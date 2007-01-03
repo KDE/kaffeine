@@ -31,14 +31,31 @@ class KaffeineApplication : public KUniqueApplication
 {
 public:
 	KaffeineApplication() : kaffeine(NULL) { }
-	~KaffeineApplication() { }
+
+	~KaffeineApplication()
+	{
+		// FIXME *grr*
+		// delete kaffeine;
+	}
 
 private:
 	KaffeineApplication(const KaffeineApplication &);
 	KaffeineApplication operator=(const KaffeineApplication &);
 
+	int newInstance();
+
 	Kaffeine *kaffeine;
 };
+
+int KaffeineApplication::newInstance()
+{
+	if (kaffeine) {
+		// FIXME
+	} else
+		kaffeine = new Kaffeine;
+
+	return 0;
+}
 
 int main(int argc, char *argv[])
 {

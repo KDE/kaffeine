@@ -1,6 +1,7 @@
 project(kaffeine)
 
 set(kaffeine_SRCS
+    kaffeine.cpp
     main.cpp)
 
 kde4_automoc(${kaffeine_SRCS})
