@@ -13,8 +13,8 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 // FIXME no Qt::WA_DeleteOnClose
 Kaffeine::Kaffeine() : KMainWindow(0, (Qt::WindowFlags) 0)
 {
-	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open");
-	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit");
+	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open_x");
+	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit_x");
 
 	createGUI();
 
