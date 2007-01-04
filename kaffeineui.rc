@@ -1,9 +1,24 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<MenuBar>
-  <Menu name="file" >
-    <text>&amp;File</text>
-    <Action name="file_open" />
-    <Separator/>
-    <Action name="file_quit" />
-  </Menu>
-</MenuBar>
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<kpartgui name="kaffeine" >
+  <MenuBar>
+    <Menu name="file_menu" >
+      <text>&amp;File</text>
+      <Action name="file_open" />
+      <Separator/>
+      <Action name="file_quit" />
+    </Menu>
+  </MenuBar>
+  <ToolBar name="main_controls_toolbar" >
+    <text>Main controls</text>
+    <Action name="controls_previous" />
+    <Action name="controls_play" />
+    <Action name="controls_stop" />
+    <Action name="controls_next" />
+    <Action name="controls_volume" />
+    <Action name="controls_mute" />
+  </ToolBar>
+  <ToolBar name="position_slider_toolbar" >
+    <text>Position slider</text>
+    <Action name="position_slider" />
+  </ToolBar>
+</kpartgui>
