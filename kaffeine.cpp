@@ -1,6 +1,4 @@
-#include <KLocalizedString>
-#include <KMenu>
-#include <KMenuBar>
+#include <KStandardAction>
 
 #include "kaffeine.h"
 
@@ -11,10 +9,10 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 // FIXME no Qt::WA_DeleteOnClose
 Kaffeine::Kaffeine() : KMainWindow(0, (Qt::WindowFlags) 0)
 {
-	KMenu *fileMenu = new KMenu(i18n("&File"), this);
+	KStandardAction::open(this, SLOT(close()), actionCollection(), "file_open");
+	KStandardAction::quit(this, SLOT(close()), actionCollection(), "file_quit");
 
-	menuBar()->addMenu(fileMenu);
-	menuBar()->addMenu(helpMenu());
+	createGUI();
 
 	show();
 }
