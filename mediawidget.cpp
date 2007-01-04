@@ -1,5 +1,5 @@
 /*
- * kaffeine.h
+ * mediawidget.cpp
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,34 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef KAFFEINE_H
-#define KAFFEINE_H
-
 #include <config.h>
-
-#include <KCmdLineOptions>
-#include <KMainWindow>
 
 #include "mediawidget.h"
 
-class Kaffeine : public KMainWindow
+void MediaWidget::play(const QString &url)
 {
-	Q_OBJECT
+	// FIXME
+}
 
-public:
-	Kaffeine();
-	~Kaffeine();
+void setPaused(bool enabled)
+{
+	// FIXME
+}
 
-	static const KCmdLineOptions cmdLineOptions[];
-
-	void updateArgs();
-
-private slots:
-	void actionOpen();
-	void actionQuit();
-
-private:
-	MediaWidget mediaWidget;
-};
-
-#endif /* KAFFEINE_H */
+void stop()
+{
+	// FIXME
+}
