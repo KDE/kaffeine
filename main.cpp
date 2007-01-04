@@ -20,10 +20,10 @@
 
 #include <config.h>
 
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocalizedstring.h>
-#include <kuniqueapplication.h>
+#include <KAboutData>
+#include <KCmdLineArgs>
+#include <KLocalizedString>
+#include <KUniqueApplication>
 
 #include "kaffeine.h"
 
