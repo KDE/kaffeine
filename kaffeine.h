@@ -23,6 +23,7 @@
 
 #include <config.h>
 
+#include <KCmdLineOptions>
 #include <KMainWindow>
 
 class Kaffeine : public KMainWindow
@@ -30,6 +31,10 @@ class Kaffeine : public KMainWindow
 public:
 	Kaffeine();
 	~Kaffeine();
+
+	static const KCmdLineOptions cmdLineOptions[];
+
+	void updateArgs();
 };
 
 #endif /* KAFFEINE_H */

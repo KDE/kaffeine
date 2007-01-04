@@ -49,9 +49,11 @@ private:
 
 int KaffeineApplication::newInstance()
 {
-	if (kaffeine) {
-		// FIXME
-	} else
+	KUniqueApplication::newInstance();
+
+	if (kaffeine)
+		kaffeine->updateArgs();
+	else
 		kaffeine = new Kaffeine;
 
 	return 0;
@@ -64,6 +66,7 @@ int main(int argc, char *argv[])
 			     KAboutData::License_GPL_V2);
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
+	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions);
 
 	if (!KaffeineApplication::start())
 		return 0;
