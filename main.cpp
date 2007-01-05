@@ -34,8 +34,7 @@ public:
 
 	~KaffeineApplication()
 	{
-		// FIXME *grr*
-		// delete kaffeine;
+		delete kaffeine;
 	}
 
 private:
@@ -49,6 +48,7 @@ private:
 
 int KaffeineApplication::newInstance()
 {
+	// for window activation - FIXME do some checks about behaviour
 	KUniqueApplication::newInstance();
 
 	if (kaffeine)
@@ -61,7 +61,7 @@ int KaffeineApplication::newInstance()
 
 int main(int argc, char *argv[])
 {
-	// FIXME
+	// FIXME add proper stuff
 	KAboutData aboutData("kaffeine", I18N_NOOP("Kaffeine Player"), "version", I18N_NOOP("description"),
 			     KAboutData::License_GPL_V2);
 

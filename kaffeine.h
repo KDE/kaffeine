@@ -26,6 +26,8 @@
 #include <KCmdLineOptions>
 #include <KMainWindow>
 
+class KAction;
+
 #include "mediawidget.h"
 
 class Kaffeine : public KMainWindow
@@ -45,6 +47,13 @@ private slots:
 	void actionQuit();
 
 private:
+	KAction *actionControlPrevious;
+	KAction *actionControlPlay;
+	KAction *actionControlStop;
+	KAction *actionControlNext;
+	KAction *actionControlVolume;
+	KAction *actionControlMute;
+
 	MediaWidget mediaWidget;
 };
 
