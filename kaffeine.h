@@ -27,7 +27,6 @@
 #include <KMainWindow>
 
 class KAction;
-class KToggleAction;
 
 #include "mediawidget.h"
 
@@ -46,21 +45,20 @@ public:
 private slots:
 	void actionOpen();
 	void actionQuit();
-	
+
+	// FIXME
 	void play();
 	void newMediaState( MediaState status );
 
 private:
-	void initActions();
-	MediaWidget *player;
 	KAction *actionControlPrevious;
 	KAction *actionControlPlayPause;
 	KAction *actionControlStop;
 	KAction *actionControlNext;
 	KAction *actionControlVolume;
 	KAction *actionControlMute;
-	KToggleAction *actionControlPause;
 
+	MediaWidget *player;
 };
 
 #endif /* KAFFEINE_H */
