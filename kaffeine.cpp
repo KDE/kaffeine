@@ -75,18 +75,13 @@ void Kaffeine::actionOpen()
 
 void Kaffeine::actionPlayPause()
 {
-	switch (player.stat()) {
-	case MediaPlaying:
-		player->togglePause(true);
-		break;
-
-	case MediaPaused:
-		player->togglePause(false);
-		break;
-
-	default:
+	if (actionControlPlayPause->isCheckable())
+		if (actionControlPlayPause->isChecked())
+			player->togglePause(true);
+		else
+			player->togglePause(false);
+	else
 		player->play();
-	}
 }
 
 void Kaffeine::actionQuit()
