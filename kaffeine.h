@@ -47,13 +47,14 @@ private slots:
 	void actionOpen();
 	void actionQuit();
 	
+	void play();
 	void newMediaState( MediaState status );
 
 private:
 	void initActions();
 	MediaWidget *player;
 	KAction *actionControlPrevious;
-	KAction *actionControlPlay;
+	KAction *actionControlPlayPause;
 	KAction *actionControlStop;
 	KAction *actionControlNext;
 	KAction *actionControlVolume;
