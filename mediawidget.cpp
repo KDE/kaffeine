@@ -20,19 +20,61 @@
 
 #include <config.h>
 
+#include <QVBoxLayout>
 #include "mediawidget.h"
+#include "mediawidget.moc"
 
-void MediaWidget::play(const QString &url)
+
+
+MediaWidget::MediaWidget()
 {
-	// FIXME
+	QVBoxLayout *box = new QVBoxLayout( this );
+	box->setMargin(0);
+	box->setSpacing(0);
+	vw = new VideoWidget( this );
+	box->addWidget( vw );
+	vp = new VideoPath( this );
+	ao = new AudioOutput( Phonon::VideoCategory, this );
+	ap = new AudioPath( this );
+	media = new MediaObject( this );
+	media->addVideoPath( vp );
+	vp->addOutput( vw );
+	media->addAudioPath( ap );
+	ap->addOutput( ao );
+	
+	connect( ao, SIGNAL(volumeChanged(float)), this, SLOT(volumeChanged(float)) );
+	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
 }
 
-void setPaused(bool enabled)
+void MediaWidget::play(const KUrl &url)
 {
-	// FIXME
+	media->setUrl( url );
+	media->play();
 }
 
-void stop()
+void MediaWidget::togglePause( bool b )
 {
-	// FIXME
+	if ( b && (media->state()==PlayingState) )
+		media->pause();
+	else if ( media->state()==PausedState )
+		media->play();
+}
+
+void MediaWidget::stop()
+{
+	media->stop();
+}
+
+void MediaWidget::setVolume( int val )
+{
+	ao->setVolume( (float)(val*0.01) );
+}
+
+void MediaWidget::volumeChanged( float val )
+{
+	emit volumeHasChanged( (int)(val*100) );
+}
+
+void MediaWidget::playbackFinished()
+{
 }

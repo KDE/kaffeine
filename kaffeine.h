@@ -47,6 +47,7 @@ private slots:
 	void actionQuit();
 
 private:
+	MediaWidget *player;
 	KAction *actionControlPrevious;
 	KAction *actionControlPlay;
 	KAction *actionControlStop;
@@ -54,7 +55,6 @@ private:
 	KAction *actionControlVolume;
 	KAction *actionControlMute;
 
-	MediaWidget mediaWidget;
 };
 
 #endif /* KAFFEINE_H */

@@ -31,6 +31,9 @@ Kaffeine::Kaffeine()
 	actionControlMute = new KAction(KIcon("player_eject"), QString(), actionCollection(), "controls_mute");
 
 	createGUI();
+	
+	player = new MediaWidget();
+	setCentralWidget( player );
 
 	// FIXME
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
@@ -50,10 +53,9 @@ void Kaffeine::updateArgs()
 
 void Kaffeine::actionOpen()
 {
-	// FIXME
-	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file(s)"));
+	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid())
-		mediaWidget.play(url.url());
+		player->play( url );
 }
 
 void Kaffeine::actionQuit()

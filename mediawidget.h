@@ -25,15 +25,45 @@
 
 #include <QWidget>
 
+#include <phonon/videopath.h>
+#include <phonon/audiooutput.h>
+#include <phonon/audiopath.h>
+#include <phonon/mediaobject.h>
+#include <phonon/ui/videowidget.h>
+#include <phonon/ui/mediacontrols.h>
+#include <kurl.h>
+
+using namespace Phonon;
+
 class MediaWidget : public QWidget
 {
+	Q_OBJECT
+	
 public:
-	MediaWidget() { }
+	MediaWidget();
 	~MediaWidget() { }
 
-	void play(const QString &url);
-	void setPaused(bool enabled);
+	void play( const KUrl &url );
+	void togglePause( bool b );
 	void stop();
+	
+public slots:
+	void setVolume( int val );
+	
+signals:
+	void volumeHasChanged( int value );
+	
+private:
+	VideoWidget *vw;
+	VideoPath *vp;
+	AudioOutput *ao;
+	AudioPath *ap;
+	MediaObject *media;
+	
+private slots:
+	void volumeChanged( float val );
+	void playbackFinished();
+
 };
 
 #endif /* MEDIAWIDGET_H */
