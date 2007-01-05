@@ -35,6 +35,8 @@
 
 using namespace Phonon;
 
+enum MediaState{ MediaPlaying, MediaPaused, MediaStopped, MediaBuffering, MediaLoading, MediaError };
+
 class MediaWidget : public QWidget
 {
 	Q_OBJECT
@@ -51,7 +53,8 @@ public slots:
 	void setVolume( int val );
 	
 signals:
-	void volumeHasChanged( int value );
+	void volumeHasChanged( int );
+	void newState( MediaState );
 	
 private:
 	VideoWidget *vw;
@@ -65,6 +68,7 @@ private:
 private slots:
 	void volumeChanged( float val );
 	void playbackFinished();
+	void stateChanged( Phonon::State, Phonon::State );
 
 };
 

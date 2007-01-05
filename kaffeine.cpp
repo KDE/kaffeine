@@ -18,6 +18,7 @@ Kaffeine::Kaffeine()
 	setAttribute(Qt::WA_DeleteOnClose, false);
 
 	player = new MediaWidget();
+	connect( player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)) );
 	initActions();
 	createGUI();
 	setCentralWidget( player );
@@ -25,6 +26,8 @@ Kaffeine::Kaffeine()
 	// FIXME
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
+	
+	stateChanged( "stopped" );
 
 	show();
 }
@@ -63,6 +66,23 @@ void Kaffeine::actionOpen()
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid())
 		player->play( url );
+}
+
+void Kaffeine::newMediaState( MediaState status )
+{
+	switch (status) {
+		case MediaPlaying:
+			stateChanged( "playing" );
+			break;
+		case MediaPaused:
+			stateChanged( "paused" );
+			break;
+		case MediaStopped:
+			stateChanged( "stopped" );
+			break;
+		default:
+			break;
+	}
 }
 
 void Kaffeine::actionQuit()

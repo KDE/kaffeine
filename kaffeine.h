@@ -46,6 +46,8 @@ public:
 private slots:
 	void actionOpen();
 	void actionQuit();
+	
+	void newMediaState( MediaState status );
 
 private:
 	void initActions();

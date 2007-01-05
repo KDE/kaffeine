@@ -44,6 +44,7 @@ MediaWidget::MediaWidget()
 	
 	connect( ao, SIGNAL(volumeChanged(float)), this, SLOT(volumeChanged(float)) );
 	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
+	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -86,4 +87,31 @@ void MediaWidget::volumeChanged( float val )
 
 void MediaWidget::playbackFinished()
 {
+}
+
+void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
+{
+	MediaState state=MediaStopped;
+	
+	switch (status) {
+		case PlayingState:
+			state = MediaPlaying;
+			break;
+		case PausedState:
+			state = MediaPaused;
+			break;
+		case StoppedState:
+			state = MediaStopped;
+			break;
+		case LoadingState:
+			state = MediaLoading;
+			break;
+		case BufferingState:
+			state = MediaBuffering;
+			break;
+		case ErrorState:
+			state = MediaError;
+			break;
+	}
+	emit newState( state );
 }
