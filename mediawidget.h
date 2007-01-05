@@ -30,7 +30,8 @@
 #include <phonon/audiopath.h>
 #include <phonon/mediaobject.h>
 #include <phonon/ui/videowidget.h>
-#include <phonon/ui/mediacontrols.h>
+#include <phonon/ui/seekslider.h>
+#include <phonon/ui/volumeslider.h>
 #include <kurl.h>
 
 using namespace Phonon;
@@ -45,6 +46,8 @@ public:
 	MediaWidget();
 	~MediaWidget() { }
 	void play( const KUrl &url );
+	QWidget* getPositionSlider();
+	QWidget* getVolumeSlider();
 	
 public slots:
 	void play();
@@ -62,6 +65,8 @@ private:
 	AudioOutput *ao;
 	AudioPath *ap;
 	MediaObject *media;
+	SeekSlider *seekSlider;
+	VolumeSlider *volumeSlider;
 	
 	KUrl currentUrl;
 	

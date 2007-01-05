@@ -16,12 +16,18 @@ Kaffeine::Kaffeine()
 {
 	// FIXME workaround
 	setAttribute(Qt::WA_DeleteOnClose, false);
+	
+	/*
+	 * initialise media widget
+	 */
+	
+	player = new MediaWidget();
+	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
 
 	/*
 	 * initialise gui elements
 	 */
 
-	// FIXME workaround
 	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open_x");
 	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit_x");
 
@@ -31,10 +37,12 @@ Kaffeine::Kaffeine()
 	actionControlStop = new KAction(KIcon("player_stop"), i18n("Stop"), actionCollection(), "controls_stop");
 	connect(actionControlStop, SIGNAL(triggered(bool)), player, SLOT(stop()));
 	actionControlNext = new KAction(KIcon("player_end"), i18n("Next"), actionCollection(), "controls_next");
-
-	// FIXME use correct items
-	actionControlVolume = new KAction(KIcon("player_eject"), QString(), actionCollection(), "controls_volume");
-	actionControlMute = new KAction(KIcon("player_eject"), QString(), actionCollection(), "controls_mute");
+	
+	KAction *ac = new KAction( actionCollection(), "controls_volume" );
+	ac->setDefaultWidget( player->getVolumeSlider() );
+	
+	ac = new KAction( actionCollection(), "position_slider" );
+	ac->setDefaultWidget( player->getPositionSlider() );
 
 	createGUI();
 
@@ -42,16 +50,8 @@ Kaffeine::Kaffeine()
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
 
-	/*
-	 * initialise media widget
-	 */
-
-	player = new MediaWidget();
-	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
 	setCentralWidget(player);
-
 	stateChanged( "stopped" );
-
 	show();
 }
 

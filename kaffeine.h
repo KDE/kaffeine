@@ -57,7 +57,6 @@ private:
 	KAction *actionControlNext;
 	KAction *actionControlVolume;
 	KAction *actionControlMute;
-
 	MediaWidget *player;
 };
 

@@ -47,6 +47,22 @@ MediaWidget::MediaWidget()
 	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
 }
 
+QWidget* MediaWidget::getPositionSlider()
+{
+	seekSlider = new SeekSlider();
+	seekSlider->setIconVisible( false );
+	seekSlider->setMediaProducer( media );
+	return seekSlider;
+}
+
+QWidget* MediaWidget::getVolumeSlider()
+{
+	volumeSlider = new VolumeSlider();
+	volumeSlider->setAudioOutput( ao );
+	volumeSlider->setOrientation( Qt::Horizontal );
+	return volumeSlider;
+}
+
 void MediaWidget::play(const KUrl &url)
 {
 	media->setUrl( url );

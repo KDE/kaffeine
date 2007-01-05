@@ -19,7 +19,6 @@
 		<Action name="controls_stop" />
 		<Action name="controls_next" />
 		<Action name="controls_volume" />
-		<Action name="controls_mute" />
 	</ToolBar>
 	<ToolBar position="bottom" name="position_slider_toolbar" > <text>Position slider</text>
 		<Action name="position_slider" />
