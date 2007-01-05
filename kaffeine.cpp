@@ -16,13 +16,15 @@ Kaffeine::Kaffeine()
 {
 	// FIXME workaround
 	setAttribute(Qt::WA_DeleteOnClose, false);
-	
+
 	/*
 	 * initialise media widget
 	 */
-	
+
 	player = new MediaWidget( this );
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
+
+	setCentralWidget(player);
 
 	/*
 	 * initialise gui elements
@@ -33,14 +35,14 @@ Kaffeine::Kaffeine()
 
 	actionControlPrevious = new KAction(KIcon("player_start"), i18n("Previous"), actionCollection(), "controls_previous");
 	actionControlPlayPause = new KAction(KIcon("player_play"), i18n("Play"), actionCollection(), "controls_play_pause");
-	connect(actionControlPlayPause, SIGNAL(triggered(bool)), this, SLOT(play()));
+	connect(actionControlPlayPause, SIGNAL(triggered(bool)), this, SLOT(actionPlayPause()));
 	actionControlStop = new KAction(KIcon("player_stop"), i18n("Stop"), actionCollection(), "controls_stop");
 	connect(actionControlStop, SIGNAL(triggered(bool)), player, SLOT(stop()));
 	actionControlNext = new KAction(KIcon("player_end"), i18n("Next"), actionCollection(), "controls_next");
-	
+
 	KAction *ac = new KAction( actionCollection(), "controls_volume" );
 	ac->setDefaultWidget( player->getVolumeSlider() );
-	
+
 	ac = new KAction( actionCollection(), "position_slider" );
 	ac->setDefaultWidget( player->getPositionSlider() );
 
@@ -50,7 +52,6 @@ Kaffeine::Kaffeine()
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
 
-	setCentralWidget(player);
 	stateChanged( "stopped" );
 	show();
 }
@@ -72,21 +73,25 @@ void Kaffeine::actionOpen()
 		player->play(url);
 }
 
+void Kaffeine::actionPlayPause()
+{
+	switch (player.stat()) {
+	case MediaPlaying:
+		player->togglePause(true);
+		break;
+
+	case MediaPaused:
+		player->togglePause(false);
+		break;
+
+	default:
+		player->play();
+	}
+}
+
 void Kaffeine::actionQuit()
 {
 	close();
-}
-
-void Kaffeine::play()
-{
-	if (actionControlPlayPause->isCheckable()) {
-		if (actionControlPlayPause->isChecked())
-			player->togglePause(true);
-		else
-			player->togglePause(false);
-	} else {
-		player->play();
-	}
 }
 
 void Kaffeine::newMediaState(MediaState status)

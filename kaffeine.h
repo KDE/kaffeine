@@ -44,10 +44,10 @@ public:
 
 private slots:
 	void actionOpen();
+	void actionPlayPause();
 	void actionQuit();
 
 	// FIXME
-	void play();
 	void newMediaState( MediaState status );
 
 private:
@@ -57,6 +57,7 @@ private:
 	KAction *actionControlNext;
 	KAction *actionControlVolume;
 	KAction *actionControlMute;
+
 	MediaWidget *player;
 };
 
