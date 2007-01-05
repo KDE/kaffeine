@@ -27,6 +27,7 @@
 #include <KMainWindow>
 
 class KAction;
+class KToggleAction;
 
 #include "mediawidget.h"
 
@@ -47,6 +48,7 @@ private slots:
 	void actionQuit();
 
 private:
+	void initActions();
 	MediaWidget *player;
 	KAction *actionControlPrevious;
 	KAction *actionControlPlay;
@@ -54,6 +56,7 @@ private:
 	KAction *actionControlNext;
 	KAction *actionControlVolume;
 	KAction *actionControlMute;
+	KToggleAction *actionControlPause;
 
 };
 

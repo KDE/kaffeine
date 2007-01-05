@@ -1,5 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<gui name="kaffeine" >
+<gui name="kaffeine" version="2">
   <MenuBar>
     <Menu name="file_menu" >
       <text>&amp;File</text>
@@ -12,6 +12,7 @@
     <text>Main controls</text>
     <Action name="controls_previous" />
     <Action name="controls_play" />
+	<Action name="controls_pause" />
     <Action name="controls_stop" />
     <Action name="controls_next" />
     <Action name="controls_volume" />

@@ -42,12 +42,12 @@ class MediaWidget : public QWidget
 public:
 	MediaWidget();
 	~MediaWidget() { }
-
 	void play( const KUrl &url );
-	void togglePause( bool b );
-	void stop();
 	
 public slots:
+	void play();
+	void togglePause( bool b );
+	void stop();
 	void setVolume( int val );
 	
 signals:
@@ -59,6 +59,8 @@ private:
 	AudioOutput *ao;
 	AudioPath *ap;
 	MediaObject *media;
+	
+	KUrl currentUrl;
 	
 private slots:
 	void volumeChanged( float val );

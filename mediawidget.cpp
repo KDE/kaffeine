@@ -49,7 +49,16 @@ MediaWidget::MediaWidget()
 void MediaWidget::play(const KUrl &url)
 {
 	media->setUrl( url );
+	currentUrl = url;
 	media->play();
+}
+
+void MediaWidget::play()
+{
+	if ( !currentUrl.path().isEmpty() ) {
+		media->setUrl( currentUrl );
+		media->play();
+	}
 }
 
 void MediaWidget::togglePause( bool b )
