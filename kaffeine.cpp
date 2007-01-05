@@ -47,14 +47,12 @@ void Kaffeine::initActions()
 	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open_x");
 	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit_x");
 
-	actionControlPrevious = new KAction(KIcon("player_start"), QString(), actionCollection(), "controls_previous");
-	actionControlPlayPause = new KAction(KIcon("player_play"), QString(), actionCollection(), "controls_play_pause");
+	actionControlPrevious = new KAction(KIcon("player_start"), i18n("Previous"), actionCollection(), "controls_previous");
+	actionControlPlayPause = new KAction(KIcon("player_play"), i18n("Play"), actionCollection(), "controls_play_pause");
 	connect(actionControlPlayPause, SIGNAL(triggered(bool)), this, SLOT(play()));
-	actionControlPause = new KToggleAction(KIcon("player_pause"), i18n("Pause"), actionCollection(), "controls_pause");
-	connect(actionControlPause, SIGNAL(triggered(bool)), player, SLOT(togglePause(bool)));
-	actionControlStop = new KAction(KIcon("player_stop"), QString(), actionCollection(), "controls_stop");
+	actionControlStop = new KAction(KIcon("player_stop"), i18n("Stop"), actionCollection(), "controls_stop");
 	connect(actionControlStop, SIGNAL(triggered(bool)), player, SLOT(stop()));
-	actionControlNext = new KAction(KIcon("player_end"), QString(), actionCollection(), "controls_next");
+	actionControlNext = new KAction(KIcon("player_end"), i18n("Next"), actionCollection(), "controls_next");
 
 	// FIXME
 	actionControlVolume = new KAction(KIcon("player_eject"), QString(), actionCollection(), "controls_volume");
@@ -87,6 +85,7 @@ void Kaffeine::newMediaState( MediaState status )
 		case MediaPlaying:
 			stateChanged( "playing" );
 			actionControlPlayPause->setIcon( KIcon("player_pause") );
+			actionControlPlayPause->setText( i18n("Pause") );
 			actionControlPlayPause->setCheckable( true );
 			actionControlPlayPause->setChecked( false );
 			break;
@@ -96,6 +95,7 @@ void Kaffeine::newMediaState( MediaState status )
 		case MediaStopped:
 			stateChanged( "stopped" );
 			actionControlPlayPause->setCheckable( false );
+			actionControlPlayPause->setText( i18n("Play") );
 			actionControlPlayPause->setIcon( KIcon("player_play") );
 			break;
 		default:
