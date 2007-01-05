@@ -43,7 +43,7 @@ class MediaWidget : public QWidget
 	Q_OBJECT
 	
 public:
-	MediaWidget();
+	MediaWidget( QWidget *parent );
 	~MediaWidget() { }
 	void play( const KUrl &url );
 	QWidget* getPositionSlider();

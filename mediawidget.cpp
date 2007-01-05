@@ -26,7 +26,7 @@
 
 
 
-MediaWidget::MediaWidget()
+MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 {
 	QVBoxLayout *box = new QVBoxLayout( this );
 	box->setMargin(0);

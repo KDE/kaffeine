@@ -21,7 +21,7 @@ Kaffeine::Kaffeine()
 	 * initialise media widget
 	 */
 	
-	player = new MediaWidget();
+	player = new MediaWidget( this );
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
 
 	/*
