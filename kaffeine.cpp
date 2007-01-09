@@ -30,8 +30,8 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	 * initialise gui elements
 	 */
 
-	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open_x");
-	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit_x");
+	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open");
+	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit");
 
 	actionControlPrevious = createAction("controls_previous", i18n("Previous"), KIcon("player_start"), statePrevNext | statePlaying);
 	actionControlPlayPause = createAction("controls_play_pause", i18n("Play"), KIcon("player_play"), stateNone);
