@@ -1,37 +1,34 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<gui name="kaffeine" version="2">
-	<MenuBar>
-		<Menu name="file_menu" > <text>&amp;File</text>
-			<Action name="file_open_x" /> <!--FIXME-->
-			<Separator/>
-			<Action name="file_quit_x" /> <!--FIXME-->
-		</Menu>
-		<Menu name="player_menu" > <text>&amp;Player</text>
-			<Action name="controls_previous" />
-			<Action name="controls_play_pause" />
-			<Action name="controls_stop" />
-			<Action name="controls_next" />
-		</Menu>
-	</MenuBar>
-	<ToolBar position="bottom" name="main_controls_toolbar" > <text>Main controls</text>
-		<Action name="controls_previous" />
-		<Action name="controls_play_pause" />
-		<Action name="controls_stop" />
-		<Action name="controls_next" />
-		<Action name="controls_volume" />
-	</ToolBar>
-	<ToolBar position="bottom" name="position_slider_toolbar" > <text>Position slider</text>
-		<Action name="position_slider" />
-	</ToolBar>
-
-	<State name="playing">
-		<enable>
-			<Action name="controls_stop" />
-		</enable>
-	</State>
-	<State name="stopped">
-		<disable>
-			<Action name="controls_stop" />
-		</disable>
-	</State>
+<gui name="kaffeine" >
+  <MenuBar>
+    <Menu name="file_menu" >
+      <text>&amp;File</text>
+<!--FIXME-->      <Action name="file_open_x" />
+      <Separator/>
+<!--FIXME-->      <Action name="file_quit_x" />
+    </Menu>
+    <Menu name="player_menu" >
+      <text>&amp;Player</text>
+      <Action name="controls_previous" />
+      <Action name="controls_play_pause" />
+      <Action name="controls_stop" />
+      <Action name="controls_next" />
+    </Menu>
+    <Menu>
+      <text>&amp;Settings</text>
+      <Action name="settings_shortcuts" />
+    </Menu>
+  </MenuBar>
+  <ToolBar position="bottom" name="main_controls_toolbar" >
+    <text>Main controls</text>
+    <Action name="controls_previous" />
+    <Action name="controls_play_pause" />
+    <Action name="controls_stop" />
+    <Action name="controls_next" />
+    <Action name="controls_volume" />
+  </ToolBar>
+  <ToolBar position="bottom" name="position_slider_toolbar" >
+    <text>Position slider</text>
+    <Action name="position_slider" />
+  </ToolBar>
 </gui>

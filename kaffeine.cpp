@@ -12,7 +12,7 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 	KCmdLineLastOption
 };
 
-Kaffeine::Kaffeine()
+Kaffeine::Kaffeine() : currentState(stateAll)
 {
 	// FIXME workaround
 	setAttribute(Qt::WA_DeleteOnClose, false);
@@ -33,12 +33,12 @@ Kaffeine::Kaffeine()
 	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open_x");
 	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit_x");
 
-	actionControlPrevious = new KAction(KIcon("player_start"), i18n("Previous"), actionCollection(), "controls_previous");
-	actionControlPlayPause = new KAction(KIcon("player_play"), i18n("Play"), actionCollection(), "controls_play_pause");
+	actionControlPrevious = createAction("controls_previous", i18n("Previous"), KIcon("player_start"), statePrevNext | statePlaying);
+	actionControlPlayPause = createAction("controls_play_pause", i18n("Play"), KIcon("player_play"), stateNone);
 	connect(actionControlPlayPause, SIGNAL(triggered(bool)), this, SLOT(actionPlayPause()));
-	actionControlStop = new KAction(KIcon("player_stop"), i18n("Stop"), actionCollection(), "controls_stop");
+	actionControlStop = createAction("controls_stop", i18n("Stop"), KIcon("player_stop"), statePlaying);
 	connect(actionControlStop, SIGNAL(triggered(bool)), player, SLOT(stop()));
-	actionControlNext = new KAction(KIcon("player_end"), i18n("Next"), actionCollection(), "controls_next");
+	actionControlNext = createAction("controls_next", i18n("Next"), KIcon("player_end"), statePrevNext);
 
 	KAction *ac = new KAction( actionCollection(), "controls_volume" );
 	ac->setDefaultWidget( player->getVolumeSlider() );
@@ -52,7 +52,8 @@ Kaffeine::Kaffeine()
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
 
-	stateChanged( "stopped" );
+	setCurrentState(stateNone);
+
 	show();
 }
 
@@ -75,13 +76,15 @@ void Kaffeine::actionOpen()
 
 void Kaffeine::actionPlayPause()
 {
-	if (actionControlPlayPause->isCheckable())
+	if (currentState.testFlag(statePlaying))
 		if (actionControlPlayPause->isChecked())
 			player->togglePause(true);
 		else
 			player->togglePause(false);
-	else
+	else {
+		// FIXME do some special actions - play playlist, ask for input ...
 		player->play();
+	}
 }
 
 void Kaffeine::actionQuit()
@@ -89,24 +92,46 @@ void Kaffeine::actionQuit()
 	close();
 }
 
+void Kaffeine::setCurrentState(stateFlags newState)
+{
+	if (currentState == newState)
+		return;
+
+	stateFlags changedFlags = currentState ^ newState;
+
+	// starting / stopping playback is special
+	if (changedFlags.testFlag(statePlaying))
+		if (newState.testFlag(statePlaying)) {
+			actionControlPlayPause->setIcon(KIcon("player_pause"));
+			actionControlPlayPause->setText(i18n("Pause"));
+			actionControlPlayPause->setCheckable(true);
+		} else {
+			actionControlPlayPause->setIcon(KIcon("player_play"));
+			actionControlPlayPause->setText(i18n("Play"));
+			actionControlPlayPause->setCheckable(false);
+		}
+
+	foreach (stateFlags key, flaggedActions.keys()) {
+		bool currentEnabled = ((currentState & key) != stateNone);
+		bool newEnabled = ((newState & key) != stateNone);
+		if (currentEnabled ^ newEnabled)
+			foreach (KAction *value, flaggedActions.values(key))
+				value->setEnabled(newEnabled);
+	}
+
+	currentState = newState;
+}
+
 void Kaffeine::newMediaState(MediaState status)
 {
 	switch (status) {
 		case MediaPlaying:
-			stateChanged( "playing" );
-			actionControlPlayPause->setIcon( KIcon("player_pause") );
-			actionControlPlayPause->setText( i18n("Pause") );
-			actionControlPlayPause->setCheckable( true );
-			actionControlPlayPause->setChecked( false );
+			setCurrentState(currentState | statePlaying);
 			break;
 		case MediaPaused:
-			stateChanged( "paused" );
 			break;
 		case MediaStopped:
-			stateChanged( "stopped" );
-			actionControlPlayPause->setCheckable( false );
-			actionControlPlayPause->setText( i18n("Play") );
-			actionControlPlayPause->setIcon( KIcon("player_play") );
+			setCurrentState(currentState & statePrevNext);
 			break;
 		default:
 			break;

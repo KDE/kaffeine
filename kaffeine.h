@@ -23,7 +23,11 @@
 
 #include <config.h>
 
+#include <QMultiMap>
+
+#include <KAction>
 #include <KCmdLineOptions>
+#include <KIcon>
 #include <KMainWindow>
 
 class KAction;
@@ -42,6 +46,16 @@ public:
 
 	void updateArgs();
 
+	enum stateFlag {
+		stateNone	= 0,
+		statePrevNext	= (1 << 0),
+		statePlaying	= (1 << 1),
+
+		stateAll	= 0xff
+	};
+
+	Q_DECLARE_FLAGS(stateFlags, stateFlag)
+
 private slots:
 	void actionOpen();
 	void actionPlayPause();
@@ -51,6 +65,20 @@ private slots:
 	void newMediaState( MediaState status );
 
 private:
+	KAction *createAction(const QString &name, const QString &text,
+		const KIcon &icon, stateFlags flags)
+	{
+		KAction *action = new KAction(icon, text, actionCollection(), name);
+		flaggedActions.insert(flags, action);
+		return action;
+	}
+
+	void setCurrentState(stateFlags newState);
+
+	stateFlags currentState;
+
+	QMultiMap<stateFlags, KAction *> flaggedActions;
+
 	KAction *actionControlPrevious;
 	KAction *actionControlPlayPause;
 	KAction *actionControlStop;
@@ -60,5 +88,7 @@ private:
 
 	MediaWidget *player;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(Kaffeine::stateFlags)
 
 #endif /* KAFFEINE_H */
