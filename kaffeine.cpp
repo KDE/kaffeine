@@ -30,8 +30,10 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	 * initialise gui elements
 	 */
 
-	KStandardAction::open(this, SLOT(actionOpen()), actionCollection(), "file_open");
-	KStandardAction::quit(this, SLOT(actionQuit()), actionCollection(), "file_quit");
+	KAction *action = KStandardAction::open(this, SLOT(actionOpen()), actionCollection());
+	actionCollection()->addAction("file_open", action);
+	action = KStandardAction::quit(this, SLOT(actionQuit()), actionCollection());
+	actionCollection()->addAction("file_quit", action);
 
 	actionControlPrevious = createAction("controls_previous", i18n("Previous"), KIcon("player_start"), statePrevNext | statePlaying);
 	actionControlPlayPause = createAction("controls_play_pause", i18n("Play"), KIcon("player_play"), stateNone);
@@ -40,10 +42,12 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	connect(actionControlStop, SIGNAL(triggered(bool)), player, SLOT(stop()));
 	actionControlNext = createAction("controls_next", i18n("Next"), KIcon("player_end"), statePrevNext);
 
-	KAction *ac = new KAction( actionCollection(), "controls_volume" );
+	KAction *ac = new KAction(actionCollection());
+	actionCollection()->addAction("controls_volume", ac);
 	ac->setDefaultWidget( player->getVolumeSlider() );
 
-	ac = new KAction( actionCollection(), "position_slider" );
+	ac = new KAction(actionCollection());
+	actionCollection()->addAction("position_slider", ac);
 	ac->setDefaultWidget( player->getPositionSlider() );
 
 	createGUI();

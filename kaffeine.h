@@ -26,6 +26,7 @@
 #include <QMultiMap>
 
 #include <KAction>
+#include <KActionCollection>
 #include <KCmdLineOptions>
 #include <KIcon>
 #include <KMainWindow>
@@ -68,7 +69,8 @@ private:
 	KAction *createAction(const QString &name, const QString &text,
 		const KIcon &icon, stateFlags flags)
 	{
-		KAction *action = new KAction(icon, text, actionCollection(), name);
+		KAction *action = new KAction(icon, text, actionCollection());
+		actionCollection()->addAction(name, action);
 		flaggedActions.insert(flags, action);
 		return action;
 	}
