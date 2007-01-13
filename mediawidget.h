@@ -58,6 +58,7 @@ public slots:
 signals:
 	void newState( MediaState );
 	void positionChanged(int position);
+	void volumeChanged(int volume);
 	
 private:
 	VideoWidget *vw;
@@ -70,7 +71,8 @@ private:
 	
 private slots:
 	void newPosition(qint64 time);
-	void newLength( qint64 );
+	void newVolume(float volume);
+//	void newLength( qint64 );
 	void playbackFinished();
 	void stateChanged( Phonon::State, Phonon::State );
 

@@ -45,7 +45,8 @@ MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 	media->setTickInterval( 350 );
 	
 	connect(media, SIGNAL(tick(qint64)), this, SLOT(newPosition(qint64)));
-	connect( media, SIGNAL( length( qint64 ) ),this, SLOT( newLength( qint64 ) ) );
+	connect(media, SIGNAL(volumeChanged(float)), this, SLOT(newVolume(float)));
+//	connect( media, SIGNAL( length( qint64 ) ),this, SLOT( newLength( qint64 ) ) );
 	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
 	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
 }
@@ -54,11 +55,11 @@ void MediaWidget::setVolume(int volume)
 {
 	ao->setVolume(volume / 100.0);
 }
-
+/*
 void MediaWidget::newLength( qint64 )
 {
 }
-
+*/
 void MediaWidget::setPosition(int position)
 {
 	// FIXME possible overflow
@@ -97,6 +98,11 @@ void MediaWidget::newPosition(qint64 time)
 {
 	// FIXME possible overflow
 	emit positionChanged((time * 65536) / media->totalTime());
+}
+
+void MediaWidget::newVolume(float volume)
+{
+	emit volumeChanged(static_cast<int> (volume * 100));
 }
 
 void MediaWidget::playbackFinished()

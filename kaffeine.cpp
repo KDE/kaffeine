@@ -38,6 +38,7 @@ Kaffeine::Kaffeine()
 
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
 	connect(player, SIGNAL(positionChanged(int)), mainWindow, SLOT(setPosition(int)));
+	connect(player, SIGNAL(volumeChanged(int)), mainWindow, SLOT(setVolume(int)));
 
 	mainWindow->setCentralWidget(player);
 
