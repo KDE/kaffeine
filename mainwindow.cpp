@@ -18,6 +18,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <config.h>
+
+#include <QSlider>
+
 #include <KAction>
 #include <KActionCollection>
 #include <KLocalizedString>
@@ -27,7 +31,8 @@
 #include "mainwindow.h"
 #include "mainwindow.moc"
 
-MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(stateAll)
+MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(stateAll),
+	ignorePosition(false)
 {
 	/*
 	 * initialise gui elements
@@ -55,12 +60,20 @@ MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(
 	action = new KAction(KIcon("player_end"), i18n("Next"), actionCollection());
 	addAction("controls_next", statePrevNext, action);
 
-	// FIXME implement
 	action = new KAction(i18n("Volume"), actionCollection());
+	QSlider *slider = new QSlider(Qt::Horizontal, this);
+	slider->setMinimum(0);
+	slider->setMaximum(100);
+	connect(slider, SIGNAL(valueChanged(int)), kaffeine, SLOT(actionVolume(int)));
+	action->setDefaultWidget(slider);
 	addAction("controls_volume", stateAlways, action);
 
-	// FIXME implement
 	action = new KAction(i18n("Position"), actionCollection());
+	controlsPosition = new QSlider(Qt::Horizontal, this);
+	controlsPosition->setMinimum(0);
+	controlsPosition->setMaximum(65536);
+	connect(controlsPosition, SIGNAL(valueChanged(int)), this, SLOT(actionPosition(int)));
+	action->setDefaultWidget(controlsPosition);
 	addAction("position_slider", statePlaying, action);
 
 	setState(stateAlways);
@@ -76,12 +89,25 @@ MainWindow::~MainWindow()
 {
 }
 
+void MainWindow::setPosition(int position)
+{
+	ignorePosition = true;
+	controlsPosition->setValue(position);
+	ignorePosition = false;
+}
+
 void MainWindow::actionPlayPause()
 {
 	if (currentState.testFlag(statePlaying))
 		kaffeine->actionPause(controlsPlayPause->isChecked());
 	else
 		kaffeine->actionPlay();
+}
+
+void MainWindow::actionPosition(int position)
+{
+	if (!ignorePosition)
+		kaffeine->actionPosition(position);
 }
 
 void MainWindow::addAction(const QString &name, stateFlags flags, KAction *action)

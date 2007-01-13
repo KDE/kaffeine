@@ -32,6 +32,7 @@
 
 class KAction;
 class KIcon;
+class QSlider;
 
 class MainWindow : public KMainWindow
 {
@@ -51,8 +52,12 @@ public:
 		setState(currentState & statePrevNext);
 	}
 
+public slots:
+	void setPosition(int position);
+
 private slots:
 	void actionPlayPause();
+	void actionPosition(int position);
 
 private:
 	enum stateFlag {
@@ -74,6 +79,9 @@ private:
 	QList<QPair<stateFlags, KAction *> > actionList;
 
 	KAction *controlsPlayPause;
+
+	QSlider *controlsPosition;
+	bool ignorePosition;
 };
 
 #endif /* MAINWINDOW_H */

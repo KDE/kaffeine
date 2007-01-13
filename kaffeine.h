@@ -47,6 +47,9 @@ public slots:
 	void actionPause(bool paused);
 	void actionStop();
 
+	void actionVolume(int volume);
+	void actionPosition(int position);
+
 	// FIXME
 	void newMediaState(MediaState status);
 

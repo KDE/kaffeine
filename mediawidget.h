@@ -46,18 +46,18 @@ public:
 	MediaWidget( QWidget *parent );
 	~MediaWidget() { }
 	void play( const KUrl &url );
-	QWidget* getPositionSlider();
-	QWidget* getVolumeSlider();
-	
+
+	void setVolume(int volume);
+	void setPosition(int position);
+
 public slots:
 	void play();
 	void togglePause( bool b );
 	void stop();
-	void setVolume( int val );
-	
+
 signals:
-	void volumeHasChanged( int );
 	void newState( MediaState );
+	void positionChanged(int position);
 	
 private:
 	VideoWidget *vw;
@@ -65,13 +65,11 @@ private:
 	AudioOutput *ao;
 	AudioPath *ap;
 	MediaObject *media;
-	SeekSlider *seekSlider;
-	VolumeSlider *volumeSlider;
 	
 	KUrl currentUrl;
 	
 private slots:
-	void volumeChanged( float val );
+	void newPosition(qint64 time);
 	void playbackFinished();
 	void stateChanged( Phonon::State, Phonon::State );
 

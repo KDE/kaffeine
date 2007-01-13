@@ -42,25 +42,20 @@ MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 	media->addAudioPath( ap );
 	ap->addOutput( ao );
 	
-	connect( ao, SIGNAL(volumeChanged(float)), this, SLOT(volumeChanged(float)) );
+	connect(media, SIGNAL(tick(qint64)), this, SLOT(newPosition(qint64)));
 	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
 	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
 }
 
-QWidget* MediaWidget::getPositionSlider()
+void MediaWidget::setVolume(int volume)
 {
-	seekSlider = new SeekSlider();
-	seekSlider->setIconVisible( false );
-	seekSlider->setMediaProducer( media );
-	return seekSlider;
+	ao->setVolume(volume / 100.0);
 }
 
-QWidget* MediaWidget::getVolumeSlider()
+void MediaWidget::setPosition(int position)
 {
-	volumeSlider = new VolumeSlider();
-	volumeSlider->setAudioOutput( ao );
-	volumeSlider->setOrientation( Qt::Horizontal );
-	return volumeSlider;
+	// FIXME possible overflow
+	media->seek((media->totalTime() * position) / 65536);
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -91,14 +86,10 @@ void MediaWidget::stop()
 	media->stop();
 }
 
-void MediaWidget::setVolume( int val )
+void MediaWidget::newPosition(qint64 time)
 {
-	ao->setVolume( (float)(val*0.01) );
-}
-
-void MediaWidget::volumeChanged( float val )
-{
-	emit volumeHasChanged( (int)(val*100) );
+	// FIXME possible overflow
+	emit positionChanged((time * 65536) / media->totalTime());
 }
 
 void MediaWidget::playbackFinished()

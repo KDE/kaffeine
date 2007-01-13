@@ -37,6 +37,7 @@ Kaffeine::Kaffeine()
 	player = new MediaWidget(mainWindow);
 
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
+	connect(player, SIGNAL(positionChanged(int)), mainWindow, SLOT(setPosition(int)));
 
 	mainWindow->setCentralWidget(player);
 
@@ -74,6 +75,16 @@ void Kaffeine::actionPause(bool paused)
 void Kaffeine::actionStop()
 {
 	player->stop();
+}
+
+void Kaffeine::actionVolume(int volume)
+{
+	player->setVolume(volume);
+}
+
+void Kaffeine::actionPosition(int position)
+{
+	player->setPosition(position);
 }
 
 void Kaffeine::newMediaState(MediaState status)
