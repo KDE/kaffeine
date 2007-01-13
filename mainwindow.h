@@ -54,10 +54,12 @@ public:
 
 public slots:
 	void setPosition(int position);
+	void setVolume(int volume);
 
 private slots:
 	void actionPlayPause();
 	void actionPosition(int position);
+	void actionVolume(int volume);
 
 private:
 	enum stateFlag {
@@ -79,10 +81,11 @@ private:
 	QList<QPair<stateFlags, KAction *> > actionList;
 
 	KAction *controlsPlayPause;
-
 	QSlider *controlsPosition;
 	QSlider *controlsVolume;
+
 	bool ignorePosition;
+	bool ignoreVolume;
 };
 
 #endif /* MAINWINDOW_H */

@@ -77,14 +77,14 @@ void Kaffeine::actionStop()
 	player->stop();
 }
 
-void Kaffeine::actionVolume(int volume)
-{
-	player->setVolume(volume);
-}
-
 void Kaffeine::actionPosition(int position)
 {
 	player->setPosition(position);
+}
+
+void Kaffeine::actionVolume(int volume)
+{
+	player->setVolume(volume);
 }
 
 void Kaffeine::newMediaState(MediaState status)
