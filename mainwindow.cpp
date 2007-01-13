@@ -32,7 +32,7 @@
 #include "mainwindow.moc"
 
 MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(stateAll),
-	ignorePosition(false)
+	ignorePosition(false), ignoreVolume(false)
 {
 	/*
 	 * initialise gui elements
