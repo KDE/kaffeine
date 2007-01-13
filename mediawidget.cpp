@@ -42,7 +42,10 @@ MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 	media->addAudioPath( ap );
 	ap->addOutput( ao );
 	
+	media->setTickInterval( 350 );
+	
 	connect(media, SIGNAL(tick(qint64)), this, SLOT(newPosition(qint64)));
+	connect( media, SIGNAL( length( qint64 ) ),this, SLOT( newLength( qint64 ) ) );
 	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
 	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
 }
@@ -50,6 +53,10 @@ MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 void MediaWidget::setVolume(int volume)
 {
 	ao->setVolume(volume / 100.0);
+}
+
+void MediaWidget::newLength( qint64 )
+{
 }
 
 void MediaWidget::setPosition(int position)

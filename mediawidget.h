@@ -70,6 +70,7 @@ private:
 	
 private slots:
 	void newPosition(qint64 time);
+	void newLength( qint64 );
 	void playbackFinished();
 	void stateChanged( Phonon::State, Phonon::State );
 
