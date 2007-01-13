@@ -81,6 +81,7 @@ private:
 	KAction *controlsPlayPause;
 
 	QSlider *controlsPosition;
+	QSlider *controlsVolume;
 	bool ignorePosition;
 };
 

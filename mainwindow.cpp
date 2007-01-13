@@ -61,11 +61,11 @@ MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(
 	addAction("controls_next", statePrevNext, action);
 
 	action = new KAction(i18n("Volume"), actionCollection());
-	QSlider *slider = new QSlider(Qt::Horizontal, this);
-	slider->setMinimum(0);
-	slider->setMaximum(100);
-	connect(slider, SIGNAL(valueChanged(int)), kaffeine, SLOT(actionVolume(int)));
-	action->setDefaultWidget(slider);
+	controlsVolume = new QSlider(Qt::Horizontal, this);
+	controlsVolume->setMinimum(0);
+	controlsVolume->setMaximum(100);
+	connect(controlsVolume, SIGNAL(valueChanged(int)), kaffeine, SLOT(actionVolume(int)));
+	action->setDefaultWidget(controlsVolume);
 	addAction("controls_volume", stateAlways, action);
 
 	action = new KAction(i18n("Position"), actionCollection());
