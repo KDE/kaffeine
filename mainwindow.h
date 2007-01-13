@@ -1,5 +1,5 @@
 /*
- * kaffeine.h
+ * mainwindow.h
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,41 +18,62 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef KAFFEINE_H
-#define KAFFEINE_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <config.h>
 
-#include <KCmdLineOptions>
+#include <QList>
+#include <QPair>
 
-#include "mediawidget.h"
+#include <KMainWindow>
 
-class MainWindow;
+#include "kaffeine.h"
 
-class Kaffeine : public QObject
+class KAction;
+class KIcon;
+
+class MainWindow : public KMainWindow
 {
 	Q_OBJECT
 
 public:
-	Kaffeine();
-	~Kaffeine();
+	MainWindow(Kaffeine *kaffeine_);
+	~MainWindow();
 
-	static const KCmdLineOptions cmdLineOptions[];
+	void play()
+	{
+		setState(currentState | statePlaying);
+	}
 
-	void updateArgs();
+	void stop()
+	{
+		setState(currentState & statePrevNext);
+	}
 
-public slots:
-	void actionOpen();
-	void actionPlay();
-	void actionPause(bool paused);
-	void actionStop();
-
-	// FIXME
-	void newMediaState(MediaState status);
+private slots:
+	void actionPlayPause();
 
 private:
-	MainWindow *mainWindow;
-	MediaWidget *player;
+	enum stateFlag {
+		stateAlways	= 0,
+		statePrevNext	= (1 << 0),
+		statePlaying	= (1 << 1),
+
+		stateAll	= 0xff
+	};
+
+	Q_DECLARE_FLAGS(stateFlags, stateFlag)
+
+	void addAction(const QString &name, stateFlags flags, KAction *action);
+	void setState(stateFlags newState);
+
+	Kaffeine *kaffeine;
+
+	stateFlags currentState;
+	QList<QPair<stateFlags, KAction *> > actionList;
+
+	KAction *controlsPlayPause;
 };
 
-#endif /* KAFFEINE_H */
+#endif /* MAINWINDOW_H */

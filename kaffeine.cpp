@@ -1,10 +1,29 @@
-#include <KAction>
+/*
+ * kaffeine.cpp
+ *
+ * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+ */
+
 #include <KFileDialog>
 #include <KLocalizedString>
-#include <KStandardAction>
-#include <KToolBar>
 
 #include "kaffeine.h"
+#include "mainwindow.h"
+
 #include "kaffeine.moc"
 
 const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
@@ -12,53 +31,16 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 	KCmdLineLastOption
 };
 
-Kaffeine::Kaffeine() : currentState(stateAll)
+Kaffeine::Kaffeine()
 {
-	// FIXME workaround
-	setAttribute(Qt::WA_DeleteOnClose, false);
+	mainWindow = new MainWindow(this);
+	player = new MediaWidget(mainWindow);
 
-	/*
-	 * initialise media widget
-	 */
-
-	player = new MediaWidget( this );
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
 
-	setCentralWidget(player);
+	mainWindow->setCentralWidget(player);
 
-	/*
-	 * initialise gui elements
-	 */
-
-	KAction *action = KStandardAction::open(this, SLOT(actionOpen()), actionCollection());
-	actionCollection()->addAction("file_open", action);
-	action = KStandardAction::quit(this, SLOT(actionQuit()), actionCollection());
-	actionCollection()->addAction("file_quit", action);
-
-	actionControlPrevious = createAction("controls_previous", i18n("Previous"), KIcon("player_start"), statePrevNext | statePlaying);
-	actionControlPlayPause = createAction("controls_play_pause", i18n("Play"), KIcon("player_play"), stateNone);
-	connect(actionControlPlayPause, SIGNAL(triggered(bool)), this, SLOT(actionPlayPause()));
-	actionControlStop = createAction("controls_stop", i18n("Stop"), KIcon("player_stop"), statePlaying);
-	connect(actionControlStop, SIGNAL(triggered(bool)), player, SLOT(stop()));
-	actionControlNext = createAction("controls_next", i18n("Next"), KIcon("player_end"), statePrevNext);
-
-	KAction *ac = new KAction(actionCollection());
-	actionCollection()->addAction("controls_volume", ac);
-	ac->setDefaultWidget( player->getVolumeSlider() );
-
-	ac = new KAction(actionCollection());
-	actionCollection()->addAction("position_slider", ac);
-	ac->setDefaultWidget( player->getPositionSlider() );
-
-	createGUI();
-
-	// FIXME workaround
-	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
-	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
-
-	setCurrentState(stateNone);
-
-	show();
+	mainWindow->show();
 }
 
 Kaffeine::~Kaffeine()
@@ -73,69 +55,37 @@ void Kaffeine::updateArgs()
 void Kaffeine::actionOpen()
 {
 	// FIXME do we want to be able to open several files at once or not?
-	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
+	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), mainWindow, i18n("Open file"));
 	if (url.isValid())
 		player->play(url);
 }
 
-void Kaffeine::actionPlayPause()
+void Kaffeine::actionPlay()
 {
-	if (currentState.testFlag(statePlaying))
-		if (actionControlPlayPause->isChecked())
-			player->togglePause(true);
-		else
-			player->togglePause(false);
-	else {
-		// FIXME do some special actions - play playlist, ask for input ...
-		player->play();
-	}
+	// FIXME do some special actions - play playlist, ask for input ...
+	player->play();
 }
 
-void Kaffeine::actionQuit()
+void Kaffeine::actionPause(bool paused)
 {
-	close();
+	player->togglePause(paused);
 }
 
-void Kaffeine::setCurrentState(stateFlags newState)
+void Kaffeine::actionStop()
 {
-	if (currentState == newState)
-		return;
-
-	stateFlags changedFlags = currentState ^ newState;
-
-	// starting / stopping playback is special
-	if (changedFlags.testFlag(statePlaying))
-		if (newState.testFlag(statePlaying)) {
-			actionControlPlayPause->setIcon(KIcon("player_pause"));
-			actionControlPlayPause->setText(i18n("Pause"));
-			actionControlPlayPause->setCheckable(true);
-		} else {
-			actionControlPlayPause->setIcon(KIcon("player_play"));
-			actionControlPlayPause->setText(i18n("Play"));
-			actionControlPlayPause->setCheckable(false);
-		}
-
-	foreach (stateFlags key, flaggedActions.keys()) {
-		bool currentEnabled = ((currentState & key) != stateNone);
-		bool newEnabled = ((newState & key) != stateNone);
-		if (currentEnabled ^ newEnabled)
-			foreach (KAction *value, flaggedActions.values(key))
-				value->setEnabled(newEnabled);
-	}
-
-	currentState = newState;
+	player->stop();
 }
 
 void Kaffeine::newMediaState(MediaState status)
 {
 	switch (status) {
 		case MediaPlaying:
-			setCurrentState(currentState | statePlaying);
+			mainWindow->play();
 			break;
 		case MediaPaused:
 			break;
 		case MediaStopped:
-			setCurrentState(currentState & statePrevNext);
+			mainWindow->stop();
 			break;
 		default:
 			break;

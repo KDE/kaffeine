@@ -21,7 +21,6 @@
 #include <config.h>
 
 #include <KAboutData>
-#include <KCmdLineArgs>
 #include <KLocalizedString>
 #include <KUniqueApplication>
 
