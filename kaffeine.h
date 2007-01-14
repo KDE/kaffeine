@@ -24,12 +24,13 @@
 #include <config.h>
 
 #include <KCmdLineOptions>
+#include <KMainWindow>
 
 #include "mediawidget.h"
 
-class MainWindow;
+class KAction;
 
-class Kaffeine : public QObject
+class Kaffeine : public KMainWindow
 {
 	Q_OBJECT
 
@@ -41,20 +42,42 @@ public:
 
 	void updateArgs();
 
-public slots:
+private slots:
 	void actionOpen();
-	void actionPlay();
-	void actionPause(bool paused);
-	void actionStop();
-
-	void actionPosition(int position);
-	void actionVolume(int volume);
+	void actionPlayPause();
 
 	// FIXME
 	void newMediaState(MediaState status);
 
 private:
-	MainWindow *mainWindow;
+	enum stateFlag {
+		stateAlways	= 0,
+		statePrevNext	= (1 << 0),
+		statePlaying	= (1 << 1),
+
+		stateAll	= 0xff
+	};
+
+	Q_DECLARE_FLAGS(stateFlags, stateFlag)
+
+	void play()
+	{
+		setState(currentState | statePlaying);
+	}
+
+	void stop()
+	{
+		setState(currentState & statePrevNext);
+	}
+
+	void addAction(const QString &name, stateFlags flags, KAction *action);
+	void setState(stateFlags newState);
+
+	stateFlags currentState;
+	QList<QPair<stateFlags, KAction *> > actionList;
+
+	KAction *controlsPlayPause;
+
 	MediaWidget *player;
 };
 

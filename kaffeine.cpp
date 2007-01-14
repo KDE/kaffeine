@@ -18,11 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <config.h>
+
+#include <QSlider>
+
+#include <KAction>
+#include <KActionCollection>
 #include <KFileDialog>
 #include <KLocalizedString>
+#include <KStandardAction>
+#include <KToolBar>
 
 #include "kaffeine.h"
-#include "mainwindow.h"
 
 #include "kaffeine.moc"
 
@@ -31,18 +38,67 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 	KCmdLineLastOption
 };
 
-Kaffeine::Kaffeine()
+Kaffeine::Kaffeine() : currentState(stateAll)
 {
-	mainWindow = new MainWindow(this);
-	player = new MediaWidget(mainWindow);
+	player = new MediaWidget(this);
 
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
-	connect(player, SIGNAL(positionChanged(int)), mainWindow, SLOT(setPosition(int)));
-	connect(player, SIGNAL(volumeChanged(int)), mainWindow, SLOT(setVolume(int)));
 
-	mainWindow->setCentralWidget(player);
+	/*
+	 * initialise gui elements
+	 */
 
-	mainWindow->show();
+	KAction *action;
+
+	action = KStandardAction::open(this, SLOT(actionOpen()), actionCollection());
+	addAction("file_open", stateAlways, action);
+
+	action = KStandardAction::quit(this, SLOT(close()), actionCollection());
+	addAction("file_quit", stateAlways, action);
+
+	action = new KAction(KIcon("player_start"), i18n("Previous"), actionCollection());
+	addAction("controls_previous", stateFlags(statePrevNext) | statePlaying, action);
+
+	controlsPlayPause = new KAction(KIcon("player_play"), i18n("Play"), actionCollection());
+	connect(controlsPlayPause, SIGNAL(triggered(bool)), this, SLOT(actionPlayPause()));
+	addAction("controls_play_pause", stateAlways, controlsPlayPause);
+
+	action = new KAction(KIcon("player_stop"), i18n("Stop"), actionCollection());
+	connect(action, SIGNAL(triggered(bool)), player, SLOT(stop()));
+	addAction("controls_stop", statePlaying, action);
+
+	action = new KAction(KIcon("player_end"), i18n("Next"), actionCollection());
+	addAction("controls_next", statePrevNext, action);
+
+	action = new KAction(actionCollection());
+	QSlider *slider = new QSlider(Qt::Horizontal, this);
+	slider->setMinimum(0);
+	slider->setMaximum(100);
+	connect(player, SIGNAL(volumeChanged(int)), slider, SLOT(setValue(int)));
+	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(newVolume(int)));
+	action->setDefaultWidget(slider);
+	addAction("controls_volume", stateAlways, action);
+
+	action = new KAction(actionCollection());
+	slider = new QSlider(Qt::Horizontal, this);
+	slider->setMinimum(0);
+	slider->setMaximum(65536);
+	connect(player, SIGNAL(positionChanged(int)), slider, SLOT(setValue(int)));
+	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(newPosition(int)));
+	action->setDefaultWidget(slider);
+	addAction("position_slider", statePlaying, action);
+
+	setState(stateAlways);
+
+	createGUI();
+
+	// FIXME workaround
+	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
+	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
+
+	setCentralWidget(player);
+
+	show();
 }
 
 Kaffeine::~Kaffeine()
@@ -57,49 +113,65 @@ void Kaffeine::updateArgs()
 void Kaffeine::actionOpen()
 {
 	// FIXME do we want to be able to open several files at once or not?
-	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), mainWindow, i18n("Open file"));
+	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid())
 		player->play(url);
 }
 
-void Kaffeine::actionPlay()
+void Kaffeine::actionPlayPause()
 {
-	// FIXME do some special actions - play playlist, ask for input ...
-	player->play();
-}
-
-void Kaffeine::actionPause(bool paused)
-{
-	player->togglePause(paused);
-}
-
-void Kaffeine::actionStop()
-{
-	player->stop();
-}
-
-void Kaffeine::actionPosition(int position)
-{
-	player->setPosition(position);
-}
-
-void Kaffeine::actionVolume(int volume)
-{
-	player->setVolume(volume);
+	if (currentState.testFlag(statePlaying))
+		player->togglePause(controlsPlayPause->isChecked());
+	else
+		// FIXME do some special actions - play playlist, ask for input ...
+		player->play();
 }
 
 void Kaffeine::newMediaState(MediaState status)
 {
 	switch (status) {
 		case MediaPlaying:
-			mainWindow->play();
+			play();
 			break;
 		case MediaPaused:
 			break;
 		case MediaStopped:
-			mainWindow->stop();
+			stop();
 			break;
 		default:
 			break;
 	}
+}
+
+void Kaffeine::addAction(const QString &name, stateFlags flags, KAction *action)
+{
+	actionCollection()->addAction(name, action);
+	if (flags != stateAlways)
+		actionList.append(qMakePair(flags, action));
+}
+
+void Kaffeine::setState(stateFlags newState)
+{
+	if (currentState == newState)
+		return;
+
+	stateFlags changedFlags = currentState ^ newState;
+
+	// starting / stopping playback is special
+	if (changedFlags.testFlag(statePlaying))
+		if (newState.testFlag(statePlaying)) {
+			controlsPlayPause->setIcon(KIcon("player_pause"));
+			controlsPlayPause->setText(i18n("Pause"));
+			controlsPlayPause->setCheckable(true);
+		} else {
+			controlsPlayPause->setIcon(KIcon("player_play"));
+			controlsPlayPause->setText(i18n("Play"));
+			controlsPlayPause->setCheckable(false);
+		}
+
+	QPair<stateFlags, KAction *> action;
+	foreach (action, actionList)
+		action.second->setEnabled((action.first & newState) != stateAlways);
+
+	currentState = newState;
 }

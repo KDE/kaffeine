@@ -3,7 +3,6 @@ project(kaffeine)
 set(kaffeine_SRCS
     kaffeine.cpp
     main.cpp
-    mainwindow.cpp
     mediawidget.cpp)
 
 kde4_automoc(${kaffeine_SRCS})
