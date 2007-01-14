@@ -40,6 +40,9 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 
 Kaffeine::Kaffeine() : currentState(stateAll)
 {
+	// FIXME workaround
+	setAttribute(Qt::WA_DeleteOnClose, false);
+
 	player = new MediaWidget(this);
 
 	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
