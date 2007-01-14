@@ -62,7 +62,7 @@ void MediaWidget::setPosition(int position)
 {
 	// FIXME possible overflow
 	if (!ignorePosition)
-		media->seek((media->totalTime() * position) / 100);
+		media->seek((media->totalTime() * position) / 65536);
 }
 
 void MediaWidget::setVolume(int volume)
@@ -103,7 +103,7 @@ void MediaWidget::newPosition(qint64 position)
 {
 	// FIXME possible overflow
 	ignorePosition = true;
-	emit positionChanged((position * 100) / media->totalTime());
+	emit positionChanged((position * 65536) / media->totalTime());
 	ignorePosition = false;
 }
 

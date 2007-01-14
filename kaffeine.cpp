@@ -72,8 +72,11 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 
 	action = new KAction(actionCollection());
 	QSlider *slider = new QSlider(Qt::Horizontal, this);
+	slider->setFocusPolicy(Qt::NoFocus);
 	slider->setMinimum(0);
 	slider->setMaximum(100);
+	slider->setSingleStep(1);
+	slider->setPageStep(10);
 	connect(player, SIGNAL(volumeChanged(int)), slider, SLOT(setValue(int)));
 	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(setVolume(int)));
 	action->setDefaultWidget(slider);
@@ -81,8 +84,11 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 
 	action = new KAction(actionCollection());
 	slider = new QSlider(Qt::Horizontal, this);
+	slider->setFocusPolicy(Qt::NoFocus);
 	slider->setMinimum(0);
-	slider->setMaximum(100);
+	slider->setMaximum(65536);
+	slider->setSingleStep(64);
+	slider->setPageStep(4096);
 	connect(player, SIGNAL(positionChanged(int)), slider, SLOT(setValue(int)));
 	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(setPosition(int)));
 	action->setDefaultWidget(slider);
