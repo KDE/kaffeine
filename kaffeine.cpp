@@ -75,16 +75,16 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	slider->setMinimum(0);
 	slider->setMaximum(100);
 	connect(player, SIGNAL(volumeChanged(int)), slider, SLOT(setValue(int)));
-	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(newVolume(int)));
+	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(setVolume(int)));
 	action->setDefaultWidget(slider);
 	addAction("controls_volume", stateAlways, action);
 
 	action = new KAction(actionCollection());
 	slider = new QSlider(Qt::Horizontal, this);
 	slider->setMinimum(0);
-	slider->setMaximum(65536);
+	slider->setMaximum(100);
 	connect(player, SIGNAL(positionChanged(int)), slider, SLOT(setValue(int)));
-	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(newPosition(int)));
+	connect(slider, SIGNAL(valueChanged(int)), player, SLOT(setPosition(int)));
 	action->setDefaultWidget(slider);
 	addAction("position_slider", statePlaying, action);
 
