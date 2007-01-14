@@ -58,8 +58,6 @@ public slots:
 
 private slots:
 	void actionPlayPause();
-	void actionPosition(int position);
-	void actionVolume(int volume);
 
 private:
 	enum stateFlag {
@@ -83,9 +81,6 @@ private:
 	KAction *controlsPlayPause;
 	QSlider *controlsPosition;
 	QSlider *controlsVolume;
-
-	bool ignorePosition;
-	bool ignoreVolume;
 };
 
 #endif /* MAINWINDOW_H */

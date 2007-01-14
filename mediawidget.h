@@ -47,31 +47,35 @@ public:
 	~MediaWidget() { }
 	void play( const KUrl &url );
 
-	void setVolume(int volume);
-	void setPosition(int position);
-
 public slots:
 	void play();
 	void togglePause( bool b );
 	void stop();
+	void setPosition(int position);
+	void setVolume(int volume);
 
 signals:
 	void newState( MediaState );
 	void positionChanged(int position);
 	void volumeChanged(int volume);
-	
+
+private slots:
+	void newPosition(qint64 position);
+	void newVolume(float volume);
+
 private:
 	VideoWidget *vw;
 	VideoPath *vp;
 	AudioOutput *ao;
 	AudioPath *ap;
 	MediaObject *media;
-	
+
 	KUrl currentUrl;
-	
+
+	bool ignorePosition;
+	bool ignoreVolume;
+
 private slots:
-	void newPosition(qint64 time);
-	void newVolume(float volume);
 //	void newLength( qint64 );
 	void playbackFinished();
 	void stateChanged( Phonon::State, Phonon::State );

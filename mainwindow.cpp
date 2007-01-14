@@ -31,8 +31,7 @@
 #include "mainwindow.h"
 #include "mainwindow.moc"
 
-MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(stateAll),
-	ignorePosition(false), ignoreVolume(false)
+MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(stateAll)
 {
 	/*
 	 * initialise gui elements
@@ -64,7 +63,7 @@ MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(
 	controlsVolume = new QSlider(Qt::Horizontal, this);
 	controlsVolume->setMinimum(0);
 	controlsVolume->setMaximum(100);
-	connect(controlsVolume, SIGNAL(valueChanged(int)), this, SLOT(actionVolume(int)));
+	connect(controlsVolume, SIGNAL(valueChanged(int)), kaffeine, SLOT(actionVolume(int)));
 	action->setDefaultWidget(controlsVolume);
 	addAction("controls_volume", stateAlways, action);
 
@@ -72,7 +71,7 @@ MainWindow::MainWindow(Kaffeine *kaffeine_) : kaffeine(kaffeine_), currentState(
 	controlsPosition = new QSlider(Qt::Horizontal, this);
 	controlsPosition->setMinimum(0);
 	controlsPosition->setMaximum(65536);
-	connect(controlsPosition, SIGNAL(valueChanged(int)), this, SLOT(actionPosition(int)));
+	connect(controlsPosition, SIGNAL(valueChanged(int)), kaffeine, SLOT(actionPosition(int)));
 	action->setDefaultWidget(controlsPosition);
 	addAction("position_slider", statePlaying, action);
 
@@ -91,16 +90,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::setPosition(int position)
 {
-	ignorePosition = true;
 	controlsPosition->setValue(position);
-	ignorePosition = false;
 }
 
 void MainWindow::setVolume(int volume)
 {
-	ignoreVolume = true;
 	controlsVolume->setValue(volume);
-	ignoreVolume = false;
 }
 
 void MainWindow::actionPlayPause()
@@ -109,18 +104,6 @@ void MainWindow::actionPlayPause()
 		kaffeine->actionPause(controlsPlayPause->isChecked());
 	else
 		kaffeine->actionPlay();
-}
-
-void MainWindow::actionPosition(int position)
-{
-	if (!ignorePosition)
-		kaffeine->actionPosition(position);
-}
-
-void MainWindow::actionVolume(int volume)
-{
-	if (!ignoreVolume)
-		kaffeine->actionPosition(volume);
 }
 
 void MainWindow::addAction(const QString &name, stateFlags flags, KAction *action)

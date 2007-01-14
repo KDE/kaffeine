@@ -26,7 +26,8 @@
 
 
 
-MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
+MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent), ignorePosition(false),
+	ignoreVolume(false)
 {
 	QVBoxLayout *box = new QVBoxLayout( this );
 	box->setMargin(0);
@@ -51,19 +52,23 @@ MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
 }
 
-void MediaWidget::setVolume(int volume)
-{
-	ao->setVolume(volume / 100.0);
-}
 /*
 void MediaWidget::newLength( qint64 )
 {
 }
 */
+
 void MediaWidget::setPosition(int position)
 {
 	// FIXME possible overflow
-	media->seek((media->totalTime() * position) / 65536);
+	if (!ignorePosition)
+		media->seek((media->totalTime() * position) / 65536);
+}
+
+void MediaWidget::setVolume(int volume)
+{
+	if (!ignoreVolume)
+		ao->setVolume(volume / 100.0);
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -94,15 +99,19 @@ void MediaWidget::stop()
 	media->stop();
 }
 
-void MediaWidget::newPosition(qint64 time)
+void MediaWidget::newPosition(qint64 position)
 {
 	// FIXME possible overflow
-	emit positionChanged((time * 65536) / media->totalTime());
+	ignorePosition = true;
+	emit positionChanged((position * 65536) / media->totalTime());
+	ignorePosition = false;
 }
 
 void MediaWidget::newVolume(float volume)
 {
+	ignoreVolume = true;
 	emit volumeChanged(static_cast<int> (volume * 100));
+	ignoreVolume = false;
 }
 
 void MediaWidget::playbackFinished()
