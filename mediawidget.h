@@ -64,6 +64,9 @@ private slots:
 	void newVolume(float volume);
 
 private:
+	void mouseDoubleClickEvent(QMouseEvent *event);
+
+private:
 	VideoWidget *vw;
 	VideoPath *vp;
 	AudioOutput *ao;
