@@ -105,7 +105,11 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
 
-	setCentralWidget(player);
+	KToolBar *xtoolBar = new KToolBar("Tab Manager", this, Qt::LeftToolBarArea);
+	tabManager = new TabManager(this, xtoolBar);
+	tabManager->addTab(player, i18n("Player"));
+
+	setCentralWidget(tabManager);
 
 	show();
 }

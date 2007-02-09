@@ -27,6 +27,7 @@
 #include <KMainWindow>
 
 #include "mediawidget.h"
+#include "tabmanager.h"
 
 class KAction;
 
@@ -77,6 +78,8 @@ private:
 	QList<QPair<stateFlags, KAction *> > actionList;
 
 	KAction *controlsPlayPause;
+
+	TabManager *tabManager;
 
 	MediaWidget *player;
 };
