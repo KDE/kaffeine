@@ -28,6 +28,7 @@
 StartTab::StartTab(TabManager *tabManager_) : TabBase(tabManager_)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
+	layout->setMargin(0);
 	QWidget *widget = new QWidget(this);
 	widget->setAutoFillBackground(true);
 	QPalette pal = widget->palette();
@@ -44,6 +45,7 @@ PlayerTab::PlayerTab(TabManager *tabManager_, MediaWidget *mediaWidget_)
 	: TabBase(tabManager_), mediaWidget(mediaWidget_)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
+	layout->setMargin(0);
 	layout->addWidget(mediaWidget);
 }
 

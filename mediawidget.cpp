@@ -145,7 +145,7 @@ void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
 	emit newState( state );
 }
 
-void MediaWidget::mouseDoubleClickEvent(QMouseEvent *event)
+void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	vw->setFullScreen(!vw->isFullScreen());
 }

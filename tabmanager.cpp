@@ -45,15 +45,16 @@ TabManager::TabManager(QWidget *parent, KToolBar *toolBar_) : QWidget(parent),
 
 void TabManager::addTab(const QString &name, TabBase *tab)
 {
-	stackedLayout->addWidget(tab);
 	QPushButton *pushButton = new QPushButton(name, toolBar);
 	pushButton->setCheckable(true);
 	pushButton->setFocusPolicy(Qt::NoFocus);
 	connect(pushButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
-//	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click()));
+//	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click())); // FIXME
 	connect(tab, SIGNAL(activating(TabBase *)), this, SLOT(activating(TabBase *)));
 	toolBar->addWidget(pushButton);
 	buttonGroup->addButton(pushButton);
+	if (stackedLayout->addWidget(tab) == 0) // FIXME
+		pushButton->setChecked(true);
 }
 
 void TabManager::activating(TabBase *tab)
