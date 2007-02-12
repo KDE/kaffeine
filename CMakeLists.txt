@@ -3,6 +3,7 @@ project(kaffeine)
 set(kaffeine_SRCS
     kaffeine.cpp
     main.cpp
+    maintabs.cpp
     mediawidget.cpp
     tabmanager.cpp)
 

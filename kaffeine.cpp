@@ -29,6 +29,7 @@
 #include <KStandardAction>
 #include <KToolBar>
 
+#include "maintabs.h"
 #include "kaffeine.h"
 
 #include "kaffeine.moc"
@@ -105,9 +106,10 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
 
-	KToolBar *xtoolBar = new KToolBar("Tab Manager", this, Qt::LeftToolBarArea);
-	tabManager = new TabManager(this, xtoolBar);
-	tabManager->addTab(player, i18n("Player"));
+	KToolBar *tabBar = new KToolBar("Tab manager", this, Qt::LeftToolBarArea);
+	tabManager = new TabManager(this, tabBar);
+	tabManager->addTab(i18n("Start"), new StartTab(tabManager));
+	tabManager->addTab(i18n("Player"), new PlayerTab(tabManager, player));
 
 	setCentralWidget(tabManager);
 

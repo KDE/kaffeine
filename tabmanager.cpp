@@ -28,6 +28,14 @@
 
 #include "tabmanager.h"
 
+#include "tabmanager.moc"
+
+void TabBase::activate()
+{
+	emit activating(this);
+	internalActivate();
+}
+
 TabManager::TabManager(QWidget *parent, KToolBar *toolBar_) : QWidget(parent),
 	toolBar(toolBar_)
 {
@@ -35,11 +43,20 @@ TabManager::TabManager(QWidget *parent, KToolBar *toolBar_) : QWidget(parent),
 	buttonGroup = new QButtonGroup(this);
 }
 
-void TabManager::addTab(QWidget *tab, const QString &name)
+void TabManager::addTab(const QString &name, TabBase *tab)
 {
 	stackedLayout->addWidget(tab);
 	QPushButton *pushButton = new QPushButton(name, toolBar);
-	toolBar->addWidget(pushButton);
 	pushButton->setCheckable(true);
+	pushButton->setFocusPolicy(Qt::NoFocus);
+	connect(pushButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
+//	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click()));
+	connect(tab, SIGNAL(activating(TabBase *)), this, SLOT(activating(TabBase *)));
+	toolBar->addWidget(pushButton);
 	buttonGroup->addButton(pushButton);
+}
+
+void TabManager::activating(TabBase *tab)
+{
+	stackedLayout->setCurrentWidget(tab);
 }

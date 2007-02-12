@@ -1,5 +1,5 @@
 /*
- * tabmanager.h
+ * maintabs.h
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,55 +18,35 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef TABMANAGER_H
-#define TABMANAGER_H
+#ifndef MAINTABS_H
+#define MAINTABS_H
 
 #include <config.h>
 
-#include <QWidget>
+#include "tabmanager.h"
 
-class QButtonGroup;
-class QPushButton;
-class QStackedLayout;
-class KToolBar;
-class TabBase;
+class MediaWidget;
 
-class TabManager : public QWidget
+class StartTab : public TabBase
 {
-	Q_OBJECT
 public:
-	TabManager(QWidget *parent, KToolBar *toolBar_);
-	~TabManager() { }
-
-	void addTab(const QString &name, TabBase *tab);
-
-private slots:
-	void activating(TabBase *tab);
+	explicit StartTab(TabManager *tabManager_);
+	~StartTab();
 
 private:
-	KToolBar *toolBar;
-	QButtonGroup *buttonGroup;
-	QStackedLayout *stackedLayout;
+	void internalActivate() { }
 };
 
-class TabBase : public QWidget
+class PlayerTab : public TabBase
 {
-	Q_OBJECT
 public:
-	explicit TabBase(TabManager *tabManager_) : QWidget(tabManager_), tabManager(tabManager_) { }
-	~TabBase() { }
-
-public slots:
-	void activate();
-
-signals:
-	void activating(TabBase *tab);
-
-protected:
-	virtual void internalActivate() = 0;
+	PlayerTab(TabManager *tabManager_, MediaWidget *mediaWidget_);
+	~PlayerTab();
 
 private:
-	TabManager *tabManager;
+	void internalActivate();
+
+	MediaWidget *mediaWidget;
 };
 
-#endif /* TABMANAGER_H */
+#endif /* MAINTABS_H */
