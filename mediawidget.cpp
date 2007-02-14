@@ -24,10 +24,9 @@
 #include "mediawidget.h"
 #include "mediawidget.moc"
 
+using namespace Phonon;
 
-
-MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent), ignorePosition(false),
-	ignoreVolume(false)
+MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
 {
 	QVBoxLayout *box = new QVBoxLayout( this );
 	box->setMargin(0);
@@ -45,8 +44,6 @@ MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent), ignorePosition(fa
 	
 	media->setTickInterval( 350 );
 	
-	connect(media, SIGNAL(tick(qint64)), this, SLOT(newPosition(qint64)));
-	connect(media, SIGNAL(volumeChanged(float)), this, SLOT(newVolume(float)));
 //	connect( media, SIGNAL( length( qint64 ) ),this, SLOT( newLength( qint64 ) ) );
 	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
 	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
@@ -58,17 +55,18 @@ void MediaWidget::newLength( qint64 )
 }
 */
 
-void MediaWidget::setPosition(int position)
+QWidget *MediaWidget::newPositionSlider()
 {
-	// FIXME possible overflow
-	if (!ignorePosition)
-		media->seek((media->totalTime() * position) / 65536);
+	SeekSlider *seekSlider = new SeekSlider();
+	seekSlider->setMediaProducer(media);
+	return seekSlider;
 }
 
-void MediaWidget::setVolume(int volume)
+QWidget *MediaWidget::newVolumeSlider()
 {
-	if (!ignoreVolume)
-		ao->setVolume(volume / 100.0);
+	VolumeSlider *volumeSlider = new VolumeSlider();
+	volumeSlider->setAudioOutput(ao);
+	return volumeSlider;
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -97,21 +95,6 @@ void MediaWidget::togglePause( bool b )
 void MediaWidget::stop()
 {
 	media->stop();
-}
-
-void MediaWidget::newPosition(qint64 position)
-{
-	// FIXME possible overflow
-	ignorePosition = true;
-	emit positionChanged((position * 65536) / media->totalTime());
-	ignorePosition = false;
-}
-
-void MediaWidget::newVolume(float volume)
-{
-	ignoreVolume = true;
-	emit volumeChanged(static_cast<int> (volume * 100));
-	ignoreVolume = false;
 }
 
 void MediaWidget::playbackFinished()
