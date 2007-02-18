@@ -7,16 +7,20 @@
       <Separator/>
       <Action name="file_quit" />
     </Menu>
-    <Menu name="player_menu" >
+    <Menu name="player" >
       <text>&amp;Player</text>
       <Action name="controls_previous" />
       <Action name="controls_play_pause" />
       <Action name="controls_stop" />
       <Action name="controls_next" />
     </Menu>
-    <Menu>
+    <Menu name="settings" >
       <text>&amp;Settings</text>
-      <Action name="settings_shortcuts" />
+      <Action name="options_show_toolbar" />
+      <Action name="options_configure_keybinding" />
+      <Action name="options_configure_toolbars" />
+      <Separator/>
+      <Action name="options_configure" />
     </Menu>
   </MenuBar>
   <ToolBar position="bottom" name="main_controls_toolbar" >
