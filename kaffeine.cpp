@@ -82,7 +82,7 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 
 	setState(stateAlways);
 
-	createGUI();
+	setupGUI();
 
 	// FIXME workaround
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
