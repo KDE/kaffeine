@@ -29,16 +29,28 @@ class QButtonGroup;
 class QPushButton;
 class QStackedLayout;
 class KToolBar;
+class MediaWidget;
 class TabBase;
 
 class TabManager : public QWidget
 {
 	Q_OBJECT
 public:
-	TabManager(QWidget *parent, KToolBar *toolBar_);
+	TabManager(QWidget *parent, KToolBar *toolBar_,
+		MediaWidget *mediaWidget);
 	~TabManager() { }
 
 	void addTab(const QString &name, TabBase *tab);
+
+	TabBase *getStartTab()
+	{
+		return startTab;
+	}
+
+	TabBase *getPlayerTab()
+	{
+		return playerTab;
+	}
 
 private slots:
 	void activating(TabBase *tab);
@@ -47,13 +59,16 @@ private:
 	KToolBar *toolBar;
 	QButtonGroup *buttonGroup;
 	QStackedLayout *stackedLayout;
+	TabBase *startTab;
+	TabBase *playerTab;
 };
 
 class TabBase : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit TabBase(TabManager *tabManager_) : QWidget(tabManager_), tabManager(tabManager_) { }
+	explicit TabBase(TabManager *tabManager_) : QWidget(tabManager_),
+		tabManager(tabManager_), ignoreActivate(false) { }
 	~TabBase() { }
 
 public slots:
@@ -67,6 +82,7 @@ protected:
 
 private:
 	TabManager *tabManager;
+	bool ignoreActivate;
 };
 
 #endif /* TABMANAGER_H */

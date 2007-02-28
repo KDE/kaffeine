@@ -21,26 +21,85 @@
 #include <config.h>
 
 #include <QButtonGroup>
+#include <QHBoxLayout>
 #include <QPushButton>
 #include <QStackedLayout>
 
+#include <KLocalizedString>
 #include <KToolBar>
 
+#include "mediawidget.h"
 #include "tabmanager.h"
-
 #include "tabmanager.moc"
+
+class StartTab : public TabBase
+{
+public:
+	explicit StartTab(TabManager *tabManager_);
+	~StartTab() { }
+
+private:
+	void internalActivate() { }
+};
+
+StartTab::StartTab(TabManager *tabManager_) : TabBase(tabManager_)
+{
+	QHBoxLayout *layout = new QHBoxLayout(this);
+	layout->setMargin(0);
+	QWidget *widget = new QWidget(this);
+	widget->setAutoFillBackground(true);
+	QPalette pal = widget->palette();
+	pal.setColor(widget->backgroundRole(), QColor(0, 255, 0));
+	widget->setPalette(pal);
+	layout->addWidget(widget);
+}
+
+class PlayerTab : public TabBase
+{
+public:
+	PlayerTab(TabManager *tabManager_, MediaWidget *mediaWidget_);
+	~PlayerTab() { }
+
+private:
+	void internalActivate()
+	{
+		layout()->addWidget(mediaWidget);
+	}
+
+	MediaWidget *mediaWidget;
+};
+
+PlayerTab::PlayerTab(TabManager *tabManager_, MediaWidget *mediaWidget_)
+	: TabBase(tabManager_), mediaWidget(mediaWidget_)
+{
+	QHBoxLayout *layout = new QHBoxLayout(this);
+	layout->setMargin(0);
+	layout->addWidget(mediaWidget);
+}
 
 void TabBase::activate()
 {
-	emit activating(this);
-	internalActivate();
+	if (!ignoreActivate) {
+		ignoreActivate = true;
+		emit activating(this);
+		ignoreActivate = false;
+		internalActivate();
+	}
 }
 
-TabManager::TabManager(QWidget *parent, KToolBar *toolBar_) : QWidget(parent),
-	toolBar(toolBar_)
+TabManager::TabManager(QWidget *parent, KToolBar *toolBar_,
+	MediaWidget *mediaWidget) : QWidget(parent), toolBar(toolBar_)
 {
 	stackedLayout = new QStackedLayout(this);
 	buttonGroup = new QButtonGroup(this);
+
+	startTab = new StartTab(this);
+	playerTab = new PlayerTab(this, mediaWidget);
+
+	addTab(i18n("Start"), startTab);
+	addTab(i18n("Player"), playerTab);
+
+	startTab->activate();
 }
 
 void TabManager::addTab(const QString &name, TabBase *tab)
@@ -49,12 +108,11 @@ void TabManager::addTab(const QString &name, TabBase *tab)
 	pushButton->setCheckable(true);
 	pushButton->setFocusPolicy(Qt::NoFocus);
 	connect(pushButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
-//	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click())); // FIXME
+	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click()));
 	connect(tab, SIGNAL(activating(TabBase *)), this, SLOT(activating(TabBase *)));
 	toolBar->addWidget(pushButton);
 	buttonGroup->addButton(pushButton);
-	if (stackedLayout->addWidget(tab) == 0) // FIXME
-		pushButton->setChecked(true);
+	stackedLayout->addWidget(tab);
 }
 
 void TabManager::activating(TabBase *tab)

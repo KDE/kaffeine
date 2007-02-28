@@ -29,9 +29,7 @@
 #include <KStandardAction>
 #include <KToolBar>
 
-#include "maintabs.h"
 #include "kaffeine.h"
-
 #include "kaffeine.moc"
 
 const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
@@ -91,9 +89,7 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
 
 	KToolBar *tabBar = new KToolBar("Tab manager", this, Qt::LeftToolBarArea);
-	tabManager = new TabManager(this, tabBar);
-	tabManager->addTab(i18n("Start"), new StartTab(tabManager));
-	tabManager->addTab(i18n("Player"), new PlayerTab(tabManager, player));
+	tabManager = new TabManager(this, tabBar, player);
 
 	setCentralWidget(tabManager);
 
