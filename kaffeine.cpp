@@ -82,16 +82,16 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 
 	setState(stateAlways);
 
-	KToolBar *tabBar = new KToolBar("Tab manager", this, Qt::LeftToolBarArea);
-	tabManager = new TabManager(this, tabBar, player);
-
-	setCentralWidget(tabManager);
-
 	setupGUI();
 
 	// FIXME workaround
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
+
+	KToolBar *tabBar = new KToolBar("Tab manager", this, Qt::LeftToolBarArea);
+	tabManager = new TabManager(this, tabBar, player);
+
+	setCentralWidget(tabManager);
 
 	show();
 }
