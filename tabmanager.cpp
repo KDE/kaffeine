@@ -22,6 +22,7 @@
 
 #include <QButtonGroup>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
 
@@ -44,13 +45,22 @@ private:
 
 StartTab::StartTab(TabManager *tabManager_) : TabBase(tabManager_)
 {
-	QHBoxLayout *layout = new QHBoxLayout(this);
+	QVBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
+	layout->setSpacing(0);
+	QLabel *label = new QLabel(i18n("<font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your desktop!</font>"));
+	label->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum));
+	QPalette pal = label->palette();
+	pal.setColor(label->backgroundRole(), QColor(127, 127, 255));
+	label->setPalette(pal);
+	label->setAutoFillBackground(true);
+	layout->addWidget(label);
 	QWidget *widget = new QWidget(this);
-	widget->setAutoFillBackground(true);
-	QPalette pal = widget->palette();
-	pal.setColor(widget->backgroundRole(), QColor(0, 255, 0));
+	pal = widget->palette();
+	pal.setColor(widget->backgroundRole(), QColor(255, 255, 255));
 	widget->setPalette(pal);
+	widget->setAutoFillBackground(true);
 	layout->addWidget(widget);
 }
 
