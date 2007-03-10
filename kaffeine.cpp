@@ -37,59 +37,30 @@ const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
 	KCmdLineLastOption
 };
 
-Kaffeine::Kaffeine() : currentState(stateAll)
+Kaffeine::Kaffeine()
 {
 	// FIXME workaround
 	setAttribute(Qt::WA_DeleteOnClose, false);
 
-	player = new MediaWidget(this);
+	mediaWidget = new MediaWidget(this);
+	actionManager = new ActionManager(this, mediaWidget);
 
-	connect(player, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
+	// FIXME
+	connect(mediaWidget, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
 
 	/*
 	 * initialise gui elements
 	 */
 
-	KAction *action;
-
-	action = KStandardAction::open(this, SLOT(actionOpen()), actionCollection());
-	addAction("file_open", stateAlways, action);
-
-	action = KStandardAction::quit(this, SLOT(close()), actionCollection());
-	addAction("file_quit", stateAlways, action);
-
-	action = new KAction(KIcon("player_start"), i18n("Previous"), actionCollection());
-	addAction("controls_previous", stateFlags(statePrevNext) | statePlaying, action);
-
-	controlsPlayPause = new KAction(KIcon("player_play"), i18n("Play"), actionCollection());
-	connect(controlsPlayPause, SIGNAL(triggered(bool)), this, SLOT(actionPlayPause()));
-	addAction("controls_play_pause", stateAlways, controlsPlayPause);
-
-	action = new KAction(KIcon("player_stop"), i18n("Stop"), actionCollection());
-	connect(action, SIGNAL(triggered(bool)), player, SLOT(stop()));
-	addAction("controls_stop", statePlaying, action);
-
-	action = new KAction(KIcon("player_end"), i18n("Next"), actionCollection());
-	addAction("controls_next", statePrevNext, action);
-
-	action = new KAction(actionCollection());
-	action->setDefaultWidget(player->newVolumeSlider());
-	addAction("controls_volume", stateAlways, action);
-
-	action = new KAction(actionCollection());
-	action->setDefaultWidget(player->newPositionSlider());
-	addAction("position_slider", statePlaying, action);
-
-	setState(stateAlways);
-
 	setupGUI();
 
 	// FIXME workaround
-	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls_toolbar"));
-	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider_toolbar"));
+	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls"));
+	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider"));
+	addToolBar(Qt::LeftToolBarArea, toolBar("tab_manager"));
 
-	KToolBar *tabBar = new KToolBar("Tab manager", this, Qt::LeftToolBarArea);
-	tabManager = new TabManager(this, tabBar, player);
+	KToolBar *tabBar = new KToolBar("xyzTab manager", this, Qt::LeftToolBarArea);
+	tabManager = new TabManager(this, tabBar, mediaWidget);
 
 	setCentralWidget(tabManager);
 
@@ -98,6 +69,7 @@ Kaffeine::Kaffeine() : currentState(stateAll)
 
 Kaffeine::~Kaffeine()
 {
+	delete actionManager;
 }
 
 void Kaffeine::updateArgs()
@@ -110,63 +82,30 @@ void Kaffeine::actionOpen()
 	// FIXME do we want to be able to open several files at once or not?
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid())
-		player->play(url);
+		mediaWidget->play(url);
 }
 
-void Kaffeine::actionPlayPause()
+void Kaffeine::actionPlayPause(bool paused)
 {
-	if (currentState.testFlag(statePlaying))
-		player->togglePause(controlsPlayPause->isChecked());
+	if (actionManager->isPlaying())
+		mediaWidget->togglePause(paused);
 	else
 		// FIXME do some special actions - play playlist, ask for input ...
-		player->play();
+		mediaWidget->play();
 }
 
 void Kaffeine::newMediaState(MediaState status)
 {
 	switch (status) {
 		case MediaPlaying:
-			play();
+			actionManager->play();
 			break;
 		case MediaPaused:
 			break;
 		case MediaStopped:
-			stop();
+			actionManager->stop();
 			break;
 		default:
 			break;
 	}
-}
-
-void Kaffeine::addAction(const QString &name, stateFlags flags, KAction *action)
-{
-	actionCollection()->addAction(name, action);
-	if (flags != stateAlways)
-		actionList.append(qMakePair(flags, action));
-}
-
-void Kaffeine::setState(stateFlags newState)
-{
-	if (currentState == newState)
-		return;
-
-	stateFlags changedFlags = currentState ^ newState;
-
-	// starting / stopping playback is special
-	if (changedFlags.testFlag(statePlaying))
-		if (newState.testFlag(statePlaying)) {
-			controlsPlayPause->setIcon(KIcon("player_pause"));
-			controlsPlayPause->setText(i18n("Pause"));
-			controlsPlayPause->setCheckable(true);
-		} else {
-			controlsPlayPause->setIcon(KIcon("player_play"));
-			controlsPlayPause->setText(i18n("Play"));
-			controlsPlayPause->setCheckable(false);
-		}
-
-	QPair<stateFlags, KAction *> action;
-	foreach (action, actionList)
-		action.second->setEnabled((action.first & newState) != stateAlways);
-
-	currentState = newState;
 }

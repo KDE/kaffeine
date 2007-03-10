@@ -24,16 +24,21 @@
       <Action name="options_configure" />
     </Menu>
   </MenuBar>
-  <ToolBar position="bottom" name="main_controls_toolbar" >
-    <text>Main controls</text>
+  <ToolBar position="bottom" name="main_controls" >
+    <text>Main Controls</text>
     <Action name="controls_previous" />
     <Action name="controls_play_pause" />
     <Action name="controls_stop" />
     <Action name="controls_next" />
     <Action name="controls_volume" />
   </ToolBar>
-  <ToolBar position="bottom" name="position_slider_toolbar" >
-    <text>Position slider</text>
+  <ToolBar position="bottom" name="position_slider" >
+    <text>Position Slider</text>
     <Action name="position_slider" />
+  </ToolBar>
+  <ToolBar position="left" name="tab_manager" >
+    <text>Tab Manager</text>
+    <Action name="tabs_start" />
+    <Action name="tabs_player" />
   </ToolBar>
 </gui>

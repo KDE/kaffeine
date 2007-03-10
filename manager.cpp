@@ -1,5 +1,5 @@
 /*
- * tabmanager.cpp
+ * manager.cpp
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -26,12 +26,91 @@
 #include <QPushButton>
 #include <QStackedLayout>
 
+#include <KAction>
+#include <KActionCollection>
 #include <KLocalizedString>
 #include <KToolBar>
 
+#include "kaffeine.h"
 #include "mediawidget.h"
-#include "tabmanager.h"
-#include "tabmanager.moc"
+#include "manager.h"
+#include "manager.moc"
+
+ActionManager::ActionManager(Kaffeine *kaffeine, MediaWidget *mediaWidget)
+	: currentState(~stateAlways)
+{
+	KActionCollection *collection = kaffeine->actionCollection();
+	KAction *action;
+
+	action = KStandardAction::open(kaffeine, SLOT(actionOpen()), collection);
+	addAction(collection, "file_open", stateAlways, action);
+
+	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
+	addAction(collection, "file_quit", stateAlways, action);
+
+	action = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
+	addAction(collection, "controls_previous", statePrevNext | statePlaying, action);
+
+	actionPlayPause = new KAction(collection);
+	QObject::connect(actionPlayPause, SIGNAL(triggered(bool)), kaffeine, SLOT(actionPlayPause(bool)));
+	textPlay = i18n("Play");
+	textPause = i18n("Pause");
+	iconPlay = KIcon("media-playback-start");
+	iconPause = KIcon("media-playback-pause");
+	addAction(collection, "controls_play_pause", stateAlways, actionPlayPause);
+
+	action = new KAction(KIcon("media-playback-stop"), i18n("Stop"), collection);
+	QObject::connect(action, SIGNAL(triggered(bool)), mediaWidget, SLOT(stop()));
+	addAction(collection, "controls_stop", statePlaying, action);
+
+	action = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
+	addAction(collection, "controls_next", statePrevNext, action);
+
+	action = new KAction(collection);
+	action->setDefaultWidget(mediaWidget->newVolumeSlider());
+	addAction(collection, "controls_volume", stateAlways, action);
+
+	action = new KAction(collection);
+	widgetPositionSlider = mediaWidget->newPositionSlider();
+	action->setDefaultWidget(widgetPositionSlider);
+	addAction(collection, "position_slider", stateAlways, action);
+
+	setState(stateAlways);
+}
+
+void ActionManager::addAction(KActionCollection *collection,
+	const QString &name, ActionManager::stateFlags flags, KAction *action)
+{
+	collection->addAction(name, action);
+	if (flags != stateAlways)
+		actionList.append(qMakePair(flags, action));
+}
+
+void ActionManager::setState(stateFlags newState)
+{
+	if (currentState == newState)
+		return;
+
+	if (((currentState ^ newState) & statePlaying) == statePlaying) {
+		if ((newState & statePlaying) == statePlaying) {
+			actionPlayPause->setText(textPause);
+			actionPlayPause->setIcon(iconPause);
+			actionPlayPause->setCheckable(true);
+			widgetPositionSlider->setEnabled(true);
+		} else {
+			actionPlayPause->setText(textPlay);
+			actionPlayPause->setIcon(iconPlay);
+			actionPlayPause->setCheckable(false);
+			widgetPositionSlider->setEnabled(false);
+		}
+	}
+
+	QPair<stateFlags, KAction *> action;
+	foreach (action, actionList)
+		action.second->setEnabled((action.first & newState) != stateAlways);
+
+	currentState = newState;
+}
 
 class StartTab : public TabBase
 {

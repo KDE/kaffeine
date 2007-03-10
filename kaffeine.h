@@ -26,10 +26,8 @@
 #include <KCmdLineOptions>
 #include <KMainWindow>
 
+#include "manager.h"
 #include "mediawidget.h"
-#include "tabmanager.h"
-
-class KAction;
 
 class Kaffeine : public KMainWindow
 {
@@ -45,43 +43,15 @@ public:
 
 private slots:
 	void actionOpen();
-	void actionPlayPause();
+	void actionPlayPause(bool paused);
 
 	// FIXME
 	void newMediaState(MediaState status);
 
 private:
-	enum stateFlag {
-		stateAlways	= 0,
-		statePrevNext	= (1 << 0),
-		statePlaying	= (1 << 1),
-
-		stateAll	= 0xff
-	};
-
-	Q_DECLARE_FLAGS(stateFlags, stateFlag)
-
-	void play()
-	{
-		setState(currentState | statePlaying);
-	}
-
-	void stop()
-	{
-		setState(currentState & statePrevNext);
-	}
-
-	void addAction(const QString &name, stateFlags flags, KAction *action);
-	void setState(stateFlags newState);
-
-	stateFlags currentState;
-	QList<QPair<stateFlags, KAction *> > actionList;
-
-	KAction *controlsPlayPause;
-
+	ActionManager *actionManager;
+	MediaWidget *mediaWidget;
 	TabManager *tabManager;
-
-	MediaWidget *player;
 };
 
 #endif /* KAFFEINE_H */

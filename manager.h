@@ -1,5 +1,5 @@
 /*
- * tabmanager.h
+ * manager.h
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,19 +18,70 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef TABMANAGER_H
-#define TABMANAGER_H
+#ifndef MANAGER_H
+#define MANAGER_H
 
 #include <config.h>
 
 #include <QWidget>
 
+#include <KIcon>
+
 class QButtonGroup;
 class QPushButton;
 class QStackedLayout;
+class KAction;
 class KToolBar;
+class Kaffeine;
 class MediaWidget;
 class TabBase;
+
+class ActionManager
+{
+public:
+	enum stateFlag {
+		stateAlways	= 0,
+		statePrevNext	= (1 << 0),
+		statePlaying	= (1 << 1),
+	};
+
+	Q_DECLARE_FLAGS(stateFlags, stateFlag)
+
+	ActionManager(Kaffeine *kaffeine, MediaWidget *mediaWidget);
+	~ActionManager() { }
+
+	void play()
+	{
+		setState(currentState | statePlaying);
+	}
+
+	void stop()
+	{
+		setState(currentState & statePrevNext);
+	}
+
+	bool isPlaying()
+	{
+		return (currentState & statePlaying) == statePlaying;
+	}
+
+private:
+	void addAction(KActionCollection *collection, const QString &name,
+		stateFlags flags, KAction *action);
+	void setState(stateFlags newState);
+
+	stateFlags currentState;
+	QList<QPair<stateFlags, KAction *> > actionList;
+
+	KAction *actionPlayPause;
+	QWidget *widgetPositionSlider;
+	QString textPlay;
+	QString textPause;
+	KIcon iconPlay;
+	KIcon iconPause;
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(ActionManager::stateFlags)
 
 class TabManager : public QWidget
 {
@@ -85,4 +136,4 @@ private:
 	bool ignoreActivate;
 };
 
-#endif /* TABMANAGER_H */
+#endif /* MANAGER_H */
