@@ -26,7 +26,7 @@
 
 using namespace Phonon;
 
-MediaWidget::MediaWidget( QWidget *parent ) : QWidget(parent)
+MediaWidget::MediaWidget(Manager *manager_) : manager(manager_)
 {
 	QVBoxLayout *box = new QVBoxLayout( this );
 	box->setMargin(0);
@@ -103,29 +103,22 @@ void MediaWidget::playbackFinished()
 
 void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
 {
-	MediaState state=MediaStopped;
-	
 	switch (status) {
 		case PlayingState:
-			state = MediaPlaying;
+			manager->setPlaying();
 			break;
 		case PausedState:
-			state = MediaPaused;
 			break;
 		case StoppedState:
-			state = MediaStopped;
+			manager->setStopped();
 			break;
 		case LoadingState:
-			state = MediaLoading;
 			break;
 		case BufferingState:
-			state = MediaBuffering;
 			break;
 		case ErrorState:
-			state = MediaError;
 			break;
 	}
-	emit newState( state );
 }
 
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)

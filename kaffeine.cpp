@@ -20,15 +20,11 @@
 
 #include <config.h>
 
-#include <QSlider>
-
-#include <KAction>
-#include <KActionCollection>
 #include <KFileDialog>
 #include <KLocalizedString>
-#include <KStandardAction>
 #include <KToolBar>
 
+#include "mediawidget.h"
 #include "kaffeine.h"
 #include "kaffeine.moc"
 
@@ -42,16 +38,9 @@ Kaffeine::Kaffeine()
 	// FIXME workaround
 	setAttribute(Qt::WA_DeleteOnClose, false);
 
-	mediaWidget = new MediaWidget(this);
-	actionManager = new ActionManager(this, mediaWidget);
-
-	// FIXME
-	connect(mediaWidget, SIGNAL(newState(MediaState)), this, SLOT(newMediaState(MediaState)));
-
-	/*
-	 * initialise gui elements
-	 */
-
+	manager = new Manager(this);
+	mediaWidget = manager->getMediaWidget();
+	setCentralWidget(manager);
 	setupGUI();
 
 	// FIXME workaround
@@ -59,17 +48,11 @@ Kaffeine::Kaffeine()
 	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider"));
 	addToolBar(Qt::LeftToolBarArea, toolBar("tab_manager"));
 
-	KToolBar *tabBar = new KToolBar("xyzTab manager", this, Qt::LeftToolBarArea);
-	tabManager = new TabManager(this, tabBar, mediaWidget);
-
-	setCentralWidget(tabManager);
-
 	show();
 }
 
 Kaffeine::~Kaffeine()
 {
-	delete actionManager;
 }
 
 void Kaffeine::updateArgs()
@@ -87,25 +70,9 @@ void Kaffeine::actionOpen()
 
 void Kaffeine::actionPlayPause(bool paused)
 {
-	if (actionManager->isPlaying())
+	if (manager->isPlaying())
 		mediaWidget->togglePause(paused);
 	else
 		// FIXME do some special actions - play playlist, ask for input ...
 		mediaWidget->play();
-}
-
-void Kaffeine::newMediaState(MediaState status)
-{
-	switch (status) {
-		case MediaPlaying:
-			actionManager->play();
-			break;
-		case MediaPaused:
-			break;
-		case MediaStopped:
-			actionManager->stop();
-			break;
-		default:
-			break;
-	}
 }

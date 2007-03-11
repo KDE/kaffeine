@@ -37,8 +37,7 @@ public:
 	}
 
 private:
-	KaffeineApplication(const KaffeineApplication &);
-	KaffeineApplication operator=(const KaffeineApplication &);
+	Q_DISABLE_COPY(KaffeineApplication)
 
 	int newInstance();
 
@@ -66,9 +65,6 @@ int main(int argc, char *argv[])
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions);
-
-	if (!KaffeineApplication::start())
-		return 0;
 
 	KaffeineApplication app;
 	return app.exec();

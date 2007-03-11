@@ -34,14 +34,14 @@
 #include <phonon/ui/volumeslider.h>
 #include <kurl.h>
 
-enum MediaState{ MediaPlaying, MediaPaused, MediaStopped, MediaBuffering, MediaLoading, MediaError };
+#include "manager.h"
 
 class MediaWidget : public QWidget
 {
 	Q_OBJECT
 	
 public:
-	MediaWidget( QWidget *parent );
+	MediaWidget(Manager *manager_);
 	~MediaWidget() { }
 	void play( const KUrl &url );
 
@@ -52,9 +52,6 @@ public slots:
 	void play();
 	void togglePause( bool b );
 	void stop();
-
-signals:
-	void newState( MediaState );
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
@@ -67,6 +64,8 @@ private:
 	Phonon::MediaObject *media;
 
 	KUrl currentUrl;
+
+	Manager *manager;
 
 private slots:
 //	void newLength( qint64 );

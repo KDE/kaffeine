@@ -31,13 +31,14 @@ class QButtonGroup;
 class QPushButton;
 class QStackedLayout;
 class KAction;
-class KToolBar;
+class KActionCollection;
 class Kaffeine;
 class MediaWidget;
 class TabBase;
 
-class ActionManager
+class Manager : public QWidget
 {
+	Q_OBJECT
 public:
 	enum stateFlag {
 		stateAlways	= 0,
@@ -47,51 +48,13 @@ public:
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
-	ActionManager(Kaffeine *kaffeine, MediaWidget *mediaWidget);
-	~ActionManager() { }
+	Manager(Kaffeine *kaffeine);
+	~Manager() { }
 
-	void play()
+	MediaWidget *getMediaWidget()
 	{
-		setState(currentState | statePlaying);
+		return mediaWidget;
 	}
-
-	void stop()
-	{
-		setState(currentState & statePrevNext);
-	}
-
-	bool isPlaying()
-	{
-		return (currentState & statePlaying) == statePlaying;
-	}
-
-private:
-	void addAction(KActionCollection *collection, const QString &name,
-		stateFlags flags, KAction *action);
-	void setState(stateFlags newState);
-
-	stateFlags currentState;
-	QList<QPair<stateFlags, KAction *> > actionList;
-
-	KAction *actionPlayPause;
-	QWidget *widgetPositionSlider;
-	QString textPlay;
-	QString textPause;
-	KIcon iconPlay;
-	KIcon iconPause;
-};
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(ActionManager::stateFlags)
-
-class TabManager : public QWidget
-{
-	Q_OBJECT
-public:
-	TabManager(QWidget *parent, KToolBar *toolBar_,
-		MediaWidget *mediaWidget);
-	~TabManager() { }
-
-	void addTab(const QString &name, TabBase *tab);
 
 	TabBase *getStartTab()
 	{
@@ -103,23 +66,58 @@ public:
 		return playerTab;
 	}
 
+	void setPlaying()
+	{
+		setState(currentState | statePlaying);
+	}
+
+	void setStopped()
+	{
+		setState(currentState & statePrevNext);
+	}
+
+	bool isPlaying()
+	{
+		return (currentState & statePlaying) == statePlaying;
+	}
+
 private slots:
 	void activating(TabBase *tab);
 
 private:
-	KToolBar *toolBar;
+	void addAction(KActionCollection *collection, const QString &name,
+		stateFlags flags, KAction *action);
+
+	void setState(stateFlags newState);
+
+	QPushButton *addTab(const QString &name, TabBase *tab);
+
+	stateFlags currentState;
+	QList<QPair<stateFlags, KAction *> > actionList;
+
+	MediaWidget *mediaWidget;
+
+	KAction *actionPlayPause;
+	QWidget *widgetPositionSlider;
+	QString textPlay;
+	QString textPause;
+	KIcon iconPlay;
+	KIcon iconPause;
+
 	QButtonGroup *buttonGroup;
 	QStackedLayout *stackedLayout;
 	TabBase *startTab;
 	TabBase *playerTab;
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(Manager::stateFlags)
+
 class TabBase : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit TabBase(TabManager *tabManager_) : QWidget(tabManager_),
-		tabManager(tabManager_), ignoreActivate(false) { }
+	explicit TabBase(Manager *manager_) : QWidget(manager_),
+		manager(manager_), ignoreActivate(false) { }
 	~TabBase() { }
 
 public slots:
@@ -132,7 +130,7 @@ protected:
 	virtual void internalActivate() = 0;
 
 private:
-	TabManager *tabManager;
+	Manager *manager;
 	bool ignoreActivate;
 };
 

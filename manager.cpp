@@ -21,7 +21,6 @@
 #include <config.h>
 
 #include <QButtonGroup>
-#include <QHBoxLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
@@ -29,16 +28,87 @@
 #include <KAction>
 #include <KActionCollection>
 #include <KLocalizedString>
-#include <KToolBar>
 
 #include "kaffeine.h"
 #include "mediawidget.h"
 #include "manager.h"
 #include "manager.moc"
 
-ActionManager::ActionManager(Kaffeine *kaffeine, MediaWidget *mediaWidget)
-	: currentState(~stateAlways)
+void TabBase::activate()
 {
+	if (!ignoreActivate) {
+		ignoreActivate = true;
+		emit activating(this);
+		ignoreActivate = false;
+		internalActivate();
+	}
+}
+
+class StartTab : public TabBase
+{
+public:
+	explicit StartTab(Manager *manager_);
+	~StartTab() { }
+
+private:
+	void internalActivate() { }
+};
+
+StartTab::StartTab(Manager *manager_) : TabBase(manager_)
+{
+	QVBoxLayout *layout = new QVBoxLayout(this);
+	layout->setMargin(0);
+	layout->setSpacing(0);
+	QLabel *label = new QLabel(i18n("<font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your desktop!</font>"));
+	label->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
+	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum));
+	QPalette pal = label->palette();
+	pal.setColor(label->backgroundRole(), QColor(127, 127, 255));
+	label->setPalette(pal);
+	label->setAutoFillBackground(true);
+	layout->addWidget(label);
+	QWidget *widget = new QWidget(this);
+	pal = widget->palette();
+	pal.setColor(widget->backgroundRole(), QColor(255, 255, 255));
+	widget->setPalette(pal);
+	widget->setAutoFillBackground(true);
+	layout->addWidget(widget);
+}
+
+class PlayerTab : public TabBase
+{
+public:
+	PlayerTab(Manager *manager_, MediaWidget *mediaWidget_);
+	~PlayerTab() { }
+
+private:
+	void internalActivate()
+	{
+		layout()->addWidget(mediaWidget);
+	}
+
+	MediaWidget *mediaWidget;
+};
+
+PlayerTab::PlayerTab(Manager *manager_, MediaWidget *mediaWidget_)
+	: TabBase(manager_), mediaWidget(mediaWidget_)
+{
+	QHBoxLayout *layout = new QHBoxLayout(this);
+	layout->setMargin(0);
+	layout->addWidget(mediaWidget);
+}
+
+Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
+	currentState(~stateAlways)
+{
+	mediaWidget = new MediaWidget(this);
+
+	stackedLayout = new QStackedLayout(this);
+	buttonGroup = new QButtonGroup(this);
+
+	startTab = new StartTab(this);
+	playerTab = new PlayerTab(this, mediaWidget);
+
 	KActionCollection *collection = kaffeine->actionCollection();
 	KAction *action;
 
@@ -75,18 +145,32 @@ ActionManager::ActionManager(Kaffeine *kaffeine, MediaWidget *mediaWidget)
 	action->setDefaultWidget(widgetPositionSlider);
 	addAction(collection, "position_slider", stateAlways, action);
 
+	action = new KAction(collection);
+	action->setDefaultWidget(addTab(i18n("Start"), startTab));
+	addAction(collection, "tabs_start", stateAlways, action);
+
+	action = new KAction(collection);
+	action->setDefaultWidget(addTab(i18n("Player"), playerTab));
+	addAction(collection, "tabs_player", stateAlways, action);
+
+	startTab->activate();
 	setState(stateAlways);
 }
 
-void ActionManager::addAction(KActionCollection *collection,
-	const QString &name, ActionManager::stateFlags flags, KAction *action)
+void Manager::activating(TabBase *tab)
+{
+	stackedLayout->setCurrentWidget(tab);
+}
+
+void Manager::addAction(KActionCollection *collection, const QString &name,
+	Manager::stateFlags flags, KAction *action)
 {
 	collection->addAction(name, action);
 	if (flags != stateAlways)
 		actionList.append(qMakePair(flags, action));
 }
 
-void ActionManager::setState(stateFlags newState)
+void Manager::setState(stateFlags newState)
 {
 	if (currentState == newState)
 		return;
@@ -112,99 +196,15 @@ void ActionManager::setState(stateFlags newState)
 	currentState = newState;
 }
 
-class StartTab : public TabBase
+QPushButton *Manager::addTab(const QString &name, TabBase *tab)
 {
-public:
-	explicit StartTab(TabManager *tabManager_);
-	~StartTab() { }
-
-private:
-	void internalActivate() { }
-};
-
-StartTab::StartTab(TabManager *tabManager_) : TabBase(tabManager_)
-{
-	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->setMargin(0);
-	layout->setSpacing(0);
-	QLabel *label = new QLabel(i18n("<font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your desktop!</font>"));
-	label->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum));
-	QPalette pal = label->palette();
-	pal.setColor(label->backgroundRole(), QColor(127, 127, 255));
-	label->setPalette(pal);
-	label->setAutoFillBackground(true);
-	layout->addWidget(label);
-	QWidget *widget = new QWidget(this);
-	pal = widget->palette();
-	pal.setColor(widget->backgroundRole(), QColor(255, 255, 255));
-	widget->setPalette(pal);
-	widget->setAutoFillBackground(true);
-	layout->addWidget(widget);
-}
-
-class PlayerTab : public TabBase
-{
-public:
-	PlayerTab(TabManager *tabManager_, MediaWidget *mediaWidget_);
-	~PlayerTab() { }
-
-private:
-	void internalActivate()
-	{
-		layout()->addWidget(mediaWidget);
-	}
-
-	MediaWidget *mediaWidget;
-};
-
-PlayerTab::PlayerTab(TabManager *tabManager_, MediaWidget *mediaWidget_)
-	: TabBase(tabManager_), mediaWidget(mediaWidget_)
-{
-	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(0);
-	layout->addWidget(mediaWidget);
-}
-
-void TabBase::activate()
-{
-	if (!ignoreActivate) {
-		ignoreActivate = true;
-		emit activating(this);
-		ignoreActivate = false;
-		internalActivate();
-	}
-}
-
-TabManager::TabManager(QWidget *parent, KToolBar *toolBar_,
-	MediaWidget *mediaWidget) : QWidget(parent), toolBar(toolBar_)
-{
-	stackedLayout = new QStackedLayout(this);
-	buttonGroup = new QButtonGroup(this);
-
-	startTab = new StartTab(this);
-	playerTab = new PlayerTab(this, mediaWidget);
-
-	addTab(i18n("Start"), startTab);
-	addTab(i18n("Player"), playerTab);
-
-	startTab->activate();
-}
-
-void TabManager::addTab(const QString &name, TabBase *tab)
-{
-	QPushButton *pushButton = new QPushButton(name, toolBar);
+	QPushButton *pushButton = new QPushButton(name);
 	pushButton->setCheckable(true);
 	pushButton->setFocusPolicy(Qt::NoFocus);
 	connect(pushButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
 	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click()));
 	connect(tab, SIGNAL(activating(TabBase *)), this, SLOT(activating(TabBase *)));
-	toolBar->addWidget(pushButton);
 	buttonGroup->addButton(pushButton);
 	stackedLayout->addWidget(tab);
-}
-
-void TabManager::activating(TabBase *tab)
-{
-	stackedLayout->setCurrentWidget(tab);
+	return pushButton;
 }

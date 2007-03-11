@@ -26,13 +26,12 @@
 #include <KCmdLineOptions>
 #include <KMainWindow>
 
-#include "manager.h"
-#include "mediawidget.h"
+class Manager;
+class MediaWidget;
 
 class Kaffeine : public KMainWindow
 {
 	Q_OBJECT
-
 public:
 	Kaffeine();
 	~Kaffeine();
@@ -45,13 +44,9 @@ private slots:
 	void actionOpen();
 	void actionPlayPause(bool paused);
 
-	// FIXME
-	void newMediaState(MediaState status);
-
 private:
-	ActionManager *actionManager;
+	Manager *manager;
 	MediaWidget *mediaWidget;
-	TabManager *tabManager;
 };
 
 #endif /* KAFFEINE_H */
