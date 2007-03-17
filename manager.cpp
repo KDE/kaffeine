@@ -21,9 +21,12 @@
 #include <config.h>
 
 #include <QButtonGroup>
+#include <QEvent>
 #include <QLabel>
+#include <QPainter>
 #include <QPushButton>
 #include <QStackedLayout>
+#include <QToolBar>
 
 #include <KAction>
 #include <KActionCollection>
@@ -198,13 +201,66 @@ void Manager::setState(stateFlags newState)
 
 QPushButton *Manager::addTab(const QString &name, TabBase *tab)
 {
-	QPushButton *pushButton = new QPushButton(name);
-	pushButton->setCheckable(true);
-	pushButton->setFocusPolicy(Qt::NoFocus);
-	connect(pushButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
-	connect(tab, SIGNAL(activating(TabBase *)), pushButton, SLOT(click()));
+	TabButton *tabButton = new TabButton(name);
+	connect(tabButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
+	connect(tab, SIGNAL(activating(TabBase *)), tabButton, SLOT(click()));
 	connect(tab, SIGNAL(activating(TabBase *)), this, SLOT(activating(TabBase *)));
-	buttonGroup->addButton(pushButton);
+	buttonGroup->addButton(tabButton);
 	stackedLayout->addWidget(tab);
-	return pushButton;
+	return tabButton;
+}
+
+TabButton::TabButton(const QString &name)
+{
+	setCheckable(true);
+	setFocusPolicy(Qt::NoFocus);
+
+	QSize size = fontMetrics().size(Qt::TextShowMnemonic, name);
+
+	horizontal = new QPixmap(size);
+	horizontal->fill(QColor(0, 0, 0, 0));
+
+	{
+		QPainter painter(horizontal);
+		painter.setBrush(palette().text());
+		painter.drawText(0, 0, size.width(), size.height(), Qt::TextShowMnemonic, name);
+	}
+
+	vertical = new QPixmap(size.height(), size.width());
+	vertical->fill(QColor(0, 0, 0, 0));
+
+	{
+		QPainter painter(vertical);
+		painter.rotate(270);
+		painter.setBrush(palette().text());
+		painter.drawText(-size.width(), 0, size.width(), size.height(), Qt::TextShowMnemonic, name);
+	}
+
+	orientationChanged(Qt::Horizontal);
+}
+
+TabButton::~TabButton()
+{
+	delete horizontal;
+	delete vertical;
+}
+
+void TabButton::orientationChanged(Qt::Orientation orientation)
+{
+	if (orientation == Qt::Vertical) {
+		setIcon(*vertical);
+		setIconSize(vertical->size());
+	} else {
+		setIcon(*horizontal);
+		setIconSize(horizontal->size());
+	}
+}
+
+void TabButton::changeEvent(QEvent *event)
+{
+	if (event->type() == QEvent::ParentChange) {
+		QToolBar *toolBar = dynamic_cast<QToolBar *> (parent());
+		if (toolBar)
+			connect(toolBar, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(orientationChanged(Qt::Orientation)));
+	}
 }

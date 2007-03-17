@@ -23,7 +23,7 @@
 
 #include <config.h>
 
-#include <QWidget>
+#include <QPushButton>
 
 #include <KIcon>
 
@@ -132,6 +132,23 @@ protected:
 private:
 	Manager *manager;
 	bool ignoreActivate;
+};
+
+class TabButton : public QPushButton
+{
+	Q_OBJECT
+public:
+	explicit TabButton(const QString &name);
+	~TabButton();
+
+private slots:
+	void orientationChanged(Qt::Orientation orientation);
+
+private:
+	void changeEvent(QEvent *event);
+
+	QPixmap *horizontal;
+	QPixmap *vertical;
 };
 
 #endif /* MANAGER_H */
