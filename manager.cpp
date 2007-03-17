@@ -55,13 +55,17 @@ public:
 
 private:
 	void internalActivate() { }
+
+	QAbstractButton *addShortcut(const QString &name, const KIcon &icon,
+		QWidget *parent);
 };
 
 StartTab::StartTab(Manager *manager_) : TabBase(manager_)
 {
-	QVBoxLayout *layout = new QVBoxLayout(this);
-	layout->setMargin(0);
-	layout->setSpacing(0);
+	QVBoxLayout *boxLayout = new QVBoxLayout(this);
+	boxLayout->setMargin(0);
+	boxLayout->setSpacing(0);
+
 	QLabel *label = new QLabel(i18n("<font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your desktop!</font>"));
 	label->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
 	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum));
@@ -69,13 +73,49 @@ StartTab::StartTab(Manager *manager_) : TabBase(manager_)
 	pal.setColor(label->backgroundRole(), QColor(127, 127, 255));
 	label->setPalette(pal);
 	label->setAutoFillBackground(true);
-	layout->addWidget(label);
+	boxLayout->addWidget(label);
+
 	QWidget *widget = new QWidget(this);
 	pal = widget->palette();
 	pal.setColor(widget->backgroundRole(), QColor(255, 255, 255));
 	widget->setPalette(pal);
 	widget->setAutoFillBackground(true);
-	layout->addWidget(widget);
+	boxLayout->addWidget(widget);
+
+	boxLayout = new QVBoxLayout(widget);
+	boxLayout->setMargin(0);
+	boxLayout->setSpacing(0);
+
+	widget = new QWidget(widget);
+	boxLayout->addWidget(widget, 0, Qt::AlignCenter);
+
+	QGridLayout *gridLayout = new QGridLayout(widget);
+	gridLayout->setMargin(15);
+	gridLayout->setSpacing(15);
+
+	QAbstractButton *button = addShortcut(i18n("Play File"), KIcon("video"), widget);
+	gridLayout->addWidget(button, 0, 0);
+
+	button = addShortcut(i18n("Play Audio CD"), KIcon("sound"), widget);
+	gridLayout->addWidget(button, 0, 1);
+
+	button = addShortcut(i18n("Play Video CD"), KIcon("video"), widget);
+	gridLayout->addWidget(button, 1, 0);
+
+	button = addShortcut(i18n("Play DVD"), KIcon("video"), widget);
+	gridLayout->addWidget(button, 1, 1);
+}
+
+QAbstractButton *StartTab::addShortcut(const QString &name, const KIcon &icon,
+	QWidget *parent)
+{
+	QPushButton *button = new QPushButton(parent);
+	button->setText(name);
+	button->setIcon(icon);
+	button->setIconSize(QSize(48, 48));
+	button->setFocusPolicy(Qt::NoFocus);
+	button->setSizePolicy(QSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum));
+	return button;
 }
 
 class PlayerTab : public TabBase
@@ -113,9 +153,8 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	playerTab = new PlayerTab(this, mediaWidget);
 
 	KActionCollection *collection = kaffeine->actionCollection();
-	KAction *action;
 
-	action = KStandardAction::open(kaffeine, SLOT(actionOpen()), collection);
+	KAction *action = KStandardAction::open(kaffeine, SLOT(actionOpen()), collection);
 	addAction(collection, "file_open", stateAlways, action);
 
 	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
