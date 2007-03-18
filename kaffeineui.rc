@@ -24,6 +24,7 @@
       <Action name="options_configure" />
     </Menu>
   </MenuBar>
+  <ToolBar hidden="true" name="mainToolBar" />
   <ToolBar position="bottom" name="main_controls" >
     <text>Main Controls</text>
     <Action name="controls_previous" />

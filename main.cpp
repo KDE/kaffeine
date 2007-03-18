@@ -29,19 +29,13 @@
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication() : kaffeine(NULL) { }
-
-	~KaffeineApplication()
-	{
-		delete kaffeine;
-	}
+	KaffeineApplication() { }
+	~KaffeineApplication() { }
 
 private:
-	Q_DISABLE_COPY(KaffeineApplication)
-
 	int newInstance();
 
-	Kaffeine *kaffeine;
+	Kaffeine kaffeine;
 };
 
 int KaffeineApplication::newInstance()
@@ -49,10 +43,7 @@ int KaffeineApplication::newInstance()
 	// for window activation - FIXME do some checks about behaviour
 	KUniqueApplication::newInstance();
 
-	if (kaffeine)
-		kaffeine->updateArgs();
-	else
-		kaffeine = new Kaffeine;
+	kaffeine.parseArgs();
 
 	return 0;
 }

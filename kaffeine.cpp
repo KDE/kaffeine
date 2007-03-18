@@ -55,7 +55,7 @@ Kaffeine::~Kaffeine()
 {
 }
 
-void Kaffeine::updateArgs()
+void Kaffeine::parseArgs()
 {
 	// FIXME implement
 }
