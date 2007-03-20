@@ -297,10 +297,20 @@ void TabButton::orientationChanged(Qt::Orientation orientation)
 
 void TabButton::changeEvent(QEvent *event)
 {
-	if (event->type() == QEvent::ParentChange) {
-		disconnect(SLOT(orientationChanged(Qt::Orientation)));
+	switch(event->type()) {
+	case QEvent::ParentChange: {
 		QToolBar *toolBar = dynamic_cast<QToolBar *> (parent());
 		if (toolBar)
 			connect(toolBar, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(orientationChanged(Qt::Orientation)));
+		break;
+		}
+	case QEvent::ParentAboutToChange: {
+		QToolBar *toolBar = dynamic_cast<QToolBar *> (parent());
+		if (toolBar)
+			disconnect(toolBar, SIGNAL(orientationChanged(Qt::Orientation)), this, SLOT(orientationChanged(Qt::Orientation)));
+		break;
+		}
+	default:
+		break;
 	}
 }
