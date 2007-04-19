@@ -41,7 +41,7 @@ Kaffeine::Kaffeine()
 	manager = new Manager(this);
 	mediaWidget = manager->getMediaWidget();
 	setCentralWidget(manager);
-	setupGUI();
+	setupGUI(ToolBar | Keys | Save | Create);
 
 	// FIXME workaround
 	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls"));

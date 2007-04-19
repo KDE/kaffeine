@@ -24,12 +24,12 @@
 #include <config.h>
 
 #include <KCmdLineOptions>
-#include <KMainWindow>
+#include <KXmlGuiWindow>
 
 class Manager;
 class MediaWidget;
 
-class Kaffeine : public KMainWindow
+class Kaffeine : public KXmlGuiWindow
 {
 	Q_OBJECT
 public:
