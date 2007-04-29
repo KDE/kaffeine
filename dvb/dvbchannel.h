@@ -21,7 +21,7 @@
 #ifndef DVBCHANNEL_H
 #define DVBCHANNEL_H
 
-#include <config.h>
+#include <config-kaffeine.h>
 
 #include <QString>
 

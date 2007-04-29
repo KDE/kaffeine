@@ -21,7 +21,7 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
-#include <config.h>
+#include <config-kaffeine.h>
 
 #include <QPushButton>
 

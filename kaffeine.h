@@ -21,7 +21,7 @@
 #ifndef KAFFEINE_H
 #define KAFFEINE_H
 
-#include <config.h>
+#include <config-kaffeine.h>
 
 #include <KCmdLineOptions>
 #include <KXmlGuiWindow>

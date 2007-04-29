@@ -21,7 +21,7 @@
 #ifndef MEDIAWIDGET_H
 #define MEDIAWIDGET_H
 
-#include <config.h>
+#include <config-kaffeine.h>
 
 #include <QWidget>
 
