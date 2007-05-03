@@ -29,9 +29,9 @@
 #include <phonon/audiooutput.h>
 #include <phonon/audiopath.h>
 #include <phonon/mediaobject.h>
-#include <phonon/ui/videowidget.h>
-#include <phonon/ui/seekslider.h>
-#include <phonon/ui/volumeslider.h>
+#include <phonon/videowidget.h>
+#include <phonon/seekslider.h>
+#include <phonon/volumeslider.h>
 #include <kurl.h>
 
 #include "manager.h"

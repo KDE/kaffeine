@@ -58,7 +58,7 @@ void MediaWidget::newLength( qint64 )
 QWidget *MediaWidget::newPositionSlider()
 {
 	SeekSlider *seekSlider = new SeekSlider();
-	seekSlider->setMediaProducer(media);
+	seekSlider->setMediaObject(media);
 	return seekSlider;
 }
 
@@ -71,7 +71,7 @@ QWidget *MediaWidget::newVolumeSlider()
 
 void MediaWidget::play(const KUrl &url)
 {
-	media->setUrl( url );
+	media->setCurrentSource( url );
 	currentUrl = url;
 	media->play();
 }
@@ -79,7 +79,7 @@ void MediaWidget::play(const KUrl &url)
 void MediaWidget::play()
 {
 	if ( !currentUrl.path().isEmpty() ) {
-		media->setUrl( currentUrl );
+		media->setCurrentSource( currentUrl );
 		media->play();
 	}
 }
