@@ -84,6 +84,24 @@ void MediaWidget::play()
 	}
 }
 
+void MediaWidget::playAudioCd()
+{
+	media->setCurrentSource(MediaSource(Cd));
+	media->play();
+}
+
+void MediaWidget::playVideoCd()
+{
+	media->setCurrentSource(MediaSource(Vcd));
+	media->play();
+}
+
+void MediaWidget::playDvd()
+{
+	media->setCurrentSource(MediaSource(Dvd));
+	media->play();
+}
+
 void MediaWidget::togglePause( bool b )
 {
 	if ( b && (media->state()==PlayingState) )

@@ -42,6 +42,9 @@ public:
 
 private slots:
 	void actionOpen();
+	void actionOpenAudioCd();
+	void actionOpenVideoCd();
+	void actionOpenDvd();
 	void actionPlayPause(bool paused);
 
 private:

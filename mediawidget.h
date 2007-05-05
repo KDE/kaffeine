@@ -50,6 +50,9 @@ public:
 
 public slots:
 	void play();
+	void playAudioCd();
+	void playVideoCd();
+	void playDvd();
 	void togglePause( bool b );
 	void stop();
 

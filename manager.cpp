@@ -98,12 +98,15 @@ StartTab::StartTab(Manager *manager_, Kaffeine *kaffeine) : TabBase(manager_)
 	gridLayout->addWidget(button, 0, 0);
 
 	button = addShortcut(i18n("Play Audio CD"), KIcon("sound"), widget);
+	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
 	button = addShortcut(i18n("Play Video CD"), KIcon("video"), widget);
+	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenVideoCd()));
 	gridLayout->addWidget(button, 1, 0);
 
 	button = addShortcut(i18n("Play DVD"), KIcon("video"), widget);
+	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenDvd()));
 	gridLayout->addWidget(button, 1, 1);
 }
 

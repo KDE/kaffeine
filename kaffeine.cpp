@@ -70,6 +70,24 @@ void Kaffeine::actionOpen()
 	}
 }
 
+void Kaffeine::actionOpenAudioCd()
+{
+	manager->getPlayerTab()->activate();
+	mediaWidget->playAudioCd();
+}
+
+void Kaffeine::actionOpenVideoCd()
+{
+	manager->getPlayerTab()->activate();
+	mediaWidget->playVideoCd();
+}
+
+void Kaffeine::actionOpenDvd()
+{
+	manager->getPlayerTab()->activate();
+	mediaWidget->playDvd();
+}
+
 void Kaffeine::actionPlayPause(bool paused)
 {
 	if (manager->isPlaying())
