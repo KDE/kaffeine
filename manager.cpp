@@ -169,6 +169,7 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 
 	actionPlayPause = new KAction(collection);
 	QObject::connect(actionPlayPause, SIGNAL(triggered(bool)), kaffeine, SLOT(actionPlayPause(bool)));
+	actionPlayPause->setShortcut(Qt::Key_Space);
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
 	iconPlay = KIcon("media-playback-start");
