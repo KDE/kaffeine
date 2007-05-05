@@ -21,6 +21,7 @@
 #include <config-kaffeine.h>
 
 #include <KFileDialog>
+#include <KInputDialog>
 #include <KLocalizedString>
 #include <KToolBar>
 
@@ -64,6 +65,15 @@ void Kaffeine::actionOpen()
 {
 	// FIXME do we want to be able to open several files at once or not?
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
+	if (url.isValid()) {
+		manager->getPlayerTab()->activate();
+		mediaWidget->play(url);
+	}
+}
+
+void Kaffeine::actionOpenUrl()
+{
+	KUrl url(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
 	if (url.isValid()) {
 		manager->getPlayerTab()->activate();
 		mediaWidget->play(url);

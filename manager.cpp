@@ -161,6 +161,11 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	KAction *action = KStandardAction::open(kaffeine, SLOT(actionOpen()), collection);
 	addAction(collection, "file_open", stateAlways, action);
 
+	action = new KAction(KIcon("uri-mms"), i18n("Open URL"), collection);
+	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenUrl()));
+	action->setShortcut(Qt::Key_U | Qt::CTRL);
+	addAction(collection, "file_open_url", stateAlways, action);
+
 	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
 	addAction(collection, "file_quit", stateAlways, action);
 
