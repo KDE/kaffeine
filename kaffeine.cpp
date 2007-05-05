@@ -64,8 +64,10 @@ void Kaffeine::actionOpen()
 {
 	// FIXME do we want to be able to open several files at once or not?
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
-	if (url.isValid())
+	if (url.isValid()) {
+		manager->getPlayerTab()->activate();
 		mediaWidget->play(url);
+	}
 }
 
 void Kaffeine::actionPlayPause(bool paused)
