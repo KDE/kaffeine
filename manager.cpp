@@ -50,7 +50,7 @@ void TabBase::activate()
 class StartTab : public TabBase
 {
 public:
-	explicit StartTab(Manager *manager_);
+	StartTab(Manager *manager_, Kaffeine *kaffeine);
 	~StartTab() { }
 
 private:
@@ -60,7 +60,7 @@ private:
 		QWidget *parent);
 };
 
-StartTab::StartTab(Manager *manager_) : TabBase(manager_)
+StartTab::StartTab(Manager *manager_, Kaffeine *kaffeine) : TabBase(manager_)
 {
 	QVBoxLayout *boxLayout = new QVBoxLayout(this);
 	boxLayout->setMargin(0);
@@ -94,6 +94,7 @@ StartTab::StartTab(Manager *manager_) : TabBase(manager_)
 	gridLayout->setSpacing(15);
 
 	QAbstractButton *button = addShortcut(i18n("Play File"), KIcon("video"), widget);
+	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpen()));
 	gridLayout->addWidget(button, 0, 0);
 
 	button = addShortcut(i18n("Play Audio CD"), KIcon("sound"), widget);
@@ -149,7 +150,7 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	stackedLayout = new QStackedLayout(this);
 	buttonGroup = new QButtonGroup(this);
 
-	startTab = new StartTab(this);
+	startTab = new StartTab(this, kaffeine);
 	playerTab = new PlayerTab(this, mediaWidget);
 
 	KActionCollection *collection = kaffeine->actionCollection();
