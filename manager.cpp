@@ -169,7 +169,7 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 
 	actionOpenRecent = KStandardAction::openRecent(kaffeine, SLOT(actionOpenRecent(KUrl)), collection);
 	addAction(collection, "file_open_recent", stateAlways, actionOpenRecent);
-	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), QString()));
+	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
 
 	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
 	addAction(collection, "file_quit", stateAlways, action);
@@ -216,7 +216,7 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 
 Manager::~Manager()
 {
-	actionOpenRecent->saveEntries(KConfigGroup(KGlobal::config(), QString()));
+	actionOpenRecent->saveEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
 }
 
 void Manager::addRecentUrl(const KUrl &url)
