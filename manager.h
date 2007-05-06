@@ -32,6 +32,7 @@ class QPushButton;
 class QStackedLayout;
 class KAction;
 class KActionCollection;
+class KRecentFilesAction;
 class Kaffeine;
 class MediaWidget;
 class TabBase;
@@ -49,7 +50,7 @@ public:
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
 	Manager(Kaffeine *kaffeine);
-	~Manager() { }
+	~Manager();
 
 	MediaWidget *getMediaWidget()
 	{
@@ -65,6 +66,8 @@ public:
 	{
 		return playerTab;
 	}
+
+	void addRecentUrl(const KUrl &url);
 
 	void setPlaying()
 	{
@@ -97,6 +100,7 @@ private:
 
 	MediaWidget *mediaWidget;
 
+	KRecentFilesAction *actionOpenRecent;
 	KAction *actionPlayPause;
 	QWidget *widgetPositionSlider;
 	QString textPlay;

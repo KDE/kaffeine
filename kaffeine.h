@@ -43,6 +43,7 @@ public:
 private slots:
 	void actionOpen();
 	void actionOpenUrl();
+	void actionOpenRecent(const KUrl &url);
 	void actionOpenAudioCd();
 	void actionOpenVideoCd();
 	void actionOpenDvd();

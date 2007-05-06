@@ -67,6 +67,7 @@ void Kaffeine::actionOpen()
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid()) {
 		manager->getPlayerTab()->activate();
+		manager->addRecentUrl(url);
 		mediaWidget->play(url);
 	}
 }
@@ -76,8 +77,15 @@ void Kaffeine::actionOpenUrl()
 	KUrl url(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
 	if (url.isValid()) {
 		manager->getPlayerTab()->activate();
+		manager->addRecentUrl(url);
 		mediaWidget->play(url);
 	}
+}
+
+void Kaffeine::actionOpenRecent(const KUrl &url)
+{
+	manager->getPlayerTab()->activate();
+	mediaWidget->play(url);
 }
 
 void Kaffeine::actionOpenAudioCd()

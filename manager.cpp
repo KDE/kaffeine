@@ -31,6 +31,7 @@
 #include <KAction>
 #include <KActionCollection>
 #include <KLocalizedString>
+#include <KRecentFilesAction>
 
 #include "kaffeine.h"
 #include "mediawidget.h"
@@ -166,6 +167,10 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	action->setShortcut(Qt::Key_U | Qt::CTRL);
 	addAction(collection, "file_open_url", stateAlways, action);
 
+	actionOpenRecent = KStandardAction::openRecent(kaffeine, SLOT(actionOpenRecent(KUrl)), collection);
+	addAction(collection, "file_open_recent", stateAlways, actionOpenRecent);
+	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), QString()));
+
 	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
 	addAction(collection, "file_quit", stateAlways, action);
 
@@ -207,6 +212,16 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 
 	startTab->activate();
 	setState(stateAlways);
+}
+
+Manager::~Manager()
+{
+	actionOpenRecent->saveEntries(KConfigGroup(KGlobal::config(), QString()));
+}
+
+void Manager::addRecentUrl(const KUrl &url)
+{
+	actionOpenRecent->addUrl(url);
 }
 
 void Manager::activating(TabBase *tab)
