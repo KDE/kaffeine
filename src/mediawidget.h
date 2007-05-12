@@ -21,8 +21,6 @@
 #ifndef MEDIAWIDGET_H
 #define MEDIAWIDGET_H
 
-#include <config-kaffeine.h>
-
 #include <QWidget>
 
 #include <phonon/videopath.h>

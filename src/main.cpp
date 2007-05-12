@@ -18,8 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <config-kaffeine.h>
-
 #include <KAboutData>
 #include <KLocalizedString>
 #include <KUniqueApplication>
@@ -50,9 +48,11 @@ int KaffeineApplication::newInstance()
 
 int main(int argc, char *argv[])
 {
-	// FIXME add proper stuff
-	KAboutData aboutData("kaffeine", I18N_NOOP("Kaffeine Player"), "version", I18N_NOOP("description"),
-			     KAboutData::License_GPL_V2);
+	KAboutData aboutData("kaffeine", I18N_NOOP("Kaffeine Player"), "0.9.0-pre-alpha",
+		I18N_NOOP("A media player for KDE with digital tv support"), License_GPL_V2,
+		"(C) 2007 The Kaffeine Authors", 0, "http://kaffeine.sourceforge.net");
+
+	// FIXME add authors
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions);

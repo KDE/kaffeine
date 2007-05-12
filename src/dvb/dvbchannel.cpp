@@ -1,5 +1,5 @@
 /*
- * kaffeine.h
+ * dvbchannel.cpp
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,40 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef KAFFEINE_H
-#define KAFFEINE_H
+#include "dvbchannel.h"
 
-#include <config-kaffeine.h>
-
-#include <KCmdLineOptions>
-#include <KXmlGuiWindow>
-
-class Manager;
-class MediaWidget;
-
-class Kaffeine : public KXmlGuiWindow
+DvbChannel::DvbChannel()
 {
-	Q_OBJECT
-public:
-	Kaffeine();
-	~Kaffeine();
+}
 
-	static const KCmdLineOptions cmdLineOptions[];
-
-	void parseArgs();
-
-private slots:
-	void actionOpen();
-	void actionOpenUrl();
-	void actionOpenRecent(const KUrl &url);
-	void actionOpenAudioCd();
-	void actionOpenVideoCd();
-	void actionOpenDvd();
-	void actionPlayPause(bool paused);
-
-private:
-	Manager *manager;
-	MediaWidget *mediaWidget;
-};
-
-#endif /* KAFFEINE_H */
+DvbChannel::~DvbChannel()
+{
+}

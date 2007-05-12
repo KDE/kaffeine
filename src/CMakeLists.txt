@@ -1,5 +1,3 @@
-project(kaffeine)
-
 set(kaffeine_SRCS
     dvb/dvbchannel.cpp
     kaffeine.cpp
@@ -8,7 +6,7 @@ set(kaffeine_SRCS
     mediawidget.cpp)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/dvb)
-
+configure_file(config-kaffeine.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-kaffeine.h)
 kde4_automoc(${kaffeine_SRCS})
 
 kde4_add_executable(kaffeine ${kaffeine_SRCS})
