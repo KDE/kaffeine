@@ -31,6 +31,8 @@ class QStackedLayout;
 class KAction;
 class KActionCollection;
 class KRecentFilesAction;
+class KUrl;
+class DvbTab;
 class Kaffeine;
 class MediaWidget;
 class TabBase;
@@ -63,6 +65,11 @@ public:
 	TabBase *getPlayerTab()
 	{
 		return playerTab;
+	}
+
+	DvbTab *getDvbTab()
+	{
+		return dvbTab;
 	}
 
 	void addRecentUrl(const KUrl &url);
@@ -110,6 +117,7 @@ private:
 	QStackedLayout *stackedLayout;
 	TabBase *startTab;
 	TabBase *playerTab;
+	DvbTab *dvbTab;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Manager::stateFlags)

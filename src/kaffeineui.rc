@@ -43,5 +43,6 @@
     <text>Tab Manager</text>
     <Action name="tabs_start" />
     <Action name="tabs_player" />
+    <Action name="tabs_dvb" />
   </ToolBar>
 </gui>

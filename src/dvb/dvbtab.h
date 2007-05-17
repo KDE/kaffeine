@@ -1,5 +1,5 @@
 /*
- * dvbchannel.cpp
+ * dvbtab.h
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,12 +18,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include "dvbchannel.h"
+#ifndef DVBTAB_H
+#define DVBTAB_H
 
-DvbChannel::DvbChannel()
-{
-}
+#include "../manager.h"
 
-DvbChannel::~DvbChannel()
+class DvbTab : public TabBase
 {
-}
+public:
+	DvbTab(Manager *manager_, MediaWidget *mediaWidget_);
+	~DvbTab() { }
+
+private:
+	void internalActivate();
+
+	MediaWidget *mediaWidget;
+	QHBoxLayout *mediaLayout;
+};
+
+#endif /* DVBTAB_H */

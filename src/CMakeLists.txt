@@ -1,5 +1,5 @@
 set(kaffeine_SRCS
-    dvb/dvbchannel.cpp
+    dvb/dvbtab.cpp
     kaffeine.cpp
     main.cpp
     manager.cpp

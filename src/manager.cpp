@@ -31,6 +31,7 @@
 #include <KLocalizedString>
 #include <KRecentFilesAction>
 
+#include "dvb/dvbtab.h"
 #include "kaffeine.h"
 #include "mediawidget.h"
 #include "manager.h"
@@ -154,6 +155,7 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 
 	startTab = new StartTab(this, kaffeine);
 	playerTab = new PlayerTab(this, mediaWidget);
+	dvbTab = new DvbTab(this, mediaWidget);
 
 	KActionCollection *collection = kaffeine->actionCollection();
 
@@ -207,6 +209,10 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	action = new KAction(collection);
 	action->setDefaultWidget(addTab(i18n("Player"), playerTab));
 	addAction(collection, "tabs_player", stateAlways, action);
+
+	action = new KAction(collection);
+	action->setDefaultWidget(addTab(i18n("Digital TV"), dvbTab));
+	addAction(collection, "tabs_dvb", stateAlways, action);
 
 	startTab->activate();
 	setState(stateAlways);

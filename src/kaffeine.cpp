@@ -42,11 +42,6 @@ Kaffeine::Kaffeine()
 	setCentralWidget(manager);
 	setupGUI(ToolBar | Keys | Save | Create);
 
-	// FIXME workaround
-	addToolBar(Qt::BottomToolBarArea, toolBar("main_controls"));
-	addToolBar(Qt::BottomToolBarArea, toolBar("position_slider"));
-	addToolBar(Qt::LeftToolBarArea, toolBar("tab_manager"));
-
 	show();
 }
 
