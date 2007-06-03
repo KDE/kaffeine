@@ -97,15 +97,15 @@ StartTab::StartTab(Manager *manager_, Kaffeine *kaffeine) : TabBase(manager_)
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpen()));
 	gridLayout->addWidget(button, 0, 0);
 
-	button = addShortcut(i18n("Play Audio CD"), KIcon("sound"), widget);
+	button = addShortcut(i18n("Play Audio CD"), KIcon("cdaudio-unmount"), widget);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("Play Video CD"), KIcon("video"), widget);
+	button = addShortcut(i18n("Play Video CD"), KIcon("drive-optical"), widget);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenVideoCd()));
 	gridLayout->addWidget(button, 1, 0);
 
-	button = addShortcut(i18n("Play DVD"), KIcon("video"), widget);
+	button = addShortcut(i18n("Play DVD"), KIcon("dvd-unmount"), widget);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenDvd()));
 	gridLayout->addWidget(button, 1, 1);
 }
@@ -170,6 +170,18 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	actionOpenRecent = KStandardAction::openRecent(kaffeine, SLOT(actionOpenRecent(KUrl)), collection);
 	addAction(collection, "file_open_recent", stateAlways, actionOpenRecent);
 	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
+
+	action = new KAction(KIcon("cdaudio-unmount"), i18n("Play Audio CD"), collection);
+	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenAudioCd()));
+	addAction(collection, "file_play_audiocd", stateAlways, action);
+
+	action = new KAction(KIcon("drive-optical"), i18n("Play Video CD"), collection);
+	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenVideoCd()));
+	addAction(collection, "file_play_videocd", stateAlways, action);
+
+	action = new KAction(KIcon("dvd-unmount"), i18n("Play DVD"), collection);
+	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenDvd()));
+	addAction(collection, "file_play_dvd", stateAlways, action);
 
 	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
 	addAction(collection, "file_quit", stateAlways, action);

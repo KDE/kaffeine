@@ -7,6 +7,10 @@
       <Action name="file_open_url" />
       <Action name="file_open_recent" />
       <Separator/>
+      <Action name="file_play_audiocd" />
+      <Action name="file_play_videocd" />
+      <Action name="file_play_dvd" />
+      <Separator/>
       <Action name="file_quit" />
     </Menu>
     <Menu name="player" >
