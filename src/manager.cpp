@@ -97,16 +97,19 @@ StartTab::StartTab(Manager *manager_, Kaffeine *kaffeine) : TabBase(manager_)
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpen()));
 	gridLayout->addWidget(button, 0, 0);
 
-	button = addShortcut(i18n("Play Audio CD"), KIcon("cdaudio-unmount"), widget);
+	button = addShortcut(i18n("Play Audio CD"), KIcon("media-optical-audio"), widget);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("Play Video CD"), KIcon("drive-optical"), widget);
+	button = addShortcut(i18n("Play Video CD"), KIcon("media-optical"), widget);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenVideoCd()));
+	gridLayout->addWidget(button, 0, 2);
+
+	button = addShortcut(i18n("Play DVD"), KIcon("media-optical"), widget);
+	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
-	button = addShortcut(i18n("Play DVD"), KIcon("dvd-unmount"), widget);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpenDvd()));
+	button = addShortcut(i18n("Digital TV"), KIcon("video-television"), widget);
 	gridLayout->addWidget(button, 1, 1);
 }
 
@@ -171,15 +174,15 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	addAction(collection, "file_open_recent", stateAlways, actionOpenRecent);
 	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
 
-	action = new KAction(KIcon("cdaudio-unmount"), i18n("Play Audio CD"), collection);
+	action = new KAction(KIcon("media-optical-audio"), i18n("Play Audio CD"), collection);
 	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenAudioCd()));
 	addAction(collection, "file_play_audiocd", stateAlways, action);
 
-	action = new KAction(KIcon("drive-optical"), i18n("Play Video CD"), collection);
+	action = new KAction(KIcon("media-optical"), i18n("Play Video CD"), collection);
 	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenVideoCd()));
 	addAction(collection, "file_play_videocd", stateAlways, action);
 
-	action = new KAction(KIcon("dvd-unmount"), i18n("Play DVD"), collection);
+	action = new KAction(KIcon("media-optical"), i18n("Play DVD"), collection);
 	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionOpenDvd()));
 	addAction(collection, "file_play_dvd", stateAlways, action);
 
