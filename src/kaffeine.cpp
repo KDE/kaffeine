@@ -27,10 +27,11 @@
 #include "kaffeine.h"
 #include "kaffeine.moc"
 
-const KCmdLineOptions Kaffeine::cmdLineOptions[] = {
+KCmdLineOptions Kaffeine::cmdLineOptions()
+{
 	// FIXME add options
-	KCmdLineLastOption
-};
+	return KCmdLineOptions();
+}
 
 Kaffeine::Kaffeine()
 {

@@ -21,7 +21,7 @@
 #ifndef KAFFEINE_H
 #define KAFFEINE_H
 
-#include <KCmdLineOptions>
+#include <KCmdLineArgs>
 #include <KXmlGuiWindow>
 
 class Manager;
@@ -34,7 +34,7 @@ public:
 	Kaffeine();
 	~Kaffeine();
 
-	static const KCmdLineOptions cmdLineOptions[];
+	static KCmdLineOptions cmdLineOptions();
 
 	void parseArgs();
 

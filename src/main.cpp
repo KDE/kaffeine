@@ -48,15 +48,15 @@ int KaffeineApplication::newInstance()
 
 int main(int argc, char *argv[])
 {
-	KAboutData aboutData("kaffeine", I18N_NOOP("Kaffeine Player"), "0.9.0-pre-alpha",
-		I18N_NOOP("A media player for KDE with digital tv support"),
-		KAboutData::License_GPL_V2, "(C) 2007 The Kaffeine Authors", 0,
-		"http://kaffeine.sourceforge.net");
+	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine Player"), "0.9.0-pre-alpha",
+		ki18n("A media player for KDE with digital tv support"),
+		KAboutData::License_GPL_V2, ki18n("(C) 2007 The Kaffeine Authors"),
+		KLocalizedString(), "http://kaffeine.sourceforge.net");
 
 	// FIXME add authors
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
-	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions);
+	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions());
 
 	KaffeineApplication app;
 	return app.exec();
