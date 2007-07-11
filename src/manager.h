@@ -49,8 +49,13 @@ public:
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
-	Manager(Kaffeine *kaffeine);
+	Manager(Kaffeine *kaffeine_);
 	~Manager();
+
+	Kaffeine *getKaffeine()
+	{
+		return kaffeine;
+	}
 
 	MediaWidget *getMediaWidget()
 	{
@@ -103,6 +108,7 @@ private:
 	stateFlags currentState;
 	QList<QPair<stateFlags, KAction *> > actionList;
 
+	Kaffeine *kaffeine;
 	MediaWidget *mediaWidget;
 
 	KRecentFilesAction *actionOpenRecent;
@@ -139,8 +145,9 @@ signals:
 protected:
 	virtual void internalActivate() = 0;
 
+	Manager *const manager;
+
 private:
-	Manager *manager;
 	bool ignoreActivate;
 };
 

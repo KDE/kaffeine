@@ -27,7 +27,7 @@
       <Action name="options_configure_keybinding" />
       <Action name="options_configure_toolbars" />
       <Separator/>
-      <Action name="options_configure" />
+      <Action name="settings_dvb" />
     </Menu>
   </MenuBar>
   <ToolBar hidden="true" name="mainToolBar" />

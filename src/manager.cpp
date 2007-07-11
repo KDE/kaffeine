@@ -50,7 +50,7 @@ void TabBase::activate()
 class StartTab : public TabBase
 {
 public:
-	StartTab(Manager *manager_, Kaffeine *kaffeine);
+	StartTab(Manager *manager_);
 	~StartTab() { }
 
 private:
@@ -60,8 +60,10 @@ private:
 		QWidget *parent);
 };
 
-StartTab::StartTab(Manager *manager_, Kaffeine *kaffeine) : TabBase(manager_)
+StartTab::StartTab(Manager *manager_) : TabBase(manager_)
 {
+	Kaffeine *kaffeine = manager->getKaffeine();
+
 	QVBoxLayout *boxLayout = new QVBoxLayout(this);
 	boxLayout->setMargin(0);
 	boxLayout->setSpacing(0);
@@ -128,37 +130,33 @@ QAbstractButton *StartTab::addShortcut(const QString &name, const KIcon &icon,
 class PlayerTab : public TabBase
 {
 public:
-	PlayerTab(Manager *manager_, MediaWidget *mediaWidget_);
+	PlayerTab(Manager *manager_);
 	~PlayerTab() { }
 
 private:
 	void internalActivate()
 	{
-		layout()->addWidget(mediaWidget);
+		layout()->addWidget(manager->getMediaWidget());
 	}
-
-	MediaWidget *mediaWidget;
 };
 
-PlayerTab::PlayerTab(Manager *manager_, MediaWidget *mediaWidget_)
-	: TabBase(manager_), mediaWidget(mediaWidget_)
+PlayerTab::PlayerTab(Manager *manager_) : TabBase(manager_)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
 	layout->setMargin(0);
-	layout->addWidget(mediaWidget);
 }
 
-Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
-	currentState(~stateAlways)
+Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateAlways),
+	kaffeine(kaffeine_)
 {
 	mediaWidget = new MediaWidget(this);
 
 	stackedLayout = new QStackedLayout(this);
 	buttonGroup = new QButtonGroup(this);
 
-	startTab = new StartTab(this, kaffeine);
-	playerTab = new PlayerTab(this, mediaWidget);
-	dvbTab = new DvbTab(this, mediaWidget);
+	startTab = new StartTab(this);
+	playerTab = new PlayerTab(this);
+	dvbTab = new DvbTab(this);
 
 	KActionCollection *collection = kaffeine->actionCollection();
 
@@ -216,6 +214,10 @@ Manager::Manager(Kaffeine *kaffeine) : QWidget(kaffeine),
 	widgetPositionSlider = mediaWidget->newPositionSlider();
 	action->setDefaultWidget(widgetPositionSlider);
 	addAction(collection, "position_slider", stateAlways, action);
+
+	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);
+	connect(action, SIGNAL(triggered(bool)), dvbTab, SLOT(configureDvb()));
+	addAction(collection, "settings_dvb", stateAlways, action);
 
 	action = new KAction(collection);
 	action->setDefaultWidget(addTab(i18n("Start"), startTab));

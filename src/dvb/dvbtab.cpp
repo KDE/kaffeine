@@ -19,17 +19,19 @@
  */
 
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QSplitter>
 #include <QTreeWidget>
 
 #include <KLocalizedString>
 
+#include "../kaffeine.h"
 #include "../manager.h"
 #include "../mediawidget.h"
 #include "dvbtab.h"
+#include "dvbtab.moc"
 
-DvbTab::DvbTab(Manager *manager_, MediaWidget *mediaWidget_) : TabBase(manager_),
-	mediaWidget(mediaWidget_)
+DvbTab::DvbTab(Manager *manager_) : TabBase(manager_)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
 	layout->setMargin(0);
@@ -49,7 +51,12 @@ DvbTab::DvbTab(Manager *manager_, MediaWidget *mediaWidget_) : TabBase(manager_)
 	splitter->setStretchFactor(1, 1);
 }
 
+void DvbTab::configureDvb()
+{
+	QMessageBox::information(manager->getKaffeine(), "Configure DVB", "Test");
+}
+
 void DvbTab::internalActivate()
 {
-	mediaLayout->addWidget(mediaWidget);
+	mediaLayout->addWidget(manager->getMediaWidget());
 }

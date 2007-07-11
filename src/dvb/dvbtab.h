@@ -25,14 +25,17 @@
 
 class DvbTab : public TabBase
 {
+	Q_OBJECT
 public:
-	DvbTab(Manager *manager_, MediaWidget *mediaWidget_);
+	DvbTab(Manager *manager_);
 	~DvbTab() { }
+
+public slots:
+	void configureDvb();
 
 private:
 	void internalActivate();
 
-	MediaWidget *mediaWidget;
 	QHBoxLayout *mediaLayout;
 };
 
