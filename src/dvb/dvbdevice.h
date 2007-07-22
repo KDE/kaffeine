@@ -1,5 +1,5 @@
 /*
- * dvbtab.h
+ * dvbdevice.h
  *
  * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,39 +18,45 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef DVBTAB_H
-#define DVBTAB_H
+#ifndef DVBDEVICE_H
+#define DVBDEVICE_H
 
-#include "../manager.h"
+#include <QString>
 
 namespace Solid
 {
 class DvbInterface;
 };
-class DvbDevice;
 
-class DvbTab : public TabBase
+class DvbDevice
 {
-	Q_OBJECT
 public:
-	DvbTab(Manager *manager_);
-	~DvbTab();
+	DvbDevice(int adapter_, int index_);
+	~DvbDevice() { }
 
-public slots:
-	void configureDvb();
+	int getAdapter() const
+	{
+		return adapter;
+	}
 
-private slots:
-	void deviceAdded(const QString &udi);
-	void deviceRemoved(const QString &udi);
+	int getIndex() const
+	{
+		return index;
+	}
+
+	void componentAdded(const DvbInterface *component);
+	void componentRemoved(const DvbInterface *component);
 
 private:
-	void internalActivate();
+	int adapter;
+	int index;
 
-	void customEvent(QEvent *event);
-	void componentAdded(const Solid::DvbInterface *component);
+	bool failure;
 
-	QHBoxLayout *mediaLayout;
-	QList<DvbDevice *> devices;
+	QString caPath;
+	QString demuxPath;
+	QString dvrPath;
+	QString frontendPath;
 };
 
-#endif /* DVBTAB_H */
+#endif /* DVBDEVICE_H */
