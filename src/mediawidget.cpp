@@ -19,10 +19,18 @@
  */
 
 #include <QVBoxLayout>
+
+#include <Phonon/AudioOutput>
+#include <Phonon/AudioPath>
+#include <Phonon/MediaObject>
+#include <Phonon/VideoPath>
+#include <Phonon/VideoWidget>
+#include <Phonon/SeekSlider>
+#include <Phonon/VolumeSlider>
+using namespace Phonon;
+
 #include "mediawidget.h"
 #include "mediawidget.moc"
-
-using namespace Phonon;
 
 MediaWidget::MediaWidget(Manager *manager_) : manager(manager_)
 {

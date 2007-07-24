@@ -23,16 +23,20 @@
 
 #include <QWidget>
 
-#include <phonon/videopath.h>
-#include <phonon/audiooutput.h>
-#include <phonon/audiopath.h>
-#include <phonon/mediaobject.h>
-#include <phonon/videowidget.h>
-#include <phonon/seekslider.h>
-#include <phonon/volumeslider.h>
-#include <kurl.h>
+#include <KUrl>
+
+#include <Phonon/Global>
 
 #include "manager.h"
+
+namespace Phonon
+{
+class AudioOutput;
+class AudioPath;
+class MediaObject;
+class VideoPath;
+class VideoWidget;
+};
 
 class MediaWidget : public QWidget
 {
