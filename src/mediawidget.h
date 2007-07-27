@@ -50,6 +50,8 @@ public:
 	QWidget *newPositionSlider();
 	QWidget *newVolumeSlider();
 
+	void setFullscreen(bool fullscreen);
+
 public slots:
 	void play();
 	void playAudioCd();

@@ -32,10 +32,10 @@ class KAction;
 class KActionCollection;
 class KRecentFilesAction;
 class KUrl;
-class DvbTab;
 class Kaffeine;
 class MediaWidget;
 class TabBase;
+class TabButton;
 
 class Manager : public QWidget
 {
@@ -43,11 +43,26 @@ class Manager : public QWidget
 public:
 	enum stateFlag {
 		stateAlways	= 0,
-		statePrevNext	= (1 << 0),
-		statePlaying	= (1 << 1),
+
+		/* view */
+		statePlayer	= (1 << 0),
+//		stateMinimal	= (1 << 1),
+		stateFullscreen	= (1 << 2),
+
+		/* playback */
+		statePrevNext	= (1 << 3),
+		statePlaying	= (1 << 4)
 	};
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
+
+	enum tabs {
+		tabStart,
+		tabPlayer,
+		tabPlaylist,
+		tabAudioCd,
+		tabDvb
+	};
 
 	Manager(Kaffeine *kaffeine_);
 	~Manager();
@@ -62,22 +77,10 @@ public:
 		return mediaWidget;
 	}
 
-	TabBase *getStartTab()
-	{
-		return startTab;
-	}
-
-	TabBase *getPlayerTab()
-	{
-		return playerTab;
-	}
-
-	DvbTab *getDvbTab()
-	{
-		return dvbTab;
-	}
-
 	void addRecentUrl(const KUrl &url);
+
+	void activate(tabs tab);
+	void activate(TabBase *tab);
 
 	void setPlaying()
 	{
@@ -86,7 +89,14 @@ public:
 
 	void setStopped()
 	{
-		setState(currentState & statePrevNext);
+		setState(currentState & (statePrevNext | statePlayer));
+	}
+
+	void toggleFullscreen()
+	{
+		if (isPlaying()) {
+			setState(currentState ^ stateFullscreen);
+		}
 	}
 
 	bool isPlaying()
@@ -94,16 +104,13 @@ public:
 		return (currentState & statePlaying) == statePlaying;
 	}
 
-private slots:
-	void activating(TabBase *tab);
-
 private:
 	void addAction(KActionCollection *collection, const QString &name,
 		stateFlags flags, KAction *action);
 
 	void setState(stateFlags newState);
 
-	QPushButton *addTab(const QString &name, TabBase *tab);
+	TabBase *createTab(const QString &name, TabBase *tab);
 
 	stateFlags currentState;
 	QList<QPair<stateFlags, KAction *> > actionList;
@@ -121,34 +128,38 @@ private:
 
 	QButtonGroup *buttonGroup;
 	QStackedLayout *stackedLayout;
+
 	TabBase *startTab;
 	TabBase *playerTab;
-	DvbTab *dvbTab;
+	TabBase *dvbTab;
+
+	bool ignoreActivate;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Manager::stateFlags)
 
 class TabBase : public QWidget
 {
+	friend class Manager;
 	Q_OBJECT
 public:
 	explicit TabBase(Manager *manager_) : QWidget(manager_),
-		manager(manager_), ignoreActivate(false) { }
+		manager(manager_), button(NULL) { }
 	~TabBase() { }
 
-public slots:
-	void activate();
-
-signals:
-	void activating(TabBase *tab);
-
 protected:
-	virtual void internalActivate() = 0;
-
 	Manager *const manager;
 
+	virtual void activate() = 0;
+
+private slots:
+	void clicked()
+	{
+		manager->activate(this);
+	}
+
 private:
-	bool ignoreActivate;
+	TabButton *button;
 };
 
 class TabButton : public QPushButton

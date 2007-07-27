@@ -72,7 +72,7 @@ void DvbTab::configureDvb()
 	QMessageBox::information(manager->getKaffeine(), "Configure DVB", "Test");
 }
 
-void DvbTab::internalActivate()
+void DvbTab::activate()
 {
 	mediaLayout->addWidget(manager->getMediaWidget());
 }

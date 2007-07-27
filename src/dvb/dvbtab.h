@@ -44,7 +44,7 @@ private slots:
 	void deviceRemoved(const QString &udi);
 
 private:
-	void internalActivate();
+	void activate();
 
 	void customEvent(QEvent *event);
 	void componentAdded(const Solid::DvbInterface *component);

@@ -39,6 +39,7 @@ public:
 	void parseArgs();
 
 private slots:
+	void actionFullscreen();
 	void actionOpen();
 	void actionOpenUrl();
 	void actionOpenRecent(const KUrl &url);

@@ -37,16 +37,6 @@
 #include "manager.h"
 #include "manager.moc"
 
-void TabBase::activate()
-{
-	if (!ignoreActivate) {
-		ignoreActivate = true;
-		emit activating(this);
-		ignoreActivate = false;
-		internalActivate();
-	}
-}
-
 class StartTab : public TabBase
 {
 public:
@@ -54,7 +44,7 @@ public:
 	~StartTab() { }
 
 private:
-	void internalActivate() { }
+	void activate() { }
 
 	QAbstractButton *addShortcut(const QString &name, const KIcon &icon,
 		QWidget *parent);
@@ -134,7 +124,7 @@ public:
 	~PlayerTab() { }
 
 private:
-	void internalActivate()
+	void activate()
 	{
 		layout()->addWidget(manager->getMediaWidget());
 	}
@@ -147,16 +137,16 @@ PlayerTab::PlayerTab(Manager *manager_) : TabBase(manager_)
 }
 
 Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateAlways),
-	kaffeine(kaffeine_)
+	kaffeine(kaffeine_), ignoreActivate(false)
 {
 	mediaWidget = new MediaWidget(this);
 
 	stackedLayout = new QStackedLayout(this);
 	buttonGroup = new QButtonGroup(this);
 
-	startTab = new StartTab(this);
-	playerTab = new PlayerTab(this);
-	dvbTab = new DvbTab(this);
+	startTab = createTab(i18n("Start"), new StartTab(this));
+	playerTab = createTab(i18n("Player"), new PlayerTab(this));
+	dvbTab = createTab(i18n("Digital TV"), new DvbTab(this));
 
 	KActionCollection *collection = kaffeine->actionCollection();
 
@@ -186,6 +176,14 @@ Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateA
 
 	action = KStandardAction::quit(kaffeine, SLOT(close()), collection);
 	addAction(collection, "file_quit", stateAlways, action);
+
+	action = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), collection);
+	// FIXME need to translate shortcuts?
+	action->setShortcut(KShortcut(i18nc("View|Full Screen Mode", "F")));
+	QObject::connect(action, SIGNAL(triggered(bool)), kaffeine, SLOT(actionFullscreen()));
+	addAction(collection, "view_fullscreen", stateAlways, action);
+	// FIXME right way to achieve correct fullscreen behaviour?
+	mediaWidget->addAction(action);
 
 	action = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
 	addAction(collection, "controls_previous", statePrevNext | statePlaying, action);
@@ -220,18 +218,18 @@ Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateA
 	addAction(collection, "settings_dvb", stateAlways, action);
 
 	action = new KAction(collection);
-	action->setDefaultWidget(addTab(i18n("Start"), startTab));
+	action->setDefaultWidget(startTab->button);
 	addAction(collection, "tabs_start", stateAlways, action);
 
 	action = new KAction(collection);
-	action->setDefaultWidget(addTab(i18n("Player"), playerTab));
+	action->setDefaultWidget(playerTab->button);
 	addAction(collection, "tabs_player", stateAlways, action);
 
 	action = new KAction(collection);
-	action->setDefaultWidget(addTab(i18n("Digital TV"), dvbTab));
+	action->setDefaultWidget(dvbTab->button);
 	addAction(collection, "tabs_dvb", stateAlways, action);
 
-	startTab->activate();
+	activate(startTab);
 	setState(stateAlways);
 }
 
@@ -245,8 +243,44 @@ void Manager::addRecentUrl(const KUrl &url)
 	actionOpenRecent->addUrl(url);
 }
 
-void Manager::activating(TabBase *tab)
+void Manager::activate(tabs tab)
 {
+	TabBase *tabBase = NULL;
+
+	switch(tab) {
+	case tabStart:
+		tabBase = startTab;
+		break;
+	case tabPlayer:
+		tabBase = playerTab;
+		break;
+	case tabPlaylist:
+		// FIXME
+		tabBase = playerTab;
+		break;
+	case tabAudioCd:
+		// FIXME
+		tabBase = playerTab;
+		break;
+	case tabDvb:
+		tabBase = dvbTab;
+		break;
+	}
+
+	activate(tabBase);
+}
+
+void Manager::activate(TabBase *tab)
+{
+	if (ignoreActivate) {
+		return;
+	}
+
+	ignoreActivate = true;
+	tab->button->click();
+	ignoreActivate = false;
+
+	tab->activate();
 	stackedLayout->setCurrentWidget(tab);
 }
 
@@ -277,6 +311,14 @@ void Manager::setState(stateFlags newState)
 		}
 	}
 
+	if ((currentState ^ newState) & stateFullscreen) {
+		bool fullscreen = ((newState & stateFullscreen) == stateFullscreen);
+		mediaWidget->setFullscreen(fullscreen);
+		if (!fullscreen) {
+			activate(dynamic_cast<TabBase *>(stackedLayout->currentWidget()));
+		}
+	}
+
 	QPair<stateFlags, KAction *> action;
 	foreach (action, actionList)
 		action.second->setEnabled((action.first & newState) != stateAlways);
@@ -284,15 +326,15 @@ void Manager::setState(stateFlags newState)
 	currentState = newState;
 }
 
-QPushButton *Manager::addTab(const QString &name, TabBase *tab)
+TabBase *Manager::createTab(const QString &name, TabBase *tab)
 {
 	TabButton *tabButton = new TabButton(name);
-	connect(tabButton, SIGNAL(clicked(bool)), tab, SLOT(activate()));
-	connect(tab, SIGNAL(activating(TabBase *)), tabButton, SLOT(click()));
-	connect(tab, SIGNAL(activating(TabBase *)), this, SLOT(activating(TabBase *)));
+	connect(tabButton, SIGNAL(clicked(bool)), tab, SLOT(clicked()));
 	buttonGroup->addButton(tabButton);
 	stackedLayout->addWidget(tab);
-	return tabButton;
+
+	tab->button = tabButton;
+	return tab;
 }
 
 TabButton::TabButton(const QString &name)

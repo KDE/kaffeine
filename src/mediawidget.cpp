@@ -75,6 +75,16 @@ QWidget *MediaWidget::newVolumeSlider()
 	return volumeSlider;
 }
 
+void MediaWidget::setFullscreen(bool fullscreen)
+{
+	if (fullscreen) {
+		setWindowFlags((windowFlags() & (~Qt::WindowType_Mask)) | Qt::Dialog);
+		showFullScreen();
+	} else {
+		setWindowFlags(windowFlags() & (~Qt::WindowType_Mask));
+	}
+}
+
 void MediaWidget::play(const KUrl &url)
 {
 	media->setCurrentSource( url );
@@ -147,5 +157,5 @@ void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
 
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
-	vw->setFullScreen(!vw->isFullScreen());
+	manager->toggleFullscreen();
 }

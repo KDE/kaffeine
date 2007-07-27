@@ -55,12 +55,17 @@ void Kaffeine::parseArgs()
 	// FIXME implement
 }
 
+void Kaffeine::actionFullscreen()
+{
+	manager->toggleFullscreen();
+}
+
 void Kaffeine::actionOpen()
 {
 	// FIXME do we want to be able to open several files at once or not?
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid()) {
-		manager->getPlayerTab()->activate();
+		manager->activate(Manager::tabPlayer);
 		manager->addRecentUrl(url);
 		mediaWidget->play(url);
 	}
@@ -70,7 +75,7 @@ void Kaffeine::actionOpenUrl()
 {
 	KUrl url(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
 	if (url.isValid()) {
-		manager->getPlayerTab()->activate();
+		manager->activate(Manager::tabPlayer);
 		manager->addRecentUrl(url);
 		mediaWidget->play(url);
 	}
@@ -78,25 +83,25 @@ void Kaffeine::actionOpenUrl()
 
 void Kaffeine::actionOpenRecent(const KUrl &url)
 {
-	manager->getPlayerTab()->activate();
+	manager->activate(Manager::tabPlayer);
 	mediaWidget->play(url);
 }
 
 void Kaffeine::actionOpenAudioCd()
 {
-	manager->getPlayerTab()->activate();
+	manager->activate(Manager::tabAudioCd);
 	mediaWidget->playAudioCd();
 }
 
 void Kaffeine::actionOpenVideoCd()
 {
-	manager->getPlayerTab()->activate();
+	manager->activate(Manager::tabPlayer);
 	mediaWidget->playVideoCd();
 }
 
 void Kaffeine::actionOpenDvd()
 {
-	manager->getPlayerTab()->activate();
+	manager->activate(Manager::tabPlayer);
 	mediaWidget->playDvd();
 }
 

@@ -13,6 +13,10 @@
       <Separator/>
       <Action name="file_quit" />
     </Menu>
+    <Menu name="view" >
+      <text>&amp;View</text>
+      <Action name="view_fullscreen" />
+    </Menu>
     <Menu name="player" >
       <text>&amp;Player</text>
       <Action name="controls_previous" />
