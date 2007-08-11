@@ -91,25 +91,33 @@ void DvbTab::configureDvb()
 
 		gridLayout->addWidget(new QLabel(i18n("<qt><b>Type:</b></qt>")), 1, 0);
 
-		QLabel *label = new QLabel();
-		switch (device->getTransmissionTypes()) {
-		case DvbDevice::DvbC:
-			label->setText(i18n("Cable"));
-			break;
-		case DvbDevice::DvbS:
-			label->setText(i18n("Satellite"));
-			break;
-		case DvbDevice::DvbT:
-			label->setText(i18n("Terrestrial"));
-			break;
-		case DvbDevice::Atsc:
-			label->setText(i18n("Atsc"));
-			break;
+		QString text;
+		DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
+		if ((transmissionTypes & DvbDevice::DvbC) != 0) {
+			text = i18n("DVB-C");
+		}
+		if ((transmissionTypes & DvbDevice::DvbS) != 0) {
+			if (!text.isEmpty()) {
+				text += " / ";
+			}
+			text += i18n("DVB-S");
+		}
+		if ((transmissionTypes & DvbDevice::DvbT) != 0) {
+			if (!text.isEmpty()) {
+				text += " / ";
+			}
+			text += i18n("DVB-T");
+		}
+		if ((transmissionTypes & DvbDevice::Atsc) != 0) {
+			if (!text.isEmpty()) {
+				text += " / ";
+			}
+			text += i18n("ATSC");
 		}
 
-		gridLayout->addWidget(label, 1, 1);
+		gridLayout->addWidget(new QLabel(text), 1, 1);
 
-		// whole page
+		// add page
 
 		QString pageName(i18n("Device %1", deviceNumber));
 		++deviceNumber;
@@ -174,5 +182,7 @@ void DvbTab::componentAdded(const Solid::Device &component)
 		}
 	}
 
-	devices.append(new DvbDevice(adapter, index));
+	DvbDevice *device = new DvbDevice(adapter, index);
+	device->componentAdded(component);
+	devices.append(device);
 }
