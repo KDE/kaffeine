@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QEvent>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMessageBox>
 #include <QSplitter>
 #include <QTreeWidget>
@@ -29,6 +30,7 @@
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
 #include <KLocalizedString>
+#include <KPageDialog>
 
 #include "../kaffeine.h"
 #include "../manager.h"
@@ -66,7 +68,58 @@ DvbTab::~DvbTab()
 
 void DvbTab::configureDvb()
 {
-	QMessageBox::information(manager->getKaffeine(), "Configure DVB", "Test");
+	KPageDialog *dialog = new KPageDialog(manager->getKaffeine());
+	dialog->setCaption(i18n("DVB Settings"));
+	dialog->setFaceType(KPageDialog::List);
+
+	int deviceNumber = 1;
+
+	foreach (DvbDevice *device, devices) {
+		if (!device->isReady()) {
+			continue;
+		}
+
+		QWidget *widget = new QWidget();
+		QGridLayout *gridLayout = new QGridLayout(widget);
+
+		// name
+
+		gridLayout->addWidget(new QLabel(i18n("<qt><b>Name:</b></qt>")), 0, 0);
+		gridLayout->addWidget(new QLabel(device->getFrontendName()), 0, 1);
+
+		// type
+
+		gridLayout->addWidget(new QLabel(i18n("<qt><b>Type:</b></qt>")), 1, 0);
+
+		QLabel *label = new QLabel();
+		switch (device->getTransmissionTypes()) {
+		case DvbDevice::DvbC:
+			label->setText(i18n("Cable"));
+			break;
+		case DvbDevice::DvbS:
+			label->setText(i18n("Satellite"));
+			break;
+		case DvbDevice::DvbT:
+			label->setText(i18n("Terrestrial"));
+			break;
+		case DvbDevice::Atsc:
+			label->setText(i18n("Atsc"));
+			break;
+		}
+
+		gridLayout->addWidget(label, 1, 1);
+
+		// whole page
+
+		QString pageName(i18n("Device %1", deviceNumber));
+		++deviceNumber;
+
+		KPageWidgetItem *page = new KPageWidgetItem(widget, pageName);
+		page->setIcon(KIcon("media-flash"));
+		dialog->addPage(page);
+	}
+
+	dialog->exec();
 }
 
 void DvbTab::activate()
