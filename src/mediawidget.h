@@ -32,9 +32,7 @@
 namespace Phonon
 {
 class AudioOutput;
-class AudioPath;
 class MediaObject;
-class VideoPath;
 class VideoWidget;
 };
 
@@ -65,9 +63,7 @@ private:
 
 private:
 	Phonon::VideoWidget *vw;
-	Phonon::VideoPath *vp;
 	Phonon::AudioOutput *ao;
-	Phonon::AudioPath *ap;
 	Phonon::MediaObject *media;
 
 	KUrl currentUrl;

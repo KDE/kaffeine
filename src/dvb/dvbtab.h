@@ -25,7 +25,7 @@
 
 namespace Solid
 {
-class DvbInterface;
+class Device;
 };
 class DvbDevice;
 
@@ -40,14 +40,14 @@ public slots:
 	void configureDvb();
 
 private slots:
-	void deviceAdded(const QString &udi);
-	void deviceRemoved(const QString &udi);
+	void componentAdded(const QString &udi);
+	void componentRemoved(const QString &udi);
 
 private:
 	void activate();
 
 	void customEvent(QEvent *event);
-	void componentAdded(const Solid::DvbInterface *component);
+	void componentAdded(const Solid::Device &component);
 
 	QHBoxLayout *mediaLayout;
 	QList<DvbDevice *> devices;

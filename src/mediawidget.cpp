@@ -21,13 +21,11 @@
 #include <QVBoxLayout>
 
 #include <Phonon/AudioOutput>
-#include <Phonon/AudioPath>
 #include <Phonon/MediaObject>
-#include <Phonon/VideoPath>
+#include <Phonon/Path>
 #include <Phonon/VideoWidget>
 #include <Phonon/SeekSlider>
 #include <Phonon/VolumeSlider>
-using namespace Phonon;
 
 #include "mediawidget.h"
 #include "mediawidget.moc"
@@ -37,16 +35,12 @@ MediaWidget::MediaWidget(Manager *manager_) : manager(manager_)
 	QVBoxLayout *box = new QVBoxLayout( this );
 	box->setMargin(0);
 	box->setSpacing(0);
-	vw = new VideoWidget( this );
+	vw = new Phonon::VideoWidget( this );
 	box->addWidget( vw );
-	vp = new VideoPath( this );
-	ao = new AudioOutput( Phonon::VideoCategory, this );
-	ap = new AudioPath( this );
-	media = new MediaObject( this );
-	media->addVideoPath( vp );
-	vp->addOutput( vw );
-	media->addAudioPath( ap );
-	ap->addOutput( ao );
+	ao = new Phonon::AudioOutput( Phonon::VideoCategory, this );
+	media = new Phonon::MediaObject( this );
+	Phonon::createPath(media, vw);
+	Phonon::createPath(media, ao);
 	
 	media->setTickInterval( 350 );
 	
@@ -63,14 +57,14 @@ void MediaWidget::newLength( qint64 )
 
 QWidget *MediaWidget::newPositionSlider()
 {
-	SeekSlider *seekSlider = new SeekSlider();
+	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider();
 	seekSlider->setMediaObject(media);
 	return seekSlider;
 }
 
 QWidget *MediaWidget::newVolumeSlider()
 {
-	VolumeSlider *volumeSlider = new VolumeSlider();
+	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider();
 	volumeSlider->setAudioOutput(ao);
 	return volumeSlider;
 }
@@ -102,27 +96,27 @@ void MediaWidget::play()
 
 void MediaWidget::playAudioCd()
 {
-	media->setCurrentSource(MediaSource(Cd));
+	media->setCurrentSource(Phonon::MediaSource(Phonon::Cd));
 	media->play();
 }
 
 void MediaWidget::playVideoCd()
 {
-	media->setCurrentSource(MediaSource(Vcd));
+	media->setCurrentSource(Phonon::MediaSource(Phonon::Vcd));
 	media->play();
 }
 
 void MediaWidget::playDvd()
 {
-	media->setCurrentSource(MediaSource(Dvd));
+	media->setCurrentSource(Phonon::MediaSource(Phonon::Dvd));
 	media->play();
 }
 
 void MediaWidget::togglePause( bool b )
 {
-	if ( b && (media->state()==PlayingState) )
+	if ( b && (media->state()==Phonon::PlayingState) )
 		media->pause();
-	else if ( media->state()==PausedState )
+	else if ( media->state()==Phonon::PausedState )
 		media->play();
 }
 
@@ -138,19 +132,19 @@ void MediaWidget::playbackFinished()
 void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
 {
 	switch (status) {
-		case PlayingState:
+		case Phonon::PlayingState:
 			manager->setPlaying();
 			break;
-		case PausedState:
+		case Phonon::PausedState:
 			break;
-		case StoppedState:
+		case Phonon::StoppedState:
 			manager->setStopped();
 			break;
-		case LoadingState:
+		case Phonon::LoadingState:
 			break;
-		case BufferingState:
+		case Phonon::BufferingState:
 			break;
-		case ErrorState:
+		case Phonon::ErrorState:
 			break;
 	}
 }

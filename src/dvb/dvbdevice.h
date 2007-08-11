@@ -25,12 +25,22 @@
 
 namespace Solid
 {
-class DvbInterface;
+class Device;
 };
 
 class DvbDevice
 {
 public:
+	enum TransmissionType
+	{
+		DvbC	= (1 << 0),
+		DvbS	= (1 << 1),
+		DvbT	= (1 << 2),
+		Atsc	= (1 << 3)
+	};
+
+	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
+
 	DvbDevice(int adapter_, int index_);
 	~DvbDevice() { }
 
@@ -44,19 +54,63 @@ public:
 		return index;
 	}
 
-	void componentAdded(const DvbInterface *component);
-	void componentRemoved(const DvbInterface *component);
+	void componentAdded(const Solid::Device &component);
+
+	bool isReady()
+	{
+		return ((currentState & DeviceReady) != 0);
+	}
+
+	TransmissionTypes getTransmissionTypes()
+	{
+		return transmissionTypes;
+	}
+
+	QString getFrontendName()
+	{
+		return frontendName;
+	}
 
 private:
+	Q_DISABLE_COPY(DvbDevice)
+
+	enum stateFlag {
+		CaPresent	= (1 << 0),
+		CaInvalid	= (1 << 1),
+		DemuxPresent	= (1 << 2),
+		DemuxInvalid	= (1 << 3),
+		DvrPresent	= (1 << 4),
+		DvrInvalid	= (1 << 5),
+		FrontendPresent	= (1 << 6),
+		FrontendInvalid	= (1 << 7),
+
+		MaskComplete	= (DemuxPresent | DemuxInvalid | DvrPresent | DvrInvalid |
+				   FrontendPresent | FrontendInvalid),
+		ValueComplete	= (DemuxPresent | DvrPresent | FrontendPresent),
+
+		DeviceReady	= (1 << 8)
+	};
+
+	Q_DECLARE_FLAGS(stateFlags, stateFlag)
+
+	void setState(stateFlags newState);
+
+	bool identifyDevice();
+
 	int adapter;
 	int index;
 
-	bool failure;
+	stateFlags currentState;
 
 	QString caPath;
 	QString demuxPath;
 	QString dvrPath;
 	QString frontendPath;
+
+	TransmissionTypes transmissionTypes;
+	QString frontendName;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)
 
 #endif /* DVBDEVICE_H */

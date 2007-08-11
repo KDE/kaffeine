@@ -24,14 +24,11 @@
 #include <QMessageBox>
 #include <QSplitter>
 #include <QTreeWidget>
-
-#include <KLocalizedString>
-
 #include <Solid/Device>
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
-using namespace Solid;
+#include <KLocalizedString>
 
 #include "../kaffeine.h"
 #include "../manager.h"
@@ -79,41 +76,41 @@ void DvbTab::activate()
 
 void DvbTab::customEvent(QEvent *)
 {
-	QObject *notifier = DeviceNotifier::instance();
+	QObject *notifier = Solid::DeviceNotifier::instance();
 
-	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(deviceAdded(QString)));
-	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(deviceRemoved(QString)));
+	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
+	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(componentRemoved(QString)));
 
-	QList<Device> devices = Device::listFromType(DeviceInterface::DvbInterface);
-	foreach (const Device &device, devices) {
-		const DvbInterface *dvbDevice = device.as<DvbInterface>();
-		if (dvbDevice != 0) {
-			componentAdded(dvbDevice);
-		}
+	QList<Solid::Device> devices = Solid::Device::listFromType(Solid::DeviceInterface::DvbInterface);
+	foreach (const Solid::Device &device, devices) {
+		componentAdded(device);
 	}
 }
 
-void DvbTab::deviceAdded(const QString &udi)
+void DvbTab::componentAdded(const QString &udi)
 {
-	const DvbInterface *dvbDevice = Device(udi).as<DvbInterface>();
-	if (dvbDevice != 0) {
-		componentAdded(dvbDevice);
+	componentAdded(Solid::Device(udi));
+}
+
+void DvbTab::componentRemoved(const QString &/*udi*/)
+{
+	// FIXME Solid::Device::as<DvbInterface>() is always NULL
+	// FIXME we need to keep our own list of udis :(
+}
+
+void DvbTab::componentAdded(const Solid::Device &component)
+{
+	const Solid::DvbInterface *dvbInterface = component.as<Solid::DvbInterface>();
+
+	if (dvbInterface == NULL) {
+		return;
 	}
-}
 
-void DvbTab::deviceRemoved(const QString &)
-{
-	// FIXME
-}
-
-void DvbTab::componentAdded(const DvbInterface *component)
-{
-	int adapter = component->deviceAdapter();
-	int index = component->deviceIndex();
+	int adapter = dvbInterface->deviceAdapter();
+	int index = dvbInterface->deviceIndex();
 
 	if ((adapter < 0) || (index < 0)) {
-		// FIXME how to get udi?
-		kWarning() << k_lineinfo << "couldn't determine adapter and/or index for \n";
+		kWarning() << k_funcinfo << "couldn't determine adapter and/or index for" << component.udi();
 		return;
 	}
 

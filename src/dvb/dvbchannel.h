@@ -23,17 +23,11 @@
 
 #include <QString>
 
+#include "dvbdevice.h"
+
 class DvbTransponder
 {
 public:
-	enum TransmissionType
-	{
-		DvbC,
-		DvbS,
-		DvbT,
-		Atsc
-	};
-
 	enum FecRate
 	{
 		Fec1_2,
@@ -49,7 +43,7 @@ public:
 
 	virtual ~DvbTransponder() { }
 
-	TransmissionType getTransmissionType() const
+	DvbDevice::TransmissionType getTransmissionType() const
 	{
 		return transmissionType;
 	}
@@ -60,14 +54,14 @@ public:
 	}
 
 protected:
-	DvbTransponder(TransmissionType transmissionType_,
+	DvbTransponder(DvbDevice::TransmissionType transmissionType_,
 		const QString &source_) : transmissionType(transmissionType_),
 		source(source_) { }
 
 private:
 	Q_DISABLE_COPY(DvbTransponder)
 
-	TransmissionType transmissionType;
+	DvbDevice::TransmissionType transmissionType;
 	QString source;
 };
 
@@ -82,7 +76,7 @@ public:
 
 	DvbCTransponder(const QString &source_, int frequency_,
 		ModulationType modulationType_, int symbolRate_,
-		FecRate fecRate_) : DvbTransponder(DvbC, source_),
+		FecRate fecRate_) : DvbTransponder(DvbDevice::DvbC, source_),
 		frequency(frequency_), modulationType(modulationType_),
 		symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbCTransponder() { }
@@ -161,7 +155,7 @@ public:
 
 	DvbSTransponder(const QString &source_, Polarization polarization_,
 		int frequency_, int symbolRate_, FecRate fecRate_) :
-		DvbTransponder(DvbS, source_),  polarization(polarization_),
+		DvbTransponder(DvbDevice::DvbS, source_),  polarization(polarization_),
 		frequency(frequency_), symbolRate(symbolRate_),
 		fecRate(fecRate_) { }
 	~DvbSTransponder() { }
