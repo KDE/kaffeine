@@ -22,11 +22,7 @@
 #define DVBDEVICE_H
 
 #include <QString>
-
-namespace Solid
-{
-class Device;
-};
+#include <Solid/Device>
 
 class DvbDevice
 {
@@ -55,6 +51,7 @@ public:
 	}
 
 	void componentAdded(const Solid::Device &component);
+	bool componentRemoved(const QString &udi);
 
 	bool isReady()
 	{
@@ -76,19 +73,13 @@ private:
 
 	enum stateFlag {
 		CaPresent	= (1 << 0),
-		CaInvalid	= (1 << 1),
-		DemuxPresent	= (1 << 2),
-		DemuxInvalid	= (1 << 3),
-		DvrPresent	= (1 << 4),
-		DvrInvalid	= (1 << 5),
-		FrontendPresent	= (1 << 6),
-		FrontendInvalid	= (1 << 7),
+		DemuxPresent	= (1 << 1),
+		DvrPresent	= (1 << 2),
+		FrontendPresent	= (1 << 3),
 
-		MaskComplete	= (DemuxPresent | DemuxInvalid | DvrPresent | DvrInvalid |
-				   FrontendPresent | FrontendInvalid),
-		ValueComplete	= (DemuxPresent | DvrPresent | FrontendPresent),
+		DevicePresent	= (DemuxPresent | DvrPresent | FrontendPresent),
 
-		DeviceReady	= (1 << 8)
+		DeviceReady	= (1 << 4)
 	};
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
@@ -101,6 +92,11 @@ private:
 	int index;
 
 	stateFlags currentState;
+
+	Solid::Device caComponent;
+	Solid::Device demuxComponent;
+	Solid::Device dvrComponent;
+	Solid::Device frontendComponent;
 
 	QString caPath;
 	QString demuxPath;

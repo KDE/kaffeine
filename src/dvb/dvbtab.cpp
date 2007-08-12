@@ -153,10 +153,13 @@ void DvbTab::componentAdded(const QString &udi)
 	componentAdded(Solid::Device(udi));
 }
 
-void DvbTab::componentRemoved(const QString &/*udi*/)
+void DvbTab::componentRemoved(const QString &udi)
 {
-	// FIXME Solid::Device::as<DvbInterface>() is always NULL
-	// FIXME we need to keep our own list of udis :(
+	foreach (DvbDevice *device, devices) {
+		if (device->componentRemoved(udi)) {
+			break;
+		}
+	}
 }
 
 void DvbTab::componentAdded(const Solid::Device &component)

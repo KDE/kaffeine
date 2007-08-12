@@ -24,7 +24,6 @@
 #include <unistd.h>
 #include <QFile>
 #include <Solid/DvbInterface>
-#include <Solid/Device>
 #include <KDebug>
 
 #include "dvbdevice.h"
@@ -37,47 +36,53 @@ void DvbDevice::componentAdded(const Solid::Device &component)
 {
 	const Solid::DvbInterface *dvbInterface = component.as<Solid::DvbInterface>();
 
-	QString *targetPath;
-	stateFlag targetPresent;
-	stateFlag targetInvalid;
+	if (dvbInterface == NULL) {
+		return;
+	}
 
 	switch (dvbInterface->deviceType()) {
 	case Solid::DvbInterface::DvbCa:
-		targetPath = &caPath;
-		targetPresent = CaPresent;
-		targetInvalid = CaInvalid;
+		caComponent = component;
+		caPath = dvbInterface->device();
+		setState(currentState | CaPresent);
 		break;
 	case Solid::DvbInterface::DvbDemux:
-		targetPath = &demuxPath;
-		targetPresent = DemuxPresent;
-		targetInvalid = DemuxInvalid;
+		demuxComponent = component;
+		demuxPath = dvbInterface->device();
+		setState(currentState | DemuxPresent);
 		break;
 	case Solid::DvbInterface::DvbDvr:
-		targetPath = &dvrPath;
-		targetPresent = DvrPresent;
-		targetInvalid = DvrInvalid;
+		dvrComponent = component;
+		dvrPath = dvbInterface->device();
+		setState(currentState | DvrPresent);
 		break;
 	case Solid::DvbInterface::DvbFrontend:
-		targetPath = &frontendPath;
-		targetPresent = FrontendPresent;
-		targetInvalid = FrontendInvalid;
+		frontendComponent = component;
+		frontendPath = dvbInterface->device();
+		setState(currentState | FrontendPresent);
 		break;
 	default:
-		return;
+		break;
+	}
+}
+
+bool DvbDevice::componentRemoved(const QString &udi)
+{
+	if (caComponent.udi() == udi) {
+		setState(currentState & (~CaPresent));
+		return true;
+	} else if (demuxComponent.udi() == udi) {
+		setState(currentState & (~DemuxPresent));
+		return true;
+	} else if (dvrComponent.udi() == udi) {
+		setState(currentState & (~DvrPresent));
+		return true;
+	} else if (frontendComponent.udi() == udi) {
+		setState(currentState & (~FrontendPresent));
+		return true;
 	}
 
-	QString path = dvbInterface->device();
-
-	if ((currentState & targetPresent) != 0) {
-		if (*targetPath != path) {
-			kWarning() << k_funcinfo << "different paths for" << component.udi();
-			setState(currentState | targetInvalid);
-		}
-		return;
-	}
-
-	*targetPath = path;
-	setState(currentState | targetPresent);
+	return false;
 }
 
 void DvbDevice::setState(stateFlags newState)
@@ -86,11 +91,11 @@ void DvbDevice::setState(stateFlags newState)
 		return;
 	}
 
-	bool oldComplete = ((currentState & MaskComplete) == ValueComplete);
-	bool newComplete = ((newState & MaskComplete) == ValueComplete);
+	bool oldPresent = ((currentState & DevicePresent) == DevicePresent);
+	bool newPresent = ((newState & DevicePresent) == DevicePresent);
 
-	if (oldComplete != newComplete) {
-		if (newComplete) {
+	if (oldPresent != newPresent) {
+		if (newPresent) {
 			if (identifyDevice()) {
 				newState |= DeviceReady;
 			}
