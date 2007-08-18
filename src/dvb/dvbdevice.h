@@ -24,8 +24,12 @@
 #include <QString>
 #include <Solid/Device>
 
-class DvbDevice
+class QSocketNotifier;
+class DvbTransponder;
+
+class DvbDevice : public QObject
 {
+	Q_OBJECT
 public:
 	enum TransmissionType
 	{
@@ -37,8 +41,17 @@ public:
 
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
 
+	enum DeviceState
+	{
+		DeviceNotReady,
+		DeviceIdle,
+		DeviceRotorMoving,
+		DeviceTuning,
+		DeviceTuned
+	};
+
 	DvbDevice(int adapter_, int index_);
-	~DvbDevice() { }
+	~DvbDevice();
 
 	int getAdapter() const
 	{
@@ -53,9 +66,9 @@ public:
 	void componentAdded(const Solid::Device &component);
 	bool componentRemoved(const QString &udi);
 
-	bool isReady()
+	DeviceState getDeviceState()
 	{
-		return ((currentState & DeviceReady) != 0);
+		return deviceState;
 	}
 
 	TransmissionTypes getTransmissionTypes()
@@ -68,6 +81,15 @@ public:
 		return frontendName;
 	}
 
+	void tuneDevice(const DvbTransponder &transponder);
+	void stopDevice();
+
+signals:
+	void stateChanged(DeviceState oldState, DeviceState newState);
+
+private slots:
+	void frontendEvent();
+
 private:
 	Q_DISABLE_COPY(DvbDevice)
 
@@ -77,21 +99,25 @@ private:
 		DvrPresent	= (1 << 2),
 		FrontendPresent	= (1 << 3),
 
-		DevicePresent	= (DemuxPresent | DvrPresent | FrontendPresent),
-
-		DeviceReady	= (1 << 4)
+		DevicePresent	= (DemuxPresent | DvrPresent | FrontendPresent)
 	};
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
 	void setState(stateFlags newState);
 
+	void setDeviceState(DeviceState newState)
+	{
+		emit stateChanged(deviceState, newState);
+		deviceState = newState;
+	}
+
 	bool identifyDevice();
 
 	int adapter;
 	int index;
 
-	stateFlags currentState;
+	stateFlags internalState;
 
 	Solid::Device caComponent;
 	Solid::Device demuxComponent;
@@ -103,8 +129,12 @@ private:
 	QString dvrPath;
 	QString frontendPath;
 
+	DeviceState deviceState;
 	TransmissionTypes transmissionTypes;
 	QString frontendName;
+
+	int frontendFd;
+	QSocketNotifier *frontendNotifier;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)

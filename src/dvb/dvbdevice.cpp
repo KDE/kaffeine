@@ -23,13 +23,21 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <QFile>
+#include <QSocketNotifier>
 #include <Solid/DvbInterface>
 #include <KDebug>
 
+#include "dvbchannel.h"
 #include "dvbdevice.h"
 
-DvbDevice::DvbDevice(int adapter_, int index_) : adapter(adapter_), index(index_), currentState(0)
+DvbDevice::DvbDevice(int adapter_, int index_) : adapter(adapter_), index(index_), internalState(0),
+	deviceState(DeviceNotReady), frontendFd(-1), frontendNotifier(NULL)
 {
+}
+
+DvbDevice::~DvbDevice()
+{
+	stopDevice();
 }
 
 void DvbDevice::componentAdded(const Solid::Device &component)
@@ -44,22 +52,22 @@ void DvbDevice::componentAdded(const Solid::Device &component)
 	case Solid::DvbInterface::DvbCa:
 		caComponent = component;
 		caPath = dvbInterface->device();
-		setState(currentState | CaPresent);
+		setState(internalState | CaPresent);
 		break;
 	case Solid::DvbInterface::DvbDemux:
 		demuxComponent = component;
 		demuxPath = dvbInterface->device();
-		setState(currentState | DemuxPresent);
+		setState(internalState | DemuxPresent);
 		break;
 	case Solid::DvbInterface::DvbDvr:
 		dvrComponent = component;
 		dvrPath = dvbInterface->device();
-		setState(currentState | DvrPresent);
+		setState(internalState | DvrPresent);
 		break;
 	case Solid::DvbInterface::DvbFrontend:
 		frontendComponent = component;
 		frontendPath = dvbInterface->device();
-		setState(currentState | FrontendPresent);
+		setState(internalState | FrontendPresent);
 		break;
 	default:
 		break;
@@ -69,42 +77,152 @@ void DvbDevice::componentAdded(const Solid::Device &component)
 bool DvbDevice::componentRemoved(const QString &udi)
 {
 	if (caComponent.udi() == udi) {
-		setState(currentState & (~CaPresent));
+		setState(internalState & (~CaPresent));
 		return true;
 	} else if (demuxComponent.udi() == udi) {
-		setState(currentState & (~DemuxPresent));
+		setState(internalState & (~DemuxPresent));
 		return true;
 	} else if (dvrComponent.udi() == udi) {
-		setState(currentState & (~DvrPresent));
+		setState(internalState & (~DvrPresent));
 		return true;
 	} else if (frontendComponent.udi() == udi) {
-		setState(currentState & (~FrontendPresent));
+		setState(internalState & (~FrontendPresent));
 		return true;
 	}
 
 	return false;
 }
 
-void DvbDevice::setState(stateFlags newState)
+void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 {
-	if (currentState == newState) {
+	if (deviceState == DeviceNotReady) {
 		return;
 	}
 
-	bool oldPresent = ((currentState & DevicePresent) == DevicePresent);
+	if (deviceState != DeviceIdle) {
+		// retuning
+		stopDevice();
+	}
+
+	frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
+
+	if (frontendFd < 0) {
+		kWarning() << k_funcinfo << "couldn't open" << frontendPath;
+		return;
+	}
+
+	switch (transponder.transmissionType) {
+	case DvbC:
+		return;
+
+	case DvbS: {
+		const DvbSTransponder *dvbSTransponder =
+			dynamic_cast<const DvbSTransponder *> (&transponder);
+
+		if (dvbSTransponder == NULL) {
+			return;
+		}
+
+		// FIXME - everything just a hack
+
+		// diseqc
+		ioctl(frontendFd, FE_SET_TONE, SEC_TONE_OFF);
+		ioctl(frontendFd, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
+		usleep(15000);
+		struct dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0xf3, 0x00, 0x00 }, 4 };
+		ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd);
+		usleep(15000);
+		ioctl(frontendFd, FE_DISEQC_SEND_BURST, SEC_MINI_A);
+		usleep(15000);
+		ioctl(frontendFd, FE_SET_TONE, SEC_TONE_ON);
+
+		// tune
+		struct dvb_frontend_parameters params;
+		params.frequency = dvbSTransponder->frequency - 10600000;
+		params.inversion = INVERSION_AUTO;
+		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
+		params.u.qpsk.fec_inner = FEC_AUTO;
+		ioctl(frontendFd, FE_SET_FRONTEND, &params);
+
+		setDeviceState(DeviceTuning);
+
+		// clear event queue
+		dvb_frontend_event event;
+		while (ioctl(frontendFd, FE_GET_EVENT, &event) == 0) {
+		}
+
+		// wait for tuning
+		fe_status_t status;
+		ioctl(frontendFd, FE_READ_STATUS, &status);
+		if ((status & FE_HAS_LOCK) != 0) {
+			setDeviceState(DeviceTuned);
+		} else {
+			frontendNotifier = new QSocketNotifier(frontendFd, QSocketNotifier::Read);
+			connect(frontendNotifier, SIGNAL(activated(int)), this, SLOT(frontendEvent()));
+		}
+	    }
+	case DvbT:
+	case Atsc:
+		return;
+	}
+}
+
+void DvbDevice::stopDevice()
+{
+	if ((deviceState == DeviceNotReady) || (deviceState == DeviceIdle)) {
+		return;
+	}
+
+	// remove notifier
+	if (frontendNotifier != NULL) {
+		delete frontendNotifier;
+		frontendNotifier = NULL;
+	}
+
+	// close frontend
+	if (frontendFd >= 0) {
+		close(frontendFd);
+		frontendFd = -1;
+	}
+
+	setDeviceState(DeviceIdle);
+}
+
+void DvbDevice::frontendEvent()
+{
+	dvb_frontend_event event;
+	if (ioctl(frontendFd, FE_GET_EVENT, &event) == 0) {
+		if ((event.status & FE_HAS_LOCK) != 0) {
+			setDeviceState(DeviceTuned);
+			delete frontendNotifier;
+			frontendNotifier = NULL;
+		}
+	}
+}
+
+void DvbDevice::setState(stateFlags newState)
+{
+	if (internalState == newState) {
+		return;
+	}
+
+	bool oldPresent = ((internalState & DevicePresent) == DevicePresent);
 	bool newPresent = ((newState & DevicePresent) == DevicePresent);
+
+	internalState = newState;
+
+	// have this block after the statement above so that setState could be called recursively
 
 	if (oldPresent != newPresent) {
 		if (newPresent) {
 			if (identifyDevice()) {
-				newState |= DeviceReady;
+				setDeviceState(DeviceIdle);
 			}
 		} else {
-			newState &= ~DeviceReady;
+			stopDevice();
+			setDeviceState(DeviceNotReady);
 		}
 	}
-
-	currentState = newState;
 }
 
 bool DvbDevice::identifyDevice()

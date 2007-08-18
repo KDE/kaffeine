@@ -75,7 +75,7 @@ void DvbTab::configureDvb()
 	int deviceNumber = 1;
 
 	foreach (DvbDevice *device, devices) {
-		if (!device->isReady()) {
+		if (device->getDeviceState() == DvbDevice::DeviceNotReady) {
 			continue;
 		}
 

@@ -43,26 +43,11 @@ public:
 
 	virtual ~DvbTransponder() { }
 
-	DvbDevice::TransmissionType getTransmissionType() const
-	{
-		return transmissionType;
-	}
-
-	QString getSource() const
-	{
-		return source;
-	}
+	const DvbDevice::TransmissionType transmissionType;
 
 protected:
-	DvbTransponder(DvbDevice::TransmissionType transmissionType_,
-		const QString &source_) : transmissionType(transmissionType_),
-		source(source_) { }
-
-private:
-	Q_DISABLE_COPY(DvbTransponder)
-
-	DvbDevice::TransmissionType transmissionType;
-	QString source;
+	DvbTransponder(DvbDevice::TransmissionType transmissionType_) :
+		transmissionType(transmissionType_) { }
 };
 
 class DvbCTransponder : public DvbTransponder
@@ -74,73 +59,33 @@ public:
 		Qam256
 	};
 
-	DvbCTransponder(const QString &source_, int frequency_,
-		ModulationType modulationType_, int symbolRate_,
-		FecRate fecRate_) : DvbTransponder(DvbDevice::DvbC, source_),
-		frequency(frequency_), modulationType(modulationType_),
-		symbolRate(symbolRate_), fecRate(fecRate_) { }
+	DvbCTransponder(int frequency_, ModulationType modulationType_, int symbolRate_,
+		FecRate fecRate_) : DvbTransponder(DvbDevice::DvbC), frequency(frequency_),
+		modulationType(modulationType_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbCTransponder() { }
 
 	/*
 	 * frequency (Hz)
 	 */
 
-	int getFrequency() const
-	{
-		return frequency;
-	}
-
-	void setFrequency(int value)
-	{
-		frequency = value;
-	}
+	int frequency;
 
 	/*
 	 * modulation type
 	 */
 
-	ModulationType getModulationType() const
-	{
-		return modulationType;
-	}
-
-	void setModulationType(ModulationType value)
-	{
-		modulationType = value;
-	}
+	ModulationType modulationType;
 
 	/*
 	 * symbol rate (symbols per second)
 	 */
 
-	int getSymbolRate() const
-	{
-		return symbolRate;
-	}
-
-	void setSymbolRate(int value)
-	{
-		symbolRate = value;
-	}
+	int symbolRate;
 
 	/*
 	 * FEC rate
 	 */
 
-	FecRate getFecRate() const
-	{
-		return fecRate;
-	}
-
-	void setFecRate(FecRate value)
-	{
-		fecRate = value;
-	}
-
-private:
-	int frequency;
-	ModulationType modulationType;
-	int symbolRate;
 	FecRate fecRate;
 };
 
@@ -153,82 +98,42 @@ public:
 		Vertical
 	};
 
-	DvbSTransponder(const QString &source_, Polarization polarization_,
-		int frequency_, int symbolRate_, FecRate fecRate_) :
-		DvbTransponder(DvbDevice::DvbS, source_),  polarization(polarization_),
-		frequency(frequency_), symbolRate(symbolRate_),
-		fecRate(fecRate_) { }
+	DvbSTransponder(Polarization polarization_, int frequency_, int symbolRate_,
+		FecRate fecRate_) : DvbTransponder(DvbDevice::DvbS),  polarization(polarization_),
+		frequency(frequency_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbSTransponder() { }
 
 	/*
 	 * polarization
 	 */
 
-	Polarization getPolarization() const
-	{
-		return polarization;
-	}
-
-	void setPolarization(Polarization value)
-	{
-		polarization = value;
-	}
+	Polarization polarization;
 
 	/*
 	 * frequency (kHz)
 	 */
 
-	int getFrequency() const
-	{
-		return frequency;
-	}
-
-	void setFrequency(int value)
-	{
-		frequency = value;
-	}
+	int frequency;
 
 	/*
 	 * symbol rate (symbols per second)
 	 */
 
-	int getSymbolRate() const
-	{
-		return symbolRate;
-	}
-
-	void setSymbolRate(int value)
-	{
-		symbolRate = value;
-	}
+	int symbolRate;
 
 	/*
 	 * FEC rate
 	 */
 
-	FecRate getFecRate() const
-	{
-		return fecRate;
-	}
-
-	void setFecRate(FecRate value)
-	{
-		fecRate = value;
-	}
-
-private:
-	Polarization polarization;
-	int frequency;
-	int symbolRate;
 	FecRate fecRate;
 };
 
 class DvbChannel
 {
 public:
-	DvbChannel(DvbTransponder *transponder_, int serviceId_, int videoPid_)
-		: transponder(transponder_), serviceId(serviceId_),
-		videoPid(videoPid_) { }
+	DvbChannel(QString source_, DvbTransponder *transponder_, int serviceId_, int videoPid_) :
+		source(source_), serviceId(serviceId_), videoPid(videoPid_),
+		transponder(transponder_) { }
 
 	~DvbChannel()
 	{
@@ -236,10 +141,16 @@ public:
 	}
 
 	/*
+	 * source
+	 */
+
+	QString source;
+
+	/*
 	 * transponder (owned by DvbChannel)
 	 */
 
-	DvbTransponder *getTransponder() const
+	const DvbTransponder *getTransponder() const
 	{
 		return transponder;
 	}
@@ -254,36 +165,18 @@ public:
 	 * service id
 	 */
 
-	int getServiceId() const
-	{
-		return serviceId;
-	}
-
-	void setServiceId(int value)
-	{
-		serviceId = value;
-	}
+	int serviceId;
 
 	/*
 	 * video pid
 	 */
 
-	int getVideoPid() const
-	{
-		return videoPid;
-	}
-
-	void setVideoPid(int value)
-	{
-		videoPid = value;
-	}
+	int videoPid;
 
 private:
 	Q_DISABLE_COPY(DvbChannel)
 
 	DvbTransponder *transponder;
-	int serviceId;
-	int videoPid;
 };
 
 #endif /* DVBCHANNEL_H */
