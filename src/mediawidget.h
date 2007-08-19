@@ -22,10 +22,8 @@
 #define MEDIAWIDGET_H
 
 #include <QWidget>
-
-#include <KUrl>
-
 #include <Phonon/Global>
+#include <KUrl>
 
 #include "manager.h"
 

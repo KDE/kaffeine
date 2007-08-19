@@ -21,7 +21,7 @@
 #ifndef DVBDEVICE_H
 #define DVBDEVICE_H
 
-#include <QString>
+#include <QTimer>
 #include <Solid/Device>
 
 class QSocketNotifier;
@@ -134,7 +134,7 @@ private:
 	QString frontendName;
 
 	int frontendFd;
-	QSocketNotifier *frontendNotifier;
+	QTimer frontendTimer;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)

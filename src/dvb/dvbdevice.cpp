@@ -23,7 +23,6 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <QFile>
-#include <QSocketNotifier>
 #include <Solid/DvbInterface>
 #include <KDebug>
 
@@ -31,8 +30,9 @@
 #include "dvbdevice.h"
 
 DvbDevice::DvbDevice(int adapter_, int index_) : adapter(adapter_), index(index_), internalState(0),
-	deviceState(DeviceNotReady), frontendFd(-1), frontendNotifier(NULL)
+	deviceState(DeviceNotReady), frontendFd(-1)
 {
+	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 }
 
 DvbDevice::~DvbDevice()
@@ -146,20 +146,8 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		setDeviceState(DeviceTuning);
 
-		// clear event queue
-		dvb_frontend_event event;
-		while (ioctl(frontendFd, FE_GET_EVENT, &event) == 0) {
-		}
-
 		// wait for tuning
-		fe_status_t status;
-		ioctl(frontendFd, FE_READ_STATUS, &status);
-		if ((status & FE_HAS_LOCK) != 0) {
-			setDeviceState(DeviceTuned);
-		} else {
-			frontendNotifier = new QSocketNotifier(frontendFd, QSocketNotifier::Read);
-			connect(frontendNotifier, SIGNAL(activated(int)), this, SLOT(frontendEvent()));
-		}
+		frontendTimer.start(100);
 	    }
 	case DvbT:
 	case Atsc:
@@ -173,11 +161,8 @@ void DvbDevice::stopDevice()
 		return;
 	}
 
-	// remove notifier
-	if (frontendNotifier != NULL) {
-		delete frontendNotifier;
-		frontendNotifier = NULL;
-	}
+	// stop waiting for tuning
+	frontendTimer.stop();
 
 	// close frontend
 	if (frontendFd >= 0) {
@@ -190,13 +175,11 @@ void DvbDevice::stopDevice()
 
 void DvbDevice::frontendEvent()
 {
-	dvb_frontend_event event;
-	if (ioctl(frontendFd, FE_GET_EVENT, &event) == 0) {
-		if ((event.status & FE_HAS_LOCK) != 0) {
-			setDeviceState(DeviceTuned);
-			delete frontendNotifier;
-			frontendNotifier = NULL;
-		}
+	fe_status_t status;
+	ioctl(frontendFd, FE_READ_STATUS, &status);
+	if ((status & FE_HAS_LOCK) != 0) {
+		setDeviceState(DeviceTuned);
+		frontendTimer.stop();
 	}
 }
 
