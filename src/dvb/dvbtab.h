@@ -21,13 +21,35 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include <Phonon/AbstractMediaStream>
+
 #include "../manager.h"
 
+class QFile;
 namespace Solid
 {
 class Device;
 };
 class DvbDevice;
+
+// FIXME - just a demo hack
+class DvbStream : public Phonon::AbstractMediaStream
+{
+	Q_OBJECT
+public:
+	DvbStream(DvbDevice *device_);
+	~DvbStream();
+
+private slots:
+	void stateChanged();
+
+private:
+	void reset();
+	void needData();
+
+	DvbDevice *device;
+	QFile *file;
+};
 
 class DvbTab : public TabBase
 {
@@ -42,6 +64,8 @@ public slots:
 private slots:
 	void componentAdded(const QString &udi);
 	void componentRemoved(const QString &udi);
+	// FIXME - just a demo hack
+	void channelActivated();
 
 private:
 	void activate();
@@ -51,6 +75,9 @@ private:
 
 	QHBoxLayout *mediaLayout;
 	QList<DvbDevice *> devices;
+
+	// FIXME - just a demo hack
+	DvbStream *dvbStream;
 };
 
 #endif /* DVBTAB_H */

@@ -20,6 +20,7 @@
 
 #include <QCoreApplication>
 #include <QEvent>
+#include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
@@ -35,11 +36,61 @@
 #include "../kaffeine.h"
 #include "../manager.h"
 #include "../mediawidget.h"
+#include "dvbchannel.h"
 #include "dvbdevice.h"
 #include "dvbtab.h"
 #include "dvbtab.moc"
 
-DvbTab::DvbTab(Manager *manager_) : TabBase(manager_)
+// FIXME - DvbStream is just a demo hack
+
+DvbStream::DvbStream(DvbDevice *device_) : device(device_), file(NULL)
+{
+	setStreamSize(-1);
+}
+
+DvbStream::~DvbStream()
+{
+	delete file;
+}
+
+void DvbStream::stateChanged()
+{
+	switch (device->getDeviceState()) {
+	case DvbDevice::DeviceTuning:
+	case DvbDevice::DeviceTuned:
+		if (file != NULL) {
+			break;
+		}
+		file = new QFile("/dev/dvb/adapter0/dvr0");
+		file->open(QIODevice::ReadOnly);
+		device->setupFilter();
+		break;
+	default:
+		delete file;
+		file = NULL;
+	}
+}
+
+void DvbStream::reset()
+{
+}
+
+void DvbStream::needData()
+{
+	if (file == NULL) {
+		endOfData();
+		return;
+	}
+
+	QByteArray data = file->read(188 * 64);
+	if (data.isEmpty()) {
+		endOfData();
+	} else {
+		writeData(data);
+	}
+}
+
+DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
 	layout->setMargin(0);
@@ -50,6 +101,14 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_)
 	QTreeWidget *channels = new QTreeWidget(splitter);
 	channels->setColumnCount(2);
 	channels->setHeaderLabels(QStringList("Name") << "Number");
+
+	// FIXME - just a demo hack
+	channels->setIndentation(0);
+	channels->setSortingEnabled(true);
+	channels->sortByColumn(0, Qt::AscendingOrder);
+	channels->addTopLevelItem(new QTreeWidgetItem(QStringList("SampleTV") << "1"));
+	channels->addTopLevelItem(new QTreeWidgetItem(QStringList("SampleTVx") << "2"));
+	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(channelActivated()));
 
 	QWidget *mediaContainer = new QWidget(splitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
@@ -63,6 +122,7 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_)
 
 DvbTab::~DvbTab()
 {
+	delete dvbStream;
 	qDeleteAll(devices);
 }
 
@@ -160,6 +220,26 @@ void DvbTab::componentRemoved(const QString &udi)
 			break;
 		}
 	}
+}
+
+// FIXME - just a demo hack
+void DvbTab::channelActivated()
+{
+	if (devices.isEmpty()) {
+		return;
+	}
+
+	DvbDevice *device = devices.at(0);
+
+	delete dvbStream;
+	dvbStream = new DvbStream(device);
+
+	connect(device, SIGNAL(stateChanged()), dvbStream, SLOT(stateChanged()));
+
+	DvbSTransponder transponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto);
+	device->tuneDevice(transponder);
+
+	manager->getMediaWidget()->playDvb(dvbStream);
 }
 
 void DvbTab::componentAdded(const Solid::Device &component)

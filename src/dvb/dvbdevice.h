@@ -84,8 +84,11 @@ public:
 	void tuneDevice(const DvbTransponder &transponder);
 	void stopDevice();
 
+	// FIXME demo hack
+	void setupFilter();
+
 signals:
-	void stateChanged(DeviceState oldState, DeviceState newState);
+	void stateChanged();
 
 private slots:
 	void frontendEvent();
@@ -108,8 +111,8 @@ private:
 
 	void setDeviceState(DeviceState newState)
 	{
-		emit stateChanged(deviceState, newState);
 		deviceState = newState;
+		emit stateChanged();
 	}
 
 	bool identifyDevice();

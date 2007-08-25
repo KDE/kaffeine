@@ -19,6 +19,7 @@
  */
 
 #include <fcntl.h>
+#include <linux/dvb/dmx.h>
 #include <linux/dvb/frontend.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -171,6 +172,28 @@ void DvbDevice::stopDevice()
 	}
 
 	setDeviceState(DeviceIdle);
+}
+
+// FIXME demo hack
+void DvbDevice::setupFilter()
+{
+	int admx_fd = open("/dev/dvb/adapter0/demux0", O_RDWR | O_NONBLOCK);
+	int vdmx_fd = open("/dev/dvb/adapter0/demux0", O_RDWR | O_NONBLOCK);
+
+	struct dmx_pes_filter_params filter;
+	filter.pid = 110;
+	filter.input = DMX_IN_FRONTEND;
+	filter.output = DMX_OUT_TS_TAP;
+	filter.pes_type = DMX_PES_OTHER;
+	filter.flags = DMX_IMMEDIATE_START;
+	ioctl(vdmx_fd, DMX_SET_PES_FILTER, &filter);
+
+	filter.pid = 120;
+	filter.input = DMX_IN_FRONTEND;
+	filter.output = DMX_OUT_TS_TAP;
+	filter.pes_type = DMX_PES_OTHER;
+	filter.flags = DMX_IMMEDIATE_START;
+	ioctl(admx_fd, DMX_SET_PES_FILTER, &filter);
 }
 
 void DvbDevice::frontendEvent()

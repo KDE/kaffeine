@@ -19,7 +19,7 @@
  */
 
 #include <QVBoxLayout>
-
+#include <Phonon/AbstractMediaStream>
 #include <Phonon/AudioOutput>
 #include <Phonon/MediaObject>
 #include <Phonon/Path>
@@ -103,6 +103,12 @@ void MediaWidget::playAudioCd()
 void MediaWidget::playVideoCd()
 {
 	media->setCurrentSource(Phonon::MediaSource(Phonon::Vcd));
+	media->play();
+}
+
+void MediaWidget::playDvb(Phonon::AbstractMediaStream *stream)
+{
+	media->setCurrentSource(Phonon::MediaSource(stream));
 	media->play();
 }
 

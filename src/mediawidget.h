@@ -29,6 +29,7 @@
 
 namespace Phonon
 {
+class AbstractMediaStream;
 class AudioOutput;
 class MediaObject;
 class VideoWidget;
@@ -52,6 +53,7 @@ public slots:
 	void play();
 	void playAudioCd();
 	void playVideoCd();
+	void playDvb(Phonon::AbstractMediaStream *stream);
 	void playDvd();
 	void togglePause( bool b );
 	void stop();
