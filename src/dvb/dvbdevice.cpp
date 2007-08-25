@@ -18,6 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+/*
+ * workaround buggy kernel includes
+ * asm/types.h doesn't define __u64 in ansi mode, but linux/dvb/dmx.h needs it
+ */
+#include <QtGlobal>
+typedef quint64 __u64;
+
 #include <fcntl.h>
 #include <linux/dvb/dmx.h>
 #include <linux/dvb/frontend.h>
