@@ -21,35 +21,15 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
-#include <Phonon/AbstractMediaStream>
-
 #include "../manager.h"
 
-class QFile;
+class QHBoxLayout;
 namespace Solid
 {
 class Device;
 };
 class DvbDevice;
-
-// FIXME - just a demo hack
-class DvbStream : public Phonon::AbstractMediaStream
-{
-	Q_OBJECT
-public:
-	DvbStream(DvbDevice *device_);
-	~DvbStream();
-
-private slots:
-	void stateChanged();
-
-private:
-	void reset();
-	void needData();
-
-	DvbDevice *device;
-	QFile *file;
-};
+class DvbStream;
 
 class DvbTab : public TabBase
 {

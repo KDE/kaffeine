@@ -25,7 +25,17 @@
 #include <Solid/Device>
 
 class QSocketNotifier;
+class DvbFilterInternal;
 class DvbTransponder;
+
+class DvbFilter
+{
+public:
+	DvbFilter() { }
+	virtual ~DvbFilter() { }
+
+	virtual void processData(const QByteArray &data) = 0;
+};
 
 class DvbDevice : public QObject
 {
@@ -84,14 +94,19 @@ public:
 	void tuneDevice(const DvbTransponder &transponder);
 	void stopDevice();
 
-	// FIXME demo hack
-	void setupFilter();
+	/*
+	 * you can use the same filter object for different pids
+	 * filtering will be stopped when the device becomes idle
+	 */
+
+	void addPidFilter(int pid, DvbFilter *filter);
 
 signals:
 	void stateChanged();
 
 private slots:
 	void frontendEvent();
+	void dvrEvent();
 
 private:
 	Q_DISABLE_COPY(DvbDevice)
@@ -138,6 +153,11 @@ private:
 
 	int frontendFd;
 	QTimer frontendTimer;
+
+	QList<DvbFilterInternal *> internalFilters;
+
+	int dvrFd;
+	QSocketNotifier *dvrNotifier;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)

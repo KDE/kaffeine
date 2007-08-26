@@ -31,14 +31,48 @@ typedef quint64 __u64;
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <QFile>
+#include <QSocketNotifier>
 #include <Solid/DvbInterface>
 #include <KDebug>
 
 #include "dvbchannel.h"
 #include "dvbdevice.h"
 
+class DvbFilterInternal
+{
+public:
+	DvbFilterInternal(int dmxFd_, int pid_) : dmxFd(dmxFd_), pid(pid_) { }
+
+	~DvbFilterInternal()
+	{
+		close(dmxFd);
+	}
+
+	int getPid() const
+	{
+		return pid;
+	}
+
+	void addFilter(DvbFilter *filter)
+	{
+		filters.append(filter);
+	}
+
+	void processData(const QByteArray &data)
+	{
+		foreach (DvbFilter *filter, filters) {
+			filter->processData(data);
+		}
+	}
+
+private:
+	int dmxFd;
+	int pid;
+	QList<DvbFilter *> filters;
+};
+
 DvbDevice::DvbDevice(int adapter_, int index_) : adapter(adapter_), index(index_), internalState(0),
-	deviceState(DeviceNotReady), frontendFd(-1)
+	deviceState(DeviceNotReady), frontendFd(-1), dvrFd(-1), dvrNotifier(NULL)
 {
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 }
@@ -172,6 +206,22 @@ void DvbDevice::stopDevice()
 	// stop waiting for tuning
 	frontendTimer.stop();
 
+	// stop all filters
+	qDeleteAll(internalFilters);
+	internalFilters.clear();
+
+	// remove socket notifier
+	if (dvrNotifier != NULL) {
+		delete dvrNotifier;
+		dvrNotifier = NULL;
+	}
+
+	// close dvr
+	if (dvrFd >= 0) {
+		close(dvrFd);
+		dvrFd = -1;
+	}
+
 	// close frontend
 	if (frontendFd >= 0) {
 		close(frontendFd);
@@ -181,26 +231,52 @@ void DvbDevice::stopDevice()
 	setDeviceState(DeviceIdle);
 }
 
-// FIXME demo hack
-void DvbDevice::setupFilter()
+void DvbDevice::addPidFilter(int pid, DvbFilter *filter)
 {
-	int admx_fd = open("/dev/dvb/adapter0/demux0", O_RDWR | O_NONBLOCK);
-	int vdmx_fd = open("/dev/dvb/adapter0/demux0", O_RDWR | O_NONBLOCK);
+	foreach (DvbFilterInternal *internalFilter, internalFilters) {
+		if (internalFilter->getPid() == pid) {
+			internalFilter->addFilter(filter);
+			return;
+		}
+	}
 
-	struct dmx_pes_filter_params filter;
-	filter.pid = 110;
-	filter.input = DMX_IN_FRONTEND;
-	filter.output = DMX_OUT_TS_TAP;
-	filter.pes_type = DMX_PES_OTHER;
-	filter.flags = DMX_IMMEDIATE_START;
-	ioctl(vdmx_fd, DMX_SET_PES_FILTER, &filter);
+	if (dvrFd < 0) {
+		dvrFd = open(QFile::encodeName(dvrPath), O_RDONLY | O_NONBLOCK);
+		if (dvrFd < 0) {
+			kWarning() << k_funcinfo << "couldn't open" << dvrPath;
+			return;
+		}
+	}
 
-	filter.pid = 120;
-	filter.input = DMX_IN_FRONTEND;
-	filter.output = DMX_OUT_TS_TAP;
-	filter.pes_type = DMX_PES_OTHER;
-	filter.flags = DMX_IMMEDIATE_START;
-	ioctl(admx_fd, DMX_SET_PES_FILTER, &filter);
+	if (dvrNotifier == NULL) {
+		dvrNotifier = new QSocketNotifier(dvrFd, QSocketNotifier::Read);
+		connect(dvrNotifier, SIGNAL(activated(int)), this, SLOT(dvrEvent()));
+	}
+
+	int dmxFd = open(QFile::encodeName(demuxPath), O_RDONLY | O_NONBLOCK);
+
+	if (dmxFd < 0) {
+		kWarning() << k_funcinfo << "couldn't open" << demuxPath;
+		return;
+	}
+
+	struct dmx_pes_filter_params pes_filter;
+	memset(&pes_filter, 0, sizeof(pes_filter));
+	pes_filter.pid = pid;
+	pes_filter.input = DMX_IN_FRONTEND;
+	pes_filter.output = DMX_OUT_TS_TAP;
+	pes_filter.pes_type = DMX_PES_OTHER;
+	pes_filter.flags = DMX_IMMEDIATE_START;
+
+	if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
+		close(dmxFd);
+		kWarning() << k_funcinfo << "couldn't set up filter for" << demuxPath;
+		return;
+	}
+
+	DvbFilterInternal *internalFilter = new DvbFilterInternal(dmxFd, pid);
+	internalFilter->addFilter(filter);
+	internalFilters.append(internalFilter);
 }
 
 void DvbDevice::frontendEvent()
@@ -210,6 +286,27 @@ void DvbDevice::frontendEvent()
 	if ((status & FE_HAS_LOCK) != 0) {
 		setDeviceState(DeviceTuned);
 		frontendTimer.stop();
+	}
+}
+
+void DvbDevice::dvrEvent()
+{
+	while(1) {
+		QByteArray data;
+		data.resize(188);
+
+		if (read(dvrFd, data.data(), 188) != 188) {
+			break;
+		}
+
+		int pid = ((data[1] << 8) + data[2]) & 0x1fff;
+
+		foreach (DvbFilterInternal *internalFilter, internalFilters) {
+			if (internalFilter->getPid() == pid) {
+				internalFilter->processData(data);
+				break;
+			}
+		}
 	}
 }
 

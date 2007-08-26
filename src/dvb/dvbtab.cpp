@@ -30,6 +30,7 @@
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
+#include <Phonon/AbstractMediaStream>
 #include <KLocalizedString>
 #include <KPageDialog>
 
@@ -43,52 +44,30 @@
 
 // FIXME - DvbStream is just a demo hack
 
-DvbStream::DvbStream(DvbDevice *device_) : device(device_), file(NULL)
+class DvbStream : public Phonon::AbstractMediaStream, public DvbFilter
 {
-	setStreamSize(-1);
-}
-
-DvbStream::~DvbStream()
-{
-	delete file;
-}
-
-void DvbStream::stateChanged()
-{
-	switch (device->getDeviceState()) {
-	case DvbDevice::DeviceTuning:
-	case DvbDevice::DeviceTuned:
-		if (file != NULL) {
-			break;
-		}
-		file = new QFile("/dev/dvb/adapter0/dvr0");
-		file->open(QIODevice::ReadOnly);
-		device->setupFilter();
-		break;
-	default:
-		delete file;
-		file = NULL;
-	}
-}
-
-void DvbStream::reset()
-{
-}
-
-void DvbStream::needData()
-{
-	if (file == NULL) {
-		endOfData();
-		return;
+public:
+	DvbStream()
+	{
+		setStreamSize(-1);
 	}
 
-	QByteArray data = file->read(188 * 64);
-	if (data.isEmpty()) {
-		endOfData();
-	} else {
+	~DvbStream() { }
+
+private:
+	void reset()
+	{
+	}
+
+	void needData()
+	{
+	}
+
+	void processData(const QByteArray &data)
+	{
 		writeData(data);
 	}
-}
+};
 
 DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 {
@@ -232,12 +211,13 @@ void DvbTab::channelActivated()
 	DvbDevice *device = devices.at(0);
 
 	delete dvbStream;
-	dvbStream = new DvbStream(device);
-
-	connect(device, SIGNAL(stateChanged()), dvbStream, SLOT(stateChanged()));
+	dvbStream = new DvbStream();
 
 	DvbSTransponder transponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto);
 	device->tuneDevice(transponder);
+
+	device->addPidFilter(110, dvbStream);
+	device->addPidFilter(120, dvbStream);
 
 	manager->getMediaWidget()->playDvb(dvbStream);
 }
