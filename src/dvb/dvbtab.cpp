@@ -47,8 +47,9 @@
 class DvbStream : public Phonon::AbstractMediaStream, public DvbFilter
 {
 public:
-	DvbStream()
+	DvbStream() : bufferPos(0)
 	{
+		buffer.resize(188 * 64);
 		setStreamSize(-1);
 	}
 
@@ -65,8 +66,19 @@ private:
 
 	void processData(const QByteArray &data)
 	{
-		writeData(data);
+		// FIXME too hacky
+		memcpy(buffer.data() + bufferPos, data.constData(), 188);
+		bufferPos += 188;
+		if (bufferPos == (188 * 64)) {
+			writeData(buffer);
+			buffer.clear();
+			buffer.resize(188 * 64);
+			bufferPos = 0;
+		}
 	}
+
+	QByteArray buffer;
+	int bufferPos;
 };
 
 DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)

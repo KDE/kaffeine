@@ -291,10 +291,10 @@ void DvbDevice::frontendEvent()
 
 void DvbDevice::dvrEvent()
 {
-	while(1) {
-		QByteArray data;
-		data.resize(188);
+	QByteArray data;
+	data.resize(188);
 
+	while(1) {
 		if (read(dvrFd, data.data(), 188) != 188) {
 			break;
 		}
