@@ -36,6 +36,7 @@ typedef quint64 __u64;
 #include <KDebug>
 
 #include "dvbchannel.h"
+#include "dvbconfig.h"
 #include "dvbdevice.h"
 
 class DvbFilterInternal
@@ -135,7 +136,7 @@ bool DvbDevice::componentRemoved(const QString &udi)
 	return false;
 }
 
-void DvbDevice::tuneDevice(const DvbTransponder &transponder)
+void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &config)
 {
 	if (deviceState == DeviceNotReady) {
 		return;
@@ -155,45 +156,91 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 	switch (transponder.transmissionType) {
 	case DvbC:
-		return;
+		// FIXME
+		break;
 
 	case DvbS: {
 		const DvbSTransponder *dvbSTransponder =
-			dynamic_cast<const DvbSTransponder *> (&transponder);
+			dynamic_cast<const DvbSTransponder *>(&transponder);
+		const DvbSConfig *dvbSConfig = dynamic_cast<const DvbSConfig *>(&config);
 
-		if (dvbSTransponder == NULL) {
-			return;
+		Q_ASSERT(dvbSTransponder != NULL);
+		Q_ASSERT(dvbSConfig != NULL);
+
+		// parameters
+
+		QPair<int, bool> lnbParameters = dvbSConfig->getParameters(dvbSTransponder);
+
+		int  switchPos = dvbSConfig->getSwitchPos();
+		bool horPolar  = (dvbSTransponder->polarization == DvbSTransponder::Horizontal);
+		bool highBand  = lnbParameters.second;
+		int  intFreq   = lnbParameters.first;
+
+		// tone off
+
+		if (ioctl(frontendFd, FE_SET_TONE, SEC_TONE_OFF) != 0) {
+			kWarning() << k_funcinfo << "ioctl FE_SET_TONE failed for" << frontendPath;
 		}
 
-		// FIXME - everything just a hack
+		// horizontal --> 18V ; vertical --> 13V
+
+		if (ioctl(frontendFd, FE_SET_VOLTAGE, horPolar ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
+			kWarning() << k_funcinfo << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
+		}
 
 		// diseqc
-		ioctl(frontendFd, FE_SET_TONE, SEC_TONE_OFF);
-		ioctl(frontendFd, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
+
 		usleep(15000);
-		struct dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0xf3, 0x00, 0x00 }, 4 };
-		ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd);
+
+		struct dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0x00, 0x00, 0x00 }, 4 };
+
+		cmd.msg[3] = 0xf0 | (switchPos << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
+
+		if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
+			kWarning() << k_funcinfo << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for" << frontendPath;
+		}
+
 		usleep(15000);
-		ioctl(frontendFd, FE_DISEQC_SEND_BURST, SEC_MINI_A);
+
+		if (ioctl(frontendFd, FE_DISEQC_SEND_BURST, (switchPos % 2) ? SEC_MINI_B : SEC_MINI_A) != 0) {
+			kWarning() << k_funcinfo << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
+		}
+
 		usleep(15000);
-		ioctl(frontendFd, FE_SET_TONE, SEC_TONE_ON);
+
+		// low band --> tone off ; high band --> tone on
+
+		if (ioctl(frontendFd, FE_SET_TONE, highBand ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
+			kWarning() << k_funcinfo << "ioctl FE_SET_TONE failed for" << frontendPath;
+		}
 
 		// tune
+
 		struct dvb_frontend_parameters params;
-		params.frequency = dvbSTransponder->frequency - 10600000;
+		params.frequency = intFreq;
 		params.inversion = INVERSION_AUTO;
 		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
 		params.u.qpsk.fec_inner = FEC_AUTO;
-		ioctl(frontendFd, FE_SET_FRONTEND, &params);
+
+		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
+			kWarning() << k_funcinfo << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
+			stopDevice();
+			break;
+		}
 
 		setDeviceState(DeviceTuning);
 
 		// wait for tuning
 		frontendTimer.start(100);
+
+		break;
 	    }
 	case DvbT:
+		// FIXME
+		break;
 	case Atsc:
-		return;
+		// FIXME
+		break;
 	}
 }
 

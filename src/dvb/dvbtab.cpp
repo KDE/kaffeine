@@ -38,6 +38,7 @@
 #include "../manager.h"
 #include "../mediawidget.h"
 #include "dvbchannel.h"
+#include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbtab.h"
 #include "dvbtab.moc"
@@ -226,7 +227,8 @@ void DvbTab::channelActivated()
 	dvbStream = new DvbStream();
 
 	DvbSTransponder transponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto);
-	device->tuneDevice(transponder);
+	DvbSConfig config("test");
+	device->tuneDevice(transponder, config);
 
 	device->addPidFilter(110, dvbStream);
 	device->addPidFilter(120, dvbStream);

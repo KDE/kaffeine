@@ -25,6 +25,7 @@
 #include <Solid/Device>
 
 class QSocketNotifier;
+class DvbConfig;
 class DvbFilterInternal;
 class DvbTransponder;
 
@@ -91,7 +92,7 @@ public:
 		return frontendName;
 	}
 
-	void tuneDevice(const DvbTransponder &transponder);
+	void tuneDevice(const DvbTransponder &transponder, const DvbConfig &config);
 	void stopDevice();
 
 	/*
