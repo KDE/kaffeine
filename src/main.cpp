@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine Player"), "0.9.0-pre-alpha",
 		ki18n("A media player for KDE with digital tv support"),
 		KAboutData::License_GPL_V2, ki18n("(C) 2007 The Kaffeine Authors"),
-		KLocalizedString(), "http://kaffeine.sourceforge.net");
+		KLocalizedString(), "http://kaffeine.kde.org");
 
 	// FIXME add authors
 
