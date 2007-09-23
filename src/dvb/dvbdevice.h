@@ -153,6 +153,7 @@ private:
 	QString frontendName;
 
 	int frontendFd;
+	int frontendTimeout;
 	QTimer frontendTimer;
 
 	QList<DvbFilterInternal *> internalFilters;

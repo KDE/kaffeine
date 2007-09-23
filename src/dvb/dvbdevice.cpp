@@ -231,6 +231,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		setDeviceState(DeviceTuning);
 
 		// wait for tuning
+		frontendTimeout = dvbSConfig->getTimeout();
 		frontendTimer.start(100);
 
 		break;
@@ -329,10 +330,22 @@ void DvbDevice::addPidFilter(int pid, DvbFilter *filter)
 void DvbDevice::frontendEvent()
 {
 	fe_status_t status;
-	ioctl(frontendFd, FE_READ_STATUS, &status);
-	if ((status & FE_HAS_LOCK) != 0) {
-		setDeviceState(DeviceTuned);
-		frontendTimer.stop();
+
+	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
+		kWarning() << k_funcinfo << "ioctl FE_READ_STATUS failed for" << frontendPath;
+	} else {
+		if ((status & FE_HAS_LOCK) != 0) {
+			kDebug() << k_funcinfo << "tuning succeeded for" << frontendPath;
+			setDeviceState(DeviceTuned);
+			frontendTimer.stop();
+		}
+	}
+
+	frontendTimeout -= 100;
+
+	if (frontendTimeout <= 0) {
+		kDebug() << k_funcinfo << "tuning failed for" << frontendPath;
+		stopDevice();
 	}
 }
 

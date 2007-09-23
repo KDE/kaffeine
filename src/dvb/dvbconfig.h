@@ -33,6 +33,16 @@ public:
 
 	QString source;
 
+	/*
+	 * returns the tuning timeout (in ms)
+	 */
+
+	int getTimeout() const
+	{
+		// FIXME hack
+		return 1500;
+	}
+
 protected:
 	Q_DISABLE_COPY(DvbConfig)
 
