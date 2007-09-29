@@ -26,7 +26,9 @@
 #include <Phonon/VideoWidget>
 #include <Phonon/SeekSlider>
 #include <Phonon/VolumeSlider>
+#include <KMessageBox>
 
+#include "kaffeine.h"
 #include "mediawidget.h"
 #include "mediawidget.moc"
 
@@ -76,19 +78,11 @@ MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), dvbSource(NULL)
 	media = new Phonon::MediaObject( this );
 	Phonon::createPath(media, vw);
 	Phonon::createPath(media, ao);
-	
-	media->setTickInterval( 350 );
-	
-//	connect( media, SIGNAL( length( qint64 ) ),this, SLOT( newLength( qint64 ) ) );
-	connect( media, SIGNAL(finished()), this, SLOT(playbackFinished()) );
-	connect( media, SIGNAL(stateChanged(Phonon::State,Phonon::State)), this, SLOT(stateChanged(Phonon::State,Phonon::State)) );
-}
 
-/*
-void MediaWidget::newLength( qint64 )
-{
+	media->setTickInterval( 350 );
+
+	connect(media, SIGNAL(stateChanged(Phonon::State, Phonon::State)), this, SLOT(stateChanged(Phonon::State)));
 }
-*/
 
 QWidget *MediaWidget::newPositionSlider()
 {
@@ -159,18 +153,24 @@ void MediaWidget::stop()
 	media->stop();
 }
 
-void MediaWidget::playbackFinished()
+void MediaWidget::stateChanged(Phonon::State state)
 {
-}
-
-void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
-{
-	switch (status) {
+	switch (state) {
+		case Phonon::LoadingState:
+		case Phonon::BufferingState:
 		case Phonon::PlayingState:
 			manager->setPlaying();
+			if (dvbSource != NULL) {
+				dvbSource->setPaused(false);
+			}
 			break;
+
 		case Phonon::PausedState:
+			if (dvbSource != NULL) {
+				dvbSource->setPaused(true);
+			}
 			break;
+
 		case Phonon::StoppedState:
 			manager->setStopped();
 			if (dvbSource != NULL) {
@@ -178,11 +178,14 @@ void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
 				dvbSource = NULL;
 			}
 			break;
-		case Phonon::LoadingState:
-			break;
-		case Phonon::BufferingState:
-			break;
+
 		case Phonon::ErrorState:
+			manager->setStopped();
+			if (dvbSource != NULL) {
+				dvbSource->stop();
+				dvbSource = NULL;
+			}
+			KMessageBox::error(manager->getKaffeine(), media->errorString());
 			break;
 	}
 }

@@ -85,23 +85,18 @@ public:
 public slots:
 	void stop();
 
+private slots:
+	void stateChanged(Phonon::State state);
+
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 
-private:
+	Manager *manager;
+	DvbSource *dvbSource;
+
 	Phonon::VideoWidget *vw;
 	Phonon::AudioOutput *ao;
 	Phonon::MediaObject *media;
-
-	Manager *manager;
-
-	DvbSource *dvbSource;
-
-private slots:
-//	void newLength( qint64 );
-	void playbackFinished();
-	void stateChanged( Phonon::State, Phonon::State );
-
 };
 
 #endif /* MEDIAWIDGET_H */
