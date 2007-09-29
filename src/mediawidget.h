@@ -29,10 +29,27 @@
 
 namespace Phonon
 {
-class AbstractMediaStream;
 class AudioOutput;
 class MediaObject;
 class VideoWidget;
+};
+class DvbSourceHelper;
+
+class DvbSource
+{
+	friend class MediaWidget;
+public:
+	DvbSource();
+	virtual ~DvbSource();
+
+	virtual void setPaused(bool paused) = 0;
+	virtual void stop() = 0;
+
+protected:
+	void writeData(const QByteArray &data);
+
+private:
+	DvbSourceHelper *stream;
 };
 
 class MediaWidget : public QWidget
@@ -42,20 +59,30 @@ class MediaWidget : public QWidget
 public:
 	MediaWidget(Manager *manager_);
 	~MediaWidget() { }
-	void play( const KUrl &url );
 
 	QWidget *newPositionSlider();
 	QWidget *newVolumeSlider();
 
 	void setFullscreen(bool fullscreen);
+	void setPaused(bool paused);
 
-public slots:
-	void play();
+	/*
+	 * loads the media and starts playback
+	 */
+
+	void play(const KUrl &url);
 	void playAudioCd();
 	void playVideoCd();
-	void playDvb(Phonon::AbstractMediaStream *stream);
 	void playDvd();
-	void togglePause( bool b );
+
+	/*
+	 * ownership isn't taken; you have to delete it
+	 * manually after DvbStream::stop() has been called
+	 */
+
+	void playDvb(DvbSource *stream);
+
+public slots:
 	void stop();
 
 private:
@@ -66,9 +93,9 @@ private:
 	Phonon::AudioOutput *ao;
 	Phonon::MediaObject *media;
 
-	KUrl currentUrl;
-
 	Manager *manager;
+
+	DvbSource *dvbSource;
 
 private slots:
 //	void newLength( qint64 );

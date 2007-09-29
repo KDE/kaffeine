@@ -30,7 +30,6 @@
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
-#include <Phonon/AbstractMediaStream>
 #include <KLocalizedString>
 #include <KPageDialog>
 
@@ -45,24 +44,25 @@
 
 // FIXME - DvbStream is just a demo hack
 
-class DvbStream : public Phonon::AbstractMediaStream, public DvbFilter
+class DvbStream : public DvbSource, public DvbFilter
 {
 public:
-	DvbStream() : bufferPos(0)
+	DvbStream(DvbDevice *device_) : device(device_), bufferPos(0)
 	{
 		buffer.resize(188 * 64);
-		setStreamSize(-1);
 	}
 
 	~DvbStream() { }
 
 private:
-	void reset()
+	void setPaused(bool /*paused*/)
 	{
+		// timeshift etc
 	}
 
-	void needData()
+	void stop()
 	{
+		device->stopDevice();
 	}
 
 	void processData(const QByteArray &data)
@@ -78,6 +78,7 @@ private:
 		}
 	}
 
+	DvbDevice *device;
 	QByteArray buffer;
 	int bufferPos;
 };
@@ -224,7 +225,7 @@ void DvbTab::channelActivated()
 	DvbDevice *device = devices.at(0);
 
 	delete dvbStream;
-	dvbStream = new DvbStream();
+	dvbStream = new DvbStream(device);
 
 	DvbSTransponder transponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto);
 	DvbSConfig config("test");

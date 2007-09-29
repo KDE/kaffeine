@@ -107,9 +107,9 @@ void Kaffeine::actionOpenDvd()
 
 void Kaffeine::actionPlayPause(bool paused)
 {
-	if (manager->isPlaying())
-		mediaWidget->togglePause(paused);
-	else
+	if (manager->isPlaying()) {
+		mediaWidget->setPaused(paused);
+	} else {
 		// FIXME do some special actions - play playlist, ask for input ...
-		mediaWidget->play();
+	}
 }

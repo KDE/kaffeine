@@ -217,6 +217,8 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		// tune
 
 		struct dvb_frontend_parameters params;
+		memset(&params, 0, sizeof(params));
+
 		params.frequency = intFreq;
 		params.inversion = INVERSION_AUTO;
 		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
@@ -330,6 +332,7 @@ void DvbDevice::addPidFilter(int pid, DvbFilter *filter)
 void DvbDevice::frontendEvent()
 {
 	fe_status_t status;
+	memset(&status, 0, sizeof(status));
 
 	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
 		kWarning() << k_funcinfo << "ioctl FE_READ_STATUS failed for" << frontendPath;

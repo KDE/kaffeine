@@ -30,7 +30,42 @@
 #include "mediawidget.h"
 #include "mediawidget.moc"
 
-MediaWidget::MediaWidget(Manager *manager_) : manager(manager_)
+class DvbSourceHelper : public Phonon::AbstractMediaStream
+{
+public:
+	DvbSourceHelper()
+	{
+		setStreamSize(-1);
+	}
+
+	~DvbSourceHelper() { }
+
+	void reset() { }
+
+	void needData() { }
+
+	void writeData(const QByteArray &data)
+	{
+		Phonon::AbstractMediaStream::writeData(data);
+	}
+};
+
+DvbSource::DvbSource()
+{
+	stream = new DvbSourceHelper();
+}
+
+DvbSource::~DvbSource()
+{
+	delete stream;
+}
+
+void DvbSource::writeData(const QByteArray &data)
+{
+	stream->writeData(data);
+}
+
+MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), dvbSource(NULL)
 {
 	QVBoxLayout *box = new QVBoxLayout( this );
 	box->setMargin(0);
@@ -79,19 +114,19 @@ void MediaWidget::setFullscreen(bool fullscreen)
 	}
 }
 
-void MediaWidget::play(const KUrl &url)
+void MediaWidget::setPaused(bool paused)
 {
-	media->setCurrentSource( url );
-	currentUrl = url;
-	media->play();
-}
-
-void MediaWidget::play()
-{
-	if ( !currentUrl.path().isEmpty() ) {
-		media->setCurrentSource( currentUrl );
+	if (paused) {
+		media->pause();
+	} else {
 		media->play();
 	}
+}
+
+void MediaWidget::play(const KUrl &url)
+{
+	media->setCurrentSource(url);
+	media->play();
 }
 
 void MediaWidget::playAudioCd()
@@ -106,24 +141,17 @@ void MediaWidget::playVideoCd()
 	media->play();
 }
 
-void MediaWidget::playDvb(Phonon::AbstractMediaStream *stream)
-{
-	media->setCurrentSource(Phonon::MediaSource(stream));
-	media->play();
-}
-
 void MediaWidget::playDvd()
 {
 	media->setCurrentSource(Phonon::MediaSource(Phonon::Dvd));
 	media->play();
 }
 
-void MediaWidget::togglePause( bool b )
+void MediaWidget::playDvb(DvbSource *source)
 {
-	if ( b && (media->state()==Phonon::PlayingState) )
-		media->pause();
-	else if ( media->state()==Phonon::PausedState )
-		media->play();
+	dvbSource = source;
+	media->setCurrentSource(Phonon::MediaSource(source->stream));
+	media->play();
 }
 
 void MediaWidget::stop()
@@ -145,6 +173,10 @@ void MediaWidget::stateChanged( Phonon::State status, Phonon::State )
 			break;
 		case Phonon::StoppedState:
 			manager->setStopped();
+			if (dvbSource != NULL) {
+				dvbSource->stop();
+				dvbSource = NULL;
+			}
 			break;
 		case Phonon::LoadingState:
 			break;
