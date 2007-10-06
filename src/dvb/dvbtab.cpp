@@ -32,6 +32,7 @@
 #include <Solid/DvbInterface>
 #include <KLocalizedString>
 #include <KPageDialog>
+#include <KDebug>
 
 #include "../kaffeine.h"
 #include "../manager.h"

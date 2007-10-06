@@ -30,6 +30,7 @@
 #include <KActionCollection>
 #include <KLocalizedString>
 #include <KRecentFilesAction>
+#include <KConfigGroup>
 
 #include "dvb/dvbtab.h"
 #include "kaffeine.h"
