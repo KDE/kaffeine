@@ -18,14 +18,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <QAbstractTableModel>
 #include <QCoreApplication>
 #include <QEvent>
 #include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
+#include <QSortFilterProxyModel>
 #include <QSplitter>
-#include <QTreeWidget>
+#include <QTreeView>
 #include <Solid/Device>
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
@@ -84,6 +86,69 @@ private:
 	int bufferPos;
 };
 
+class DvbChannelModel : public QAbstractTableModel
+{
+public:
+	explicit DvbChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
+	~DvbChannelModel() { }
+
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	int columnCount(const QModelIndex &parent) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+};
+
+int DvbChannelModel::rowCount(const QModelIndex &parent) const
+{
+	if (parent.isValid()) {
+		return 0;
+	}
+
+	// FIXME
+	return 3;
+}
+
+int DvbChannelModel::columnCount(const QModelIndex &parent) const
+{
+	if (parent.isValid()) {
+		return 0;
+	}
+
+	return 2;
+}
+
+// FIXME
+QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
+{
+	if (!index.isValid() || role != Qt::DisplayRole || index.column() >= 2 || index.row() >= 3) {
+		return QVariant();
+	}
+
+	switch (2 * index.row() + index.column()) {
+		case 0: return "sample";
+		case 1: return 1;
+		case 2: return "channel";
+		case 3: return 3;
+		case 4: return "test";
+		case 5: return 2;
+	}
+
+	return QVariant();
+}
+
+QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation == Qt::Vertical || role != Qt::DisplayRole) {
+		return QVariant();
+	}
+
+	if (section == 0) {
+		return i18n("Name");
+	} else {
+		return i18n("Number");
+	}
+}
+
 DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
@@ -92,16 +157,18 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 	QSplitter *splitter = new QSplitter(this);
 	layout->addWidget(splitter);
 
-	QTreeWidget *channels = new QTreeWidget(splitter);
-	channels->setColumnCount(2);
-	channels->setHeaderLabels(QStringList("Name") << "Number");
+	QAbstractItemModel *model = new DvbChannelModel(this);
+
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+	proxyModel->setSortLocaleAware(true);
+	proxyModel->setSourceModel(model);
 
 	// FIXME - just a demo hack
+	QTreeView *channels = new QTreeView(splitter);
 	channels->setIndentation(0);
+	channels->setModel(proxyModel);
 	channels->setSortingEnabled(true);
 	channels->sortByColumn(0, Qt::AscendingOrder);
-	channels->addTopLevelItem(new QTreeWidgetItem(QStringList("SampleTV") << "1"));
-	channels->addTopLevelItem(new QTreeWidgetItem(QStringList("SampleTVx") << "2"));
 	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(channelActivated()));
 
 	QWidget *mediaContainer = new QWidget(splitter);
