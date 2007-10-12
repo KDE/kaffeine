@@ -28,6 +28,7 @@ namespace Solid
 {
 class Device;
 };
+class DvbChannelModel;
 class DvbDevice;
 class DvbStream;
 
@@ -55,6 +56,8 @@ private:
 
 	QHBoxLayout *mediaLayout;
 	QList<DvbDevice *> devices;
+
+	DvbChannelModel *channelModel;
 
 	// FIXME - just a demo hack
 	DvbStream *dvbStream;

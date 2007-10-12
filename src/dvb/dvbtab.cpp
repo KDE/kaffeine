@@ -32,9 +32,10 @@
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
+#include <KDebug>
+#include <KLineEdit>
 #include <KLocalizedString>
 #include <KPageDialog>
-#include <KDebug>
 
 #include "../kaffeine.h"
 #include "../manager.h"
@@ -86,90 +87,53 @@ private:
 	int bufferPos;
 };
 
-class DvbChannelModel : public QAbstractTableModel
-{
-public:
-	explicit DvbChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
-	~DvbChannelModel() { }
-
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	int columnCount(const QModelIndex &parent) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-};
-
-int DvbChannelModel::rowCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	// FIXME
-	return 3;
-}
-
-int DvbChannelModel::columnCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return 2;
-}
-
-// FIXME
-QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
-{
-	if (!index.isValid() || role != Qt::DisplayRole || index.column() >= 2 || index.row() >= 3) {
-		return QVariant();
-	}
-
-	switch (2 * index.row() + index.column()) {
-		case 0: return "sample";
-		case 1: return 1;
-		case 2: return "channel";
-		case 3: return 3;
-		case 4: return "test";
-		case 5: return 2;
-	}
-
-	return QVariant();
-}
-
-QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation == Qt::Vertical || role != Qt::DisplayRole) {
-		return QVariant();
-	}
-
-	if (section == 0) {
-		return i18n("Name");
-	} else {
-		return i18n("Number");
-	}
-}
-
 DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 {
-	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(0);
+	QBoxLayout *widgetLayout = new QHBoxLayout(this);
+	widgetLayout->setMargin(0);
 
 	QSplitter *splitter = new QSplitter(this);
-	layout->addWidget(splitter);
+	widgetLayout->addWidget(splitter);
 
-	QAbstractItemModel *model = new DvbChannelModel(this);
+	QWidget *leftSideWidget = new QWidget(splitter);
+	QBoxLayout *leftSideLayout = new QVBoxLayout(leftSideWidget);
+	leftSideLayout->setMargin(3);
+
+	QWidget *searchBoxWidget = new QWidget(leftSideWidget);
+	QBoxLayout *searchBoxLayout = new QHBoxLayout(searchBoxWidget);
+	searchBoxLayout->setMargin(0);
+	leftSideLayout->addWidget(searchBoxWidget);
+
+	searchBoxLayout->addWidget(new QLabel(i18n("Search:"), searchBoxWidget));
+
+	KLineEdit *lineEdit = new KLineEdit(searchBoxWidget);
+	lineEdit->setClearButtonShown(true);
+	searchBoxLayout->addWidget(lineEdit);
+
+	// FIXME - just a demo hack
+	channelModel = new DvbChannelModel(this);
+	DvbChannelList list;
+	list.append(DvbSharedChannel(new DvbChannel("sample", 1, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
+	list.append(DvbSharedChannel(new DvbChannel("channel", 3, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
+	list.append(DvbSharedChannel(new DvbChannel("test", 2, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
+	channelModel->setList(list);
 
 	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
 	proxyModel->setSortLocaleAware(true);
-	proxyModel->setSourceModel(model);
+	proxyModel->setSourceModel(channelModel);
 
 	// FIXME - just a demo hack
-	QTreeView *channels = new QTreeView(splitter);
+	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	connect(lineEdit, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterRegExp(QString)));
+
+	// FIXME - just a demo hack
+	QTreeView *channels = new QTreeView(leftSideWidget);
 	channels->setIndentation(0);
 	channels->setModel(proxyModel);
 	channels->setSortingEnabled(true);
 	channels->sortByColumn(0, Qt::AscendingOrder);
 	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(channelActivated()));
+	leftSideLayout->addWidget(channels);
 
 	QWidget *mediaContainer = new QWidget(splitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);

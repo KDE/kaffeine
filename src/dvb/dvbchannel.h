@@ -21,6 +21,7 @@
 #ifndef DVBCHANNEL_H
 #define DVBCHANNEL_H
 
+#include <QAbstractTableModel>
 #include <QString>
 
 #include "dvbdevice.h"
@@ -128,17 +129,30 @@ public:
 	FecRate fecRate;
 };
 
-class DvbChannel
+class DvbChannel : public QSharedData
 {
 public:
-	DvbChannel(QString source_, DvbTransponder *transponder_, int serviceId_, int videoPid_) :
-		source(source_), serviceId(serviceId_), videoPid(videoPid_),
+	DvbChannel(const QString &name_, int number_, const QString &source_,
+		DvbTransponder *transponder_, int serviceId_, int videoPid_) : name(name_),
+		number(number_), source(source_), serviceId(serviceId_), videoPid(videoPid_),
 		transponder(transponder_) { }
 
 	~DvbChannel()
 	{
 		delete transponder;
 	}
+
+	/*
+	 * name
+	 */
+
+	QString name;
+
+	/*
+	 * number
+	 */
+
+	int number;
 
 	/*
 	 * source
@@ -177,6 +191,35 @@ private:
 	Q_DISABLE_COPY(DvbChannel)
 
 	DvbTransponder *transponder;
+};
+
+/*
+ * explicitly shared means here that all "copies" will access and modify the same data
+ */
+
+typedef QExplicitlySharedDataPointer<DvbChannel> DvbSharedChannel;
+typedef QList<DvbSharedChannel> DvbChannelList;
+
+class DvbChannelModel : public QAbstractTableModel
+{
+public:
+	explicit DvbChannelModel(QObject *parent);
+	~DvbChannelModel();
+
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+	DvbChannelList getList() const
+	{
+		return list;
+	}
+
+	void setList(const DvbChannelList &list_);
+
+private:
+	DvbChannelList list;
 };
 
 #endif /* DVBCHANNEL_H */
