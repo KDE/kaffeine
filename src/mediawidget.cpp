@@ -1,3 +1,4 @@
+#include "mediawidget.h"
 /*
  * mediawidget.cpp
  *
@@ -18,84 +19,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <QVBoxLayout>
-#include <Phonon/AbstractMediaStream>
-#include <Phonon/AudioOutput>
-#include <Phonon/MediaObject>
-#include <Phonon/Path>
-#include <Phonon/VideoWidget>
-#include <Phonon/SeekSlider>
-#include <Phonon/VolumeSlider>
+#include <QHBoxLayout>
 #include <KMessageBox>
 
+#include "engine_phonon.h"
 #include "kaffeine.h"
+#include "manager.h"
 #include "mediawidget.h"
-#include "mediawidget.moc"
 
-class DvbSourceHelper : public Phonon::AbstractMediaStream
+MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), engine(NULL)
 {
-public:
-	DvbSourceHelper()
-	{
-		setStreamSize(-1);
-	}
+	QBoxLayout *layout = new QHBoxLayout(this);
+	layout->setMargin(0);
+	setLayout(layout);
 
-	~DvbSourceHelper() { }
-
-	void reset() { }
-
-	void needData() { }
-
-	void writeData(const QByteArray &data)
-	{
-		Phonon::AbstractMediaStream::writeData(data);
-	}
-};
-
-DvbSource::DvbSource()
-{
-	stream = new DvbSourceHelper();
-}
-
-DvbSource::~DvbSource()
-{
-	delete stream;
-}
-
-void DvbSource::writeData(const QByteArray &data)
-{
-	stream->writeData(data);
-}
-
-MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), dvbSource(NULL)
-{
-	QVBoxLayout *box = new QVBoxLayout( this );
-	box->setMargin(0);
-	box->setSpacing(0);
-	vw = new Phonon::VideoWidget( this );
-	box->addWidget( vw );
-	ao = new Phonon::AudioOutput( Phonon::VideoCategory, this );
-	media = new Phonon::MediaObject( this );
-	Phonon::createPath(media, vw);
-	Phonon::createPath(media, ao);
-
-	media->setTickInterval( 350 );
-
-	connect(media, SIGNAL(stateChanged(Phonon::State, Phonon::State)), this, SLOT(stateChanged(Phonon::State)));
+	switchEngine(new EnginePhonon(this));
 }
 
 QWidget *MediaWidget::newPositionSlider()
 {
-	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider();
-	seekSlider->setMediaObject(media);
-	return seekSlider;
+	return engine->positionSlider();
 }
 
 QWidget *MediaWidget::newVolumeSlider()
 {
-	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider();
-	volumeSlider->setAudioOutput(ao);
-	return volumeSlider;
+	return engine->volumeSlider();
 }
 
 void MediaWidget::setFullscreen(bool fullscreen)
@@ -110,84 +58,64 @@ void MediaWidget::setFullscreen(bool fullscreen)
 
 void MediaWidget::setPaused(bool paused)
 {
-	if (paused) {
-		media->pause();
-	} else {
-		media->play();
-	}
+	engine->setPaused(paused);
 }
 
 void MediaWidget::play(const KUrl &url)
 {
-	media->setCurrentSource(url);
-	media->play();
+	engine->play(url);
+	manager->setPlaying();
 }
 
 void MediaWidget::playAudioCd()
 {
-	media->setCurrentSource(Phonon::MediaSource(Phonon::Cd));
-	media->play();
+	engine->playAudioCd();
+	manager->setPlaying();
 }
 
 void MediaWidget::playVideoCd()
 {
-	media->setCurrentSource(Phonon::MediaSource(Phonon::Vcd));
-	media->play();
+	engine->playVideoCd();
+	manager->setPlaying();
 }
 
 void MediaWidget::playDvd()
 {
-	media->setCurrentSource(Phonon::MediaSource(Phonon::Dvd));
-	media->play();
+	engine->playDvd();
+	manager->setPlaying();
 }
 
-void MediaWidget::playDvb(DvbSource *source)
+void MediaWidget::playDvb(DvbLiveFeed *feed)
 {
-	dvbSource = source;
-	media->setCurrentSource(Phonon::MediaSource(source->stream));
-	media->play();
+	engine->playDvb(feed);
+	manager->setPlaying();
+}
+
+void MediaWidget::switchEngine(Engine *newEngine)
+{
+	delete engine;
+
+	engine = newEngine;
+	layout()->addWidget(engine->videoWidget());
+
+	connect(engine, SIGNAL(playbackFinished), this, SLOT(playbackFinished()));
+	connect(engine, SIGNAL(playbackFailed(QString)), this, SLOT(playbackFailed(QString)));
 }
 
 void MediaWidget::stop()
 {
-	media->stop();
+	engine->stop();
 }
 
-void MediaWidget::stateChanged(Phonon::State state)
+void MediaWidget::playbackFinished()
 {
-	switch (state) {
-		case Phonon::LoadingState:
-		case Phonon::BufferingState:
-		case Phonon::PlayingState:
-			manager->setPlaying();
-			if (dvbSource != NULL) {
-				dvbSource->setPaused(false);
-			}
-			break;
+	manager->setStopped();
+}
 
-		case Phonon::PausedState:
-			if (dvbSource != NULL) {
-				dvbSource->setPaused(true);
-			}
-			break;
-
-		case Phonon::StoppedState:
-			manager->setStopped();
-			if (dvbSource != NULL) {
-				dvbSource->stop();
-				dvbSource = NULL;
-			}
-			break;
-
-		case Phonon::ErrorState:
-			manager->setStopped();
-			if (dvbSource != NULL) {
-				dvbSource->stop();
-				dvbSource = NULL;
-			}
-			KMessageBox::error(manager->getKaffeine(), media->errorString());
-			break;
-	}
+void MediaWidget::playbackFailed(const QString &errorMessage)
+{
+	manager->setStopped();
+	KMessageBox::error(manager->getKaffeine(), errorMessage);
 }
 
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)

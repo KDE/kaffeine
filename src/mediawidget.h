@@ -22,40 +22,15 @@
 #define MEDIAWIDGET_H
 
 #include <QWidget>
-#include <Phonon/Global>
 #include <KUrl>
 
-#include "manager.h"
-
-namespace Phonon
-{
-class AudioOutput;
-class MediaObject;
-class VideoWidget;
-};
-class DvbSourceHelper;
-
-class DvbSource
-{
-	friend class MediaWidget;
-public:
-	DvbSource();
-	virtual ~DvbSource();
-
-	virtual void setPaused(bool paused) = 0;
-	virtual void stop() = 0;
-
-protected:
-	void writeData(const QByteArray &data);
-
-private:
-	DvbSourceHelper *stream;
-};
+class DvbLiveFeed; // defined in engine.h
+class Engine;
+class Manager;
 
 class MediaWidget : public QWidget
 {
 	Q_OBJECT
-	
 public:
 	MediaWidget(Manager *manager_);
 	~MediaWidget() { }
@@ -80,23 +55,22 @@ public:
 	 * manually after DvbStream::stop() has been called
 	 */
 
-	void playDvb(DvbSource *stream);
+	void playDvb(DvbLiveFeed *feed);
+
+	void switchEngine(Engine *newEngine);
 
 public slots:
 	void stop();
 
 private slots:
-	void stateChanged(Phonon::State state);
+	void playbackFinished();
+	void playbackFailed(const QString &errorMessage);
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 
 	Manager *manager;
-	DvbSource *dvbSource;
-
-	Phonon::VideoWidget *vw;
-	Phonon::AudioOutput *ao;
-	Phonon::MediaObject *media;
+	Engine *engine;
 };
 
 #endif /* MEDIAWIDGET_H */

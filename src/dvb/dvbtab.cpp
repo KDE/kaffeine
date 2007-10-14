@@ -37,6 +37,7 @@
 #include <KLocalizedString>
 #include <KPageDialog>
 
+#include "../engine.h"
 #include "../kaffeine.h"
 #include "../manager.h"
 #include "../mediawidget.h"
@@ -44,11 +45,10 @@
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbtab.h"
-#include "dvbtab.moc"
 
 // FIXME - DvbStream is just a demo hack
 
-class DvbStream : public DvbSource, public DvbFilter
+class DvbStream : public DvbLiveFeed, public DvbFilter
 {
 public:
 	DvbStream(DvbDevice *device_) : device(device_), bufferPos(0)
@@ -75,7 +75,7 @@ private:
 		memcpy(buffer.data() + bufferPos, data.constData(), 188);
 		bufferPos += 188;
 		if (bufferPos == (188 * 64)) {
-			writeData(buffer);
+			emit writeData(buffer);
 			buffer.clear();
 			buffer.resize(188 * 64);
 			bufferPos = 0;

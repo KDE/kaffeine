@@ -36,7 +36,6 @@
 #include "kaffeine.h"
 #include "mediawidget.h"
 #include "manager.h"
-#include "manager.moc"
 
 class StartTab : public TabBase
 {

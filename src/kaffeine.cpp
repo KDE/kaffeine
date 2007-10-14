@@ -23,9 +23,9 @@
 #include <KLocalizedString>
 #include <KToolBar>
 
+#include "manager.h"
 #include "mediawidget.h"
 #include "kaffeine.h"
-#include "kaffeine.moc"
 
 KCmdLineOptions Kaffeine::cmdLineOptions()
 {
