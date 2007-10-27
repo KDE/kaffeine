@@ -19,11 +19,13 @@
  */
 
 #include <QAbstractTableModel>
+#include <QContextMenuEvent>
 #include <QCoreApplication>
 #include <QEvent>
 #include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
@@ -32,6 +34,7 @@
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
+#include <KAction>
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
@@ -127,7 +130,7 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 	connect(lineEdit, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterRegExp(QString)));
 
 	// FIXME - just a demo hack
-	QTreeView *channels = new QTreeView(leftSideWidget);
+	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
 	channels->setIndentation(0);
 	channels->setModel(proxyModel);
 	channels->setSortingEnabled(true);
@@ -295,4 +298,35 @@ void DvbTab::componentAdded(const Solid::Device &component)
 	DvbDevice *device = new DvbDevice(adapter, index);
 	device->componentAdded(component);
 	devices.append(device);
+}
+
+DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
+{
+	menu = new QMenu(this);
+	KAction *action = new KAction(i18n("Edit Channel"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(actionEdit()));
+	menu->addAction(action);
+}
+
+DvbChannelView::~DvbChannelView()
+{
+}
+
+void DvbChannelView::contextMenuEvent(QContextMenuEvent *event)
+{
+	QModelIndex index = indexAt(event->pos());
+
+	if (!index.isValid()) {
+		return;
+	}
+
+	editIndex = index;
+	menu->popup(event->globalPos());
+}
+
+void DvbChannelView::actionEdit()
+{
+	if (editIndex.isValid()) {
+		kDebug() << "edit";
+	}
 }
