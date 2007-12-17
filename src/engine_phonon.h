@@ -29,7 +29,6 @@ namespace Phonon
 {
 class AudioOutput;
 class MediaObject;
-class VideoWidget;
 };
 
 class DvbLiveFeedPhonon : public Phonon::AbstractMediaStream
