@@ -18,15 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <QAbstractTableModel>
 #include <QContextMenuEvent>
 #include <QCoreApplication>
 #include <QEvent>
-#include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
-#include <QMessageBox>
 #include <QSortFilterProxyModel>
 #include <QSplitter>
 #include <QTreeView>
