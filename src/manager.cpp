@@ -85,7 +85,7 @@ StartTab::StartTab(Manager *manager_) : TabBase(manager_)
 	gridLayout->setMargin(15);
 	gridLayout->setSpacing(15);
 
-	QAbstractButton *button = addShortcut(i18n("Play File"), KIcon("video"), widget);
+	QAbstractButton *button = addShortcut(i18n("Play File"), KIcon("video-x-generic"), widget);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(actionOpen()));
 	gridLayout->addWidget(button, 0, 0);
 

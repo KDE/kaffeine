@@ -41,7 +41,11 @@ Kaffeine::Kaffeine()
 	manager = new Manager(this);
 	mediaWidget = manager->getMediaWidget();
 	setCentralWidget(manager);
-	setupGUI(ToolBar | Keys | Save | Create);
+	setupGUI(ToolBar | Keys | Create);
+
+	// workaround broken size restoring
+	showMaximized();
+	setAutoSaveSettings();
 
 	show();
 }
