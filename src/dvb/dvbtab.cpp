@@ -48,7 +48,7 @@
 
 // FIXME - DvbStream is just a demo hack
 
-class DvbStream : public DvbLiveFeed, public DvbFilter
+class DvbStream : public DvbLiveFeed, public DvbPidFilter
 {
 public:
 	DvbStream(DvbDevice *device_) : device(device_), bufferPos(0)
@@ -69,10 +69,10 @@ private:
 		device->stopDevice();
 	}
 
-	void processData(const QByteArray &data)
+	void processData(const char data[188])
 	{
 		// FIXME too hacky
-		memcpy(buffer.data() + bufferPos, data.constData(), 188);
+		memcpy(buffer.data() + bufferPos, data, 188);
 		bufferPos += 188;
 		if (bufferPos == (188 * 64)) {
 			emit writeData(buffer);
@@ -254,7 +254,7 @@ void DvbTab::channelActivated()
 		return;
 	}
 
-	DvbDevice *device = devices.at(0);
+	DvbDevice *device = devices.begin().value();
 
 	delete dvbStream;
 	dvbStream = new DvbStream(device);
@@ -281,20 +281,20 @@ void DvbTab::componentAdded(const Solid::Device &component)
 	int index = dvbInterface->deviceIndex();
 
 	if ((adapter < 0) || (index < 0)) {
-		kWarning() << k_funcinfo << "couldn't determine adapter and/or index for" << component.udi();
+		kWarning() << "couldn't determine adapter and/or index for" << component.udi();
 		return;
 	}
 
-	foreach (DvbDevice *device, devices) {
-		if ((device->getAdapter() == adapter) && (device->getIndex() == index)) {
-			device->componentAdded(component);
-			return;
-		}
+	int internal_index = (adapter << 16) | index;
+
+	DvbDevice *device = devices.value(internal_index);
+
+	if (device == NULL) {
+		device = new DvbDevice();
+		devices.insert(internal_index, device);
 	}
 
-	DvbDevice *device = new DvbDevice(adapter, index);
 	device->componentAdded(component);
-	devices.append(device);
 }
 
 DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)

@@ -24,18 +24,17 @@
 #include <QTimer>
 #include <Solid/Device>
 
-class QSocketNotifier;
 class DvbConfig;
-class DvbFilterInternal;
+class DvbDeviceThread;
 class DvbTransponder;
 
-class DvbFilter
+class DvbPidFilter
 {
 public:
-	DvbFilter() { }
-	virtual ~DvbFilter() { }
+	DvbPidFilter() { }
+	virtual ~DvbPidFilter() { }
 
-	virtual void processData(const QByteArray &data) = 0;
+	virtual void processData(const char data[188]) = 0;
 };
 
 class DvbDevice : public QObject
@@ -44,10 +43,10 @@ class DvbDevice : public QObject
 public:
 	enum TransmissionType
 	{
-		DvbC	= (1 << 0),
-		DvbS	= (1 << 1),
-		DvbT	= (1 << 2),
-		Atsc	= (1 << 3)
+		DvbC = (1 << 0),
+		DvbS = (1 << 1),
+		DvbT = (1 << 2),
+		Atsc = (1 << 3)
 	};
 
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
@@ -61,34 +60,26 @@ public:
 		DeviceTuned
 	};
 
-	DvbDevice(int adapter_, int index_);
+	DvbDevice();
 	~DvbDevice();
-
-	int getAdapter() const
-	{
-		return adapter;
-	}
-
-	int getIndex() const
-	{
-		return index;
-	}
 
 	void componentAdded(const Solid::Device &component);
 	bool componentRemoved(const QString &udi);
 
-	DeviceState getDeviceState()
+	DeviceState getDeviceState() const
 	{
 		return deviceState;
 	}
 
-	TransmissionTypes getTransmissionTypes()
+	TransmissionTypes getTransmissionTypes() const
 	{
+		Q_ASSERT(deviceState != DeviceNotReady);
 		return transmissionTypes;
 	}
 
-	QString getFrontendName()
+	QString getFrontendName() const
 	{
+		Q_ASSERT(deviceState != DeviceNotReady);
 		return frontendName;
 	}
 
@@ -97,17 +88,17 @@ public:
 
 	/*
 	 * you can use the same filter object for different pids
-	 * filtering will be stopped when the device becomes idle
+	 * all filters will be removed when the device becomes idle
 	 */
 
-	void addPidFilter(int pid, DvbFilter *filter);
+	void addPidFilter(int pid, DvbPidFilter *filter);
+	void removePidFilter(int pid, DvbPidFilter *filter);
 
 signals:
 	void stateChanged();
 
 private slots:
 	void frontendEvent();
-	void dvrEvent();
 
 private:
 	Q_DISABLE_COPY(DvbDevice)
@@ -123,20 +114,9 @@ private:
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
-	void setState(stateFlags newState);
-
-	void setDeviceState(DeviceState newState)
-	{
-		deviceState = newState;
-		emit stateChanged();
-	}
-
+	void setInternalState(stateFlags newState);
+	void setDeviceState(DeviceState newState);
 	bool identifyDevice();
-
-	int adapter;
-	int index;
-
-	stateFlags internalState;
 
 	Solid::Device caComponent;
 	Solid::Device demuxComponent;
@@ -148,6 +128,7 @@ private:
 	QString dvrPath;
 	QString frontendPath;
 
+	stateFlags internalState;
 	DeviceState deviceState;
 	TransmissionTypes transmissionTypes;
 	QString frontendName;
@@ -156,10 +137,7 @@ private:
 	int frontendTimeout;
 	QTimer frontendTimer;
 
-	QList<DvbFilterInternal *> internalFilters;
-
-	int dvrFd;
-	QSocketNotifier *dvrNotifier;
+	DvbDeviceThread *thread;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)

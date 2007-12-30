@@ -25,55 +25,300 @@
 #include <QtGlobal>
 typedef quint64 __u64;
 
+#include <errno.h>
 #include <fcntl.h>
 #include <linux/dvb/dmx.h>
 #include <linux/dvb/frontend.h>
+#include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <QCoreApplication>
 #include <QFile>
-#include <QSocketNotifier>
+#include <QMutex>
+#include <QThread>
 #include <Solid/DvbInterface>
 #include <KDebug>
 
-#include "dvbchannel.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 
 class DvbFilterInternal
 {
 public:
-	DvbFilterInternal(int dmxFd_, int pid_) : dmxFd(dmxFd_), pid(pid_) { }
+	DvbFilterInternal(int pid_, int dmxFd_) : pid(pid_), dmxFd(dmxFd_) { }
+	~DvbFilterInternal() { }
 
-	~DvbFilterInternal()
+	bool operator<(const DvbFilterInternal &x) const
 	{
-		close(dmxFd);
+		return pid < x.pid;
 	}
 
-	int getPid() const
+	friend bool operator<(const DvbFilterInternal &x, int y)
 	{
-		return pid;
+		return x.pid < y;
 	}
 
-	void addFilter(DvbFilter *filter)
+	friend bool operator<(int x, const DvbFilterInternal &y)
 	{
-		filters.append(filter);
+		return x < y.pid;
 	}
 
-	void processData(const QByteArray &data)
+	void processData(const char data[188])
 	{
-		foreach (DvbFilter *filter, filters) {
-			filter->processData(data);
+		QList<DvbPidFilter *>::iterator it;
+
+		for (it = filters.begin(); it != filters.end(); ++it) {
+			(*it)->processData(data);
 		}
 	}
 
-private:
-	int dmxFd;
 	int pid;
-	QList<DvbFilter *> filters;
+	int dmxFd;
+	QList<DvbPidFilter *> filters;
 };
 
-DvbDevice::DvbDevice(int adapter_, int index_) : adapter(adapter_), index(index_), internalState(0),
-	deviceState(DeviceNotReady), frontendFd(-1), dvrFd(-1), dvrNotifier(NULL)
+struct DvbFilterData
+{
+	char packets[21][188];
+	int count;
+	DvbFilterData *next;
+};
+
+class DvbDeviceThread : private QThread
+{
+public:
+	DvbDeviceThread(int dvrFd_) : dvrFd(dvrFd_)
+	{
+		currentUnused = new DvbFilterData;
+		currentUnused->next = currentUnused;
+		currentUsed = currentUnused;
+
+		usedBuffers = 0;
+		totalBuffers = 1;
+
+		if (pipe(pipes) != 0) {
+			kError() << "pipe() failed";
+
+			pipes[0] = -1;
+			pipes[1] = -1;
+
+			return;
+		}
+
+		start();
+	}
+
+	~DvbDeviceThread()
+	{
+		if (write(pipes[1], " ", 1) != 1) {
+			kError() << "write() failed";
+		}
+
+		wait();
+
+		close(pipes[0]);
+		close(pipes[1]);
+
+		// delete all buffers
+		for (int i = 0; i < totalBuffers; ++i) {
+			DvbFilterData *temp = currentUnused->next;
+			delete currentUnused;
+			currentUnused = temp;
+		}
+
+		// close all filters
+		for (QList<DvbFilterInternal>::iterator it = filters.begin(); it != filters.end(); ++it) {
+			close(it->dmxFd);
+		}
+
+		// close dvr
+		close(dvrFd);
+	}
+
+	void addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath);
+	void removePidFilter(int pid, DvbPidFilter *filter);
+
+private:
+	void customEvent(QEvent *);
+	void run();
+
+	int dvrFd;
+	QList<DvbFilterInternal> filters;
+
+	QMutex mutex;
+	DvbFilterData *currentUnused;
+	DvbFilterData *currentUsed;
+	int usedBuffers;
+	int totalBuffers;
+
+	int pipes[2];
+};
+
+void DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath)
+{
+	QList<DvbFilterInternal>::iterator it = qBinaryFind(filters.begin(), filters.end(), pid);
+
+	if (it != filters.end()) {
+		it->filters.append(filter);
+	} else {
+		int dmxFd = open(QFile::encodeName(demuxPath), O_RDONLY | O_NONBLOCK);
+
+		if (dmxFd < 0) {
+			kWarning() << "couldn't open" << demuxPath;
+			return;
+		}
+
+		struct dmx_pes_filter_params pes_filter;
+		memset(&pes_filter, 0, sizeof(pes_filter));
+
+		pes_filter.pid = pid;
+		pes_filter.input = DMX_IN_FRONTEND;
+		pes_filter.output = DMX_OUT_TS_TAP;
+		pes_filter.pes_type = DMX_PES_OTHER;
+		pes_filter.flags = DMX_IMMEDIATE_START;
+
+		if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
+			kWarning() << "couldn't set up filter for" << demuxPath;
+			close(dmxFd);
+			return;
+		}
+
+		DvbFilterInternal filterInternal(pid, dmxFd);
+		filterInternal.filters.append(filter);
+
+		filters.append(filterInternal);
+		qSort(filters);
+	}
+}
+
+void DvbDeviceThread::removePidFilter(int pid, DvbPidFilter *filter)
+{
+	QList<DvbFilterInternal>::iterator it = qBinaryFind(filters.begin(), filters.end(), pid);
+
+	if (it == filters.end()) {
+		return;
+	}
+
+	int index = it->filters.indexOf(filter);
+
+	if (index == -1) {
+		return;
+	}
+
+	it->filters.removeAt(index);
+
+	if (it->filters.isEmpty()) {
+		close(it->dmxFd);
+		filters.erase(it);
+	}
+}
+
+void DvbDeviceThread::customEvent(QEvent *)
+{
+	while (true) {
+		int i;
+
+		for (i = 0; i < usedBuffers; ++i) {
+			for (int j = 0; j < currentUsed->count; ++j) {
+				char *packet = currentUsed->packets[j];
+				int pid = ((packet[1] << 8) + packet[2]) & 0x1fff;
+
+				QList<DvbFilterInternal>::iterator it =
+					qBinaryFind(filters.begin(), filters.end(), pid);
+
+				if (it != filters.end()) {
+					it->processData(packet);
+				}
+			}
+
+			currentUsed = currentUsed->next;
+		}
+
+		mutex.lock();
+		usedBuffers -= i;
+		if (usedBuffers == 0) {
+			mutex.unlock();
+			break;
+		}
+		mutex.unlock();
+	}
+}
+
+void DvbDeviceThread::run()
+{
+	struct pollfd pfds[2];
+	memset(&pfds, 0, sizeof(pfds));
+
+	pfds[0].fd = pipes[0];
+	pfds[0].events = POLLIN;
+
+	pfds[1].fd = dvrFd;
+	pfds[1].events = POLLIN;
+
+	while (true) {
+		if (poll(pfds, 2, -1) < 0) {
+			if (errno == EINTR) {
+				continue;
+			}
+
+			kWarning() << "poll() failed";
+			break;
+		}
+
+		if ((pfds[0].revents & POLLIN) != 0) {
+			kDebug() << "thread stopped";
+			break;
+		}
+
+		bool needNotify = false;
+
+		while (true) {
+			int size = read(dvrFd, currentUnused->packets, 21*188);
+
+			if (size < 0) {
+				if (errno == EAGAIN) {
+					break;
+				}
+
+				kWarning() << "read() failed";
+				break;
+			}
+
+			currentUnused->count = size / 188;
+
+			if ((usedBuffers + 1) == totalBuffers) {
+				// we ran out of buffers
+				DvbFilterData *newBuffer = new DvbFilterData;
+
+				newBuffer->next = currentUnused->next;
+				currentUnused->next = newBuffer;
+
+				++totalBuffers;
+			}
+
+			mutex.lock();
+			if (usedBuffers == 0) {
+				needNotify = true;
+			}
+			++usedBuffers;
+			mutex.unlock();
+
+			currentUnused = currentUnused->next;
+
+			if (size != 21*188) {
+				break;
+			}
+		}
+
+		if (needNotify) {
+			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+		}
+
+		msleep(1);
+	}
+}
+
+DvbDevice::DvbDevice() : internalState(0), deviceState(DeviceNotReady), frontendFd(-1), thread(NULL)
 {
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 }
@@ -87,30 +332,28 @@ void DvbDevice::componentAdded(const Solid::Device &component)
 {
 	const Solid::DvbInterface *dvbInterface = component.as<Solid::DvbInterface>();
 
-	if (dvbInterface == NULL) {
-		return;
-	}
+	Q_ASSERT(dvbInterface != 0);
 
 	switch (dvbInterface->deviceType()) {
 	case Solid::DvbInterface::DvbCa:
 		caComponent = component;
 		caPath = dvbInterface->device();
-		setState(internalState | CaPresent);
+		setInternalState(internalState | CaPresent);
 		break;
 	case Solid::DvbInterface::DvbDemux:
 		demuxComponent = component;
 		demuxPath = dvbInterface->device();
-		setState(internalState | DemuxPresent);
+		setInternalState(internalState | DemuxPresent);
 		break;
 	case Solid::DvbInterface::DvbDvr:
 		dvrComponent = component;
 		dvrPath = dvbInterface->device();
-		setState(internalState | DvrPresent);
+		setInternalState(internalState | DvrPresent);
 		break;
 	case Solid::DvbInterface::DvbFrontend:
 		frontendComponent = component;
 		frontendPath = dvbInterface->device();
-		setState(internalState | FrontendPresent);
+		setInternalState(internalState | FrontendPresent);
 		break;
 	default:
 		break;
@@ -120,46 +363,187 @@ void DvbDevice::componentAdded(const Solid::Device &component)
 bool DvbDevice::componentRemoved(const QString &udi)
 {
 	if (caComponent.udi() == udi) {
-		setState(internalState & (~CaPresent));
+		setInternalState(internalState & (~CaPresent));
 		return true;
 	} else if (demuxComponent.udi() == udi) {
-		setState(internalState & (~DemuxPresent));
+		setInternalState(internalState & (~DemuxPresent));
 		return true;
 	} else if (dvrComponent.udi() == udi) {
-		setState(internalState & (~DvrPresent));
+		setInternalState(internalState & (~DvrPresent));
 		return true;
 	} else if (frontendComponent.udi() == udi) {
-		setState(internalState & (~FrontendPresent));
+		setInternalState(internalState & (~FrontendPresent));
 		return true;
 	}
 
 	return false;
 }
 
-void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &config)
+static fe_modulation_t convertDvbModulation(DvbCTransponder::ModulationType modulation)
 {
-	if (deviceState == DeviceNotReady) {
-		return;
+	switch (modulation) {
+	case DvbCTransponder::Qam16: return QAM_16;
+	case DvbCTransponder::Qam32: return QAM_32;
+	case DvbCTransponder::Qam64: return QAM_64;
+	case DvbCTransponder::Qam128: return QAM_128;
+	case DvbCTransponder::Qam256: return QAM_256;
+	case DvbCTransponder::QamAuto: return QAM_AUTO;
 	}
 
-	if (deviceState != DeviceIdle) {
-		// retuning
-		stopDevice();
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_modulation_t convertDvbModulation(DvbTTransponder::ModulationType modulation)
+{
+	switch (modulation) {
+	case DvbTTransponder::Qpsk: return QPSK;
+	case DvbTTransponder::Qam16: return QAM_16;
+	case DvbTTransponder::Qam64: return QAM_64;
+	case DvbTTransponder::Auto: return QAM_AUTO;
 	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_modulation_t convertDvbModulation(AtscTransponder::ModulationType modulation)
+{
+	switch (modulation) {
+	case AtscTransponder::Qam64: return QAM_64;
+	case AtscTransponder::Qam256: return QAM_256;
+	case AtscTransponder::QamAuto: return QAM_AUTO;
+	case AtscTransponder::Vsb8: return VSB_8;
+	case AtscTransponder::Vsb16: return VSB_16;
+	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_code_rate convertDvbFecRate(DvbTransponder::FecRate fecRate)
+{
+	switch (fecRate) {
+	case DvbTransponder::Fec1_2: return FEC_1_2;
+	case DvbTransponder::Fec2_3: return FEC_2_3;
+	case DvbTransponder::Fec3_4: return FEC_3_4;
+	case DvbTransponder::Fec4_5: return FEC_4_5;
+	case DvbTransponder::Fec5_6: return FEC_5_6;
+	case DvbTransponder::Fec6_7: return FEC_6_7;
+	case DvbTransponder::Fec7_8: return FEC_7_8;
+	case DvbTransponder::Fec8_9: return FEC_8_9;
+	case DvbTransponder::FecAuto: return FEC_AUTO;
+	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_bandwidth convertDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
+{
+	switch (bandwidth) {
+	case DvbTTransponder::Bandwidth6Mhz: return BANDWIDTH_6_MHZ;
+	case DvbTTransponder::Bandwidth7Mhz: return BANDWIDTH_7_MHZ;
+	case DvbTTransponder::Bandwidth8Mhz: return BANDWIDTH_8_MHZ;
+	case DvbTTransponder::BandwidthAuto: return BANDWIDTH_AUTO;
+	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_transmit_mode convertDvbTransmissionMode(DvbTTransponder::TransmissionMode mode)
+{
+	switch (mode) {
+	case DvbTTransponder::TransmissionMode2k: return TRANSMISSION_MODE_2K;
+	case DvbTTransponder::TransmissionMode8k: return TRANSMISSION_MODE_8K;
+	case DvbTTransponder::TransmissionModeAuto: return TRANSMISSION_MODE_AUTO;
+	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_guard_interval convertDvbGuardInterval(DvbTTransponder::GuardInterval guardInterval)
+{
+	switch (guardInterval) {
+	case DvbTTransponder::GuardInterval1_4: return GUARD_INTERVAL_1_4;
+	case DvbTTransponder::GuardInterval1_8: return GUARD_INTERVAL_1_8;
+	case DvbTTransponder::GuardInterval1_16: return GUARD_INTERVAL_1_16;
+	case DvbTTransponder::GuardInterval1_32: return GUARD_INTERVAL_1_32;
+	case DvbTTransponder::GuardIntervalAuto: return GUARD_INTERVAL_AUTO;
+	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
+{
+	switch (hierarchy) {
+	case DvbTTransponder::HierarchyNone: return HIERARCHY_NONE;
+	case DvbTTransponder::Hierarchy1: return HIERARCHY_1;
+	case DvbTTransponder::Hierarchy2: return HIERARCHY_2;
+	case DvbTTransponder::Hierarchy4: return HIERARCHY_4;
+	case DvbTTransponder::HierarchyAuto: return HIERARCHY_AUTO;
+	}
+
+	Q_ASSERT(false);
+	abort();
+}
+
+void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &config)
+{
+	Q_ASSERT(deviceState == DeviceIdle);
 
 	frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
 
 	if (frontendFd < 0) {
-		kWarning() << k_funcinfo << "couldn't open" << frontendPath;
+		kWarning() << "couldn't open" << frontendPath;
+		return;
+	}
+
+	int dvrFd = open(QFile::encodeName(dvrPath), O_RDONLY | O_NONBLOCK);
+
+	if (dvrFd < 0) {
+		kWarning() << "couldn't open" << dvrPath;
 		return;
 	}
 
 	switch (transponder.transmissionType) {
-	case DvbC:
-		// FIXME
-		break;
+	case DvbTransponder::DvbC: {
+		const DvbCTransponder *dvbCTransponder =
+			dynamic_cast<const DvbCTransponder *>(&transponder);
 
-	case DvbS: {
+		Q_ASSERT(dvbCTransponder != NULL);
+
+		// tune
+
+		struct dvb_frontend_parameters params;
+		memset(&params, 0, sizeof(params));
+
+		params.frequency = dvbCTransponder->frequency;
+		params.inversion = INVERSION_AUTO;
+		params.u.qam.symbol_rate = dvbCTransponder->symbolRate;
+		params.u.qam.fec_inner = convertDvbFecRate(dvbCTransponder->fecRate);
+		params.u.qam.modulation = convertDvbModulation(dvbCTransponder->modulationType);
+
+		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
+			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
+			close(frontendFd);
+			close(dvrFd);
+			return;
+		}
+
+		setDeviceState(DeviceTuning);
+
+		// wait for tuning
+		frontendTimeout = config.getTimeout();
+		frontendTimer.start(100);
+
+		break;
+	    }
+	case DvbTransponder::DvbS: {
 		const DvbSTransponder *dvbSTransponder =
 			dynamic_cast<const DvbSTransponder *>(&transponder);
 		const DvbSConfig *dvbSConfig = dynamic_cast<const DvbSConfig *>(&config);
@@ -179,13 +563,13 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		// tone off
 
 		if (ioctl(frontendFd, FE_SET_TONE, SEC_TONE_OFF) != 0) {
-			kWarning() << k_funcinfo << "ioctl FE_SET_TONE failed for" << frontendPath;
+			kWarning() << "ioctl FE_SET_TONE failed for" << frontendPath;
 		}
 
 		// horizontal --> 18V ; vertical --> 13V
 
 		if (ioctl(frontendFd, FE_SET_VOLTAGE, horPolar ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
-			kWarning() << k_funcinfo << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
+			kWarning() << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
 		}
 
 		// diseqc
@@ -197,13 +581,13 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		cmd.msg[3] = 0xf0 | (switchPos << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
 
 		if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
-			kWarning() << k_funcinfo << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for" << frontendPath;
+			kWarning() << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for" << frontendPath;
 		}
 
 		usleep(15000);
 
 		if (ioctl(frontendFd, FE_DISEQC_SEND_BURST, (switchPos % 2) ? SEC_MINI_B : SEC_MINI_A) != 0) {
-			kWarning() << k_funcinfo << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
+			kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
 		}
 
 		usleep(15000);
@@ -211,7 +595,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		// low band --> tone off ; high band --> tone on
 
 		if (ioctl(frontendFd, FE_SET_TONE, highBand ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
-			kWarning() << k_funcinfo << "ioctl FE_SET_TONE failed for" << frontendPath;
+			kWarning() << "ioctl FE_SET_TONE failed for" << frontendPath;
 		}
 
 		// tune
@@ -222,29 +606,96 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		params.frequency = intFreq;
 		params.inversion = INVERSION_AUTO;
 		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
-		params.u.qpsk.fec_inner = FEC_AUTO;
+		params.u.qpsk.fec_inner = convertDvbFecRate(dvbSTransponder->fecRate);
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
-			kWarning() << k_funcinfo << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
-			stopDevice();
-			break;
+			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
+			close(frontendFd);
+			close(dvrFd);
+			return;
 		}
 
 		setDeviceState(DeviceTuning);
 
 		// wait for tuning
-		frontendTimeout = dvbSConfig->getTimeout();
+		frontendTimeout = config.getTimeout();
 		frontendTimer.start(100);
 
 		break;
 	    }
-	case DvbT:
-		// FIXME
+	case DvbTransponder::DvbT: {
+		const DvbTTransponder *dvbTTransponder =
+			dynamic_cast<const DvbTTransponder *>(&transponder);
+
+		Q_ASSERT(dvbTTransponder != NULL);
+
+		// tune
+
+		struct dvb_frontend_parameters params;
+		memset(&params, 0, sizeof(params));
+
+		params.frequency = dvbTTransponder->frequency;
+		params.inversion = INVERSION_AUTO;
+		params.u.ofdm.bandwidth = convertDvbBandwidth(dvbTTransponder->bandwidth);
+		params.u.ofdm.code_rate_HP = convertDvbFecRate(dvbTTransponder->fecRateHigh);
+		params.u.ofdm.code_rate_LP = convertDvbFecRate(dvbTTransponder->fecRateLow);
+		params.u.ofdm.constellation = convertDvbModulation(dvbTTransponder->modulationType);
+		params.u.ofdm.transmission_mode =
+			convertDvbTransmissionMode(dvbTTransponder->transmissionMode);
+		params.u.ofdm.guard_interval =
+			convertDvbGuardInterval(dvbTTransponder->guardInterval);
+		params.u.ofdm.hierarchy_information =
+			convertDvbHierarchy(dvbTTransponder->hierarchy);
+
+		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
+			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
+			close(frontendFd);
+			close(dvrFd);
+			return;
+		}
+
+		setDeviceState(DeviceTuning);
+
+		// wait for tuning
+		frontendTimeout = config.getTimeout();
+		frontendTimer.start(100);
+
 		break;
-	case Atsc:
-		// FIXME
+	    }
+	case DvbTransponder::Atsc: {
+		const AtscTransponder *atscTransponder =
+			dynamic_cast<const AtscTransponder *>(&transponder);
+
+		Q_ASSERT(atscTransponder != NULL);
+
+		// tune
+
+		struct dvb_frontend_parameters params;
+		memset(&params, 0, sizeof(params));
+
+		params.frequency = atscTransponder->frequency;
+		params.inversion = INVERSION_AUTO;
+		params.u.vsb.modulation = convertDvbModulation(atscTransponder->modulationType);
+
+		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
+			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
+			close(frontendFd);
+			close(dvrFd);
+			return;
+		}
+
+		setDeviceState(DeviceTuning);
+
+		// wait for tuning
+		frontendTimeout = config.getTimeout();
+		frontendTimer.start(100);
+
 		break;
+	    }
 	}
+
+	// create thread
+	thread = new DvbDeviceThread(dvrFd);
 }
 
 void DvbDevice::stopDevice()
@@ -253,24 +704,14 @@ void DvbDevice::stopDevice()
 		return;
 	}
 
+	// stop thread
+	if (thread != NULL) {
+		delete thread;
+		thread = NULL;
+	}
+
 	// stop waiting for tuning
 	frontendTimer.stop();
-
-	// stop all filters
-	qDeleteAll(internalFilters);
-	internalFilters.clear();
-
-	// remove socket notifier
-	if (dvrNotifier != NULL) {
-		delete dvrNotifier;
-		dvrNotifier = NULL;
-	}
-
-	// close dvr
-	if (dvrFd >= 0) {
-		close(dvrFd);
-		dvrFd = -1;
-	}
 
 	// close frontend
 	if (frontendFd >= 0) {
@@ -281,52 +722,18 @@ void DvbDevice::stopDevice()
 	setDeviceState(DeviceIdle);
 }
 
-void DvbDevice::addPidFilter(int pid, DvbFilter *filter)
+void DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 {
-	foreach (DvbFilterInternal *internalFilter, internalFilters) {
-		if (internalFilter->getPid() == pid) {
-			internalFilter->addFilter(filter);
-			return;
-		}
+	if (thread != NULL) {
+		thread->addPidFilter(pid, filter, demuxPath);
 	}
+}
 
-	if (dvrFd < 0) {
-		dvrFd = open(QFile::encodeName(dvrPath), O_RDONLY | O_NONBLOCK);
-		if (dvrFd < 0) {
-			kWarning() << k_funcinfo << "couldn't open" << dvrPath;
-			return;
-		}
+void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
+{
+	if (thread != NULL) {
+		thread->removePidFilter(pid, filter);
 	}
-
-	if (dvrNotifier == NULL) {
-		dvrNotifier = new QSocketNotifier(dvrFd, QSocketNotifier::Read);
-		connect(dvrNotifier, SIGNAL(activated(int)), this, SLOT(dvrEvent()));
-	}
-
-	int dmxFd = open(QFile::encodeName(demuxPath), O_RDONLY | O_NONBLOCK);
-
-	if (dmxFd < 0) {
-		kWarning() << k_funcinfo << "couldn't open" << demuxPath;
-		return;
-	}
-
-	struct dmx_pes_filter_params pes_filter;
-	memset(&pes_filter, 0, sizeof(pes_filter));
-	pes_filter.pid = pid;
-	pes_filter.input = DMX_IN_FRONTEND;
-	pes_filter.output = DMX_OUT_TS_TAP;
-	pes_filter.pes_type = DMX_PES_OTHER;
-	pes_filter.flags = DMX_IMMEDIATE_START;
-
-	if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
-		close(dmxFd);
-		kWarning() << k_funcinfo << "couldn't set up filter for" << demuxPath;
-		return;
-	}
-
-	DvbFilterInternal *internalFilter = new DvbFilterInternal(dmxFd, pid);
-	internalFilter->addFilter(filter);
-	internalFilters.append(internalFilter);
 }
 
 void DvbDevice::frontendEvent()
@@ -335,45 +742,25 @@ void DvbDevice::frontendEvent()
 	memset(&status, 0, sizeof(status));
 
 	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
-		kWarning() << k_funcinfo << "ioctl FE_READ_STATUS failed for" << frontendPath;
+		kWarning() << "ioctl FE_READ_STATUS failed for" << frontendPath;
 	} else {
 		if ((status & FE_HAS_LOCK) != 0) {
-			kDebug() << k_funcinfo << "tuning succeeded for" << frontendPath;
-			setDeviceState(DeviceTuned);
+			kDebug() << "tuning succeeded for" << frontendPath;
 			frontendTimer.stop();
+			setDeviceState(DeviceTuned);
+			return;
 		}
 	}
 
 	frontendTimeout -= 100;
 
 	if (frontendTimeout <= 0) {
-		kDebug() << k_funcinfo << "tuning failed for" << frontendPath;
+		kDebug() << "tuning failed for" << frontendPath;
 		stopDevice();
 	}
 }
 
-void DvbDevice::dvrEvent()
-{
-	QByteArray data;
-	data.resize(188);
-
-	while(1) {
-		if (read(dvrFd, data.data(), 188) != 188) {
-			break;
-		}
-
-		int pid = ((data[1] << 8) + data[2]) & 0x1fff;
-
-		foreach (DvbFilterInternal *internalFilter, internalFilters) {
-			if (internalFilter->getPid() == pid) {
-				internalFilter->processData(data);
-				break;
-			}
-		}
-	}
-}
-
-void DvbDevice::setState(stateFlags newState)
+void DvbDevice::setInternalState(stateFlags newState)
 {
 	if (internalState == newState) {
 		return;
@@ -382,9 +769,9 @@ void DvbDevice::setState(stateFlags newState)
 	bool oldPresent = ((internalState & DevicePresent) == DevicePresent);
 	bool newPresent = ((newState & DevicePresent) == DevicePresent);
 
-	internalState = newState;
+	// have this assignment here so that setInternalState can be called recursively
 
-	// have this block after the statement above so that setState could be called recursively
+	internalState = newState;
 
 	if (oldPresent != newPresent) {
 		if (newPresent) {
@@ -398,20 +785,27 @@ void DvbDevice::setState(stateFlags newState)
 	}
 }
 
+void DvbDevice::setDeviceState(DeviceState newState)
+{
+	deviceState = newState;
+	emit stateChanged();
+}
+
 bool DvbDevice::identifyDevice()
 {
 	int fd = open(QFile::encodeName(frontendPath), O_RDONLY | O_NONBLOCK);
 
 	if (fd < 0) {
-		kWarning() << k_funcinfo << "couldn't open" << frontendPath;
+		kWarning() << "couldn't open" << frontendPath;
 		return false;
 	}
 
 	dvb_frontend_info frontend_info;
+	memset(&frontend_info, 0, sizeof(frontend_info));
 
 	if (ioctl(fd, FE_GET_INFO, &frontend_info) != 0) {
+		kWarning() << "couldn't execute FE_GET_INFO ioctl on" << frontendPath;
 		close(fd);
-		kWarning() << k_funcinfo << "couldn't execute FE_GET_INFO ioctl on" << frontendPath;
 		return false;
 	}
 
@@ -431,14 +825,13 @@ bool DvbDevice::identifyDevice()
 		transmissionTypes = Atsc;
 		break;
 	default:
-		kWarning() << k_funcinfo << "unknown frontend type" << frontend_info.type << "for"
-			<< frontendPath;
+		kWarning() << "unknown frontend type" << frontend_info.type << "for" << frontendPath;
 		return false;
 	}
 
 	frontendName = QString::fromAscii(frontend_info.name);
 
-	kDebug() << k_funcinfo << "found dvb card" << frontendName;
+	kDebug() << "found dvb card" << frontendName;
 
 	return true;
 }

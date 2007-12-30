@@ -57,7 +57,7 @@ private:
 	void componentAdded(const Solid::Device &component);
 
 	QHBoxLayout *mediaLayout;
-	QList<DvbDevice *> devices;
+	QMap<int, DvbDevice *> devices;
 
 	DvbChannelModel *channelModel;
 

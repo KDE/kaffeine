@@ -22,13 +22,19 @@
 #define DVBCHANNEL_H
 
 #include <QAbstractTableModel>
-#include <QString>
-
-#include "dvbdevice.h"
+#include <QSharedData>
 
 class DvbTransponder
 {
 public:
+	enum TransmissionType
+	{
+		DvbC,
+		DvbS,
+		DvbT,
+		Atsc
+	};
+
 	enum FecRate
 	{
 		Fec1_2,
@@ -44,11 +50,10 @@ public:
 
 	virtual ~DvbTransponder() { }
 
-	const DvbDevice::TransmissionType transmissionType;
+	const TransmissionType transmissionType;
 
 protected:
-	DvbTransponder(DvbDevice::TransmissionType transmissionType_) :
-		transmissionType(transmissionType_) { }
+	DvbTransponder(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }
 };
 
 class DvbCTransponder : public DvbTransponder
@@ -56,12 +61,16 @@ class DvbCTransponder : public DvbTransponder
 public:
 	enum ModulationType
 	{
+		Qam16,
+		Qam32,
 		Qam64,
-		Qam256
+		Qam128,
+		Qam256,
+		QamAuto
 	};
 
 	DvbCTransponder(int frequency_, ModulationType modulationType_, int symbolRate_,
-		FecRate fecRate_) : DvbTransponder(DvbDevice::DvbC), frequency(frequency_),
+		FecRate fecRate_) : DvbTransponder(DvbC), frequency(frequency_),
 		modulationType(modulationType_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbCTransponder() { }
 
@@ -100,7 +109,7 @@ public:
 	};
 
 	DvbSTransponder(Polarization polarization_, int frequency_, int symbolRate_,
-		FecRate fecRate_) : DvbTransponder(DvbDevice::DvbS),  polarization(polarization_),
+		FecRate fecRate_) : DvbTransponder(DvbS), polarization(polarization_),
 		frequency(frequency_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbSTransponder() { }
 
@@ -127,6 +136,137 @@ public:
 	 */
 
 	FecRate fecRate;
+};
+
+class DvbTTransponder : public DvbTransponder
+{
+public:
+	enum ModulationType
+	{
+		Qpsk,
+		Qam16,
+		Qam64,
+		Auto
+	};
+
+	enum Bandwidth
+	{
+		Bandwidth6Mhz,
+		Bandwidth7Mhz,
+		Bandwidth8Mhz,
+		BandwidthAuto
+	};
+
+	enum TransmissionMode
+	{
+		TransmissionMode2k,
+		TransmissionMode8k,
+		TransmissionModeAuto
+	};
+
+	enum GuardInterval
+	{
+		GuardInterval1_4,
+		GuardInterval1_8,
+		GuardInterval1_16,
+		GuardInterval1_32,
+		GuardIntervalAuto
+	};
+
+	enum Hierarchy
+	{
+		HierarchyNone,
+		Hierarchy1,
+		Hierarchy2,
+		Hierarchy4,
+		HierarchyAuto
+	};
+
+	DvbTTransponder(int frequency_, ModulationType modulationType_, Bandwidth bandwidth_,
+		FecRate fecRateHigh_, FecRate fecRateLow_, TransmissionMode transmissionMode_,
+		GuardInterval guardInterval_, Hierarchy hierarchy_) : DvbTransponder(DvbT),
+		frequency(frequency_), modulationType(modulationType_), bandwidth(bandwidth_),
+		fecRateHigh(fecRateHigh_), fecRateLow(fecRateLow_),
+		transmissionMode(transmissionMode_), guardInterval(guardInterval_),
+		hierarchy(hierarchy_) { }
+	~DvbTTransponder() { }
+
+	/*
+	 * frequency (Hz)
+	 */
+
+	int frequency;
+
+	/*
+	 * modulation type
+	 */
+
+	ModulationType modulationType;
+
+	/*
+	 * bandwidth
+	 */
+
+	Bandwidth bandwidth;
+
+	/*
+	 * FEC rate (high priority stream)
+	 */
+
+	FecRate fecRateHigh;
+
+	/*
+	 * FEC rate (low priority stream)
+	 */
+
+	FecRate fecRateLow;
+
+	/*
+	 * transmission mode
+	 */
+
+	TransmissionMode transmissionMode;
+
+	/*
+	 * guard interval
+	 */
+
+	GuardInterval guardInterval;
+
+	/*
+	 * hierarchy
+	 */
+
+	Hierarchy hierarchy;
+};
+
+class AtscTransponder : public DvbTransponder
+{
+public:
+	enum ModulationType
+	{
+		Qam64,
+		Qam256,
+		QamAuto,
+		Vsb8,
+		Vsb16
+	};
+
+	AtscTransponder(int frequency_, ModulationType modulationType_) : DvbTransponder(Atsc),
+		frequency(frequency_), modulationType(modulationType_) { }
+	~AtscTransponder() { }
+
+	/*
+	 * frequency (Hz)
+	 */
+
+	int frequency;
+
+	/*
+	 * modulation type
+	 */
+
+	ModulationType modulationType;
 };
 
 class DvbChannel : public QSharedData
