@@ -44,7 +44,10 @@ Kaffeine::Kaffeine()
 	setupGUI(ToolBar | Keys | Create);
 
 	// workaround broken size restoring
-	showMaximized();
+	bool maximized = KConfig().group("Workarounds").readEntry("Maximized", false);
+	if (maximized) {
+		showMaximized();
+	}
 	setAutoSaveSettings();
 
 	show();
@@ -52,6 +55,8 @@ Kaffeine::Kaffeine()
 
 Kaffeine::~Kaffeine()
 {
+	// workaround broken size restoring
+	KConfig().group("Workarounds").writeEntry("Maximized", isMaximized());
 }
 
 void Kaffeine::parseArgs()
