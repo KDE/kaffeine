@@ -24,6 +24,9 @@
 #include <QAbstractTableModel>
 #include <QSharedData>
 
+class DvbChannelReader;
+class DvbChannelWriter;
+
 class DvbTransponder
 {
 public:
@@ -37,18 +40,21 @@ public:
 
 	enum FecRate
 	{
-		Fec1_2,
-		Fec2_3,
-		Fec3_4,
-		Fec4_5,
-		Fec5_6,
-		Fec6_7,
-		Fec7_8,
-		Fec8_9,
-		FecAuto
+		Fec1_2 = 0,
+		Fec2_3 = 1,
+		Fec3_4 = 2,
+		Fec4_5 = 3,
+		Fec5_6 = 4,
+		Fec6_7 = 5,
+		Fec7_8 = 6,
+		Fec8_9 = 7,
+		FecAuto = 8,
+		FecRateMax = FecAuto
 	};
 
 	virtual ~DvbTransponder() { }
+
+	virtual void writeTransponder(DvbChannelWriter &writer) const = 0;
 
 	const TransmissionType transmissionType;
 
@@ -61,18 +67,22 @@ class DvbCTransponder : public DvbTransponder
 public:
 	enum ModulationType
 	{
-		Qam16,
-		Qam32,
-		Qam64,
-		Qam128,
-		Qam256,
-		QamAuto
+		Qam16 = 0,
+		Qam32 = 1,
+		Qam64 = 2,
+		Qam128 = 3,
+		Qam256 = 4,
+		Auto = 5,
+		ModulationTypeMax = Auto
 	};
 
 	DvbCTransponder(int frequency_, ModulationType modulationType_, int symbolRate_,
 		FecRate fecRate_) : DvbTransponder(DvbC), frequency(frequency_),
 		modulationType(modulationType_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbCTransponder() { }
+
+	static DvbCTransponder *readTransponder(DvbChannelReader &reader);
+	void writeTransponder(DvbChannelWriter &writer) const;
 
 	/*
 	 * frequency (Hz)
@@ -104,14 +114,20 @@ class DvbSTransponder : public DvbTransponder
 public:
 	enum Polarization
 	{
-		Horizontal,
-		Vertical
+		Horizontal = 0,
+		Vertical = 1,
+		CircularLeft = 2,
+		CircularRight = 3,
+		PolarizationMax = CircularRight
 	};
 
 	DvbSTransponder(Polarization polarization_, int frequency_, int symbolRate_,
 		FecRate fecRate_) : DvbTransponder(DvbS), polarization(polarization_),
 		frequency(frequency_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbSTransponder() { }
+
+	static DvbSTransponder *readTransponder(DvbChannelReader &reader);
+	void writeTransponder(DvbChannelWriter &writer) const;
 
 	/*
 	 * polarization
@@ -143,43 +159,48 @@ class DvbTTransponder : public DvbTransponder
 public:
 	enum ModulationType
 	{
-		Qpsk,
-		Qam16,
-		Qam64,
-		Auto
+		Qpsk = 0,
+		Qam16 = 1,
+		Qam64 = 2,
+		Auto = 3,
+		ModulationTypeMax = Auto
 	};
 
 	enum Bandwidth
 	{
-		Bandwidth6Mhz,
-		Bandwidth7Mhz,
-		Bandwidth8Mhz,
-		BandwidthAuto
+		Bandwidth6Mhz = 0,
+		Bandwidth7Mhz = 1,
+		Bandwidth8Mhz = 2,
+		BandwidthAuto = 3,
+		BandwidthMax = BandwidthAuto
 	};
 
 	enum TransmissionMode
 	{
-		TransmissionMode2k,
-		TransmissionMode8k,
-		TransmissionModeAuto
+		TransmissionMode2k = 0,
+		TransmissionMode8k = 1,
+		TransmissionModeAuto = 2,
+		TransmissionModeMax = TransmissionModeAuto
 	};
 
 	enum GuardInterval
 	{
-		GuardInterval1_4,
-		GuardInterval1_8,
-		GuardInterval1_16,
-		GuardInterval1_32,
-		GuardIntervalAuto
+		GuardInterval1_4 = 0,
+		GuardInterval1_8 = 1,
+		GuardInterval1_16 = 2,
+		GuardInterval1_32 = 3,
+		GuardIntervalAuto = 4,
+		GuardIntervalMax = GuardIntervalAuto
 	};
 
 	enum Hierarchy
 	{
-		HierarchyNone,
-		Hierarchy1,
-		Hierarchy2,
-		Hierarchy4,
-		HierarchyAuto
+		HierarchyNone = 0,
+		Hierarchy1 = 1,
+		Hierarchy2 = 2,
+		Hierarchy4 = 3,
+		HierarchyAuto = 4,
+		HierarchyMax = HierarchyAuto
 	};
 
 	DvbTTransponder(int frequency_, ModulationType modulationType_, Bandwidth bandwidth_,
@@ -190,6 +211,9 @@ public:
 		transmissionMode(transmissionMode_), guardInterval(guardInterval_),
 		hierarchy(hierarchy_) { }
 	~DvbTTransponder() { }
+
+	static DvbTTransponder *readTransponder(DvbChannelReader &reader);
+	void writeTransponder(DvbChannelWriter &writer) const;
 
 	/*
 	 * frequency (Hz)
@@ -245,16 +269,20 @@ class AtscTransponder : public DvbTransponder
 public:
 	enum ModulationType
 	{
-		Qam64,
-		Qam256,
-		QamAuto,
-		Vsb8,
-		Vsb16
+		Qam64 = 0,
+		Qam256 = 1,
+		Vsb8 = 2,
+		Vsb16 = 3,
+		Auto = 4,
+		ModulationTypeMax = Auto
 	};
 
 	AtscTransponder(int frequency_, ModulationType modulationType_) : DvbTransponder(Atsc),
 		frequency(frequency_), modulationType(modulationType_) { }
 	~AtscTransponder() { }
+
+	static AtscTransponder *readTransponder(DvbChannelReader &reader);
+	void writeTransponder(DvbChannelWriter &writer) const;
 
 	/*
 	 * frequency (Hz)
@@ -281,6 +309,9 @@ public:
 	{
 		delete transponder;
 	}
+
+	static DvbChannel *readChannel(DvbChannelReader &reader);
+	void writeChannel(DvbChannelWriter &writer) const;
 
 	/*
 	 * name
@@ -338,12 +369,11 @@ private:
  */
 
 typedef QExplicitlySharedDataPointer<DvbChannel> DvbSharedChannel;
-typedef QList<DvbSharedChannel> DvbChannelList;
 
 class DvbChannelModel : public QAbstractTableModel
 {
 public:
-	explicit DvbChannelModel(QObject *parent);
+	DvbChannelModel(const QList<DvbSharedChannel> &list_, QObject *parent);
 	~DvbChannelModel();
 
 	int columnCount(const QModelIndex &parent) const;
@@ -351,15 +381,18 @@ public:
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-	DvbChannelList getList() const
+	QList<DvbSharedChannel> getList() const
 	{
 		return list;
 	}
 
-	void setList(const DvbChannelList &list_);
+	void setList(const QList<DvbSharedChannel> &list_);
+
+	static QList<DvbSharedChannel> readList();
+	static void writeList(QList<DvbSharedChannel> list);
 
 private:
-	DvbChannelList list;
+	QList<DvbSharedChannel> list;
 };
 
 #endif /* DVBCHANNEL_H */

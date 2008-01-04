@@ -387,7 +387,7 @@ static fe_modulation_t convertDvbModulation(DvbCTransponder::ModulationType modu
 	case DvbCTransponder::Qam64: return QAM_64;
 	case DvbCTransponder::Qam128: return QAM_128;
 	case DvbCTransponder::Qam256: return QAM_256;
-	case DvbCTransponder::QamAuto: return QAM_AUTO;
+	case DvbCTransponder::Auto: return QAM_AUTO;
 	}
 
 	Q_ASSERT(false);
@@ -412,7 +412,7 @@ static fe_modulation_t convertDvbModulation(AtscTransponder::ModulationType modu
 	switch (modulation) {
 	case AtscTransponder::Qam64: return QAM_64;
 	case AtscTransponder::Qam256: return QAM_256;
-	case AtscTransponder::QamAuto: return QAM_AUTO;
+	case AtscTransponder::Auto: return QAM_AUTO;
 	case AtscTransponder::Vsb8: return VSB_8;
 	case AtscTransponder::Vsb16: return VSB_16;
 	}
@@ -556,7 +556,8 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		QPair<int, bool> lnbParameters = dvbSConfig->getParameters(dvbSTransponder);
 
 		int  switchPos = dvbSConfig->getSwitchPos();
-		bool horPolar  = (dvbSTransponder->polarization == DvbSTransponder::Horizontal);
+		bool horPolar  = (dvbSTransponder->polarization == DvbSTransponder::Horizontal) ||
+			(dvbSTransponder->polarization == DvbSTransponder::CircularLeft);
 		bool highBand  = lnbParameters.second;
 		int  intFreq   = lnbParameters.first;
 
@@ -566,7 +567,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			kWarning() << "ioctl FE_SET_TONE failed for" << frontendPath;
 		}
 
-		// horizontal --> 18V ; vertical --> 13V
+		// horizontal / circular left --> 18V ; vertical / circular right --> 13V
 
 		if (ioctl(frontendFd, FE_SET_VOLTAGE, horPolar ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
 			kWarning() << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;

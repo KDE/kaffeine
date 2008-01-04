@@ -111,12 +111,11 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 	searchBoxLayout->addWidget(lineEdit);
 
 	// FIXME - just a demo hack
-	channelModel = new DvbChannelModel(this);
-	DvbChannelList list;
+	QList<DvbSharedChannel> list;
 	list.append(DvbSharedChannel(new DvbChannel("sample", 1, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
 	list.append(DvbSharedChannel(new DvbChannel("channel", 3, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
 	list.append(DvbSharedChannel(new DvbChannel("test", 2, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
-	channelModel->setList(list);
+	channelModel = new DvbChannelModel(list, this);
 
 	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
 	proxyModel->setSortLocaleAware(true);
