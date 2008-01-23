@@ -507,6 +507,8 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 
 	if (dvrFd < 0) {
 		kWarning() << "couldn't open" << dvrPath;
+		close(frontendFd);
+		frontendFd = -1;
 		return;
 	}
 
@@ -532,6 +534,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
 			close(frontendFd);
 			close(dvrFd);
+			frontendFd = -1;
 			return;
 		}
 
@@ -613,6 +616,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
 			close(frontendFd);
 			close(dvrFd);
+			frontendFd = -1;
 			return;
 		}
 
@@ -652,6 +656,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
 			close(frontendFd);
 			close(dvrFd);
+			frontendFd = -1;
 			return;
 		}
 
@@ -682,6 +687,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
 			close(frontendFd);
 			close(dvrFd);
+			frontendFd = -1;
 			return;
 		}
 
