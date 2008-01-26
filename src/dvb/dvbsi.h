@@ -39,6 +39,11 @@ public:
 		return static_cast<unsigned char> (data.at(pos + index));
 	}
 
+	DvbUnsignedByteArray subArray(int index) const
+	{
+		return DvbUnsignedByteArray(data, pos + index);
+	}
+
 private:
 	QByteArray data;
 	int pos;
@@ -76,6 +81,7 @@ private:
 	void processSection(const DvbSection &section);
 
 	int versionNumber;
+	QVector<QPair<unsigned int, unsigned int> > programTable;
 };
 
 class DvbSection
@@ -156,6 +162,16 @@ public:
 	int lastSectionNumber() const
 	{
 		return data.at(7);
+	}
+
+	DvbUnsignedByteArray sectionData() const
+	{
+		return data.subArray(8);
+	}
+
+	int sectionDataSize() const
+	{
+		return sectionLength() - 12;
 	}
 
 	bool verifyCrc32() const;

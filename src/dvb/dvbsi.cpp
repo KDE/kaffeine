@@ -99,24 +99,24 @@ void DvbSectionFilter::appendData(const char *data, int length)
 void DvbPatFilter::processSection(const DvbSection &section)
 {
 	if (!section.isValid()) {
-		kDebug() << "invalid section\n";
+		kDebug() << "invalid section";
 		return;
 	}
 
 	if ((section.tableId() != 0) || !section.isPublicSection()) {
-		kDebug() << "section doesn't fit into PAT\n";
+		kDebug() << "section doesn't fit into PAT";
 		return;
 	}
 
 	DvbPublicSection publicSection(section);
 
 	if (!publicSection.isValid()) {
-		kDebug() << "invalid public section\n";
+		kDebug() << "invalid public section";
 		return;
 	}
 
 	if (!publicSection.verifyCrc32()) {
-		kDebug() << "crc wrong\n";
+		kDebug() << "crc wrong";
 		return;
 	}
 
@@ -128,7 +128,26 @@ void DvbPatFilter::processSection(const DvbSection &section)
 
 	versionNumber = publicSection.versionNumber();
 
-	kDebug() << "found a new PAT\n";
+	DvbUnsignedByteArray data = publicSection.sectionData();
+	int dataSize = publicSection.sectionDataSize();
+
+	if ((dataSize % 4) != 0) {
+		kDebug() << "table size not a multiple of 4";
+		return;
+	}
+
+	kDebug() << "found a new PAT";
+
+	programTable.resize(dataSize / 4);
+
+	for (int i = 0; i < dataSize / 4; ++i) {
+		int pos = 4 * i;
+
+		unsigned int programNumber = (data.at(pos) << 8) | data.at(pos + 1);
+		unsigned int pid = ((data.at(pos + 2) << 8) | data.at(pos + 3)) & ((1 << 13) - 1);
+
+		programTable.replace(i, qMakePair(programNumber, pid));
+	}
 }
 
 /*
