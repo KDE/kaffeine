@@ -24,6 +24,10 @@
       <Action name="controls_stop" />
       <Action name="controls_next" />
     </Menu>
+    <Menu name="dvb" >
+      <text>&amp;DVB</text>
+      <Action name="dvb_channels" />
+    </Menu>
     <Menu name="settings" >
       <text>&amp;Settings</text>
       <Action name="options_show_toolbar" />

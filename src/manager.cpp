@@ -213,6 +213,9 @@ Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateA
 	action->setDefaultWidget(widgetPositionSlider);
 	addAction(collection, "position_slider", stateAlways, action);
 
+	action = new KAction(KIcon("configure"), i18n("Configure Channels"), collection);
+	addAction(collection, "dvb_channels", stateAlways, action);
+
 	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);
 	connect(action, SIGNAL(triggered(bool)), dvbTab, SLOT(configureDvb()));
 	addAction(collection, "settings_dvb", stateAlways, action);
