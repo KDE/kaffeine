@@ -214,6 +214,7 @@ Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateA
 	addAction(collection, "position_slider", stateAlways, action);
 
 	action = new KAction(KIcon("configure"), i18n("Configure Channels"), collection);
+	connect(action, SIGNAL(triggered(bool)), dvbTab, SLOT(configureChannels()));
 	addAction(collection, "dvb_channels", stateAlways, action);
 
 	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);

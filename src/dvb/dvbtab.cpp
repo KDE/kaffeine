@@ -18,20 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <QContextMenuEvent>
 #include <QCoreApplication>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMenu>
-#include <QSortFilterProxyModel>
 #include <QSplitter>
-#include <QTreeView>
 #include <Solid/Device>
 #include <Solid/DeviceInterface>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
-#include <KAction>
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
@@ -44,6 +39,7 @@
 #include "dvbchannel.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
+#include "dvbscan.h"
 #include "dvbtab.h"
 
 // FIXME - DvbStream is just a demo hack
@@ -117,21 +113,11 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 	list.append(DvbSharedChannel(new DvbChannel("test", 2, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
 	channelModel = new DvbChannelModel(list, this);
 
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
-	proxyModel->setSortLocaleAware(true);
-	proxyModel->setSourceModel(channelModel);
-
-	// FIXME - just a demo hack
-	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	connect(lineEdit, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterRegExp(QString)));
-
 	// FIXME - just a demo hack
 	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
-	channels->setIndentation(0);
-	channels->setModel(proxyModel);
-	channels->setSortingEnabled(true);
-	channels->sortByColumn(0, Qt::AscendingOrder);
+	channels->setModel(channelModel);
 	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(channelActivated()));
+	connect(lineEdit, SIGNAL(textChanged(QString)), channels, SLOT(setFilterRegExp(QString)));
 	leftSideLayout->addWidget(channels);
 
 	QWidget *mediaContainer = new QWidget(splitter);
@@ -148,6 +134,13 @@ DvbTab::~DvbTab()
 {
 	delete dvbStream;
 	qDeleteAll(devices);
+}
+
+void DvbTab::configureChannels()
+{
+	DvbScanDialog dialog(this, channelModel);
+
+	dialog.exec();
 }
 
 void DvbTab::configureDvb()
@@ -294,35 +287,4 @@ void DvbTab::componentAdded(const Solid::Device &component)
 	}
 
 	device->componentAdded(component);
-}
-
-DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
-{
-	menu = new QMenu(this);
-	KAction *action = new KAction(i18n("Edit Channel"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(actionEdit()));
-	menu->addAction(action);
-}
-
-DvbChannelView::~DvbChannelView()
-{
-}
-
-void DvbChannelView::contextMenuEvent(QContextMenuEvent *event)
-{
-	QModelIndex index = indexAt(event->pos());
-
-	if (!index.isValid()) {
-		return;
-	}
-
-	editIndex = index;
-	menu->popup(event->globalPos());
-}
-
-void DvbChannelView::actionEdit()
-{
-	if (editIndex.isValid()) {
-		kDebug() << "edit";
-	}
 }

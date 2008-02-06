@@ -18,7 +18,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include <QContextMenuEvent>
 #include <QFile>
+#include <QMenu>
+#include <QSortFilterProxyModel>
+#include <KAction>
 #include <KDebug>
 #include <KLocalizedString>
 #include <KStandardDirs>
@@ -403,5 +407,55 @@ void DvbChannelModel::writeList(QList<DvbSharedChannel> list)
 		(*it)->writeChannel(writer);
 
 		writer.outputLine(&file);
+	}
+}
+
+DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
+{
+	menu = new QMenu(this);
+	KAction *action = new KAction(i18n("Edit Channel"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(actionEdit()));
+	menu->addAction(action);
+
+	proxyModel = new QSortFilterProxyModel(this);
+	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	proxyModel->setSortLocaleAware(true);
+
+	setIndentation(0);
+	QTreeView::setModel(proxyModel);
+	setSortingEnabled(true);
+	sortByColumn(0, Qt::AscendingOrder);
+}
+
+DvbChannelView::~DvbChannelView()
+{
+}
+
+void DvbChannelView::setModel(QAbstractItemModel *model)
+{
+	proxyModel->setSourceModel(model);
+}
+
+void DvbChannelView::setFilterRegExp(const QString& string)
+{
+	proxyModel->setFilterRegExp(string);
+}
+
+void DvbChannelView::contextMenuEvent(QContextMenuEvent *event)
+{
+	QModelIndex index = indexAt(event->pos());
+
+	if (!index.isValid()) {
+		return;
+	}
+
+	editIndex = index;
+	menu->popup(event->globalPos());
+}
+
+void DvbChannelView::actionEdit()
+{
+	if (editIndex.isValid()) {
+		kDebug() << "edit";
 	}
 }

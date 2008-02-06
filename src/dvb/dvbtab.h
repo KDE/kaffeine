@@ -21,8 +21,6 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
-#include <QTreeView>
-
 #include "../manager.h"
 
 class QHBoxLayout;
@@ -42,6 +40,7 @@ public:
 	~DvbTab();
 
 public slots:
+	void configureChannels();
 	void configureDvb();
 
 private slots:
@@ -63,24 +62,6 @@ private:
 
 	// FIXME - just a demo hack
 	DvbStream *dvbStream;
-};
-
-class DvbChannelView : public QTreeView
-{
-	Q_OBJECT
-public:
-	explicit DvbChannelView(QWidget *parent);
-	~DvbChannelView();
-
-protected:
-	void contextMenuEvent(QContextMenuEvent *event);
-
-private slots:
-	void actionEdit();
-
-private:
-	QMenu *menu;
-	QPersistentModelIndex editIndex;
 };
 
 #endif /* DVBTAB_H */

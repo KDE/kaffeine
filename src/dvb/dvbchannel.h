@@ -21,9 +21,10 @@
 #ifndef DVBCHANNEL_H
 #define DVBCHANNEL_H
 
-#include <QAbstractTableModel>
 #include <QSharedData>
+#include <QTreeView>
 
+class QSortFilterProxyModel;
 class DvbChannelReader;
 class DvbChannelWriter;
 
@@ -364,11 +365,7 @@ private:
 	DvbTransponder *transponder;
 };
 
-/*
- * explicitly shared means here that all "copies" will access and modify the same data
- */
-
-typedef QExplicitlySharedDataPointer<DvbChannel> DvbSharedChannel;
+typedef QSharedDataPointer<DvbChannel> DvbSharedChannel;
 
 class DvbChannelModel : public QAbstractTableModel
 {
@@ -393,6 +390,30 @@ public:
 
 private:
 	QList<DvbSharedChannel> list;
+};
+
+class DvbChannelView : public QTreeView
+{
+	Q_OBJECT
+public:
+	explicit DvbChannelView(QWidget *parent);
+	~DvbChannelView();
+
+	virtual void setModel(QAbstractItemModel *model);
+
+public slots:
+	void setFilterRegExp(const QString& string);
+
+protected:
+	void contextMenuEvent(QContextMenuEvent *event);
+
+private slots:
+	void actionEdit();
+
+private:
+	QMenu *menu;
+	QSortFilterProxyModel *proxyModel;
+	QPersistentModelIndex editIndex;
 };
 
 #endif /* DVBCHANNEL_H */
