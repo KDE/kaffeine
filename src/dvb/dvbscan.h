@@ -23,10 +23,12 @@
 
 #include <KDialog>
 
+class DvbTab;
+
 class DvbScanDialog : public KDialog
 {
 public:
-	DvbScanDialog(QWidget *parent, DvbChannelModel *channelModel);
+	explicit DvbScanDialog(DvbTab *dvbTab);
 	~DvbScanDialog() { }
 };
 

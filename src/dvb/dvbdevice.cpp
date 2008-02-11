@@ -492,7 +492,7 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 	abort();
 }
 
-void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &config)
+void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *config)
 {
 	Q_ASSERT(deviceState == DeviceIdle);
 
@@ -512,10 +512,10 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 		return;
 	}
 
-	switch (transponder.transmissionType) {
+	switch (transponder->transmissionType) {
 	case DvbTransponder::DvbC: {
 		const DvbCTransponder *dvbCTransponder =
-			dynamic_cast<const DvbCTransponder *>(&transponder);
+			dynamic_cast<const DvbCTransponder *>(transponder);
 
 		Q_ASSERT(dvbCTransponder != NULL);
 
@@ -538,18 +538,12 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			return;
 		}
 
-		setDeviceState(DeviceTuning);
-
-		// wait for tuning
-		frontendTimeout = config.getTimeout();
-		frontendTimer.start(100);
-
 		break;
 	    }
 	case DvbTransponder::DvbS: {
 		const DvbSTransponder *dvbSTransponder =
-			dynamic_cast<const DvbSTransponder *>(&transponder);
-		const DvbSConfig *dvbSConfig = dynamic_cast<const DvbSConfig *>(&config);
+			dynamic_cast<const DvbSTransponder *>(transponder);
+		const DvbSConfig *dvbSConfig = dynamic_cast<const DvbSConfig *>(config);
 
 		Q_ASSERT(dvbSTransponder != NULL);
 		Q_ASSERT(dvbSConfig != NULL);
@@ -620,17 +614,11 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			return;
 		}
 
-		setDeviceState(DeviceTuning);
-
-		// wait for tuning
-		frontendTimeout = config.getTimeout();
-		frontendTimer.start(100);
-
 		break;
 	    }
 	case DvbTransponder::DvbT: {
 		const DvbTTransponder *dvbTTransponder =
-			dynamic_cast<const DvbTTransponder *>(&transponder);
+			dynamic_cast<const DvbTTransponder *>(transponder);
 
 		Q_ASSERT(dvbTTransponder != NULL);
 
@@ -660,17 +648,11 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			return;
 		}
 
-		setDeviceState(DeviceTuning);
-
-		// wait for tuning
-		frontendTimeout = config.getTimeout();
-		frontendTimer.start(100);
-
 		break;
 	    }
 	case DvbTransponder::Atsc: {
 		const AtscTransponder *atscTransponder =
-			dynamic_cast<const AtscTransponder *>(&transponder);
+			dynamic_cast<const AtscTransponder *>(transponder);
 
 		Q_ASSERT(atscTransponder != NULL);
 
@@ -691,15 +673,15 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder, const DvbConfig &c
 			return;
 		}
 
-		setDeviceState(DeviceTuning);
-
-		// wait for tuning
-		frontendTimeout = config.getTimeout();
-		frontendTimer.start(100);
-
 		break;
 	    }
 	}
+
+	setDeviceState(DeviceTuning);
+
+	// wait for tuning
+	frontendTimeout = config->getTimeout();
+	frontendTimer.start(100);
 
 	// create thread
 	thread = new DvbDeviceThread(dvrFd);

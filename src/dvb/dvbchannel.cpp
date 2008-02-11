@@ -351,6 +351,15 @@ QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, i
 	}
 }
 
+const DvbChannel *DvbChannelModel::getChannel(const QModelIndex &index) const
+{
+	if (!index.isValid() || index.row() >= list.size()) {
+		return NULL;
+	}
+
+	return list.at(index.row());
+}
+
 void DvbChannelModel::setList(const QList<DvbSharedChannel> &list_)
 {
 	reset();

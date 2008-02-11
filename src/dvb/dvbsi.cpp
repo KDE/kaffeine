@@ -59,7 +59,8 @@ void DvbSectionFilter::processData(const char data[188])
 		if (bufferValid) {
 			if (!buffer.isEmpty()) {
 				int pos = static_cast<unsigned char> (buffer.at(0)) + 1;
-				processSection(DvbSection(DvbUnsignedByteArray(buffer, pos)));
+				DvbSectionData data(buffer.constData() + pos, buffer.size() - pos);
+				processSection(data);
 			} else {
 				kDebug() << "valid buffer is empty";
 			}
@@ -96,57 +97,97 @@ void DvbSectionFilter::appendData(const char *data, int length)
 	memcpy(buffer.data() + size, data, length);
 }
 
-void DvbPatFilter::processSection(const DvbSection &section)
+void DvbPatFilter::processSection(const DvbSectionData &data)
 {
+	DvbPatSection section(data);
+
 	if (!section.isValid()) {
 		kDebug() << "invalid section";
 		return;
 	}
 
-	if ((section.tableId() != 0) || !section.isPublicSection()) {
-		kDebug() << "section doesn't fit into PAT";
+	// FIXME take care of section number
+
+	if (section.versionNumber() == versionNumber) {
 		return;
 	}
 
-	DvbPublicSection publicSection(section);
+	versionNumber = section.versionNumber();
 
-	if (!publicSection.isValid()) {
-		kDebug() << "invalid public section";
-		return;
+	kDebug() << "found a new PAT";
+
+	DvbPatEntry entry = section.entries();
+
+	while (!entry.isEmpty()) {
+		if (!entry.isValid()) {
+			kDebug() << "invalid PAT entry";
+			break;
+		}
+
+		kDebug() << "PAT entry [ programNumber =" << entry.programNumber() << "pid ="
+			<< entry.pid() << "]";
+
+		entry = entry.next();
 	}
+}
 
-	if (!publicSection.verifyCrc32()) {
-		kDebug() << "crc wrong";
+void DvbPmtFilter::processSection(const DvbSectionData &data)
+{
+	DvbPmtSection section(data);
+
+	if (!section.isValid()) {
+		kDebug() << "invalid section";
 		return;
 	}
 
 	// FIXME take care of section number
 
-	if (publicSection.versionNumber() == versionNumber) {
+	if (section.versionNumber() == versionNumber) {
 		return;
 	}
 
-	versionNumber = publicSection.versionNumber();
+	versionNumber = section.versionNumber();
 
-	DvbUnsignedByteArray data = publicSection.sectionData();
-	int dataSize = publicSection.sectionDataSize();
+	kDebug() << "found a new PMT";
 
-	if ((dataSize % 4) != 0) {
-		kDebug() << "table size not a multiple of 4";
-		return;
+	DvbDescriptor descriptor = section.descriptors();
+
+	while (!descriptor.isEmpty()) {
+		if (!descriptor.isValid()) {
+			kDebug() << "invalid descriptor";
+			break;
+		}
+
+		kDebug() << "\tPMT descriptor [ tag =" << descriptor.descriptorTag() << "]";
+
+		descriptor = descriptor.next();
 	}
 
-	kDebug() << "found a new PAT";
+	DvbPmtEntry entry = section.entries();
 
-	programTable.resize(dataSize / 4);
+	while (!entry.isEmpty()) {
+		if (!entry.isValid()) {
+			kDebug() << "invalid stream";
+			break;
+		}
 
-	for (int i = 0; i < dataSize / 4; ++i) {
-		int pos = 4 * i;
+		kDebug() << "\tPMT stream [ type =" << entry.streamType() << "pid ="
+			<< entry.pid() << "]";
 
-		unsigned int programNumber = (data.at(pos) << 8) | data.at(pos + 1);
-		unsigned int pid = ((data.at(pos + 2) << 8) | data.at(pos + 3)) & ((1 << 13) - 1);
+		descriptor = entry.descriptors();
 
-		programTable.replace(i, qMakePair(programNumber, pid));
+		while (!descriptor.isEmpty()) {
+			if (!descriptor.isValid()) {
+				kDebug() << "invalid descriptor";
+				break;
+			}
+
+			kDebug() << "\t\tstream descriptor [ tag =" << descriptor.descriptorTag() << "]";
+
+			descriptor = descriptor.next();
+		}
+
+		entry = entry.next();
 	}
 }
 
@@ -167,7 +208,7 @@ void DvbPatFilter::processSection(const DvbSection &section)
  * }
  */
 
-const unsigned int DvbPublicSection::crc32Table[] =
+const unsigned int DvbStandardSection::crc32Table[] =
 {
 	0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9,
 	0x130476dc, 0x17c56b6b, 0x1a864db2, 0x1e475005,
@@ -235,13 +276,12 @@ const unsigned int DvbPublicSection::crc32Table[] =
 	0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
 };
 
-bool DvbPublicSection::verifyCrc32() const
+bool DvbStandardSection::verifyCrc32() const
 {
 	unsigned int crc32 = 0xffffffff;
-	int length = sectionLength();
 
 	for (int i = 0; i < length; ++i) {
-		crc32 = (crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ data.at(i)];
+		crc32 = (crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ at(i)];
 	}
 
 	return crc32 == 0;

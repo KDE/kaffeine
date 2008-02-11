@@ -21,9 +21,10 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include <QMap>
 #include "../manager.h"
 
-class QHBoxLayout;
+class QModelIndex;
 namespace Solid
 {
 class Device;
@@ -39,6 +40,11 @@ public:
 	DvbTab(Manager *manager_);
 	~DvbTab();
 
+	DvbChannelModel *getChannelModel()
+	{
+		return channelModel;
+	}
+
 public slots:
 	void configureChannels();
 	void configureDvb();
@@ -46,8 +52,7 @@ public slots:
 private slots:
 	void componentAdded(const QString &udi);
 	void componentRemoved(const QString &udi);
-	// FIXME - just a demo hack
-	void channelActivated();
+	void playLive(const QModelIndex &index);
 
 private:
 	void activate();
@@ -55,7 +60,7 @@ private:
 	void customEvent(QEvent *event);
 	void componentAdded(const Solid::Device &component);
 
-	QHBoxLayout *mediaLayout;
+	QLayout *mediaLayout;
 	QMap<int, DvbDevice *> devices;
 
 	DvbChannelModel *channelModel;

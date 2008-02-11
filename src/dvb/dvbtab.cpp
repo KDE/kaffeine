@@ -116,7 +116,7 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 	// FIXME - just a demo hack
 	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
 	channels->setModel(channelModel);
-	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(channelActivated()));
+	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)), channels, SLOT(setFilterRegExp(QString)));
 	leftSideLayout->addWidget(channels);
 
@@ -138,7 +138,7 @@ DvbTab::~DvbTab()
 
 void DvbTab::configureChannels()
 {
-	DvbScanDialog dialog(this, channelModel);
+	DvbScanDialog dialog(this);
 
 	dialog.exec();
 }
@@ -240,7 +240,7 @@ void DvbTab::componentRemoved(const QString &udi)
 }
 
 // FIXME - just a demo hack
-void DvbTab::channelActivated()
+void DvbTab::playLive(const QModelIndex &index)
 {
 	if (devices.isEmpty()) {
 		return;
@@ -251,9 +251,10 @@ void DvbTab::channelActivated()
 	delete dvbStream;
 	dvbStream = new DvbStream(device);
 
-	DvbSTransponder transponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto);
+	const DvbChannel *channel = channelModel->getChannel(index);
+
 	DvbSConfig config("test");
-	device->tuneDevice(transponder, config);
+	device->tuneDevice(channel->getTransponder(), &config);
 
 	device->addPidFilter(110, dvbStream);
 	device->addPidFilter(120, dvbStream);

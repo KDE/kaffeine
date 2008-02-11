@@ -83,7 +83,7 @@ public:
 		return frontendName;
 	}
 
-	void tuneDevice(const DvbTransponder &transponder, const DvbConfig &config);
+	void tuneDevice(const DvbTransponder *transponder, const DvbConfig *config);
 	void stopDevice();
 
 	/*

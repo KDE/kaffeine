@@ -26,7 +26,7 @@
 #include "dvbscan.h"
 #include "dvbtab.h"
 
-DvbScanDialog::DvbScanDialog(QWidget *parent, DvbChannelModel *channelModel) : KDialog(parent)
+DvbScanDialog::DvbScanDialog(DvbTab *dvbTab) : KDialog(dvbTab)
 {
 	setCaption(i18n("Configure Channels"));
 
@@ -49,7 +49,7 @@ DvbScanDialog::DvbScanDialog(QWidget *parent, DvbChannelModel *channelModel) : K
 	rightLayout->addWidget(channelPreview);
 
 	DvbChannelView *channelView = new DvbChannelView(mainWidget);
-	channelView->setModel(channelModel);
+	channelView->setModel(dvbTab->getChannelModel());
 	mainLayout->addWidget(channelView);
 	mainLayout->addWidget(rightWidget);
 
