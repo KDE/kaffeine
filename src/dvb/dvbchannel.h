@@ -370,7 +370,7 @@ typedef QSharedDataPointer<DvbChannel> DvbSharedChannel;
 class DvbChannelModel : public QAbstractTableModel
 {
 public:
-	DvbChannelModel(const QList<DvbSharedChannel> &list_, QObject *parent);
+	DvbChannelModel(QObject *parent);
 	~DvbChannelModel();
 
 	int columnCount(const QModelIndex &parent) const;
@@ -401,7 +401,13 @@ public:
 	explicit DvbChannelView(QWidget *parent);
 	~DvbChannelView();
 
-	virtual void setModel(QAbstractItemModel *model);
+	void setModel(QAbstractItemModel *model);
+
+	/*
+	 * should be only used in the scan dialog
+	 */
+
+	void enableDeleteAction();
 
 public slots:
 	void setFilterRegExp(const QString& string);
@@ -411,11 +417,13 @@ protected:
 
 private slots:
 	void actionEdit();
+	void actionChangeIcon();
+	void actionDelete();
 
 private:
-	QMenu *menu;
 	QSortFilterProxyModel *proxyModel;
-	QPersistentModelIndex editIndex;
+	QMenu *menu;
+	QPersistentModelIndex menuIndex;
 };
 
 #endif /* DVBCHANNEL_H */

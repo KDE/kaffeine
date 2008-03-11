@@ -1,0 +1,214 @@
+<ui version="4.0" >
+ <class>DvbScanDialog</class>
+ <widget class="QWidget" name="DvbScanDialog" >
+  <layout class="QHBoxLayout" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Channels</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>Use right click to edit/delete</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="DvbChannelView" native="1" name="channelView" />
+      </item>
+      <item>
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QPushButton" name="newChannelButton" >
+          <property name="text" >
+           <string>New</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="deleteAllButton" >
+          <property name="text" >
+           <string>Delete all</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QVBoxLayout" >
+     <item>
+      <widget class="QGroupBox" name="groupBox_2" >
+       <property name="title" >
+        <string>Channel search</string>
+       </property>
+       <layout class="QVBoxLayout" >
+        <item>
+         <widget class="QLabel" name="label" >
+          <property name="text" >
+           <string>Select source:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="sourceList" />
+        </item>
+        <item>
+         <widget class="QPushButton" name="scanButton" >
+          <property name="checkable" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="scanFilesLabel" />
+        </item>
+        <item>
+         <layout class="QGridLayout" >
+          <item row="0" column="0" >
+           <widget class="QLabel" name="label_3" >
+            <property name="text" >
+             <string>Signal:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" >
+           <widget class="QLabel" name="label_4" >
+            <property name="text" >
+             <string>SNR:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2" >
+           <widget class="QLabel" name="label_5" >
+            <property name="text" >
+             <string>Tuned:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" >
+           <widget class="DvbGradProgress" native="1" name="signalWidget" />
+          </item>
+          <item row="1" column="1" >
+           <widget class="DvbGradProgress" native="1" name="snrWidget" />
+          </item>
+          <item row="2" column="1" >
+           <widget class="KLed" name="tuningLed" >
+            <property name="state" >
+             <enum>KLed::Off</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar" />
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation" >
+        <enum>Qt::Vertical</enum>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_4" >
+       <property name="title" >
+        <string>Filter</string>
+       </property>
+       <layout class="QVBoxLayout" >
+        <item>
+         <widget class="QCheckBox" name="FtaCBox" >
+          <property name="text" >
+           <string>Free to air</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="radioCBox" >
+          <property name="text" >
+           <string>Radio</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="TvCBox" >
+          <property name="text" >
+           <string>TV</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="providerCBox" >
+          <property name="text" >
+           <string>Provider:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="providerList" >
+          <property name="enabled" >
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="filteredButton" >
+          <property name="text" >
+           <string>Add filtered</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3" >
+     <property name="title" >
+      <string>Scan results</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <item>
+       <widget class="DvbChannelView" native="1" name="scanResultsView" />
+      </item>
+      <item>
+       <widget class="QPushButton" name="selectedButton" >
+        <property name="text" >
+         <string>Add selected</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KLed</class>
+   <extends>QWidget</extends>
+   <header>kled.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DvbGradProgress</class>
+   <extends>QWidget</extends>
+   <header>dvb/dvbscan.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DvbChannelView</class>
+   <extends>QWidget</extends>
+   <header>dvb/dvbchannel.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

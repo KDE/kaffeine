@@ -711,6 +711,49 @@ void DvbDevice::stopDevice()
 	setDeviceState(DeviceIdle);
 }
 
+int DvbDevice::getSignal()
+{
+	Q_ASSERT(frontendFd >= 0);
+
+	int signal = ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH);
+
+	if ((signal < 0) || (signal > 0xffff)) {
+		kWarning() << "ioctl FE_READ_SIGNAL_STRENGTH failed for" << frontendPath;
+		return 0;
+	}
+
+	return (signal * 100) / 0xffff;
+}
+
+int DvbDevice::getSnr()
+{
+	Q_ASSERT(frontendFd >= 0);
+
+	int snr = ioctl(frontendFd, FE_READ_SNR);
+
+	if ((snr < 0) || (snr > 0xffff)) {
+		kWarning() << "ioctl FE_READ_SNR failed for" << frontendPath;
+		return 0;
+	}
+
+	return (snr * 100) / 0xffff;
+}
+
+bool DvbDevice::isTuned()
+{
+	Q_ASSERT(frontendFd >= 0);
+
+	fe_status_t status;
+	memset(&status, 0, sizeof(status));
+
+	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
+		kWarning() << "ioctl FE_READ_STATUS failed for" << frontendPath;
+		return false;
+	}
+
+	return (status & FE_HAS_LOCK) != 0;
+}
+
 void DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 {
 	if (thread != NULL) {

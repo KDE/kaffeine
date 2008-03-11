@@ -297,8 +297,7 @@ void DvbChannel::writeChannel(DvbChannelWriter &writer) const
 	transponder->writeTransponder(writer);
 }
 
-DvbChannelModel::DvbChannelModel(const QList<DvbSharedChannel> &list_, QObject *parent)
-	: QAbstractTableModel(parent), list(list_)
+DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
 {
 }
 
@@ -421,11 +420,6 @@ void DvbChannelModel::writeList(QList<DvbSharedChannel> list)
 
 DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
 {
-	menu = new QMenu(this);
-	KAction *action = new KAction(i18n("Edit Channel"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(actionEdit()));
-	menu->addAction(action);
-
 	proxyModel = new QSortFilterProxyModel(this);
 	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	proxyModel->setSortLocaleAware(true);
@@ -434,6 +428,16 @@ DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
 	QTreeView::setModel(proxyModel);
 	setSortingEnabled(true);
 	sortByColumn(0, Qt::AscendingOrder);
+
+	menu = new QMenu(this);
+
+	KAction *action = new KAction(i18n("Edit channel"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(actionEdit()));
+	menu->addAction(action);
+
+	action = new KAction(i18n("Change icon"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(actionChangeIcon()));
+	menu->addAction(action);
 }
 
 DvbChannelView::~DvbChannelView()
@@ -443,6 +447,13 @@ DvbChannelView::~DvbChannelView()
 void DvbChannelView::setModel(QAbstractItemModel *model)
 {
 	proxyModel->setSourceModel(model);
+}
+
+void DvbChannelView::enableDeleteAction()
+{
+	KAction *action = new KAction(i18n("Delete channel"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(actionDelete()));
+	menu->addAction(action);
 }
 
 void DvbChannelView::setFilterRegExp(const QString& string)
@@ -458,13 +469,33 @@ void DvbChannelView::contextMenuEvent(QContextMenuEvent *event)
 		return;
 	}
 
-	editIndex = index;
+	menuIndex = index;
 	menu->popup(event->globalPos());
 }
 
 void DvbChannelView::actionEdit()
 {
-	if (editIndex.isValid()) {
-		kDebug() << "edit";
+	if (!menuIndex.isValid()) {
+		return;
 	}
+
+	// FIXME
+}
+
+void DvbChannelView::actionChangeIcon()
+{
+	if (!menuIndex.isValid()) {
+		return;
+	}
+
+	// FIXME
+}
+
+void DvbChannelView::actionDelete()
+{
+	if (!menuIndex.isValid()) {
+		return;
+	}
+
+	// FIXME
 }

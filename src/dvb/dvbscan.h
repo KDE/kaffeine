@@ -21,15 +21,53 @@
 #ifndef DVBSCAN_H
 #define DVBSCAN_H
 
+#include <QLabel>
+#include <QTimer>
 #include <KDialog>
 
+class DvbChannelModel;
+class DvbDevice;
+class DvbScanInternal;
 class DvbTab;
+class Ui_DvbScanDialog;
 
 class DvbScanDialog : public KDialog
 {
+	Q_OBJECT
 public:
-	explicit DvbScanDialog(DvbTab *dvbTab);
-	~DvbScanDialog() { }
+	explicit DvbScanDialog(DvbTab *dvbTab_);
+	~DvbScanDialog();
+
+private slots:
+	void scanButtonClicked(bool checked);
+	void updateStatus();
+
+private:
+	DvbTab *dvbTab;
+	Ui_DvbScanDialog *ui;
+	DvbChannelModel *channelModel;
+	DvbChannelModel *previewModel;
+
+	DvbDevice *device;
+	QTimer statusTimer;
+	bool isLive;
+
+	DvbScanInternal *internal;
+};
+
+class DvbGradProgress : public QLabel
+{
+public:
+	explicit DvbGradProgress(QWidget *parent);
+	~DvbGradProgress();
+
+	void setValue(int value_);
+
+protected:
+	void paintEvent(QPaintEvent *event);
+
+private:
+	int value;
 };
 
 #endif /* DVBSCAN_H */

@@ -18,40 +18,129 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <QBoxLayout>
-#include <QLabel>
-#include <KLocalizedString>
-
-#include "dvbchannel.h"
 #include "dvbscan.h"
+#include "dvbsi.h"
 #include "dvbtab.h"
+#include "ui_dvbscandialog.h"
+#include <QPainter>
 
-DvbScanDialog::DvbScanDialog(DvbTab *dvbTab) : KDialog(dvbTab)
+DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
 {
-	setCaption(i18n("Configure Channels"));
+	setAlignment(Qt::AlignCenter);
+	setFrameShape(Box);
+	setText(i18n("0%"));
+}
 
-	QWidget *mainWidget = new QWidget(this);
-	QLayout *mainLayout = new QHBoxLayout(mainWidget);
+DvbGradProgress::~DvbGradProgress()
+{
+}
 
-	QWidget *rightWidget = new QWidget(mainWidget);
-	QLayout *rightLayout = new QVBoxLayout(rightWidget);
+void DvbGradProgress::setValue(int value_)
+{
+	value = value_;
+	Q_ASSERT((value >= 0) && (value <= 100));
+	setText(i18n("%1%").arg(value));
+	update();
+}
 
-	QWidget *topWidget = new QWidget(rightWidget);
-	QLayout *topLayout = new QHBoxLayout(topWidget);
+void DvbGradProgress::paintEvent(QPaintEvent *event)
+{
+	{
+		QPainter painter(this);
+		int border = frameWidth();
+		QRect rect(border, border, width() - 2 * border, height() - 2 * border);
+		QLinearGradient gradient(rect.topLeft(), rect.topRight());
+		gradient.setColorAt(0, Qt::red);
+		gradient.setColorAt(1, Qt::green);
+		rect.setWidth((rect.width() * value) / 100);
+		painter.fillRect(rect, gradient);
+	}
 
-	QPushButton *button = new QPushButton(i18n("Scan"), topWidget);
-	topLayout->addWidget(button);
-	QLabel *label = new QLabel("Scan file from xx.xx.xxxx", topWidget);
-	topLayout->addWidget(label);
+	QLabel::paintEvent(event);
+}
 
-	DvbChannelView *channelPreview = new DvbChannelView(rightWidget);
-	rightLayout->addWidget(topWidget);
-	rightLayout->addWidget(channelPreview);
+class DvbScanInternal
+{
+public:
+	DvbScanInternal() { }
+	~DvbScanInternal() { }
+};
 
-	DvbChannelView *channelView = new DvbChannelView(mainWidget);
-	channelView->setModel(dvbTab->getChannelModel());
-	mainLayout->addWidget(channelView);
-	mainLayout->addWidget(rightWidget);
+DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
+{
+	setCaption(i18n("Configure channels"));
 
-	setMainWidget(mainWidget);
+	QWidget *widget = new QWidget(this);
+	ui = new Ui_DvbScanDialog();
+	ui->setupUi(widget);
+
+	QString date = KGlobal::locale()->formatDate(dvbTab->getScanFilesDate(), KLocale::ShortDate);
+	ui->scanFilesLabel->setText(i18n("Scan files last updated<br>on %1").arg(date));
+	ui->scanButton->setText(i18n("Start scan"));
+
+	channelModel = new DvbChannelModel(this);
+	channelModel->setList(dvbTab->getChannelModel()->getList());
+	ui->channelView->setModel(channelModel);
+	ui->channelView->enableDeleteAction();
+
+	previewModel = new DvbChannelModel(this);
+	ui->scanResultsView->setModel(previewModel);
+
+	DvbDevice *liveDevice = dvbTab->getLiveDevice();
+
+	if (liveDevice != NULL) {
+		ui->sourceList->addItem(i18n("Current transponder"));
+		ui->sourceList->setEnabled(false);
+		device = liveDevice;
+		statusTimer.start(1000);
+		isLive = true;
+	} else {
+		QStringList list = dvbTab->getSourceList();
+
+		if (!list.isEmpty()) {
+			ui->sourceList->addItems(list);
+		} else {
+			ui->sourceList->setEnabled(false);
+			ui->scanButton->setEnabled(false);
+		}
+
+		device = NULL;
+		isLive = false;
+	}
+
+	connect(ui->scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
+	connect(ui->providerCBox, SIGNAL(clicked(bool)), ui->providerList, SLOT(setEnabled(bool)));
+	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
+
+	setMainWidget(widget);
+}
+
+DvbScanDialog::~DvbScanDialog()
+{
+	delete ui;
+}
+
+void DvbScanDialog::scanButtonClicked(bool checked)
+{
+	if (!checked) {
+		// stop scan
+		ui->scanButton->setText(i18n("Start scan"));
+		Q_ASSERT(internal != NULL);
+		delete internal;
+		internal = NULL;
+		return;
+	}
+
+	// start scan
+	ui->scanButton->setText(i18n("Stop scan"));
+	Q_ASSERT(internal == NULL);
+
+	// FIXME
+}
+
+void DvbScanDialog::updateStatus()
+{
+	ui->signalWidget->setValue(device->getSignal());
+	ui->snrWidget->setValue(device->getSnr());
+	ui->tuningLed->setState(device->isTuned() ? KLed::On : KLed::Off);
 }

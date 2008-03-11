@@ -40,9 +40,30 @@ public:
 	DvbTab(Manager *manager_);
 	~DvbTab();
 
-	DvbChannelModel *getChannelModel()
+	/*
+	 * returns the date of the last scan file update
+	 */
+
+	QDate getScanFilesDate() const
+	{
+		// FIXME
+		return QDate(2008, 3, 10);
+	}
+
+	QStringList getSourceList() const
+	{
+		// FIXME
+		return QStringList();
+	}
+
+	DvbChannelModel *getChannelModel() const
 	{
 		return channelModel;
+	}
+
+	DvbDevice *getLiveDevice() const
+	{
+		return liveDevice;
 	}
 
 public slots:
@@ -64,6 +85,8 @@ private:
 	QMap<int, DvbDevice *> devices;
 
 	DvbChannelModel *channelModel;
+
+	DvbDevice *liveDevice;
 
 	// FIXME - just a demo hack
 	DvbStream *dvbStream;

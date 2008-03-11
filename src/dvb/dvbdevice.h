@@ -87,6 +87,15 @@ public:
 	void stopDevice();
 
 	/*
+	 * signal and SNR are scaled from 0 to 100
+	 * the device has to be tuned / tuning when you call one of these functions
+	 */
+
+	int getSignal();
+	int getSnr();
+	bool isTuned();
+
+	/*
 	 * you can use the same filter object for different pids
 	 * all filters will be removed when the device becomes idle
 	 */

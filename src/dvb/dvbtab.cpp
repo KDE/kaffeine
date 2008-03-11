@@ -83,7 +83,7 @@ private:
 	int bufferPos;
 };
 
-DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
+DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStream(NULL)
 {
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
@@ -107,11 +107,12 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), dvbStream(NULL)
 	searchBoxLayout->addWidget(lineEdit);
 
 	// FIXME - just a demo hack
+	channelModel = new DvbChannelModel(this);
 	QList<DvbSharedChannel> list;
 	list.append(DvbSharedChannel(new DvbChannel("sample", 1, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
 	list.append(DvbSharedChannel(new DvbChannel("channel", 3, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
 	list.append(DvbSharedChannel(new DvbChannel("test", 2, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
-	channelModel = new DvbChannelModel(list, this);
+	channelModel->setList(list);
 
 	// FIXME - just a demo hack
 	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
