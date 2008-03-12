@@ -715,9 +715,9 @@ int DvbDevice::getSignal()
 {
 	Q_ASSERT(frontendFd >= 0);
 
-	int signal = ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH);
+	quint16 signal;
 
-	if ((signal < 0) || (signal > 0xffff)) {
+	if (ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH, &signal) != 0) {
 		kWarning() << "ioctl FE_READ_SIGNAL_STRENGTH failed for" << frontendPath;
 		return 0;
 	}
@@ -729,9 +729,9 @@ int DvbDevice::getSnr()
 {
 	Q_ASSERT(frontendFd >= 0);
 
-	int snr = ioctl(frontendFd, FE_READ_SNR);
+	quint16 snr;
 
-	if ((snr < 0) || (snr > 0xffff)) {
+	if (ioctl(frontendFd, FE_READ_SNR, &snr) != 0) {
 		kWarning() << "ioctl FE_READ_SNR failed for" << frontendPath;
 		return 0;
 	}

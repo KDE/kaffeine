@@ -92,6 +92,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 		ui->sourceList->addItem(i18n("Current transponder"));
 		ui->sourceList->setEnabled(false);
 		device = liveDevice;
+		updateStatus();
 		statusTimer.start(1000);
 		isLive = true;
 	} else {
