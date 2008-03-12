@@ -26,16 +26,15 @@
 
 class DvbLiveFeed : public QObject
 {
+	friend class EnginePhonon;
 	Q_OBJECT
 public:
 	DvbLiveFeed() { }
 	virtual ~DvbLiveFeed() { }
 
-public slots:
-	virtual void setPaused(bool paused) = 0;
-	virtual void stop() = 0;
-
 signals:
+	void livePaused(bool paused);
+	void liveStopped();
 	void writeData(const QByteArray &data);
 };
 

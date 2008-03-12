@@ -55,16 +55,6 @@ public:
 	~DvbStream() { }
 
 private:
-	void setPaused(bool /*paused*/)
-	{
-		// timeshift etc
-	}
-
-	void stop()
-	{
-		device->stopDevice();
-	}
-
 	void processData(const char data[188])
 	{
 		// FIXME too hacky
@@ -260,7 +250,22 @@ void DvbTab::playLive(const QModelIndex &index)
 	device->addPidFilter(110, dvbStream);
 	device->addPidFilter(120, dvbStream);
 
+	liveDevice = device;
+	connect(dvbStream, SIGNAL(livePaused(bool)), this, SLOT(livePaused(bool)));
+	connect(dvbStream, SIGNAL(liveStopped()), this, SLOT(liveStopped()));
+
 	manager->getMediaWidget()->playDvb(dvbStream);
+}
+
+void DvbTab::livePaused(bool /*paused*/)
+{
+	// FIXME - timeshift & co
+}
+
+void DvbTab::liveStopped()
+{
+	liveDevice->stopDevice();
+	liveDevice = NULL;
 }
 
 void DvbTab::componentAdded(const Solid::Device &component)

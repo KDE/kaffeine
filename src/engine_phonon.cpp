@@ -148,20 +148,20 @@ void EnginePhonon::stateChanged(Phonon::State state)
 		case Phonon::BufferingState:
 		case Phonon::PlayingState:
 			if (liveFeed != NULL) {
-				liveFeed->setPaused(false);
+				liveFeed->livePaused(false);
 			}
 			break;
 
 		case Phonon::PausedState:
 			if (liveFeed != NULL) {
-				liveFeed->setPaused(true);
+				liveFeed->livePaused(true);
 			}
 			break;
 
 		case Phonon::StoppedState:
 			if (liveFeed != NULL) {
 				disconnect(liveFeed, SIGNAL(writeData(QByteArray)), liveFeedPhonon, SLOT(writeData(QByteArray)));
-				liveFeed->stop();
+				liveFeed->liveStopped();
 				liveFeed = NULL;
 			}
 			emit playbackFinished();
@@ -170,7 +170,7 @@ void EnginePhonon::stateChanged(Phonon::State state)
 		case Phonon::ErrorState:
 			if (liveFeed != NULL) {
 				disconnect(liveFeed, SIGNAL(writeData(QByteArray)), liveFeedPhonon, SLOT(writeData(QByteArray)));
-				liveFeed->stop();
+				liveFeed->liveStopped();
 				liveFeed = NULL;
 			}
 			emit playbackFailed(mediaObject->errorString());

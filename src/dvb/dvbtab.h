@@ -74,6 +74,8 @@ private slots:
 	void componentAdded(const QString &udi);
 	void componentRemoved(const QString &udi);
 	void playLive(const QModelIndex &index);
+	void livePaused(bool paused);
+	void liveStopped();
 
 private:
 	void activate();
