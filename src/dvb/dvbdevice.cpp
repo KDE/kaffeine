@@ -63,15 +63,6 @@ public:
 		return x < y.pid;
 	}
 
-	void processData(const char data[188])
-	{
-		QList<DvbPidFilter *>::iterator it;
-
-		for (it = filters.begin(); it != filters.end(); ++it) {
-			(*it)->processData(data);
-		}
-	}
-
 	int pid;
 	int dmxFd;
 	QList<DvbPidFilter *> filters;
@@ -227,7 +218,13 @@ void DvbDeviceThread::customEvent(QEvent *)
 					qBinaryFind(filters.begin(), filters.end(), pid);
 
 				if (it != filters.end()) {
-					it->processData(packet);
+					/*
+					 * it->filters has to be copied (foreach does that for us),
+					 * because processData() may modify it
+					 */
+					foreach (DvbPidFilter *filter, it->filters) {
+						filter->processData(packet);
+					}
 				}
 			}
 
