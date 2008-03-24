@@ -212,7 +212,8 @@ void DvbDeviceThread::customEvent(QEvent *)
 		for (i = 0; i < usedBuffers; ++i) {
 			for (int j = 0; j < currentUsed->count; ++j) {
 				char *packet = currentUsed->packets[j];
-				int pid = ((packet[1] << 8) + packet[2]) & 0x1fff;
+				int pid = ((static_cast<unsigned char> (packet[1]) << 8) |
+					static_cast<unsigned char> (packet[2])) & ((1 << 13) - 1);
 
 				QList<DvbFilterInternal>::iterator it =
 					qBinaryFind(filters.begin(), filters.end(), pid);
