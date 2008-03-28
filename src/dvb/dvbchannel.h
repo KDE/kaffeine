@@ -28,7 +28,7 @@ class QSortFilterProxyModel;
 class DvbChannelReader;
 class DvbChannelWriter;
 
-class DvbTransponder
+class DvbTransponder : public QSharedData
 {
 public:
 	enum TransmissionType
@@ -61,6 +61,9 @@ public:
 
 protected:
 	DvbTransponder(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }
+
+private:
+	Q_DISABLE_COPY(DvbTransponder);
 };
 
 class DvbCTransponder : public DvbTransponder
@@ -298,21 +301,14 @@ public:
 	ModulationType modulationType;
 };
 
-class DvbChannel : public QSharedData
+typedef QSharedDataPointer<DvbTransponder> DvbSharedTransponder;
+
+class DvbChannel
 {
 public:
-	DvbChannel(const QString &name_, int number_, const QString &source_,
-		DvbTransponder *transponder_, int serviceId_, int videoPid_) : name(name_),
-		number(number_), source(source_), serviceId(serviceId_), videoPid(videoPid_),
-		transponder(transponder_) { }
-
-	~DvbChannel()
-	{
-		delete transponder;
-	}
-
-	static DvbChannel *readChannel(DvbChannelReader &reader);
-	void writeChannel(DvbChannelWriter &writer) const;
+	DvbChannel() : name(), number(-1), source(), networkId(-1), tsId(-1), serviceId(-1),
+		videoPid(-1), videoType(-1), transponder() { }
+	~DvbChannel() { }
 
 	/*
 	 * name
@@ -333,19 +329,16 @@ public:
 	QString source;
 
 	/*
-	 * transponder (owned by DvbChannel)
+	 * network id
 	 */
 
-	const DvbTransponder *getTransponder() const
-	{
-		return transponder;
-	}
+	int networkId;
 
-	void setTransponder(DvbTransponder *value)
-	{
-		delete transponder;
-		transponder = value;
-	}
+	/*
+	 * transport stream id
+	 */
+
+	int tsId;
 
 	/*
 	 * service id
@@ -359,13 +352,29 @@ public:
 
 	int videoPid;
 
+	/*
+	 * video type
+	 */
+
+	int videoType;
+
+	/*
+	 * transponder (owned by DvbChannel)
+	 */
+
+	const DvbTransponder *getTransponder() const
+	{
+		return transponder;
+	}
+
+	void setTransponder(DvbTransponder *value)
+	{
+		transponder = DvbSharedTransponder(value);
+	}
+
 private:
-	Q_DISABLE_COPY(DvbChannel)
-
-	DvbTransponder *transponder;
+	DvbSharedTransponder transponder;
 };
-
-typedef QSharedDataPointer<DvbChannel> DvbSharedChannel;
 
 class DvbChannelModel : public QAbstractTableModel
 {
@@ -380,18 +389,18 @@ public:
 
 	const DvbChannel *getChannel(const QModelIndex &index) const;
 
-	QList<DvbSharedChannel> getList() const
+	QList<DvbChannel> getList() const
 	{
 		return list;
 	}
 
-	void setList(const QList<DvbSharedChannel> &list_);
+	void setList(const QList<DvbChannel> &list_);
 
-	static QList<DvbSharedChannel> readList();
-	static void writeList(QList<DvbSharedChannel> list);
+	static QList<DvbChannel> readList();
+	static void writeList(QList<DvbChannel> list);
 
 private:
-	QList<DvbSharedChannel> list;
+	QList<DvbChannel> list;
 };
 
 class DvbChannelView : public QTreeView

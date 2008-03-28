@@ -98,10 +98,18 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStre
 
 	// FIXME - just a demo hack
 	channelModel = new DvbChannelModel(this);
-	QList<DvbSharedChannel> list;
-	list.append(DvbSharedChannel(new DvbChannel("sample", 1, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
-	list.append(DvbSharedChannel(new DvbChannel("channel", 3, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
-	list.append(DvbSharedChannel(new DvbChannel("test", 2, "", new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto), 0, 0)));
+	QList<DvbChannel> list;
+	DvbChannel channel;
+	channel.name = "sample";
+	channel.number = 1;
+	channel.setTransponder(new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto));
+	list.append(channel);
+	channel.name = "channel";
+	channel.number = 2;
+	list.append(channel);
+	channel.name = "test";
+	channel.number = 3;
+	list.append(channel);
 	channelModel->setList(list);
 
 	// FIXME - just a demo hack

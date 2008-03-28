@@ -23,58 +23,24 @@
 
 #include "dvbdevice.h"
 
-class DvbSectionData
+class DvbSectionData;
+
+class DvbSectionFilter : public QObject, public DvbPidFilter
 {
+	Q_OBJECT
 public:
-	DvbSectionData(const char *data_, int size_) : length(-1), data(data_), size(size_) { }
-	~DvbSectionData() { }
-
-	bool isEmpty() const
-	{
-		return size == 0;
-	}
-
-	bool isValid() const
-	{
-		return length >= 0;
-	}
-
-protected:
-	bool checkLength() const
-	{
-		return size >= length;
-	}
-
-	unsigned char at(int index) const
-	{
-		return data[index];
-	}
-
-	DvbSectionData subArray(int index, int size) const
-	{
-		return DvbSectionData(data + index, size);
-	}
-
-	DvbSectionData nextData() const
-	{
-		return DvbSectionData(data + length, size - length);
-	}
-
-	int length;
-
-private:
-	const char *data;
-	int size;
-};
-
-class DvbSectionFilter : public DvbPidFilter
-{
-public:
-	DvbSectionFilter() : continuityCounter(0), bufferValid(false) { }
+	DvbSectionFilter() : continuityCounter(-1), bufferValid(false) { }
 	~DvbSectionFilter() { }
 
-protected:
-	virtual void processSection(const DvbSectionData &data) = 0;
+	void resetFilter()
+	{
+		buffer.clear();
+		continuityCounter = -1;
+		bufferValid = false;
+	}
+
+signals:
+	void sectionFound(const DvbSectionData &data);
 
 private:
 	void processData(const char data[188]);
@@ -86,154 +52,49 @@ private:
 	bool bufferValid;
 };
 
-class DvbPatFilter : public DvbSectionFilter
+class DvbSectionData
 {
+	friend class DvbSiText;
 public:
-	DvbPatFilter() : versionNumber(-1) { }
-	~DvbPatFilter() { }
+	DvbSectionData(const char *data_, int size_) : length(-1), size(size_), data(data_) { }
+	~DvbSectionData() { }
+
+	bool isEmpty() const
+	{
+		return size == 0;
+	}
+
+	bool isValid() const
+	{
+		return length > 0;
+	}
+
+protected:
+	bool checkSize(int size_) const
+	{
+		return size >= size_;
+	}
+
+	unsigned char at(int index) const
+	{
+		return data[index];
+	}
+
+	DvbSectionData subArray(int index) const
+	{
+		return DvbSectionData(data + index, size - index);
+	}
+
+	DvbSectionData subArray(int index, int size) const
+	{
+		return DvbSectionData(data + index, size);
+	}
+
+	int length;
 
 private:
-	void processSection(const DvbSectionData &data);
-
-	int versionNumber;
-};
-
-class DvbPmtFilter : public DvbSectionFilter
-{
-public:
-	DvbPmtFilter() : versionNumber(-1) { }
-	~DvbPmtFilter() { }
-
-private:
-	void processSection(const DvbSectionData &data);
-
-	int versionNumber;
-};
-
-class DvbDescriptor : public DvbSectionData
-{
-public:
-	DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
-	{
-		length = 2;
-
-		if (!checkLength()) {
-			length = -1;
-		} else {
-			length = descriptorLength();
-
-			if (!checkLength()) {
-				length = -1;
-			}
-		}
-	}
-
-	~DvbDescriptor() { }
-
-	DvbDescriptor next() const
-	{
-		return DvbDescriptor(nextData());
-	}
-
-	int descriptorTag() const
-	{
-		return at(0);
-	}
-
-private:
-	/*
-	 * the meaning of this field differs from the standard
-	 * it returns the length of the /whole/ descriptor,
-	 * not only the number of bytes immediately following this field
-	 */
-
-	int descriptorLength() const
-	{
-		return at(1) + 2;
-	}
-};
-
-class DvbPatEntry : public DvbSectionData
-{
-public:
-	DvbPatEntry(const DvbSectionData &data) : DvbSectionData(data)
-	{
-		length = 4;
-
-		if (!checkLength()) {
-			length = -1;
-		}
-	}
-
-	~DvbPatEntry() { }
-
-	DvbPatEntry next() const
-	{
-		return DvbPatEntry(nextData());
-	}
-
-	int programNumber() const
-	{
-		return (at(0) << 8) | at(1);
-	}
-
-	int pid() const
-	{
-		return ((at(2) << 8) | at(3)) & ((1 << 13) - 1);
-	}
-};
-
-class DvbPmtEntry : public DvbSectionData
-{
-public:
-	DvbPmtEntry(const DvbSectionData &data) : DvbSectionData(data)
-	{
-		length = 5;
-
-		if (!checkLength()) {
-			length = -1;
-		} else {
-			length = entryLength();
-
-			if (!checkLength()) {
-				length = -1;
-			}
-		}
-	}
-
-	~DvbPmtEntry() { }
-
-	DvbPmtEntry next() const
-	{
-		return DvbPmtEntry(nextData());
-	}
-
-	int streamType() const
-	{
-		return at(0);
-	}
-
-	int pid() const
-	{
-		return ((at(1) << 8) | at(2)) & ((1 << 13) - 1);
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(subArray(5, length - 5));
-	}
-
-private:
-	/*
-	 * the meaning of this field differs from the standard
-	 * it returns the length of the /whole/ entry,
-	 * not only the number of bytes immediately following this field
-	 */
-
-	int entryLength() const
-	{
-		return (((at(3) << 8) | at(4)) & ((1 << 12) - 1)) + 5;
-	}
+	int size;
+	const char *data;
 };
 
 class DvbSection : public DvbSectionData
@@ -241,14 +102,10 @@ class DvbSection : public DvbSectionData
 public:
 	explicit DvbSection(const DvbSectionData &data) : DvbSectionData(data)
 	{
-		length = 3;
-
-		if (!checkLength()) {
-			length = -1;
-		} else {
+		if (checkSize(3)) {
 			length = sectionLength();
 
-			if (!checkLength()) {
+			if (!checkSize(length)) {
 				length = -1;
 			}
 		}
@@ -321,10 +178,249 @@ private:
 	static const unsigned int crc32Table[];
 };
 
+class DvbSiText
+{
+public:
+	static QString convertText(const DvbSectionData &text);
+
+private:
+	enum TextEncoding
+	{
+		Iso6937		=  0,
+		Iso8859_1	=  1,
+		Iso8859_2	=  2,
+		Iso8859_3	=  3,
+		Iso8859_4	=  4,
+		Iso8859_5	=  5,
+		Iso8859_6	=  6,
+		Iso8859_7	=  7,
+		Iso8859_8	=  8,
+		Iso8859_9	=  9,
+		Iso8859_10	= 10,
+		Iso8859_11	= 11,
+		Iso8859_12	= 12,
+		Iso8859_13	= 13,
+		Iso8859_14	= 14,
+		Iso8859_15	= 15,
+		Gb2312		= 16,
+		Big5		= 17,
+		Utf_8		= 18,
+
+		EncodingTypeMax	= 18
+	};
+
+	DvbSiText() { }
+	~DvbSiText() { }
+
+	static QTextCodec *codecTable[EncodingTypeMax + 1];
+};
+
+class DvbDescriptor : public DvbSectionData
+{
+public:
+	explicit DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
+	{
+		if (checkSize(2)) {
+			length = descriptorLength();
+
+			if (!checkSize(length)) {
+				length = -1;
+			}
+		}
+	}
+
+	~DvbDescriptor() { }
+
+	int descriptorTag() const
+	{
+		return at(0);
+	}
+
+	DvbDescriptor next() const
+	{
+		return DvbDescriptor(subArray(length));
+	}
+
+private:
+	/*
+	 * the meaning of this field differs from the standard
+	 * it returns the length of the /whole/ descriptor,
+	 * not only the number of bytes immediately following this field
+	 */
+
+	int descriptorLength() const
+	{
+		return at(1) + 2;
+	}
+};
+
+class DvbServiceDescriptor : public DvbDescriptor
+{
+public:
+	DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+	{
+		if (length < 5) {
+			length = -1;
+		} else {
+			providerNameLength = at(3);
+
+			if (length < (5 + providerNameLength)) {
+				length = -1;
+			} else {
+				serviceNameLength = at(4 + providerNameLength);
+
+				if (length < (5 + providerNameLength + serviceNameLength)) {
+					length = -1;
+				}
+			}
+		}
+	}
+
+	QString providerName() const
+	{
+		return DvbSiText::convertText(subArray(4, providerNameLength));
+	}
+
+	QString serviceName() const
+	{
+		return DvbSiText::convertText(subArray(5 + providerNameLength, serviceNameLength));
+	}
+
+private:
+	int providerNameLength;
+	int serviceNameLength;
+};
+
+class DvbPatSectionEntry : public DvbSectionData
+{
+public:
+	DvbPatSectionEntry(const DvbSectionData &data) : DvbSectionData(data)
+	{
+		if (checkSize(4)) {
+			length = 4;
+		}
+	}
+
+	~DvbPatSectionEntry() { }
+
+	int programNumber() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	int pid() const
+	{
+		return ((at(2) << 8) | at(3)) & ((1 << 13) - 1);
+	}
+
+	DvbPatSectionEntry next() const
+	{
+		return DvbPatSectionEntry(subArray(4));
+	}
+};
+
+class DvbPmtSectionEntry : public DvbSectionData
+{
+public:
+	DvbPmtSectionEntry(const DvbSectionData &data) : DvbSectionData(data)
+	{
+		if (checkSize(5)) {
+			length = entryLength();
+
+			if (!checkSize(length)) {
+				length = -1;
+			}
+		}
+	}
+
+	~DvbPmtSectionEntry() { }
+
+	int streamType() const
+	{
+		return at(0);
+	}
+
+	int pid() const
+	{
+		return ((at(1) << 8) | at(2)) & ((1 << 13) - 1);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(subArray(5, length - 5));
+	}
+
+	DvbPmtSectionEntry next() const
+	{
+		return DvbPmtSectionEntry(subArray(length));
+	}
+
+private:
+	/*
+	 * the meaning of this field differs from the standard
+	 * it returns the length of the /whole/ entry,
+	 * not only the number of bytes immediately following this field
+	 */
+
+	int entryLength() const
+	{
+		return (((at(3) << 8) | at(4)) & ((1 << 12) - 1)) + 5;
+	}
+};
+
+class DvbSdtSectionEntry : public DvbSectionData
+{
+public:
+	DvbSdtSectionEntry(const DvbSectionData &data) : DvbSectionData(data)
+	{
+		if (checkSize(5)) {
+			length = entryLength();
+
+			if (!checkSize(length)) {
+				length = -1;
+			}
+		}
+	}
+
+	~DvbSdtSectionEntry() { }
+
+	int serviceId() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	bool isScrambled() const
+	{
+		return (at(3) & (1 << 4));
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(subArray(5, length - 5));
+	}
+
+	DvbSdtSectionEntry next() const
+	{
+		return DvbSdtSectionEntry(subArray(length));
+	}
+
+private:
+	/*
+	 * the meaning of this field differs from the standard
+	 * it returns the length of the /whole/ entry,
+	 * not only the number of bytes immediately following this field
+	 */
+
+	int entryLength() const
+	{
+		return (((at(3) << 8) | at(4)) & ((1 << 12) - 1)) + 5;
+	}
+};
+
 class DvbPatSection : public DvbStandardSection
 {
 public:
-	explicit DvbPatSection(const DvbSectionData &data) : DvbStandardSection(data)
+	explicit DvbPatSection(const DvbStandardSection &section) : DvbStandardSection(section)
 	{
 		if (length < 12) {
 			length = -1;
@@ -335,9 +431,9 @@ public:
 
 	~DvbPatSection() { }
 
-	DvbPatEntry entries() const
+	DvbPatSectionEntry entries() const
 	{
-		return DvbPatEntry(subArray(8, length - 12));
+		return DvbPatSectionEntry(subArray(8, length - 12));
 	}
 };
 
@@ -361,14 +457,19 @@ public:
 
 	~DvbPmtSection() { }
 
+	int programNumber() const
+	{
+		return (at(3) << 8) | at(4);
+	}
+
 	DvbDescriptor descriptors() const
 	{
 		return DvbDescriptor(subArray(12, programDescriptorsLength));
 	}
 
-	DvbPmtEntry entries() const
+	DvbPmtSectionEntry entries() const
 	{
-		return DvbPmtEntry(subArray(12 + programDescriptorsLength,
+		return DvbPmtSectionEntry(subArray(12 + programDescriptorsLength,
 			length - 16 - programDescriptorsLength));
 	}
 
@@ -379,6 +480,36 @@ private:
 	}
 
 	int programDescriptorsLength;
+};
+
+class DvbSdtSection : public DvbStandardSection
+{
+public:
+	DvbSdtSection(const DvbSectionData &data, int tableId_) : DvbStandardSection(data)
+	{
+		if (length < 15) {
+			length = -1;
+		} else if (tableId() != tableId_) {
+			length = -1;
+		}
+	}
+
+	~DvbSdtSection() { }
+
+	int transportStreamId() const
+	{
+		return (at(3) << 8) | at(4);
+	}
+
+	int originalNetworkId() const
+	{
+		return (at(8) << 8) | at(9);
+	}
+
+	DvbSdtSectionEntry entries() const
+	{
+		return DvbSdtSectionEntry(subArray(11, length - 15));
+	}
 };
 
 #endif /* DVBSI_H */

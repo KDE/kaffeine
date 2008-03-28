@@ -23,6 +23,7 @@
 #include "dvbtab.h"
 #include "ui_dvbscandialog.h"
 #include <QPainter>
+#include <KDebug>
 
 DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
 {
@@ -59,11 +60,63 @@ void DvbGradProgress::paintEvent(QPaintEvent *event)
 	QLabel::paintEvent(event);
 }
 
+class DvbPatEntry
+{
+public:
+	DvbPatEntry(int programNumber_, int pid_) : programNumber(programNumber_), pid(pid_) { }
+	~DvbPatEntry() { }
+
+	int programNumber;
+	int pid;
+};
+
 class DvbScanInternal
 {
 public:
-	DvbScanInternal() { }
-	~DvbScanInternal() { }
+	enum State
+	{
+		ScanInit,
+		ScanPat,
+		ScanSdt,
+		ScanPmt,
+		ScanNit
+	};
+
+	DvbScanInternal(DvbDevice *device_) : state(ScanInit), patIndex(0), device(device_),
+		currentPid(-1) { }
+
+	~DvbScanInternal()
+	{
+		stopFilter();
+	}
+
+	void startFilter(int pid)
+	{
+		Q_ASSERT(currentPid == -1);
+		filter.resetFilter();
+		device->addPidFilter(pid, &filter);
+		currentPid = pid;
+	}
+
+	void stopFilter()
+	{
+		if (currentPid != -1) {
+			device->removePidFilter(currentPid, &filter);
+			currentPid = -1;
+		}
+	}
+
+	State state;
+	DvbSectionFilter filter;
+	QTimer timer;
+
+	int patIndex;
+	QList<DvbPatEntry> patEntries;
+	QList<DvbChannel> channels;
+
+private:
+	DvbDevice *device;
+	int currentPid;
 };
 
 DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
@@ -118,6 +171,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 
 DvbScanDialog::~DvbScanDialog()
 {
+	delete internal;
 	delete ui;
 }
 
@@ -136,7 +190,13 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	ui->scanButton->setText(i18n("Stop scan"));
 	Q_ASSERT(internal == NULL);
 
-	// FIXME
+	internal = new DvbScanInternal(device);
+
+	connect(&internal->filter, SIGNAL(sectionFound(DvbSectionData)),
+		this, SLOT(sectionFound(DvbSectionData)));
+	connect(&internal->timer, SIGNAL(timeout()), this, SLOT(sectionTimeout()));
+
+	updateScanState();
 }
 
 void DvbScanDialog::updateStatus()
@@ -144,4 +204,261 @@ void DvbScanDialog::updateStatus()
 	ui->signalWidget->setValue(device->getSignal());
 	ui->snrWidget->setValue(device->getSnr());
 	ui->tuningLed->setState(device->isTuned() ? KLed::On : KLed::Off);
+}
+
+void DvbScanDialog::sectionFound(const DvbSectionData &data)
+{
+	DvbStandardSection standardSection(data);
+
+	if (!standardSection.isValid()) {
+		kDebug() << "invalid section";
+		return;
+	}
+
+	if ((standardSection.sectionNumber() != 0) || (standardSection.lastSectionNumber() != 0)) {
+		kWarning() << "section numbers > 0 aren't supported";
+	}
+
+	switch (internal->state) {
+	case DvbScanInternal::ScanPat: {
+		DvbPatSection section(standardSection);
+
+		if (!section.isValid()) {
+			kDebug() << "invalid section";
+		}
+
+		kDebug() << "found a new PAT";
+
+		DvbPatSectionEntry entry = section.entries();
+
+		while (!entry.isEmpty()) {
+			if (!entry.isValid()) {
+				kDebug() << "invalid PAT entry";
+				break;
+			}
+
+			DvbPatEntry patEntry(entry.programNumber(), entry.pid());
+			internal->patEntries.append(patEntry);
+
+			entry = entry.next();
+		}
+
+		updateScanState();
+		break;
+	    }
+
+	case DvbScanInternal::ScanPmt: {
+		DvbPmtSection section(standardSection);
+
+		if (!section.isValid()) {
+			kDebug() << "invalid section";
+		}
+
+		kDebug() << "found a new PMT";
+
+		DvbPmtSectionEntry entry = section.entries();
+
+		while (!entry.isEmpty()) {
+			if (!entry.isValid()) {
+				kDebug() << "invalid PMT entry";
+				break;
+			}
+
+			DvbChannel channel;
+
+			channel.serviceId = section.programNumber();
+
+			// video pid & type
+			// audio pids & type & lang
+			// subtitle pids & type & lang
+			// teletext pid
+
+			switch (entry.streamType()) {
+			case 0x01:   // MPEG1 video
+			case 0x02:   // MPEG2 video
+			case 0x10:   // MPEG4 video
+			case 0x1b: { // H264 video
+				channel.videoPid = entry.pid();
+				channel.videoType = entry.streamType();
+				break;
+			    }
+
+			case 0x03:   // MPEG1 audio
+			case 0x04:   // MPEG2 audio
+			case 0x0f:   // AAC audio
+			case 0x11:   // AAC / LATM audio
+			case 0x81:   // AC-3 audio (ATSC specific)
+			case 0x87: { // enhanced AC-3 audio (ATSC specific)
+				// FIXME - handle audio
+				break;
+			    }
+
+			case 0x06: { // private streams
+				// FIXME - handle private streams
+				break;
+			    }
+			}
+
+			DvbDescriptor descriptor = entry.descriptors();
+
+			while (!descriptor.isEmpty()) {
+				if (!descriptor.isValid()) {
+					kDebug() << "invalid descriptor";
+					break;
+				}
+
+//				kDebug() << "\t\tstream descriptor [ tag =" << descriptor.descriptorTag() << "]";
+
+				descriptor = descriptor.next();
+			}
+
+			internal->channels.append(channel);
+
+			entry = entry.next();
+		}
+
+		updateScanState();
+		break;
+	    }
+
+	case DvbScanInternal::ScanSdt: {
+		if (standardSection.tableId() != 0x42) {
+			// there are also other tables in the SDT
+			break;
+		}
+
+		DvbSdtSection section(standardSection, 0x42);
+
+		if (!section.isValid()) {
+			kDebug() << "invalid section";
+		}
+
+		kDebug() << "found a new SDT";
+
+		DvbSdtSectionEntry entry = section.entries();
+
+		while (!entry.isEmpty()) {
+			if (!entry.isValid()) {
+				kDebug() << "invalid SDT entry";
+				break;
+			}
+
+			int serviceId = entry.serviceId();
+			QList<DvbChannel>::iterator it;
+
+			for (it = internal->channels.begin(); it != internal->channels.end(); ++it) {
+				if (it->serviceId != serviceId) {
+					continue;
+				}
+
+				it->networkId = section.originalNetworkId();
+				it->tsId = section.transportStreamId();
+
+				DvbDescriptor descriptor = entry.descriptors();
+
+				while (!descriptor.isEmpty()) {
+					if (!descriptor.isValid()) {
+						kDebug() << "invalid descriptor";
+						break;
+					}
+
+					if (descriptor.descriptorTag() != 0x48) {
+						descriptor = descriptor.next();
+						continue;
+					}
+
+					DvbServiceDescriptor serviceDescriptor(descriptor);
+
+					if (!serviceDescriptor.isValid()) {
+						descriptor = descriptor.next();
+						kDebug() << "invalid service descriptor";
+						continue;
+					}
+
+					it->name = serviceDescriptor.serviceName();
+					kDebug() << "name =" << it->name;
+
+					break;
+				}
+
+				break;
+			}
+
+			if (it == internal->channels.end()) {
+				kDebug() << "unassignable SDT entry" << serviceId;
+			}
+
+			entry = entry.next();
+		}
+
+		updateScanState();
+		break;
+	    }
+	}
+}
+
+void DvbScanDialog::sectionTimeout()
+{
+	kWarning() << "timeout while reading section ( state =" << internal->state << ")";
+	updateScanState();
+}
+
+void DvbScanDialog::updateScanState()
+{
+	internal->stopFilter();
+	internal->timer.stop();
+
+	switch (internal->state) {
+	case DvbScanInternal::ScanInit: {
+		// set up PAT filter
+		internal->state = DvbScanInternal::ScanPat;
+		internal->startFilter(0x0);
+		break;
+	    }
+
+	case DvbScanInternal::ScanPat:
+		// fall through
+	case DvbScanInternal::ScanPmt: {
+
+		while (internal->patIndex < internal->patEntries.size()) {
+			const DvbPatEntry &entry = internal->patEntries.at(internal->patIndex);
+
+			if (entry.programNumber == 0x0) {
+				// special meaning
+				internal->patIndex++;
+				continue;
+			}
+
+			// set up PMT filter
+			internal->state = DvbScanInternal::ScanPmt;
+			internal->startFilter(entry.pid);
+			break;
+		}
+
+		if (internal->patIndex < internal->patEntries.size()) {
+			// advance to the next PMT entry for next call
+			internal->patIndex++;
+			break;
+		}
+
+		if (!internal->channels.empty()) {
+			// set up SDT filter
+			internal->state = DvbScanInternal::ScanSdt;
+			internal->startFilter(0x11);
+			break;
+		}
+
+		// fall through
+	    }
+
+	case DvbScanInternal::ScanSdt: {
+		// FIXME
+		// we're finished here :)
+		ui->scanButton->setChecked(false);
+		scanButtonClicked(false);
+		return;
+	    }
+	}
+
+	internal->timer.start(5000);
 }

@@ -28,6 +28,7 @@
 class DvbChannelModel;
 class DvbDevice;
 class DvbScanInternal;
+class DvbSectionData;
 class DvbTab;
 class Ui_DvbScanDialog;
 
@@ -42,7 +43,12 @@ private slots:
 	void scanButtonClicked(bool checked);
 	void updateStatus();
 
+	void sectionFound(const DvbSectionData &data);
+	void sectionTimeout();
+
 private:
+	void updateScanState();
+
 	DvbTab *dvbTab;
 	Ui_DvbScanDialog *ui;
 	DvbChannelModel *channelModel;

@@ -93,6 +93,8 @@ public:
 		return line.mid(begin, end - begin);
 	}
 
+	bool readChannel(DvbChannel *channel);
+
 private:
 	QString line;
 	int begin;
@@ -119,6 +121,8 @@ public:
 			line.append(QString::number(value));
 		}
 	}
+
+	void writeChannel(const DvbChannel &channel);
 
 	void writeString(const QString &value)
 	{
@@ -229,48 +233,54 @@ void AtscTransponder::writeTransponder(DvbChannelWriter &writer) const
 	writer.writeInt(modulationType);
 }
 
-DvbChannel *DvbChannel::readChannel(DvbChannelReader &reader)
+bool DvbChannelReader::readChannel(DvbChannel *channel)
 {
-	int type = reader.readInt();
-	QString name = reader.readString();
-	int number = reader.readInt();
-	QString source = reader.readString();
-	int serviceId = reader.readInt(false);
-	int videoPid = reader.readInt(false);
+	int type = readInt();
 
-	if (!reader.isValid()) {
-		return NULL;
+	channel->name = readString();
+	channel->number = readInt();
+	channel->source = readString();
+	channel->networkId = readInt(false);
+	channel->tsId = readInt(false);
+	channel->serviceId = readInt(false);
+	channel->videoPid = readInt(false);
+	channel->videoType = readInt(false);
+
+	if (!isValid()) {
+		return false;
 	}
 
 	DvbTransponder *transponder = NULL;
 
 	switch (type) {
 	case 0: // DVB-C
-		transponder = DvbCTransponder::readTransponder(reader);
+		transponder = DvbCTransponder::readTransponder(*this);
 		break;
 	case 1: // DVB-S
-		transponder = DvbSTransponder::readTransponder(reader);
+		transponder = DvbSTransponder::readTransponder(*this);
 		break;
 	case 2: // DVB-T
-		transponder = DvbTTransponder::readTransponder(reader);
+		transponder = DvbTTransponder::readTransponder(*this);
 		break;
 	case 3: // ATSC
-		transponder = AtscTransponder::readTransponder(reader);
+		transponder = AtscTransponder::readTransponder(*this);
 		break;
 	}
 
 	if (transponder == NULL) {
-		return NULL;
+		return false;
 	}
 
-	return new DvbChannel(name, number, source, transponder, serviceId, videoPid);
+	channel->setTransponder(transponder);
+
+	return true;
 }
 
-void DvbChannel::writeChannel(DvbChannelWriter &writer) const
+void DvbChannelWriter::writeChannel(const DvbChannel &channel)
 {
 	int type;
 
-	switch (transponder->transmissionType) {
+	switch (channel.getTransponder()->transmissionType) {
 	case DvbTransponder::DvbC:
 		type = 0;
 		break;
@@ -287,14 +297,18 @@ void DvbChannel::writeChannel(DvbChannelWriter &writer) const
 		Q_ASSERT(false);
 	}
 
-	writer.writeFirstInt(type);
-	writer.writeString(name);
-	writer.writeInt(number);
-	writer.writeString(source);
-	writer.writeInt(serviceId);
-	writer.writeInt(videoPid);
+	writeFirstInt(type);
 
-	transponder->writeTransponder(writer);
+	writeString(channel.name);
+	writeInt(channel.number);
+	writeString(channel.source);
+	writeInt(channel.networkId);
+	writeInt(channel.tsId);
+	writeInt(channel.serviceId);
+	writeInt(channel.videoPid);
+	writeInt(channel.videoType);
+
+	channel.getTransponder()->writeTransponder(*this);
 }
 
 DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
@@ -331,9 +345,9 @@ QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 	}
 
 	if (index.column() == 0) {
-		return list.at(index.row())->name;
+		return list.at(index.row()).name;
 	} else {
-		return list.at(index.row())->number;
+		return list.at(index.row()).number;
 	}
 }
 
@@ -356,18 +370,18 @@ const DvbChannel *DvbChannelModel::getChannel(const QModelIndex &index) const
 		return NULL;
 	}
 
-	return list.at(index.row());
+	return &list.at(index.row());
 }
 
-void DvbChannelModel::setList(const QList<DvbSharedChannel> &list_)
+void DvbChannelModel::setList(const QList<DvbChannel> &list_)
 {
 	reset();
 	list = list_;
 }
 
-QList<DvbSharedChannel> DvbChannelModel::readList()
+QList<DvbChannel> DvbChannelModel::readList()
 {
-	QList<DvbSharedChannel> list;
+	QList<DvbChannel> list;
 
 	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
 
@@ -379,16 +393,16 @@ QList<DvbSharedChannel> DvbChannelModel::readList()
 	bool fileOk = true;
 
 	while (!file.atEnd()) {
-		DvbChannelReader line(&file);
+		DvbChannelReader channelReader(&file);
 
-		DvbChannel *channel = DvbChannel::readChannel(line);
+		DvbChannel channel;
 
-		if (channel == NULL) {
+		if (!channelReader.readChannel(&channel)) {
 			fileOk = false;
 			continue;
 		}
 
-		list.append(DvbSharedChannel(channel));
+		list.append(channel);
 	}
 
 	if (!fileOk) {
@@ -400,7 +414,7 @@ QList<DvbSharedChannel> DvbChannelModel::readList()
 	return list;
 }
 
-void DvbChannelModel::writeList(QList<DvbSharedChannel> list)
+void DvbChannelModel::writeList(QList<DvbChannel> list)
 {
 	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
 
@@ -409,11 +423,9 @@ void DvbChannelModel::writeList(QList<DvbSharedChannel> list)
 		return;
 	}
 
-	for (QList<DvbSharedChannel>::const_iterator it = list.begin(); it != list.end(); ++it) {
+	for (QList<DvbChannel>::const_iterator it = list.begin(); it != list.end(); ++it) {
 		DvbChannelWriter writer;
-
-		(*it)->writeChannel(writer);
-
+		writer.writeChannel(*it);
 		writer.outputLine(&file);
 	}
 }

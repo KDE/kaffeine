@@ -18,9 +18,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <KDebug>
-
 #include "dvbsi.h"
+#include <QTextCodec>
+#include <KDebug>
 
 // FIXME some debug messages may be printed too often
 
@@ -47,20 +47,18 @@ void DvbSectionFilter::processData(const char data[188])
 			kDebug() << "discontinuity";
 			buffer.clear();
 			bufferValid = false;
-			return;
 		}
 	}
 
 	continuityCounter = continuity;
 
 	bool sectionStart = (data[1] & 0x40) != 0;
+	QByteArray output;
 
 	if (sectionStart) {
 		if (bufferValid) {
 			if (!buffer.isEmpty()) {
-				int pos = static_cast<unsigned char> (buffer.at(0)) + 1;
-				DvbSectionData data(buffer.constData() + pos, buffer.size() - pos);
-				processSection(data);
+				output = buffer;
 			} else {
 				kDebug() << "valid buffer is empty";
 			}
@@ -88,6 +86,12 @@ void DvbSectionFilter::processData(const char data[188])
 	} else {
 		kDebug() << "data discarded";
 	}
+
+	if (!output.isEmpty()) {
+		int pos = static_cast<unsigned char> (output.at(0)) + 1;
+		DvbSectionData data(output.constData() + pos, output.size() - pos);
+		emit sectionFound(data);
+	}
 }
 
 void DvbSectionFilter::appendData(const char *data, int length)
@@ -97,98 +101,15 @@ void DvbSectionFilter::appendData(const char *data, int length)
 	memcpy(buffer.data() + size, data, length);
 }
 
-void DvbPatFilter::processSection(const DvbSectionData &data)
+bool DvbStandardSection::verifyCrc32() const
 {
-	DvbPatSection section(data);
+	unsigned int crc32 = 0xffffffff;
 
-	if (!section.isValid()) {
-		kDebug() << "invalid section";
-		return;
+	for (int i = 0; i < length; ++i) {
+		crc32 = (crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ at(i)];
 	}
 
-	// FIXME take care of section number
-
-	if (section.versionNumber() == versionNumber) {
-		return;
-	}
-
-	versionNumber = section.versionNumber();
-
-	kDebug() << "found a new PAT";
-
-	DvbPatEntry entry = section.entries();
-
-	while (!entry.isEmpty()) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid PAT entry";
-			break;
-		}
-
-		kDebug() << "PAT entry [ programNumber =" << entry.programNumber() << "pid ="
-			<< entry.pid() << "]";
-
-		entry = entry.next();
-	}
-}
-
-void DvbPmtFilter::processSection(const DvbSectionData &data)
-{
-	DvbPmtSection section(data);
-
-	if (!section.isValid()) {
-		kDebug() << "invalid section";
-		return;
-	}
-
-	// FIXME take care of section number
-
-	if (section.versionNumber() == versionNumber) {
-		return;
-	}
-
-	versionNumber = section.versionNumber();
-
-	kDebug() << "found a new PMT";
-
-	DvbDescriptor descriptor = section.descriptors();
-
-	while (!descriptor.isEmpty()) {
-		if (!descriptor.isValid()) {
-			kDebug() << "invalid descriptor";
-			break;
-		}
-
-		kDebug() << "\tPMT descriptor [ tag =" << descriptor.descriptorTag() << "]";
-
-		descriptor = descriptor.next();
-	}
-
-	DvbPmtEntry entry = section.entries();
-
-	while (!entry.isEmpty()) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid stream";
-			break;
-		}
-
-		kDebug() << "\tPMT stream [ type =" << entry.streamType() << "pid ="
-			<< entry.pid() << "]";
-
-		descriptor = entry.descriptors();
-
-		while (!descriptor.isEmpty()) {
-			if (!descriptor.isValid()) {
-				kDebug() << "invalid descriptor";
-				break;
-			}
-
-			kDebug() << "\t\tstream descriptor [ tag =" << descriptor.descriptorTag() << "]";
-
-			descriptor = descriptor.next();
-		}
-
-		entry = entry.next();
-	}
+	return crc32 == 0;
 }
 
 /*
@@ -276,13 +197,119 @@ const unsigned int DvbStandardSection::crc32Table[] =
 	0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
 };
 
-bool DvbStandardSection::verifyCrc32() const
+QString DvbSiText::convertText(const DvbSectionData &text)
 {
-	unsigned int crc32 = 0xffffffff;
+	const char *data = text.data;
+	int size = text.size;
 
-	for (int i = 0; i < length; ++i) {
-		crc32 = (crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ at(i)];
+	if (size < 1) {
+		return QString();
 	}
 
-	return crc32 == 0;
+	// determine encoding
+	TextEncoding encoding = Iso6937;
+
+	if (text.at(0) < 0x20) {
+		switch (text.at(0)) {
+		case 0x01: encoding = Iso8859_5; break;
+		case 0x02: encoding = Iso8859_6; break;
+		case 0x03: encoding = Iso8859_7; break;
+		case 0x04: encoding = Iso8859_8; break;
+		case 0x05: encoding = Iso8859_9; break;
+		case 0x06: encoding = Iso8859_10; break;
+		case 0x07: encoding = Iso8859_11; break;
+		case 0x08: encoding = Iso8859_12; break;
+		case 0x09: encoding = Iso8859_13; break;
+		case 0x0a: encoding = Iso8859_14; break;
+		case 0x0b: encoding = Iso8859_15; break;
+
+		case 0x13: encoding = Gb2312; break;
+		case 0x14: encoding = Big5; break;
+		case 0x15: encoding = Utf_8; break;
+
+		case 0x10: {
+			if (size < 3) {
+				return QString();
+			}
+
+			if (text.at(2) != 0) {
+				return QString();
+			}
+
+			switch (text.at(3)) {
+			case 0x01: encoding = Iso8859_1; break;
+			case 0x02: encoding = Iso8859_2; break;
+			case 0x03: encoding = Iso8859_3; break;
+			case 0x04: encoding = Iso8859_4; break;
+			case 0x05: encoding = Iso8859_5; break;
+			case 0x06: encoding = Iso8859_6; break;
+			case 0x07: encoding = Iso8859_7; break;
+			case 0x08: encoding = Iso8859_8; break;
+			case 0x09: encoding = Iso8859_9; break;
+			case 0x0a: encoding = Iso8859_10; break;
+			case 0x0b: encoding = Iso8859_11; break;
+			case 0x0c: encoding = Iso8859_12; break;
+			case 0x0d: encoding = Iso8859_13; break;
+			case 0x0e: encoding = Iso8859_14; break;
+			case 0x0f: encoding = Iso8859_15; break;
+
+			default:
+				return QString();
+			}
+
+			data += 2;
+			size -= 2;
+
+			break;
+		    }
+
+		default:
+			return QString();
+		}
+
+		data++;
+		size--;
+	}
+
+	if (codecTable[encoding] == NULL) {
+		QTextCodec *codec = NULL;
+
+		switch (encoding) {
+		case Iso6937:
+			/*
+			 * qt doesn't support ISO 6937 (bu
+			 * ISO 8859-1 is a good replacement in almost any case
+			 */
+			codec = QTextCodec::codecForName("ISO 8859-1");
+			break;
+
+		case Iso8859_1: codec = QTextCodec::codecForName("ISO 8859-1"); break;
+		case Iso8859_2: codec = QTextCodec::codecForName("ISO 8859-2"); break;
+		case Iso8859_3: codec = QTextCodec::codecForName("ISO 8859-3"); break;
+		case Iso8859_4: codec = QTextCodec::codecForName("ISO 8859-4"); break;
+		case Iso8859_5: codec = QTextCodec::codecForName("ISO 8859-5"); break;
+		case Iso8859_6: codec = QTextCodec::codecForName("ISO 8859-6"); break;
+		case Iso8859_7: codec = QTextCodec::codecForName("ISO 8859-7"); break;
+		case Iso8859_8: codec = QTextCodec::codecForName("ISO 8859-8"); break;
+		case Iso8859_9: codec = QTextCodec::codecForName("ISO 8859-9"); break;
+		case Iso8859_10: codec = QTextCodec::codecForName("ISO 8859-10"); break;
+		case Iso8859_11: codec = QTextCodec::codecForName("ISO 8859-11"); break;
+		case Iso8859_12: codec = QTextCodec::codecForName("ISO 8859-12"); break;
+		case Iso8859_13: codec = QTextCodec::codecForName("ISO 8859-13"); break;
+		case Iso8859_14: codec = QTextCodec::codecForName("ISO 8859-14"); break;
+		case Iso8859_15: codec = QTextCodec::codecForName("ISO 8859-15"); break;
+		case Gb2312: codec = QTextCodec::codecForName("GB2312"); break;
+		case Big5: codec = QTextCodec::codecForName("BIG5"); break;
+		case Utf_8: codec = QTextCodec::codecForName("UTF-8"); break;
+		}
+
+		Q_ASSERT(codec != NULL);
+		codecTable[encoding] = codec;
+	}
+
+	// FIXME strip control codes
+
+	return codecTable[encoding]->toUnicode(data, size);
 }
+
+QTextCodec *DvbSiText::codecTable[EncodingTypeMax + 1] = { NULL };
