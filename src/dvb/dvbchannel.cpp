@@ -1,7 +1,7 @@
 /*
  * dvbchannel.cpp
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "dvbchannel.h"
 #include <QContextMenuEvent>
 #include <QFile>
 #include <QMenu>
@@ -27,16 +28,10 @@
 #include <KLocalizedString>
 #include <KStandardDirs>
 
-#include "dvbchannel.h"
-
 class DvbChannelReader
 {
 public:
-	DvbChannelReader(QIODevice *device) : begin(0), end(-1), valid(true)
-	{
-		line = QString::fromUtf8(device->readLine());
-	}
-
+	DvbChannelReader(const QString &line_) : line(line_), begin(0), end(-1), valid(true) { }
 	~DvbChannelReader() { }
 
 	bool isValid() const
@@ -55,12 +50,12 @@ public:
 		return static_cast<T> (value);
 	}
 
-	int readInt(bool disallowEmpty = true)
+	int readInt(bool allowEmpty = false)
 	{
 		QString string = readString();
 
 		if (string.isEmpty()) {
-			if (disallowEmpty) {
+			if (!allowEmpty) {
 				valid = false;
 			}
 
@@ -108,33 +103,30 @@ public:
 	DvbChannelWriter() { }
 	~DvbChannelWriter() { }
 
-	void writeFirstInt(int value)
+	QString getLine()
 	{
-		line.append(QString::number(value));
+		int index = line.size() - 1;
+		Q_ASSERT(index >= 0);
+		line[index] = '\n';
+		return line;
 	}
 
 	void writeInt(int value)
 	{
-		line.append('|');
-
 		if (value >= 0) {
 			line.append(QString::number(value));
 		}
-	}
 
-	void writeChannel(const DvbChannel &channel);
+		line.append('|');
+	}
 
 	void writeString(const QString &value)
 	{
-		line.append('|');
 		line.append(value);
+		line.append('|');
 	}
 
-	void outputLine(QIODevice *device)
-	{
-		line.append('\n');
-		device->write(line.toUtf8());
-	}
+	void writeChannel(const DvbChannel &channel);
 
 private:
 	QString line;
@@ -239,12 +231,17 @@ bool DvbChannelReader::readChannel(DvbChannel *channel)
 
 	channel->name = readString();
 	channel->number = readInt();
+
 	channel->source = readString();
-	channel->networkId = readInt(false);
-	channel->tsId = readInt(false);
-	channel->serviceId = readInt(false);
-	channel->videoPid = readInt(false);
-	channel->videoType = readInt(false);
+	channel->networkId = readInt(true);
+	channel->transportStreamId = readInt(true);
+	channel->serviceId = readInt();
+
+	channel->pmtPid = readInt();
+	channel->videoPid = readInt(true);
+	channel->audioPid = readInt(true);
+
+	channel->scrambled = readInt() != 0;
 
 	if (!isValid()) {
 		return false;
@@ -295,20 +292,80 @@ void DvbChannelWriter::writeChannel(const DvbChannel &channel)
 		break;
 	default:
 		Q_ASSERT(false);
+		return;
 	}
 
-	writeFirstInt(type);
+	writeInt(type);
 
 	writeString(channel.name);
 	writeInt(channel.number);
+
 	writeString(channel.source);
 	writeInt(channel.networkId);
-	writeInt(channel.tsId);
+	writeInt(channel.transportStreamId);
 	writeInt(channel.serviceId);
+
+	writeInt(channel.pmtPid);
 	writeInt(channel.videoPid);
-	writeInt(channel.videoType);
+	writeInt(channel.audioPid);
+
+	writeInt(channel.scrambled ? 1 : 0);
 
 	channel.getTransponder()->writeTransponder(*this);
+}
+
+QList<DvbChannel> DvbChannel::readList()
+{
+	QList<DvbChannel> list;
+
+	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		kDebug() << "can't open" << file.fileName();
+		return list;
+	}
+
+	QTextStream stream(&file);
+	stream.setCodec("UTF-8");
+	bool fileOk = true;
+
+	while (!stream.atEnd()) {
+		DvbChannel channel;
+
+		if (!DvbChannelReader(stream.readLine()).readChannel(&channel)) {
+			fileOk = false;
+			continue;
+		}
+
+		list.append(channel);
+	}
+
+	if (!fileOk) {
+		kWarning() << "file contains invalid lines" << file.fileName();
+	}
+
+	kDebug() << "successfully read" << list.size() << "entries";
+
+	return list;
+}
+
+void DvbChannel::writeList(const QList<DvbChannel> &list)
+{
+	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "can't open" << file.fileName();
+		return;
+	}
+
+	QTextStream stream(&file);
+	stream.setCodec("UTF-8");
+
+	for (QList<DvbChannel>::const_iterator it = list.begin(); it != list.end(); ++it) {
+		DvbChannelWriter writer;
+		writer.writeChannel(*it);
+		stream << writer.getLine();
+	}
 }
 
 DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
@@ -377,57 +434,6 @@ void DvbChannelModel::setList(const QList<DvbChannel> &list_)
 {
 	reset();
 	list = list_;
-}
-
-QList<DvbChannel> DvbChannelModel::readList()
-{
-	QList<DvbChannel> list;
-
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "can't open" << file.fileName();
-		return list;
-	}
-
-	bool fileOk = true;
-
-	while (!file.atEnd()) {
-		DvbChannelReader channelReader(&file);
-
-		DvbChannel channel;
-
-		if (!channelReader.readChannel(&channel)) {
-			fileOk = false;
-			continue;
-		}
-
-		list.append(channel);
-	}
-
-	if (!fileOk) {
-		kWarning() << "file contains invalid lines" << file.fileName();
-	}
-
-	kDebug() << "successfully read" << list.size() << "entries";
-
-	return list;
-}
-
-void DvbChannelModel::writeList(QList<DvbChannel> list)
-{
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
-
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kDebug() << "can't open" << file.fileName();
-		return;
-	}
-
-	for (QList<DvbChannel>::const_iterator it = list.begin(); it != list.end(); ++it) {
-		DvbChannelWriter writer;
-		writer.writeChannel(*it);
-		writer.outputLine(&file);
-	}
 }
 
 DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)

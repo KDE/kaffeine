@@ -279,7 +279,6 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 			case 0x10:   // MPEG4 video
 			case 0x1b: { // H264 video
 				channel.videoPid = entry.pid();
-				channel.videoType = entry.streamType();
 				break;
 			    }
 
@@ -352,7 +351,7 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 				}
 
 				it->networkId = section.originalNetworkId();
-				it->tsId = section.transportStreamId();
+				it->transportStreamId = section.transportStreamId();
 
 				DvbDescriptor descriptor = entry.descriptors();
 

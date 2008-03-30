@@ -512,9 +512,7 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 	switch (transponder->transmissionType) {
 	case DvbTransponder::DvbC: {
-		const DvbCTransponder *dvbCTransponder =
-			dynamic_cast<const DvbCTransponder *>(transponder);
-
+		const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
 		Q_ASSERT(dvbCTransponder != NULL);
 
 		// tune
@@ -538,9 +536,9 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 		break;
 	    }
+
 	case DvbTransponder::DvbS: {
-		const DvbSTransponder *dvbSTransponder =
-			dynamic_cast<const DvbSTransponder *>(transponder);
+		const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
 		const DvbSConfig *dvbSConfig = dynamic_cast<const DvbSConfig *>(config);
 
 		Q_ASSERT(dvbSTransponder != NULL);
@@ -614,10 +612,9 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 		break;
 	    }
-	case DvbTransponder::DvbT: {
-		const DvbTTransponder *dvbTTransponder =
-			dynamic_cast<const DvbTTransponder *>(transponder);
 
+	case DvbTransponder::DvbT: {
+		const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
 		Q_ASSERT(dvbTTransponder != NULL);
 
 		// tune
@@ -648,10 +645,9 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 		break;
 	    }
-	case DvbTransponder::Atsc: {
-		const AtscTransponder *atscTransponder =
-			dynamic_cast<const AtscTransponder *>(transponder);
 
+	case DvbTransponder::Atsc: {
+		const AtscTransponder *atscTransponder = transponder->getAtscTransponder();
 		Q_ASSERT(atscTransponder != NULL);
 
 		// tune

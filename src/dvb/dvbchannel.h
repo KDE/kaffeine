@@ -1,7 +1,7 @@
 /*
  * dvbchannel.h
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,10 @@
 class QSortFilterProxyModel;
 class DvbChannelReader;
 class DvbChannelWriter;
+class DvbCTransponder;
+class DvbSTransponder;
+class DvbTTransponder;
+class AtscTransponder;
 
 class DvbTransponder : public QSharedData
 {
@@ -54,6 +58,26 @@ public:
 	};
 
 	virtual ~DvbTransponder() { }
+
+	virtual const DvbCTransponder *getDvbCTransponder() const
+	{
+		return NULL;
+	}
+
+	virtual const DvbSTransponder *getDvbSTransponder() const
+	{
+		return NULL;
+	}
+
+	virtual const DvbTTransponder *getDvbTTransponder() const
+	{
+		return NULL;
+	}
+
+	virtual const AtscTransponder *getAtscTransponder() const
+	{
+		return NULL;
+	}
 
 	virtual void writeTransponder(DvbChannelWriter &writer) const = 0;
 
@@ -85,31 +109,17 @@ public:
 		modulationType(modulationType_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbCTransponder() { }
 
+	const DvbCTransponder *getDvbCTransponder() const
+	{
+		return this;
+	}
+
 	static DvbCTransponder *readTransponder(DvbChannelReader &reader);
 	void writeTransponder(DvbChannelWriter &writer) const;
 
-	/*
-	 * frequency (Hz)
-	 */
-
-	int frequency;
-
-	/*
-	 * modulation type
-	 */
-
+	int frequency; // Hz
 	ModulationType modulationType;
-
-	/*
-	 * symbol rate (symbols per second)
-	 */
-
-	int symbolRate;
-
-	/*
-	 * FEC rate
-	 */
-
+	int symbolRate; // symbols per second
 	FecRate fecRate;
 };
 
@@ -130,31 +140,17 @@ public:
 		frequency(frequency_), symbolRate(symbolRate_), fecRate(fecRate_) { }
 	~DvbSTransponder() { }
 
+	const DvbSTransponder *getDvbSTransponder() const
+	{
+		return this;
+	}
+
 	static DvbSTransponder *readTransponder(DvbChannelReader &reader);
 	void writeTransponder(DvbChannelWriter &writer) const;
 
-	/*
-	 * polarization
-	 */
-
 	Polarization polarization;
-
-	/*
-	 * frequency (kHz)
-	 */
-
-	int frequency;
-
-	/*
-	 * symbol rate (symbols per second)
-	 */
-
-	int symbolRate;
-
-	/*
-	 * FEC rate
-	 */
-
+	int frequency; // kHz
+	int symbolRate; // symbols per second
 	FecRate fecRate;
 };
 
@@ -216,55 +212,21 @@ public:
 		hierarchy(hierarchy_) { }
 	~DvbTTransponder() { }
 
+	const DvbTTransponder *getDvbTTransponder() const
+	{
+		return this;
+	}
+
 	static DvbTTransponder *readTransponder(DvbChannelReader &reader);
 	void writeTransponder(DvbChannelWriter &writer) const;
 
-	/*
-	 * frequency (Hz)
-	 */
-
-	int frequency;
-
-	/*
-	 * modulation type
-	 */
-
+	int frequency; // Hz
 	ModulationType modulationType;
-
-	/*
-	 * bandwidth
-	 */
-
 	Bandwidth bandwidth;
-
-	/*
-	 * FEC rate (high priority stream)
-	 */
-
-	FecRate fecRateHigh;
-
-	/*
-	 * FEC rate (low priority stream)
-	 */
-
-	FecRate fecRateLow;
-
-	/*
-	 * transmission mode
-	 */
-
+	FecRate fecRateHigh; // high priority stream
+	FecRate fecRateLow; // low priority stream
 	TransmissionMode transmissionMode;
-
-	/*
-	 * guard interval
-	 */
-
 	GuardInterval guardInterval;
-
-	/*
-	 * hierarchy
-	 */
-
 	Hierarchy hierarchy;
 };
 
@@ -285,19 +247,15 @@ public:
 		frequency(frequency_), modulationType(modulationType_) { }
 	~AtscTransponder() { }
 
+	const AtscTransponder *getAtscTransponder() const
+	{
+		return this;
+	}
+
 	static AtscTransponder *readTransponder(DvbChannelReader &reader);
 	void writeTransponder(DvbChannelWriter &writer) const;
 
-	/*
-	 * frequency (Hz)
-	 */
-
-	int frequency;
-
-	/*
-	 * modulation type
-	 */
-
+	int frequency; // Hz
 	ModulationType modulationType;
 };
 
@@ -306,57 +264,24 @@ typedef QSharedDataPointer<DvbTransponder> DvbSharedTransponder;
 class DvbChannel
 {
 public:
-	DvbChannel() : name(), number(-1), source(), networkId(-1), tsId(-1), serviceId(-1),
-		videoPid(-1), videoType(-1), transponder() { }
+	DvbChannel() : name(), number(-1), source(), networkId(-1), transportStreamId(-1),
+		serviceId(-1), pmtPid(-1), videoPid(-1), audioPid(-1), scrambled(false),
+		transponder() { }
 	~DvbChannel() { }
 
-	/*
-	 * name
-	 */
-
 	QString name;
-
-	/*
-	 * number
-	 */
-
 	int number;
 
-	/*
-	 * source
-	 */
-
 	QString source;
-
-	/*
-	 * network id
-	 */
-
-	int networkId;
-
-	/*
-	 * transport stream id
-	 */
-
-	int tsId;
-
-	/*
-	 * service id
-	 */
-
+	int networkId; // may be -1 (not present)
+	int transportStreamId; // may be -1 (not present)
 	int serviceId;
 
-	/*
-	 * video pid
-	 */
+	int pmtPid;
+	int videoPid; // may be -1 (not present)
+	int audioPid; // may be -1 (not present)
 
-	int videoPid;
-
-	/*
-	 * video type
-	 */
-
-	int videoType;
+	bool scrambled;
 
 	/*
 	 * transponder (owned by DvbChannel)
@@ -371,6 +296,13 @@ public:
 	{
 		transponder = DvbSharedTransponder(value);
 	}
+
+	/*
+	 * static functions for reading / writing channel list
+	 */
+
+	static QList<DvbChannel> readList();
+	static void writeList(const QList<DvbChannel> &list);
 
 private:
 	DvbSharedTransponder transponder;
@@ -395,9 +327,6 @@ public:
 	}
 
 	void setList(const QList<DvbChannel> &list_);
-
-	static QList<DvbChannel> readList();
-	static void writeList(QList<DvbChannel> list);
 
 private:
 	QList<DvbChannel> list;
