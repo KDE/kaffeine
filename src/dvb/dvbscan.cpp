@@ -60,6 +60,101 @@ void DvbGradProgress::paintEvent(QPaintEvent *event)
 	QLabel::paintEvent(event);
 }
 
+class DvbPreviewChannel : public DvbChannel
+{
+public:
+	DvbPreviewChannel() : DvbChannel(), snr(-1) { }
+	~DvbPreviewChannel() { }
+
+	bool isValid() const
+	{
+		return !name.isEmpty() && ((videoPid != -1) || !audioPids.isEmpty());
+	}
+
+	/*
+	 * assigned in the SDT
+	 */
+
+	// QString name;
+	// int networkId; // may be -1 (not present)
+	// int transportStreamId; // may be -1 (not present)
+	// bool scrambled;
+	QString provider;
+
+	/*
+	 * assigned in the PMT
+	 */
+
+	// int pmtPid;
+	// int serviceId;
+	// int videoPid; // may be -1 (not present)
+	QList<int> audioPids;
+
+	/*
+	 * assigned later
+	 */
+
+	// QString source;
+	// DvbSharedTransponder transponder;
+	int snr; // percent
+
+	/*
+	 * assigned when adding channel to the main list
+	 */
+
+	// int number;
+	// int audioPid; // may be -1 (not present)
+
+	/*
+	 * model functions
+	 */
+
+	static int columnCount();
+	static QVariant headerData(int column);
+	QVariant modelData(int column) const;
+};
+
+int DvbPreviewChannel::columnCount()
+{
+	return 3;
+}
+
+QVariant DvbPreviewChannel::headerData(int column)
+{
+	switch (column) {
+	case 0:
+		return i18n("Name");
+	case 1:
+		return i18n("Provider");
+	case 2:
+		return i18n("SNR");
+	default:
+		return QVariant();
+	}
+}
+
+QVariant DvbPreviewChannel::modelData(int column) const
+{
+	switch (column) {
+	case 0:
+		return name;
+	case 1:
+		return provider;
+	case 2:
+		return snr;
+	default:
+		return QVariant();
+	}
+}
+
+class DvbPreviewChannelModel : public DvbGenericChannelModel<DvbPreviewChannel>
+{
+public:
+	explicit DvbPreviewChannelModel(QObject *parent) :
+		DvbGenericChannelModel<DvbPreviewChannel>(parent) { }
+	~DvbPreviewChannelModel() { }
+};
+
 class DvbPatEntry
 {
 public:
@@ -82,12 +177,28 @@ public:
 		ScanNit
 	};
 
-	DvbScanInternal(DvbDevice *device_) : state(ScanInit), patIndex(0), device(device_),
-		currentPid(-1) { }
+	DvbScanInternal(DvbDevice *device_, const QString &source_,
+		const DvbSharedTransponder &transponder_) : state(ScanInit), patIndex(0),
+		device(device_), source(source_), transponder(transponder_), currentPid(-1) { }
 
 	~DvbScanInternal()
 	{
 		stopFilter();
+	}
+
+	DvbDevice *getDevice() const
+	{
+		return device;
+	}
+
+	QString getSource() const
+	{
+		return source;
+	}
+
+	DvbSharedTransponder getTransponder() const
+	{
+		return transponder;
 	}
 
 	void startFilter(int pid)
@@ -106,16 +217,24 @@ public:
 		}
 	}
 
+	int getCurrentPid() const
+	{
+		return currentPid;
+	}
+
 	State state;
 	DvbSectionFilter filter;
 	QTimer timer;
 
 	int patIndex;
 	QList<DvbPatEntry> patEntries;
-	QList<DvbChannel> channels;
+	QList<DvbPreviewChannel> channels;
 
 private:
 	DvbDevice *device;
+	QString source;
+	DvbSharedTransponder transponder;
+
 	int currentPid;
 };
 
@@ -133,11 +252,12 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->setList(dvbTab->getChannelModel()->getList());
-	ui->channelView->setModel(channelModel);
+	ui->channelView->setModel(channelModel->getProxyModel());
 	ui->channelView->enableDeleteAction();
 
-	previewModel = new DvbChannelModel(this);
-	ui->scanResultsView->setModel(previewModel);
+	previewModel = new DvbPreviewChannelModel(this);
+	ui->scanResultsView->setModel(previewModel->getProxyModel());
+	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
 	DvbDevice *liveDevice = dvbTab->getLiveDevice();
 
@@ -162,8 +282,11 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 		isLive = false;
 	}
 
+	connect(ui->deleteAllButton, SIGNAL(clicked(bool)), this, SLOT(deleteAllChannels()));
 	connect(ui->scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
 	connect(ui->providerCBox, SIGNAL(clicked(bool)), ui->providerList, SLOT(setEnabled(bool)));
+	connect(ui->filteredButton, SIGNAL(clicked(bool)), this, SLOT(addFilteredChannels()));
+	connect(ui->selectedButton, SIGNAL(clicked(bool)), this, SLOT(addSelectedChannels()));
 	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
 	setMainWidget(widget);
@@ -173,6 +296,11 @@ DvbScanDialog::~DvbScanDialog()
 {
 	delete internal;
 	delete ui;
+}
+
+QList<DvbChannel> DvbScanDialog::getChannelList() const
+{
+	return channelModel->getList();
 }
 
 void DvbScanDialog::scanButtonClicked(bool checked)
@@ -188,9 +316,16 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	// start scan
 	ui->scanButton->setText(i18n("Stop scan"));
+	previewModel->setList(QList<DvbPreviewChannel>());
+
 	Q_ASSERT(internal == NULL);
 
-	internal = new DvbScanInternal(device);
+	if (isLive) {
+		const DvbChannel *channel = dvbTab->getLiveChannel();
+		internal = new DvbScanInternal(device, channel->source, channel->getTransponder());
+	} else {
+		// FIXME
+	}
 
 	connect(&internal->filter, SIGNAL(sectionFound(DvbSectionData)),
 		this, SLOT(sectionFound(DvbSectionData)));
@@ -204,6 +339,67 @@ void DvbScanDialog::updateStatus()
 	ui->signalWidget->setValue(device->getSignal());
 	ui->snrWidget->setValue(device->getSnr());
 	ui->tuningLed->setState(device->isTuned() ? KLed::On : KLed::Off);
+}
+
+void DvbScanDialog::addSelectedChannels()
+{
+	QList<const DvbPreviewChannel *> channels;
+
+	foreach (QModelIndex index, ui->scanResultsView->selectionModel()->selectedRows()) {
+		const DvbPreviewChannel *selectedChannel = previewModel->getChannel(index);
+
+		if (selectedChannel != NULL) {
+			channels.append(selectedChannel);
+		}
+	}
+
+	addUpdateChannels(channels);
+}
+
+void DvbScanDialog::addFilteredChannels()
+{
+	QList<const DvbPreviewChannel *> channels;
+
+	foreach (const DvbPreviewChannel &channel, previewModel->getList()) {
+		if (ui->ftaCBox->isChecked()) {
+			// only fta channels
+			if (channel.scrambled) {
+				continue;
+			}
+		}
+
+		if (ui->radioCBox->isChecked()) {
+			if (!ui->tvCBox->isChecked()) {
+				// only radio channels
+				if (channel.videoPid != -1) {
+					continue;
+				}
+			}
+		} else {
+			if (ui->tvCBox->isChecked()) {
+				// only tv channels
+				if (channel.videoPid == -1) {
+					continue;
+				}
+			}
+		}
+
+		if (ui->providerCBox->isChecked()) {
+			// only channels from a certain provider
+			if (channel.provider != ui->providerList->currentText()) {
+				continue;
+			}
+		}
+
+		channels.append(&channel);
+	}
+
+	addUpdateChannels(channels);
+}
+
+void DvbScanDialog::deleteAllChannels()
+{
+	channelModel->setList(QList<DvbChannel>());
 }
 
 void DvbScanDialog::sectionFound(const DvbSectionData &data)
@@ -256,6 +452,10 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 
 		kDebug() << "found a new PMT";
 
+		DvbPreviewChannel channel;
+		channel.pmtPid = internal->getCurrentPid();
+		channel.serviceId = section.programNumber();
+
 		DvbPmtSectionEntry entry = section.entries();
 
 		while (!entry.isEmpty()) {
@@ -263,15 +463,6 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 				kDebug() << "invalid PMT entry";
 				break;
 			}
-
-			DvbChannel channel;
-
-			channel.serviceId = section.programNumber();
-
-			// video pid & type
-			// audio pids & type & lang
-			// subtitle pids & type & lang
-			// teletext pid
 
 			switch (entry.streamType()) {
 			case 0x01:   // MPEG1 video
@@ -288,33 +479,15 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 			case 0x11:   // AAC / LATM audio
 			case 0x81:   // AC-3 audio (ATSC specific)
 			case 0x87: { // enhanced AC-3 audio (ATSC specific)
-				// FIXME - handle audio
-				break;
-			    }
-
-			case 0x06: { // private streams
-				// FIXME - handle private streams
+				channel.audioPids.append(entry.pid());
 				break;
 			    }
 			}
-
-			DvbDescriptor descriptor = entry.descriptors();
-
-			while (!descriptor.isEmpty()) {
-				if (!descriptor.isValid()) {
-					kDebug() << "invalid descriptor";
-					break;
-				}
-
-//				kDebug() << "\t\tstream descriptor [ tag =" << descriptor.descriptorTag() << "]";
-
-				descriptor = descriptor.next();
-			}
-
-			internal->channels.append(channel);
 
 			entry = entry.next();
 		}
+
+		internal->channels.append(channel);
 
 		updateScanState();
 		break;
@@ -343,7 +516,7 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 			}
 
 			int serviceId = entry.serviceId();
-			QList<DvbChannel>::iterator it;
+			QList<DvbPreviewChannel>::iterator it;
 
 			for (it = internal->channels.begin(); it != internal->channels.end(); ++it) {
 				if (it->serviceId != serviceId) {
@@ -352,6 +525,7 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 
 				it->networkId = section.originalNetworkId();
 				it->transportStreamId = section.transportStreamId();
+				it->scrambled = entry.isScrambled();
 
 				DvbDescriptor descriptor = entry.descriptors();
 
@@ -375,7 +549,7 @@ void DvbScanDialog::sectionFound(const DvbSectionData &data)
 					}
 
 					it->name = serviceDescriptor.serviceName();
-					kDebug() << "name =" << it->name;
+					it->provider = serviceDescriptor.providerName();
 
 					break;
 				}
@@ -453,6 +627,27 @@ void DvbScanDialog::updateScanState()
 	case DvbScanInternal::ScanSdt: {
 		// FIXME
 		// we're finished here :)
+
+		QString source = internal->getSource();
+		DvbSharedTransponder transponder = internal->getTransponder();
+		int snr = internal->getDevice()->getSnr();
+		QList<DvbPreviewChannel>::iterator it;
+
+		for (it = internal->channels.begin(); it != internal->channels.end();) {
+			if (!it->isValid()) {
+				it = internal->channels.erase(it);
+				continue;
+			}
+
+			it->source = source;
+			it->setTransponder(transponder);
+			it->snr = snr;
+
+			++it;
+		}
+
+		previewModel->appendList(internal->channels);
+
 		ui->scanButton->setChecked(false);
 		scanButtonClicked(false);
 		return;
@@ -460,4 +655,79 @@ void DvbScanDialog::updateScanState()
 	}
 
 	internal->timer.start(5000);
+}
+
+class DvbChannelNumberLess
+{
+public:
+	bool operator()(const DvbChannel &x, const DvbChannel &y) const
+	{
+		return (x.number < y.number);
+	}
+};
+
+void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
+{
+	QList<DvbChannel> channels = channelModel->getList();
+	QList<DvbChannel> newChannels;
+
+	foreach (const DvbPreviewChannel *currentChannel, channelList) {
+		QList<DvbChannel>::const_iterator it;
+
+		for (it = channels.begin(); it != channels.end(); ++it) {
+			// FIXME - algorithmic complexity is quite high
+			if ((currentChannel->source == it->source) &&
+			    (currentChannel->networkId == it->networkId) &&
+			    (currentChannel->transportStreamId == it->transportStreamId) &&
+			    (currentChannel->serviceId == it->serviceId)) {
+				break;
+			}
+		}
+
+		DvbChannel channel = *currentChannel;
+
+		if (it != channels.end()) {
+			// update channel
+			channel.number = it->number;
+			channel.audioPid = it->audioPid;
+			if (!currentChannel->audioPids.contains(channel.audioPid)) {
+				if (!currentChannel->audioPids.isEmpty()) {
+					channel.audioPid = currentChannel->audioPids.at(0);
+				} else {
+					channel.audioPid = -1;
+				}
+			}
+
+			channelModel->updateChannel(it - channels.begin(), channel);
+		} else {
+			// add channel
+			// number is assigned later
+			if (!currentChannel->audioPids.isEmpty()) {
+				channel.audioPid = currentChannel->audioPids.at(0);
+			}
+
+			newChannels.append(channel);
+		}
+	}
+
+	if (newChannels.isEmpty()) {
+		return;
+	}
+
+	qSort(channels.begin(), channels.end(), DvbChannelNumberLess());
+
+	int currentNumber = 1;
+	QList<DvbChannel>::const_iterator channelIt = channels.begin();
+
+	for (QList<DvbChannel>::iterator it = newChannels.begin(); it != newChannels.end(); ++it) {
+		while ((channelIt != channels.end()) && (currentNumber == channelIt->number)) {
+			++channelIt;
+			++currentNumber;
+		}
+
+		it->number = currentNumber;
+		++currentNumber;
+	}
+
+	channelModel->appendList(newChannels);
 }

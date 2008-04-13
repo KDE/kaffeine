@@ -29,6 +29,7 @@ namespace Solid
 {
 class Device;
 };
+class DvbChannel;
 class DvbChannelModel;
 class DvbDevice;
 class DvbStream;
@@ -66,6 +67,11 @@ public:
 		return liveDevice;
 	}
 
+	const DvbChannel *getLiveChannel() const
+	{
+		return liveChannel;
+	}
+
 public slots:
 	void configureChannels();
 	void configureDvb();
@@ -89,6 +95,7 @@ private:
 	DvbChannelModel *channelModel;
 
 	DvbDevice *liveDevice;
+	const DvbChannel *liveChannel;
 
 	// FIXME - just a demo hack
 	DvbStream *dvbStream;

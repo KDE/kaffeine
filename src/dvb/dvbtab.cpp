@@ -102,7 +102,13 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStre
 	DvbChannel channel;
 	channel.name = "sample";
 	channel.number = 1;
-	channel.setTransponder(new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto));
+	channel.source = "Astra19.2E";
+	channel.networkId = 1;
+	channel.transportStreamId = 1079;
+	channel.serviceId = 28006;
+	channel.videoPid = 110;
+	channel.audioPid = 120;
+	channel.setTransponder(DvbSharedTransponder(new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto)));
 	list.append(channel);
 	channel.name = "channel";
 	channel.number = 2;
@@ -114,9 +120,9 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStre
 
 	// FIXME - just a demo hack
 	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
-	channels->setModel(channelModel);
+	channels->setModel(channelModel->getProxyModel());
 	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
-	connect(lineEdit, SIGNAL(textChanged(QString)), channels, SLOT(setFilterRegExp(QString)));
+	connect(lineEdit, SIGNAL(textChanged(QString)), channelModel->getProxyModel(), SLOT(setFilterRegExp(QString)));
 	leftSideLayout->addWidget(channels);
 
 	QWidget *mediaContainer = new QWidget(splitter);
@@ -139,7 +145,9 @@ void DvbTab::configureChannels()
 {
 	DvbScanDialog dialog(this);
 
-	dialog.exec();
+	if (dialog.exec() == QDialog::Accepted) {
+		channelModel->setList(dialog.getChannelList());
+	}
 }
 
 void DvbTab::configureDvb()
@@ -246,6 +254,9 @@ void DvbTab::playLive(const QModelIndex &index)
 	}
 
 	DvbDevice *device = devices.begin().value();
+	device->stopDevice();
+
+	manager->getMediaWidget()->stop();
 
 	delete dvbStream;
 	dvbStream = new DvbStream(device);
@@ -255,10 +266,11 @@ void DvbTab::playLive(const QModelIndex &index)
 	DvbSConfig config("test");
 	device->tuneDevice(channel->getTransponder(), &config);
 
-	device->addPidFilter(110, dvbStream);
-	device->addPidFilter(120, dvbStream);
+	device->addPidFilter(channel->videoPid, dvbStream);
+	device->addPidFilter(channel->audioPid, dvbStream);
 
 	liveDevice = device;
+	liveChannel = channel;
 	connect(dvbStream, SIGNAL(livePaused(bool)), this, SLOT(livePaused(bool)));
 	connect(dvbStream, SIGNAL(liveStopped()), this, SLOT(liveStopped()));
 

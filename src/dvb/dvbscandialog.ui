@@ -125,7 +125,7 @@
        </property>
        <layout class="QVBoxLayout" >
         <item>
-         <widget class="QCheckBox" name="FtaCBox" >
+         <widget class="QCheckBox" name="ftaCBox" >
           <property name="text" >
            <string>Free to air</string>
           </property>
@@ -139,7 +139,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QCheckBox" name="TvCBox" >
+         <widget class="QCheckBox" name="tvCBox" >
           <property name="text" >
            <string>TV</string>
           </property>
@@ -178,7 +178,7 @@
      </property>
      <layout class="QVBoxLayout" >
       <item>
-       <widget class="DvbChannelView" native="1" name="scanResultsView" />
+       <widget class="DvbChannelViewBase" native="1" name="scanResultsView" />
       </item>
       <item>
        <widget class="QPushButton" name="selectedButton" >
@@ -205,6 +205,11 @@
   </customwidget>
   <customwidget>
    <class>DvbChannelView</class>
+   <extends>QWidget</extends>
+   <header>dvb/dvbchannel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DvbChannelViewBase</class>
    <extends>QWidget</extends>
    <header>dvb/dvbchannel.h</header>
   </customwidget>

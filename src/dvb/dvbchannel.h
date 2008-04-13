@@ -22,9 +22,9 @@
 #define DVBCHANNEL_H
 
 #include <QSharedData>
+#include <QSortFilterProxyModel>
 #include <QTreeView>
 
-class QSortFilterProxyModel;
 class DvbChannelReader;
 class DvbChannelWriter;
 class DvbCTransponder;
@@ -259,7 +259,8 @@ public:
 	ModulationType modulationType;
 };
 
-typedef QSharedDataPointer<DvbTransponder> DvbSharedTransponder;
+// you can't modify it anyway; explicit sharing just makes implementation easier
+typedef QExplicitlySharedDataPointer<DvbTransponder> DvbSharedTransponder;
 
 class DvbChannel
 {
@@ -287,15 +288,23 @@ public:
 	 * transponder (owned by DvbChannel)
 	 */
 
-	const DvbTransponder *getTransponder() const
+	DvbSharedTransponder getTransponder() const
 	{
 		return transponder;
 	}
 
-	void setTransponder(DvbTransponder *value)
+	void setTransponder(DvbSharedTransponder transponder_)
 	{
-		transponder = DvbSharedTransponder(value);
+		transponder = transponder_;
 	}
+
+	/*
+	 * model functions
+	 */
+
+	static int columnCount();
+	static QVariant headerData(int column);
+	QVariant modelData(int column) const;
 
 	/*
 	 * static functions for reading / writing channel list
@@ -308,47 +317,126 @@ private:
 	DvbSharedTransponder transponder;
 };
 
-class DvbChannelModel : public QAbstractTableModel
+template<class T> class DvbGenericChannelModel : protected QAbstractTableModel
 {
 public:
-	DvbChannelModel(QObject *parent);
-	~DvbChannelModel();
+	explicit DvbGenericChannelModel(QObject *parent) : QAbstractTableModel(parent)
+	{
+		proxyModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
+		proxyModel.setSortLocaleAware(true);
+		proxyModel.setSourceModel(this);
+	}
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	~DvbGenericChannelModel() { }
 
-	const DvbChannel *getChannel(const QModelIndex &index) const;
-
-	QList<DvbChannel> getList() const
+	QList<T> getList() const
 	{
 		return list;
 	}
 
-	void setList(const QList<DvbChannel> &list_);
+	void setList(const QList<T> &list_)
+	{
+		list = list_;
+		reset();
+	}
+
+	void appendList(const QList<T> &values)
+	{
+		beginInsertRows(QModelIndex(), list.size(), list.size() + values.size() - 1);
+		list += values;
+		endInsertRows();
+	}
+
+	QSortFilterProxyModel *getProxyModel()
+	{
+		return &proxyModel;
+	}
+
+	const T *getChannel(const QModelIndex &index) const
+	{
+		QModelIndex sourceIndex = proxyModel.mapToSource(index);
+
+		if (!sourceIndex.isValid() || sourceIndex.row() >= list.size()) {
+			return NULL;
+		}
+
+		return &list.at(sourceIndex.row());
+	}
+
+	void updateChannel(int position, const T &channel)
+	{
+		list.replace(position, channel);
+		emit dataChanged(index(position, 0), index(position, T::columnCount() - 1));
+	}
 
 private:
-	QList<DvbChannel> list;
+	int columnCount(const QModelIndex &parent) const
+	{
+		if (parent.isValid()) {
+			return 0;
+		}
+
+		return T::columnCount();
+	}
+
+	int rowCount(const QModelIndex &parent) const
+	{
+		if (parent.isValid()) {
+			return 0;
+		}
+
+		return list.size();
+	}
+
+	QVariant data(const QModelIndex &index, int role) const
+	{
+		if (!index.isValid() || role != Qt::DisplayRole || index.row() >= list.size()) {
+			return QVariant();
+		}
+
+		return list.at(index.row()).modelData(index.column());
+	}
+
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const
+	{
+		if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
+			return QVariant();
+		}
+
+		return T::headerData(section);
+	}
+
+	QList<T> list;
+	QSortFilterProxyModel proxyModel;
 };
 
-class DvbChannelView : public QTreeView
+class DvbChannelModel : public DvbGenericChannelModel<DvbChannel>
+{
+public:
+	explicit DvbChannelModel(QObject *parent) : DvbGenericChannelModel<DvbChannel>(parent) { }
+	~DvbChannelModel() { }
+};
+
+class DvbChannelViewBase : public QTreeView
+{
+public:
+	explicit DvbChannelViewBase(QWidget *parent);
+	~DvbChannelViewBase();
+};
+
+// this class adds a context menu
+class DvbChannelView : public DvbChannelViewBase
 {
 	Q_OBJECT
 public:
 	explicit DvbChannelView(QWidget *parent);
 	~DvbChannelView();
 
-	void setModel(QAbstractItemModel *model);
-
 	/*
 	 * should be only used in the scan dialog
 	 */
 
 	void enableDeleteAction();
-
-public slots:
-	void setFilterRegExp(const QString& string);
 
 protected:
 	void contextMenuEvent(QContextMenuEvent *event);
@@ -359,7 +447,6 @@ private slots:
 	void actionDelete();
 
 private:
-	QSortFilterProxyModel *proxyModel;
 	QMenu *menu;
 	QPersistentModelIndex menuIndex;
 };

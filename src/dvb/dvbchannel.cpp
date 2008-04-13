@@ -268,7 +268,7 @@ bool DvbChannelReader::readChannel(DvbChannel *channel)
 		return false;
 	}
 
-	channel->setTransponder(transponder);
+	channel->setTransponder(DvbSharedTransponder(transponder));
 
 	return true;
 }
@@ -368,85 +368,48 @@ void DvbChannel::writeList(const QList<DvbChannel> &list)
 	}
 }
 
-DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
+int DvbChannel::columnCount()
 {
-}
-
-DvbChannelModel::~DvbChannelModel()
-{
-}
-
-int DvbChannelModel::rowCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return list.size();
-}
-
-int DvbChannelModel::columnCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
 	return 2;
 }
 
-QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
+QVariant DvbChannel::headerData(int column)
 {
-	if (!index.isValid() || role != Qt::DisplayRole || index.column() >= 2
-	    || index.row() >= list.size()) {
-		return QVariant();
-	}
-
-	if (index.column() == 0) {
-		return list.at(index.row()).name;
-	} else {
-		return list.at(index.row()).number;
-	}
-}
-
-QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
-		return QVariant();
-	}
-
-	if (section == 0) {
+	switch (column) {
+	case 0:
 		return i18n("Name");
-	} else {
+	case 1:
 		return i18n("Number");
+	default:
+		return QVariant();
 	}
 }
 
-const DvbChannel *DvbChannelModel::getChannel(const QModelIndex &index) const
+QVariant DvbChannel::modelData(int column) const
 {
-	if (!index.isValid() || index.row() >= list.size()) {
-		return NULL;
+	switch (column) {
+	case 0:
+		return name;
+	case 1:
+		return number;
+	default:
+		return QVariant();
 	}
-
-	return &list.at(index.row());
 }
 
-void DvbChannelModel::setList(const QList<DvbChannel> &list_)
+DvbChannelViewBase::DvbChannelViewBase(QWidget *parent) : QTreeView(parent)
 {
-	reset();
-	list = list_;
-}
-
-DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
-{
-	proxyModel = new QSortFilterProxyModel(this);
-	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	proxyModel->setSortLocaleAware(true);
-
 	setIndentation(0);
-	QTreeView::setModel(proxyModel);
 	setSortingEnabled(true);
 	sortByColumn(0, Qt::AscendingOrder);
+}
 
+DvbChannelViewBase::~DvbChannelViewBase()
+{
+}
+
+DvbChannelView::DvbChannelView(QWidget *parent) : DvbChannelViewBase(parent)
+{
 	menu = new QMenu(this);
 
 	KAction *action = new KAction(i18n("Edit channel"), this);
@@ -462,21 +425,11 @@ DvbChannelView::~DvbChannelView()
 {
 }
 
-void DvbChannelView::setModel(QAbstractItemModel *model)
-{
-	proxyModel->setSourceModel(model);
-}
-
 void DvbChannelView::enableDeleteAction()
 {
 	KAction *action = new KAction(i18n("Delete channel"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(actionDelete()));
 	menu->addAction(action);
-}
-
-void DvbChannelView::setFilterRegExp(const QString& string)
-{
-	proxyModel->setFilterRegExp(string);
 }
 
 void DvbChannelView::contextMenuEvent(QContextMenuEvent *event)

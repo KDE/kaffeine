@@ -25,8 +25,11 @@
 #include <QTimer>
 #include <KDialog>
 
+class DvbChannel;
 class DvbChannelModel;
 class DvbDevice;
+class DvbPreviewChannel;
+class DvbPreviewChannelModel;
 class DvbScanInternal;
 class DvbSectionData;
 class DvbTab;
@@ -39,9 +42,15 @@ public:
 	explicit DvbScanDialog(DvbTab *dvbTab_);
 	~DvbScanDialog();
 
+	QList<DvbChannel> getChannelList() const;
+
 private slots:
 	void scanButtonClicked(bool checked);
 	void updateStatus();
+
+	void addSelectedChannels();
+	void addFilteredChannels();
+	void deleteAllChannels();
 
 	void sectionFound(const DvbSectionData &data);
 	void sectionTimeout();
@@ -49,10 +58,12 @@ private slots:
 private:
 	void updateScanState();
 
+	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);
+
 	DvbTab *dvbTab;
 	Ui_DvbScanDialog *ui;
 	DvbChannelModel *channelModel;
-	DvbChannelModel *previewModel;
+	DvbPreviewChannelModel *previewModel;
 
 	DvbDevice *device;
 	QTimer statusTimer;

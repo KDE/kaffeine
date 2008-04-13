@@ -98,7 +98,7 @@ void MediaWidget::switchEngine(Engine *newEngine)
 	engine = newEngine;
 	layout()->addWidget(engine->videoWidget());
 
-	connect(engine, SIGNAL(playbackFinished), this, SLOT(playbackFinished()));
+	connect(engine, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 	connect(engine, SIGNAL(playbackFailed(QString)), this, SLOT(playbackFailed(QString)));
 }
 
