@@ -21,6 +21,7 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include <QDate>
 #include <QMap>
 #include "../manager.h"
 

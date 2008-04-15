@@ -21,70 +21,142 @@
 #ifndef DVBSCAN_H
 #define DVBSCAN_H
 
-#include <QLabel>
-#include <QTimer>
-#include <KDialog>
+#include "dvbchannel.h"
+#include "dvbsi.h"
 
-class DvbChannel;
-class DvbChannelModel;
-class DvbDevice;
-class DvbPreviewChannel;
-class DvbPreviewChannelModel;
-class DvbScanInternal;
-class DvbSectionData;
-class DvbTab;
-class Ui_DvbScanDialog;
+class DvbPreviewChannel : public DvbChannel
+{
+public:
+	DvbPreviewChannel() : snr(-1) { }
+	~DvbPreviewChannel() { }
 
-class DvbScanDialog : public KDialog
+	bool isValid() const
+	{
+		return !name.isEmpty() && ((videoPid != -1) || !audioPids.isEmpty());
+	}
+
+	/*
+	 * assigned in the SDT
+	 */
+
+	// QString name;
+	// int networkId; // may be -1 (not present)
+	// int transportStreamId; // may be -1 (not present)
+	// bool scrambled;
+	QString provider;
+
+	/*
+	 * assigned in the PMT
+	 */
+
+	// int pmtPid;
+	// int serviceId;
+	// int videoPid; // may be -1 (not present)
+	QList<int> audioPids;
+
+	/*
+	 * assigned later
+	 */
+
+	// QString source;
+	// DvbSharedTransponder transponder;
+	int snr; // percent
+
+	/*
+	 * assigned when adding channel to the main list
+	 */
+
+	// int number;
+	// int audioPid; // may be -1 (not present)
+
+	/*
+	 * model functions
+	 */
+
+	static int columnCount();
+	static QVariant headerData(int column);
+	QVariant modelData(int column) const;
+};
+
+class DvbPreviewChannelModel : public DvbGenericChannelModel<DvbPreviewChannel>
+{
+public:
+	explicit DvbPreviewChannelModel(QObject *parent) :
+		DvbGenericChannelModel<DvbPreviewChannel>(parent) { }
+	~DvbPreviewChannelModel() { }
+};
+
+class DvbPatEntry
+{
+public:
+	DvbPatEntry(int programNumber_, int pid_) : programNumber(programNumber_), pid(pid_) { }
+	~DvbPatEntry() { }
+
+	int programNumber;
+	int pid;
+};
+
+class DvbScan : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DvbScanDialog(DvbTab *dvbTab_);
-	~DvbScanDialog();
+	enum State
+	{
+		ScanInit,
+		ScanPat,
+		ScanSdt,
+		ScanPmt,
+		ScanNit
+	};
 
-	QList<DvbChannel> getChannelList() const;
+	DvbScan(const QString &source_, DvbDevice *device_, bool isLive_,
+		const QList<DvbSharedTransponder> &transponderList_);
+	~DvbScan();
+
+signals:
+	void foundChannels(const QList<DvbPreviewChannel> &channels);
+	void scanFinished();
 
 private slots:
-	void scanButtonClicked(bool checked);
-	void updateStatus();
-
-	void addSelectedChannels();
-	void addFilteredChannels();
-	void deleteAllChannels();
-
 	void sectionFound(const DvbSectionData &data);
 	void sectionTimeout();
 
 private:
-	void updateScanState();
+	void startFilter(int pid)
+	{
+		Q_ASSERT(currentPid == -1);
+		filter.resetFilter();
+		device->addPidFilter(pid, &filter);
+		currentPid = pid;
+	}
 
-	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);
+	void stopFilter()
+	{
+		if (currentPid != -1) {
+			device->removePidFilter(currentPid, &filter);
+			currentPid = -1;
+		}
+	}
 
-	DvbTab *dvbTab;
-	Ui_DvbScanDialog *ui;
-	DvbChannelModel *channelModel;
-	DvbPreviewChannelModel *previewModel;
+	void updateState();
 
+	const QString source;
 	DvbDevice *device;
-	QTimer statusTimer;
-	bool isLive;
+	DvbSharedTransponder transponder;
 
-	DvbScanInternal *internal;
-};
+	const bool isLive;
+	QList<DvbSharedTransponder> transponderList;
+	int transponderIndex;
 
-class DvbGradProgress : public QLabel
-{
-public:
-	explicit DvbGradProgress(QWidget *parent);
-	~DvbGradProgress();
+	State state;
+	QTimer timer;
+	DvbSectionFilter filter;
+	int currentPid;
 
-	void setValue(int value_);
+	QList<DvbPatEntry> patEntries;
+	int patIndex;
 
-protected:
-	void paintEvent(QPaintEvent *event);
-
-private:
-	int value;
+	QList<DvbPreviewChannel> channels;
 };
 
 #endif /* DVBSCAN_H */

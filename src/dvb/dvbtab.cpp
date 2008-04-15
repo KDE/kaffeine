@@ -39,7 +39,7 @@
 #include "dvbchannel.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
-#include "dvbscan.h"
+#include "dvbscandialog.h"
 #include "dvbtab.h"
 
 // FIXME - DvbStream is just a demo hack
