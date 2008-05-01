@@ -58,9 +58,9 @@ StartTab::StartTab(Manager *manager_) : TabBase(manager_)
 	boxLayout->setMargin(0);
 	boxLayout->setSpacing(0);
 
-	QLabel *label = new QLabel(i18n("<font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your desktop!</font>"));
-	label->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum));
+	QLabel *label = new QLabel(i18n("<center><font size=\"+4\">"
+		"<b>[Kaffeine Player]</b><br>caffeine for your desktop!</font></center>"));
+	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 	QPalette pal = label->palette();
 	pal.setColor(label->backgroundRole(), QColor(127, 127, 255));
 	label->setPalette(pal);
