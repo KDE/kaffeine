@@ -60,8 +60,13 @@ public:
 		DeviceTuned
 	};
 
-	DvbDevice();
+	DvbDevice(int deviceId_);
 	~DvbDevice();
+
+	int getId() const
+	{
+		return deviceId;
+	}
 
 	void componentAdded(const Solid::Device &component);
 	bool componentRemoved(const QString &udi);
@@ -137,6 +142,7 @@ private:
 	QString dvrPath;
 	QString frontendPath;
 
+	int deviceId;
 	stateFlags internalState;
 	DeviceState deviceState;
 	TransmissionTypes transmissionTypes;
@@ -150,5 +156,27 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)
+
+class DvbDeviceManager : public QObject
+{
+	Q_OBJECT
+public:
+	explicit DvbDeviceManager(QObject *parent);
+	~DvbDeviceManager();
+
+	QList<DvbDevice *> getDeviceList() const
+	{
+		return devices;
+	}
+
+private slots:
+	void componentAdded(const QString &udi);
+	void componentRemoved(const QString &udi);
+
+private:
+	void componentAdded(const Solid::Device &component);
+
+	QList<DvbDevice *> devices;
+};
 
 #endif /* DVBDEVICE_H */

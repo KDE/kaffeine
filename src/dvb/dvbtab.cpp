@@ -18,20 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#include <QCoreApplication>
-#include <QEvent>
+#include "dvbtab.h"
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSplitter>
-#include <Solid/Device>
-#include <Solid/DeviceInterface>
-#include <Solid/DeviceNotifier>
-#include <Solid/DvbInterface>
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
-#include <KPageDialog>
-
 #include "../engine.h"
 #include "../kaffeine.h"
 #include "../manager.h"
@@ -39,8 +33,8 @@
 #include "dvbchannel.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
+#include "dvbmanager.h"
 #include "dvbscandialog.h"
-#include "dvbtab.h"
 
 // FIXME - DvbStream is just a demo hack
 
@@ -75,6 +69,8 @@ private:
 
 DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStream(NULL)
 {
+	dvbManager = new DvbManager(this);
+
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
 
@@ -96,33 +92,11 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStre
 	lineEdit->setClearButtonShown(true);
 	searchBoxLayout->addWidget(lineEdit);
 
-	// FIXME - just a demo hack
-	channelModel = new DvbChannelModel(this);
-	QList<DvbChannel> list;
-	DvbChannel channel;
-	channel.name = "sample";
-	channel.number = 1;
-	channel.source = "Astra19.2E";
-	channel.networkId = 1;
-	channel.transportStreamId = 1079;
-	channel.serviceId = 28006;
-	channel.videoPid = 110;
-	channel.audioPid = 120;
-	channel.setTransponder(DvbSharedTransponder(new DvbSTransponder(DvbSTransponder::Horizontal, 11953000, 27500000, DvbSTransponder::FecAuto)));
-	list.append(channel);
-	channel.name = "channel";
-	channel.number = 2;
-	list.append(channel);
-	channel.name = "test";
-	channel.number = 3;
-	list.append(channel);
-	channelModel->setList(list);
-
-	// FIXME - just a demo hack
 	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
-	channels->setModel(channelModel->getProxyModel());
+	QSortFilterProxyModel *proxyModel = dvbManager->getChannelModel()->getProxyModel();
+	channels->setModel(proxyModel);
 	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
-	connect(lineEdit, SIGNAL(textChanged(QString)), channelModel->getProxyModel(), SLOT(setFilterRegExp(QString)));
+	connect(lineEdit, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterRegExp(QString)));
 	leftSideLayout->addWidget(channels);
 
 	QWidget *mediaContainer = new QWidget(splitter);
@@ -131,87 +105,23 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStre
 
 	splitter->setStretchFactor(0, 0);
 	splitter->setStretchFactor(1, 1);
-
-	QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 }
 
 DvbTab::~DvbTab()
 {
 	delete dvbStream;
-	qDeleteAll(devices);
 }
 
 void DvbTab::configureChannels()
 {
 	DvbScanDialog dialog(this);
-
-	if (dialog.exec() == QDialog::Accepted) {
-		channelModel->setList(dialog.getChannelList());
-	}
+	dialog.exec();
 }
 
 void DvbTab::configureDvb()
 {
-	KPageDialog *dialog = new KPageDialog(manager->getKaffeine());
-	dialog->setCaption(i18n("DVB Settings"));
-	dialog->setFaceType(KPageDialog::List);
-
-	int deviceNumber = 1;
-
-	foreach (DvbDevice *device, devices) {
-		if (device->getDeviceState() == DvbDevice::DeviceNotReady) {
-			continue;
-		}
-
-		QWidget *widget = new QWidget();
-		QGridLayout *gridLayout = new QGridLayout(widget);
-
-		// name
-
-		gridLayout->addWidget(new QLabel(i18n("<qt><b>Name:</b></qt>")), 0, 0);
-		gridLayout->addWidget(new QLabel(device->getFrontendName()), 0, 1);
-
-		// type
-
-		gridLayout->addWidget(new QLabel(i18n("<qt><b>Type:</b></qt>")), 1, 0);
-
-		QString text;
-		DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
-		if ((transmissionTypes & DvbDevice::DvbC) != 0) {
-			text = i18n("DVB-C");
-		}
-		if ((transmissionTypes & DvbDevice::DvbS) != 0) {
-			if (!text.isEmpty()) {
-				text += " / ";
-			}
-			text += i18n("DVB-S");
-		}
-		if ((transmissionTypes & DvbDevice::DvbT) != 0) {
-			if (!text.isEmpty()) {
-				text += " / ";
-			}
-			text += i18n("DVB-T");
-		}
-		if ((transmissionTypes & DvbDevice::Atsc) != 0) {
-			if (!text.isEmpty()) {
-				text += " / ";
-			}
-			text += i18n("ATSC");
-		}
-
-		gridLayout->addWidget(new QLabel(text), 1, 1);
-
-		// add page
-
-		QString pageName(i18n("Device %1", deviceNumber));
-		++deviceNumber;
-
-		KPageWidgetItem *page = new KPageWidgetItem(widget, pageName);
-		page->setIcon(KIcon("media-flash"));
-		dialog->addPage(page);
-	}
-
-	dialog->exec();
+	DvbConfigDialog dialog(this);
+	dialog.exec();
 }
 
 void DvbTab::activate()
@@ -219,41 +129,16 @@ void DvbTab::activate()
 	mediaLayout->addWidget(manager->getMediaWidget());
 }
 
-void DvbTab::customEvent(QEvent *)
-{
-	QObject *notifier = Solid::DeviceNotifier::instance();
-
-	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
-	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(componentRemoved(QString)));
-
-	QList<Solid::Device> devices = Solid::Device::listFromType(Solid::DeviceInterface::DvbInterface);
-	foreach (const Solid::Device &device, devices) {
-		componentAdded(device);
-	}
-}
-
-void DvbTab::componentAdded(const QString &udi)
-{
-	componentAdded(Solid::Device(udi));
-}
-
-void DvbTab::componentRemoved(const QString &udi)
-{
-	foreach (DvbDevice *device, devices) {
-		if (device->componentRemoved(udi)) {
-			break;
-		}
-	}
-}
-
 // FIXME - just a demo hack
 void DvbTab::playLive(const QModelIndex &index)
 {
+	QList<DvbDevice *> devices = dvbManager->getDeviceList();
+
 	if (devices.isEmpty()) {
 		return;
 	}
 
-	DvbDevice *device = devices.begin().value();
+	DvbDevice *device = devices.at(0);
 	device->stopDevice();
 
 	manager->getMediaWidget()->stop();
@@ -261,10 +146,10 @@ void DvbTab::playLive(const QModelIndex &index)
 	delete dvbStream;
 	dvbStream = new DvbStream(device);
 
-	const DvbChannel *channel = channelModel->getChannel(index);
+	const DvbChannel *channel = dvbManager->getChannelModel()->getChannel(index);
 
 	DvbSConfig config("test");
-	device->tuneDevice(channel->getTransponder(), &config);
+	device->tuneDevice(channel->getTransponder().data(), &config);
 
 	device->addPidFilter(channel->videoPid, dvbStream);
 	device->addPidFilter(channel->audioPid, dvbStream);
@@ -286,32 +171,4 @@ void DvbTab::liveStopped()
 {
 	liveDevice->stopDevice();
 	liveDevice = NULL;
-}
-
-void DvbTab::componentAdded(const Solid::Device &component)
-{
-	const Solid::DvbInterface *dvbInterface = component.as<Solid::DvbInterface>();
-
-	if (dvbInterface == NULL) {
-		return;
-	}
-
-	int adapter = dvbInterface->deviceAdapter();
-	int index = dvbInterface->deviceIndex();
-
-	if ((adapter < 0) || (index < 0)) {
-		kWarning() << "couldn't determine adapter and/or index for" << component.udi();
-		return;
-	}
-
-	int internal_index = (adapter << 16) | index;
-
-	DvbDevice *device = devices.value(internal_index);
-
-	if (device == NULL) {
-		device = new DvbDevice();
-		devices.insert(internal_index, device);
-	}
-
-	device->componentAdded(component);
 }

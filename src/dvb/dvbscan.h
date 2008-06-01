@@ -22,7 +22,10 @@
 #define DVBSCAN_H
 
 #include "dvbchannel.h"
+#include "dvbconfig.h"
 #include "dvbsi.h"
+
+class DvbPatEntry;
 
 class DvbPreviewChannel : public DvbChannel
 {
@@ -36,7 +39,20 @@ public:
 	}
 
 	/*
-	 * assigned in the SDT
+	 * assigned when reading PMT
+	 */
+
+	// QString name; // a generic name is assigned
+	// QString source;
+	// int serviceId;
+	// int pmtPid;
+	// int videoPid; // may be -1 (not present)
+	// DvbSharedTransponder transponder;
+	QList<int> audioPids;
+	int snr; // percent
+
+	/*
+	 * assigned when reading SDT
 	 */
 
 	// QString name;
@@ -44,23 +60,6 @@ public:
 	// int transportStreamId; // may be -1 (not present)
 	// bool scrambled;
 	QString provider;
-
-	/*
-	 * assigned in the PMT
-	 */
-
-	// int pmtPid;
-	// int serviceId;
-	// int videoPid; // may be -1 (not present)
-	QList<int> audioPids;
-
-	/*
-	 * assigned later
-	 */
-
-	// QString source;
-	// DvbSharedTransponder transponder;
-	int snr; // percent
 
 	/*
 	 * assigned when adding channel to the main list
@@ -78,38 +77,13 @@ public:
 	QVariant modelData(int column) const;
 };
 
-class DvbPreviewChannelModel : public DvbGenericChannelModel<DvbPreviewChannel>
-{
-public:
-	explicit DvbPreviewChannelModel(QObject *parent) :
-		DvbGenericChannelModel<DvbPreviewChannel>(parent) { }
-	~DvbPreviewChannelModel() { }
-};
-
-class DvbPatEntry
-{
-public:
-	DvbPatEntry(int programNumber_, int pid_) : programNumber(programNumber_), pid(pid_) { }
-	~DvbPatEntry() { }
-
-	int programNumber;
-	int pid;
-};
-
 class DvbScan : public QObject
 {
 	Q_OBJECT
 public:
-	enum State
-	{
-		ScanInit,
-		ScanPat,
-		ScanSdt,
-		ScanPmt,
-		ScanNit
-	};
-
-	DvbScan(const QString &source_, DvbDevice *device_, bool isLive_,
+	DvbScan(const QString &source_, DvbDevice *device_,
+		const DvbSharedTransponder &transponder_);
+	DvbScan(const QString &source_, DvbDevice *device_, const DvbSharedConfig &config_,
 		const QList<DvbSharedTransponder> &transponderList_);
 	~DvbScan();
 
@@ -120,19 +94,34 @@ signals:
 private slots:
 	void sectionFound(const DvbSectionData &data);
 	void sectionTimeout();
+	void deviceStateChanged();
 
 private:
+	enum State
+	{
+		ScanTune,
+		ScanInit,
+		ScanPat,
+		ScanSdt,
+		ScanPmt,
+		ScanNit
+	};
+
+	void init();
+
 	void startFilter(int pid)
 	{
 		Q_ASSERT(currentPid == -1);
 		filter.resetFilter();
 		device->addPidFilter(pid, &filter);
 		currentPid = pid;
+		timer.start(5000);
 	}
 
 	void stopFilter()
 	{
 		if (currentPid != -1) {
+			timer.stop();
 			device->removePidFilter(currentPid, &filter);
 			currentPid = -1;
 		}
@@ -140,18 +129,22 @@ private:
 
 	void updateState();
 
-	const QString source;
+	QString source;
 	DvbDevice *device;
 	DvbSharedTransponder transponder;
 
-	const bool isLive;
+	bool isLive;
+
+	// these three members are only used if isLive is false
 	QList<DvbSharedTransponder> transponderList;
 	int transponderIndex;
+	DvbSharedConfig config;
 
 	State state;
 	QTimer timer;
 	DvbSectionFilter filter;
 	int currentPid;
+	int snr;
 
 	QList<DvbPatEntry> patEntries;
 	int patIndex;

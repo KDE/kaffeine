@@ -97,11 +97,7 @@
            <widget class="DvbGradProgress" native="1" name="snrWidget" />
           </item>
           <item row="2" column="1" >
-           <widget class="KLed" name="tuningLed" >
-            <property name="state" >
-             <enum>KLed::Off</enum>
-            </property>
-           </widget>
+           <widget class="KLed" name="tuningLed" />
           </item>
          </layout>
         </item>

@@ -42,10 +42,9 @@ public:
 	explicit DvbScanDialog(DvbTab *dvbTab_);
 	~DvbScanDialog();
 
-	QList<DvbChannel> getChannelList() const;
-
 private slots:
 	void scanButtonClicked(bool checked);
+	void dialogAccepted();
 	void foundChannels(const QList<DvbPreviewChannel> &channels);
 	void scanFinished();
 
@@ -57,6 +56,7 @@ private slots:
 
 private:
 	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);
+	void setDevice(DvbDevice *newDevice);
 
 	DvbTab *dvbTab;
 	Ui_DvbScanDialog *ui;

@@ -22,16 +22,25 @@
 #define DVBCONFIG_H
 
 #include <QPair>
+#include <QSharedData>
 #include <QString>
+#include <KPageDialog>
 
-#include "dvbchannel.h"
+class DvbSConfig;
+class DvbSTransponder;
+class DvbTab;
 
-class DvbConfig
+class DvbConfig : public QSharedData
 {
 public:
 	virtual ~DvbConfig() { }
 
-	QString source;
+	virtual const DvbSConfig *getDvbSConfig() const
+	{
+		return NULL;
+	}
+
+	const QString source;
 
 	/*
 	 * returns the tuning timeout (in ms)
@@ -44,9 +53,10 @@ public:
 	}
 
 protected:
-	Q_DISABLE_COPY(DvbConfig)
-
 	DvbConfig(const QString &source_) : source(source_) { }
+
+private:
+	Q_DISABLE_COPY(DvbConfig);
 };
 
 class DvbSConfig : public DvbConfig
@@ -55,17 +65,18 @@ public:
 	DvbSConfig(const QString &source_) : DvbConfig(source_) { }
 	~DvbSConfig() { }
 
+	const DvbSConfig *getDvbSConfig() const
+	{
+		return this;
+	}
+
 	/*
 	 * determines the correct parameters for the lnb
 	 * first return value: intermediate frequency (in Khz)
 	 * second return value: band (true = high band, false = low band)
 	 */
 
-	QPair<int, bool> getParameters(const DvbSTransponder *transponder) const
-	{
-		// FIXME hack
-		return QPair<int, bool>(transponder->frequency - 10600000, true);
-	}
+	QPair<int, bool> getParameters(const DvbSTransponder *transponder) const;
 
 	/*
 	 * returns the diseqc switch position (0 = first sat, 1 = second sat etc)
@@ -76,6 +87,16 @@ public:
 		// FIXME hack
 		return 0;
 	}
+};
+
+// you can't modify it anyway; explicit sharing just makes implementation easier
+typedef QExplicitlySharedDataPointer<DvbConfig> DvbSharedConfig;
+
+class DvbConfigDialog : public KPageDialog
+{
+public:
+	explicit DvbConfigDialog(DvbTab *dvbTab_);
+	~DvbConfigDialog();
 };
 
 #endif /* DVBCONFIG_H */

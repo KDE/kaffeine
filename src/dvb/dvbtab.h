@@ -21,46 +21,24 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
-#include <QDate>
-#include <QMap>
 #include "../manager.h"
 
 class QModelIndex;
-namespace Solid
-{
-class Device;
-};
 class DvbChannel;
-class DvbChannelModel;
 class DvbDevice;
+class DvbManager;
 class DvbStream;
 
 class DvbTab : public TabBase
 {
 	Q_OBJECT
 public:
-	DvbTab(Manager *manager_);
+	explicit DvbTab(Manager *manager_);
 	~DvbTab();
 
-	/*
-	 * returns the date of the last scan file update
-	 */
-
-	QDate getScanFilesDate() const
+	DvbManager *getDvbManager() const
 	{
-		// FIXME
-		return QDate(2008, 3, 10);
-	}
-
-	QStringList getSourceList() const
-	{
-		// FIXME
-		return QStringList();
-	}
-
-	DvbChannelModel *getChannelModel() const
-	{
-		return channelModel;
+		return dvbManager;
 	}
 
 	DvbDevice *getLiveDevice() const
@@ -78,8 +56,6 @@ public slots:
 	void configureDvb();
 
 private slots:
-	void componentAdded(const QString &udi);
-	void componentRemoved(const QString &udi);
 	void playLive(const QModelIndex &index);
 	void livePaused(bool paused);
 	void liveStopped();
@@ -87,14 +63,8 @@ private slots:
 private:
 	void activate();
 
-	void customEvent(QEvent *event);
-	void componentAdded(const Solid::Device &component);
-
+	DvbManager *dvbManager;
 	QLayout *mediaLayout;
-	QMap<int, DvbDevice *> devices;
-
-	DvbChannelModel *channelModel;
-
 	DvbDevice *liveDevice;
 	const DvbChannel *liveChannel;
 

@@ -19,12 +19,14 @@
  */
 
 #include "dvbscandialog.h"
+
+#include <QPainter>
+#include <KDebug>
+#include "dvbmanager.h"
 #include "dvbscan.h"
 #include "dvbsi.h"
 #include "dvbtab.h"
 #include "ui_dvbscandialog.h"
-#include <QPainter>
-#include <KDebug>
 
 DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
 {
@@ -61,6 +63,14 @@ void DvbGradProgress::paintEvent(QPaintEvent *event)
 	QLabel::paintEvent(event);
 }
 
+class DvbPreviewChannelModel : public DvbGenericChannelModel<DvbPreviewChannel>
+{
+public:
+	explicit DvbPreviewChannelModel(QObject *parent) :
+		DvbGenericChannelModel<DvbPreviewChannel>(parent) { }
+	~DvbPreviewChannelModel() { }
+};
+
 DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
 {
 	setCaption(i18n("Configure channels"));
@@ -69,12 +79,12 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui = new Ui_DvbScanDialog();
 	ui->setupUi(widget);
 
-	QString date = KGlobal::locale()->formatDate(dvbTab->getScanFilesDate(), KLocale::ShortDate);
+	QString date = dvbTab->getDvbManager()->getScanFilesDate();
 	ui->scanFilesLabel->setText(i18n("Scan files last updated<br>on %1").arg(date));
 	ui->scanButton->setText(i18n("Start scan"));
 
 	channelModel = new DvbChannelModel(this);
-	channelModel->setList(dvbTab->getChannelModel()->getList());
+	channelModel->setList(dvbTab->getDvbManager()->getChannelModel()->getList());
 	ui->channelView->setModel(channelModel->getProxyModel());
 	ui->channelView->enableDeleteAction();
 
@@ -82,17 +92,14 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui->scanResultsView->setModel(previewModel->getProxyModel());
 	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-	DvbDevice *liveDevice = dvbTab->getLiveDevice();
+	setDevice(dvbTab->getLiveDevice());
 
-	if (liveDevice != NULL) {
+	if (device != NULL) {
 		ui->sourceList->addItem(i18n("Current transponder"));
 		ui->sourceList->setEnabled(false);
-		device = liveDevice;
-		updateStatus();
-		statusTimer.start(1000);
 		isLive = true;
 	} else {
-		QStringList list = dvbTab->getSourceList();
+		QStringList list = dvbTab->getDvbManager()->getSourceList();
 
 		if (!list.isEmpty()) {
 			ui->sourceList->addItems(list);
@@ -101,10 +108,10 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 			ui->scanButton->setEnabled(false);
 		}
 
-		device = NULL;
 		isLive = false;
 	}
 
+	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 	connect(ui->deleteAllButton, SIGNAL(clicked(bool)), this, SLOT(deleteAllChannels()));
 	connect(ui->scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
 	connect(ui->providerCBox, SIGNAL(clicked(bool)), ui->providerList, SLOT(setEnabled(bool)));
@@ -119,11 +126,6 @@ DvbScanDialog::~DvbScanDialog()
 {
 	delete internal;
 	delete ui;
-}
-
-QList<DvbChannel> DvbScanDialog::getChannelList() const
-{
-	return channelModel->getList();
 }
 
 void DvbScanDialog::scanButtonClicked(bool checked)
@@ -145,11 +147,15 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	if (isLive) {
 		const DvbChannel *channel = dvbTab->getLiveChannel();
-		QList<DvbSharedTransponder> transponderList;
-		transponderList.append(channel->getTransponder());
-		internal = new DvbScan(channel->source, device, true, transponderList);
+		internal = new DvbScan(channel->source, device, channel->getTransponder());
 	} else {
 		// FIXME
+		QString source = ui->sourceList->currentText();
+		DvbManager *manager = dvbTab->getDvbManager();
+		setDevice(manager->getDeviceList().at(0));
+		DvbSharedConfig config = manager->getConfig(source);
+		QList<DvbSharedTransponder> transponderList = manager->getTransponderList(source);
+		internal = new DvbScan(source, device, config, transponderList);
 	}
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
@@ -157,22 +163,36 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	connect(internal, SIGNAL(scanFinished()), this, SLOT(scanFinished()));
 }
 
+void DvbScanDialog::dialogAccepted()
+{
+	dvbTab->getDvbManager()->getChannelModel()->setList(channelModel->getList());
+}
+
 void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 {
 	previewModel->appendList(channels);
+	// FIXME update provider list
 }
 
 void DvbScanDialog::scanFinished()
 {
+	if (!isLive) {
+		// FIXME
+		device->stopDevice();
+		setDevice(NULL);
+	}
+
 	ui->scanButton->setChecked(false);
 	scanButtonClicked(false);
 }
 
 void DvbScanDialog::updateStatus()
 {
-	ui->signalWidget->setValue(device->getSignal());
-	ui->snrWidget->setValue(device->getSnr());
-	ui->tuningLed->setState(device->isTuned() ? KLed::On : KLed::Off);
+	if (device->getDeviceState() != DvbDevice::DeviceIdle) {
+		ui->signalWidget->setValue(device->getSignal());
+		ui->snrWidget->setValue(device->getSnr());
+		ui->tuningLed->setState(device->isTuned() ? KLed::On : KLed::Off);
+	}
 }
 
 void DvbScanDialog::addSelectedChannels()
@@ -309,4 +329,19 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 	}
 
 	channelModel->appendList(newChannels);
+}
+
+void DvbScanDialog::setDevice(DvbDevice *newDevice)
+{
+	device = newDevice;
+
+	if (device == NULL) {
+		statusTimer.stop();
+		ui->signalWidget->setValue(0);
+		ui->snrWidget->setValue(0);
+		ui->tuningLed->setState(KLed::Off);
+	} else {
+		statusTimer.start(1000);
+		updateStatus();
+	}
 }

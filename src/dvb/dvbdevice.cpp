@@ -25,6 +25,8 @@
 #include <QtGlobal>
 typedef quint64 __u64;
 
+#include "dvbdevice.h"
+
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/dvb/dmx.h>
@@ -36,11 +38,11 @@ typedef quint64 __u64;
 #include <QFile>
 #include <QMutex>
 #include <QThread>
+#include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
 #include <KDebug>
-
+#include "dvbchannel.h"
 #include "dvbconfig.h"
-#include "dvbdevice.h"
 
 class DvbFilterInternal
 {
@@ -78,34 +80,26 @@ struct DvbFilterData
 class DvbDeviceThread : private QThread
 {
 public:
-	DvbDeviceThread(int dvrFd_) : dvrFd(dvrFd_)
+	explicit DvbDeviceThread(QObject *parent) : QThread(parent), dvrFd(-1)
 	{
 		currentUnused = new DvbFilterData;
 		currentUnused->next = currentUnused;
 		currentUsed = currentUnused;
 
-		usedBuffers = 0;
 		totalBuffers = 1;
 
 		if (pipe(pipes) != 0) {
 			kError() << "pipe() failed";
-
 			pipes[0] = -1;
 			pipes[1] = -1;
-
-			return;
 		}
-
-		start();
 	}
 
 	~DvbDeviceThread()
 	{
-		if (write(pipes[1], " ", 1) != 1) {
-			kError() << "write() failed";
+		if (isRunning()) {
+			stop();
 		}
-
-		wait();
 
 		close(pipes[0]);
 		close(pipes[1]);
@@ -116,14 +110,14 @@ public:
 			delete currentUnused;
 			currentUnused = temp;
 		}
+	}
 
-		// close all filters
-		for (QList<DvbFilterInternal>::iterator it = filters.begin(); it != filters.end(); ++it) {
-			close(it->dmxFd);
-		}
+	void start(int dvrFd_);
+	void stop();
 
-		// close dvr
-		close(dvrFd);
+	bool isRunning()
+	{
+		return dvrFd != -1;
 	}
 
 	void addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath);
@@ -144,6 +138,41 @@ private:
 
 	int pipes[2];
 };
+
+void DvbDeviceThread::start(int dvrFd_)
+{
+	Q_ASSERT(dvrFd == -1);
+
+	dvrFd = dvrFd_;
+	usedBuffers = 0;
+
+	QThread::start();
+}
+
+void DvbDeviceThread::stop()
+{
+	Q_ASSERT(dvrFd != -1);
+
+	if (write(pipes[1], " ", 1) != 1) {
+		kError() << "write() failed";
+	}
+
+	wait();
+
+	char temp;
+	read(pipes[0], &temp, 1);
+
+	// close all filters
+	for (QList<DvbFilterInternal>::iterator it = filters.begin(); it != filters.end(); ++it) {
+		close(it->dmxFd);
+	}
+
+	filters.clear();
+
+	// close dvr
+	close(dvrFd);
+	dvrFd = -1;
+}
 
 void DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath)
 {
@@ -234,7 +263,7 @@ void DvbDeviceThread::customEvent(QEvent *)
 
 		mutex.lock();
 		usedBuffers -= i;
-		if (usedBuffers == 0) {
+		if (usedBuffers <= 0) {
 			mutex.unlock();
 			break;
 		}
@@ -316,8 +345,10 @@ void DvbDeviceThread::run()
 	}
 }
 
-DvbDevice::DvbDevice() : internalState(0), deviceState(DeviceNotReady), frontendFd(-1), thread(NULL)
+DvbDevice::DvbDevice(int deviceId_) : deviceId(deviceId_), internalState(0),
+	deviceState(DeviceNotReady), frontendFd(-1)
 {
+	thread = new DvbDeviceThread(this);
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 }
 
@@ -539,7 +570,7 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 	case DvbTransponder::DvbS: {
 		const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
-		const DvbSConfig *dvbSConfig = dynamic_cast<const DvbSConfig *>(config);
+		const DvbSConfig *dvbSConfig = config->getDvbSConfig();
 
 		Q_ASSERT(dvbSTransponder != NULL);
 		Q_ASSERT(dvbSConfig != NULL);
@@ -677,8 +708,8 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 	frontendTimeout = config->getTimeout();
 	frontendTimer.start(100);
 
-	// create thread
-	thread = new DvbDeviceThread(dvrFd);
+	// start thread
+	thread->start(dvrFd);
 }
 
 void DvbDevice::stopDevice()
@@ -688,9 +719,8 @@ void DvbDevice::stopDevice()
 	}
 
 	// stop thread
-	if (thread != NULL) {
-		delete thread;
-		thread = NULL;
+	if (thread->isRunning()) {
+		thread->stop();
 	}
 
 	// stop waiting for tuning
@@ -750,16 +780,12 @@ bool DvbDevice::isTuned()
 
 void DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 {
-	if (thread != NULL) {
-		thread->addPidFilter(pid, filter, demuxPath);
-	}
+	thread->addPidFilter(pid, filter, demuxPath);
 }
 
 void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 {
-	if (thread != NULL) {
-		thread->removePidFilter(pid, filter);
-	}
+	thread->removePidFilter(pid, filter);
 }
 
 void DvbDevice::frontendEvent()
@@ -860,4 +886,70 @@ bool DvbDevice::identifyDevice()
 	kDebug() << "found dvb card" << frontendName;
 
 	return true;
+}
+
+DvbDeviceManager::DvbDeviceManager(QObject *parent) : QObject(parent)
+{
+	QObject *notifier = Solid::DeviceNotifier::instance();
+
+	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
+	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(componentRemoved(QString)));
+
+	QList<Solid::Device> devices = Solid::Device::listFromType(Solid::DeviceInterface::DvbInterface);
+	foreach (const Solid::Device &device, devices) {
+		componentAdded(device);
+	}
+}
+
+DvbDeviceManager::~DvbDeviceManager()
+{
+	qDeleteAll(devices);
+}
+
+void DvbDeviceManager::componentAdded(const QString &udi)
+{
+	componentAdded(Solid::Device(udi));
+}
+
+void DvbDeviceManager::componentRemoved(const QString &udi)
+{
+	foreach (DvbDevice *device, devices) {
+		if (device->componentRemoved(udi)) {
+			break;
+		}
+	}
+}
+
+void DvbDeviceManager::componentAdded(const Solid::Device &component)
+{
+	const Solid::DvbInterface *dvbInterface = component.as<Solid::DvbInterface>();
+
+	if (dvbInterface == NULL) {
+		return;
+	}
+
+	int adapter = dvbInterface->deviceAdapter();
+	int index = dvbInterface->deviceIndex();
+
+	if ((adapter < 0) || (index < 0)) {
+		kWarning() << "couldn't determine adapter and/or index for" << component.udi();
+		return;
+	}
+
+	int deviceId = (adapter << 16) | index;
+	DvbDevice *device = NULL;
+
+	foreach (DvbDevice *currentDevice, devices) {
+		if (currentDevice->getId() == deviceId) {
+			device = currentDevice;
+			break;
+		}
+	}
+
+	if (device == NULL) {
+		device = new DvbDevice(deviceId);
+		devices.append(device);
+	}
+
+	device->componentAdded(component);
 }

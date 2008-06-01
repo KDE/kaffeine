@@ -277,7 +277,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		switch (encoding) {
 		case Iso6937:
 			/*
-			 * qt doesn't support ISO 6937 (bu
+			 * qt doesn't support ISO 6937
 			 * ISO 8859-1 is a good replacement in almost any case
 			 */
 			codec = QTextCodec::codecForName("ISO 8859-1");
@@ -307,7 +307,25 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		codecTable[encoding] = codec;
 	}
 
-	// FIXME strip control codes
+	if (encoding <= Iso8859_15) {
+		// only strip control codes for one-byte character tables
+
+		char *dest = new char[size];
+		char *destIt = dest;
+
+		for (const char *it = data; it != (data + size); ++it) {
+			unsigned char value = *it;
+
+			if ((value < 0x80) || (value > 0x9f)) {
+				*(destIt++) = value;
+			}
+		}
+
+		QString result = codecTable[encoding]->toUnicode(dest, destIt - dest);
+		delete dest;
+
+		return result;
+	}
 
 	return codecTable[encoding]->toUnicode(data, size);
 }

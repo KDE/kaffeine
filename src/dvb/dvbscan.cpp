@@ -19,8 +19,10 @@
  */
 
 #include "dvbscan.h"
+
 #include <KDebug>
 #include <KLocalizedString>
+#include "dvbconfig.h"
 
 int DvbPreviewChannel::columnCount()
 {
@@ -55,13 +57,37 @@ QVariant DvbPreviewChannel::modelData(int column) const
 	}
 }
 
-DvbScan::DvbScan(const QString &source_, DvbDevice *device_, bool isLive_,
-	const QList<DvbSharedTransponder> &transponderList_) :
-	source(source_), device(device_), isLive(isLive_), transponderList(transponderList_),
-	transponderIndex(0), state(ScanInit), currentPid(-1), patIndex(0)
+class DvbPatEntry
+{
+public:
+	DvbPatEntry(int programNumber_, int pid_) : programNumber(programNumber_), pid(pid_) { }
+	~DvbPatEntry() { }
+
+	int programNumber;
+	int pid;
+};
+
+DvbScan::DvbScan(const QString &source_, DvbDevice *device_,
+	const DvbSharedTransponder &transponder_) : source(source_), device(device_),
+	transponder(transponder_), isLive(true), transponderIndex(-1), state(ScanInit),
+	currentPid(-1)
+{
+	init();
+}
+
+DvbScan::DvbScan(const QString &source_, DvbDevice *device_, const DvbSharedConfig &config_,
+	const QList<DvbSharedTransponder> &transponderList_) : source(source_), device(device_),
+	isLive(false), transponderList(transponderList_), transponderIndex(0), config(config_),
+	state(ScanTune), currentPid(-1)
+{
+	init();
+}
+
+void DvbScan::init()
 {
 	connect(&filter, SIGNAL(sectionFound(DvbSectionData)), this, SLOT(sectionFound(DvbSectionData)));
 	connect(&timer, SIGNAL(timeout()), this, SLOT(sectionTimeout()));
+	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 	updateState();
 }
 
@@ -121,9 +147,6 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 		kDebug() << "found a new PMT";
 
 		DvbPreviewChannel channel;
-		channel.pmtPid = currentPid;
-		channel.serviceId = section.programNumber();
-
 		DvbPmtSectionEntry entry = section.entries();
 
 		while (!entry.isEmpty()) {
@@ -155,7 +178,15 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 			entry = entry.next();
 		}
 
-		channels.append(channel);
+		if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
+			channel.name = "[" + QString::number(section.programNumber()) + "]";
+			channel.source = source;
+			channel.serviceId = section.programNumber();
+			channel.pmtPid = currentPid;
+			channel.setTransponder(transponder);
+			channel.snr = snr;
+			channels.append(channel);
+		}
 
 		updateState();
 		break;
@@ -225,8 +256,93 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 				break;
 			}
 
-			if (it == channels.end()) {
-				kDebug() << "unassignable SDT entry" << serviceId;
+			entry = entry.next();
+		}
+
+		updateState();
+		break;
+	    }
+
+	case ScanNit: {
+		if (standardSection.tableId() != 0x40) {
+			// we are only interested in the current network
+			break;
+		}
+
+		DvbNitSection section(standardSection, 0x40);
+
+		if (!section.isValid()) {
+			kDebug() << "invalid section";
+		}
+
+		kDebug() << "found a new NIT";
+
+		DvbNitSectionEntry entry = section.entries();
+
+		while (!entry.isEmpty()) {
+			if (!entry.isValid()) {
+				kDebug() << "invalid NIT entry";
+				break;
+			}
+
+			DvbDescriptor descriptor = entry.descriptors();
+
+			while (!descriptor.isEmpty()) {
+				if (!descriptor.isValid()) {
+					kDebug() << "invalid descriptor";
+					break;
+				}
+
+				if (descriptor.descriptorTag() != 0x43) {
+					descriptor = descriptor.next();
+					continue;
+				}
+
+				DvbSatelliteDescriptor satDescriptor(descriptor);
+
+				if (!satDescriptor.isValid()) {
+					kDebug() << "invalid satellite descriptor";
+					descriptor = descriptor.next();
+					continue;
+				}
+
+				if (satDescriptor.modulationSystem() !=
+				    DvbSatelliteDescriptor::ModulationDvbS) {
+					kDebug() << "ignoring non-DVB-S descriptor";
+					descriptor = descriptor.next();
+					continue;
+				}
+
+				DvbSTransponder *transponder = satDescriptor.createDvbSTransponder();
+
+				if (transponder == NULL) {
+					break;
+				}
+
+				bool found = false;
+
+				foreach (const DvbSharedTransponder &it, transponderList) {
+					const DvbSTransponder *sIt = it->getDvbSTransponder();
+
+					if (sIt == NULL) {
+						continue;
+					}
+
+					if ((sIt->polarization == transponder->polarization) &&
+					    (sIt->frequency == transponder->frequency)) {
+						found = true;
+						break;
+					}
+				}
+
+				if (!found) {
+					kDebug() << "added [" << transponder->frequency << transponder->polarization << "]";
+					transponderList.append(DvbSharedTransponder(transponder));
+				} else {
+					delete transponder;
+				}
+
+				descriptor = descriptor.next();
 			}
 
 			entry = entry.next();
@@ -235,94 +351,126 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 		updateState();
 		break;
 	    }
+
+	case ScanInit:
+	case ScanTune: {
+		Q_ASSERT(false);
+	    }
 	}
 }
 
 void DvbScan::sectionTimeout()
 {
-	kWarning() << "timeout while reading section ( state =" << state << ")";
+	kWarning() << "timeout while reading section; state =" << state;
 	updateState();
+}
+
+void DvbScan::deviceStateChanged()
+{
+	switch (device->getDeviceState()) {
+	case DvbDevice::DeviceIdle: {
+/*		if (state == ScanTune) {
+			updateState();
+		} */
+
+		break;
+	    }
+
+	case DvbDevice::DeviceNotReady:
+	case DvbDevice::DeviceRotorMoving:
+	case DvbDevice::DeviceTuning: {
+		// do nothing
+		break;
+	    }
+
+	case DvbDevice::DeviceTuned: {
+		Q_ASSERT(state == ScanTune);
+		state = ScanInit;
+		updateState();
+		break;
+	    }
+	}
 }
 
 void DvbScan::updateState()
 {
 	stopFilter();
-	timer.stop();
 
 	switch (state) {
 	case ScanInit: {
-		// switch transponder
-		transponder = transponderList.at(transponderIndex);
-
-		// FIXME
-
 		// set up PAT filter
-		state = ScanPat;
+		patEntries.clear();
+		patIndex = 0;
 		startFilter(0x0);
+		state = ScanPat;
 		break;
 	    }
 
-	case ScanPat:
+	case ScanPat: {
+		snr = device->getSnr();
+	    }
 		// fall through
 	case ScanPmt: {
-
 		while (patIndex < patEntries.size()) {
-			const DvbPatEntry &entry = patEntries.at(patIndex);
-
-			if (entry.programNumber == 0x0) {
-				// special meaning
+			if (patEntries.at(patIndex).programNumber == 0x0) {
+				// special meaning - skip
 				patIndex++;
-				continue;
+			} else {
+				break;
 			}
-
-			// set up PMT filter
-			state = ScanPmt;
-			startFilter(entry.pid);
-			break;
 		}
 
 		if (patIndex < patEntries.size()) {
-			// advance to the next PMT entry for next call
+			// set up PMT filter and advance to the next PAT entry
+			startFilter(patEntries.at(patIndex).pid);
 			patIndex++;
+			state = ScanPmt;
 			break;
 		}
 
 		if (!channels.empty()) {
 			// set up SDT filter
-			state = ScanSdt;
 			startFilter(0x11);
+			state = ScanSdt;
+			break;
+		}
+	    }
+		// fall through
+	case ScanSdt: {
+		if (!channels.isEmpty()) {
+			emit foundChannels(channels);
+			channels.clear();
+		}
+
+		if (isLive) {
+			emit scanFinished();
 			break;
 		}
 
-		// fall through
+		// set up NIT filter
+		startFilter(0x10);
+		state = ScanNit;
+		break;
 	    }
 
-	case ScanSdt: {
-		// FIXME
-		// we're finished here :)
+	case ScanNit:
+	case ScanTune: {
+		// switch transponder
+		Q_ASSERT(isLive == false);
 
-		int snr = device->getSnr();
-		QList<DvbPreviewChannel>::iterator it;
-
-		for (it = channels.begin(); it != channels.end();) {
-			if (!it->isValid()) {
-				it = channels.erase(it);
-				continue;
-			}
-
-			it->source = source;
-			it->setTransponder(transponder);
-			it->snr = snr;
-
-			++it;
+		if (transponderIndex >= transponderList.size()) {
+			emit scanFinished();
+			break;
 		}
 
-		emit foundChannels(channels);
-		emit scanFinished();
+		transponder = transponderList.at(transponderIndex);
+		++transponderIndex;
 
-		return;
+		// tune to the next transponder
+		device->stopDevice();
+		device->tuneDevice(transponder.data(), config.data());
+		state = ScanTune;
+		break;
 	    }
 	}
-
-	timer.start(5000);
 }
