@@ -21,41 +21,6 @@
 #include "dvbscan.h"
 
 #include <KDebug>
-#include <KLocalizedString>
-#include "dvbconfig.h"
-
-int DvbPreviewChannel::columnCount()
-{
-	return 3;
-}
-
-QVariant DvbPreviewChannel::headerData(int column)
-{
-	switch (column) {
-	case 0:
-		return i18n("Name");
-	case 1:
-		return i18n("Provider");
-	case 2:
-		return i18n("SNR");
-	default:
-		return QVariant();
-	}
-}
-
-QVariant DvbPreviewChannel::modelData(int column) const
-{
-	switch (column) {
-	case 0:
-		return name;
-	case 1:
-		return provider;
-	case 2:
-		return snr;
-	default:
-		return QVariant();
-	}
-}
 
 class DvbPatEntry
 {
@@ -67,18 +32,17 @@ public:
 	int pid;
 };
 
-DvbScan::DvbScan(const QString &source_, DvbDevice *device_,
-	const DvbSharedTransponder &transponder_) : source(source_), device(device_),
-	transponder(transponder_), isLive(true), transponderIndex(-1), state(ScanInit),
-	currentPid(-1)
+DvbScan::DvbScan(const QString &source_, DvbDevice *device_, const DvbTransponder &transponder_) :
+	source(source_), device(device_), transponder(transponder_), isLive(true),
+	transponderIndex(-1), state(ScanInit), currentPid(-1)
 {
 	init();
 }
 
-DvbScan::DvbScan(const QString &source_, DvbDevice *device_, const DvbSharedConfig &config_,
-	const QList<DvbSharedTransponder> &transponderList_) : source(source_), device(device_),
-	isLive(false), transponderList(transponderList_), transponderIndex(0), config(config_),
-	state(ScanTune), currentPid(-1)
+DvbScan::DvbScan(const QString &source_, DvbDevice *device_,
+	const QList<DvbTransponder> &transponderList_) : source(source_), device(device_),
+	isLive(false), transponderList(transponderList_), transponderIndex(0), state(ScanTune),
+	currentPid(-1)
 {
 	init();
 }
@@ -183,7 +147,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 			channel.source = source;
 			channel.serviceId = section.programNumber();
 			channel.pmtPid = currentPid;
-			channel.setTransponder(transponder);
+			channel.transponder = transponder;
 			channel.snr = snr;
 			channels.append(channel);
 		}
@@ -321,7 +285,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 
 				bool found = false;
 
-				foreach (const DvbSharedTransponder &it, transponderList) {
+				foreach (const DvbTransponder &it, transponderList) {
 					const DvbSTransponder *sIt = it->getDvbSTransponder();
 
 					if (sIt == NULL) {
@@ -337,7 +301,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 
 				if (!found) {
 					kDebug() << "added [" << transponder->frequency << transponder->polarization << "]";
-					transponderList.append(DvbSharedTransponder(transponder));
+					transponderList.append(DvbTransponder(transponder));
 				} else {
 					delete transponder;
 				}
@@ -468,7 +432,7 @@ void DvbScan::updateState()
 
 		// tune to the next transponder
 		device->stopDevice();
-		device->tuneDevice(transponder.data(), config.data());
+		device->tuneDevice(source, transponder);
 		state = ScanTune;
 		break;
 	    }

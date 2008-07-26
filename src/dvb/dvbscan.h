@@ -22,12 +22,11 @@
 #define DVBSCAN_H
 
 #include "dvbchannel.h"
-#include "dvbconfig.h"
 #include "dvbsi.h"
 
 class DvbPatEntry;
 
-class DvbPreviewChannel : public DvbChannel
+class DvbPreviewChannel : public DvbChannelBase
 {
 public:
 	DvbPreviewChannel() : snr(-1) { }
@@ -67,24 +66,15 @@ public:
 
 	// int number;
 	// int audioPid; // may be -1 (not present)
-
-	/*
-	 * model functions
-	 */
-
-	static int columnCount();
-	static QVariant headerData(int column);
-	QVariant modelData(int column) const;
 };
 
 class DvbScan : public QObject
 {
 	Q_OBJECT
 public:
+	DvbScan(const QString &source_, DvbDevice *device_, const DvbTransponder &transponder_);
 	DvbScan(const QString &source_, DvbDevice *device_,
-		const DvbSharedTransponder &transponder_);
-	DvbScan(const QString &source_, DvbDevice *device_, const DvbSharedConfig &config_,
-		const QList<DvbSharedTransponder> &transponderList_);
+		const QList<DvbTransponder> &transponderList_);
 	~DvbScan();
 
 signals:
@@ -131,14 +121,13 @@ private:
 
 	QString source;
 	DvbDevice *device;
-	DvbSharedTransponder transponder;
+	DvbTransponder transponder;
 
 	bool isLive;
 
 	// these three members are only used if isLive is false
-	QList<DvbSharedTransponder> transponderList;
+	QList<DvbTransponder> transponderList;
 	int transponderIndex;
-	DvbSharedConfig config;
 
 	State state;
 	QTimer timer;

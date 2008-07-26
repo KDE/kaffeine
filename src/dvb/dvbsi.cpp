@@ -19,6 +19,7 @@
  */
 
 #include "dvbsi.h"
+
 #include <QTextCodec>
 #include <KDebug>
 

@@ -1,6 +1,7 @@
 set(kaffeine_SRCS
     dvb/dvbchannel.cpp
-    dvb/dvbconfig.cpp
+    dvb/dvbchannelview.cpp
+    dvb/dvbconfigdialog.cpp
     dvb/dvbdevice.cpp
     dvb/dvbmanager.cpp
     dvb/dvbscan.cpp
@@ -23,4 +24,4 @@ kde4_add_executable(kaffeine4 ${kaffeine_SRCS})
 target_link_libraries(kaffeine4 ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})
 
 install(TARGETS kaffeine4 DESTINATION ${BIN_INSTALL_DIR})
-install(FILES kaffeine4ui.rc DESTINATION ${DATA_INSTALL_DIR}/kaffeine4)
+install(FILES kaffeine4ui.rc scanfile_g.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine4)

@@ -22,42 +22,43 @@
 #define DVBCHANNEL_H
 
 #include <QSharedData>
-#include <QSortFilterProxyModel>
-#include <QTreeView>
+#include <QString>
 
-class DvbChannelReader;
-class DvbChannelWriter;
 class DvbCTransponder;
 class DvbSTransponder;
 class DvbTTransponder;
 class AtscTransponder;
 
-class DvbTransponder : public QSharedData
+class DvbTransponderBase : public QSharedData
 {
 public:
 	enum TransmissionType
 	{
-		DvbC,
-		DvbS,
-		DvbT,
-		Atsc
+		DvbC = 0,
+		DvbS = 1,
+		DvbT = 2,
+		Atsc = 3
 	};
 
 	enum FecRate
 	{
-		Fec1_2 = 0,
-		Fec2_3 = 1,
-		Fec3_4 = 2,
-		Fec4_5 = 3,
-		Fec5_6 = 4,
-		Fec6_7 = 5,
-		Fec7_8 = 6,
-		Fec8_9 = 7,
-		FecAuto = 8,
+		FecNone = 0,
+		Fec1_2 = 1,
+		Fec2_3 = 2,
+		Fec3_4 = 3,
+		Fec4_5 = 4,
+		Fec5_6 = 5,
+		Fec6_7 = 6,
+		Fec7_8 = 7,
+		Fec8_9 = 8,
+		FecAuto = 9,
 		FecRateMax = FecAuto
 	};
 
-	virtual ~DvbTransponder() { }
+	DvbTransponderBase() { }
+	virtual ~DvbTransponderBase() { }
+
+	virtual TransmissionType getTransmissionType() const = 0;
 
 	virtual const DvbCTransponder *getDvbCTransponder() const
 	{
@@ -78,19 +79,9 @@ public:
 	{
 		return NULL;
 	}
-
-	virtual void writeTransponder(DvbChannelWriter &writer) const = 0;
-
-	const TransmissionType transmissionType;
-
-protected:
-	DvbTransponder(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }
-
-private:
-	Q_DISABLE_COPY(DvbTransponder);
 };
 
-class DvbCTransponder : public DvbTransponder
+class DvbCTransponder : public DvbTransponderBase
 {
 public:
 	enum ModulationType
@@ -100,30 +91,27 @@ public:
 		Qam64 = 2,
 		Qam128 = 3,
 		Qam256 = 4,
-		Auto = 5,
-		ModulationTypeMax = Auto
+		ModulationAuto = 5,
+		ModulationTypeMax = ModulationAuto
 	};
 
-	DvbCTransponder(int frequency_, ModulationType modulationType_, int symbolRate_,
-		FecRate fecRate_) : DvbTransponder(DvbC), frequency(frequency_),
-		modulationType(modulationType_), symbolRate(symbolRate_), fecRate(fecRate_) { }
-	~DvbCTransponder() { }
+	TransmissionType getTransmissionType() const
+	{
+		return DvbC;
+	}
 
 	const DvbCTransponder *getDvbCTransponder() const
 	{
 		return this;
 	}
 
-	static DvbCTransponder *readTransponder(DvbChannelReader &reader);
-	void writeTransponder(DvbChannelWriter &writer) const;
-
 	int frequency; // Hz
-	ModulationType modulationType;
 	int symbolRate; // symbols per second
+	ModulationType modulationType;
 	FecRate fecRate;
 };
 
-class DvbSTransponder : public DvbTransponder
+class DvbSTransponder : public DvbTransponderBase
 {
 public:
 	enum Polarization
@@ -135,37 +123,25 @@ public:
 		PolarizationMax = CircularRight
 	};
 
-	DvbSTransponder(Polarization polarization_, int frequency_, int symbolRate_,
-		FecRate fecRate_) : DvbTransponder(DvbS), polarization(polarization_),
-		frequency(frequency_), symbolRate(symbolRate_), fecRate(fecRate_) { }
-	~DvbSTransponder() { }
+	TransmissionType getTransmissionType() const
+	{
+		return DvbS;
+	}
 
 	const DvbSTransponder *getDvbSTransponder() const
 	{
 		return this;
 	}
 
-	static DvbSTransponder *readTransponder(DvbChannelReader &reader);
-	void writeTransponder(DvbChannelWriter &writer) const;
-
-	Polarization polarization;
 	int frequency; // kHz
+	Polarization polarization;
 	int symbolRate; // symbols per second
 	FecRate fecRate;
 };
 
-class DvbTTransponder : public DvbTransponder
+class DvbTTransponder : public DvbTransponderBase
 {
 public:
-	enum ModulationType
-	{
-		Qpsk = 0,
-		Qam16 = 1,
-		Qam64 = 2,
-		Auto = 3,
-		ModulationTypeMax = Auto
-	};
-
 	enum Bandwidth
 	{
 		Bandwidth6Mhz = 0,
@@ -173,6 +149,15 @@ public:
 		Bandwidth8Mhz = 2,
 		BandwidthAuto = 3,
 		BandwidthMax = BandwidthAuto
+	};
+
+	enum ModulationType
+	{
+		Qpsk = 0,
+		Qam16 = 1,
+		Qam64 = 2,
+		ModulationAuto = 3,
+		ModulationTypeMax = ModulationAuto
 	};
 
 	enum TransmissionMode
@@ -203,26 +188,19 @@ public:
 		HierarchyMax = HierarchyAuto
 	};
 
-	DvbTTransponder(int frequency_, ModulationType modulationType_, Bandwidth bandwidth_,
-		FecRate fecRateHigh_, FecRate fecRateLow_, TransmissionMode transmissionMode_,
-		GuardInterval guardInterval_, Hierarchy hierarchy_) : DvbTransponder(DvbT),
-		frequency(frequency_), modulationType(modulationType_), bandwidth(bandwidth_),
-		fecRateHigh(fecRateHigh_), fecRateLow(fecRateLow_),
-		transmissionMode(transmissionMode_), guardInterval(guardInterval_),
-		hierarchy(hierarchy_) { }
-	~DvbTTransponder() { }
+	TransmissionType getTransmissionType() const
+	{
+		return DvbT;
+	}
 
 	const DvbTTransponder *getDvbTTransponder() const
 	{
 		return this;
 	}
 
-	static DvbTTransponder *readTransponder(DvbChannelReader &reader);
-	void writeTransponder(DvbChannelWriter &writer) const;
-
 	int frequency; // Hz
-	ModulationType modulationType;
 	Bandwidth bandwidth;
+	ModulationType modulationType;
 	FecRate fecRateHigh; // high priority stream
 	FecRate fecRateLow; // low priority stream
 	TransmissionMode transmissionMode;
@@ -230,7 +208,7 @@ public:
 	Hierarchy hierarchy;
 };
 
-class AtscTransponder : public DvbTransponder
+class AtscTransponder : public DvbTransponderBase
 {
 public:
 	enum ModulationType
@@ -239,36 +217,38 @@ public:
 		Qam256 = 1,
 		Vsb8 = 2,
 		Vsb16 = 3,
-		Auto = 4,
-		ModulationTypeMax = Auto
+		ModulationAuto = 4,
+		ModulationTypeMax = ModulationAuto
 	};
 
-	AtscTransponder(int frequency_, ModulationType modulationType_) : DvbTransponder(Atsc),
-		frequency(frequency_), modulationType(modulationType_) { }
-	~AtscTransponder() { }
+	TransmissionType getTransmissionType() const
+	{
+		return Atsc;
+	}
 
 	const AtscTransponder *getAtscTransponder() const
 	{
 		return this;
 	}
 
-	static AtscTransponder *readTransponder(DvbChannelReader &reader);
-	void writeTransponder(DvbChannelWriter &writer) const;
-
 	int frequency; // Hz
 	ModulationType modulationType;
 };
 
-// you can't modify it anyway; explicit sharing just makes implementation easier
-typedef QExplicitlySharedDataPointer<DvbTransponder> DvbSharedTransponder;
-
-class DvbChannel
+class DvbTransponder : public QExplicitlySharedDataPointer<const DvbTransponderBase>
 {
 public:
-	DvbChannel() : name(), number(-1), source(), networkId(-1), transportStreamId(-1),
-		serviceId(-1), pmtPid(-1), videoPid(-1), audioPid(-1), scrambled(false),
-		transponder() { }
-	~DvbChannel() { }
+	explicit DvbTransponder(const DvbTransponderBase *transponder = NULL) :
+		QExplicitlySharedDataPointer<const DvbTransponderBase>(transponder) { }
+	~DvbTransponder() { }
+};
+
+class DvbChannelBase
+{
+public:
+	DvbChannelBase() : number(-1), networkId(-1), transportStreamId(-1), serviceId(-1),
+		pmtPid(-1), videoPid(-1), audioPid(-1), scrambled(false) { }
+	~DvbChannelBase() { }
 
 	QString name;
 	int number;
@@ -284,171 +264,83 @@ public:
 
 	bool scrambled;
 
-	/*
-	 * transponder (owned by DvbChannel)
-	 */
+	DvbTransponder transponder;
+};
 
-	DvbSharedTransponder getTransponder() const
+class DvbChannel : public DvbChannelBase, public QSharedData
+{
+public:
+	DvbChannel() { }
+	explicit DvbChannel(const DvbChannelBase &channel) : DvbChannelBase(channel) { }
+	~DvbChannel() { }
+};
+
+class DvbSharedChannel : public QSharedDataPointer<DvbChannel>
+{
+public:
+	explicit DvbSharedChannel(DvbChannel *channel = NULL) :
+		QSharedDataPointer<DvbChannel>(channel) { }
+	explicit DvbSharedChannel(const DvbChannelBase &channel) :
+		QSharedDataPointer<DvbChannel>(new DvbChannel(channel)) { }
+	~DvbSharedChannel() { }
+};
+
+class DvbLineReader
+{
+public:
+	explicit DvbLineReader(const QString &line_) : line(line_), pos(0), valid(true) { }
+	~DvbLineReader() { }
+
+	bool isValid() const
 	{
-		return transponder;
+		return valid;
 	}
 
-	void setTransponder(DvbSharedTransponder transponder_)
+	template<typename T> T readEnum(T maxValue)
 	{
-		transponder = transponder_;
+		int value = readInt();
+
+		if (value > maxValue) {
+			valid = false;
+		}
+
+		return static_cast<T>(value);
 	}
 
-	/*
-	 * model functions
-	 */
+	int readInt(bool allowEmpty = false);
+	QString readString();
 
-	static int columnCount();
-	static QVariant headerData(int column);
-	QVariant modelData(int column) const;
+	DvbChannel *readChannel();
 
-	/*
-	 * static functions for reading / writing channel list
-	 */
-
-	static QList<DvbChannel> readList();
-	static void writeList(const QList<DvbChannel> &list);
+	DvbCTransponder *readDvbCTransponder();
+	DvbSTransponder *readDvbSTransponder();
+	DvbTTransponder *readDvbTTransponder();
+	AtscTransponder *readAtscTransponder();
 
 private:
-	DvbSharedTransponder transponder;
+	QString line;
+	int pos;
+	bool valid;
 };
 
-template<class T> class DvbGenericChannelModel : protected QAbstractTableModel
+class DvbLineWriter
 {
 public:
-	explicit DvbGenericChannelModel(QObject *parent) : QAbstractTableModel(parent)
-	{
-		proxyModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
-		proxyModel.setSortLocaleAware(true);
-		proxyModel.setSourceModel(this);
-	}
+	QString getLine();
 
-	~DvbGenericChannelModel() { }
+	void writeInt(int value);
+	void writeString(const QString &string);
 
-	QList<T> getList() const
-	{
-		return list;
-	}
-
-	void setList(const QList<T> &list_)
-	{
-		list = list_;
-		reset();
-	}
-
-	void appendList(const QList<T> &values)
-	{
-		beginInsertRows(QModelIndex(), list.size(), list.size() + values.size() - 1);
-		list += values;
-		endInsertRows();
-	}
-
-	QSortFilterProxyModel *getProxyModel()
-	{
-		return &proxyModel;
-	}
-
-	const T *getChannel(const QModelIndex &index) const
-	{
-		QModelIndex sourceIndex = proxyModel.mapToSource(index);
-
-		if (!sourceIndex.isValid() || sourceIndex.row() >= list.size()) {
-			return NULL;
-		}
-
-		return &list.at(sourceIndex.row());
-	}
-
-	void updateChannel(int position, const T &channel)
-	{
-		list.replace(position, channel);
-		emit dataChanged(index(position, 0), index(position, T::columnCount() - 1));
-	}
+	void writeChannel(const DvbChannel *channel);
+	void writeTransponder(const DvbTransponderBase *transponder);
 
 private:
-	int columnCount(const QModelIndex &parent) const
-	{
-		if (parent.isValid()) {
-			return 0;
-		}
+	void writeDvbCTransponder(const DvbCTransponder *transponder);
+	void writeDvbSTransponder(const DvbSTransponder *transponder);
+	void writeDvbTTransponder(const DvbTTransponder *transponder);
+	void writeAtscTransponder(const AtscTransponder *transponder);
 
-		return T::columnCount();
-	}
-
-	int rowCount(const QModelIndex &parent) const
-	{
-		if (parent.isValid()) {
-			return 0;
-		}
-
-		return list.size();
-	}
-
-	QVariant data(const QModelIndex &index, int role) const
-	{
-		if (!index.isValid() || role != Qt::DisplayRole || index.row() >= list.size()) {
-			return QVariant();
-		}
-
-		return list.at(index.row()).modelData(index.column());
-	}
-
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const
-	{
-		if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
-			return QVariant();
-		}
-
-		return T::headerData(section);
-	}
-
-	QList<T> list;
-	QSortFilterProxyModel proxyModel;
-};
-
-class DvbChannelModel : public DvbGenericChannelModel<DvbChannel>
-{
-public:
-	explicit DvbChannelModel(QObject *parent) : DvbGenericChannelModel<DvbChannel>(parent) { }
-	~DvbChannelModel() { }
-};
-
-class DvbChannelViewBase : public QTreeView
-{
-public:
-	explicit DvbChannelViewBase(QWidget *parent);
-	~DvbChannelViewBase();
-};
-
-// this class adds a context menu
-class DvbChannelView : public DvbChannelViewBase
-{
-	Q_OBJECT
-public:
-	explicit DvbChannelView(QWidget *parent);
-	~DvbChannelView();
-
-	/*
-	 * should be only used in the scan dialog
-	 */
-
-	void enableDeleteAction();
-
-protected:
-	void contextMenuEvent(QContextMenuEvent *event);
-
-private slots:
-	void actionEdit();
-	void actionChangeIcon();
-	void actionDelete();
-
-private:
-	QMenu *menu;
-	QPersistentModelIndex menuIndex;
+	QString line;
 };
 
 #endif /* DVBCHANNEL_H */

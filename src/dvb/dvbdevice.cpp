@@ -1,7 +1,7 @@
 /*
  * dvbdevice.cpp
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,14 +18,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "dvbdevice.h"
+
 /*
  * workaround buggy kernel includes
  * asm/types.h doesn't define __u64 in ansi mode, but linux/dvb/dmx.h needs it
  */
 #include <QtGlobal>
 typedef quint64 __u64;
-
-#include "dvbdevice.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -43,6 +43,7 @@ typedef quint64 __u64;
 #include <KDebug>
 #include "dvbchannel.h"
 #include "dvbconfig.h"
+#include "dvbmanager.h"
 
 class DvbFilterInternal
 {
@@ -416,7 +417,7 @@ static fe_modulation_t convertDvbModulation(DvbCTransponder::ModulationType modu
 	case DvbCTransponder::Qam64: return QAM_64;
 	case DvbCTransponder::Qam128: return QAM_128;
 	case DvbCTransponder::Qam256: return QAM_256;
-	case DvbCTransponder::Auto: return QAM_AUTO;
+	case DvbCTransponder::ModulationAuto: return QAM_AUTO;
 	}
 
 	Q_ASSERT(false);
@@ -429,7 +430,7 @@ static fe_modulation_t convertDvbModulation(DvbTTransponder::ModulationType modu
 	case DvbTTransponder::Qpsk: return QPSK;
 	case DvbTTransponder::Qam16: return QAM_16;
 	case DvbTTransponder::Qam64: return QAM_64;
-	case DvbTTransponder::Auto: return QAM_AUTO;
+	case DvbTTransponder::ModulationAuto: return QAM_AUTO;
 	}
 
 	Q_ASSERT(false);
@@ -441,27 +442,28 @@ static fe_modulation_t convertDvbModulation(AtscTransponder::ModulationType modu
 	switch (modulation) {
 	case AtscTransponder::Qam64: return QAM_64;
 	case AtscTransponder::Qam256: return QAM_256;
-	case AtscTransponder::Auto: return QAM_AUTO;
 	case AtscTransponder::Vsb8: return VSB_8;
 	case AtscTransponder::Vsb16: return VSB_16;
+	case AtscTransponder::ModulationAuto: return QAM_AUTO;
 	}
 
 	Q_ASSERT(false);
 	abort();
 }
 
-static fe_code_rate convertDvbFecRate(DvbTransponder::FecRate fecRate)
+static fe_code_rate convertDvbFecRate(DvbTransponderBase::FecRate fecRate)
 {
 	switch (fecRate) {
-	case DvbTransponder::Fec1_2: return FEC_1_2;
-	case DvbTransponder::Fec2_3: return FEC_2_3;
-	case DvbTransponder::Fec3_4: return FEC_3_4;
-	case DvbTransponder::Fec4_5: return FEC_4_5;
-	case DvbTransponder::Fec5_6: return FEC_5_6;
-	case DvbTransponder::Fec6_7: return FEC_6_7;
-	case DvbTransponder::Fec7_8: return FEC_7_8;
-	case DvbTransponder::Fec8_9: return FEC_8_9;
-	case DvbTransponder::FecAuto: return FEC_AUTO;
+	case DvbTransponderBase::FecNone: return FEC_NONE;
+	case DvbTransponderBase::Fec1_2: return FEC_1_2;
+	case DvbTransponderBase::Fec2_3: return FEC_2_3;
+	case DvbTransponderBase::Fec3_4: return FEC_3_4;
+	case DvbTransponderBase::Fec4_5: return FEC_4_5;
+	case DvbTransponderBase::Fec5_6: return FEC_5_6;
+	case DvbTransponderBase::Fec6_7: return FEC_6_7;
+	case DvbTransponderBase::Fec7_8: return FEC_7_8;
+	case DvbTransponderBase::Fec8_9: return FEC_8_9;
+	case DvbTransponderBase::FecAuto: return FEC_AUTO;
 	}
 
 	Q_ASSERT(false);
@@ -521,9 +523,23 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 	abort();
 }
 
-void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *config)
+void DvbDevice::tuneDevice(const QString &source, const DvbTransponder &transponder)
 {
 	Q_ASSERT(deviceState == DeviceIdle);
+
+	DvbConfig config;
+
+	foreach (const DvbConfig &it, configList) {
+		if (it->source == source) {
+			config = it;
+			break;
+		}
+	}
+
+	if (config == DvbConfig()) {
+		kWarning() << "couldn't find matching configuration";
+		return;
+	}
 
 	frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
 
@@ -541,8 +557,8 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 		return;
 	}
 
-	switch (transponder->transmissionType) {
-	case DvbTransponder::DvbC: {
+	switch (transponder->getTransmissionType()) {
+	case DvbTransponderBase::DvbC: {
 		const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
 		Q_ASSERT(dvbCTransponder != NULL);
 
@@ -568,22 +584,27 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 		break;
 	    }
 
-	case DvbTransponder::DvbS: {
+	case DvbTransponderBase::DvbS: {
 		const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
 		const DvbSConfig *dvbSConfig = config->getDvbSConfig();
-
 		Q_ASSERT(dvbSTransponder != NULL);
 		Q_ASSERT(dvbSConfig != NULL);
 
 		// parameters
 
-		QPair<int, bool> lnbParameters = dvbSConfig->getParameters(dvbSTransponder);
+		bool horPolar = (dvbSTransponder->polarization == DvbSTransponder::Horizontal) ||
+				(dvbSTransponder->polarization == DvbSTransponder::CircularLeft);
 
-		int  switchPos = dvbSConfig->getSwitchPos();
-		bool horPolar  = (dvbSTransponder->polarization == DvbSTransponder::Horizontal) ||
-			(dvbSTransponder->polarization == DvbSTransponder::CircularLeft);
-		bool highBand  = lnbParameters.second;
-		int  intFreq   = lnbParameters.first;
+		int frequency = dvbSTransponder->frequency;
+		bool highBand;
+
+		if (frequency < dvbSConfig->switchFrequency) {
+			highBand = false;
+			frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+		} else {
+			highBand = true;
+			frequency = abs(frequency - dvbSConfig->highBandFrequency);
+		}
 
 		// tone off
 
@@ -593,7 +614,8 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 		// horizontal / circular left --> 18V ; vertical / circular right --> 13V
 
-		if (ioctl(frontendFd, FE_SET_VOLTAGE, horPolar ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
+		if (ioctl(frontendFd, FE_SET_VOLTAGE,
+			  horPolar ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
 			kWarning() << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
 		}
 
@@ -603,7 +625,8 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 		struct dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0x00, 0x00, 0x00 }, 4 };
 
-		cmd.msg[3] = 0xf0 | (switchPos << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
+		cmd.msg[3] = 0xf0 | (dvbSConfig->diseqcPos << 2) | (horPolar ? 2 : 0) |
+			            (highBand ? 1 : 0);
 
 		if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
 			kWarning() << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for" << frontendPath;
@@ -611,7 +634,8 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 
 		usleep(15000);
 
-		if (ioctl(frontendFd, FE_DISEQC_SEND_BURST, (switchPos % 2) ? SEC_MINI_B : SEC_MINI_A) != 0) {
+		if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
+			  ((dvbSConfig->diseqcPos % 2) == 0) ? SEC_MINI_A : SEC_MINI_B) != 0) {
 			kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
 		}
 
@@ -628,7 +652,7 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 		struct dvb_frontend_parameters params;
 		memset(&params, 0, sizeof(params));
 
-		params.frequency = intFreq;
+		params.frequency = frequency;
 		params.inversion = INVERSION_AUTO;
 		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
 		params.u.qpsk.fec_inner = convertDvbFecRate(dvbSTransponder->fecRate);
@@ -644,7 +668,7 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 		break;
 	    }
 
-	case DvbTransponder::DvbT: {
+	case DvbTransponderBase::DvbT: {
 		const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
 		Q_ASSERT(dvbTTransponder != NULL);
 
@@ -677,7 +701,7 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 		break;
 	    }
 
-	case DvbTransponder::Atsc: {
+	case DvbTransponderBase::Atsc: {
 		const AtscTransponder *atscTransponder = transponder->getAtscTransponder();
 		Q_ASSERT(atscTransponder != NULL);
 
@@ -705,7 +729,7 @@ void DvbDevice::tuneDevice(const DvbTransponder *transponder, const DvbConfig *c
 	setDeviceState(DeviceTuning);
 
 	// wait for tuning
-	frontendTimeout = config->getTimeout();
+	frontendTimeout = config->timeout;
 	frontendTimer.start(100);
 
 	// start thread
@@ -888,7 +912,7 @@ bool DvbDevice::identifyDevice()
 	return true;
 }
 
-DvbDeviceManager::DvbDeviceManager(QObject *parent) : QObject(parent)
+DvbDeviceManager::DvbDeviceManager(DvbManager *manager_) : QObject(manager_), manager(manager_)
 {
 	QObject *notifier = Solid::DeviceNotifier::instance();
 
@@ -949,6 +973,7 @@ void DvbDeviceManager::componentAdded(const Solid::Device &component)
 	if (device == NULL) {
 		device = new DvbDevice(deviceId);
 		devices.append(device);
+		manager->deviceAdded(device);
 	}
 
 	device->componentAdded(component);

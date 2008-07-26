@@ -1,7 +1,7 @@
 /*
  * dvbconfig.h
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,82 +21,126 @@
 #ifndef DVBCONFIG_H
 #define DVBCONFIG_H
 
-#include <QPair>
 #include <QSharedData>
 #include <QString>
-#include <KPageDialog>
 
+class DvbCConfig;
 class DvbSConfig;
+class DvbTConfig;
+class AtscConfig;
 class DvbSTransponder;
-class DvbTab;
 
-class DvbConfig : public QSharedData
+class DvbConfigBase : public QSharedData
 {
 public:
-	virtual ~DvbConfig() { }
+	enum TransmissionType
+	{
+		DvbC = 0,
+		DvbS = 1,
+		DvbT = 2,
+		Atsc = 3
+	};
+
+	DvbConfigBase() : timeout(1500) { }
+	virtual ~DvbConfigBase() { }
+
+	virtual TransmissionType getTransmissionType() const = 0;
+
+	virtual const DvbCConfig *getDvbCConfig() const
+	{
+		return NULL;
+	}
 
 	virtual const DvbSConfig *getDvbSConfig() const
 	{
 		return NULL;
 	}
 
-	const QString source;
-
-	/*
-	 * returns the tuning timeout (in ms)
-	 */
-
-	int getTimeout() const
+	virtual const DvbTConfig *getDvbTConfig() const
 	{
-		// FIXME hack
-		return 1500;
+		return NULL;
 	}
 
-protected:
-	DvbConfig(const QString &source_) : source(source_) { }
+	virtual const AtscConfig *getAtscConfig() const
+	{
+		return NULL;
+	}
 
-private:
-	Q_DISABLE_COPY(DvbConfig);
+	QString source;
+	int timeout; // tuning timeout (ms)
 };
 
-class DvbSConfig : public DvbConfig
+class DvbCConfig : public DvbConfigBase
 {
 public:
-	DvbSConfig(const QString &source_) : DvbConfig(source_) { }
+	TransmissionType getTransmissionType() const
+	{
+		return DvbC;
+	}
+
+	const DvbCConfig *getDvbCConfig() const
+	{
+		return this;
+	}
+};
+
+class DvbSConfig : public DvbConfigBase
+{
+public:
+	DvbSConfig(int diseqcPos_) : diseqcPos(diseqcPos_), lowBandFrequency(9750000),
+		switchFrequency(11700000), highBandFrequency(10600000) { }
 	~DvbSConfig() { }
+
+	TransmissionType getTransmissionType() const
+	{
+		return DvbS;
+	}
 
 	const DvbSConfig *getDvbSConfig() const
 	{
 		return this;
 	}
 
-	/*
-	 * determines the correct parameters for the lnb
-	 * first return value: intermediate frequency (in Khz)
-	 * second return value: band (true = high band, false = low band)
-	 */
+	int diseqcPos;         // diseqc switch position (0 = first sat, 1 = second sat etc)
+	int lowBandFrequency;  // kHz
+	int switchFrequency;   // kHz (0 == only low band)
+	int highBandFrequency; // kHz
+};
 
-	QPair<int, bool> getParameters(const DvbSTransponder *transponder) const;
-
-	/*
-	 * returns the diseqc switch position (0 = first sat, 1 = second sat etc)
-	 */
-
-	int getSwitchPos() const
+class DvbTConfig : public DvbConfigBase
+{
+public:
+	TransmissionType getTransmissionType() const
 	{
-		// FIXME hack
-		return 0;
+		return DvbT;
+	}
+
+	const DvbTConfig *getDvbTConfig() const
+	{
+		return this;
 	}
 };
 
-// you can't modify it anyway; explicit sharing just makes implementation easier
-typedef QExplicitlySharedDataPointer<DvbConfig> DvbSharedConfig;
-
-class DvbConfigDialog : public KPageDialog
+class AtscConfig : public DvbConfigBase
 {
 public:
-	explicit DvbConfigDialog(DvbTab *dvbTab_);
-	~DvbConfigDialog();
+	TransmissionType getTransmissionType() const
+	{
+		return Atsc;
+	}
+
+	const AtscConfig *getAtscConfig() const
+	{
+		return this;
+	}
+};
+
+class DvbConfig : public QExplicitlySharedDataPointer<const DvbConfigBase>
+{
+public:
+	explicit DvbConfig(const DvbConfigBase *config = NULL) :
+		QExplicitlySharedDataPointer<const DvbConfigBase>(config) { }
+	~DvbConfig() { }
 };
 
 #endif /* DVBCONFIG_H */

@@ -1,7 +1,7 @@
 /*
  * dvbdevice.h
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@
 
 class DvbConfig;
 class DvbDeviceThread;
+class DvbManager;
 class DvbTransponder;
 
 class DvbPidFilter
@@ -88,7 +89,7 @@ public:
 		return frontendName;
 	}
 
-	void tuneDevice(const DvbTransponder *transponder, const DvbConfig *config);
+	void tuneDevice(const QString &source, const DvbTransponder &transponder);
 	void stopDevice();
 
 	/*
@@ -107,6 +108,12 @@ public:
 
 	void addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
+
+	/*
+	 * configuration
+	 */
+
+	QList<DvbConfig> configList;
 
 signals:
 	void stateChanged();
@@ -161,7 +168,7 @@ class DvbDeviceManager : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DvbDeviceManager(QObject *parent);
+	explicit DvbDeviceManager(DvbManager *manager_);
 	~DvbDeviceManager();
 
 	QList<DvbDevice *> getDeviceList() const
@@ -176,6 +183,7 @@ private slots:
 private:
 	void componentAdded(const Solid::Device &component);
 
+	DvbManager *manager;
 	QList<DvbDevice *> devices;
 };
 

@@ -69,7 +69,56 @@ public:
 	explicit DvbPreviewChannelModel(QObject *parent) :
 		DvbGenericChannelModel<DvbPreviewChannel>(parent) { }
 	~DvbPreviewChannelModel() { }
+
+	int columnCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 };
+
+int DvbPreviewChannelModel::columnCount(const QModelIndex &parent) const
+{
+	if (parent.isValid()) {
+		return 0;
+	}
+
+	return 3;
+}
+
+QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
+{
+	if (!index.isValid() || role != Qt::DisplayRole || index.row() >= list.size()) {
+		return QVariant();
+	}
+
+	switch (index.column()) {
+	case 0:
+		return list.at(index.row()).name;
+	case 1:
+		return list.at(index.row()).provider;
+	case 2:
+		return list.at(index.row()).snr;
+	}
+
+	return QVariant();
+}
+
+QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
+		return QVariant();
+	}
+
+	switch (section) {
+	case 0:
+		return i18n("Name");
+	case 1:
+		return i18n("Provider");
+	case 2:
+		return i18n("SNR");
+	}
+
+	return QVariant();
+}
 
 DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
 {
@@ -79,8 +128,8 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui = new Ui_DvbScanDialog();
 	ui->setupUi(widget);
 
-	QString date = dvbTab->getDvbManager()->getScanFilesDate();
-	ui->scanFilesLabel->setText(i18n("Scan files last updated<br>on %1").arg(date));
+	QString date = dvbTab->getDvbManager()->getScanFileDate();
+	ui->scanFilesLabel->setText(i18n("Scan file last updated<br>on %1").arg(date));
 	ui->scanButton->setText(i18n("Start scan"));
 
 	channelModel = new DvbChannelModel(this);
@@ -147,15 +196,14 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	if (isLive) {
 		const DvbChannel *channel = dvbTab->getLiveChannel();
-		internal = new DvbScan(channel->source, device, channel->getTransponder());
+		internal = new DvbScan(channel->source, device, channel->transponder);
 	} else {
 		// FIXME
 		QString source = ui->sourceList->currentText();
 		DvbManager *manager = dvbTab->getDvbManager();
 		setDevice(manager->getDeviceList().at(0));
-		DvbSharedConfig config = manager->getConfig(source);
-		QList<DvbSharedTransponder> transponderList = manager->getTransponderList(source);
-		internal = new DvbScan(source, device, config, transponderList);
+		QList<DvbTransponder> transponderList = manager->getTransponderList(source);
+		internal = new DvbScan(source, device, transponderList);
 	}
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
@@ -253,59 +301,59 @@ void DvbScanDialog::addFilteredChannels()
 
 void DvbScanDialog::deleteAllChannels()
 {
-	channelModel->setList(QList<DvbChannel>());
+	channelModel->setList(QList<DvbSharedChannel>());
 }
 
 class DvbChannelNumberLess
 {
 public:
-	bool operator()(const DvbChannel &x, const DvbChannel &y) const
+	bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
 	{
-		return (x.number < y.number);
+		return (x->number < y->number);
 	}
 };
 
 void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
 {
-	QList<DvbChannel> channels = channelModel->getList();
-	QList<DvbChannel> newChannels;
+	QList<DvbSharedChannel> channels = channelModel->getList();
+	QList<DvbSharedChannel> newChannels;
 
 	foreach (const DvbPreviewChannel *currentChannel, channelList) {
-		QList<DvbChannel>::const_iterator it;
+		QList<DvbSharedChannel>::const_iterator it;
 
 		for (it = channels.begin(); it != channels.end(); ++it) {
 			// FIXME - algorithmic complexity is quite high
-			if ((currentChannel->source == it->source) &&
-			    (currentChannel->networkId == it->networkId) &&
-			    (currentChannel->transportStreamId == it->transportStreamId) &&
-			    (currentChannel->serviceId == it->serviceId)) {
+			if ((currentChannel->source == (*it)->source) &&
+			    (currentChannel->networkId == (*it)->networkId) &&
+			    (currentChannel->transportStreamId == (*it)->transportStreamId) &&
+			    (currentChannel->serviceId == (*it)->serviceId)) {
 				break;
 			}
 		}
 
-		DvbChannel channel = *currentChannel;
+		DvbChannel *channel = new DvbChannel(*currentChannel);
 
 		if (it != channels.end()) {
 			// update channel
-			channel.number = it->number;
-			channel.audioPid = it->audioPid;
-			if (!currentChannel->audioPids.contains(channel.audioPid)) {
+			channel->number = (*it)->number;
+			channel->audioPid = (*it)->audioPid;
+			if (!currentChannel->audioPids.contains(channel->audioPid)) {
 				if (!currentChannel->audioPids.isEmpty()) {
-					channel.audioPid = currentChannel->audioPids.at(0);
+					channel->audioPid = currentChannel->audioPids.at(0);
 				} else {
-					channel.audioPid = -1;
+					channel->audioPid = -1;
 				}
 			}
 
-			channelModel->updateChannel(it - channels.begin(), channel);
+			channelModel->updateChannel(it - channels.begin(), DvbSharedChannel(channel));
 		} else {
 			// add channel
 			// number is assigned later
 			if (!currentChannel->audioPids.isEmpty()) {
-				channel.audioPid = currentChannel->audioPids.at(0);
+				channel->audioPid = currentChannel->audioPids.at(0);
 			}
 
-			newChannels.append(channel);
+			newChannels.append(DvbSharedChannel(channel));
 		}
 	}
 
@@ -316,15 +364,15 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 	qSort(channels.begin(), channels.end(), DvbChannelNumberLess());
 
 	int currentNumber = 1;
-	QList<DvbChannel>::const_iterator channelIt = channels.begin();
+	QList<DvbSharedChannel>::const_iterator channelIt = channels.begin();
 
-	for (QList<DvbChannel>::iterator it = newChannels.begin(); it != newChannels.end(); ++it) {
-		while ((channelIt != channels.end()) && (currentNumber == channelIt->number)) {
+	for (QList<DvbSharedChannel>::iterator it = newChannels.begin(); it != newChannels.end(); ++it) {
+		while ((channelIt != channels.end()) && (currentNumber == (*channelIt)->number)) {
 			++channelIt;
 			++currentNumber;
 		}
 
-		it->number = currentNumber;
+		(*it)->number = currentNumber;
 		++currentNumber;
 	}
 

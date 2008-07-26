@@ -338,7 +338,14 @@ public:
 	DvbSTransponder *createDvbSTransponder() const
 	{
 		Q_ASSERT(modulationSystem() == ModulationDvbS);
-		return new DvbSTransponder(polarization(), frequency(), symbolRate(), fecRate());
+
+		DvbSTransponder *transponder = new DvbSTransponder;
+		transponder->frequency = frequency();
+		transponder->polarization = polarization();
+		transponder->symbolRate = symbolRate();
+		transponder->fecRate = fecRate();
+
+		return transponder;
 	}
 
 private:
@@ -358,10 +365,9 @@ private:
 			return DvbSTransponder::Vertical;
 		case 2:
 			return DvbSTransponder::CircularLeft;
-		case 3:
-			return DvbSTransponder::CircularRight;
 		default:
-			Q_ASSERT(false);
+			// to make the compiler happy - the only possible value left is 3
+			return DvbSTransponder::CircularRight;
 		}
 	}
 
@@ -372,26 +378,26 @@ private:
 		return bcdToInt(bcd, 100);
 	}
 
-	DvbTransponder::FecRate fecRate() const
+	DvbTransponderBase::FecRate fecRate() const
 	{
 		switch (at(12) & ((1 << 4) - 1)) {
 		case 1:
-			return DvbTransponder::Fec1_2;
+			return DvbTransponderBase::Fec1_2;
 		case 2:
-			return DvbTransponder::Fec2_3;
+			return DvbTransponderBase::Fec2_3;
 		case 3:
-			return DvbTransponder::Fec3_4;
+			return DvbTransponderBase::Fec3_4;
 		case 4:
-			return DvbTransponder::Fec5_6;
+			return DvbTransponderBase::Fec5_6;
 		case 5:
-			return DvbTransponder::Fec7_8;
+			return DvbTransponderBase::Fec7_8;
 		case 6:
-			return DvbTransponder::Fec8_9;
+			return DvbTransponderBase::Fec8_9;
 		case 8:
-			return DvbTransponder::Fec4_5;
+			return DvbTransponderBase::Fec4_5;
 		default:
 			// this includes rates like 3/5 and 9/10
-			return DvbTransponder::FecAuto;
+			return DvbTransponderBase::FecAuto;
 		}
 	}
 };

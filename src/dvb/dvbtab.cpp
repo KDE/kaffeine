@@ -1,7 +1,7 @@
 /*
  * dvbtab.cpp
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@
 #include "../manager.h"
 #include "../mediawidget.h"
 #include "dvbchannel.h"
-#include "dvbconfig.h"
+#include "dvbchannelview.h"
+#include "dvbconfigdialog.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbscandialog.h"
@@ -146,10 +147,9 @@ void DvbTab::playLive(const QModelIndex &index)
 	delete dvbStream;
 	dvbStream = new DvbStream(device);
 
-	const DvbChannel *channel = dvbManager->getChannelModel()->getChannel(index);
+	DvbSharedChannel channel = *dvbManager->getChannelModel()->getChannel(index);
 
-	DvbSConfig config("test");
-	device->tuneDevice(channel->getTransponder().data(), &config);
+	device->tuneDevice("Astra-19.2E", channel->transponder);
 
 	device->addPidFilter(channel->videoPid, dvbStream);
 	device->addPidFilter(channel->audioPid, dvbStream);

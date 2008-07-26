@@ -23,23 +23,28 @@
 
 #include <QDate>
 #include <QStringList>
-#include "dvbchannel.h"
-#include "dvbconfig.h"
 
+class DvbChannelModel;
+class DvbConfig;
 class DvbDevice;
 class DvbDeviceManager;
+class DvbScanData;
+class DvbTransponder;
 
 class DvbManager : public QObject
 {
 public:
+	enum TransmissionType
+	{
+		DvbC = 0,
+		DvbS = 1,
+		DvbT = 2,
+		Atsc = 3,
+		TransmissionTypeMax = Atsc
+	};
+
 	explicit DvbManager(QObject *parent);
 	~DvbManager();
-
-	/*
-	 * returns the formatted (short) date of the last scan file update
-	 */
-
-	QString getScanFilesDate() const;
 
 	QStringList getSourceList() const
 	{
@@ -53,15 +58,26 @@ public:
 
 	QList<DvbDevice *> getDeviceList() const;
 
-	DvbSharedConfig getConfig(const QString &source) const;
+	QString getScanFileDate(); // returns the formatted short date of the last scan file update
+	QStringList getScanSources(TransmissionType type);
+	QList<DvbTransponder> getTransponderList(const QString &source);
 
-	QList<DvbSharedTransponder> getTransponderList(const QString &source) const;
+	void deviceAdded(DvbDevice *device);
 
 private:
-	QDate scanFilesDate;
-	QStringList sourceList;
+	void readChannelList();
+	void writeChannelList();
+
+	void readScanFile();
+
 	DvbChannelModel *channelModel;
+	QStringList sourceList;
 	DvbDeviceManager *deviceManager;
+
+	QDate scanFileDate;
+	DvbScanData *scanData;
+	QStringList scanSources[TransmissionTypeMax + 1];
+	QList<int> scanOffsets[TransmissionTypeMax + 1];
 };
 
 #endif /* DVBMANAGER_H */

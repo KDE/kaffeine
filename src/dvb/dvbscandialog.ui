@@ -202,12 +202,12 @@
   <customwidget>
    <class>DvbChannelView</class>
    <extends>QWidget</extends>
-   <header>dvb/dvbchannel.h</header>
+   <header>dvb/dvbchannelview.h</header>
   </customwidget>
   <customwidget>
    <class>DvbChannelViewBase</class>
    <extends>QWidget</extends>
-   <header>dvb/dvbchannel.h</header>
+   <header>dvb/dvbchannelview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
