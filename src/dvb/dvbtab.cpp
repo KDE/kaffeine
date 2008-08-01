@@ -26,6 +26,7 @@
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KMessageBox>
 #include "../engine.h"
 #include "../kaffeine.h"
 #include "../manager.h"
@@ -133,23 +134,26 @@ void DvbTab::activate()
 // FIXME - just a demo hack
 void DvbTab::playLive(const QModelIndex &index)
 {
-	QList<DvbDevice *> devices = dvbManager->getDeviceList();
+	DvbSharedChannel channel = *dvbManager->getChannelModel()->getChannel(index);
 
-	if (devices.isEmpty()) {
+	if (channel == NULL) {
 		return;
 	}
 
-	DvbDevice *device = devices.at(0);
-	device->stopDevice();
+	DvbDevice *device = dvbManager->requestDevice(channel->source);
 
+	if (device == NULL) {
+		KMessageBox::sorry(this, i18n("No suitable device found."));
+		return;
+	}
+
+	device->stopDevice();
 	manager->getMediaWidget()->stop();
 
 	delete dvbStream;
 	dvbStream = new DvbStream(device);
 
-	DvbSharedChannel channel = *dvbManager->getChannelModel()->getChannel(index);
-
-	device->tuneDevice("Astra-19.2E", channel->transponder);
+	device->tuneDevice(channel->transponder);
 
 	device->addPidFilter(channel->videoPid, dvbStream);
 	device->addPidFilter(channel->audioPid, dvbStream);

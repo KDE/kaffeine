@@ -22,17 +22,20 @@
 #define DVBMANAGER_H
 
 #include <QDate>
+#include <QPair>
 #include <QStringList>
 
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
+class DvbDeviceConfig;
 class DvbDeviceManager;
 class DvbScanData;
 class DvbTransponder;
 
 class DvbManager : public QObject
 {
+	Q_OBJECT
 public:
 	enum TransmissionType
 	{
@@ -56,22 +59,34 @@ public:
 		return channelModel;
 	}
 
-	QList<DvbDevice *> getDeviceList() const;
+	QList<DvbDevice *> getDevices() const;
+	DvbDevice *requestDevice(const QString &source);
+	void releaseDevice(DvbDevice *device);
+
+	QPair<QList<DvbConfig>, int> getDeviceConfig(DvbDevice *device) const;
+	void setDeviceConfig(const QPair<QList<DvbConfig>, int> &config);
 
 	QString getScanFileDate(); // returns the formatted short date of the last scan file update
 	QStringList getScanSources(TransmissionType type);
 	QList<DvbTransponder> getTransponderList(const QString &source);
 
+private slots:
 	void deviceAdded(DvbDevice *device);
+	void deviceRemoved(DvbDevice *device);
 
 private:
 	void readChannelList();
 	void writeChannelList();
 
+	void readDeviceConfigs();
+	void writeDeviceConfigs();
+
 	void readScanFile();
 
 	DvbChannelModel *channelModel;
+	QList<DvbDeviceConfig> deviceConfigs;
 	QStringList sourceList;
+
 	DvbDeviceManager *deviceManager;
 
 	QDate scanFileDate;

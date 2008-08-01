@@ -23,10 +23,9 @@
 
 #include <QTimer>
 #include <Solid/Device>
+#include "dvbconfig.h"
 
-class DvbConfig;
 class DvbDeviceThread;
-class DvbManager;
 class DvbTransponder;
 
 class DvbPidFilter
@@ -61,12 +60,12 @@ public:
 		DeviceTuned
 	};
 
-	DvbDevice(int deviceId_);
+	DvbDevice(int deviceIndex_);
 	~DvbDevice();
 
-	int getId() const
+	int getIndex() const
 	{
-		return deviceId;
+		return deviceIndex;
 	}
 
 	void componentAdded(const Solid::Device &component);
@@ -89,7 +88,13 @@ public:
 		return frontendName;
 	}
 
-	void tuneDevice(const QString &source, const DvbTransponder &transponder);
+	QString getDeviceId() const
+	{
+		Q_ASSERT(deviceState != DeviceNotReady);
+		return deviceId;
+	}
+
+	void tuneDevice(const DvbTransponder &transponder);
 	void stopDevice();
 
 	/*
@@ -109,11 +114,7 @@ public:
 	void addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
 
-	/*
-	 * configuration
-	 */
-
-	QList<DvbConfig> configList;
+	DvbConfig config;
 
 signals:
 	void stateChanged();
@@ -149,11 +150,12 @@ private:
 	QString dvrPath;
 	QString frontendPath;
 
-	int deviceId;
+	int deviceIndex;
 	stateFlags internalState;
 	DeviceState deviceState;
 	TransmissionTypes transmissionTypes;
 	QString frontendName;
+	QString deviceId;
 
 	int frontendFd;
 	int frontendTimeout;
@@ -168,13 +170,17 @@ class DvbDeviceManager : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DvbDeviceManager(DvbManager *manager_);
+	explicit DvbDeviceManager(QObject *parent);
 	~DvbDeviceManager();
 
-	QList<DvbDevice *> getDeviceList() const
+	QList<DvbDevice *> getDevices() const
 	{
 		return devices;
 	}
+
+signals:
+	void deviceAdded(DvbDevice *device);
+	void deviceRemoved(DvbDevice *device);
 
 private slots:
 	void componentAdded(const QString &udi);
@@ -183,7 +189,6 @@ private slots:
 private:
 	void componentAdded(const Solid::Device &component);
 
-	DvbManager *manager;
 	QList<DvbDevice *> devices;
 };
 

@@ -432,7 +432,7 @@ void DvbScan::updateState()
 
 		// tune to the next transponder
 		device->stopDevice();
-		device->tuneDevice(source, transponder);
+		device->tuneDevice(transponder);
 		state = ScanTune;
 		break;
 	    }

@@ -35,6 +35,7 @@ typedef quint64 __u64;
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <QCoreApplication>
+#include <QDir>
 #include <QFile>
 #include <QMutex>
 #include <QThread>
@@ -346,7 +347,7 @@ void DvbDeviceThread::run()
 	}
 }
 
-DvbDevice::DvbDevice(int deviceId_) : deviceId(deviceId_), internalState(0),
+DvbDevice::DvbDevice(int deviceIndex_) : deviceIndex(deviceIndex_), internalState(0),
 	deviceState(DeviceNotReady), frontendFd(-1)
 {
 	thread = new DvbDeviceThread(this);
@@ -523,23 +524,9 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 	abort();
 }
 
-void DvbDevice::tuneDevice(const QString &source, const DvbTransponder &transponder)
+void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 {
 	Q_ASSERT(deviceState == DeviceIdle);
-
-	DvbConfig config;
-
-	foreach (const DvbConfig &it, configList) {
-		if (it->source == source) {
-			config = it;
-			break;
-		}
-	}
-
-	if (config == DvbConfig()) {
-		kWarning() << "couldn't find matching configuration";
-		return;
-	}
 
 	frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
 
@@ -625,7 +612,7 @@ void DvbDevice::tuneDevice(const QString &source, const DvbTransponder &transpon
 
 		struct dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0x00, 0x00, 0x00 }, 4 };
 
-		cmd.msg[3] = 0xf0 | (dvbSConfig->diseqcPos << 2) | (horPolar ? 2 : 0) |
+		cmd.msg[3] = 0xf0 | (dvbSConfig->lnbNumber << 2) | (horPolar ? 2 : 0) |
 			            (highBand ? 1 : 0);
 
 		if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
@@ -635,7 +622,7 @@ void DvbDevice::tuneDevice(const QString &source, const DvbTransponder &transpon
 		usleep(15000);
 
 		if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
-			  ((dvbSConfig->diseqcPos % 2) == 0) ? SEC_MINI_A : SEC_MINI_B) != 0) {
+			  ((dvbSConfig->lnbNumber % 2) == 0) ? SEC_MINI_A : SEC_MINI_B) != 0) {
 			kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
 		}
 
@@ -867,6 +854,30 @@ void DvbDevice::setDeviceState(DeviceState newState)
 	emit stateChanged();
 }
 
+static int DvbReadSysAttr(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		return -1;
+	}
+
+	QByteArray data = file.read(16);
+
+	if ((data.size() == 0) || (data.size() == 16)) {
+		return -1;
+	}
+
+	bool ok;
+	int value = QString(data).toInt(&ok, 16);
+
+	if (!ok || (value >= (1 << 16))) {
+		return -1;
+	}
+
+	return value;
+}
+
 bool DvbDevice::identifyDevice()
 {
 	int fd = open(QFile::encodeName(frontendPath), O_RDONLY | O_NONBLOCK);
@@ -906,21 +917,56 @@ bool DvbDevice::identifyDevice()
 	}
 
 	frontendName = QString::fromAscii(frontend_info.name);
+	deviceId = QString();
 
-	kDebug() << "found dvb card" << frontendName;
+	int adapter = deviceIndex >> 16;
+	int index = deviceIndex & ((1 << 16) - 1);
+	QDir dir(QString("/sys/class/dvb/dvb%1.frontend%2").arg(adapter).arg(index));
+
+	if (QFile::exists(dir.filePath("device/vendor"))) {
+		// PCI device
+		int vendor = DvbReadSysAttr(dir.filePath("device/vendor"));
+		int device = DvbReadSysAttr(dir.filePath("device/device"));
+		int subsystem_vendor = DvbReadSysAttr(dir.filePath("device/subsystem_vendor"));
+		int subsystem_device = DvbReadSysAttr(dir.filePath("device/subsystem_device"));
+
+		if ((vendor >= 0) && (device >= 0) && (subsystem_vendor >= 0) &&
+		    (subsystem_device >= 0)) {
+			deviceId = 'P';
+			deviceId += QString("%1").arg(vendor, 4, 16, QChar('0'));
+			deviceId += QString("%1").arg(device, 4, 16, QChar('0'));
+			deviceId += QString("%1").arg(subsystem_vendor, 4, 16, QChar('0'));
+			deviceId += QString("%1").arg(subsystem_device, 4, 16, QChar('0'));
+		}
+	} else if (QFile::exists(dir.filePath("id/vendor"))) {
+		// USB device
+		int vendor = DvbReadSysAttr(dir.filePath("id/vendor"));
+		int product = DvbReadSysAttr(dir.filePath("id/product"));
+
+		if ((vendor >= 0) && (product >= 0)) {
+			deviceId = 'U';
+			deviceId += QString("%1").arg(vendor, 4, 16, QChar('0'));
+			deviceId += QString("%1").arg(product, 4, 16, QChar('0'));
+		}
+	}
+
+	if (deviceId.isEmpty()) {
+		kWarning() << "couldn't identify device";
+	}
+
+	kDebug() << "found dvb device" << deviceId << "/" << frontendName;
 
 	return true;
 }
 
-DvbDeviceManager::DvbDeviceManager(DvbManager *manager_) : QObject(manager_), manager(manager_)
+DvbDeviceManager::DvbDeviceManager(QObject *parent) : QObject(parent)
 {
 	QObject *notifier = Solid::DeviceNotifier::instance();
-
 	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
 	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(componentRemoved(QString)));
 
-	QList<Solid::Device> devices = Solid::Device::listFromType(Solid::DeviceInterface::DvbInterface);
-	foreach (const Solid::Device &device, devices) {
+	foreach (const Solid::Device &device,
+		 Solid::Device::listFromType(Solid::DeviceInterface::DvbInterface)) {
 		componentAdded(device);
 	}
 }
@@ -938,7 +984,13 @@ void DvbDeviceManager::componentAdded(const QString &udi)
 void DvbDeviceManager::componentRemoved(const QString &udi)
 {
 	foreach (DvbDevice *device, devices) {
+		bool wasReady = (device->getDeviceState() != DvbDevice::DeviceNotReady);
+
 		if (device->componentRemoved(udi)) {
+			if (wasReady && (device->getDeviceState() == DvbDevice::DeviceNotReady)) {
+				emit deviceRemoved(device);
+			}
+
 			break;
 		}
 	}
@@ -960,21 +1012,25 @@ void DvbDeviceManager::componentAdded(const Solid::Device &component)
 		return;
 	}
 
-	int deviceId = (adapter << 16) | index;
-	DvbDevice *device = NULL;
+	int deviceIndex = (adapter << 16) | index;
+	DvbDevice *device;
 
-	foreach (DvbDevice *currentDevice, devices) {
-		if (currentDevice->getId() == deviceId) {
-			device = currentDevice;
+	for (QList<DvbDevice *>::iterator it = devices.begin();; ++it) {
+		if ((it == devices.constEnd()) || ((*it)->getIndex() > deviceIndex)) {
+			device = new DvbDevice(deviceIndex);
+			devices.insert(it, device);
+			break;
+		} else if ((*it)->getIndex() == deviceIndex) {
+			device = *it;
 			break;
 		}
 	}
 
-	if (device == NULL) {
-		device = new DvbDevice(deviceId);
-		devices.append(device);
-		manager->deviceAdded(device);
-	}
+	bool wasNotReady = (device->getDeviceState() == DvbDevice::DeviceNotReady);
 
 	device->componentAdded(component);
+
+	if (wasNotReady && (device->getDeviceState() != DvbDevice::DeviceNotReady)) {
+		emit deviceAdded(device);
+	}
 }

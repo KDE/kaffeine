@@ -40,7 +40,7 @@ DvbConfigDialog::DvbConfigDialog(DvbTab *dvbTab) : KPageDialog(dvbTab)
 	DvbManager *manager = dvbTab->getDvbManager();
 	int deviceNumber = 1;
 
-	foreach (DvbDevice *device, manager->getDeviceList()) {
+	foreach (DvbDevice *device, manager->getDevices()) {
 		if (device->getDeviceState() == DvbDevice::DeviceNotReady) {
 			continue;
 		}
@@ -56,7 +56,7 @@ DvbConfigDialog::DvbConfigDialog(DvbTab *dvbTab) : KPageDialog(dvbTab)
 		DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
 
 		if ((transmissionTypes & DvbDevice::DvbS) != 0) {
-			DvbSConfigBox *configBox = new DvbSConfigBox(pageWidget, device, manager);
+			DvbSConfigBox *configBox = new DvbSConfigBox(pageWidget, manager, device);
 			connect(this, SIGNAL(accepted()), configBox, SLOT(dialogAccepted()));
 			pageLayout->addWidget(configBox);
 		}
@@ -84,20 +84,17 @@ DvbSLnbConfig::DvbSLnbConfig(QPushButton *configureButton_, QComboBox *sourceBox
 	const DvbSConfig &config_) : QObject(configureButton_), configureButton(configureButton_),
 	sourceBox(sourceBox_), config(config_)
 {
+	connect(sourceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sourceChanged(int)));
 	connect(configureButton, SIGNAL(clicked()), this, SLOT(configureLnb()));
+
+	sourceChanged(sourceBox->currentIndex());
 }
 
 DvbSLnbConfig::~DvbSLnbConfig()
 {
 }
 
-void DvbSLnbConfig::setEnabled(bool enabled)
-{
-	configureButton->setEnabled(enabled);
-	sourceBox->setEnabled(enabled);
-}
-
-DvbSConfig DvbSLnbConfig::getConfig()
+const DvbSConfig &DvbSLnbConfig::getConfig()
 {
 	if (sourceBox->currentIndex() <= 0) {
 		// no source selected
@@ -107,6 +104,11 @@ DvbSConfig DvbSLnbConfig::getConfig()
 	}
 
 	return config;
+}
+
+void DvbSLnbConfig::sourceChanged(int index)
+{
+	configureButton->setEnabled(index > 0);
 }
 
 void DvbSLnbConfig::configureLnb()
@@ -230,8 +232,8 @@ void DvbSLnbConfig::dialogAccepted()
 	config.highBandFrequency = highBandSpinBox->value() * 1000;
 }
 
-DvbSConfigBox::DvbSConfigBox(QWidget *parent, DvbDevice *device_, DvbManager *manager) :
-	QGroupBox(parent), device(device_)
+DvbSConfigBox::DvbSConfigBox(QWidget *parent, DvbManager *manager_, DvbDevice *device_) :
+	QGroupBox(parent), manager(manager_), device(device_)
 {
 	setTitle(i18n("DVB-S"));
 	QGridLayout *gridLayout = new QGridLayout(this);
@@ -244,47 +246,40 @@ DvbSConfigBox::DvbSConfigBox(QWidget *parent, DvbDevice *device_, DvbManager *ma
 	spinBox->setValue(1500);
 	gridLayout->addWidget(spinBox, 0, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Number of LNBs:")), 1, 0);
-
-	spinBox = new QSpinBox(this);
-	spinBox->setRange(1, 4);
-	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(lnbCountChanged(int)));
-	gridLayout->addWidget(spinBox, 1, 1);
+	deviceConfig = manager->getDeviceConfig(device);
 
 	for (int i = 1; i <= 4; ++i) {
-		int diseqcPos = i - 1;
+		QPushButton *pushButton = new QPushButton(i18n("LNB %1 settings").arg(i), this);
+		gridLayout->addWidget(pushButton, i, 0);
+
+		QComboBox *comboBox = new QComboBox(this);
+		QStringList sources = manager->getScanSources(DvbManager::DvbS);
+		comboBox->addItem(i18n("No source"));
+		comboBox->addItems(sources);
+		gridLayout->addWidget(comboBox, i, 1);
+
+		int lnbNumber = i - 1;
 		const DvbSConfig *config = NULL;
 
-		foreach (const DvbConfig &it, device->configList) {
+		foreach (const DvbConfig &it, deviceConfig.first) {
 			if ((it->getTransmissionType() == DvbConfigBase::DvbS) &&
-			    (it->getDvbSConfig()->diseqcPos == diseqcPos)) {
+			    (it->getDvbSConfig()->lnbNumber == lnbNumber)) {
 				config = it->getDvbSConfig();
 				break;
 			}
 		}
 
-		DvbSConfig defaultConfig(diseqcPos);
+		DvbSLnbConfig *lnbConfig;
 
-		if (config == NULL) {
-			config = &defaultConfig;
+		if (config != NULL) {
+			comboBox->setCurrentIndex(sources.indexOf(config->source) + 1);
+			lnbConfig = new DvbSLnbConfig(pushButton, comboBox, *config);
+		} else {
+			lnbConfig = new DvbSLnbConfig(pushButton, comboBox, DvbSConfig(lnbNumber));
 		}
 
-		QPushButton *pushButton = new QPushButton(i18n("LNB %1 settings").arg(i), this);
-		gridLayout->addWidget(pushButton, i + 1, 0);
-
-		QStringList sources = manager->getScanSources(DvbManager::DvbS);
-
-		QComboBox *comboBox = new QComboBox(this);
-		comboBox->addItem(i18n("No source"));
-		comboBox->addItems(sources);
-		comboBox->setCurrentIndex(sources.indexOf(config->source) + 1);
-		gridLayout->addWidget(comboBox, i + 1, 1);
-
-		DvbSLnbConfig *lnbConfig = new DvbSLnbConfig(pushButton, comboBox, *config);
 		lnbConfigs.append(lnbConfig);
 	}
-
-	lnbCountChanged(1);
 }
 
 DvbSConfigBox::~DvbSConfigBox()
@@ -293,48 +288,26 @@ DvbSConfigBox::~DvbSConfigBox()
 
 void DvbSConfigBox::dialogAccepted()
 {
-	foreach (DvbSLnbConfig *lnbConfig, lnbConfigs) {
-		DvbSConfig config = lnbConfig->getConfig();
+	if (deviceConfig.second < 0) {
+		return;
+	}
 
-		if (!config.source.isEmpty()) {
-			bool found = false;
+	for (int i = 0; i < deviceConfig.first.size(); ++i) {
+		const DvbConfig &config = deviceConfig.first.at(i);
 
-			for (int i = 0; i < device->configList.size(); ++i) {
-				DvbConfig &it = device->configList[i];
-
-				if ((it->getTransmissionType() == DvbConfigBase::DvbS) &&
-				    (it->getDvbSConfig()->diseqcPos == config.diseqcPos)) {
-					it = DvbConfig(new DvbSConfig(config));
-					found = true;
-					break;
-				}
-			}
-
-			if (!found) {
-				device->configList.append(DvbConfig(new DvbSConfig(config)));
-			}
-		} else {
-			for (int i = 0; i < device->configList.size(); ++i) {
-				const DvbConfig &it = device->configList.at(i);
-
-				if ((it->getTransmissionType() == DvbConfigBase::DvbS) &&
-				    (it->getDvbSConfig()->diseqcPos == config.diseqcPos)) {
-					device->configList.removeAt(i);
-					--i;
-					break;
-				}
-			}
+		if (config->getTransmissionType() == DvbConfigBase::DvbS) {
+			deviceConfig.first.removeAt(i);
+			--i;
 		}
 	}
-}
 
-void DvbSConfigBox::lnbCountChanged(int count)
-{
-	for (int i = 0; i < count; ++i) {
-		lnbConfigs[i]->setEnabled(true);
+	foreach (DvbSLnbConfig *lnbConfig, lnbConfigs) {
+		const DvbSConfig &config = lnbConfig->getConfig();
+
+		if (!config.source.isEmpty()) {
+			deviceConfig.first.append(DvbConfig(new DvbSConfig(config)));
+		}
 	}
 
-	for (int i = count; i < 4; ++i) {
-		lnbConfigs[i]->setEnabled(false);
-	}
+	manager->setDeviceConfig(deviceConfig);
 }

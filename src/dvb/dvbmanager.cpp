@@ -166,7 +166,97 @@ const char *DvbScanData::readLine()
 	return line;
 }
 
-DvbManager::DvbManager(QObject *parent) : QObject(parent)
+class DvbDeviceConfig
+{
+public:
+	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_)
+		: deviceId(deviceId_), frontendName(frontendName_), device(device_), used(false) { }
+	~DvbDeviceConfig() { }
+
+	QString deviceId;
+	QString frontendName;
+	DvbDevice *device;
+	QList<DvbConfig> configs;
+	bool used;
+};
+
+class DvbDeviceConfigReader : public QTextStream
+{
+public:
+	explicit DvbDeviceConfigReader(QIODevice *device) : QTextStream(device), valid(true)
+	{
+		setCodec("UTF-8");
+	}
+
+	~DvbDeviceConfigReader() { }
+
+	bool isValid() const
+	{
+		return valid;
+	}
+
+	int readInt(const QString &entry)
+	{
+		QString string = readString(entry);
+
+		if (string.isEmpty()) {
+			valid = false;
+			return -1;
+		}
+
+		bool ok;
+		int value = string.toInt(&ok);
+
+		if (!ok || (value < 0)) {
+			valid = false;
+		}
+
+		return value;
+	}
+
+	QString readString(const QString &entry)
+	{
+		QString line = readLine();
+
+		if (!line.startsWith(entry + '=')) {
+			valid = false;
+			return QString();
+		}
+
+		return line.remove(0, entry.size() + 1);
+	}
+
+private:
+	bool valid;
+};
+
+class DvbDeviceConfigWriter : public QTextStream
+{
+public:
+	explicit DvbDeviceConfigWriter(QIODevice *device) : QTextStream(device)
+	{
+		setCodec("UTF-8");
+	}
+
+	~DvbDeviceConfigWriter() { }
+
+	void write(const QString &string)
+	{
+		*this << string << '\n';
+	}
+
+	void write(const QString &entry, int value)
+	{
+		*this << entry << '=' << value << '\n';
+	}
+
+	void write(const QString &entry, const QString &string)
+	{
+		*this << entry << '=' << string << '\n';
+	}
+};
+
+DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 {
 	// FIXME
 	sourceList << "Astra-19.2E";
@@ -178,7 +268,7 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent)
 	DvbChannel *channel = new DvbChannel;
 	channel->name = "sample";
 	channel->number = 1;
-	channel->source = "Astra19.2E";
+	channel->source = "Astra-19.2E";
 	channel->networkId = 1;
 	channel->transportStreamId = 1079;
 	channel->serviceId = 28006;
@@ -201,19 +291,88 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent)
 	list.append(DvbSharedChannel(channel));
 	channelModel->setList(list);
 
-	deviceManager = new DvbDeviceManager(this);
+	readDeviceConfigs();
 
-	scanData = NULL;
+	deviceManager = new DvbDeviceManager(this);
+	connect(deviceManager, SIGNAL(deviceAdded(DvbDevice*)),
+		this, SLOT(deviceAdded(DvbDevice*)));
+	connect(deviceManager, SIGNAL(deviceRemoved(DvbDevice*)),
+		this, SLOT(deviceRemoved(DvbDevice*)));
+
+	// coldplug; we can't do it earlier because now the devices are sorted (by index)!
+	foreach (DvbDevice *device, getDevices()) {
+		if (device->getDeviceState() != DvbDevice::DeviceNotReady) {
+			deviceAdded(device);
+		}
+	}
 }
 
 DvbManager::~DvbManager()
 {
+	writeDeviceConfigs();
 	delete scanData;
 }
 
-QList<DvbDevice *> DvbManager::getDeviceList() const
+QList<DvbDevice *> DvbManager::getDevices() const
 {
-	return deviceManager->getDeviceList();
+	return deviceManager->getDevices();
+}
+
+DvbDevice *DvbManager::requestDevice(const QString &source)
+{
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		const DvbDeviceConfig &it = deviceConfigs.at(i);
+
+		if ((it.device == NULL) || (it.used)) {
+			continue;
+		}
+
+		foreach (DvbConfig config, it.configs) {
+			if (config->source == source) {
+				DvbDevice *device = it.device;
+				device->config = config;
+				// FIXME check actual usability
+				deviceConfigs[i].used = true;
+				return device;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+void DvbManager::releaseDevice(DvbDevice *device)
+{
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		const DvbDeviceConfig &it = deviceConfigs.at(i);
+
+		if (it.device == device) {
+			deviceConfigs[i].used = false;
+			break;
+		}
+	}
+}
+
+QPair<QList<DvbConfig>, int> DvbManager::getDeviceConfig(DvbDevice *device) const
+{
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		const DvbDeviceConfig &config = deviceConfigs.at(i);
+
+		if (config.device == device) {
+			return qMakePair(config.configs, i);
+		}
+	}
+
+	kWarning() << "couldn't find device";
+
+	return qMakePair(QList<DvbConfig>(), -1);
+}
+
+void DvbManager::setDeviceConfig(const QPair<QList<DvbConfig>, int> &config)
+{
+	Q_ASSERT((config.second >= 0) && (config.second < deviceConfigs.size()));
+
+	deviceConfigs[config.second].configs = config.first;
 }
 
 QString DvbManager::getScanFileDate()
@@ -254,9 +413,33 @@ QList<DvbTransponder> DvbManager::getTransponderList(const QString &source)
 
 void DvbManager::deviceAdded(DvbDevice *device)
 {
-	DvbSConfig *config = new DvbSConfig(0);
-	config->source = "Astra-19.2E";
-	device->configList.append(DvbConfig(config));
+	QString deviceId = device->getDeviceId();
+	QString frontendName = device->getFrontendName();
+
+	for (int i = 0;; ++i) {
+		if (i == deviceConfigs.size()) {
+			deviceConfigs.append(DvbDeviceConfig(deviceId, frontendName, device));
+			break;
+		}
+
+		const DvbDeviceConfig &it = deviceConfigs.at(i);
+
+		if ((it.deviceId.isEmpty() || deviceId.isEmpty() || (it.deviceId == deviceId)) &&
+		    (it.frontendName == frontendName) && (it.device == NULL)) {
+			deviceConfigs[i].device = device;
+			break;
+		}
+	}
+}
+
+void DvbManager::deviceRemoved(DvbDevice *device)
+{
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		if (deviceConfigs.at(i).device == device) {
+			deviceConfigs[i].device = NULL;
+			break;
+		}
+	}
 }
 
 void DvbManager::readChannelList()
@@ -310,6 +493,124 @@ void DvbManager::writeChannelList()
 		DvbLineWriter writer;
 		writer.writeChannel(*it);
 		stream << writer.getLine();
+	}
+}
+
+void DvbManager::readDeviceConfigs()
+{
+	// FIXME error handling
+
+	QFile file(KStandardDirs::locateLocal("appdata", "config.dvb"));
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		kWarning() << "can't open" << file.fileName();
+		return;
+	}
+
+	DvbDeviceConfigReader reader(&file);
+
+	while (!reader.atEnd()) {
+		if (reader.readLine() != "[device]") {
+			continue;
+		}
+
+		QString deviceId = reader.readString("deviceId");
+		QString frontendName = reader.readString("frontendName");
+		int configCount = reader.readInt("configCount");
+
+		if (!reader.isValid()) {
+			break;
+		}
+
+		DvbDeviceConfig deviceConfig(deviceId, frontendName, NULL);
+
+		for (int i = 0; i < configCount; ++i) {
+			while (!reader.atEnd()) {
+				if (reader.readLine() == "[config]") {
+					break;
+				}
+			}
+
+			QString source = reader.readString("source");
+			int timeout = reader.readInt("timeout");
+			QString type = reader.readString("type");
+
+			if (!reader.isValid()) {
+				break;
+			}
+
+			if (type == "DvbS") {
+				DvbSConfig config(reader.readInt("lnbNumber"));
+
+				config.source = source;
+				config.timeout = timeout;
+				config.lowBandFrequency = reader.readInt("lowBandFrequency");
+				config.switchFrequency = reader.readInt("switchFrequency");
+				config.highBandFrequency = reader.readInt("highBandFrequency");
+
+				if (!reader.isValid()) {
+					break;
+				}
+
+				deviceConfig.configs.append(DvbConfig(new DvbSConfig(config)));
+			}
+		}
+
+		deviceConfigs.append(deviceConfig);
+	}
+}
+
+void DvbManager::writeDeviceConfigs()
+{
+	QFile file(KStandardDirs::locateLocal("appdata", "config.dvb"));
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "can't open" << file.fileName();
+		return;
+	}
+
+	DvbDeviceConfigWriter writer(&file);
+
+	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
+		writer.write("[device]");
+		writer.write("deviceId", deviceConfig.deviceId);
+		writer.write("frontendName", deviceConfig.frontendName);
+		writer.write("configCount", deviceConfig.configs.size());
+
+		foreach (const DvbConfig &config, deviceConfig.configs) {
+			writer.write("[config]");
+			writer.write("source", config->source);
+			writer.write("timeout", config->timeout);
+
+			switch (config->getTransmissionType()) {
+			case DvbTransponderBase::DvbC: {
+				// FIXME
+				break;
+			    }
+
+			case DvbTransponderBase::DvbS: {
+				const DvbSConfig *dvbSConfig = config->getDvbSConfig();
+
+				writer.write("type", "DvbS");
+				writer.write("lnbNumber", dvbSConfig->lnbNumber);
+				writer.write("lowBandFrequency", dvbSConfig->lowBandFrequency);
+				writer.write("switchFrequency", dvbSConfig->switchFrequency);
+				writer.write("highBandFrequency", dvbSConfig->highBandFrequency);
+
+				break;
+			    }
+
+			case DvbTransponderBase::DvbT: {
+				// FIXME
+				break;
+			    }
+
+			case DvbTransponderBase::Atsc: {
+				// FIXME
+				break;
+			    }
+			}
+		}
 	}
 }
 

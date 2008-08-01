@@ -87,7 +87,7 @@ public:
 class DvbSConfig : public DvbConfigBase
 {
 public:
-	DvbSConfig(int diseqcPos_) : diseqcPos(diseqcPos_), lowBandFrequency(9750000),
+	DvbSConfig(int lnbNumber_) : lnbNumber(lnbNumber_), lowBandFrequency(9750000),
 		switchFrequency(11700000), highBandFrequency(10600000) { }
 	~DvbSConfig() { }
 
@@ -101,7 +101,7 @@ public:
 		return this;
 	}
 
-	int diseqcPos;         // diseqc switch position (0 = first sat, 1 = second sat etc)
+	int lnbNumber;         // corresponds to diseqc switch position (0 = first sat etc)
 	int lowBandFrequency;  // kHz
 	int switchFrequency;   // kHz (0 == only low band)
 	int highBandFrequency; // kHz

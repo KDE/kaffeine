@@ -22,6 +22,7 @@
 
 #include <QPainter>
 #include <KDebug>
+#include <KMessageBox>
 #include "dvbmanager.h"
 #include "dvbscan.h"
 #include "dvbsi.h"
@@ -181,30 +182,36 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 {
 	if (!checked) {
 		// stop scan
-		ui->scanButton->setText(i18n("Start scan"));
 		Q_ASSERT(internal != NULL);
+		ui->scanButton->setText(i18n("Start scan"));
 		delete internal;
 		internal = NULL;
 		return;
 	}
 
 	// start scan
-	ui->scanButton->setText(i18n("Stop scan"));
-	previewModel->setList(QList<DvbPreviewChannel>());
-
 	Q_ASSERT(internal == NULL);
 
 	if (isLive) {
 		const DvbChannel *channel = dvbTab->getLiveChannel();
 		internal = new DvbScan(channel->source, device, channel->transponder);
 	} else {
-		// FIXME
 		QString source = ui->sourceList->currentText();
 		DvbManager *manager = dvbTab->getDvbManager();
-		setDevice(manager->getDeviceList().at(0));
-		QList<DvbTransponder> transponderList = manager->getTransponderList(source);
-		internal = new DvbScan(source, device, transponderList);
+		setDevice(manager->requestDevice(source));
+
+		if (device != NULL) {
+			QList<DvbTransponder> transponderList = manager->getTransponderList(source);
+			internal = new DvbScan(source, device, transponderList);
+		} else {
+			ui->scanButton->setChecked(false);
+			KMessageBox::sorry(this, i18n("No suitable device found."));
+			return;
+		}
 	}
+
+	ui->scanButton->setText(i18n("Stop scan"));
+	previewModel->setList(QList<DvbPreviewChannel>());
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));

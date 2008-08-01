@@ -48,11 +48,10 @@ public:
 		const DvbSConfig &config_);
 	~DvbSLnbConfig();
 
-	void setEnabled(bool enabled);
-
-	DvbSConfig getConfig();
+	const DvbSConfig &getConfig();
 
 private slots:
+	void sourceChanged(int index);
 	void configureLnb();
 	void selectType(int type);
 	void dialogAccepted();
@@ -75,17 +74,16 @@ class DvbSConfigBox : public QGroupBox
 {
 	Q_OBJECT
 public:
-	DvbSConfigBox(QWidget *parent, DvbDevice *device_, DvbManager *manager);
+	DvbSConfigBox(QWidget *parent, DvbManager *manager_, DvbDevice *device_);
 	~DvbSConfigBox();
 
 public slots:
 	void dialogAccepted();
 
-private slots:
-	void lnbCountChanged(int count);
-
 private:
+	DvbManager *manager;
 	DvbDevice *device;
+	QPair<QList<DvbConfig>, int> deviceConfig;
 	QList<DvbSLnbConfig *> lnbConfigs;
 };
 
