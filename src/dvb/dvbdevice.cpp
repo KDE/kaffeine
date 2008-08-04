@@ -410,6 +410,20 @@ bool DvbDevice::componentRemoved(const QString &udi)
 	return false;
 }
 
+bool DvbDevice::checkUsable()
+{
+	Q_ASSERT(deviceState == DeviceIdle);
+
+	int fd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
+
+	if (fd < 0) {
+		return false;
+	}
+
+	close(fd);
+	return true;
+}
+
 static fe_modulation_t convertDvbModulation(DvbCTransponder::ModulationType modulation)
 {
 	switch (modulation) {

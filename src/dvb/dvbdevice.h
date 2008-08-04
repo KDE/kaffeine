@@ -94,6 +94,7 @@ public:
 		return deviceId;
 	}
 
+	bool checkUsable();
 	void tuneDevice(const DvbTransponder &transponder);
 	void stopDevice();
 

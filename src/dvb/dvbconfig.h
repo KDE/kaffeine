@@ -66,7 +66,8 @@ public:
 		return NULL;
 	}
 
-	QString source;
+	QString name;
+	QString scanSource;
 	int timeout; // tuning timeout (ms)
 };
 

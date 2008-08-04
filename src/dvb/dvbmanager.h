@@ -22,6 +22,7 @@
 #define DVBMANAGER_H
 
 #include <QDate>
+#include <QMap>
 #include <QPair>
 #include <QStringList>
 
@@ -32,6 +33,20 @@ class DvbDeviceConfig;
 class DvbDeviceManager;
 class DvbScanData;
 class DvbTransponder;
+
+class DvbDeviceConfig
+{
+public:
+	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_)
+		: deviceId(deviceId_), frontendName(frontendName_), device(device_), used(false) { }
+	~DvbDeviceConfig() { }
+
+	QString deviceId;
+	QString frontendName;
+	DvbDevice *device;
+	QList<DvbConfig> configs;
+	bool used;
+};
 
 class DvbManager : public QObject
 {
@@ -49,9 +64,9 @@ public:
 	explicit DvbManager(QObject *parent);
 	~DvbManager();
 
-	QStringList getSourceList() const
+	QStringList getSources() const
 	{
-		return sourceList;
+		return sources;
 	}
 
 	DvbChannelModel *getChannelModel() const
@@ -63,8 +78,8 @@ public:
 	DvbDevice *requestDevice(const QString &source);
 	void releaseDevice(DvbDevice *device);
 
-	QPair<QList<DvbConfig>, int> getDeviceConfig(DvbDevice *device) const;
-	void setDeviceConfig(const QPair<QList<DvbConfig>, int> &config);
+	QList<DvbDeviceConfig> getDeviceConfigs() const;
+	void setDeviceConfigs(const QList<QList<DvbConfig> > &configs);
 
 	QString getScanFileDate(); // returns the formatted short date of the last scan file update
 	QStringList getScanSources(TransmissionType type);
@@ -85,7 +100,8 @@ private:
 
 	DvbChannelModel *channelModel;
 	QList<DvbDeviceConfig> deviceConfigs;
-	QStringList sourceList;
+	QMap<QString, QString> sourceMapping;
+	QStringList sources;
 
 	DvbDeviceManager *deviceManager;
 

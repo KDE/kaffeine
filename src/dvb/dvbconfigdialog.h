@@ -21,45 +21,74 @@
 #ifndef DVBCONFIGDIALOG_H
 #define DVBCONFIGDIALOG_H
 
-#include <QGroupBox>
 #include <KPageDialog>
-#include "dvbconfig.h"
 
 class QComboBox;
 class QLabel;
-class QPushButton;
+class QLineEdit;
 class QSpinBox;
-class DvbDevice;
+class DvbConfig;
+class DvbConfigBase;
+class DvbConfigPage;
+class DvbDeviceConfig;
 class DvbManager;
+class DvbSConfig;
 class DvbTab;
 
 class DvbConfigDialog : public KPageDialog
 {
+	Q_OBJECT
 public:
 	explicit DvbConfigDialog(DvbTab *dvbTab_);
 	~DvbConfigDialog();
+
+private slots:
+	void dialogAccepted();
+
+private:
+	DvbManager *manager;
+	QList<DvbConfigPage *> configPages;
 };
 
-class DvbSLnbConfig : public QObject
+class DvbConfigObject : public QObject
 {
 	Q_OBJECT
 public:
-	DvbSLnbConfig(QPushButton *configureButton_, QComboBox *sourceBox_,
-		const DvbSConfig &config_);
-	~DvbSLnbConfig();
-
-	const DvbSConfig &getConfig();
+	DvbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_, QLineEdit *nameEdit_,
+		const QString &defaultName_, DvbConfigBase *config_);
+	~DvbConfigObject();
 
 private slots:
+	void timeoutChanged(int timeout);
+	void sourceChanged(int index);
+	void nameChanged();
+
+private:
+	QComboBox *sourceBox;
+	QLineEdit *nameEdit;
+	QString defaultName;
+	DvbConfigBase *config;
+};
+
+class DvbSConfigObject : public QObject
+{
+	Q_OBJECT
+public:
+	DvbSConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
+		QPushButton *configureButton_, DvbSConfig *config_);
+	~DvbSConfigObject();
+
+private slots:
+	void timeoutChanged(int timeout);
 	void sourceChanged(int index);
 	void configureLnb();
 	void selectType(int type);
 	void dialogAccepted();
 
 private:
-	QPushButton *configureButton;
 	QComboBox *sourceBox;
-	DvbSConfig config;
+	QPushButton *configureButton;
+	DvbSConfig *config;
 
 	QLabel *lowBandLabel;
 	QLabel *switchLabel;
@@ -70,21 +99,16 @@ private:
 	bool customEnabled;
 };
 
-class DvbSConfigBox : public QGroupBox
+class DvbConfigPage : public QWidget
 {
-	Q_OBJECT
 public:
-	DvbSConfigBox(QWidget *parent, DvbManager *manager_, DvbDevice *device_);
-	~DvbSConfigBox();
+	DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceConfig);
+	~DvbConfigPage();
 
-public slots:
-	void dialogAccepted();
+	QList<DvbConfig> getConfigs() const;
 
 private:
-	DvbManager *manager;
-	DvbDevice *device;
-	QPair<QList<DvbConfig>, int> deviceConfig;
-	QList<DvbSLnbConfig *> lnbConfigs;
+	QList<DvbConfig> configs;
 };
 
 #endif /* DVBCONFIGDIALOG_H */

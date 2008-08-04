@@ -149,7 +149,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 		ui->sourceList->setEnabled(false);
 		isLive = true;
 	} else {
-		QStringList list = dvbTab->getDvbManager()->getSourceList();
+		QStringList list = dvbTab->getDvbManager()->getSources();
 
 		if (!list.isEmpty()) {
 			ui->sourceList->addItems(list);
