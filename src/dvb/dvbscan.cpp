@@ -75,7 +75,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 
 	switch (state) {
 	case ScanPat: {
-		DvbPatSection section(standardSection);
+		DvbPatSection section(data);
 
 		if (!section.isValid()) {
 			kDebug() << "invalid section";
@@ -92,7 +92,11 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 			}
 
 			DvbPatEntry patEntry(entry.programNumber(), entry.pid());
-			patEntries.append(patEntry);
+
+			if (patEntry.programNumber != 0x0) {
+				// skip 0x0 which has a special meaning
+				patEntries.append(patEntry);
+			}
 
 			entry = entry.next();
 		}
@@ -102,7 +106,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 	    }
 
 	case ScanPmt: {
-		DvbPmtSection section(standardSection);
+		DvbPmtSection section(data);
 
 		if (!section.isValid()) {
 			kDebug() << "invalid section";
@@ -162,7 +166,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 			break;
 		}
 
-		DvbSdtSection section(standardSection, 0x42);
+		DvbSdtSection section(data);
 
 		if (!section.isValid()) {
 			kDebug() << "invalid section";
@@ -233,7 +237,7 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 			break;
 		}
 
-		DvbNitSection section(standardSection, 0x40);
+		DvbNitSection section(data);
 
 		if (!section.isValid()) {
 			kDebug() << "invalid section";
@@ -270,17 +274,46 @@ void DvbScan::sectionFound(const DvbSectionData &data)
 					continue;
 				}
 
-				if (satDescriptor.modulationSystem() !=
-				    DvbSatelliteDescriptor::ModulationDvbS) {
+				if (satDescriptor.isDvbS2()) {
 					kDebug() << "ignoring non-DVB-S descriptor";
 					descriptor = descriptor.next();
 					continue;
 				}
 
-				DvbSTransponder *transponder = satDescriptor.createDvbSTransponder();
+				DvbSTransponder *transponder = new DvbSTransponder();
+				transponder->frequency = satDescriptor.frequency();
 
-				if (transponder == NULL) {
-					break;
+				switch (satDescriptor.polarization()) {
+				case 0:
+					transponder->polarization = DvbSTransponder::Horizontal;
+				case 1:
+					transponder->polarization = DvbSTransponder::Vertical;
+				case 2:
+					transponder->polarization = DvbSTransponder::CircularLeft;
+				default:
+					transponder->polarization = DvbSTransponder::CircularRight;
+				}
+
+				transponder->symbolRate = satDescriptor.symbolRate();
+
+				switch (satDescriptor.fecRate()) {
+				case 1:
+					transponder->fecRate = DvbTransponderBase::Fec1_2;
+				case 2:
+					transponder->fecRate = DvbTransponderBase::Fec2_3;
+				case 3:
+					transponder->fecRate = DvbTransponderBase::Fec3_4;
+				case 4:
+					transponder->fecRate = DvbTransponderBase::Fec5_6;
+				case 5:
+					transponder->fecRate = DvbTransponderBase::Fec7_8;
+				case 6:
+					transponder->fecRate = DvbTransponderBase::Fec8_9;
+				case 8:
+					transponder->fecRate = DvbTransponderBase::Fec4_5;
+				default:
+					// this includes rates like 3/5 and 9/10
+					transponder->fecRate = DvbTransponderBase::FecAuto;
 				}
 
 				bool found = false;
@@ -358,6 +391,69 @@ void DvbScan::deviceStateChanged()
 
 void DvbScan::updateState()
 {
+	if ((progress & Tuned) == 0) {
+		if ((progress & Tuning) != 0) {
+			return;
+		}
+
+		// switch transponder
+
+		Q_ASSERT(isLive == false);
+
+		patEntries.clear();
+		patIndex = 0;
+		channels.clear();
+
+		if (transponderIndex >= transponderList.size()) {
+			emit scanFinished();
+			break;
+		}
+
+		transponder = transponderList.at(transponderIndex);
+		++transponderIndex;
+
+		// tune to the next transponder
+		device->stopDevice();
+		device->tuneDevice(transponder);
+
+		progress |= Tuning;
+		return;
+	}
+
+	if ((progress & PatScanning) == 0) {
+		if (!startFilter(DvbScanFilter::Pat, 0x0)) {
+			return;
+		}
+
+		progress |= PatScanning;
+	}
+
+	if ((progress & SdtScanning) == 0) {
+		if (!startFilter(DvbScanFilter::Sdt, 0x11)) {
+			return;
+		}
+
+		progress |= SdtScanning;
+	}
+
+	if (((progress & NitScanning) == 0) && !isLive) {
+		if (!startFilter(DvbScanFilter::Nit, 0x10)) {
+			return;
+		}
+
+		progress |= NitScanning;
+	}
+
+	while (patIndex < patEntries.size()) {
+		if (!startFilter(DvbScanFilter::Pmt, patEntries.at(PatIndex).pid)) {
+			return;
+		}
+
+		++patIndex;
+	}
+
+
+
 	stopFilter();
 
 	switch (state) {
@@ -375,15 +471,6 @@ void DvbScan::updateState()
 	    }
 		// fall through
 	case ScanPmt: {
-		while (patIndex < patEntries.size()) {
-			if (patEntries.at(patIndex).programNumber == 0x0) {
-				// special meaning - skip
-				patIndex++;
-			} else {
-				break;
-			}
-		}
-
 		if (patIndex < patEntries.size()) {
 			// set up PMT filter and advance to the next PAT entry
 			startFilter(patEntries.at(patIndex).pid);
@@ -419,22 +506,6 @@ void DvbScan::updateState()
 
 	case ScanNit:
 	case ScanTune: {
-		// switch transponder
-		Q_ASSERT(isLive == false);
-
-		if (transponderIndex >= transponderList.size()) {
-			emit scanFinished();
-			break;
-		}
-
-		transponder = transponderList.at(transponderIndex);
-		++transponderIndex;
-
-		// tune to the next transponder
-		device->stopDevice();
-		device->tuneDevice(transponder);
-		state = ScanTune;
-		break;
 	    }
 	}
 }

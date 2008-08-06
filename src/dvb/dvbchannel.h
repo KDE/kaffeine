@@ -235,11 +235,11 @@ public:
 	ModulationType modulationType;
 };
 
-class DvbTransponder : public QExplicitlySharedDataPointer<const DvbTransponderBase>
+class DvbTransponder : public QSharedDataPointer<DvbTransponderBase>
 {
 public:
-	explicit DvbTransponder(const DvbTransponderBase *transponder = NULL) :
-		QExplicitlySharedDataPointer<const DvbTransponderBase>(transponder) { }
+	explicit DvbTransponder(DvbTransponderBase *transponder = NULL) :
+		QSharedDataPointer<DvbTransponderBase>(transponder) { }
 	~DvbTransponder() { }
 };
 
