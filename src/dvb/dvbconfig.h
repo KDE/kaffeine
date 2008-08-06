@@ -136,11 +136,11 @@ public:
 	}
 };
 
-class DvbConfig : public QSharedDataPointer<DvbConfigBase>
+class DvbConfig : public QExplicitlySharedDataPointer<const DvbConfigBase>
 {
 public:
-	explicit DvbConfig(DvbConfigBase *config = NULL) :
-		QSharedDataPointer<DvbConfigBase>(config) { }
+	explicit DvbConfig(const DvbConfigBase *config = NULL) :
+		QExplicitlySharedDataPointer<const DvbConfigBase>(config) { }
 	~DvbConfig() { }
 };
 
