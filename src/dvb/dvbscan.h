@@ -87,57 +87,58 @@ private slots:
 	void deviceStateChanged();
 
 private:
-	enum ProgressFlag
+	enum State
 	{
-		Tuning      = (1 << 0),
-		Tuned       = (1 << 1),
-		PatScanning = (1 << 2),
-		PatScanned  = (1 << 3),
-		SdtScanning = (1 << 4),
-		SdtScanned  = (1 << 5),
-		NitScanning = (1 << 6),
-		NitScanned  = (1 << 7),
-		PmtScanning = (1 << 8),
-		PmtScanned  = (1 << 9)
+		ScanTune,
+		ScanInit,
+		ScanPat,
+		ScanSdt,
+		ScanPmt,
+		ScanNit
 	};
 
-	Q_DECLARE_FLAGS(ProgressFlags, ProgressFlag)
-
 	void init();
+
+	void startFilter(int pid)
+	{
+		Q_ASSERT(currentPid == -1);
+		filter.resetFilter();
+		device->addPidFilter(pid, &filter);
+		currentPid = pid;
+		timer.start(5000);
+	}
+
+	void stopFilter()
+	{
+		if (currentPid != -1) {
+			timer.stop();
+			device->removePidFilter(currentPid, &filter);
+			currentPid = -1;
+		}
+	}
 
 	void updateState();
 
 	QString source;
 	DvbDevice *device;
 	DvbTransponder transponder;
+
 	bool isLive;
 
-	// only used if isLive is false
+	// these three members are only used if isLive is false
 	QList<DvbTransponder> transponderList;
 	int transponderIndex;
 
-	ProgressFlags progress;
+	State state;
+	QTimer timer;
+	DvbSectionFilter filter;
+	int currentPid;
+	int snr;
+
 	QList<DvbPatEntry> patEntries;
 	int patIndex;
+
 	QList<DvbPreviewChannel> channels;
-
-	// QList<DvbScanFilter> filters;
-};
-
-class DvbScanFilter : public DvbSectionFilter
-{
-public:
-	DvbScanFilter() { }
-	~DvbScanFilter() { }
-
-signals:
-	
-
-private:
-	DvbDevice *device;
-	int currentPid;
-	QTimer timer;
-	int snr;
 };
 
 #endif /* DVBSCAN_H */
