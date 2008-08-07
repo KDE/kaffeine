@@ -122,7 +122,7 @@ public:
 		return dvrFd != -1;
 	}
 
-	void addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath);
+	bool addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath);
 	void removePidFilter(int pid, DvbPidFilter *filter);
 
 private:
@@ -176,7 +176,7 @@ void DvbDeviceThread::stop()
 	dvrFd = -1;
 }
 
-void DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath)
+bool DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString &demuxPath)
 {
 	QList<DvbFilterInternal>::iterator it = qBinaryFind(filters.begin(), filters.end(), pid);
 
@@ -187,7 +187,7 @@ void DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString 
 
 		if (dmxFd < 0) {
 			kWarning() << "couldn't open" << demuxPath;
-			return;
+			return false;
 		}
 
 		struct dmx_pes_filter_params pes_filter;
@@ -202,7 +202,7 @@ void DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString 
 		if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
 			kWarning() << "couldn't set up filter for" << demuxPath;
 			close(dmxFd);
-			return;
+			return false;
 		}
 
 		DvbFilterInternal filterInternal(pid, dmxFd);
@@ -211,6 +211,8 @@ void DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString 
 		filters.append(filterInternal);
 		qSort(filters);
 	}
+
+	return true;
 }
 
 void DvbDeviceThread::removePidFilter(int pid, DvbPidFilter *filter)
@@ -803,9 +805,9 @@ bool DvbDevice::isTuned()
 	return (status & FE_HAS_LOCK) != 0;
 }
 
-void DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
+bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 {
-	thread->addPidFilter(pid, filter, demuxPath);
+	return thread->addPidFilter(pid, filter, demuxPath);
 }
 
 void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)

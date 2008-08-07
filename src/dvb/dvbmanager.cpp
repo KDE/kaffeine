@@ -104,7 +104,7 @@ QList<DvbTransponder> DvbScanData::readTransponders(int offset, DvbManager::Tran
 	bool parseError = false;
 
 	while ((*pos != '[') && (*pos != 0)) {
-		DvbLineReader reader(readLine());
+		DvbLineReader reader(QString::fromAscii(pos));
 		DvbTransponderBase *transponder = NULL;
 
 		switch (type) {
@@ -126,6 +126,15 @@ QList<DvbTransponder> DvbScanData::readTransponders(int offset, DvbManager::Tran
 			list.append(DvbTransponder(transponder));
 		} else {
 			parseError = true;
+		}
+
+		while (pos != end) {
+			if (*pos == 0) {
+				++pos;
+				break;
+			}
+
+			++pos;
 		}
 	}
 
@@ -384,6 +393,7 @@ QList<DvbTransponder> DvbManager::getTransponderList(const QString &source)
 		readScanFile();
 	}
 
+	// FIXME
 	int index = scanSources[DvbS].indexOf(sourceMapping.value(source));
 
 	if (index == -1) {

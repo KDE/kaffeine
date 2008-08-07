@@ -112,7 +112,7 @@ public:
 	 * all filters will be removed when the device becomes idle
 	 */
 
-	void addPidFilter(int pid, DvbPidFilter *filter);
+	bool addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
 
 	DvbConfig config;

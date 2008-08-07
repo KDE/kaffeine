@@ -90,8 +90,7 @@ void DvbSectionFilter::processData(const char data[188])
 
 	if (!output.isEmpty()) {
 		int pos = static_cast<unsigned char> (output.at(0)) + 1;
-		DvbSectionData data(output.constData() + pos, output.size() - pos);
-		emit sectionFound(data);
+		processSection(DvbSectionData(output.constData() + pos, output.size() - pos));
 	}
 }
 

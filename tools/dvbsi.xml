@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dvbsi>
+  <descriptors>
+    <DvbServiceDescriptor>
+      <unused bits="8" />
+      <providerNameLength bits="8" type="int" />
+      <providerName lengthFunc="providerNameLength" type="string" />
+      <serviceNameLength bits="8" type="int" />
+      <serviceName lengthFunc="serviceNameLength" type="string" />
+    </DvbServiceDescriptor>
+    <DvbCableDescriptor>
+      <frequency bits="32" type="int" />
+      <unused bits="12" />
+      <unused bits="4" />
+      <modulation bits="8" type="int" />
+      <symbolRate bits="28" type="int" />
+      <fecRate bits="4" type="int" />
+    </DvbCableDescriptor>
+    <DvbSatelliteDescriptor>
+      <frequency bits="32" type="int" />
+      <unused bits="16" />
+      <unused bits="1" />
+      <polarization bits="2" type="int" />
+      <unused bits="2" />
+      <isDvbS2 bits="1" type="bool" />
+      <unused bits="2" />
+      <symbolRate bits="28" type="int" />
+      <fecRate bits="4" type="int" />
+    </DvbSatelliteDescriptor>
+    <DvbTerrestrialDescriptor>
+      <frequency bits="32" type="int" />
+      <bandwidth bits="3" type="int" />
+      <unused bits="1" />
+      <unused bits="1" />
+      <unused bits="1" />
+      <unused bits="2" />
+      <constellation bits="2" type="int" />
+      <hierarchy bits="3" type="int" />
+      <fecHighRate bits="3" type="int" />
+      <fecLowRate bits="3" type="int" />
+      <guardInterval bits="2" type="int" />
+      <transmissionMode bits="2" type="int" />
+      <unused bits="1" />
+      <unused bits="32" />
+    </DvbTerrestrialDescriptor>
+  </descriptors>
+  <entries>
+    <DvbPatSectionEntry>
+      <programNumber bits="16" type="int" />
+      <unused bits="3" />
+      <pid bits="13" type="int" />
+    </DvbPatSectionEntry>
+    <DvbPmtSectionEntry>
+      <streamType bits="8" type="int" />
+      <unused bits="3" />
+      <pid bits="13" type="int" />
+      <unused bits="4" />
+      <entryLength bits="12" type="entryLength" />
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+    </DvbPmtSectionEntry>
+    <DvbSdtSectionEntry>
+      <serviceId bits="16" type="int" />
+      <unused bits="6" />
+      <unused bits="1" />
+      <unused bits="1" />
+      <unused bits="3" />
+      <isScrambled bits="1" type="bool" />
+      <entryLength bits="12" type="entryLength" />
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+    </DvbSdtSectionEntry>
+    <DvbNitSectionEntry>
+      <unused bits="16" />
+      <unused bits="16" />
+      <unused bits="4" />
+      <entryLength bits="12" type="entryLength" />
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+    </DvbNitSectionEntry>
+  </entries>
+  <sections>
+    <DvbPatSection>
+      <entries listType="DvbPatSectionEntry" lengthFunc="" type="list" />
+    </DvbPatSection>
+    <DvbPmtSection extension="programNumber" >
+      <unused bits="3" />
+      <unused bits="13" />
+      <unused bits="4" />
+      <descriptorsLength bits="12" type="int" />
+      <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list" />
+      <entries listType="DvbPmtSectionEntry" lengthFunc="" type="list" />
+    </DvbPmtSection>
+    <DvbSdtSection extension="transportStreamId" >
+      <originalNetworkId bits="16" type="int" />
+      <unused bits="8" />
+      <entries listType="DvbSdtSectionEntry" lengthFunc="" type="list" />
+    </DvbSdtSection>
+    <DvbNitSection>
+      <unused bits="4" />
+      <descriptorsLength bits="12" type="int" />
+      <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list" />
+      <unused bits="4" />
+      <entriesLength bits="12" type="int" />
+      <entries listType="DvbNitSectionEntry" lengthFunc="entriesLength" type="list" />
+    </DvbNitSection>
+  </sections>
+</dvbsi>

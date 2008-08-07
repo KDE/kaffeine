@@ -202,6 +202,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 		if (device != NULL) {
 			QList<DvbTransponder> transponderList = manager->getTransponderList(source);
+			kDebug() << "WPAS" << transponderList.size();
 			internal = new DvbScan(source, device, transponderList);
 		} else {
 			ui->scanButton->setChecked(false);

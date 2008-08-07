@@ -24,7 +24,9 @@
 #include "dvbchannel.h"
 #include "dvbsi.h"
 
+class DvbScanFilter;
 class DvbPatEntry;
+class DvbSdtEntry;
 
 class DvbPreviewChannel : public DvbChannelBase
 {
@@ -70,11 +72,12 @@ public:
 
 class DvbScan : public QObject
 {
+	friend class DvbScanFilter;
 	Q_OBJECT
 public:
 	DvbScan(const QString &source_, DvbDevice *device_, const DvbTransponder &transponder_);
 	DvbScan(const QString &source_, DvbDevice *device_,
-		const QList<DvbTransponder> &transponderList_);
+		const QList<DvbTransponder> &transponders_);
 	~DvbScan();
 
 signals:
@@ -82,63 +85,52 @@ signals:
 	void scanFinished();
 
 private slots:
-	void sectionFound(const DvbSectionData &data);
-	void sectionTimeout();
 	void deviceStateChanged();
 
 private:
+	enum FilterType
+	{
+		PatFilter,
+		SdtFilter,
+		NitFilter,
+		PmtFilter
+	};
+
 	enum State
 	{
-		ScanTune,
-		ScanInit,
 		ScanPat,
 		ScanSdt,
+		ScanNit,
 		ScanPmt,
-		ScanNit
+		ScanTune
 	};
 
 	void init();
 
-	void startFilter(int pid)
-	{
-		Q_ASSERT(currentPid == -1);
-		filter.resetFilter();
-		device->addPidFilter(pid, &filter);
-		currentPid = pid;
-		timer.start(5000);
-	}
+	void processSection(DvbScanFilter *filter, const DvbSectionData &data);
+	void filterTimeout(DvbScanFilter *filter);
 
-	void stopFilter()
-	{
-		if (currentPid != -1) {
-			timer.stop();
-			device->removePidFilter(currentPid, &filter);
-			currentPid = -1;
-		}
-	}
-
+	bool startFilter(int pid, FilterType type);
 	void updateState();
 
 	QString source;
 	DvbDevice *device;
 	DvbTransponder transponder;
-
 	bool isLive;
 
-	// these three members are only used if isLive is false
-	QList<DvbTransponder> transponderList;
+	// only used if isLive is false
+	QList<DvbTransponder> transponders;
 	int transponderIndex;
 
 	State state;
-	QTimer timer;
-	DvbSectionFilter filter;
-	int currentPid;
 	int snr;
-
 	QList<DvbPatEntry> patEntries;
 	int patIndex;
-
+	QList<DvbSdtEntry> sdtEntries;
 	QList<DvbPreviewChannel> channels;
+
+	QList<DvbScanFilter *> filters;
+	int activeFilters;
 };
 
 #endif /* DVBSCAN_H */
