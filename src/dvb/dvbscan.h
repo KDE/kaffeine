@@ -91,27 +91,30 @@ private:
 	enum FilterType
 	{
 		PatFilter,
+		PmtFilter,
 		SdtFilter,
-		NitFilter,
-		PmtFilter
+		NitFilter
 	};
 
 	enum State
 	{
 		ScanPat,
-		ScanSdt,
 		ScanNit,
+		ScanSdt,
 		ScanPmt,
 		ScanTune
 	};
 
 	void init();
 
-	void processSection(DvbScanFilter *filter, const DvbSectionData &data);
-	void filterTimeout(DvbScanFilter *filter);
-
 	bool startFilter(int pid, FilterType type);
 	void updateState();
+
+	void processPat(const DvbPatSection &section);
+	void processPmt(const DvbPmtSection &section, int pid);
+	void processSdt(const DvbSdtSection &section);
+	void processNit(const DvbNitSection &section);
+	void filterFinished(DvbScanFilter *filter);
 
 	QString source;
 	DvbDevice *device;

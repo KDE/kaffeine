@@ -83,7 +83,7 @@ public:
 
 	QString getScanFileDate(); // returns the formatted short date of the last scan file update
 	QStringList getScanSources(TransmissionType type);
-	QList<DvbTransponder> getTransponderList(const QString &source);
+	QList<DvbTransponder> getTransponders(const QString &source);
 
 private slots:
 	void deviceAdded(DvbDevice *device);

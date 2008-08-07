@@ -243,7 +243,7 @@ void DvbDeviceThread::customEvent(QEvent *)
 		int i;
 
 		for (i = 0; i < usedBuffers; ++i) {
-			for (int j = 0; j < currentUsed->count; ++j) {
+			for (int j = 0; (usedBuffers != 0) && (j < currentUsed->count); ++j) {
 				char *packet = currentUsed->packets[j];
 				int pid = ((static_cast<unsigned char> (packet[1]) << 8) |
 					static_cast<unsigned char> (packet[2])) & ((1 << 13) - 1);

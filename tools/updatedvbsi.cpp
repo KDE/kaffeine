@@ -406,9 +406,9 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 
 	if (type == Entry) {
 		stream << "\n";
-		stream << "\t" << entryName << " next() const\n";
+		stream << "\tvoid advance()\n";
 		stream << "\t{\n";
-		stream << "\t\treturn " << entryName << "(genericNext());\n";
+		stream << "\t\t*this = " << entryName << "(next());\n";
 		stream << "\t}\n";
 	}
 

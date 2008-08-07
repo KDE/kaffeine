@@ -387,7 +387,7 @@ QStringList DvbManager::getScanSources(TransmissionType type)
 	return scanSources[type];
 }
 
-QList<DvbTransponder> DvbManager::getTransponderList(const QString &source)
+QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 {
 	if (scanFileDate.isNull()) {
 		readScanFile();

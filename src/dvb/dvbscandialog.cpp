@@ -201,9 +201,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		setDevice(manager->requestDevice(source));
 
 		if (device != NULL) {
-			QList<DvbTransponder> transponderList = manager->getTransponderList(source);
-			kDebug() << "WPAS" << transponderList.size();
-			internal = new DvbScan(source, device, transponderList);
+			internal = new DvbScan(source, device, manager->getTransponders(source));
 		} else {
 			ui->scanButton->setChecked(false);
 			KMessageBox::sorry(this, i18n("No suitable device found."));

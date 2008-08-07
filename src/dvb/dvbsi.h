@@ -75,7 +75,7 @@ protected:
 		return data[index];
 	}
 
-	DvbSectionData genericNext() const
+	DvbSectionData next() const
 	{
 		return DvbSectionData(data + length, size - length);
 	}
@@ -235,9 +235,9 @@ public:
 		return at(1);
 	}
 
-	DvbDescriptor next() const
+	void advance()
 	{
-		return DvbDescriptor(genericNext());
+		*this = DvbDescriptor(next());
 	}
 
 	static int bcdToInt(unsigned int bcd, int multiplier)
@@ -440,9 +440,9 @@ public:
 
 	~DvbPatSectionEntry() { }
 
-	DvbPatSectionEntry next() const
+	void advance()
 	{
-		return DvbPatSectionEntry(genericNext());
+		*this = DvbPatSectionEntry(next());
 	}
 
 	int programNumber() const
@@ -476,9 +476,9 @@ public:
 
 	~DvbPmtSectionEntry() { }
 
-	DvbPmtSectionEntry next() const
+	void advance()
 	{
-		return DvbPmtSectionEntry(genericNext());
+		*this = DvbPmtSectionEntry(next());
 	}
 
 	int streamType() const
@@ -517,9 +517,9 @@ public:
 
 	~DvbSdtSectionEntry() { }
 
-	DvbSdtSectionEntry next() const
+	void advance()
 	{
-		return DvbSdtSectionEntry(genericNext());
+		*this = DvbSdtSectionEntry(next());
 	}
 
 	int serviceId() const
@@ -558,9 +558,9 @@ public:
 
 	~DvbNitSectionEntry() { }
 
-	DvbNitSectionEntry next() const
+	void advance()
 	{
-		return DvbNitSectionEntry(genericNext());
+		*this = DvbNitSectionEntry(next());
 	}
 
 	DvbDescriptor descriptors() const
