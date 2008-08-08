@@ -21,10 +21,10 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include "dvbchannel.h"
 #include "../manager.h"
 
 class QModelIndex;
-class DvbChannel;
 class DvbDevice;
 class DvbManager;
 class DvbStream;
@@ -46,7 +46,7 @@ public:
 		return liveDevice;
 	}
 
-	const DvbChannel *getLiveChannel() const
+	DvbSharedChannel getLiveChannel() const
 	{
 		return liveChannel;
 	}
@@ -66,7 +66,7 @@ private:
 	DvbManager *dvbManager;
 	QLayout *mediaLayout;
 	DvbDevice *liveDevice;
-	const DvbChannel *liveChannel;
+	DvbSharedChannel liveChannel;
 
 	// FIXME - just a demo hack
 	DvbStream *dvbStream;

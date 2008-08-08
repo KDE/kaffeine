@@ -28,6 +28,7 @@
 class DvbChannel;
 class DvbChannelModel;
 class DvbDevice;
+class DvbManager;
 class DvbPreviewChannel;
 class DvbPreviewChannelModel;
 class DvbScan;
@@ -61,6 +62,7 @@ private:
 	void setDevice(DvbDevice *newDevice);
 
 	DvbTab *dvbTab;
+	DvbManager *manager;
 	Ui_DvbScanDialog *ui;
 	DvbChannelModel *channelModel;
 	DvbPreviewChannelModel *previewModel;

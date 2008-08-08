@@ -140,26 +140,37 @@ void DvbTab::playLive(const QModelIndex &index)
 		return;
 	}
 
-	DvbDevice *device = dvbManager->requestDevice(channel->source);
-
-	if (device == NULL) {
-		KMessageBox::sorry(this, i18n("No suitable device found."));
-		return;
-	}
-
-	device->stopDevice();
 	manager->getMediaWidget()->stop();
 
 	delete dvbStream;
-	dvbStream = new DvbStream(device);
+	dvbStream = NULL;
 
-	device->tuneDevice(channel->transponder);
+	if ((liveDevice == NULL) || (liveChannel->source != channel->source)) {
+		if (liveDevice != NULL) {
+			liveDevice->stopDevice();
+			dvbManager->releaseDevice(liveDevice);
+			liveDevice = NULL;
+		}
 
-	device->addPidFilter(channel->videoPid, dvbStream);
-	device->addPidFilter(channel->audioPid, dvbStream);
+		DvbDevice *device = dvbManager->requestDevice(channel->source);
 
-	liveDevice = device;
+		if (device == NULL) {
+			KMessageBox::sorry(this, i18n("No suitable device found."));
+			return;
+		}
+
+		liveDevice = device;
+	} else {
+		liveDevice->stopDevice();
+	}
+
+	dvbStream = new DvbStream(liveDevice);
 	liveChannel = channel;
+
+	liveDevice->tuneDevice(channel->transponder);
+	liveDevice->addPidFilter(channel->videoPid, dvbStream);
+	liveDevice->addPidFilter(channel->audioPid, dvbStream);
+
 	connect(dvbStream, SIGNAL(livePaused(bool)), this, SLOT(livePaused(bool)));
 	connect(dvbStream, SIGNAL(liveStopped()), this, SLOT(liveStopped()));
 
@@ -174,5 +185,6 @@ void DvbTab::livePaused(bool /*paused*/)
 void DvbTab::liveStopped()
 {
 	liveDevice->stopDevice();
+	dvbManager->releaseDevice(liveDevice);
 	liveDevice = NULL;
 }

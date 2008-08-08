@@ -124,17 +124,18 @@ QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orienta
 DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
 {
 	setCaption(i18n("Configure channels"));
+	manager = dvbTab->getDvbManager();
 
 	QWidget *widget = new QWidget(this);
 	ui = new Ui_DvbScanDialog();
 	ui->setupUi(widget);
 
-	QString date = dvbTab->getDvbManager()->getScanFileDate();
+	QString date = manager->getScanFileDate();
 	ui->scanFilesLabel->setText(i18n("Scan file last updated<br>on %1").arg(date));
 	ui->scanButton->setText(i18n("Start scan"));
 
 	channelModel = new DvbChannelModel(this);
-	channelModel->setList(dvbTab->getDvbManager()->getChannelModel()->getList());
+	channelModel->setList(manager->getChannelModel()->getList());
 	ui->channelView->setModel(channelModel->getProxyModel());
 	ui->channelView->enableDeleteAction();
 
@@ -149,7 +150,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 		ui->sourceList->setEnabled(false);
 		isLive = true;
 	} else {
-		QStringList list = dvbTab->getDvbManager()->getSources();
+		QStringList list = manager->getSources();
 
 		if (!list.isEmpty()) {
 			ui->sourceList->addItems(list);
@@ -187,8 +188,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		ui->progressBar->setValue(0);
 
 		if (!isLive) {
-			// FIXME
 			device->stopDevice();
+			manager->releaseDevice(device);
 			setDevice(NULL);
 		}
 
@@ -205,7 +206,6 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		internal = new DvbScan(channel->source, device, channel->transponder);
 	} else {
 		QString source = ui->sourceList->currentText();
-		DvbManager *manager = dvbTab->getDvbManager();
 		setDevice(manager->requestDevice(source));
 
 		if (device != NULL) {
@@ -229,7 +229,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 void DvbScanDialog::dialogAccepted()
 {
-	dvbTab->getDvbManager()->getChannelModel()->setList(channelModel->getList());
+	manager->getChannelModel()->setList(channelModel->getList());
 }
 
 void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
