@@ -156,7 +156,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	switch (type) {
 	case DvbScan::PatFilter: {
 		if (section.tableId() != 0x0) {
-			kDebug() << "invalid PAT table id";
 			return;
 		}
 
@@ -179,7 +178,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 
 	case DvbScan::PmtFilter: {
 		if (section.tableId() != 0x2) {
-			kDebug() << "invalid PMT table id";
 			return;
 		}
 
@@ -255,7 +253,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
 	kWarning() << "timeout while reading section; type =" << type << "pid =" << pid;
-
 	scan->filterFinished(this);
 }
 

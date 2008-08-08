@@ -126,6 +126,10 @@ bool DvbStandardSection::verifyCrc32() const
 		crc32 = (crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ at(i)];
 	}
 
+	if (crc32 != 0) {
+		kDebug() << "crc check failed";
+	}
+
 	return crc32 == 0;
 }
 
