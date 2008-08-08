@@ -569,6 +569,82 @@ public:
 	}
 };
 
+class AtscVctSectionEntry : public DvbSectionData
+{
+public:
+	explicit AtscVctSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+	{
+		if (size < 32) {
+			length = 0;
+			return;
+		}
+
+		length = (((at(30) & 0x3) << 8) | at(31)) + 32;
+
+		if (size < length) {
+			length = 0;
+			return;
+		}
+	}
+
+	~AtscVctSectionEntry() { }
+
+	void advance()
+	{
+		*this = AtscVctSectionEntry(next());
+	}
+
+	int shortName1() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	int shortName2() const
+	{
+		return (at(2) << 8) | at(3);
+	}
+
+	int shortName3() const
+	{
+		return (at(4) << 8) | at(5);
+	}
+
+	int shortName4() const
+	{
+		return (at(6) << 8) | at(7);
+	}
+
+	int shortName5() const
+	{
+		return (at(8) << 8) | at(9);
+	}
+
+	int shortName6() const
+	{
+		return (at(10) << 8) | at(11);
+	}
+
+	int shortName7() const
+	{
+		return (at(12) << 8) | at(13);
+	}
+
+	int programNumber() const
+	{
+		return (at(24) << 8) | at(25);
+	}
+
+	bool isHidden() const
+	{
+		return ((at(26) & 0x10) != 0);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(subArray(32, length - 32));
+	}
+};
+
 class DvbPatSection : public DvbStandardSection
 {
 public:
@@ -696,6 +772,35 @@ public:
 private:
 	int descriptorsLength;
 	int entriesLength;
+};
+
+class AtscVctSection : public DvbStandardSection
+{
+public:
+	explicit AtscVctSection(const DvbSection &section) : DvbStandardSection(section)
+	{
+		if (length < 14) {
+			length = 0;
+			return;
+		}
+	}
+
+	~AtscVctSection() { }
+
+	int transportStreamId() const
+	{
+		return (at(3) << 8) | at(4);
+	}
+
+	int entryCount() const
+	{
+		return at(9);
+	}
+
+	AtscVctSectionEntry entries() const
+	{
+		return AtscVctSectionEntry(subArray(10, length - 14));
+	}
 };
 
 #endif /* DVBSI_H */

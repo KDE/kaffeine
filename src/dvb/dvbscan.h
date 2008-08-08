@@ -94,6 +94,7 @@ private:
 		PatFilter,
 		PmtFilter,
 		SdtFilter,
+		VctFilter,
 		NitFilter
 	};
 
@@ -114,6 +115,7 @@ private:
 	void processPat(const DvbPatSection &section);
 	void processPmt(const DvbPmtSection &section, int pid);
 	void processSdt(const DvbSdtSection &section);
+	void processVct(const AtscVctSection &section);
 	void processNit(const DvbNitSection &section);
 	void filterFinished(DvbScanFilter *filter);
 

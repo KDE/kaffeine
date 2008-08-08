@@ -75,6 +75,33 @@
       <entryLength bits="12" type="entryLength" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
     </DvbNitSectionEntry>
+    <AtscVctSectionEntry>
+      <shortName1 bits="16" type="int" />
+      <shortName2 bits="16" type="int" />
+      <shortName3 bits="16" type="int" />
+      <shortName4 bits="16" type="int" />
+      <shortName5 bits="16" type="int" />
+      <shortName6 bits="16" type="int" />
+      <shortName7 bits="16" type="int" />
+      <unused bits="4" />
+      <unused bits="10" />
+      <unused bits="10" />
+      <unused bits="8" />
+      <unused bits="32" />
+      <unused bits="16" />
+      <programNumber bits="16" type="int" />
+      <unused bits="2" />
+      <unused bits="1" />
+      <isHidden bits="1" type="bool" />
+      <unused bits="2" />
+      <unused bits="1" />
+      <unused bits="3" />
+      <unused bits="6" />
+      <unused bits="16" />
+      <unused bits="6" />
+      <entryLength bits="10" type="entryLength" />
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+    </AtscVctSectionEntry>
   </entries>
   <sections>
     <DvbPatSection>
@@ -101,5 +128,10 @@
       <entriesLength bits="12" type="int" />
       <entries listType="DvbNitSectionEntry" lengthFunc="entriesLength" type="list" />
     </DvbNitSection>
+    <AtscVctSection extension="transportStreamId" >
+      <unused bits="8" />
+      <entryCount bits="8" type="int" />
+      <entries listType="AtscVctSectionEntry" lengthFunc="" type="list" />
+    </AtscVctSection>
   </sections>
 </dvbsi>

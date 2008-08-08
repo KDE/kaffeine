@@ -221,6 +221,29 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 		break;
 	    }
 
+	case DvbScan::VctFilter: {
+		if ((section.tableId() != 0xc8) && (section.tableId() != 0xc9)) {
+			// there are also other tables in the VCT
+			return;
+		}
+
+		AtscVctSection vctSection(section);
+
+		if (!vctSection.isValid()) {
+			kDebug() << "invalid VCT section";
+			return;
+		}
+
+		if (!checkMultipleSection(vctSection)) {
+			// already read this part
+			return;
+		}
+
+		scan->processVct(vctSection);
+
+		break;
+	    }
+
 	case DvbScan::NitFilter: {
 		if (section.tableId() != 0x40) {
 			// we are only interested in the current network
@@ -339,20 +362,10 @@ void DvbScan::updateState()
 		    }
 			// fall through
 		case ScanNit: {
-			if (!isLive) {
-				switch (transponder->getTransmissionType()) {
-				case DvbTransponderBase::DvbC:
-				case DvbTransponderBase::DvbS:
-				case DvbTransponderBase::DvbT: {
-					if (!startFilter(0x10, NitFilter)) {
-						return;
-					}
-
-					break;
-				    }
-		
-				case DvbTransponderBase::Atsc:
-					break;
+			if ((!isLive) &&
+			    (transponder->getTransmissionType() != DvbTransponderBase::Atsc)) {
+				if (!startFilter(0x10, NitFilter)) {
+					return;
 				}
 			}
 
@@ -360,8 +373,14 @@ void DvbScan::updateState()
 		    }
 			// fall through
 		case ScanSdt: {
-			if (!startFilter(0x11, SdtFilter)) {
-				return;
+			if (transponder->getTransmissionType() != DvbTransponderBase::Atsc) {
+				if (!startFilter(0x11, SdtFilter)) {
+					return;
+				}
+			} else {
+				if (!startFilter(0x1ffb, VctFilter)) {
+					return;
+				}
 			}
 
 			state = ScanPmt;
@@ -543,6 +562,33 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 			sdtEntry.provider = serviceDescriptor.providerName();
 			break;
 		}
+
+		sdtEntries.append(sdtEntry);
+	}
+}
+
+void DvbScan::processVct(const AtscVctSection &section)
+{
+	int i = section.entryCount();
+
+	for (AtscVctSectionEntry entry = section.entries(); i > 0; entry.advance(), --i) {
+		if (!entry.isValid()) {
+			kDebug() << "invalid VCT entry";
+			break;
+		}
+
+		DvbSdtEntry sdtEntry(entry.programNumber(), -1, section.transportStreamId(), false);
+
+		QChar shortName[] = { entry.shortName1(), entry.shortName2(), entry.shortName3(),
+				      entry.shortName4(), entry.shortName5(), entry.shortName6(),
+				      entry.shortName7(), 0 };
+		int nameLength = 0;
+
+		while (shortName[nameLength] != 0) {
+			++nameLength;
+		}
+
+		sdtEntry.name = QString(shortName, nameLength);
 
 		sdtEntries.append(sdtEntry);
 	}
