@@ -86,9 +86,10 @@ public:
 	{
 		currentUnused = new DvbFilterData;
 		currentUnused->next = currentUnused;
-		currentUsed = currentUnused;
-
 		totalBuffers = 1;
+
+		usedBuffers = 0;
+		currentUsed = currentUnused;
 
 		if (pipe(pipes) != 0) {
 			kError() << "pipe() failed";
@@ -146,8 +147,6 @@ void DvbDeviceThread::start(int dvrFd_)
 	Q_ASSERT(dvrFd == -1);
 
 	dvrFd = dvrFd_;
-	usedBuffers = 0;
-
 	QThread::start();
 }
 
@@ -163,6 +162,10 @@ void DvbDeviceThread::stop()
 
 	char temp;
 	read(pipes[0], &temp, 1);
+
+	// consistent state (there may still be a pending event!)
+	usedBuffers = 0;
+	currentUsed = currentUnused;
 
 	// close all filters
 	for (QList<DvbFilterInternal>::iterator it = filters.begin(); it != filters.end(); ++it) {
@@ -243,7 +246,7 @@ void DvbDeviceThread::customEvent(QEvent *)
 		int i;
 
 		for (i = 0; i < usedBuffers; ++i) {
-			for (int j = 0; (usedBuffers != 0) && (j < currentUsed->count); ++j) {
+			for (int j = 0; j < currentUsed->count; ++j) {
 				char *packet = currentUsed->packets[j];
 				int pid = ((static_cast<unsigned char> (packet[1]) << 8) |
 					static_cast<unsigned char> (packet[2])) & ((1 << 13) - 1);
@@ -258,6 +261,11 @@ void DvbDeviceThread::customEvent(QEvent *)
 					 */
 					foreach (DvbPidFilter *filter, it->filters) {
 						filter->processData(packet);
+
+						// FIXME
+						if (usedBuffers == 0) {
+							return;
+						}
 					}
 				}
 			}
@@ -297,7 +305,6 @@ void DvbDeviceThread::run()
 		}
 
 		if ((pfds[0].revents & POLLIN) != 0) {
-			kDebug() << "thread stopped";
 			break;
 		}
 

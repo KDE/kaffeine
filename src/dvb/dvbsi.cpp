@@ -54,43 +54,60 @@ void DvbSectionFilter::processData(const char data[188])
 	continuityCounter = continuity;
 
 	bool sectionStart = (data[1] & 0x40) != 0;
-	QByteArray output;
+	const char *payload;
+	int payloadLength;
+
+	if ((data[3] & 0x20) == 0) {
+		// adaptation field not present
+		payload = data + 4;
+		payloadLength = 188 - 4;
+	} else {
+		// adaptation field present
+		unsigned char length = data[4];
+
+		if (length > 182) {
+			kDebug() << "no payload or corrupt";
+			return;
+		}
+
+		payload = data + 5 + length;
+		payloadLength = 188 - 5 - length;
+	}
+
+	// be careful that playloadLength is > 0 at this point
 
 	if (sectionStart) {
+		unsigned char pointer = payload[0];
+
+		if (pointer >= payloadLength) {
+			kDebug() << "invalid pointer";
+			pointer = payloadLength - 1;
+		}
+
 		if (bufferValid) {
+			appendData(payload + 1, pointer);
+
 			if (!buffer.isEmpty()) {
-				output = buffer;
+				processSection(DvbSectionData(buffer.constData(), buffer.size()));
+				// be aware that the filter might have been reset
+				// (buffer cleared, bufferValid set to false)
+				// in this case don't poison the filter with new data
+				// --> check bufferValid before calling appendData()
 			} else {
 				kDebug() << "valid buffer is empty";
 			}
+
+			buffer.clear();
+		} else {
+			bufferValid = true;
 		}
 
-		buffer.clear();
-		bufferValid = true;
+		payload += pointer + 1;
+		payloadLength -= pointer + 1;
 	}
 
 	if (bufferValid) {
-		if ((data[3] & 0x20) == 0) {
-			// adaptation field not present
-			appendData(data + 4, 184);
-		} else {
-			// adaptation field present
-			unsigned char length = data[4];
-
-			if (length > 182) {
-				// no payload or corrupt
-				return;
-			}
-
-			appendData(data + 5 + length, 183 - length);
-		}
-	} else {
-		kDebug() << "data discarded";
-	}
-
-	if (!output.isEmpty()) {
-		int pos = static_cast<unsigned char> (output.at(0)) + 1;
-		processSection(DvbSectionData(output.constData() + pos, output.size() - pos));
+		appendData(payload, payloadLength);
 	}
 }
 

@@ -117,11 +117,22 @@ void DvbScanFilter::stopFilter()
 
 bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 {
+	int sectionCount = section.lastSectionNumber() + 1;
+
+	if (section.sectionNumber() >= sectionCount) {
+		kDebug() << "current > last";
+		sectionCount = section.sectionNumber() + 1;
+	}
+
 	if (multipleSections.isEmpty()) {
-		multipleSections.resize(section.lastSectionNumber() + 1);
+		multipleSections.resize(sectionCount);
 	} else {
-		if (multipleSections.size() != (section.lastSectionNumber() + 1)) {
+		if (multipleSections.size() != sectionCount) {
 			kDebug() << "inconsistent number of sections";
+
+			if (multipleSections.size() < sectionCount) {
+				multipleSections.resize(sectionCount);
+			}
 		}
 	}
 
@@ -138,7 +149,7 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	DvbSection section(data);
 
 	if (!section.isValid()) {
-		kDebug() << "invalid section" << scan->transponder->getDvbSTransponder()->frequency;
+		kDebug() << "invalid section";
 		return;
 	}
 
@@ -243,7 +254,7 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
-	kWarning() << "timeout while reading section; type =" << type << " pid =" << pid;
+	kWarning() << "timeout while reading section; type =" << type << "pid =" << pid;
 
 	scan->filterFinished(this);
 }
