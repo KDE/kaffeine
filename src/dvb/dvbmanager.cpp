@@ -263,7 +263,27 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
 		foreach (const DvbConfig &config, deviceConfig.configs) {
 			if (!config->name.isEmpty()) {
-				sourceMapping.insert(config->name, config->scanSource);
+				TransmissionType type;
+
+				switch (config->getTransmissionType()) {
+				case DvbConfigBase::DvbC:
+					type = DvbC;
+					break;
+				case DvbConfigBase::DvbS:
+					type = DvbS;
+					break;
+				case DvbConfigBase::DvbT:
+					type = DvbT;
+					break;
+				case DvbConfigBase::Atsc:
+					type = Atsc;
+					break;
+				default:
+					Q_ASSERT(false);
+				}
+
+				sourceMapping.insert(config->name,
+						     qMakePair(type, config->scanSource));
 			}
 		}
 	}
@@ -359,7 +379,27 @@ void DvbManager::setDeviceConfigs(const QList<QList<DvbConfig> > &configs)
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
 		foreach (const DvbConfig &config, deviceConfig.configs) {
 			if (!config->name.isEmpty()) {
-				sourceMapping.insert(config->name, config->scanSource);
+				TransmissionType type;
+
+				switch (config->getTransmissionType()) {
+				case DvbConfigBase::DvbC:
+					type = DvbC;
+					break;
+				case DvbConfigBase::DvbS:
+					type = DvbS;
+					break;
+				case DvbConfigBase::DvbT:
+					type = DvbT;
+					break;
+				case DvbConfigBase::Atsc:
+					type = Atsc;
+					break;
+				default:
+					Q_ASSERT(false);
+				}
+
+				sourceMapping.insert(config->name,
+						     qMakePair(type, config->scanSource));
 			}
 		}
 	}
@@ -393,15 +433,22 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 		readScanFile();
 	}
 
-	// FIXME
-	int index = scanSources[DvbS].indexOf(sourceMapping.value(source));
+	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
+
+	if (scanSource.second.isEmpty()) {
+		kWarning() << "invalid source";
+		return QList<DvbTransponder>();
+	}
+
+	TransmissionType type = scanSource.first;
+	int index = scanSources[type].indexOf(scanSource.second);
 
 	if (index == -1) {
 		kWarning() << "invalid source";
 		return QList<DvbTransponder>();
 	}
 
-	return scanData->readTransponders(scanOffsets[DvbS].at(index), DvbS);
+	return scanData->readTransponders(scanOffsets[type].at(index), type);
 }
 
 void DvbManager::deviceAdded(DvbDevice *device)

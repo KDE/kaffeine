@@ -36,8 +36,8 @@
       <unused bits="2" />
       <constellation bits="2" type="int" />
       <hierarchy bits="3" type="int" />
-      <fecHighRate bits="3" type="int" />
-      <fecLowRate bits="3" type="int" />
+      <fecRateHigh bits="3" type="int" />
+      <fecRateLow bits="3" type="int" />
       <guardInterval bits="2" type="int" />
       <transmissionMode bits="2" type="int" />
       <unused bits="1" />

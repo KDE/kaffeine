@@ -45,7 +45,9 @@ public:
 private slots:
 	void scanButtonClicked(bool checked);
 	void dialogAccepted();
+
 	void foundChannels(const QList<DvbPreviewChannel> &channels);
+	void scanProgress(int percentage);
 	void scanFinished();
 
 	void updateStatus();

@@ -422,6 +422,8 @@ void DvbScan::updateState()
 		case ScanTune: {
 			switch (device->getDeviceState()) {
 			case DvbDevice::DeviceIdle: {
+				emit scanProgress((100 * transponderIndex) / transponders.size());
+
 				if (transponderIndex >= transponders.size()) {
 					emit scanFinished();
 					return;
@@ -496,6 +498,8 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 	}
 
 	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
+		// FIXME assign tsid
+		// FIXME use tsid for generic name
 		channel.name = QString("[%1]").arg(section.programNumber());
 		channel.source = source;
 		channel.serviceId = section.programNumber();
@@ -568,6 +572,92 @@ void DvbScan::processNit(const DvbNitSection &section)
 				}
 
 				found = true;
+
+				DvbCableDescriptor cabDescriptor(descriptor);
+
+				if (!cabDescriptor.isValid()) {
+					kDebug() << "invalid cable descriptor";
+					break;
+				}
+
+				DvbCTransponder *transponder = new DvbCTransponder();
+
+				transponder->frequency =
+					DvbDescriptor::bcdToInt(cabDescriptor.frequency(), 100);
+
+				transponder->symbolRate =
+					DvbDescriptor::bcdToInt(cabDescriptor.symbolRate(), 100);
+
+				switch (cabDescriptor.modulation()) {
+				case 1:
+					transponder->modulationType = DvbCTransponder::Qam16;
+					break;
+				case 2:
+					transponder->modulationType = DvbCTransponder::Qam32;
+					break;
+				case 3:
+					transponder->modulationType = DvbCTransponder::Qam64;
+					break;
+				case 4:
+					transponder->modulationType = DvbCTransponder::Qam128;
+					break;
+				case 5:
+					transponder->modulationType = DvbCTransponder::Qam256;
+					break;
+				default:
+					transponder->modulationType =
+						DvbCTransponder::ModulationAuto;
+					break;
+				}
+
+				switch (cabDescriptor.fecRate()) {
+				case 1:
+					transponder->fecRate = DvbTransponderBase::Fec1_2;
+					break;
+				case 2:
+					transponder->fecRate = DvbTransponderBase::Fec2_3;
+					break;
+				case 3:
+					transponder->fecRate = DvbTransponderBase::Fec3_4;
+					break;
+				case 4:
+					transponder->fecRate = DvbTransponderBase::Fec5_6;
+					break;
+				case 5:
+					transponder->fecRate = DvbTransponderBase::Fec7_8;
+					break;
+				case 6:
+					transponder->fecRate = DvbTransponderBase::Fec8_9;
+					break;
+				case 8:
+					transponder->fecRate = DvbTransponderBase::Fec4_5;
+					break;
+				case 15:
+					transponder->fecRate = DvbTransponderBase::FecNone;
+					break;
+				default:
+					// this includes rates like 3/5 and 9/10
+					transponder->fecRate = DvbTransponderBase::FecAuto;
+				}
+
+				for (int i = 0;; ++i) {
+					if (i == transponders.size()) {
+						transponders.append(DvbTransponder(transponder));
+						break;
+					}
+
+					const DvbCTransponder *it =
+						transponders.at(i)->getDvbCTransponder();
+
+					if (it == NULL) {
+						continue;
+					}
+
+					if (abs(it->frequency - transponder->frequency) < 2000000) {
+						delete transponder;
+						break;
+					}
+				}
 
 				break;
 			    }
@@ -654,8 +744,7 @@ void DvbScan::processNit(const DvbNitSection &section)
 						continue;
 					}
 
-					// FIXME reconsider the details ...
-					if ((it->frequency == transponder->frequency) &&
+					if ((abs(it->frequency - transponder->frequency) < 2000) &&
 					    (it->polarization == transponder->polarization)) {
 						delete transponder;
 						break;
@@ -671,6 +760,161 @@ void DvbScan::processNit(const DvbNitSection &section)
 				}
 
 				found = true;
+
+				DvbTerrestrialDescriptor terDescriptor(descriptor);
+
+				if (!terDescriptor.isValid()) {
+					kDebug() << "invalid terrestrial descriptor";
+					break;
+				}
+
+				DvbTTransponder *transponder = new DvbTTransponder();
+
+				transponder->frequency = terDescriptor.frequency() * 10;
+
+				switch (terDescriptor.bandwidth()) {
+				case 0:
+					transponder->bandwidth = DvbTTransponder::Bandwidth8Mhz;
+					break;
+				case 1:
+					transponder->bandwidth = DvbTTransponder::Bandwidth7Mhz;
+					break;
+				case 2:
+					transponder->bandwidth = DvbTTransponder::Bandwidth6Mhz;
+					break;
+				default:
+					// this includes 5 MHz
+					transponder->bandwidth = DvbTTransponder::BandwidthAuto;
+					break;
+				}
+
+				switch (terDescriptor.constellation()) {
+				case 0:
+					transponder->modulationType = DvbTTransponder::Qpsk;
+					break;
+				case 1:
+					transponder->modulationType = DvbTTransponder::Qam16;
+					break;
+				case 2:
+					transponder->modulationType = DvbTTransponder::Qam64;
+					break;
+				default:
+					transponder->modulationType =
+						DvbTTransponder::ModulationAuto;
+					break;
+				}
+
+				switch (terDescriptor.fecRateHigh()) {
+				case 0:
+					transponder->fecRateHigh = DvbTTransponder::Fec1_2;
+					break;
+				case 1:
+					transponder->fecRateHigh = DvbTTransponder::Fec2_3;
+					break;
+				case 2:
+					transponder->fecRateHigh = DvbTTransponder::Fec3_4;
+					break;
+				case 3:
+					transponder->fecRateHigh = DvbTTransponder::Fec5_6;
+					break;
+				case 4:
+					transponder->fecRateHigh = DvbTTransponder::Fec7_8;
+					break;
+				default:
+					transponder->fecRateHigh = DvbTTransponder::FecAuto;
+					break;
+				}
+
+				switch (terDescriptor.fecRateLow()) {
+				case 0:
+					transponder->fecRateLow = DvbTTransponder::Fec1_2;
+					break;
+				case 1:
+					transponder->fecRateLow = DvbTTransponder::Fec2_3;
+					break;
+				case 2:
+					transponder->fecRateLow = DvbTTransponder::Fec3_4;
+					break;
+				case 3:
+					transponder->fecRateLow = DvbTTransponder::Fec5_6;
+					break;
+				case 4:
+					transponder->fecRateLow = DvbTTransponder::Fec7_8;
+					break;
+				default:
+					transponder->fecRateLow = DvbTTransponder::FecAuto;
+					break;
+				}
+
+				switch (terDescriptor.transmissionMode()) {
+				case 0:
+					transponder->transmissionMode =
+						DvbTTransponder::TransmissionMode2k;
+					break;
+				case 1:
+					transponder->transmissionMode =
+						DvbTTransponder::TransmissionMode8k;
+					break;
+				default:
+					// this includes 4k
+					transponder->transmissionMode =
+						DvbTTransponder::TransmissionModeAuto;
+					break;
+				}
+
+				switch (terDescriptor.guardInterval()) {
+				case 0:
+					transponder->guardInterval =
+						DvbTTransponder::GuardInterval1_32;
+					break;
+				case 1:
+					transponder->guardInterval =
+						DvbTTransponder::GuardInterval1_16;
+					break;
+				case 2:
+					transponder->guardInterval =
+						DvbTTransponder::GuardInterval1_8;
+					break;
+				default:
+					transponder->guardInterval =
+						DvbTTransponder::GuardInterval1_4;
+					break;
+				}
+
+				switch (terDescriptor.hierarchy() & 0x3) {
+				case 0:
+					transponder->fecRateLow = DvbTTransponder::FecNone;
+					transponder->hierarchy = DvbTTransponder::HierarchyNone;
+					break;
+				case 1:
+					transponder->hierarchy = DvbTTransponder::Hierarchy1;
+					break;
+				case 2:
+					transponder->hierarchy = DvbTTransponder::Hierarchy2;
+					break;
+				default:
+					transponder->hierarchy = DvbTTransponder::Hierarchy4;
+					break;
+				}
+
+				for (int i = 0;; ++i) {
+					if (i == transponders.size()) {
+						transponders.append(DvbTransponder(transponder));
+						break;
+					}
+
+					const DvbTTransponder *it =
+						transponders.at(i)->getDvbTTransponder();
+
+					if (it == NULL) {
+						continue;
+					}
+
+					if (abs(it->frequency - transponder->frequency) < 2000000) {
+						delete transponder;
+						break;
+					}
+				}
 
 				break;
 			    }

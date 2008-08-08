@@ -184,6 +184,14 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		// stop scan
 		Q_ASSERT(internal != NULL);
 		ui->scanButton->setText(i18n("Start scan"));
+		ui->progressBar->setValue(0);
+
+		if (!isLive) {
+			// FIXME
+			device->stopDevice();
+			setDevice(NULL);
+		}
+
 		delete internal;
 		internal = NULL;
 		return;
@@ -214,6 +222,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
+	connect(internal, SIGNAL(scanProgress(int)), this, SLOT(scanProgress(int)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
 	connect(internal, SIGNAL(scanFinished()), this, SLOT(scanFinished()), Qt::QueuedConnection);
 }
@@ -229,14 +238,13 @@ void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 	// FIXME update provider list
 }
 
+void DvbScanDialog::scanProgress(int percentage)
+{
+	ui->progressBar->setValue(percentage);
+}
+
 void DvbScanDialog::scanFinished()
 {
-	if (!isLive) {
-		// FIXME
-		device->stopDevice();
-		setDevice(NULL);
-	}
-
 	ui->scanButton->setChecked(false);
 	scanButtonClicked(false);
 }

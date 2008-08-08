@@ -82,6 +82,7 @@ public:
 
 signals:
 	void foundChannels(const QList<DvbPreviewChannel> &channels);
+	void scanProgress(int percentage);
 	void scanFinished();
 
 private slots:

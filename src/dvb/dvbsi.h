@@ -404,12 +404,12 @@ public:
 		return ((at(7) & 0x3f) >> 3);
 	}
 
-	int fecHighRate() const
+	int fecRateHigh() const
 	{
 		return (at(7) & 0x7);
 	}
 
-	int fecLowRate() const
+	int fecRateLow() const
 	{
 		return (at(8) >> 5);
 	}

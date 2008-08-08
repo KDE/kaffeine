@@ -100,7 +100,7 @@ private:
 
 	DvbChannelModel *channelModel;
 	QList<DvbDeviceConfig> deviceConfigs;
-	QMap<QString, QString> sourceMapping;
+	QMap<QString, QPair<TransmissionType, QString> > sourceMapping;
 	QStringList sources;
 
 	DvbDeviceManager *deviceManager;
