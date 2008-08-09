@@ -512,7 +512,17 @@ DvbConfigPage::~DvbConfigPage()
 {
 }
 
-QList<DvbConfig> DvbConfigPage::getConfigs() const
+QList<DvbConfig> DvbConfigPage::getConfigs()
 {
+	// FIXME
+	for (int i = 0; i < configs.count(); ++i) {
+		const DvbConfig &config = configs.at(i);
+
+		if (config->name.isEmpty() || config->scanSource.isEmpty()) {
+			configs.removeAt(i);
+			--i;
+		}
+	}
+
 	return configs;
 }

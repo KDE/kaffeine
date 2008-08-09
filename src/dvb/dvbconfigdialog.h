@@ -105,7 +105,7 @@ public:
 	DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceConfig);
 	~DvbConfigPage();
 
-	QList<DvbConfig> getConfigs() const;
+	QList<DvbConfig> getConfigs();
 
 private:
 	QList<DvbConfig> configs;
