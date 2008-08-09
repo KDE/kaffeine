@@ -961,10 +961,10 @@ bool DvbDevice::identifyDevice()
 			deviceId += QString("%1").arg(subsystem_vendor, 4, 16, QChar('0'));
 			deviceId += QString("%1").arg(subsystem_device, 4, 16, QChar('0'));
 		}
-	} else if (QFile::exists(dir.filePath("id/vendor"))) {
+	} else if (QFile::exists(dir.filePath("device/idVendor"))) {
 		// USB device
-		int vendor = DvbReadSysAttr(dir.filePath("id/vendor"));
-		int product = DvbReadSysAttr(dir.filePath("id/product"));
+		int vendor = DvbReadSysAttr(dir.filePath("device/idVendor"));
+		int product = DvbReadSysAttr(dir.filePath("device/idProduct"));
 
 		if ((vendor >= 0) && (product >= 0)) {
 			deviceId = 'U';
