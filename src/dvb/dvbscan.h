@@ -43,8 +43,8 @@ public:
 	 * assigned when reading PMT
 	 */
 
-	// QString name; // a generic name is assigned
 	// QString source;
+	// int transportStreamId;
 	// int serviceId;
 	// int pmtPid;
 	// int videoPid; // may be -1 (not present)
@@ -58,7 +58,6 @@ public:
 
 	// QString name;
 	// int networkId; // may be -1 (not present)
-	// int transportStreamId; // may be -1 (not present)
 	// bool scrambled;
 	QString provider;
 
@@ -129,11 +128,13 @@ private:
 	int transponderIndex;
 
 	State state;
-	int snr;
 	QList<DvbPatEntry> patEntries;
 	int patIndex;
 	QList<DvbSdtEntry> sdtEntries;
 	QList<DvbPreviewChannel> channels;
+
+	int snr;
+	int transportStreamId;
 
 	QList<DvbScanFilter *> filters;
 	int activeFilters;

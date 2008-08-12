@@ -36,14 +36,12 @@ public:
 class DvbSdtEntry
 {
 public:
-	DvbSdtEntry(int serviceId_, int networkId_, int transportStreamId_, bool scrambled_) :
-		serviceId(serviceId_), networkId(networkId_), transportStreamId(transportStreamId_),
-		scrambled(scrambled_) { }
+	DvbSdtEntry(int serviceId_, int networkId_, bool scrambled_) : serviceId(serviceId_),
+		networkId(networkId_), scrambled(scrambled_) { }
 	~DvbSdtEntry() { }
 
 	int serviceId;
 	int networkId;
-	int transportStreamId;
 	bool scrambled;
 	QString name;
 	QString provider;
@@ -281,14 +279,14 @@ void DvbScanFilter::timerEvent(QTimerEvent *)
 
 DvbScan::DvbScan(const QString &source_, DvbDevice *device_, const DvbTransponder &transponder_) :
 	source(source_), device(device_), transponder(transponder_), isLive(true),
-	transponderIndex(-1), state(ScanPat), snr(-1), patIndex(0), activeFilters(0)
+	transponderIndex(-1), state(ScanPat), patIndex(0), activeFilters(0)
 {
 	init();
 }
 
 DvbScan::DvbScan(const QString &source_, DvbDevice *device_,
 	const QList<DvbTransponder> &transponders_) : source(source_), device(device_),
-	isLive(false), transponders(transponders_), transponderIndex(0), state(ScanTune), snr(-1),
+	isLive(false), transponders(transponders_), transponderIndex(0), state(ScanTune),
 	patIndex(0), activeFilters(0)
 {
 	init();
@@ -314,7 +312,6 @@ void DvbScan::deviceStateChanged()
 		updateState();
 	}
 }
-
 
 bool DvbScan::startFilter(int pid, FilterType type)
 {
@@ -399,23 +396,23 @@ void DvbScan::updateState()
 				return;
 			}
 
-			foreach (const DvbSdtEntry &sdtEntry, sdtEntries) {
-				for (int i = 0; i < channels.size(); ++i) {
-					const DvbPreviewChannel &channel = channels.at(i);
+			for (int i = 0; i < channels.size(); ++i) {
+				DvbPreviewChannel &channel = channels[i];
 
+				foreach (const DvbSdtEntry &sdtEntry, sdtEntries) {
 					if (channel.serviceId == sdtEntry.serviceId) {
-						DvbPreviewChannel &it = channels[i];
-
-						it.networkId = sdtEntry.networkId;
-						it.transportStreamId = sdtEntry.transportStreamId;
-						it.scrambled = sdtEntry.scrambled;
-
-						if (!sdtEntry.name.isEmpty()) {
-							it.name = sdtEntry.name;
-						}
-
-						it.provider = sdtEntry.provider;
+						channel.networkId = sdtEntry.networkId;
+						channel.scrambled = sdtEntry.scrambled;
+						channel.name = sdtEntry.name;
+						channel.provider = sdtEntry.provider;
+						break;
 					}
+				}
+
+				if (channel.name.isEmpty()) {
+					channel.name = QString("[%1:%2]").
+						       arg(channel.transportStreamId).
+						       arg(channel.serviceId);
 				}
 			}
 
@@ -472,6 +469,8 @@ void DvbScan::updateState()
 
 void DvbScan::processPat(const DvbPatSection &section)
 {
+	transportStreamId = section.transportStreamId();
+
 	for (DvbPatSectionEntry entry = section.entries(); !entry.isEmpty(); entry.advance()) {
 		if (!entry.isValid()) {
 			kDebug() << "invalid PAT entry";
@@ -517,10 +516,8 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 	}
 
 	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
-		// FIXME assign tsid
-		// FIXME use tsid for generic name
-		channel.name = QString("[%1]").arg(section.programNumber());
 		channel.source = source;
+		channel.transportStreamId = transportStreamId;
 		channel.serviceId = section.programNumber();
 		channel.pmtPid = pid;
 		channel.transponder = transponder;
@@ -538,7 +535,7 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 		}
 
 		DvbSdtEntry sdtEntry(entry.serviceId(), section.originalNetworkId(),
-				     section.transportStreamId(), entry.isScrambled());
+				     entry.isScrambled());
 
 		for (DvbDescriptor descriptor = entry.descriptors(); !descriptor.isEmpty();
 		     descriptor.advance()) {
@@ -577,7 +574,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 			break;
 		}
 
-		DvbSdtEntry sdtEntry(entry.programNumber(), -1, section.transportStreamId(), false);
+		DvbSdtEntry sdtEntry(entry.programNumber(), -1, false);
 
 		QChar shortName[] = { entry.shortName1(), entry.shortName2(), entry.shortName3(),
 				      entry.shortName4(), entry.shortName5(), entry.shortName6(),

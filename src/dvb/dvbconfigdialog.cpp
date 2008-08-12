@@ -343,7 +343,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 	DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
 
-	if ((transmissionTypes /* & DvbDevice::DvbC */) != 0) {
+	if ((transmissionTypes & DvbDevice::DvbC) != 0) {
 		QFrame *frame = new QFrame(this);
 		frame->setFrameShape(QFrame::HLine);
 		gridLayout->addWidget(frame, ++i, 0, 1, 2);
@@ -444,6 +444,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 			QStringList sources = manager->getScanSources(DvbManager::DvbS);
 			comboBox->addItem(i18n("No source"));
 			comboBox->addItems(sources);
+			// FIXME possible bug: index = 0 while scanSource != empty
 			comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
 			gridLayout->addWidget(comboBox, i, 1);
 
@@ -451,7 +452,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 		}
 	}
 
-	if ((transmissionTypes /* & DvbDevice::DvbT */) != 0) {
+	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
 		QFrame *frame = new QFrame(this);
 		frame->setFrameShape(QFrame::HLine);
 		gridLayout->addWidget(frame, ++i, 0, 1, 2);
@@ -504,7 +505,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 		new DvbConfigObject(spinBox, comboBox, lineEdit, i18n("Terrestrial"), config);
 	}
 
-	if ((transmissionTypes /* & DvbDevice::Atsc */) != 0) {
+	if ((transmissionTypes & DvbDevice::Atsc) != 0) {
 		QFrame *frame = new QFrame(this);
 		frame->setFrameShape(QFrame::HLine);
 		gridLayout->addWidget(frame, ++i, 0, 1, 2);

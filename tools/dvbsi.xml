@@ -104,7 +104,7 @@
     </AtscVctSectionEntry>
   </entries>
   <sections>
-    <DvbPatSection>
+    <DvbPatSection extension="transportStreamId" >
       <entries listType="DvbPatSectionEntry" lengthFunc="" type="list" />
     </DvbPatSection>
     <DvbPmtSection extension="programNumber" >
@@ -115,7 +115,7 @@
       <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list" />
       <entries listType="DvbPmtSectionEntry" lengthFunc="" type="list" />
     </DvbPmtSection>
-    <DvbSdtSection extension="transportStreamId" >
+    <DvbSdtSection>
       <originalNetworkId bits="16" type="int" />
       <unused bits="8" />
       <entries listType="DvbSdtSectionEntry" lengthFunc="" type="list" />
@@ -128,7 +128,7 @@
       <entriesLength bits="12" type="int" />
       <entries listType="DvbNitSectionEntry" lengthFunc="entriesLength" type="list" />
     </DvbNitSection>
-    <AtscVctSection extension="transportStreamId" >
+    <AtscVctSection>
       <unused bits="8" />
       <entryCount bits="8" type="int" />
       <entries listType="AtscVctSectionEntry" lengthFunc="" type="list" />

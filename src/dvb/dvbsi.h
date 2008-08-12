@@ -658,6 +658,11 @@ public:
 
 	~DvbPatSection() { }
 
+	int transportStreamId() const
+	{
+		return (at(3) << 8) | at(4);
+	}
+
 	DvbPatSectionEntry entries() const
 	{
 		return DvbPatSectionEntry(subArray(8, length - 12));
@@ -715,11 +720,6 @@ public:
 	}
 
 	~DvbSdtSection() { }
-
-	int transportStreamId() const
-	{
-		return (at(3) << 8) | at(4);
-	}
 
 	int originalNetworkId() const
 	{
@@ -786,11 +786,6 @@ public:
 	}
 
 	~AtscVctSection() { }
-
-	int transportStreamId() const
-	{
-		return (at(3) << 8) | at(4);
-	}
 
 	int entryCount() const
 	{

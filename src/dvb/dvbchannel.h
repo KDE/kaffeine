@@ -255,7 +255,7 @@ public:
 
 	QString source;
 	int networkId; // may be -1 (not present)
-	int transportStreamId; // may be -1 (not present)
+	int transportStreamId;
 	int serviceId;
 
 	int pmtPid;

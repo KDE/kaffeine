@@ -198,7 +198,7 @@ DvbChannel *DvbLineReader::readChannel()
 
 	channel->source = readString();
 	channel->networkId = readInt(true);
-	channel->transportStreamId = readInt(true);
+	channel->transportStreamId = readInt();
 	channel->serviceId = readInt();
 
 	channel->pmtPid = readInt();
