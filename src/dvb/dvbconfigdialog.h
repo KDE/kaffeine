@@ -96,7 +96,7 @@ private:
 	QSpinBox *lowBandSpinBox;
 	QSpinBox *switchSpinBox;
 	QSpinBox *highBandSpinBox;
-	bool customEnabled;
+	int currentType;
 };
 
 class DvbConfigPage : public QWidget

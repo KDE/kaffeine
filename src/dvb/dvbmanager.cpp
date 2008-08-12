@@ -587,11 +587,12 @@ void DvbManager::readDeviceConfigs()
 
 				deviceConfig.configs.append(DvbConfig(new DvbCConfig(config)));
 			} else if (type == "DvbS") {
-				DvbSConfig config(reader.readInt("lnbNumber"));
+				DvbSConfig config;
 
 				config.name = name;
 				config.scanSource = scanSource;
 				config.timeout = timeout;
+				config.lnbNumber = reader.readInt("lnbNumber");
 				config.lowBandFrequency = reader.readInt("lowBandFrequency");
 				config.switchFrequency = reader.readInt("switchFrequency");
 				config.highBandFrequency = reader.readInt("highBandFrequency");

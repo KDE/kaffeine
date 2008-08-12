@@ -83,6 +83,110 @@ void DvbLineWriter::writeString(const QString &string)
 	line.append('|');
 }
 
+DvbCTransponder *DvbLineReader::readDvbCTransponder()
+{
+	DvbCTransponder *transponder = new DvbCTransponder;
+
+	transponder->frequency = readInt();
+	transponder->symbolRate = readInt();
+	transponder->modulation = readEnum(DvbCTransponder::ModulationMax);
+	transponder->fecRate = readEnum(DvbCTransponder::FecRateMax);
+
+	if (!isValid()) {
+		delete transponder;
+		return NULL;
+	}
+
+	return transponder;
+}
+
+void DvbLineWriter::writeTransponder(const DvbCTransponder *transponder)
+{
+	writeInt(transponder->frequency);
+	writeInt(transponder->symbolRate);
+	writeInt(transponder->modulation);
+	writeInt(transponder->fecRate);
+}
+
+DvbSTransponder *DvbLineReader::readDvbSTransponder()
+{
+	DvbSTransponder *transponder = new DvbSTransponder;
+
+	transponder->frequency = readInt();
+	transponder->polarization = readEnum(DvbSTransponder::PolarizationMax);
+	transponder->symbolRate = readInt();
+	transponder->fecRate = readEnum(DvbSTransponder::FecRateMax);
+
+	if (!isValid()) {
+		delete transponder;
+		return NULL;
+	}
+
+	return transponder;
+}
+
+void DvbLineWriter::writeTransponder(const DvbSTransponder *transponder)
+{
+	writeInt(transponder->frequency);
+	writeInt(transponder->polarization);
+	writeInt(transponder->symbolRate);
+	writeInt(transponder->fecRate);
+}
+
+DvbTTransponder *DvbLineReader::readDvbTTransponder()
+{
+	DvbTTransponder *transponder = new DvbTTransponder;
+
+	transponder->frequency = readInt();
+	transponder->bandwidth = readEnum(DvbTTransponder::BandwidthMax);
+	transponder->modulation = readEnum(DvbTTransponder::ModulationMax);
+	transponder->fecRateHigh = readEnum(DvbTTransponder::FecRateMax);
+	transponder->fecRateLow = readEnum(DvbTTransponder::FecRateMax);
+	transponder->transmissionMode = readEnum(DvbTTransponder::TransmissionModeMax);
+	transponder->guardInterval = readEnum(DvbTTransponder::GuardIntervalMax);
+	transponder->hierarchy = readEnum(DvbTTransponder::HierarchyMax);
+
+	if (!isValid()) {
+		delete transponder;
+		return NULL;
+	}
+
+	return transponder;
+}
+
+void DvbLineWriter::writeTransponder(const DvbTTransponder *transponder)
+{
+	writeInt(transponder->frequency);
+	writeInt(transponder->bandwidth);
+	writeInt(transponder->modulation);
+	writeInt(transponder->fecRateHigh);
+	writeInt(transponder->fecRateLow);
+	writeInt(transponder->transmissionMode);
+	writeInt(transponder->guardInterval);
+	writeInt(transponder->hierarchy);
+}
+
+AtscTransponder *DvbLineReader::readAtscTransponder()
+{
+	AtscTransponder *transponder = new AtscTransponder;
+
+	transponder->frequency = readInt();
+	transponder->modulation = readEnum(AtscTransponder::ModulationMax);
+
+	if (!isValid()) {
+		delete transponder;
+		return NULL;
+	}
+
+	return transponder;
+}
+
+void DvbLineWriter::writeTransponder(const AtscTransponder *transponder)
+{
+	writeInt(transponder->frequency);
+	writeInt(transponder->modulation);
+}
+
 DvbChannel *DvbLineReader::readChannel()
 {
 	DvbChannel *channel = new DvbChannel;
@@ -155,127 +259,18 @@ void DvbLineWriter::writeChannel(const DvbChannel *channel)
 
 	writeInt(channel->scrambled ? 1 : 0);
 
-	writeTransponder(channel->transponder.data());
-}
-
-void DvbLineWriter::writeTransponder(const DvbTransponderBase *transponder)
-{
-	switch (transponder->getTransmissionType()) {
+	switch (type) {
 	case DvbTransponderBase::DvbC:
-		writeDvbCTransponder(transponder->getDvbCTransponder());
+		writeTransponder(channel->transponder->getDvbCTransponder());
 		break;
 	case DvbTransponderBase::DvbS:
-		writeDvbSTransponder(transponder->getDvbSTransponder());
+		writeTransponder(channel->transponder->getDvbSTransponder());
 		break;
 	case DvbTransponderBase::DvbT:
-		writeDvbTTransponder(transponder->getDvbTTransponder());
+		writeTransponder(channel->transponder->getDvbTTransponder());
 		break;
 	case DvbTransponderBase::Atsc:
-		writeAtscTransponder(transponder->getAtscTransponder());
+		writeTransponder(channel->transponder->getAtscTransponder());
 		break;
 	}
-}
-
-DvbCTransponder *DvbLineReader::readDvbCTransponder()
-{
-	DvbCTransponder *transponder = new DvbCTransponder;
-
-	transponder->frequency = readInt();
-	transponder->symbolRate = readInt();
-	transponder->modulationType = readEnum(DvbCTransponder::ModulationTypeMax);
-	transponder->fecRate = readEnum(DvbCTransponder::FecRateMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-void DvbLineWriter::writeDvbCTransponder(const DvbCTransponder *transponder)
-{
-	writeInt(transponder->frequency);
-	writeInt(transponder->symbolRate);
-	writeInt(transponder->modulationType);
-	writeInt(transponder->fecRate);
-}
-
-DvbSTransponder *DvbLineReader::readDvbSTransponder()
-{
-	DvbSTransponder *transponder = new DvbSTransponder;
-
-	transponder->frequency = readInt();
-	transponder->polarization = readEnum(DvbSTransponder::PolarizationMax);
-	transponder->symbolRate = readInt();
-	transponder->fecRate = readEnum(DvbSTransponder::FecRateMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-void DvbLineWriter::writeDvbSTransponder(const DvbSTransponder *transponder)
-{
-	writeInt(transponder->frequency);
-	writeInt(transponder->polarization);
-	writeInt(transponder->symbolRate);
-	writeInt(transponder->fecRate);
-}
-
-DvbTTransponder *DvbLineReader::readDvbTTransponder()
-{
-	DvbTTransponder *transponder = new DvbTTransponder;
-
-	transponder->frequency = readInt();
-	transponder->bandwidth = readEnum(DvbTTransponder::BandwidthMax);
-	transponder->modulationType = readEnum(DvbTTransponder::ModulationTypeMax);
-	transponder->fecRateHigh = readEnum(DvbTTransponder::FecRateMax);
-	transponder->fecRateLow = readEnum(DvbTTransponder::FecRateMax);
-	transponder->transmissionMode = readEnum(DvbTTransponder::TransmissionModeMax);
-	transponder->guardInterval = readEnum(DvbTTransponder::GuardIntervalMax);
-	transponder->hierarchy = readEnum(DvbTTransponder::HierarchyMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-void DvbLineWriter::writeDvbTTransponder(const DvbTTransponder *transponder)
-{
-	writeInt(transponder->frequency);
-	writeInt(transponder->bandwidth);
-	writeInt(transponder->modulationType);
-	writeInt(transponder->fecRateHigh);
-	writeInt(transponder->fecRateLow);
-	writeInt(transponder->transmissionMode);
-	writeInt(transponder->guardInterval);
-	writeInt(transponder->hierarchy);
-}
-
-AtscTransponder *DvbLineReader::readAtscTransponder()
-{
-	AtscTransponder *transponder = new AtscTransponder;
-
-	transponder->frequency = readInt();
-	transponder->modulationType = readEnum(AtscTransponder::ModulationTypeMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-void DvbLineWriter::writeAtscTransponder(const AtscTransponder *transponder)
-{
-	writeInt(transponder->frequency);
-	writeInt(transponder->modulationType);
 }

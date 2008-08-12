@@ -433,7 +433,7 @@ bool DvbDevice::checkUsable()
 	return true;
 }
 
-static fe_modulation_t convertDvbModulation(DvbCTransponder::ModulationType modulation)
+static fe_modulation_t convertDvbModulation(DvbCTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case DvbCTransponder::Qam16: return QAM_16;
@@ -448,7 +448,7 @@ static fe_modulation_t convertDvbModulation(DvbCTransponder::ModulationType modu
 	abort();
 }
 
-static fe_modulation_t convertDvbModulation(DvbTTransponder::ModulationType modulation)
+static fe_modulation_t convertDvbModulation(DvbTTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case DvbTTransponder::Qpsk: return QPSK;
@@ -461,7 +461,7 @@ static fe_modulation_t convertDvbModulation(DvbTTransponder::ModulationType modu
 	abort();
 }
 
-static fe_modulation_t convertDvbModulation(AtscTransponder::ModulationType modulation)
+static fe_modulation_t convertDvbModulation(AtscTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case AtscTransponder::Qam64: return QAM_64;
@@ -581,7 +581,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 		params.inversion = INVERSION_AUTO;
 		params.u.qam.symbol_rate = dvbCTransponder->symbolRate;
 		params.u.qam.fec_inner = convertDvbFecRate(dvbCTransponder->fecRate);
-		params.u.qam.modulation = convertDvbModulation(dvbCTransponder->modulationType);
+		params.u.qam.modulation = convertDvbModulation(dvbCTransponder->modulation);
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
@@ -606,14 +606,26 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 				(dvbSTransponder->polarization == DvbSTransponder::CircularLeft);
 
 		int frequency = dvbSTransponder->frequency;
-		bool highBand;
+		bool highBand = false;
 
-		if (frequency < dvbSConfig->switchFrequency) {
-			highBand = false;
-			frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+		if (dvbSConfig->switchFrequency != 0) {
+			// dual LO (low / high)
+			if (frequency < dvbSConfig->switchFrequency) {
+				frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+			} else {
+				frequency = abs(frequency - dvbSConfig->highBandFrequency);
+				highBand = true;
+			}
+		} else if (dvbSConfig->highBandFrequency != 0) {
+			// single LO (horizontal / vertical)
+			if (horPolar) {
+				frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+			} else {
+				frequency = abs(frequency - dvbSConfig->highBandFrequency);
+			}
 		} else {
-			highBand = true;
-			frequency = abs(frequency - dvbSConfig->highBandFrequency);
+			// single LO
+			frequency = abs(frequency - dvbSConfig->lowBandFrequency);
 		}
 
 		// tone off
@@ -692,7 +704,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 		params.u.ofdm.bandwidth = convertDvbBandwidth(dvbTTransponder->bandwidth);
 		params.u.ofdm.code_rate_HP = convertDvbFecRate(dvbTTransponder->fecRateHigh);
 		params.u.ofdm.code_rate_LP = convertDvbFecRate(dvbTTransponder->fecRateLow);
-		params.u.ofdm.constellation = convertDvbModulation(dvbTTransponder->modulationType);
+		params.u.ofdm.constellation = convertDvbModulation(dvbTTransponder->modulation);
 		params.u.ofdm.transmission_mode =
 			convertDvbTransmissionMode(dvbTTransponder->transmissionMode);
 		params.u.ofdm.guard_interval =
@@ -722,7 +734,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		params.frequency = atscTransponder->frequency;
 		params.inversion = INVERSION_AUTO;
-		params.u.vsb.modulation = convertDvbModulation(atscTransponder->modulationType);
+		params.u.vsb.modulation = convertDvbModulation(atscTransponder->modulation);
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;

@@ -636,23 +636,22 @@ void DvbScan::processNit(const DvbNitSection &section)
 
 				switch (cabDescriptor.modulation()) {
 				case 1:
-					transponder->modulationType = DvbCTransponder::Qam16;
+					transponder->modulation = DvbCTransponder::Qam16;
 					break;
 				case 2:
-					transponder->modulationType = DvbCTransponder::Qam32;
+					transponder->modulation = DvbCTransponder::Qam32;
 					break;
 				case 3:
-					transponder->modulationType = DvbCTransponder::Qam64;
+					transponder->modulation = DvbCTransponder::Qam64;
 					break;
 				case 4:
-					transponder->modulationType = DvbCTransponder::Qam128;
+					transponder->modulation = DvbCTransponder::Qam128;
 					break;
 				case 5:
-					transponder->modulationType = DvbCTransponder::Qam256;
+					transponder->modulation = DvbCTransponder::Qam256;
 					break;
 				default:
-					transponder->modulationType =
-						DvbCTransponder::ModulationAuto;
+					transponder->modulation = DvbCTransponder::ModulationAuto;
 					break;
 				}
 
@@ -836,17 +835,16 @@ void DvbScan::processNit(const DvbNitSection &section)
 
 				switch (terDescriptor.constellation()) {
 				case 0:
-					transponder->modulationType = DvbTTransponder::Qpsk;
+					transponder->modulation = DvbTTransponder::Qpsk;
 					break;
 				case 1:
-					transponder->modulationType = DvbTTransponder::Qam16;
+					transponder->modulation = DvbTTransponder::Qam16;
 					break;
 				case 2:
-					transponder->modulationType = DvbTTransponder::Qam64;
+					transponder->modulation = DvbTTransponder::Qam64;
 					break;
 				default:
-					transponder->modulationType =
-						DvbTTransponder::ModulationAuto;
+					transponder->modulation = DvbTTransponder::ModulationAuto;
 					break;
 				}
 

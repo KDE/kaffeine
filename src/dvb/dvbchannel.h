@@ -84,7 +84,7 @@ public:
 class DvbCTransponder : public DvbTransponderBase
 {
 public:
-	enum ModulationType
+	enum Modulation
 	{
 		Qam16 = 0,
 		Qam32 = 1,
@@ -92,7 +92,7 @@ public:
 		Qam128 = 3,
 		Qam256 = 4,
 		ModulationAuto = 5,
-		ModulationTypeMax = ModulationAuto
+		ModulationMax = ModulationAuto
 	};
 
 	TransmissionType getTransmissionType() const
@@ -107,7 +107,7 @@ public:
 
 	int frequency; // Hz
 	int symbolRate; // symbols per second
-	ModulationType modulationType;
+	Modulation modulation;
 	FecRate fecRate;
 };
 
@@ -151,13 +151,13 @@ public:
 		BandwidthMax = BandwidthAuto
 	};
 
-	enum ModulationType
+	enum Modulation
 	{
 		Qpsk = 0,
 		Qam16 = 1,
 		Qam64 = 2,
 		ModulationAuto = 3,
-		ModulationTypeMax = ModulationAuto
+		ModulationMax = ModulationAuto
 	};
 
 	enum TransmissionMode
@@ -200,7 +200,7 @@ public:
 
 	int frequency; // Hz
 	Bandwidth bandwidth;
-	ModulationType modulationType;
+	Modulation modulation;
 	FecRate fecRateHigh; // high priority stream
 	FecRate fecRateLow; // low priority stream
 	TransmissionMode transmissionMode;
@@ -211,14 +211,14 @@ public:
 class AtscTransponder : public DvbTransponderBase
 {
 public:
-	enum ModulationType
+	enum Modulation
 	{
 		Qam64 = 0,
 		Qam256 = 1,
 		Vsb8 = 2,
 		Vsb16 = 3,
 		ModulationAuto = 4,
-		ModulationTypeMax = ModulationAuto
+		ModulationMax = ModulationAuto
 	};
 
 	TransmissionType getTransmissionType() const
@@ -232,7 +232,7 @@ public:
 	}
 
 	int frequency; // Hz
-	ModulationType modulationType;
+	Modulation modulation;
 };
 
 class DvbTransponder : public QExplicitlySharedDataPointer<const DvbTransponderBase>
@@ -310,12 +310,12 @@ public:
 	int readInt(bool allowEmpty = false);
 	QString readString();
 
-	DvbChannel *readChannel();
-
 	DvbCTransponder *readDvbCTransponder();
 	DvbSTransponder *readDvbSTransponder();
 	DvbTTransponder *readDvbTTransponder();
 	AtscTransponder *readAtscTransponder();
+
+	DvbChannel *readChannel();
 
 private:
 	QString line;
@@ -331,15 +331,14 @@ public:
 	void writeInt(int value);
 	void writeString(const QString &string);
 
+	void writeTransponder(const DvbCTransponder *transponder);
+	void writeTransponder(const DvbSTransponder *transponder);
+	void writeTransponder(const DvbTTransponder *transponder);
+	void writeTransponder(const AtscTransponder *transponder);
+
 	void writeChannel(const DvbChannel *channel);
-	void writeTransponder(const DvbTransponderBase *transponder);
 
 private:
-	void writeDvbCTransponder(const DvbCTransponder *transponder);
-	void writeDvbSTransponder(const DvbSTransponder *transponder);
-	void writeDvbTTransponder(const DvbTTransponder *transponder);
-	void writeAtscTransponder(const AtscTransponder *transponder);
-
 	QString line;
 };
 

@@ -28,7 +28,6 @@ class DvbCConfig;
 class DvbSConfig;
 class DvbTConfig;
 class AtscConfig;
-class DvbSTransponder;
 
 class DvbConfigBase : public QSharedData
 {
@@ -41,7 +40,7 @@ public:
 		Atsc = 3
 	};
 
-	DvbConfigBase() : timeout(1500) { }
+	DvbConfigBase() { }
 	virtual ~DvbConfigBase() { }
 
 	virtual TransmissionType getTransmissionType() const = 0;
@@ -88,10 +87,6 @@ public:
 class DvbSConfig : public DvbConfigBase
 {
 public:
-	DvbSConfig(int lnbNumber_) : lnbNumber(lnbNumber_), lowBandFrequency(9750000),
-		switchFrequency(11700000), highBandFrequency(10600000) { }
-	~DvbSConfig() { }
-
 	TransmissionType getTransmissionType() const
 	{
 		return DvbS;
@@ -103,9 +98,9 @@ public:
 	}
 
 	int lnbNumber;         // corresponds to diseqc switch position (0 = first sat etc)
-	int lowBandFrequency;  // kHz
-	int switchFrequency;   // kHz (0 == only low band)
-	int highBandFrequency; // kHz
+	int lowBandFrequency;  // kHz (C-band multipoint: horizontal)
+	int switchFrequency;   // kHz (0 == only low band or C-band multipoint)
+	int highBandFrequency; // kHz (C-band multipoint: vertical)
 };
 
 class DvbTConfig : public DvbConfigBase

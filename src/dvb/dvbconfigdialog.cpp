@@ -172,50 +172,61 @@ void DvbSConfigObject::configureLnb()
 	buttonGroup->addButton(radioButton, 2);
 	gridLayout->addWidget(radioButton, 1, 0, 1, 2);
 
-	radioButton = new QRadioButton(i18n("Custom LNB"), mainWidget);
+	radioButton = new QRadioButton(i18n("C-band multipoint LNB"), mainWidget);
 	buttonGroup->addButton(radioButton, 3);
 	gridLayout->addWidget(radioButton, 2, 0, 1, 2);
 
+	radioButton = new QRadioButton(i18n("Custom LNB"), mainWidget);
+	buttonGroup->addButton(radioButton, 4);
+	gridLayout->addWidget(radioButton, 3, 0, 1, 2);
+
 	QFrame *frame = new QFrame(mainWidget);
 	frame->setFrameShape(QFrame::HLine);
-	gridLayout->addWidget(frame, 3, 0, 1, 2);
+	gridLayout->addWidget(frame, 4, 0, 1, 2);
 
-	lowBandLabel = new QLabel(i18n("Low-band frequency (MHz)"), mainWidget);
-	gridLayout->addWidget(lowBandLabel, 4, 0);
+	lowBandLabel = new QLabel(mainWidget);
+	gridLayout->addWidget(lowBandLabel, 5, 0);
 
 	switchLabel = new QLabel(i18n("Switch frequency (MHz)"), mainWidget);
-	gridLayout->addWidget(switchLabel, 5, 0);
+	gridLayout->addWidget(switchLabel, 6, 0);
 
-	highBandLabel = new QLabel(i18n("High-band frequency (MHz)"), mainWidget);
-	gridLayout->addWidget(highBandLabel, 6, 0);
+	highBandLabel = new QLabel(mainWidget);
+	gridLayout->addWidget(highBandLabel, 7, 0);
 
 	lowBandSpinBox = new QSpinBox(mainWidget);
 	lowBandSpinBox->setRange(0, 13000);
 	lowBandSpinBox->setValue(config->lowBandFrequency / 1000);
-	gridLayout->addWidget(lowBandSpinBox, 4, 1);
+	gridLayout->addWidget(lowBandSpinBox, 5, 1);
 
 	switchSpinBox = new QSpinBox(mainWidget);
 	switchSpinBox->setRange(0, 13000);
 	switchSpinBox->setValue(config->switchFrequency / 1000);
-	gridLayout->addWidget(switchSpinBox, 5, 1);
+	gridLayout->addWidget(switchSpinBox, 6, 1);
 
 	highBandSpinBox = new QSpinBox(mainWidget);
 	highBandSpinBox->setRange(0, 13000);
 	highBandSpinBox->setValue(config->highBandFrequency / 1000);
-	gridLayout->addWidget(highBandSpinBox, 6, 1);
+	gridLayout->addWidget(highBandSpinBox, 7, 1);
+
+	gridLayout->addItem(new QSpacerItem(0, 0), 8, 0, 1, 2);
+	gridLayout->setRowStretch(8, 1);
 
 	int lnbType;
 
 	if ((config->lowBandFrequency == 9750000) && (config->switchFrequency == 11700000) &&
 	    (config->highBandFrequency == 10600000)) {
 		lnbType = 1;
-	} else if ((config->lowBandFrequency == 5150000) && (config->switchFrequency == 0)) {
+	} else if ((config->lowBandFrequency == 5150000) && (config->switchFrequency == 0) &&
+		   (config->highBandFrequency == 0)) {
 		lnbType = 2;
-	} else {
+	} else if ((config->lowBandFrequency == 5750000) && (config->switchFrequency == 0) &&
+		   (config->highBandFrequency == 5150000)) {
 		lnbType = 3;
+	} else {
+		lnbType = 4;
 	}
 
-	customEnabled = true;
+	currentType = 4;
 	buttonGroup->button(lnbType)->setChecked(true);
 	selectType(lnbType);
 
@@ -225,8 +236,6 @@ void DvbSConfigObject::configureLnb()
 
 void DvbSConfigObject::selectType(int type)
 {
-	bool enableCustom = false;
-
 	switch (type) {
 	case 1:
 		lowBandSpinBox->setValue(9750);
@@ -241,12 +250,48 @@ void DvbSConfigObject::selectType(int type)
 		break;
 
 	case 3:
-		enableCustom = true;
+		lowBandSpinBox->setValue(5750);
+		switchSpinBox->setValue(0);
+		highBandSpinBox->setValue(5150);
 		break;
 	}
 
-	if (customEnabled != enableCustom) {
-		if (enableCustom) {
+	if (switchSpinBox->value() != 0) {
+		if (currentType != 1) {
+			lowBandLabel->setText(i18n("Low band LOF (MHz)"));
+
+			switchLabel->show();
+			switchSpinBox->show();
+
+			highBandLabel->setText(i18n("High band LOF (MHz)"));
+			highBandLabel->show();
+			highBandSpinBox->show();
+		}
+	} else if (highBandSpinBox->value() != 0) {
+		if (currentType != 3) {
+			lowBandLabel->setText(i18n("Horizontal LOF (MHz)"));
+
+			switchLabel->hide();
+			switchSpinBox->hide();
+
+			highBandLabel->setText(i18n("Vertical LOF (MHz)"));
+			highBandLabel->show();
+			highBandSpinBox->show();
+		}
+	} else {
+		if (currentType != 2) {
+			lowBandLabel->setText(i18n("LOF (MHz)"));
+
+			switchLabel->hide();
+			switchSpinBox->hide();
+
+			highBandLabel->hide();
+			highBandSpinBox->hide();
+		}
+	}
+
+	if ((currentType == 4) != (type == 4)) {
+		if (type == 4) {
 			lowBandLabel->setEnabled(true);
 			switchLabel->setEnabled(true);
 			highBandLabel->setEnabled(true);
@@ -261,9 +306,9 @@ void DvbSConfigObject::selectType(int type)
 			switchSpinBox->setEnabled(false);
 			highBandSpinBox->setEnabled(false);
 		}
-
-		customEnabled = enableCustom;
 	}
+
+	currentType = type;
 }
 
 void DvbSConfigObject::dialogAccepted()
@@ -310,6 +355,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 		for (int j = 0;; ++j) {
 			if (j == deviceConfig.configs.size()) {
 				config = new DvbCConfig();
+				config->timeout = 1500;
 				break;
 			}
 
@@ -369,7 +415,12 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 			for (int j = 0;; ++j) {
 				if (j == deviceConfig.configs.size()) {
-					config = new DvbSConfig(lnbNumber);
+					config = new DvbSConfig();
+					config->timeout = 1500;
+					config->lnbNumber = lnbNumber;
+					config->lowBandFrequency = 9750000;
+					config->switchFrequency = 11700000;
+					config->highBandFrequency = 10600000;
 					break;
 				}
 
@@ -420,6 +471,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 		for (int j = 0;; ++j) {
 			if (j == deviceConfig.configs.size()) {
 				config = new DvbTConfig();
+				config->timeout = 1500;
 				break;
 			}
 
@@ -472,6 +524,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 		for (int j = 0;; ++j) {
 			if (j == deviceConfig.configs.size()) {
 				config = new AtscConfig();
+				config->timeout = 1500;
 				break;
 			}
 
