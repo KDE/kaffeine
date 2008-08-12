@@ -112,7 +112,7 @@ public:
 
 private:
 	QMap<QString, DvbSTransponder::FecRate> fecMap;
-	QMap<QString, DvbCTransponder::ModulationType> modulationMap;
+	QMap<QString, DvbCTransponder::Modulation> modulationMap;
 };
 
 DvbCFileHelper::DvbCFileHelper()
@@ -138,7 +138,7 @@ DvbCTransponder *DvbCFileHelper::readTransponder(ScanFileReader &reader)
 	transponder->frequency = reader.readInt();
 	transponder->symbolRate = reader.readInt();
 	transponder->fecRate = reader.readEnum(fecMap);
-	transponder->modulationType = reader.readEnum(modulationMap);
+	transponder->modulation = reader.readEnum(modulationMap);
 
 	if (!reader.isValid()) {
 		delete transponder;
@@ -224,7 +224,7 @@ private:
 	QMap<QString, DvbTTransponder::Bandwidth> bandwidthMap;
 	QMap<QString, DvbTTransponder::FecRate> fecHighMap;
 	QMap<QString, DvbTTransponder::FecRate> fecLowMap;
-	QMap<QString, DvbTTransponder::ModulationType> modulationMap;
+	QMap<QString, DvbTTransponder::Modulation> modulationMap;
 	QMap<QString, DvbTTransponder::TransmissionMode> transmissionModeMap;
 	QMap<QString, DvbTTransponder::GuardInterval> guardIntervalMap;
 	QMap<QString, DvbTTransponder::Hierarchy> hierarchyMap;
@@ -279,7 +279,7 @@ DvbTTransponder *DvbTFileHelper::readTransponder(ScanFileReader &reader)
 	transponder->bandwidth = reader.readEnum(bandwidthMap);
 	transponder->fecRateHigh = reader.readEnum(fecHighMap);
 	transponder->fecRateLow = reader.readEnum(fecLowMap);
-	transponder->modulationType = reader.readEnum(modulationMap);
+	transponder->modulation = reader.readEnum(modulationMap);
 	transponder->transmissionMode = reader.readEnum(transmissionModeMap);
 	transponder->guardInterval = reader.readEnum(guardIntervalMap);
 	transponder->hierarchy = reader.readEnum(hierarchyMap);
@@ -306,7 +306,7 @@ public:
 	}
 
 private:
-	QMap<QString, AtscTransponder::ModulationType> modulationMap;
+	QMap<QString, AtscTransponder::Modulation> modulationMap;
 };
 
 AtscFileHelper::AtscFileHelper()
@@ -327,7 +327,7 @@ AtscTransponder *AtscFileHelper::readTransponder(ScanFileReader &reader)
 	AtscTransponder *transponder = new AtscTransponder();
 
 	transponder->frequency = reader.readInt();
-	transponder->modulationType = reader.readEnum(modulationMap);
+	transponder->modulation = reader.readEnum(modulationMap);
 
 	if (!reader.isValid()) {
 		delete transponder;
@@ -400,7 +400,14 @@ template<class T1, class T2> void readScanDirectory(QTextStream &out, const QStr
 		}
 
 		if (!list.isEmpty()) {
-			out << "[" << file.fileName() << "]\n";
+			if (dirName == "dvb-s") {
+				// use upper case for orbital position
+				QString name = file.fileName();
+				name[name.size() - 1] = name.at(name.size() - 1).toUpper();
+				out << "[" << name << "]\n";
+			} else {
+				out << "[" << file.fileName() << "]\n";
+			}
 
 			qStableSort(list.begin(), list.end(), scanFileHelper);
 
