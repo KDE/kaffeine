@@ -1,0 +1,13 @@
+Current status
+==============
+
+Working: - playback (thanks to phonon; file, audio cd, video cd, dvd)
+         - basic DVB (identify / configure / scan / watch)
+
+Bigger missing parts: - rest of DVB support (I'm working primarly on that)
+                      - playlist handling
+                      - cd ripping
+
+other TODO: - lots of minor stuff
+            - a manual (it's too early for that) :)
+              * section about updating scan file
