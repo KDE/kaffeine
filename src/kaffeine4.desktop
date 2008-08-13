@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=Kaffeine
+Exec=kaffeine4 %U
+GenericName=Media Player
+Categories=Qt;KDE;AudioVideo;Player;
+Icon=kaffeine4
+MimeType=application/x-ogg;audio/basic;audio/vnd.rn-realaudio;audio/x-aiff;audio/x-mp3;audio/x-mpeg;audio/x-mpegurl;audio/x-ms-wma;audio/x-ogg;audio/x-pn-realaudio;audio/x-pn-realaudio-plugin;audio/x-scpls;audio/x-wav;audio/x-flac;video/x-matroska;audio/x-matroska;video/mpeg;video/msvideo;video/quicktime;video/vnd.rn-realvideo;video/x-avi;video/x-fli;video/x-flic;video/x-ms-asf;video/x-ms-wmv;video/x-msvideo;application/x-mplayer2;application/smil;application/x-kaffeine;audio/x-musepack;audio/x-mod;audio/x-stm;application/vnd.rn-realmedia;
+Terminal=false
+Type=Application
+X-KDE-HasTempFileOption=true
+#To enable back when doc will be available
+#X-DocPath=kaffeine/index.html
+X-Desktop-File-Install-Version=0.15

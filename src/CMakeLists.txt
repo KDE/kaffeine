@@ -25,3 +25,4 @@ target_link_libraries(kaffeine4 ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})
 
 install(TARGETS kaffeine4 DESTINATION ${BIN_INSTALL_DIR})
 install(FILES kaffeine4ui.rc scanfile_g.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine4)
+install (FILES kaffeine4.desktop DESTINATION share/applications/kde4)
