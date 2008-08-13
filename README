@@ -11,3 +11,24 @@ Bigger missing parts: - rest of DVB support (I'm working primarly on that)
 other TODO: - lots of minor stuff
             - a manual (it's too early for that) :)
               * section about updating scan file
+
+Naming
+======
+
+Actually the application should be called "kaffeine", but it's temporarily named
+"kaffeine4" to allow coinstallability (for lazy developers :), as it isn't a full
+replacement yet.
+
+Bugs
+====
+
+You are welcome to report crashes and stuff that doesn't work the right way.
+We know what stuff isn't implemented yet, so please don't report that (ok, I admit
+that this distinction sometimes isn't too easy if you don't know the code).
+
+One known bug is that you can only switch channels once (and kaffeine will crash
+at exit); this is being investigated.
+
+(I know I should add a contribution section here; if you're interested drop a line
+to kaffeine-user (at) lists.sourceforge.net which is regularly moderated, so you don't
+have to subscribe or something like that).
