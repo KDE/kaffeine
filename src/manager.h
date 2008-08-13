@@ -30,6 +30,7 @@ class QPushButton;
 class QStackedLayout;
 class KAction;
 class KActionCollection;
+class KMultiTabBar;
 class KRecentFilesAction;
 class KUrl;
 class Kaffeine;
@@ -110,7 +111,7 @@ private:
 
 	void setState(stateFlags newState);
 
-	TabBase *createTab(const QString &name, TabBase *tab);
+	TabBase *createTab(const QString &name, TabBase *tab, int id);
 
 	stateFlags currentState;
 	QList<QPair<stateFlags, KAction *> > actionList;
@@ -134,6 +135,9 @@ private:
 	TabBase *dvbTab;
 
 	bool ignoreActivate;
+
+	// FIXME quick hack
+	KMultiTabBar *tabBar;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Manager::stateFlags)
@@ -159,7 +163,7 @@ private slots:
 	}
 
 private:
-	TabButton *button;
+	QPushButton *button;
 };
 
 class TabButton : public QPushButton

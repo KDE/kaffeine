@@ -29,6 +29,7 @@
 #include <KAction>
 #include <KActionCollection>
 #include <KLocalizedString>
+#include <KMultiTabBar>
 #include <KRecentFilesAction>
 #include <KConfigGroup>
 
@@ -144,9 +145,12 @@ Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateA
 	stackedLayout = new QStackedLayout(this);
 	buttonGroup = new QButtonGroup(this);
 
-	startTab = createTab(i18n("Start"), new StartTab(this));
-	playerTab = createTab(i18n("Player"), new PlayerTab(this));
-	dvbTab = createTab(i18n("Digital TV"), new DvbTab(this));
+	tabBar = new KMultiTabBar(KMultiTabBar::Left);
+	tabBar->setStyle(KMultiTabBar::KDEV3ICON);
+
+	startTab = createTab(i18n("Start"), new StartTab(this), 1);
+	playerTab = createTab(i18n("Player"), new PlayerTab(this), 2);
+	dvbTab = createTab(i18n("Digital TV"), new DvbTab(this), 3);
 
 	KActionCollection *collection = kaffeine->actionCollection();
 
@@ -222,16 +226,8 @@ Manager::Manager(Kaffeine *kaffeine_) : QWidget(kaffeine_), currentState(~stateA
 	addAction(collection, "settings_dvb", stateAlways, action);
 
 	action = new KAction(collection);
-	action->setDefaultWidget(startTab->button);
-	addAction(collection, "tabs_start", stateAlways, action);
-
-	action = new KAction(collection);
-	action->setDefaultWidget(playerTab->button);
-	addAction(collection, "tabs_player", stateAlways, action);
-
-	action = new KAction(collection);
-	action->setDefaultWidget(dvbTab->button);
-	addAction(collection, "tabs_dvb", stateAlways, action);
+	action->setDefaultWidget(tabBar);
+	addAction(collection, "tabs_tab_bar", stateAlways, action);
 
 	activate(startTab);
 	setState(stateAlways);
@@ -330,14 +326,13 @@ void Manager::setState(stateFlags newState)
 	currentState = newState;
 }
 
-TabBase *Manager::createTab(const QString &name, TabBase *tab)
+TabBase *Manager::createTab(const QString &name, TabBase *tab, int id)
 {
-	TabButton *tabButton = new TabButton(name);
-	connect(tabButton, SIGNAL(clicked(bool)), tab, SLOT(clicked()));
-	buttonGroup->addButton(tabButton);
+	tabBar->appendTab(QPixmap(), id, name);
+	tab->button = tabBar->tab(id);
+	connect(tab->button, SIGNAL(clicked(bool)), tab, SLOT(clicked()));
 	stackedLayout->addWidget(tab);
 
-	tab->button = tabButton;
 	return tab;
 }
 
