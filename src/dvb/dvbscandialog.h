@@ -32,7 +32,6 @@ class DvbManager;
 class DvbPreviewChannel;
 class DvbPreviewChannelModel;
 class DvbScan;
-class DvbSectionData;
 class DvbTab;
 class Ui_DvbScanDialog;
 
