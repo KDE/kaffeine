@@ -951,7 +951,7 @@ bool DvbDevice::identifyDevice()
 	}
 
 	frontendName = QString::fromAscii(frontend_info.name);
-	deviceId = QString();
+	deviceId.clear();
 
 	int adapter = deviceIndex >> 16;
 	int index = deviceIndex & ((1 << 16) - 1);

@@ -325,7 +325,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source)
 			continue;
 		}
 
-		foreach (DvbConfig config, it.configs) {
+		foreach (const DvbConfig &config, it.configs) {
 			if (config->name == source) {
 				if (!it.device->checkUsable()) {
 					break;
@@ -747,6 +747,6 @@ void DvbManager::readScanFile()
 	    !scanData->readSources(scanSources[DvbT], scanOffsets[DvbT], "[dvb-t/") ||
 	    !scanData->readSources(scanSources[Atsc], scanOffsets[Atsc], "[atsc/") ||
 	    !scanData->checkEnd()) {
-		kWarning() << "parsing error occured";
+		kWarning() << "parsing error occurred";
 	}
 }

@@ -18,12 +18,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "kaffeine.h"
+
 #include <KFileDialog>
 #include <KInputDialog>
-
 #include "manager.h"
 #include "mediawidget.h"
-#include "kaffeine.h"
 
 KCmdLineOptions Kaffeine::cmdLineOptions()
 {

@@ -1,4 +1,3 @@
-#include "mediawidget.h"
 /*
  * mediawidget.cpp
  *
@@ -19,13 +18,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "mediawidget.h"
+
 #include <QHBoxLayout>
 #include <KMessageBox>
-
 #include "engine_phonon.h"
 #include "kaffeine.h"
 #include "manager.h"
-#include "mediawidget.h"
 
 MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), engine(NULL)
 {

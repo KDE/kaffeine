@@ -22,11 +22,11 @@
 
 #include <QBoxLayout>
 #include <QButtonGroup>
-#include <QComboBox>
 #include <QLabel>
-#include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <KComboBox>
+#include <KLineEdit>
 #include <KLocalizedString>
 #include "dvbdevice.h"
 #include "dvbmanager.h"
@@ -70,8 +70,8 @@ void DvbConfigDialog::dialogAccepted()
 	manager->setDeviceConfigs(deviceConfigs);
 }
 
-DvbConfigObject::DvbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
-	QLineEdit *nameEdit_, const QString &defaultName_, DvbConfigBase *config_) :
+DvbConfigObject::DvbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
+	KLineEdit *nameEdit_, const QString &defaultName_, DvbConfigBase *config_) :
 	QObject(timeoutSpinBox), sourceBox(sourceBox_), nameEdit(nameEdit_),
 	defaultName(defaultName_), config(config_)
 {
@@ -95,7 +95,7 @@ void DvbConfigObject::sourceChanged(int index)
 {
 	if (index <= 0) {
 		// no source selected
-		config->scanSource = QString();
+		config->scanSource.clear();
 	} else {
 		config->scanSource = sourceBox->currentText();
 	}
@@ -113,7 +113,7 @@ void DvbConfigObject::nameChanged()
 	}
 }
 
-DvbSConfigObject::DvbSConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
+DvbSConfigObject::DvbSConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
 	QPushButton *configureButton_, DvbSConfig *config_) : QObject(timeoutSpinBox),
 	sourceBox(sourceBox_), configureButton(configureButton_), config(config_)
 {
@@ -140,8 +140,8 @@ void DvbSConfigObject::sourceChanged(int index)
 	if (index <= 0) {
 		// no source selected
 		configureButton->setEnabled(false);
-		config->name = QString();
-		config->scanSource = QString();
+		config->name.clear();
+		config->scanSource.clear();
 	} else {
 		QString source = sourceBox->currentText();
 
@@ -323,7 +323,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 	QGridLayout *gridLayout = new QGridLayout(this);
 
 	QString name = deviceConfig.frontendName;
-	gridLayout->addWidget(new QLabel(i18n("Name: %1").arg(name)), 0, 0, 1, 2);
+	gridLayout->addWidget(new QLabel(i18n("Name: %1", name)), 0, 0, 1, 2);
 
 	int i = 0;
 	DvbDevice *device = deviceConfig.device;
@@ -379,7 +379,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 		gridLayout->addWidget(new QLabel(i18n("Source:")), ++i, 0);
 
-		QComboBox *comboBox = new QComboBox(this);
+		KComboBox *comboBox = new KComboBox(this);
 		QStringList sources = manager->getScanSources(DvbManager::DvbC);
 		comboBox->addItem(i18n("No source"));
 		comboBox->addItems(sources);
@@ -388,7 +388,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 		gridLayout->addWidget(new QLabel(i18n("Name:")), ++i, 0);
 
-		QLineEdit *lineEdit = new QLineEdit(this);
+		KLineEdit *lineEdit = new KLineEdit(this);
 		lineEdit->setText(config->name);
 		gridLayout->addWidget(lineEdit, i, 1);
 
@@ -437,10 +437,10 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 			configs.append(DvbConfig(config));
 
 			QPushButton *pushButton =
-				new QPushButton(i18n("LNB %1 settings").arg(lnbNumber + 1), this);
+				new QPushButton(i18n("LNB %1 settings", lnbNumber + 1), this);
 			gridLayout->addWidget(pushButton, ++i, 0);
 
-			QComboBox *comboBox = new QComboBox(this);
+			KComboBox *comboBox = new KComboBox(this);
 			QStringList sources = manager->getScanSources(DvbManager::DvbS);
 			comboBox->addItem(i18n("No source"));
 			comboBox->addItems(sources);
@@ -489,7 +489,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 		gridLayout->addWidget(new QLabel(i18n("Source:")), ++i, 0);
 
-		QComboBox *comboBox = new QComboBox(this);
+		KComboBox *comboBox = new KComboBox(this);
 		QStringList sources = manager->getScanSources(DvbManager::DvbT);
 		comboBox->addItem(i18n("No source"));
 		comboBox->addItems(sources);
@@ -498,7 +498,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 		gridLayout->addWidget(new QLabel(i18n("Name:")), ++i, 0);
 
-		QLineEdit *lineEdit = new QLineEdit(this);
+		KLineEdit *lineEdit = new KLineEdit(this);
 		lineEdit->setText(config->name);
 		gridLayout->addWidget(lineEdit, i, 1);
 
@@ -542,7 +542,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 		gridLayout->addWidget(new QLabel(i18n("Source:")), ++i, 0);
 
-		QComboBox *comboBox = new QComboBox(this);
+		KComboBox *comboBox = new KComboBox(this);
 		QStringList sources = manager->getScanSources(DvbManager::Atsc);
 		comboBox->addItem(i18n("No source"));
 		comboBox->addItems(sources);
@@ -551,7 +551,7 @@ DvbConfigPage::DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceC
 
 		gridLayout->addWidget(new QLabel(i18n("Name:")), ++i, 0);
 
-		QLineEdit *lineEdit = new QLineEdit(this);
+		KLineEdit *lineEdit = new KLineEdit(this);
 		lineEdit->setText(config->name);
 		gridLayout->addWidget(lineEdit, i, 1);
 

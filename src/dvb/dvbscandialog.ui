@@ -55,7 +55,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="sourceList" />
+         <widget class="KComboBox" name="sourceList" />
         </item>
         <item>
          <widget class="QPushButton" name="scanButton" >
@@ -153,7 +153,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="providerList" >
+         <widget class="KComboBox" name="providerList" >
           <property name="enabled" >
            <bool>false</bool>
           </property>
@@ -194,14 +194,14 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>KComboBox</class>
+   <extends>QComboBox</extends>
+   <header>kcombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>KLed</class>
    <extends>QWidget</extends>
    <header>kled.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DvbGradProgress</class>
-   <extends>QWidget</extends>
-   <header>dvb/dvbscan.h</header>
   </customwidget>
   <customwidget>
    <class>DvbChannelView</class>
@@ -212,6 +212,11 @@
    <class>DvbChannelViewBase</class>
    <extends>QWidget</extends>
    <header>dvb/dvbchannelview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DvbGradProgress</class>
+   <extends>QWidget</extends>
+   <header>dvb/dvbscandialog.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

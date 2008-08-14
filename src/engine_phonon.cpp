@@ -1,5 +1,3 @@
-
-#include "engine_phonon.h"
 /*
  * engine_phonon.cpp
  *
@@ -20,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "engine_phonon.h"
+
 #include <Phonon/AbstractMediaStream>
 #include <Phonon/AudioOutput>
 #include <Phonon/MediaObject>
@@ -27,8 +27,6 @@
 #include <Phonon/SeekSlider>
 #include <Phonon/VideoWidget>
 #include <Phonon/VolumeSlider>
-
-#include "engine_phonon.h"
 
 EnginePhonon::EnginePhonon(QObject *parent) : Engine(parent), liveFeed(NULL)
 {

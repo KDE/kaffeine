@@ -18,6 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
+#include "manager.h"
+
 #include <QButtonGroup>
 #include <QEvent>
 #include <QLabel>
@@ -25,17 +27,14 @@
 #include <QPushButton>
 #include <QStackedLayout>
 #include <QToolBar>
-
 #include <KAction>
 #include <KActionCollection>
+#include <KConfigGroup>
 #include <KMultiTabBar>
 #include <KRecentFilesAction>
-#include <KConfigGroup>
-
 #include "dvb/dvbtab.h"
 #include "kaffeine.h"
 #include "mediawidget.h"
-#include "manager.h"
 
 class StartTab : public TabBase
 {
@@ -319,8 +318,9 @@ void Manager::setState(stateFlags newState)
 	}
 
 	QPair<stateFlags, KAction *> action;
-	foreach (action, actionList)
+	foreach (action, actionList) {
 		action.second->setEnabled((action.first & newState) != stateAlways);
+	}
 
 	currentState = newState;
 }

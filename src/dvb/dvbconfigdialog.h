@@ -23,10 +23,10 @@
 
 #include <KPageDialog>
 
-class QComboBox;
 class QLabel;
-class QLineEdit;
 class QSpinBox;
+class KComboBox;
+class KLineEdit;
 class DvbConfig;
 class DvbConfigBase;
 class DvbConfigPage;
@@ -54,7 +54,7 @@ class DvbConfigObject : public QObject
 {
 	Q_OBJECT
 public:
-	DvbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_, QLineEdit *nameEdit_,
+	DvbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_, KLineEdit *nameEdit_,
 		const QString &defaultName_, DvbConfigBase *config_);
 	~DvbConfigObject();
 
@@ -64,8 +64,8 @@ private slots:
 	void nameChanged();
 
 private:
-	QComboBox *sourceBox;
-	QLineEdit *nameEdit;
+	KComboBox *sourceBox;
+	KLineEdit *nameEdit;
 	QString defaultName;
 	DvbConfigBase *config;
 };
@@ -74,7 +74,7 @@ class DvbSConfigObject : public QObject
 {
 	Q_OBJECT
 public:
-	DvbSConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
+	DvbSConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
 		QPushButton *configureButton_, DvbSConfig *config_);
 	~DvbSConfigObject();
 
@@ -86,7 +86,7 @@ private slots:
 	void dialogAccepted();
 
 private:
-	QComboBox *sourceBox;
+	KComboBox *sourceBox;
 	QPushButton *configureButton;
 	DvbSConfig *config;
 

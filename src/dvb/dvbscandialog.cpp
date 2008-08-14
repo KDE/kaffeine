@@ -19,6 +19,7 @@
  */
 
 #include "dvbscandialog.h"
+#include "ui_dvbscandialog.h"
 
 #include <QPainter>
 #include <KDebug>
@@ -27,7 +28,6 @@
 #include "dvbscan.h"
 #include "dvbsi.h"
 #include "dvbtab.h"
-#include "ui_dvbscandialog.h"
 
 DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
 {
@@ -44,7 +44,7 @@ void DvbGradProgress::setValue(int value_)
 {
 	value = value_;
 	Q_ASSERT((value >= 0) && (value <= 100));
-	setText(i18n("%1%").arg(value));
+	setText(i18n("%1%", value));
 	update();
 }
 
@@ -131,7 +131,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui->setupUi(widget);
 
 	QString date = manager->getScanFileDate();
-	ui->scanFilesLabel->setText(i18n("Scan file last updated<br>on %1").arg(date));
+	ui->scanFilesLabel->setText(i18n("Scan file last updated<br>on %1", date));
 	ui->scanButton->setText(i18n("Start scan"));
 
 	channelModel = new DvbChannelModel(this);
@@ -262,7 +262,7 @@ void DvbScanDialog::addSelectedChannels()
 {
 	QList<const DvbPreviewChannel *> channels;
 
-	foreach (QModelIndex index, ui->scanResultsView->selectionModel()->selectedRows()) {
+	foreach (const QModelIndex &index, ui->scanResultsView->selectionModel()->selectedRows()) {
 		const DvbPreviewChannel *selectedChannel = previewModel->getChannel(index);
 
 		if (selectedChannel != NULL) {
