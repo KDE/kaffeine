@@ -28,7 +28,6 @@
 
 #include <KAction>
 #include <KActionCollection>
-#include <KLocalizedString>
 #include <KMultiTabBar>
 #include <KRecentFilesAction>
 #include <KConfigGroup>

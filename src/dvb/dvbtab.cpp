@@ -25,7 +25,6 @@
 #include <QSplitter>
 #include <KDebug>
 #include <KLineEdit>
-#include <KLocalizedString>
 #include <KMessageBox>
 #include "../engine.h"
 #include "../kaffeine.h"

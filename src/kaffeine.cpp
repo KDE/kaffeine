@@ -20,8 +20,6 @@
 
 #include <KFileDialog>
 #include <KInputDialog>
-#include <KLocalizedString>
-#include <KToolBar>
 
 #include "manager.h"
 #include "mediawidget.h"
