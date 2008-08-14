@@ -29,7 +29,7 @@ namespace Phonon
 {
 class AudioOutput;
 class MediaObject;
-};
+}
 
 class DvbLiveFeedPhonon : public Phonon::AbstractMediaStream
 {
