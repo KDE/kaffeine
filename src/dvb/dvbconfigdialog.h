@@ -21,8 +21,9 @@
 #ifndef DVBCONFIGDIALOG_H
 #define DVBCONFIGDIALOG_H
 
-#include <KPageDialog>
+#include <KDialog>
 
+class QGridLayout;
 class QLabel;
 class QSpinBox;
 class KComboBox;
@@ -33,13 +34,12 @@ class DvbConfigPage;
 class DvbDeviceConfig;
 class DvbManager;
 class DvbSConfig;
-class DvbTab;
 
-class DvbConfigDialog : public KPageDialog
+class DvbConfigDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	explicit DvbConfigDialog(DvbTab *dvbTab_);
+	DvbConfigDialog(QWidget *parent, DvbManager *manager_);
 	~DvbConfigDialog();
 
 private slots:
@@ -102,12 +102,15 @@ private:
 class DvbConfigPage : public QWidget
 {
 public:
-	DvbConfigPage(DvbManager *manager, const DvbDeviceConfig &deviceConfig);
+	DvbConfigPage(QWidget *parent, DvbManager *manager, const DvbDeviceConfig &deviceConfig);
 	~DvbConfigPage();
 
 	QList<DvbConfig> getConfigs();
 
 private:
+	void createObject(QGridLayout *gridLayout, int &i, DvbManager *manager,
+		DvbConfigBase *config);
+
 	QList<DvbConfig> configs;
 };
 

@@ -115,6 +115,10 @@ public:
 	bool addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
 
+	/*
+	 * assigned by DvbManager::requestDevice()
+	 */
+
 	DvbConfig config;
 
 signals:

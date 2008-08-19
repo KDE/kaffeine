@@ -121,8 +121,9 @@ void DvbTab::configureChannels()
 
 void DvbTab::configureDvb()
 {
-	DvbConfigDialog dialog(this);
-	dialog.exec();
+	DvbConfigDialog *dialog = new DvbConfigDialog(this, dvbManager);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbTab::activate()

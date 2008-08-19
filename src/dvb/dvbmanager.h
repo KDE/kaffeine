@@ -96,6 +96,8 @@ private:
 	void readDeviceConfigs();
 	void writeDeviceConfigs();
 
+	void updateSourceMapping();
+
 	void readScanFile();
 
 	DvbChannelModel *channelModel;

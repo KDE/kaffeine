@@ -257,38 +257,7 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 	readChannelList();
 
 	readDeviceConfigs();
-
-	sourceMapping.clear();
-
-	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
-		foreach (const DvbConfig &config, deviceConfig.configs) {
-			if (!config->name.isEmpty()) {
-				TransmissionType type;
-
-				switch (config->getTransmissionType()) {
-				case DvbConfigBase::DvbC:
-					type = DvbC;
-					break;
-				case DvbConfigBase::DvbS:
-					type = DvbS;
-					break;
-				case DvbConfigBase::DvbT:
-					type = DvbT;
-					break;
-				case DvbConfigBase::Atsc:
-					type = Atsc;
-					break;
-				default:
-					Q_ASSERT(false);
-				}
-
-				sourceMapping.insert(config->name,
-						     qMakePair(type, config->scanSource));
-			}
-		}
-	}
-
-	sources = sourceMapping.keys();
+	updateSourceMapping();
 
 	deviceManager = new DvbDeviceManager(this);
 	connect(deviceManager, SIGNAL(deviceAdded(DvbDevice*)),
@@ -374,37 +343,7 @@ void DvbManager::setDeviceConfigs(const QList<QList<DvbConfig> > &configs)
 		}
 	}
 
-	sourceMapping.clear();
-
-	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
-		foreach (const DvbConfig &config, deviceConfig.configs) {
-			if (!config->name.isEmpty()) {
-				TransmissionType type;
-
-				switch (config->getTransmissionType()) {
-				case DvbConfigBase::DvbC:
-					type = DvbC;
-					break;
-				case DvbConfigBase::DvbS:
-					type = DvbS;
-					break;
-				case DvbConfigBase::DvbT:
-					type = DvbT;
-					break;
-				case DvbConfigBase::Atsc:
-					type = Atsc;
-					break;
-				default:
-					Q_ASSERT(false);
-				}
-
-				sourceMapping.insert(config->name,
-						     qMakePair(type, config->scanSource));
-			}
-		}
-	}
-
-	sources = sourceMapping.keys();
+	updateSourceMapping();
 }
 
 QString DvbManager::getScanFileDate()
@@ -682,6 +621,39 @@ void DvbManager::writeDeviceConfigs()
 			}
 		}
 	}
+}
+
+void DvbManager::updateSourceMapping()
+{
+	sourceMapping.clear();
+
+	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
+		foreach (const DvbConfig &config, deviceConfig.configs) {
+			TransmissionType type;
+
+			switch (config->getTransmissionType()) {
+			case DvbConfigBase::DvbC:
+				type = DvbC;
+				break;
+			case DvbConfigBase::DvbS:
+				type = DvbS;
+				break;
+			case DvbConfigBase::DvbT:
+				type = DvbT;
+				break;
+			case DvbConfigBase::Atsc:
+				type = Atsc;
+				break;
+			default:
+				Q_ASSERT(false);
+				continue;
+			}
+
+			sourceMapping.insert(config->name, qMakePair(type, config->scanSource));
+		}
+	}
+
+	sources = sourceMapping.keys();
 }
 
 void DvbManager::readScanFile()
