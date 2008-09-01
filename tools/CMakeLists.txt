@@ -1,5 +1,3 @@
-project(kaffeine)
-
 add_executable(convertscanfiles convertscanfiles.cpp)
 target_link_libraries(convertscanfiles ${QT_QTCORE_LIBRARY})
 
