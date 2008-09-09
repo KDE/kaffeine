@@ -247,6 +247,13 @@ void DvbDeviceThread::customEvent(QEvent *)
 		for (i = 0; i < usedBuffers; ++i) {
 			for (int j = 0; j < currentUsed->count; ++j) {
 				char *packet = currentUsed->packets[j];
+
+				if ((packet[1] & 0x80) != 0) {
+					// transport error indicator
+					kDebug() << "discarding packet due to TEI being set";
+					continue;
+				}
+
 				int pid = ((static_cast<unsigned char> (packet[1]) << 8) |
 					static_cast<unsigned char> (packet[2])) & ((1 << 13) - 1);
 
