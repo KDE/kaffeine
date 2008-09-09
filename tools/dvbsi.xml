@@ -43,6 +43,9 @@
       <unused bits="1" />
       <unused bits="32" />
     </DvbTerrestrialDescriptor>
+    <AtscChannelNameDescriptor>
+      <name lengthFunc="" type="atsc_string" />
+    </AtscChannelNameDescriptor>
   </descriptors>
   <entries>
     <DvbPatSectionEntry>

@@ -31,7 +31,8 @@ public:
 		Int,
 		List,
 		String,
-		EntryLength
+		EntryLength,
+		AtscString,
 	};
 
 	Element() { }
@@ -57,7 +58,7 @@ QTextStream &operator<<(QTextStream &stream, const Element &element)
 		return stream;
 	}
 
-	if ((element.type == Element::List) || (element.type == Element::String)) {
+	if ((element.type == Element::List) || (element.type == Element::String) || (element.type == Element::AtscString)) {
 		stream << (element.bitIndex / 8) << element.offsetString;
 
 		return stream;
@@ -246,11 +247,11 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 			} else {
 				element.type = Element::Int;
 			}
-		} else if ((type == "list") || (type == "string")) {
+		} else if ((type == "list") || (type == "string") || type =="atsc_string") {
 			element.lengthFunc = attributes.namedItem("lengthFunc").nodeValue();
 			element.listType = attributes.namedItem("listType").nodeValue();
 
-			if (type == "string") {
+			if (type == "string" || type == "atsc_string") {
 				element.listType = "QString";
 			} else if (element.listType.isEmpty()) {
 				qCritical() << "Error: invalid list definition";
@@ -271,6 +272,8 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 
 			if (type == "string") {
 				element.type = Element::String;
+			} else if (type == "atsc_string") {
+				element.type = Element::AtscString;
 			} else {
 				element.type = Element::List;
 			}
@@ -444,12 +447,15 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 
 		case Element::List:
 		case Element::String:
+		case Element::AtscString:
 			stream << "\n";
 			stream << "\t" << element.listType << " " << element.name << "() const\n";
 			stream << "\t{\n";
 
 			if (element.type == Element::List) {
 				stream << "\t\treturn " << element.listType << "(subArray(" << element << ", ";
+			} else if (element.type == Element::AtscString) {
+				stream << "\t\treturn AtscPsipText::convertText(subArray(" << element << ", ";
 			} else {
 				stream << "\t\treturn DvbSiText::convertText(subArray(" << element << ", ";
 			}

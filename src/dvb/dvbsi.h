@@ -55,6 +55,7 @@ private:
 class DvbSectionData
 {
 	friend class DvbSiText;
+	friend class AtscPsipText;
 public:
 	DvbSectionData(const char *data_, int size_) : size(size_), length(0), data(data_) { }
 	~DvbSectionData() { }
@@ -254,6 +255,44 @@ public:
 	}
 };
 
+// ATSC "Multiple String Structure".  See A/65C Section 6.10
+class AtscPsipText
+{
+public:
+	static QString convertText(const DvbSectionData &text);
+private:
+	static QString interpretTextData(const char *data, unsigned int len,
+					 unsigned int mode);
+};
+
+// ATSC Huffman compressed string support, conforming to A/65C Annex C
+class AtscHuffmanString
+{
+public:
+	static QString convertText(const char *data_, int size, int table);
+private:
+	AtscHuffmanString(const char *data_, int size, int table);
+	~AtscHuffmanString();
+	bool hasBits();
+	unsigned char getBit();
+	unsigned char getByte();
+	void decompress();
+
+	const char *data;
+	int bitsLeft;
+
+	QString result;
+	const unsigned short *offsets;
+	const unsigned char *tableBase;
+
+	static const unsigned short Huffman1Offsets[128];
+	static const unsigned char Huffman1Tables[];
+
+	static const unsigned short Huffman2Offsets[128];
+	static const unsigned char Huffman2Tables[];
+};
+
+
 // everything below this line is automatically generated
 
 class DvbServiceDescriptor : public DvbDescriptor
@@ -422,6 +461,25 @@ public:
 	int transmissionMode() const
 	{
 		return ((at(8) & 0x7) >> 1);
+	}
+};
+
+class AtscChannelNameDescriptor : public DvbDescriptor
+{
+public:
+	explicit AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+	{
+		if (length < 2) {
+			length = 0;
+			return;
+		}
+	}
+
+	~AtscChannelNameDescriptor() { }
+
+	QString name() const
+	{
+		return AtscPsipText::convertText(subArray(2, length - 2));
 	}
 };
 

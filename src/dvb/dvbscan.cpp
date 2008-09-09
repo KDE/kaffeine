@@ -576,17 +576,42 @@ void DvbScan::processVct(const AtscVctSection &section)
 
 		DvbSdtEntry sdtEntry(entry.programNumber(), -1, false);
 
-		QChar shortName[] = { entry.shortName1(), entry.shortName2(), entry.shortName3(),
-				      entry.shortName4(), entry.shortName5(), entry.shortName6(),
-				      entry.shortName7(), 0 };
-		int nameLength = 0;
+		// Each VCT section has it's own list of descriptors
+		// See A/65C table 6.25a for the list of descriptors
+		for (DvbDescriptor descriptor = entry.descriptors(); 
+		     !descriptor.isEmpty(); descriptor.advance()) {
+			if (!descriptor.isValid()) {
+				kDebug() << "Invalid VCT descriptor";
+				break;
+			}
+			if (descriptor.descriptorTag() != 0xa0) {
+				continue;
+			}
 
-		while (shortName[nameLength] != 0) {
-			++nameLength;
+			// Extended Channel Name Descriptor
+			AtscChannelNameDescriptor nameDescriptor(descriptor);
+			if (!nameDescriptor.isValid()) {
+				continue;
+			}
+			sdtEntry.name = nameDescriptor.name();
 		}
 
-		sdtEntry.name = QString(shortName, nameLength);
-
+		if (sdtEntry.name.isEmpty()) {
+			// Extended Channel name not available, fall back
+			// to the short name
+			QChar shortName[] = { entry.shortName1(), 
+					      entry.shortName2(),
+					      entry.shortName3(),
+					      entry.shortName4(),
+					      entry.shortName5(),
+					      entry.shortName6(),
+					      entry.shortName7(), 0 };
+			int nameLength = 0;
+			while (shortName[nameLength] != 0) {
+				++nameLength;
+			}
+			sdtEntry.name = QString(shortName, nameLength);
+		}
 		sdtEntries.append(sdtEntry);
 	}
 }
