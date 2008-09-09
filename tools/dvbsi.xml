@@ -4,9 +4,9 @@
     <DvbServiceDescriptor>
       <unused bits="8" />
       <providerNameLength bits="8" type="int" />
-      <providerName lengthFunc="providerNameLength" type="string" />
+      <providerName listType="DvbString" lengthFunc="providerNameLength" type="list" />
       <serviceNameLength bits="8" type="int" />
-      <serviceName lengthFunc="serviceNameLength" type="string" />
+      <serviceName listType="DvbString" lengthFunc="serviceNameLength" type="list" />
     </DvbServiceDescriptor>
     <DvbCableDescriptor>
       <frequency bits="32" type="int" />
@@ -44,7 +44,7 @@
       <unused bits="32" />
     </DvbTerrestrialDescriptor>
     <AtscChannelNameDescriptor>
-      <name lengthFunc="" type="atsc_string" />
+      <name listType="AtscString" lengthFunc="" type="list" />
     </AtscChannelNameDescriptor>
   </descriptors>
   <entries>

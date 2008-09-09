@@ -30,9 +30,7 @@ public:
 		Bool,
 		Int,
 		List,
-		String,
-		EntryLength,
-		AtscString,
+		EntryLength
 	};
 
 	Element() { }
@@ -58,7 +56,7 @@ QTextStream &operator<<(QTextStream &stream, const Element &element)
 		return stream;
 	}
 
-	if ((element.type == Element::List) || (element.type == Element::String) || (element.type == Element::AtscString)) {
+	if (element.type == Element::List) {
 		stream << (element.bitIndex / 8) << element.offsetString;
 
 		return stream;
@@ -247,13 +245,11 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 			} else {
 				element.type = Element::Int;
 			}
-		} else if ((type == "list") || (type == "string") || type =="atsc_string") {
+		} else if (type == "list") {
 			element.lengthFunc = attributes.namedItem("lengthFunc").nodeValue();
 			element.listType = attributes.namedItem("listType").nodeValue();
 
-			if (type == "string" || type == "atsc_string") {
-				element.listType = "QString";
-			} else if (element.listType.isEmpty()) {
+			if (element.listType.isEmpty()) {
 				qCritical() << "Error: invalid list definition";
 				return false;
 			}
@@ -270,14 +266,7 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 				return false;
 			}
 
-			if (type == "string") {
-				element.type = Element::String;
-			} else if (type == "atsc_string") {
-				element.type = Element::AtscString;
-			} else {
-				element.type = Element::List;
-			}
-
+			element.type = Element::List;
 			element.bits = 0;
 
 			offsetString += " + " + element.name + "Length";
@@ -377,7 +366,7 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 			--i;
 
 			seenLength = true;
-		} else if (((element.type == Element::List) || (element.type == Element::String)) && !element.lengthFunc.isEmpty()) {
+		} else if ((element.type == Element::List) && !element.lengthFunc.isEmpty()) {
 			if ((i <= 0) || (elements.at(i - 1).name != element.lengthFunc)) {
 				qCritical() << "Error: lengthFunc isn't a valid back reference";
 				return false;
@@ -446,18 +435,21 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 			break;
 
 		case Element::List:
-		case Element::String:
-		case Element::AtscString:
-			stream << "\n";
-			stream << "\t" << element.listType << " " << element.name << "() const\n";
-			stream << "\t{\n";
-
-			if (element.type == Element::List) {
-				stream << "\t\treturn " << element.listType << "(subArray(" << element << ", ";
-			} else if (element.type == Element::AtscString) {
+			if (element.listType == "DvbString") {
+				stream << "\n";
+				stream << "\tQString " << element.name << "() const\n";
+				stream << "\t{\n";
+				stream << "\t\treturn DvbSiText::convertText(subArray(" << element << ", ";
+			} else if (element.listType == "AtscString") {
+				stream << "\n";
+				stream << "\tQString " << element.name << "() const\n";
+				stream << "\t{\n";
 				stream << "\t\treturn AtscPsipText::convertText(subArray(" << element << ", ";
 			} else {
-				stream << "\t\treturn DvbSiText::convertText(subArray(" << element << ", ";
+				stream << "\n";
+				stream << "\t" << element.listType << " " << element.name << "() const\n";
+				stream << "\t{\n";
+				stream << "\t\treturn " << element.listType << "(subArray(" << element << ", ";
 			}
 
 			if (element.lengthFunc.isEmpty()) {
@@ -483,7 +475,7 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 		stream << "private:\n";
 
 		foreach (const Element &element, elements) {
-			if (((element.type == Element::List) || (element.type == Element::String)) && !element.lengthFunc.isEmpty()) {
+			if ((element.type == Element::List) && !element.lengthFunc.isEmpty()) {
 				stream << "\tint " << element.name << "Length;\n";
 			}
 		}
