@@ -1,0 +1,22 @@
+== Functionality required before first beta release ==
+
+= General =
+General Selection of Audio channel and subtitles
+
+= DVB Subsystem =
+Figure out why Phonon crashes after more than one channel
+Synthesize PAT/PMT
+DVB Selection of Audio Channels/Subtitles
+Channel properties dialog
+On screen display showing current channel information (needs spec)
+Electronic program guide support (EIT)
+Electronic Program guide support (ATSC)
+Profile the playback subsystem performance
+Properly parse ATSC radio/scrambled flags
+Scanning support for ATSC Cable (CVCT)
+
+== Future functionality ==
+CD Ripping
+Playlist support
+CICAM support
+Recordings (ability to record a show and watch it later)
