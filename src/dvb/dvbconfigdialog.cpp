@@ -26,6 +26,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QTreeWidget>
 #include <KComboBox>
 #include <KLineEdit>
 #include <KLocalizedString>
@@ -70,15 +71,181 @@ void DvbConfigDialog::dialogAccepted()
 	manager->setDeviceConfigs(deviceConfigs);
 }
 
-DvbConfigObject::DvbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
-	KLineEdit *nameEdit_, const QString &defaultName_, DvbConfigBase *config_) :
-	QObject(timeoutSpinBox), sourceBox(sourceBox_), nameEdit(nameEdit_),
-	defaultName(defaultName_), config(config_)
+DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
+	const DvbDeviceConfig &deviceConfig) : QWidget(parent)
 {
-	connect(timeoutSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
-	connect(sourceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sourceChanged(int)));
-	connect(nameEdit, SIGNAL(editingFinished()), this, SLOT(nameChanged()));
+	QBoxLayout *boxLayout = new QVBoxLayout(this);
+	boxLayout->addWidget(new QLabel(i18n("Name: %1", deviceConfig.frontendName)));
 
+	DvbDevice *device = deviceConfig.device;
+
+	if (device == NULL) {
+		QFrame *frame = new QFrame(this);
+		frame->setFrameShape(QFrame::HLine);
+		boxLayout->addWidget(frame);
+
+		boxLayout->addWidget(new QLabel(i18n("device not connected")));
+
+		// FIXME option to remove device config
+
+		boxLayout->addStretch();
+		return;
+	}
+
+	DvbConfig dvbCConfig;
+	QList<DvbConfig> dvbSConfigs;
+	DvbConfig dvbTConfig;
+	DvbConfig atscConfig;
+
+	foreach (const DvbConfig &config, deviceConfig.configs) {
+		switch (config->getTransmissionType()) {
+		case DvbConfigBase::DvbC:
+			dvbCConfig = config;
+			break;
+		case DvbConfigBase::DvbS:
+			dvbSConfigs.append(config);
+			break;
+		case DvbConfigBase::DvbT:
+			dvbTConfig = config;
+			break;
+		case DvbConfigBase::Atsc:
+			atscConfig = config;
+			break;
+		}
+	}
+
+	DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
+
+	if ((transmissionTypes & DvbDevice::DvbC) != 0) {
+		DvbConfigBase *config;
+
+		if (dvbCConfig.constData() != NULL) {
+			config = new DvbConfigBase(*dvbCConfig);
+		} else {
+			config = new DvbConfigBase(DvbConfigBase::DvbC);
+			config->timeout = 1500;
+		}
+
+		configs.append(DvbConfig(config));
+		new DvbConfigObject(this, boxLayout, manager, config);
+	}
+
+	if ((transmissionTypes & DvbDevice::DvbS) != 0) {
+		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs);
+	}
+
+	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
+		DvbConfigBase *config;
+
+		if (dvbTConfig.constData() != NULL) {
+			config = new DvbConfigBase(*dvbTConfig);
+		} else {
+			config = new DvbConfigBase(DvbConfigBase::DvbT);
+			config->timeout = 1500;
+		}
+
+		configs.append(DvbConfig(config));
+		new DvbConfigObject(this, boxLayout, manager, config);
+	}
+
+	if ((transmissionTypes & DvbDevice::Atsc) != 0) {
+		DvbConfigBase *config;
+
+		if (atscConfig.constData() != NULL) {
+			config = new DvbConfigBase(*atscConfig);
+		} else {
+			config = new DvbConfigBase(DvbConfigBase::Atsc);
+			config->timeout = 1500;
+		}
+
+		configs.append(DvbConfig(config));
+		new DvbConfigObject(this, boxLayout, manager, config);
+	}
+
+	boxLayout->addStretch();
+}
+
+DvbConfigPage::~DvbConfigPage()
+{
+}
+
+QList<DvbConfig> DvbConfigPage::getConfigs()
+{
+	if (dvbSObject != NULL) {
+		dvbSObject->appendConfigs(configs);
+	}
+
+	for (int i = 0; i < configs.count(); ++i) {
+		const DvbConfig &config = configs.at(i);
+
+		if (config->name.isEmpty() || config->scanSource.isEmpty()) {
+			configs.removeAt(i);
+			--i;
+		}
+	}
+
+	return configs;
+}
+
+DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager *manager,
+	DvbConfigBase *config_) : QObject(parent), config(config_)
+{
+	QFrame *frame = new QFrame(parent);
+	frame->setFrameShape(QFrame::HLine);
+	layout->addWidget(frame);
+
+	QStringList sources;
+
+	switch (config->getTransmissionType()) {
+	case DvbConfigBase::DvbC:
+		defaultName = i18n("Cable");
+		sources = manager->getScanSources(DvbManager::DvbC);
+		layout->addWidget(new QLabel(i18n("DVB-C")));
+		break;
+	case DvbConfigBase::DvbS:
+		Q_ASSERT(false);
+		break;
+	case DvbConfigBase::DvbT:
+		defaultName = i18n("Terrestrial");
+		sources = manager->getScanSources(DvbManager::DvbT);
+		layout->addWidget(new QLabel(i18n("DVB-T")));
+		break;
+	case DvbConfigBase::Atsc:
+		defaultName = i18n("Atsc");
+		sources = manager->getScanSources(DvbManager::Atsc);
+		layout->addWidget(new QLabel(i18n("ATSC")));
+		break;
+	}
+
+	QGridLayout *gridLayout = new QGridLayout();
+	layout->addLayout(gridLayout);
+
+	gridLayout->addWidget(new QLabel(i18n("Tuner timeout (ms):")), 0, 0);
+
+	QSpinBox *spinBox = new QSpinBox(parent);
+	spinBox->setRange(100, 5000);
+	spinBox->setSingleStep(100);
+	spinBox->setValue(config->timeout);
+	connect(spinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
+	gridLayout->addWidget(spinBox, 0, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Source:")), 1, 0);
+
+	sourceBox = new KComboBox(parent);
+	sourceBox->addItem(i18n("No source"));
+	sourceBox->addItems(sources);
+	sourceBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
+	connect(sourceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sourceChanged(int)));
+	gridLayout->addWidget(sourceBox, 1, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Name:")), 2, 0);
+
+	nameEdit = new KLineEdit(parent);
+	nameEdit->setText(config->name);
+	connect(nameEdit, SIGNAL(editingFinished()), this, SLOT(nameChanged()));
+	gridLayout->addWidget(nameEdit, 2, 1);
+
+	timeoutChanged(spinBox->value());
 	sourceChanged(sourceBox->currentIndex());
 	nameChanged();
 }
@@ -116,27 +283,280 @@ void DvbConfigObject::nameChanged()
 	}
 }
 
-DvbSConfigObject::DvbSConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
-	QPushButton *configureButton_, DvbSConfig *config_) : QObject(timeoutSpinBox),
-	sourceBox(sourceBox_), configureButton(configureButton_), config(config_)
+DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
+	const QList<DvbConfig> &configs) : QObject(parent_), parent(parent_)
 {
-	connect(timeoutSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
-	connect(sourceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sourceChanged(int)));
-	connect(configureButton, SIGNAL(clicked()), this, SLOT(configureLnb()));
+	if (!configs.isEmpty()) {
+		lnbConfig = new DvbConfigBase(*configs.at(0));
+	} else {
+		lnbConfig = createConfig(0);
+	}
 
-	sourceChanged(sourceBox->currentIndex());
+	sources = manager->getScanSources(DvbManager::DvbS);
+
+	QFrame *frame = new QFrame(parent);
+	frame->setFrameShape(QFrame::HLine);
+	boxLayout->addWidget(frame);
+
+	boxLayout->addWidget(new QLabel(i18n("DVB-S")));
+
+	layout = new QGridLayout();
+	boxLayout->addLayout(layout);
+
+	layout->addWidget(new QLabel(i18n("Tuner timeout (ms):")), 0, 0);
+
+	QSpinBox *spinBox = new QSpinBox(parent);
+	spinBox->setRange(100, 5000);
+	spinBox->setSingleStep(100);
+	spinBox->setValue(lnbConfig->timeout);
+	layout->addWidget(spinBox, 0, 1);
+
+	layout->addWidget(new QLabel(i18n("Configuration:")), 1, 0);
+
+	configBox = new KComboBox(parent);
+	configBox->addItem(i18n("DiSEqC switch"));
+	configBox->addItem(i18n("USALS rotor"));
+	configBox->addItem(i18n("Positions rotor"));
+	configBox->setCurrentIndex(lnbConfig->configuration);
+	connect(configBox, SIGNAL(currentIndexChanged(int)), this, SLOT(configChanged(int)));
+	layout->addWidget(configBox, 1, 1);
+
+	// Diseqc switch
+
+	for (int lnbNumber = 0; lnbNumber < 4; ++lnbNumber) {
+		DvbConfigBase *config;
+
+		if ((lnbConfig->configuration == DvbConfigBase::DiseqcSwitch) &&
+		    (lnbNumber < configs.size())) {
+			config = new DvbConfigBase(*configs.at(lnbNumber));
+		} else {
+			config = createConfig(lnbNumber);
+		}
+
+		QPushButton *pushButton = new QPushButton(i18n("LNB %1 settings", lnbNumber + 1),
+							  parent);
+		connect(this, SIGNAL(setDiseqcVisible(bool)), pushButton, SLOT(setVisible(bool)));
+		layout->addWidget(pushButton, lnbNumber + 2, 0);
+
+		KComboBox *comboBox = new KComboBox(parent);
+		comboBox->addItem(i18n("No source"));
+		comboBox->addItems(sources);
+		comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
+		connect(this, SIGNAL(setDiseqcVisible(bool)), comboBox, SLOT(setVisible(bool)));
+		layout->addWidget(comboBox, lnbNumber + 2, 1);
+
+		diseqcConfigs.append(DvbConfig(config));
+		new DvbSLnbConfigObject(spinBox, comboBox, pushButton, config);
+	}
+
+	// USALS rotor / Positions rotor
+
+	QPushButton *pushButton = new QPushButton(i18n("LNB settings"), parent);
+	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	layout->addWidget(pushButton, 6, 0);
+
+	new DvbSLnbConfigObject(spinBox, NULL, pushButton, lnbConfig);
+
+	sourceBox = new KComboBox(parent);
+	sourceBox->addItems(sources);
+	connect(this, SIGNAL(setRotorVisible(bool)), sourceBox, SLOT(setVisible(bool)));
+	layout->addWidget(sourceBox, 6, 1);
+
+	satelliteView = new QTreeWidget(parent);
+
+	// Usals rotor
+
+	pushButton = new QPushButton(i18n("Add satellite"), parent);
+	connect(this, SIGNAL(setUsalsVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
+	layout->addWidget(pushButton, 7, 0, 1, 2);
+
+	// Positions rotor
+
+	rotorSpinBox = new QSpinBox(parent);
+	rotorSpinBox->setRange(0, 255);
+	connect(this, SIGNAL(setPositionsVisible(bool)), rotorSpinBox, SLOT(setVisible(bool)));
+	layout->addWidget(rotorSpinBox, 8, 0);
+
+	pushButton = new QPushButton(i18n("Add satellite"), parent);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
+	connect(this, SIGNAL(setPositionsVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	layout->addWidget(pushButton, 8, 1);
+
+	// USALS rotor / Positions rotor
+
+	satelliteView->setColumnCount(2);
+	satelliteView->setHeaderLabels(QStringList() << i18n("Satellite") << i18n("Position"));
+	satelliteView->setIndentation(0);
+	satelliteView->setMinimumHeight(100);
+	satelliteView->setSortingEnabled(true);
+	satelliteView->sortByColumn(0, Qt::AscendingOrder);
+	connect(this, SIGNAL(setRotorVisible(bool)), satelliteView, SLOT(setVisible(bool)));
+	layout->addWidget(satelliteView, 9, 0, 1, 2);
+
+	if ((lnbConfig->configuration == DvbConfigBase::UsalsRotor) ||
+	    (lnbConfig->configuration == DvbConfigBase::PositionsRotor)) {
+		foreach (const DvbConfig &config, configs) {
+			QStringList stringList;
+			stringList << config->scanSource << QString::number(config->lnbNumber);
+			satelliteView->addTopLevelItem(new QTreeWidgetItem(stringList));
+		}
+	}
+
+	pushButton = new QPushButton(i18n("Remove satellite"), parent);
+	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeSatellite()));
+	layout->addWidget(pushButton, 10, 0, 1, 2);
+
+	configChanged(configBox->currentIndex());
 }
 
 DvbSConfigObject::~DvbSConfigObject()
 {
+	delete lnbConfig;
 }
 
-void DvbSConfigObject::timeoutChanged(int timeout)
+void DvbSConfigObject::appendConfigs(QList<DvbConfig> &list)
 {
-	config->timeout = timeout;
+	int index = configBox->currentIndex();
+
+	if (index == 0) {
+		// Diseqc switch
+
+		list += diseqcConfigs;
+	} else if ((index == 1) || (index == 2)) {
+		// Usals rotor / Positions rotor
+
+		for (int i = 0;; ++i) {
+			QTreeWidgetItem *item = satelliteView->topLevelItem(i);
+
+			if (item == NULL) {
+				break;
+			}
+
+			QString satellite = item->text(0);
+
+			DvbConfigBase *config = new DvbConfigBase(*lnbConfig);
+			config->name = satellite;
+			config->scanSource = satellite;
+
+			if (index == 1) {
+				// USALS rotor
+				config->configuration = DvbConfigBase::UsalsRotor;
+			} else {
+				// Positions rotor
+				config->configuration = DvbConfigBase::PositionsRotor;
+				config->lnbNumber = item->text(1).toInt();
+			}
+
+			list.append(DvbConfig(config));
+		}
+	}
 }
 
-void DvbSConfigObject::sourceChanged(int index)
+void DvbSConfigObject::configChanged(int index)
+{
+	if (index == 0) {
+		// Diseqc switch
+
+		emit setDiseqcVisible(true);
+		emit setRotorVisible(false);
+		emit setUsalsVisible(false);
+		emit setPositionsVisible(false);
+	} else if (index == 1) {
+		// Usals rotor
+
+		satelliteView->hideColumn(1);
+
+		emit setDiseqcVisible(false);
+		emit setRotorVisible(true);
+		emit setUsalsVisible(true);
+		emit setPositionsVisible(false);
+	} else if (index == 2) {
+		// Positions rotor
+
+		if (satelliteView->isColumnHidden(1)) {
+			int width = satelliteView->columnWidth(0);
+			satelliteView->showColumn(1);
+			satelliteView->setColumnWidth(0, width / 2);
+		}
+
+		emit setDiseqcVisible(false);
+		emit setRotorVisible(true);
+		emit setUsalsVisible(false);
+		emit setPositionsVisible(true);
+	}
+}
+
+void DvbSConfigObject::addSatellite()
+{
+	QString satellite = sourceBox->currentText();
+	QString index = rotorSpinBox->text();
+	QStringList stringList = QStringList() << satellite << index;
+
+	if (configBox->currentIndex() == 1) {
+		// USALS rotor
+
+		if (satelliteView->findItems(satellite, Qt::MatchExactly).isEmpty()) {
+			satelliteView->addTopLevelItem(new QTreeWidgetItem(stringList));
+		}
+	} else {
+		// Positions rotor
+
+		QList<QTreeWidgetItem *> items =
+			satelliteView->findItems(index, Qt::MatchExactly, 1);
+
+		if (!items.isEmpty()) {
+			items.at(0)->setText(0, sourceBox->currentText());
+		} else {
+			satelliteView->addTopLevelItem(new QTreeWidgetItem(stringList));
+		}
+	}
+}
+
+void DvbSConfigObject::removeSatellite()
+{
+	qDeleteAll(satelliteView->selectedItems());
+}
+
+DvbConfigBase *DvbSConfigObject::createConfig(int lnbNumber)
+{
+	DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbS);
+	config->timeout = 1500;
+	config->configuration = DvbConfigBase::DiseqcSwitch;
+	config->lnbNumber = lnbNumber;
+	config->lowBandFrequency = 9750000;
+	config->switchFrequency = 11700000;
+	config->highBandFrequency = 10600000;
+	return config;
+}
+
+DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
+	QPushButton *configureButton_, DvbConfigBase *config_) : QObject(timeoutSpinBox),
+	sourceBox(sourceBox_), configureButton(configureButton_), config(config_)
+{
+	connect(timeoutSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
+	connect(configureButton, SIGNAL(clicked()), this, SLOT(configure()));
+
+	if (sourceBox != NULL) {
+		connect(sourceBox, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(sourceChanged(int)));
+		sourceChanged(sourceBox->currentIndex());
+	}
+
+	timeoutChanged(timeoutSpinBox->value());
+}
+
+DvbSLnbConfigObject::~DvbSLnbConfigObject()
+{
+}
+
+void DvbSLnbConfigObject::timeoutChanged(int value)
+{
+	config->timeout = value;
+}
+
+void DvbSLnbConfigObject::sourceChanged(int index)
 {
 	if (index <= 0) {
 		// no source selected
@@ -150,7 +570,7 @@ void DvbSConfigObject::sourceChanged(int index)
 	}
 }
 
-void DvbSConfigObject::configureLnb()
+void DvbSLnbConfigObject::configure()
 {
 	KDialog *dialog = new KDialog(configureButton);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -235,7 +655,7 @@ void DvbSConfigObject::configureLnb()
 	dialog->show();
 }
 
-void DvbSConfigObject::selectType(int type)
+void DvbSLnbConfigObject::selectType(int type)
 {
 	switch (type) {
 	case 1:
@@ -312,226 +732,9 @@ void DvbSConfigObject::selectType(int type)
 	currentType = type;
 }
 
-void DvbSConfigObject::dialogAccepted()
+void DvbSLnbConfigObject::dialogAccepted()
 {
 	config->lowBandFrequency = lowBandSpinBox->value() * 1000;
 	config->switchFrequency = switchSpinBox->value() * 1000;
 	config->highBandFrequency = highBandSpinBox->value() * 1000;
-}
-
-DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
-	const DvbDeviceConfig &deviceConfig) : QWidget(parent)
-{
-	QGridLayout *gridLayout = new QGridLayout(this);
-
-	QString name = deviceConfig.frontendName;
-	gridLayout->addWidget(new QLabel(i18n("Name: %1", name)), 0, 0, 1, 2);
-
-	int i = 0;
-	DvbDevice *device = deviceConfig.device;
-
-	if (device == NULL) {
-		QFrame *frame = new QFrame(this);
-		frame->setFrameShape(QFrame::HLine);
-		gridLayout->addWidget(frame, ++i, 0, 1, 2);
-
-		gridLayout->addWidget(new QLabel(i18n("device not connected")), ++i, 0, 1, 2);
-
-		gridLayout->addItem(new QSpacerItem(0, 0), ++i, 0, 1, 2);
-		gridLayout->setRowStretch(i, 1);
-
-		return;
-	}
-
-	DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
-
-	if ((transmissionTypes & DvbDevice::DvbC) != 0) {
-		DvbCConfig *config = NULL;
-
-		foreach (const DvbConfig &it, deviceConfig.configs) {
-			if (it->getTransmissionType() == DvbConfigBase::DvbC) {
-				config = new DvbCConfig(*it->getDvbCConfig());
-				break;
-			}
-		}
-
-		if (config == NULL) {
-			config = new DvbCConfig();
-			config->timeout = 1500;
-		}
-
-		configs.append(DvbConfig(config));
-		createObject(gridLayout, i, manager, config);
-	}
-
-	if ((transmissionTypes & DvbDevice::DvbS) != 0) {
-		QFrame *frame = new QFrame(this);
-		frame->setFrameShape(QFrame::HLine);
-		gridLayout->addWidget(frame, ++i, 0, 1, 2);
-
-		gridLayout->addWidget(new QLabel(i18n("DVB-S")), ++i, 0, 1, 2, Qt::AlignCenter);
-
-		gridLayout->addWidget(new QLabel(i18n("Tuner timeout (ms):")), ++i, 0);
-
-		QSpinBox *spinBox = new QSpinBox(this);
-		spinBox->setRange(100, 5000);
-		spinBox->setSingleStep(100);
-		spinBox->setValue(1500);
-		gridLayout->addWidget(spinBox, i, 1);
-
-		for (int lnbNumber = 0; lnbNumber < 4; ++lnbNumber) {
-			DvbSConfig *config = NULL;
-
-			for (int j = 0;; ++j) {
-				if (j == deviceConfig.configs.size()) {
-					config = new DvbSConfig();
-					config->timeout = 1500;
-					config->lnbNumber = lnbNumber;
-					config->lowBandFrequency = 9750000;
-					config->switchFrequency = 11700000;
-					config->highBandFrequency = 10600000;
-					break;
-				}
-
-				const DvbConfig &it = deviceConfig.configs.at(j);
-
-				if ((it->getTransmissionType() == DvbConfigBase::DvbS) &&
-				    (it->getDvbSConfig()->lnbNumber == lnbNumber)) {
-					config = new DvbSConfig(*it->getDvbSConfig());
-					spinBox->setValue(config->timeout);
-					break;
-				}
-			}
-
-			configs.append(DvbConfig(config));
-
-			QPushButton *pushButton =
-				new QPushButton(i18n("LNB %1 settings", lnbNumber + 1), this);
-			gridLayout->addWidget(pushButton, ++i, 0);
-
-			KComboBox *comboBox = new KComboBox(this);
-			QStringList sources = manager->getScanSources(DvbManager::DvbS);
-			comboBox->addItem(i18n("No source"));
-			comboBox->addItems(sources);
-			comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
-			gridLayout->addWidget(comboBox, i, 1);
-
-			new DvbSConfigObject(spinBox, comboBox, pushButton, config);
-		}
-	}
-
-	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
-		DvbTConfig *config = NULL;
-
-		foreach (const DvbConfig &it, deviceConfig.configs) {
-			if (it->getTransmissionType() == DvbConfigBase::DvbT) {
-				config = new DvbTConfig(*it->getDvbTConfig());
-				break;
-			}
-		}
-
-		if (config == NULL) {
-			config = new DvbTConfig();
-			config->timeout = 1500;
-		}
-
-		configs.append(DvbConfig(config));
-		createObject(gridLayout, i, manager, config);
-	}
-
-	if ((transmissionTypes & DvbDevice::Atsc) != 0) {
-		AtscConfig *config = NULL;
-
-		foreach (const DvbConfig &it, deviceConfig.configs) {
-			if (it->getTransmissionType() == DvbConfigBase::Atsc) {
-				config = new AtscConfig(*it->getAtscConfig());
-				break;
-			}
-		}
-
-		if (config == NULL) {
-			config = new AtscConfig();
-			config->timeout = 1500;
-		}
-
-		configs.append(DvbConfig(config));
-		createObject(gridLayout, i, manager, config);
-	}
-
-	gridLayout->addItem(new QSpacerItem(0, 0), ++i, 0, 1, 2);
-	gridLayout->setRowStretch(i, 1);
-}
-
-DvbConfigPage::~DvbConfigPage()
-{
-}
-
-QList<DvbConfig> DvbConfigPage::getConfigs()
-{
-	for (int i = 0; i < configs.count(); ++i) {
-		const DvbConfig &config = configs.at(i);
-
-		if (config->name.isEmpty() || config->scanSource.isEmpty()) {
-			configs.removeAt(i);
-			--i;
-		}
-	}
-
-	return configs;
-}
-
-void DvbConfigPage::createObject(QGridLayout *gridLayout, int &i, DvbManager *manager,
-	DvbConfigBase *config)
-{
-	QFrame *frame = new QFrame(this);
-	frame->setFrameShape(QFrame::HLine);
-	gridLayout->addWidget(frame, ++i, 0, 1, 2);
-
-	QString defaultName;
-	QStringList sources;
-
-	switch (config->getTransmissionType()) {
-	case DvbConfigBase::DvbC:
-		defaultName = i18n("Cable");
-		sources = manager->getScanSources(DvbManager::DvbC);
-		gridLayout->addWidget(new QLabel(i18n("DVB-C")), ++i, 0, 1, 2, Qt::AlignCenter);
-		break;
-	case DvbConfigBase::DvbS:
-		Q_ASSERT(false);
-		break;
-	case DvbConfigBase::DvbT:
-		defaultName = i18n("Terrestrial");
-		sources = manager->getScanSources(DvbManager::DvbT);
-		gridLayout->addWidget(new QLabel(i18n("DVB-T")), ++i, 0, 1, 2, Qt::AlignCenter);
-		break;
-	case DvbConfigBase::Atsc:
-		defaultName = i18n("Atsc");
-		sources = manager->getScanSources(DvbManager::Atsc);
-		gridLayout->addWidget(new QLabel(i18n("ATSC")), ++i, 0, 1, 2, Qt::AlignCenter);
-		break;
-	}
-
-	gridLayout->addWidget(new QLabel(i18n("Tuner timeout (ms):")), ++i, 0);
-
-	QSpinBox *spinBox = new QSpinBox(this);
-	spinBox->setRange(100, 5000);
-	spinBox->setSingleStep(100);
-	spinBox->setValue(config->timeout);
-	gridLayout->addWidget(spinBox, i, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Source:")), ++i, 0);
-
-	KComboBox *comboBox = new KComboBox(this);
-	comboBox->addItem(i18n("No source"));
-	comboBox->addItems(sources);
-	comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
-	gridLayout->addWidget(comboBox, i, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Name:")), ++i, 0);
-
-	KLineEdit *lineEdit = new KLineEdit(this);
-	lineEdit->setText(config->name);
-	gridLayout->addWidget(lineEdit, i, 1);
-
-	new DvbConfigObject(spinBox, comboBox, lineEdit, defaultName, config);
 }

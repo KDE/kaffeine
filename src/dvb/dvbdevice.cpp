@@ -192,7 +192,7 @@ bool DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString 
 			return false;
 		}
 
-		struct dmx_pes_filter_params pes_filter;
+		dmx_pes_filter_params pes_filter;
 		memset(&pes_filter, 0, sizeof(pes_filter));
 
 		pes_filter.pid = pid;
@@ -291,7 +291,7 @@ void DvbDeviceThread::customEvent(QEvent *)
 
 void DvbDeviceThread::run()
 {
-	struct pollfd pfds[2];
+	pollfd pfds[2];
 	memset(&pfds, 0, sizeof(pfds));
 
 	pfds[0].fd = pipes[0];
@@ -573,6 +573,8 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 		return;
 	}
 
+	bool moveRotor = false;
+
 	switch (transponder->getTransmissionType()) {
 	case DvbTransponderBase::DvbC: {
 		const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
@@ -580,7 +582,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		// tune
 
-		struct dvb_frontend_parameters params;
+		dvb_frontend_parameters params;
 		memset(&params, 0, sizeof(params));
 
 		params.frequency = dvbCTransponder->frequency;
@@ -602,9 +604,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 	case DvbTransponderBase::DvbS: {
 		const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
-		const DvbSConfig *dvbSConfig = config->getDvbSConfig();
 		Q_ASSERT(dvbSTransponder != NULL);
-		Q_ASSERT(dvbSConfig != NULL);
 
 		// parameters
 
@@ -614,24 +614,24 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 		int frequency = dvbSTransponder->frequency;
 		bool highBand = false;
 
-		if (dvbSConfig->switchFrequency != 0) {
+		if (config->switchFrequency != 0) {
 			// dual LO (low / high)
-			if (frequency < dvbSConfig->switchFrequency) {
-				frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+			if (frequency < config->switchFrequency) {
+				frequency = abs(frequency - config->lowBandFrequency);
 			} else {
-				frequency = abs(frequency - dvbSConfig->highBandFrequency);
+				frequency = abs(frequency - config->highBandFrequency);
 				highBand = true;
 			}
-		} else if (dvbSConfig->highBandFrequency != 0) {
+		} else if (config->highBandFrequency != 0) {
 			// single LO (horizontal / vertical)
 			if (horPolar) {
-				frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+				frequency = abs(frequency - config->lowBandFrequency);
 			} else {
-				frequency = abs(frequency - dvbSConfig->highBandFrequency);
+				frequency = abs(frequency - config->highBandFrequency);
 			}
 		} else {
 			// single LO
-			frequency = abs(frequency - dvbSConfig->lowBandFrequency);
+			frequency = abs(frequency - config->lowBandFrequency);
 		}
 
 		// tone off
@@ -647,27 +647,52 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 			kWarning() << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
 		}
 
-		// diseqc
+		// diseqc / rotor
 
 		usleep(15000);
 
-		struct dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0x00, 0x00, 0x00 }, 4 };
+		dvb_diseqc_master_cmd mCmd;
 
-		cmd.msg[3] = 0xf0 | (dvbSConfig->lnbNumber << 2) | (horPolar ? 2 : 0) |
-			            (highBand ? 1 : 0);
+		switch (config->configuration) {
+		case DvbConfigBase::DiseqcSwitch: {
+			dvb_diseqc_master_cmd cmd = { { 0xe0, 0x10, 0x38, 0x00, 0x00, 0x00 }, 4 };
+			cmd.msg[3] = 0xf0 | (config->lnbNumber << 2) | (horPolar ? 2 : 0) |
+				            (highBand ? 1 : 0);
+			mCmd = cmd;
+			break;
+		    }
 
-		if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
+		case DvbConfigBase::UsalsRotor: {
+			// FIXME
+			moveRotor = true;
+			break;
+		    }
+
+		case DvbConfigBase::PositionsRotor: {
+			dvb_diseqc_master_cmd cmd = { { 0xe0, 0x30, 0x6b, 0x00, 0x00, 0x00 }, 4 };
+			cmd.msg[3] = config->lnbNumber;
+			mCmd = cmd;
+			moveRotor = true;
+			break;
+		    }
+		}
+
+		if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &mCmd) != 0) {
 			kWarning() << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for" << frontendPath;
 		}
 
 		usleep(15000);
 
-		if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
-			  ((dvbSConfig->lnbNumber % 2) == 0) ? SEC_MINI_A : SEC_MINI_B) != 0) {
-			kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
-		}
+		if (!moveRotor) {
+			int burst = ((config->lnbNumber % 2) == 0) ? SEC_MINI_A : SEC_MINI_B;
 
-		usleep(15000);
+			if (ioctl(frontendFd, FE_DISEQC_SEND_BURST, burst) != 0) {
+				kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" <<
+					      frontendPath;
+			}
+
+			usleep(15000);
+		}
 
 		// low band --> tone off ; high band --> tone on
 
@@ -677,7 +702,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		// tune
 
-		struct dvb_frontend_parameters params;
+		dvb_frontend_parameters params;
 		memset(&params, 0, sizeof(params));
 
 		params.frequency = frequency;
@@ -702,7 +727,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		// tune
 
-		struct dvb_frontend_parameters params;
+		dvb_frontend_parameters params;
 		memset(&params, 0, sizeof(params));
 
 		params.frequency = dvbTTransponder->frequency;
@@ -735,7 +760,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		// tune
 
-		struct dvb_frontend_parameters params;
+		dvb_frontend_parameters params;
 		memset(&params, 0, sizeof(params));
 
 		params.frequency = atscTransponder->frequency;
@@ -754,11 +779,19 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 	    }
 	}
 
-	setDeviceState(DeviceTuning);
+	if (!moveRotor) {
+		setDeviceState(DeviceTuning);
 
-	// wait for tuning
-	frontendTimeout = config->timeout;
-	frontendTimer.start(100);
+		// wait for tuning
+		frontendTimeout = config->timeout;
+		frontendTimer.start(100);
+	} else {
+		setDeviceState(DeviceRotorMoving);
+
+		// wait for tuning
+		frontendTimeout = config->timeout;
+		frontendTimer.start(15000);
+	}
 
 	// start thread
 	thread->start(dvrFd);
@@ -855,6 +888,8 @@ void DvbDevice::frontendEvent()
 			return;
 		}
 	}
+
+	// FIXME progress bar when moving rotor
 
 	frontendTimeout -= 100;
 

@@ -23,9 +23,11 @@
 
 #include <KDialog>
 
+class QBoxLayout;
 class QGridLayout;
 class QLabel;
 class QSpinBox;
+class QTreeWidget;
 class KComboBox;
 class KLineEdit;
 class DvbConfig;
@@ -33,7 +35,8 @@ class DvbConfigBase;
 class DvbConfigPage;
 class DvbDeviceConfig;
 class DvbManager;
-class DvbSConfig;
+class DvbSConfigObject;
+class DvbSLnbConfigObject;
 
 class DvbConfigDialog : public KDialog
 {
@@ -50,55 +53,6 @@ private:
 	QList<DvbConfigPage *> configPages;
 };
 
-class DvbConfigObject : public QObject
-{
-	Q_OBJECT
-public:
-	DvbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_, KLineEdit *nameEdit_,
-		const QString &defaultName_, DvbConfigBase *config_);
-	~DvbConfigObject();
-
-private slots:
-	void timeoutChanged(int timeout);
-	void sourceChanged(int index);
-	void nameChanged();
-
-private:
-	KComboBox *sourceBox;
-	KLineEdit *nameEdit;
-	QString defaultName;
-	DvbConfigBase *config;
-};
-
-class DvbSConfigObject : public QObject
-{
-	Q_OBJECT
-public:
-	DvbSConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
-		QPushButton *configureButton_, DvbSConfig *config_);
-	~DvbSConfigObject();
-
-private slots:
-	void timeoutChanged(int timeout);
-	void sourceChanged(int index);
-	void configureLnb();
-	void selectType(int type);
-	void dialogAccepted();
-
-private:
-	KComboBox *sourceBox;
-	QPushButton *configureButton;
-	DvbSConfig *config;
-
-	QLabel *lowBandLabel;
-	QLabel *switchLabel;
-	QLabel *highBandLabel;
-	QSpinBox *lowBandSpinBox;
-	QSpinBox *switchSpinBox;
-	QSpinBox *highBandSpinBox;
-	int currentType;
-};
-
 class DvbConfigPage : public QWidget
 {
 public:
@@ -108,10 +62,92 @@ public:
 	QList<DvbConfig> getConfigs();
 
 private:
-	void createObject(QGridLayout *gridLayout, int &i, DvbManager *manager,
-		DvbConfigBase *config);
-
 	QList<DvbConfig> configs;
+	DvbSConfigObject *dvbSObject;
+};
+
+class DvbConfigObject : public QObject
+{
+	Q_OBJECT
+public:
+	DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager *manager,
+		DvbConfigBase *config_);
+	~DvbConfigObject();
+
+private slots:
+	void timeoutChanged(int timeout);
+	void sourceChanged(int index);
+	void nameChanged();
+
+private:
+	DvbConfigBase *config;
+	QString defaultName;
+	KComboBox *sourceBox;
+	KLineEdit *nameEdit;
+};
+
+class DvbSConfigObject : public QObject
+{
+	Q_OBJECT
+public:
+	DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
+		const QList<DvbConfig> &configs);
+	~DvbSConfigObject();
+
+	void appendConfigs(QList<DvbConfig> &list);
+
+signals:
+	void setDiseqcVisible(bool visible);
+	void setRotorVisible(bool visible); // common parts of usals / positions ui
+	void setUsalsVisible(bool visible); // usals-specific parts of ui
+	void setPositionsVisible(bool visible); // positions-specific parts of ui
+
+private slots:
+	void configChanged(int index);
+	void addSatellite();
+	void removeSatellite();
+
+private:
+	DvbConfigBase *createConfig(int lnbNumber);
+
+	QWidget *parent;
+	DvbConfigBase *lnbConfig;
+	QList<DvbConfig> diseqcConfigs;
+	QStringList sources;
+	QGridLayout *layout;
+	KComboBox *configBox;
+	KComboBox *sourceBox;
+	QSpinBox *rotorSpinBox;
+	QTreeWidget *satelliteView;
+};
+
+class DvbSLnbConfigObject : public QObject
+{
+	Q_OBJECT
+public:
+	DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
+		QPushButton *configureButton_, DvbConfigBase *config_);
+	~DvbSLnbConfigObject();
+
+private slots:
+	void timeoutChanged(int value);
+	void sourceChanged(int index);
+	void configure();
+	void selectType(int type);
+	void dialogAccepted();
+
+private:
+	KComboBox *sourceBox;
+	QPushButton *configureButton;
+	DvbConfigBase *config;
+
+	QLabel *lowBandLabel;
+	QLabel *switchLabel;
+	QLabel *highBandLabel;
+	QSpinBox *lowBandSpinBox;
+	QSpinBox *switchSpinBox;
+	QSpinBox *highBandSpinBox;
+	int currentType;
 };
 
 #endif /* DVBCONFIGDIALOG_H */

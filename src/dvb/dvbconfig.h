@@ -24,11 +24,6 @@
 #include <QSharedData>
 #include <QString>
 
-class DvbCConfig;
-class DvbSConfig;
-class DvbTConfig;
-class AtscConfig;
-
 class DvbConfigBase : public QSharedData
 {
 public:
@@ -37,98 +32,41 @@ public:
 		DvbC = 0,
 		DvbS = 1,
 		DvbT = 2,
-		Atsc = 3
+		Atsc = 3,
+		TransmissionTypeMax = Atsc
 	};
 
-	DvbConfigBase() { }
-	virtual ~DvbConfigBase() { }
+	DvbConfigBase(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }
+	~DvbConfigBase() { }
 
-	virtual TransmissionType getTransmissionType() const = 0;
-
-	virtual const DvbCConfig *getDvbCConfig() const
+	TransmissionType getTransmissionType() const
 	{
-		return NULL;
-	}
-
-	virtual const DvbSConfig *getDvbSConfig() const
-	{
-		return NULL;
-	}
-
-	virtual const DvbTConfig *getDvbTConfig() const
-	{
-		return NULL;
-	}
-
-	virtual const AtscConfig *getAtscConfig() const
-	{
-		return NULL;
+		return transmissionType;
 	}
 
 	QString name;
 	QString scanSource;
 	int timeout; // tuning timeout (ms)
-};
 
-class DvbCConfig : public DvbConfigBase
-{
-public:
-	TransmissionType getTransmissionType() const
+	// only used for DVB-S
+
+	enum Configuration
 	{
-		return DvbC;
-	}
+		DiseqcSwitch = 0,
+		UsalsRotor = 1,
+		PositionsRotor = 2,
+		ConfigurationMax = PositionsRotor
+	};
 
-	const DvbCConfig *getDvbCConfig() const
-	{
-		return this;
-	}
-};
-
-class DvbSConfig : public DvbConfigBase
-{
-public:
-	TransmissionType getTransmissionType() const
-	{
-		return DvbS;
-	}
-
-	const DvbSConfig *getDvbSConfig() const
-	{
-		return this;
-	}
-
+	Configuration configuration;
 	int lnbNumber;         // corresponds to diseqc switch position (0 = first sat etc)
+			       // or to rotor position (0 = first position etc)
 	int lowBandFrequency;  // kHz (C-band multipoint: horizontal)
 	int switchFrequency;   // kHz (0 == only low band or C-band multipoint)
 	int highBandFrequency; // kHz (C-band multipoint: vertical)
-};
 
-class DvbTConfig : public DvbConfigBase
-{
-public:
-	TransmissionType getTransmissionType() const
-	{
-		return DvbT;
-	}
-
-	const DvbTConfig *getDvbTConfig() const
-	{
-		return this;
-	}
-};
-
-class AtscConfig : public DvbConfigBase
-{
-public:
-	TransmissionType getTransmissionType() const
-	{
-		return Atsc;
-	}
-
-	const AtscConfig *getAtscConfig() const
-	{
-		return this;
-	}
+private:
+	TransmissionType transmissionType;
 };
 
 class DvbConfig : public QExplicitlySharedDataPointer<const DvbConfigBase>

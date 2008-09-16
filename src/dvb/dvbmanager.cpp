@@ -190,6 +190,17 @@ public:
 		return valid;
 	}
 
+	template<typename T> T readEnum(const QString &entry, T maxValue)
+	{
+		int value = readInt(entry);
+
+		if (value > maxValue) {
+			valid = false;
+		}
+
+		return static_cast<T>(value);
+	}
+
 	int readInt(const QString &entry)
 	{
 		QString string = readString(entry);
@@ -508,56 +519,33 @@ void DvbManager::readDeviceConfigs()
 				}
 			}
 
-			QString name = reader.readString("name");
-			QString scanSource = reader.readString("scanSource");
-			int timeout = reader.readInt("timeout");
-			QString type = reader.readString("type");
+			DvbConfigBase::TransmissionType type =
+				reader.readEnum("type", DvbConfigBase::TransmissionTypeMax);
 
 			if (!reader.isValid()) {
 				break;
 			}
 
-			if (type == "DvbC") {
-				DvbCConfig config;
+			DvbConfigBase *config = new DvbConfigBase(type);
+			config->name = reader.readString("name");
+			config->scanSource = reader.readString("scanSource");
+			config->timeout = reader.readInt("timeout");
 
-				config.name = name;
-				config.scanSource = scanSource;
-				config.timeout = timeout;
-
-				deviceConfig.configs.append(DvbConfig(new DvbCConfig(config)));
-			} else if (type == "DvbS") {
-				DvbSConfig config;
-
-				config.name = name;
-				config.scanSource = scanSource;
-				config.timeout = timeout;
-				config.lnbNumber = reader.readInt("lnbNumber");
-				config.lowBandFrequency = reader.readInt("lowBandFrequency");
-				config.switchFrequency = reader.readInt("switchFrequency");
-				config.highBandFrequency = reader.readInt("highBandFrequency");
-
-				if (!reader.isValid()) {
-					break;
-				}
-
-				deviceConfig.configs.append(DvbConfig(new DvbSConfig(config)));
-			} else if (type == "DvbT") {
-				DvbTConfig config;
-
-				config.name = name;
-				config.scanSource = scanSource;
-				config.timeout = timeout;
-
-				deviceConfig.configs.append(DvbConfig(new DvbTConfig(config)));
-			} else if (type == "Atsc") {
-				AtscConfig config;
-
-				config.name = name;
-				config.scanSource = scanSource;
-				config.timeout = timeout;
-
-				deviceConfig.configs.append(DvbConfig(new AtscConfig(config)));
+			if (type == DvbConfigBase::DvbS) {
+				config->configuration = reader.readEnum("configuration",
+								   DvbConfigBase::ConfigurationMax);
+				config->lnbNumber = reader.readInt("lnbNumber");
+				config->lowBandFrequency = reader.readInt("lowBandFrequency");
+				config->switchFrequency = reader.readInt("switchFrequency");
+				config->highBandFrequency = reader.readInt("highBandFrequency");
 			}
+
+			if (!reader.isValid()) {
+				delete config;
+				break;
+			}
+
+			deviceConfig.configs.append(DvbConfig(config));
 		}
 
 		deviceConfigs.append(deviceConfig);
@@ -587,37 +575,17 @@ void DvbManager::writeDeviceConfigs()
 
 		foreach (const DvbConfig &config, deviceConfig.configs) {
 			writer.write("[config]");
+			writer.write("type", config->getTransmissionType());
 			writer.write("name", config->name);
 			writer.write("scanSource", config->scanSource);
 			writer.write("timeout", config->timeout);
 
-			switch (config->getTransmissionType()) {
-			case DvbTransponderBase::DvbC: {
-				writer.write("type", "DvbC");
-				break;
-			    }
-
-			case DvbTransponderBase::DvbS: {
-				const DvbSConfig *dvbSConfig = config->getDvbSConfig();
-
-				writer.write("type", "DvbS");
-				writer.write("lnbNumber", dvbSConfig->lnbNumber);
-				writer.write("lowBandFrequency", dvbSConfig->lowBandFrequency);
-				writer.write("switchFrequency", dvbSConfig->switchFrequency);
-				writer.write("highBandFrequency", dvbSConfig->highBandFrequency);
-
-				break;
-			    }
-
-			case DvbTransponderBase::DvbT: {
-				writer.write("type", "DvbT");
-				break;
-			    }
-
-			case DvbTransponderBase::Atsc: {
-				writer.write("type", "Atsc");
-				break;
-			    }
+			if (config->getTransmissionType() == DvbConfigBase::DvbS) {
+				writer.write("configuration", config->configuration);
+				writer.write("lnbNumber", config->lnbNumber);
+				writer.write("lowBandFrequency", config->lowBandFrequency);
+				writer.write("switchFrequency", config->switchFrequency);
+				writer.write("highBandFrequency", config->highBandFrequency);
 			}
 		}
 	}
