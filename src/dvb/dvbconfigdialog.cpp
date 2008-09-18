@@ -72,7 +72,7 @@ void DvbConfigDialog::dialogAccepted()
 }
 
 DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
-	const DvbDeviceConfig &deviceConfig) : QWidget(parent)
+	const DvbDeviceConfig &deviceConfig) : QWidget(parent), dvbSObject(NULL)
 {
 	QBoxLayout *boxLayout = new QVBoxLayout(this);
 	boxLayout->addWidget(new QLabel(i18n("Name: %1", deviceConfig.frontendName)));
