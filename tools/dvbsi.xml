@@ -87,14 +87,14 @@
       <shortName6 bits="16" type="int" />
       <shortName7 bits="16" type="int" />
       <unused bits="4" />
-      <unused bits="10" />
-      <unused bits="10" />
+      <majorNumber bits="10" type="int" />
+      <minorNumber bits="10" type="int" />
       <unused bits="8" />
       <unused bits="32" />
       <unused bits="16" />
       <programNumber bits="16" type="int" />
       <unused bits="2" />
-      <unused bits="1" />
+      <isScrambled bits="1" type="bool" />
       <isHidden bits="1" type="bool" />
       <unused bits="2" />
       <unused bits="1" />

@@ -687,9 +687,24 @@ public:
 		return (at(12) << 8) | at(13);
 	}
 
+	int majorNumber() const
+	{
+		return ((at(14) & 0xf) << 6) | (at(15) >> 2);
+	}
+
+	int minorNumber() const
+	{
+		return ((at(15) & 0x3) << 8) | at(16);
+	}
+
 	int programNumber() const
 	{
 		return (at(24) << 8) | at(25);
+	}
+
+	bool isScrambled() const
+	{
+		return ((at(26) & 0x20) != 0);
 	}
 
 	bool isHidden() const

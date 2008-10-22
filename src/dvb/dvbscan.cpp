@@ -574,7 +574,9 @@ void DvbScan::processVct(const AtscVctSection &section)
 			break;
 		}
 
-		DvbSdtEntry sdtEntry(entry.programNumber(), -1, false);
+		QString majorminor = QString("%1-%2 ").arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
+
+		DvbSdtEntry sdtEntry(entry.programNumber(), -1, entry.isScrambled());
 
 		// Each VCT section has it's own list of descriptors
 		// See A/65C table 6.25a for the list of descriptors
@@ -593,7 +595,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 			if (!nameDescriptor.isValid()) {
 				continue;
 			}
-			sdtEntry.name = nameDescriptor.name();
+			sdtEntry.name = majorminor + nameDescriptor.name();
 		}
 
 		if (sdtEntry.name.isEmpty()) {
@@ -610,7 +612,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 			while (shortName[nameLength] != 0) {
 				++nameLength;
 			}
-			sdtEntry.name = QString(shortName, nameLength);
+			sdtEntry.name = majorminor + QString(shortName, nameLength);
 		}
 		sdtEntries.append(sdtEntry);
 	}
