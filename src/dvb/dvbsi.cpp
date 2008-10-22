@@ -344,7 +344,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		}
 
 		QString result = codecTable[encoding]->toUnicode(dest, destIt - dest);
-		delete dest;
+		delete[] dest;
 
 		return result;
 	}
