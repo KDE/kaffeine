@@ -41,15 +41,8 @@ public:
 		return dvbManager;
 	}
 
-	DvbDevice *getLiveDevice() const
-	{
-		return liveDevice;
-	}
-
-	DvbSharedChannel getLiveChannel() const
-	{
-		return liveChannel;
-	}
+	DvbDevice *getLiveDevice() const;
+	DvbSharedChannel getLiveChannel() const;
 
 public slots:
 	void configureChannels();
@@ -57,7 +50,6 @@ public slots:
 
 private slots:
 	void playLive(const QModelIndex &index);
-	void livePaused(bool paused);
 	void liveStopped();
 
 private:
@@ -65,11 +57,9 @@ private:
 
 	DvbManager *dvbManager;
 	QLayout *mediaLayout;
-	DvbDevice *liveDevice;
-	DvbSharedChannel liveChannel;
 
 	// FIXME - just a demo hack
-	DvbStream *dvbStream;
+	DvbStream *liveStream;
 };
 
 #endif /* DVBTAB_H */

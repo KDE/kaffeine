@@ -22,17 +22,22 @@
 #define MEDIAWIDGET_H
 
 #include <QWidget>
+#include <Phonon/AbstractMediaStream>
 #include <KUrl>
 
-class DvbLiveFeed; // defined in engine.h
-class Engine;
+namespace Phonon
+{
+class AudioOutput;
+};
+
+class DvbLiveFeed;
 class Manager;
 
 class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	MediaWidget(Manager *manager_);
+	explicit MediaWidget(Manager *manager_);
 	~MediaWidget() { }
 
 	QWidget *newPositionSlider();
@@ -51,26 +56,34 @@ public:
 	void playDvd();
 
 	/*
-	 * ownership isn't taken; you have to delete it
-	 * manually after DvbStream::stop() has been called
+	 * ownership is taken over by the media widget
 	 */
 
 	void playDvb(DvbLiveFeed *feed);
-
-	void switchEngine(Engine *newEngine);
 
 public slots:
 	void stop();
 
 private slots:
-	void playbackFinished();
-	void playbackFailed(const QString &errorMessage);
+	void stateChanged(Phonon::State state);
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 
 	Manager *manager;
-	Engine *engine;
+	Phonon::MediaObject *mediaObject;
+	Phonon::AudioOutput *audioOutput;
+	DvbLiveFeed *liveFeed;
+};
+
+class DvbLiveFeed : public Phonon::AbstractMediaStream
+{
+public:
+	DvbLiveFeed() { }
+	virtual ~DvbLiveFeed() { }
+
+	virtual void livePaused(bool paused) = 0;
+	virtual void liveStopped() = 0;
 };
 
 #endif /* MEDIAWIDGET_H */

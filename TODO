@@ -12,15 +12,14 @@ Working:
 General Selection of Audio channel and subtitles
 
 = DVB Subsystem =
-Figure out why Phonon crashes after more than one channel (#169380)
 Synthesize PAT/PMT
 DVB Selection of Audio Channels/Subtitles
 Channel properties dialog
 On screen display showing current channel information (needs spec)
 Electronic program guide support (EIT)
 Electronic Program guide support (ATSC)
+Timeshift support
 Profile the playback subsystem performance
-Properly parse ATSC scrambled flags
 
 == Future functionality ==
 CD Ripping

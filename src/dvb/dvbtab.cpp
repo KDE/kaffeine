@@ -26,7 +26,6 @@
 #include <KDebug>
 #include <KLineEdit>
 #include <KMessageBox>
-#include "../engine.h"
 #include "../kaffeine.h"
 #include "../manager.h"
 #include "../mediawidget.h"
@@ -42,14 +41,37 @@
 class DvbStream : public DvbLiveFeed, public DvbPidFilter
 {
 public:
-	DvbStream(DvbDevice *device_) : device(device_), bufferPos(0)
+	DvbStream(DvbManager *dvbManager_, DvbDevice *device_, DvbSharedChannel channel_) :
+		dvbManager(dvbManager_), device(device_), channel(channel_), bufferPos(0)
 	{
+		setStreamSize(-1);
 		buffer.resize(188 * 64);
 	}
 
 	~DvbStream() { }
 
+	void livePaused(bool /*paused*/)
+	{
+		// FIXME timeshift & co
+	}
+
+	void liveStopped()
+	{
+		if (device != NULL) {
+			device->stopDevice();
+			dvbManager->releaseDevice(device);
+			device = NULL;
+		}
+	}
+
+	DvbManager *dvbManager;
+	DvbDevice *device;
+	DvbSharedChannel channel;
+
 private:
+	void needData() { }
+	void reset() { }
+
 	void processData(const char data[188])
 	{
 		// FIXME too hacky
@@ -63,12 +85,11 @@ private:
 		}
 	}
 
-	DvbDevice *device;
 	QByteArray buffer;
 	int bufferPos;
 };
 
-DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStream(NULL)
+DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveStream(NULL)
 {
 	dvbManager = new DvbManager(this);
 
@@ -110,7 +131,6 @@ DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveDevice(NULL), dvbStre
 
 DvbTab::~DvbTab()
 {
-	delete dvbStream;
 }
 
 void DvbTab::configureChannels()
@@ -131,60 +151,64 @@ void DvbTab::activate()
 	mediaLayout->addWidget(manager->getMediaWidget());
 }
 
+DvbDevice *DvbTab::getLiveDevice() const
+{
+	if (liveStream != NULL) {
+		return liveStream->device;
+	}
+
+	return NULL;
+}
+
+DvbSharedChannel DvbTab::getLiveChannel() const
+{
+	if (liveStream != NULL) {
+		return liveStream->channel;
+	}
+
+	return DvbSharedChannel();
+}
+
 // FIXME - just a demo hack
 void DvbTab::playLive(const QModelIndex &index)
 {
+	if (liveStream != NULL) {
+		liveStream->liveStopped();
+		// FIXME hacky; but ok for now
+		disconnect(liveStream, SIGNAL(destroyed(QObject *)), this, SLOT(liveStopped()));
+		liveStream = NULL;
+	}
+
+	// don't call manager->getMediaWidget()->stop() here
+	// otherwise the media widget runs into trouble
+	// because the stop event arrives after starting playback ...
+
 	DvbSharedChannel channel = *dvbManager->getChannelModel()->getChannel(index);
 
 	if (channel == NULL) {
+		manager->getMediaWidget()->stop();
 		return;
 	}
 
-	manager->getMediaWidget()->stop();
+	DvbDevice *device = dvbManager->requestDevice(channel->source);
 
-	delete dvbStream;
-	dvbStream = NULL;
-
-	if ((liveDevice == NULL) || (liveChannel->source != channel->source)) {
-		if (liveDevice != NULL) {
-			liveDevice->stopDevice();
-			dvbManager->releaseDevice(liveDevice);
-			liveDevice = NULL;
-		}
-
-		DvbDevice *device = dvbManager->requestDevice(channel->source);
-
-		if (device == NULL) {
-			KMessageBox::sorry(this, i18n("No suitable device found."));
-			return;
-		}
-
-		liveDevice = device;
-	} else {
-		liveDevice->stopDevice();
+	if (device == NULL) {
+		manager->getMediaWidget()->stop();
+		KMessageBox::sorry(this, i18n("No suitable device found."));
+		return;
 	}
 
-	dvbStream = new DvbStream(liveDevice);
-	liveChannel = channel;
+	liveStream = new DvbStream(dvbManager, device, channel);
+	connect(liveStream, SIGNAL(destroyed(QObject *)), this, SLOT(liveStopped()));
 
-	liveDevice->tuneDevice(channel->transponder);
-	liveDevice->addPidFilter(channel->videoPid, dvbStream);
-	liveDevice->addPidFilter(channel->audioPid, dvbStream);
+	device->tuneDevice(channel->transponder);
+	device->addPidFilter(channel->videoPid, liveStream);
+	device->addPidFilter(channel->audioPid, liveStream);
 
-	connect(dvbStream, SIGNAL(livePaused(bool)), this, SLOT(livePaused(bool)));
-	connect(dvbStream, SIGNAL(liveStopped()), this, SLOT(liveStopped()));
-
-	manager->getMediaWidget()->playDvb(dvbStream);
-}
-
-void DvbTab::livePaused(bool /*paused*/)
-{
-	// FIXME - timeshift & co
+	manager->getMediaWidget()->playDvb(liveStream);
 }
 
 void DvbTab::liveStopped()
 {
-	liveDevice->stopDevice();
-	dvbManager->releaseDevice(liveDevice);
-	liveDevice = NULL;
+	liveStream = NULL;
 }

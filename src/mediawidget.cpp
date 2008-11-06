@@ -21,28 +21,47 @@
 #include "mediawidget.h"
 
 #include <QHBoxLayout>
+#include <Phonon/AbstractMediaStream>
+#include <Phonon/AudioOutput>
+#include <Phonon/MediaObject>
+#include <Phonon/Path>
+#include <Phonon/SeekSlider>
+#include <Phonon/VideoWidget>
+#include <Phonon/VolumeSlider>
 #include <KMessageBox>
-#include "engine_phonon.h"
 #include "kaffeine.h"
 #include "manager.h"
 
-MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), engine(NULL)
+MediaWidget::MediaWidget(Manager *manager_) : manager(manager_), liveFeed(NULL)
 {
 	QBoxLayout *layout = new QHBoxLayout(this);
 	layout->setMargin(0);
-	setLayout(layout);
 
-	switchEngine(new EnginePhonon(this));
+	mediaObject = new Phonon::MediaObject(this);
+
+	audioOutput = new Phonon::AudioOutput(Phonon::VideoCategory, this);
+	Phonon::createPath(mediaObject, audioOutput);
+
+	Phonon::VideoWidget *videoWidget = new Phonon::VideoWidget(this);
+	Phonon::createPath(mediaObject, videoWidget);
+	layout->addWidget(videoWidget);
+
+	connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
+		this, SLOT(stateChanged(Phonon::State)));
 }
 
 QWidget *MediaWidget::newPositionSlider()
 {
-	return engine->positionSlider();
+	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider();
+	seekSlider->setMediaObject(mediaObject);
+	return seekSlider;
 }
 
 QWidget *MediaWidget::newVolumeSlider()
 {
-	return engine->volumeSlider();
+	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider();
+	volumeSlider->setAudioOutput(audioOutput);
+	return volumeSlider;
 }
 
 void MediaWidget::setFullscreen(bool fullscreen)
@@ -57,64 +76,88 @@ void MediaWidget::setFullscreen(bool fullscreen)
 
 void MediaWidget::setPaused(bool paused)
 {
-	engine->setPaused(paused);
+	if (paused) {
+		mediaObject->pause();
+	} else {
+		mediaObject->play();
+	}
 }
 
 void MediaWidget::play(const KUrl &url)
 {
-	engine->play(url);
-	manager->setPlaying();
+	mediaObject->setCurrentSource(url);
+	mediaObject->play();
 }
 
 void MediaWidget::playAudioCd()
 {
-	engine->playAudioCd();
-	manager->setPlaying();
+	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Cd));
+	mediaObject->play();
 }
 
 void MediaWidget::playVideoCd()
 {
-	engine->playVideoCd();
-	manager->setPlaying();
+	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Vcd));
+	mediaObject->play();
 }
 
 void MediaWidget::playDvd()
 {
-	engine->playDvd();
-	manager->setPlaying();
+	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Dvd));
+	mediaObject->play();
 }
 
 void MediaWidget::playDvb(DvbLiveFeed *feed)
 {
-	engine->playDvb(feed);
-	manager->setPlaying();
-}
+	if (liveFeed != NULL) {
+		liveFeed->liveStopped();
+		delete liveFeed;
+		liveFeed = NULL;
+	}
 
-void MediaWidget::switchEngine(Engine *newEngine)
-{
-	delete engine;
-
-	engine = newEngine;
-	layout()->addWidget(engine->videoWidget());
-
-	connect(engine, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-	connect(engine, SIGNAL(playbackFailed(QString)), this, SLOT(playbackFailed(QString)));
+	liveFeed = feed;
+	mediaObject->setCurrentSource(Phonon::MediaSource(feed));
+	mediaObject->play();
 }
 
 void MediaWidget::stop()
 {
-	engine->stop();
+	mediaObject->stop();
 }
 
-void MediaWidget::playbackFinished()
+void MediaWidget::stateChanged(Phonon::State state)
 {
-	manager->setStopped();
-}
+	switch (state) {
+		case Phonon::LoadingState:
+		case Phonon::BufferingState:
+		case Phonon::PlayingState:
+		case Phonon::PausedState:
+			if (liveFeed != NULL) {
+				liveFeed->livePaused(state == Phonon::PausedState);
+			}
+			manager->setPlaying();
+			break;
 
-void MediaWidget::playbackFailed(const QString &errorMessage)
-{
-	manager->setStopped();
-	KMessageBox::error(manager->getKaffeine(), errorMessage);
+		case Phonon::StoppedState:
+			if (liveFeed != NULL) {
+				liveFeed->liveStopped();
+				delete liveFeed;
+				liveFeed = NULL;
+			}
+			manager->setStopped();
+			break;
+
+		case Phonon::ErrorState:
+			if (liveFeed != NULL) {
+				liveFeed->liveStopped();
+				delete liveFeed;
+				liveFeed = NULL;
+			}
+			manager->setStopped();
+			// FIXME check errorType
+			KMessageBox::error(manager->getKaffeine(), mediaObject->errorString());
+			break;
+	}
 }
 
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
