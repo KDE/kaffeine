@@ -28,7 +28,7 @@
 namespace Phonon
 {
 class AudioOutput;
-};
+}
 
 class DvbLiveFeed;
 class Manager;
