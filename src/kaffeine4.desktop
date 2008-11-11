@@ -5,6 +5,7 @@ Name[x-test]=xxKaffeinexx
 Exec=kaffeine4 %U
 GenericName=Media Player
 GenericName[bg]=Медия плеър
+GenericName[cs]=Přehrávač médií
 GenericName[csb]=Mùltimedialny grôcz
 GenericName[de]=Medienwiedergabe
 GenericName[el]=Αναπαραγωγέας πολυμέσων
