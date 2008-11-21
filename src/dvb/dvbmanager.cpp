@@ -479,7 +479,7 @@ void DvbManager::writeChannelList()
 	stream.setCodec("UTF-8");
 	QList<DvbSharedChannel> list = channelModel->getList();
 
-	for (QList<DvbSharedChannel>::const_iterator it = list.begin(); it != list.end(); ++it) {
+	for (QList<DvbSharedChannel>::const_iterator it = list.constBegin(); it != list.constEnd(); ++it) {
 		DvbLineWriter writer;
 		writer.writeChannel(*it);
 		stream << writer.getLine();

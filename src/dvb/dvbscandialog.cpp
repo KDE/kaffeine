@@ -336,7 +336,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 	foreach (const DvbPreviewChannel *currentChannel, channelList) {
 		QList<DvbSharedChannel>::const_iterator it;
 
-		for (it = channels.begin(); it != channels.end(); ++it) {
+		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
 			// FIXME - algorithmic complexity is quite high
 			if ((currentChannel->source == (*it)->source) &&
 			    (currentChannel->networkId == (*it)->networkId) &&
@@ -348,7 +348,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 
 		DvbChannel *channel = new DvbChannel(*currentChannel);
 
-		if (it != channels.end()) {
+		if (it != channels.constEnd()) {
 			// update channel
 			channel->number = (*it)->number;
 			channel->audioPid = (*it)->audioPid;
@@ -360,7 +360,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 				}
 			}
 
-			channelModel->updateChannel(it - channels.begin(), DvbSharedChannel(channel));
+			channelModel->updateChannel(it - channels.constBegin(), DvbSharedChannel(channel));
 		} else {
 			// add channel
 			// number is assigned later
@@ -379,10 +379,10 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 	qSort(channels.begin(), channels.end(), DvbChannelNumberLess());
 
 	int currentNumber = 1;
-	QList<DvbSharedChannel>::const_iterator channelIt = channels.begin();
+	QList<DvbSharedChannel>::const_iterator channelIt = channels.constBegin();
 
 	for (QList<DvbSharedChannel>::iterator it = newChannels.begin(); it != newChannels.end(); ++it) {
-		while ((channelIt != channels.end()) && (currentNumber == (*channelIt)->number)) {
+		while ((channelIt != channels.constEnd()) && (currentNumber == (*channelIt)->number)) {
 			++channelIt;
 			++currentNumber;
 		}

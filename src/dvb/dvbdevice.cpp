@@ -1092,7 +1092,7 @@ void DvbDeviceManager::componentAdded(const Solid::Device &component)
 	DvbDevice *device;
 
 	for (QList<DvbDevice *>::iterator it = devices.begin();; ++it) {
-		if ((it == devices.constEnd()) || ((*it)->getIndex() > deviceIndex)) {
+		if ((it == devices.end()) || ((*it)->getIndex() > deviceIndex)) {
 			device = new DvbDevice(deviceIndex);
 			devices.insert(it, device);
 			break;
