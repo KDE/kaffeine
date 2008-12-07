@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Kaffeine
 Name[ne]=क्याफिन
+Name[pa]=ਕੈਫ਼ੀਨ
 Name[x-test]=xxKaffeinexx
 Exec=kaffeine4 %U
 GenericName=Media Player
@@ -26,9 +27,11 @@ GenericName[nds]=Medienafspeler
 GenericName[ne]=मिडिया प्लेयर
 GenericName[nl]=Mediaspeler
 GenericName[nn]=Mediespelar
+GenericName[pa]=ਮੀਡਿਆ ਪਲੇਅਰ
 GenericName[pl]=Odtwarzacz multimedialny
 GenericName[pt]=Leitor Multimédia
 GenericName[pt_BR]=Reprodutor de mídias
+GenericName[ro]=Redare multimedia
 GenericName[ru]=Проигрыватель мультимедиа
 GenericName[sv]=Mediaspelare
 GenericName[tg]=Навозишгари Медиа
