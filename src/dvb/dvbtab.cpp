@@ -25,9 +25,8 @@
 #include <QSplitter>
 #include <KDebug>
 #include <KLineEdit>
+#include <KLocalizedString>
 #include <KMessageBox>
-#include "../kaffeine.h"
-#include "../manager.h"
 #include "../mediawidget.h"
 #include "dvbchannel.h"
 #include "dvbchannelview.h"
@@ -89,7 +88,7 @@ private:
 	int bufferPos;
 };
 
-DvbTab::DvbTab(Manager *manager_) : TabBase(manager_), liveStream(NULL)
+DvbTab::DvbTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_), liveStream(NULL)
 {
 	dvbManager = new DvbManager(this);
 
@@ -148,7 +147,7 @@ void DvbTab::configureDvb()
 
 void DvbTab::activate()
 {
-	mediaLayout->addWidget(manager->getMediaWidget());
+	mediaLayout->addWidget(mediaWidget);
 }
 
 DvbDevice *DvbTab::getLiveDevice() const
@@ -179,21 +178,21 @@ void DvbTab::playLive(const QModelIndex &index)
 		liveStream = NULL;
 	}
 
-	// don't call manager->getMediaWidget()->stop() here
+	// don't call mediaWidget->stop() here
 	// otherwise the media widget runs into trouble
 	// because the stop event arrives after starting playback ...
 
 	DvbSharedChannel channel = *dvbManager->getChannelModel()->getChannel(index);
 
 	if (channel == NULL) {
-		manager->getMediaWidget()->stop();
+		mediaWidget->stop();
 		return;
 	}
 
 	DvbDevice *device = dvbManager->requestDevice(channel->source);
 
 	if (device == NULL) {
-		manager->getMediaWidget()->stop();
+		mediaWidget->stop();
 		KMessageBox::sorry(this, i18n("No suitable device found."));
 		return;
 	}
@@ -205,7 +204,7 @@ void DvbTab::playLive(const QModelIndex &index)
 	device->addPidFilter(channel->videoPid, liveStream);
 	device->addPidFilter(channel->audioPid, liveStream);
 
-	manager->getMediaWidget()->playDvb(liveStream);
+	mediaWidget->playDvb(liveStream);
 }
 
 void DvbTab::liveStopped()

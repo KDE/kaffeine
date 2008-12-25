@@ -21,8 +21,8 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include "../kaffeine.h"
 #include "dvbchannel.h"
-#include "../manager.h"
 
 class QModelIndex;
 class DvbDevice;
@@ -33,7 +33,7 @@ class DvbTab : public TabBase
 {
 	Q_OBJECT
 public:
-	explicit DvbTab(Manager *manager_);
+	explicit DvbTab(MediaWidget *mediaWidget_);
 	~DvbTab();
 
 	DvbManager *getDvbManager() const
@@ -55,6 +55,7 @@ private slots:
 private:
 	void activate();
 
+	MediaWidget *mediaWidget;
 	DvbManager *dvbManager;
 	QLayout *mediaLayout;
 

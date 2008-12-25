@@ -1,7 +1,7 @@
 /*
  * main.cpp
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  */
 
 #include <KAboutData>
+#include <KCmdLineArgs>
 #include <KLocalizedString>
 #include <KUniqueApplication>
 

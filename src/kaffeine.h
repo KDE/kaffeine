@@ -1,7 +1,7 @@
 /*
  * kaffeine.h
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,36 +21,67 @@
 #ifndef KAFFEINE_H
 #define KAFFEINE_H
 
-#include <KCmdLineArgs>
-#include <KXmlGuiWindow>
+#include <KMainWindow>
 
-class Manager;
+class QStackedLayout;
+class KActionCollection;
+class KCmdLineOptions;
+class KRecentFilesAction;
+class KUrl;
 class MediaWidget;
+class TabBase;
 
-class Kaffeine : public KXmlGuiWindow
+class Kaffeine : public KMainWindow
 {
 	Q_OBJECT
 public:
+	static KCmdLineOptions cmdLineOptions();
+
 	Kaffeine();
 	~Kaffeine();
-
-	static KCmdLineOptions cmdLineOptions();
 
 	void parseArgs();
 
 private slots:
-	void actionFullscreen();
-	void actionOpen();
-	void actionOpenUrl();
-	void actionOpenRecent(const KUrl &url);
-	void actionOpenAudioCd();
-	void actionOpenVideoCd();
-	void actionOpenDvd();
-	void actionPlayPause(bool paused);
+	void open();
+	void openUrl();
+	void openRecent(const KUrl &url);
+	void openAudioCd();
+	void openVideoCd();
+	void openDvd();
+	void toggleFullscreen();
+	void configureKeys();
+
+	void activateStartTab();
+	void activatePlayerTab();
+	void activateDvbTab();
 
 private:
-	Manager *manager;
+	enum TabIds
+	{
+		TabStart	= 0,
+		TabPlayer	= 1,
+		TabDvb		= 2
+	};
+
+	void activateTab(TabIds tabId);
+
+	KActionCollection *collection;
+	KRecentFilesAction *actionOpenRecent;
+
 	MediaWidget *mediaWidget;
+	QStackedLayout *stackedLayout;
+	QList<TabBase *> tabs;
+	TabBase *currentTab;
+};
+
+class TabBase : public QWidget
+{
+public:
+	TabBase() { }
+	~TabBase() { }
+
+	virtual void activate() = 0;
 };
 
 #endif /* KAFFEINE_H */

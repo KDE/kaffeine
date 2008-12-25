@@ -1,7 +1,7 @@
 /*
  * mediawidget.h
  *
- * Copyright (C) 2007 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,28 +23,22 @@
 
 #include <QWidget>
 #include <Phonon/AbstractMediaStream>
-#include <KUrl>
+#include <KIcon>
 
-namespace Phonon
-{
-class AudioOutput;
-}
-
+class KAction;
+class KActionCollection;
+class KToolBar;
+class KUrl;
 class DvbLiveFeed;
-class Manager;
 
 class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	explicit MediaWidget(Manager *manager_);
+	MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *collection);
 	~MediaWidget() { }
 
-	QWidget *newPositionSlider();
-	QWidget *newVolumeSlider();
-
-	void setFullscreen(bool fullscreen);
-	void setPaused(bool paused);
+	bool isPlaying() const;
 
 	/*
 	 * loads the media and starts playback
@@ -61,19 +55,32 @@ public:
 
 	void playDvb(DvbLiveFeed *feed);
 
+signals:
+	void toggleFullscreen();
+
 public slots:
 	void stop();
 
 private slots:
-	void stateChanged(Phonon::State state);
+	void stateChanged();
+	void playPause(bool paused);
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 
-	Manager *manager;
 	Phonon::MediaObject *mediaObject;
-	Phonon::AudioOutput *audioOutput;
 	DvbLiveFeed *liveFeed;
+	bool playing;
+
+	KAction *actionBackward;
+	KAction *actionPlayPause;
+	KAction *actionStop;
+	KAction *actionForward;
+
+	QString textPlay;
+	QString textPause;
+	KIcon iconPlay;
+	KIcon iconPause;
 };
 
 class DvbLiveFeed : public Phonon::AbstractMediaStream
