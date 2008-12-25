@@ -62,7 +62,7 @@ public slots:
 	void stop();
 
 private slots:
-	void stateChanged();
+	void stateChanged(Phonon::State state);
 	void playPause(bool paused);
 
 private:

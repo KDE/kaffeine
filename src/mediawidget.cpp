@@ -44,7 +44,7 @@ MediaWidget::MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *
 
 	mediaObject = new Phonon::MediaObject(this);
 	connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
-		this, SLOT(stateChanged()));
+		this, SLOT(stateChanged(Phonon::State)));
 
 	Phonon::AudioOutput *audioOutput = new Phonon::AudioOutput(Phonon::VideoCategory, this);
 	Phonon::createPath(mediaObject, audioOutput);
@@ -83,7 +83,7 @@ MediaWidget::MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *
 	seekSlider->setSizePolicy(sizePolicy);
 	toolBar->addWidget(seekSlider);
 
-	stateChanged();
+	stateChanged(Phonon::StoppedState);
 }
 
 bool MediaWidget::isPlaying() const
@@ -133,18 +133,18 @@ void MediaWidget::stop()
 	mediaObject->stop();
 }
 
-void MediaWidget::stateChanged()
+void MediaWidget::stateChanged(Phonon::State state)
 {
 	bool newPlaying = false;
 
-	switch (mediaObject->state()) {
+	switch (state) {
+		case Phonon::LoadingState: // FIXME used for different purposes??
 		case Phonon::BufferingState:
 		case Phonon::PlayingState:
 		case Phonon::PausedState:
 			newPlaying = true;
 			break;
 
-		case Phonon::LoadingState:
 		case Phonon::StoppedState:
 			break;
 
