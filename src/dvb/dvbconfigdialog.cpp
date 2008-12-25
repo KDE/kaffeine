@@ -30,6 +30,7 @@
 #include <KComboBox>
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KTabWidget>
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
@@ -39,7 +40,7 @@ DvbConfigDialog::DvbConfigDialog(QWidget *parent, DvbManager *manager_) : KDialo
 	setAttribute(Qt::WA_DeleteOnClose);
 	setCaption(i18n("DVB Settings"));
 
-	QTabWidget *tabWidget = new QTabWidget(this);
+	KTabWidget *tabWidget = new KTabWidget(this);
 	setMainWidget(tabWidget);
 
 	// FIXME general options
