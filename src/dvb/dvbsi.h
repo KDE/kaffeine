@@ -24,6 +24,7 @@
 #include "dvbchannel.h"
 #include "dvbdevice.h"
 
+class DvbPmtSection;
 class DvbSectionData;
 
 class DvbSectionFilter : public DvbPidFilter
@@ -70,6 +71,11 @@ public:
 		return length > 0;
 	}
 
+	const char *getData() const
+	{
+		return data;
+	}
+
 protected:
 	unsigned char at(int index) const
 	{
@@ -103,7 +109,7 @@ public:
 			return;
 		}
 
-		length = sectionLength() + 3;
+		length = (((at(1) & 0xf) << 8) | at(2)) + 3;
 
 		if (size < length) {
 			length = 0;
@@ -111,6 +117,11 @@ public:
 	}
 
 	~DvbSection() { }
+
+	int getSectionLength() const
+	{
+		return length;
+	}
 
 	int tableId() const
 	{
@@ -120,11 +131,6 @@ public:
 	bool isStandardSection() const
 	{
 		return (at(1) & 0x80) != 0;
-	}
-
-	int sectionLength() const
-	{
-		return ((at(1) & 0xf) << 8) | at(2);
 	}
 };
 
@@ -164,10 +170,10 @@ public:
 		return at(7);
 	}
 
+	static const unsigned int crc32Table[];
+
 private:
 	bool verifyCrc32() const;
-
-	static const unsigned int crc32Table[];
 };
 
 class DvbSiText
@@ -200,9 +206,6 @@ private:
 
 		EncodingTypeMax	= 18
 	};
-
-	DvbSiText() { }
-	~DvbSiText() { }
 
 	static QTextCodec *codecTable[EncodingTypeMax + 1];
 };
@@ -292,6 +295,37 @@ private:
 	static const unsigned char Huffman2Tables[];
 };
 
+class DvbSectionGenerator
+{
+public:
+	DvbSectionGenerator() : versionNumber(0), continuityCounter(0) { }
+	~DvbSectionGenerator() { }
+
+	QByteArray generatePackets();
+
+protected:
+	char *startSection(int sectionLength);
+	void endSection(int sectionLength, int pid);
+
+private:
+	QByteArray packets;
+	int versionNumber;
+	int continuityCounter;
+};
+
+class DvbPatGenerator : public DvbSectionGenerator
+{
+public:
+	DvbPatGenerator(int transportStreamId, int programNumber, int pmtPid);
+	~DvbPatGenerator() { }
+};
+
+class DvbPmtGenerator : public DvbSectionGenerator
+{
+public:
+	DvbPmtGenerator(int pmtPid, const DvbPmtSection &section, const QList<int> &pids);
+	~DvbPmtGenerator() { }
+};
 
 // everything below this line is automatically generated
 
