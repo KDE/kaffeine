@@ -2,6 +2,7 @@
 Name=Kaffeine
 Name[ne]=क्याफिन
 Name[pa]=ਕੈਫ਼ੀਨ
+Name[th]=แคฟเฟอีน
 Name[x-test]=xxKaffeinexx
 Exec=kaffeine4 %U
 GenericName=Media Player
@@ -36,6 +37,7 @@ GenericName[ro]=Redare multimedia
 GenericName[ru]=Проигрыватель мультимедиа
 GenericName[sv]=Mediaspelare
 GenericName[tg]=Навозишгари Медиа
+GenericName[th]=เครื่องเล่นสื่อ
 GenericName[tr]=Çokluortam Oynatıcı
 GenericName[uk]=Програвач мультимедіа
 GenericName[x-test]=xxMedia Playerxx
