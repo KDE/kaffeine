@@ -367,7 +367,7 @@ template<class T1, class T2> void readScanDirectory(QTextStream &out, const QStr
 			int pos = line.indexOf('#');
 
 			if (pos != -1) {
-				while ((pos > 1) && (line[pos - 1] == ' ')) {
+				while ((pos > 0) && (line[pos - 1] == ' ')) {
 					--pos;
 				}
 
