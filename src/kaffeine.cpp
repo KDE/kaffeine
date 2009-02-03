@@ -138,33 +138,10 @@ Kaffeine::Kaffeine()
 	// unlike qt, kde sets this flag
 	setAttribute(Qt::WA_DeleteOnClose, false);
 
-	collection = new KActionCollection(this);
-
-	QWidget *widget = new QWidget(this);
-	stackedLayout = new QStackedLayout(widget);
-	setCentralWidget(widget);
-
-	KToolBar *toolBar = new KToolBar("control_bar", this, Qt::BottomToolBarArea);
-	toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-
-	mediaWidget = new MediaWidget(widget, toolBar, collection);
-	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
-
-	// the index of a tab in "tabs" has to correspond with the value from "TabIds"!
-
-	TabBase *startTab = new StartTab(this);
-	stackedLayout->addWidget(startTab);
-	tabs.append(startTab);
-
-	TabBase *playerTab = new PlayerTab(mediaWidget);
-	stackedLayout->addWidget(playerTab);
-	tabs.append(playerTab);
-
-	TabBase *dvbTab = new DvbTab(mediaWidget);
-	stackedLayout->addWidget(dvbTab);
-	tabs.append(dvbTab);
+	// menu structure
 
 	KMenuBar *menuBar = KMainWindow::menuBar();
+	collection = new KActionCollection(this);
 
 	KMenu *menu = new KMenu(i18n("&File"));
 	menuBar->addMenu(menu);
@@ -222,12 +199,8 @@ Kaffeine::Kaffeine()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(toggleFullscreen()));
 	menu->addAction(collection->addAction("view_fullscreen", action));
 
-	menu = new KMenu(i18n("&DVB"));
-	menuBar->addMenu(menu);
-
-	action = new KAction(KIcon("configure"), i18n("Configure Channels"), collection);
-	connect(action, SIGNAL(triggered(bool)), dvbTab, SLOT(configureChannels()));
-	menu->addAction(collection->addAction("dvb_channels", action));
+	KMenu *dvbMenu = new KMenu(i18n("&DVB"));
+	menuBar->addMenu(dvbMenu);
 
 	menu = new KMenu(i18n("&Settings"));
 	menuBar->addMenu(menu);
@@ -235,13 +208,37 @@ Kaffeine::Kaffeine()
 	action = KStandardAction::keyBindings(this, SLOT(configureKeys()), collection);
 	menu->addAction(collection->addAction("settings_keys", action));
 
-	menu->addSeparator();
-
-	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);
-	connect(action, SIGNAL(triggered(bool)), dvbTab, SLOT(configureDvb()));
-	menu->addAction(collection->addAction("settings_dvb", action));
-
 	menuBar->addMenu(helpMenu());
+
+	// control bar
+
+	KToolBar *toolBar = new KToolBar("control_bar", this, Qt::BottomToolBarArea);
+	toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+	// main area
+
+	QWidget *widget = new QWidget(this);
+	stackedLayout = new QStackedLayout(widget);
+	setCentralWidget(widget);
+
+	mediaWidget = new MediaWidget(widget, toolBar, collection);
+	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
+
+	// the index of a tab in "tabs" has to correspond with the value from "TabIds"!
+
+	TabBase *tab = new StartTab(this);
+	stackedLayout->addWidget(tab);
+	tabs.append(tab);
+
+	currentTab = tab;
+
+	tab = new PlayerTab(mediaWidget);
+	stackedLayout->addWidget(tab);
+	tabs.append(tab);
+
+	tab = new DvbTab(dvbMenu, collection, mediaWidget);
+	stackedLayout->addWidget(tab);
+	tabs.append(tab);
 
 	// actions also have to work if the menu bar is hidden (fullscreen) - FIXME better solution?
 	foreach (QAction *action, collection->actions()) {

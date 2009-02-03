@@ -123,7 +123,7 @@ QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orienta
 
 DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
 {
-	setCaption(i18n("Configure channels"));
+	setCaption(i18n("Channels"));
 	manager = dvbTab->getDvbManager();
 
 	QWidget *widget = new QWidget(this);

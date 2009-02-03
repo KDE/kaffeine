@@ -33,7 +33,7 @@ class DvbTab : public TabBase
 {
 	Q_OBJECT
 public:
-	explicit DvbTab(MediaWidget *mediaWidget_);
+	DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~DvbTab();
 
 	DvbManager *getDvbManager() const
@@ -45,7 +45,7 @@ public:
 	DvbSharedChannel getLiveChannel() const;
 
 public slots:
-	void configureChannels();
+	void showChannelDialog();
 	void configureDvb();
 
 private slots:

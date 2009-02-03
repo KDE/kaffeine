@@ -23,9 +23,12 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QSplitter>
+#include <KAction>
+#include <KActionCollection>
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KMenu>
 #include <KMessageBox>
 #include "../mediawidget.h"
 #include "dvbchannel.h"
@@ -88,8 +91,20 @@ private:
 	int bufferPos;
 };
 
-DvbTab::DvbTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_), liveStream(NULL)
+DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
+	mediaWidget(mediaWidget_), liveStream(NULL)
 {
+	KAction *action = new KAction(KIcon("view-list-details"), i18n("Channels"), collection);
+	action->setShortcut(Qt::Key_C);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
+	menu->addAction(collection->addAction("dvb_channels", action));
+
+	menu->addSeparator();
+
+	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
+	menu->addAction(collection->addAction("settings_dvb", action));
+
 	dvbManager = new DvbManager(this);
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
@@ -132,7 +147,7 @@ DvbTab::~DvbTab()
 {
 }
 
-void DvbTab::configureChannels()
+void DvbTab::showChannelDialog()
 {
 	DvbScanDialog dialog(this);
 	dialog.exec();
