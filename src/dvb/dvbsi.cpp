@@ -1011,9 +1011,9 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 	data[2] = pid;
 	data[3] = 0x10;
 	data[4] = 0x00;
-	data[6] = 0x80 | ((sectionLength - 3) >> 8);
+	data[6] = 0xb0 | ((sectionLength - 3) >> 8);
 	data[7] = sectionLength - 3;
-	data[10] = (versionNumber << 1) | 0x01;
+	data[10] = 0xc1 | (versionNumber << 1);
 	data[11] = 0x00;
 	data[12] = 0x00;
 
@@ -1057,7 +1057,7 @@ DvbPatGenerator::DvbPatGenerator(int transportStreamId, int programNumber, int p
 	data[4] = transportStreamId;
 	data[8] = programNumber >> 8;
 	data[9] = programNumber;
-	data[10] = pmtPid >> 8;
+	data[10] = 0xe0 | (pmtPid >> 8);
 	data[11] = pmtPid;
 	endSection(16, 0x00);
 }
@@ -1074,9 +1074,10 @@ DvbPmtGenerator::DvbPmtGenerator(int pmtPid, const DvbPmtSection &section, const
 
 	while (entry.isValid()) {
 		const char *begin = entry.getData();
+		bool selected = pids.contains(entry.pid());
 		entry.advance();
 
-		if (pids.contains(entry.pid())) {
+		if (selected) {
 			memcpy(data + size, begin, entry.getData() - begin);
 			size += entry.getData() - begin;
 		}
