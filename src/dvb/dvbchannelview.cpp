@@ -26,6 +26,17 @@
 #include <KMenu>
 #include "dvbchannel.h"
 
+const DvbSharedChannel *DvbChannelModel::channelForName(const QString &name)
+{
+	foreach (const DvbSharedChannel &channel, list) {
+		if (channel->name == name) {
+			return &channel;
+		}
+	}
+
+	return NULL;
+}
+
 int DvbChannelModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {

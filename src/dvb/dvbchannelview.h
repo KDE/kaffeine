@@ -32,6 +32,7 @@ template<class T> class DvbGenericChannelModel : public QAbstractTableModel
 public:
 	explicit DvbGenericChannelModel(QObject *parent) : QAbstractTableModel(parent)
 	{
+		proxyModel.setDynamicSortFilter(true);
 		proxyModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
 		proxyModel.setSortLocaleAware(true);
 		proxyModel.setSourceModel(this);
@@ -76,7 +77,6 @@ public:
 	void updateChannel(int pos, const T &channel)
 	{
 		list.replace(pos, channel);
-		// FIXME check behaviour
 		emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
 	}
 
@@ -102,6 +102,8 @@ public:
 	explicit DvbChannelModel(QObject *parent) :
 		DvbGenericChannelModel<DvbSharedChannel>(parent) { }
 	~DvbChannelModel() { }
+
+	const DvbSharedChannel *channelForName(const QString &name);
 
 	int columnCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
