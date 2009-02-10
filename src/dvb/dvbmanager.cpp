@@ -29,6 +29,7 @@
 #include "dvbchannelview.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
+#include "dvbrecording.h"
 
 class DvbScanData
 {
@@ -266,6 +267,8 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 {
 	channelModel = new DvbChannelModel(this);
 	readChannelList();
+
+	recordingModel = new DvbRecordingModel(this);
 
 	readDeviceConfigs();
 	updateSourceMapping();

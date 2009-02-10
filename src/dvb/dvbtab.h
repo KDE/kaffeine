@@ -44,11 +44,11 @@ public:
 	DvbDevice *getLiveDevice() const;
 	DvbSharedChannel getLiveChannel() const;
 
-public slots:
+private slots:
 	void showChannelDialog();
+	void showRecordingDialog();
 	void configureDvb();
 
-private slots:
 	void playLive(const QModelIndex &index);
 	void liveStopped();
 

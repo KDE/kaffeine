@@ -182,6 +182,8 @@ bool DvbDeviceThread::addPidFilter(int pid, DvbPidFilter *filter, const QString 
 {
 	QList<DvbFilterInternal>::iterator it = qBinaryFind(filters.begin(), filters.end(), pid);
 
+	// FIXME don't allow a filter to be registered twice for the same pid
+
 	if (it != filters.end()) {
 		it->filters.append(filter);
 	} else {

@@ -36,6 +36,7 @@
 #include "dvbconfigdialog.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
+#include "dvbrecording.h"
 #include "dvbscandialog.h"
 
 // FIXME - DvbStream is just a demo hack
@@ -99,6 +100,11 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
 	menu->addAction(collection->addAction("dvb_channels", action));
 
+	action = new KAction(KIcon("view-pim-calendar"), i18n("Recordings"), collection);
+	action->setShortcut(Qt::Key_R);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
+	menu->addAction(collection->addAction("dvb_recordings", action));
+
 	menu->addSeparator();
 
 	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);
@@ -150,6 +156,12 @@ DvbTab::~DvbTab()
 void DvbTab::showChannelDialog()
 {
 	DvbScanDialog dialog(this);
+	dialog.exec();
+}
+
+void DvbTab::showRecordingDialog()
+{
+	DvbRecordingDialog dialog(dvbManager, this);
 	dialog.exec();
 }
 

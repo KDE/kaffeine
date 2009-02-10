@@ -31,6 +31,7 @@ class DvbConfig;
 class DvbDevice;
 class DvbDeviceConfig;
 class DvbDeviceManager;
+class DvbRecordingModel;
 class DvbScanData;
 class DvbTransponder;
 
@@ -74,6 +75,11 @@ public:
 		return channelModel;
 	}
 
+	DvbRecordingModel *getRecordingModel() const
+	{
+		return recordingModel;
+	}
+
 	QList<DvbDevice *> getDevices() const;
 	DvbDevice *requestDevice(const QString &source);
 	void releaseDevice(DvbDevice *device);
@@ -101,6 +107,8 @@ private:
 	void readScanFile();
 
 	DvbChannelModel *channelModel;
+	DvbRecordingModel *recordingModel;
+
 	QList<DvbDeviceConfig> deviceConfigs;
 	QMap<QString, QPair<TransmissionType, QString> > sourceMapping;
 	QStringList sources;
