@@ -11,7 +11,8 @@ set(kaffeine_SRCS
     dvb/dvbtab.cpp
     kaffeine.cpp
     main.cpp
-    mediawidget.cpp)
+    mediawidget.cpp
+    proxytreeview.cpp)
 
 set(kaffeine_UI
     dvb/dvbscandialog.ui)

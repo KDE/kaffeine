@@ -28,19 +28,16 @@ class QAbstractItemModel;
 class QComboBox;
 class QDateTimeEdit;
 class QLineEdit;
-class QSortFilterProxyModel;
 class QTimeEdit;
-class QTreeView;
 class DvbManager;
 class DvbRecording;
+class ProxyTreeView;
 
 class DvbRecordingModel : public QAbstractTableModel
 {
 public:
 	explicit DvbRecordingModel(DvbManager *manager_);
 	~DvbRecordingModel();
-
-	int sourceIndex(QSortFilterProxyModel *proxyModel, const QModelIndex &proxyIndex) const;
 
 	DvbRecording *at(int i);
 	void append(DvbRecording *recording);
@@ -77,8 +74,7 @@ private slots:
 private:
 	DvbManager *manager;
 	DvbRecordingModel *model;
-	QSortFilterProxyModel *proxyModel;
-	QTreeView *treeView;
+	ProxyTreeView *treeView;
 };
 
 class DvbRecordingEditor : public KDialog

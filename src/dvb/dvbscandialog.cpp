@@ -24,6 +24,7 @@
 #include <QPainter>
 #include <KDebug>
 #include <KMessageBox>
+#include "dvbchannelview.h"
 #include "dvbmanager.h"
 #include "dvbscan.h"
 #include "dvbsi.h"
@@ -136,12 +137,18 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->setList(manager->getChannelModel()->getList());
-	ui->channelView->setModel(channelModel->getProxyModel());
-	ui->channelView->enableDeleteAction();
+	ui->channelView->setIndentation(0);
+	ui->channelView->setSortingEnabled(true);
+	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
+	ui->channelView->setModel(channelModel);
+	ui->channelView->addContextActions(channelModel->createContextActions());
 
 	previewModel = new DvbPreviewChannelModel(this);
-	ui->scanResultsView->setModel(previewModel->getProxyModel());
+	ui->scanResultsView->setIndentation(0);
+	ui->scanResultsView->setSortingEnabled(true);
+	ui->scanResultsView->sortByColumn(0, Qt::AscendingOrder);
 	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	ui->scanResultsView->setModel(previewModel);
 
 	setDevice(dvbTab->getLiveDevice());
 
@@ -262,12 +269,8 @@ void DvbScanDialog::addSelectedChannels()
 {
 	QList<const DvbPreviewChannel *> channels;
 
-	foreach (const QModelIndex &index, ui->scanResultsView->selectionModel()->selectedRows()) {
-		const DvbPreviewChannel *selectedChannel = previewModel->getChannel(index);
-
-		if (selectedChannel != NULL) {
-			channels.append(selectedChannel);
-		}
+	foreach (int row, ui->scanResultsView->selectedRows()) {
+		channels.append(&previewModel->getChannel(row));
 	}
 
 	addUpdateChannels(channels);

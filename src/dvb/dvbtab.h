@@ -28,6 +28,7 @@ class QModelIndex;
 class DvbDevice;
 class DvbManager;
 class DvbStream;
+class ProxyTreeView;
 
 class DvbTab : public TabBase
 {
@@ -44,6 +45,8 @@ public:
 	DvbDevice *getLiveDevice() const;
 	DvbSharedChannel getLiveChannel() const;
 
+	void playChannel(const QString &name);
+
 private slots:
 	void showChannelDialog();
 	void showRecordingDialog();
@@ -55,9 +58,13 @@ private slots:
 private:
 	void activate();
 
+	void playChannel(const DvbSharedChannel &channel);
+
 	MediaWidget *mediaWidget;
 	DvbManager *dvbManager;
 	QLayout *mediaLayout;
+
+	ProxyTreeView *channelView;
 
 	// FIXME - just a demo hack
 	DvbStream *liveStream;

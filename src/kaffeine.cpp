@@ -112,12 +112,12 @@ public:
 	explicit PlayerTab(MediaWidget *mediaWidget_);
 	~PlayerTab() { }
 
-private:
 	void activate()
 	{
 		layout()->addWidget(mediaWidget);
 	}
 
+private:
 	MediaWidget *mediaWidget;
 };
 
@@ -125,12 +125,6 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
 	layout->setMargin(0);
-}
-
-KCmdLineOptions Kaffeine::cmdLineOptions()
-{
-	// FIXME add options
-	return KCmdLineOptions();
 }
 
 Kaffeine::Kaffeine()
@@ -224,21 +218,18 @@ Kaffeine::Kaffeine()
 	mediaWidget = new MediaWidget(widget, toolBar, collection);
 	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
 
-	// the index of a tab in "tabs" has to correspond with the value from "TabIds"!
+	// tabs
 
-	TabBase *tab = new StartTab(this);
-	stackedLayout->addWidget(tab);
-	tabs.append(tab);
+	startTab = new StartTab(this);
+	stackedLayout->addWidget(startTab);
 
-	currentTab = tab;
+	playerTab = new PlayerTab(mediaWidget);
+	stackedLayout->addWidget(playerTab);
 
-	tab = new PlayerTab(mediaWidget);
-	stackedLayout->addWidget(tab);
-	tabs.append(tab);
+	dvbTab = new DvbTab(dvbMenu, collection, mediaWidget);
+	stackedLayout->addWidget(dvbTab);
 
-	tab = new DvbTab(dvbMenu, collection, mediaWidget);
-	stackedLayout->addWidget(tab);
-	tabs.append(tab);
+	activateTab(startTab);
 
 	// actions also have to work if the menu bar is hidden (fullscreen) - FIXME better solution?
 	foreach (QAction *action, collection->actions()) {
@@ -262,7 +253,7 @@ Kaffeine::Kaffeine()
 		QTimer::singleShot(0, this, SLOT(showMaximized()));
 	}
 
-	activateTab(TabStart);
+	parseArgs();
 
 	show();
 }
@@ -275,9 +266,32 @@ Kaffeine::~Kaffeine()
 	actionOpenRecent->saveEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
 }
 
+KCmdLineOptions Kaffeine::cmdLineOptions()
+{
+	KCmdLineOptions options;
+	options.add("f");
+	options.add("fullscreen", ki18n("Start in fullscreen mode"));
+	options.add("dvb <channel>", ki18n("Tune to the selected channel"));
+	options.add("+[file]", ki18n("File or url to play"));
+	return options;
+}
+
 void Kaffeine::parseArgs()
 {
-	// FIXME implement
+	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
+	if (args->isSet("fullscreen") && !isFullScreen()) {
+		toggleFullscreen();
+	}
+
+	QString dvb = args->getOption("dvb");
+
+	if (!dvb.isEmpty()) {
+		activateDvbTab();
+		dvbTab->playChannel(dvb);
+	}
+
+	// FIXME take care of +[file]
 }
 
 void Kaffeine::open()
@@ -286,7 +300,7 @@ void Kaffeine::open()
 	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
 	if (url.isValid()) {
 		actionOpenRecent->addUrl(url);
-		activateTab(TabPlayer);
+		activateTab(playerTab);
 		mediaWidget->play(url);
 	}
 }
@@ -296,7 +310,7 @@ void Kaffeine::openUrl()
 	KUrl url(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
 	if (url.isValid()) {
 		actionOpenRecent->addUrl(url);
-		activateTab(TabPlayer);
+		activateTab(playerTab);
 		mediaWidget->play(url);
 	}
 }
@@ -306,25 +320,25 @@ void Kaffeine::openRecent(const KUrl &url)
 	// we need to copy "url" because addUrl() invalidates it
 	KUrl copy(url);
 	actionOpenRecent->addUrl(copy); // moves the url to the top of the list
-	activateTab(TabPlayer);
+	activateTab(playerTab);
 	mediaWidget->play(copy);
 }
 
 void Kaffeine::openAudioCd()
 {
-	activateTab(TabPlayer); // FIXME
+	activateTab(playerTab); // FIXME
 	mediaWidget->playAudioCd();
 }
 
 void Kaffeine::openVideoCd()
 {
-	activateTab(TabPlayer);
+	activateTab(playerTab);
 	mediaWidget->playVideoCd();
 }
 
 void Kaffeine::openDvd()
 {
-	activateTab(TabPlayer);
+	activateTab(playerTab);
 	mediaWidget->playDvd();
 }
 
@@ -335,7 +349,6 @@ void Kaffeine::toggleFullscreen()
 	if (isFullScreen()) {
 		menuBar()->hide();
 
-		TabBase *playerTab = tabs.at(TabPlayer);
 		stackedLayout->setCurrentWidget(playerTab);
 		playerTab->activate();
 	} else {
@@ -355,22 +368,22 @@ void Kaffeine::configureKeys()
 
 void Kaffeine::activateStartTab()
 {
-	activateTab(TabStart);
+	activateTab(startTab);
 }
 
 void Kaffeine::activatePlayerTab()
 {
-	activateTab(TabPlayer);
+	activateTab(playerTab);
 }
 
 void Kaffeine::activateDvbTab()
 {
-	activateTab(TabDvb);
+	activateTab(dvbTab);
 }
 
-void Kaffeine::activateTab(TabIds tabId)
+void Kaffeine::activateTab(TabBase *tab)
 {
-	currentTab = tabs.at(tabId);
+	currentTab = tab;
 
 	if (isFullScreen()) {
 		return;

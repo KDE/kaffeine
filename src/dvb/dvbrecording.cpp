@@ -30,9 +30,9 @@
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QTimerEvent>
-#include <QTreeView>
 #include <KDebug>
 #include <KLocalizedString>
+#include "../proxytreeview.h"
 #include "dvbchannel.h"
 #include "dvbchannelview.h"
 #include "dvbdevice.h"
@@ -294,18 +294,6 @@ DvbRecordingModel::~DvbRecordingModel()
 	qDeleteAll(recordings);
 }
 
-int DvbRecordingModel::sourceIndex(QSortFilterProxyModel *proxyModel,
-	const QModelIndex &proxyIndex) const
-{
-	QModelIndex sourceIndex = proxyModel->mapToSource(proxyIndex);
-
-	if (!sourceIndex.isValid() || (sourceIndex.row() >= recordings.size())) {
-		return -1;
-	}
-
-	return sourceIndex.row();
-}
-
 DvbRecording *DvbRecordingModel::at(int i)
 {
 	return recordings.at(i);
@@ -469,16 +457,11 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 
 	model = manager->getRecordingModel();
 
-	proxyModel = new QSortFilterProxyModel(this);
-	proxyModel->setDynamicSortFilter(true);
-	proxyModel->setSortLocaleAware(true);
-	proxyModel->setSourceModel(model);
-
-	treeView = new QTreeView(this);
+	treeView = new ProxyTreeView(this);
 	treeView->setIndentation(0);
-	treeView->setModel(proxyModel);
 	treeView->setSortingEnabled(true);
 	treeView->sortByColumn(2, Qt::AscendingOrder);
+	treeView->setModel(model);
 	mainLayout->addWidget(treeView);
 
 	setMainWidget(widget);
@@ -509,45 +492,31 @@ void DvbRecordingDialog::newRecording()
 
 void DvbRecordingDialog::editRecording()
 {
-	// you can select only one row at once --> it's enough to look at a single element
-	QList<QModelIndex> selection = treeView->selectionModel()->selection().indexes();
+	int row = treeView->selectedRow();
 
-	if (selection.isEmpty()) {
+	if (row < 0) {
 		return;
 	}
 
-	int index = model->sourceIndex(proxyModel, selection.at(0));
-
-	if (index < 0) {
-		return;
-	}
-
-	DvbRecording *recording = model->at(index);
+	DvbRecording *recording = model->at(row);
 
 	DvbRecordingEditor editor(manager->getChannelModel(), recording, this);
 
 	if (editor.exec() == QDialog::Accepted) {
 		editor.updateRecording(recording);
-		model->updated(index);
+		model->updated(row);
 	}
 }
 
 void DvbRecordingDialog::removeRecording()
 {
-	// you can select only one row at once --> it's enough to look at a single element
-	QList<QModelIndex> selection = treeView->selectionModel()->selection().indexes();
+	int row = treeView->selectedRow();
 
-	if (selection.isEmpty()) {
+	if (row < 0) {
 		return;
 	}
 
-	int index = model->sourceIndex(proxyModel, selection.at(0));
-
-	if (index < 0) {
-		return;
-	}
-
-	model->remove(index);
+	model->remove(row);
 }
 
 DvbRecordingEditor::DvbRecordingEditor(QAbstractItemModel *channels, const DvbRecording *recording,

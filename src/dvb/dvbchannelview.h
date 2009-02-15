@@ -21,29 +21,16 @@
 #ifndef DVBCHANNELVIEW_H
 #define DVBCHANNELVIEW_H
 
-#include <QSortFilterProxyModel>
-#include <QTreeView>
+#include <QAbstractTableModel>
 
+class QAction;
 class DvbSharedChannel;
-class KMenu;
 
 template<class T> class DvbGenericChannelModel : public QAbstractTableModel
 {
 public:
-	explicit DvbGenericChannelModel(QObject *parent) : QAbstractTableModel(parent)
-	{
-		proxyModel.setDynamicSortFilter(true);
-		proxyModel.setFilterCaseSensitivity(Qt::CaseInsensitive);
-		proxyModel.setSortLocaleAware(true);
-		proxyModel.setSourceModel(this);
-	}
-
+	explicit DvbGenericChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
 	~DvbGenericChannelModel() { }
-
-	QSortFilterProxyModel *getProxyModel()
-	{
-		return &proxyModel;
-	}
 
 	QList<T> getList() const
 	{
@@ -63,15 +50,9 @@ public:
 		endInsertRows();
 	}
 
-	const T *getChannel(const QModelIndex &index) const
+	const T &getChannel(int i) const
 	{
-		QModelIndex sourceIndex = proxyModel.mapToSource(index);
-
-		if (!sourceIndex.isValid() || (sourceIndex.row() >= list.size())) {
-			return NULL;
-		}
-
-		return &list.at(sourceIndex.row());
+		return list.at(i);
 	}
 
 	void updateChannel(int pos, const T &channel)
@@ -91,9 +72,6 @@ public:
 
 protected:
 	QList<T> list;
-
-private:
-	QSortFilterProxyModel proxyModel;
 };
 
 class DvbChannelModel : public DvbGenericChannelModel<DvbSharedChannel>
@@ -103,45 +81,17 @@ public:
 		DvbGenericChannelModel<DvbSharedChannel>(parent) { }
 	~DvbChannelModel() { }
 
-	const DvbSharedChannel *channelForName(const QString &name);
+	const DvbSharedChannel *channelForName(const QString &name) const;
 
 	int columnCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-};
-
-class DvbChannelViewBase : public QTreeView
-{
-public:
-	explicit DvbChannelViewBase(QWidget *parent);
-	~DvbChannelViewBase();
-};
-
-// this class adds a context menu
-class DvbChannelView : public DvbChannelViewBase
-{
-	Q_OBJECT
-public:
-	explicit DvbChannelView(QWidget *parent);
-	~DvbChannelView();
 
 	/*
-	 * should be only used in the scan dialog
+	 * the delete action should only be used in the scan dialog
 	 */
 
-	void enableDeleteAction();
-
-protected:
-	void contextMenuEvent(QContextMenuEvent *event);
-
-private slots:
-	void actionEdit();
-	void actionChangeIcon();
-	void actionDelete();
-
-private:
-	KMenu *menu;
-	QPersistentModelIndex menuIndex;
+	QList<QAction *> createContextActions(bool enableDeleteAction = false);
 };
 
 #endif /* DVBCHANNELVIEW_H */

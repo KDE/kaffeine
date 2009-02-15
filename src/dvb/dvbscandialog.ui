@@ -16,7 +16,7 @@
        </widget>
       </item>
       <item>
-       <widget class="DvbChannelView" native="1" name="channelView" />
+       <widget class="ProxyTreeView" native="1" name="channelView" />
       </item>
       <item>
        <layout class="QHBoxLayout" >
@@ -178,7 +178,7 @@
      </property>
      <layout class="QVBoxLayout" >
       <item>
-       <widget class="DvbChannelViewBase" native="1" name="scanResultsView" />
+       <widget class="ProxyTreeView" native="1" name="scanResultsView" />
       </item>
       <item>
        <widget class="QPushButton" name="selectedButton" >
@@ -204,14 +204,9 @@
    <header>kled.h</header>
   </customwidget>
   <customwidget>
-   <class>DvbChannelView</class>
+   <class>ProxyTreeView</class>
    <extends>QWidget</extends>
-   <header>dvb/dvbchannelview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>DvbChannelViewBase</class>
-   <extends>QWidget</extends>
-   <header>dvb/dvbchannelview.h</header>
+   <header>proxytreeview.h</header>
   </customwidget>
   <customwidget>
    <class>DvbGradProgress</class>

@@ -28,18 +28,20 @@ class KActionCollection;
 class KCmdLineOptions;
 class KRecentFilesAction;
 class KUrl;
+class DvbTab;
 class MediaWidget;
+class PlayerTab;
+class StartTab;
 class TabBase;
 
 class Kaffeine : public KMainWindow
 {
 	Q_OBJECT
 public:
-	static KCmdLineOptions cmdLineOptions();
-
 	Kaffeine();
 	~Kaffeine();
 
+	static KCmdLineOptions cmdLineOptions();
 	void parseArgs();
 
 private slots:
@@ -57,22 +59,18 @@ private slots:
 	void activateDvbTab();
 
 private:
-	enum TabIds
-	{
-		TabStart	= 0,
-		TabPlayer	= 1,
-		TabDvb		= 2
-	};
-
-	void activateTab(TabIds tabId);
+	void activateTab(TabBase *tab);
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
 
 	MediaWidget *mediaWidget;
 	QStackedLayout *stackedLayout;
-	QList<TabBase *> tabs;
 	TabBase *currentTab;
+
+	StartTab *startTab;
+	PlayerTab *playerTab;
+	DvbTab *dvbTab;
 };
 
 class TabBase : public QWidget

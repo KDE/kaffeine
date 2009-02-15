@@ -20,13 +20,11 @@
 
 #include "dvbchannelview.h"
 
-#include <QContextMenuEvent>
 #include <KAction>
 #include <KLocalizedString>
-#include <KMenu>
 #include "dvbchannel.h"
 
-const DvbSharedChannel *DvbChannelModel::channelForName(const QString &name)
+const DvbSharedChannel *DvbChannelModel::channelForName(const QString &name) const
 {
 	foreach (const DvbSharedChannel &channel, list) {
 		if (channel->name == name) {
@@ -78,76 +76,23 @@ QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, i
 	return QVariant();
 }
 
-DvbChannelViewBase::DvbChannelViewBase(QWidget *parent) : QTreeView(parent)
+QList<QAction *> DvbChannelModel::createContextActions(bool enableDeleteAction)
 {
-	setIndentation(0);
-	setSortingEnabled(true);
-	sortByColumn(0, Qt::AscendingOrder);
-}
-
-DvbChannelViewBase::~DvbChannelViewBase()
-{
-}
-
-DvbChannelView::DvbChannelView(QWidget *parent) : DvbChannelViewBase(parent)
-{
-	menu = new KMenu(this);
+	QList<QAction *> actions;
 
 	KAction *action = new KAction(i18n("Edit channel"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(actionEdit()));
-	menu->addAction(action);
+	actions.append(action);
 
 	action = new KAction(i18n("Change icon"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(actionChangeIcon()));
-	menu->addAction(action);
-}
+	actions.append(action);
 
-DvbChannelView::~DvbChannelView()
-{
-}
-
-void DvbChannelView::enableDeleteAction()
-{
-	KAction *action = new KAction(i18n("Delete channel"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(actionDelete()));
-	menu->addAction(action);
-}
-
-void DvbChannelView::contextMenuEvent(QContextMenuEvent *event)
-{
-	QModelIndex index = indexAt(event->pos());
-
-	if (!index.isValid()) {
-		return;
+	if (enableDeleteAction) {
+		action = new KAction(i18n("Delete channel"), this);
+		connect(action, SIGNAL(triggered()), this, SLOT(actionDelete()));
+		actions.append(action);
 	}
 
-	menuIndex = index;
-	menu->popup(event->globalPos());
-}
-
-void DvbChannelView::actionEdit()
-{
-	if (!menuIndex.isValid()) {
-		return;
-	}
-
-	// FIXME
-}
-
-void DvbChannelView::actionChangeIcon()
-{
-	if (!menuIndex.isValid()) {
-		return;
-	}
-
-	// FIXME
-}
-
-void DvbChannelView::actionDelete()
-{
-	if (!menuIndex.isValid()) {
-		return;
-	}
-
-	// FIXME
+	return actions;
 }

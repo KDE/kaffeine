@@ -31,6 +31,7 @@
 #include <KMenu>
 #include <KMessageBox>
 #include "../mediawidget.h"
+#include "../proxytreeview.h"
 #include "dvbchannel.h"
 #include "dvbchannelview.h"
 #include "dvbconfigdialog.h"
@@ -134,12 +135,17 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	lineEdit->setClearButtonShown(true);
 	searchBoxLayout->addWidget(lineEdit);
 
-	DvbChannelView *channels = new DvbChannelView(leftSideWidget);
-	QSortFilterProxyModel *proxyModel = dvbManager->getChannelModel()->getProxyModel();
-	channels->setModel(proxyModel);
-	connect(channels, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
-	connect(lineEdit, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterRegExp(QString)));
-	leftSideLayout->addWidget(channels);
+	DvbChannelModel *channelModel = dvbManager->getChannelModel();
+	channelView = new ProxyTreeView(leftSideWidget);
+	channelView->setIndentation(0);
+	channelView->setSortingEnabled(true);
+	channelView->sortByColumn(0, Qt::AscendingOrder);
+	channelView->setModel(channelModel);
+	channelView->addContextActions(channelModel->createContextActions());
+	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
+	connect(lineEdit, SIGNAL(textChanged(QString)),
+		channelView->model(), SLOT(setFilterRegExp(QString)));
+	leftSideLayout->addWidget(channelView);
 
 	QWidget *mediaContainer = new QWidget(splitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
@@ -151,6 +157,19 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 DvbTab::~DvbTab()
 {
+}
+
+void DvbTab::playChannel(const QString &name)
+{
+	// FIXME ugly
+
+	const DvbSharedChannel *channel = dvbManager->getChannelModel()->channelForName(name);
+
+	if (channel != NULL) {
+		playChannel(*channel);
+	} else {
+		playChannel(DvbSharedChannel(NULL));
+	}
 }
 
 void DvbTab::showChannelDialog()
@@ -195,8 +214,17 @@ DvbSharedChannel DvbTab::getLiveChannel() const
 	return DvbSharedChannel();
 }
 
-// FIXME - just a demo hack
 void DvbTab::playLive(const QModelIndex &index)
+{
+	playChannel(dvbManager->getChannelModel()->getChannel(channelView->mapToSource(index)));
+}
+
+void DvbTab::liveStopped()
+{
+	liveStream = NULL;
+}
+
+void DvbTab::playChannel(const DvbSharedChannel &channel)
 {
 	if (liveStream != NULL) {
 		liveStream->liveStopped();
@@ -208,8 +236,6 @@ void DvbTab::playLive(const QModelIndex &index)
 	// don't call mediaWidget->stop() here
 	// otherwise the media widget runs into trouble
 	// because the stop event arrives after starting playback ...
-
-	DvbSharedChannel channel = *dvbManager->getChannelModel()->getChannel(index);
 
 	if (channel == NULL) {
 		mediaWidget->stop();
@@ -228,13 +254,16 @@ void DvbTab::playLive(const QModelIndex &index)
 	connect(liveStream, SIGNAL(destroyed(QObject *)), this, SLOT(liveStopped()));
 
 	device->tuneDevice(channel->transponder);
-	device->addPidFilter(channel->videoPid, liveStream);
-	device->addPidFilter(channel->audioPid, liveStream);
+
+	if (channel->videoPid != -1) {
+		device->addPidFilter(channel->videoPid, liveStream);
+	}
+
+	if (channel->audioPid != -1) {
+		device->addPidFilter(channel->audioPid, liveStream);
+	}
+
+	// FIXME synthesize pat / pmt, audio streams, subtitles, ...
 
 	mediaWidget->playDvb(liveStream);
-}
-
-void DvbTab::liveStopped()
-{
-	liveStream = NULL;
 }
