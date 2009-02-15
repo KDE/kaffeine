@@ -21,16 +21,16 @@
 #include "dvbrecording.h"
 
 #include <QBoxLayout>
-#include <QComboBox>
 #include <QDateTimeEdit>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
-#include <QLineEdit>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QTimerEvent>
+#include <KComboBox>
 #include <KDebug>
+#include <KLineEdit>
 #include <KLocalizedString>
 #include "../proxytreeview.h"
 #include "dvbchannel.h"
@@ -529,13 +529,13 @@ DvbRecordingEditor::DvbRecordingEditor(QAbstractItemModel *channels, const DvbRe
 
 	layout->addWidget(new QLabel(i18n("Name:")), 0, 0);
 
-	nameEdit = new QLineEdit(widget);
+	nameEdit = new KLineEdit(widget);
 	nameEdit->setText(recording->name);
 	layout->addWidget(nameEdit, 0, 1);
 
 	layout->addWidget(new QLabel(i18n("Channel:")), 1, 0);
 
-	channelBox = new QComboBox(widget);
+	channelBox = new KComboBox(widget);
 	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
 	proxyModel->setSortLocaleAware(true);
 	proxyModel->setSourceModel(channels);

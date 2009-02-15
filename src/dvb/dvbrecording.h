@@ -25,10 +25,10 @@
 #include <KDialog>
 
 class QAbstractItemModel;
-class QComboBox;
 class QDateTimeEdit;
-class QLineEdit;
 class QTimeEdit;
+class KComboBox;
+class KLineEdit;
 class DvbManager;
 class DvbRecording;
 class ProxyTreeView;
@@ -93,8 +93,8 @@ public slots:
 	void endChanged(const QDateTime &dateTime);
 
 private:
-	QLineEdit *nameEdit;
-	QComboBox *channelBox;
+	KLineEdit *nameEdit;
+	KComboBox *channelBox;
 	QDateTimeEdit *beginEdit;
 	QTimeEdit *durationEdit;
 	QDateTimeEdit *endEdit;
