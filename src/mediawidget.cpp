@@ -1,7 +1,7 @@
 /*
  * mediawidget.cpp
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,8 @@
 #include <QBoxLayout>
 #include <Phonon/AbstractMediaStream>
 #include <Phonon/AudioOutput>
+#include <Phonon/MediaController>
 #include <Phonon/MediaObject>
-#include <Phonon/Path>
 #include <Phonon/SeekSlider>
 #include <Phonon/VideoWidget>
 #include <Phonon/VolumeSlider>
@@ -34,10 +34,9 @@
 #include <KMessageBox>
 #include <KToolBar>
 #include <KUrl>
-#include "kaffeine.h"
 
-MediaWidget::MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *collection) :
-	QWidget(parent), liveFeed(NULL), playing(true)
+MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent) :
+	QWidget(parent), playing(true), titleCount(1), chapterCount(1)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -53,24 +52,32 @@ MediaWidget::MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *
 	Phonon::createPath(mediaObject, videoWidget);
 	layout->addWidget(videoWidget);
 
-	actionBackward = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
-	toolBar->addAction(collection->addAction("controls_previous", actionBackward));
+	mediaController = new Phonon::MediaController(mediaObject);
+	connect(mediaController, SIGNAL(availableTitlesChanged(int)),
+		this, SLOT(titleCountChanged(int)));
+	connect(mediaController, SIGNAL(availableChaptersChanged(int)),
+		this, SLOT(chapterCountChanged(int)));
+
+	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
+	connect(actionPrevious, SIGNAL(triggered(bool)), this, SLOT(previous()));
+	toolBar->addAction(collection->addAction("controls_previous", actionPrevious));
 
 	actionPlayPause = new KAction(collection);
-	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(playPause(bool)));
 	actionPlayPause->setShortcut(Qt::Key_Space);
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
 	iconPlay = KIcon("media-playback-start");
 	iconPause = KIcon("media-playback-pause");
+	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(playPause(bool)));
 	toolBar->addAction(collection->addAction("controls_play_pause", actionPlayPause));
 
 	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), collection);
 	connect(actionStop, SIGNAL(triggered(bool)), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 
-	actionForward = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
-	toolBar->addAction(collection->addAction("controls_next", actionForward));
+	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
+	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
+	toolBar->addAction(collection->addAction("controls_next", actionNext));
 
 	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider();
 	volumeSlider->setAudioOutput(audioOutput);
@@ -86,9 +93,8 @@ MediaWidget::MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *
 	stateChanged(Phonon::StoppedState);
 }
 
-bool MediaWidget::isPlaying() const
+MediaWidget::~MediaWidget()
 {
-	return playing;
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -115,22 +121,13 @@ void MediaWidget::playDvd()
 	mediaObject->play();
 }
 
-void MediaWidget::playDvb(DvbLiveFeed *feed)
+void MediaWidget::playDvb(Phonon::AbstractMediaStream *feed)
 {
-	if (liveFeed != NULL) {
-		liveFeed->liveStopped();
-		delete liveFeed;
-		liveFeed = NULL;
-	}
-
-	liveFeed = feed;
-	mediaObject->setCurrentSource(Phonon::MediaSource(feed));
+	dvbFeed = feed;
+	Phonon::MediaSource source(feed);
+	source.setAutoDelete(true);
+	mediaObject->setCurrentSource(source);
 	mediaObject->play();
-}
-
-void MediaWidget::stop()
-{
-	mediaObject->stop();
 }
 
 void MediaWidget::stateChanged(Phonon::State state)
@@ -154,17 +151,18 @@ void MediaWidget::stateChanged(Phonon::State state)
 			break;
 	}
 
-	if (liveFeed && !newPlaying) {
-		liveFeed->liveStopped();
-		delete liveFeed;
-		liveFeed = NULL;
-	}
-
 	if (playing == newPlaying) {
 		return;
 	}
 
-	if (newPlaying) {
+	playing = newPlaying;
+
+	if (!playing) {
+		// FIXME is there a more elegant way to do this?
+		delete dvbFeed; // dvbFeed is a QPointer
+	}
+
+	if (playing) {
 		actionPlayPause->setText(textPause);
 		actionPlayPause->setIcon(iconPause);
 		actionPlayPause->setCheckable(true);
@@ -176,16 +174,17 @@ void MediaWidget::stateChanged(Phonon::State state)
 		actionStop->setEnabled(false);
 	}
 
-	// FIXME take care of skip forward / backward
-	actionBackward->setEnabled(false);
-	actionForward->setEnabled(false);
+	updatePreviousNext();
+}
 
-	playing = newPlaying;
+void MediaWidget::previous()
+{
+	mediaController->previousTitle();
 }
 
 void MediaWidget::playPause(bool paused)
 {
-	if (isPlaying()) {
+	if (playing) {
 		if (paused) {
 			mediaObject->pause();
 		} else {
@@ -196,7 +195,36 @@ void MediaWidget::playPause(bool paused)
 	}
 }
 
+void MediaWidget::stop()
+{
+	mediaObject->stop();
+}
+
+void MediaWidget::next()
+{
+	mediaController->nextTitle();
+}
+
+void MediaWidget::titleCountChanged(int count)
+{
+	titleCount = count;
+	updatePreviousNext();
+}
+
+void MediaWidget::chapterCountChanged(int count)
+{
+	chapterCount = count;
+	updatePreviousNext();
+}
+
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	emit toggleFullscreen();
+}
+
+void MediaWidget::updatePreviousNext()
+{
+	bool enabled = playing && ((titleCount > 1) || (chapterCount > 1));
+	actionPrevious->setEnabled(enabled);
+	actionNext->setEnabled(enabled);
 }

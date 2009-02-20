@@ -215,7 +215,7 @@ Kaffeine::Kaffeine()
 	stackedLayout = new QStackedLayout(widget);
 	setCentralWidget(widget);
 
-	mediaWidget = new MediaWidget(widget, toolBar, collection);
+	mediaWidget = new MediaWidget(toolBar, collection, widget);
 	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
 
 	// tabs

@@ -22,15 +22,13 @@ Timeshift support
 Profile the playback subsystem performance
 
 == Future functionality ==
-CD Ripping
+CD: track selection, CDDB (or similar), ripping
+DVD: title / chapter / angle selection
+CD / VCD / DVD: deal nicely with multiple drives
 Playlist support
 CICAM support
-Recordings (ability to record a show and watch it later)
 Documentation / Manual (too early for that)
   * section about updating scan file
-
-== Random stuff ==
-Deal nicely with multiple dvd/... drives
 
 
 I know I should add a contribution section here; if you're interested drop a line

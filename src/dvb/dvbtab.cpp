@@ -20,19 +20,17 @@
 
 #include "dvbtab.h"
 
-#include <QHBoxLayout>
-#include <QLabel>
+#include <QBoxLayout>
 #include <QSplitter>
+#include <Phonon/AbstractMediaStream>
 #include <KAction>
 #include <KActionCollection>
-#include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KMessageBox>
 #include "../mediawidget.h"
 #include "../proxytreeview.h"
-#include "dvbchannel.h"
 #include "dvbchannelview.h"
 #include "dvbconfigdialog.h"
 #include "dvbdevice.h"
@@ -40,13 +38,11 @@
 #include "dvbrecording.h"
 #include "dvbscandialog.h"
 
-// FIXME - DvbStream is just a demo hack
-
-class DvbStream : public DvbLiveFeed, public DvbPidFilter
+class DvbStream : public Phonon::AbstractMediaStream, public DvbPidFilter
 {
 public:
-	DvbStream(DvbManager *dvbManager_, DvbDevice *device_, DvbSharedChannel channel_) :
-		dvbManager(dvbManager_), device(device_), channel(channel_), bufferPos(0)
+	DvbStream(DvbDevice *device_, const DvbSharedChannel &channel_) : device(device_),
+		channel(channel_), bufferPos(0)
 	{
 		setStreamSize(-1);
 		buffer.resize(188 * 64);
@@ -54,21 +50,6 @@ public:
 
 	~DvbStream() { }
 
-	void livePaused(bool /*paused*/)
-	{
-		// FIXME timeshift & co
-	}
-
-	void liveStopped()
-	{
-		if (device != NULL) {
-			device->stopDevice();
-			dvbManager->releaseDevice(device);
-			device = NULL;
-		}
-	}
-
-	DvbManager *dvbManager;
 	DvbDevice *device;
 	DvbSharedChannel channel;
 
@@ -221,37 +202,29 @@ void DvbTab::playLive(const QModelIndex &index)
 
 void DvbTab::liveStopped()
 {
+	DvbDevice *device = liveStream->device;
+	device->stopDevice();
+	dvbManager->releaseDevice(device);
 	liveStream = NULL;
 }
 
 void DvbTab::playChannel(const DvbSharedChannel &channel)
 {
-	if (liveStream != NULL) {
-		liveStream->liveStopped();
-		// FIXME hacky; but ok for now
-		disconnect(liveStream, SIGNAL(destroyed(QObject *)), this, SLOT(liveStopped()));
-		liveStream = NULL;
-	}
-
-	// don't call mediaWidget->stop() here
-	// otherwise the media widget runs into trouble
-	// because the stop event arrives after starting playback ...
+	delete liveStream; // liveStream is set to NULL by liveStopped()
 
 	if (channel == NULL) {
-		mediaWidget->stop();
 		return;
 	}
 
 	DvbDevice *device = dvbManager->requestDevice(channel->source);
 
 	if (device == NULL) {
-		mediaWidget->stop();
 		KMessageBox::sorry(this, i18n("No suitable device found."));
 		return;
 	}
 
-	liveStream = new DvbStream(dvbManager, device, channel);
-	connect(liveStream, SIGNAL(destroyed(QObject *)), this, SLOT(liveStopped()));
+	liveStream = new DvbStream(device, channel);
+	connect(liveStream, SIGNAL(destroyed(QObject*)), this, SLOT(liveStopped()));
 
 	device->tuneDevice(channel->transponder);
 

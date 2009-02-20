@@ -1,7 +1,7 @@
 /*
  * mediawidget.h
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,24 +21,28 @@
 #ifndef MEDIAWIDGET_H
 #define MEDIAWIDGET_H
 
+#include <QPointer>
 #include <QWidget>
-#include <Phonon/AbstractMediaStream>
+#include <Phonon/Global>
 #include <KIcon>
 
+namespace Phonon
+{
+class AbstractMediaStream;
+class MediaController;
+class MediaObject;
+};
 class KAction;
 class KActionCollection;
 class KToolBar;
 class KUrl;
-class DvbLiveFeed;
 
 class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	MediaWidget(QWidget *parent, KToolBar *toolBar, KActionCollection *collection);
-	~MediaWidget() { }
-
-	bool isPlaying() const;
+	MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent);
+	~MediaWidget();
 
 	/*
 	 * loads the media and starts playback
@@ -50,47 +54,46 @@ public:
 	void playDvd();
 
 	/*
-	 * ownership is taken over by the media widget
+	 * you stop dvb playback by deleting the feed
+	 * the feed is deleted by MediaWidget if the user stops playback
 	 */
 
-	void playDvb(DvbLiveFeed *feed);
+	void playDvb(Phonon::AbstractMediaStream *feed);
 
 signals:
 	void toggleFullscreen();
 
-public slots:
-	void stop();
-
 private slots:
 	void stateChanged(Phonon::State state);
+	void previous();
 	void playPause(bool paused);
+	void stop();
+	void next();
+
+	void titleCountChanged(int count);
+	void chapterCountChanged(int count);
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
+	void updatePreviousNext();
 
 	Phonon::MediaObject *mediaObject;
-	DvbLiveFeed *liveFeed;
+	Phonon::MediaController *mediaController;
+	QPointer<Phonon::AbstractMediaStream> dvbFeed;
 	bool playing;
 
-	KAction *actionBackward;
+	KAction *actionPrevious;
 	KAction *actionPlayPause;
 	KAction *actionStop;
-	KAction *actionForward;
+	KAction *actionNext;
 
 	QString textPlay;
 	QString textPause;
 	KIcon iconPlay;
 	KIcon iconPause;
-};
 
-class DvbLiveFeed : public Phonon::AbstractMediaStream
-{
-public:
-	DvbLiveFeed() { }
-	virtual ~DvbLiveFeed() { }
-
-	virtual void livePaused(bool paused) = 0;
-	virtual void liveStopped() = 0;
+	int titleCount;
+	int chapterCount;
 };
 
 #endif /* MEDIAWIDGET_H */

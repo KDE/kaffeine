@@ -51,7 +51,6 @@ private slots:
 	void showChannelDialog();
 	void showRecordingDialog();
 	void configureDvb();
-
 	void playLive(const QModelIndex &index);
 	void liveStopped();
 
@@ -66,7 +65,6 @@ private:
 
 	ProxyTreeView *channelView;
 
-	// FIXME - just a demo hack
 	DvbStream *liveStream;
 };
 
