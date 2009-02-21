@@ -31,7 +31,7 @@ namespace Phonon
 class AbstractMediaStream;
 class MediaController;
 class MediaObject;
-};
+}
 class KAction;
 class KActionCollection;
 class KToolBar;
