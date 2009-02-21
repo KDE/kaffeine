@@ -8,9 +8,6 @@ Working:
 
 == Functionality required before first beta release ==
 
-= General =
-General Selection of Audio channel and subtitles
-
 = DVB Subsystem =
 Synthesize PAT/PMT
 DVB Selection of Audio Channels/Subtitles
@@ -23,7 +20,7 @@ Profile the playback subsystem performance
 
 == Future functionality ==
 CD: track selection, CDDB (or similar), ripping
-DVD: title / chapter / angle selection
+DVD: menu / title / chapter / angle selection
 CD / VCD / DVD: deal nicely with multiple drives
 Playlist support
 CICAM support

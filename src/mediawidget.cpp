@@ -30,13 +30,15 @@
 #include <Phonon/VolumeSlider>
 #include <KAction>
 #include <KActionCollection>
+#include <KComboBox>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KToolBar>
 #include <KUrl>
 
 MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent) :
-	QWidget(parent), playing(true), titleCount(1), chapterCount(1)
+	QWidget(parent), playing(true), titleCount(0), chapterCount(0), audioChannelsReady(false),
+	subtitlesReady(false)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -57,6 +59,10 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 		this, SLOT(titleCountChanged(int)));
 	connect(mediaController, SIGNAL(availableChaptersChanged(int)),
 		this, SLOT(chapterCountChanged(int)));
+	connect(mediaController, SIGNAL(availableAudioChannelsChanged()),
+		this, SLOT(audioChannelsChanged()));
+	connect(mediaController, SIGNAL(availableSubtitlesChanged()),
+		this, SLOT(subtitlesChanged()));
 
 	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
 	connect(actionPrevious, SIGNAL(triggered(bool)), this, SLOT(previous()));
@@ -79,11 +85,21 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
 
-	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider();
+	audioChannelBox = new KComboBox(toolBar);
+	connect(audioChannelBox, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(changeAudioChannel(int)));
+	toolBar->addWidget(audioChannelBox);
+
+	subtitleBox = new KComboBox(toolBar);
+	textSubtitlesOff = i18n("off");
+	connect(subtitleBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSubtitle(int)));
+	toolBar->addWidget(subtitleBox);
+
+	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider(toolBar);
 	volumeSlider->setAudioOutput(audioOutput);
 	toolBar->addWidget(volumeSlider);
 
-	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider();
+	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
 	seekSlider->setMediaObject(mediaObject);
 	QSizePolicy sizePolicy = seekSlider->sizePolicy();
 	sizePolicy.setHorizontalStretch(1);
@@ -175,6 +191,8 @@ void MediaWidget::stateChanged(Phonon::State state)
 	}
 
 	updatePreviousNext();
+	updateAudioChannelBox();
+	updateSubtitleBox();
 }
 
 void MediaWidget::previous()
@@ -205,6 +223,20 @@ void MediaWidget::next()
 	mediaController->nextTitle();
 }
 
+void MediaWidget::changeAudioChannel(int index)
+{
+	if (audioChannelsReady) {
+		mediaController->setCurrentAudioChannel(audioChannels.at(index));
+	}
+}
+
+void MediaWidget::changeSubtitle(int index)
+{
+	if (subtitlesReady) {
+		mediaController->setCurrentSubtitle(subtitles.at(index));
+	}
+}
+
 void MediaWidget::titleCountChanged(int count)
 {
 	titleCount = count;
@@ -217,6 +249,19 @@ void MediaWidget::chapterCountChanged(int count)
 	updatePreviousNext();
 }
 
+void MediaWidget::audioChannelsChanged()
+{
+	audioChannels = mediaController->availableAudioChannels();
+	updateAudioChannelBox();
+}
+
+void MediaWidget::subtitlesChanged()
+{
+	subtitles = mediaController->availableSubtitles();
+	subtitles.prepend(Phonon::SubtitleDescription()); // helper for switching subtitles off
+	updateSubtitleBox();
+}
+
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	emit toggleFullscreen();
@@ -227,4 +272,54 @@ void MediaWidget::updatePreviousNext()
 	bool enabled = playing && ((titleCount > 1) || (chapterCount > 1));
 	actionPrevious->setEnabled(enabled);
 	actionNext->setEnabled(enabled);
+}
+
+void MediaWidget::updateAudioChannelBox()
+{
+	audioChannelsReady = false;
+	audioChannelBox->clear();
+	audioChannelBox->setEnabled(playing && (audioChannels.size() > 1));
+
+	if (playing) {
+		Phonon::AudioChannelDescription current = mediaController->currentAudioChannel();
+		int index = -1;
+
+		for (int i = 0; i < audioChannels.size(); ++i) {
+			const Phonon::AudioChannelDescription &description = audioChannels.at(i);
+			audioChannelBox->addItem(description.name());
+
+			if (description == current) {
+				index = i;
+			}
+		}
+
+		audioChannelBox->setCurrentIndex(index);
+		audioChannelsReady = true;
+	}
+}
+
+void MediaWidget::updateSubtitleBox()
+{
+	subtitlesReady = false;
+	subtitleBox->clear();
+	subtitleBox->setEnabled(playing && (subtitles.size() > 1));
+
+	if (playing) {
+		Phonon::SubtitleDescription current = mediaController->currentSubtitle();
+		int index = 0;
+
+		subtitleBox->addItem(textSubtitlesOff);
+
+		for (int i = 1; i < subtitles.size(); ++i) {
+			const Phonon::SubtitleDescription &description = subtitles.at(i);
+			subtitleBox->addItem(description.name());
+
+			if (description == current) {
+				index = i;
+			}
+		}
+
+		subtitleBox->setCurrentIndex(index);
+		subtitlesReady = true;
+	}
 }

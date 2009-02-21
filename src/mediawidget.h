@@ -24,6 +24,7 @@
 #include <QPointer>
 #include <QWidget>
 #include <Phonon/Global>
+#include <Phonon/ObjectDescription>
 #include <KIcon>
 
 namespace Phonon
@@ -34,6 +35,7 @@ class MediaObject;
 }
 class KAction;
 class KActionCollection;
+class KComboBox;
 class KToolBar;
 class KUrl;
 
@@ -69,13 +71,19 @@ private slots:
 	void playPause(bool paused);
 	void stop();
 	void next();
+	void changeAudioChannel(int index);
+	void changeSubtitle(int index);
 
 	void titleCountChanged(int count);
 	void chapterCountChanged(int count);
+	void audioChannelsChanged();
+	void subtitlesChanged();
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 	void updatePreviousNext();
+	void updateAudioChannelBox();
+	void updateSubtitleBox();
 
 	Phonon::MediaObject *mediaObject;
 	Phonon::MediaController *mediaController;
@@ -84,16 +92,22 @@ private:
 
 	KAction *actionPrevious;
 	KAction *actionPlayPause;
-	KAction *actionStop;
-	KAction *actionNext;
-
 	QString textPlay;
 	QString textPause;
 	KIcon iconPlay;
 	KIcon iconPause;
+	KAction *actionStop;
+	KAction *actionNext;
+	KComboBox *audioChannelBox;
+	KComboBox *subtitleBox;
+	QString textSubtitlesOff;
 
 	int titleCount;
 	int chapterCount;
+	bool audioChannelsReady;
+	bool subtitlesReady;
+	QList<Phonon::AudioChannelDescription> audioChannels;
+	QList<Phonon::SubtitleDescription> subtitles;
 };
 
 #endif /* MEDIAWIDGET_H */
