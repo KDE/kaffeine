@@ -61,5 +61,6 @@ int main(int argc, char *argv[])
 	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions());
 
 	KaffeineApplication app;
+	app.setQuitOnLastWindowClosed(true); // FIXME why is this needed ???
 	return app.exec();
 }
