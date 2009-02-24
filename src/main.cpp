@@ -28,13 +28,20 @@
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication() { }
-	~KaffeineApplication() { }
+	KaffeineApplication()
+	{
+		kaffeine = new Kaffeine();
+	}
+
+	~KaffeineApplication()
+	{
+		// unlike qt, kde sets Qt::WA_DeleteOnClose and needs it to work properly ...
+	}
 
 private:
 	int newInstance();
 
-	Kaffeine kaffeine;
+	Kaffeine *kaffeine;
 };
 
 int KaffeineApplication::newInstance()
@@ -42,7 +49,7 @@ int KaffeineApplication::newInstance()
 	// for window activation - FIXME do some checks about behaviour
 	KUniqueApplication::newInstance();
 
-	kaffeine.parseArgs();
+	kaffeine->parseArgs();
 
 	return 0;
 }
@@ -61,6 +68,5 @@ int main(int argc, char *argv[])
 	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions());
 
 	KaffeineApplication app;
-	app.setQuitOnLastWindowClosed(true); // FIXME why is this needed ???
 	return app.exec();
 }

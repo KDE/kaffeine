@@ -23,7 +23,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
-#include <QTimer>
 #include <KActionCollection>
 #include <KCmdLineOptions>
 #include <KFileDialog>
@@ -129,9 +128,6 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 
 Kaffeine::Kaffeine()
 {
-	// unlike qt, kde sets this flag
-	setAttribute(Qt::WA_DeleteOnClose, false);
-
 	// menu structure
 
 	KMenuBar *menuBar = KMainWindow::menuBar();
@@ -248,11 +244,6 @@ Kaffeine::Kaffeine()
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
-	// workaround broken size restoring
-	if (KConfig().group("Workarounds").readEntry("Maximized", false)) {
-		QTimer::singleShot(0, this, SLOT(showMaximized()));
-	}
-
 	parseArgs();
 
 	show();
@@ -260,9 +251,6 @@ Kaffeine::Kaffeine()
 
 Kaffeine::~Kaffeine()
 {
-	// workaround broken size restoring
-	KConfig().group("Workarounds").writeEntry("Maximized", isMaximized());
-
 	actionOpenRecent->saveEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
 }
 

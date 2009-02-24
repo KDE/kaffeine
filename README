@@ -1,3 +1,8 @@
+Requirements
+============
+
+Phonon 4.3 and KDE 4.2 are strongly recommended.
+
 Naming
 ======
 
@@ -11,6 +16,3 @@ Bugs
 You are welcome to report crashes and stuff that doesn't work the right way.
 We know what stuff isn't implemented yet, so please don't report that (ok, I admit
 that this distinction sometimes isn't too easy if you don't know the code).
-
-One known bug is that you can only switch channels once (and kaffeine will crash
-at exit); this is being investigated.
