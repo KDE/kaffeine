@@ -22,6 +22,7 @@
 
 #include <QBitArray>
 #include <KDebug>
+#include "dvbsi.h"
 
 class DvbPatEntry
 {
@@ -147,7 +148,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	DvbSection section(data);
 
 	if (!section.isValid()) {
-		kDebug() << "invalid section";
 		return;
 	}
 
@@ -160,7 +160,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 		DvbPatSection patSection(section);
 
 		if (!patSection.isValid()) {
-			kDebug() << "invalid PAT section";
 			return;
 		}
 
@@ -182,7 +181,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 		DvbPmtSection pmtSection(section);
 
 		if (!pmtSection.isValid()) {
-			kDebug() << "invalid PMT section";
 			return;
 		}
 
@@ -205,7 +203,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 		DvbSdtSection sdtSection(section);
 
 		if (!sdtSection.isValid()) {
-			kDebug() << "invalid SDT section";
 			return;
 		}
 
@@ -228,7 +225,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 		AtscVctSection vctSection(section);
 
 		if (!vctSection.isValid()) {
-			kDebug() << "invalid VCT section";
 			return;
 		}
 
@@ -251,7 +247,6 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 		DvbNitSection nitSection(section);
 
 		if (!nitSection.isValid()) {
-			kDebug() << "invalid NIT section";
 			return;
 		}
 
@@ -471,12 +466,7 @@ void DvbScan::processPat(const DvbPatSection &section)
 {
 	transportStreamId = section.transportStreamId();
 
-	for (DvbPatSectionEntry entry = section.entries(); !entry.isEmpty(); entry.advance()) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid PAT entry";
-			break;
-		}
-
+	for (DvbPatSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
 		if (entry.programNumber() != 0x0) {
 			// skip 0x0 which has a special meaning
 			patEntries.append(DvbPatEntry(entry.programNumber(), entry.pid()));
@@ -488,12 +478,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 {
 	DvbPreviewChannel channel;
 
-	for (DvbPmtSectionEntry entry = section.entries(); !entry.isEmpty(); entry.advance()) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid PMT entry";
-			break;
-		}
-
+	for (DvbPmtSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
 		switch (entry.streamType()) {
 		case 0x01:   // MPEG1 video
 		case 0x02:   // MPEG2 video
@@ -528,22 +513,12 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 
 void DvbScan::processSdt(const DvbSdtSection &section)
 {
-	for (DvbSdtSectionEntry entry = section.entries(); !entry.isEmpty(); entry.advance()) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid SDT entry";
-			break;
-		}
-
+	for (DvbSdtSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
 		DvbSdtEntry sdtEntry(entry.serviceId(), section.originalNetworkId(),
 				     entry.isScrambled());
 
-		for (DvbDescriptor descriptor = entry.descriptors(); !descriptor.isEmpty();
+		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
 		     descriptor.advance()) {
-			if (!descriptor.isValid()) {
-				kDebug() << "invalid descriptor";
-				break;
-			}
-
 			if (descriptor.descriptorTag() != 0x48) {
 				continue;
 			}
@@ -551,7 +526,6 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 			DvbServiceDescriptor serviceDescriptor(descriptor);
 
 			if (!serviceDescriptor.isValid()) {
-				kDebug() << "invalid service descriptor";
 				continue;
 			}
 
@@ -568,24 +542,16 @@ void DvbScan::processVct(const AtscVctSection &section)
 {
 	int i = section.entryCount();
 
-	for (AtscVctSectionEntry entry = section.entries(); i > 0; entry.advance(), --i) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid VCT entry";
-			break;
-		}
-
+	for (AtscVctSectionEntry entry = section.entries(); (i > 0) && (entry.isValid());
+	     --i, entry.advance()) {
 		QString majorminor = QString("%1-%2 ").arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
 
 		DvbSdtEntry sdtEntry(entry.programNumber(), -1, entry.isScrambled());
 
 		// Each VCT section has it's own list of descriptors
 		// See A/65C table 6.25a for the list of descriptors
-		for (DvbDescriptor descriptor = entry.descriptors(); 
-		     !descriptor.isEmpty(); descriptor.advance()) {
-			if (!descriptor.isValid()) {
-				kDebug() << "Invalid VCT descriptor";
-				break;
-			}
+		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
+		     descriptor.advance()) {
 			if (descriptor.descriptorTag() != 0xa0) {
 				continue;
 			}
@@ -620,19 +586,9 @@ void DvbScan::processVct(const AtscVctSection &section)
 
 void DvbScan::processNit(const DvbNitSection &section)
 {
-	for (DvbNitSectionEntry entry = section.entries(); !entry.isEmpty(); entry.advance()) {
-		if (!entry.isValid()) {
-			kDebug() << "invalid NIT entry";
-			break;
-		}
-
-		for (DvbDescriptor descriptor = entry.descriptors(); !descriptor.isEmpty();
+	for (DvbNitSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
+		for (DvbDescriptor descriptor = entry.descriptors();  descriptor.isValid();
 		     descriptor.advance()) {
-			if (!descriptor.isValid()) {
-				kDebug() << "invalid descriptor";
-				break;
-			}
-
 			bool found = false;
 
 			switch (transponder->getTransmissionType()) {
@@ -646,7 +602,6 @@ void DvbScan::processNit(const DvbNitSection &section)
 				DvbCableDescriptor cabDescriptor(descriptor);
 
 				if (!cabDescriptor.isValid()) {
-					kDebug() << "invalid cable descriptor";
 					break;
 				}
 
@@ -741,7 +696,6 @@ void DvbScan::processNit(const DvbNitSection &section)
 				DvbSatelliteDescriptor satDescriptor(descriptor);
 
 				if (!satDescriptor.isValid()) {
-					kDebug() << "invalid satellite descriptor";
 					break;
 				}
 
@@ -833,7 +787,6 @@ void DvbScan::processNit(const DvbNitSection &section)
 				DvbTerrestrialDescriptor terDescriptor(descriptor);
 
 				if (!terDescriptor.isValid()) {
-					kDebug() << "invalid terrestrial descriptor";
 					break;
 				}
 

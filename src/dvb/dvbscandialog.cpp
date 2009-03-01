@@ -25,9 +25,9 @@
 #include <KDebug>
 #include <KMessageBox>
 #include "dvbchannelview.h"
+#include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbscan.h"
-#include "dvbsi.h"
 #include "dvbtab.h"
 
 DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
@@ -138,17 +138,17 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	channelModel = new DvbChannelModel(this);
 	channelModel->setList(manager->getChannelModel()->getList());
 	ui->channelView->setIndentation(0);
-	ui->channelView->setSortingEnabled(true);
-	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
 	ui->channelView->setModel(channelModel);
+	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
+	ui->channelView->setSortingEnabled(true);
 	ui->channelView->addContextActions(channelModel->createContextActions());
 
 	previewModel = new DvbPreviewChannelModel(this);
 	ui->scanResultsView->setIndentation(0);
-	ui->scanResultsView->setSortingEnabled(true);
-	ui->scanResultsView->sortByColumn(0, Qt::AscendingOrder);
 	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	ui->scanResultsView->setModel(previewModel);
+	ui->scanResultsView->sortByColumn(0, Qt::AscendingOrder);
+	ui->scanResultsView->setSortingEnabled(true);
 
 	setDevice(dvbTab->getLiveDevice());
 

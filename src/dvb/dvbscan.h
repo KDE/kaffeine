@@ -21,12 +21,18 @@
 #ifndef DVBSCAN_H
 #define DVBSCAN_H
 
+#include <QObject>
 #include "dvbchannel.h"
-#include "dvbsi.h"
 
+class AtscVctSection;
+class DvbDevice;
+class DvbNitSection;
 class DvbScanFilter;
 class DvbPatEntry;
+class DvbPatSection;
+class DvbPmtSection;
 class DvbSdtEntry;
+class DvbSdtSection;
 
 class DvbPreviewChannel : public DvbChannelBase
 {

@@ -29,7 +29,6 @@
 #include <QSortFilterProxyModel>
 #include <QTimerEvent>
 #include <KComboBox>
-#include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
 #include "../proxytreeview.h"
@@ -90,20 +89,13 @@ void DvbRecordingPmtFilter::processSection(const DvbSectionData &data)
 {
 	DvbSection section(data);
 
-	if (!section.isValid()) {
-		kDebug() << "invalid section";
-		return;
-	}
-
-	if (section.tableId() != 0x2) {
-		kDebug() << "invalid table id";
+	if (!section.isValid() || (section.tableId() != 0x2)) {
 		return;
 	}
 
 	DvbPmtSection pmtSection(section);
 
 	if (!pmtSection.isValid()) {
-		kDebug() << "invalid PMT section";
 		return;
 	}
 
@@ -223,7 +215,8 @@ void DvbRecording::timerEvent(QTimerEvent *event)
 	}
 
 	if (patGenerator == NULL) {
-		patGenerator = new DvbPatGenerator(channel->transportStreamId, channel->serviceId, channel->pmtPid);
+		patGenerator = new DvbPatGenerator();
+		patGenerator->setup(channel->transportStreamId, channel->serviceId, channel->pmtPid);
 
 		file.write(patGenerator->generatePackets());
 		file.write(buffer);
@@ -252,7 +245,8 @@ void DvbRecording::processData(const char data[188])
 void DvbRecording::processPmtSection(const DvbPmtSection &section)
 {
 	if (patGenerator == NULL) {
-		patGenerator = new DvbPatGenerator(channel->transportStreamId, channel->serviceId, channel->pmtPid);
+		patGenerator = new DvbPatGenerator();
+		patGenerator->setup(channel->transportStreamId, channel->serviceId, channel->pmtPid);
 	}
 
 	if (pmtGenerator == NULL) {
@@ -266,7 +260,8 @@ void DvbRecording::processPmtSection(const DvbPmtSection &section)
 			pids.append(channel->audioPid);
 		}
 
-		pmtGenerator = new DvbPmtGenerator(channel->pmtPid, section, pids);
+		pmtGenerator = new DvbPmtGenerator();
+		pmtGenerator->setup(channel->pmtPid, section, pids);
 	}
 
 	device->removePidFilter(channel->pmtPid, pmtFilter);
@@ -459,9 +454,9 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 
 	treeView = new ProxyTreeView(this);
 	treeView->setIndentation(0);
-	treeView->setSortingEnabled(true);
-	treeView->sortByColumn(2, Qt::AscendingOrder);
 	treeView->setModel(model);
+	treeView->sortByColumn(2, Qt::AscendingOrder);
+	treeView->setSortingEnabled(true);
 	mainLayout->addWidget(treeView);
 
 	setMainWidget(widget);

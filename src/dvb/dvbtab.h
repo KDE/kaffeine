@@ -52,6 +52,7 @@ private slots:
 	void showRecordingDialog();
 	void configureDvb();
 	void playLive(const QModelIndex &index);
+	void liveDataReady(const QByteArray &data);
 	void liveStopped();
 
 private:

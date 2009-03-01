@@ -1,7 +1,7 @@
 /*
  * dvbsi.h
  *
- * Copyright (C) 2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2008-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,11 +61,6 @@ public:
 	DvbSectionData(const char *data_, int size_) : size(size_), length(0), data(data_) { }
 	~DvbSectionData() { }
 
-	bool isEmpty() const
-	{
-		return size == 0;
-	}
-
 	bool isValid() const
 	{
 		return length > 0;
@@ -102,20 +97,7 @@ private:
 class DvbSection : public DvbSectionData
 {
 public:
-	explicit DvbSection(const DvbSectionData &data) : DvbSectionData(data)
-	{
-		if (size < 3) {
-			length = 0;
-			return;
-		}
-
-		length = (((at(1) & 0xf) << 8) | at(2)) + 3;
-
-		if (size < length) {
-			length = 0;
-		}
-	}
-
+	explicit DvbSection(const DvbSectionData &data);
 	~DvbSection() { }
 
 	int getSectionLength() const
@@ -140,10 +122,6 @@ public:
 	explicit DvbStandardSection(const DvbSection &section) : DvbSection(section)
 	{
 		if (length < 12) {
-			length = 0;
-		} else if (!isStandardSection()) {
-			length = 0;
-		} else if (!verifyCrc32()) {
 			length = 0;
 		}
 	}
@@ -170,10 +148,9 @@ public:
 		return at(7);
 	}
 
-	static const unsigned int crc32Table[];
+	int verifyCrc32() const;
 
-private:
-	bool verifyCrc32() const;
+	static const unsigned int crc32Table[];
 };
 
 class DvbSiText
@@ -213,20 +190,7 @@ private:
 class DvbDescriptor : public DvbSectionData
 {
 public:
-	explicit DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
-	{
-		if (size < 2) {
-			length = 0;
-			return;
-		}
-
-		length = descriptorLength() + 2;
-
-		if (size < length) {
-			length = 0;
-		}
-	}
-
+	explicit DvbDescriptor(const DvbSectionData &data);
 	~DvbDescriptor() { }
 
 	int descriptorTag() const
@@ -316,15 +280,66 @@ private:
 class DvbPatGenerator : public DvbSectionGenerator
 {
 public:
-	DvbPatGenerator(int transportStreamId, int programNumber, int pmtPid);
+	DvbPatGenerator() { }
 	~DvbPatGenerator() { }
+
+	void setup(int transportStreamId, int programNumber, int pmtPid);
 };
 
 class DvbPmtGenerator : public DvbSectionGenerator
 {
 public:
-	DvbPmtGenerator(int pmtPid, const DvbPmtSection &section, const QList<int> &pids);
+	DvbPmtGenerator() { }
 	~DvbPmtGenerator() { }
+
+	void setup(int pmtPid, const DvbPmtSection &section, const QList<int> &pids);
+};
+
+class DvbPmtFilter : public QObject, public DvbSectionFilter
+{
+	Q_OBJECT
+public:
+	explicit DvbPmtFilter(int programNumber_);
+	~DvbPmtFilter() { }
+
+signals:
+	void pmtSectionChanged(const DvbPmtSection &section);
+
+private:
+	void processSection(const DvbSectionData &data);
+
+	int programNumber;
+	int versionNumber;
+	QList<int> crcs;
+};
+
+class DvbPatPmtInjector : public QObject, public DvbPidFilter
+{
+	Q_OBJECT
+public:
+	DvbPatPmtInjector(DvbDevice *device_, int transportStreamId, int programNumber, int pmtPid_,
+		const QList<int> &pids_);
+	~DvbPatPmtInjector() { }
+
+public slots:
+	void pmtSectionChanged(const DvbPmtSection &section);
+
+signals:
+	void dataReady(const QByteArray &array);
+
+private:
+	void timerEvent(QTimerEvent *event);
+	void processData(const char data[188]);
+
+	DvbDevice *device;
+	int pmtPid;
+	QList<int> pids;
+	bool valid;
+	QByteArray buffer;
+	int timerId;
+	DvbPatGenerator patGenerator;
+	DvbPmtGenerator pmtGenerator;
+	DvbPmtFilter pmtFilter;
 };
 
 // everything below this line is automatically generated
@@ -332,28 +347,7 @@ public:
 class DvbServiceDescriptor : public DvbDescriptor
 {
 public:
-	explicit DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-	{
-		if (length < 5) {
-			length = 0;
-			return;
-		}
-
-		providerNameLength = at(3);
-
-		if (length < (5 + providerNameLength)) {
-			length = 0;
-			return;
-		}
-
-		serviceNameLength = at(4 + providerNameLength);
-
-		if (length < (5 + providerNameLength + serviceNameLength)) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbServiceDescriptor(const DvbDescriptor &descriptor);
 	~DvbServiceDescriptor() { }
 
 	QString providerName() const
@@ -374,14 +368,7 @@ private:
 class DvbCableDescriptor : public DvbDescriptor
 {
 public:
-	explicit DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-	{
-		if (length < 13) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbCableDescriptor(const DvbDescriptor &descriptor);
 	~DvbCableDescriptor() { }
 
 	int frequency() const
@@ -408,14 +395,7 @@ public:
 class DvbSatelliteDescriptor : public DvbDescriptor
 {
 public:
-	explicit DvbSatelliteDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-	{
-		if (length < 13) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbSatelliteDescriptor(const DvbDescriptor &descriptor);
 	~DvbSatelliteDescriptor() { }
 
 	int frequency() const
@@ -447,14 +427,7 @@ public:
 class DvbTerrestrialDescriptor : public DvbDescriptor
 {
 public:
-	explicit DvbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-	{
-		if (length < 13) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbTerrestrialDescriptor(const DvbDescriptor &descriptor);
 	~DvbTerrestrialDescriptor() { }
 
 	int frequency() const
@@ -501,14 +474,7 @@ public:
 class AtscChannelNameDescriptor : public DvbDescriptor
 {
 public:
-	explicit AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-	{
-		if (length < 2) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit AtscChannelNameDescriptor(const DvbDescriptor &descriptor);
 	~AtscChannelNameDescriptor() { }
 
 	QString name() const
@@ -520,16 +486,7 @@ public:
 class DvbPatSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbPatSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
-	{
-		if (size < 4) {
-			length = 0;
-			return;
-		}
-
-		length = 4;
-	}
-
+	explicit DvbPatSectionEntry(const DvbSectionData &data_);
 	~DvbPatSectionEntry() { }
 
 	void advance()
@@ -551,21 +508,7 @@ public:
 class DvbPmtSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbPmtSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
-	{
-		if (size < 5) {
-			length = 0;
-			return;
-		}
-
-		length = (((at(3) & 0xf) << 8) | at(4)) + 5;
-
-		if (size < length) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbPmtSectionEntry(const DvbSectionData &data_);
 	~DvbPmtSectionEntry() { }
 
 	void advance()
@@ -592,21 +535,7 @@ public:
 class DvbSdtSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbSdtSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
-	{
-		if (size < 5) {
-			length = 0;
-			return;
-		}
-
-		length = (((at(3) & 0xf) << 8) | at(4)) + 5;
-
-		if (size < length) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbSdtSectionEntry(const DvbSectionData &data_);
 	~DvbSdtSectionEntry() { }
 
 	void advance()
@@ -633,21 +562,7 @@ public:
 class DvbNitSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbNitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
-	{
-		if (size < 6) {
-			length = 0;
-			return;
-		}
-
-		length = (((at(4) & 0xf) << 8) | at(5)) + 6;
-
-		if (size < length) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbNitSectionEntry(const DvbSectionData &data_);
 	~DvbNitSectionEntry() { }
 
 	void advance()
@@ -664,21 +579,7 @@ public:
 class AtscVctSectionEntry : public DvbSectionData
 {
 public:
-	explicit AtscVctSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
-	{
-		if (size < 32) {
-			length = 0;
-			return;
-		}
-
-		length = (((at(30) & 0x3) << 8) | at(31)) + 32;
-
-		if (size < length) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit AtscVctSectionEntry(const DvbSectionData &data_);
 	~AtscVctSectionEntry() { }
 
 	void advance()
@@ -755,14 +656,7 @@ public:
 class DvbPatSection : public DvbStandardSection
 {
 public:
-	explicit DvbPatSection(const DvbSection &section) : DvbStandardSection(section)
-	{
-		if (length < 12) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbPatSection(const DvbSection &section);
 	~DvbPatSection() { }
 
 	int transportStreamId() const
@@ -779,21 +673,7 @@ public:
 class DvbPmtSection : public DvbStandardSection
 {
 public:
-	explicit DvbPmtSection(const DvbSection &section) : DvbStandardSection(section)
-	{
-		if (length < 16) {
-			length = 0;
-			return;
-		}
-
-		descriptorsLength = ((at(10) & 0xf) << 8) | at(11);
-
-		if (length < (16 + descriptorsLength)) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbPmtSection(const DvbSection &section);
 	~DvbPmtSection() { }
 
 	int programNumber() const
@@ -818,14 +698,7 @@ private:
 class DvbSdtSection : public DvbStandardSection
 {
 public:
-	explicit DvbSdtSection(const DvbSection &section) : DvbStandardSection(section)
-	{
-		if (length < 15) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbSdtSection(const DvbSection &section);
 	~DvbSdtSection() { }
 
 	int originalNetworkId() const
@@ -842,28 +715,7 @@ public:
 class DvbNitSection : public DvbStandardSection
 {
 public:
-	explicit DvbNitSection(const DvbSection &section) : DvbStandardSection(section)
-	{
-		if (length < 16) {
-			length = 0;
-			return;
-		}
-
-		descriptorsLength = ((at(8) & 0xf) << 8) | at(9);
-
-		if (length < (16 + descriptorsLength)) {
-			length = 0;
-			return;
-		}
-
-		entriesLength = ((at(10 + descriptorsLength) & 0xf) << 8) | at(11 + descriptorsLength);
-
-		if (length < (16 + descriptorsLength + entriesLength)) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit DvbNitSection(const DvbSection &section);
 	~DvbNitSection() { }
 
 	DvbDescriptor descriptors() const
@@ -884,14 +736,7 @@ private:
 class AtscVctSection : public DvbStandardSection
 {
 public:
-	explicit AtscVctSection(const DvbSection &section) : DvbStandardSection(section)
-	{
-		if (length < 14) {
-			length = 0;
-			return;
-		}
-	}
-
+	explicit AtscVctSection(const DvbSection &section);
 	~AtscVctSection() { }
 
 	int entryCount() const

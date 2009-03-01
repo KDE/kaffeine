@@ -37,41 +37,32 @@
 #include "dvbmanager.h"
 #include "dvbrecording.h"
 #include "dvbscandialog.h"
+#include "dvbsi.h"
 
-class DvbStream : public Phonon::AbstractMediaStream, public DvbPidFilter
+class DvbStream : public Phonon::AbstractMediaStream
 {
 public:
-	DvbStream(DvbDevice *device_, const DvbSharedChannel &channel_) : device(device_),
-		channel(channel_), bufferPos(0)
+	DvbStream(DvbDevice *device_, const DvbSharedChannel &channel_, const QList<int> &pids) :
+		device(device_), channel(channel_), injector(device, channel->transportStreamId,
+		channel->serviceId, channel->pmtPid, pids)
 	{
 		setStreamSize(-1);
-		buffer.resize(188 * 64);
 	}
 
 	~DvbStream() { }
 
+	void writeData(const QByteArray &data)
+	{
+		Phonon::AbstractMediaStream::writeData(data);
+	}
+
 	DvbDevice *device;
 	DvbSharedChannel channel;
+	DvbPatPmtInjector injector;
 
 private:
 	void needData() { }
 	void reset() { }
-
-	void processData(const char data[188])
-	{
-		// FIXME too hacky
-		memcpy(buffer.data() + bufferPos, data, 188);
-		bufferPos += 188;
-		if (bufferPos == (188 * 64)) {
-			emit writeData(buffer);
-			buffer.clear();
-			buffer.resize(188 * 64);
-			bufferPos = 0;
-		}
-	}
-
-	QByteArray buffer;
-	int bufferPos;
 };
 
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
@@ -119,9 +110,9 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	DvbChannelModel *channelModel = dvbManager->getChannelModel();
 	channelView = new ProxyTreeView(leftSideWidget);
 	channelView->setIndentation(0);
-	channelView->setSortingEnabled(true);
-	channelView->sortByColumn(0, Qt::AscendingOrder);
 	channelView->setModel(channelModel);
+	channelView->sortByColumn(0, Qt::AscendingOrder);
+	channelView->setSortingEnabled(true);
 	channelView->addContextActions(channelModel->createContextActions());
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
@@ -200,6 +191,11 @@ void DvbTab::playLive(const QModelIndex &index)
 	playChannel(dvbManager->getChannelModel()->getChannel(channelView->mapToSource(index)));
 }
 
+void DvbTab::liveDataReady(const QByteArray &data)
+{
+	liveStream->writeData(data);
+}
+
 void DvbTab::liveStopped()
 {
 	DvbDevice *device = liveStream->device;
@@ -223,20 +219,24 @@ void DvbTab::playChannel(const DvbSharedChannel &channel)
 		return;
 	}
 
-	liveStream = new DvbStream(device, channel);
-	connect(liveStream, SIGNAL(destroyed(QObject*)), this, SLOT(liveStopped()));
-
 	device->tuneDevice(channel->transponder);
 
+	QList<int> pids;
+
 	if (channel->videoPid != -1) {
-		device->addPidFilter(channel->videoPid, liveStream);
+		pids.append(channel->videoPid);
 	}
 
 	if (channel->audioPid != -1) {
-		device->addPidFilter(channel->audioPid, liveStream);
+		pids.append(channel->audioPid);
 	}
 
-	// FIXME synthesize pat / pmt, audio streams, subtitles, ...
+	liveStream = new DvbStream(device, channel, pids);
+	connect(liveStream, SIGNAL(destroyed(QObject*)), this, SLOT(liveStopped()));
+	connect(&liveStream->injector, SIGNAL(dataReady(QByteArray)),
+		this, SLOT(liveDataReady(QByteArray)));
+
+	// FIXME audio streams, subtitles, ...
 
 	mediaWidget->playDvb(liveStream);
 }

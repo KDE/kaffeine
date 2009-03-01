@@ -1,7 +1,7 @@
 /*
  * updatedvbsi.cpp
  *
- * Copyright (C) 2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2008-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +29,7 @@ public:
 	{
 		Bool,
 		Int,
-		List,
-		EntryLength
+		List
 	};
 
 	Element() { }
@@ -114,83 +113,14 @@ public:
 		Section
 	};
 
-	explicit SiXmlParser(QTextStream &stream_) : stream(stream_) { }
-	~SiXmlParser() { }
-
-	bool parse(QDomDocument &document);
-
-private:
-	bool parseEntry(QDomNode node, Type type);
-
-	QTextStream &stream;
+	static void parseEntry(QDomNode node, Type type, QTextStream &headerStream, QTextStream &cppStream);
 };
 
-bool SiXmlParser::parse(QDomDocument &document)
+void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream, QTextStream &cppStream)
 {
-	QDomElement root = document.documentElement();
-
-	if (root.nodeName() != "dvbsi") {
-		qCritical() << "Error: expected \"dvbsi\"";
-		return false;
-	}
-
-	QDomNode child = root.firstChild();
-
-	if (child.nodeName() == "descriptors") {
-		QDomNode entry = child.firstChild();
-
-		while (!entry.isNull()) {
-			if (!parseEntry(entry, Descriptor)) {
-				return false;
-			}
-
-			entry = entry.nextSibling();
-		}
-
-		child = child.nextSibling();
-	}
-
-	if (child.nodeName() == "entries") {
-		QDomNode entry = child.firstChild();
-
-		while (!entry.isNull()) {
-			if (!parseEntry(entry, Entry)) {
-				return false;
-			}
-
-			entry = entry.nextSibling();
-		}
-
-		child = child.nextSibling();
-	}
-
-	if (child.nodeName() == "sections") {
-		QDomNode entry = child.firstChild();
-
-		while (!entry.isNull()) {
-			if (!parseEntry(entry, Section)) {
-				return false;
-			}
-
-			entry = entry.nextSibling();
-		}
-
-		child = child.nextSibling();
-	}
-
-	if (!child.isNull()) {
-		qWarning() << "Warning: unknown elements";
-	}
-
-	return true;
-}
-
-bool SiXmlParser::parseEntry(QDomNode node, Type type)
-{
-	QDomNode child = node.firstChild();
 	QList<Element> elements;
-	int bitIndex;
-	int minBits;
+	int bitIndex = 0;
+	int minBits = 0;
 	QString offsetString;
 
 	switch (type) {
@@ -208,71 +138,48 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 		bitIndex = 8 * 8;
 		minBits = 12 * 8;
 		break;
-
-	default:
-		Q_ASSERT(false);
-		return false;
 	}
 
-	while (!child.isNull()) {
+	for (QDomNode child = node.firstChild(); !child.isNull(); child = child.nextSibling()) {
+		QDomNamedNodeMap attributes = child.attributes();
+
 		Element element;
 		element.name = child.nodeName();
+		element.bits = attributes.namedItem("bits").nodeValue().toInt();
 		element.bitIndex = bitIndex;
 		element.offsetString = offsetString;
 
-		QDomNamedNodeMap attributes = child.attributes();
 		QString type = attributes.namedItem("type").nodeValue();
 
-		if ((element.name == "unused") || (type == "bool") || (type == "int") || (type == "entryLength")) {
-			QString bitString = attributes.namedItem("bits").nodeValue();
-
-			element.bits = bitString.toInt();
-
-			if (bitString.isEmpty() || (element.bits <= 0)) {
-				qCritical() << "Error: invalid \"bits\"";
-				return false;
+		if ((element.name == "unused") || (type == "int")) {
+			if (element.bits <= 0) {
+				qCritical() << "invalid number of bits";
+				return;
 			}
 
-			if (type == "entryLength") {
-				element.type = Element::EntryLength;
-			} else if (type == "bool") {
-				if (element.bits != 1) {
-					qCritical() << "Error: element.bits isn't 1";
-					return false;
-				}
+			element.type = Element::Int;
+		} else if (type == "bool") {
+			element.type = Element::Bool;
 
-				element.type = Element::Bool;
-			} else {
-				element.type = Element::Int;
+			if (element.bits != 1) {
+				qCritical() << "invalid number of bits";
+				return;
 			}
 		} else if (type == "list") {
+			element.type = Element::List;
+			element.bits = 0;
 			element.lengthFunc = attributes.namedItem("lengthFunc").nodeValue();
 			element.listType = attributes.namedItem("listType").nodeValue();
 
-			if (element.listType.isEmpty()) {
-				qCritical() << "Error: invalid list definition";
-				return false;
-			}
-
-			if (element.lengthFunc.isEmpty()) {
-				if (!child.nextSibling().isNull()) {
-					qCritical() << "Error: variable list isn't at the end";
-					return false;
-				}
-			}
-
 			if ((element.bitIndex % 8) != 0) {
-				qCritical() << "Error: element.bitIndex isn't a multiple of 8";
-				return false;
+				qCritical() << "list doesn't start at a byte boundary";
+				return;
 			}
-
-			element.type = Element::List;
-			element.bits = 0;
 
 			offsetString += " + " + element.name + "Length";
 		} else {
-			qCritical() << "Error: invalid \"type\"";
-			return false;
+			qCritical() << "unknown type:" << element.type;
+			return;
 		}
 
 		bitIndex += element.bits;
@@ -281,256 +188,297 @@ bool SiXmlParser::parseEntry(QDomNode node, Type type)
 		if (element.name != "unused") {
 			elements.append(element);
 		}
-
-		child = child.nextSibling();
 	}
 
 	if ((minBits % 8) != 0) {
-		qCritical() << "Error: minBits isn't a multiple of 8";
-		return false;
+		qCritical() << "minBits isn't a multiple of 8";
+		return;
 	}
 
 	QString entryName = node.nodeName();
-	bool seenLength = false;
 
 	switch (type) {
 	case Descriptor:
-		stream << "\n";
-		stream << "class " << entryName << " : public DvbDescriptor\n";
-		stream << "{\n";
-		stream << "public:\n";
-		stream << "\texplicit " << entryName << "(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)\n";
-		stream << "\t{\n";
-		stream << "\t\tif (length < " << (minBits / 8) << ") {\n";
-		stream << "\t\t\tlength = 0;\n";
-		stream << "\t\t\treturn;\n";
-		stream << "\t\t}\n";
-
-		seenLength = true;
+		cppStream << "\n";
+		cppStream << entryName << "::" << entryName << "(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)\n";
+		cppStream << "{\n";
+		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
+		cppStream << "\t\tkDebug() << \"invalid descriptor\";\n";
+		cppStream << "\t\tlength = 0;\n";
+		cppStream << "\t\treturn;\n";
+		cppStream << "\t}\n";
 		break;
 
-	case Entry:
-		stream << "\n";
-		stream << "class " << entryName << " : public DvbSectionData\n";
-		stream << "{\n";
-		stream << "public:\n";
-		stream << "\texplicit " << entryName << "(const DvbSectionData &data_) : DvbSectionData(data_)\n";
-		stream << "\t{\n";
-		stream << "\t\tif (size < " << (minBits / 8) << ") {\n";
-		stream << "\t\t\tlength = 0;\n";
-		stream << "\t\t\treturn;\n";
-		stream << "\t\t}\n";
+	case Entry: {
+		cppStream << "\n";
+		cppStream << entryName << "::" << entryName << "(const DvbSectionData &data_) : DvbSectionData(data_)\n";
+		cppStream << "{\n";
+		cppStream << "\tif (size < " << (minBits / 8) << ") {\n";
+		cppStream << "\t\tif (size > 0) {\n";
+		cppStream << "\t\t\tkDebug() << \"invalid entry\";\n";
+		cppStream << "\t\t}\n";
+		cppStream << "\n";
+		cppStream << "\t\tlength = 0;\n";
+		cppStream << "\t\treturn;\n";
+		cppStream << "\t}\n";
+		cppStream << "\n";
+
+		bool fixedLength = true;
+
+		for (int i = 0; i < elements.size(); ++i) {
+			const Element &element = elements.at(i);
+
+			if (element.name != "entryLength") {
+				continue;
+			}
+
+			if (((element.bitIndex + element.bits) % 8) != 0) {
+				qCritical() << "entry length doesn't start at a byte boundary";
+				return;
+			}
+
+			cppStream << "\tlength = (" << element << ") + " << ((element.bitIndex + element.bits) / 8) << ";\n";
+			cppStream << "\n";
+			cppStream << "\tif (length > size) {\n";
+			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\tlength = size;\n";
+			cppStream << "\t}\n";
+
+			elements.removeAt(i);
+			fixedLength = false;
+			break;
+		}
+
+		if (fixedLength) {
+			cppStream << "\tlength = " << (minBits / 8) << ";\n";
+		}
+
 		break;
+	    }
 
 	case Section:
-		stream << "\n";
-		stream << "class " << entryName << " : public DvbStandardSection\n";
-		stream << "{\n";
-		stream << "public:\n";
-		stream << "\texplicit " << entryName << "(const DvbSection &section) : DvbStandardSection(section)\n";
-		stream << "\t{\n";
-		stream << "\t\tif (length < " << (minBits / 8) << ") {\n";
-		stream << "\t\t\tlength = 0;\n";
-		stream << "\t\t\treturn;\n";
-		stream << "\t\t}\n";
+		cppStream << "\n";
+		cppStream << entryName << "::" << entryName << "(const DvbSection &section) : DvbStandardSection(section)\n";
+		cppStream << "{\n";
+		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
+		cppStream << "\t\tkDebug() << \"invalid section\";\n";
+		cppStream << "\t\tlength = 0;\n";
+		cppStream << "\t\treturn;\n";
+		cppStream << "\t}\n";
 
-		seenLength = true;
 		break;
 	}
 
-	bool privateVars = false;
+	QList<QString> privateVars;
 
 	for (int i = 0; i < elements.size(); ++i) {
 		const Element &element = elements.at(i);
 
-		if (element.type == Element::EntryLength) {
-			if (seenLength) {
-				qCritical() << "Error: more than one entry length defined";
-				return false;
-			}
-
-			if (((element.bitIndex + element.bits) % 8) != 0) {
-				qCritical() << "Error: (element.bitIndex + element.bits) isn't a multiple of 8";
-				return false;
-			}
-
-			stream << "\n";
-			stream << "\t\tlength = (" << element << ") + " << ((element.bitIndex + element.bits) / 8) << ";\n";
-			stream << "\n";
-			stream << "\t\tif (size < length) {\n";
-			stream << "\t\t\tlength = 0;\n";
-			stream << "\t\t\treturn;\n";
-			stream << "\t\t}\n";
-
-			elements.removeAt(i);
-			--i;
-
-			seenLength = true;
-		} else if ((element.type == Element::List) && !element.lengthFunc.isEmpty()) {
-			if ((i <= 0) || (elements.at(i - 1).name != element.lengthFunc)) {
-				qCritical() << "Error: lengthFunc isn't a valid back reference";
-				return false;
-			}
-
-			stream << "\n";
-			stream << "\t\t" << element.name << "Length = " << elements.at(i - 1) << ";\n";
-			stream << "\n";
-			stream << "\t\tif (length < (" << (minBits / 8) << element.offsetString << " + " << element.name << "Length)) {\n";
-			stream << "\t\t\tlength = 0;\n";
-			stream << "\t\t\treturn;\n";
-			stream << "\t\t}\n";
-
-			elements.removeAt(i - 1);
-			--i;
-
-			privateVars = true;
+		if ((element.type != Element::List) || element.lengthFunc.isEmpty()) {
+			continue;
 		}
+
+		if ((i <= 0) || (elements.at(i - 1).name != element.lengthFunc)) {
+			qCritical() << "lengthFunc isn't a valid back reference";
+			return;
+		}
+
+		cppStream << "\n";
+		cppStream << "\t" << element.name << "Length = " << elements.at(i - 1) << ";\n";
+		cppStream << "\n";
+
+		if (element.offsetString.isEmpty()) {
+			cppStream << "\tif (" << element.name << "Length > (length - " << (minBits / 8) << ")) {\n";
+			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\t" << element.name << "Length = length - " << (minBits / 8) << ";\n";
+		} else {
+			cppStream << "\tif (" << element.name << "Length > (length - (" << (minBits / 8) << element.offsetString << "))) {\n";
+			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\t" << element.name << "Length = length - (" << (minBits / 8) << element.offsetString << ");\n";
+		}
+
+		cppStream << "\t}\n";
+
+		elements.removeAt(i - 1);
+		--i;
+
+		privateVars.append(element.name + "Length");
 	}
 
-	if (!seenLength) {
-		stream << "\n";
-		stream << "\t\tlength = " << (minBits / 8) << ";\n";
+	cppStream << "}\n";
+
+	switch (type) {
+	case Descriptor:
+		headerStream << "\n";
+		headerStream << "class " << entryName << " : public DvbDescriptor\n";
+		headerStream << "{\n";
+		headerStream << "public:\n";
+		headerStream << "\texplicit " << entryName << "(const DvbDescriptor &descriptor);\n";
+		break;
+
+	case Entry:
+		headerStream << "\n";
+		headerStream << "class " << entryName << " : public DvbSectionData\n";
+		headerStream << "{\n";
+		headerStream << "public:\n";
+		headerStream << "\texplicit " << entryName << "(const DvbSectionData &data_);\n";
+		break;
+
+	case Section:
+		headerStream << "\n";
+		headerStream << "class " << entryName << " : public DvbStandardSection\n";
+		headerStream << "{\n";
+		headerStream << "public:\n";
+		headerStream << "\texplicit " << entryName << "(const DvbSection &section);\n";
+		break;
 	}
 
-	stream << "\t}\n";
-	stream << "\n";
-	stream << "\t~" << entryName << "() { }\n";
+	headerStream << "\t~" << entryName << "() { }\n";
 
 	if (type == Entry) {
-		stream << "\n";
-		stream << "\tvoid advance()\n";
-		stream << "\t{\n";
-		stream << "\t\t*this = " << entryName << "(next());\n";
-		stream << "\t}\n";
+		headerStream << "\n";
+		headerStream << "\tvoid advance()\n";
+		headerStream << "\t{\n";
+		headerStream << "\t\t*this = " << entryName << "(next());\n";
+		headerStream << "\t}\n";
 	}
 
 	if (type == Section) {
 		QString extension = node.attributes().namedItem("extension").nodeValue();
 
 		if (!extension.isEmpty()) {
-			stream << "\n";
-			stream << "\tint " << extension << "() const\n";
-			stream << "\t{\n";
-			stream << "\t\treturn (at(3) << 8) | at(4);\n";
-			stream << "\t}\n";
+			headerStream << "\n";
+			headerStream << "\tint " << extension << "() const\n";
+			headerStream << "\t{\n";
+			headerStream << "\t\treturn (at(3) << 8) | at(4);\n";
+			headerStream << "\t}\n";
 		}
 	}
 
 	foreach (const Element &element, elements) {
 		switch (element.type) {
 		case Element::Bool:
-			stream << "\n";
-			stream << "\tbool " << element.name << "() const\n";
-			stream << "\t{\n";
-			stream << "\t\treturn (" << element << ");\n";
-			stream << "\t}\n";
+			headerStream << "\n";
+			headerStream << "\tbool " << element.name << "() const\n";
+			headerStream << "\t{\n";
+			headerStream << "\t\treturn (" << element << ");\n";
+			headerStream << "\t}\n";
 			break;
 
 		case Element::Int:
-			stream << "\n";
-			stream << "\tint " << element.name << "() const\n";
-			stream << "\t{\n";
-			stream << "\t\treturn " << element << ";\n";
-			stream << "\t}\n";
+			headerStream << "\n";
+			headerStream << "\tint " << element.name << "() const\n";
+			headerStream << "\t{\n";
+			headerStream << "\t\treturn " << element << ";\n";
+			headerStream << "\t}\n";
 			break;
 
 		case Element::List:
 			if (element.listType == "DvbString") {
-				stream << "\n";
-				stream << "\tQString " << element.name << "() const\n";
-				stream << "\t{\n";
-				stream << "\t\treturn DvbSiText::convertText(subArray(" << element << ", ";
+				headerStream << "\n";
+				headerStream << "\tQString " << element.name << "() const\n";
+				headerStream << "\t{\n";
+				headerStream << "\t\treturn DvbSiText::convertText(subArray(" << element << ", ";
 			} else if (element.listType == "AtscString") {
-				stream << "\n";
-				stream << "\tQString " << element.name << "() const\n";
-				stream << "\t{\n";
-				stream << "\t\treturn AtscPsipText::convertText(subArray(" << element << ", ";
+				headerStream << "\n";
+				headerStream << "\tQString " << element.name << "() const\n";
+				headerStream << "\t{\n";
+				headerStream << "\t\treturn AtscPsipText::convertText(subArray(" << element << ", ";
 			} else {
-				stream << "\n";
-				stream << "\t" << element.listType << " " << element.name << "() const\n";
-				stream << "\t{\n";
-				stream << "\t\treturn " << element.listType << "(subArray(" << element << ", ";
+				headerStream << "\n";
+				headerStream << "\t" << element.listType << " " << element.name << "() const\n";
+				headerStream << "\t{\n";
+				headerStream << "\t\treturn " << element.listType << "(subArray(" << element << ", ";
 			}
 
 			if (element.lengthFunc.isEmpty()) {
 				if (element.offsetString.isEmpty()) {
-					stream << "length - " << (minBits / 8) << "));\n";
+					headerStream << "length - " << (minBits / 8) << "));\n";
 				} else {
-					stream << "length - (" << (minBits / 8) << element.offsetString << ")));\n";
+					headerStream << "length - (" << (minBits / 8) << element.offsetString << ")));\n";
 				}
 			} else {
-				stream << element.name << "Length));\n";
+				headerStream << element.name << "Length));\n";
 			}
 
-			stream << "\t}\n";
+			headerStream << "\t}\n";
 			break;
-
-		default:
-			Q_ASSERT(false);
 		}
 	}
 
-	if (privateVars) {
-		stream << "\n";
-		stream << "private:\n";
+	if (!privateVars.isEmpty()) {
+		headerStream << "\n";
+		headerStream << "private:\n";
 
-		foreach (const Element &element, elements) {
-			if ((element.type == Element::List) && !element.lengthFunc.isEmpty()) {
-				stream << "\tint " << element.name << "Length;\n";
-			}
+		foreach (const QString &privateVar, privateVars) {
+			headerStream << "\tint " << privateVar << ";\n";
 		}
 	}
 
-	stream << "};\n";
-
-	return true;
+	headerStream << "};\n";
 }
 
-int main()
+class FileHelper
 {
-	QFile xmlFile("dvbsi.xml");
+public:
+	explicit FileHelper(const QString &name);
 
-	if (!xmlFile.open(QIODevice::ReadOnly)) {
-		qCritical() << "Error: can't open file" << xmlFile.fileName();
-		return 1;
+	bool isValid() const
+	{
+		return valid;
 	}
 
-	QDomDocument document;
-
-	if (!document.setContent(&xmlFile)) {
-		qCritical() << "Error: can't read file" << xmlFile.fileName();
-		return 1;
+	QTextStream &getStream()
+	{
+		return outStream;
 	}
 
-	if (!QFile::rename("../src/dvb/dvbsi.h", "../src/dvb/dvbsi.h.orig")) {
-		qCritical() << "Error: can't rename \"../src/dvb/dvbsi.h\" to \"../src/dvb/dvbsi.h.orig\"";
-		return 1;
+	void removeOrig()
+	{
+		if (!QFile::remove(origName)) {
+			qCritical() << "can't remove" << origName;
+		}
 	}
 
-	QFile inFile("../src/dvb/dvbsi.h.orig");
+private:
+	bool valid;
+	QString origName;
+	QFile outFile;
+	QTextStream outStream;
+};
+
+FileHelper::FileHelper(const QString &name) : valid(false)
+{
+	origName = name + ".orig";
+
+	if (!QFile::rename(name, origName)) {
+		qCritical() << "can't rename" << name << "to" << origName;
+		return;
+	}
+
+	QFile inFile(origName);
 
 	if (!inFile.open(QIODevice::ReadOnly)) {
-		qCritical() << "Error: can't open file" << inFile.fileName();
-		return 1;
+		qCritical() << "can't open file" << inFile.fileName();
+		return;
 	}
 
-	QFile outFile("../src/dvb/dvbsi.h");
+	outFile.setFileName(name);
 
 	if (!outFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qCritical() << "Error: can't open file" << outFile.fileName();
-		return 1;
+		qCritical() << "can't open file" << outFile.fileName();
 	}
 
 	QTextStream inStream(&inFile);
 	inStream.setCodec("UTF-8");
 
-	QTextStream outStream(&outFile);
+	outStream.setDevice(&outFile);
 	outStream.setCodec("UTF-8");
 
 	while (true) {
 		if (inStream.atEnd()) {
-			qCritical() << "Error: can't find the autogeneration boundary";
-			return 1;
+			qCritical() << "can't find autogeneration boundary in" << inFile.fileName();
+			return;
 		}
 
 		QString line = inStream.readLine();
@@ -541,16 +489,73 @@ int main()
 		}
 	}
 
-	if (!SiXmlParser(outStream).parse(document)) {
+	valid = true;
+}
+
+int main()
+{
+	QFile xmlFile("dvbsi.xml");
+
+	if (!xmlFile.open(QIODevice::ReadOnly)) {
+		qCritical() << "can't open file" << xmlFile.fileName();
 		return 1;
 	}
 
-	outStream << "\n#endif /* DVBSI_H */\n";
+	QDomDocument document;
 
-	if (!inFile.remove()) {
-		qCritical() << "Error: can't remove file" << inFile.fileName();
+	if (!document.setContent(&xmlFile)) {
+		qCritical() << "can't read file" << xmlFile.fileName();
 		return 1;
 	}
+
+	QDomElement root = document.documentElement();
+
+	if (root.nodeName() != "dvbsi") {
+		qCritical() << "invalid root name";
+		return 1;
+	}
+
+	FileHelper headerFile("../src/dvb/dvbsi.h");
+
+	if (!headerFile.isValid()) {
+		return 1;
+	}
+
+	FileHelper cppFile("../src/dvb/dvbsi.cpp");
+
+	if (!cppFile.isValid()) {
+		return 1;
+	}
+
+	QTextStream &headerStream = headerFile.getStream();
+	QTextStream &cppStream = cppFile.getStream();
+
+	for (QDomNode child = root.firstChild(); !child.isNull(); child = child.nextSibling()) {
+		if (child.nodeName() == "descriptors") {
+			for (QDomNode grandChild = child.firstChild(); !grandChild.isNull();
+			     grandChild = grandChild.nextSibling()) {
+				SiXmlParser::parseEntry(grandChild, SiXmlParser::Descriptor, headerStream, cppStream);
+			}
+		} else if (child.nodeName() == "entries") {
+			for (QDomNode grandChild = child.firstChild(); !grandChild.isNull();
+			     grandChild = grandChild.nextSibling()) {
+				SiXmlParser::parseEntry(grandChild, SiXmlParser::Entry, headerStream, cppStream);
+			}
+		} else if (child.nodeName() == "sections") {
+			for (QDomNode grandChild = child.firstChild(); !grandChild.isNull();
+			     grandChild = grandChild.nextSibling()) {
+				SiXmlParser::parseEntry(grandChild, SiXmlParser::Section, headerStream, cppStream);
+			}
+		} else {
+			qCritical() << "unknown entry:" << child.nodeName();
+		}
+	}
+
+	headerStream << "\n";
+	headerStream << "#endif /* DVBSI_H */\n";
+
+	headerFile.removeOrig();
+	cppFile.removeOrig();
 
 	xmlFile.close();
 

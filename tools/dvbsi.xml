@@ -58,7 +58,7 @@
       <unused bits="3" />
       <pid bits="13" type="int" />
       <unused bits="4" />
-      <entryLength bits="12" type="entryLength" />
+      <entryLength bits="12" type="int" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
     </DvbPmtSectionEntry>
     <DvbSdtSectionEntry>
@@ -68,14 +68,14 @@
       <unused bits="1" />
       <unused bits="3" />
       <isScrambled bits="1" type="bool" />
-      <entryLength bits="12" type="entryLength" />
+      <entryLength bits="12" type="int" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
     </DvbSdtSectionEntry>
     <DvbNitSectionEntry>
       <unused bits="16" />
       <unused bits="16" />
       <unused bits="4" />
-      <entryLength bits="12" type="entryLength" />
+      <entryLength bits="12" type="int" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
     </DvbNitSectionEntry>
     <AtscVctSectionEntry>
@@ -102,7 +102,7 @@
       <unused bits="6" />
       <unused bits="16" />
       <unused bits="6" />
-      <entryLength bits="10" type="entryLength" />
+      <entryLength bits="10" type="int" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
     </AtscVctSectionEntry>
   </entries>
