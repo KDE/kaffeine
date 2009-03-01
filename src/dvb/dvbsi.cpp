@@ -1010,6 +1010,45 @@ const unsigned char AtscHuffmanString::Huffman2Tables[] = {
 	0x02, 0x03, 0x04, 0x05, 0x9b, 0x9b, 0x9b, 0x9b,
 	0x9b, 0x9b, 0x9b, 0x9b, 0x9b, 0x9b };
 
+void DvbSectionGenerator::initPat(int transportStreamId, int programNumber, int pmtPid)
+{
+	Q_ASSERT((pmtPid >= 0) && (pmtPid <= 0x1fff));
+
+	char *data = startSection(16);
+	data[0] = 0x00;
+	data[3] = transportStreamId >> 8;
+	data[4] = transportStreamId;
+	data[8] = programNumber >> 8;
+	data[9] = programNumber;
+	data[10] = 0xe0 | (pmtPid >> 8);
+	data[11] = pmtPid;
+	endSection(16, 0x00);
+}
+
+void DvbSectionGenerator::initPmt(int pmtPid, const DvbPmtSection &section, const QList<int> &pids)
+{
+	Q_ASSERT(section.isValid());
+
+	char *data = startSection(section.getSectionLength());
+
+	DvbPmtSectionEntry entry = section.entries();
+	memcpy(data, section.getData(), entry.getData() - section.getData());
+	int size = entry.getData() - section.getData();
+
+	while (entry.isValid()) {
+		const char *begin = entry.getData();
+		bool selected = pids.contains(entry.pid());
+		entry.advance();
+
+		if (selected) {
+			memcpy(data + size, begin, entry.getData() - begin);
+			size += entry.getData() - begin;
+		}
+	}
+
+	endSection(size + 4, pmtPid);
+}
+
 QByteArray DvbSectionGenerator::generatePackets()
 {
 	char *data = packets.data();
@@ -1078,45 +1117,6 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 	versionNumber = (versionNumber + 1) & 0x1f;
 }
 
-void DvbPatGenerator::setup(int transportStreamId, int programNumber, int pmtPid)
-{
-	Q_ASSERT((pmtPid >= 0) && (pmtPid <= 0x1fff));
-
-	char *data = startSection(16);
-	data[0] = 0x00;
-	data[3] = transportStreamId >> 8;
-	data[4] = transportStreamId;
-	data[8] = programNumber >> 8;
-	data[9] = programNumber;
-	data[10] = 0xe0 | (pmtPid >> 8);
-	data[11] = pmtPid;
-	endSection(16, 0x00);
-}
-
-void DvbPmtGenerator::setup(int pmtPid, const DvbPmtSection &section, const QList<int> &pids)
-{
-	Q_ASSERT(section.isValid());
-
-	char *data = startSection(section.getSectionLength());
-
-	DvbPmtSectionEntry entry = section.entries();
-	memcpy(data, section.getData(), entry.getData() - section.getData());
-	int size = entry.getData() - section.getData();
-
-	while (entry.isValid()) {
-		const char *begin = entry.getData();
-		bool selected = pids.contains(entry.pid());
-		entry.advance();
-
-		if (selected) {
-			memcpy(data + size, begin, entry.getData() - begin);
-			size += entry.getData() - begin;
-		}
-	}
-
-	endSection(size + 4, pmtPid);
-}
-
 DvbPmtFilter::DvbPmtFilter(int programNumber_) : programNumber(programNumber_), versionNumber(-1)
 {
 }
@@ -1154,7 +1154,7 @@ DvbPatPmtInjector::DvbPatPmtInjector(DvbDevice *device_, int transportStreamId, 
 	valid(false), timerId(0), pmtFilter(programNumber)
 {
 	buffer.reserve(188 * 128);
-	patGenerator.setup(transportStreamId, programNumber, pmtPid);
+	patGenerator.initPat(transportStreamId, programNumber, pmtPid);
 
 	device->addPidFilter(pmtPid, &pmtFilter);
 	connect(&pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
@@ -1167,7 +1167,7 @@ DvbPatPmtInjector::DvbPatPmtInjector(DvbDevice *device_, int transportStreamId, 
 
 void DvbPatPmtInjector::pmtSectionChanged(const DvbPmtSection &section)
 {
-	pmtGenerator.setup(pmtPid, section, pids);
+	pmtGenerator.initPmt(pmtPid, section, pids);
 
 	if (valid) {
 		buffer.append(pmtGenerator.generatePackets());

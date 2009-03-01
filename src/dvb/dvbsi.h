@@ -265,34 +265,18 @@ public:
 	DvbSectionGenerator() : versionNumber(0), continuityCounter(0) { }
 	~DvbSectionGenerator() { }
 
+	void initPat(int transportStreamId, int programNumber, int pmtPid);
+	void initPmt(int pmtPid, const DvbPmtSection &section, const QList<int> &pids);
+
 	QByteArray generatePackets();
 
-protected:
+private:
 	char *startSection(int sectionLength);
 	void endSection(int sectionLength, int pid);
 
-private:
 	QByteArray packets;
 	int versionNumber;
 	int continuityCounter;
-};
-
-class DvbPatGenerator : public DvbSectionGenerator
-{
-public:
-	DvbPatGenerator() { }
-	~DvbPatGenerator() { }
-
-	void setup(int transportStreamId, int programNumber, int pmtPid);
-};
-
-class DvbPmtGenerator : public DvbSectionGenerator
-{
-public:
-	DvbPmtGenerator() { }
-	~DvbPmtGenerator() { }
-
-	void setup(int pmtPid, const DvbPmtSection &section, const QList<int> &pids);
 };
 
 class DvbPmtFilter : public QObject, public DvbSectionFilter
@@ -337,8 +321,8 @@ private:
 	bool valid;
 	QByteArray buffer;
 	int timerId;
-	DvbPatGenerator patGenerator;
-	DvbPmtGenerator pmtGenerator;
+	DvbSectionGenerator patGenerator;
+	DvbSectionGenerator pmtGenerator;
 	DvbPmtFilter pmtFilter;
 };
 
