@@ -1205,7 +1205,8 @@ void DvbPatPmtInjector::timerEvent(QTimerEvent *event)
 
 void DvbPatPmtInjector::processData(const char data[188])
 {
-	buffer.append(data, 188);
+	// append(const char *, int) is 4.5rc1 (don't use it yet)
+	buffer.append(QByteArray::fromRawData(data, 188));
 
 	if (valid && (buffer.size() >= (188 * 128))) {
 		emit dataReady(buffer);
