@@ -163,6 +163,7 @@ void MediaWidget::stateChanged(Phonon::State state)
 
 		case Phonon::ErrorState:
 			// FIXME check errorType
+			delete dvbFeed; // dvbFeed is a QPointer
 			KMessageBox::error(this, mediaObject->errorString());
 			break;
 	}
@@ -172,11 +173,6 @@ void MediaWidget::stateChanged(Phonon::State state)
 	}
 
 	playing = newPlaying;
-
-	if (!playing) {
-		// FIXME is there a more elegant way to do this?
-		delete dvbFeed; // dvbFeed is a QPointer
-	}
 
 	if (playing) {
 		actionPlayPause->setText(textPause);
@@ -216,6 +212,7 @@ void MediaWidget::playPause(bool paused)
 void MediaWidget::stop()
 {
 	mediaObject->stop();
+	delete dvbFeed; // dvbFeed is a QPointer
 }
 
 void MediaWidget::next()
