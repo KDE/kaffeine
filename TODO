@@ -9,7 +9,6 @@ Working:
 == Functionality required before first beta release ==
 
 = DVB Subsystem =
-Synthesize PAT/PMT
 DVB Selection of Audio Channels/Subtitles
 Channel properties dialog
 On screen display showing current channel information (needs spec)

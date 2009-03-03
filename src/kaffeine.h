@@ -58,11 +58,16 @@ private slots:
 	void activatePlayerTab();
 	void activateDvbTab();
 
+	void hideCursor();
+
 private:
 	void activateTab(TabBase *tab);
+	bool event(QEvent *event);
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
+	KToolBar *controlBar;
+	QTimer *cursorHideTimer;
 
 	MediaWidget *mediaWidget;
 	QStackedLayout *stackedLayout;

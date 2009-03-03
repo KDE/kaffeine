@@ -20,9 +20,11 @@
 
 #include "kaffeine.h"
 
+#include <QHoverEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
+#include <QTimer>
 #include <KActionCollection>
 #include <KCmdLineOptions>
 #include <KFileDialog>
@@ -202,8 +204,13 @@ Kaffeine::Kaffeine()
 
 	// control bar
 
-	KToolBar *toolBar = new KToolBar("control_bar", this, Qt::BottomToolBarArea);
-	toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	controlBar = new KToolBar("control_bar", this, Qt::BottomToolBarArea);
+	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+	cursorHideTimer = new QTimer(this);
+	cursorHideTimer->setInterval(1500);
+	cursorHideTimer->setSingleShot(true);
+	connect(cursorHideTimer, SIGNAL(timeout()), this, SLOT(hideCursor()));
 
 	// main area
 
@@ -211,7 +218,7 @@ Kaffeine::Kaffeine()
 	stackedLayout = new QStackedLayout(widget);
 	setCentralWidget(widget);
 
-	mediaWidget = new MediaWidget(toolBar, collection, widget);
+	mediaWidget = new MediaWidget(controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
 
 	// tabs
@@ -238,11 +245,12 @@ Kaffeine::Kaffeine()
 	// let KMainWindow save / restore its settings
 	setAutoSaveSettings();
 
-	// make sure that the menu bar is visible (fullscreen -> quit -> restore -> hidden)
+	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
 	menuBar->show();
+	controlBar->show();
 
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
-	toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
 	parseArgs();
 
@@ -336,17 +344,19 @@ void Kaffeine::toggleFullscreen()
 
 	if (isFullScreen()) {
 		menuBar()->hide();
+		cursorHideTimer->start();
 
 		stackedLayout->setCurrentWidget(playerTab);
 		playerTab->activate();
 	} else {
+		cursorHideTimer->stop();
+		unsetCursor();
 		menuBar()->show();
+		controlBar->show();
 
 		stackedLayout->setCurrentWidget(currentTab);
 		currentTab->activate();
 	}
-
-	// FIXME hide cursor / toolbar
 }
 
 void Kaffeine::configureKeys()
@@ -369,6 +379,11 @@ void Kaffeine::activateDvbTab()
 	activateTab(dvbTab);
 }
 
+void Kaffeine::hideCursor()
+{
+	setCursor(Qt::BlankCursor);
+}
+
 void Kaffeine::activateTab(TabBase *tab)
 {
 	currentTab = tab;
@@ -379,4 +394,31 @@ void Kaffeine::activateTab(TabBase *tab)
 
 	stackedLayout->setCurrentWidget(currentTab);
 	currentTab->activate();
+}
+
+bool Kaffeine::event(QEvent *event)
+{
+	// FIXME we depend on QEvent::HoverMove (instead of QEvent::MouseMove)
+	// but the latter depends on mouse tracking being enabled on this widget
+	// and all its children (especially the phonon video widget) ...
+
+	if ((event->type() == QEvent::HoverMove) && isFullScreen()) {
+		unsetCursor();
+		cursorHideTimer->start();
+
+		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
+
+		switch (toolBarArea(controlBar)) {
+		case Qt::TopToolBarArea:
+			controlBar->setVisible((y < 60) && (y >= 0));
+			break;
+		case Qt::BottomToolBarArea:
+			controlBar->setVisible((y >= (height() - 60)) && (y < height()));
+			break;
+		default:
+			break;
+		}
+	}
+
+	return KMainWindow::event(event);
 }
