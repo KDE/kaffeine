@@ -104,7 +104,8 @@ QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orientation, int role)
+	const
 {
 	if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
 		return QVariant();
@@ -319,13 +320,14 @@ void DvbScanDialog::addFilteredChannels()
 
 void DvbScanDialog::deleteAllChannels()
 {
-	channelModel->setList(QList<DvbSharedChannel>());
+	channelModel->setList(QList<QSharedDataPointer<DvbChannel> >());
 }
 
 class DvbChannelNumberLess
 {
 public:
-	bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
+	bool operator()(const QSharedDataPointer<DvbChannel> &x,
+		const QSharedDataPointer<DvbChannel> &y) const
 	{
 		return (x->number < y->number);
 	}
@@ -333,11 +335,11 @@ public:
 
 void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
 {
-	QList<DvbSharedChannel> channels = channelModel->getList();
-	QList<DvbSharedChannel> newChannels;
+	QList<QSharedDataPointer<DvbChannel> > channels = channelModel->getList();
+	QList<QSharedDataPointer<DvbChannel> > newChannels;
 
 	foreach (const DvbPreviewChannel *currentChannel, channelList) {
-		QList<DvbSharedChannel>::const_iterator it;
+		QList<QSharedDataPointer<DvbChannel> >::const_iterator it;
 
 		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
 			// FIXME - algorithmic complexity is quite high
@@ -363,7 +365,8 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 				}
 			}
 
-			channelModel->updateChannel(it - channels.constBegin(), DvbSharedChannel(channel));
+			channelModel->updateChannel(it - channels.constBegin(),
+				QSharedDataPointer<DvbChannel>(channel));
 		} else {
 			// add channel
 			// number is assigned later
@@ -371,7 +374,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 				channel->audioPid = currentChannel->audioPids.at(0);
 			}
 
-			newChannels.append(DvbSharedChannel(channel));
+			newChannels.append(QSharedDataPointer<DvbChannel>(channel));
 		}
 	}
 
@@ -382,10 +385,12 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 	qSort(channels.begin(), channels.end(), DvbChannelNumberLess());
 
 	int currentNumber = 1;
-	QList<DvbSharedChannel>::const_iterator channelIt = channels.constBegin();
+	QList<QSharedDataPointer<DvbChannel> >::const_iterator channelIt = channels.constBegin();
 
-	for (QList<DvbSharedChannel>::iterator it = newChannels.begin(); it != newChannels.end(); ++it) {
-		while ((channelIt != channels.constEnd()) && (currentNumber == (*channelIt)->number)) {
+	for (QList<QSharedDataPointer<DvbChannel> >::iterator it = newChannels.begin();
+	     it != newChannels.constEnd(); ++it) {
+		while ((channelIt != channels.constEnd()) &&
+		       (currentNumber == (*channelIt)->number)) {
 			++channelIt;
 			++currentNumber;
 		}

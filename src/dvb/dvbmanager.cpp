@@ -447,7 +447,7 @@ void DvbManager::readChannelList()
 	QTextStream stream(&file);
 	stream.setCodec("UTF-8");
 	bool fileOk = true;
-	QList<DvbSharedChannel> list;
+	QList<QSharedDataPointer<DvbChannel> > list;
 
 	while (!stream.atEnd()) {
 		DvbChannel *channel = DvbLineReader(stream.readLine()).readChannel();
@@ -457,7 +457,7 @@ void DvbManager::readChannelList()
 			continue;
 		}
 
-		list.append(DvbSharedChannel(channel));
+		list.append(QSharedDataPointer<DvbChannel>(channel));
 	}
 
 	if (!fileOk) {
@@ -480,11 +480,10 @@ void DvbManager::writeChannelList()
 
 	QTextStream stream(&file);
 	stream.setCodec("UTF-8");
-	QList<DvbSharedChannel> list = channelModel->getList();
 
-	for (QList<DvbSharedChannel>::const_iterator it = list.constBegin(); it != list.constEnd(); ++it) {
+	foreach (const QSharedDataPointer<DvbChannel> &channel, channelModel->getList()) {
 		DvbLineWriter writer;
-		writer.writeChannel(*it);
+		writer.writeChannel(channel);
 		stream << writer.getLine();
 	}
 }

@@ -22,9 +22,10 @@
 #define DVBCHANNELVIEW_H
 
 #include <QAbstractTableModel>
+#include <QSharedDataPointer>
 
 class QAction;
-class DvbSharedChannel;
+class DvbChannel;
 
 template<class T> class DvbGenericChannelModel : public QAbstractTableModel
 {
@@ -74,14 +75,14 @@ protected:
 	QList<T> list;
 };
 
-class DvbChannelModel : public DvbGenericChannelModel<DvbSharedChannel>
+class DvbChannelModel : public DvbGenericChannelModel<QSharedDataPointer<DvbChannel> >
 {
 public:
 	explicit DvbChannelModel(QObject *parent) :
-		DvbGenericChannelModel<DvbSharedChannel>(parent) { }
+		DvbGenericChannelModel<QSharedDataPointer<DvbChannel> >(parent) { }
 	~DvbChannelModel() { }
 
-	const DvbSharedChannel *channelForName(const QString &name) const;
+	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;
 
 	int columnCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;

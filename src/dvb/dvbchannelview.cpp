@@ -24,15 +24,15 @@
 #include <KLocalizedString>
 #include "dvbchannel.h"
 
-const DvbSharedChannel *DvbChannelModel::channelForName(const QString &name) const
+QSharedDataPointer<DvbChannel> DvbChannelModel::channelForName(const QString &name) const
 {
-	foreach (const DvbSharedChannel &channel, list) {
+	foreach (const QSharedDataPointer<DvbChannel> &channel, list) {
 		if (channel->name == name) {
-			return &channel;
+			return channel;
 		}
 	}
 
-	return NULL;
+	return QSharedDataPointer<DvbChannel>();
 }
 
 int DvbChannelModel::columnCount(const QModelIndex &parent) const

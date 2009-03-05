@@ -58,7 +58,7 @@ public:
 private:
 	DvbManager *manager;
 	DvbDevice *device;
-	DvbSharedChannel channel;
+	QSharedDataPointer<DvbChannel> channel;
 
 	QFile file;
 	DvbFileWriter fileWriter;
@@ -121,14 +121,12 @@ void DvbRecording::start()
 	}
 
 	if (channel == NULL) {
-		const DvbSharedChannel *channelT = manager->getChannelModel()->channelForName(channelName);
+		channel = manager->getChannelModel()->channelForName(channelName);
 
-		if (channelT == NULL) {
+		if (channel == NULL) {
 			// FIXME error message
 			return;
 		}
-
-		channel = *channelT;
 	}
 
 	if (device == NULL) {

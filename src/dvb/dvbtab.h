@@ -21,10 +21,11 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include <QSharedDataPointer>
 #include "../kaffeine.h"
-#include "dvbchannel.h"
 
 class QModelIndex;
+class DvbChannel;
 class DvbDevice;
 class DvbManager;
 class DvbStream;
@@ -43,7 +44,7 @@ public:
 	}
 
 	DvbDevice *getLiveDevice() const;
-	DvbSharedChannel getLiveChannel() const;
+	QSharedDataPointer<DvbChannel> getLiveChannel() const;
 
 	void playChannel(const QString &name);
 
@@ -58,7 +59,7 @@ private slots:
 private:
 	void activate();
 
-	void playChannel(const DvbSharedChannel &channel);
+	void playChannel(const QSharedDataPointer<DvbChannel> &channel);
 
 	MediaWidget *mediaWidget;
 	DvbManager *dvbManager;

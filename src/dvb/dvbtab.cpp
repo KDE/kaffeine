@@ -42,9 +42,9 @@
 class DvbStream : public Phonon::AbstractMediaStream
 {
 public:
-	DvbStream(DvbDevice *device_, const DvbSharedChannel &channel_, const QList<int> &pids) :
-		device(device_), channel(channel_), injector(device, channel->transportStreamId,
-		channel->serviceId, channel->pmtPid, pids)
+	DvbStream(DvbDevice *device_, const QSharedDataPointer<DvbChannel> &channel_,
+		const QList<int> &pids) : device(device_), channel(channel_), injector(device,
+		channel->transportStreamId, channel->serviceId, channel->pmtPid, pids)
 	{
 		setStreamSize(-1);
 	}
@@ -57,7 +57,7 @@ public:
 	}
 
 	DvbDevice *device;
-	DvbSharedChannel channel;
+	QSharedDataPointer<DvbChannel> channel;
 	DvbPatPmtInjector injector;
 
 private:
@@ -133,15 +133,7 @@ DvbTab::~DvbTab()
 
 void DvbTab::playChannel(const QString &name)
 {
-	// FIXME ugly
-
-	const DvbSharedChannel *channel = dvbManager->getChannelModel()->channelForName(name);
-
-	if (channel != NULL) {
-		playChannel(*channel);
-	} else {
-		playChannel(DvbSharedChannel(NULL));
-	}
+	playChannel(dvbManager->getChannelModel()->channelForName(name));
 }
 
 void DvbTab::showChannelDialog()
@@ -177,13 +169,13 @@ DvbDevice *DvbTab::getLiveDevice() const
 	return NULL;
 }
 
-DvbSharedChannel DvbTab::getLiveChannel() const
+QSharedDataPointer<DvbChannel> DvbTab::getLiveChannel() const
 {
 	if (liveStream != NULL) {
 		return liveStream->channel;
 	}
 
-	return DvbSharedChannel();
+	return QSharedDataPointer<DvbChannel>();
 }
 
 void DvbTab::playLive(const QModelIndex &index)
@@ -204,7 +196,7 @@ void DvbTab::liveStopped()
 	liveStream = NULL;
 }
 
-void DvbTab::playChannel(const DvbSharedChannel &channel)
+void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
 	delete liveStream; // liveStream is set to NULL by liveStopped()
 

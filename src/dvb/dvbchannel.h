@@ -275,16 +275,6 @@ public:
 	~DvbChannel() { }
 };
 
-class DvbSharedChannel : public QSharedDataPointer<DvbChannel>
-{
-public:
-	explicit DvbSharedChannel(DvbChannel *channel = NULL) :
-		QSharedDataPointer<DvbChannel>(channel) { }
-	explicit DvbSharedChannel(const DvbChannelBase &channel) :
-		QSharedDataPointer<DvbChannel>(new DvbChannel(channel)) { }
-	~DvbSharedChannel() { }
-};
-
 class DvbLineReader
 {
 public:
