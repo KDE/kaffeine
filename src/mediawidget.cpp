@@ -36,6 +36,26 @@
 #include <KToolBar>
 #include <KUrl>
 
+class DvbFeed : public Phonon::AbstractMediaStream
+{
+public:
+	DvbFeed()
+	{
+		setStreamSize(-1);
+	}
+
+	~DvbFeed() { }
+
+	void writeData(const QByteArray &data)
+	{
+		Phonon::AbstractMediaStream::writeData(data);
+	}
+
+private:
+	void needData() { }
+	void reset() { }
+};
+
 MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent) :
 	QWidget(parent), playing(true), titleCount(0), chapterCount(0), audioChannelsReady(false),
 	subtitlesReady(false)
@@ -137,13 +157,25 @@ void MediaWidget::playDvd()
 	mediaObject->play();
 }
 
-void MediaWidget::playDvb(Phonon::AbstractMediaStream *feed)
+void MediaWidget::playDvb()
 {
-	dvbFeed = feed;
-	Phonon::MediaSource source(feed);
+	Q_ASSERT(dvbFeed == NULL);
+	dvbFeed = new DvbFeed();
+	connect(dvbFeed, SIGNAL(destroyed(QObject*)), this, SIGNAL(dvbStopped()));
+	Phonon::MediaSource source(dvbFeed);
 	source.setAutoDelete(true);
 	mediaObject->setCurrentSource(source);
 	mediaObject->play();
+}
+
+void MediaWidget::writeDvbData(const QByteArray &data)
+{
+	dvbFeed->writeData(data);
+}
+
+void MediaWidget::stopDvb()
+{
+	delete dvbFeed; // dvbFeed is a QPointer
 }
 
 void MediaWidget::stateChanged(Phonon::State state)

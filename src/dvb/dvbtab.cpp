@@ -22,7 +22,6 @@
 
 #include <QBoxLayout>
 #include <QSplitter>
-#include <Phonon/AbstractMediaStream>
 #include <KAction>
 #include <KActionCollection>
 #include <KLineEdit>
@@ -39,34 +38,8 @@
 #include "dvbscandialog.h"
 #include "dvbsi.h"
 
-class DvbStream : public Phonon::AbstractMediaStream
-{
-public:
-	DvbStream(DvbDevice *device_, const QSharedDataPointer<DvbChannel> &channel_,
-		const QList<int> &pids) : device(device_), channel(channel_), injector(device,
-		channel->transportStreamId, channel->serviceId, channel->pmtPid, pids)
-	{
-		setStreamSize(-1);
-	}
-
-	~DvbStream() { }
-
-	void writeData(const QByteArray &data)
-	{
-		Phonon::AbstractMediaStream::writeData(data);
-	}
-
-	DvbDevice *device;
-	QSharedDataPointer<DvbChannel> channel;
-	DvbPatPmtInjector injector;
-
-private:
-	void needData() { }
-	void reset() { }
-};
-
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
-	mediaWidget(mediaWidget_), liveStream(NULL)
+	mediaWidget(mediaWidget_), liveDevice(NULL), liveStream(NULL)
 {
 	KAction *action = new KAction(KIcon("view-list-details"), i18n("Channels"), collection);
 	action->setShortcut(Qt::Key_C);
@@ -84,6 +57,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", action));
 
+	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
 	dvbManager = new DvbManager(this);
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
@@ -131,6 +105,11 @@ DvbTab::~DvbTab()
 {
 }
 
+QSharedDataPointer<DvbChannel> DvbTab::getLiveChannel() const
+{
+	return liveChannel;
+}
+
 void DvbTab::playChannel(const QString &name)
 {
 	playChannel(dvbManager->getChannelModel()->channelForName(name));
@@ -160,58 +139,39 @@ void DvbTab::activate()
 	mediaLayout->addWidget(mediaWidget);
 }
 
-DvbDevice *DvbTab::getLiveDevice() const
-{
-	if (liveStream != NULL) {
-		return liveStream->device;
-	}
-
-	return NULL;
-}
-
-QSharedDataPointer<DvbChannel> DvbTab::getLiveChannel() const
-{
-	if (liveStream != NULL) {
-		return liveStream->channel;
-	}
-
-	return QSharedDataPointer<DvbChannel>();
-}
-
 void DvbTab::playLive(const QModelIndex &index)
 {
 	playChannel(dvbManager->getChannelModel()->getChannel(channelView->mapToSource(index)));
 }
 
-void DvbTab::liveDataReady(const QByteArray &data)
-{
-	liveStream->writeData(data);
-}
-
 void DvbTab::liveStopped()
 {
-	DvbDevice *device = liveStream->device;
-	device->stopDevice();
-	dvbManager->releaseDevice(device);
+	liveDevice->stopDevice();
+	dvbManager->releaseDevice(liveDevice);
+	liveDevice = NULL;
+	liveChannel = NULL;
+	delete liveStream;
 	liveStream = NULL;
 }
 
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
-	delete liveStream; // liveStream is set to NULL by liveStopped()
+	mediaWidget->stopDvb();
 
 	if (channel == NULL) {
 		return;
 	}
 
-	DvbDevice *device = dvbManager->requestDevice(channel->source);
+	liveDevice = dvbManager->requestDevice(channel->source);
 
-	if (device == NULL) {
+	if (liveDevice == NULL) {
 		KMessageBox::sorry(this, i18n("No suitable device found."));
 		return;
 	}
 
-	device->tuneDevice(channel->transponder);
+	mediaWidget->playDvb();
+	liveDevice->tuneDevice(channel->transponder);
+	liveChannel = channel;
 
 	QList<int> pids;
 
@@ -223,12 +183,10 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		pids.append(channel->audioPid);
 	}
 
-	liveStream = new DvbStream(device, channel, pids);
-	connect(liveStream, SIGNAL(destroyed(QObject*)), this, SLOT(liveStopped()));
-	connect(&liveStream->injector, SIGNAL(dataReady(QByteArray)),
-		this, SLOT(liveDataReady(QByteArray)));
+	liveStream = new DvbPatPmtInjector(liveDevice, channel->transportStreamId,
+		channel->serviceId, channel->pmtPid, pids);
+	connect(liveStream, SIGNAL(dataReady(QByteArray)),
+		mediaWidget, SLOT(writeDvbData(QByteArray)));
 
 	// FIXME audio streams, subtitles, ...
-
-	mediaWidget->playDvb(liveStream);
 }

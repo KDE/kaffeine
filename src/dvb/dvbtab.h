@@ -28,7 +28,7 @@ class QModelIndex;
 class DvbChannel;
 class DvbDevice;
 class DvbManager;
-class DvbStream;
+class DvbPatPmtInjector;
 class ProxyTreeView;
 
 class DvbTab : public TabBase
@@ -43,7 +43,11 @@ public:
 		return dvbManager;
 	}
 
-	DvbDevice *getLiveDevice() const;
+	DvbDevice *getLiveDevice() const
+	{
+		return liveDevice;
+	}
+
 	QSharedDataPointer<DvbChannel> getLiveChannel() const;
 
 	void playChannel(const QString &name);
@@ -53,7 +57,6 @@ private slots:
 	void showRecordingDialog();
 	void configureDvb();
 	void playLive(const QModelIndex &index);
-	void liveDataReady(const QByteArray &data);
 	void liveStopped();
 
 private:
@@ -67,7 +70,9 @@ private:
 
 	ProxyTreeView *channelView;
 
-	DvbStream *liveStream;
+	DvbDevice *liveDevice;
+	QSharedDataPointer<DvbChannel> liveChannel;
+	DvbPatPmtInjector *liveStream;
 };
 
 #endif /* DVBTAB_H */

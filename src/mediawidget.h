@@ -29,7 +29,6 @@
 
 namespace Phonon
 {
-class AbstractMediaStream;
 class MediaController;
 class MediaObject;
 }
@@ -38,6 +37,7 @@ class KActionCollection;
 class KComboBox;
 class KToolBar;
 class KUrl;
+class DvbFeed;
 
 class MediaWidget : public QWidget
 {
@@ -56,14 +56,18 @@ public:
 	void playDvd();
 
 	/*
-	 * you stop dvb playback by deleting the feed
-	 * the feed is deleted by MediaWidget if the user stops playback
+	 * start dvb mode
 	 */
 
-	void playDvb(Phonon::AbstractMediaStream *feed);
+	void playDvb();
+
+public slots:
+	void writeDvbData(const QByteArray &data);
+	void stopDvb();
 
 signals:
 	void toggleFullscreen();
+	void dvbStopped();
 
 private slots:
 	void stateChanged(Phonon::State state);
@@ -87,7 +91,7 @@ private:
 
 	Phonon::MediaObject *mediaObject;
 	Phonon::MediaController *mediaController;
-	QPointer<Phonon::AbstractMediaStream> dvbFeed;
+	QPointer<DvbFeed> dvbFeed;
 	bool playing;
 
 	KAction *actionPrevious;
