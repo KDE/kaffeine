@@ -285,7 +285,7 @@ void Kaffeine::parseArgs()
 		actionOpenRecent->addUrl(url);
 		activateTab(playerTab);
 		mediaWidget->play(url);
-
+		args->clear();
 		// FIXME fix case where more than one url is passed
 		return;
 	}
@@ -296,6 +296,7 @@ void Kaffeine::parseArgs()
 		activateDvbTab();
 		dvbTab->playChannel(dvb);
 	}
+	args->clear();
 }
 
 void Kaffeine::open()

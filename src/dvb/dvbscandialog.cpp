@@ -388,7 +388,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 	QList<QSharedDataPointer<DvbChannel> >::const_iterator channelIt = channels.constBegin();
 
 	for (QList<QSharedDataPointer<DvbChannel> >::iterator it = newChannels.begin();
-	     it != newChannels.constEnd(); ++it) {
+	     it != newChannels.end(); ++it) {
 		while ((channelIt != channels.constEnd()) &&
 		       (currentNumber == (*channelIt)->number)) {
 			++channelIt;
