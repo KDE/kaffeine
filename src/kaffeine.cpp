@@ -280,14 +280,22 @@ void Kaffeine::parseArgs()
 		toggleFullscreen();
 	}
 
+	if (args->count() > 0) {
+		KUrl url = args->url(0);
+		actionOpenRecent->addUrl(url);
+		activateTab(playerTab);
+		mediaWidget->play(url);
+
+		// FIXME fix case where more than one url is passed
+		return;
+	}
+
 	QString dvb = args->getOption("dvb");
 
 	if (!dvb.isEmpty()) {
 		activateDvbTab();
 		dvbTab->playChannel(dvb);
 	}
-
-	// FIXME take care of +[file]
 }
 
 void Kaffeine::open()
