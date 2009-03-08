@@ -305,6 +305,8 @@ public:
 		const QList<int> &pids_);
 	~DvbPatPmtInjector() { }
 
+	QByteArray generatePackets();
+
 public slots:
 	void pmtSectionChanged(const DvbPmtSection &section);
 

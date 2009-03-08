@@ -21,6 +21,7 @@
 #include "dvbtab.h"
 
 #include <QBoxLayout>
+#include <QDir>
 #include <QSplitter>
 #include <KAction>
 #include <KActionCollection>
@@ -58,6 +59,9 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	menu->addAction(collection->addAction("settings_dvb", action));
 
 	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
+	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
+	connect(mediaWidget, SIGNAL(startDvbTimeShift()), this, SLOT(startTimeShift()));
+
 	dvbManager = new DvbManager(this);
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
@@ -144,6 +148,40 @@ void DvbTab::playLive(const QModelIndex &index)
 	playChannel(dvbManager->getChannelModel()->getChannel(channelView->mapToSource(index)));
 }
 
+void DvbTab::prepareTimeShift()
+{
+	// FIXME make directory configurable ?
+	// FIXME .ts <--> .m2t ?
+	QFile *file = new QFile(QDir::homePath() + "/TimeShift-" +
+		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".ts");
+
+	if (file->exists() || !file->open(QIODevice::WriteOnly)) {
+		// FIXME error message
+		delete file;
+		mediaWidget->stopDvb();
+		return;
+	}
+
+	timeShiftFile = file;
+
+	disconnect(liveStream, SIGNAL(dataReady(QByteArray)),
+		mediaWidget, SLOT(writeDvbData(QByteArray)));
+	connect(liveStream, SIGNAL(dataReady(QByteArray)),
+		this, SLOT(writeTimeShiftData(QByteArray)));
+
+	timeShiftFile->write(liveStream->generatePackets());
+}
+
+void DvbTab::writeTimeShiftData(const QByteArray &data)
+{
+	timeShiftFile->write(data);
+}
+
+void DvbTab::startTimeShift()
+{
+	mediaWidget->play(timeShiftFile->fileName());
+}
+
 void DvbTab::liveStopped()
 {
 	liveDevice->stopDevice();
@@ -152,6 +190,8 @@ void DvbTab::liveStopped()
 	liveChannel = NULL;
 	delete liveStream;
 	liveStream = NULL;
+	delete timeShiftFile;
+	timeShiftFile = NULL;
 }
 
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)

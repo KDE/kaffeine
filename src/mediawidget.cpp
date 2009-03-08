@@ -39,17 +39,25 @@
 class DvbFeed : public Phonon::AbstractMediaStream
 {
 public:
-	DvbFeed()
+	DvbFeed() : timeShiftActive(false), ignoreStop(false)
 	{
 		setStreamSize(-1);
 	}
 
 	~DvbFeed() { }
 
+	void endOfData()
+	{
+		Phonon::AbstractMediaStream::endOfData();
+	}
+
 	void writeData(const QByteArray &data)
 	{
 		Phonon::AbstractMediaStream::writeData(data);
 	}
+
+	bool timeShiftActive;
+	bool ignoreStop;
 
 private:
 	void needData() { }
@@ -57,8 +65,8 @@ private:
 };
 
 MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent) :
-	QWidget(parent), playing(true), titleCount(0), chapterCount(0), audioChannelsReady(false),
-	subtitlesReady(false)
+	QWidget(parent), dvbFeed(NULL), playing(true), titleCount(0), chapterCount(0),
+	audioChannelsReady(false), subtitlesReady(false)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -66,6 +74,9 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	mediaObject = new Phonon::MediaObject(this);
 	connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
 		this, SLOT(stateChanged(Phonon::State)));
+	connect(mediaObject, SIGNAL(currentSourceChanged(Phonon::MediaSource)),
+		this, SLOT(stopDvb()));
+	connect(mediaObject, SIGNAL(finished()), this, SLOT(playbackFinished()));
 
 	Phonon::AudioOutput *audioOutput = new Phonon::AudioOutput(Phonon::VideoCategory, this);
 	Phonon::createPath(mediaObject, audioOutput);
@@ -159,13 +170,10 @@ void MediaWidget::playDvd()
 
 void MediaWidget::playDvb()
 {
-	Q_ASSERT(dvbFeed == NULL);
-	dvbFeed = new DvbFeed();
-	connect(dvbFeed, SIGNAL(destroyed(QObject*)), this, SIGNAL(dvbStopped()));
-	Phonon::MediaSource source(dvbFeed);
-	source.setAutoDelete(true);
-	mediaObject->setCurrentSource(source);
+	DvbFeed *feed = new DvbFeed();
+	mediaObject->setCurrentSource(Phonon::MediaSource(feed));
 	mediaObject->play();
+	dvbFeed = feed; // don't set dvbFeed before setCurrentSource
 }
 
 void MediaWidget::writeDvbData(const QByteArray &data)
@@ -175,7 +183,11 @@ void MediaWidget::writeDvbData(const QByteArray &data)
 
 void MediaWidget::stopDvb()
 {
-	delete dvbFeed; // dvbFeed is a QPointer
+	if ((dvbFeed != NULL) && !dvbFeed->ignoreStop) {
+		delete dvbFeed;
+		dvbFeed = NULL;
+		emit dvbStopped();
+	}
 }
 
 void MediaWidget::stateChanged(Phonon::State state)
@@ -195,7 +207,7 @@ void MediaWidget::stateChanged(Phonon::State state)
 
 		case Phonon::ErrorState:
 			// FIXME check errorType
-			delete dvbFeed; // dvbFeed is a QPointer
+			stopDvb();
 			KMessageBox::error(this, mediaObject->errorString());
 			break;
 	}
@@ -223,6 +235,13 @@ void MediaWidget::stateChanged(Phonon::State state)
 	updateSubtitleBox();
 }
 
+void MediaWidget::playbackFinished()
+{
+	if ((dvbFeed != NULL) && dvbFeed->timeShiftActive) {
+		mediaObject->play();
+	}
+}
+
 void MediaWidget::previous()
 {
 	mediaController->previousTitle();
@@ -233,8 +252,20 @@ void MediaWidget::playPause(bool paused)
 	if (playing) {
 		if (paused) {
 			mediaObject->pause();
+
+			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
+				dvbFeed->endOfData();
+				emit prepareDvbTimeShift();
+			}
 		} else {
-			mediaObject->play();
+			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
+				dvbFeed->timeShiftActive = true;
+				dvbFeed->ignoreStop = true;
+				emit startDvbTimeShift();
+				dvbFeed->ignoreStop = false;
+			} else {
+				mediaObject->play();
+			}
 		}
 	} else {
 		// FIXME do some special actions - play playlist, ask for input ...
@@ -244,7 +275,7 @@ void MediaWidget::playPause(bool paused)
 void MediaWidget::stop()
 {
 	mediaObject->stop();
-	delete dvbFeed; // dvbFeed is a QPointer
+	stopDvb();
 }
 
 void MediaWidget::next()

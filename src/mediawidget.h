@@ -21,7 +21,6 @@
 #ifndef MEDIAWIDGET_H
 #define MEDIAWIDGET_H
 
-#include <QPointer>
 #include <QWidget>
 #include <Phonon/Global>
 #include <Phonon/ObjectDescription>
@@ -67,10 +66,13 @@ public slots:
 
 signals:
 	void toggleFullscreen();
+	void prepareDvbTimeShift();
+	void startDvbTimeShift();
 	void dvbStopped();
 
 private slots:
 	void stateChanged(Phonon::State state);
+	void playbackFinished();
 	void previous();
 	void playPause(bool paused);
 	void stop();
@@ -91,7 +93,7 @@ private:
 
 	Phonon::MediaObject *mediaObject;
 	Phonon::MediaController *mediaController;
-	QPointer<DvbFeed> dvbFeed;
+	DvbFeed *dvbFeed;
 	bool playing;
 
 	KAction *actionPrevious;

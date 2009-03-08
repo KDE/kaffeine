@@ -24,6 +24,7 @@
 #include <QSharedDataPointer>
 #include "../kaffeine.h"
 
+class QFile;
 class QModelIndex;
 class DvbChannel;
 class DvbDevice;
@@ -57,6 +58,9 @@ private slots:
 	void showRecordingDialog();
 	void configureDvb();
 	void playLive(const QModelIndex &index);
+	void prepareTimeShift();
+	void writeTimeShiftData(const QByteArray &data);
+	void startTimeShift();
 	void liveStopped();
 
 private:
@@ -73,6 +77,7 @@ private:
 	DvbDevice *liveDevice;
 	QSharedDataPointer<DvbChannel> liveChannel;
 	DvbPatPmtInjector *liveStream;
+	QFile *timeShiftFile;
 };
 
 #endif /* DVBTAB_H */

@@ -1165,6 +1165,13 @@ DvbPatPmtInjector::DvbPatPmtInjector(DvbDevice *device_, int transportStreamId, 
 	}
 }
 
+QByteArray DvbPatPmtInjector::generatePackets()
+{
+	QByteArray packets = patGenerator.generatePackets();
+	packets.append(pmtGenerator.generatePackets());
+	return packets;
+}
+
 void DvbPatPmtInjector::pmtSectionChanged(const DvbPmtSection &section)
 {
 	pmtGenerator.initPmt(pmtPid, section, pids);
