@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Kaffeine
+Name[hne]=कैफीन
 Name[ne]=क्याफिन
 Name[pa]=ਕੈਫ਼ੀਨ
 Name[th]=แคฟเฟอีน
@@ -18,6 +19,7 @@ GenericName[fr]=Lecteur multimédia
 GenericName[ga]=Seinnteoir Meán
 GenericName[gl]=Reprodutor multimedia
 GenericName[hi]=मीडिया-प्लेयर
+GenericName[hne]=मीडिया-प्लेयर
 GenericName[it]=Lettore multimediale
 GenericName[ja]=メディアプレーヤー
 GenericName[km]=កម្មវិធី​ចាក់​មេឌៀ
