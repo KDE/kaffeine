@@ -28,6 +28,7 @@
 
 namespace Phonon
 {
+class AudioOutput;
 class MediaController;
 class MediaObject;
 }
@@ -79,6 +80,10 @@ private slots:
 	void next();
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
+	void increaseVolume();
+	void decreaseVolume();
+	void skipBackward();
+	void skipForward();
 
 	void titleCountChanged(int count);
 	void chapterCountChanged(int count);
@@ -92,6 +97,7 @@ private:
 	void updateSubtitleBox();
 
 	Phonon::MediaObject *mediaObject;
+	Phonon::AudioOutput *audioOutput;
 	Phonon::MediaController *mediaController;
 	DvbFeed *dvbFeed;
 	bool playing;

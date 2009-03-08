@@ -78,7 +78,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 		this, SLOT(stopDvb()));
 	connect(mediaObject, SIGNAL(finished()), this, SLOT(playbackFinished()));
 
-	Phonon::AudioOutput *audioOutput = new Phonon::AudioOutput(Phonon::VideoCategory, this);
+	audioOutput = new Phonon::AudioOutput(Phonon::VideoCategory, this);
 	Phonon::createPath(mediaObject, audioOutput);
 
 	Phonon::VideoWidget *videoWidget = new Phonon::VideoWidget(this);
@@ -96,11 +96,12 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 		this, SLOT(subtitlesChanged()));
 
 	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
+	actionPrevious->setShortcut(Qt::Key_MediaPrevious);
 	connect(actionPrevious, SIGNAL(triggered(bool)), this, SLOT(previous()));
 	toolBar->addAction(collection->addAction("controls_previous", actionPrevious));
 
 	actionPlayPause = new KAction(collection);
-	actionPlayPause->setShortcut(Qt::Key_Space);
+	actionPlayPause->setShortcut(KShortcut(Qt::Key_Space, Qt::Key_MediaPlay));
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
 	iconPlay = KIcon("media-playback-start");
@@ -109,10 +110,12 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	toolBar->addAction(collection->addAction("controls_play_pause", actionPlayPause));
 
 	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), collection);
+	actionStop->setShortcut(Qt::Key_MediaStop);
 	connect(actionStop, SIGNAL(triggered(bool)), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 
 	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
+	actionNext->setShortcut(Qt::Key_MediaNext);
 	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
 
@@ -136,6 +139,26 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	sizePolicy.setHorizontalStretch(1);
 	seekSlider->setSizePolicy(sizePolicy);
 	toolBar->addWidget(seekSlider);
+
+	KAction *action = new KAction(KIcon("audio-volume-high"), i18n("Increase volume"), collection);
+	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
+	videoWidget->addAction(collection->addAction("controls_increase_volume", action));
+
+	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease volume"), collection);
+	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
+	videoWidget->addAction(collection->addAction("controls_decrease_volume", action));
+
+	action = new KAction(KIcon("media-skip-backward"), i18n("Skip backward"), collection);
+	action->setShortcut(KShortcut(Qt::Key_Left, Qt::Key_Back));
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
+	videoWidget->addAction(collection->addAction("controls_skip_backward", action));
+
+	action = new KAction(KIcon("media-skip-forward"), i18n("Skip forward"), collection);
+	action->setShortcut(KShortcut(Qt::Key_Right, Qt::Key_Forward));
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
+	videoWidget->addAction(collection->addAction("controls_skip_forward", action));
 
 	stateChanged(Phonon::StoppedState);
 }
@@ -295,6 +318,44 @@ void MediaWidget::changeSubtitle(int index)
 	if (subtitlesReady) {
 		mediaController->setCurrentSubtitle(subtitles.at(index));
 	}
+}
+
+void MediaWidget::increaseVolume()
+{
+	qreal volume = audioOutput->volume() + 0.05;
+
+	if (volume > 1) {
+		volume = 1;
+	}
+
+	audioOutput->setVolume(volume);
+}
+
+void MediaWidget::decreaseVolume()
+{
+	qreal volume = audioOutput->volume() - 0.05;
+
+	if (volume < 0) {
+		volume = 0;
+	}
+
+	audioOutput->setVolume(volume);
+}
+
+void MediaWidget::skipBackward()
+{
+	qint64 time = mediaObject->currentTime() - 15000;
+
+	if (time < 0) {
+		time = 0;
+	}
+
+	mediaObject->seek(time);
+}
+
+void MediaWidget::skipForward()
+{
+	mediaObject->seek(mediaObject->currentTime() + 15000);
 }
 
 void MediaWidget::titleCountChanged(int count)
