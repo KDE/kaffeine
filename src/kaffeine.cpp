@@ -353,6 +353,7 @@ void Kaffeine::toggleFullscreen()
 
 	if (isFullScreen()) {
 		menuBar()->hide();
+		controlBar->hide();
 		cursorHideTimer->start();
 
 		stackedLayout->setCurrentWidget(playerTab);
@@ -412,8 +413,8 @@ bool Kaffeine::event(QEvent *event)
 	// and all its children (especially the phonon video widget) ...
 
 	if ((event->type() == QEvent::HoverMove) && isFullScreen()) {
+		cursorHideTimer->stop();
 		unsetCursor();
-		cursorHideTimer->start();
 
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
 
@@ -426,6 +427,10 @@ bool Kaffeine::event(QEvent *event)
 			break;
 		default:
 			break;
+		}
+
+		if (controlBar->isHidden()) {
+			cursorHideTimer->start();
 		}
 	}
 
