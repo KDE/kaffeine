@@ -68,6 +68,11 @@ public slots:
 
 signals:
 	void toggleFullscreen();
+
+	void playlistPrevious();
+	void playlistPlay();
+	void playlistNext();
+
 	void prepareDvbTimeShift();
 	void startDvbTimeShift();
 	void dvbStopped();

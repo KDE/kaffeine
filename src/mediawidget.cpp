@@ -283,12 +283,20 @@ void MediaWidget::playbackFinished()
 {
 	if ((dvbFeed != NULL) && dvbFeed->timeShiftActive) {
 		mediaObject->play();
+	} else {
+		emit playlistNext();
 	}
 }
 
 void MediaWidget::previous()
 {
-	mediaController->previousTitle();
+	if (dvbFeed != NULL) {
+		// FIXME
+	} else if ((titleCount > 1) || (chapterCount > 1)) {
+		mediaController->previousTitle();
+	} else {
+		emit playlistPrevious();
+	}
 }
 
 void MediaWidget::playPause(bool paused)
@@ -312,7 +320,7 @@ void MediaWidget::playPause(bool paused)
 			}
 		}
 	} else {
-		// FIXME do some special actions - play playlist, ask for input ...
+		emit playlistPlay();
 	}
 }
 
@@ -324,7 +332,13 @@ void MediaWidget::stop()
 
 void MediaWidget::next()
 {
-	mediaController->nextTitle();
+	if (dvbFeed != NULL) {
+		// FIXME
+	} else if ((titleCount > 1) || (chapterCount > 1)) {
+		mediaController->nextTitle();
+	} else {
+		emit playlistNext();
+	}
 }
 
 void MediaWidget::changeAudioChannel(int index)
@@ -425,7 +439,8 @@ void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 
 void MediaWidget::updatePreviousNext()
 {
-	bool enabled = playing && ((titleCount > 1) || (chapterCount > 1));
+	// bool enabled = playing && ((titleCount > 1) || (chapterCount > 1));
+	bool enabled = playing; // hmm - ok for now
 	actionPrevious->setEnabled(enabled);
 	actionNext->setEnabled(enabled);
 }
