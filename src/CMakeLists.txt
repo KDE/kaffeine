@@ -9,6 +9,7 @@ set(kaffeine_SRCS
     dvb/dvbscandialog.cpp
     dvb/dvbsi.cpp
     dvb/dvbtab.cpp
+    playlist/playlisttab.cpp
     kaffeine.cpp
     main.cpp
     mediawidget.cpp

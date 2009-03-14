@@ -31,6 +31,7 @@ class KUrl;
 class DvbTab;
 class MediaWidget;
 class PlayerTab;
+class PlaylistTab;
 class StartTab;
 class TabBase;
 
@@ -56,6 +57,7 @@ private slots:
 
 	void activateStartTab();
 	void activatePlayerTab();
+	void activatePlaylistTab();
 	void activateDvbTab();
 
 	void hideCursor();
@@ -75,6 +77,7 @@ private:
 
 	StartTab *startTab;
 	PlayerTab *playerTab;
+	PlaylistTab *playlistTab;
 	DvbTab *dvbTab;
 };
 

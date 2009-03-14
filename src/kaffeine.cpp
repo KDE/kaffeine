@@ -35,6 +35,7 @@
 #include <KShortcutsDialog>
 #include <KToolBar>
 #include "dvb/dvbtab.h"
+#include "playlist/playlisttab.h"
 #include "mediawidget.h"
 
 class StartTab : public TabBase
@@ -180,6 +181,11 @@ Kaffeine::Kaffeine()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(activatePlayerTab()));
 	menu->addAction(collection->addAction("view_player_tab", action));
 
+	action = new KAction(KIcon("view-media-playlist"), i18n("Switch to Playlist Tab"),
+		collection);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(activatePlaylistTab()));
+	menu->addAction(collection->addAction("view_playlist_tab", action));
+
 	action = new KAction(KIcon("video-television"), i18n("Switch to DVB Tab"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(activateDvbTab()));
 	menu->addAction(collection->addAction("view_dvb_tab", action));
@@ -228,6 +234,9 @@ Kaffeine::Kaffeine()
 
 	playerTab = new PlayerTab(mediaWidget);
 	stackedLayout->addWidget(playerTab);
+
+	playlistTab = new PlaylistTab(mediaWidget);
+	stackedLayout->addWidget(playlistTab);
 
 	dvbTab = new DvbTab(dvbMenu, collection, mediaWidget);
 	stackedLayout->addWidget(dvbTab);
@@ -380,6 +389,11 @@ void Kaffeine::activateStartTab()
 void Kaffeine::activatePlayerTab()
 {
 	activateTab(playerTab);
+}
+
+void Kaffeine::activatePlaylistTab()
+{
+	activateTab(playlistTab);
 }
 
 void Kaffeine::activateDvbTab()
