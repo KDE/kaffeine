@@ -252,8 +252,6 @@ Kaffeine::Kaffeine()
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
-	parseArgs();
-
 	show();
 }
 
