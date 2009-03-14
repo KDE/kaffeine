@@ -32,6 +32,7 @@ class AudioOutput;
 class MediaController;
 class MediaObject;
 }
+class QSlider;
 class KAction;
 class KActionCollection;
 class KComboBox;
@@ -80,6 +81,10 @@ private slots:
 	void next();
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
+	void toggleMuted();
+	void mutedChanged(bool muted);
+	void changeVolume(int volume);
+	void volumeChanged(qreal volume);
 	void increaseVolume();
 	void decreaseVolume();
 	void skipBackward();
@@ -113,6 +118,10 @@ private:
 	KComboBox *audioChannelBox;
 	KComboBox *subtitleBox;
 	QString textSubtitlesOff;
+	KAction *muteAction;
+	KIcon mutedIcon;
+	KIcon unmutedIcon;
+	QSlider *volumeSlider;
 
 	int titleCount;
 	int chapterCount;

@@ -27,10 +27,10 @@
 #include <Phonon/MediaObject>
 #include <Phonon/SeekSlider>
 #include <Phonon/VideoWidget>
-#include <Phonon/VolumeSlider>
 #include <KAction>
 #include <KActionCollection>
 #include <KComboBox>
+#include <KConfigGroup>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KToolBar>
@@ -129,18 +129,29 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSubtitle(int)));
 	toolBar->addWidget(subtitleBox);
 
-	Phonon::VolumeSlider *volumeSlider = new Phonon::VolumeSlider(toolBar);
-	volumeSlider->setAudioOutput(audioOutput);
-	toolBar->addWidget(volumeSlider);
+	muteAction = new KAction(i18n("Mute volume"), collection);
+	mutedIcon = KIcon("audio-volume-muted");
+	unmutedIcon = KIcon("audio-volume-medium");
+	muteAction->setIcon(unmutedIcon);
+	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
+	connect(muteAction, SIGNAL(triggered(bool)), this, SLOT(toggleMuted()));
+	connect(audioOutput, SIGNAL(mutedChanged(bool)), this, SLOT(mutedChanged(bool)));
+	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
 
-	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
-	seekSlider->setMediaObject(mediaObject);
-	QSizePolicy sizePolicy = seekSlider->sizePolicy();
-	sizePolicy.setHorizontalStretch(1);
-	seekSlider->setSizePolicy(sizePolicy);
-	toolBar->addWidget(seekSlider);
+	KAction *action = new KAction(i18n("Volume slider"), collection);
+	volumeSlider = new QSlider(toolBar);
+	volumeSlider->setFocusPolicy(Qt::NoFocus);
+	volumeSlider->setOrientation(Qt::Horizontal);
+	volumeSlider->setRange(0, 100);
+	volumeSlider->setToolTip(action->text());
+	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(changeVolume(int)));
+	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(volumeChanged(qreal)));
+	volumeSlider->setValue(KConfigGroup(KGlobal::config(), "MediaObject").
+		readEntry("Volume", 100));
+	action->setDefaultWidget(volumeSlider);
+	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
-	KAction *action = new KAction(KIcon("audio-volume-high"), i18n("Increase volume"), collection);
+	action = new KAction(KIcon("audio-volume-high"), i18n("Increase volume"), collection);
 	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
 	videoWidget->addAction(collection->addAction("controls_increase_volume", action));
@@ -149,6 +160,13 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
 	videoWidget->addAction(collection->addAction("controls_decrease_volume", action));
+
+	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
+	seekSlider->setMediaObject(mediaObject);
+	QSizePolicy sizePolicy = seekSlider->sizePolicy();
+	sizePolicy.setHorizontalStretch(1);
+	seekSlider->setSizePolicy(sizePolicy);
+	toolBar->addWidget(seekSlider);
 
 	action = new KAction(KIcon("media-skip-backward"), i18n("Skip backward"), collection);
 	action->setShortcut(KShortcut(Qt::Key_Left, Qt::Key_Back));
@@ -165,6 +183,9 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 
 MediaWidget::~MediaWidget()
 {
+	// don't use volumeSlider here because it may have already been destroyed
+	KConfigGroup(KGlobal::config(), "MediaObject").writeEntry("Volume",
+		int(audioOutput->volume() * 100 + qreal(0.5)));
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -320,26 +341,40 @@ void MediaWidget::changeSubtitle(int index)
 	}
 }
 
+void MediaWidget::toggleMuted()
+{
+	audioOutput->setMuted(!audioOutput->isMuted());
+}
+
+void MediaWidget::mutedChanged(bool muted)
+{
+	if (muted) {
+		muteAction->setIcon(mutedIcon);
+	} else {
+		muteAction->setIcon(unmutedIcon);
+	}
+}
+
+void MediaWidget::changeVolume(int volume)
+{
+	audioOutput->setVolume(volume * qreal(0.01));
+}
+
+void MediaWidget::volumeChanged(qreal volume)
+{
+	volumeSlider->setValue(volume * 100 + qreal(0.5));
+}
+
 void MediaWidget::increaseVolume()
 {
-	qreal volume = audioOutput->volume() + 0.05;
-
-	if (volume > 1) {
-		volume = 1;
-	}
-
-	audioOutput->setVolume(volume);
+	// QSlider ensures that the value is within the range
+	volumeSlider->setValue(volumeSlider->value() + 5);
 }
 
 void MediaWidget::decreaseVolume()
 {
-	qreal volume = audioOutput->volume() - 0.05;
-
-	if (volume < 0) {
-		volume = 0;
-	}
-
-	audioOutput->setVolume(volume);
+	// QSlider ensures that the value is within the range
+	volumeSlider->setValue(volumeSlider->value() - 5);
 }
 
 void MediaWidget::skipBackward()
