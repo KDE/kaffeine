@@ -21,6 +21,7 @@
 #include "mediawidget.h"
 
 #include <QBoxLayout>
+#include <QPushButton>
 #include <Phonon/AbstractMediaStream>
 #include <Phonon/AudioOutput>
 #include <Phonon/MediaController>
@@ -96,7 +97,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 		this, SLOT(subtitlesChanged()));
 
 	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
-	actionPrevious->setShortcut(Qt::Key_MediaPrevious);
+	actionPrevious->setShortcut(KShortcut(Qt::Key_PageUp, Qt::Key_MediaPrevious));
 	connect(actionPrevious, SIGNAL(triggered(bool)), this, SLOT(previous()));
 	toolBar->addAction(collection->addAction("controls_previous", actionPrevious));
 
@@ -115,7 +116,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 
 	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
-	actionNext->setShortcut(Qt::Key_MediaNext);
+	actionPrevious->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
 	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
 
@@ -177,6 +178,16 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	action->setShortcut(KShortcut(Qt::Key_Right, Qt::Key_Forward));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
 	videoWidget->addAction(collection->addAction("controls_skip_forward", action));
+
+	action = new KAction(i18n("Switch between elapsed and remaining time display"), collection);
+	timeButton = new QPushButton(toolBar);
+	timeButton->setFocusPolicy(Qt::NoFocus);
+	timeButton->setToolTip(action->text());
+	showElapsedTime = true;
+	connect(timeButton, SIGNAL(clicked(bool)), this, SLOT(timeButtonClicked()));
+	connect(mediaObject, SIGNAL(tick(qint64)), this, SLOT(updateTimeButton()));
+	action->setDefaultWidget(timeButton);
+	toolBar->addAction(collection->addAction("controls_time_button", action));
 
 	stateChanged(Phonon::StoppedState);
 }
@@ -275,6 +286,7 @@ void MediaWidget::stateChanged(Phonon::State state)
 	}
 
 	updatePreviousNext();
+	updateTimeButton();
 	updateAudioChannelBox();
 	updateSubtitleBox();
 }
@@ -405,6 +417,42 @@ void MediaWidget::skipBackward()
 void MediaWidget::skipForward()
 {
 	mediaObject->seek(mediaObject->currentTime() + 15000);
+}
+
+void MediaWidget::timeButtonClicked()
+{
+	showElapsedTime = !showElapsedTime;
+	updateTimeButton();
+}
+
+void MediaWidget::updateTimeButton()
+{
+	bool enabled = playing && ((dvbFeed == NULL) || dvbFeed->timeShiftActive);
+	qint64 time = 0;
+
+	if (enabled) {
+		if (showElapsedTime) {
+			// show elapsed time
+			time = mediaObject->currentTime();
+		} else {
+			// show remaining time
+			time = mediaObject->currentTime();
+		}
+
+		if (time < 0) {
+			time = 0;
+		}
+	}
+
+	timeButton->setEnabled(enabled);
+
+	if (showElapsedTime) {
+		// show elapsed time
+		timeButton->setText(' ' + QTime(0, 0).addMSecs(time).toString());
+	} else {
+		// show remaining time
+		timeButton->setText('-' + QTime(0, 0).addMSecs(time).toString());
+	}
 }
 
 void MediaWidget::titleCountChanged(int count)

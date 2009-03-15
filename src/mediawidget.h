@@ -32,6 +32,7 @@ class AudioOutput;
 class MediaController;
 class MediaObject;
 }
+class QPushButton;
 class QSlider;
 class KAction;
 class KActionCollection;
@@ -94,6 +95,8 @@ private slots:
 	void decreaseVolume();
 	void skipBackward();
 	void skipForward();
+	void timeButtonClicked();
+	void updateTimeButton();
 
 	void titleCountChanged(int count);
 	void chapterCountChanged(int count);
@@ -127,6 +130,8 @@ private:
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
 	QSlider *volumeSlider;
+	QPushButton *timeButton;
+	bool showElapsedTime;
 
 	int titleCount;
 	int chapterCount;
