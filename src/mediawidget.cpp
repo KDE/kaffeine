@@ -436,7 +436,7 @@ void MediaWidget::updateTimeButton()
 			time = mediaObject->currentTime();
 		} else {
 			// show remaining time
-			time = mediaObject->currentTime();
+			time = mediaObject->remainingTime();
 		}
 
 		if (time < 0) {
