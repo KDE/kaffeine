@@ -48,7 +48,7 @@ public:
 private slots:
 	void open();
 	void openUrl();
-	void openRecent(const KUrl &url);
+	void openUrl(const KUrl &url);
 	void openAudioCd();
 	void openVideoCd();
 	void openDvd();

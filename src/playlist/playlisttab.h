@@ -29,6 +29,8 @@ public:
 	explicit PlaylistTab(MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
+	void addUrl(const KUrl &url);
+
 private:
 	void activate();
 

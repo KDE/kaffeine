@@ -147,7 +147,7 @@ Kaffeine::Kaffeine()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
 	menu->addAction(collection->addAction("file_open_url", action));
 
-	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openRecent(KUrl)), collection);
+	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(KUrl)), collection);
 	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
 	menu->addAction(collection->addAction("file_open_recent", actionOpenRecent));
 
@@ -309,30 +309,29 @@ void Kaffeine::parseArgs()
 void Kaffeine::open()
 {
 	// FIXME do we want to be able to open several files at once or not?
-	KUrl url = KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file"));
-	if (url.isValid()) {
-		actionOpenRecent->addUrl(url);
-		activateTab(playerTab);
-		mediaWidget->play(url);
-	}
+	openUrl(KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file")));
 }
 
 void Kaffeine::openUrl()
 {
-	KUrl url(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
-	if (url.isValid()) {
-		actionOpenRecent->addUrl(url);
-		activateTab(playerTab);
-		mediaWidget->play(url);
-	}
+	openUrl(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
 }
 
-void Kaffeine::openRecent(const KUrl &url)
+void Kaffeine::openUrl(const KUrl &url)
 {
-	// we need to copy "url" because addUrl() invalidates it
+	if (!url.isValid()) {
+		return;
+	}
+
+	// we need to copy "url" because addUrl() may invalidate it
 	KUrl copy(url);
 	actionOpenRecent->addUrl(copy); // moves the url to the top of the list
-	activateTab(playerTab);
+
+	if (currentTab != playlistTab) {
+		activateTab(playerTab);
+	}
+
+	playlistTab->addUrl(copy);
 	mediaWidget->play(copy);
 }
 

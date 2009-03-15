@@ -21,29 +21,44 @@
 #include "playlisttab.h"
 
 #include <QBoxLayout>
+#include <QLabel>
 #include <QSplitter>
 #include "../mediawidget.h"
+
+// FIXME stubby :)
 
 PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 {
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
 
-	QSplitter *splitter = new QSplitter(this);
-	widgetLayout->addWidget(splitter);
+	QSplitter *horizontalSplitter = new QSplitter(this);
+	widgetLayout->addWidget(horizontalSplitter);
 
-	new QWidget(splitter);
+	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
-	QWidget *mediaContainer = new QWidget(splitter);
+	new QLabel("Hi, i'm the file browser", verticalSplitter);
+	new QLabel("Hi, i'm the playlist browser", verticalSplitter);
+
+	verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
+
+	new QLabel("Hi, i'm the playlist", verticalSplitter);
+
+	QWidget *mediaContainer = new QWidget(verticalSplitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
 	mediaLayout->setMargin(0);
 
-	splitter->setStretchFactor(0, 0);
-	splitter->setStretchFactor(1, 1);
+	verticalSplitter->setStretchFactor(0, 0);
+	verticalSplitter->setStretchFactor(1, 1);
 }
 
 PlaylistTab::~PlaylistTab()
 {
+}
+
+void PlaylistTab::addUrl(const KUrl &url)
+{
+	// FIXME
 }
 
 void PlaylistTab::activate()
