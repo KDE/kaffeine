@@ -49,6 +49,8 @@ public:
 	bool isRunning() const;
 	void start();
 
+	void releaseDevice();
+
 	QString name;
 	QString channelName;
 	QDateTime begin;
@@ -72,11 +74,6 @@ DvbRecording::DvbRecording(DvbManager *manager_) : manager(manager_), device(NUL
 
 DvbRecording::~DvbRecording()
 {
-	if (device != NULL) {
-		// FIXME this crashes when cleanup is in progress
-		device->stopDevice();
-		manager->releaseDevice(device);
-	}
 }
 
 bool DvbRecording::isRunning() const
@@ -167,6 +164,14 @@ void DvbRecording::start()
 	}
 }
 
+void DvbRecording::releaseDevice()
+{
+	if (device != NULL) {
+		device->stopDevice();
+		manager->releaseDevice(device);
+	}
+}
+
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel(manager_),
 	manager(manager_)
 {
@@ -200,7 +205,9 @@ void DvbRecordingModel::append(DvbRecording *recording)
 void DvbRecordingModel::remove(int i)
 {
 	beginRemoveRows(QModelIndex(), i, i);
-	delete recordings.takeAt(i);
+	DvbRecording *recording = recordings.takeAt(i);
+	recording->releaseDevice();
+	delete recording;
 	endRemoveRows();
 }
 
