@@ -40,7 +40,7 @@
 #include "dvbsi.h"
 
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
-	mediaWidget(mediaWidget_), liveDevice(NULL), liveStream(NULL)
+	mediaWidget(mediaWidget_), liveDevice(NULL), liveStream(NULL), timeShiftFile(NULL)
 {
 	KAction *action = new KAction(KIcon("view-list-details"), i18n("Channels"), collection);
 	action->setShortcut(Qt::Key_C);
