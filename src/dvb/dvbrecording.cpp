@@ -68,17 +68,19 @@ private:
 };
 
 DvbRecording::DvbRecording(DvbManager *manager_) : manager(manager_), device(NULL),
-	fileWriter(&file)
+	fileWriter(&file), injector(NULL)
 {
 }
 
 DvbRecording::~DvbRecording()
 {
+	delete injector;
 }
 
 bool DvbRecording::isRunning() const
 {
-	return (device != NULL) && (device->getDeviceState() != DvbDevice::DeviceIdle);
+	return (device != NULL) && (device->getDeviceState() != DvbDevice::DeviceIdle) &&
+		(device->getDeviceState() != DvbDevice::DeviceTuningFailed);
 }
 
 void DvbRecording::start()
@@ -136,7 +138,8 @@ void DvbRecording::start()
 		}
 	}
 
-	if (device->getDeviceState() != DvbDevice::DeviceIdle) {
+	if ((device->getDeviceState() != DvbDevice::DeviceIdle) &&
+	    (device->getDeviceState() != DvbDevice::DeviceTuningFailed)) {
 		return;
 	}
 
@@ -154,8 +157,6 @@ void DvbRecording::start()
 			pids.append(channel->audioPid);
 		}
 
-		// FIXME does that still work if tuning has failed?
-
 		injector = new DvbPatPmtInjector(device, channel->transportStreamId,
 			channel->serviceId, channel->pmtPid, pids);
 
@@ -167,7 +168,7 @@ void DvbRecording::start()
 void DvbRecording::releaseDevice()
 {
 	if (device != NULL) {
-		device->stopDevice();
+		injector->removePidFilters();
 		manager->releaseDevice(device);
 	}
 }

@@ -57,6 +57,7 @@ public:
 		DeviceIdle,
 		DeviceRotorMoving,
 		DeviceTuning,
+		DeviceTuningFailed,
 		DeviceTuned
 	};
 
@@ -96,7 +97,7 @@ public:
 
 	bool checkUsable();
 	void tuneDevice(const DvbTransponder &transponder);
-	void stopDevice();
+	void stop();
 
 	/*
 	 * signal and SNR are scaled from 0 to 100
@@ -109,7 +110,6 @@ public:
 
 	/*
 	 * you can use the same filter object for different pids
-	 * all filters will be removed when the device becomes idle
 	 */
 
 	bool addPidFilter(int pid, DvbPidFilter *filter);

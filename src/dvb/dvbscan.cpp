@@ -425,14 +425,15 @@ void DvbScan::updateState()
 			sdtEntries.clear();
 			channels.clear();
 
-			device->stopDevice();
+			device->stop();
 
 			state = ScanTune;
 		    }
 			// fall through
 		case ScanTune: {
 			switch (device->getDeviceState()) {
-			case DvbDevice::DeviceIdle: {
+			case DvbDevice::DeviceIdle:
+			case DvbDevice::DeviceTuningFailed: {
 				emit scanProgress((100 * transponderIndex) / transponders.size());
 
 				if (transponderIndex >= transponders.size()) {

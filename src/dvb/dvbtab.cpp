@@ -184,7 +184,7 @@ void DvbTab::startTimeShift()
 
 void DvbTab::liveStopped()
 {
-	liveDevice->stopDevice();
+	liveStream->removePidFilters();
 	dvbManager->releaseDevice(liveDevice);
 	liveDevice = NULL;
 	liveChannel = NULL;

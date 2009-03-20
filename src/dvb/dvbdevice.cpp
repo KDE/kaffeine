@@ -373,7 +373,7 @@ DvbDevice::DvbDevice(int deviceIndex_) : deviceIndex(deviceIndex_), internalStat
 
 DvbDevice::~DvbDevice()
 {
-	stopDevice();
+	stop();
 }
 
 void DvbDevice::componentAdded(const Solid::Device &component)
@@ -557,22 +557,27 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 
 void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 {
-	Q_ASSERT(deviceState == DeviceIdle);
-
-	frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
+	Q_ASSERT((deviceState == DeviceIdle) || ((deviceState == DeviceTuningFailed)));
 
 	if (frontendFd < 0) {
-		kWarning() << "couldn't open" << frontendPath;
-		return;
-	}
+		frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
 
-	int dvrFd = open(QFile::encodeName(dvrPath), O_RDONLY | O_NONBLOCK);
+		if (frontendFd < 0) {
+			kWarning() << "couldn't open" << frontendPath;
+			return;
+		}
 
-	if (dvrFd < 0) {
-		kWarning() << "couldn't open" << dvrPath;
-		close(frontendFd);
-		frontendFd = -1;
-		return;
+		int dvrFd = open(QFile::encodeName(dvrPath), O_RDONLY | O_NONBLOCK);
+
+		if (dvrFd < 0) {
+			kWarning() << "couldn't open" << dvrPath;
+			close(frontendFd);
+			frontendFd = -1;
+			return;
+		}
+
+		// start thread
+		thread->start(dvrFd);
 	}
 
 	bool moveRotor = false;
@@ -595,9 +600,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
-			close(frontendFd);
-			close(dvrFd);
-			frontendFd = -1;
+			setDeviceState(DeviceTuningFailed);
 			return;
 		}
 
@@ -714,9 +717,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
-			close(frontendFd);
-			close(dvrFd);
-			frontendFd = -1;
+			setDeviceState(DeviceTuningFailed);
 			return;
 		}
 
@@ -747,9 +748,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
-			close(frontendFd);
-			close(dvrFd);
-			frontendFd = -1;
+			setDeviceState(DeviceTuningFailed);
 			return;
 		}
 
@@ -771,9 +770,7 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 
 		if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 			kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
-			close(frontendFd);
-			close(dvrFd);
-			frontendFd = -1;
+			setDeviceState(DeviceTuningFailed);
 			return;
 		}
 
@@ -794,12 +791,9 @@ void DvbDevice::tuneDevice(const DvbTransponder &transponder)
 		frontendTimeout = config->timeout;
 		frontendTimer.start(15000);
 	}
-
-	// start thread
-	thread->start(dvrFd);
 }
 
-void DvbDevice::stopDevice()
+void DvbDevice::stop()
 {
 	if ((deviceState == DeviceNotReady) || (deviceState == DeviceIdle)) {
 		return;
@@ -897,7 +891,8 @@ void DvbDevice::frontendEvent()
 
 	if (frontendTimeout <= 0) {
 		kDebug() << "tuning failed for" << frontendPath;
-		stopDevice();
+		frontendTimer.stop();
+		setDeviceState(DeviceTuningFailed);
 	}
 }
 
@@ -920,7 +915,7 @@ void DvbDevice::setInternalState(stateFlags newState)
 				setDeviceState(DeviceIdle);
 			}
 		} else {
-			stopDevice();
+			stop();
 			setDeviceState(DeviceNotReady);
 		}
 	}

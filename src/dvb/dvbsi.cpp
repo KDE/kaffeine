@@ -1172,6 +1172,15 @@ QByteArray DvbPatPmtInjector::generatePackets()
 	return packets;
 }
 
+void DvbPatPmtInjector::removePidFilters()
+{
+	device->removePidFilter(pmtPid, &pmtFilter);
+
+	foreach (int pid, pids) {
+		device->removePidFilter(pid, this);
+	}
+}
+
 void DvbPatPmtInjector::pmtSectionChanged(const DvbPmtSection &section)
 {
 	pmtGenerator.initPmt(pmtPid, section, pids);

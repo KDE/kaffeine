@@ -196,7 +196,6 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		ui->progressBar->setValue(0);
 
 		if (!isLive) {
-			device->stopDevice();
 			manager->releaseDevice(device);
 			setDevice(NULL);
 		}

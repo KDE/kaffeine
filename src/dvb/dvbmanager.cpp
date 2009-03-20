@@ -327,6 +327,8 @@ DvbDevice *DvbManager::requestDevice(const QString &source)
 
 void DvbManager::releaseDevice(DvbDevice *device)
 {
+	device->stop();
+
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
 

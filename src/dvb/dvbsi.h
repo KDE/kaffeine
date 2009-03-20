@@ -306,6 +306,7 @@ public:
 	~DvbPatPmtInjector() { }
 
 	QByteArray generatePackets();
+	void removePidFilters();
 
 public slots:
 	void pmtSectionChanged(const DvbPmtSection &section);
