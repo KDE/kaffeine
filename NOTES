@@ -1,0 +1,16 @@
+===============
+About this file
+===============
+
+This file covers various topics relevant to Kaffeine development.
+
+------------------------
+DVB-T channel allocation
+------------------------
+
+Geneva 2006 Agreement (GE06) - http://www.itu.int/ITU-R/terrestrial/broadcast/plans/ge06/index.html
+
+- VHF band: channels  5 - 12 ; center frequency = 142.5 + 7 * channel number MHz ; bandwidth = 7 MHz
+- UHF band: channels 21 - 69 ; center frequency = 306   + 8 * channel number MHz ; bandwidth = 8 MHz
+
+Australia has a different channel allocation.
