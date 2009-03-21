@@ -253,8 +253,11 @@ void DvbScanDialog::scanProgress(int percentage)
 
 void DvbScanDialog::scanFinished()
 {
-	ui->scanButton->setChecked(false);
-	scanButtonClicked(false);
+	// the state may have changed because the signal is queued
+	if (ui->scanButton->isChecked()) {
+		ui->scanButton->setChecked(false);
+		scanButtonClicked(false);
+	}
 }
 
 void DvbScanDialog::updateStatus()
