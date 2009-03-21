@@ -86,8 +86,7 @@ bool DvbRecording::isRunning() const
 void DvbRecording::start()
 {
 	if (!file.isOpen()) {
-		// FIXME make directory configurable
-		QString basePath = QDir::homePath() + '/' + name;
+		QString basePath = manager->getRecordingFolder() + '/' + name;
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			QString path = basePath;

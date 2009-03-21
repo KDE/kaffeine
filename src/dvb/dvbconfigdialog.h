@@ -42,14 +42,18 @@ class DvbConfigDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbConfigDialog(QWidget *parent, DvbManager *manager_);
+	DvbConfigDialog(DvbManager *manager_, QWidget *parent);
 	~DvbConfigDialog();
 
 private slots:
+	void changeRecordingFolder();
+	void changeTimeShiftFolder();
 	void dialogAccepted();
 
 private:
 	DvbManager *manager;
+	KLineEdit *recordingFolderEdit;
+	KLineEdit *timeShiftFolderEdit;
 	QList<DvbConfigPage *> configPages;
 };
 

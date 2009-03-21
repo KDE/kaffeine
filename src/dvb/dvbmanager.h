@@ -95,6 +95,11 @@ public:
 	QStringList getScanSources(TransmissionType type);
 	QList<DvbTransponder> getTransponders(const QString &source);
 
+	QString getRecordingFolder();
+	QString getTimeShiftFolder();
+	void setRecordingFolder(const QString &path);
+	void setTimeShiftFolder(const QString &path);
+
 private slots:
 	void deviceAdded(DvbDevice *device);
 	void deviceRemoved(DvbDevice *device);

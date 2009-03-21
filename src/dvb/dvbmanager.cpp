@@ -20,6 +20,7 @@
 
 #include "dvbmanager.h"
 
+#include <QDir>
 #include <QFile>
 #include <KDebug>
 #include <KGlobal>
@@ -451,6 +452,40 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 	}
 
 	return scanData->readTransponders(scanOffsets[type].at(index), type);
+}
+
+QString DvbManager::getRecordingFolder()
+{
+	QString path = KConfigGroup(KGlobal::config(), "DVB").readEntry("RecordingFolder");
+
+	if (path.isEmpty() || !QDir(path).exists()) {
+		path = QDir::homePath();
+		setRecordingFolder(path);
+	}
+
+	return path;
+}
+
+QString DvbManager::getTimeShiftFolder()
+{
+	QString path = KConfigGroup(KGlobal::config(), "DVB").readEntry("TimeShiftFolder");
+
+	if (path.isEmpty() || !QDir(path).exists()) {
+		path = QDir::homePath();
+		setTimeShiftFolder(path);
+	}
+
+	return path;
+}
+
+void DvbManager::setRecordingFolder(const QString &path)
+{
+	KConfigGroup(KGlobal::config(), "DVB").writeEntry("RecordingFolder", path);
+}
+
+void DvbManager::setTimeShiftFolder(const QString &path)
+{
+	KConfigGroup(KGlobal::config(), "DVB").writeEntry("TimeShiftFolder", path);
 }
 
 void DvbManager::deviceAdded(DvbDevice *device)

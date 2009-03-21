@@ -133,9 +133,8 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::configureDvb()
 {
-	DvbConfigDialog *dialog = new DvbConfigDialog(this, dvbManager);
-	dialog->setModal(true);
-	dialog->show();
+	DvbConfigDialog dialog(dvbManager, this);
+	dialog.exec();
 }
 
 void DvbTab::activate()
@@ -150,9 +149,8 @@ void DvbTab::playLive(const QModelIndex &index)
 
 void DvbTab::prepareTimeShift()
 {
-	// FIXME make directory configurable ?
 	// FIXME .ts <--> .m2t ?
-	QFile *file = new QFile(QDir::homePath() + "/TimeShift-" +
+	QFile *file = new QFile(dvbManager->getTimeShiftFolder() + "/TimeShift-" +
 		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".ts");
 
 	if (file->exists() || !file->open(QIODevice::WriteOnly)) {

@@ -26,24 +26,55 @@
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
+#include <QToolButton>
 #include <QTreeWidget>
 #include <KComboBox>
+#include <KFileDialog>
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KTabWidget>
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
-DvbConfigDialog::DvbConfigDialog(QWidget *parent, DvbManager *manager_) : KDialog(parent),
+DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
 	manager(manager_)
 {
-	setAttribute(Qt::WA_DeleteOnClose);
 	setCaption(i18n("DVB Settings"));
 
 	KTabWidget *tabWidget = new KTabWidget(this);
 	setMainWidget(tabWidget);
 
-	// FIXME general options
+	QWidget *widget = new QWidget(tabWidget);
+	QGridLayout *gridLayout = new QGridLayout(widget);
+
+	gridLayout->addWidget(new QLabel(i18n("Recording folder:")), 0, 0);
+
+	recordingFolderEdit = new KLineEdit(this);
+	recordingFolderEdit->setText(manager->getRecordingFolder());
+	gridLayout->addWidget(recordingFolderEdit, 0, 1);
+
+	QToolButton *toolButton = new QToolButton(widget);
+	toolButton->setIcon(KIcon("document-open-folder"));
+	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeRecordingFolder()));
+	gridLayout->addWidget(toolButton, 0, 2);
+
+	gridLayout->addWidget(new QLabel(i18n("Time shift folder:")), 1, 0);
+
+	timeShiftFolderEdit = new KLineEdit(this);
+	timeShiftFolderEdit->setText(manager->getTimeShiftFolder());
+	gridLayout->addWidget(timeShiftFolderEdit, 1, 1);
+
+	toolButton = new QToolButton(widget);
+	toolButton->setIcon(KIcon("document-open-folder"));
+	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeTimeShiftFolder()));
+	gridLayout->addWidget(toolButton, 1, 2);
+
+	gridLayout->addItem(new QSpacerItem(0, 0), 2, 0, 1, 2);
+	gridLayout->setRowStretch(2, 1);
+
+	// FIXME more general options
+
+	tabWidget->addTab(widget, KIcon("configure"), i18n("General Options"));
 
 	int i = 1;
 
@@ -61,8 +92,33 @@ DvbConfigDialog::~DvbConfigDialog()
 {
 }
 
+void DvbConfigDialog::changeRecordingFolder()
+{
+	QString path = KFileDialog::getExistingDirectory(recordingFolderEdit->text(), this);
+
+	if (path.isEmpty()) {
+		return;
+	}
+
+	recordingFolderEdit->setText(path);
+}
+
+void DvbConfigDialog::changeTimeShiftFolder()
+{
+	QString path = KFileDialog::getExistingDirectory(timeShiftFolderEdit->text(), this);
+
+	if (path.isEmpty()) {
+		return;
+	}
+
+	timeShiftFolderEdit->setText(path);
+}
+
 void DvbConfigDialog::dialogAccepted()
 {
+	manager->setRecordingFolder(recordingFolderEdit->text());
+	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
+
 	QList<QList<DvbConfig> > deviceConfigs;
 
 	foreach (DvbConfigPage *configPage, configPages) {
