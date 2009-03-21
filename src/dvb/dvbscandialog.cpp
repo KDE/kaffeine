@@ -195,13 +195,14 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		ui->scanButton->setText(i18n("Start scan"));
 		ui->progressBar->setValue(0);
 
+		delete internal;
+		internal = NULL;
+
 		if (!isLive) {
 			manager->releaseDevice(device);
 			setDevice(NULL);
 		}
 
-		delete internal;
-		internal = NULL;
 		return;
 	}
 
