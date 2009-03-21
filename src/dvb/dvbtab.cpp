@@ -202,7 +202,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		return;
 	}
 
-	liveDevice = dvbManager->requestDevice(channel->source);
+	liveDevice = dvbManager->requestDevice(channel->transponder);
 
 	if (liveDevice == NULL) {
 		KMessageBox::sorry(this, i18n("No suitable device found."));
@@ -210,7 +210,6 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 	}
 
 	mediaWidget->playDvb();
-	liveDevice->tuneDevice(channel->transponder);
 	liveChannel = channel;
 
 	QList<int> pids;

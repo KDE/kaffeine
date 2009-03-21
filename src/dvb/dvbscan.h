@@ -49,7 +49,6 @@ public:
 	 * assigned when reading PMT
 	 */
 
-	// QString source;
 	// int transportStreamId;
 	// int serviceId;
 	// int pmtPid;
@@ -80,9 +79,8 @@ class DvbScan : public QObject
 	friend class DvbScanFilter;
 	Q_OBJECT
 public:
-	DvbScan(const QString &source_, DvbDevice *device_, const DvbTransponder &transponder_);
-	DvbScan(const QString &source_, DvbDevice *device_,
-		const QList<DvbTransponder> &transponders_);
+	DvbScan(DvbDevice *device_, const DvbTransponder &transponder_);
+	DvbScan(DvbDevice *device_, const QList<DvbTransponder> &transponders_);
 	~DvbScan();
 
 signals:
@@ -124,7 +122,6 @@ private:
 	void processNit(const DvbNitSection &section);
 	void filterFinished(DvbScanFilter *filter);
 
-	QString source;
 	DvbDevice *device;
 	DvbTransponder transponder;
 	bool isLive;

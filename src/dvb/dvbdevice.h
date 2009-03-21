@@ -96,7 +96,7 @@ public:
 	}
 
 	bool checkUsable();
-	void tuneDevice(const DvbTransponder &transponder);
+	void tune(const DvbTransponder &transponder);
 	void stop();
 
 	/*

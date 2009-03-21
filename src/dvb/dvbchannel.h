@@ -28,6 +28,7 @@ class DvbCTransponder;
 class DvbSTransponder;
 class DvbTTransponder;
 class AtscTransponder;
+class DvbTransponder;
 
 class DvbTransponderBase : public QSharedData
 {
@@ -79,6 +80,17 @@ public:
 	{
 		return NULL;
 	}
+
+	/*
+	 * corresponding in this context means that both tuning parameters will lead to the same
+	 * transponder; note the tuning parameters don't have to be equal, it's sufficient that they
+	 * can't coexist at the same time (for example the frequency difference between two channels
+	 * in the same network has to be big enough because of bandwith)
+	 */
+
+	virtual bool corresponds(const DvbTransponder &transponder) const = 0;
+
+	QString source;
 };
 
 class DvbCTransponder : public DvbTransponderBase
@@ -104,6 +116,8 @@ public:
 	{
 		return this;
 	}
+
+	bool corresponds(const DvbTransponder &transponder) const;
 
 	int frequency; // Hz
 	int symbolRate; // symbols per second
@@ -133,8 +147,10 @@ public:
 		return this;
 	}
 
-	int frequency; // kHz
+	bool corresponds(const DvbTransponder &transponder) const;
+
 	Polarization polarization;
+	int frequency; // kHz
 	int symbolRate; // symbols per second
 	FecRate fecRate;
 };
@@ -198,6 +214,8 @@ public:
 		return this;
 	}
 
+	bool corresponds(const DvbTransponder &transponder) const;
+
 	int frequency; // Hz
 	Bandwidth bandwidth;
 	Modulation modulation;
@@ -231,6 +249,8 @@ public:
 		return this;
 	}
 
+	bool corresponds(const DvbTransponder &transponder) const;
+
 	int frequency; // Hz
 	Modulation modulation;
 };
@@ -253,7 +273,6 @@ public:
 	QString name;
 	int number;
 
-	QString source;
 	int networkId; // may be -1 (not present)
 	int transportStreamId;
 	int serviceId;

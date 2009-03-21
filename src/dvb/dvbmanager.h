@@ -25,6 +25,7 @@
 #include <QMap>
 #include <QPair>
 #include <QStringList>
+#include "dvbchannel.h"
 
 class DvbChannelModel;
 class DvbConfig;
@@ -39,14 +40,15 @@ class DvbDeviceConfig
 {
 public:
 	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_)
-		: deviceId(deviceId_), frontendName(frontendName_), device(device_), used(false) { }
+		: deviceId(deviceId_), frontendName(frontendName_), device(device_), useCount(0) { }
 	~DvbDeviceConfig() { }
 
 	QString deviceId;
 	QString frontendName;
 	DvbDevice *device;
 	QList<DvbConfig> configs;
-	bool used;
+	int useCount; // -1 means exlusive use
+	DvbTransponder transponder;
 };
 
 class DvbManager : public QObject
@@ -81,7 +83,9 @@ public:
 	}
 
 	QList<DvbDevice *> getDevices() const;
-	DvbDevice *requestDevice(const QString &source);
+	DvbDevice *requestDevice(const DvbTransponder &transponder);
+	// exclusive = you can freely tune() and stop(), because the device isn't shared
+	DvbDevice *requestExclusiveDevice(const QString &source);
 	void releaseDevice(DvbDevice *device);
 
 	QList<DvbDeviceConfig> getDeviceConfigs() const;

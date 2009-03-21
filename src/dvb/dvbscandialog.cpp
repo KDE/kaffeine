@@ -211,13 +211,13 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	if (isLive) {
 		const DvbChannel *channel = dvbTab->getLiveChannel();
-		internal = new DvbScan(channel->source, device, channel->transponder);
+		internal = new DvbScan(device, channel->transponder);
 	} else {
 		QString source = ui->sourceList->currentText();
-		setDevice(manager->requestDevice(source));
+		setDevice(manager->requestExclusiveDevice(source));
 
 		if (device != NULL) {
-			internal = new DvbScan(source, device, manager->getTransponders(source));
+			internal = new DvbScan(device, manager->getTransponders(source));
 		} else {
 			ui->scanButton->setChecked(false);
 			KMessageBox::sorry(this, i18n("No suitable device found."));
@@ -346,7 +346,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 
 		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
 			// FIXME - algorithmic complexity is quite high
-			if ((currentChannel->source == (*it)->source) &&
+			if ((currentChannel->transponder->source == (*it)->transponder->source) &&
 			    (currentChannel->networkId == (*it)->networkId) &&
 			    (currentChannel->transportStreamId == (*it)->transportStreamId) &&
 			    (currentChannel->serviceId == (*it)->serviceId)) {

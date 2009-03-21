@@ -130,21 +130,13 @@ void DvbRecording::start()
 
 	if (device == NULL) {
 		// assign device
-		device = manager->requestDevice(channel->source);
+		device = manager->requestDevice(channel->transponder);
 
 		if (device == NULL) {
 			// FIXME error message
 			return;
 		}
 	}
-
-	if ((device->getDeviceState() != DvbDevice::DeviceIdle) &&
-	    (device->getDeviceState() != DvbDevice::DeviceTuningFailed)) {
-		return;
-	}
-
-	// start recording
-	device->tuneDevice(channel->transponder);
 
 	if (injector == NULL) {
 		QList<int> pids;
@@ -163,6 +155,13 @@ void DvbRecording::start()
 		QObject::connect(injector, SIGNAL(dataReady(QByteArray)),
 			&fileWriter, SLOT(write(QByteArray)));
 	}
+
+	if ((device->getDeviceState() != DvbDevice::DeviceIdle) &&
+	    (device->getDeviceState() != DvbDevice::DeviceTuningFailed)) {
+		return;
+	}
+
+	// FIXME retune
 }
 
 void DvbRecording::releaseDevice()

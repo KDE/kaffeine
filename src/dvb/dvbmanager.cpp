@@ -299,12 +299,56 @@ QList<DvbDevice *> DvbManager::getDevices() const
 	return deviceManager->getDevices();
 }
 
-DvbDevice *DvbManager::requestDevice(const QString &source)
+DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder)
+{
+	// first try to find a device that is already tuned to the selected transponder
+
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		const DvbDeviceConfig &it = deviceConfigs.at(i);
+
+		if ((it.device == NULL) || (it.useCount < 1)) {
+			continue;
+		}
+
+		if (it.transponder->corresponds(transponder)) {
+			++deviceConfigs[i].useCount;
+			return it.device;
+		}
+	}
+
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		const DvbDeviceConfig &it = deviceConfigs.at(i);
+
+		if ((it.device == NULL) || (it.useCount != 0)) {
+			continue;
+		}
+
+		foreach (const DvbConfig &config, it.configs) {
+			if (config->name == transponder->source) {
+				if (!it.device->checkUsable()) {
+					break;
+				}
+
+				++deviceConfigs[i].useCount;
+				deviceConfigs[i].transponder = transponder;
+
+				DvbDevice *device = it.device;
+				device->config = config;
+				device->tune(transponder);
+				return device;
+			}
+		}
+	}
+
+	return NULL;
+}
+
+DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
 
-		if ((it.device == NULL) || (it.used)) {
+		if ((it.device == NULL) || (it.useCount != 0)) {
 			continue;
 		}
 
@@ -314,9 +358,10 @@ DvbDevice *DvbManager::requestDevice(const QString &source)
 					break;
 				}
 
+				deviceConfigs[i].useCount = -1;
+
 				DvbDevice *device = it.device;
 				device->config = config;
-				deviceConfigs[i].used = true;
 				return device;
 			}
 		}
@@ -327,13 +372,15 @@ DvbDevice *DvbManager::requestDevice(const QString &source)
 
 void DvbManager::releaseDevice(DvbDevice *device)
 {
-	device->stop();
-
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
 
 		if (it.device == device) {
-			deviceConfigs[i].used = false;
+			if ((--deviceConfigs[i].useCount) <= 0) {
+				deviceConfigs[i].device->stop();
+				deviceConfigs[i].useCount = 0;
+			}
+
 			break;
 		}
 	}

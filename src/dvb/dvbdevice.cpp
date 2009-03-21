@@ -555,7 +555,7 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 	abort();
 }
 
-void DvbDevice::tuneDevice(const DvbTransponder &transponder)
+void DvbDevice::tune(const DvbTransponder &transponder)
 {
 	Q_ASSERT((deviceState == DeviceIdle) || ((deviceState == DeviceTuningFailed)));
 
