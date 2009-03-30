@@ -26,6 +26,7 @@
 #include "dvbconfig.h"
 
 class DvbDeviceThread;
+class DvbManager;
 class DvbTransponder;
 
 class DvbPidFilter
@@ -61,7 +62,7 @@ public:
 		DeviceTuned
 	};
 
-	DvbDevice(int deviceIndex_);
+	DvbDevice(DvbManager *manager_, int deviceIndex_);
 	~DvbDevice();
 
 	int getIndex() const
@@ -145,6 +146,8 @@ private:
 	void setDeviceState(DeviceState newState);
 	bool identifyDevice();
 
+	DvbManager *manager;
+
 	Solid::Device caComponent;
 	Solid::Device demuxComponent;
 	Solid::Device dvrComponent;
@@ -175,7 +178,7 @@ class DvbDeviceManager : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DvbDeviceManager(QObject *parent);
+	explicit DvbDeviceManager(DvbManager *manager_);
 	~DvbDeviceManager();
 
 	QList<DvbDevice *> getDevices() const
@@ -194,6 +197,7 @@ private slots:
 private:
 	void componentAdded(const Solid::Device &component);
 
+	DvbManager *manager;
 	QList<DvbDevice *> devices;
 };
 

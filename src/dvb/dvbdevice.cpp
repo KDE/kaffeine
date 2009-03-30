@@ -26,6 +26,7 @@
  */
 typedef quint64 __u64;
 
+#include <cmath>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/dvb/dmx.h>
@@ -364,8 +365,8 @@ void DvbDeviceThread::run()
 	}
 }
 
-DvbDevice::DvbDevice(int deviceIndex_) : deviceIndex(deviceIndex_), internalState(0),
-	deviceState(DeviceNotReady), frontendFd(-1)
+DvbDevice::DvbDevice(DvbManager *manager_, int deviceIndex_) : manager(manager_),
+	deviceIndex(deviceIndex_), internalState(0), deviceState(DeviceNotReady), frontendFd(-1)
 {
 	thread = new DvbDeviceThread(this);
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
@@ -668,13 +669,63 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		    }
 
 		case DvbConfigBase::UsalsRotor: {
-			// FIXME
+			QString source = transponder->source;
+			source.remove(0, source.lastIndexOf('-') + 1);
+
+			bool ok = false;
+			double position = 0;
+
+			if (source.endsWith('E')) {
+				source.chop(1);
+				position = source.toDouble(&ok);
+			} else if (source.endsWith('W')) {
+				source.chop(1);
+				position = -source.toDouble(&ok);
+			}
+
+			if (!ok) {
+				kWarning() << "couldn't extract orbital position";
+			}
+
+			double longitudeDiff = manager->getLongitude() - position;
+
+			double latRad = manager->getLatitude() * M_PI / 180;
+			double longDiffRad = longitudeDiff * M_PI / 180;
+			double temp = cos(latRad) * cos(longDiffRad);
+			double temp2 = -sin(latRad) * cos(longDiffRad) / sqrt(1 - temp * temp);
+
+			// deal with corner cases
+			if (temp2 < -1) {
+				temp2 = -1;
+			} else if (temp2 > 1) {
+				temp2 = 1;
+			} else if (temp2 != temp2) {
+				temp2 = 1;
+			}
+
+			double azimuth = acos(temp2) * 180 / M_PI;
+
+			if (((longitudeDiff > 0) && (longitudeDiff < 180)) ||
+			    (longitudeDiff < -180)) {
+				azimuth = 360 - azimuth;
+			}
+
+			int value = (azimuth * 16) + 0.5;
+
+			if (value == (360 * 16)) {
+				value = 0;
+			}
+
+			dvb_diseqc_master_cmd cmd = { { 0xe0, 0x31, 0x6e, 0x00, 0x00, 0x00 }, 5 };
+			cmd.msg[3] = value / 256;
+			cmd.msg[4] = value % 256;
+			mCmd = cmd;
 			moveRotor = true;
 			break;
 		    }
 
 		case DvbConfigBase::PositionsRotor: {
-			dvb_diseqc_master_cmd cmd = { { 0xe0, 0x30, 0x6b, 0x00, 0x00, 0x00 }, 4 };
+			dvb_diseqc_master_cmd cmd = { { 0xe0, 0x31, 0x6b, 0x00, 0x00, 0x00 }, 4 };
 			cmd.msg[3] = config->lnbNumber;
 			mCmd = cmd;
 			moveRotor = true;
@@ -1032,7 +1083,7 @@ bool DvbDevice::identifyDevice()
 	return true;
 }
 
-DvbDeviceManager::DvbDeviceManager(QObject *parent) : QObject(parent)
+DvbDeviceManager::DvbDeviceManager(DvbManager *manager_) : QObject(manager_), manager(manager_)
 {
 	QObject *notifier = Solid::DeviceNotifier::instance();
 	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
@@ -1090,7 +1141,7 @@ void DvbDeviceManager::componentAdded(const Solid::Device &component)
 
 	for (QList<DvbDevice *>::iterator it = devices.begin();; ++it) {
 		if ((it == devices.end()) || ((*it)->getIndex() > deviceIndex)) {
-			device = new DvbDevice(deviceIndex);
+			device = new DvbDevice(manager, deviceIndex);
 			devices.insert(it, device);
 			break;
 		} else if ((*it)->getIndex() == deviceIndex) {

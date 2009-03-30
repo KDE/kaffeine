@@ -26,10 +26,17 @@
 class QBoxLayout;
 class QGridLayout;
 class QLabel;
+class QProgressBar;
 class QSpinBox;
 class QTreeWidget;
 class KComboBox;
+class KJob;
 class KLineEdit;
+namespace KIO
+{
+class Job;
+class TransferJob;
+}
 class DvbConfig;
 class DvbConfigBase;
 class DvbConfigPage;
@@ -48,13 +55,46 @@ public:
 private slots:
 	void changeRecordingFolder();
 	void changeTimeShiftFolder();
-	void dialogAccepted();
+	void updateScanFile();
+	void latitudeChanged(const QString &text);
+	void longitudeChanged(const QString &text);
 
 private:
+	static double toLatitude(const QString &text, bool *ok);
+	static double toLongitude(const QString &text, bool *ok);
+
+	void accept();
+
 	DvbManager *manager;
 	KLineEdit *recordingFolderEdit;
 	KLineEdit *timeShiftFolderEdit;
+	KLineEdit *latitudeEdit;
+	KLineEdit *longitudeEdit;
+	QPixmap validPixmap;
+	QPixmap invalidPixmap;
+	QLabel *latitudeValidLabel;
+	QLabel *longitudeValidLabel;
 	QList<DvbConfigPage *> configPages;
+};
+
+class DvbScanFileDownloadDialog : public KDialog
+{
+	Q_OBJECT
+public:
+	DvbScanFileDownloadDialog(DvbManager *manager_, QWidget *parent);
+	~DvbScanFileDownloadDialog();
+
+private slots:
+	void progressChanged(KJob *, unsigned long percent);
+	void dataArrived(KIO::Job *, const QByteArray &data);
+	void jobFinished();
+
+private:
+	DvbManager *manager;
+	QProgressBar *progressBar;
+	QLabel *label;
+	KIO::TransferJob *job;
+	QByteArray scanData;
 };
 
 class DvbConfigPage : public QWidget

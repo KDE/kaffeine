@@ -20,6 +20,7 @@
 
 #include "dvbmanager.h"
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <KDebug>
@@ -454,6 +455,38 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 	return scanData->readTransponders(scanOffsets[type].at(index), type);
 }
 
+bool DvbManager::updateScanFile(const QByteArray &data)
+{
+	if (data.size() < 41) {
+		kWarning() << "too small";
+		return false;
+	}
+
+	if (!DvbScanData(data).readDate().isValid()) {
+		kWarning() << "invalid format";
+		return false;
+	}
+
+	QCryptographicHash hash(QCryptographicHash::Sha1);
+	hash.addData(data.constData(), data.size() - 41);
+
+	if (hash.result().toHex() != data.mid(data.size() - 41, 40)) {
+		kWarning() << "invalid hash";
+		return false;
+	}
+
+	QFile file(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "can't open" << file.fileName();
+		return false;
+	}
+
+	file.write(data);
+
+	return true;
+}
+
 QString DvbManager::getRecordingFolder()
 {
 	QString path = KConfigGroup(KGlobal::config(), "DVB").readEntry("RecordingFolder");
@@ -486,6 +519,26 @@ void DvbManager::setRecordingFolder(const QString &path)
 void DvbManager::setTimeShiftFolder(const QString &path)
 {
 	KConfigGroup(KGlobal::config(), "DVB").writeEntry("TimeShiftFolder", path);
+}
+
+double DvbManager::getLatitude()
+{
+	return KConfigGroup(KGlobal::config(), "DVB").readEntry("Latitude", 0.0);
+}
+
+double DvbManager::getLongitude()
+{
+	return KConfigGroup(KGlobal::config(), "DVB").readEntry("Longitude", 0.0);
+}
+
+void DvbManager::setLatitude(double value)
+{
+	KConfigGroup(KGlobal::config(), "DVB").writeEntry("Latitude", value);
+}
+
+void DvbManager::setLongitude(double value)
+{
+	KConfigGroup(KGlobal::config(), "DVB").writeEntry("Longitude", value);
 }
 
 void DvbManager::deviceAdded(DvbDevice *device)
@@ -716,7 +769,7 @@ void DvbManager::readScanFile()
 	QDate localDate;
 
 	if (localFile.open(QIODevice::ReadOnly)) {
-		localDate = DvbScanData((localFile.read(1024))).readDate();
+		localDate = DvbScanData(localFile.read(1024)).readDate();
 
 		if (localDate.isNull()) {
 			kWarning() << "can't read" << localFile.fileName();
@@ -729,7 +782,7 @@ void DvbManager::readScanFile()
 	QDate globalDate;
 
 	if (globalFile.open(QIODevice::ReadOnly)) {
-		globalDate = DvbScanData((globalFile.read(1024))).readDate();
+		globalDate = DvbScanData(globalFile.read(1024)).readDate();
 
 		if (globalDate.isNull()) {
 			kWarning() << "can't read" << globalFile.fileName();

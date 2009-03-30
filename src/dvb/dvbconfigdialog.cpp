@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QLabel>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -30,8 +31,10 @@
 #include <QTreeWidget>
 #include <KComboBox>
 #include <KFileDialog>
+#include <KIO/Job>
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KPushButton>
 #include <KTabWidget>
 #include "dvbdevice.h"
 #include "dvbmanager.h"
@@ -45,11 +48,12 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	setMainWidget(tabWidget);
 
 	QWidget *widget = new QWidget(tabWidget);
-	QGridLayout *gridLayout = new QGridLayout(widget);
+	QBoxLayout *boxLayout = new QVBoxLayout(widget);
 
+	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Recording folder:")), 0, 0);
 
-	recordingFolderEdit = new KLineEdit(this);
+	recordingFolderEdit = new KLineEdit(widget);
 	recordingFolderEdit->setText(manager->getRecordingFolder());
 	gridLayout->addWidget(recordingFolderEdit, 0, 1);
 
@@ -60,7 +64,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 
 	gridLayout->addWidget(new QLabel(i18n("Time shift folder:")), 1, 0);
 
-	timeShiftFolderEdit = new KLineEdit(this);
+	timeShiftFolderEdit = new KLineEdit(widget);
 	timeShiftFolderEdit->setText(manager->getTimeShiftFolder());
 	gridLayout->addWidget(timeShiftFolderEdit, 1, 1);
 
@@ -68,9 +72,55 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	toolButton->setIcon(KIcon("document-open-folder"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeTimeShiftFolder()));
 	gridLayout->addWidget(toolButton, 1, 2);
+	boxLayout->addLayout(gridLayout);
 
-	gridLayout->addItem(new QSpacerItem(0, 0), 2, 0, 1, 2);
-	gridLayout->setRowStretch(2, 1);
+	QFrame *frame = new QFrame(widget);
+	frame->setFrameShape(QFrame::HLine);
+	boxLayout->addWidget(frame);
+
+	boxLayout->addWidget(new QLabel(i18n("Scan file last updated on %1",
+		manager->getScanFileDate())));
+
+	QPushButton *pushButton = new QPushButton(i18n("Update scan file over internet"), widget);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));
+	boxLayout->addWidget(pushButton);
+
+	frame = new QFrame(widget);
+	frame->setFrameShape(QFrame::HLine);
+	boxLayout->addWidget(frame);
+
+	boxLayout->addWidget(new QLabel(i18n("Your position (only needed for USALS rotor)")));
+
+	gridLayout = new QGridLayout();
+	gridLayout->addWidget(new QLabel(i18n("Latitude:")), 0, 0);
+	gridLayout->addWidget(new QLabel(i18n("[S -90 ... 90 N]")), 0, 1);
+
+	latitudeEdit = new KLineEdit(widget);
+	latitudeEdit->setText(QString::number(manager->getLatitude(), 'g', 10));
+	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
+	gridLayout->addWidget(latitudeEdit, 0, 2);
+
+	validPixmap = KIcon("dialog-ok-apply").pixmap(KIconLoader::SizeSmallMedium);
+	invalidPixmap = KIcon("dialog-cancel").pixmap(KIconLoader::SizeSmallMedium);
+
+	latitudeValidLabel = new QLabel(widget);
+	latitudeValidLabel->setPixmap(validPixmap);
+	gridLayout->addWidget(latitudeValidLabel, 0, 3);
+
+	gridLayout->addWidget(new QLabel(i18n("Longitude:")), 1, 0);
+	gridLayout->addWidget(new QLabel(i18n("[W -180 ... 180 E]")), 1, 1);
+
+	longitudeEdit = new KLineEdit(widget);
+	longitudeEdit->setText(QString::number(manager->getLongitude(), 'g', 10));
+	connect(longitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(longitudeChanged(QString)));
+	gridLayout->addWidget(longitudeEdit, 1, 2);
+
+	longitudeValidLabel = new QLabel(widget);
+	longitudeValidLabel->setPixmap(validPixmap);
+	gridLayout->addWidget(longitudeValidLabel, 1, 3);
+	boxLayout->addLayout(gridLayout);
+
+	boxLayout->addStretch();
 
 	// FIXME more general options
 
@@ -84,8 +134,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 		configPages.append(configPage);
 		++i;
 	}
-
-	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 }
 
 DvbConfigDialog::~DvbConfigDialog()
@@ -114,10 +162,82 @@ void DvbConfigDialog::changeTimeShiftFolder()
 	timeShiftFolderEdit->setText(path);
 }
 
-void DvbConfigDialog::dialogAccepted()
+void DvbConfigDialog::updateScanFile()
+{
+	DvbScanFileDownloadDialog dialog(manager, this);
+	dialog.exec();
+}
+
+void DvbConfigDialog::latitudeChanged(const QString &text)
+{
+	bool ok;
+	toLatitude(text, &ok);
+
+	if (ok) {
+		latitudeValidLabel->setPixmap(validPixmap);
+	} else {
+		latitudeValidLabel->setPixmap(invalidPixmap);
+	}
+}
+
+void DvbConfigDialog::longitudeChanged(const QString &text)
+{
+	bool ok;
+	toLongitude(text, &ok);
+
+	if (ok) {
+		longitudeValidLabel->setPixmap(validPixmap);
+	} else {
+		longitudeValidLabel->setPixmap(invalidPixmap);
+	}
+}
+
+double DvbConfigDialog::toLatitude(const QString &text, bool *ok)
+{
+	if (text.isEmpty()) {
+		*ok = true;
+		return 0;
+	}
+
+	double value = text.toDouble(ok);
+
+	if (qAbs(value) > 90) {
+		*ok = false;
+	}
+
+	return value;
+}
+
+double DvbConfigDialog::toLongitude(const QString &text, bool *ok)
+{
+	if (text.isEmpty()) {
+		*ok = true;
+		return 0;
+	}
+
+	double value = text.toDouble(ok);
+
+	if (qAbs(value) > 180) {
+		*ok = false;
+	}
+
+	return value;
+}
+
+void DvbConfigDialog::accept()
 {
 	manager->setRecordingFolder(recordingFolderEdit->text());
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
+
+	bool latitudeOk;
+	bool longitudeOk;
+	double latitude = toLatitude(latitudeEdit->text(), &latitudeOk);
+	double longitude = toLongitude(longitudeEdit->text(), &longitudeOk);
+
+	if (latitudeOk && longitudeOk) {
+		manager->setLatitude(latitude);
+		manager->setLongitude(longitude);
+	}
 
 	QList<QList<DvbConfig> > deviceConfigs;
 
@@ -126,6 +246,77 @@ void DvbConfigDialog::dialogAccepted()
 	}
 
 	manager->setDeviceConfigs(deviceConfigs);
+
+	KDialog::accept();
+}
+
+DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidget *parent) :
+	KDialog(parent), manager(manager_)
+{
+	setCaption("Update Scan File");
+
+	QWidget *widget = new QWidget(this);
+	setMainWidget(widget);
+
+	QBoxLayout *layout = new QVBoxLayout(widget);
+
+	label = new QLabel(i18n("Downloading scan file"), widget);
+	layout->addWidget(label);
+
+	progressBar = new QProgressBar(widget);
+	progressBar->setRange(0, 100);
+	layout->addWidget(progressBar);
+
+	job = KIO::get(KUrl(), KIO::Reload, KIO::HideProgressInfo); // FIXME insert correct url
+	job->setAutoDelete(false);
+	connect(job, SIGNAL(percent(KJob*,unsigned long)),
+		this, SLOT(progressChanged(KJob*,unsigned long)));
+	connect(job, SIGNAL(data(KIO::Job*,QByteArray)),
+		this, SLOT(dataArrived(KIO::Job*,QByteArray)));
+	connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished()));
+
+	button(KDialog::Ok)->setEnabled(false);
+}
+
+DvbScanFileDownloadDialog::~DvbScanFileDownloadDialog()
+{
+	delete job;
+}
+
+void DvbScanFileDownloadDialog::progressChanged(KJob *, unsigned long percent)
+{
+	progressBar->setValue(percent);
+}
+
+void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)
+{
+	if ((scanData.size() + data.size()) <= (512 * 1024)) {
+		scanData.append(data);
+	} else {
+		job->kill(KJob::EmitResult);
+	}
+}
+
+void DvbScanFileDownloadDialog::jobFinished()
+{
+	progressBar->setValue(100);
+	button(KDialog::Ok)->setEnabled(true);
+
+	if (job->error() != 0) {
+		if (job->error() == KJob::KilledJobError) {
+			label->setText(i18n("Scan file update failed"));
+		} else {
+			label->setText(job->errorString());
+		}
+
+		return;
+	}
+
+	if (manager->updateScanFile(scanData)) {
+		label->setText(i18n("Scan file successfully updated"));
+	} else {
+		label->setText(i18n("Scan file update failed"));
+	}
 }
 
 DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
