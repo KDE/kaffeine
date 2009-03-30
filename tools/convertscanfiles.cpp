@@ -405,8 +405,25 @@ template<class T1, class T2> void readScanDirectory(QTextStream &out, const QStr
 			QString name = dir.dirName() + '/' + fileName;
 
 			if (name.startsWith("dvb-s")) {
-				// use upper case for orbital position
+				// use upper case for orbital location
 				name[name.size() - 1] = name.at(name.size() - 1).toUpper();
+
+				QString source = name;
+				source.remove(0, source.lastIndexOf('-') + 1);
+
+				bool ok = false;
+
+				if (source.endsWith('E')) {
+					source.chop(1);
+					source.toDouble(&ok);
+				} else if (source.endsWith('W')) {
+					source.chop(1);
+					source.toDouble(&ok);
+				}
+
+				if (!ok) {
+					qWarning() << "Warning: invalid orbital location for file" << file.fileName();
+				}
 			}
 
 			out << "[" << name << "]\n";
