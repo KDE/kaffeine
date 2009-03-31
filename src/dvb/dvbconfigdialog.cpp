@@ -81,7 +81,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	boxLayout->addWidget(new QLabel(i18n("Scan file last updated on %1",
 		manager->getScanFileDate())));
 
-	QPushButton *pushButton = new QPushButton(i18n("Update scan file over internet"), widget);
+	QPushButton *pushButton = new QPushButton(i18n("Update scan file over Internet"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));
 	boxLayout->addWidget(pushButton);
 
@@ -304,7 +304,7 @@ void DvbScanFileDownloadDialog::jobFinished()
 
 	if (job->error() != 0) {
 		if (job->error() == KJob::KilledJobError) {
-			label->setText(i18n("Scan file update failed"));
+			label->setText(i18n("Scan file update failed."));
 		} else {
 			label->setText(job->errorString());
 		}
@@ -313,9 +313,9 @@ void DvbScanFileDownloadDialog::jobFinished()
 	}
 
 	if (manager->updateScanFile(scanData)) {
-		label->setText(i18n("Scan file successfully updated"));
+		label->setText(i18n("Scan file successfully updated."));
 	} else {
-		label->setText(i18n("Scan file update failed"));
+		label->setText(i18n("Scan file update failed."));
 	}
 }
 
