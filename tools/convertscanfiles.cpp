@@ -1,7 +1,7 @@
 /*
  * convertscanfiles.cpp
  *
- * Copyright (C) 2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2008-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,334 +21,72 @@
 #include <QCoreApplication>
 #include <QCryptographicHash>
 #include <QDate>
+#include <QDebug>
 #include <QDir>
-#include <QtDebug>
 #include "../src/dvb/dvbchannel.cpp"
 
-class ScanFileReader
+class NumericalLessThan
 {
 public:
-	ScanFileReader(const QString &line_) : line(line_), pos(0), valid(true) { }
-	~ScanFileReader() { }
-
-	bool checkEnd() const
+	bool operator()(const QString &x, const QString &y)
 	{
-		return pos >= line.size();
-	}
+		int i = 0;
 
-	bool isValid() const
-	{
-		return valid;
-	}
+		while (true) {
+			if ((i == x.length()) || (i == y.length())) {
+				return x.length() < y.length();
+			}
 
-	template<class T> T readEnum(const QMap<QString, T> &map)
-	{
-		T value = map.value(readString(), static_cast<T>(-1));
+			if (x.at(i) != y.at(i)) {
+				break;
+			}
 
-		if (value == static_cast<T>(-1)) {
-			valid = false;
+			++i;
 		}
 
-		return value;
-	}
+		int xIndex = x.indexOf(' ', i);
 
-	int readInt()
-	{
-		QString string = readString();
-
-		if (string.isEmpty()) {
-			valid = false;
-			return -1;
+		if (xIndex == -1) {
+			xIndex = x.length();
 		}
 
-		bool ok;
-		int value = string.toInt(&ok);
+		int yIndex = y.indexOf(' ', i);
 
-		if (!ok || (value <= 0)) {
-			valid = false;
+		if (yIndex == -1) {
+			yIndex = y.length();
 		}
 
-		return value;
-	}
-
-	QString readString()
-	{
-		int begin = pos;
-		int end = pos;
-
-		while ((end < line.size()) && (line[end] != ' ')) {
-			++end;
-		}
-
-		pos = end + 1;
-
-		while ((pos < line.size()) && (line[pos] == ' ')) {
-			++pos;
-		}
-
-		if (end > begin) {
-			return line.mid(begin, end - begin);
+		if (xIndex != yIndex) {
+			return xIndex < yIndex;
 		} else {
-			return QString();
+			return x.at(i) < y.at(i);
 		}
 	}
-
-private:
-	QString line;
-	int pos;
-	bool valid;
 };
 
-class DvbCFileHelper
+void readScanDirectory(QTextStream &out, const QString &path, DvbTransponderBase::TransmissionType type)
 {
-public:
-	DvbCFileHelper();
-	~DvbCFileHelper() { }
+	QDir dir;
 
-	DvbCTransponder *readTransponder(ScanFileReader &reader);
-
-	bool operator()(DvbCTransponder *x, DvbCTransponder *y) const
-	{
-		return x->frequency < y->frequency;
+	switch (type) {
+	case DvbTransponderBase::DvbC:
+		dir.setPath(path + "/dvb-c");
+		break;
+	case DvbTransponderBase::DvbS:
+		dir.setPath(path + "/dvb-s");
+		break;
+	case DvbTransponderBase::DvbT:
+		dir.setPath(path + "/dvb-t");
+		break;
+	case DvbTransponderBase::Atsc:
+		dir.setPath(path + "/atsc");
+		break;
 	}
-
-private:
-	QMap<QString, DvbSTransponder::FecRate> fecMap;
-	QMap<QString, DvbCTransponder::Modulation> modulationMap;
-};
-
-DvbCFileHelper::DvbCFileHelper()
-{
-	fecMap.insert("NONE", DvbSTransponder::FecNone);
-
-	modulationMap.insert("QAM16", DvbCTransponder::Qam16);
-	modulationMap.insert("QAM32", DvbCTransponder::Qam32);
-	modulationMap.insert("QAM64", DvbCTransponder::Qam64);
-	modulationMap.insert("QAM128", DvbCTransponder::Qam128);
-	modulationMap.insert("QAM256", DvbCTransponder::Qam256);
-	modulationMap.insert("AUTO", DvbCTransponder::ModulationAuto);
-}
-
-DvbCTransponder *DvbCFileHelper::readTransponder(ScanFileReader &reader)
-{
-	if (reader.readString() != "C") {
-		return NULL;
-	}
-
-	DvbCTransponder *transponder = new DvbCTransponder();
-
-	transponder->frequency = reader.readInt();
-	transponder->symbolRate = reader.readInt();
-	transponder->fecRate = reader.readEnum(fecMap);
-	transponder->modulation = reader.readEnum(modulationMap);
-
-	if (!reader.isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-class DvbSFileHelper
-{
-public:
-	DvbSFileHelper();
-	~DvbSFileHelper() { }
-
-	DvbSTransponder *readTransponder(ScanFileReader &reader);
-
-	bool operator()(DvbSTransponder *x, DvbSTransponder *y) const
-	{
-		if (x->frequency != y->frequency) {
-			return x->frequency < y->frequency;
-		}
-
-		return x->polarization < y->polarization;
-	}
-
-private:
-	QMap<QString, DvbSTransponder::Polarization> polarizationMap;
-	QMap<QString, DvbSTransponder::FecRate> fecMap;
-};
-
-DvbSFileHelper::DvbSFileHelper()
-{
-	polarizationMap.insert("H", DvbSTransponder::Horizontal);
-	polarizationMap.insert("V", DvbSTransponder::Vertical);
-
-	fecMap.insert("1/2", DvbSTransponder::Fec1_2);
-	fecMap.insert("2/3", DvbSTransponder::Fec2_3);
-	fecMap.insert("3/4", DvbSTransponder::Fec3_4);
-	fecMap.insert("4/5", DvbSTransponder::Fec4_5);
-	fecMap.insert("5/6", DvbSTransponder::Fec5_6);
-	fecMap.insert("6/7", DvbSTransponder::Fec6_7);
-	fecMap.insert("7/8", DvbSTransponder::Fec7_8);
-	fecMap.insert("8/9", DvbSTransponder::Fec8_9);
-	fecMap.insert("AUTO", DvbSTransponder::FecAuto);
-}
-
-DvbSTransponder *DvbSFileHelper::readTransponder(ScanFileReader &reader)
-{
-	if (reader.readString() != "S") {
-		return NULL;
-	}
-
-	DvbSTransponder *transponder = new DvbSTransponder();
-
-	transponder->frequency = reader.readInt();
-	transponder->polarization = reader.readEnum(polarizationMap);
-	transponder->symbolRate = reader.readInt();
-	transponder->fecRate = reader.readEnum(fecMap);
-
-	if (!reader.isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-class DvbTFileHelper
-{
-public:
-	DvbTFileHelper();
-	~DvbTFileHelper() { }
-
-	DvbTTransponder *readTransponder(ScanFileReader &reader);
-
-	bool operator()(DvbTTransponder *x, DvbTTransponder *y) const
-	{
-		return x->frequency < y->frequency;
-	}
-
-private:
-	QMap<QString, DvbTTransponder::Bandwidth> bandwidthMap;
-	QMap<QString, DvbTTransponder::FecRate> fecHighMap;
-	QMap<QString, DvbTTransponder::FecRate> fecLowMap;
-	QMap<QString, DvbTTransponder::Modulation> modulationMap;
-	QMap<QString, DvbTTransponder::TransmissionMode> transmissionModeMap;
-	QMap<QString, DvbTTransponder::GuardInterval> guardIntervalMap;
-	QMap<QString, DvbTTransponder::Hierarchy> hierarchyMap;
-};
-
-DvbTFileHelper::DvbTFileHelper()
-{
-	bandwidthMap.insert("6MHz", DvbTTransponder::Bandwidth6Mhz);
-	bandwidthMap.insert("7MHz", DvbTTransponder::Bandwidth7Mhz);
-	bandwidthMap.insert("8MHz", DvbTTransponder::Bandwidth8Mhz);
-	bandwidthMap.insert("AUTO", DvbTTransponder::BandwidthAuto);
-
-	fecHighMap.insert("1/2", DvbSTransponder::Fec1_2);
-	fecHighMap.insert("2/3", DvbSTransponder::Fec2_3);
-	fecHighMap.insert("3/4", DvbSTransponder::Fec3_4);
-	fecHighMap.insert("4/5", DvbSTransponder::Fec4_5);
-	fecHighMap.insert("5/6", DvbSTransponder::Fec5_6);
-	fecHighMap.insert("6/7", DvbSTransponder::Fec6_7);
-	fecHighMap.insert("7/8", DvbSTransponder::Fec7_8);
-	fecHighMap.insert("8/9", DvbSTransponder::Fec8_9);
-	fecHighMap.insert("AUTO", DvbSTransponder::FecAuto);
-
-	fecLowMap.insert("NONE", DvbSTransponder::FecNone);
-
-	modulationMap.insert("QPSK", DvbTTransponder::Qpsk);
-	modulationMap.insert("QAM16", DvbTTransponder::Qam16);
-	modulationMap.insert("QAM64", DvbTTransponder::Qam64);
-	modulationMap.insert("AUTO", DvbTTransponder::ModulationAuto);
-
-	transmissionModeMap.insert("2k", DvbTTransponder::TransmissionMode2k);
-	transmissionModeMap.insert("8k", DvbTTransponder::TransmissionMode8k);
-	transmissionModeMap.insert("AUTO", DvbTTransponder::TransmissionModeAuto);
-
-	guardIntervalMap.insert("1/4", DvbTTransponder::GuardInterval1_4);
-	guardIntervalMap.insert("1/8", DvbTTransponder::GuardInterval1_8);
-	guardIntervalMap.insert("1/16", DvbTTransponder::GuardInterval1_16);
-	guardIntervalMap.insert("1/32", DvbTTransponder::GuardInterval1_32);
-	guardIntervalMap.insert("AUTO", DvbTTransponder::GuardIntervalAuto);
-
-	hierarchyMap.insert("NONE", DvbTTransponder::HierarchyNone);
-}
-
-DvbTTransponder *DvbTFileHelper::readTransponder(ScanFileReader &reader)
-{
-	if (reader.readString() != "T") {
-		return NULL;
-	}
-
-	DvbTTransponder *transponder = new DvbTTransponder();
-
-	transponder->frequency = reader.readInt();
-	transponder->bandwidth = reader.readEnum(bandwidthMap);
-	transponder->fecRateHigh = reader.readEnum(fecHighMap);
-	transponder->fecRateLow = reader.readEnum(fecLowMap);
-	transponder->modulation = reader.readEnum(modulationMap);
-	transponder->transmissionMode = reader.readEnum(transmissionModeMap);
-	transponder->guardInterval = reader.readEnum(guardIntervalMap);
-	transponder->hierarchy = reader.readEnum(hierarchyMap);
-
-	if (!reader.isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-class AtscFileHelper
-{
-public:
-	AtscFileHelper();
-	~AtscFileHelper() { }
-
-	AtscTransponder *readTransponder(ScanFileReader &reader);
-
-	bool operator()(AtscTransponder *x, AtscTransponder *y) const
-	{
-		return x->frequency < y->frequency;
-	}
-
-private:
-	QMap<QString, AtscTransponder::Modulation> modulationMap;
-};
-
-AtscFileHelper::AtscFileHelper()
-{
-	modulationMap.insert("8VSB", AtscTransponder::Vsb8);
-	modulationMap.insert("16VSB", AtscTransponder::Vsb16);
-	modulationMap.insert("QAM64", AtscTransponder::Qam64);
-	modulationMap.insert("QAM256", AtscTransponder::Qam256);
-	modulationMap.insert("AUTO", AtscTransponder::ModulationAuto);
-}
-
-AtscTransponder *AtscFileHelper::readTransponder(ScanFileReader &reader)
-{
-	if (reader.readString() != "A") {
-		return NULL;
-	}
-
-	AtscTransponder *transponder = new AtscTransponder();
-
-	transponder->frequency = reader.readInt();
-	transponder->modulation = reader.readEnum(modulationMap);
-
-	if (!reader.isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
-}
-
-template<class T1, class T2> void readScanDirectory(QTextStream &out, const QString &dirName)
-{
-	QDir dir(dirName);
 
 	if (!dir.exists()) {
-		qCritical() << "Error: can't open directory" << dirName;
+		qCritical() << "Error: can't open directory" << dir.path();
 		return;
 	}
-
-	T2 scanFileHelper;
 
 	foreach (const QString &fileName, dir.entryList(QDir::Files, QDir::Name)) {
 		QFile file(dir.filePath(fileName));
@@ -360,8 +98,7 @@ template<class T1, class T2> void readScanDirectory(QTextStream &out, const QStr
 
 		QTextStream stream(&file);
 		stream.setCodec("UTF-8");
-		QList<T1 *> list;
-		bool superfluousChar = false;
+		QList<QString> transponders;
 
 		while (!stream.atEnd()) {
 			QString line = stream.readLine();
@@ -373,73 +110,107 @@ template<class T1, class T2> void readScanDirectory(QTextStream &out, const QStr
 					--pos;
 				}
 
-				line = line.left(pos);
+				line.truncate(pos);
 			}
 
 			if (line.isEmpty()) {
 				continue;
 			}
 
-			ScanFileReader reader(line);
+			QString string;
 
-			T1 *transponder = scanFileHelper.readTransponder(reader);
+			switch (type) {
+			case DvbTransponderBase::DvbC: {
+				DvbCTransponder transponder;
+				if (transponder.fromString(line)) {
+					string = transponder.toString();
+				}
+				break;
+			    }
+			case DvbTransponderBase::DvbS: {
+				DvbSTransponder transponder;
+				if (transponder.fromString(line)) {
+					string = transponder.toString();
+				}
+				break;
+			    }
+			case DvbTransponderBase::DvbT: {
+				DvbTTransponder transponder;
+				if (transponder.fromString(line)) {
+					string = transponder.toString();
+				}
+				break;
+			    }
+			case DvbTransponderBase::Atsc: {
+				AtscTransponder transponder;
+				if (transponder.fromString(line)) {
+					string = transponder.toString();
+				}
+				break;
+			    }
+			}
 
-			if (transponder == NULL) {
+			if (string.isEmpty()) {
 				qCritical() << "Error: can't parse file" << file.fileName();
-				qDeleteAll(list);
 				return;
 			}
 
-			if (!reader.checkEnd()) {
-				superfluousChar = true;
-			}
+			// reduce multiple spaces to one space and remove leading zeros
 
-			list.append(transponder);
-		}
-
-		if (superfluousChar) {
-			qWarning() << "Warning: superfluous characters in file" << file.fileName();
-		}
-
-		if (!list.isEmpty()) {
-			QString name = dir.dirName() + '/' + fileName;
-
-			if (name.startsWith("dvb-s")) {
-				// use upper case for orbital location
-				name[name.size() - 1] = name.at(name.size() - 1).toUpper();
-
-				QString source = name;
-				source.remove(0, source.lastIndexOf('-') + 1);
-
-				bool ok = false;
-
-				if (source.endsWith('E')) {
-					source.chop(1);
-					source.toDouble(&ok);
-				} else if (source.endsWith('W')) {
-					source.chop(1);
-					source.toDouble(&ok);
+			for (int i = 1; i < line.length(); ++i) {
+				if (line.at(i - 1) != ' ') {
+					continue;
 				}
 
-				if (!ok) {
-					qWarning() << "Warning: invalid orbital location for file" << file.fileName();
+				if ((line.at(i) == ' ') || (line.at(i) == '0')) {
+					line.remove(i, 1);
+					--i;
 				}
 			}
 
-			out << "[" << name << "]\n";
-
-			qStableSort(list.begin(), list.end(), scanFileHelper);
-
-			foreach (const T1 *transponder, list) {
-				DvbLineWriter writer;
-				writer.writeTransponder(transponder);
-				out << writer.getLine();
+			if (line != string) {
+				qWarning() << "Warning: suboptimal representation" << line << "<-->" << string << "in file" << file.fileName();
 			}
-		} else {
+
+			transponders.append(string);
+		}
+
+		if (transponders.isEmpty()) {
 			qWarning() << "Warning: no transponder found in file" << file.fileName();
+			continue;
 		}
 
-		qDeleteAll(list);
+		QString name = dir.dirName() + '/' + fileName;
+
+		if (type == DvbSTransponder::DvbS) {
+			// use upper case for orbital position
+			name[name.size() - 1] = name.at(name.size() - 1).toUpper();
+
+			QString source = name;
+			source.remove(0, source.lastIndexOf('-') + 1);
+
+			bool ok = false;
+
+			if (source.endsWith('E')) {
+				source.chop(1);
+				source.toDouble(&ok);
+			} else if (source.endsWith('W')) {
+				source.chop(1);
+				source.toDouble(&ok);
+			}
+
+			if (!ok) {
+				qWarning() << "Warning: invalid orbital position for file" << file.fileName();
+			}
+		}
+
+		out << '[' << name << "]\n";
+
+		qSort(transponders.begin(), transponders.end(), NumericalLessThan());
+
+		foreach (const QString &transponder, transponders) {
+			out << transponder << '\n';
+		}
 	}
 }
 
@@ -461,12 +232,12 @@ int main(int argc, char *argv[])
 	out << "[date]\n";
 	out << QDate::currentDate().toString(Qt::ISODate) << '\n';
 
-	QString baseDir(argv[1]);
+	QString path(argv[1]);
 
-	readScanDirectory<DvbCTransponder, DvbCFileHelper>(out, baseDir + "/dvb-c");
-	readScanDirectory<DvbSTransponder, DvbSFileHelper>(out, baseDir + "/dvb-s");
-	readScanDirectory<DvbTTransponder, DvbTFileHelper>(out, baseDir + "/dvb-t");
-	readScanDirectory<AtscTransponder, AtscFileHelper>(out, baseDir + "/atsc");
+	readScanDirectory(out, path, DvbTransponderBase::DvbC);
+	readScanDirectory(out, path, DvbTransponderBase::DvbS);
+	readScanDirectory(out, path, DvbTransponderBase::DvbT);
+	readScanDirectory(out, path, DvbTransponderBase::Atsc);
 
 	out << "# sha1sum " << flush;
 	out << QCryptographicHash::hash(data, QCryptographicHash::Sha1).toHex() << '\n' << flush;
@@ -475,6 +246,7 @@ int main(int argc, char *argv[])
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		qCritical() << "Error: can't open file" << file.fileName();
+		return 1;
 	}
 
 	file.write(data);

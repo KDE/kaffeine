@@ -107,28 +107,28 @@ QList<DvbTransponder> DvbScanData::readTransponders(int offset, DvbManager::Tran
 	bool parseError = false;
 
 	while ((*pos != '[') && (*pos != 0)) {
-		DvbLineReader reader(QString::fromAscii(pos));
 		DvbTransponderBase *transponder = NULL;
 
 		switch (type) {
 		case DvbManager::DvbC:
-			transponder = reader.readDvbCTransponder();
+			transponder = new DvbCTransponder;
 			break;
 		case DvbManager::DvbS:
-			transponder = reader.readDvbSTransponder();
+			transponder = new DvbSTransponder;
 			break;
 		case DvbManager::DvbT:
-			transponder = reader.readDvbTTransponder();
+			transponder = new DvbTTransponder;
 			break;
 		case DvbManager::Atsc:
-			transponder = reader.readAtscTransponder();
+			transponder = new AtscTransponder;
 			break;
 		}
 
-		if (transponder != NULL) {
-			list.append(DvbTransponder(transponder));
-		} else {
+		if ((transponder == NULL) || !transponder->fromString(QString::fromAscii(pos))) {
 			parseError = true;
+			delete transponder;
+		} else {
+			list.append(DvbTransponder(transponder));
 		}
 
 		while (pos != end) {

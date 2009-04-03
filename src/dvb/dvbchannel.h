@@ -82,6 +82,13 @@ public:
 	}
 
 	/*
+	 * convert from / to linuxtv scan file format
+	 */
+
+	virtual bool fromString(const QString &string) = 0;
+	virtual QString toString() const = 0;
+
+	/*
 	 * corresponding in this context means that both tuning parameters will lead to the same
 	 * transponder; note the tuning parameters don't have to be equal, it's sufficient that they
 	 * can't coexist at the same time (for example the frequency difference between two channels
@@ -115,6 +122,9 @@ public:
 		return this;
 	}
 
+	bool fromString(const QString &string);
+	QString toString() const;
+
 	bool corresponds(const DvbTransponder &transponder) const;
 
 	int frequency; // Hz
@@ -144,6 +154,9 @@ public:
 	{
 		return this;
 	}
+
+	bool fromString(const QString &string);
+	QString toString() const;
 
 	bool corresponds(const DvbTransponder &transponder) const;
 
@@ -212,6 +225,9 @@ public:
 		return this;
 	}
 
+	bool fromString(const QString &string);
+	QString toString() const;
+
 	bool corresponds(const DvbTransponder &transponder) const;
 
 	int frequency; // Hz
@@ -246,6 +262,9 @@ public:
 	{
 		return this;
 	}
+
+	bool fromString(const QString &string);
+	QString toString() const;
 
 	bool corresponds(const DvbTransponder &transponder) const;
 
