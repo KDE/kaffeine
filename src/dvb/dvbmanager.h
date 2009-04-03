@@ -48,6 +48,7 @@ public:
 	DvbDevice *device;
 	QList<DvbConfig> configs;
 	int useCount; // -1 means exlusive use
+	QString source;
 	DvbTransponder transponder;
 };
 
@@ -83,7 +84,7 @@ public:
 	}
 
 	QList<DvbDevice *> getDevices() const;
-	DvbDevice *requestDevice(const DvbTransponder &transponder);
+	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder);
 	// exclusive = you can freely tune() and stop(), because the device isn't shared
 	DvbDevice *requestExclusiveDevice(const QString &source);
 	void releaseDevice(DvbDevice *device);

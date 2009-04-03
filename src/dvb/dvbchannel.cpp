@@ -105,7 +105,6 @@ bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 	const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
 
 	return (dvbCTransponder != NULL) &&
-	       (dvbCTransponder->source == source) &&
 	       (qAbs(dvbCTransponder->frequency - frequency) <= 2000000);
 }
 
@@ -139,7 +138,6 @@ bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 	const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
 
 	return (dvbSTransponder != NULL) &&
-	       (dvbSTransponder->source == source) &&
 	       (dvbSTransponder->polarization == polarization) &&
 	       (qAbs(dvbSTransponder->frequency - frequency) <= 2000);
 }
@@ -178,7 +176,6 @@ bool DvbTTransponder::corresponds(const DvbTransponder &transponder) const
 	const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
 
 	return (dvbTTransponder != NULL) &&
-	       (dvbTTransponder->source == source) &&
 	       (qAbs(dvbTTransponder->frequency - frequency) <= 2000000);
 }
 
@@ -214,7 +211,6 @@ bool AtscTransponder::corresponds(const DvbTransponder &transponder) const
 	const AtscTransponder *atscTransponder = transponder->getAtscTransponder();
 
 	return (atscTransponder != NULL) &&
-	       (atscTransponder->source == source) &&
 	       (qAbs(atscTransponder->frequency - frequency) <= 2000000);
 }
 
@@ -233,7 +229,7 @@ DvbChannel *DvbLineReader::readChannel()
 	channel->name = readString();
 	channel->number = readInt();
 
-	QString source = readString();
+	channel->source = readString();
 	channel->networkId = readInt(true);
 	channel->transportStreamId = readInt();
 	channel->serviceId = readInt();
@@ -271,7 +267,6 @@ DvbChannel *DvbLineReader::readChannel()
 		return NULL;
 	}
 
-	transponder->source = source;
 	channel->transponder = DvbTransponder(transponder);
 
 	return channel;
@@ -286,7 +281,7 @@ void DvbLineWriter::writeChannel(const DvbChannel *channel)
 	writeString(channel->name);
 	writeInt(channel->number);
 
-	writeString(channel->transponder->source);
+	writeString(channel->source);
 	writeInt(channel->networkId);
 	writeInt(channel->transportStreamId);
 	writeInt(channel->serviceId);

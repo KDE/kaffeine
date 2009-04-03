@@ -272,14 +272,15 @@ void DvbScanFilter::timerEvent(QTimerEvent *)
 	scan->filterFinished(this);
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const DvbTransponder &transponder_) : device(device_),
-	transponder(transponder_), isLive(true), transponderIndex(-1), state(ScanPat), patIndex(0),
-	activeFilters(0)
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_) :
+	device(device_), source(source_), transponder(transponder_), isLive(true),
+	transponderIndex(-1), state(ScanPat), patIndex(0), activeFilters(0)
 {
 	init();
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const QList<DvbTransponder> &transponders_) : device(device_),
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_,
+	const QList<DvbTransponder> &transponders_) : device(device_), source(source_),
 	isLive(false), transponders(transponders_), transponderIndex(0), state(ScanTune),
 	patIndex(0), activeFilters(0)
 {
@@ -503,6 +504,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 	}
 
 	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
+		channel.source = source;
 		channel.transportStreamId = transportStreamId;
 		channel.serviceId = section.programNumber();
 		channel.pmtPid = pid;

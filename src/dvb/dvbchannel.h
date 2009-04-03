@@ -89,8 +89,6 @@ public:
 	 */
 
 	virtual bool corresponds(const DvbTransponder &transponder) const = 0;
-
-	QString source;
 };
 
 class DvbCTransponder : public DvbTransponderBase
@@ -273,6 +271,7 @@ public:
 	QString name;
 	int number;
 
+	QString source;
 	int networkId; // may be -1 (not present)
 	int transportStreamId;
 	int serviceId;

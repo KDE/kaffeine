@@ -669,7 +669,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		    }
 
 		case DvbConfigBase::UsalsRotor: {
-			QString source = transponder->source;
+			QString source = config->scanSource;
 			source.remove(0, source.lastIndexOf('-') + 1);
 
 			bool ok = false;

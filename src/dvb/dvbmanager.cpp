@@ -301,7 +301,7 @@ QList<DvbDevice *> DvbManager::getDevices() const
 	return deviceManager->getDevices();
 }
 
-DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder)
+DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder)
 {
 	// first try to find a device that is already tuned to the selected transponder
 
@@ -312,7 +312,7 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder)
 			continue;
 		}
 
-		if (it.transponder->corresponds(transponder)) {
+		if ((it.source == source) && it.transponder->corresponds(transponder)) {
 			++deviceConfigs[i].useCount;
 			return it.device;
 		}
@@ -326,12 +326,13 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder)
 		}
 
 		foreach (const DvbConfig &config, it.configs) {
-			if (config->name == transponder->source) {
+			if (config->name == source) {
 				if (!it.device->checkUsable()) {
 					break;
 				}
 
 				++deviceConfigs[i].useCount;
+				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 
 				DvbDevice *device = it.device;

@@ -129,7 +129,7 @@ void DvbRecording::start()
 
 	if (device == NULL) {
 		// assign device
-		device = manager->requestDevice(channel->transponder);
+		device = manager->requestDevice(channel->source, channel->transponder);
 
 		if (device == NULL) {
 			// FIXME error message
