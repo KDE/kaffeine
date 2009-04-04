@@ -64,7 +64,100 @@ public:
 	}
 };
 
-void readScanDirectory(QTextStream &out, const QString &path, DvbTransponderBase::TransmissionType type)
+static QString parseLine(DvbTransponderBase::TransmissionType type, const QString &line, const QString &fileName)
+{
+	switch (type) {
+	case DvbTransponderBase::DvbC: {
+		DvbCTransponder transponder;
+
+		if (!transponder.fromString(line)) {
+			break;
+		}
+
+		if (transponder.modulation == DvbCTransponder::ModulationAuto) {
+			qWarning() << "Warning: modulation == AUTO in file" << fileName;
+		}
+
+		if (transponder.fecRate != DvbCTransponder::FecNone) {
+			qWarning() << "Warning: fec rate != NONE in file" << fileName;
+		}
+
+		return transponder.toString();
+	    }
+
+	case DvbTransponderBase::DvbS: {
+		DvbSTransponder transponder;
+
+		if (!transponder.fromString(line)) {
+			break;
+		}
+
+		if (transponder.fecRate == DvbSTransponder::FecNone) {
+			qWarning() << "Warning: fec rate == NONE in file" << fileName;
+		}
+
+		// fecRate == AUTO is ok
+
+		return transponder.toString();
+	    }
+
+	case DvbTransponderBase::DvbT: {
+		DvbTTransponder transponder;
+
+		if (!transponder.fromString(line)) {
+			break;
+		}
+
+		if (transponder.bandwidth == DvbTTransponder::BandwidthAuto) {
+			qWarning() << "Warning: bandwidth == AUTO in file" << fileName;
+		}
+
+		if (transponder.modulation == DvbTTransponder::ModulationAuto) {
+			qWarning() << "Warning: modulation == AUTO in file" << fileName;
+		}
+
+		if (transponder.fecRateHigh == DvbTTransponder::FecNone) {
+			qWarning() << "Warning: fec rate high == NONE in file" << fileName;
+		}
+
+		// fecRateHigh == AUTO is ok
+
+		if (transponder.fecRateLow != DvbTTransponder::FecNone) {
+			qWarning() << "Warning: fec rate low != NONE in file" << fileName;
+		}
+
+		if (transponder.transmissionMode == DvbTTransponder::TransmissionModeAuto) {
+			qWarning() << "Warning: transmission mode == AUTO in file" << fileName;
+		}
+
+		// guardInterval == AUTO is tolerated (but should be avoided if possible)
+
+		if (transponder.hierarchy != DvbTTransponder::HierarchyNone) {
+			qWarning() << "Warning: hierarchy != NONE in file" << fileName;
+		}
+
+		return transponder.toString();
+	    }
+
+	case DvbTransponderBase::Atsc: {
+		AtscTransponder transponder;
+
+		if (!transponder.fromString(line)) {
+			break;
+		}
+
+		if (transponder.modulation == AtscTransponder::ModulationAuto) {
+			qWarning() << "Warning: modulation == AUTO in file" << fileName;
+		}
+
+		return transponder.toString();
+	    }
+	}
+
+	return QString();
+}
+
+static void readScanDirectory(QTextStream &out, const QString &path, DvbTransponderBase::TransmissionType type)
 {
 	QDir dir;
 
@@ -117,41 +210,10 @@ void readScanDirectory(QTextStream &out, const QString &path, DvbTransponderBase
 				continue;
 			}
 
-			QString string;
-
-			switch (type) {
-			case DvbTransponderBase::DvbC: {
-				DvbCTransponder transponder;
-				if (transponder.fromString(line)) {
-					string = transponder.toString();
-				}
-				break;
-			    }
-			case DvbTransponderBase::DvbS: {
-				DvbSTransponder transponder;
-				if (transponder.fromString(line)) {
-					string = transponder.toString();
-				}
-				break;
-			    }
-			case DvbTransponderBase::DvbT: {
-				DvbTTransponder transponder;
-				if (transponder.fromString(line)) {
-					string = transponder.toString();
-				}
-				break;
-			    }
-			case DvbTransponderBase::Atsc: {
-				AtscTransponder transponder;
-				if (transponder.fromString(line)) {
-					string = transponder.toString();
-				}
-				break;
-			    }
-			}
+			QString string = parseLine(type, line, fileName);
 
 			if (string.isEmpty()) {
-				qCritical() << "Error: can't parse file" << file.fileName();
+				qCritical() << "Error: can't parse line" << line << "in file" << fileName;
 				return;
 			}
 
@@ -169,14 +231,14 @@ void readScanDirectory(QTextStream &out, const QString &path, DvbTransponderBase
 			}
 
 			if (line != string) {
-				qWarning() << "Warning: suboptimal representation" << line << "<-->" << string << "in file" << file.fileName();
+				qWarning() << "Warning: suboptimal representation" << line << "<-->" << string << "in file" << fileName;
 			}
 
 			transponders.append(string);
 		}
 
 		if (transponders.isEmpty()) {
-			qWarning() << "Warning: no transponder found in file" << file.fileName();
+			qWarning() << "Warning: no transponder found in file" << fileName;
 			continue;
 		}
 
@@ -200,7 +262,7 @@ void readScanDirectory(QTextStream &out, const QString &path, DvbTransponderBase
 			}
 
 			if (!ok) {
-				qWarning() << "Warning: invalid orbital position for file" << file.fileName();
+				qWarning() << "Warning: invalid orbital position for file" << fileName;
 			}
 		}
 

@@ -111,18 +111,12 @@ public:
 		return valid;
 	}
 
-	void readInt(int &value, bool allowNegativeOne = false)
+	void readInt(int &value)
 	{
 		stream >> value;
 
-		if (allowNegativeOne) {
-			if (value < -1) {
-				valid = false;
-			}
-		} else {
-			if (value < 0) {
-				valid = false;
-			}
+		if (value < 0) {
+			valid = false;
 		}
 	}
 
