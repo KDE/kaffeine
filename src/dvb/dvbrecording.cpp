@@ -31,7 +31,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include "../proxytreeview.h"
-#include "dvbchannelview.h"
+#include "dvbchannelui.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
 

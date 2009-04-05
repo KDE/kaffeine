@@ -86,20 +86,14 @@ QList<int> ProxyTreeView::selectedRows() const
 	return result;
 }
 
+void ProxyTreeView::setContextMenu(KMenu *menu_)
+{
+	menu = menu_;
+}
+
 void ProxyTreeView::setModel(QAbstractItemModel *model)
 {
 	proxyModel->setSourceModel(model);
-}
-
-void ProxyTreeView::addContextActions(const QList<QAction *> &actions)
-{
-	if (menu == NULL) {
-		menu = new KMenu(this);
-	}
-
-	foreach (QAction *action, actions) {
-		menu->addAction(action);
-	}
 }
 
 QAbstractItemModel *ProxyTreeView::sourceModel() const

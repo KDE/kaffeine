@@ -31,7 +31,7 @@
 #include <KMessageBox>
 #include "../mediawidget.h"
 #include "../proxytreeview.h"
-#include "dvbchannelview.h"
+#include "dvbchannelui.h"
 #include "dvbconfigdialog.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
@@ -91,7 +91,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	channelView->setModel(channelModel);
 	channelView->sortByColumn(0, Qt::AscendingOrder);
 	channelView->setSortingEnabled(true);
-	channelView->addContextActions(channelModel->createContextActions());
+	channelView->setContextMenu(new DvbChannelContextMenu(channelModel, channelView));
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		channelView->model(), SLOT(setFilterRegExp(QString)));

@@ -1,6 +1,6 @@
 set(kaffeine_SRCS
     dvb/dvbchannel.cpp
-    dvb/dvbchannelview.cpp
+    dvb/dvbchannelui.cpp
     dvb/dvbconfigdialog.cpp
     dvb/dvbdevice.cpp
     dvb/dvbmanager.cpp

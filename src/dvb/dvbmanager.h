@@ -112,9 +112,6 @@ private slots:
 	void deviceRemoved(DvbDevice *device);
 
 private:
-	void readChannelList();
-	void writeChannelList();
-
 	void readDeviceConfigs();
 	void writeDeviceConfigs();
 

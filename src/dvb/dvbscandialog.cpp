@@ -24,7 +24,7 @@
 #include <QPainter>
 #include <KDebug>
 #include <KMessageBox>
-#include "dvbchannelview.h"
+#include "dvbchannelui.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbscan.h"
@@ -65,16 +65,42 @@ void DvbGradProgress::paintEvent(QPaintEvent *event)
 	QLabel::paintEvent(event);
 }
 
-class DvbPreviewChannelModel : public DvbGenericChannelModel<DvbPreviewChannel>
+class DvbPreviewChannelModel : public QAbstractTableModel
 {
 public:
-	explicit DvbPreviewChannelModel(QObject *parent) :
-		DvbGenericChannelModel<DvbPreviewChannel>(parent) { }
+	explicit DvbPreviewChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
 	~DvbPreviewChannelModel() { }
 
 	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+	void appendChannels(const QList<DvbPreviewChannel> &list)
+	{
+		beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
+		channels += list;
+		endInsertRows();
+	}
+
+	const DvbPreviewChannel &getChannel(int pos) const
+	{
+		return channels.at(pos);
+	}
+
+	QList<DvbPreviewChannel> getChannels() const
+	{
+		return channels;
+	}
+
+	void removeChannels()
+	{
+		channels.clear();
+		reset();
+	}
+
+private:
+	QList<DvbPreviewChannel> channels;
 };
 
 int DvbPreviewChannelModel::columnCount(const QModelIndex &parent) const
@@ -86,19 +112,28 @@ int DvbPreviewChannelModel::columnCount(const QModelIndex &parent) const
 	return 3;
 }
 
+int DvbPreviewChannelModel::rowCount(const QModelIndex &parent) const
+{
+	if (parent.isValid()) {
+		return 0;
+	}
+
+	return channels.size();
+}
+
 QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || role != Qt::DisplayRole || index.row() >= list.size()) {
+	if (!index.isValid() || role != Qt::DisplayRole || index.row() >= channels.size()) {
 		return QVariant();
 	}
 
 	switch (index.column()) {
 	case 0:
-		return list.at(index.row()).name;
+		return channels.at(index.row()).name;
 	case 1:
-		return list.at(index.row()).provider;
+		return channels.at(index.row()).provider;
 	case 2:
-		return list.at(index.row()).snr;
+		return channels.at(index.row()).snr;
 	}
 
 	return QVariant();
@@ -137,12 +172,15 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui->scanButton->setText(i18n("Start scan"));
 
 	channelModel = new DvbChannelModel(this);
-	channelModel->setList(manager->getChannelModel()->getList());
+	channelModel->setChannels(manager->getChannelModel()->getChannels());
 	ui->channelView->setIndentation(0);
 	ui->channelView->setModel(channelModel);
 	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
 	ui->channelView->setSortingEnabled(true);
-	ui->channelView->addContextActions(channelModel->createContextActions());
+
+	DvbChannelContextMenu *menu = new DvbChannelContextMenu(channelModel, ui->channelView);
+	menu->addDeleteAction();
+	ui->channelView->setContextMenu(menu);
 
 	previewModel = new DvbPreviewChannelModel(this);
 	ui->scanResultsView->setIndentation(0);
@@ -226,7 +264,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	}
 
 	ui->scanButton->setText(i18n("Stop scan"));
-	previewModel->setList(QList<DvbPreviewChannel>());
+	previewModel->removeChannels();
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
@@ -237,12 +275,12 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 void DvbScanDialog::dialogAccepted()
 {
-	manager->getChannelModel()->setList(channelModel->getList());
+	manager->getChannelModel()->setChannels(channelModel->getChannels());
 }
 
 void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 {
-	previewModel->appendList(channels);
+	previewModel->appendChannels(channels);
 	// FIXME update provider list
 }
 
@@ -284,7 +322,7 @@ void DvbScanDialog::addFilteredChannels()
 {
 	QList<const DvbPreviewChannel *> channels;
 
-	foreach (const DvbPreviewChannel &channel, previewModel->getList()) {
+	foreach (const DvbPreviewChannel &channel, previewModel->getChannels()) {
 		if (ui->ftaCBox->isChecked()) {
 			// only fta channels
 			if (channel.scrambled) {
@@ -323,7 +361,7 @@ void DvbScanDialog::addFilteredChannels()
 
 void DvbScanDialog::deleteAllChannels()
 {
-	channelModel->setList(QList<QSharedDataPointer<DvbChannel> >());
+	channelModel->setChannels(QList<QSharedDataPointer<DvbChannel> >());
 }
 
 class DvbChannelNumberLess
@@ -338,7 +376,7 @@ public:
 
 void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
 {
-	QList<QSharedDataPointer<DvbChannel> > channels = channelModel->getList();
+	QList<QSharedDataPointer<DvbChannel> > channels = channelModel->getChannels();
 	QList<QSharedDataPointer<DvbChannel> > newChannels;
 
 	foreach (const DvbPreviewChannel *currentChannel, channelList) {
@@ -402,7 +440,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 		++currentNumber;
 	}
 
-	channelModel->appendList(newChannels);
+	channelModel->appendChannels(newChannels);
 }
 
 void DvbScanDialog::setDevice(DvbDevice *newDevice)

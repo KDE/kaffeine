@@ -36,8 +36,8 @@ public:
 	int selectedRow() const;
 	QList<int> selectedRows() const;
 
+	void setContextMenu(KMenu *menu_);
 	void setModel(QAbstractItemModel *model);
-	void addContextActions(const QList<QAction *> &actions);
 
 protected:
 	QAbstractItemModel *sourceModel() const;

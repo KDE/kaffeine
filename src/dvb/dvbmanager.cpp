@@ -28,7 +28,7 @@
 #include <KLocale>
 #include <KStandardDirs>
 #include "dvbchannel.h"
-#include "dvbchannelview.h"
+#include "dvbchannelui.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbrecording.h"
@@ -268,7 +268,7 @@ public:
 DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 {
 	channelModel = new DvbChannelModel(this);
-	readChannelList();
+	channelModel->loadChannels();
 
 	recordingModel = new DvbRecordingModel(this);
 
@@ -292,7 +292,7 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 DvbManager::~DvbManager()
 {
 	writeDeviceConfigs();
-	writeChannelList();
+	channelModel->saveChannels();
 	delete scanData;
 }
 
@@ -570,59 +570,6 @@ void DvbManager::deviceRemoved(DvbDevice *device)
 			deviceConfigs[i].device = NULL;
 			break;
 		}
-	}
-}
-
-void DvbManager::readChannelList()
-{
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "can't open" << file.fileName();
-		return;
-	}
-
-	QTextStream stream(&file);
-	stream.setCodec("UTF-8");
-	bool fileOk = true;
-	QList<QSharedDataPointer<DvbChannel> > list;
-
-	while (!stream.atEnd()) {
-		DvbChannel *channel = DvbLineReader(stream.readLine()).readChannel();
-
-		if (channel == NULL) {
-			fileOk = false;
-			continue;
-		}
-
-		list.append(QSharedDataPointer<DvbChannel>(channel));
-	}
-
-	if (!fileOk) {
-		kWarning() << "invalid lines in file" << file.fileName();
-	}
-
-	kDebug() << "successfully read" << list.size() << "entries";
-
-	channelModel->setList(list);
-}
-
-void DvbManager::writeChannelList()
-{
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
-
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kWarning() << "can't open" << file.fileName();
-		return;
-	}
-
-	QTextStream stream(&file);
-	stream.setCodec("UTF-8");
-
-	foreach (const QSharedDataPointer<DvbChannel> &channel, channelModel->getList()) {
-		DvbLineWriter writer;
-		writer.writeChannel(channel);
-		stream << writer.getLine();
 	}
 }
 
