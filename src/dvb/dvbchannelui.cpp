@@ -22,13 +22,13 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QComboBox>
 #include <QFile>
 #include <QLabel>
-#include <QLineEdit>
 #include <QSpinBox>
 #include <KAction>
+#include <KComboBox>
 #include <KDebug>
+#include <KLineEdit>
 #include <KLocalizedString>
 #include <KStandardDirs>
 #include "dvbchannel.h"
@@ -244,7 +244,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	QBoxLayout *boxLayout = new QHBoxLayout();
 	boxLayout->addWidget(new QLabel(i18n("Name:")));
 
-	nameEdit = new QLineEdit(widget);
+	nameEdit = new KLineEdit(widget);
 	nameEdit->setText(channel->name);
 	boxLayout->addWidget(nameEdit);
 
@@ -285,7 +285,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
 
  	// FIXME
-	audioChannelBox = new QComboBox(widget);
+	audioChannelBox = new KComboBox(widget);
 	audioChannelBox->addItem(QString::number(channel->audioPid));
 	audioChannelBox->setCurrentIndex(0);
 	gridLayout->addWidget(audioChannelBox, 3, 1);

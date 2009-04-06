@@ -26,9 +26,9 @@
 #include <KMenu>
 
 class QCheckBox;
-class QComboBox;
-class QLineEdit;
 class QSpinBox;
+class KComboBox;
+class KLineEdit;
 class DvbChannel;
 class ProxyTreeView;
 
@@ -88,12 +88,12 @@ public:
 
 private:
 	QSharedDataPointer<DvbChannel> channel;
-	QLineEdit *nameEdit;
+	KLineEdit *nameEdit;
 	QSpinBox *numberBox;
 	QSpinBox *networkIdBox;
 	QSpinBox *transportStreamIdBox;
 	QSpinBox *serviceIdBox;
-	QComboBox *audioChannelBox;
+	KComboBox *audioChannelBox;
 	QCheckBox *scrambledBox;
 };
 
