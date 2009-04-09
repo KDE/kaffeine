@@ -1,7 +1,7 @@
 /*
  * dvbchannel.cpp
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,57 @@
 
 #include "dvbchannel.h"
 
+#include <QDataStream>
+#include <QStringList>
 #include <QTextStream>
+#include <KLocalizedString>
 
-static const char *dvbFecRateTable[DvbTransponderBase::FecRateMax + 2] = {
+template<> DvbTransponderBase::FecRate DvbTransponderBase::maxEnumValue()
+{
+	return DvbTransponderBase::FecRateMax;
+}
+
+template<> DvbCTransponder::Modulation DvbTransponderBase::maxEnumValue()
+{
+	return DvbCTransponder::ModulationMax;
+}
+
+template<> DvbSTransponder::Polarization DvbTransponderBase::maxEnumValue()
+{
+	return DvbSTransponder::PolarizationMax;
+}
+
+template<> DvbTTransponder::Bandwidth DvbTransponderBase::maxEnumValue()
+{
+	return DvbTTransponder::BandwidthMax;
+}
+
+template<> DvbTTransponder::Modulation DvbTransponderBase::maxEnumValue()
+{
+	return DvbTTransponder::ModulationMax;
+}
+
+template<> DvbTTransponder::TransmissionMode DvbTransponderBase::maxEnumValue()
+{
+	return DvbTTransponder::TransmissionModeMax;
+}
+
+template<> DvbTTransponder::GuardInterval DvbTransponderBase::maxEnumValue()
+{
+	return DvbTTransponder::GuardIntervalMax;
+}
+
+template<> DvbTTransponder::Hierarchy DvbTransponderBase::maxEnumValue()
+{
+	return DvbTTransponder::HierarchyMax;
+}
+
+template<> AtscTransponder::Modulation DvbTransponderBase::maxEnumValue()
+{
+	return AtscTransponder::ModulationMax;
+}
+
+static const char *dvbFecRateTable[] = {
 	/* FecNone = 0 */ "NONE",
 	/* Fec1_2 = 1  */ "1/2",
 	/* Fec2_3 = 2  */ "2/3",
@@ -32,73 +80,178 @@ static const char *dvbFecRateTable[DvbTransponderBase::FecRateMax + 2] = {
 	/* Fec6_7 = 6  */ "6/7",
 	/* Fec7_8 = 7  */ "7/8",
 	/* Fec8_9 = 8  */ "8/9",
-	/* FecAuto = 9 */ "AUTO",
-	NULL };
+	/* FecAuto = 9 */ "AUTO" };
 
-static const char *dvbCModulationTable[DvbCTransponder::ModulationMax + 2] = {
+template<> QStringList DvbTransponderBase::displayStrings<DvbTransponderBase::FecRate>()
+{
+	QStringList strings;
+	strings.append(/* FecNone = 0 */ "NONE");
+	strings.append(/* Fec1_2 = 1  */ "1/2");
+	strings.append(/* Fec2_3 = 2  */ "2/3");
+	strings.append(/* Fec3_4 = 3  */ "3/4");
+	strings.append(/* Fec4_5 = 4  */ "4/5");
+	strings.append(/* Fec5_6 = 5  */ "5/6");
+	strings.append(/* Fec6_7 = 6  */ "6/7");
+	strings.append(/* Fec7_8 = 7  */ "7/8");
+	strings.append(/* Fec8_9 = 8  */ "8/9");
+	strings.append(/* FecAuto = 9 */ "AUTO");
+	return strings;
+}
+
+static const char *dvbCModulationTable[] = {
 	/* Qam16 = 0          */ "QAM16",
 	/* Qam32 = 1          */ "QAM32",
 	/* Qam64 = 2          */ "QAM64",
 	/* Qam128 = 3         */ "QAM128",
 	/* Qam256 = 4         */ "QAM256",
-	/* ModulationAuto = 5 */ "AUTO",
-	NULL };
+	/* ModulationAuto = 5 */ "AUTO" };
 
-static const char *dvbSPolarizationTable[DvbSTransponder::PolarizationMax + 2] = {
+template<> QStringList DvbTransponderBase::displayStrings<DvbCTransponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qam16 = 0          */ "QAM16");
+	strings.append(/* Qam32 = 1          */ "QAM32");
+	strings.append(/* Qam64 = 2          */ "QAM64");
+	strings.append(/* Qam128 = 3         */ "QAM128");
+	strings.append(/* Qam256 = 4         */ "QAM256");
+	strings.append(/* ModulationAuto = 5 */ "AUTO");
+	return strings;
+}
+
+static const char *dvbSPolarizationTable[] = {
 	/* Horizontal = 0    */ "H",
 	/* Vertical = 1      */ "V",
 	/* CircularLeft = 2  */ "H",
-	/* CircularRight = 3 */ "V",
-	NULL };
+	/* CircularRight = 3 */ "V" };
 
-static const char *dvbTBandwidthTable[DvbTTransponder::BandwidthMax + 2] = {
-	/* Bandwidth6Mhz = 0 */ "6MHz",
-	/* Bandwidth7Mhz = 1 */ "7MHz",
-	/* Bandwidth8Mhz = 2 */ "8MHz",
-	/* BandwidthAuto = 3 */ "AUTO",
-	NULL };
+template<> QStringList DvbTransponderBase::displayStrings<DvbSTransponder::Polarization>()
+{
+	QStringList strings;
+	strings.append(/* Horizontal = 0    */ i18n("Horizontal"));
+	strings.append(/* Vertical = 1      */ i18n("Vertical"));
+	strings.append(/* CircularLeft = 2  */ i18n("Circular left"));
+	strings.append(/* CircularRight = 3 */ i18n("Circular right"));
+	return strings;
+}
 
-static const char *dvbTModulationTable[DvbTTransponder::ModulationMax + 2] = {
+static const char *dvbTBandwidthTable[] = {
+	/* Bandwidth6MHz = 0 */ "6MHz",
+	/* Bandwidth7MHz = 1 */ "7MHz",
+	/* Bandwidth8MHz = 2 */ "8MHz",
+	/* BandwidthAuto = 3 */ "AUTO" };
+
+template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::Bandwidth>()
+{
+	QStringList strings;
+	strings.append(/* Bandwidth6MHz = 0 */ "6MHz");
+	strings.append(/* Bandwidth7MHz = 1 */ "7MHz");
+	strings.append(/* Bandwidth8MHz = 2 */ "8MHz");
+	strings.append(/* BandwidthAuto = 3 */ "AUTO");
+	return strings;
+}
+
+static const char *dvbTModulationTable[] = {
 	/* Qpsk = 0           */ "QPSK",
 	/* Qam16 = 1          */ "QAM16",
 	/* Qam64 = 2          */ "QAM64",
-	/* ModulationAuto = 3 */ "AUTO",
-	NULL };
+	/* ModulationAuto = 3 */ "AUTO" };
 
-static const char *dvbTTransmissionModeTable[DvbTTransponder::TransmissionModeMax + 2] = {
+template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qpsk = 0           */ "QPSK");
+	strings.append(/* Qam16 = 1          */ "QAM16");
+	strings.append(/* Qam64 = 2          */ "QAM64");
+	strings.append(/* ModulationAuto = 3 */ "AUTO");
+	return strings;
+}
+
+static const char *dvbTTransmissionModeTable[] = {
 	/* TransmissionMode2k = 0   */ "2k",
 	/* TransmissionMode8k = 1   */ "8k",
-	/* TransmissionModeAuto = 2 */ "AUTO",
-	NULL };
+	/* TransmissionModeAuto = 2 */ "AUTO" };
 
-static const char *dvbTGuardIntervalTable[DvbTTransponder::GuardIntervalMax + 2] = {
+template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::TransmissionMode>()
+{
+	QStringList strings;
+	strings.append(/* TransmissionMode2k = 0   */ "2k");
+	strings.append(/* TransmissionMode8k = 1   */ "8k");
+	strings.append(/* TransmissionModeAuto = 2 */ "AUTO");
+	return strings;
+}
+
+static const char *dvbTGuardIntervalTable[] = {
 	/* GuardInterval1_4 = 0  */ "1/4",
 	/* GuardInterval1_8 = 1  */ "1/8",
 	/* GuardInterval1_16 = 2 */ "1/16",
 	/* GuardInterval1_32 = 3 */ "1/32",
-	/* GuardIntervalAuto = 4 */ "AUTO",
-	NULL };
+	/* GuardIntervalAuto = 4 */ "AUTO" };
 
-static const char *dvbTHierarchyTable[DvbTTransponder::HierarchyMax + 2] = {
+template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::GuardInterval>()
+{
+	QStringList strings;
+	strings.append(/* GuardInterval1_4 = 0  */ "1/4");
+	strings.append(/* GuardInterval1_8 = 1  */ "1/8");
+	strings.append(/* GuardInterval1_16 = 2 */ "1/16");
+	strings.append(/* GuardInterval1_32 = 3 */ "1/32");
+	strings.append(/* GuardIntervalAuto = 4 */ "AUTO");
+	return strings;
+}
+
+static const char *dvbTHierarchyTable[] = {
 	/* HierarchyNone = 0 */ "NONE",
 	/* Hierarchy1 = 1    */ "1",
 	/* Hierarchy2 = 2    */ "2",
 	/* Hierarchy4 = 3    */ "4",
-	/* HierarchyAuto = 4 */ "AUTO",
-	NULL };
+	/* HierarchyAuto = 4 */ "AUTO" };
 
-static const char *atscModulationTable[AtscTransponder::ModulationMax + 2] = {
+template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::Hierarchy>()
+{
+	QStringList strings;
+	strings.append(/* HierarchyNone = 0 */ "NONE");
+	strings.append(/* Hierarchy1 = 1    */ "1");
+	strings.append(/* Hierarchy2 = 2    */ "2");
+	strings.append(/* Hierarchy4 = 3    */ "4");
+	strings.append(/* HierarchyAuto = 4 */ "AUTO");
+	return strings;
+}
+
+static const char *atscModulationTable[] = {
 	/* Qam64 = 0          */ "QAM64",
 	/* Qam256 = 1         */ "QAM256",
 	/* Vsb8 = 2           */ "8VSB",
 	/* Vsb16 = 3          */ "16VSB",
-	/* ModulationAuto = 4 */ "AUTO",
-	NULL };
+	/* ModulationAuto = 4 */ "AUTO" };
+
+template<> QStringList DvbTransponderBase::displayStrings<AtscTransponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qam64 = 0          */ "QAM64");
+	strings.append(/* Qam256 = 1         */ "QAM256");
+	strings.append(/* Vsb8 = 2           */ "VSB8");
+	strings.append(/* Vsb16 = 3          */ "VSB16");
+	strings.append(/* ModulationAuto = 4 */ "AUTO");
+	return strings;
+}
+
+template<class T> static QDataStream &operator>>(QDataStream &stream, T &value)
+{
+	int intValue;
+	stream >> intValue;
+
+	if ((intValue < 0) || (intValue > DvbTransponderBase::maxEnumValue<T>())) {
+		stream.setStatus(QDataStream::ReadCorruptData);
+	} else {
+		value = static_cast<T>(intValue);
+	}
+
+	return stream;
+}
 
 class DvbChannelStringReader
 {
 public:
-	DvbChannelStringReader(const QString &string_) : string(string_), valid(true)
+	DvbChannelStringReader(const QString &string_) : string(string_)
 	{
 		stream.setString(&string);
 		stream.setIntegerBase(10);
@@ -108,16 +261,12 @@ public:
 
 	bool isValid() const
 	{
-		return valid;
+		return stream.status() == QTextStream::Ok;
 	}
 
 	void readInt(int &value)
 	{
 		stream >> value;
-
-		if (value < 0) {
-			valid = false;
-		}
 	}
 
 	template<class T> void readEnum(T &value, const char **table)
@@ -125,14 +274,14 @@ public:
 		QString string;
 		stream >> string;
 
-		for (int i = 0; table[i] != NULL; ++i) {
+		for (int i = 0; i < DvbTransponderBase::maxEnumValue<T>(); ++i) {
 			if (string == table[i]) {
 				value = static_cast<T>(i);
 				return;
 			}
 		}
 
-		valid = false;
+		stream.setStatus(QTextStream::ReadCorruptData);
 	}
 
 	void checkChar(QChar value)
@@ -141,14 +290,13 @@ public:
 		stream >> string;
 
 		if (string != value) {
-			valid = false;
+			stream.setStatus(QTextStream::ReadCorruptData);
 		}
 	}
 
 private:
 	QString string;
 	QTextStream stream;
-	bool valid;
 };
 
 class DvbChannelStringWriter
@@ -187,84 +335,20 @@ private:
 	QTextStream stream;
 };
 
-int DvbLineReader::readInt(bool allowEmpty)
+void DvbCTransponder::readTransponder(QDataStream &stream)
 {
-	QString string = readString();
-
-	if (string.isEmpty()) {
-		if (!allowEmpty) {
-			valid = false;
-		}
-
-		return -1;
-	}
-
-	bool ok;
-	int value = string.toInt(&ok);
-
-	if (!ok || (value < 0)) {
-		valid = false;
-	}
-
-	return value;
+	stream >> frequency;
+	stream >> symbolRate;
+	stream >> modulation;
+	stream >> fecRate;
 }
 
-QString DvbLineReader::readString()
+void DvbCTransponder::writeTransponder(QDataStream &stream) const
 {
-	int begin = pos;
-	int end = pos;
-
-	while ((end < line.size()) && (line[end] != '|')) {
-		++end;
-	}
-
-	pos = end + 1;
-
-	if (end > begin) {
-		return line.mid(begin, end - begin);
-	} else {
-		return QString();
-	}
-}
-
-QString DvbLineWriter::getLine()
-{
-	int index = line.size() - 1;
-	Q_ASSERT(index >= 0);
-	line[index] = '\n';
-	return line;
-}
-
-void DvbLineWriter::writeInt(int value)
-{
-	if (value >= 0) {
-		line.append(QString::number(value));
-	}
-
-	line.append('|');
-}
-
-void DvbLineWriter::writeString(const QString &string)
-{
-	line.append(string);
-	line.append('|');
-}
-
-DvbCTransponder *DvbLineReader::readDvbCTransponder()
-{
-	DvbCTransponder *transponder = new DvbCTransponder;
-
-	transponder->frequency = readInt();
-	transponder->symbolRate = readInt();
-	transponder->modulation = readEnum(DvbCTransponder::ModulationMax);
-	transponder->fecRate = readEnum(DvbCTransponder::FecRateMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
+	stream << frequency;
+	stream << symbolRate;
+	stream << modulation;
+	stream << fecRate;
 }
 
 bool DvbCTransponder::fromString(const QString &string)
@@ -297,29 +381,20 @@ bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 	       (qAbs(dvbCTransponder->frequency - frequency) <= 2000000);
 }
 
-void DvbLineWriter::writeTransponder(const DvbCTransponder *transponder)
+void DvbSTransponder::readTransponder(QDataStream &stream)
 {
-	writeInt(transponder->frequency);
-	writeInt(transponder->symbolRate);
-	writeInt(transponder->modulation);
-	writeInt(transponder->fecRate);
+	stream >> frequency;
+	stream >> polarization;
+	stream >> symbolRate;
+	stream >> fecRate;
 }
 
-DvbSTransponder *DvbLineReader::readDvbSTransponder()
+void DvbSTransponder::writeTransponder(QDataStream &stream) const
 {
-	DvbSTransponder *transponder = new DvbSTransponder;
-
-	transponder->frequency = readInt();
-	transponder->polarization = readEnum(DvbSTransponder::PolarizationMax);
-	transponder->symbolRate = readInt();
-	transponder->fecRate = readEnum(DvbSTransponder::FecRateMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
+	stream << frequency;
+	stream << polarization;
+	stream << symbolRate;
+	stream << fecRate;
 }
 
 bool DvbSTransponder::fromString(const QString &string)
@@ -353,33 +428,28 @@ bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 	       (qAbs(dvbSTransponder->frequency - frequency) <= 2000);
 }
 
-void DvbLineWriter::writeTransponder(const DvbSTransponder *transponder)
+void DvbTTransponder::readTransponder(QDataStream &stream)
 {
-	writeInt(transponder->frequency);
-	writeInt(transponder->polarization);
-	writeInt(transponder->symbolRate);
-	writeInt(transponder->fecRate);
+	stream >> frequency;
+	stream >> bandwidth;
+	stream >> modulation;
+	stream >> fecRateHigh;
+	stream >> fecRateLow;
+	stream >> transmissionMode;
+	stream >> guardInterval;
+	stream >> hierarchy;
 }
 
-DvbTTransponder *DvbLineReader::readDvbTTransponder()
+void DvbTTransponder::writeTransponder(QDataStream &stream) const
 {
-	DvbTTransponder *transponder = new DvbTTransponder;
-
-	transponder->frequency = readInt();
-	transponder->bandwidth = readEnum(DvbTTransponder::BandwidthMax);
-	transponder->modulation = readEnum(DvbTTransponder::ModulationMax);
-	transponder->fecRateHigh = readEnum(DvbTTransponder::FecRateMax);
-	transponder->fecRateLow = readEnum(DvbTTransponder::FecRateMax);
-	transponder->transmissionMode = readEnum(DvbTTransponder::TransmissionModeMax);
-	transponder->guardInterval = readEnum(DvbTTransponder::GuardIntervalMax);
-	transponder->hierarchy = readEnum(DvbTTransponder::HierarchyMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
+	stream << frequency;
+	stream << bandwidth;
+	stream << modulation;
+	stream << fecRateHigh;
+	stream << fecRateLow;
+	stream << transmissionMode;
+	stream << guardInterval;
+	stream << hierarchy;
 }
 
 bool DvbTTransponder::fromString(const QString &string)
@@ -420,31 +490,16 @@ bool DvbTTransponder::corresponds(const DvbTransponder &transponder) const
 	       (qAbs(dvbTTransponder->frequency - frequency) <= 2000000);
 }
 
-void DvbLineWriter::writeTransponder(const DvbTTransponder *transponder)
+void AtscTransponder::readTransponder(QDataStream &stream)
 {
-	writeInt(transponder->frequency);
-	writeInt(transponder->bandwidth);
-	writeInt(transponder->modulation);
-	writeInt(transponder->fecRateHigh);
-	writeInt(transponder->fecRateLow);
-	writeInt(transponder->transmissionMode);
-	writeInt(transponder->guardInterval);
-	writeInt(transponder->hierarchy);
+	stream >> frequency;
+	stream >> modulation;
 }
 
-AtscTransponder *DvbLineReader::readAtscTransponder()
+void AtscTransponder::writeTransponder(QDataStream &stream) const
 {
-	AtscTransponder *transponder = new AtscTransponder;
-
-	transponder->frequency = readInt();
-	transponder->modulation = readEnum(AtscTransponder::ModulationMax);
-
-	if (!isValid()) {
-		delete transponder;
-		return NULL;
-	}
-
-	return transponder;
+	stream << frequency;
+	stream << modulation;
 }
 
 bool AtscTransponder::fromString(const QString &string)
@@ -473,96 +528,69 @@ bool AtscTransponder::corresponds(const DvbTransponder &transponder) const
 	       (qAbs(atscTransponder->frequency - frequency) <= 2000000);
 }
 
-void DvbLineWriter::writeTransponder(const AtscTransponder *transponder)
+void DvbChannelBase::readChannel(QDataStream &stream)
 {
-	writeInt(transponder->frequency);
-	writeInt(transponder->modulation);
-}
+	int type;
+	stream >> type;
 
-DvbChannel *DvbLineReader::readChannel()
-{
-	DvbChannel *channel = new DvbChannel;
-
-	int type = readInt();
-
-	channel->name = readString();
-	channel->number = readInt();
-
-	channel->source = readString();
-	channel->networkId = readInt(true);
-	channel->transportStreamId = readInt();
-	channel->serviceId = readInt();
-
-	channel->pmtPid = readInt();
-	channel->videoPid = readInt(true);
-	channel->audioPid = readInt(true);
-
-	channel->scrambled = (readInt() & 0x1) != 0;
-
-	if (!isValid()) {
-		delete channel;
-		return NULL;
-	}
-
-	DvbTransponderBase *transponder = NULL;
+	DvbTransponderBase *transponderBase = NULL;
 
 	switch (type) {
 	case DvbTransponderBase::DvbC:
-		transponder = readDvbCTransponder();
+		transponderBase = new DvbCTransponder();
 		break;
 	case DvbTransponderBase::DvbS:
-		transponder = readDvbSTransponder();
+		transponderBase = new DvbSTransponder();
 		break;
 	case DvbTransponderBase::DvbT:
-		transponder = readDvbTTransponder();
+		transponderBase = new DvbTTransponder();
 		break;
 	case DvbTransponderBase::Atsc:
-		transponder = readAtscTransponder();
+		transponderBase = new AtscTransponder();
 		break;
 	}
 
-	if (transponder == NULL) {
-		delete channel;
-		return NULL;
+	if (transponderBase == NULL) {
+		stream.setStatus(QDataStream::ReadCorruptData);
+		return;
 	}
 
-	channel->transponder = DvbTransponder(transponder);
+	stream >> name;
+	stream >> number;
 
-	return channel;
+	stream >> source;
+	transponderBase->readTransponder(stream);
+	transponder = DvbTransponder(transponderBase);
+	stream >> networkId;
+	stream >> transportStreamId;
+	stream >> serviceId;
+	stream >> pmtPid;
+
+	stream >> pmtSection;
+	stream >> videoPid;
+	stream >> audioPid;
+
+	int flags;
+	stream >> flags;
+	scrambled = (flags & 0x1) != 0;
 }
 
-void DvbLineWriter::writeChannel(const DvbChannel *channel)
+void DvbChannelBase::writeChannel(QDataStream &stream) const
 {
-	int type = channel->transponder->getTransmissionType();
+	stream << transponder->getTransmissionType();
 
-	writeInt(type);
+	stream << name;
+	stream << number;
 
-	writeString(channel->name);
-	writeInt(channel->number);
+	stream << source;
+	transponder->writeTransponder(stream);
+	stream << networkId;
+	stream << transportStreamId;
+	stream << serviceId;
+	stream << pmtPid;
 
-	writeString(channel->source);
-	writeInt(channel->networkId);
-	writeInt(channel->transportStreamId);
-	writeInt(channel->serviceId);
-
-	writeInt(channel->pmtPid);
-	writeInt(channel->videoPid);
-	writeInt(channel->audioPid);
-
-	writeInt(channel->scrambled ? 1 : 0);
-
-	switch (type) {
-	case DvbTransponderBase::DvbC:
-		writeTransponder(channel->transponder->getDvbCTransponder());
-		break;
-	case DvbTransponderBase::DvbS:
-		writeTransponder(channel->transponder->getDvbSTransponder());
-		break;
-	case DvbTransponderBase::DvbT:
-		writeTransponder(channel->transponder->getDvbTTransponder());
-		break;
-	case DvbTransponderBase::Atsc:
-		writeTransponder(channel->transponder->getAtscTransponder());
-		break;
-	}
+	stream << pmtSection;
+	stream << videoPid;
+	stream << audioPid;
+	stream << (scrambled ? 1 : 0);
 }

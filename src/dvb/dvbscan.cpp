@@ -396,9 +396,9 @@ void DvbScan::updateState()
 
 				foreach (const DvbSdtEntry &sdtEntry, sdtEntries) {
 					if (channel.serviceId == sdtEntry.serviceId) {
+						channel.name = sdtEntry.name;
 						channel.networkId = sdtEntry.networkId;
 						channel.scrambled = sdtEntry.scrambled;
-						channel.name = sdtEntry.name;
 						channel.provider = sdtEntry.provider;
 						break;
 					}
@@ -505,10 +505,11 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 
 	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
 		channel.source = source;
+		channel.transponder = transponder;
 		channel.transportStreamId = transportStreamId;
 		channel.serviceId = section.programNumber();
 		channel.pmtPid = pid;
-		channel.transponder = transponder;
+		channel.pmtSection = QByteArray(section.getData(), section.getSectionLength());
 		channel.snr = snr;
 		channels.append(channel);
 	}
@@ -799,13 +800,13 @@ void DvbScan::processNit(const DvbNitSection &section)
 
 				switch (terDescriptor.bandwidth()) {
 				case 0:
-					transponder->bandwidth = DvbTTransponder::Bandwidth8Mhz;
+					transponder->bandwidth = DvbTTransponder::Bandwidth8MHz;
 					break;
 				case 1:
-					transponder->bandwidth = DvbTTransponder::Bandwidth7Mhz;
+					transponder->bandwidth = DvbTTransponder::Bandwidth7MHz;
 					break;
 				case 2:
-					transponder->bandwidth = DvbTTransponder::Bandwidth6Mhz;
+					transponder->bandwidth = DvbTTransponder::Bandwidth6MHz;
 					break;
 				default:
 					// this includes 5 MHz

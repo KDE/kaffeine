@@ -1,7 +1,7 @@
 /*
  * dvbchannel.h
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,9 @@ public:
 	DvbTransponderBase() { }
 	virtual ~DvbTransponderBase() { }
 
+	template<class T> static T maxEnumValue();
+	template<class T> static QStringList displayStrings();
+
 	virtual TransmissionType getTransmissionType() const = 0;
 
 	virtual const DvbCTransponder *getDvbCTransponder() const
@@ -80,6 +83,9 @@ public:
 	{
 		return NULL;
 	}
+
+	virtual void readTransponder(QDataStream &stream) = 0;
+	virtual void writeTransponder(QDataStream &stream) const = 0;
 
 	/*
 	 * convert from / to linuxtv scan file format
@@ -122,6 +128,8 @@ public:
 		return this;
 	}
 
+	void readTransponder(QDataStream &stream);
+	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -155,6 +163,8 @@ public:
 		return this;
 	}
 
+	void readTransponder(QDataStream &stream);
+	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -171,9 +181,9 @@ class DvbTTransponder : public DvbTransponderBase
 public:
 	enum Bandwidth
 	{
-		Bandwidth6Mhz = 0,
-		Bandwidth7Mhz = 1,
-		Bandwidth8Mhz = 2,
+		Bandwidth6MHz = 0,
+		Bandwidth7MHz = 1,
+		Bandwidth8MHz = 2,
 		BandwidthAuto = 3,
 		BandwidthMax = BandwidthAuto
 	};
@@ -225,6 +235,8 @@ public:
 		return this;
 	}
 
+	void readTransponder(QDataStream &stream);
+	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -263,6 +275,8 @@ public:
 		return this;
 	}
 
+	void readTransponder(QDataStream &stream);
+	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -287,21 +301,23 @@ public:
 		pmtPid(-1), videoPid(-1), audioPid(-1), scrambled(false) { }
 	~DvbChannelBase() { }
 
+	void readChannel(QDataStream &stream);
+	void writeChannel(QDataStream &stream) const;
+
 	QString name;
 	int number;
 
 	QString source;
+	DvbTransponder transponder;
 	int networkId; // may be -1 (not present)
 	int transportStreamId;
 	int serviceId;
-
 	int pmtPid;
+
+	QByteArray pmtSection;
 	int videoPid; // may be -1 (not present)
 	int audioPid; // may be -1 (not present)
-
 	bool scrambled;
-
-	DvbTransponder transponder;
 };
 
 class DvbChannel : public DvbChannelBase, public QSharedData
@@ -310,63 +326,6 @@ public:
 	DvbChannel() { }
 	explicit DvbChannel(const DvbChannelBase &channel) : DvbChannelBase(channel) { }
 	~DvbChannel() { }
-};
-
-class DvbLineReader
-{
-public:
-	explicit DvbLineReader(const QString &line_) : line(line_), pos(0), valid(true) { }
-	~DvbLineReader() { }
-
-	bool isValid() const
-	{
-		return valid;
-	}
-
-	template<typename T> T readEnum(T maxValue)
-	{
-		int value = readInt();
-
-		if (value > maxValue) {
-			valid = false;
-		}
-
-		return static_cast<T>(value);
-	}
-
-	int readInt(bool allowEmpty = false);
-	QString readString();
-
-	DvbCTransponder *readDvbCTransponder();
-	DvbSTransponder *readDvbSTransponder();
-	DvbTTransponder *readDvbTTransponder();
-	AtscTransponder *readAtscTransponder();
-
-	DvbChannel *readChannel();
-
-private:
-	QString line;
-	int pos;
-	bool valid;
-};
-
-class DvbLineWriter
-{
-public:
-	QString getLine();
-
-	void writeInt(int value);
-	void writeString(const QString &string);
-
-	void writeTransponder(const DvbCTransponder *transponder);
-	void writeTransponder(const DvbSTransponder *transponder);
-	void writeTransponder(const DvbTTransponder *transponder);
-	void writeTransponder(const AtscTransponder *transponder);
-
-	void writeChannel(const DvbChannel *channel);
-
-private:
-	QString line;
 };
 
 #endif /* DVBCHANNEL_H */

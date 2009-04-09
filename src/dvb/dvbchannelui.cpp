@@ -30,6 +30,7 @@
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KMessageBox> // temporary
 #include <KStandardDirs>
 #include "dvbchannel.h"
 #include "../proxytreeview.h"
@@ -140,23 +141,22 @@ void DvbChannelModel::loadChannels()
 		return;
 	}
 
-	QTextStream stream(&file);
-	stream.setCodec("UTF-8");
-	bool fileOk = true;
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
 
 	while (!stream.atEnd()) {
-		DvbChannel *channel = DvbLineReader(stream.readLine()).readChannel();
+		DvbChannel *channel = new DvbChannel;
+		channel->readChannel(stream);
 
-		if (channel == NULL) {
-			fileOk = false;
-			continue;
+		if (stream.status() != QDataStream::Ok) {
+			kWarning() << "invalid channels in file" << file.fileName();
+			// no i18n: temporary, pre-release only
+			KMessageBox::information(NULL, "Please rescan your channels.");
+			delete channel;
+			break;
 		}
 
 		channels.append(QSharedDataPointer<DvbChannel>(channel));
-	}
-
-	if (!fileOk) {
-		kWarning() << "invalid lines in file" << file.fileName();
 	}
 
 	kDebug() << "successfully loaded" << channels.size() << "channels";
@@ -171,13 +171,11 @@ void DvbChannelModel::saveChannels()
 		return;
 	}
 
-	QTextStream stream(&file);
-	stream.setCodec("UTF-8");
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
 
 	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
-		DvbLineWriter writer;
-		writer.writeChannel(channel);
-		stream << writer.getLine();
+		channel->writeChannel(stream);
 	}
 }
 

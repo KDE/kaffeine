@@ -50,11 +50,12 @@ public:
 	 */
 
 	// QString source;
+	// DvbSharedTransponder transponder;
 	// int transportStreamId;
 	// int serviceId;
 	// int pmtPid;
+	// QByteArray pmtSection;
 	// int videoPid; // may be -1 (not present)
-	// DvbSharedTransponder transponder;
 	QList<int> audioPids;
 	int snr; // percent
 

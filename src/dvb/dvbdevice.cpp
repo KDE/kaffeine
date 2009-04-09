@@ -453,8 +453,7 @@ static fe_modulation_t convertDvbModulation(DvbCTransponder::Modulation modulati
 	case DvbCTransponder::ModulationAuto: return QAM_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return QAM_AUTO;
 }
 
 static fe_modulation_t convertDvbModulation(DvbTTransponder::Modulation modulation)
@@ -466,8 +465,7 @@ static fe_modulation_t convertDvbModulation(DvbTTransponder::Modulation modulati
 	case DvbTTransponder::ModulationAuto: return QAM_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return QAM_AUTO;
 }
 
 static fe_modulation_t convertDvbModulation(AtscTransponder::Modulation modulation)
@@ -480,8 +478,7 @@ static fe_modulation_t convertDvbModulation(AtscTransponder::Modulation modulati
 	case AtscTransponder::ModulationAuto: return QAM_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return QAM_AUTO;
 }
 
 static fe_code_rate convertDvbFecRate(DvbTransponderBase::FecRate fecRate)
@@ -499,21 +496,19 @@ static fe_code_rate convertDvbFecRate(DvbTransponderBase::FecRate fecRate)
 	case DvbTransponderBase::FecAuto: return FEC_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return FEC_AUTO;
 }
 
 static fe_bandwidth convertDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
 {
 	switch (bandwidth) {
-	case DvbTTransponder::Bandwidth6Mhz: return BANDWIDTH_6_MHZ;
-	case DvbTTransponder::Bandwidth7Mhz: return BANDWIDTH_7_MHZ;
-	case DvbTTransponder::Bandwidth8Mhz: return BANDWIDTH_8_MHZ;
+	case DvbTTransponder::Bandwidth6MHz: return BANDWIDTH_6_MHZ;
+	case DvbTTransponder::Bandwidth7MHz: return BANDWIDTH_7_MHZ;
+	case DvbTTransponder::Bandwidth8MHz: return BANDWIDTH_8_MHZ;
 	case DvbTTransponder::BandwidthAuto: return BANDWIDTH_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return BANDWIDTH_AUTO;
 }
 
 static fe_transmit_mode convertDvbTransmissionMode(DvbTTransponder::TransmissionMode mode)
@@ -524,8 +519,7 @@ static fe_transmit_mode convertDvbTransmissionMode(DvbTTransponder::Transmission
 	case DvbTTransponder::TransmissionModeAuto: return TRANSMISSION_MODE_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return TRANSMISSION_MODE_AUTO;
 }
 
 static fe_guard_interval convertDvbGuardInterval(DvbTTransponder::GuardInterval guardInterval)
@@ -538,8 +532,7 @@ static fe_guard_interval convertDvbGuardInterval(DvbTTransponder::GuardInterval 
 	case DvbTTransponder::GuardIntervalAuto: return GUARD_INTERVAL_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return GUARD_INTERVAL_AUTO;
 }
 
 static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
@@ -552,8 +545,7 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 	case DvbTTransponder::HierarchyAuto: return HIERARCHY_AUTO;
 	}
 
-	Q_ASSERT(false);
-	abort();
+	return HIERARCHY_AUTO;
 }
 
 void DvbDevice::tune(const DvbTransponder &transponder)
