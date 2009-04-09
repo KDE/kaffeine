@@ -116,7 +116,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 
 	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
-	actionPrevious->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
+	actionNext->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
 	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
 
