@@ -22,7 +22,7 @@
 #define DVBCHANNEL_H
 
 #include <QSharedData>
-#include <QString>
+#include <QStringList>
 
 class DvbCTransponder;
 class DvbSTransponder;

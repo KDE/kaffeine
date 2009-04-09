@@ -20,8 +20,6 @@
 
 #include "dvbchannel.h"
 
-#include <QDataStream>
-#include <QStringList>
 #include <QTextStream>
 #include <KLocalizedString>
 
@@ -283,7 +281,7 @@ public:
 		QString string;
 		stream >> string;
 
-		for (int i = 0; i < DvbTransponderBase::maxEnumValue<T>(); ++i) {
+		for (int i = 0; i <= DvbTransponderBase::maxEnumValue<T>(); ++i) {
 			if (string == table[i]) {
 				value = static_cast<T>(i);
 				return;
@@ -392,16 +390,16 @@ bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 
 void DvbSTransponder::readTransponder(QDataStream &stream)
 {
-	stream >> frequency;
 	stream >> polarization;
+	stream >> frequency;
 	stream >> symbolRate;
 	stream >> fecRate;
 }
 
 void DvbSTransponder::writeTransponder(QDataStream &stream) const
 {
-	stream << frequency;
 	stream << polarization;
+	stream << frequency;
 	stream << symbolRate;
 	stream << fecRate;
 }
