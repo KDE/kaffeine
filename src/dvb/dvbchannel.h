@@ -33,16 +33,14 @@ class DvbTransponder;
 class DvbTransponderBase : public QSharedData
 {
 public:
-	enum TransmissionType
-	{
+	enum TransmissionType {
 		DvbC = 0,
 		DvbS = 1,
 		DvbT = 2,
 		Atsc = 3
 	};
 
-	enum FecRate
-	{
+	enum FecRate {
 		FecNone = 0,
 		Fec1_2 = 1,
 		Fec2_3 = 2,
@@ -107,8 +105,7 @@ public:
 class DvbCTransponder : public DvbTransponderBase
 {
 public:
-	enum Modulation
-	{
+	enum Modulation {
 		Qam16 = 0,
 		Qam32 = 1,
 		Qam64 = 2,
@@ -144,8 +141,7 @@ public:
 class DvbSTransponder : public DvbTransponderBase
 {
 public:
-	enum Polarization
-	{
+	enum Polarization {
 		Horizontal = 0,
 		Vertical = 1,
 		CircularLeft = 2,
@@ -179,8 +175,7 @@ public:
 class DvbTTransponder : public DvbTransponderBase
 {
 public:
-	enum Bandwidth
-	{
+	enum Bandwidth {
 		Bandwidth6MHz = 0,
 		Bandwidth7MHz = 1,
 		Bandwidth8MHz = 2,
@@ -188,8 +183,7 @@ public:
 		BandwidthMax = BandwidthAuto
 	};
 
-	enum Modulation
-	{
+	enum Modulation {
 		Qpsk = 0,
 		Qam16 = 1,
 		Qam64 = 2,
@@ -197,16 +191,14 @@ public:
 		ModulationMax = ModulationAuto
 	};
 
-	enum TransmissionMode
-	{
+	enum TransmissionMode {
 		TransmissionMode2k = 0,
 		TransmissionMode8k = 1,
 		TransmissionModeAuto = 2,
 		TransmissionModeMax = TransmissionModeAuto
 	};
 
-	enum GuardInterval
-	{
+	enum GuardInterval {
 		GuardInterval1_4 = 0,
 		GuardInterval1_8 = 1,
 		GuardInterval1_16 = 2,
@@ -215,8 +207,7 @@ public:
 		GuardIntervalMax = GuardIntervalAuto
 	};
 
-	enum Hierarchy
-	{
+	enum Hierarchy {
 		HierarchyNone = 0,
 		Hierarchy1 = 1,
 		Hierarchy2 = 2,
@@ -255,8 +246,7 @@ public:
 class AtscTransponder : public DvbTransponderBase
 {
 public:
-	enum Modulation
-	{
+	enum Modulation {
 		Qam64 = 0,
 		Qam256 = 1,
 		Vsb8 = 2,
