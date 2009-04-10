@@ -225,6 +225,7 @@ Kaffeine::Kaffeine()
 	setCentralWidget(widget);
 
 	mediaWidget = new MediaWidget(controlBar, collection, widget);
+	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
 
 	// tabs

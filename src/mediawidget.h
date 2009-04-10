@@ -68,6 +68,7 @@ public slots:
 	void stopDvb();
 
 signals:
+	void changeCaption(const QString &caption);
 	void toggleFullscreen();
 
 	void playlistPrevious();
@@ -96,6 +97,7 @@ private slots:
 	void skipBackward();
 	void skipForward();
 	void timeButtonClicked();
+	void updateCaption();
 	void updateTimeButton();
 
 	void titleCountChanged(int count);

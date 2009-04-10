@@ -75,6 +75,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	mediaObject = new Phonon::MediaObject(this);
 	connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
 		this, SLOT(stateChanged(Phonon::State)));
+	connect(mediaObject, SIGNAL(metaDataChanged()), this, SLOT(updateCaption()));
 	connect(mediaObject, SIGNAL(currentSourceChanged(Phonon::MediaSource)),
 		this, SLOT(stopDvb()));
 	connect(mediaObject, SIGNAL(finished()), this, SLOT(playbackFinished()));
@@ -285,6 +286,7 @@ void MediaWidget::stateChanged(Phonon::State state)
 		actionStop->setEnabled(false);
 	}
 
+	updateCaption();
 	updatePreviousNext();
 	updateTimeButton();
 	updateAudioChannelBox();
@@ -483,6 +485,28 @@ void MediaWidget::subtitlesChanged()
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	emit toggleFullscreen();
+}
+
+void MediaWidget::updateCaption()
+{
+	QString caption;
+
+	if (playing) {
+		if (dvbFeed != NULL) {
+			// FIXME
+		} else {
+			// FIXME include artist?
+			QStringList strings = mediaObject->metaData(Phonon::TitleMetaData);
+
+			if (!strings.isEmpty() && !strings.at(0).isEmpty()) {
+				caption = strings.at(0);
+			} else {
+				caption = KUrl(mediaObject->currentSource().url()).fileName();
+			}
+		}
+	}
+
+	emit changeCaption(caption);
 }
 
 void MediaWidget::updatePreviousNext()
