@@ -13,4 +13,5 @@ Geneva 2006 Agreement (GE06) - http://www.itu.int/ITU-R/terrestrial/broadcast/pl
 - VHF band: channels  5 - 12 ; center frequency = 142.5 + 7 * channel number MHz ; bandwidth = 7 MHz
 - UHF band: channels 21 - 69 ; center frequency = 306   + 8 * channel number MHz ; bandwidth = 8 MHz
 
-Australia has a different channel allocation.
+Australia: 177.5 - 226.5 and 529.5 (?) - 816.5 (?) MHz ; bandwidth = 7 MHz
+Italy VHF band: 177.5, 186, 194.5, 203.5, 212.5, 219.5 and 226.5 MHz ; bandwidth = 7 or 8 (?) MHz
