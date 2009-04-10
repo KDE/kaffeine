@@ -251,14 +251,16 @@ void MediaWidget::stateChanged(Phonon::State state)
 	bool newPlaying = false;
 
 	switch (state) {
-		case Phonon::LoadingState: // FIXME used for different purposes??
 		case Phonon::BufferingState:
 		case Phonon::PlayingState:
 		case Phonon::PausedState:
 			newPlaying = true;
 			break;
 
+		case Phonon::LoadingState:
 		case Phonon::StoppedState:
+			// user has to be able to stop dvb playback even if no data has arrived yet
+			newPlaying = (dvbFeed != NULL);
 			break;
 
 		case Phonon::ErrorState:
