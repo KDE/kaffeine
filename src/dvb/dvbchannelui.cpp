@@ -322,7 +322,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	    }
 	}
 
-	gridLayout->addItem(new QLabel(), 10, 0, 1, 2);
+	gridLayout->addWidget(new QLabel(), 10, 0, 1, 2);
 
 	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), 11, 0);
 	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), 11, 1);
