@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QFile>
+#include <QGroupBox>
 #include <QLabel>
 #include <QSpinBox>
 #include <KAction>
@@ -231,6 +232,11 @@ void DvbChannelContextMenu::deleteChannel()
 	}
 }
 
+template<class T> static QString enumToString(T value)
+{
+	return DvbTransponderBase::displayStrings<T>().at(value);
+}
+
 DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel_, QWidget *parent)
 	: KDialog(parent), channel(channel_)
 {
@@ -254,28 +260,99 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	boxLayout->addWidget(numberBox);
 	mainLayout->addLayout(boxLayout);
 
-	QFrame *frame = new QFrame(widget);
-	frame->setFrameShape(QFrame::HLine);
-	mainLayout->addWidget(frame);
+	boxLayout = new QHBoxLayout();
 
-	QGridLayout *gridLayout = new QGridLayout();
-	gridLayout->addWidget(new QLabel(i18n("Network id:")), 0, 0);
+	QGroupBox *groupBox = new QGroupBox(widget);
+	QGridLayout *gridLayout = new QGridLayout(groupBox);
+	gridLayout->addWidget(new QLabel(i18n("Source:")), 0, 0);
+	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
 
-	networkIdBox = new QSpinBox(widget);
+	switch (channel->transponder->getTransmissionType()) {
+	case DvbTransponderBase::DvbC: {
+		const DvbCTransponder *tp = channel->transponder->getDvbCTransponder();
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
+		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(new QLabel(i18n("Symbol rate (kS/s):")), 2, 0);
+		gridLayout->addWidget(new QLabel(QString::number(tp->symbolRate / 1000.0)), 2, 1);
+		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 3, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->modulation)), 3, 1);
+		gridLayout->addWidget(new QLabel(i18n("FEC rate:")), 4, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->fecRate)), 4, 1);
+		break;
+	    }
+	case DvbTransponderBase::DvbS: {
+		const DvbSTransponder *tp = channel->transponder->getDvbSTransponder();
+		gridLayout->addWidget(new QLabel(i18n("Polarization:")), 1, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->polarization)), 1, 1);
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 2, 0);
+		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000.0)), 2, 1);
+		gridLayout->addWidget(new QLabel(i18n("Symbol rate (kS/s):")), 3, 0);
+		gridLayout->addWidget(new QLabel(QString::number(tp->symbolRate / 1000.0)), 3, 1);
+		gridLayout->addWidget(new QLabel(i18n("FEC rate:")), 4, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->fecRate)), 4, 1);
+		break;
+	    }
+	case DvbTransponderBase::DvbT: {
+		const DvbTTransponder *tp = channel->transponder->getDvbTTransponder();
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
+		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(new QLabel(i18n("Bandwidth:")), 2, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->bandwidth)), 2, 1);
+		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 3, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->modulation)), 3, 1);
+		gridLayout->addWidget(new QLabel(i18n("FEC rate:")), 4, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->fecRateHigh)), 4, 1);
+		gridLayout->addWidget(new QLabel(i18n("FEC rate LP:")), 5, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->fecRateLow)), 5, 1);
+		gridLayout->addWidget(new QLabel(i18n("Transmission mode:")), 6, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->transmissionMode)), 6, 1);
+		gridLayout->addWidget(new QLabel(i18n("Guard interval:")), 7, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), 7, 1);
+		gridLayout->addWidget(new QLabel(i18n("Hierarchy:")), 8, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->hierarchy)), 8, 1);
+		break;
+	    }
+	case DvbTransponderBase::Atsc: {
+		const AtscTransponder *tp = channel->transponder->getAtscTransponder();
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
+		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 2, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->modulation)), 2, 1);
+		break;
+	    }
+	}
+
+	gridLayout->addItem(new QLabel(), 10, 0, 1, 2);
+
+	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), 11, 0);
+	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), 11, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Video PID:")), 12, 0);
+	gridLayout->addWidget(new QLabel(QString::number(channel->videoPid)), 12, 1);
+
+	gridLayout->addItem(new QSpacerItem(0, 0), 13, 0, 1, 2);
+	gridLayout->setRowStretch(13, 1);
+	boxLayout->addWidget(groupBox);
+
+	groupBox = new QGroupBox(widget);
+	gridLayout = new QGridLayout(groupBox);
+	gridLayout->addWidget(new QLabel(i18n("Network ID:")), 0, 0);
+
+	networkIdBox = new QSpinBox(groupBox);
 	networkIdBox->setRange(-1, (1 << 16) - 1);
 	networkIdBox->setValue(channel->networkId);
 	gridLayout->addWidget(networkIdBox, 0, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Transport stream id:")), 1, 0);
+	gridLayout->addWidget(new QLabel(i18n("Transport stream ID:")), 1, 0);
 
-	transportStreamIdBox = new QSpinBox(widget);
+	transportStreamIdBox = new QSpinBox(groupBox);
 	transportStreamIdBox->setRange(0, (1 << 16) - 1);
 	transportStreamIdBox->setValue(channel->transportStreamId);
 	gridLayout->addWidget(transportStreamIdBox, 1, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Service id:")), 2, 0);
+	gridLayout->addWidget(new QLabel(i18n("Service ID:")), 2, 0);
 
-	serviceIdBox = new QSpinBox(widget);
+	serviceIdBox = new QSpinBox(groupBox);
 	serviceIdBox->setRange(0, (1 << 16) - 1);
 	serviceIdBox->setValue(channel->serviceId);
 	gridLayout->addWidget(serviceIdBox, 2, 1);
@@ -283,17 +360,21 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
 
  	// FIXME
-	audioChannelBox = new KComboBox(widget);
+	audioChannelBox = new KComboBox(groupBox);
 	audioChannelBox->addItem(QString::number(channel->audioPid));
 	audioChannelBox->setCurrentIndex(0);
 	gridLayout->addWidget(audioChannelBox, 3, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), 4, 0);
 
-	scrambledBox = new QCheckBox(widget);
+	scrambledBox = new QCheckBox(groupBox);
 	scrambledBox->setChecked(channel->scrambled);
 	gridLayout->addWidget(scrambledBox, 4, 1);
-	mainLayout->addLayout(gridLayout);
+
+	gridLayout->addItem(new QSpacerItem(0, 0), 5, 0, 1, 2);
+	gridLayout->setRowStretch(5, 1);
+	boxLayout->addWidget(groupBox);
+	mainLayout->addLayout(boxLayout);
 
 	setMainWidget(widget);
 }

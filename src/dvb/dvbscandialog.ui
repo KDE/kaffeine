@@ -50,7 +50,7 @@
         <item>
          <widget class="QLabel" name="label" >
           <property name="text" >
-           <string>Select source:</string>
+           <string>Source:</string>
           </property>
          </widget>
         </item>
