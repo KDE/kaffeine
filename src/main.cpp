@@ -1,7 +1,7 @@
 /*
  * main.cpp
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,9 +28,10 @@
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication()
+	KaffeineApplication() : firstInstance(true)
 	{
 		kaffeine = new Kaffeine();
+		kaffeine->parseArgs();
 	}
 
 	~KaffeineApplication()
@@ -42,16 +43,19 @@ private:
 	int newInstance();
 
 	Kaffeine *kaffeine;
+	bool firstInstance;
 };
 
 int KaffeineApplication::newInstance()
 {
-	// for window activation - FIXME do some checks about behaviour
-	KUniqueApplication::newInstance();
+	if (firstInstance) {
+		// using KFileWidget, newInstance() might be called _during_ kaffeine construction
+		firstInstance = false;
+	} else {
+		kaffeine->parseArgs();
+	}
 
-	kaffeine->parseArgs();
-
-	return 0;
+	return KUniqueApplication::newInstance();
 }
 
 int main(int argc, char *argv[])
