@@ -58,6 +58,7 @@ class DvbSectionData
 	friend class DvbSiText;
 	friend class AtscPsipText;
 public:
+	DvbSectionData(const QByteArray &array) : size(array.size()), length(0), data(array.constData()) { }
 	DvbSectionData(const char *data_, int size_) : size(size_), length(0), data(data_) { }
 	~DvbSectionData() { }
 

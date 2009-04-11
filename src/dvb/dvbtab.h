@@ -24,12 +24,11 @@
 #include <QSharedDataPointer>
 #include "../kaffeine.h"
 
-class QFile;
 class QModelIndex;
 class DvbChannel;
 class DvbDevice;
+class DvbLiveStream;
 class DvbManager;
-class DvbPatPmtInjector;
 class ProxyTreeView;
 
 class DvbTab : public TabBase
@@ -44,11 +43,7 @@ public:
 		return dvbManager;
 	}
 
-	DvbDevice *getLiveDevice() const
-	{
-		return liveDevice;
-	}
-
+	DvbDevice *getLiveDevice() const;
 	QSharedDataPointer<DvbChannel> getLiveChannel() const;
 
 	void playChannel(const QString &name);
@@ -59,7 +54,6 @@ private slots:
 	void configureDvb();
 	void playLive(const QModelIndex &index);
 	void prepareTimeShift();
-	void writeTimeShiftData(const QByteArray &data);
 	void startTimeShift();
 	void liveStopped();
 
@@ -74,10 +68,7 @@ private:
 
 	ProxyTreeView *channelView;
 
-	DvbDevice *liveDevice;
-	QSharedDataPointer<DvbChannel> liveChannel;
-	DvbPatPmtInjector *liveStream;
-	QFile *timeShiftFile;
+	DvbLiveStream *liveStream;
 };
 
 #endif /* DVBTAB_H */

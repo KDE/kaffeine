@@ -39,8 +39,116 @@
 #include "dvbscandialog.h"
 #include "dvbsi.h"
 
+class DvbLiveStream : public DvbPidFilter, public QObject
+{
+public:
+	DvbLiveStream(DvbDevice *device_, const QSharedDataPointer<DvbChannel> &channel_,
+		MediaWidget *mediaWidget_, const QList<int> &pids_);
+	~DvbLiveStream();
+
+	DvbDevice *getDevice() const
+	{
+		return device;
+	}
+
+	QSharedDataPointer<DvbChannel> getChannel() const
+	{
+		return channel;
+	}
+
+	QString getTimeShiftFileName() const
+	{
+		return timeShiftFile.fileName();
+	}
+
+	void removePidFilters();
+	bool startTimeShift(const QString &fileName);
+
+private:
+	void processData(const char data[188]);
+	void timerEvent(QTimerEvent *);
+
+	DvbDevice *device;
+	QSharedDataPointer<DvbChannel> channel;
+	MediaWidget *mediaWidget;
+	QList<int> pids;
+
+	DvbSectionGenerator patGenerator;
+	DvbSectionGenerator pmtGenerator;
+	QByteArray buffer;
+
+	QFile timeShiftFile;
+};
+
+DvbLiveStream::DvbLiveStream(DvbDevice *device_, const QSharedDataPointer<DvbChannel> &channel_,
+	MediaWidget *mediaWidget_, const QList<int> &pids_) : device(device_), channel(channel_),
+	mediaWidget(mediaWidget_), pids(pids_)
+{
+	foreach (int pid, pids) {
+		device->addPidFilter(pid, this);
+	}
+
+	patGenerator.initPat(channel->transportStreamId, channel->serviceId, channel->pmtPid);
+	pmtGenerator.initPmt(channel->pmtPid, DvbPmtSection(DvbSection(channel->pmtSection)), pids);
+
+	buffer.reserve(64 * 188);
+	buffer.append(patGenerator.generatePackets());
+	buffer.append(pmtGenerator.generatePackets());
+
+	startTimer(500);
+}
+
+DvbLiveStream::~DvbLiveStream()
+{
+}
+
+void DvbLiveStream::removePidFilters()
+{
+	foreach (int pid, pids) {
+		device->addPidFilter(pid, this);
+	}
+}
+
+bool DvbLiveStream::startTimeShift(const QString &fileName)
+{
+	timeShiftFile.setFileName(fileName);
+
+	if (timeShiftFile.exists() || !timeShiftFile.open(QIODevice::WriteOnly)) {
+		return false;
+	}
+
+	timeShiftFile.write(patGenerator.generatePackets());
+	timeShiftFile.write(pmtGenerator.generatePackets());
+
+	return true;
+}
+
+void DvbLiveStream::processData(const char data[188])
+{
+	buffer.append(QByteArray::fromRawData(data, 188));
+
+	if (buffer.size() < (64 * 188)) {
+		return;
+	}
+
+	if (!timeShiftFile.isOpen()) {
+		mediaWidget->writeDvbData(buffer);
+	} else {
+		timeShiftFile.write(buffer);
+	}
+
+	buffer.clear();
+	buffer.reserve(64 * 188);
+}
+
+void DvbLiveStream::timerEvent(QTimerEvent *)
+{
+	buffer.append(patGenerator.generatePackets());
+	buffer.append(pmtGenerator.generatePackets());
+}
+
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
-	mediaWidget(mediaWidget_), liveDevice(NULL), liveStream(NULL), timeShiftFile(NULL)
+	mediaWidget(mediaWidget_), liveStream(NULL)
 {
 	KAction *action = new KAction(KIcon("view-list-details"), i18n("Channels"), collection);
 	action->setShortcut(Qt::Key_C);
@@ -109,9 +217,22 @@ DvbTab::~DvbTab()
 {
 }
 
+DvbDevice *DvbTab::getLiveDevice() const
+{
+	if (liveStream != NULL) {
+		return liveStream->getDevice();
+	}
+
+	return NULL;
+}
+
 QSharedDataPointer<DvbChannel> DvbTab::getLiveChannel() const
 {
-	return liveChannel;
+	if (liveStream != NULL) {
+		return liveStream->getChannel();
+	}
+
+	return QSharedDataPointer<DvbChannel>(NULL);
 }
 
 void DvbTab::playChannel(const QString &name)
@@ -150,46 +271,27 @@ void DvbTab::playLive(const QModelIndex &index)
 void DvbTab::prepareTimeShift()
 {
 	// FIXME .ts <--> .m2t ?
-	QFile *file = new QFile(dvbManager->getTimeShiftFolder() + "/TimeShift-" +
-		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".ts");
+	QString fileName = dvbManager->getTimeShiftFolder() + "/TimeShift-" +
+		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".ts";
 
-	if (file->exists() || !file->open(QIODevice::WriteOnly)) {
+	if (!liveStream->startTimeShift(fileName)) {
 		// FIXME error message
-		delete file;
 		mediaWidget->stopDvb();
 		return;
 	}
-
-	timeShiftFile = file;
-
-	disconnect(liveStream, SIGNAL(dataReady(QByteArray)),
-		mediaWidget, SLOT(writeDvbData(QByteArray)));
-	connect(liveStream, SIGNAL(dataReady(QByteArray)),
-		this, SLOT(writeTimeShiftData(QByteArray)));
-
-	timeShiftFile->write(liveStream->generatePackets());
-}
-
-void DvbTab::writeTimeShiftData(const QByteArray &data)
-{
-	timeShiftFile->write(data);
 }
 
 void DvbTab::startTimeShift()
 {
-	mediaWidget->play(timeShiftFile->fileName());
+	mediaWidget->play(liveStream->getTimeShiftFileName());
 }
 
 void DvbTab::liveStopped()
 {
 	liveStream->removePidFilters();
-	dvbManager->releaseDevice(liveDevice);
-	liveDevice = NULL;
-	liveChannel = NULL;
+	dvbManager->releaseDevice(liveStream->getDevice());
 	delete liveStream;
 	liveStream = NULL;
-	delete timeShiftFile;
-	timeShiftFile = NULL;
 }
 
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
@@ -200,15 +302,14 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		return;
 	}
 
-	liveDevice = dvbManager->requestDevice(channel->source, channel->transponder);
+	DvbDevice *device = dvbManager->requestDevice(channel->source, channel->transponder);
 
-	if (liveDevice == NULL) {
+	if (device == NULL) {
 		KMessageBox::sorry(this, i18n("No suitable device found."));
 		return;
 	}
 
 	mediaWidget->playDvb();
-	liveChannel = channel;
 
 	QList<int> pids;
 
@@ -220,10 +321,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		pids.append(channel->audioPid);
 	}
 
-	liveStream = new DvbPatPmtInjector(liveDevice, channel->transportStreamId,
-		channel->serviceId, channel->pmtPid, pids);
-	connect(liveStream, SIGNAL(dataReady(QByteArray)),
-		mediaWidget, SLOT(writeDvbData(QByteArray)));
+	liveStream = new DvbLiveStream(device, channel, mediaWidget, pids);
 
 	// FIXME audio streams, subtitles, ...
 }
