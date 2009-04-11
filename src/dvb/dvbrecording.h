@@ -25,27 +25,12 @@
 #include <KDialog>
 
 class QDateTimeEdit;
-class QFile;
 class QTimeEdit;
 class KComboBox;
 class KLineEdit;
 class DvbManager;
 class DvbRecording;
 class ProxyTreeView;
-
-class DvbFileWriter : public QObject
-{
-	Q_OBJECT
-public:
-	explicit DvbFileWriter(QFile *file_) : file(file_) { }
-	~DvbFileWriter() { }
-
-public slots:
-	void write(const QByteArray &data);
-
-private:
-	QFile *file;
-};
 
 class DvbRecordingModel : public QAbstractTableModel
 {

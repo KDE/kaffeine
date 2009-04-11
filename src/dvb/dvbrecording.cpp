@@ -35,16 +35,11 @@
 #include "dvbmanager.h"
 #include "dvbsi.h"
 
-void DvbFileWriter::write(const QByteArray &data)
-{
-	file->write(data);
-}
-
-class DvbRecording
+class DvbRecording : public DvbPidFilter, public QObject
 {
 public:
-	explicit DvbRecording(DvbManager *manager_);
-	~DvbRecording();
+	explicit DvbRecording(DvbManager *manager_) : manager(manager_), device(NULL) { }
+	~DvbRecording() { }
 
 	bool isRunning() const;
 	void start();
@@ -58,29 +53,24 @@ public:
 	QDateTime end;
 
 private:
+	void processData(const char data[188]);
+	void timerEvent(QTimerEvent *);
+
 	DvbManager *manager;
 	DvbDevice *device;
 	QSharedDataPointer<DvbChannel> channel;
 
 	QFile file;
-	DvbFileWriter fileWriter;
-	DvbPatPmtInjector *injector;
+	QList<int> pids;
+	DvbSectionGenerator patGenerator;
+	DvbSectionGenerator pmtGenerator;
+	QByteArray buffer;
 };
-
-DvbRecording::DvbRecording(DvbManager *manager_) : manager(manager_), device(NULL),
-	fileWriter(&file), injector(NULL)
-{
-}
-
-DvbRecording::~DvbRecording()
-{
-	delete injector;
-}
 
 bool DvbRecording::isRunning() const
 {
 	return (device != NULL) && (device->getDeviceState() != DvbDevice::DeviceIdle) &&
-		(device->getDeviceState() != DvbDevice::DeviceTuningFailed);
+	       (device->getDeviceState() != DvbDevice::DeviceTuningFailed);
 }
 
 void DvbRecording::start()
@@ -135,10 +125,6 @@ void DvbRecording::start()
 			// FIXME error message
 			return;
 		}
-	}
-
-	if (injector == NULL) {
-		QList<int> pids;
 
 		if (channel->videoPid != -1) {
 			pids.append(channel->videoPid);
@@ -148,11 +134,20 @@ void DvbRecording::start()
 			pids.append(channel->audioPid);
 		}
 
-		injector = new DvbPatPmtInjector(device, channel->transportStreamId,
-			channel->serviceId, channel->pmtPid, pids);
+		foreach (int pid, pids) {
+			device->addPidFilter(pid, this);
+		}
 
-		QObject::connect(injector, SIGNAL(dataReady(QByteArray)),
-			&fileWriter, SLOT(write(QByteArray)));
+		patGenerator.initPat(channel->transportStreamId, channel->serviceId,
+			channel->pmtPid);
+		pmtGenerator.initPmt(channel->pmtPid,
+			DvbPmtSection(DvbSection(channel->pmtSection)), pids);
+
+		buffer.reserve(256 * 188);
+		buffer.append(patGenerator.generatePackets());
+		buffer.append(pmtGenerator.generatePackets());
+
+		startTimer(500);
 	}
 
 	if ((device->getDeviceState() != DvbDevice::DeviceIdle) &&
@@ -166,9 +161,35 @@ void DvbRecording::start()
 void DvbRecording::releaseDevice()
 {
 	if (device != NULL) {
-		injector->removePidFilters();
+		foreach (int pid, pids) {
+			device->removePidFilter(pid, this);
+		}
+
 		manager->releaseDevice(device);
+
+		// flush pending data
+		file.write(buffer);
 	}
+}
+
+void DvbRecording::processData(const char data[188])
+{
+	buffer.append(QByteArray::fromRawData(data, 188));
+
+	if (buffer.size() < (256 * 188)) {
+		return;
+	}
+
+	file.write(buffer);
+
+	buffer.clear();
+	buffer.reserve(256 * 188);
+}
+
+void DvbRecording::timerEvent(QTimerEvent *)
+{
+	buffer.append(patGenerator.generatePackets());
+	buffer.append(pmtGenerator.generatePackets());
 }
 
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel(manager_),

@@ -298,38 +298,6 @@ private:
 	QList<int> crcs;
 };
 
-class DvbPatPmtInjector : public QObject, public DvbPidFilter
-{
-	Q_OBJECT
-public:
-	DvbPatPmtInjector(DvbDevice *device_, int transportStreamId, int programNumber, int pmtPid_,
-		const QList<int> &pids_);
-	~DvbPatPmtInjector() { }
-
-	QByteArray generatePackets();
-	void removePidFilters();
-
-public slots:
-	void pmtSectionChanged(const DvbPmtSection &section);
-
-signals:
-	void dataReady(const QByteArray &array);
-
-private:
-	void timerEvent(QTimerEvent *event);
-	void processData(const char data[188]);
-
-	DvbDevice *device;
-	int pmtPid;
-	QList<int> pids;
-	bool valid;
-	QByteArray buffer;
-	int timerId;
-	DvbSectionGenerator patGenerator;
-	DvbSectionGenerator pmtGenerator;
-	DvbPmtFilter pmtFilter;
-};
-
 // everything below this line is automatically generated
 
 class DvbServiceDescriptor : public DvbDescriptor

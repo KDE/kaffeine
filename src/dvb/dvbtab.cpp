@@ -105,7 +105,7 @@ DvbLiveStream::~DvbLiveStream()
 void DvbLiveStream::removePidFilters()
 {
 	foreach (int pid, pids) {
-		device->addPidFilter(pid, this);
+		device->removePidFilter(pid, this);
 	}
 }
 
