@@ -37,6 +37,7 @@ class QSlider;
 class KAction;
 class KActionCollection;
 class KComboBox;
+class KMenu;
 class KToolBar;
 class KUrl;
 class DvbFeed;
@@ -45,7 +46,7 @@ class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent);
+	MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *collection, QWidget *parent);
 	~MediaWidget();
 
 	/*

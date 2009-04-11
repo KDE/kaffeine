@@ -33,6 +33,7 @@
 #include <KComboBox>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <KMenu>
 #include <KMessageBox>
 #include <KToolBar>
 #include <KUrl>
@@ -65,9 +66,9 @@ private:
 	void reset() { }
 };
 
-MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidget *parent) :
-	QWidget(parent), dvbFeed(NULL), playing(true), titleCount(0), chapterCount(0),
-	audioChannelsReady(false), subtitlesReady(false)
+MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *collection,
+	QWidget *parent) : QWidget(parent), dvbFeed(NULL), playing(true), titleCount(0),
+	chapterCount(0), audioChannelsReady(false), subtitlesReady(false)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -97,12 +98,13 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	connect(mediaController, SIGNAL(availableSubtitlesChanged()),
 		this, SLOT(subtitlesChanged()));
 
-	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), collection);
+	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), this);
 	actionPrevious->setShortcut(KShortcut(Qt::Key_PageUp, Qt::Key_MediaPrevious));
 	connect(actionPrevious, SIGNAL(triggered(bool)), this, SLOT(previous()));
 	toolBar->addAction(collection->addAction("controls_previous", actionPrevious));
+	menu->addAction(actionPrevious);
 
-	actionPlayPause = new KAction(collection);
+	actionPlayPause = new KAction(this);
 	actionPlayPause->setShortcut(KShortcut(Qt::Key_Space, Qt::Key_MediaPlay));
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
@@ -110,16 +112,20 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	iconPause = KIcon("media-playback-pause");
 	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(playPause(bool)));
 	toolBar->addAction(collection->addAction("controls_play_pause", actionPlayPause));
+	menu->addAction(actionPlayPause);
 
-	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), collection);
+	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), this);
 	actionStop->setShortcut(Qt::Key_MediaStop);
 	connect(actionStop, SIGNAL(triggered(bool)), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
+	menu->addAction(actionStop);
 
-	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), collection);
+	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), this);
 	actionNext->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
 	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
+	menu->addAction(actionNext);
+	menu->addSeparator();
 
 	audioChannelBox = new KComboBox(toolBar);
 	connect(audioChannelBox, SIGNAL(currentIndexChanged(int)),
@@ -131,7 +137,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSubtitle(int)));
 	toolBar->addWidget(subtitleBox);
 
-	muteAction = new KAction(i18n("Mute volume"), collection);
+	muteAction = new KAction(i18n("Mute volume"), this);
 	mutedIcon = KIcon("audio-volume-muted");
 	unmutedIcon = KIcon("audio-volume-medium");
 	muteAction->setIcon(unmutedIcon);
@@ -140,7 +146,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	connect(audioOutput, SIGNAL(mutedChanged(bool)), this, SLOT(mutedChanged(bool)));
 	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
 
-	KAction *action = new KAction(i18n("Volume slider"), collection);
+	KAction *action = new KAction(i18n("Volume slider"), this);
 	volumeSlider = new QSlider(toolBar);
 	volumeSlider->setFocusPolicy(Qt::NoFocus);
 	volumeSlider->setOrientation(Qt::Horizontal);
@@ -153,15 +159,16 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
-	action = new KAction(KIcon("audio-volume-high"), i18n("Increase volume"), collection);
+	action = new KAction(KIcon("audio-volume-high"), i18n("Increase volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
-	videoWidget->addAction(collection->addAction("controls_increase_volume", action));
+	menu->addAction(collection->addAction("controls_increase_volume", action));
 
-	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease volume"), collection);
+	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
-	videoWidget->addAction(collection->addAction("controls_decrease_volume", action));
+	menu->addAction(collection->addAction("controls_decrease_volume", action));
+	menu->addSeparator();
 
 	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
 	seekSlider->setMediaObject(mediaObject);
@@ -170,17 +177,17 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 	seekSlider->setSizePolicy(sizePolicy);
 	toolBar->addWidget(seekSlider);
 
-	action = new KAction(KIcon("media-skip-backward"), i18n("Skip backward"), collection);
+	action = new KAction(KIcon("media-skip-backward"), i18n("Skip backward"), this);
 	action->setShortcut(KShortcut(Qt::Key_Left, Qt::Key_Back));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
-	videoWidget->addAction(collection->addAction("controls_skip_backward", action));
+	menu->addAction(collection->addAction("controls_skip_backward", action));
 
-	action = new KAction(KIcon("media-skip-forward"), i18n("Skip forward"), collection);
+	action = new KAction(KIcon("media-skip-forward"), i18n("Skip forward"), this);
 	action->setShortcut(KShortcut(Qt::Key_Right, Qt::Key_Forward));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
-	videoWidget->addAction(collection->addAction("controls_skip_forward", action));
+	menu->addAction(collection->addAction("controls_skip_forward", action));
 
-	action = new KAction(i18n("Switch between elapsed and remaining time display"), collection);
+	action = new KAction(i18n("Switch between elapsed and remaining time display"), this);
 	timeButton = new QPushButton(toolBar);
 	timeButton->setFocusPolicy(Qt::NoFocus);
 	timeButton->setToolTip(action->text());
@@ -195,9 +202,7 @@ MediaWidget::MediaWidget(KToolBar *toolBar, KActionCollection *collection, QWidg
 
 MediaWidget::~MediaWidget()
 {
-	// don't use volumeSlider here because it may have already been destroyed
-	KConfigGroup(KGlobal::config(), "MediaObject").writeEntry("Volume",
-		int(audioOutput->volume() * 100 + qreal(0.5)));
+	KConfigGroup(KGlobal::config(), "MediaObject").writeEntry("Volume", volumeSlider->value());
 }
 
 void MediaWidget::play(const KUrl &url)

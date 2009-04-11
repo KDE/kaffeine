@@ -197,6 +197,9 @@ Kaffeine::Kaffeine()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(toggleFullscreen()));
 	menu->addAction(collection->addAction("view_fullscreen", action));
 
+	KMenu *playerMenu = new KMenu(i18n("&Player"));
+	menuBar->addMenu(playerMenu);
+
 	KMenu *dvbMenu = new KMenu(i18n("&DVB"));
 	menuBar->addMenu(dvbMenu);
 
@@ -224,7 +227,7 @@ Kaffeine::Kaffeine()
 	stackedLayout = new QStackedLayout(widget);
 	setCentralWidget(widget);
 
-	mediaWidget = new MediaWidget(controlBar, collection, widget);
+	mediaWidget = new MediaWidget(playerMenu, controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
 
