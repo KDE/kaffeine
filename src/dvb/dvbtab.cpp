@@ -195,8 +195,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	DvbChannelModel *channelModel = dvbManager->getChannelModel();
 	channelView = new ProxyTreeView(leftSideWidget);
-	channelView->setIndentation(0);
 	channelView->setModel(channelModel);
+	channelView->setRootIsDecorated(false);
 	channelView->sortByColumn(0, Qt::AscendingOrder);
 	channelView->setSortingEnabled(true);
 	channelView->setContextMenu(new DvbChannelContextMenu(channelModel, channelView));

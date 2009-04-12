@@ -635,10 +635,10 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 	satelliteView->setColumnCount(2);
 	satelliteView->setHeaderLabels(QStringList() << i18n("Satellite") << i18n("Position"));
-	satelliteView->setIndentation(0);
 	satelliteView->setMinimumHeight(100);
-	satelliteView->setSortingEnabled(true);
+	satelliteView->setRootIsDecorated(false);
 	satelliteView->sortByColumn(0, Qt::AscendingOrder);
+	satelliteView->setSortingEnabled(true);
 	connect(this, SIGNAL(setRotorVisible(bool)), satelliteView, SLOT(setVisible(bool)));
 	layout->addWidget(satelliteView, 9, 0, 1, 2);
 

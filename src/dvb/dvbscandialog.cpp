@@ -173,8 +173,8 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->setChannels(manager->getChannelModel()->getChannels());
-	ui->channelView->setIndentation(0);
 	ui->channelView->setModel(channelModel);
+	ui->channelView->setRootIsDecorated(false);
 	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
 	ui->channelView->setSortingEnabled(true);
 
@@ -183,9 +183,9 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui->channelView->setContextMenu(menu);
 
 	previewModel = new DvbPreviewChannelModel(this);
-	ui->scanResultsView->setIndentation(0);
-	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	ui->scanResultsView->setModel(previewModel);
+	ui->scanResultsView->setRootIsDecorated(false);
+	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	ui->scanResultsView->sortByColumn(0, Qt::AscendingOrder);
 	ui->scanResultsView->setSortingEnabled(true);
 

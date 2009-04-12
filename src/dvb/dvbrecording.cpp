@@ -375,8 +375,8 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	model = manager->getRecordingModel();
 
 	treeView = new ProxyTreeView(this);
-	treeView->setIndentation(0);
 	treeView->setModel(model);
+	treeView->setRootIsDecorated(false);
 	treeView->sortByColumn(2, Qt::AscendingOrder);
 	treeView->setSortingEnabled(true);
 	mainLayout->addWidget(treeView);
