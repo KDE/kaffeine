@@ -95,11 +95,15 @@ private slots:
 	void volumeChanged(qreal volume);
 	void increaseVolume();
 	void decreaseVolume();
+	void updateSeekable();
+	void longSkipBackward();
 	void skipBackward();
 	void skipForward();
+	void longSkipForward();
+	void jumpToPosition();
 	void timeButtonClicked();
-	void updateCaption();
 	void updateTimeButton();
+	void updateCaption();
 
 	void titleCountChanged(int count);
 	void chapterCountChanged(int count);
@@ -133,6 +137,11 @@ private:
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
 	QSlider *volumeSlider;
+	KAction *longSkipBackwardAction;
+	KAction *skipBackwardAction;
+	KAction *skipForwardAction;
+	KAction *longSkipForwardAction;
+	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 	bool showElapsedTime;
 

@@ -21,7 +21,9 @@
 #include "mediawidget.h"
 
 #include <QBoxLayout>
+#include <QLabel>
 #include <QPushButton>
+#include <QTimeEdit>
 #include <Phonon/AbstractMediaStream>
 #include <Phonon/AudioOutput>
 #include <Phonon/MediaController>
@@ -32,6 +34,7 @@
 #include <KActionCollection>
 #include <KComboBox>
 #include <KConfigGroup>
+#include <KDialog>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KMessageBox>
@@ -66,6 +69,43 @@ private:
 	void reset() { }
 };
 
+class JumpToPositionDialog : public KDialog
+{
+public:
+	JumpToPositionDialog(const QTime &time, QWidget *parent);
+	~JumpToPositionDialog();
+
+	QTime getPosition() const;
+
+private:
+	QTimeEdit *timeEdit;
+};
+
+JumpToPositionDialog::JumpToPositionDialog(const QTime &time, QWidget *parent) : KDialog(parent)
+{
+	setCaption(i18n("Jump to Position"));
+
+	QWidget *widget = new QWidget(this);
+	QBoxLayout *layout = new QVBoxLayout(widget);
+
+	layout->addWidget(new QLabel(i18n("Enter a position:")));
+
+	timeEdit = new QTimeEdit(time, this);
+	timeEdit->setDisplayFormat("hh:mm:ss");
+	layout->addWidget(timeEdit);
+
+	setMainWidget(widget);
+}
+
+JumpToPositionDialog::~JumpToPositionDialog()
+{
+}
+
+QTime JumpToPositionDialog::getPosition() const
+{
+	return timeEdit->time();
+}
+
 MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), dvbFeed(NULL), playing(true), titleCount(0),
 	chapterCount(0), audioChannelsReady(false), subtitlesReady(false)
@@ -76,6 +116,7 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	mediaObject = new Phonon::MediaObject(this);
 	connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
 		this, SLOT(stateChanged(Phonon::State)));
+	connect(mediaObject, SIGNAL(seekableChanged(bool)), this, SLOT(updateSeekable()));
 	connect(mediaObject, SIGNAL(metaDataChanged()), this, SLOT(updateCaption()));
 	connect(mediaObject, SIGNAL(currentSourceChanged(Phonon::MediaSource)),
 		this, SLOT(stopDvb()));
@@ -115,7 +156,7 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	menu->addAction(actionPlayPause);
 
 	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), this);
-	actionStop->setShortcut(Qt::Key_MediaStop);
+	actionStop->setShortcut(KShortcut(Qt::Key_Delete, Qt::Key_MediaStop));
 	connect(actionStop, SIGNAL(triggered(bool)), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 	menu->addAction(actionStop);
@@ -159,12 +200,12 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
-	action = new KAction(KIcon("audio-volume-high"), i18n("Increase volume"), this);
+	action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
 	menu->addAction(collection->addAction("controls_increase_volume", action));
 
-	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease volume"), this);
+	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease Volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
 	menu->addAction(collection->addAction("controls_decrease_volume", action));
@@ -177,15 +218,35 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	seekSlider->setSizePolicy(sizePolicy);
 	toolBar->addWidget(seekSlider);
 
-	action = new KAction(KIcon("media-skip-backward"), i18n("Skip backward"), this);
-	action->setShortcut(KShortcut(Qt::Key_Left, Qt::Key_Back));
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
-	menu->addAction(collection->addAction("controls_skip_backward", action));
+	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
+		i18n("Skip 1min Backward"), this);
+	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
+	connect(longSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
+	menu->addAction(collection->addAction("controls_long_skip_backward",
+		longSkipBackwardAction));
 
-	action = new KAction(KIcon("media-skip-forward"), i18n("Skip forward"), this);
-	action->setShortcut(KShortcut(Qt::Key_Right, Qt::Key_Forward));
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
-	menu->addAction(collection->addAction("controls_skip_forward", action));
+	skipBackwardAction = new KAction(KIcon("media-skip-backward"), i18n("Skip 10s Backward"),
+		this);
+	skipBackwardAction->setShortcut(Qt::Key_Left);
+	connect(skipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
+	menu->addAction(collection->addAction("controls_skip_backward", skipBackwardAction));
+
+	skipForwardAction = new KAction(KIcon("media-skip-forward"), i18n("Skip 10s Forward"),
+		this);
+	skipForwardAction->setShortcut(Qt::Key_Right);
+	connect(skipForwardAction, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
+	menu->addAction(collection->addAction("controls_skip_forward", skipForwardAction));
+
+	longSkipForwardAction = new KAction(KIcon("media-skip-forward"), i18n("Skip 1min Forward"),
+		this);
+	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
+	connect(longSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
+	menu->addAction(collection->addAction("controls_long_skip_forward", longSkipForwardAction));
+
+	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
+	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
+	connect(jumpToPositionAction, SIGNAL(triggered(bool)), this, SLOT(jumpToPosition()));
+	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
 
 	action = new KAction(i18n("Switch between elapsed and remaining time display"), this);
 	timeButton = new QPushButton(toolBar);
@@ -293,11 +354,12 @@ void MediaWidget::stateChanged(Phonon::State state)
 		actionStop->setEnabled(false);
 	}
 
-	updateCaption();
 	updatePreviousNext();
-	updateTimeButton();
 	updateAudioChannelBox();
 	updateSubtitleBox();
+	updateSeekable();
+	updateTimeButton();
+	updateCaption();
 }
 
 void MediaWidget::playbackFinished()
@@ -412,9 +474,31 @@ void MediaWidget::decreaseVolume()
 	volumeSlider->setValue(volumeSlider->value() - 5);
 }
 
+void MediaWidget::updateSeekable()
+{
+	bool seekable = playing && mediaObject->isSeekable();
+
+	longSkipBackwardAction->setEnabled(seekable);
+	skipBackwardAction->setEnabled(seekable);
+	skipForwardAction->setEnabled(seekable);
+	longSkipForwardAction->setEnabled(seekable);
+	jumpToPositionAction->setEnabled(seekable);
+}
+
+void MediaWidget::longSkipBackward()
+{
+	qint64 time = mediaObject->currentTime() - 60000;
+
+	if (time < 0) {
+		time = 0;
+	}
+
+	mediaObject->seek(time);
+}
+
 void MediaWidget::skipBackward()
 {
-	qint64 time = mediaObject->currentTime() - 15000;
+	qint64 time = mediaObject->currentTime() - 10000;
 
 	if (time < 0) {
 		time = 0;
@@ -425,7 +509,21 @@ void MediaWidget::skipBackward()
 
 void MediaWidget::skipForward()
 {
-	mediaObject->seek(mediaObject->currentTime() + 15000);
+	mediaObject->seek(mediaObject->currentTime() + 10000);
+}
+
+void MediaWidget::longSkipForward()
+{
+	mediaObject->seek(mediaObject->currentTime() + 60000);
+}
+
+void MediaWidget::jumpToPosition()
+{
+	JumpToPositionDialog dialog(QTime().addMSecs(mediaObject->currentTime()), this);
+
+	if (dialog.exec() == QDialog::Accepted) {
+		mediaObject->seek(QTime().msecsTo(dialog.getPosition()));
+	}
 }
 
 void MediaWidget::timeButtonClicked()
@@ -464,6 +562,28 @@ void MediaWidget::updateTimeButton()
 	}
 }
 
+void MediaWidget::updateCaption()
+{
+	QString caption;
+
+	if (playing) {
+		if (dvbFeed != NULL) {
+			// FIXME
+		} else {
+			// FIXME include artist?
+			QStringList strings = mediaObject->metaData(Phonon::TitleMetaData);
+
+			if (!strings.isEmpty() && !strings.at(0).isEmpty()) {
+				caption = strings.at(0);
+			} else {
+				caption = KUrl(mediaObject->currentSource().url()).fileName();
+			}
+		}
+	}
+
+	emit changeCaption(caption);
+}
+
 void MediaWidget::titleCountChanged(int count)
 {
 	titleCount = count;
@@ -492,28 +612,6 @@ void MediaWidget::subtitlesChanged()
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	emit toggleFullscreen();
-}
-
-void MediaWidget::updateCaption()
-{
-	QString caption;
-
-	if (playing) {
-		if (dvbFeed != NULL) {
-			// FIXME
-		} else {
-			// FIXME include artist?
-			QStringList strings = mediaObject->metaData(Phonon::TitleMetaData);
-
-			if (!strings.isEmpty() && !strings.at(0).isEmpty()) {
-				caption = strings.at(0);
-			} else {
-				caption = KUrl(mediaObject->currentSource().url()).fileName();
-			}
-		}
-	}
-
-	emit changeCaption(caption);
 }
 
 void MediaWidget::updatePreviousNext()
