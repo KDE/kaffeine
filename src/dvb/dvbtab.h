@@ -25,6 +25,7 @@
 #include "../kaffeine.h"
 
 class QModelIndex;
+class KAction;
 class DvbChannel;
 class DvbDevice;
 class DvbLiveStream;
@@ -51,6 +52,8 @@ public:
 private slots:
 	void showChannelDialog();
 	void showRecordingDialog();
+	void instantRecord(bool checked);
+	void instantRecordRemoved();
 	void configureDvb();
 	void playLive(const QModelIndex &index);
 	void prepareTimeShift();
@@ -59,14 +62,13 @@ private slots:
 
 private:
 	void activate();
-
 	void playChannel(const QSharedDataPointer<DvbChannel> &channel);
 
 	MediaWidget *mediaWidget;
 	DvbManager *dvbManager;
-	QLayout *mediaLayout;
-
+	KAction *instantRecordAction;
 	ProxyTreeView *channelView;
+	QLayout *mediaLayout;
 
 	DvbLiveStream *liveStream;
 };

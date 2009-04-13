@@ -193,7 +193,7 @@ void DvbRecording::timerEvent(QTimerEvent *)
 }
 
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel(manager_),
-	manager(manager_)
+	manager(manager_), instantIndex(-1)
 {
 	// FIXME read recordings from file
 
@@ -224,6 +224,15 @@ void DvbRecordingModel::append(DvbRecording *recording)
 
 void DvbRecordingModel::remove(int i)
 {
+	if (instantIndex >= i) {
+		if (instantIndex > i) {
+			--instantIndex;
+		} else {
+			emit instantRecordRemoved();
+			instantIndex = -1;
+		}
+	}
+
 	beginRemoveRows(QModelIndex(), i, i);
 	DvbRecording *recording = recordings.takeAt(i);
 	recording->releaseDevice();
@@ -235,6 +244,27 @@ void DvbRecordingModel::updated(int i)
 {
 	emit dataChanged(index(i, 0), index(i, columnCount(QModelIndex()) - 1));
 	checkStatus();
+}
+
+void DvbRecordingModel::startInstantRecord(const QSharedDataPointer<DvbChannel> &channel)
+{
+	DvbRecording *recording = new DvbRecording(manager);
+	recording->name = channel->name + QTime::currentTime().toString("-hhmmss"); // FIXME use epg
+	recording->channelName = channel->name; // FIXME possible mapping problems
+	recording->begin = QDateTime::currentDateTime();
+	recording->duration = QTime(3, 0); // FIXME configurable? sensible default?
+	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
+	append(recording);
+
+	instantIndex = recordings.size() - 1;
+}
+
+void DvbRecordingModel::stopInstantRecord()
+{
+	Q_ASSERT(instantIndex >= 0);
+	int row = instantIndex;
+	instantIndex = -1; // don't emit instantRecordRemoved()
+	remove(row);
 }
 
 int DvbRecordingModel::columnCount(const QModelIndex &parent) const

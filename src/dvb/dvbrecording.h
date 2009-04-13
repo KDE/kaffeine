@@ -28,12 +28,14 @@ class QDateTimeEdit;
 class QTimeEdit;
 class KComboBox;
 class KLineEdit;
+class DvbChannel;
 class DvbManager;
 class DvbRecording;
 class ProxyTreeView;
 
 class DvbRecordingModel : public QAbstractTableModel
 {
+	Q_OBJECT
 public:
 	explicit DvbRecordingModel(DvbManager *manager_);
 	~DvbRecordingModel();
@@ -43,10 +45,16 @@ public:
 	void remove(int i);
 	void updated(int i);
 
+	void startInstantRecord(const QSharedDataPointer<DvbChannel> &channel);
+	void stopInstantRecord(); // doesn't emit instantRecordRemoved()
+
 	int columnCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	int rowCount(const QModelIndex &parent) const;
+
+signals:
+	void instantRecordRemoved();
 
 private:
 	void timerEvent(QTimerEvent *event);
@@ -55,6 +63,7 @@ private:
 
 	DvbManager *manager;
 	QList<DvbRecording *> recordings;
+	int instantIndex;
 	int timerId;
 };
 

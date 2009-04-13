@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QDir>
 #include <QSplitter>
+#include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
 #include <KLineEdit>
@@ -150,21 +151,29 @@ void DvbLiveStream::timerEvent(QTimerEvent *)
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
 	mediaWidget(mediaWidget_), liveStream(NULL)
 {
-	KAction *action = new KAction(KIcon("view-list-details"), i18n("Channels"), collection);
-	action->setShortcut(Qt::Key_C);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
-	menu->addAction(collection->addAction("dvb_channels", action));
+	KAction *channelsAction = new KAction(KIcon("view-list-details"), i18n("Channels"), this);
+	channelsAction->setShortcut(Qt::Key_C);
+	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
+	menu->addAction(collection->addAction("dvb_channels", channelsAction));
 
-	action = new KAction(KIcon("view-pim-calendar"), i18n("Recordings"), collection);
-	action->setShortcut(Qt::Key_R);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
-	menu->addAction(collection->addAction("dvb_recordings", action));
+	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"), i18n("Recordings"),
+		this);
+	recordingsAction->setShortcut(Qt::Key_R);
+	connect(recordingsAction, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
+	menu->addAction(collection->addAction("dvb_recordings", recordingsAction));
 
 	menu->addSeparator();
 
-	action = new KAction(KIcon("configure"), i18n("Configure DVB"), collection);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
-	menu->addAction(collection->addAction("settings_dvb", action));
+	instantRecordAction = new KAction(KIcon("document-save"), i18n("Instant Record"), this);
+	instantRecordAction->setCheckable(true);
+	connect(instantRecordAction, SIGNAL(triggered(bool)), this, SLOT(instantRecord(bool)));
+	menu->addAction(collection->addAction("dvb_instant_record", instantRecordAction));
+
+	menu->addSeparator();
+
+	KAction *configureAction = new KAction(KIcon("configure"), i18n("Configure DVB"), this);
+	connect(configureAction, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
+	menu->addAction(collection->addAction("settings_dvb", configureAction));
 
 	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
 	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
@@ -172,29 +181,28 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	dvbManager = new DvbManager(this);
 
-	QBoxLayout *widgetLayout = new QHBoxLayout(this);
-	widgetLayout->setMargin(0);
+	connect(dvbManager->getRecordingModel(), SIGNAL(instantRecordRemoved()),
+		this, SLOT(instantRecordRemoved()));
+
+	QBoxLayout *boxLayout = new QHBoxLayout(this);
+	boxLayout->setMargin(0);
 
 	QSplitter *splitter = new QSplitter(this);
-	widgetLayout->addWidget(splitter);
+	boxLayout->addWidget(splitter);
 
-	QWidget *leftSideWidget = new QWidget(splitter);
-	QBoxLayout *leftSideLayout = new QVBoxLayout(leftSideWidget);
-	leftSideLayout->setMargin(3);
+	QWidget *leftWidget = new QWidget(splitter);
+	QBoxLayout *leftLayout = new QVBoxLayout(leftWidget);
 
-	QWidget *searchBoxWidget = new QWidget(leftSideWidget);
-	QBoxLayout *searchBoxLayout = new QHBoxLayout(searchBoxWidget);
-	searchBoxLayout->setMargin(0);
-	leftSideLayout->addWidget(searchBoxWidget);
+	boxLayout = new QHBoxLayout();
+	boxLayout->addWidget(new QLabel(i18n("Search:")));
 
-	searchBoxLayout->addWidget(new QLabel(i18n("Search:"), searchBoxWidget));
-
-	KLineEdit *lineEdit = new KLineEdit(searchBoxWidget);
+	KLineEdit *lineEdit = new KLineEdit(leftWidget);
 	lineEdit->setClearButtonShown(true);
-	searchBoxLayout->addWidget(lineEdit);
+	boxLayout->addWidget(lineEdit);
+	leftLayout->addLayout(boxLayout);
 
 	DvbChannelModel *channelModel = dvbManager->getChannelModel();
-	channelView = new ProxyTreeView(leftSideWidget);
+	channelView = new ProxyTreeView(leftWidget);
 	channelView->setModel(channelModel);
 	channelView->setRootIsDecorated(false);
 	channelView->sortByColumn(0, Qt::AscendingOrder);
@@ -203,13 +211,30 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		channelView->model(), SLOT(setFilterRegExp(QString)));
-	leftSideLayout->addWidget(channelView);
+	leftLayout->addWidget(channelView);
+
+	boxLayout = new QHBoxLayout();
+
+	QToolButton *toolButton = new QToolButton(leftWidget);
+	toolButton->setDefaultAction(configureAction);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(leftWidget);
+	toolButton->setDefaultAction(channelsAction);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(leftWidget);
+	toolButton->setDefaultAction(recordingsAction);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(leftWidget);
+	toolButton->setDefaultAction(instantRecordAction);
+	boxLayout->addWidget(toolButton);
+	leftLayout->addLayout(boxLayout);
 
 	QWidget *mediaContainer = new QWidget(splitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
 	mediaLayout->setMargin(0);
-
-	splitter->setStretchFactor(0, 0);
 	splitter->setStretchFactor(1, 1);
 }
 
@@ -250,6 +275,25 @@ void DvbTab::showRecordingDialog()
 {
 	DvbRecordingDialog dialog(dvbManager, this);
 	dialog.exec();
+}
+
+void DvbTab::instantRecord(bool checked)
+{
+	if (checked) {
+		if (liveStream == NULL) {
+			instantRecordAction->setChecked(false);
+			return;
+		}
+
+		dvbManager->getRecordingModel()->startInstantRecord(liveStream->getChannel());
+	} else {
+		dvbManager->getRecordingModel()->stopInstantRecord();
+	}
+}
+
+void DvbTab::instantRecordRemoved()
+{
+	instantRecordAction->setChecked(false);
 }
 
 void DvbTab::configureDvb()
@@ -297,6 +341,7 @@ void DvbTab::liveStopped()
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
 	mediaWidget->stopDvb();
+	instantRecordAction->setChecked(false);
 
 	if (channel == NULL) {
 		return;
