@@ -28,9 +28,10 @@ class QDateTimeEdit;
 class QTimeEdit;
 class KComboBox;
 class KLineEdit;
-class DvbChannel;
+class DvbChannelModel;
 class DvbManager;
 class DvbRecording;
+class DvbRecordingEditor;
 class ProxyTreeView;
 
 class DvbRecordingModel : public QAbstractTableModel
@@ -40,31 +41,30 @@ public:
 	explicit DvbRecordingModel(DvbManager *manager_);
 	~DvbRecordingModel();
 
-	DvbRecording *at(int i);
-	void append(DvbRecording *recording);
-	void remove(int i);
-	void updated(int i);
-
-	void startInstantRecord(const QSharedDataPointer<DvbChannel> &channel);
-	void stopInstantRecord(); // doesn't emit instantRecordRemoved()
-
 	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	int rowCount(const QModelIndex &parent) const;
+
+	const DvbRecording *getRecording(int row);
+	void appendRecording(DvbRecording *recording);
+	void removeRecording(int row);
+	void updateRecording(int row, DvbRecordingEditor *editor);
+
+	void startInstantRecording(const QString &name, const QString &channel);
+	void stopInstantRecording(); // stops the last started instant recording
 
 signals:
-	void instantRecordRemoved();
+	void instantRecordingRemoved(); // not emitted by stopInstantRecording()
 
-private:
-	void timerEvent(QTimerEvent *event);
-
+private slots:
 	void checkStatus();
 
+private:
 	DvbManager *manager;
 	QList<DvbRecording *> recordings;
-	int instantIndex;
-	int timerId;
+	int instantRecordingRow;
+	QTimer *checkStatusTimer;
 };
 
 class DvbRecordingDialog : public KDialog
@@ -89,9 +89,9 @@ class DvbRecordingEditor : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbRecordingEditor(QAbstractItemModel *channels, const DvbRecording *recording,
+	DvbRecordingEditor(const DvbRecording *recording, DvbChannelModel *channelModel,
 		QWidget *parent);
-	~DvbRecordingEditor() { }
+	~DvbRecordingEditor();
 
 	void updateRecording(DvbRecording *recording) const;
 
@@ -99,6 +99,7 @@ public slots:
 	void beginChanged(const QDateTime &dateTime);
 	void durationChanged(const QTime &time);
 	void endChanged(const QDateTime &dateTime);
+	void checkValid();
 
 private:
 	KLineEdit *nameEdit;

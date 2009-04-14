@@ -181,8 +181,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	dvbManager = new DvbManager(this);
 
-	connect(dvbManager->getRecordingModel(), SIGNAL(instantRecordRemoved()),
-		this, SLOT(instantRecordRemoved()));
+	connect(dvbManager->getRecordingModel(), SIGNAL(instantRecordingRemoved()),
+		this, SLOT(instantRecordingRemoved()));
 
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
 	boxLayout->setMargin(0);
@@ -285,13 +285,17 @@ void DvbTab::instantRecord(bool checked)
 			return;
 		}
 
-		dvbManager->getRecordingModel()->startInstantRecord(liveStream->getChannel());
+		QString channelName = liveStream->getChannel()->name;
+
+		// FIXME use epg for name
+		dvbManager->getRecordingModel()->startInstantRecording(
+			channelName + QTime::currentTime().toString("-hhmmss"), channelName);
 	} else {
-		dvbManager->getRecordingModel()->stopInstantRecord();
+		dvbManager->getRecordingModel()->stopInstantRecording();
 	}
 }
 
-void DvbTab::instantRecordRemoved()
+void DvbTab::instantRecordingRemoved()
 {
 	instantRecordAction->setChecked(false);
 }

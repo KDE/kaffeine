@@ -53,7 +53,7 @@ private slots:
 	void showChannelDialog();
 	void showRecordingDialog();
 	void instantRecord(bool checked);
-	void instantRecordRemoved();
+	void instantRecordingRemoved();
 	void configureDvb();
 	void playLive(const QModelIndex &index);
 	void prepareTimeShift();
