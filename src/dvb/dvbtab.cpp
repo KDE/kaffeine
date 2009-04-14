@@ -217,18 +217,22 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	QToolButton *toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(configureAction);
+	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(channelsAction);
+	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(recordingsAction);
+	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(instantRecordAction);
+	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	boxLayout->addWidget(toolButton);
 	leftLayout->addLayout(boxLayout);
 
