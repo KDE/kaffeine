@@ -392,7 +392,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 		audioPids.append(it.key());
 	}
 
-	audioChannelBox->setCurrentIndex(audioPids.indexOf(channel->audioPid);
+	audioChannelBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
 
 	if (audioPids.size() <= 1) {
 		audioChannelBox->setEnabled(false);
