@@ -57,7 +57,24 @@ int DvbChannelModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || role != Qt::DisplayRole || index.row() >= channels.size()) {
+	if (!index.isValid() || index.row() >= channels.size()) {
+		return QVariant();
+	}
+
+	if (role != Qt::DisplayRole) {
+		if ((role == Qt::DecorationRole) && (index.column() == 0)) {
+			const QSharedDataPointer<DvbChannel> &channel = channels.at(index.row());
+
+			// FIXME use better icons
+			if (channel->scrambled) {
+				return KIcon("document-encrypt");
+			} else if (channel->videoPid >= 0) {
+				return KIcon("video-television");
+			} else {
+				return KIcon("preferences-desktop-text-to-speech");
+			}
+		}
+
 		return QVariant();
 	}
 
