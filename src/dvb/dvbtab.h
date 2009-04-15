@@ -56,6 +56,8 @@ private slots:
 	void instantRecordingRemoved();
 	void configureDvb();
 	void playLive(const QModelIndex &index);
+	void previousChannel();
+	void nextChannel();
 	void prepareTimeShift();
 	void startTimeShift();
 	void changeAudioChannel(int index);

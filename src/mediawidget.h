@@ -76,6 +76,8 @@ signals:
 	void playlistPlay();
 	void playlistNext();
 
+	void previousDvbChannel();
+	void nextDvbChannel();
 	void prepareDvbTimeShift();
 	void startDvbTimeShift();
 	void changeDvbAudioChannel(int index);

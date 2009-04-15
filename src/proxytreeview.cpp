@@ -47,13 +47,7 @@ int ProxyTreeView::mapToSource(const QModelIndex &index) const
 int ProxyTreeView::selectedRow() const
 {
 	// it's enough to look at a single element if you can only select a single row
-	QList<QModelIndex> selection = selectionModel()->selection().indexes();
-
-	if (selection.isEmpty()) {
-		return -1;
-	}
-
-	QModelIndex index = proxyModel->mapToSource(selection.at(0));
+	QModelIndex index = proxyModel->mapToSource(currentIndex());
 
 	if (!index.isValid()) {
 		return -1;

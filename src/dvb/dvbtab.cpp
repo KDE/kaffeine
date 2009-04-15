@@ -202,6 +202,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(configureAction, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", configureAction));
 
+	connect(mediaWidget, SIGNAL(previousDvbChannel()), this, SLOT(previousChannel()));
+	connect(mediaWidget, SIGNAL(nextDvbChannel()), this, SLOT(nextChannel()));
 	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
 	connect(mediaWidget, SIGNAL(startDvbTimeShift()), this, SLOT(startTimeShift()));
 	connect(mediaWidget, SIGNAL(changeDvbAudioChannel(int)),
@@ -348,6 +350,46 @@ void DvbTab::activate()
 void DvbTab::playLive(const QModelIndex &index)
 {
 	playChannel(dvbManager->getChannelModel()->getChannel(channelView->mapToSource(index)));
+}
+
+void DvbTab::previousChannel()
+{
+	// it's enough to look at a single element if you can only select a single row
+	QModelIndex index = channelView->currentIndex();
+
+	if (!index.isValid()) {
+		return;
+	}
+
+	QModelIndex previous = index.sibling(index.row() - 1, index.column());
+	int sourceIndex = channelView->mapToSource(previous);
+
+	if (sourceIndex < 0) {
+		return;
+	}
+
+	channelView->setCurrentIndex(previous);
+	playChannel(dvbManager->getChannelModel()->getChannel(sourceIndex));
+}
+
+void DvbTab::nextChannel()
+{
+	// it's enough to look at a single element if you can only select a single row
+	QModelIndex index = channelView->currentIndex();
+
+	if (!index.isValid()) {
+		return;
+	}
+
+	QModelIndex next = index.sibling(index.row() + 1, index.column());
+	int sourceIndex = channelView->mapToSource(next);
+
+	if (sourceIndex < 0) {
+		return;
+	}
+
+	channelView->setCurrentIndex(next);
+	playChannel(dvbManager->getChannelModel()->getChannel(sourceIndex));
 }
 
 void DvbTab::prepareTimeShift()
