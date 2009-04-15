@@ -33,8 +33,9 @@
 #include <KLocalizedString>
 #include <KMessageBox> // temporary
 #include <KStandardDirs>
-#include "dvbchannel.h"
 #include "../proxytreeview.h"
+#include "dvbchannel.h"
+#include "dvbsi.h"
 
 int DvbChannelModel::columnCount(const QModelIndex &parent) const
 {
@@ -330,8 +331,26 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	gridLayout->addWidget(new QLabel(i18n("Video PID:")), 12, 0);
 	gridLayout->addWidget(new QLabel(QString::number(channel->videoPid)), 12, 1);
 
-	gridLayout->addItem(new QSpacerItem(0, 0), 13, 0, 1, 2);
-	gridLayout->setRowStretch(13, 1);
+	int row = 13;
+	DvbPmtParser pmtParser(DvbPmtSection(DvbSection(channel->pmtSection)));
+
+	for (QMap<int, QString>::const_iterator it = pmtParser.subtitlePids.constBegin();
+	     it != pmtParser.subtitlePids.constEnd(); ++it) {
+		if (it == pmtParser.subtitlePids.constBegin()) {
+			gridLayout->addWidget(new QLabel(i18n("Subtitle PID:")), row, 0);
+		}
+
+		gridLayout->addWidget(new QLabel(QString("%1 (%2)").arg(it.key()).arg(it.value())),
+				      row++, 1);
+	}
+
+	if (pmtParser.teletextPid != -1) {
+		gridLayout->addWidget(new QLabel(i18n("Teletext PID:")), row, 0);
+		gridLayout->addWidget(new QLabel(QString::number(pmtParser.teletextPid)), row++, 1);
+	}
+
+	gridLayout->addItem(new QSpacerItem(0, 0), row, 0, 1, 2);
+	gridLayout->setRowStretch(row, 1);
 	boxLayout->addWidget(groupBox);
 
 	groupBox = new QGroupBox(widget);
@@ -359,10 +378,26 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
 
- 	// FIXME
 	audioChannelBox = new KComboBox(groupBox);
-	audioChannelBox->addItem(QString::number(channel->audioPid));
-	audioChannelBox->setCurrentIndex(0);
+
+	for (QMap<int, QString>::const_iterator it = pmtParser.audioPids.constBegin();
+	     it != pmtParser.audioPids.constEnd(); ++it) {
+		QString text = QString::number(it.key());
+
+		if (!it.value().isEmpty()) {
+			text = text + " (" + it.value() + ')';
+		}
+
+		audioChannelBox->addItem(text);
+		audioPids.append(it.key());
+	}
+
+	audioChannelBox->setCurrentIndex(audioPids.indexOf(channel->audioPid);
+
+	if (audioPids.size() <= 1) {
+		audioChannelBox->setEnabled(false);
+	}
+
 	gridLayout->addWidget(audioChannelBox, 3, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), 4, 0);
@@ -390,7 +425,11 @@ QSharedDataPointer<DvbChannel> DvbChannelEditor::getChannel()
 	channel->networkId = networkIdBox->value();
 	channel->transportStreamId = transportStreamIdBox->value();
 	channel->serviceId = serviceIdBox->value();
-	// FIXME audio pid
+
+	if (audioChannelBox->currentIndex() != -1) {
+		channel->audioPid = audioPids.at(audioChannelBox->currentIndex());
+	}
+
 	channel->scrambled = scrambledBox->isChecked();
 
 	return channel;

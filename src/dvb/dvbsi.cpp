@@ -1117,39 +1117,131 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 	versionNumber = (versionNumber + 1) & 0x1f;
 }
 
-DvbPmtFilter::DvbPmtFilter(int programNumber_) : programNumber(programNumber_), versionNumber(-1)
+DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletextPid(-1)
 {
-}
+	for (DvbPmtSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
+		QString streamLanguage;
+		QString subtitleLanguage;
+		bool teletextPresent = false;
 
-void DvbPmtFilter::processSection(const DvbSectionData &data)
-{
-	DvbSection section(data);
+		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
+		     descriptor.advance()) {
+			switch (descriptor.descriptorTag()) {
+			case 0x0a: {
+				DvbLanguageDescriptor languageDescriptor(descriptor);
 
-	if (!section.isValid() || (section.tableId() != 0x2)) {
-		return;
+				if (!languageDescriptor.isValid()) {
+					break;
+				}
+
+				// ISO 8859-1 equals to unicode range 0x0000 - 0x00ff
+				streamLanguage.clear();
+				streamLanguage.append(QChar(languageDescriptor.languageCode1()));
+				streamLanguage.append(QChar(languageDescriptor.languageCode2()));
+				streamLanguage.append(QChar(languageDescriptor.languageCode3()));
+				break;
+			    }
+
+			case 0x59: {
+				DvbSubtitleDescriptor subtitleDescriptor(descriptor);
+
+				if (!subtitleDescriptor.isValid()) {
+					break;
+				}
+
+				if ((subtitleDescriptor.subtitleType() >= 0x01) &&
+				    (subtitleDescriptor.subtitleType() <= 0x03)) {
+					// FIXME how to deal with vbi and teletext subtitles?
+					kDebug() << "special subtitle found";
+				}
+
+				// ISO 8859-1 equals to unicode range 0x0000 - 0x00ff
+				subtitleLanguage.clear();
+				subtitleLanguage.append(QChar(subtitleDescriptor.languageCode1()));
+				subtitleLanguage.append(QChar(subtitleDescriptor.languageCode2()));
+				subtitleLanguage.append(QChar(subtitleDescriptor.languageCode3()));
+				break;
+			    }
+
+			case 0x56:
+				teletextPresent = true;
+				break;
+			}
+		}
+
+		switch (entry.streamType()) {
+		case 0x01: // MPEG1 video
+		case 0x02: // MPEG2 video
+		case 0x10: // MPEG4 video
+		case 0x1b: // H264 video
+			if (videoPid != -1) {
+				kDebug() << "more than one video pid";
+			}
+
+			videoPid = entry.pid();
+			break;
+
+		case 0x03: // MPEG1 audio
+		case 0x04: // MPEG2 audio
+		case 0x0f: // AAC audio
+		case 0x11: // AAC / LATM audio
+		case 0x81: // AC-3 audio (ATSC specific)
+		case 0x87: // enhanced AC-3 audio (ATSC specific)
+			audioPids.insert(entry.pid(), streamLanguage);
+			break;
+
+		case 0x06: // private data - can be subtitle, teletext or something else
+			if (!subtitleLanguage.isEmpty()) {
+				subtitlePids.insert(entry.pid(), subtitleLanguage);
+
+				if (teletextPresent) {
+					kDebug() << "subtitle and teletext on the same pid";
+				}
+			}
+
+			if (teletextPresent) {
+				if (teletextPid != -1) {
+					kDebug() << "more than one teletext pid";
+				}
+
+				teletextPid = entry.pid();
+			}
+
+			break;
+
+		default:
+			if (!subtitleLanguage.isEmpty()) {
+				kDebug() << "subtitle with unexpected stream type found";
+			}
+
+			if (teletextPresent) {
+				kDebug() << "teletext with unexpected stream type found";
+			}
+
+			break;
+		}
 	}
-
-	DvbPmtSection pmtSection(section);
-
-	if (!pmtSection.isValid() || (pmtSection.programNumber() != programNumber) ||
-	    (pmtSection.versionNumber() == versionNumber)) {
-		return;
-	}
-
-	int crc = pmtSection.verifyCrc32();
-
-	if ((crc != 0) && !crcs.contains(crc)) {
-		kDebug() << "crc error";
-		crcs.append(crc);
-		return;
-	}
-
-	versionNumber = pmtSection.versionNumber();
-
-	emit pmtSectionChanged(pmtSection);
 }
 
 // everything below this line is automatically generated
+
+DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (length < 6) {
+		kDebug() << "invalid descriptor";
+		length = 0;
+		return;
+	}
+}
+
+DvbSubtitleDescriptor::DvbSubtitleDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (length < 10) {
+		kDebug() << "invalid descriptor";
+		length = 0;
+		return;
+	}
+}
 
 DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {

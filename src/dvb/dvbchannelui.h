@@ -94,6 +94,7 @@ private:
 	QSpinBox *transportStreamIdBox;
 	QSpinBox *serviceIdBox;
 	KComboBox *audioChannelBox;
+	QList<int> audioPids;
 	QCheckBox *scrambledBox;
 };
 

@@ -280,25 +280,68 @@ private:
 	int continuityCounter;
 };
 
-class DvbPmtFilter : public QObject, public DvbSectionFilter
+class DvbPmtParser
 {
-	Q_OBJECT
 public:
-	explicit DvbPmtFilter(int programNumber_);
-	~DvbPmtFilter() { }
+	explicit DvbPmtParser(const DvbPmtSection &section);
+	~DvbPmtParser() { }
 
-signals:
-	void pmtSectionChanged(const DvbPmtSection &section);
-
-private:
-	void processSection(const DvbSectionData &data);
-
-	int programNumber;
-	int versionNumber;
-	QList<int> crcs;
+	int videoPid;
+	QMap<int, QString> audioPids; // QString = language code (may be empty)
+	QMap<int, QString> subtitlePids; // QString = language code
+	int teletextPid;
 };
 
 // everything below this line is automatically generated
+
+class DvbLanguageDescriptor : public DvbDescriptor
+{
+public:
+	explicit DvbLanguageDescriptor(const DvbDescriptor &descriptor);
+	~DvbLanguageDescriptor() { }
+
+	int languageCode1() const
+	{
+		return at(2);
+	}
+
+	int languageCode2() const
+	{
+		return at(3);
+	}
+
+	int languageCode3() const
+	{
+		return at(4);
+	}
+};
+
+class DvbSubtitleDescriptor : public DvbDescriptor
+{
+public:
+	explicit DvbSubtitleDescriptor(const DvbDescriptor &descriptor);
+	~DvbSubtitleDescriptor() { }
+
+	int languageCode1() const
+	{
+		return at(2);
+	}
+
+	int languageCode2() const
+	{
+		return at(3);
+	}
+
+	int languageCode3() const
+	{
+		return at(4);
+	}
+
+	int subtitleType() const
+	{
+		return at(5);
+	}
+};
 
 class DvbServiceDescriptor : public DvbDescriptor
 {

@@ -1,6 +1,20 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dvbsi>
   <descriptors>
+    <DvbLanguageDescriptor>
+      <languageCode1 bits="8" type="int" />
+      <languageCode2 bits="8" type="int" />
+      <languageCode3 bits="8" type="int" />
+      <unused bits="8" />
+    </DvbLanguageDescriptor>
+    <DvbSubtitleDescriptor>
+      <languageCode1 bits="8" type="int" />
+      <languageCode2 bits="8" type="int" />
+      <languageCode3 bits="8" type="int" />
+      <subtitleType bits="8" type="int" />
+      <unused bits="16" />
+      <unused bits="16" />
+    </DvbSubtitleDescriptor>
     <DvbServiceDescriptor>
       <unused bits="8" />
       <providerNameLength bits="8" type="int" />
