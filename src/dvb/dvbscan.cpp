@@ -481,27 +481,9 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 {
 	DvbPreviewChannel channel;
 
-	for (DvbPmtSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
-		switch (entry.streamType()) {
-		case 0x01:   // MPEG1 video
-		case 0x02:   // MPEG2 video
-		case 0x10:   // MPEG4 video
-		case 0x1b: { // H264 video
-			channel.videoPid = entry.pid();
-			break;
-		    }
-
-		case 0x03:   // MPEG1 audio
-		case 0x04:   // MPEG2 audio
-		case 0x0f:   // AAC audio
-		case 0x11:   // AAC / LATM audio
-		case 0x81:   // AC-3 audio (ATSC specific)
-		case 0x87: { // enhanced AC-3 audio (ATSC specific)
-			channel.audioPids.append(entry.pid());
-			break;
-		    }
-		}
-	}
+	DvbPmtParser parser(section);
+	channel.videoPid = parser.videoPid;
+	channel.audioPids = parser.audioPids.keys();
 
 	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
 		channel.source = source;
