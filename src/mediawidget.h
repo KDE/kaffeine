@@ -58,7 +58,7 @@ public:
 	void playVideoCd();
 	void playDvd();
 
-	void playDvb(); // starts dvb mode
+	void playDvb(const QString &channelName); // starts dvb mode
 	void writeDvbData(const QByteArray &data);
 
 	// empty list = use audio channels / subtitles provided by phonon

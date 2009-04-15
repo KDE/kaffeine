@@ -62,6 +62,7 @@ public:
 		Phonon::AbstractMediaStream::writeData(data);
 	}
 
+	QString channelName;
 	bool timeShiftActive;
 	bool ignoreStop;
 	QStringList audioChannels;
@@ -295,9 +296,10 @@ void MediaWidget::playDvd()
 	mediaObject->play();
 }
 
-void MediaWidget::playDvb()
+void MediaWidget::playDvb(const QString &channelName)
 {
 	DvbFeed *feed = new DvbFeed();
+	feed->channelName = channelName;
 	mediaObject->setCurrentSource(Phonon::MediaSource(feed));
 	mediaObject->play();
 	dvbFeed = feed; // don't set dvbFeed before setCurrentSource
@@ -595,7 +597,7 @@ void MediaWidget::updateCaption()
 
 	if (playing) {
 		if (dvbFeed != NULL) {
-			// FIXME
+			caption = dvbFeed->channelName;
 		} else {
 			// FIXME include artist?
 			QStringList strings = mediaObject->metaData(Phonon::TitleMetaData);

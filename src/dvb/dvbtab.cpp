@@ -410,7 +410,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		return;
 	}
 
-	mediaWidget->playDvb();
+	mediaWidget->playDvb(channel->name);
 
 	QList<int> pids;
 
