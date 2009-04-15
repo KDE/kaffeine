@@ -329,7 +329,11 @@ void DvbDeviceThread::run()
 
 				size = read(dvrFd, currentUnused->packets, 21*188);
 
-				if ((size < 0) && (errno != EAGAIN)) {
+				if (size < 0) {
+					if (errno == EAGAIN) {
+						break;
+					}
+
 					kWarning() << "read() failed";
 					return;
 				}
