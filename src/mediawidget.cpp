@@ -406,6 +406,8 @@ void MediaWidget::playPause(bool paused)
 {
 	if (playing) {
 		if (paused) {
+			actionPlayPause->setIcon(iconPlay);
+			actionPlayPause->setText(textPlay);
 			mediaObject->pause();
 
 			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
@@ -413,6 +415,9 @@ void MediaWidget::playPause(bool paused)
 				emit prepareDvbTimeShift();
 			}
 		} else {
+			actionPlayPause->setIcon(iconPause);
+			actionPlayPause->setText(textPause);
+
 			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
 				dvbFeed->timeShiftActive = true;
 				dvbFeed->ignoreStop = true;
