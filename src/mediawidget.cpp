@@ -44,7 +44,8 @@
 class DvbFeed : public Phonon::AbstractMediaStream
 {
 public:
-	DvbFeed() : timeShiftActive(false), ignoreStop(false)
+	DvbFeed() : timeShiftActive(false), ignoreStop(false), audioChannelIndex(0),
+		subtitleIndex(0)
 	{
 		setStreamSize(-1);
 	}
@@ -63,6 +64,10 @@ public:
 
 	bool timeShiftActive;
 	bool ignoreStop;
+	QStringList audioChannels;
+	QStringList subtitles;
+	int audioChannelIndex;
+	int subtitleIndex;
 
 private:
 	void needData() { }
@@ -303,6 +308,20 @@ void MediaWidget::writeDvbData(const QByteArray &data)
 	dvbFeed->writeData(data);
 }
 
+void MediaWidget::updateDvbAudioChannels(const QStringList &audioChannels, int currentIndex)
+{
+	dvbFeed->audioChannels = audioChannels;
+	dvbFeed->audioChannelIndex = currentIndex;
+	updateAudioChannelBox();
+}
+
+void MediaWidget::updateDvbSubtitles(const QStringList &subtitles, int currentIndex)
+{
+	dvbFeed->subtitles = subtitles;
+	dvbFeed->subtitleIndex = currentIndex;
+	updateSubtitleBox();
+}
+
 void MediaWidget::stopDvb()
 {
 	if ((dvbFeed != NULL) && !dvbFeed->ignoreStop) {
@@ -427,14 +446,22 @@ void MediaWidget::next()
 void MediaWidget::changeAudioChannel(int index)
 {
 	if (audioChannelsReady) {
-		mediaController->setCurrentAudioChannel(audioChannels.at(index));
+		if ((dvbFeed != NULL) && !dvbFeed->audioChannels.isEmpty()) {
+			emit changeDvbAudioChannel(index);
+		} else {
+			mediaController->setCurrentAudioChannel(audioChannels.at(index));
+		}
 	}
 }
 
 void MediaWidget::changeSubtitle(int index)
 {
 	if (subtitlesReady) {
-		mediaController->setCurrentSubtitle(subtitles.at(index));
+		if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty()) {
+			emit changeDvbSubtitle(index);
+		} else {
+			mediaController->setCurrentSubtitle(subtitles.at(index));
+		}
 	}
 }
 
@@ -607,6 +634,10 @@ void MediaWidget::subtitlesChanged()
 	subtitles = mediaController->availableSubtitles();
 	subtitles.prepend(Phonon::SubtitleDescription()); // helper for switching subtitles off
 	updateSubtitleBox();
+
+	if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty() && (subtitles.size() > 1)) {
+		mediaController->setCurrentSubtitle(subtitles.at(1));
+	}
 }
 
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
@@ -626,9 +657,13 @@ void MediaWidget::updateAudioChannelBox()
 {
 	audioChannelsReady = false;
 	audioChannelBox->clear();
-	audioChannelBox->setEnabled(playing && (audioChannels.size() > 1));
 
-	if (playing) {
+	if ((dvbFeed != NULL) && !dvbFeed->audioChannels.isEmpty()) {
+		audioChannelBox->addItems(dvbFeed->audioChannels);
+		audioChannelBox->setCurrentIndex(dvbFeed->audioChannelIndex);
+		audioChannelBox->setEnabled(dvbFeed->audioChannels.size() > 1);
+		audioChannelsReady = true;
+	} else if (playing) {
 		Phonon::AudioChannelDescription current = mediaController->currentAudioChannel();
 		int index = -1;
 
@@ -642,7 +677,10 @@ void MediaWidget::updateAudioChannelBox()
 		}
 
 		audioChannelBox->setCurrentIndex(index);
+		audioChannelBox->setEnabled(audioChannels.size() > 1);
 		audioChannelsReady = true;
+	} else {
+		audioChannelBox->setEnabled(false);
 	}
 }
 
@@ -650,9 +688,13 @@ void MediaWidget::updateSubtitleBox()
 {
 	subtitlesReady = false;
 	subtitleBox->clear();
-	subtitleBox->setEnabled(playing && (subtitles.size() > 1));
 
-	if (playing) {
+	if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty()) {
+		subtitleBox->addItems(dvbFeed->subtitles);
+		subtitleBox->setCurrentIndex(dvbFeed->subtitleIndex);
+		subtitleBox->setEnabled(dvbFeed->subtitles.size() > 1);
+		subtitlesReady = true;
+	} else if (playing) {
 		Phonon::SubtitleDescription current = mediaController->currentSubtitle();
 		int index = 0;
 
@@ -668,6 +710,9 @@ void MediaWidget::updateSubtitleBox()
 		}
 
 		subtitleBox->setCurrentIndex(index);
+		subtitleBox->setEnabled(subtitles.size() > 1);
 		subtitlesReady = true;
+	} else {
+		subtitleBox->setEnabled(false);
 	}
 }

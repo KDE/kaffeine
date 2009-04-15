@@ -58,6 +58,8 @@ private slots:
 	void playLive(const QModelIndex &index);
 	void prepareTimeShift();
 	void startTimeShift();
+	void changeAudioChannel(int index);
+	void changeSubtitle(int index);
 	void liveStopped();
 
 private:

@@ -58,14 +58,14 @@ public:
 	void playVideoCd();
 	void playDvd();
 
-	/*
-	 * start dvb mode
-	 */
+	void playDvb(); // starts dvb mode
+	void writeDvbData(const QByteArray &data);
 
-	void playDvb();
+	// empty list = use audio channels / subtitles provided by phonon
+	void updateDvbAudioChannels(const QStringList &audioChannels, int currentIndex);
+	void updateDvbSubtitles(const QStringList &subtitles, int currentIndex);
 
 public slots:
-	void writeDvbData(const QByteArray &data);
 	void stopDvb();
 
 signals:
@@ -78,6 +78,8 @@ signals:
 
 	void prepareDvbTimeShift();
 	void startDvbTimeShift();
+	void changeDvbAudioChannel(int index);
+	void changeDvbSubtitle(int index);
 	void dvbStopped();
 
 private slots:

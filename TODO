@@ -9,8 +9,6 @@ Working:
 == Functionality required before first beta release ==
 
 = DVB Subsystem =
-DVB Selection of Audio Channels/Subtitles
-Channel properties dialog
 On screen display showing current channel information (needs spec)
 Electronic program guide support (EIT)
 Electronic Program guide support (ATSC)

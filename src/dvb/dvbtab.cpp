@@ -64,6 +64,12 @@ public:
 
 	void removePidFilters();
 	bool startTimeShift(const QString &fileName);
+	void replacePid(int oldPid, int newPid);
+
+	int audioPid;
+	int subtitlePid;
+	QList<int> audioPids;
+	QList<int> subtitlePids;
 
 private:
 	void processData(const char data[188]);
@@ -82,8 +88,8 @@ private:
 };
 
 DvbLiveStream::DvbLiveStream(DvbDevice *device_, const QSharedDataPointer<DvbChannel> &channel_,
-	MediaWidget *mediaWidget_, const QList<int> &pids_) : device(device_), channel(channel_),
-	mediaWidget(mediaWidget_), pids(pids_)
+	MediaWidget *mediaWidget_, const QList<int> &pids_) : audioPid(-1), subtitlePid(-1),
+	device(device_), channel(channel_), mediaWidget(mediaWidget_), pids(pids_)
 {
 	foreach (int pid, pids) {
 		device->addPidFilter(pid, this);
@@ -122,6 +128,27 @@ bool DvbLiveStream::startTimeShift(const QString &fileName)
 	timeShiftFile.write(pmtGenerator.generatePackets());
 
 	return true;
+}
+
+void DvbLiveStream::replacePid(int oldPid, int newPid)
+{
+	if (oldPid == newPid) {
+		return;
+	}
+
+	if (oldPid != -1) {
+		device->removePidFilter(oldPid, this);
+		pids.removeAll(oldPid);
+	}
+
+	if (newPid != -1) {
+		device->addPidFilter(newPid, this);
+		pids.append(newPid);
+	}
+
+	pmtGenerator.initPmt(channel->pmtPid, DvbPmtSection(DvbSection(channel->pmtSection)), pids);
+	buffer.append(patGenerator.generatePackets());
+	buffer.append(pmtGenerator.generatePackets());
 }
 
 void DvbLiveStream::processData(const char data[188])
@@ -175,9 +202,12 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(configureAction, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", configureAction));
 
-	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
 	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
 	connect(mediaWidget, SIGNAL(startDvbTimeShift()), this, SLOT(startTimeShift()));
+	connect(mediaWidget, SIGNAL(changeDvbAudioChannel(int)),
+		this, SLOT(changeAudioChannel(int)));
+	connect(mediaWidget, SIGNAL(changeDvbSubtitle(int)), this, SLOT(changeSubtitle(int)));
+	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
 
 	dvbManager = new DvbManager(this);
 
@@ -331,11 +361,29 @@ void DvbTab::prepareTimeShift()
 		mediaWidget->stopDvb();
 		return;
 	}
+
+	// don't allow changes after starting time shift
+	mediaWidget->updateDvbAudioChannels(QStringList(), 0);
+	mediaWidget->updateDvbSubtitles(QStringList(), 0);
 }
 
 void DvbTab::startTimeShift()
 {
 	mediaWidget->play(liveStream->getTimeShiftFileName());
+}
+
+void DvbTab::changeAudioChannel(int index)
+{
+	int audioPid = liveStream->audioPids.at(index);
+	liveStream->replacePid(liveStream->audioPid, audioPid);
+	liveStream->audioPid = audioPid;
+}
+
+void DvbTab::changeSubtitle(int index)
+{
+	int subtitlePid = liveStream->subtitlePids.at(index);
+	liveStream->replacePid(liveStream->subtitlePid, subtitlePid);
+	liveStream->subtitlePid = subtitlePid;
 }
 
 void DvbTab::liveStopped()
@@ -376,5 +424,44 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 
 	liveStream = new DvbLiveStream(device, channel, mediaWidget, pids);
 
-	// FIXME audio streams, subtitles, ...
+	DvbPmtParser pmtParser(DvbPmtSection(DvbSection(channel->pmtSection)));
+
+	QStringList audioChannels;
+
+	for (QMap<int, QString>::const_iterator it = pmtParser.audioPids.constBegin();
+	     it != pmtParser.audioPids.constEnd(); ++it) {
+		if (!it.value().isEmpty()) {
+			audioChannels.append(it.value());
+		} else {
+			audioChannels.append(QString::number(it.key()));
+		}
+
+		liveStream->audioPids.append(it.key());
+	}
+
+	liveStream->audioPid = channel->audioPid;
+
+	if (!audioChannels.isEmpty()) {
+		mediaWidget->updateDvbAudioChannels(audioChannels,
+			liveStream->audioPids.indexOf(channel->audioPid));
+	}
+
+	QStringList subtitles;
+	subtitles.append(i18n("off"));
+	liveStream->subtitlePids.append(-1);
+
+	for (QMap<int, QString>::const_iterator it = pmtParser.subtitlePids.constBegin();
+	     it != pmtParser.subtitlePids.constEnd(); ++it) {
+		if (!it.value().isEmpty()) {
+			subtitles.append(it.value());
+		} else {
+			subtitles.append(QString::number(it.key()));
+		}
+
+		liveStream->subtitlePids.append(it.key());
+	}
+
+	if (subtitles.size() > 1) {
+		mediaWidget->updateDvbSubtitles(subtitles, 0);
+	}
 }
