@@ -32,6 +32,7 @@ class AudioOutput;
 class MediaController;
 class MediaObject;
 }
+class QActionGroup;
 class QPushButton;
 class QSlider;
 class KAction;
@@ -99,6 +100,12 @@ private slots:
 	void volumeChanged(qreal volume);
 	void increaseVolume();
 	void decreaseVolume();
+	void updateTitleMenu();
+	void updateChapterMenu();
+	void updateAngleMenu();
+	void changeTitle(QAction *action);
+	void changeChapter(QAction *action);
+	void changeAngle(QAction *action);
 	void updateSeekable();
 	void longSkipBackward();
 	void skipBackward();
@@ -111,12 +118,12 @@ private slots:
 
 	void titleCountChanged(int count);
 	void chapterCountChanged(int count);
+	void angleCountChanged(int count);
 	void audioChannelsChanged();
 	void subtitlesChanged();
 
 private:
 	void mouseDoubleClickEvent(QMouseEvent *);
-	void updatePreviousNext();
 	void updateAudioChannelBox();
 	void updateSubtitleBox();
 
@@ -137,10 +144,23 @@ private:
 	KComboBox *audioChannelBox;
 	KComboBox *subtitleBox;
 	QString textSubtitlesOff;
+	bool audioChannelsReady;
+	bool subtitlesReady;
+	QList<Phonon::AudioChannelDescription> audioChannels;
+	QList<Phonon::SubtitleDescription> subtitles;
 	KAction *muteAction;
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
 	QSlider *volumeSlider;
+	KMenu *titleMenu;
+	KMenu *chapterMenu;
+	KMenu *angleMenu;
+	QActionGroup *titleGroup;
+	QActionGroup *chapterGroup;
+	QActionGroup *angleGroup;
+	int titleCount;
+	int chapterCount;
+	int angleCount;
 	KAction *longSkipBackwardAction;
 	KAction *skipBackwardAction;
 	KAction *skipForwardAction;
@@ -148,13 +168,6 @@ private:
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 	bool showElapsedTime;
-
-	int titleCount;
-	int chapterCount;
-	bool audioChannelsReady;
-	bool subtitlesReady;
-	QList<Phonon::AudioChannelDescription> audioChannels;
-	QList<Phonon::SubtitleDescription> subtitles;
 };
 
 #endif /* MEDIAWIDGET_H */

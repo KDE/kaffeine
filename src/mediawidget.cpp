@@ -112,8 +112,7 @@ QTime JumpToPositionDialog::getPosition() const
 }
 
 MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *collection,
-	QWidget *parent) : QWidget(parent), dvbFeed(NULL), playing(true), titleCount(0),
-	chapterCount(0), audioChannelsReady(false), subtitlesReady(false)
+	QWidget *parent) : QWidget(parent), dvbFeed(NULL), playing(true)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -135,14 +134,6 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	layout->addWidget(videoWidget);
 
 	mediaController = new Phonon::MediaController(mediaObject);
-	connect(mediaController, SIGNAL(availableTitlesChanged(int)),
-		this, SLOT(titleCountChanged(int)));
-	connect(mediaController, SIGNAL(availableChaptersChanged(int)),
-		this, SLOT(chapterCountChanged(int)));
-	connect(mediaController, SIGNAL(availableAudioChannelsChanged()),
-		this, SLOT(audioChannelsChanged()));
-	connect(mediaController, SIGNAL(availableSubtitlesChanged()),
-		this, SLOT(subtitlesChanged()));
 
 	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), this);
 	actionPrevious->setShortcut(KShortcut(Qt::Key_PageUp, Qt::Key_MediaPrevious));
@@ -174,13 +165,19 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	menu->addSeparator();
 
 	audioChannelBox = new KComboBox(toolBar);
+	audioChannelsReady = false;
 	connect(audioChannelBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(changeAudioChannel(int)));
+	connect(mediaController, SIGNAL(availableAudioChannelsChanged()),
+		this, SLOT(audioChannelsChanged()));
 	toolBar->addWidget(audioChannelBox);
 
 	subtitleBox = new KComboBox(toolBar);
 	textSubtitlesOff = i18n("off");
+	subtitlesReady = false;
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSubtitle(int)));
+	connect(mediaController, SIGNAL(availableSubtitlesChanged()),
+		this, SLOT(subtitlesChanged()));
 	toolBar->addWidget(subtitleBox);
 
 	muteAction = new KAction(i18n("Mute volume"), this);
@@ -214,6 +211,34 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
 	menu->addAction(collection->addAction("controls_decrease_volume", action));
+	menu->addSeparator();
+
+	titleMenu = new KMenu(i18n("Title"), this);
+	titleGroup = new QActionGroup(this);
+	titleCount = 0;
+	connect(titleGroup, SIGNAL(triggered(QAction*)), this, SLOT(changeTitle(QAction*)));
+	connect(mediaController, SIGNAL(availableTitlesChanged(int)),
+		this, SLOT(titleCountChanged(int)));
+	connect(mediaController, SIGNAL(titleChanged(int)), this, SLOT(updateTitleMenu()));
+	menu->addMenu(titleMenu);
+
+	chapterMenu = new KMenu(i18n("Chapter"), this);
+	chapterGroup = new QActionGroup(this);
+	chapterCount = 0;
+	connect(chapterGroup, SIGNAL(triggered(QAction*)), this, SLOT(changeChapter(QAction*)));
+	connect(mediaController, SIGNAL(availableChaptersChanged(int)),
+		this, SLOT(chapterCountChanged(int)));
+	connect(mediaController, SIGNAL(chapterChanged(int)), this, SLOT(updateChapterMenu()));
+	menu->addMenu(chapterMenu);
+
+	angleMenu = new KMenu(i18n("Angle"), this);
+	angleGroup = new QActionGroup(this);
+	angleCount = 0;
+	connect(angleGroup, SIGNAL(triggered(QAction*)), this, SLOT(changeAngle(QAction*)));
+	connect(mediaController, SIGNAL(availableAnglesChanged(int)),
+		this, SLOT(angleCountChanged(int)));
+	connect(mediaController, SIGNAL(angleChanged(int)), this, SLOT(updateAngleMenu()));
+	menu->addMenu(angleMenu);
 	menu->addSeparator();
 
 	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
@@ -366,17 +391,23 @@ void MediaWidget::stateChanged(Phonon::State state)
 		actionPlayPause->setText(textPause);
 		actionPlayPause->setIcon(iconPause);
 		actionPlayPause->setCheckable(true);
+		actionPrevious->setEnabled(true);
 		actionStop->setEnabled(true);
+		actionNext->setEnabled(true);
 	} else {
 		actionPlayPause->setText(textPlay);
 		actionPlayPause->setIcon(iconPlay);
 		actionPlayPause->setCheckable(false);
+		actionPrevious->setEnabled(false);
 		actionStop->setEnabled(false);
+		actionNext->setEnabled(false);
 	}
 
-	updatePreviousNext();
 	updateAudioChannelBox();
 	updateSubtitleBox();
+	updateTitleMenu();
+	updateChapterMenu();
+	updateAngleMenu();
 	updateSeekable();
 	updateTimeButton();
 	updateCaption();
@@ -507,6 +538,108 @@ void MediaWidget::decreaseVolume()
 	volumeSlider->setValue(volumeSlider->value() - 5);
 }
 
+void MediaWidget::updateTitleMenu()
+{
+	if (playing && (titleCount > 1)) {
+		QList<QAction *> actions = titleGroup->actions();
+
+		if (actions.count() < titleCount) {
+			for (int i = actions.count(); i < titleCount; ++i) {
+				QAction *action = titleGroup->addAction(QString::number(i + 1));
+				action->setCheckable(true);
+				titleMenu->addAction(action);
+			}
+		} else if (actions.count() > titleCount) {
+			for (int i = actions.count(); i > titleCount; --i) {
+				delete actions.at(i - 1);
+			}
+		}
+
+		int current = mediaController->currentTitle() - 1;
+
+		if ((current >= 0) && (current < titleCount)) {
+			titleGroup->actions().at(current)->setChecked(true);
+		}
+
+		titleMenu->setEnabled(true);
+	} else {
+		titleMenu->setEnabled(false);
+	}
+}
+
+void MediaWidget::updateChapterMenu()
+{
+	if (playing && (chapterCount > 1)) {
+		QList<QAction *> actions = chapterGroup->actions();
+
+		if (actions.count() < chapterCount) {
+			for (int i = actions.count(); i < chapterCount; ++i) {
+				QAction *action = chapterGroup->addAction(QString::number(i + 1));
+				action->setCheckable(true);
+				chapterMenu->addAction(action);
+			}
+		} else if (actions.count() > chapterCount) {
+			for (int i = actions.count(); i > chapterCount; --i) {
+				delete actions.at(i - 1);
+			}
+		}
+
+		int current = mediaController->currentChapter() - 1;
+
+		if ((current >= 0) && (current < chapterCount)) {
+			chapterGroup->actions().at(current)->setChecked(true);
+		}
+
+		chapterMenu->setEnabled(true);
+	} else {
+		chapterMenu->setEnabled(false);
+	}
+}
+
+void MediaWidget::updateAngleMenu()
+{
+	if (playing && (angleCount > 1)) {
+		QList<QAction *> actions = angleGroup->actions();
+
+		if (actions.count() < angleCount) {
+			for (int i = actions.count(); i < angleCount; ++i) {
+				QAction *action = angleGroup->addAction(QString::number(i + 1));
+				action->setCheckable(true);
+				angleMenu->addAction(action);
+			}
+		} else if (actions.count() > angleCount) {
+			for (int i = actions.count(); i > angleCount; --i) {
+				delete actions.at(i - 1);
+			}
+		}
+
+		int current = mediaController->currentAngle() - 1;
+
+		if ((current >= 0) && (current < angleCount)) {
+			angleGroup->actions().at(current)->setChecked(true);
+		}
+
+		angleMenu->setEnabled(true);
+	} else {
+		angleMenu->setEnabled(false);
+	}
+}
+
+void MediaWidget::changeTitle(QAction *action)
+{
+	mediaController->setCurrentTitle(titleGroup->actions().indexOf(action) + 1);
+}
+
+void MediaWidget::changeChapter(QAction *action)
+{
+	mediaController->setCurrentChapter(chapterGroup->actions().indexOf(action) + 1);
+}
+
+void MediaWidget::changeAngle(QAction *action)
+{
+	mediaController->setCurrentAngle(angleGroup->actions().indexOf(action) + 1);
+}
+
 void MediaWidget::updateSeekable()
 {
 	bool seekable = playing && mediaObject->isSeekable();
@@ -620,13 +753,19 @@ void MediaWidget::updateCaption()
 void MediaWidget::titleCountChanged(int count)
 {
 	titleCount = count;
-	updatePreviousNext();
+	updateTitleMenu();
 }
 
 void MediaWidget::chapterCountChanged(int count)
 {
 	chapterCount = count;
-	updatePreviousNext();
+	updateChapterMenu();
+}
+
+void MediaWidget::angleCountChanged(int count)
+{
+	angleCount = count;
+	updateAngleMenu();
 }
 
 void MediaWidget::audioChannelsChanged()
@@ -649,14 +788,6 @@ void MediaWidget::subtitlesChanged()
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	emit toggleFullscreen();
-}
-
-void MediaWidget::updatePreviousNext()
-{
-	// bool enabled = playing && ((titleCount > 1) || (chapterCount > 1));
-	bool enabled = playing; // hmm - ok for now
-	actionPrevious->setEnabled(enabled);
-	actionNext->setEnabled(enabled);
 }
 
 void MediaWidget::updateAudioChannelBox()
