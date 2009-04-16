@@ -93,7 +93,7 @@ void DvbRecording::start()
 				path += '-' + QString::number(attempt);
 			}
 
-			file.setFileName(path + ".ts"); // FIXME .ts or .m2t(s) ?
+			file.setFileName(path + ".m2t");
 
 			if (file.exists() || !file.open(QIODevice::WriteOnly)) {
 				continue;

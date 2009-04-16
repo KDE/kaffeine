@@ -394,9 +394,8 @@ void DvbTab::nextChannel()
 
 void DvbTab::prepareTimeShift()
 {
-	// FIXME .ts <--> .m2t ?
 	QString fileName = dvbManager->getTimeShiftFolder() + "/TimeShift-" +
-		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".ts";
+		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t";
 
 	if (!liveStream->startTimeShift(fileName)) {
 		// FIXME error message
