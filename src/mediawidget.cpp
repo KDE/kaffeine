@@ -180,6 +180,18 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 		this, SLOT(subtitlesChanged()));
 	toolBar->addWidget(subtitleBox);
 
+	KMenu *audioMenu = new KMenu(i18n("Audio"));
+
+	KAction *action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
+	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
+	audioMenu->addAction(collection->addAction("controls_increase_volume", action));
+
+	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease Volume"), this);
+	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
+	audioMenu->addAction(collection->addAction("controls_decrease_volume", action));
+
 	muteAction = new KAction(i18n("Mute volume"), this);
 	mutedIcon = KIcon("audio-volume-muted");
 	unmutedIcon = KIcon("audio-volume-medium");
@@ -188,8 +200,12 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	connect(muteAction, SIGNAL(triggered(bool)), this, SLOT(toggleMuted()));
 	connect(audioOutput, SIGNAL(mutedChanged(bool)), this, SLOT(mutedChanged(bool)));
 	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
+	audioMenu->addAction(muteAction);
 
-	KAction *action = new KAction(i18n("Volume slider"), this);
+	menu->addMenu(audioMenu);
+	menu->addSeparator();
+
+	action = new KAction(i18n("Volume slider"), this);
 	volumeSlider = new QSlider(toolBar);
 	volumeSlider->setFocusPolicy(Qt::NoFocus);
 	volumeSlider->setOrientation(Qt::Horizontal);
@@ -201,17 +217,6 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 		readEntry("Volume", 100));
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
-
-	action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
-	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
-	menu->addAction(collection->addAction("controls_increase_volume", action));
-
-	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease Volume"), this);
-	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
-	menu->addAction(collection->addAction("controls_decrease_volume", action));
-	menu->addSeparator();
 
 	titleMenu = new KMenu(i18n("Title"), this);
 	titleGroup = new QActionGroup(this);
