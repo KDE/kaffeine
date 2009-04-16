@@ -192,7 +192,7 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
 	audioMenu->addAction(collection->addAction("controls_decrease_volume", action));
 
-	muteAction = new KAction(i18n("Mute volume"), this);
+	muteAction = new KAction(i18n("Mute Volume"), this);
 	mutedIcon = KIcon("audio-volume-muted");
 	unmutedIcon = KIcon("audio-volume-medium");
 	muteAction->setIcon(unmutedIcon);
@@ -205,7 +205,7 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	menu->addMenu(audioMenu);
 	menu->addSeparator();
 
-	action = new KAction(i18n("Volume slider"), this);
+	action = new KAction(i18n("Volume Slider"), this);
 	volumeSlider = new QSlider(toolBar);
 	volumeSlider->setFocusPolicy(Qt::NoFocus);
 	volumeSlider->setOrientation(Qt::Horizontal);
