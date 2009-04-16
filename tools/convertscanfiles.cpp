@@ -19,7 +19,6 @@
  */
 
 #include <QCoreApplication>
-#include <QCryptographicHash>
 #include <QDate>
 #include <QDebug>
 #include <QDir>
@@ -301,8 +300,7 @@ int main(int argc, char *argv[])
 	readScanDirectory(out, path, DvbTransponderBase::DvbT);
 	readScanDirectory(out, path, DvbTransponderBase::Atsc);
 
-	out << "# sha1sum " << flush;
-	out << QCryptographicHash::hash(data, QCryptographicHash::Sha1).toHex() << '\n' << flush;
+	out.flush();
 
 	QFile file(argv[2]);
 
@@ -312,6 +310,15 @@ int main(int argc, char *argv[])
 	}
 
 	file.write(data);
+
+	QFile compressedFile(QString(argv[2]) + ".qz");
+
+	if (!compressedFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		qCritical() << "Error: can't open file" << compressedFile.fileName();
+		return 1;
+	}
+
+	compressedFile.write(qCompress(data, 9));
 
 	return 0;
 }

@@ -20,7 +20,6 @@
 
 #include "dvbmanager.h"
 
-#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <KDebug>
@@ -458,21 +457,15 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 
 bool DvbManager::updateScanFile(const QByteArray &data)
 {
-	if (data.size() < 41) {
-		kWarning() << "too small";
+	QByteArray uncompressed = qUncompress(data);
+
+	if (uncompressed.isEmpty()) {
+		kWarning() << "qUncompress failed";
 		return false;
 	}
 
-	if (!DvbScanData(data).readDate().isValid()) {
+	if (!DvbScanData(uncompressed).readDate().isValid()) {
 		kWarning() << "invalid format";
-		return false;
-	}
-
-	QCryptographicHash hash(QCryptographicHash::Sha1);
-	hash.addData(data.constData(), data.size() - 41);
-
-	if (hash.result().toHex() != data.mid(data.size() - 41, 40)) {
-		kWarning() << "invalid hash";
 		return false;
 	}
 
@@ -483,7 +476,7 @@ bool DvbManager::updateScanFile(const QByteArray &data)
 		return false;
 	}
 
-	file.write(data);
+	file.write(uncompressed);
 
 	return true;
 }
@@ -726,7 +719,7 @@ void DvbManager::readScanFile()
 		kDebug() << "can't open" << localFile.fileName();
 	}
 
-	QFile globalFile(KStandardDirs::locate("appdata", "scanfile_g.dvb"));
+	QFile globalFile(KStandardDirs::locate("appdata", "scanfile.dvb"));
 	QDate globalDate;
 
 	if (globalFile.open(QIODevice::ReadOnly)) {

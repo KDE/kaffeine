@@ -290,7 +290,7 @@ void DvbScanFileDownloadDialog::progressChanged(KJob *, unsigned long percent)
 
 void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)
 {
-	if ((scanData.size() + data.size()) <= (512 * 1024)) {
+	if ((scanData.size() + data.size()) <= (64 * 1024)) {
 		scanData.append(data);
 	} else {
 		job->kill(KJob::EmitResult);
