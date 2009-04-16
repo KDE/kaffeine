@@ -161,10 +161,7 @@ private:
 	int titleCount;
 	int chapterCount;
 	int angleCount;
-	KAction *longSkipBackwardAction;
-	KAction *skipBackwardAction;
-	KAction *skipForwardAction;
-	KAction *longSkipForwardAction;
+	KMenu *navigationMenu;
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 	bool showElapsedTime;

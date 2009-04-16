@@ -218,6 +218,42 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
+	navigationMenu = new KMenu(i18n("Navigation"));
+
+	action = new KAction(KIcon("media-skip-backward"), i18n("Skip 1min Backward"), this);
+	action->setShortcut(Qt::SHIFT + Qt::Key_Left);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
+	navigationMenu->addAction(collection->addAction("controls_long_skip_backward", action));
+
+	action = new KAction(KIcon("media-skip-backward"), i18n("Skip 10s Backward"), this);
+	action->setShortcut(Qt::Key_Left);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
+	navigationMenu->addAction(collection->addAction("controls_skip_backward", action));
+
+	action = new KAction(KIcon("media-skip-forward"), i18n("Skip 10s Forward"), this);
+	action->setShortcut(Qt::Key_Right);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
+	navigationMenu->addAction(collection->addAction("controls_skip_forward", action));
+
+	action = new KAction(KIcon("media-skip-forward"), i18n("Skip 1min Forward"), this);
+	action->setShortcut(Qt::SHIFT + Qt::Key_Right);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
+	navigationMenu->addAction(collection->addAction("controls_long_skip_forward", action));
+	menu->addMenu(navigationMenu);
+
+	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
+	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
+	connect(jumpToPositionAction, SIGNAL(triggered(bool)), this, SLOT(jumpToPosition()));
+	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
+	menu->addSeparator();
+
+	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
+	seekSlider->setMediaObject(mediaObject);
+	QSizePolicy sizePolicy = seekSlider->sizePolicy();
+	sizePolicy.setHorizontalStretch(1);
+	seekSlider->setSizePolicy(sizePolicy);
+	toolBar->addWidget(seekSlider);
+
 	titleMenu = new KMenu(i18n("Title"), this);
 	titleGroup = new QActionGroup(this);
 	titleCount = 0;
@@ -244,44 +280,6 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 		this, SLOT(angleCountChanged(int)));
 	connect(mediaController, SIGNAL(angleChanged(int)), this, SLOT(updateAngleMenu()));
 	menu->addMenu(angleMenu);
-	menu->addSeparator();
-
-	Phonon::SeekSlider *seekSlider = new Phonon::SeekSlider(toolBar);
-	seekSlider->setMediaObject(mediaObject);
-	QSizePolicy sizePolicy = seekSlider->sizePolicy();
-	sizePolicy.setHorizontalStretch(1);
-	seekSlider->setSizePolicy(sizePolicy);
-	toolBar->addWidget(seekSlider);
-
-	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
-		i18n("Skip 1min Backward"), this);
-	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
-	connect(longSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
-	menu->addAction(collection->addAction("controls_long_skip_backward",
-		longSkipBackwardAction));
-
-	skipBackwardAction = new KAction(KIcon("media-skip-backward"), i18n("Skip 10s Backward"),
-		this);
-	skipBackwardAction->setShortcut(Qt::Key_Left);
-	connect(skipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
-	menu->addAction(collection->addAction("controls_skip_backward", skipBackwardAction));
-
-	skipForwardAction = new KAction(KIcon("media-skip-forward"), i18n("Skip 10s Forward"),
-		this);
-	skipForwardAction->setShortcut(Qt::Key_Right);
-	connect(skipForwardAction, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
-	menu->addAction(collection->addAction("controls_skip_forward", skipForwardAction));
-
-	longSkipForwardAction = new KAction(KIcon("media-skip-forward"), i18n("Skip 1min Forward"),
-		this);
-	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
-	connect(longSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
-	menu->addAction(collection->addAction("controls_long_skip_forward", longSkipForwardAction));
-
-	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
-	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
-	connect(jumpToPositionAction, SIGNAL(triggered(bool)), this, SLOT(jumpToPosition()));
-	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
 
 	action = new KAction(i18n("Switch between elapsed and remaining time display"), this);
 	timeButton = new QPushButton(toolBar);
@@ -647,13 +645,13 @@ void MediaWidget::changeAngle(QAction *action)
 
 void MediaWidget::updateSeekable()
 {
-	bool seekable = playing && mediaObject->isSeekable();
-
-	longSkipBackwardAction->setEnabled(seekable);
-	skipBackwardAction->setEnabled(seekable);
-	skipForwardAction->setEnabled(seekable);
-	longSkipForwardAction->setEnabled(seekable);
-	jumpToPositionAction->setEnabled(seekable);
+	if (playing && mediaObject->isSeekable()) {
+		navigationMenu->setEnabled(true);
+		jumpToPositionAction->setEnabled(true);
+	} else {
+		navigationMenu->setEnabled(false);
+		jumpToPositionAction->setEnabled(false);
+	}
 }
 
 void MediaWidget::longSkipBackward()
