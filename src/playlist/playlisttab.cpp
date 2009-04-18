@@ -23,11 +23,12 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <QSplitter>
+#include <QTreeView>
+#include <kfilewidget.h>
 #include "../mediawidget.h"
+#include "playlistmodel.h"
 
-// FIXME stubby :)
-
-PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
+PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_), currentTrack(0)
 {
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
@@ -37,18 +38,33 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 
 	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
-	new QLabel("Hi, i'm the file browser", verticalSplitter);
+	new KFileWidget(KUrl(), verticalSplitter);
+
 	new QLabel("Hi, i'm the playlist browser", verticalSplitter);
 
 	verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
-	new QLabel("Hi, i'm the playlist", verticalSplitter);
+	playlistModel = new PlaylistModel(this);
+	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(nextTrack()));
+	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(previousTrack()));
+
+	playlistView = new QTreeView(this);
+	playlistView->setAcceptDrops(true);
+	playlistView->setAlternatingRowColors(true);
+	playlistView->setDragDropMode(QAbstractItemView::DragDrop);
+	playlistView->setDragEnabled(true);
+	playlistView->setDropIndicatorShown(true);
+	playlistView->setRootIsDecorated(false);
+	playlistView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	playlistView->setModel(playlistModel);
+	connect(playlistView, SIGNAL(doubleClicked(QModelIndex)), // FIXME use activated(...) ?
+		this, SLOT(playTrack(QModelIndex)));
+
+	verticalSplitter->addWidget(playlistView);
 
 	QWidget *mediaContainer = new QWidget(verticalSplitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
 	mediaLayout->setMargin(0);
-
-	verticalSplitter->setStretchFactor(0, 0);
 	verticalSplitter->setStretchFactor(1, 1);
 }
 
@@ -56,12 +72,51 @@ PlaylistTab::~PlaylistTab()
 {
 }
 
-void PlaylistTab::addUrl(const KUrl &url)
+void PlaylistTab::playUrl(const KUrl &url)
 {
-	// FIXME
+	int track = playlistModel->trackCount();
+	playlistModel->appendUrl(url);
+	playTrack(track);
+}
+
+void PlaylistTab::playUrls(const QList<KUrl> &urls)
+{
+	int track = playlistModel->trackCount();
+	playlistModel->appendUrls(urls);
+	playTrack(track);
+}
+
+void PlaylistTab::previousTrack()
+{
+	if ((currentTrack - 1) >= 0) {
+		playTrack(currentTrack - 1);
+	}
+}
+
+void PlaylistTab::nextTrack()
+{
+	if ((currentTrack + 1) < playlistModel->trackCount()) {
+		playTrack(currentTrack + 1);
+	}
+}
+
+void PlaylistTab::playTrack(const QModelIndex &index)
+{
+	if (!index.isValid() || (index.row() >= playlistModel->trackCount())) {
+		return;
+	}
+
+	playTrack(index.row());
 }
 
 void PlaylistTab::activate()
 {
 	mediaLayout->addWidget(mediaWidget);
+}
+
+void PlaylistTab::playTrack(int track)
+{
+	currentTrack = track;
+	mediaWidget->play(playlistModel->getTrack(currentTrack));
+	// FIXME update playlistView currentTrack display
 }

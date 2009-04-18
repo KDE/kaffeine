@@ -1,5 +1,5 @@
 /*
- * playlisttab.h
+ * playlistmodel.h
  *
  * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,40 +18,33 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef PLAYLISTTAB_H
-#define PLAYLISTTAB_H
+#ifndef PLAYLISTMODEL_H
+#define PLAYLISTMODEL_H
 
-#include "../kaffeine.h"
+#include <QAbstractTableModel>
 
-class QModelIndex;
-class QTreeView;
-class PlaylistModel;
+class KUrl;
 
-class PlaylistTab : public TabBase
+class PlaylistModel : public QAbstractTableModel
 {
-	Q_OBJECT
 public:
-	explicit PlaylistTab(MediaWidget *mediaWidget_);
-	~PlaylistTab();
+	explicit PlaylistModel(QObject *parent);
+	~PlaylistModel();
 
-	void playUrl(const KUrl &url);
-	void playUrls(const QList<KUrl> &urls);
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	Qt::DropActions supportedDropActions() const;
 
-public slots:
-	void previousTrack();
-	void nextTrack();
-	void playTrack(const QModelIndex &index);
+	void appendUrl(const KUrl &url);
+	void appendUrls(const QList<KUrl> &urls);
+
+	KUrl getTrack(int number) const;
+	int trackCount() const; // FIXME use rowCount() instead?
 
 private:
-	void activate();
-
-	void playTrack(int track);
-
-	MediaWidget *mediaWidget;
-	QLayout *mediaLayout;
-	PlaylistModel *playlistModel;
-	QTreeView *playlistView;
-	int currentTrack;
+	QList<KUrl> tracks;
 };
 
-#endif /* PLAYLISTTAB_H */
+#endif /* PLAYLISTMODEL_H */

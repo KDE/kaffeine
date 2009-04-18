@@ -35,8 +35,8 @@
 #include <KShortcutsDialog>
 #include <KToolBar>
 #include "dvb/dvbtab.h"
-#include "playlist/playlisttab.h"
 #include "mediawidget.h"
+#include "playlist/playlisttab.h"
 
 class StartTab : public TabBase
 {
@@ -292,12 +292,24 @@ void Kaffeine::parseArgs()
 	}
 
 	if (args->count() > 0) {
-		KUrl url = args->url(0);
-		actionOpenRecent->addUrl(url);
-		activateTab(playerTab);
-		mediaWidget->play(url);
+		QList<KUrl> urls;
+
+		for (int i = 0; i < args->count(); ++i) {
+			KUrl url = args->url(i);
+
+			if (url.isValid()) {
+				urls.append(url);
+			}
+		}
+
+		if (urls.size() >= 2) {
+			activateTab(playlistTab);
+			playlistTab->playUrls(urls);
+		} else if (!urls.isEmpty()) {
+			openUrl(urls.at(0));
+		}
+
 		args->clear();
-		// FIXME fix case where more than one url is passed
 		return;
 	}
 
@@ -307,13 +319,20 @@ void Kaffeine::parseArgs()
 		activateDvbTab();
 		dvbTab->playChannel(dvb);
 	}
+
 	args->clear();
 }
 
 void Kaffeine::open()
 {
-	// FIXME do we want to be able to open several files at once or not?
-	openUrl(KFileDialog::getOpenUrl(KUrl(), QString(), this, i18n("Open file")));
+	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), QString(), this, i18n("Open file"));
+
+	if (urls.size() >= 2) {
+		activateTab(playlistTab);
+		playlistTab->playUrls(urls);
+	} else if (!urls.isEmpty()) {
+		openUrl(urls.at(0));
+	}
 }
 
 void Kaffeine::openUrl()
@@ -335,8 +354,7 @@ void Kaffeine::openUrl(const KUrl &url)
 		activateTab(playerTab);
 	}
 
-	playlistTab->addUrl(copy);
-	mediaWidget->play(copy);
+	playlistTab->playUrl(copy);
 }
 
 void Kaffeine::openAudioCd()
