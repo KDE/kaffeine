@@ -129,7 +129,7 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	audioOutput = new Phonon::AudioOutput(Phonon::VideoCategory, this);
 	Phonon::createPath(mediaObject, audioOutput);
 
-	Phonon::VideoWidget *videoWidget = new Phonon::VideoWidget(this);
+	videoWidget = new Phonon::VideoWidget(this);
 	Phonon::createPath(mediaObject, videoWidget);
 	layout->addWidget(videoWidget);
 
@@ -203,6 +203,33 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	audioMenu->addAction(muteAction);
 
 	menu->addMenu(audioMenu);
+	menu->addSeparator();
+
+	KMenu *aspectMenu = new KMenu(i18n("Aspect Ratio"));
+	QActionGroup *aspectGroup = new QActionGroup(this);
+
+	action = new KAction(i18n("Auto"), aspectGroup);
+	action->setCheckable(true);
+	action->setChecked(true);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioAuto()));
+	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
+
+	action = new KAction(i18n("4:3"), aspectGroup);
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatio4_3()));
+	aspectMenu->addAction(collection->addAction("controls_aspect_4_3", action));
+
+	action = new KAction(i18n("16:9"), aspectGroup);
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatio16_9()));
+	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
+
+	action = new KAction(i18n("Fit to Window"), aspectGroup);
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioWidget()));
+	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
+
+	menu->addMenu(aspectMenu);
 	menu->addSeparator();
 
 	action = new KAction(i18n("Volume Slider"), this);
@@ -539,6 +566,26 @@ void MediaWidget::decreaseVolume()
 {
 	// QSlider ensures that the value is within the range
 	volumeSlider->setValue(volumeSlider->value() - 5);
+}
+
+void MediaWidget::aspectRatioAuto()
+{
+	videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatioAuto);
+}
+
+void MediaWidget::aspectRatio4_3()
+{
+	videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatio4_3);
+}
+
+void MediaWidget::aspectRatio16_9()
+{
+	videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatio16_9);
+}
+
+void MediaWidget::aspectRatioWidget()
+{
+	videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatioWidget);
 }
 
 void MediaWidget::updateTitleMenu()

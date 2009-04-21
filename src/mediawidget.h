@@ -31,6 +31,7 @@ namespace Phonon
 class AudioOutput;
 class MediaController;
 class MediaObject;
+class VideoWidget;
 }
 class QActionGroup;
 class QPushButton;
@@ -100,6 +101,10 @@ private slots:
 	void volumeChanged(qreal volume);
 	void increaseVolume();
 	void decreaseVolume();
+	void aspectRatioAuto();
+	void aspectRatio4_3();
+	void aspectRatio16_9();
+	void aspectRatioWidget();
 	void updateTitleMenu();
 	void updateChapterMenu();
 	void updateAngleMenu();
@@ -129,6 +134,7 @@ private:
 
 	Phonon::MediaObject *mediaObject;
 	Phonon::AudioOutput *audioOutput;
+	Phonon::VideoWidget *videoWidget;
 	Phonon::MediaController *mediaController;
 	DvbFeed *dvbFeed;
 	bool playing;
