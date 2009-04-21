@@ -51,6 +51,7 @@ public:
 
 private slots:
 	void showChannelDialog();
+	void showEpgDialog();
 	void showRecordingDialog();
 	void instantRecord(bool checked);
 	void instantRecordingRemoved();

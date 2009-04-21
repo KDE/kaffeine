@@ -30,6 +30,7 @@
 #include "dvbchannelui.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
+#include "dvbepg.h"
 #include "dvbrecording.h"
 
 class DvbScanData
@@ -264,10 +265,22 @@ public:
 	}
 };
 
+DvbDeviceConfig::DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
+	DvbDevice *device_) : deviceId(deviceId_), frontendName(frontendName_), device(device_),
+	useCount(0)
+{
+}
+
+DvbDeviceConfig::~DvbDeviceConfig()
+{
+}
+
 DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 {
 	channelModel = new DvbChannelModel(this);
 	channelModel->loadChannels();
+
+	epgModel = new DvbEpgModel(this);
 
 	recordingModel = new DvbRecordingModel(this);
 

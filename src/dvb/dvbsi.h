@@ -33,9 +33,9 @@ public:
 	DvbSectionFilter() : continuityCounter(-1), bufferValid(false) { }
 	~DvbSectionFilter() { }
 
+protected:
 	virtual void processSection(const DvbSectionData &data) = 0;
 
-protected:
 	void resetFilter()
 	{
 		buffer.clear();
@@ -364,6 +364,43 @@ private:
 	int serviceNameLength;
 };
 
+class DvbShortEventDescriptor : public DvbDescriptor
+{
+public:
+	explicit DvbShortEventDescriptor(const DvbDescriptor &descriptor);
+	~DvbShortEventDescriptor() { }
+
+	QString eventName() const
+	{
+		return DvbSiText::convertText(subArray(6, eventNameLength));
+	}
+
+	QString text() const
+	{
+		return DvbSiText::convertText(subArray(7 + eventNameLength, textLength));
+	}
+
+private:
+	int eventNameLength;
+	int textLength;
+};
+
+class DvbExtendedEventDescriptor : public DvbDescriptor
+{
+public:
+	explicit DvbExtendedEventDescriptor(const DvbDescriptor &descriptor);
+	~DvbExtendedEventDescriptor() { }
+
+	QString text() const
+	{
+		return DvbSiText::convertText(subArray(8 + itemsLength, textLength));
+	}
+
+private:
+	int itemsLength;
+	int textLength;
+};
+
 class DvbCableDescriptor : public DvbDescriptor
 {
 public:
@@ -558,6 +595,38 @@ public:
 	}
 };
 
+class DvbEitSectionEntry : public DvbSectionData
+{
+public:
+	explicit DvbEitSectionEntry(const DvbSectionData &data_);
+	~DvbEitSectionEntry() { }
+
+	void advance()
+	{
+		*this = DvbEitSectionEntry(next());
+	}
+
+	int startDate() const
+	{
+		return (at(2) << 8) | at(3);
+	}
+
+	int startTime() const
+	{
+		return (at(4) << 16) | (at(5) << 8) | at(6);
+	}
+
+	int duration() const
+	{
+		return (at(7) << 16) | (at(8) << 8) | at(9);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(subArray(12, length - 12));
+	}
+};
+
 class DvbNitSectionEntry : public DvbSectionData
 {
 public:
@@ -708,6 +777,33 @@ public:
 	DvbSdtSectionEntry entries() const
 	{
 		return DvbSdtSectionEntry(subArray(11, length - 15));
+	}
+};
+
+class DvbEitSection : public DvbStandardSection
+{
+public:
+	explicit DvbEitSection(const DvbSection &section);
+	~DvbEitSection() { }
+
+	int serviceId() const
+	{
+		return (at(3) << 8) | at(4);
+	}
+
+	int transportStreamId() const
+	{
+		return (at(8) << 8) | at(9);
+	}
+
+	int originalNetworkId() const
+	{
+		return (at(10) << 8) | at(11);
+	}
+
+	DvbEitSectionEntry entries() const
+	{
+		return DvbEitSectionEntry(subArray(14, length - 18));
 	}
 };
 

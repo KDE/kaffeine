@@ -1266,6 +1266,52 @@ DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : Dv
 	}
 }
 
+DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (length < 7) {
+		kDebug() << "invalid descriptor";
+		length = 0;
+		return;
+	}
+
+	eventNameLength = at(5);
+
+	if (eventNameLength > (length - 7)) {
+		kDebug() << "adjusting length";
+		eventNameLength = length - 7;
+	}
+
+	textLength = at(6 + eventNameLength);
+
+	if (textLength > (length - (7 + eventNameLength))) {
+		kDebug() << "adjusting length";
+		textLength = length - (7 + eventNameLength);
+	}
+}
+
+DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (length < 8) {
+		kDebug() << "invalid descriptor";
+		length = 0;
+		return;
+	}
+
+	itemsLength = at(6);
+
+	if (itemsLength > (length - 8)) {
+		kDebug() << "adjusting length";
+		itemsLength = length - 8;
+	}
+
+	textLength = at(7 + itemsLength);
+
+	if (textLength > (length - (8 + itemsLength))) {
+		kDebug() << "adjusting length";
+		textLength = length - (8 + itemsLength);
+	}
+}
+
 DvbCableDescriptor::DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (length < 13) {
@@ -1354,6 +1400,25 @@ DvbSdtSectionEntry::DvbSdtSectionEntry(const DvbSectionData &data_) : DvbSection
 	}
 }
 
+DvbEitSectionEntry::DvbEitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+{
+	if (size < 12) {
+		if (size > 0) {
+			kDebug() << "invalid entry";
+		}
+
+		length = 0;
+		return;
+	}
+
+	length = (((at(10) & 0xf) << 8) | at(11)) + 12;
+
+	if (length > size) {
+		kDebug() << "adjusting length";
+		length = size;
+	}
+}
+
 DvbNitSectionEntry::DvbNitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
 	if (size < 6) {
@@ -1420,6 +1485,15 @@ DvbPmtSection::DvbPmtSection(const DvbSection &section) : DvbStandardSection(sec
 DvbSdtSection::DvbSdtSection(const DvbSection &section) : DvbStandardSection(section)
 {
 	if (length < 15) {
+		kDebug() << "invalid section";
+		length = 0;
+		return;
+	}
+}
+
+DvbEitSection::DvbEitSection(const DvbSection &section) : DvbStandardSection(section)
+{
+	if (length < 18) {
 		kDebug() << "invalid section";
 		length = 0;
 		return;

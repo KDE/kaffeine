@@ -35,6 +35,7 @@
 #include "dvbchannelui.h"
 #include "dvbconfigdialog.h"
 #include "dvbdevice.h"
+#include "dvbepg.h"
 #include "dvbmanager.h"
 #include "dvbrecording.h"
 #include "dvbscandialog.h"
@@ -70,6 +71,7 @@ public:
 	int subtitlePid;
 	QList<int> audioPids;
 	QList<int> subtitlePids;
+	DvbEitFilter *eitFilter;
 
 private:
 	void processData(const char data[188]);
@@ -178,10 +180,15 @@ void DvbLiveStream::timerEvent(QTimerEvent *)
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
 	mediaWidget(mediaWidget_), liveStream(NULL)
 {
-	KAction *channelsAction = new KAction(KIcon("view-list-details"), i18n("Channels"), this);
+	KAction *channelsAction = new KAction(KIcon("video-television"), i18n("Channels"), this);
 	channelsAction->setShortcut(Qt::Key_C);
 	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
 	menu->addAction(collection->addAction("dvb_channels", channelsAction));
+
+	KAction *epgAction = new KAction(KIcon("view-list-details"), i18n("EPG"), this);
+	epgAction->setShortcut(Qt::Key_G);
+	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(showEpgDialog()));
+	menu->addAction(collection->addAction("dvb_epg", epgAction));
 
 	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"), i18n("Recordings"),
 		this);
@@ -313,6 +320,12 @@ void DvbTab::showRecordingDialog()
 	dialog.exec();
 }
 
+void DvbTab::showEpgDialog()
+{
+	DvbEpgDialog dialog(dvbManager, this);
+	dialog.exec();
+}
+
 void DvbTab::instantRecord(bool checked)
 {
 	if (checked) {
@@ -429,8 +442,10 @@ void DvbTab::changeSubtitle(int index)
 
 void DvbTab::liveStopped()
 {
+	liveStream->getDevice()->removePidFilter(0x0012, liveStream->eitFilter);
 	liveStream->removePidFilters();
 	dvbManager->releaseDevice(liveStream->getDevice());
+	delete liveStream->eitFilter;
 	delete liveStream;
 	liveStream = NULL;
 }
@@ -505,4 +520,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 	if (subtitles.size() > 1) {
 		mediaWidget->updateDvbSubtitles(subtitles, 0);
 	}
+
+	liveStream->eitFilter = new DvbEitFilter(channel->source, dvbManager->getEpgModel());
+	device->addPidFilter(0x0012, liveStream->eitFilter);
 }

@@ -32,6 +32,7 @@ class DvbConfig;
 class DvbDevice;
 class DvbDeviceConfig;
 class DvbDeviceManager;
+class DvbEpgModel;
 class DvbRecordingModel;
 class DvbScanData;
 class DvbTransponder;
@@ -39,9 +40,8 @@ class DvbTransponder;
 class DvbDeviceConfig
 {
 public:
-	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_)
-		: deviceId(deviceId_), frontendName(frontendName_), device(device_), useCount(0) { }
-	~DvbDeviceConfig() { }
+	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_);
+	~DvbDeviceConfig();
 
 	QString deviceId;
 	QString frontendName;
@@ -76,6 +76,11 @@ public:
 	DvbChannelModel *getChannelModel() const
 	{
 		return channelModel;
+	}
+
+	DvbEpgModel *getEpgModel() const
+	{
+		return epgModel;
 	}
 
 	DvbRecordingModel *getRecordingModel() const
@@ -120,6 +125,7 @@ private:
 	void readScanFile();
 
 	DvbChannelModel *channelModel;
+	DvbEpgModel *epgModel;
 	DvbRecordingModel *recordingModel;
 
 	QList<DvbDeviceConfig> deviceConfigs;

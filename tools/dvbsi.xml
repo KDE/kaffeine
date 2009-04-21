@@ -22,6 +22,22 @@
       <serviceNameLength bits="8" type="int" />
       <serviceName listType="DvbString" lengthFunc="serviceNameLength" type="list" />
     </DvbServiceDescriptor>
+    <DvbShortEventDescriptor>
+      <unused bits="24" />
+      <eventNameLength bits="8" type="int" />
+      <eventName listType="DvbString" lengthFunc="eventNameLength" type="list" />
+      <textLength bits="8" type="int" />
+      <text listType="DvbString" lengthFunc="textLength" type="list" />
+    </DvbShortEventDescriptor>
+    <DvbExtendedEventDescriptor>
+      <unused bits="4" />
+      <unused bits="4" />
+      <unused bits="24" />
+      <itemsLength bits="8" type="int" />
+      <items listType="unused" lengthFunc="itemsLength" type="list" />
+      <textLength bits="8" type="int" />
+      <text listType="DvbString" lengthFunc="textLength" type="list" />
+    </DvbExtendedEventDescriptor>
     <DvbCableDescriptor>
       <frequency bits="32" type="int" />
       <unused bits="12" />
@@ -85,6 +101,16 @@
       <entryLength bits="12" type="int" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
     </DvbSdtSectionEntry>
+    <DvbEitSectionEntry>
+      <unused bits="16" />
+      <startDate bits="16" type="int" />
+      <startTime bits="24" type="int" />
+      <duration bits="24" type="int" />
+      <unused bits="3" />
+      <unused bits="1" />
+      <entryLength bits="12" type="int" />
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+    </DvbEitSectionEntry>
     <DvbNitSectionEntry>
       <unused bits="16" />
       <unused bits="16" />
@@ -137,6 +163,13 @@
       <unused bits="8" />
       <entries listType="DvbSdtSectionEntry" lengthFunc="" type="list" />
     </DvbSdtSection>
+    <DvbEitSection extension="serviceId" >
+      <transportStreamId bits="16" type="int" />
+      <originalNetworkId bits="16" type="int" />
+      <unused bits="8" />
+      <unused bits="8" />
+      <entries listType="DvbEitSectionEntry" lengthFunc="" type="list" />
+    </DvbEitSection>
     <DvbNitSection>
       <unused bits="4" />
       <descriptorsLength bits="12" type="int" />

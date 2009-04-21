@@ -178,7 +178,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 			offsetString += " + " + element.name + "Length";
 		} else {
-			qCritical() << "unknown type:" << element.type;
+			qCritical() << "unknown type:" << type;
 			return;
 		}
 
@@ -374,6 +374,10 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 			break;
 
 		case Element::List:
+			if (element.listType == "unused") {
+				break;
+			}
+
 			if (element.listType == "DvbString") {
 				headerStream << "\n";
 				headerStream << "\tQString " << element.name << "() const\n";
