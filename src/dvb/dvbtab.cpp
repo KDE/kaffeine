@@ -265,6 +265,11 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
+	toolButton->setDefaultAction(epgAction);
+	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(recordingsAction);
 	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 	boxLayout->addWidget(toolButton);
