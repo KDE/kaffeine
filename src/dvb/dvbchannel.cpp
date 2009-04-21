@@ -20,50 +20,52 @@
 
 #include "dvbchannel.h"
 
+#include <QDataStream>
 #include <QTextStream>
-#include <KLocalizedString>
 
-template<> DvbTransponderBase::FecRate DvbTransponderBase::maxEnumValue()
+template<class T> static T maxEnumValue();
+
+template<> DvbTransponderBase::FecRate maxEnumValue()
 {
 	return DvbTransponderBase::FecRateMax;
 }
 
-template<> DvbCTransponder::Modulation DvbTransponderBase::maxEnumValue()
+template<> DvbCTransponder::Modulation maxEnumValue()
 {
 	return DvbCTransponder::ModulationMax;
 }
 
-template<> DvbSTransponder::Polarization DvbTransponderBase::maxEnumValue()
+template<> DvbSTransponder::Polarization maxEnumValue()
 {
 	return DvbSTransponder::PolarizationMax;
 }
 
-template<> DvbTTransponder::Bandwidth DvbTransponderBase::maxEnumValue()
+template<> DvbTTransponder::Bandwidth maxEnumValue()
 {
 	return DvbTTransponder::BandwidthMax;
 }
 
-template<> DvbTTransponder::Modulation DvbTransponderBase::maxEnumValue()
+template<> DvbTTransponder::Modulation maxEnumValue()
 {
 	return DvbTTransponder::ModulationMax;
 }
 
-template<> DvbTTransponder::TransmissionMode DvbTransponderBase::maxEnumValue()
+template<> DvbTTransponder::TransmissionMode maxEnumValue()
 {
 	return DvbTTransponder::TransmissionModeMax;
 }
 
-template<> DvbTTransponder::GuardInterval DvbTransponderBase::maxEnumValue()
+template<> DvbTTransponder::GuardInterval maxEnumValue()
 {
 	return DvbTTransponder::GuardIntervalMax;
 }
 
-template<> DvbTTransponder::Hierarchy DvbTransponderBase::maxEnumValue()
+template<> DvbTTransponder::Hierarchy maxEnumValue()
 {
 	return DvbTTransponder::HierarchyMax;
 }
 
-template<> AtscTransponder::Modulation DvbTransponderBase::maxEnumValue()
+template<> AtscTransponder::Modulation maxEnumValue()
 {
 	return AtscTransponder::ModulationMax;
 }
@@ -81,22 +83,6 @@ static const char *dvbFecRateTable[] = {
 	/* FecAuto = 9 */ "AUTO"
 };
 
-template<> QStringList DvbTransponderBase::displayStrings<DvbTransponderBase::FecRate>()
-{
-	QStringList strings;
-	strings.append(/* FecNone = 0 */ "NONE");
-	strings.append(/* Fec1_2 = 1  */ "1/2");
-	strings.append(/* Fec2_3 = 2  */ "2/3");
-	strings.append(/* Fec3_4 = 3  */ "3/4");
-	strings.append(/* Fec4_5 = 4  */ "4/5");
-	strings.append(/* Fec5_6 = 5  */ "5/6");
-	strings.append(/* Fec6_7 = 6  */ "6/7");
-	strings.append(/* Fec7_8 = 7  */ "7/8");
-	strings.append(/* Fec8_9 = 8  */ "8/9");
-	strings.append(/* FecAuto = 9 */ "AUTO");
-	return strings;
-}
-
 static const char *dvbCModulationTable[] = {
 	/* Qam16 = 0          */ "QAM16",
 	/* Qam32 = 1          */ "QAM32",
@@ -106,34 +92,12 @@ static const char *dvbCModulationTable[] = {
 	/* ModulationAuto = 5 */ "AUTO"
 };
 
-template<> QStringList DvbTransponderBase::displayStrings<DvbCTransponder::Modulation>()
-{
-	QStringList strings;
-	strings.append(/* Qam16 = 0          */ "QAM16");
-	strings.append(/* Qam32 = 1          */ "QAM32");
-	strings.append(/* Qam64 = 2          */ "QAM64");
-	strings.append(/* Qam128 = 3         */ "QAM128");
-	strings.append(/* Qam256 = 4         */ "QAM256");
-	strings.append(/* ModulationAuto = 5 */ "AUTO");
-	return strings;
-}
-
 static const char *dvbSPolarizationTable[] = {
 	/* Horizontal = 0    */ "H",
 	/* Vertical = 1      */ "V",
 	/* CircularLeft = 2  */ "H",
 	/* CircularRight = 3 */ "V"
 };
-
-template<> QStringList DvbTransponderBase::displayStrings<DvbSTransponder::Polarization>()
-{
-	QStringList strings;
-	strings.append(/* Horizontal = 0    */ i18n("Horizontal"));
-	strings.append(/* Vertical = 1      */ i18n("Vertical"));
-	strings.append(/* CircularLeft = 2  */ i18n("Circular left"));
-	strings.append(/* CircularRight = 3 */ i18n("Circular right"));
-	return strings;
-}
 
 static const char *dvbTBandwidthTable[] = {
 	/* Bandwidth6MHz = 0 */ "6MHz",
@@ -142,16 +106,6 @@ static const char *dvbTBandwidthTable[] = {
 	/* BandwidthAuto = 3 */ "AUTO"
 };
 
-template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::Bandwidth>()
-{
-	QStringList strings;
-	strings.append(/* Bandwidth6MHz = 0 */ "6MHz");
-	strings.append(/* Bandwidth7MHz = 1 */ "7MHz");
-	strings.append(/* Bandwidth8MHz = 2 */ "8MHz");
-	strings.append(/* BandwidthAuto = 3 */ "AUTO");
-	return strings;
-}
-
 static const char *dvbTModulationTable[] = {
 	/* Qpsk = 0           */ "QPSK",
 	/* Qam16 = 1          */ "QAM16",
@@ -159,30 +113,11 @@ static const char *dvbTModulationTable[] = {
 	/* ModulationAuto = 3 */ "AUTO"
 };
 
-template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::Modulation>()
-{
-	QStringList strings;
-	strings.append(/* Qpsk = 0           */ "QPSK");
-	strings.append(/* Qam16 = 1          */ "QAM16");
-	strings.append(/* Qam64 = 2          */ "QAM64");
-	strings.append(/* ModulationAuto = 3 */ "AUTO");
-	return strings;
-}
-
 static const char *dvbTTransmissionModeTable[] = {
 	/* TransmissionMode2k = 0   */ "2k",
 	/* TransmissionMode8k = 1   */ "8k",
 	/* TransmissionModeAuto = 2 */ "AUTO"
 };
-
-template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::TransmissionMode>()
-{
-	QStringList strings;
-	strings.append(/* TransmissionMode2k = 0   */ "2k");
-	strings.append(/* TransmissionMode8k = 1   */ "8k");
-	strings.append(/* TransmissionModeAuto = 2 */ "AUTO");
-	return strings;
-}
 
 static const char *dvbTGuardIntervalTable[] = {
 	/* GuardInterval1_4 = 0  */ "1/4",
@@ -192,17 +127,6 @@ static const char *dvbTGuardIntervalTable[] = {
 	/* GuardIntervalAuto = 4 */ "AUTO"
 };
 
-template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::GuardInterval>()
-{
-	QStringList strings;
-	strings.append(/* GuardInterval1_4 = 0  */ "1/4");
-	strings.append(/* GuardInterval1_8 = 1  */ "1/8");
-	strings.append(/* GuardInterval1_16 = 2 */ "1/16");
-	strings.append(/* GuardInterval1_32 = 3 */ "1/32");
-	strings.append(/* GuardIntervalAuto = 4 */ "AUTO");
-	return strings;
-}
-
 static const char *dvbTHierarchyTable[] = {
 	/* HierarchyNone = 0 */ "NONE",
 	/* Hierarchy1 = 1    */ "1",
@@ -210,17 +134,6 @@ static const char *dvbTHierarchyTable[] = {
 	/* Hierarchy4 = 3    */ "4",
 	/* HierarchyAuto = 4 */ "AUTO"
 };
-
-template<> QStringList DvbTransponderBase::displayStrings<DvbTTransponder::Hierarchy>()
-{
-	QStringList strings;
-	strings.append(/* HierarchyNone = 0 */ "NONE");
-	strings.append(/* Hierarchy1 = 1    */ "1");
-	strings.append(/* Hierarchy2 = 2    */ "2");
-	strings.append(/* Hierarchy4 = 3    */ "4");
-	strings.append(/* HierarchyAuto = 4 */ "AUTO");
-	return strings;
-}
 
 static const char *atscModulationTable[] = {
 	/* Qam64 = 0          */ "QAM64",
@@ -230,23 +143,12 @@ static const char *atscModulationTable[] = {
 	/* ModulationAuto = 4 */ "AUTO"
 };
 
-template<> QStringList DvbTransponderBase::displayStrings<AtscTransponder::Modulation>()
-{
-	QStringList strings;
-	strings.append(/* Qam64 = 0          */ "QAM64");
-	strings.append(/* Qam256 = 1         */ "QAM256");
-	strings.append(/* Vsb8 = 2           */ "VSB8");
-	strings.append(/* Vsb16 = 3          */ "VSB16");
-	strings.append(/* ModulationAuto = 4 */ "AUTO");
-	return strings;
-}
-
 template<class T> static QDataStream &operator>>(QDataStream &stream, T &value)
 {
 	int intValue;
 	stream >> intValue;
 
-	if ((intValue < 0) || (intValue > DvbTransponderBase::maxEnumValue<T>())) {
+	if ((intValue < 0) || (intValue > maxEnumValue<T>())) {
 		stream.setStatus(QDataStream::ReadCorruptData);
 	} else {
 		value = static_cast<T>(intValue);
@@ -281,7 +183,7 @@ public:
 		QString string;
 		stream >> string;
 
-		for (int i = 0; i <= DvbTransponderBase::maxEnumValue<T>(); ++i) {
+		for (int i = 0; i <= maxEnumValue<T>(); ++i) {
 			if (string == table[i]) {
 				value = static_cast<T>(i);
 				return;

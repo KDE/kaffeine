@@ -37,6 +37,108 @@
 #include "dvbchannel.h"
 #include "dvbsi.h"
 
+template<class T> static QStringList displayStrings();
+
+template<> QStringList displayStrings<DvbTransponderBase::FecRate>()
+{
+	QStringList strings;
+	strings.append(/* FecNone = 0 */ "NONE");
+	strings.append(/* Fec1_2 = 1  */ "1/2");
+	strings.append(/* Fec2_3 = 2  */ "2/3");
+	strings.append(/* Fec3_4 = 3  */ "3/4");
+	strings.append(/* Fec4_5 = 4  */ "4/5");
+	strings.append(/* Fec5_6 = 5  */ "5/6");
+	strings.append(/* Fec6_7 = 6  */ "6/7");
+	strings.append(/* Fec7_8 = 7  */ "7/8");
+	strings.append(/* Fec8_9 = 8  */ "8/9");
+	strings.append(/* FecAuto = 9 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbCTransponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qam16 = 0          */ "QAM16");
+	strings.append(/* Qam32 = 1          */ "QAM32");
+	strings.append(/* Qam64 = 2          */ "QAM64");
+	strings.append(/* Qam128 = 3         */ "QAM128");
+	strings.append(/* Qam256 = 4         */ "QAM256");
+	strings.append(/* ModulationAuto = 5 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbSTransponder::Polarization>()
+{
+	QStringList strings;
+	strings.append(/* Horizontal = 0    */ i18n("Horizontal"));
+	strings.append(/* Vertical = 1      */ i18n("Vertical"));
+	strings.append(/* CircularLeft = 2  */ i18n("Circular left"));
+	strings.append(/* CircularRight = 3 */ i18n("Circular right"));
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbTTransponder::Bandwidth>()
+{
+	QStringList strings;
+	strings.append(/* Bandwidth6MHz = 0 */ "6MHz");
+	strings.append(/* Bandwidth7MHz = 1 */ "7MHz");
+	strings.append(/* Bandwidth8MHz = 2 */ "8MHz");
+	strings.append(/* BandwidthAuto = 3 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbTTransponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qpsk = 0           */ "QPSK");
+	strings.append(/* Qam16 = 1          */ "QAM16");
+	strings.append(/* Qam64 = 2          */ "QAM64");
+	strings.append(/* ModulationAuto = 3 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbTTransponder::TransmissionMode>()
+{
+	QStringList strings;
+	strings.append(/* TransmissionMode2k = 0   */ "2k");
+	strings.append(/* TransmissionMode8k = 1   */ "8k");
+	strings.append(/* TransmissionModeAuto = 2 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbTTransponder::GuardInterval>()
+{
+	QStringList strings;
+	strings.append(/* GuardInterval1_4 = 0  */ "1/4");
+	strings.append(/* GuardInterval1_8 = 1  */ "1/8");
+	strings.append(/* GuardInterval1_16 = 2 */ "1/16");
+	strings.append(/* GuardInterval1_32 = 3 */ "1/32");
+	strings.append(/* GuardIntervalAuto = 4 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbTTransponder::Hierarchy>()
+{
+	QStringList strings;
+	strings.append(/* HierarchyNone = 0 */ "NONE");
+	strings.append(/* Hierarchy1 = 1    */ "1");
+	strings.append(/* Hierarchy2 = 2    */ "2");
+	strings.append(/* Hierarchy4 = 3    */ "4");
+	strings.append(/* HierarchyAuto = 4 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<AtscTransponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qam64 = 0          */ "QAM64");
+	strings.append(/* Qam256 = 1         */ "QAM256");
+	strings.append(/* Vsb8 = 2           */ "VSB8");
+	strings.append(/* Vsb16 = 3          */ "VSB16");
+	strings.append(/* ModulationAuto = 4 */ "AUTO");
+	return strings;
+}
+
 int DvbChannelModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
@@ -252,7 +354,8 @@ void DvbChannelContextMenu::deleteChannel()
 
 template<class T> static QString enumToString(T value)
 {
-	return DvbTransponderBase::displayStrings<T>().at(value);
+	// FIXME efficiency
+	return displayStrings<T>().at(value);
 }
 
 DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel_, QWidget *parent)

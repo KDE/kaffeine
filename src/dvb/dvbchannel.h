@@ -57,9 +57,6 @@ public:
 	DvbTransponderBase() { }
 	virtual ~DvbTransponderBase() { }
 
-	template<class T> static T maxEnumValue();
-	template<class T> static QStringList displayStrings();
-
 	virtual TransmissionType getTransmissionType() const = 0;
 
 	virtual const DvbCTransponder *getDvbCTransponder() const
