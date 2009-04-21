@@ -25,7 +25,6 @@
 #include <QListView>
 #include <QScrollArea>
 #include <QTreeView>
-#include <KDebug>
 #include <KLocale>
 #include <KLocalizedString>
 #include "dvbchannelui.h"
@@ -42,6 +41,7 @@ public:
 	QVariant data(const QModelIndex &index, int role) const;
 
 	QSharedDataPointer<DvbChannel> getChannel(int row) const;
+	int indexOf(const QSharedDataPointer<DvbChannel> &channel) const;
 
 private:
 	QList<QSharedDataPointer<DvbChannel> > channels;
@@ -85,6 +85,11 @@ QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
 QSharedDataPointer<DvbChannel> DvbEpgChannelModel::getChannel(int row) const
 {
 	return channels.at(row);
+}
+
+int DvbEpgChannelModel::indexOf(const QSharedDataPointer<DvbChannel> &channel) const
+{
+	return channels.indexOf(channel);
 }
 
 class DvbEpgEntryLess
@@ -240,8 +245,16 @@ bool DvbEpgModel::contains(const QSharedDataPointer<DvbChannel> &channel)
 		DvbEpgEntryLess()) != allEntries.constEnd());
 }
 
+void DvbEpgModel::resetChannel()
+{
+	filteredEntries.clear();
+	reset();
+}
+
 void DvbEpgModel::setChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
+	// FIXME eliminate entries which are too old
+
 	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries.constBegin(),
 		allEntries.constEnd(), channel, DvbEpgEntryLess());
 	QList<DvbEpgEntry>::const_iterator end = qUpperBound(allEntries.constBegin(),
@@ -335,7 +348,7 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 					break;
 				}
 
-				epgEntry.details = eventDescriptor.text();
+				epgEntry.details += eventDescriptor.text();
 				break;
 			    }
 			}
@@ -345,7 +358,8 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 	}
 }
 
-DvbEpgDialog::DvbEpgDialog(DvbManager *manager, QWidget *parent) : KDialog(parent)
+DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
+	const QSharedDataPointer<DvbChannel> &currentChannel, QWidget *parent) : KDialog(parent)
 {
 	setCaption(i18n("Electronic Program Guide"));
 
@@ -394,6 +408,15 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager, QWidget *parent) : KDialog(paren
 	boxLayout->addWidget(scrollArea);
 	mainLayout->addLayout(boxLayout);
 
+	int currentRow = channelModel->indexOf(currentChannel);
+
+	if (currentRow != -1) {
+		channelView->setCurrentIndex(channelModel->index(currentRow, 0));
+		epgModel->setChannel(currentChannel);
+	} else {
+		epgModel->resetChannel();
+	}
+
 	setMainWidget(widget);
 }
 
@@ -403,16 +426,14 @@ DvbEpgDialog::~DvbEpgDialog()
 
 void DvbEpgDialog::channelActivated(const QModelIndex &index)
 {
-	QSharedDataPointer<DvbChannel> channel = 
-
-channelModel->getChannel(index.row());
+	QSharedDataPointer<DvbChannel> channel = channelModel->getChannel(index.row());
 
 	if (channel == NULL) {
 		return;
 	}
 
-	contentLabel->setText(QString());
 	epgModel->setChannel(channel);
+	contentLabel->setText(QString());
 }
 
 void DvbEpgDialog::entryActivated(const QModelIndex &index)

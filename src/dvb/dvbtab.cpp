@@ -78,7 +78,7 @@ private:
 	void timerEvent(QTimerEvent *);
 
 	DvbDevice *device;
-	QSharedDataPointer<DvbChannel> channel;
+	const QSharedDataPointer<DvbChannel> channel;
 	MediaWidget *mediaWidget;
 	QList<int> pids;
 
@@ -322,7 +322,7 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::showEpgDialog()
 {
-	DvbEpgDialog dialog(dvbManager, this);
+	DvbEpgDialog dialog(dvbManager, getLiveChannel(), this);
 	dialog.exec();
 }
 

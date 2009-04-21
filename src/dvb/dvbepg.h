@@ -59,6 +59,7 @@ public:
 
 	void addEntry(const DvbEpgEntry &entry);
 	bool contains(const QSharedDataPointer<DvbChannel> &channel);
+	void resetChannel();
 	void setChannel(const QSharedDataPointer<DvbChannel> &channel);
 	const DvbEpgEntry *getEntry(int row) const;
 
@@ -86,7 +87,8 @@ class DvbEpgDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbEpgDialog(DvbManager *manager, QWidget *parent);
+	DvbEpgDialog(DvbManager *manager, const QSharedDataPointer<DvbChannel> &currentChannel,
+		QWidget *parent);
 	~DvbEpgDialog();
 
 private slots:
