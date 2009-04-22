@@ -363,6 +363,7 @@ void DvbTab::configureDvb()
 void DvbTab::activate()
 {
 	mediaLayout->addWidget(mediaWidget);
+	mediaWidget->setFocus();
 }
 
 void DvbTab::playLive(const QModelIndex &index)

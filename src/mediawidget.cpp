@@ -117,6 +117,8 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
 
+	setFocusPolicy(Qt::StrongFocus);
+
 	mediaObject = new Phonon::MediaObject(this);
 	connect(mediaObject, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
 		this, SLOT(stateChanged(Phonon::State)));
