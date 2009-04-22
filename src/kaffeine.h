@@ -1,7 +1,7 @@
 /*
  * kaffeine.h
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <KMainWindow>
 
 class QStackedLayout;
+class QTabBar;
 class KActionCollection;
 class KCmdLineOptions;
 class KRecentFilesAction;
@@ -54,28 +55,32 @@ private slots:
 	void openDvd();
 	void toggleFullscreen();
 	void configureKeys();
-
-	void activateStartTab();
-	void activatePlayerTab();
-	void activatePlaylistTab();
 	void activateDvbTab();
-
+	void activateTab(int tabIndex);
 	void hideCursor();
 
 private:
-	void activateTab(TabBase *tab);
+	enum TabIndex {
+		StartTabId = 0,
+		PlayerTabId = 1,
+		PlaylistTabId = 2,
+		DvbTabId = 3
+	};
+
 	bool event(QEvent *event);
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
+	KToolBar *navigationBar;
+	QTabBar *tabBar;
 	KToolBar *controlBar;
 	QTimer *cursorHideTimer;
 
 	MediaWidget *mediaWidget;
 	QStackedLayout *stackedLayout;
-	TabBase *currentTab;
+	QList<TabBase *> tabs;
+	int currentTabIndex;
 
-	StartTab *startTab;
 	PlayerTab *playerTab;
 	PlaylistTab *playlistTab;
 	DvbTab *dvbTab;

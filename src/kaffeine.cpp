@@ -1,7 +1,7 @@
 /*
  * kaffeine.cpp
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
+#include <QTabBar>
 #include <QTimer>
 #include <KActionCollection>
 #include <KCmdLineOptions>
@@ -173,25 +174,6 @@ Kaffeine::Kaffeine()
 	menu = new KMenu(i18n("&View"));
 	menuBar->addMenu(menu);
 
-	action = new KAction(KIcon("start-here-kde"), i18n("Switch to Start Tab"), collection);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(activateStartTab()));
-	menu->addAction(collection->addAction("view_start_tab", action));
-
-	action = new KAction(KIcon("kaffeine"), i18n("Switch to Player Tab"), collection);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(activatePlayerTab()));
-	menu->addAction(collection->addAction("view_player_tab", action));
-
-	action = new KAction(KIcon("view-media-playlist"), i18n("Switch to Playlist Tab"),
-		collection);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(activatePlaylistTab()));
-	menu->addAction(collection->addAction("view_playlist_tab", action));
-
-	action = new KAction(KIcon("video-television"), i18n("Switch to DVB Tab"), collection);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(activateDvbTab()));
-	menu->addAction(collection->addAction("view_dvb_tab", action));
-
-	menu->addSeparator();
-
 	action = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), collection);
 	action->setShortcut(Qt::Key_F);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(toggleFullscreen()));
@@ -210,6 +192,19 @@ Kaffeine::Kaffeine()
 	menu->addAction(collection->addAction("settings_keys", action));
 
 	menuBar->addMenu(helpMenu());
+
+	// navigation bar - keep in sync with TabIndex enum!
+
+	navigationBar = new KToolBar("navigation_bar", this, Qt::LeftToolBarArea);
+
+	tabBar = new QTabBar(navigationBar);
+	tabBar->addTab(KIcon("start-here-kde"), i18n("Start"));
+	tabBar->addTab(KIcon("kaffeine"), i18n("Playback"));
+	tabBar->addTab(KIcon("view-media-playlist"), i18n("Playlist"));
+	tabBar->addTab(KIcon("video-television"), i18n("Television"));
+	tabBar->setShape(QTabBar::RoundedWest);
+	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
+	navigationBar->addWidget(tabBar);
 
 	// control bar
 
@@ -231,21 +226,25 @@ Kaffeine::Kaffeine()
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
 
-	// tabs
+	// tabs - keep in sync with TabIndex enum!
 
-	startTab = new StartTab(this);
+	TabBase *startTab = new StartTab(this);
+	tabs.append(startTab);
 	stackedLayout->addWidget(startTab);
 
 	playerTab = new PlayerTab(mediaWidget);
+	tabs.append(playerTab);
 	stackedLayout->addWidget(playerTab);
 
 	playlistTab = new PlaylistTab(mediaWidget);
+	tabs.append(playlistTab);
 	stackedLayout->addWidget(playlistTab);
 
 	dvbTab = new DvbTab(dvbMenu, collection, mediaWidget);
+	tabs.append(dvbTab);
 	stackedLayout->addWidget(dvbTab);
 
-	activateTab(startTab);
+	currentTabIndex = StartTabId;
 
 	// actions also have to work if the menu bar is hidden (fullscreen) - FIXME better solution?
 	foreach (QAction *action, collection->actions()) {
@@ -260,6 +259,7 @@ Kaffeine::Kaffeine()
 
 	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
 	menuBar->show();
+	navigationBar->show();
 	controlBar->show();
 
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
@@ -303,7 +303,7 @@ void Kaffeine::parseArgs()
 		}
 
 		if (urls.size() >= 2) {
-			activateTab(playlistTab);
+			activateTab(PlaylistTabId);
 			playlistTab->playUrls(urls);
 		} else if (!urls.isEmpty()) {
 			openUrl(urls.at(0));
@@ -316,7 +316,7 @@ void Kaffeine::parseArgs()
 	QString dvb = args->getOption("dvb");
 
 	if (!dvb.isEmpty()) {
-		activateDvbTab();
+		activateTab(DvbTabId);
 		dvbTab->playChannel(dvb);
 	}
 
@@ -328,7 +328,7 @@ void Kaffeine::open()
 	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), QString(), this, i18n("Open file"));
 
 	if (urls.size() >= 2) {
-		activateTab(playlistTab);
+		activateTab(PlaylistTabId);
 		playlistTab->playUrls(urls);
 	} else if (!urls.isEmpty()) {
 		openUrl(urls.at(0));
@@ -350,8 +350,8 @@ void Kaffeine::openUrl(const KUrl &url)
 	KUrl copy(url);
 	actionOpenRecent->addUrl(copy); // moves the url to the top of the list
 
-	if (currentTab != playlistTab) {
-		activateTab(playerTab);
+	if (currentTabIndex != PlaylistTabId) {
+		activateTab(PlayerTabId);
 	}
 
 	playlistTab->playUrl(copy);
@@ -359,19 +359,19 @@ void Kaffeine::openUrl(const KUrl &url)
 
 void Kaffeine::openAudioCd()
 {
-	activateTab(playerTab); // FIXME
+	activateTab(PlayerTabId); // FIXME
 	mediaWidget->playAudioCd();
 }
 
 void Kaffeine::openVideoCd()
 {
-	activateTab(playerTab);
+	activateTab(PlayerTabId);
 	mediaWidget->playVideoCd();
 }
 
 void Kaffeine::openDvd()
 {
-	activateTab(playerTab);
+	activateTab(PlayerTabId);
 	mediaWidget->playDvd();
 }
 
@@ -381,19 +381,21 @@ void Kaffeine::toggleFullscreen()
 
 	if (isFullScreen()) {
 		menuBar()->hide();
+		navigationBar->hide();
 		controlBar->hide();
 		cursorHideTimer->start();
 
-		stackedLayout->setCurrentWidget(playerTab);
+		stackedLayout->setCurrentIndex(PlayerTabId);
 		playerTab->activate();
 	} else {
 		cursorHideTimer->stop();
 		unsetCursor();
 		menuBar()->show();
+		navigationBar->show();
 		controlBar->show();
 
-		stackedLayout->setCurrentWidget(currentTab);
-		currentTab->activate();
+		stackedLayout->setCurrentIndex(currentTabIndex);
+		tabs.at(currentTabIndex)->activate();
 	}
 }
 
@@ -402,41 +404,27 @@ void Kaffeine::configureKeys()
 	KShortcutsDialog::configure(collection);
 }
 
-void Kaffeine::activateStartTab()
-{
-	activateTab(startTab);
-}
-
-void Kaffeine::activatePlayerTab()
-{
-	activateTab(playerTab);
-}
-
-void Kaffeine::activatePlaylistTab()
-{
-	activateTab(playlistTab);
-}
-
 void Kaffeine::activateDvbTab()
 {
-	activateTab(dvbTab);
+	activateTab(DvbTabId);
 }
 
-void Kaffeine::hideCursor()
+void Kaffeine::activateTab(int tabIndex)
 {
-	setCursor(Qt::BlankCursor);
-}
-
-void Kaffeine::activateTab(TabBase *tab)
-{
-	currentTab = tab;
+	currentTabIndex = tabIndex;
+	tabBar->setCurrentIndex(tabIndex);
 
 	if (isFullScreen()) {
 		return;
 	}
 
-	stackedLayout->setCurrentWidget(currentTab);
-	currentTab->activate();
+	stackedLayout->setCurrentIndex(currentTabIndex);
+	tabs.at(currentTabIndex)->activate();
+}
+
+void Kaffeine::hideCursor()
+{
+	setCursor(Qt::BlankCursor);
 }
 
 bool Kaffeine::event(QEvent *event)
