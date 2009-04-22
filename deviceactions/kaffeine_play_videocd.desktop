@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Service
+Actions=PlayVideoCd;
+X-KDE-Solid-Predicate=[OpticalDisc.availableContent == 'VideoCd|SuperVideoCd']
+
+[Desktop Action PlayVideoCd]
+Name=Play Video CD with Kaffeine
+Exec=kaffeine4 --videocd %f
+Icon=kaffeine4

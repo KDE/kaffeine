@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Service
+Actions=PlayDVD;
+X-KDE-Solid-Predicate=[OpticalDisc.availableContent == 'VideoDvd']
+
+[Desktop Action PlayDVD]
+Name=Play DVD with Kaffeine
+Exec=kaffeine4 --dvd %f
+Icon=kaffeine4

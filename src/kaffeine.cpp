@@ -278,7 +278,10 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 	KCmdLineOptions options;
 	options.add("f");
 	options.add("fullscreen", ki18n("Start in fullscreen mode"));
-	options.add("dvb <channel>", ki18n("Tune to the selected channel"));
+	options.add("audiocd", ki18n("Play Audio CD"));
+	options.add("videocd", ki18n("Play Video CD"));
+	options.add("dvd", ki18n("Play DVD"));
+	options.add("tv <channel>", ki18n("Tune to the selected channel"));
 	options.add("+[file]", ki18n("File or url to play"));
 	return options;
 }
@@ -289,6 +292,40 @@ void Kaffeine::parseArgs()
 
 	if (args->isSet("fullscreen") && !isFullScreen()) {
 		toggleFullscreen();
+	}
+
+	if (args->isSet("audiocd")) {
+		// FIXME device is ignored
+		openAudioCd();
+
+		args->clear();
+		return;
+	}
+
+	if (args->isSet("videocd")) {
+		// FIXME device is ignored
+		openVideoCd();
+
+		args->clear();
+		return;
+	}
+
+	if (args->isSet("dvd")) {
+		// FIXME device is ignored
+		openDvd();
+
+		args->clear();
+		return;
+	}
+
+	QString dvb = args->getOption("tv");
+
+	if (!dvb.isEmpty()) {
+		activateTab(DvbTabId);
+		dvbTab->playChannel(dvb);
+
+		args->clear();
+		return;
 	}
 
 	if (args->count() > 0) {
@@ -308,16 +345,6 @@ void Kaffeine::parseArgs()
 		} else if (!urls.isEmpty()) {
 			openUrl(urls.at(0));
 		}
-
-		args->clear();
-		return;
-	}
-
-	QString dvb = args->getOption("dvb");
-
-	if (!dvb.isEmpty()) {
-		activateTab(DvbTabId);
-		dvbTab->playChannel(dvb);
 	}
 
 	args->clear();

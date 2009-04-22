@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Service
+Actions=PlayAudioCd;
+X-KDE-Solid-Predicate=[OpticalDisc.availableContent == 'Audio']
+
+[Desktop Action PlayAudioCd]
+Name=Play Audio CD with Kaffeine
+Exec=kaffeine4 --audiocd %f
+Icon=kaffeine4
