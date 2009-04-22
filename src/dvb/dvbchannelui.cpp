@@ -20,6 +20,7 @@
 
 #include "dvbchannelui.h"
 
+#include <QBitArray>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QFile>
@@ -235,13 +236,71 @@ void DvbChannelModel::setChannels(const QList<QSharedDataPointer<DvbChannel> > &
 
 void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list)
 {
+	QBitArray numbers(2 * channels.size());
+
+	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
+		int number = channel->number;
+
+		if (number >= numbers.size()) {
+			numbers.resize(2 * (number + 1));
+		}
+
+		numbers.setBit(number);
+	}
+
+	int candidate = 1;
+
 	beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
-	channels += list;
+
+	foreach (const QSharedDataPointer<DvbChannel> &channel, list) {
+		while ((candidate < numbers.size()) && numbers.testBit(candidate)) {
+			++candidate;
+		}
+
+		channels.append(channel);
+		channels.last()->number = candidate;
+
+		++candidate;
+	}
+
 	endInsertRows();
 }
 
 void DvbChannelModel::updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel)
 {
+	int oldNumber = channels.at(pos)->number;
+	int newNumber = channel->number;
+
+	if (oldNumber != newNumber) {
+		QBitArray numbers(2 * channels.size());
+		int affectedPos = -1;
+
+		for (int i = 0; i < channels.size(); ++i) {
+			int number = channels.at(i)->number;
+
+			if (number > newNumber) {
+				if (number >= numbers.size()) {
+					numbers.resize(2 * (number + 1));
+				}
+
+				numbers.setBit(number);
+			} else if (number == newNumber) {
+				affectedPos = i;
+			}
+		}
+
+		if (affectedPos != -1) {
+			int candidate = newNumber + 1;
+
+			while ((candidate < numbers.size()) && numbers.testBit(candidate)) {
+				++candidate;
+			}
+
+			channels[affectedPos]->number = candidate;
+			emit dataChanged(index(affectedPos, 1), index(affectedPos, 1));
+		}
+	}
+
 	channels.replace(pos, channel);
 	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
 }
@@ -279,11 +338,9 @@ void DvbChannelModel::loadChannels()
 
 		channels.append(QSharedDataPointer<DvbChannel>(channel));
 	}
-
-	kDebug() << "successfully loaded" << channels.size() << "channels";
 }
 
-void DvbChannelModel::saveChannels()
+void DvbChannelModel::saveChannels() const
 {
 	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
 
@@ -376,7 +433,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	boxLayout->addWidget(new QLabel(i18n("Number:")));
 
 	numberBox = new QSpinBox(widget);
-	numberBox->setMaximum(99999);
+	numberBox->setRange(1, 99999);
 	numberBox->setValue(channel->number);
 	boxLayout->addWidget(numberBox);
 	mainLayout->addLayout(boxLayout);
@@ -541,7 +598,7 @@ DvbChannelEditor::~DvbChannelEditor()
 QSharedDataPointer<DvbChannel> DvbChannelEditor::getChannel()
 {
 	channel->name = nameEdit->text();
-	channel->number = numberBox->value(); // FIXME adjust the other channel numbers
+	channel->number = numberBox->value();
 	channel->networkId = networkIdBox->value();
 	channel->transportStreamId = transportStreamIdBox->value();
 	channel->serviceId = serviceIdBox->value();

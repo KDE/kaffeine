@@ -212,8 +212,6 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel
 		recordings.append(recording);
 	}
 
-	kDebug() << "successfully loaded" << recordings.size() << "recordings";
-
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
 

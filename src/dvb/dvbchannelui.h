@@ -43,17 +43,21 @@ public:
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
-	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;
-
+	void loadChannels();
+	void saveChannels() const;
 	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
 	void setChannels(const QList<QSharedDataPointer<DvbChannel> > &channels_);
-	void appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list);
-	void updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel);
+
+	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
+	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;
 	void removeChannel(int pos);
 
-	void loadChannels();
-	void saveChannels();
+	/*
+	 * these two functions automatically adjust the channel numbers
+	 */
+
+	void appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list);
+	void updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel);
 
 private:
 	QList<QSharedDataPointer<DvbChannel> > channels;
