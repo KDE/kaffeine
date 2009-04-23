@@ -168,13 +168,18 @@ QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 		if ((role == Qt::DecorationRole) && (index.column() == 0)) {
 			const QSharedDataPointer<DvbChannel> &channel = channels.at(index.row());
 
-			// FIXME use better icons
-			if (channel->scrambled) {
-				return KIcon("document-encrypt");
-			} else if (channel->videoPid >= 0) {
-				return KIcon("video-television");
+			if (channel->videoPid >= 0) {
+				if (!channel->scrambled) {
+					return KIcon("video-television");
+				} else {
+					return KIcon("video-television-encrypted");
+				}
 			} else {
-				return KIcon("preferences-desktop-text-to-speech");
+				if (!channel->scrambled) {
+					return KIcon("text-speak");
+				} else {
+					return KIcon("audio-radio-encrypted");
+				}
 			}
 		}
 

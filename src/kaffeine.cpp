@@ -36,8 +36,8 @@
 #include <KShortcutsDialog>
 #include <KToolBar>
 #include "dvb/dvbtab.h"
-#include "mediawidget.h"
 #include "playlist/playlisttab.h"
+#include "mediawidget.h"
 
 class StartTab : public TabBase
 {
@@ -75,26 +75,31 @@ StartTab::StartTab(Kaffeine *kaffeine)
 
 	QGridLayout *gridLayout = new QGridLayout(widget);
 	gridLayout->setAlignment(Qt::AlignCenter);
-	gridLayout->setMargin(15);
+	gridLayout->setMargin(10);
 	gridLayout->setSpacing(15);
 
-	QPushButton *button = addShortcut(i18n("Play File"), KIcon("video-x-generic"), widget);
+	QPushButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), widget);
+	button->setShortcut(Qt::Key_1);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
 
-	button = addShortcut(i18n("Play Audio CD"), KIcon("media-optical-audio"), widget);
+	button = addShortcut(i18n("&2 Play Audio CD"), KIcon("media-optical-audio"), widget);
+	button->setShortcut(Qt::Key_2);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("Play Video CD"), KIcon("media-optical"), widget);
+	button = addShortcut(i18n("&3 Play Video CD"), KIcon("media-optical"), widget);
+	button->setShortcut(Qt::Key_3);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
-	button = addShortcut(i18n("Play DVD"), KIcon("media-optical"), widget);
+	button = addShortcut(i18n("&4 Play DVD"), KIcon("media-optical"), widget);
+	button->setShortcut(Qt::Key_4);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
-	button = addShortcut(i18n("Digital TV"), KIcon("video-television"), widget);
+	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), widget);
+	button->setShortcut(Qt::Key_5);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(activateDvbTab()));
 	gridLayout->addWidget(button, 1, 1);
 }
@@ -105,7 +110,7 @@ QPushButton *StartTab::addShortcut(const QString &name, const KIcon &icon, QWidg
 	button->setText(name);
 	button->setIcon(icon);
 	button->setIconSize(QSize(48, 48));
-	button->setFocusPolicy(Qt::NoFocus); // FIXME deal with shortcut <-> visual appearance
+	button->setFocusPolicy(Qt::NoFocus);
 	return button;
 }
 
@@ -182,7 +187,7 @@ Kaffeine::Kaffeine()
 	KMenu *playerMenu = new KMenu(i18n("&Player"));
 	menuBar->addMenu(playerMenu);
 
-	KMenu *dvbMenu = new KMenu(i18n("&DVB"));
+	KMenu *dvbMenu = new KMenu(i18n("&Television"));
 	menuBar->addMenu(dvbMenu);
 
 	menu = new KMenu(i18n("&Settings"));
@@ -281,8 +286,8 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 	options.add("audiocd", ki18n("Play Audio CD"));
 	options.add("videocd", ki18n("Play Video CD"));
 	options.add("dvd", ki18n("Play DVD"));
-	options.add("tv <channel>", ki18n("Tune to the selected channel"));
-	options.add("+[file]", ki18n("File or url to play"));
+	options.add("tv <channel>", ki18n("Play TV channel"));
+	options.add("+[file]", ki18n("Files or URLs to play"));
 	return options;
 }
 
@@ -352,7 +357,7 @@ void Kaffeine::parseArgs()
 
 void Kaffeine::open()
 {
-	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), QString(), this, i18n("Open file"));
+	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), QString(), this, i18n("Open files"));
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
