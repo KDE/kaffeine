@@ -176,7 +176,7 @@ Kaffeine::Kaffeine()
 	action = KStandardAction::quit(this, SLOT(close()), collection);
 	menu->addAction(collection->addAction("file_quit", action));
 
-	KMenu *playerMenu = new KMenu(i18n("&Player"));
+	KMenu *playerMenu = new KMenu(i18n("&Playback"));
 	menuBar->addMenu(playerMenu);
 
 	fullScreenAction = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), this);

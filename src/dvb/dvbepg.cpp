@@ -361,7 +361,8 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 	const QSharedDataPointer<DvbChannel> &currentChannel, QWidget *parent) : KDialog(parent)
 {
-	setCaption(i18n("Electronic Program Guide"));
+	setButtons(KDialog::Close);
+	setCaption(i18n("Program Guide"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(widget);

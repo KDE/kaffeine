@@ -80,6 +80,11 @@ QList<int> ProxyTreeView::selectedRows() const
 	return result;
 }
 
+KMenu *ProxyTreeView::getContextMenu() const
+{
+	return menu;
+}
+
 void ProxyTreeView::setContextMenu(KMenu *menu_)
 {
 	menu = menu_;
@@ -97,7 +102,7 @@ QAbstractItemModel *ProxyTreeView::sourceModel() const
 
 void ProxyTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-	if (menu != NULL) {
+	if ((menu != NULL) && currentIndex().isValid()) {
 		menu->popup(event->globalPos());
 	}
 }

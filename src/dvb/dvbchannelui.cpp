@@ -365,13 +365,15 @@ void DvbChannelModel::saveChannels() const
 DvbChannelContextMenu::DvbChannelContextMenu(DvbChannelModel *model_, ProxyTreeView *view_) :
 	KMenu(view_), model(model_), view(view_)
 {
-	KAction *action = new KAction(i18n("Edit channel"), this);
+	KAction *action = new KAction(i18n("Edit"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 
-	action = new KAction(i18n("Change icon"), this);
+/* FIXME wait till it's implemented
+	action = new KAction(i18n("Change Icon"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(changeIcon()));
-	// addAction(action); // FIXME wait till it's implemented
+	addAction(action);
+*/
 }
 
 DvbChannelContextMenu::~DvbChannelContextMenu()
@@ -380,7 +382,7 @@ DvbChannelContextMenu::~DvbChannelContextMenu()
 
 void DvbChannelContextMenu::addDeleteAction()
 {
-	KAction *action = new KAction(i18n("Delete channel"), this);
+	KAction *action = new KAction(i18n("Delete"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(deleteChannel()));
 	addAction(action);
 }

@@ -9,28 +9,28 @@
      </property>
      <layout class="QVBoxLayout" >
       <item>
-       <widget class="QLabel" name="label_2" >
-        <property name="text" >
-         <string>Use right click to edit/delete</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="ProxyTreeView" native="1" name="channelView" />
       </item>
       <item>
        <layout class="QHBoxLayout" >
         <item>
-         <widget class="QPushButton" name="newChannelButton" >
+         <widget class="QPushButton" name="editChannelButton" >
           <property name="text" >
-           <string>New</string>
+           <string>Edit</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="deleteAllButton" >
+         <widget class="QPushButton" name="removeChannelButton" >
           <property name="text" >
-           <string>Delete all</string>
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="removeAllButton" >
+          <property name="text" >
+           <string>Remove All</string>
           </property>
          </widget>
         </item>
@@ -44,7 +44,7 @@
      <item>
       <widget class="QGroupBox" name="groupBox_2" >
        <property name="title" >
-        <string>Channel search</string>
+        <string>Channel Scan</string>
        </property>
        <layout class="QVBoxLayout" >
         <item>
@@ -162,7 +162,14 @@
         <item>
          <widget class="QPushButton" name="filteredButton" >
           <property name="text" >
-           <string>Add filtered</string>
+           <string>Add Filtered</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="selectedButton" >
+          <property name="text" >
+           <string>Add Selected</string>
           </property>
          </widget>
         </item>
@@ -174,18 +181,11 @@
    <item>
     <widget class="QGroupBox" name="groupBox_3" >
      <property name="title" >
-      <string>Scan results</string>
+      <string>Scan Results</string>
      </property>
      <layout class="QVBoxLayout" >
       <item>
        <widget class="ProxyTreeView" native="1" name="scanResultsView" />
-      </item>
-      <item>
-       <widget class="QPushButton" name="selectedButton" >
-        <property name="text" >
-         <string>Add selected</string>
-        </property>
-       </widget>
       </item>
      </layout>
     </widget>

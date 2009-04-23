@@ -54,7 +54,7 @@ private slots:
 
 	void addSelectedChannels();
 	void addFilteredChannels();
-	void deleteAllChannels();
+	void removeAllChannels();
 
 private:
 	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);

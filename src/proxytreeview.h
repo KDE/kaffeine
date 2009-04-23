@@ -36,6 +36,7 @@ public:
 	int selectedRow() const;
 	QList<int> selectedRows() const;
 
+	KMenu *getContextMenu() const;
 	void setContextMenu(KMenu *menu_);
 	void setModel(QAbstractItemModel *model);
 

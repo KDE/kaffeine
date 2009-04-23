@@ -168,8 +168,8 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui->setupUi(widget);
 
 	QString date = manager->getScanFileDate();
-	ui->scanFilesLabel->setText(i18n("Scan file last updated<br>on %1", date));
-	ui->scanButton->setText(i18n("Start scan"));
+	ui->scanFilesLabel->setText(i18n("Scan data last updated<br>on %1", date));
+	ui->scanButton->setText(i18n("Start Scan"));
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->setChannels(manager->getChannelModel()->getChannels());
@@ -192,7 +192,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	setDevice(dvbTab->getLiveDevice());
 
 	if (device != NULL) {
-		ui->sourceList->addItem(i18n("Current transponder"));
+		ui->sourceList->addItem(i18n("Current Transponder"));
 		ui->sourceList->setEnabled(false);
 		isLive = true;
 	} else {
@@ -208,8 +208,12 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 		isLive = false;
 	}
 
+	KMenu *contextMenu = ui->channelView->getContextMenu(); // DvbChannelContextMenu
+
 	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
-	connect(ui->deleteAllButton, SIGNAL(clicked(bool)), this, SLOT(deleteAllChannels()));
+	connect(ui->editChannelButton, SIGNAL(clicked(bool)), contextMenu, SLOT(editChannel()));
+	connect(ui->removeChannelButton, SIGNAL(clicked(bool)), contextMenu, SLOT(deleteChannel()));
+	connect(ui->removeAllButton, SIGNAL(clicked(bool)), this, SLOT(removeAllChannels()));
 	connect(ui->scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
 	connect(ui->providerCBox, SIGNAL(clicked(bool)), ui->providerList, SLOT(setEnabled(bool)));
 	connect(ui->filteredButton, SIGNAL(clicked(bool)), this, SLOT(addFilteredChannels()));
@@ -359,7 +363,7 @@ void DvbScanDialog::addFilteredChannels()
 	addUpdateChannels(channels);
 }
 
-void DvbScanDialog::deleteAllChannels()
+void DvbScanDialog::removeAllChannels()
 {
 	channelModel->setChannels(QList<QSharedDataPointer<DvbChannel> >());
 }

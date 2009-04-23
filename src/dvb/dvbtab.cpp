@@ -185,7 +185,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
 	menu->addAction(collection->addAction("dvb_channels", channelsAction));
 
-	KAction *epgAction = new KAction(KIcon("view-list-details"), i18n("EPG"), this);
+	KAction *epgAction = new KAction(KIcon("view-list-details"), i18n("Program Guide"), this);
 	epgAction->setShortcut(Qt::Key_G);
 	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(showEpgDialog()));
 	menu->addAction(collection->addAction("dvb_epg", epgAction));
@@ -205,7 +205,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	menu->addSeparator();
 
-	KAction *configureAction = new KAction(KIcon("configure"), i18n("Configure DVB"), this);
+	KAction *configureAction = new KAction(KIcon("configure"), i18n("Configure Television"), this);
 	connect(configureAction, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", configureAction));
 

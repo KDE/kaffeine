@@ -24,11 +24,12 @@
 #include <QDateTimeEdit>
 #include <QFile>
 #include <QLabel>
+#include <QPushButton>
+#include <KAction>
 #include <KComboBox>
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
-#include <KPushButton>
 #include <KStandardDirs>
 #include "../proxytreeview.h"
 #include "dvbchannelui.h"
@@ -407,6 +408,7 @@ void DvbRecordingModel::checkStatus()
 DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
 	manager(manager_)
 {
+	setButtons(KDialog::Close);
 	setCaption(i18n("Recordings"));
 
 	QWidget *widget = new QWidget(this);
@@ -429,9 +431,20 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	boxLayout->addStretch(1);
 	mainLayout->addLayout(boxLayout);
 
+	KMenu *contextMenu = new KMenu(this);
+
+	KAction *action = new KAction(i18n("Edit"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(editRecording()));
+	contextMenu->addAction(action);
+
+	action = new KAction(i18n("Remove"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(removeRecording()));
+	contextMenu->addAction(action);
+
 	model = manager->getRecordingModel();
 
 	treeView = new ProxyTreeView(this);
+	treeView->setContextMenu(contextMenu);
 	treeView->setModel(model);
 	treeView->setRootIsDecorated(false);
 	treeView->sortByColumn(2, Qt::AscendingOrder);
@@ -574,8 +587,7 @@ void DvbRecordingEditor::updateRecording(DvbRecording *recording) const
 
 void DvbRecordingEditor::checkValid()
 {
-	button(KDialog::Ok)->setEnabled(!nameEdit->text().isEmpty() &&
-					(channelBox->currentIndex() != -1));
+	enableButtonOk(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
 }
 
 void DvbRecordingEditor::beginChanged(const QDateTime &dateTime)
