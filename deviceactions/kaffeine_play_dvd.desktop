@@ -5,5 +5,31 @@ X-KDE-Solid-Predicate=[OpticalDisc.availableContent == 'VideoDvd']
 
 [Desktop Action PlayDVD]
 Name=Play DVD with Kaffeine
+Name[bg]=Възпроизвеждане на DVD с Kaffeine
+Name[csb]=Grôj DVD w Kaffeine
+Name[el]=Αναπαραγωγή DVD με το Kaffeine
+Name[es]=Reproducir DVD con Kaffeine
+Name[et]=Esita DVD Kaffeine'is
+Name[fi]=Toista dvd-levy Kaffeinessa
+Name[fr]=Lire un DVD avec Kaffeine
+Name[ga]=Seinn DVD le Kaffeine
+Name[gl]=Reproducir o DVD con Kaffeine
+Name[it]=Riproduci DVD con Kaffeine
+Name[km]=ចាក់​ឌីវីឌី​ជាមួយ Kaffeine
+Name[ko]=Kaffeine으로 DVD 재생하기
+Name[lt]=Groti DVD su Kaffeine
+Name[lv]=Atskaņot DVD ar Kaffeine
+Name[nds]=DVD mit Kaffeine afspelen
+Name[ne]=क्याफिनसँग डीभीडी प्ले गर्नुहोस्
+Name[nl]=DVD met Kaffeine afspelen
+Name[pl]=Odtwarzaj DVD w Kaffeine
+Name[pt]=Ver o DVD com o Kaffeine
+Name[pt_BR]=Ver o DVD com o Kaffeine
+Name[ro]=Redare DVD cu Kaffeine
+Name[sv]=Spela dvd med Kaffeine
+Name[tg]=Намоиши DVD бо Kaffeine
+Name[tr]=DVDyi Kaffeine ile Oynat
+Name[uk]=Відтворити DVD за допомогою Kaffeine
+Name[zh_CN]=用 Kaffeine 播放 DVD
 Exec=kaffeine4 --dvd %f
 Icon=kaffeine4
