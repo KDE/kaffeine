@@ -357,7 +357,7 @@ void Kaffeine::parseArgs()
 
 void Kaffeine::open()
 {
-	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), QString(), this, i18n("Open files"));
+	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), QString(), this);
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
