@@ -330,6 +330,15 @@ MediaWidget::~MediaWidget()
 
 void MediaWidget::play(const KUrl &url)
 {
+	if (url.toLocalFile().endsWith(".iso", Qt::CaseInsensitive)) {
+		// FIXME move into phonon
+		KUrl copy(url);
+		copy.setProtocol("dvd");
+		mediaObject->setCurrentSource(copy);
+		mediaObject->play();
+		return;
+	}
+
 	mediaObject->setCurrentSource(url);
 	mediaObject->play();
 }
