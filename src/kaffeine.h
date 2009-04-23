@@ -25,6 +25,7 @@
 
 class QStackedLayout;
 class QTabBar;
+class KAction;
 class KActionCollection;
 class KCmdLineOptions;
 class KRecentFilesAction;
@@ -53,7 +54,7 @@ private slots:
 	void openAudioCd();
 	void openVideoCd();
 	void openDvd();
-	void toggleFullscreen();
+	void toggleFullScreen();
 	void configureKeys();
 	void activateDvbTab();
 	void activateTab(int tabIndex);
@@ -71,6 +72,7 @@ private:
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
+	KAction *fullScreenAction;
 	KToolBar *navigationBar;
 	QTabBar *tabBar;
 	KToolBar *controlBar;

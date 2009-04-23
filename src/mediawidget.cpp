@@ -21,6 +21,7 @@
 #include "mediawidget.h"
 
 #include <QBoxLayout>
+#include <QContextMenuEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimeEdit>
@@ -111,8 +112,9 @@ QTime JumpToPositionDialog::getPosition() const
 	return timeEdit->time();
 }
 
-MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *collection,
-	QWidget *parent) : QWidget(parent), dvbFeed(NULL), playing(true)
+MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
+	KActionCollection *collection, QWidget *parent) : QWidget(parent), menu(menu_),
+	dvbFeed(NULL), playing(true)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -164,6 +166,9 @@ MediaWidget::MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *coll
 	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
 	menu->addAction(actionNext);
+	menu->addSeparator();
+
+	menu->addAction(collection->addAction("view_fullscreen", fullScreenAction));
 	menu->addSeparator();
 
 	audioChannelBox = new KComboBox(toolBar);
@@ -846,9 +851,14 @@ void MediaWidget::subtitlesChanged()
 	}
 }
 
+void MediaWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+	menu->popup(event->globalPos());
+}
+
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
-	emit toggleFullscreen();
+	emit toggleFullScreen();
 }
 
 void MediaWidget::updateAudioChannelBox()

@@ -48,7 +48,8 @@ class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	MediaWidget(KMenu *menu, KToolBar *toolBar, KActionCollection *collection, QWidget *parent);
+	MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
+		    KActionCollection *collection, QWidget *parent);
 	~MediaWidget();
 
 	/*
@@ -72,7 +73,7 @@ public slots:
 
 signals:
 	void changeCaption(const QString &caption);
-	void toggleFullscreen();
+	void toggleFullScreen();
 
 	void playlistPrevious();
 	void playlistPlay();
@@ -128,10 +129,12 @@ private slots:
 	void subtitlesChanged();
 
 private:
+	void contextMenuEvent(QContextMenuEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *);
 	void updateAudioChannelBox();
 	void updateSubtitleBox();
 
+	KMenu *menu;
 	Phonon::MediaObject *mediaObject;
 	Phonon::AudioOutput *audioOutput;
 	Phonon::VideoWidget *videoWidget;

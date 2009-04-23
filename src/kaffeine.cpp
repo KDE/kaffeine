@@ -176,16 +176,12 @@ Kaffeine::Kaffeine()
 	action = KStandardAction::quit(this, SLOT(close()), collection);
 	menu->addAction(collection->addAction("file_quit", action));
 
-	menu = new KMenu(i18n("&View"));
-	menuBar->addMenu(menu);
-
-	action = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), collection);
-	action->setShortcut(Qt::Key_F);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(toggleFullscreen()));
-	menu->addAction(collection->addAction("view_fullscreen", action));
-
 	KMenu *playerMenu = new KMenu(i18n("&Player"));
 	menuBar->addMenu(playerMenu);
+
+	fullScreenAction = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), this);
+	fullScreenAction->setShortcut(Qt::Key_F);
+	connect(fullScreenAction, SIGNAL(triggered(bool)), this, SLOT(toggleFullScreen()));
 
 	KMenu *dvbMenu = new KMenu(i18n("&Television"));
 	menuBar->addMenu(dvbMenu);
@@ -227,9 +223,9 @@ Kaffeine::Kaffeine()
 	stackedLayout = new QStackedLayout(widget);
 	setCentralWidget(widget);
 
-	mediaWidget = new MediaWidget(playerMenu, controlBar, collection, widget);
+	mediaWidget = new MediaWidget(playerMenu, fullScreenAction, controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
-	connect(mediaWidget, SIGNAL(toggleFullscreen()), this, SLOT(toggleFullscreen()));
+	connect(mediaWidget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
 
 	// tabs - keep in sync with TabIndex enum!
 
@@ -282,7 +278,7 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 {
 	KCmdLineOptions options;
 	options.add("f");
-	options.add("fullscreen", ki18n("Start in fullscreen mode"));
+	options.add("fullscreen", ki18n("Start in full screen mode"));
 	options.add("audiocd", ki18n("Play Audio CD"));
 	options.add("videocd", ki18n("Play Video CD"));
 	options.add("dvd", ki18n("Play DVD"));
@@ -296,7 +292,7 @@ void Kaffeine::parseArgs()
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
 	if (args->isSet("fullscreen") && !isFullScreen()) {
-		toggleFullscreen();
+		toggleFullScreen();
 	}
 
 	if (args->isSet("audiocd")) {
@@ -423,7 +419,7 @@ void Kaffeine::openDvd()
 	mediaWidget->playDvd();
 }
 
-void Kaffeine::toggleFullscreen()
+void Kaffeine::toggleFullScreen()
 {
 	setWindowState(windowState() ^ Qt::WindowFullScreen);
 
@@ -431,6 +427,8 @@ void Kaffeine::toggleFullscreen()
 		menuBar()->hide();
 		navigationBar->hide();
 		controlBar->hide();
+		fullScreenAction->setText(i18n("Exit Full Screen Mode"));
+		fullScreenAction->setIcon(KIcon("view-restore"));
 		cursorHideTimer->start();
 
 		stackedLayout->setCurrentIndex(PlayerTabId);
@@ -438,6 +436,8 @@ void Kaffeine::toggleFullscreen()
 	} else {
 		cursorHideTimer->stop();
 		unsetCursor();
+		fullScreenAction->setText(i18n("Full Screen Mode"));
+		fullScreenAction->setIcon(KIcon("view-fullscreen"));
 		menuBar()->show();
 		navigationBar->show();
 		controlBar->show();
