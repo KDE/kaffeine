@@ -66,6 +66,7 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_),
 	mediaLayout = new QHBoxLayout(mediaContainer);
 	mediaLayout->setMargin(0);
 	verticalSplitter->setStretchFactor(1, 1);
+	horizontalSplitter->setStretchFactor(1, 1);
 }
 
 PlaylistTab::~PlaylistTab()
