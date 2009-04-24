@@ -284,6 +284,10 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	mediaLayout = new QHBoxLayout(mediaContainer);
 	mediaLayout->setMargin(0);
 	splitter->setStretchFactor(1, 1);
+
+	fastRetuneTimer = new QTimer(this);
+	fastRetuneTimer->setInterval(500);
+	connect(fastRetuneTimer, SIGNAL(timeout()), this, SLOT(fastRetuneTimeout()));
 }
 
 DvbTab::~DvbTab()
@@ -456,8 +460,20 @@ void DvbTab::liveStopped()
 	liveStream = NULL;
 }
 
+void DvbTab::fastRetuneTimeout()
+{
+	fastRetuneTimer->stop();
+}
+
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
+	if (fastRetuneTimer->isActive()) {
+		// FIXME hack
+		return;
+	} else {
+		fastRetuneTimer->start();
+	}
+
 	mediaWidget->stopDvb();
 	instantRecordAction->setChecked(false);
 

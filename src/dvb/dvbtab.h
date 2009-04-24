@@ -64,6 +64,7 @@ private slots:
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
 	void liveStopped();
+	void fastRetuneTimeout();
 
 private:
 	void activate();
@@ -75,6 +76,7 @@ private:
 	ProxyTreeView *channelView;
 	QLayout *mediaLayout;
 
+	QTimer *fastRetuneTimer;
 	DvbLiveStream *liveStream;
 };
 
