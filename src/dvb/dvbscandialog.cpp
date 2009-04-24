@@ -269,6 +269,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	ui->scanButton->setText(i18n("Stop scan"));
 	previewModel->removeChannels();
+	providers.clear();
+	ui->providerList->clear();
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
@@ -282,10 +284,31 @@ void DvbScanDialog::dialogAccepted()
 	manager->getChannelModel()->setChannels(channelModel->getChannels());
 }
 
+static bool localeAwareLessThan(const QString &x, const QString &y)
+{
+	return x.localeAwareCompare(y) < 0;
+}
+
 void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 {
 	previewModel->appendChannels(channels);
-	// FIXME update provider list
+
+	foreach (const DvbPreviewChannel &channel, channels) {
+		if (channel.provider.isEmpty()) {
+			continue;
+		}
+
+		QStringList::const_iterator it = qLowerBound(providers.constBegin(),
+			providers.constEnd(), channel.provider, localeAwareLessThan);
+
+		if ((it != providers.constEnd()) && (*it == channel.provider)) {
+			continue;
+		}
+
+		int pos = it - providers.constBegin();
+		providers.insert(pos, channel.provider);
+		ui->providerList->insertItem(pos, channel.provider);
+	}
 }
 
 void DvbScanDialog::scanProgress(int percentage)

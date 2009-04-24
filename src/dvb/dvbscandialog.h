@@ -65,6 +65,7 @@ private:
 	Ui_DvbScanDialog *ui;
 	DvbChannelModel *channelModel;
 	DvbPreviewChannelModel *previewModel;
+	QStringList providers;
 
 	DvbDevice *device;
 	QTimer statusTimer;

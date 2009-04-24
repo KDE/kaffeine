@@ -588,7 +588,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 		layout->addWidget(pushButton, lnbNumber + 2, 0);
 
 		KComboBox *comboBox = new KComboBox(parent);
-		comboBox->addItem(i18n("No source"));
+		comboBox->addItem(i18n("No Source"));
 		comboBox->addItems(sources);
 		comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
 		connect(this, SIGNAL(setDiseqcVisible(bool)), comboBox, SLOT(setVisible(bool)));
