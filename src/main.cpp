@@ -60,8 +60,7 @@ int KaffeineApplication::newInstance()
 
 int main(int argc, char *argv[])
 {
-	// FIXME kaffeine4 --> kaffeine ; coinstallability with kaffeine
-	KAboutData aboutData("kaffeine4", 0, ki18n("Kaffeine"), "0.9.0-pre-alpha",
+	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "0.9.0-pre-alpha",
 		ki18n("A media player for KDE with digital tv support"),
 		KAboutData::License_GPL_V2, ki18n("(C) 2007 The Kaffeine Authors"),
 		KLocalizedString(), "http://kaffeine.kde.org");

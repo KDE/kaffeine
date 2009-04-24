@@ -31,5 +31,5 @@ Name[tg]=Навозиши диски аудио бо Kaffeine
 Name[tr]=Kaffeine ile Ses CDsi Çal
 Name[uk]=Відтворити Аудіо-КД за допомогою Kaffeine
 Name[zh_CN]=用 Kaffeine 播放音频 CD
-Exec=kaffeine4 --audiocd %f
-Icon=kaffeine4
+Exec=kaffeine --audiocd %f
+Icon=kaffeine

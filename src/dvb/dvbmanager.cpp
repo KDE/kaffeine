@@ -732,7 +732,7 @@ void DvbManager::readScanFile()
 		kDebug() << "can't open" << localFile.fileName();
 	}
 
-	QFile globalFile(KGlobal::dirs()->installPath("data") + "kaffeine4/scanfile.dvb");
+	QFile globalFile(KGlobal::dirs()->installPath("data") + "kaffeine/scanfile.dvb");
 	QDate globalDate;
 
 	if (globalFile.open(QIODevice::ReadOnly)) {

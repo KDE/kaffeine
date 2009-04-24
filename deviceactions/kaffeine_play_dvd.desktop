@@ -31,5 +31,5 @@ Name[tg]=Намоиши DVD бо Kaffeine
 Name[tr]=DVDyi Kaffeine ile Oynat
 Name[uk]=Відтворити DVD за допомогою Kaffeine
 Name[zh_CN]=用 Kaffeine 播放 DVD
-Exec=kaffeine4 --dvd %f
-Icon=kaffeine4
+Exec=kaffeine --dvd %f
+Icon=kaffeine

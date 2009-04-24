@@ -9,5 +9,5 @@ Name[pt]=Ver o CD de Vídeo com o Kaffeine
 Name[pt_BR]=Ver o CD de Vídeo com o Kaffeine
 Name[sv]=Spela video-cd med Kaffeine
 Name[uk]=Відтворити відео-КД за допомогою Kaffeine
-Exec=kaffeine4 --videocd %f
-Icon=kaffeine4
+Exec=kaffeine --videocd %f
+Icon=kaffeine

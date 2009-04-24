@@ -21,9 +21,9 @@ set(kaffeine_UI
     dvb/dvbscandialog.ui)
 
 kde4_add_ui_files(kaffeine_SRCS ${kaffeine_UI})
-kde4_add_executable(kaffeine4 ${kaffeine_SRCS})
-target_link_libraries(kaffeine4 ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS} ${KDE4_SOLID_LIBS})
+kde4_add_executable(kaffeine ${kaffeine_SRCS})
+target_link_libraries(kaffeine ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS} ${KDE4_SOLID_LIBS})
 
-install(TARGETS kaffeine4 ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine4)
-install(FILES kaffeine4.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
+install(FILES kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})

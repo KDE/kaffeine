@@ -3,13 +3,6 @@ Requirements
 
 Phonon 4.3 and KDE 4.2 are strongly recommended.
 
-Naming
-======
-
-Actually the application should be called "kaffeine", but it's temporarily named
-"kaffeine4" to allow coinstallability (for lazy developers :), as it isn't a full
-replacement yet.
-
 Bugs
 ====
 
