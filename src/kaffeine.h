@@ -24,11 +24,11 @@
 #include <KMainWindow>
 
 class QStackedLayout;
-class QTabBar;
 class KAction;
 class KActionCollection;
 class KCmdLineOptions;
 class KRecentFilesAction;
+class KTabBar;
 class KUrl;
 class DvbTab;
 class MediaWidget;
@@ -74,7 +74,7 @@ private:
 	KRecentFilesAction *actionOpenRecent;
 	KAction *fullScreenAction;
 	KToolBar *navigationBar;
-	QTabBar *tabBar;
+	KTabBar *tabBar;
 	KToolBar *controlBar;
 	QTimer *cursorHideTimer;
 

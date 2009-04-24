@@ -24,7 +24,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
-#include <QTabBar>
 #include <QTimer>
 #include <KActionCollection>
 #include <KCmdLineOptions>
@@ -34,6 +33,7 @@
 #include <KMenuBar>
 #include <KRecentFilesAction>
 #include <KShortcutsDialog>
+#include <KTabBar>
 #include <KToolBar>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
@@ -198,12 +198,12 @@ Kaffeine::Kaffeine()
 
 	navigationBar = new KToolBar("navigation_bar", this, Qt::LeftToolBarArea);
 
-	tabBar = new QTabBar(navigationBar);
+	tabBar = new KTabBar(navigationBar);
 	tabBar->addTab(KIcon("start-here-kde"), i18n("Start"));
 	tabBar->addTab(KIcon("kaffeine"), i18n("Playback"));
 	tabBar->addTab(KIcon("view-media-playlist"), i18n("Playlist"));
 	tabBar->addTab(KIcon("video-television"), i18n("Television"));
-	tabBar->setShape(QTabBar::RoundedWest);
+	tabBar->setShape(KTabBar::RoundedWest);
 	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
 	navigationBar->addWidget(tabBar);
 
