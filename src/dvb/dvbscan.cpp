@@ -405,7 +405,7 @@ void DvbScan::updateState()
 				}
 
 				if (channel.name.isEmpty()) {
-					channel.name = QString("[%1:%2]").
+					channel.name = QString("#0 %1:%2").
 						       arg(channel.transportStreamId).
 						       arg(channel.serviceId);
 				}
