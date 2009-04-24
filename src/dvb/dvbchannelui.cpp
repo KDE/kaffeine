@@ -32,7 +32,6 @@
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
-#include <KMessageBox> // temporary
 #include <KStandardDirs>
 #include "../proxytreeview.h"
 #include "dvbchannel.h"
@@ -335,8 +334,6 @@ void DvbChannelModel::loadChannels()
 
 		if (stream.status() != QDataStream::Ok) {
 			kWarning() << "invalid channels in file" << file.fileName();
-			// no i18n: temporary, pre-release only
-			KMessageBox::information(NULL, "Please rescan your channels.");
 			delete channel;
 			break;
 		}
