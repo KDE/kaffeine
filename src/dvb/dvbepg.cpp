@@ -392,6 +392,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 	boxLayout = new QVBoxLayout();
 
 	QTreeView *treeView = new QTreeView(widget);
+	treeView->setMinimumWidth(450);
 	treeView->setModel(epgModel);
 	treeView->setRootIsDecorated(false);
 	connect(treeView, SIGNAL(activated(QModelIndex)), this, SLOT(entryActivated(QModelIndex)));
@@ -404,6 +405,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 
 	QScrollArea *scrollArea = new QScrollArea(widget);
 	scrollArea->setBackgroundRole(QPalette::Light);
+	scrollArea->setMinimumHeight(175);
 	scrollArea->setWidget(contentLabel);
 	scrollArea->setWidgetResizable(true);
 	boxLayout->addWidget(scrollArea);

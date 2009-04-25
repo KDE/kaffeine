@@ -293,7 +293,7 @@ void DvbScanDialog::dialogAccepted()
 	manager->getChannelModel()->setChannels(channelModel->getChannels());
 }
 
-static bool localeAwareLessThan(const QString &x, const QString &y)
+static bool localeAwareLessThan2(const QString &x, const QString &y)
 {
 	return x.localeAwareCompare(y) < 0;
 }
@@ -308,7 +308,7 @@ void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 		}
 
 		QStringList::const_iterator it = qLowerBound(providers.constBegin(),
-			providers.constEnd(), channel.provider, localeAwareLessThan);
+			providers.constEnd(), channel.provider, localeAwareLessThan2);
 
 		if ((it != providers.constEnd()) && (*it == channel.provider)) {
 			continue;

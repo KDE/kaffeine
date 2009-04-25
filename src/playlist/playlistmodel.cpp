@@ -20,6 +20,7 @@
 
 #include "playlistmodel.h"
 
+#include <KLocalizedString>
 #include <KUrl>
 
 PlaylistModel::PlaylistModel(QObject *parent) : QAbstractTableModel(parent)
@@ -72,9 +73,9 @@ QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation, int
 
 	switch (section) {
 	case 0:
-		return "Number"; // FIXME no i18n for now
+		return i18n("Number");
 	case 1:
-		return "Track"; // FIXME no i18n for now
+		return i18n("Title");
 	}
 
 	return QVariant();

@@ -36,13 +36,9 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_),
 	QSplitter *horizontalSplitter = new QSplitter(this);
 	widgetLayout->addWidget(horizontalSplitter);
 
+	new KFileWidget(KUrl(), horizontalSplitter);
+
 	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
-
-	new KFileWidget(KUrl(), verticalSplitter);
-
-	new QLabel("Hi, i'm the playlist browser", verticalSplitter);
-
-	verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
 	playlistModel = new PlaylistModel(this);
 	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(nextTrack()));

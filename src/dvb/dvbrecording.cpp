@@ -502,7 +502,7 @@ void DvbRecordingDialog::removeRecording()
 	model->removeRecording(row);
 }
 
-static bool localeAwareLessThan(const QString &x, const QString &y)
+static bool localeAwareLessThan3(const QString &x, const QString &y)
 {
 	return x.localeAwareCompare(y) < 0;
 }
@@ -530,7 +530,7 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 		channels.append(channel->name);
 	}
 
-	qStableSort(channels.begin(), channels.end(), localeAwareLessThan);
+	qStableSort(channels.begin(), channels.end(), localeAwareLessThan3);
 
 	channelBox = new KComboBox(widget);
 	channelBox->addItems(channels);
