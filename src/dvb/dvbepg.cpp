@@ -440,13 +440,16 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 void DvbEpgDialog::entryActivated(const QModelIndex &index)
 {
 	const DvbEpgEntry *entry = epgModel->getEntry(index.row());
-	QString text = i18n("<font color=#008000 size=\"+1\">%1</font><br>").arg(entry->title);
+	QString text = i18n("<font color=#008000 size=\"+1\">%1</font><br>", entry->title);
 
 	if (!entry->subheading.isEmpty()) {
-		text += i18n("<font color=#808000>%1</font><br>").arg(entry->subheading);
+		text += i18n("<font color=#808000>%1</font><br>", entry->subheading);
 	}
 
-	text += i18n("<font color=#800000>%1 - %2</font><br><br>").arg(KGlobal::locale()->formatDateTime(entry->begin, KLocale::LongDate)).arg(KGlobal::locale()->formatTime(entry->begin.time().addSecs(QTime().secsTo(entry->duration))));
+	QString begin = KGlobal::locale()->formatDateTime(entry->begin, KLocale::LongDate);
+	QString end = KGlobal::locale()->formatTime(entry->begin.time().addSecs(QTime().secsTo(entry->duration)));
+
+	text += i18n("<font color=#800000>%1 - %2</font><br><br>", begin, end);
 
 	text += entry->details;
 	contentLabel->setText(text);
