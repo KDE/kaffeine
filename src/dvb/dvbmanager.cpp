@@ -299,10 +299,14 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 			deviceAdded(device);
 		}
 	}
+
+	scanDataDate = KConfigGroup(KGlobal::config(), "DVB").readEntry("ScanDataDate",
+									QDate(1900, 1, 1));
 }
 
 DvbManager::~DvbManager()
 {
+	KConfigGroup(KGlobal::config(), "DVB").writeEntry("ScanDataDate", scanDataDate);
 	writeDeviceConfigs();
 	channelModel->saveChannels();
 	delete scanData;
@@ -424,21 +428,21 @@ void DvbManager::setDeviceConfigs(const QList<QList<DvbConfig> > &configs)
 	updateSourceMapping();
 }
 
-QString DvbManager::getScanFileDate()
+QString DvbManager::getScanDataDate()
 {
-	if (scanFileDate.isNull()) {
-		readScanFile();
+	if (scanDataDate.isNull()) {
+		readScanData();
 	}
 
-	return KGlobal::locale()->formatDate(scanFileDate, KLocale::ShortDate);
+	return KGlobal::locale()->formatDate(scanDataDate, KLocale::ShortDate);
 }
 
 QStringList DvbManager::getScanSources(TransmissionType type)
 {
 	Q_ASSERT((type >= 0) && (type <= TransmissionTypeMax));
 
-	if (scanFileDate.isNull()) {
-		readScanFile();
+	if (scanData == NULL) {
+		readScanData();
 	}
 
 	return scanSources[type];
@@ -462,8 +466,8 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 
 QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 {
-	if (scanFileDate.isNull()) {
-		readScanFile();
+	if (scanData == NULL) {
+		readScanData();
 	}
 
 	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
@@ -484,7 +488,7 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 	return scanData->readTransponders(scanOffsets[type].at(index), type);
 }
 
-bool DvbManager::updateScanFile(const QByteArray &data)
+bool DvbManager::updateScanData(const QByteArray &data)
 {
 	QByteArray uncompressed = qUncompress(data);
 
@@ -506,6 +510,10 @@ bool DvbManager::updateScanFile(const QByteArray &data)
 	}
 
 	file.write(uncompressed);
+	file.close();
+
+	scanDataDate = QDate::currentDate();
+	readScanData();
 
 	return true;
 }
@@ -733,8 +741,16 @@ void DvbManager::updateSourceMapping()
 	sources = sourceMapping.keys();
 }
 
-void DvbManager::readScanFile()
+void DvbManager::readScanData()
 {
+	delete scanData;
+	scanData = NULL;
+
+	for (int i = 0; i <= TransmissionTypeMax; ++i) {
+		scanSources[i].clear();
+		scanOffsets[i].clear();
+	}
+
 	QFile localFile(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
 	QDate localDate;
 
@@ -763,8 +779,6 @@ void DvbManager::readScanFile()
 
 	if (!localDate.isNull() && (globalDate.isNull() || (localDate >= globalDate))) {
 		// use local file
-		scanFileDate = localDate;
-
 		if (localFile.seek(0)) {
 			scanData = new DvbScanData(localFile.readAll());
 		} else {
@@ -773,8 +787,6 @@ void DvbManager::readScanFile()
 		}
 	} else if (!globalDate.isNull()) {
 		// use global file
-		scanFileDate = globalDate;
-
 		if (globalFile.seek(0)) {
 			scanData = new DvbScanData(globalFile.readAll());
 		} else {
@@ -782,13 +794,14 @@ void DvbManager::readScanFile()
 			return;
 		}
 	} else {
-		scanFileDate = QDate(1900, 1, 1);
+		scanDataDate = QDate(1900, 1, 1);
 		return;
 	}
 
-	if (scanData->readDate() != scanFileDate) {
-		kWarning() << "consistency error";
-		return;
+	QDate date = scanData->readDate();
+
+	if (scanDataDate < date) {
+		scanDataDate = date;
 	}
 
 	if (!scanData->readSources(scanSources[DvbC], scanOffsets[DvbC], "[dvb-c/") ||

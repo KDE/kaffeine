@@ -80,7 +80,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	boxLayout->addWidget(frame);
 
 	boxLayout->addWidget(new QLabel(i18n("Scan data last updated on %1",
-		manager->getScanFileDate())));
+		manager->getScanDataDate())));
 
 	QPushButton *pushButton = new QPushButton(i18n("Update scan data over Internet"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));
@@ -313,8 +313,9 @@ void DvbScanFileDownloadDialog::jobFinished()
 		return;
 	}
 
-	if (manager->updateScanFile(scanData)) {
-		label->setText(i18n("Scan data successfully updated."));
+	if (manager->updateScanData(scanData)) {
+		label->setText(i18n("Scan data successfully updated. Changes take\n"
+				    "effect after you have closed the configuration dialog."));
 	} else {
 		label->setText(i18n("Scan data update failed."));
 	}

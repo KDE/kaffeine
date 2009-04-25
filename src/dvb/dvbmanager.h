@@ -97,11 +97,11 @@ public:
 	QList<DvbDeviceConfig> getDeviceConfigs() const;
 	void setDeviceConfigs(const QList<QList<DvbConfig> > &configs);
 
-	QString getScanFileDate(); // returns the formatted short date of the last scan file update
+	QString getScanDataDate(); // returns the formatted short date of the last scan file update
 	QStringList getScanSources(TransmissionType type);
 	QString getAutoScanSource(const QString &source) const;
 	QList<DvbTransponder> getTransponders(const QString &source);
-	bool updateScanFile(const QByteArray &data);
+	bool updateScanData(const QByteArray &data);
 
 	QString getRecordingFolder();
 	QString getTimeShiftFolder();
@@ -123,7 +123,7 @@ private:
 
 	void updateSourceMapping();
 
-	void readScanFile();
+	void readScanData();
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;
@@ -135,7 +135,7 @@ private:
 
 	DvbDeviceManager *deviceManager;
 
-	QDate scanFileDate;
+	QDate scanDataDate;
 	DvbScanData *scanData;
 	QStringList scanSources[TransmissionTypeMax + 1];
 	QList<int> scanOffsets[TransmissionTypeMax + 1];

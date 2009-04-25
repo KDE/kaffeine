@@ -167,7 +167,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	ui = new Ui_DvbScanDialog();
 	ui->setupUi(widget);
 
-	QString date = manager->getScanFileDate();
+	QString date = manager->getScanDataDate();
 	ui->scanFilesLabel->setText(i18n("Scan data last updated<br>on %1", date));
 	ui->scanButton->setText(i18n("Start Scan"));
 
