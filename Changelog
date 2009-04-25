@@ -1,0 +1,29 @@
+------------------
+Kaffeine Changelog
+------------------
+
+Version 1.0-pre1:
+  - initial KDE4 release based on KDE4, QT4, Phonon and Solid
+    much of the code base was rewritten;
+    as a consequence not all features from old kaffeine are present yet
+  - supports:
+    - KDE integration
+    - DVB-C, DVB-S, DVB-T and ATSC devices
+    - multiple devices and device hot plug
+    - scanning inclusive region-based DVB-T Autoscan
+    - audio stream and subtitle selection
+    - recordings inclusive instant record
+    - time shifting
+    - EPG (incomplete)
+    - audio CDs, video CDs and DVDs
+  - stuff you might miss: (working hard on them of course ;-)
+    - localization (see below), full EPG support, CICAM, playlist handling,
+      OSD, S2API, broadcast, DBUS interface
+  - note: there will be a follow-up release in 1 - 1.5 months fixing important
+          shortcomings and also giving time for translations
+  - note: KDE 4.2, Phonon 4.3 and QT 4.4 are required to build / run Kaffeine
+  - note: Kaffeine currently depends on phonon-xine for digital TV playback
+          (due to the used phonon API)
+  - note: you have to reconfigure / rescan if you were using snapshots before
+
+  Have fun!

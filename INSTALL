@@ -1,0 +1,16 @@
+-------------------
+Installing Kaffeine
+-------------------
+
+You need development headers for QT 4.4, Phonon 4.3 and KDE 4.2
+(minimum versions) and gettext for translations.
+
+Create an empty build dir and do the following steps:
+# cmake <path/to/kaffeine/source/directory> <options>
+# make
+# make install
+
+Useful options include -DCMAKE_INSTALL_PREFIX=<path> (installation prefix
+for Kaffeine), -DCMAKE_BUILD_TYPE=<type> and -DKDE4_ENABLE_FINAL=ON.
+
+For further information look for generic KDE4 / cmake instructions.

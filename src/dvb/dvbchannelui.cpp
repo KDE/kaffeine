@@ -379,7 +379,7 @@ DvbChannelContextMenu::~DvbChannelContextMenu()
 
 void DvbChannelContextMenu::addDeleteAction()
 {
-	KAction *action = new KAction(i18n("Delete"), this);
+	KAction *action = new KAction(i18n("Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(deleteChannel()));
 	addAction(action);
 }
