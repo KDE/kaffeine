@@ -11,6 +11,8 @@ add_subdirectory(deviceactions)
 add_subdirectory(icons)
 add_subdirectory(src)
 
+macro_optional_add_subdirectory(po)
+
 if(BUILD_TOOLS)
   add_subdirectory(tools)
 endif(BUILD_TOOLS)
