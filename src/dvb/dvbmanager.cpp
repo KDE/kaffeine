@@ -444,6 +444,22 @@ QStringList DvbManager::getScanSources(TransmissionType type)
 	return scanSources[type];
 }
 
+QString DvbManager::getAutoScanSource(const QString &source) const
+{
+	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
+
+	if (scanSource.second.isEmpty()) {
+		kWarning() << "invalid source";
+		return QString();
+	}
+
+	if ((scanSource.first == DvbT) && (scanSource.second.startsWith("AUTO"))) {
+		return scanSource.second;
+	}
+
+	return QString();
+}
+
 QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 {
 	if (scanFileDate.isNull()) {

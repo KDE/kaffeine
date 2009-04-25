@@ -23,6 +23,7 @@
 
 #include <QTimer>
 #include <Solid/Device>
+#include "dvbchannel.h"
 #include "dvbconfig.h"
 
 class DvbDeviceThread;
@@ -98,6 +99,8 @@ public:
 
 	bool checkUsable();
 	void tune(const DvbTransponder &transponder);
+	void autoTune(const DvbTransponder &transponder);
+	DvbTransponder getAutoTransponder() const;
 	void stop();
 
 	/*
@@ -162,6 +165,7 @@ private:
 	stateFlags internalState;
 	DeviceState deviceState;
 	TransmissionTypes transmissionTypes;
+	int frontendCapabilities;
 	QString frontendName;
 	QString deviceId;
 
@@ -170,6 +174,10 @@ private:
 	QTimer frontendTimer;
 
 	DvbDeviceThread *thread;
+
+	bool isAuto;
+	DvbTTransponder *autoTTransponder;
+	DvbTransponder autoTransponder;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)

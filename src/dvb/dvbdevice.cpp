@@ -374,7 +374,8 @@ void DvbDeviceThread::run()
 }
 
 DvbDevice::DvbDevice(DvbManager *manager_, int deviceIndex_) : manager(manager_),
-	deviceIndex(deviceIndex_), internalState(0), deviceState(DeviceNotReady), frontendFd(-1)
+	deviceIndex(deviceIndex_), internalState(0), deviceState(DeviceNotReady), frontendFd(-1),
+	isAuto(false)
 {
 	thread = new DvbDeviceThread(this);
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
@@ -844,6 +845,44 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	}
 }
 
+void DvbDevice::autoTune(const DvbTransponder &transponder)
+{
+	if (transponder->getTransmissionType() != DvbTransponderBase::DvbT) {
+		kWarning() << "can't handle != DVB-T";
+		return;
+	}
+
+	isAuto = true;
+	autoTTransponder = new DvbTTransponder(*transponder->getDvbTTransponder());
+	autoTransponder = DvbTransponder(autoTTransponder);
+
+	// we have to iterate over unsupported AUTO values
+
+	if ((frontendCapabilities & FE_CAN_FEC_AUTO) == 0) {
+		autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
+	}
+
+	if ((frontendCapabilities & FE_CAN_GUARD_INTERVAL_AUTO) == 0) {
+		autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_8;
+	}
+
+	if ((frontendCapabilities & FE_CAN_QAM_AUTO) == 0) {
+		autoTTransponder->modulation = DvbTTransponder::Qam64;
+	}
+
+	if ((frontendCapabilities & FE_CAN_TRANSMISSION_MODE_AUTO) == 0) {
+		autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
+	}
+
+	tune(autoTransponder);
+}
+
+DvbTransponder DvbDevice::getAutoTransponder() const
+{
+	// FIXME query back information like frequency - tuning parameters - ...
+	return autoTransponder;
+}
+
 void DvbDevice::stop()
 {
 	if ((deviceState == DeviceNotReady) || (deviceState == DeviceIdle)) {
@@ -864,6 +903,7 @@ void DvbDevice::stop()
 		frontendFd = -1;
 	}
 
+	isAuto = false;
 	setDeviceState(DeviceIdle);
 }
 
@@ -941,9 +981,124 @@ void DvbDevice::frontendEvent()
 	frontendTimeout -= 100;
 
 	if (frontendTimeout <= 0) {
-		kDebug() << "tuning failed for" << frontendPath;
 		frontendTimer.stop();
-		setDeviceState(DeviceTuningFailed);
+
+		if (!isAuto) {
+			kWarning() << "tuning failed for" << frontendPath;
+			setDeviceState(DeviceTuningFailed);
+			return;
+		}
+
+		quint16 signal;
+
+		if (ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH, &signal) != 0) {
+			kWarning() << "ioctl FE_READ_SIGNAL_STRENGTH failed for" << frontendPath;
+			signal = 0;
+		}
+
+		bool carry = true;
+
+		if ((signal != 0) && (signal < 0x2000)) {
+			// signal too weak
+			carry = false;
+		}
+
+		if (carry && ((frontendCapabilities & FE_CAN_FEC_AUTO) == 0)) {
+			switch (autoTTransponder->fecRateHigh) {
+			case DvbTTransponder::Fec2_3:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec3_4;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec3_4:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec1_2;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec1_2:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec5_6;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec5_6:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec7_8;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec7_8:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec4_5;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec4_5:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec6_7;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec6_7:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec8_9;
+				carry = false;
+				break;
+			case DvbTTransponder::Fec8_9:
+			case DvbTTransponder::FecNone:
+			case DvbTTransponder::FecAuto:
+				autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
+				break;
+			}
+		}
+
+		if (carry && ((frontendCapabilities & FE_CAN_GUARD_INTERVAL_AUTO) == 0)) {
+			switch (autoTTransponder->guardInterval) {
+			case DvbTTransponder::GuardInterval1_8:
+				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_32;
+				carry = false;
+				break;
+			case DvbTTransponder::GuardInterval1_32:
+				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_4;
+				carry = false;
+				break;
+			case DvbTTransponder::GuardInterval1_4:
+				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_16;
+				carry = false;
+				break;
+			case DvbTTransponder::GuardInterval1_16:
+			case DvbTTransponder::GuardIntervalAuto:
+				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_8;
+				break;
+			}
+		}
+
+		if (carry && ((frontendCapabilities & FE_CAN_QAM_AUTO) == 0)) {
+			switch (autoTTransponder->modulation) {
+			case DvbTTransponder::Qam64:
+				autoTTransponder->modulation = DvbTTransponder::Qam16;
+				carry = false;
+				break;
+			case DvbTTransponder::Qam16:
+				autoTTransponder->modulation = DvbTTransponder::Qpsk;
+				carry = false;
+				break;
+			case DvbTTransponder::Qpsk:
+			case DvbTTransponder::ModulationAuto:
+				autoTTransponder->modulation = DvbTTransponder::Qam64;
+				break;
+			}
+		}
+
+		if (carry && ((frontendCapabilities & FE_CAN_TRANSMISSION_MODE_AUTO) == 0)) {
+			switch (autoTTransponder->transmissionMode) {
+			case DvbTTransponder::TransmissionMode8k:
+				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode2k;
+				carry = false;
+				break;
+			case DvbTTransponder::TransmissionMode2k:
+			case DvbTTransponder::TransmissionModeAuto:
+				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
+				break;
+			}
+		}
+
+		if (!carry) {
+			deviceState = DeviceTuningFailed;
+			tune(autoTransponder);
+		} else {
+			kWarning() << "tuning failed for" << frontendPath;
+			setDeviceState(DeviceTuningFailed);
+		}
 	}
 }
 
@@ -1039,6 +1194,8 @@ bool DvbDevice::identifyDevice()
 		kWarning() << "unknown frontend type" << frontend_info.type << "for" << frontendPath;
 		return false;
 	}
+
+	frontendCapabilities = frontend_info.caps;
 
 	frontendName = QString::fromAscii(frontend_info.name);
 	deviceId.clear();

@@ -444,24 +444,38 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 	layout->addWidget(frame);
 
 	QStringList sources;
+	int sourceIndex = -1;
 
 	switch (config->getTransmissionType()) {
 	case DvbConfigBase::DvbC:
 		defaultName = i18n("Cable");
 		sources = manager->getScanSources(DvbManager::DvbC);
+		sourceIndex = sources.indexOf(config->scanSource);
 		layout->addWidget(new QLabel(i18n("DVB-C")));
 		break;
 	case DvbConfigBase::DvbS:
-		Q_ASSERT(false);
+		// handled separately
 		break;
 	case DvbConfigBase::DvbT:
 		defaultName = i18n("Terrestrial");
-		sources = manager->getScanSources(DvbManager::DvbT);
+		sources.append("AUTO-Normal");
+		sources.append("AUTO-Offsets");
+		sources.append("AUTO-Australia");
+		sources.append("AUTO-Italy");
+		sources.append("AUTO-Taiwan");
+		sources += manager->getScanSources(DvbManager::DvbT);
+		sourceIndex = sources.indexOf(config->scanSource);
+		sources.replace(0, i18n("Autoscan"));
+		sources.replace(1, i18n("Autoscan with 167 kHz Offsets"));
+		sources.replace(2, i18n("Autoscan Australia"));
+		sources.replace(3, i18n("Autoscan Italy"));
+		sources.replace(4, i18n("Autoscan Taiwan"));
 		layout->addWidget(new QLabel(i18n("DVB-T")));
 		break;
 	case DvbConfigBase::Atsc:
 		defaultName = i18n("Atsc");
 		sources = manager->getScanSources(DvbManager::Atsc);
+		sourceIndex = sources.indexOf(config->scanSource);
 		layout->addWidget(new QLabel(i18n("ATSC")));
 		break;
 	}
@@ -483,7 +497,7 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 	sourceBox = new KComboBox(parent);
 	sourceBox->addItem(i18n("No Source"));
 	sourceBox->addItems(sources);
-	sourceBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
+	sourceBox->setCurrentIndex(sourceIndex + 1);
 	connect(sourceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sourceChanged(int)));
 	gridLayout->addWidget(sourceBox, 1, 1);
 
@@ -514,6 +528,26 @@ void DvbConfigObject::sourceChanged(int index)
 		// no source selected
 		nameEdit->setEnabled(false);
 		config->scanSource.clear();
+	} else if ((index <= 5) && (config->getTransmissionType() == DvbConfigBase::DvbT)) {
+		nameEdit->setEnabled(true);
+
+		switch (index - 1) {
+		case 0:
+			config->scanSource = "AUTO-Normal";
+			break;
+		case 1:
+			config->scanSource = "AUTO-Offsets";
+			break;
+		case 2:
+			config->scanSource = "AUTO-Australia";
+			break;
+		case 3:
+			config->scanSource = "AUTO-Italy";
+			break;
+		case 4:
+			config->scanSource = "AUTO-Taiwan";
+			break;
+		}
 	} else {
 		nameEdit->setEnabled(true);
 		config->scanSource = sourceBox->currentText();

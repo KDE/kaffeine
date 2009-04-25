@@ -234,7 +234,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	if (!checked) {
 		// stop scan
 		Q_ASSERT(internal != NULL);
-		ui->scanButton->setText(i18n("Start scan"));
+		ui->scanButton->setText(i18n("Start Scan"));
 		ui->progressBar->setValue(0);
 
 		delete internal;
@@ -259,7 +259,14 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		setDevice(manager->requestExclusiveDevice(source));
 
 		if (device != NULL) {
-			internal = new DvbScan(device, source, manager->getTransponders(source));
+			// FIXME ugly
+			QString autoScanSource = manager->getAutoScanSource(source);
+
+			if (autoScanSource.isEmpty()) {
+				internal = new DvbScan(device, source, manager->getTransponders(source));
+			} else {
+				internal = new DvbScan(device, source, autoScanSource);
+			}
 		} else {
 			ui->scanButton->setChecked(false);
 			KMessageBox::sorry(this, i18n("No suitable device found."));
@@ -267,7 +274,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		}
 	}
 
-	ui->scanButton->setText(i18n("Stop scan"));
+	ui->scanButton->setText(i18n("Stop Scan"));
 	previewModel->removeChannels();
 	providers.clear();
 	ui->providerList->clear();
@@ -277,6 +284,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	connect(internal, SIGNAL(scanProgress(int)), this, SLOT(scanProgress(int)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
 	connect(internal, SIGNAL(scanFinished()), this, SLOT(scanFinished()), Qt::QueuedConnection);
+
+	internal->start();
 }
 
 void DvbScanDialog::dialogAccepted()

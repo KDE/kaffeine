@@ -84,7 +84,10 @@ public:
 	DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_);
 	DvbScan(DvbDevice *device_, const QString &source_,
 		const QList<DvbTransponder> &transponders_);
+	DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource);
 	~DvbScan();
+
+	void start();
 
 signals:
 	void foundChannels(const QList<DvbPreviewChannel> &channels);
@@ -113,8 +116,6 @@ private:
 		ScanTune
 	};
 
-	void init();
-
 	bool startFilter(int pid, FilterType type);
 	void updateState();
 
@@ -129,6 +130,7 @@ private:
 	QString source;
 	DvbTransponder transponder;
 	bool isLive;
+	bool isAuto;
 
 	// only used if isLive is false
 	QList<DvbTransponder> transponders;
