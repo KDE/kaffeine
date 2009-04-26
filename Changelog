@@ -2,7 +2,7 @@
 Kaffeine Changelog
 ------------------
 
-Version 1.0-pre1:
+Version 1.0-pre1 (2009-04-26):
   - initial KDE4 release based on KDE4, QT4, Phonon and Solid
     much of the code base was rewritten;
     as a consequence not all features from old kaffeine are present yet
@@ -25,5 +25,3 @@ Version 1.0-pre1:
   - note: Kaffeine currently depends on phonon-xine for digital TV playback
           (due to the used phonon API)
   - note: you have to reconfigure / rescan if you were using snapshots before
-
-  Have fun!

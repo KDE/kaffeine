@@ -1,35 +1,84 @@
-Current status
-==============
+----
+TODO
+----
 
-Working:
-- playback (thanks to phonon; file, audio cd, video cd, dvd)
-- basic digital TV support (identify / configure / scan / watch; DVB / ATSC)
+If you are interested in contributing please drop a line to
+kaffeine-user@lists.sourceforge.net (moderated; you don't have to subscribe).
 
+Below is an unsorted list of tasks; additionally there are also FIXMEs in the
+code and maybe you have your own ideas about problematic areas.
 
-== Functionality required before first beta release ==
-
-= DVB Subsystem =
-On screen display showing current channel information (needs spec)
-Electronic program guide support (EIT)
-Electronic Program guide support (ATSC)
-Deinterlacer support
-
-== Future functionality ==
-CD: track selection, CDDB (or similar), ripping
-DVD: menu selection
-CD / VCD / DVD: deal nicely with multiple drives
-Playlist support
-CICAM support
-Documentation / Manual (too early for that)
-  * section about updating scan file
-Allow more than one Kaffeine instance
-Command line debug options: dump channels, dump stream
-Profile the playback subsystem performance
-Headless server
-Extend dvb-s transponder data
+See http://websvn.kde.org/trunk/extragear/multimedia/kaffeine/TODO?view=markup
+for an up-to-date version of this file.
 
 
-I know I should add a contribution section here; if you're interested drop a line
-to kaffeine-user (at) lists.sourceforge.net which is regularly moderated, so you don't
-have to subscribe or something like that; alternatively just drop by at #kaffeine on
-freenode.
+- write a handbook
+
+- OSD / overlay
+  - show current / next program; descriptions (EPG)
+
+- EPG
+  - ATSC support
+  - schedule recordings (and also have them marked)
+  - load / save events
+  - fix support for some channels
+
+- audio CD
+  - better track selection
+  - CDDB (or similar)
+  - ripping
+
+- DVD
+  - menu selection (mainly a phonon task)
+
+- audio CD / video CD / DVD
+  - deal nicely with multiple drives
+
+- playlist
+  - load / save playlists (m3u, pls, kaffeine, ...)
+  - drag and drop
+  - random and repeat mode
+
+- video settings
+  - possibility to adjust hue, saturation, brightness and contrast
+
+- CICAM support
+
+- DBUS interface
+  - X-DBUS-ServiceName in the .desktop file?
+
+- quit actions
+  - close / shutdown after playlist / recordings finished
+
+- allow more than one Kaffeine instance
+
+- profile performance
+
+- support for external subtitles
+  - mainly a phonon task
+
+- recordings
+  - warning when quiting if there are active / pending recordings
+  - allow repetiton (daily, weekly, monthly)
+
+- DVB categories
+
+- seek slider
+  - implement "jumping" behaviour, i.e. jump to the position where you click
+
+- cursor hiding
+  - sometimes flickering when hiding control bar
+
+- l10n
+  - use klocale for all date / time conversations
+  - use i18nc() where appropriate
+
+- broadcast support
+  - receive and send
+  - manage kaffeine remotely (headless backend?)
+
+- S2API support
+  - DVB-S2
+
+- equalizer
+  - mainly a phonon task

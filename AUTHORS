@@ -1,6 +1,12 @@
-Christoph Pfister <christophpfister@gmail.com>
-(Maintainer)
+Maintainer:
+  Christoph Pfister <christophpfister@gmail.com>
 
 
-Fabian Schury     - Playlist and playback related patches
-Devin Heitmueller - ATSC patches
+Contributors:
+  Devin Heitmueller - ATSC patches
+  Fabian Schury     - Playback and playlist patches
+
+
+Former maintainers (KDE3 Kaffeine):
+  Christophe Thommeret
+  Jürgen Kofler
