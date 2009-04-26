@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QDir>
 #include <QSplitter>
+#include <QThread>
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
@@ -177,6 +178,41 @@ void DvbLiveStream::timerEvent(QTimerEvent *)
 	buffer.append(pmtGenerator.generatePackets());
 }
 
+class DvbTimeShiftCleaner : public QThread
+{
+public:
+	explicit DvbTimeShiftCleaner(QObject *parent) : QThread(parent) { }
+
+	~DvbTimeShiftCleaner()
+	{
+		wait();
+	}
+
+	void remove(const QString &path_, const QStringList &files_);
+
+private:
+	void run();
+
+	QString path;
+	QStringList files;
+};
+
+void DvbTimeShiftCleaner::remove(const QString &path_, const QStringList &files_)
+{
+	path = path_;
+	files = files_;
+
+	start();
+}
+
+void DvbTimeShiftCleaner::run()
+{
+	// delete files asynchronously because it may block for several seconds
+	foreach (const QString &file, files) {
+		QFile::remove(path + '/' + file);
+	}
+}
+
 DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
 	mediaWidget(mediaWidget_), liveStream(NULL)
 {
@@ -288,6 +324,12 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	fastRetuneTimer = new QTimer(this);
 	fastRetuneTimer->setInterval(500);
 	connect(fastRetuneTimer, SIGNAL(timeout()), this, SLOT(fastRetuneTimeout()));
+
+	timeShiftCleaner = new DvbTimeShiftCleaner(this);
+
+	QTimer *timer = new QTimer(this);
+	timer->start(30000);
+	connect(timer, SIGNAL(timeout()), this, SLOT(cleanTimeShiftFiles()));
 }
 
 DvbTab::~DvbTab()
@@ -463,6 +505,24 @@ void DvbTab::liveStopped()
 void DvbTab::fastRetuneTimeout()
 {
 	fastRetuneTimer->stop();
+}
+
+void DvbTab::cleanTimeShiftFiles()
+{
+	if (timeShiftCleaner->isRunning()) {
+		return;
+	}
+
+	QDir dir(dvbManager->getTimeShiftFolder());
+	QStringList entries = dir.entryList(QStringList("TimeShift-*.m2t"), QDir::Files, QDir::Name);
+
+	if (entries.count() < 2) {
+		return;
+	}
+
+	entries.removeLast();
+
+	timeShiftCleaner->remove(dir.path(), entries);
 }
 
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)

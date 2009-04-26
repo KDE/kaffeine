@@ -30,6 +30,7 @@ class DvbChannel;
 class DvbDevice;
 class DvbLiveStream;
 class DvbManager;
+class DvbTimeShiftCleaner;
 class ProxyTreeView;
 
 class DvbTab : public TabBase
@@ -65,6 +66,7 @@ private slots:
 	void changeSubtitle(int index);
 	void liveStopped();
 	void fastRetuneTimeout();
+	void cleanTimeShiftFiles();
 
 private:
 	void activate();
@@ -78,6 +80,8 @@ private:
 
 	QTimer *fastRetuneTimer;
 	DvbLiveStream *liveStream;
+
+	DvbTimeShiftCleaner *timeShiftCleaner;
 };
 
 #endif /* DVBTAB_H */
