@@ -318,7 +318,7 @@ void DvbChannelModel::removeChannel(int pos)
 
 void DvbChannelModel::loadChannels()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
+	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		kDebug() << "can't open" << file.fileName();
@@ -344,7 +344,7 @@ void DvbChannelModel::loadChannels()
 
 void DvbChannelModel::saveChannels() const
 {
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dvb"));
+	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		kWarning() << "can't open" << file.fileName();
