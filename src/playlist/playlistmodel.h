@@ -24,27 +24,42 @@
 #include <QAbstractTableModel>
 
 class KUrl;
+class MediaWidget;
 
 class PlaylistModel : public QAbstractTableModel
 {
+	Q_OBJECT
 public:
-	explicit PlaylistModel(QObject *parent);
+	PlaylistModel(MediaWidget *mediaWidget_, QObject *parent);
 	~PlaylistModel();
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
 	Qt::DropActions supportedDropActions() const;
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QStringList mimeTypes() const;
+	QMimeData *mimeData(const QModelIndexList &indexes) const;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+	bool removeRows(int row, int count, const QModelIndex &parent);
 
 	void appendUrl(const KUrl &url);
 	void appendUrls(const QList<KUrl> &urls);
 
-	KUrl getTrack(int number) const;
-	int trackCount() const; // FIXME use rowCount() instead?
+public slots:
+	void playPreviousTrack();
+	void playCurrentTrack();
+	void playNextTrack();
+	void playTrack(const QModelIndex &index);
 
 private:
+	void playTrack(int track);
+
+	MediaWidget *mediaWidget;
 	QList<KUrl> tracks;
+	int currentTrack;
 };
 
 #endif /* PLAYLISTMODEL_H */

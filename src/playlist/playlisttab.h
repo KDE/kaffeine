@@ -23,13 +23,12 @@
 
 #include "../kaffeine.h"
 
-class QModelIndex;
 class QTreeView;
 class PlaylistModel;
+class PlaylistView;
 
 class PlaylistTab : public TabBase
 {
-	Q_OBJECT
 public:
 	explicit PlaylistTab(MediaWidget *mediaWidget_);
 	~PlaylistTab();
@@ -37,21 +36,13 @@ public:
 	void playUrl(const KUrl &url);
 	void playUrls(const QList<KUrl> &urls);
 
-public slots:
-	void previousTrack();
-	void nextTrack();
-	void playTrack(const QModelIndex &index);
-
 private:
 	void activate();
-
-	void playTrack(int track);
 
 	MediaWidget *mediaWidget;
 	QLayout *mediaLayout;
 	PlaylistModel *playlistModel;
-	QTreeView *playlistView;
-	int currentTrack;
+	PlaylistView *playlistView;
 };
 
 #endif /* PLAYLISTTAB_H */

@@ -20,11 +20,19 @@
 
 #include "playlistmodel.h"
 
+#include <QMimeData>
 #include <KLocalizedString>
 #include <KUrl>
+#include "../mediawidget.h"
 
-PlaylistModel::PlaylistModel(QObject *parent) : QAbstractTableModel(parent)
+PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
+	QAbstractTableModel(parent), mediaWidget(mediaWidget_), currentTrack(-1)
 {
+	setSupportedDragActions(Qt::MoveAction);
+
+	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(playPreviousTrack()));
+	connect(mediaWidget, SIGNAL(playlistPlay()), this, SLOT(playCurrentTrack()));
+	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
 }
 
 PlaylistModel::~PlaylistModel()
@@ -51,15 +59,21 @@ int PlaylistModel::rowCount(const QModelIndex &parent) const
 
 QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || (role != Qt::DisplayRole) || (index.row() >= tracks.size())) {
+	if (!index.isValid() || (index.row() >= tracks.size())) {
 		return QVariant();
 	}
 
-	switch (index.column()) {
-	case 0:
-		return index.row() + 1;
-	case 1:
-		return tracks.at(index.row()).fileName();
+	if (role == Qt::DecorationRole) {
+		if ((index.row() == currentTrack) && (index.column() == 0)) {
+			return KIcon("media-playback-start");
+		}
+	} else if (role == Qt::DisplayRole) {
+		switch (index.column()) {
+		case 0:
+			return index.row() + 1;
+		case 1:
+			return tracks.at(index.row()).fileName();
+		}
 	}
 
 	return QVariant();
@@ -86,26 +100,162 @@ Qt::DropActions PlaylistModel::supportedDropActions() const
 	return Qt::CopyAction | Qt::MoveAction;
 }
 
+Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const
+{
+	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
+
+	if (index.isValid()) {
+		return defaultFlags | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+	} else {
+		return defaultFlags | Qt::ItemIsDropEnabled;
+	}
+}
+
+QStringList PlaylistModel::mimeTypes() const
+{
+	return QStringList("text/uri-list");
+}
+
+QMimeData *PlaylistModel::mimeData(const QModelIndexList &indexes) const
+{
+	KUrl::List urls;
+
+	foreach (QModelIndex index, indexes) {
+		if (index.isValid() && (index.column() == 0)) {
+			urls.append(tracks.at(index.row()));
+		}
+	}
+
+	QMimeData *mimeData = new QMimeData();
+	urls.populateMimeData(mimeData);
+	return mimeData;
+}
+
+bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int, const QModelIndex &parent)
+{
+	if (action == Qt::IgnoreAction) {
+		return true;
+	}
+
+	int beginRow = 0;
+
+	if (row != -1) {
+		beginRow = row;
+	} else if (parent.isValid()) {
+		beginRow = parent.row();
+	} else {
+		beginRow = tracks.size();
+	}
+
+	if (!data->hasUrls()) {
+		return false;
+	}
+
+	QList<KUrl> urls = KUrl::List::fromMimeData(data);
+
+	beginInsertRows(QModelIndex(), beginRow, beginRow + urls.size() - 1);
+
+	for (int i = 0; i < urls.size(); ++i) {
+		tracks.insert(beginRow + i, urls[i]);
+	}
+
+	endInsertRows();
+
+	if (beginRow <= currentTrack) {
+		currentTrack += urls.size();
+	}
+
+	return true;
+}
+
 void PlaylistModel::appendUrl(const KUrl &url)
 {
+	bool startPlayback = tracks.isEmpty();
+
 	beginInsertRows(QModelIndex(), tracks.size(), tracks.size());
 	tracks.append(url);
 	endInsertRows();
+
+	if (startPlayback) {
+		playTrack(0);
+	}
 }
 
 void PlaylistModel::appendUrls(const QList<KUrl> &urls)
 {
+	bool startPlayback = tracks.isEmpty();
+
 	beginInsertRows(QModelIndex(), tracks.size(), tracks.size() + urls.size() - 1);
 	tracks += urls;
 	endInsertRows();
+
+	if (startPlayback) {
+		playTrack(0);
+	}
 }
 
-KUrl PlaylistModel::getTrack(int number) const
+bool PlaylistModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-	return tracks.at(number);
+	// FIXME for now only removal of a single row is supported
+	if (parent.isValid() || (count != 1)) {
+		return false;
+	}
+
+	beginRemoveRows(QModelIndex(), row, row);
+	tracks.removeAt(row);
+	endRemoveRows();
+
+	if (row < currentTrack) {
+		--currentTrack;
+	} else if (row == currentTrack) {
+		playTrack(-1);
+	}
+
+	return true;
 }
 
-int PlaylistModel::trackCount() const
+void PlaylistModel::playPreviousTrack()
 {
-	return tracks.size();
+	playTrack(currentTrack - 1);
+}
+
+void PlaylistModel::playCurrentTrack()
+{
+	playTrack(currentTrack);
+}
+
+void PlaylistModel::playNextTrack()
+{
+	playTrack(currentTrack + 1);
+}
+
+void PlaylistModel::playTrack(const QModelIndex &index)
+{
+	playTrack(index.row());
+}
+
+void PlaylistModel::playTrack(int track)
+{
+	if ((track < 0) || (track >= tracks.size())) {
+		track = -1;
+	}
+
+	if (track != currentTrack) {
+		int oldTrack = currentTrack;
+		currentTrack = track;
+
+		if (oldTrack != -1) {
+			emit dataChanged(index(oldTrack, 0), index(oldTrack, 0));
+		}
+
+		if (track != -1) {
+			emit dataChanged(index(track, 0), index(track, 0));
+		}
+	}
+
+	if (currentTrack != -1) {
+		mediaWidget->play(tracks.at(currentTrack));
+	} else {
+		mediaWidget->stop();
+	}
 }

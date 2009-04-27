@@ -21,14 +21,41 @@
 #include "playlisttab.h"
 
 #include <QBoxLayout>
-#include <QLabel>
+#include <QKeyEvent>
 #include <QSplitter>
 #include <QTreeView>
 #include <kfilewidget.h>
 #include "../mediawidget.h"
 #include "playlistmodel.h"
 
-PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_), currentTrack(0)
+class PlaylistView : public QTreeView
+{
+public:
+	explicit PlaylistView(QWidget *parent) : QTreeView(parent) { }
+	~PlaylistView() { }
+
+protected:
+	void keyPressEvent(QKeyEvent *event);
+};
+
+void PlaylistView::keyPressEvent(QKeyEvent *event)
+{
+	if(event->key() == Qt::Key_Delete) {
+		QModelIndexList selectedRows = selectionModel()->selectedRows();
+		qSort(selectedRows);
+
+		for (int i = selectedRows.size() - 1; i >= 0; --i) {
+			// FIXME compress
+			model()->removeRows(selectedRows.at(i).row(), 1);
+		}
+
+		return;
+	}
+
+	QTreeView::keyPressEvent(event);
+}
+
+PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 {
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
@@ -36,31 +63,27 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_),
 	QSplitter *horizontalSplitter = new QSplitter(this);
 	widgetLayout->addWidget(horizontalSplitter);
 
-	new KFileWidget(KUrl(), horizontalSplitter);
+	KFileWidget *fileWidget = new KFileWidget(KUrl(), horizontalSplitter);
+	fileWidget->setMode(KFile::Files | KFile::ExistingOnly | KFile::LocalOnly); // XXX
 
 	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
-	playlistModel = new PlaylistModel(this);
-	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(nextTrack()));
-	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(previousTrack()));
+	playlistModel = new PlaylistModel(mediaWidget, this);
 
-	playlistView = new QTreeView(this);
-	playlistView->setAcceptDrops(true);
+	playlistView = new PlaylistView(this);
 	playlistView->setAlternatingRowColors(true);
 	playlistView->setDragDropMode(QAbstractItemView::DragDrop);
-	playlistView->setDragEnabled(true);
-	playlistView->setDropIndicatorShown(true);
+	playlistView->setModel(playlistModel);
 	playlistView->setRootIsDecorated(false);
 	playlistView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	playlistView->setModel(playlistModel);
 	connect(playlistView, SIGNAL(doubleClicked(QModelIndex)), // FIXME use activated(...) ?
-		this, SLOT(playTrack(QModelIndex)));
-
+		playlistModel, SLOT(playTrack(QModelIndex)));
 	verticalSplitter->addWidget(playlistView);
 
 	QWidget *mediaContainer = new QWidget(verticalSplitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
 	mediaLayout->setMargin(0);
+
 	verticalSplitter->setStretchFactor(1, 1);
 	horizontalSplitter->setStretchFactor(1, 1);
 }
@@ -71,49 +94,15 @@ PlaylistTab::~PlaylistTab()
 
 void PlaylistTab::playUrl(const KUrl &url)
 {
-	int track = playlistModel->trackCount();
 	playlistModel->appendUrl(url);
-	playTrack(track);
 }
 
 void PlaylistTab::playUrls(const QList<KUrl> &urls)
 {
-	int track = playlistModel->trackCount();
 	playlistModel->appendUrls(urls);
-	playTrack(track);
-}
-
-void PlaylistTab::previousTrack()
-{
-	if ((currentTrack - 1) >= 0) {
-		playTrack(currentTrack - 1);
-	}
-}
-
-void PlaylistTab::nextTrack()
-{
-	if ((currentTrack + 1) < playlistModel->trackCount()) {
-		playTrack(currentTrack + 1);
-	}
-}
-
-void PlaylistTab::playTrack(const QModelIndex &index)
-{
-	if (!index.isValid() || (index.row() >= playlistModel->trackCount())) {
-		return;
-	}
-
-	playTrack(index.row());
 }
 
 void PlaylistTab::activate()
 {
 	mediaLayout->addWidget(mediaWidget);
-}
-
-void PlaylistTab::playTrack(int track)
-{
-	currentTrack = track;
-	mediaWidget->play(playlistModel->getTrack(currentTrack));
-	// FIXME update playlistView currentTrack display
 }

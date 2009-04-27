@@ -69,6 +69,7 @@ public:
 	void updateDvbSubtitles(const QStringList &subtitles, int currentIndex);
 
 public slots:
+	void stop();
 	void stopDvb();
 
 signals:
@@ -92,7 +93,6 @@ private slots:
 	void playbackFinished();
 	void previous();
 	void playPause(bool paused);
-	void stop();
 	void next();
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
