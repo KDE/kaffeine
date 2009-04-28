@@ -484,7 +484,7 @@ void Kaffeine::checkScreenSaver()
 {
 	if (isFullScreen() || mediaWidget->shouldInhibitScreenSaver()) {
 		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-			       "org.freedesktop.ScreenSaver").call("SimulateUserActivity");
+			"org.freedesktop.ScreenSaver").call(QDBus::NoBlock, "SimulateUserActivity");
 	}
 }
 
