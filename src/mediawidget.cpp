@@ -366,6 +366,12 @@ void MediaWidget::playDvd()
 	mediaObject->play();
 }
 
+bool MediaWidget::shouldInhibitScreenSaver() const
+{
+	return (playing && (mediaObject->state() != Phonon::PausedState) &&
+		mediaObject->hasVideo());
+}
+
 void MediaWidget::playDvb(const QString &channelName)
 {
 	DvbFeed *feed = new DvbFeed();

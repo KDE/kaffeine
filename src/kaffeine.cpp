@@ -20,6 +20,7 @@
 
 #include "kaffeine.h"
 
+#include <QDBusInterface>
 #include <QHoverEvent>
 #include <QLabel>
 #include <QPushButton>
@@ -226,6 +227,10 @@ Kaffeine::Kaffeine()
 	mediaWidget = new MediaWidget(playerMenu, fullScreenAction, controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
+
+	QTimer *timer = new QTimer(this);
+	timer->start(50000);
+	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
 
 	// tabs - keep in sync with TabIndex enum!
 
@@ -473,6 +478,14 @@ void Kaffeine::activateTab(int tabIndex)
 void Kaffeine::hideCursor()
 {
 	setCursor(Qt::BlankCursor);
+}
+
+void Kaffeine::checkScreenSaver()
+{
+	if (isFullScreen() || mediaWidget->shouldInhibitScreenSaver()) {
+		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
+			       "org.freedesktop.ScreenSaver").call("SimulateUserActivity");
+	}
 }
 
 bool Kaffeine::event(QEvent *event)

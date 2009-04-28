@@ -61,6 +61,8 @@ public:
 	void playVideoCd();
 	void playDvd();
 
+	bool shouldInhibitScreenSaver() const;
+
 	void playDvb(const QString &channelName); // starts dvb mode
 	void writeDvbData(const QByteArray &data);
 

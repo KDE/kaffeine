@@ -59,6 +59,7 @@ private slots:
 	void activateDvbTab();
 	void activateTab(int tabIndex);
 	void hideCursor();
+	void checkScreenSaver();
 
 private:
 	enum TabIndex {
