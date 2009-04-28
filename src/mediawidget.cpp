@@ -221,6 +221,11 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioAuto()));
 	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
 
+	action = new KAction(i18n("Fit to Window"), aspectGroup);
+	action->setCheckable(true);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioWidget()));
+	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
+
 	action = new KAction(i18n("4:3"), aspectGroup);
 	action->setCheckable(true);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatio4_3()));
@@ -230,11 +235,6 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setCheckable(true);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatio16_9()));
 	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
-
-	action = new KAction(i18n("Fit to Window"), aspectGroup);
-	action->setCheckable(true);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioWidget()));
-	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
 
 	menu->addMenu(aspectMenu);
 	menu->addSeparator();
