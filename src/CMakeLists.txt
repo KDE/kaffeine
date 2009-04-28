@@ -22,7 +22,7 @@ set(kaffeine_UI
 
 kde4_add_ui_files(kaffeine_SRCS ${kaffeine_UI})
 kde4_add_executable(kaffeine ${kaffeine_SRCS})
-target_link_libraries(kaffeine ${KDE4_KFILE_LIBRARY} ${KDE4_KIO_LIBRARY} ${KDE4_PHONON_LIBRARY} ${KDE4_SOLID_LIBRARY})
+target_link_libraries(kaffeine ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS} ${KDE4_SOLID_LIBS})
 
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
