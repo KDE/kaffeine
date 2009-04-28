@@ -120,7 +120,7 @@ QMimeData *PlaylistModel::mimeData(const QModelIndexList &indexes) const
 {
 	KUrl::List urls;
 
-	foreach (QModelIndex index, indexes) {
+	foreach (const QModelIndex &index, indexes) {
 		if (index.isValid() && (index.column() == 0)) {
 			urls.append(tracks.at(index.row()));
 		}
