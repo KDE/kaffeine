@@ -20,7 +20,6 @@
 
 #include <QFile>
 #include <QDomDocument>
-#include <QtDebug>
 
 class Element
 {

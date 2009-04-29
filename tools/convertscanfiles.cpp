@@ -20,7 +20,6 @@
 
 #include <QCoreApplication>
 #include <QDate>
-#include <QDebug>
 #include <QDir>
 #include "../src/dvb/dvbchannel.cpp"
 

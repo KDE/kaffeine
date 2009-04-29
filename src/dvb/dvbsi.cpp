@@ -21,7 +21,6 @@
 #include "dvbsi.h"
 
 #include <QTextCodec>
-#include <QTimerEvent>
 #include <KDebug>
 
 // FIXME some debug messages may be printed too often

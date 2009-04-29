@@ -26,7 +26,6 @@
 #include <QScrollArea>
 #include <QTreeView>
 #include <KLocale>
-#include <KLocalizedString>
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 
