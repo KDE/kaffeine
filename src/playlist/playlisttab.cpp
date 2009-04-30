@@ -73,9 +73,11 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 	playlistView = new PlaylistView(this);
 	playlistView->setAlternatingRowColors(true);
 	playlistView->setDragDropMode(QAbstractItemView::DragDrop);
-	playlistView->setModel(playlistModel);
 	playlistView->setRootIsDecorated(false);
 	playlistView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	playlistView->setModel(playlistModel);
+	playlistView->sortByColumn(0, Qt::AscendingOrder);
+	playlistView->setSortingEnabled(true);
 	connect(playlistView, SIGNAL(doubleClicked(QModelIndex)), // FIXME use activated(...) ?
 		playlistModel, SLOT(playTrack(QModelIndex)));
 	verticalSplitter->addWidget(playlistView);

@@ -25,6 +25,7 @@
 
 class KUrl;
 class MediaWidget;
+class PlaylistTrack;
 
 class PlaylistModel : public QAbstractTableModel
 {
@@ -44,6 +45,7 @@ public:
 	QMimeData *mimeData(const QModelIndexList &indexes) const;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	bool removeRows(int row, int count, const QModelIndex &parent);
+	void sort(int column, Qt::SortOrder order);
 
 	void appendUrl(const KUrl &url);
 	void appendUrls(const QList<KUrl> &urls);
@@ -58,7 +60,7 @@ private:
 	void playTrack(int track);
 
 	MediaWidget *mediaWidget;
-	QList<KUrl> tracks;
+	QList<PlaylistTrack> tracks;
 	int currentTrack;
 };
 

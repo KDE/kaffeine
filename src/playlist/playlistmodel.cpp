@@ -25,6 +25,43 @@
 #include <KUrl>
 #include "../mediawidget.h"
 
+class PlaylistTrack
+{
+public:
+	explicit PlaylistTrack(const KUrl &url_);
+	~PlaylistTrack() { }
+
+	KUrl getUrl() const
+	{
+		return url;
+	}
+
+	QString getTitle() const
+	{
+		return title;
+	}
+
+	bool operator<(const PlaylistTrack &other) const
+	{
+		if (title != other.title) {
+			return title.localeAwareCompare(other.title) < 0;
+		}
+
+		return index < other.index;
+	}
+
+	int index; // only used for sorting
+
+private:
+	KUrl url;
+	QString title;
+};
+
+PlaylistTrack::PlaylistTrack(const KUrl &url_) : url(url_)
+{
+	title = url.fileName();
+}
+
 PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
 	QAbstractTableModel(parent), mediaWidget(mediaWidget_), currentTrack(-1)
 {
@@ -72,7 +109,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 		case 0:
 			return index.row() + 1;
 		case 1:
-			return tracks.at(index.row()).fileName();
+			return tracks.at(index.row()).getTitle();
 		}
 	}
 
@@ -105,7 +142,7 @@ Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const
 	Qt::ItemFlags defaultFlags = QAbstractTableModel::flags(index);
 
 	if (index.isValid()) {
-		return defaultFlags | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+		return defaultFlags | Qt::ItemIsDragEnabled;
 	} else {
 		return defaultFlags | Qt::ItemIsDropEnabled;
 	}
@@ -118,12 +155,20 @@ QStringList PlaylistModel::mimeTypes() const
 
 QMimeData *PlaylistModel::mimeData(const QModelIndexList &indexes) const
 {
-	KUrl::List urls;
+	QList<int> rows;
 
 	foreach (const QModelIndex &index, indexes) {
 		if (index.isValid() && (index.column() == 0)) {
-			urls.append(tracks.at(index.row()));
+			rows.append(index.row());
 		}
+	}
+
+	qSort(rows);
+
+	KUrl::List urls;
+
+	foreach (int row, rows) {
+		urls.append(tracks.at(row).getUrl());
 	}
 
 	QMimeData *mimeData = new QMimeData();
@@ -156,7 +201,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	beginInsertRows(QModelIndex(), beginRow, beginRow + urls.size() - 1);
 
 	for (int i = 0; i < urls.size(); ++i) {
-		tracks.insert(beginRow + i, urls[i]);
+		tracks.insert(beginRow + i, PlaylistTrack(urls[i]));
 	}
 
 	endInsertRows();
@@ -173,7 +218,7 @@ void PlaylistModel::appendUrl(const KUrl &url)
 	bool startPlayback = tracks.isEmpty();
 
 	beginInsertRows(QModelIndex(), tracks.size(), tracks.size());
-	tracks.append(url);
+	tracks.append(PlaylistTrack(url));
 	endInsertRows();
 
 	if (startPlayback) {
@@ -186,7 +231,11 @@ void PlaylistModel::appendUrls(const QList<KUrl> &urls)
 	bool startPlayback = tracks.isEmpty();
 
 	beginInsertRows(QModelIndex(), tracks.size(), tracks.size() + urls.size() - 1);
-	tracks += urls;
+
+	foreach (const KUrl &url, urls) {
+		tracks.append(PlaylistTrack(url));
+	}
+
 	endInsertRows();
 
 	if (startPlayback) {
@@ -196,22 +245,65 @@ void PlaylistModel::appendUrls(const QList<KUrl> &urls)
 
 bool PlaylistModel::removeRows(int row, int count, const QModelIndex &parent)
 {
-	// FIXME for now only removal of a single row is supported
-	if (parent.isValid() || (count != 1)) {
+	if (parent.isValid()) {
 		return false;
 	}
 
-	beginRemoveRows(QModelIndex(), row, row);
-	tracks.removeAt(row);
+	int end = row + count;
+
+	beginRemoveRows(QModelIndex(), row, end - 1);
+	tracks.erase(tracks.begin() + row, tracks.begin() + end);
 	endRemoveRows();
 
-	if (row < currentTrack) {
-		--currentTrack;
-	} else if (row == currentTrack) {
-		playTrack(-1);
+	if (row <= currentTrack) {
+		if (end <= currentTrack) {
+			currentTrack -= count;
+		} else {
+			playTrack(-1);
+		}
 	}
 
 	return true;
+}
+
+void PlaylistModel::sort(int column, Qt::SortOrder order)
+{
+	if (column != 1) {
+		return;
+	}
+
+	emit layoutAboutToBeChanged();
+
+	for (int i = 0; i < tracks.size(); ++i) {
+		tracks[i].index = i;
+	}
+
+	if (order == Qt::AscendingOrder) {
+		qSort(tracks);
+	} else {
+		qSort(tracks.begin(), tracks.end(), qGreater<PlaylistTrack>());
+	}
+
+	QMap<int, int> mapping;
+
+	for (int i = 0; i < tracks.size(); ++i) {
+		mapping.insert(tracks.at(i).index, i);
+	}
+
+	QModelIndexList oldIndexes = persistentIndexList();
+	QModelIndexList newIndexes;
+
+	foreach (const QModelIndex &oldIndex, oldIndexes) {
+		newIndexes.append(index(mapping.value(oldIndex.row()), oldIndex.column()));
+	}
+
+	changePersistentIndexList(oldIndexes, newIndexes);
+
+	if (currentTrack != -1) {
+		currentTrack = mapping.value(currentTrack);
+	}
+
+	emit layoutChanged();
 }
 
 void PlaylistModel::playPreviousTrack()
@@ -254,7 +346,7 @@ void PlaylistModel::playTrack(int track)
 	}
 
 	if (currentTrack != -1) {
-		mediaWidget->play(tracks.at(currentTrack));
+		mediaWidget->play(tracks.at(currentTrack).getUrl());
 	} else {
 		mediaWidget->stop();
 	}
