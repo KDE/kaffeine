@@ -119,6 +119,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
 
+	setAcceptDrops(true);
 	setFocusPolicy(Qt::StrongFocus);
 
 	mediaObject = new Phonon::MediaObject(this);
@@ -865,6 +866,23 @@ void MediaWidget::contextMenuEvent(QContextMenuEvent *event)
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *)
 {
 	emit toggleFullScreen();
+}
+
+void MediaWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+	if (event->mimeData()->hasUrls()) {
+		event->acceptProposedAction();
+	}
+}
+
+void MediaWidget::dropEvent(QDropEvent *event)
+{
+	const QMimeData *mimeData = event->mimeData();
+
+	if (mimeData->hasUrls()) {
+		emit playlistUrlsDropped(KUrl::List::fromMimeData(mimeData));
+		event->acceptProposedAction();
+	}
 }
 
 void MediaWidget::updateAudioChannelBox()

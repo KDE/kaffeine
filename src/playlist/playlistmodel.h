@@ -48,13 +48,14 @@ public:
 	void sort(int column, Qt::SortOrder order);
 
 	void appendUrl(const KUrl &url);
-	void appendUrls(const QList<KUrl> &urls);
 
 public slots:
 	void playPreviousTrack();
 	void playCurrentTrack();
 	void playNextTrack();
 	void playTrack(const QModelIndex &index);
+
+	void appendUrls(const QList<KUrl> &urls);
 
 private:
 	void playTrack(int track);

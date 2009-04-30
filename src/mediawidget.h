@@ -81,6 +81,7 @@ signals:
 	void playlistPrevious();
 	void playlistPlay();
 	void playlistNext();
+	void playlistUrlsDropped(const QList<KUrl> &urls);
 
 	void previousDvbChannel();
 	void nextDvbChannel();
@@ -133,6 +134,9 @@ private slots:
 private:
 	void contextMenuEvent(QContextMenuEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *);
+	void dragEnterEvent(QDragEnterEvent *event);
+	void dropEvent(QDropEvent *event);
+
 	void updateAudioChannelBox();
 	void updateSubtitleBox();
 

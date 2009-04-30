@@ -70,6 +70,8 @@ PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
 	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(playPreviousTrack()));
 	connect(mediaWidget, SIGNAL(playlistPlay()), this, SLOT(playCurrentTrack()));
 	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
+	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<KUrl>)),
+		this, SLOT(appendUrls(QList<KUrl>)));
 }
 
 PlaylistModel::~PlaylistModel()
