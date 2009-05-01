@@ -157,7 +157,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	menu->addAction(actionPlayPause);
 
 	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), this);
-	actionStop->setShortcut(KShortcut(Qt::Key_Delete, Qt::Key_MediaStop));
+	actionStop->setShortcut(KShortcut(Qt::Key_Backspace, Qt::Key_MediaStop));
 	connect(actionStop, SIGNAL(triggered(bool)), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 	menu->addAction(actionStop);
