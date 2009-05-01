@@ -52,6 +52,8 @@ public:
 		    KActionCollection *collection, QWidget *parent);
 	~MediaWidget();
 
+	static QString extensionFilter(); // usable for KFileDialog::setFilter()
+
 	/*
 	 * loads the media and starts playback
 	 */

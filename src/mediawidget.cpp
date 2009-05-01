@@ -334,6 +334,22 @@ MediaWidget::~MediaWidget()
 	KConfigGroup(KGlobal::config(), "MediaObject").writeEntry("Volume", volumeSlider->value());
 }
 
+QString MediaWidget::extensionFilter()
+{
+	return QString(
+		// generated from kaffeine.desktop's mime types
+		"*.669 *.aac *.ac3 *.aif *.aifc *.aiff *.anim1 *.anim2 *.anim3 *.anim4 *.anim5 "
+		"*.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf *.asx *.au *.avi *.divx *.dv *.flac "
+		"*.flc *.fli *.flv *.it *.m15 *.m2t *.m4a *.m4b *.m4v *.med *.mka *.mkv *.mng "
+		"*.mod *.moov *.mov *.mp+ *.mp2 *.mp3 *.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpp "
+		"*.mtm *.nsv *.oga *.ogg *.ogm *.ogv *.ogx *.qt *.qtl *.qtvr *.ra *.ram *.rax *.rm "
+		"*.rmj *.rmm *.rms *.rmvb *.rmx *.rv *.rvx *.s3m *.shn *.snd *.spx *.stm *.tta "
+		"*.ult *.uni *.vob *.voc *.wav *.wax *.wma *.wmp *.wmv *.wmx *.wv *.wvp *.wvx *.xm "
+		// manual entries
+		"*.iso|") + i18nc("file filter description", "Supported media files") +
+		"\n*|" + i18nc("file filter description", "All files");
+}
+
 void MediaWidget::play(const KUrl &url)
 {
 	if (url.toLocalFile().endsWith(".iso", Qt::CaseInsensitive)) {

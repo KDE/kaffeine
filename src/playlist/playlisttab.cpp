@@ -64,6 +64,7 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 	widgetLayout->addWidget(horizontalSplitter);
 
 	KFileWidget *fileWidget = new KFileWidget(KUrl(), horizontalSplitter);
+	fileWidget->setFilter(MediaWidget::extensionFilter());
 	fileWidget->setMode(KFile::Files | KFile::ExistingOnly | KFile::LocalOnly); // XXX
 
 	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
