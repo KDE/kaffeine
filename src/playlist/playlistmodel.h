@@ -53,6 +53,8 @@ public slots:
 	void playCurrentTrack();
 	void playNextTrack();
 	void playTrack(const QModelIndex &index);
+	void repeatPlaylist(bool repeat_);
+	void shufflePlaylist();
 
 private:
 	void playTrack(int track);
@@ -60,6 +62,7 @@ private:
 	MediaWidget *mediaWidget;
 	QList<PlaylistTrack> tracks;
 	int currentTrack;
+	bool repeat;
 };
 
 #endif /* PLAYLISTMODEL_H */

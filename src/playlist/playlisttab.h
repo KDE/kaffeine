@@ -30,7 +30,7 @@ class PlaylistView;
 class PlaylistTab : public TabBase
 {
 public:
-	explicit PlaylistTab(MediaWidget *mediaWidget_);
+	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
 	void playUrls(const QList<KUrl> &urls);

@@ -184,6 +184,9 @@ Kaffeine::Kaffeine()
 	fullScreenAction->setShortcut(Qt::Key_F);
 	connect(fullScreenAction, SIGNAL(triggered(bool)), this, SLOT(toggleFullScreen()));
 
+	KMenu *playlistMenu = new KMenu(i18nc("menu bar", "Play&list"));
+	menuBar->addMenu(playlistMenu);
+
 	KMenu *dvbMenu = new KMenu(i18n("&Television"));
 	menuBar->addMenu(dvbMenu);
 
@@ -242,7 +245,7 @@ Kaffeine::Kaffeine()
 	tabs.append(playerTab);
 	stackedLayout->addWidget(playerTab);
 
-	playlistTab = new PlaylistTab(mediaWidget);
+	playlistTab = new PlaylistTab(playlistMenu, collection, mediaWidget);
 	tabs.append(playlistTab);
 	stackedLayout->addWidget(playlistTab);
 
@@ -270,6 +273,9 @@ Kaffeine::Kaffeine()
 
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+	// initialize random number generator
+	qsrand(QTime().msecsTo(QTime::currentTime()));
 
 	show();
 }

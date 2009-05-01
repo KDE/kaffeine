@@ -24,7 +24,11 @@
 #include <QKeyEvent>
 #include <QSplitter>
 #include <QTreeView>
+#include <KAction>
+#include <KActionCollection>
 #include <kfilewidget.h>
+#include <KLocalizedString>
+#include <KMenu>
 #include "../mediawidget.h"
 #include "playlistmodel.h"
 
@@ -55,8 +59,22 @@ void PlaylistView::keyPressEvent(QKeyEvent *event)
 	QTreeView::keyPressEvent(event);
 }
 
-PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
+PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
+	mediaWidget(mediaWidget_)
 {
+	playlistModel = new PlaylistModel(mediaWidget, this);
+
+	KAction *repeatAction = new KAction(KIcon("media-playlist-repeat"),
+					    i18nc("playlist menu", "Repeat"), this);
+	repeatAction->setCheckable(true);
+	connect(repeatAction, SIGNAL(triggered(bool)), playlistModel, SLOT(repeatPlaylist(bool)));
+	menu->addAction(collection->addAction("playlist_repeat", repeatAction));
+
+	KAction *shuffleAction = new KAction(KIcon("media-playlist-shuffle"),
+					     i18nc("playlist menu", "Shuffle"), this);
+	connect(shuffleAction, SIGNAL(triggered(bool)), playlistModel, SLOT(shufflePlaylist()));
+	menu->addAction(collection->addAction("playlist_shuffle", shuffleAction));
+
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
 
@@ -68,8 +86,6 @@ PlaylistTab::PlaylistTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 	fileWidget->setMode(KFile::Files | KFile::ExistingOnly | KFile::LocalOnly); // XXX
 
 	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
-
-	playlistModel = new PlaylistModel(mediaWidget, this);
 
 	playlistView = new PlaylistView(this);
 	playlistView->setAlternatingRowColors(true);

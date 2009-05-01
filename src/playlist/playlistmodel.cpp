@@ -43,15 +43,6 @@ public:
 		return title;
 	}
 
-	bool operator<(const PlaylistTrack &other) const
-	{
-		if (title != other.title) {
-			return title.localeAwareCompare(other.title) < 0;
-		}
-
-		return index < other.index;
-	}
-
 	int index; // only used for sorting
 
 private:
@@ -65,7 +56,7 @@ PlaylistTrack::PlaylistTrack(const KUrl &url_) : url(url_)
 }
 
 PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
-	QAbstractTableModel(parent), mediaWidget(mediaWidget_), currentTrack(-1)
+	QAbstractTableModel(parent), mediaWidget(mediaWidget_), currentTrack(-1), repeat(false)
 {
 	setSupportedDragActions(Qt::MoveAction);
 
@@ -200,19 +191,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 		return false;
 	}
 
-	QList<KUrl> urls = KUrl::List::fromMimeData(data);
-
-	beginInsertRows(QModelIndex(), beginRow, beginRow + urls.size() - 1);
-
-	for (int i = 0; i < urls.size(); ++i) {
-		tracks.insert(beginRow + i, PlaylistTrack(urls[i]));
-	}
-
-	endInsertRows();
-
-	if (beginRow <= currentTrack) {
-		currentTrack += urls.size();
-	}
+	appendUrls(KUrl::List::fromMimeData(data));
 
 	return true;
 }
@@ -278,9 +257,27 @@ bool PlaylistModel::removeRows(int row, int count, const QModelIndex &parent)
 	return true;
 }
 
+static bool playlistTitleLessThan(const PlaylistTrack &x, const PlaylistTrack &y)
+{
+	if (x.getTitle() != y.getTitle()) {
+		return x.getTitle().localeAwareCompare(y.getTitle()) < 0;
+	}
+
+	return x.index < y.index;
+}
+
+static bool playlistTitleGreater(const PlaylistTrack &x, const PlaylistTrack &y)
+{
+	if (x.getTitle() != y.getTitle()) {
+		return x.getTitle().localeAwareCompare(y.getTitle()) > 0;
+	}
+
+	return x.index > y.index;
+}
+
 void PlaylistModel::sort(int column, Qt::SortOrder order)
 {
-	if (column != 1) {
+	if ((tracks.size() < 2) || (column != 1)) {
 		return;
 	}
 
@@ -291,9 +288,9 @@ void PlaylistModel::sort(int column, Qt::SortOrder order)
 	}
 
 	if (order == Qt::AscendingOrder) {
-		qSort(tracks);
+		qSort(tracks.begin(), tracks.end(), playlistTitleLessThan);
 	} else {
-		qSort(tracks.begin(), tracks.end(), qGreater<PlaylistTrack>());
+		qSort(tracks.begin(), tracks.end(), playlistTitleGreater);
 	}
 
 	QMap<int, int> mapping;
@@ -338,10 +335,68 @@ void PlaylistModel::playTrack(const QModelIndex &index)
 	playTrack(index.row());
 }
 
+void PlaylistModel::repeatPlaylist(bool repeat_)
+{
+	repeat = repeat_;
+}
+
+static bool playlistIndexLess(const PlaylistTrack &x, const PlaylistTrack &y)
+{
+	return x.index < y.index;
+}
+
+void PlaylistModel::shufflePlaylist()
+{
+	if (tracks.size() < 2) {
+		return;
+	}
+
+	emit layoutAboutToBeChanged();
+
+	QList<int> remainingIndexes;
+
+	for (int i = 0; i < tracks.size(); ++i) {
+		remainingIndexes.append(i);
+	}
+
+	QMap<int, int> mapping;
+
+	for (int i = 0; i < tracks.size(); ++i) {
+		int index = remainingIndexes.takeAt(qrand() % remainingIndexes.size());
+		tracks[i].index = index;
+		mapping.insert(i, index);
+	}
+
+	qSort(tracks.begin(), tracks.end(), playlistIndexLess);
+
+	QModelIndexList oldIndexes = persistentIndexList();
+	QModelIndexList newIndexes;
+
+	foreach (const QModelIndex &oldIndex, oldIndexes) {
+		newIndexes.append(index(mapping.value(oldIndex.row()), oldIndex.column()));
+	}
+
+	changePersistentIndexList(oldIndexes, newIndexes);
+
+	if (currentTrack != -1) {
+		currentTrack = mapping.value(currentTrack);
+	}
+
+	emit layoutChanged();
+}
+
 void PlaylistModel::playTrack(int track)
 {
-	if ((track < 0) || (track >= tracks.size())) {
+	if (track < 0) {
 		track = -1;
+	}
+
+	if (track >= tracks.size()) {
+		if (!repeat || tracks.isEmpty()) {
+			track = -1;
+		} else {
+			track = 0;
+		}
 	}
 
 	if (track != currentTrack) {
