@@ -216,23 +216,23 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	KMenu *aspectMenu = new KMenu(i18n("Aspect Ratio"));
 	QActionGroup *aspectGroup = new QActionGroup(this);
 
-	action = new KAction(i18n("Auto"), aspectGroup);
+	action = new KAction(i18nc("aspect ratio", "Automatic"), aspectGroup);
 	action->setCheckable(true);
 	action->setChecked(true);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioAuto()));
 	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
 
-	action = new KAction(i18n("Fit to Window"), aspectGroup);
+	action = new KAction(i18nc("aspect ratio", "Fit to Window"), aspectGroup);
 	action->setCheckable(true);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatioWidget()));
 	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
 
-	action = new KAction(i18n("4:3"), aspectGroup);
+	action = new KAction(i18nc("aspect ratio", "4:3"), aspectGroup);
 	action->setCheckable(true);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatio4_3()));
 	aspectMenu->addAction(collection->addAction("controls_aspect_4_3", action));
 
-	action = new KAction(i18n("16:9"), aspectGroup);
+	action = new KAction(i18nc("aspect ratio", "16:9"), aspectGroup);
 	action->setCheckable(true);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(aspectRatio16_9()));
 	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
