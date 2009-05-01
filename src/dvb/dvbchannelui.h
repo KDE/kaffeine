@@ -42,6 +42,7 @@ public:
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	bool removeRows(int row, int count, const QModelIndex &parent);
 
 	void loadChannels();
 	void saveChannels() const;
@@ -50,7 +51,6 @@ public:
 
 	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
 	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;
-	void removeChannel(int pos);
 
 	/*
 	 * these two functions automatically adjust the channel numbers

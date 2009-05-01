@@ -175,6 +175,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	channelModel->setChannels(manager->getChannelModel()->getChannels());
 	ui->channelView->setModel(channelModel);
 	ui->channelView->setRootIsDecorated(false);
+	ui->channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
 	ui->channelView->setSortingEnabled(true);
 

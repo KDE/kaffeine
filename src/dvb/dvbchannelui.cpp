@@ -211,6 +211,19 @@ QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, i
 	return QVariant();
 }
 
+bool DvbChannelModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+	if (parent.isValid()) {
+		return false;
+	}
+
+	beginRemoveRows(QModelIndex(), row, row + count - 1);
+	channels.erase(channels.begin() + row, channels.begin() + row + count);
+	endRemoveRows();
+
+	return true;
+}
+
 QSharedDataPointer<DvbChannel> DvbChannelModel::getChannel(int pos) const
 {
 	return channels.at(pos);
@@ -309,13 +322,6 @@ void DvbChannelModel::updateChannel(int pos, const QSharedDataPointer<DvbChannel
 	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
 }
 
-void DvbChannelModel::removeChannel(int pos)
-{
-	beginRemoveRows(QModelIndex(), pos, pos);
-	channels.removeAt(pos);
-	endRemoveRows();
-}
-
 void DvbChannelModel::loadChannels()
 {
 	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
@@ -406,10 +412,12 @@ void DvbChannelContextMenu::changeIcon()
 
 void DvbChannelContextMenu::deleteChannel()
 {
-	int pos = view->selectedRow();
+	QList<int> rows = view->selectedRows();
+	qSort(rows);
 
-	if (pos != -1) {
-		model->removeChannel(pos);
+	for (int i = rows.size() - 1; i >= 0; --i) {
+		// FIXME compress
+		model->removeRow(rows.at(i));
 	}
 }
 
