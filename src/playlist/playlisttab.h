@@ -33,7 +33,6 @@ public:
 	explicit PlaylistTab(MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
-	void playUrl(const KUrl &url);
 	void playUrls(const QList<KUrl> &urls);
 
 private:

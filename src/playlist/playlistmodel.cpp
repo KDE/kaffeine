@@ -20,6 +20,8 @@
 
 #include "playlistmodel.h"
 
+#include <QDir>
+#include <QFileInfo>
 #include <QMimeData>
 #include <KLocalizedString>
 #include <KUrl>
@@ -215,33 +217,41 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	return true;
 }
 
-void PlaylistModel::appendUrl(const KUrl &url)
+void PlaylistModel::appendUrls(const QList<KUrl> &urls, bool enqueue)
 {
-	bool startPlayback = tracks.isEmpty();
-
-	beginInsertRows(QModelIndex(), tracks.size(), tracks.size());
-	tracks.append(PlaylistTrack(url));
-	endInsertRows();
-
-	if (startPlayback) {
-		playTrack(0);
-	}
-}
-
-void PlaylistModel::appendUrls(const QList<KUrl> &urls)
-{
-	bool startPlayback = tracks.isEmpty();
-
-	beginInsertRows(QModelIndex(), tracks.size(), tracks.size() + urls.size() - 1);
+	QList<PlaylistTrack> newTracks;
 
 	foreach (const KUrl &url, urls) {
-		tracks.append(PlaylistTrack(url));
+		QString localFile = url.toLocalFile();
+
+		if (!localFile.isEmpty() && QFileInfo(localFile).isDir()) {
+			QDir dir(localFile);
+
+			QStringList entries = dir.entryList(QDir::Files,
+							    QDir::Name | QDir::LocaleAware);
+
+			// FIXME filter according to the known extensions
+
+			foreach (const QString &entry, entries) {
+				newTracks.append(PlaylistTrack(QUrl::fromLocalFile(dir.filePath(entry))));
+			}
+		} else {
+			newTracks.append(PlaylistTrack(url));
+		}
 	}
 
+	if (newTracks.size() < 1) {
+		return;
+	}
+
+	int oldTracksSize = tracks.size();
+
+	beginInsertRows(QModelIndex(), tracks.size(), tracks.size() + newTracks.size() - 1);
+	tracks += newTracks;
 	endInsertRows();
 
-	if (startPlayback) {
-		playTrack(0);
+	if ((oldTracksSize == 0) || !enqueue) {
+		playTrack(oldTracksSize);
 	}
 }
 

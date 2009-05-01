@@ -95,14 +95,9 @@ PlaylistTab::~PlaylistTab()
 {
 }
 
-void PlaylistTab::playUrl(const KUrl &url)
-{
-	playlistModel->appendUrl(url);
-}
-
 void PlaylistTab::playUrls(const QList<KUrl> &urls)
 {
-	playlistModel->appendUrls(urls);
+	playlistModel->appendUrls(urls, false);
 }
 
 void PlaylistTab::activate()

@@ -47,15 +47,12 @@ public:
 	bool removeRows(int row, int count, const QModelIndex &parent);
 	void sort(int column, Qt::SortOrder order);
 
-	void appendUrl(const KUrl &url);
-
 public slots:
+	void appendUrls(const QList<KUrl> &urls, bool enqueue = true);
 	void playPreviousTrack();
 	void playCurrentTrack();
 	void playNextTrack();
 	void playTrack(const QModelIndex &index);
-
-	void appendUrls(const QList<KUrl> &urls);
 
 private:
 	void playTrack(int track);

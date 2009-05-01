@@ -387,7 +387,7 @@ void Kaffeine::openUrl(const KUrl &url)
 		activateTab(PlayerTabId);
 	}
 
-	playlistTab->playUrl(copy);
+	playlistTab->playUrls(QList<KUrl>() << copy);
 }
 
 void Kaffeine::openAudioCd()
