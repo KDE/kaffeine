@@ -191,33 +191,30 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 		return false;
 	}
 
-	appendUrls(KUrl::List::fromMimeData(data));
+	QList<PlaylistTrack> newTracks = processUrls(KUrl::List::fromMimeData(data));
+
+	if (newTracks.size() < 1) {
+		return false;
+	}
+
+	beginInsertRows(QModelIndex(), beginRow, beginRow + newTracks.size() - 1);
+
+	for (int i = 0; i < newTracks.size(); ++i) {
+		tracks.insert(beginRow + i, newTracks.at(i));
+	}
+
+	endInsertRows();
+
+	if (beginRow <= currentTrack) {
+		currentTrack += newTracks.size();
+	}
 
 	return true;
 }
 
 void PlaylistModel::appendUrls(const QList<KUrl> &urls, bool enqueue)
 {
-	QList<PlaylistTrack> newTracks;
-
-	foreach (const KUrl &url, urls) {
-		QString localFile = url.toLocalFile();
-
-		if (!localFile.isEmpty() && QFileInfo(localFile).isDir()) {
-			QDir dir(localFile);
-
-			QStringList entries = dir.entryList(QDir::Files,
-							    QDir::Name | QDir::LocaleAware);
-
-			// FIXME filter according to the known extensions
-
-			foreach (const QString &entry, entries) {
-				newTracks.append(PlaylistTrack(QUrl::fromLocalFile(dir.filePath(entry))));
-			}
-		} else {
-			newTracks.append(PlaylistTrack(url));
-		}
-	}
+	QList<PlaylistTrack> newTracks = processUrls(urls);
 
 	if (newTracks.size() < 1) {
 		return;
@@ -383,6 +380,32 @@ void PlaylistModel::shufflePlaylist()
 	}
 
 	emit layoutChanged();
+}
+
+QList<PlaylistTrack> PlaylistModel::processUrls(const QList<KUrl> &urls)
+{
+	QList<PlaylistTrack> newTracks;
+
+	foreach (const KUrl &url, urls) {
+		QString localFile = url.toLocalFile();
+
+		if (!localFile.isEmpty() && QFileInfo(localFile).isDir()) {
+			QDir dir(localFile);
+
+			QStringList entries = dir.entryList(QDir::Files,
+							    QDir::Name | QDir::LocaleAware);
+
+			// FIXME filter according to the known extensions
+
+			foreach (const QString &entry, entries) {
+				newTracks.append(PlaylistTrack(QUrl::fromLocalFile(dir.filePath(entry))));
+			}
+		} else {
+			newTracks.append(PlaylistTrack(url));
+		}
+	}
+
+	return newTracks;
 }
 
 void PlaylistModel::playTrack(int track)

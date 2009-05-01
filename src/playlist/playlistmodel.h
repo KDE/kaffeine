@@ -57,6 +57,8 @@ public slots:
 	void shufflePlaylist();
 
 private:
+	static QList<PlaylistTrack> processUrls(const QList<KUrl> &urls);
+
 	void playTrack(int track);
 
 	MediaWidget *mediaWidget;
