@@ -55,6 +55,7 @@ public slots:
 	void playTrack(const QModelIndex &index);
 	void repeatPlaylist(bool repeat_);
 	void shufflePlaylist();
+	void clearPlaylist();
 
 private:
 	static QList<PlaylistTrack> processUrls(const QList<KUrl> &urls);

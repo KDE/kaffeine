@@ -22,7 +22,9 @@
 
 #include <QBoxLayout>
 #include <QKeyEvent>
+#include <QListView>
 #include <QSplitter>
+#include <QToolButton>
 #include <QTreeView>
 #include <KAction>
 #include <KActionCollection>
@@ -75,19 +77,76 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	connect(shuffleAction, SIGNAL(triggered(bool)), playlistModel, SLOT(shufflePlaylist()));
 	menu->addAction(collection->addAction("playlist_shuffle", shuffleAction));
 
+	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
+					    i18nc("playlist menu", "Clear"), this);
+	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearPlaylist()));
+	menu->addAction(collection->addAction("playlist_clear", clearAction));
+
+	menu->addSeparator();
+
+	KAction *newAction = new KAction(KIcon("list-add"), i18nc("playlist menu", "New"), this);
+	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
+	menu->addAction(collection->addAction("playlist_new", newAction));
+
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
 
 	QSplitter *horizontalSplitter = new QSplitter(this);
 	widgetLayout->addWidget(horizontalSplitter);
 
-	KFileWidget *fileWidget = new KFileWidget(KUrl(), horizontalSplitter);
-	fileWidget->setFilter(MediaWidget::extensionFilter());
-	fileWidget->setMode(KFile::Files | KFile::ExistingOnly | KFile::LocalOnly); // XXX
-
 	QSplitter *verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
-	playlistView = new PlaylistView(this);
+	QWidget *widget = new QWidget(verticalSplitter);
+	QBoxLayout *sideLayout = new QVBoxLayout(widget);
+	sideLayout->setMargin(0);
+
+	QBoxLayout *boxLayout = new QHBoxLayout();
+
+	QToolButton *toolButton = new QToolButton(widget);
+	toolButton->setDefaultAction(newAction);
+	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	boxLayout->addWidget(toolButton);
+
+	boxLayout->addStretch();
+	sideLayout->addLayout(boxLayout);
+
+	QListView *playlistBrowserView = new QListView(widget);
+	connect(playlistBrowserView, SIGNAL(activated(QModelIndex)),
+		this, SLOT(playlistActivated(QModelIndex)));
+	sideLayout->addWidget(playlistBrowserView);
+
+	KFileWidget *fileWidget = new KFileWidget(KUrl(), verticalSplitter);
+	fileWidget->setFilter(MediaWidget::extensionFilter());
+	fileWidget->setMode(KFile::Files | KFile::ExistingOnly);
+	verticalSplitter->setStretchFactor(1, 1);
+
+	verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
+
+	widget = new QWidget(verticalSplitter);
+	sideLayout = new QVBoxLayout(widget);
+	sideLayout->setMargin(0);
+
+	boxLayout = new QHBoxLayout();
+
+	toolButton = new QToolButton(widget);
+	toolButton->setDefaultAction(repeatAction);
+	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(widget);
+	toolButton->setDefaultAction(shuffleAction);
+	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(widget);
+	toolButton->setDefaultAction(clearAction);
+	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	boxLayout->addWidget(toolButton);
+
+	boxLayout->addStretch();
+	sideLayout->addLayout(boxLayout);
+
+	playlistView = new PlaylistView(widget);
 	playlistView->setAlternatingRowColors(true);
 	playlistView->setDragDropMode(QAbstractItemView::DragDrop);
 	playlistView->setRootIsDecorated(false);
@@ -95,9 +154,9 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	playlistView->setModel(playlistModel);
 	playlistView->sortByColumn(0, Qt::AscendingOrder);
 	playlistView->setSortingEnabled(true);
-	connect(playlistView, SIGNAL(doubleClicked(QModelIndex)), // FIXME use activated(...) ?
+	connect(playlistView, SIGNAL(activated(QModelIndex)),
 		playlistModel, SLOT(playTrack(QModelIndex)));
-	verticalSplitter->addWidget(playlistView);
+	sideLayout->addWidget(playlistView);
 
 	QWidget *mediaContainer = new QWidget(verticalSplitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
@@ -114,6 +173,16 @@ PlaylistTab::~PlaylistTab()
 void PlaylistTab::playUrls(const QList<KUrl> &urls)
 {
 	playlistModel->appendUrls(urls, false);
+}
+
+void PlaylistTab::newPlaylist()
+{
+	// FIXME
+}
+
+void PlaylistTab::playlistActivated(const QModelIndex &index)
+{
+	// FIXME
 }
 
 void PlaylistTab::activate()

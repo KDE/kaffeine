@@ -97,7 +97,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 
 	if (role == Qt::DecorationRole) {
 		if ((index.row() == currentTrack) && (index.column() == 0)) {
-			return KIcon("media-playback-start");
+			return KIcon("arrow-right");
 		}
 	} else if (role == Qt::DisplayRole) {
 		switch (index.column()) {
@@ -380,6 +380,17 @@ void PlaylistModel::shufflePlaylist()
 	}
 
 	emit layoutChanged();
+}
+
+void PlaylistModel::clearPlaylist()
+{
+	tracks.clear();
+
+	if (currentTrack != -1) {
+		playTrack(-1);
+	}
+
+	reset();
 }
 
 QList<PlaylistTrack> PlaylistModel::processUrls(const QList<KUrl> &urls)

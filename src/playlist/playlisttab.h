@@ -23,17 +23,23 @@
 
 #include "../kaffeine.h"
 
+class QModelIndex;
 class QTreeView;
 class PlaylistModel;
 class PlaylistView;
 
 class PlaylistTab : public TabBase
 {
+	Q_OBJECT
 public:
 	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
 	void playUrls(const QList<KUrl> &urls);
+
+private slots:
+	void newPlaylist();
+	void playlistActivated(const QModelIndex &index);
 
 private:
 	void activate();
