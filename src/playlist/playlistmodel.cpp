@@ -392,10 +392,11 @@ QList<PlaylistTrack> PlaylistModel::processUrls(const QList<KUrl> &urls)
 		if (!localFile.isEmpty() && QFileInfo(localFile).isDir()) {
 			QDir dir(localFile);
 
-			QStringList entries = dir.entryList(QDir::Files,
-							    QDir::Name | QDir::LocaleAware);
+			QString extensionFilter = MediaWidget::extensionFilter();
+			extensionFilter.truncate(extensionFilter.indexOf('|'));
 
-			// FIXME filter according to the known extensions
+			QStringList entries = dir.entryList(extensionFilter.split(' '), QDir::Files,
+							    QDir::Name | QDir::LocaleAware);
 
 			foreach (const QString &entry, entries) {
 				newTracks.append(PlaylistTrack(QUrl::fromLocalFile(dir.filePath(entry))));
