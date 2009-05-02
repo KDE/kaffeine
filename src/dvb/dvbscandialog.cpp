@@ -123,17 +123,37 @@ int DvbPreviewChannelModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || role != Qt::DisplayRole || index.row() >= channels.size()) {
+	if (!index.isValid() || index.row() >= channels.size()) {
 		return QVariant();
 	}
 
-	switch (index.column()) {
-	case 0:
-		return channels.at(index.row()).name;
-	case 1:
-		return channels.at(index.row()).provider;
-	case 2:
-		return channels.at(index.row()).snr;
+	if (role == Qt::DecorationRole) {
+		if (index.column() == 0) {
+			const DvbPreviewChannel &channel = channels.at(index.row());
+
+			if (channel.videoPid >= 0) {
+				if (!channel.scrambled) {
+					return KIcon("video-television");
+				} else {
+					return KIcon("video-television-encrypted");
+				}
+			} else {
+				if (!channel.scrambled) {
+					return KIcon("text-speak");
+				} else {
+					return KIcon("audio-radio-encrypted");
+				}
+			}
+		}
+	} else if (role == Qt::DisplayRole) {
+		switch (index.column()) {
+		case 0:
+			return channels.at(index.row()).name;
+		case 1:
+			return channels.at(index.row()).provider;
+		case 2:
+			return channels.at(index.row()).snr;
+		}
 	}
 
 	return QVariant();
