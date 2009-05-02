@@ -819,20 +819,20 @@ void MediaWidget::updateTimeButton()
 
 void MediaWidget::updateCaption()
 {
+	if (dvbFeed != NULL) {
+		return;
+	}
+
 	QString caption;
 
 	if (playing) {
-		if (dvbFeed != NULL) {
-			return;
-		} else {
-			// FIXME include artist?
-			QStringList strings = mediaObject->metaData(Phonon::TitleMetaData);
+		// FIXME include artist?
+		QStringList strings = mediaObject->metaData(Phonon::TitleMetaData);
 
-			if (!strings.isEmpty() && !strings.at(0).isEmpty()) {
-				caption = strings.at(0);
-			} else {
-				caption = KUrl(mediaObject->currentSource().url()).fileName();
-			}
+		if (!strings.isEmpty() && !strings.at(0).isEmpty()) {
+			caption = strings.at(0);
+		} else {
+			caption = KUrl(mediaObject->currentSource().url()).fileName();
 		}
 	}
 
