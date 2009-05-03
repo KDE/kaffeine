@@ -78,13 +78,13 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	menu->addAction(collection->addAction("playlist_shuffle", shuffleAction));
 
 	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
-					    i18nc("playlist menu", "Clear"), this);
+					   "Clear", this); // FIXME
 	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearPlaylist()));
 	menu->addAction(collection->addAction("playlist_clear", clearAction));
 
 	menu->addSeparator();
 
-	KAction *newAction = new KAction(KIcon("list-add"), i18nc("playlist menu", "New"), this);
+	KAction *newAction = new KAction(KIcon("list-add"), "New", this); // FIXME
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
 	menu->addAction(collection->addAction("playlist_new", newAction));
 
