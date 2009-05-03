@@ -19,10 +19,17 @@
  */
 
 #include "dvbscandialog.h"
-#include "ui_dvbscandialog.h"
 
+#include <QBoxLayout>
+#include <QCheckBox>
+#include <QGroupBox>
 #include <QPainter>
+#include <QProgressBar>
+#include <QPushButton>
+#include <KComboBox>
 #include <KDebug>
+#include <KLed>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include "dvbchannelui.h"
 #include "dvbdevice.h"
@@ -183,71 +190,155 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	setCaption(i18n("Channels"));
 	manager = dvbTab->getDvbManager();
 
-	QWidget *widget = new QWidget(this);
-	ui = new Ui_DvbScanDialog();
-	ui->setupUi(widget);
+	QWidget *mainWidget = new QWidget(this);
+	QBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
 
-	QString date = manager->getScanDataDate();
-	ui->scanFilesLabel->setText(i18n("Scan data last updated<br>on %1", date));
-	ui->scanButton->setText(i18n("Start Scan"));
+	QGroupBox *groupBox = new QGroupBox(i18n("Channels"), mainWidget);
+	QBoxLayout *groupLayout = new QVBoxLayout(groupBox);
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->setChannels(manager->getChannelModel()->getChannels());
-	ui->channelView->setModel(channelModel);
-	ui->channelView->setRootIsDecorated(false);
-	ui->channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	ui->channelView->sortByColumn(0, Qt::AscendingOrder);
-	ui->channelView->setSortingEnabled(true);
 
-	DvbChannelContextMenu *menu = new DvbChannelContextMenu(channelModel, ui->channelView);
-	menu->addDeleteAction();
-	ui->channelView->setContextMenu(menu);
+	DvbChannelView *channelView = new DvbChannelView(channelModel, groupBox);
+
+	QBoxLayout *boxLayout = new QHBoxLayout();
+
+	QPushButton *button = new QPushButton(KIcon("configure"), i18n("Edit"), groupBox);
+	connect(button, SIGNAL(clicked(bool)), channelView, SLOT(editChannel()));
+	boxLayout->addWidget(button);
+
+	button = new QPushButton(KIcon("edit-delete"), i18n("Remove"), groupBox);
+	connect(button, SIGNAL(clicked(bool)), channelView, SLOT(deleteChannel()));
+	boxLayout->addWidget(button);
+
+	button = new QPushButton(KIcon("edit-clear-list"), i18n("Remove All"), groupBox);
+	connect(button, SIGNAL(clicked(bool)), this, SLOT(removeAllChannels()));
+	boxLayout->addWidget(button);
+	groupLayout->addLayout(boxLayout);
+
+	channelView->addDeleteAction();
+	channelView->setModel(channelModel);
+	channelView->setRootIsDecorated(false);
+	channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	channelView->sortByColumn(0, Qt::AscendingOrder);
+	channelView->setSortingEnabled(true);
+	groupLayout->addWidget(channelView);
+	mainLayout->addWidget(groupBox);
+
+	boxLayout = new QVBoxLayout();
+
+	groupBox = new QGroupBox(i18n("Channel Scan"), mainWidget);
+	groupLayout = new QVBoxLayout(groupBox);
+
+	groupLayout->addWidget(new QLabel(i18n("Source:")));
+
+	sourceBox = new KComboBox(groupBox);
+	groupLayout->addWidget(sourceBox);
+
+	scanButton = new QPushButton(KIcon("edit-find"), i18n("Start Scan"), groupBox);
+	scanButton->setCheckable(true);
+	connect(scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
+	groupLayout->addWidget(scanButton);
+
+	QString date = manager->getScanDataDate();
+	groupLayout->addWidget(new QLabel(i18n("Scan data last updated<br>on %1", date)));
+
+	QGridLayout *gridLayout = new QGridLayout();
+
+	gridLayout->addWidget(new QLabel(i18n("Signal:")), 0, 0);
+
+	signalWidget = new DvbGradProgress(groupBox);
+	gridLayout->addWidget(signalWidget, 0, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("SNR:")), 1, 0);
+
+	snrWidget = new DvbGradProgress(groupBox);
+	gridLayout->addWidget(snrWidget, 1, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Tuned:")), 2, 0);
+
+	tunedLed = new KLed(groupBox);
+	gridLayout->addWidget(tunedLed, 2, 1);
+	groupLayout->addLayout(gridLayout);
+
+	progressBar = new QProgressBar(groupBox);
+	progressBar->setValue(0);
+	groupLayout->addWidget(progressBar);
+
+	groupLayout->addSpacer();
+	boxLayout->addWidget(groupBox);
+
+	groupBox = new QGroupBox(i18n("Filter"), mainWidget);
+	groupLayout = new QVBoxLayout(groupBox);
+
+	ftaCheckBox = new QCheckBox(i18n("Free to air"), groupBox);
+	groupLayout->addWidget(ftaCheckBox);
+
+	radioCheckBox = new QCheckBox(i18n("Radio"), groupBox);
+	groupLayout->addWidget(radioCheckBox);
+
+	tvCheckBox = new QCheckBox(i18n("TV"), groupBox);
+	groupLayout->addWidget(tvCheckBox);
+
+	providerCheckBox = new QCheckBox(i18n("Provider:"), groupBox);
+	groupLayout->addWidget(providerCheckBox);
+
+	providerBox = new KComboBox(groupBox);
+	providerBox->setEnabled(false);
+	connect(providerCheckBox, SIGNAL(clicked(bool)), providerBox, SLOT(setEnabled(bool)));
+	groupLayout->addWidget(providerBox);
+
+	button = new QPushButton(i18n("Add Filtered"), groupBox);
+	connect(button, SIGNAL(clicked(bool)), this, SLOT(addFilteredChannels()));
+	groupLayout->addWidget(button);
+
+	button = new QPushButton(i18n("Add Selected"), groupBox);
+	connect(button, SIGNAL(clicked(bool)), this, SLOT(addSelectedChannels()));
+	groupLayout->addWidget(button);
+	boxLayout->addWidget(groupBox);
+	mainLayout->addLayout(boxLayout);
+
+	groupBox = new QGroupBox(i18n("Scan Results"), mainWidget);
+	groupLayout = new QVBoxLayout(groupBox);
 
 	previewModel = new DvbPreviewChannelModel(this);
-	ui->scanResultsView->setModel(previewModel);
-	ui->scanResultsView->setRootIsDecorated(false);
-	ui->scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	ui->scanResultsView->sortByColumn(0, Qt::AscendingOrder);
-	ui->scanResultsView->setSortingEnabled(true);
+	scanResultsView = new ProxyTreeView(groupBox);
+	scanResultsView->setModel(previewModel);
+	scanResultsView->setRootIsDecorated(false);
+	scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
+	scanResultsView->sortByColumn(0, Qt::AscendingOrder);
+	scanResultsView->setSortingEnabled(true);
+	groupLayout->addWidget(scanResultsView);
+	mainLayout->addWidget(groupBox);
 
 	setDevice(dvbTab->getLiveDevice());
 
 	if (device != NULL) {
-		ui->sourceList->addItem(i18n("Current Transponder"));
-		ui->sourceList->setEnabled(false);
+		sourceBox->addItem(i18n("Current Transponder"));
+		sourceBox->setEnabled(false);
 		isLive = true;
 	} else {
 		QStringList list = manager->getSources();
 
 		if (!list.isEmpty()) {
-			ui->sourceList->addItems(list);
+			sourceBox->addItems(list);
 		} else {
-			ui->sourceList->setEnabled(false);
-			ui->scanButton->setEnabled(false);
+			sourceBox->setEnabled(false);
+			scanButton->setEnabled(false);
 		}
 
 		isLive = false;
 	}
 
-	KMenu *contextMenu = ui->channelView->getContextMenu(); // DvbChannelContextMenu
-
 	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
-	connect(ui->editChannelButton, SIGNAL(clicked(bool)), contextMenu, SLOT(editChannel()));
-	connect(ui->removeChannelButton, SIGNAL(clicked(bool)), contextMenu, SLOT(deleteChannel()));
-	connect(ui->removeAllButton, SIGNAL(clicked(bool)), this, SLOT(removeAllChannels()));
-	connect(ui->scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
-	connect(ui->providerCBox, SIGNAL(clicked(bool)), ui->providerList, SLOT(setEnabled(bool)));
-	connect(ui->filteredButton, SIGNAL(clicked(bool)), this, SLOT(addFilteredChannels()));
-	connect(ui->selectedButton, SIGNAL(clicked(bool)), this, SLOT(addSelectedChannels()));
 	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
-	setMainWidget(widget);
+	setMainWidget(mainWidget);
 }
 
 DvbScanDialog::~DvbScanDialog()
 {
 	delete internal;
-	delete ui;
 }
 
 void DvbScanDialog::scanButtonClicked(bool checked)
@@ -255,8 +346,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	if (!checked) {
 		// stop scan
 		Q_ASSERT(internal != NULL);
-		ui->scanButton->setText(i18n("Start Scan"));
-		ui->progressBar->setValue(0);
+		scanButton->setText(i18n("Start Scan"));
+		progressBar->setValue(0);
 
 		delete internal;
 		internal = NULL;
@@ -276,7 +367,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		const DvbChannel *channel = dvbTab->getLiveChannel();
 		internal = new DvbScan(device, channel->source, channel->transponder);
 	} else {
-		QString source = ui->sourceList->currentText();
+		QString source = sourceBox->currentText();
 		setDevice(manager->requestExclusiveDevice(source));
 
 		if (device != NULL) {
@@ -289,20 +380,20 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 				internal = new DvbScan(device, source, autoScanSource);
 			}
 		} else {
-			ui->scanButton->setChecked(false);
+			scanButton->setChecked(false);
 			KMessageBox::sorry(this, i18n("No suitable device found."));
 			return;
 		}
 	}
 
-	ui->scanButton->setText(i18n("Stop Scan"));
-	previewModel->removeChannels();
+	scanButton->setText(i18n("Stop Scan"));
 	providers.clear();
-	ui->providerList->clear();
+	providerBox->clear();
+	previewModel->removeChannels();
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
-	connect(internal, SIGNAL(scanProgress(int)), this, SLOT(scanProgress(int)));
+	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(int)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
 	connect(internal, SIGNAL(scanFinished()), this, SLOT(scanFinished()), Qt::QueuedConnection);
 
@@ -337,20 +428,15 @@ void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 
 		int pos = it - providers.constBegin();
 		providers.insert(pos, channel.provider);
-		ui->providerList->insertItem(pos, channel.provider);
+		providerBox->insertItem(pos, channel.provider);
 	}
-}
-
-void DvbScanDialog::scanProgress(int percentage)
-{
-	ui->progressBar->setValue(percentage);
 }
 
 void DvbScanDialog::scanFinished()
 {
 	// the state may have changed because the signal is queued
-	if (ui->scanButton->isChecked()) {
-		ui->scanButton->setChecked(false);
+	if (scanButton->isChecked()) {
+		scanButton->setChecked(false);
 		scanButtonClicked(false);
 	}
 }
@@ -358,9 +444,9 @@ void DvbScanDialog::scanFinished()
 void DvbScanDialog::updateStatus()
 {
 	if (device->getDeviceState() != DvbDevice::DeviceIdle) {
-		ui->signalWidget->setValue(device->getSignal());
-		ui->snrWidget->setValue(device->getSnr());
-		ui->tuningLed->setState(device->isTuned() ? KLed::On : KLed::Off);
+		signalWidget->setValue(device->getSignal());
+		snrWidget->setValue(device->getSnr());
+		tunedLed->setState(device->isTuned() ? KLed::On : KLed::Off);
 	}
 }
 
@@ -368,7 +454,7 @@ void DvbScanDialog::addSelectedChannels()
 {
 	QList<const DvbPreviewChannel *> channels;
 
-	foreach (int row, ui->scanResultsView->selectedRows()) {
+	foreach (int row, scanResultsView->selectedRows()) {
 		channels.append(&previewModel->getChannel(row));
 	}
 
@@ -380,22 +466,22 @@ void DvbScanDialog::addFilteredChannels()
 	QList<const DvbPreviewChannel *> channels;
 
 	foreach (const DvbPreviewChannel &channel, previewModel->getChannels()) {
-		if (ui->ftaCBox->isChecked()) {
+		if (ftaCheckBox->isChecked()) {
 			// only fta channels
 			if (channel.scrambled) {
 				continue;
 			}
 		}
 
-		if (ui->radioCBox->isChecked()) {
-			if (!ui->tvCBox->isChecked()) {
+		if (radioCheckBox->isChecked()) {
+			if (!tvCheckBox->isChecked()) {
 				// only radio channels
 				if (channel.videoPid != -1) {
 					continue;
 				}
 			}
 		} else {
-			if (ui->tvCBox->isChecked()) {
+			if (tvCheckBox->isChecked()) {
 				// only tv channels
 				if (channel.videoPid == -1) {
 					continue;
@@ -403,9 +489,9 @@ void DvbScanDialog::addFilteredChannels()
 			}
 		}
 
-		if (ui->providerCBox->isChecked()) {
+		if (providerCheckBox->isChecked()) {
 			// only channels from a certain provider
-			if (channel.provider != ui->providerList->currentText()) {
+			if (channel.provider != providerBox->currentText()) {
 				continue;
 			}
 		}
@@ -477,9 +563,9 @@ void DvbScanDialog::setDevice(DvbDevice *newDevice)
 
 	if (device == NULL) {
 		statusTimer.stop();
-		ui->signalWidget->setValue(0);
-		ui->snrWidget->setValue(0);
-		ui->tuningLed->setState(KLed::Off);
+		signalWidget->setValue(0);
+		snrWidget->setValue(0);
+		tunedLed->setState(KLed::Off);
 	} else {
 		statusTimer.start(1000);
 		updateStatus();

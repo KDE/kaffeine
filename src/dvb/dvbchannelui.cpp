@@ -365,59 +365,50 @@ void DvbChannelModel::saveChannels() const
 	}
 }
 
-DvbChannelContextMenu::DvbChannelContextMenu(DvbChannelModel *model_, ProxyTreeView *view_) :
-	KMenu(view_), model(model_), view(view_)
+DvbChannelView::DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent) :
+	ProxyTreeView(parent), channelModel(channelModel_)
 {
 	KAction *action = new KAction(i18n("Edit"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 
-/* FIXME wait till it's implemented
-	action = new KAction(i18n("Change Icon"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(changeIcon()));
-	addAction(action);
-*/
+	// FIXME Change Icon action
 }
 
-DvbChannelContextMenu::~DvbChannelContextMenu()
+DvbChannelView::~DvbChannelView()
 {
 }
 
-void DvbChannelContextMenu::addDeleteAction()
+void DvbChannelView::addDeleteAction()
 {
 	KAction *action = new KAction(i18n("Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(deleteChannel()));
 	addAction(action);
 }
 
-void DvbChannelContextMenu::editChannel()
+void DvbChannelView::editChannel()
 {
-	int pos = view->selectedRow();
+	int pos = selectedRow();
 
 	if (pos == -1) {
 		return;
 	}
 
-	DvbChannelEditor editor(model->getChannel(pos), view);
+	DvbChannelEditor editor(channelModel->getChannel(pos), this);
 
 	if (editor.exec() == QDialog::Accepted) {
-		model->updateChannel(pos, editor.getChannel());
+		channelModel->updateChannel(pos, editor.getChannel());
 	}
 }
 
-void DvbChannelContextMenu::changeIcon()
+void DvbChannelView::deleteChannel()
 {
-	// FIXME
-}
-
-void DvbChannelContextMenu::deleteChannel()
-{
-	QList<int> rows = view->selectedRows();
+	QList<int> rows = selectedRows();
 	qSort(rows);
 
 	for (int i = rows.size() - 1; i >= 0; --i) {
 		// FIXME compress
-		model->removeRow(rows.at(i));
+		channelModel->removeRow(rows.at(i));
 	}
 }
 

@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 #include <KDialog>
 #include <KMenu>
+#include "../proxytreeview.h"
 
 class QCheckBox;
 class QSpinBox;
@@ -63,23 +64,21 @@ private:
 	QList<QSharedDataPointer<DvbChannel> > channels;
 };
 
-class DvbChannelContextMenu : public KMenu
+class DvbChannelView : public ProxyTreeView
 {
 	Q_OBJECT
 public:
-	DvbChannelContextMenu(DvbChannelModel *model_, ProxyTreeView *view_);
-	~DvbChannelContextMenu();
+	DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent);
+	~DvbChannelView();
 
 	void addDeleteAction(); // should only be used in the scan dialog
 
 private slots:
 	void editChannel();
-	void changeIcon();
 	void deleteChannel();
 
 private:
-	DvbChannelModel *model;
-	ProxyTreeView *view;
+	DvbChannelModel *channelModel;
 };
 
 class DvbChannelEditor : public KDialog

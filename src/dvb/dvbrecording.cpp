@@ -431,25 +431,22 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	boxLayout->addStretch(1);
 	mainLayout->addLayout(boxLayout);
 
-	KMenu *contextMenu = new KMenu(this);
-
-	KAction *action = new KAction(i18n("Edit"), this);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(editRecording()));
-	contextMenu->addAction(action);
-
-	action = new KAction(i18n("Remove"), this);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(removeRecording()));
-	contextMenu->addAction(action);
-
 	model = manager->getRecordingModel();
 
 	treeView = new ProxyTreeView(this);
-	treeView->setContextMenu(contextMenu);
 	treeView->setModel(model);
 	treeView->setRootIsDecorated(false);
 	treeView->sortByColumn(2, Qt::AscendingOrder);
 	treeView->setSortingEnabled(true);
 	mainLayout->addWidget(treeView);
+
+	KAction *action = new KAction(i18n("Edit"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(editRecording()));
+	treeView->addAction(action);
+
+	action = new KAction(i18n("Remove"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(removeRecording()));
+	treeView->addAction(action);
 
 	setMainWidget(widget);
 }

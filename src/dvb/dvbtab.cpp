@@ -277,12 +277,11 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	leftLayout->addLayout(boxLayout);
 
 	DvbChannelModel *channelModel = dvbManager->getChannelModel();
-	channelView = new ProxyTreeView(leftWidget);
+	channelView = new DvbChannelView(channelModel, leftWidget);
 	channelView->setModel(channelModel);
 	channelView->setRootIsDecorated(false);
 	channelView->sortByColumn(0, Qt::AscendingOrder);
 	channelView->setSortingEnabled(true);
-	channelView->setContextMenu(new DvbChannelContextMenu(channelModel, channelView));
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		channelView->model(), SLOT(setFilterRegExp(QString)));

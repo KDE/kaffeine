@@ -25,15 +25,20 @@
 #include <QTimer>
 #include <KDialog>
 
+class QCheckBox;
+class QProgressBar;
+class KComboBox;
+class KLed;
 class DvbChannel;
 class DvbChannelModel;
 class DvbDevice;
 class DvbManager;
+class DvbGradProgress;
 class DvbPreviewChannel;
 class DvbPreviewChannelModel;
 class DvbScan;
 class DvbTab;
-class Ui_DvbScanDialog;
+class ProxyTreeView;
 
 class DvbScanDialog : public KDialog
 {
@@ -47,7 +52,6 @@ private slots:
 	void dialogAccepted();
 
 	void foundChannels(const QList<DvbPreviewChannel> &channels);
-	void scanProgress(int percentage);
 	void scanFinished();
 
 	void updateStatus();
@@ -62,10 +66,21 @@ private:
 
 	DvbTab *dvbTab;
 	DvbManager *manager;
-	Ui_DvbScanDialog *ui;
 	DvbChannelModel *channelModel;
-	DvbPreviewChannelModel *previewModel;
+	KComboBox *sourceBox;
+	QPushButton *scanButton;
+	QProgressBar *progressBar;
+	DvbGradProgress *signalWidget;
+	DvbGradProgress *snrWidget;
+	KLed *tunedLed;
+	QCheckBox *ftaCheckBox;
+	QCheckBox *radioCheckBox;
+	QCheckBox *tvCheckBox;
+	QCheckBox *providerCheckBox;
 	QStringList providers;
+	KComboBox *providerBox;
+	DvbPreviewChannelModel *previewModel;
+	ProxyTreeView *scanResultsView;
 
 	DvbDevice *device;
 	QTimer statusTimer;

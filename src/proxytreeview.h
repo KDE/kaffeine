@@ -24,7 +24,6 @@
 #include <QTreeView>
 
 class QSortFilterProxyModel;
-class KMenu;
 
 class ProxyTreeView : public QTreeView
 {
@@ -36,17 +35,13 @@ public:
 	int selectedRow() const;
 	QList<int> selectedRows() const;
 
-	KMenu *getContextMenu() const;
-	void setContextMenu(KMenu *menu_);
 	void setModel(QAbstractItemModel *model);
 
 protected:
-	QAbstractItemModel *sourceModel() const;
 	void contextMenuEvent(QContextMenuEvent *event);
 
 private:
 	QSortFilterProxyModel *proxyModel;
-	KMenu *menu;
 };
 
 #endif /* PROXYTREEVIEW_H */

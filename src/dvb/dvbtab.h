@@ -27,6 +27,7 @@
 class QModelIndex;
 class KAction;
 class DvbChannel;
+class DvbChannelView;
 class DvbDevice;
 class DvbLiveStream;
 class DvbManager;
@@ -75,7 +76,7 @@ private:
 	MediaWidget *mediaWidget;
 	DvbManager *dvbManager;
 	KAction *instantRecordAction;
-	ProxyTreeView *channelView;
+	DvbChannelView *channelView;
 	QLayout *mediaLayout;
 
 	QTimer *fastRetuneTimer;

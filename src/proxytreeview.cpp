@@ -21,10 +21,10 @@
 #include "proxytreeview.h"
 
 #include <QContextMenuEvent>
+#include <QMenu>
 #include <QSortFilterProxyModel>
-#include <KMenu>
 
-ProxyTreeView::ProxyTreeView(QWidget *parent) : QTreeView(parent), menu(NULL)
+ProxyTreeView::ProxyTreeView(QWidget *parent) : QTreeView(parent)
 {
 	proxyModel = new QSortFilterProxyModel(this);
 	proxyModel->setDynamicSortFilter(true);
@@ -80,29 +80,22 @@ QList<int> ProxyTreeView::selectedRows() const
 	return result;
 }
 
-KMenu *ProxyTreeView::getContextMenu() const
-{
-	return menu;
-}
-
-void ProxyTreeView::setContextMenu(KMenu *menu_)
-{
-	menu = menu_;
-}
-
 void ProxyTreeView::setModel(QAbstractItemModel *model)
 {
 	proxyModel->setSourceModel(model);
 }
 
-QAbstractItemModel *ProxyTreeView::sourceModel() const
-{
-	return proxyModel->sourceModel();
-}
-
 void ProxyTreeView::contextMenuEvent(QContextMenuEvent *event)
 {
-	if ((menu != NULL) && currentIndex().isValid()) {
-		menu->popup(event->globalPos());
+	if (!currentIndex().isValid()) {
+		return;
 	}
+
+	QList<QAction *> contextActions = actions();
+
+	if (contextActions.isEmpty()) {
+		return;
+	}
+
+	QMenu::exec(contextActions, event->globalPos());
 }
