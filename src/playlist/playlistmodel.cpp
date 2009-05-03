@@ -319,7 +319,11 @@ void PlaylistModel::playPreviousTrack()
 
 void PlaylistModel::playCurrentTrack()
 {
-	playTrack(currentTrack);
+	if (currentTrack != -1) {
+		playTrack(currentTrack);
+	} else {
+		playTrack(0);
+	}
 }
 
 void PlaylistModel::playNextTrack()
