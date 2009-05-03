@@ -264,9 +264,9 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	progressBar = new QProgressBar(groupBox);
 	progressBar->setValue(0);
 	groupLayout->addWidget(progressBar);
-
-	groupLayout->addSpacer();
 	boxLayout->addWidget(groupBox);
+
+	boxLayout->addStretch();
 
 	groupBox = new QGroupBox(i18n("Filter"), mainWidget);
 	groupLayout = new QVBoxLayout(groupBox);

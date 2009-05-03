@@ -89,13 +89,4 @@ private:
 	DvbTab *dvbTab;
 };
 
-class TabBase : public QWidget
-{
-public:
-	TabBase() { }
-	~TabBase() { }
-
-	virtual void activate() = 0;
-};
-
 #endif /* KAFFEINE_H */

@@ -1,5 +1,5 @@
 /*
- * playlisttab.h
+ * tabbase.h
  *
  * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,40 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
  */
 
-#ifndef PLAYLISTTAB_H
-#define PLAYLISTTAB_H
+#ifndef TABBASE_H
+#define TABBASE_H
 
-#include "../tabbase.h"
+#include <QWidget>
 
-class QModelIndex;
-class QTreeView;
-class KActionCollection;
-class KMenu;
-class KUrl;
-class MediaWidget;
-class PlaylistModel;
-class PlaylistView;
-
-class PlaylistTab : public TabBase
+class TabBase : public QWidget
 {
-	Q_OBJECT
 public:
-	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
-	~PlaylistTab();
+	TabBase() { }
+	~TabBase() { }
 
-	void playUrls(const QList<KUrl> &urls);
-
-private slots:
-	void newPlaylist();
-	void playlistActivated(const QModelIndex &index);
-
-private:
-	void activate();
-
-	MediaWidget *mediaWidget;
-	QLayout *mediaLayout;
-	PlaylistModel *playlistModel;
-	PlaylistView *playlistView;
+	virtual void activate() = 0;
 };
 
-#endif /* PLAYLISTTAB_H */
+#endif /* TABBASE_H */

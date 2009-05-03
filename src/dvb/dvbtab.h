@@ -22,16 +22,19 @@
 #define DVBTAB_H
 
 #include <QSharedDataPointer>
-#include "../kaffeine.h"
+#include "../tabbase.h"
 
 class QModelIndex;
 class KAction;
+class KActionCollection;
+class KMenu;
 class DvbChannel;
 class DvbChannelView;
 class DvbDevice;
 class DvbLiveStream;
 class DvbManager;
 class DvbTimeShiftCleaner;
+class MediaWidget;
 class ProxyTreeView;
 
 class DvbTab : public TabBase
