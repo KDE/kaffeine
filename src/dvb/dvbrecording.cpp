@@ -409,7 +409,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	manager(manager_)
 {
 	setButtons(KDialog::Close);
-	setCaption(i18n("Recordings"));
+	setCaption(i18nc("dialog", "Recording Schedule"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
@@ -507,7 +507,7 @@ static bool localeAwareLessThan3(const QString &x, const QString &y)
 DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannelModel *channelModel,
 	QWidget *parent) : KDialog(parent)
 {
-	setCaption(i18n("Edit Recording"));
+	setCaption(i18nc("subdialog of recording schedule", "Edit Schedule Entry"));
 
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);

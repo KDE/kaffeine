@@ -226,8 +226,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(showEpgDialog()));
 	menu->addAction(collection->addAction("dvb_epg", epgAction));
 
-	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"), i18n("Recordings"),
-		this);
+	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"),
+						i18nc("dialog", "Recording Schedule"), this);
 	recordingsAction->setShortcut(Qt::Key_R);
 	connect(recordingsAction, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
 	menu->addAction(collection->addAction("dvb_recordings", recordingsAction));
