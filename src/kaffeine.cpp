@@ -54,52 +54,35 @@ private:
 
 StartTab::StartTab(Kaffeine *kaffeine)
 {
-	QVBoxLayout *boxLayout = new QVBoxLayout(this);
-	boxLayout->setMargin(0);
-	boxLayout->setSpacing(0);
+	setBackgroundRole(QPalette::Base);
+	setAutoFillBackground(true);
 
-	QLabel *label = new QLabel(i18n("<center><font size=\"+4\"><b>[Kaffeine Player]</b><br>"
-		"caffeine for your desktop!</font></center>"));
-	label->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
-	QPalette palette = label->palette();
-	palette.setColor(label->backgroundRole(), QColor(127, 127, 255));
-	label->setPalette(palette);
-	label->setAutoFillBackground(true);
-	boxLayout->addWidget(label);
-
-	QWidget *widget = new QWidget(this);
-	palette = widget->palette();
-	palette.setColor(widget->backgroundRole(), QColor(255, 255, 255));
-	widget->setPalette(palette);
-	widget->setAutoFillBackground(true);
-	boxLayout->addWidget(widget);
-
-	QGridLayout *gridLayout = new QGridLayout(widget);
+	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setAlignment(Qt::AlignCenter);
 	gridLayout->setMargin(10);
 	gridLayout->setSpacing(15);
 
-	QPushButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), widget);
+	QPushButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
 	button->setShortcut(Qt::Key_1);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
 
-	button = addShortcut(i18n("&2 Play Audio CD"), KIcon("media-optical-audio"), widget);
+	button = addShortcut(i18n("&2 Play Audio CD"), KIcon("media-optical-audio"), this);
 	button->setShortcut(Qt::Key_2);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("&3 Play Video CD"), KIcon("media-optical"), widget);
+	button = addShortcut(i18n("&3 Play Video CD"), KIcon("media-optical"), this);
 	button->setShortcut(Qt::Key_3);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
-	button = addShortcut(i18n("&4 Play DVD"), KIcon("media-optical"), widget);
+	button = addShortcut(i18n("&4 Play DVD"), KIcon("media-optical"), this);
 	button->setShortcut(Qt::Key_4);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
-	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), widget);
+	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), this);
 	button->setShortcut(Qt::Key_5);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(activateDvbTab()));
 	gridLayout->addWidget(button, 1, 1);
