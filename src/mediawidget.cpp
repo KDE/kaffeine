@@ -253,24 +253,28 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
-	navigationMenu = new KMenu(i18n("Navigation"), this);
+	navigationMenu = new KMenu(i18nc("playback menu", "Skip"), this);
 
-	action = new KAction(KIcon("media-skip-backward"), i18n("Skip 1min Backward"), this);
+	action = new KAction(KIcon("media-skip-backward"),
+			     i18nc("submenu of skip", "Skip 1min Backward"), this);
 	action->setShortcut(Qt::SHIFT + Qt::Key_Left);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
 	navigationMenu->addAction(collection->addAction("controls_long_skip_backward", action));
 
-	action = new KAction(KIcon("media-skip-backward"), i18n("Skip 10s Backward"), this);
+	action = new KAction(KIcon("media-skip-backward"),
+			     i18nc("submenu of skip", "Skip 10s Backward"), this);
 	action->setShortcut(Qt::Key_Left);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
 	navigationMenu->addAction(collection->addAction("controls_skip_backward", action));
 
-	action = new KAction(KIcon("media-skip-forward"), i18n("Skip 10s Forward"), this);
+	action = new KAction(KIcon("media-skip-forward"),
+			     i18nc("submenu of skip", "Skip 10s Forward"), this);
 	action->setShortcut(Qt::Key_Right);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
 	navigationMenu->addAction(collection->addAction("controls_skip_forward", action));
 
-	action = new KAction(KIcon("media-skip-forward"), i18n("Skip 1min Forward"), this);
+	action = new KAction(KIcon("media-skip-forward"),
+			     i18nc("submenu of skip", "Skip 1min Forward"), this);
 	action->setShortcut(Qt::SHIFT + Qt::Key_Right);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
 	navigationMenu->addAction(collection->addAction("controls_long_skip_forward", action));
