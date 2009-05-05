@@ -126,7 +126,7 @@ Kaffeine::Kaffeine()
 	KMenuBar *menuBar = KMainWindow::menuBar();
 	collection = new KActionCollection(this);
 
-	KMenu *menu = new KMenu(i18n("&File"));
+	KMenu *menu = new KMenu(i18n("&File"), this);
 	menuBar->addMenu(menu);
 
 	KAction *action = KStandardAction::open(this, SLOT(open()), collection);
@@ -160,20 +160,20 @@ Kaffeine::Kaffeine()
 	action = KStandardAction::quit(this, SLOT(close()), collection);
 	menu->addAction(collection->addAction("file_quit", action));
 
-	KMenu *playerMenu = new KMenu(i18n("&Playback"));
+	KMenu *playerMenu = new KMenu(i18n("&Playback"), this);
 	menuBar->addMenu(playerMenu);
 
 	fullScreenAction = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), this);
 	fullScreenAction->setShortcut(Qt::Key_F);
 	connect(fullScreenAction, SIGNAL(triggered(bool)), this, SLOT(toggleFullScreen()));
 
-	KMenu *playlistMenu = new KMenu(i18nc("menu bar", "Play&list"));
+	KMenu *playlistMenu = new KMenu(i18nc("menu bar", "Play&list"), this);
 	menuBar->addMenu(playlistMenu);
 
-	KMenu *dvbMenu = new KMenu(i18n("&Television"));
+	KMenu *dvbMenu = new KMenu(i18n("&Television"), this);
 	menuBar->addMenu(dvbMenu);
 
-	menu = new KMenu(i18n("&Settings"));
+	menu = new KMenu(i18n("&Settings"), this);
 	menuBar->addMenu(menu);
 
 	action = KStandardAction::keyBindings(this, SLOT(configureKeys()), collection);

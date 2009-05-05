@@ -188,7 +188,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 		this, SLOT(subtitlesChanged()));
 	toolBar->addWidget(subtitleBox);
 
-	KMenu *audioMenu = new KMenu(i18n("Audio"));
+	KMenu *audioMenu = new KMenu(i18n("Audio"), this);
 
 	KAction *action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
@@ -213,7 +213,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	menu->addMenu(audioMenu);
 	menu->addSeparator();
 
-	KMenu *aspectMenu = new KMenu(i18n("Aspect Ratio"));
+	KMenu *aspectMenu = new KMenu(i18n("Aspect Ratio"), this);
 	QActionGroup *aspectGroup = new QActionGroup(this);
 
 	action = new KAction(i18nc("aspect ratio", "Automatic"), aspectGroup);
@@ -253,7 +253,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
-	navigationMenu = new KMenu(i18n("Navigation"));
+	navigationMenu = new KMenu(i18n("Navigation"), this);
 
 	action = new KAction(KIcon("media-skip-backward"), i18n("Skip 1min Backward"), this);
 	action->setShortcut(Qt::SHIFT + Qt::Key_Left);
