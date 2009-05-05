@@ -996,12 +996,14 @@ void DvbDevice::frontendEvent()
 			signal = 0;
 		}
 
-		bool carry = true;
-
 		if ((signal != 0) && (signal < 0x2000)) {
 			// signal too weak
-			carry = false;
+			kWarning() << "tuning failed for" << frontendPath;
+			setDeviceState(DeviceTuningFailed);
+			return;
 		}
+
+		bool carry = true;
 
 		if (carry && ((frontendCapabilities & FE_CAN_FEC_AUTO) == 0)) {
 			switch (autoTTransponder->fecRateHigh) {
@@ -1021,18 +1023,9 @@ void DvbDevice::frontendEvent()
 				autoTTransponder->fecRateHigh = DvbTTransponder::Fec7_8;
 				carry = false;
 				break;
-			case DvbTTransponder::Fec7_8:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec4_5;
-				carry = false;
-				break;
 			case DvbTTransponder::Fec4_5:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec6_7;
-				carry = false;
-				break;
 			case DvbTTransponder::Fec6_7:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec8_9;
-				carry = false;
-				break;
+			case DvbTTransponder::Fec7_8:
 			case DvbTTransponder::Fec8_9:
 			case DvbTTransponder::FecNone:
 			case DvbTTransponder::FecAuto:
