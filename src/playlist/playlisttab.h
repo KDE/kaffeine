@@ -29,6 +29,8 @@ class KActionCollection;
 class KMenu;
 class KUrl;
 class MediaWidget;
+class PlaylistBrowserModel;
+class PlaylistBrowserView;
 class PlaylistModel;
 class PlaylistView;
 
@@ -43,6 +45,7 @@ public:
 
 private slots:
 	void newPlaylist();
+	void removePlaylist();
 	void playlistActivated(const QModelIndex &index);
 
 private:
@@ -50,6 +53,9 @@ private:
 
 	MediaWidget *mediaWidget;
 	QLayout *mediaLayout;
+	PlaylistBrowserModel *playlistBrowserModel;
+	PlaylistBrowserView *playlistBrowserView;
+	int currentPlaylist;
 	PlaylistModel *playlistModel;
 	PlaylistView *playlistView;
 };

@@ -27,32 +27,23 @@
 #include <KUrl>
 #include "../mediawidget.h"
 
-class PlaylistTrack
-{
-public:
-	explicit PlaylistTrack(const KUrl &url_);
-	~PlaylistTrack() { }
-
-	KUrl getUrl() const
-	{
-		return url;
-	}
-
-	QString getTitle() const
-	{
-		return title;
-	}
-
-	int index; // only used for sorting
-
-private:
-	KUrl url;
-	QString title;
-};
-
 PlaylistTrack::PlaylistTrack(const KUrl &url_) : url(url_)
 {
 	title = url.fileName();
+}
+
+PlaylistTrack::~PlaylistTrack()
+{
+}
+
+KUrl PlaylistTrack::getUrl() const
+{
+	return url;
+}
+
+QString PlaylistTrack::getTitle() const
+{
+	return title;
 }
 
 PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
@@ -310,6 +301,18 @@ void PlaylistModel::sort(int column, Qt::SortOrder order)
 	}
 
 	emit layoutChanged();
+}
+
+QList<PlaylistTrack> PlaylistModel::getPlaylist() const
+{
+	return tracks;
+}
+
+void PlaylistModel::setPlaylist(const QList<PlaylistTrack> &tracks_)
+{
+	playTrack(-1);
+	tracks = tracks_;
+	reset();
 }
 
 void PlaylistModel::playPreviousTrack()

@@ -22,10 +22,25 @@
 #define PLAYLISTMODEL_H
 
 #include <QAbstractTableModel>
+#include <KUrl>
 
-class KUrl;
 class MediaWidget;
-class PlaylistTrack;
+
+class PlaylistTrack
+{
+public:
+	explicit PlaylistTrack(const KUrl &url_);
+	~PlaylistTrack();
+
+	KUrl getUrl() const;
+	QString getTitle() const;
+
+	int index; // only used for sorting
+
+private:
+	KUrl url;
+	QString title;
+};
 
 class PlaylistModel : public QAbstractTableModel
 {
@@ -46,6 +61,9 @@ public:
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	bool removeRows(int row, int count, const QModelIndex &parent);
 	void sort(int column, Qt::SortOrder order);
+
+	QList<PlaylistTrack> getPlaylist() const;
+	void setPlaylist(const QList<PlaylistTrack> &tracks_);
 
 public slots:
 	void appendUrls(const QList<KUrl> &urls, bool enqueue = true);
