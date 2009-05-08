@@ -27,7 +27,6 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <KComboBox>
-#include <KDebug>
 #include <KLed>
 #include <KLocalizedString>
 #include <KMessageBox>

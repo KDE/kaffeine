@@ -24,7 +24,6 @@
 #include <QLabel>
 #include <QListView>
 #include <QScrollArea>
-#include <QTreeView>
 #include <KLocale>
 #include "dvbchannelui.h"
 #include "dvbmanager.h"

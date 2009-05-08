@@ -34,13 +34,11 @@
 #include <KAction>
 #include <KActionCollection>
 #include <KComboBox>
-#include <KConfigGroup>
 #include <KDialog>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KMessageBox>
 #include <KToolBar>
-#include <KUrl>
 
 class DvbFeed : public Phonon::AbstractMediaStream
 {

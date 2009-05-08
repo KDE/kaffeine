@@ -20,7 +20,6 @@
 
 #include <KAboutData>
 #include <KCmdLineArgs>
-#include <KLocalizedString>
 #include <KUniqueApplication>
 #include "kaffeine.h"
 

@@ -21,10 +21,8 @@
 #include "playlistmodel.h"
 
 #include <QDir>
-#include <QFileInfo>
 #include <QMimeData>
 #include <KLocalizedString>
-#include <KUrl>
 #include "../mediawidget.h"
 
 PlaylistTrack::PlaylistTrack(const KUrl &url_) : url(url_)

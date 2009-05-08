@@ -36,14 +36,11 @@ typedef quint64 __u64;
 #include <cmath>
 #include <QCoreApplication>
 #include <QDir>
-#include <QFile>
 #include <QMutex>
 #include <QThread>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
 #include <KDebug>
-#include "dvbchannel.h"
-#include "dvbconfig.h"
 #include "dvbmanager.h"
 
 class DvbFilterInternal

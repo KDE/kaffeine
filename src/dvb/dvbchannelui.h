@@ -21,9 +21,7 @@
 #ifndef DVBCHANNELUI_H
 #define DVBCHANNELUI_H
 
-#include <QAbstractTableModel>
 #include <KDialog>
-#include <KMenu>
 #include "../proxytreeview.h"
 
 class QCheckBox;

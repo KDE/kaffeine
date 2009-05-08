@@ -22,7 +22,6 @@
 
 #include <QDBusInterface>
 #include <QHoverEvent>
-#include <QLabel>
 #include <QPushButton>
 #include <QStackedLayout>
 #include <QTimer>

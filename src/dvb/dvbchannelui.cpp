@@ -33,8 +33,6 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KStandardDirs>
-#include "../proxytreeview.h"
-#include "dvbchannel.h"
 #include "dvbsi.h"
 
 template<class T> static QStringList displayStrings();

@@ -32,15 +32,12 @@
 #include <KMenu>
 #include <KMessageBox>
 #include "../mediawidget.h"
-#include "../proxytreeview.h"
 #include "dvbchannelui.h"
 #include "dvbconfigdialog.h"
-#include "dvbdevice.h"
 #include "dvbepg.h"
 #include "dvbmanager.h"
 #include "dvbrecording.h"
 #include "dvbscandialog.h"
-#include "dvbsi.h"
 
 class DvbLiveStream : public DvbPidFilter, public QObject
 {

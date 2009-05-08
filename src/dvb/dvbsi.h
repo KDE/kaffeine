@@ -21,7 +21,6 @@
 #ifndef DVBSI_H
 #define DVBSI_H
 
-#include "dvbchannel.h"
 #include "dvbdevice.h"
 
 class DvbPmtSection;

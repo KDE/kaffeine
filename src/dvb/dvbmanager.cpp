@@ -21,15 +21,10 @@
 #include "dvbmanager.h"
 
 #include <QDir>
-#include <QFile>
 #include <KDebug>
-#include <KGlobal>
 #include <KLocale>
 #include <KStandardDirs>
-#include "dvbchannel.h"
 #include "dvbchannelui.h"
-#include "dvbconfig.h"
-#include "dvbdevice.h"
 #include "dvbepg.h"
 #include "dvbrecording.h"
 
