@@ -1,4 +1,4 @@
-add_executable(convertscanfiles convertscanfiles.cpp)
+add_executable(convertscanfiles convertscanfiles.cpp ../src/dvb/dvbchannel.cpp)
 target_link_libraries(convertscanfiles ${QT_QTCORE_LIBRARY})
 
 add_executable(updatedvbsi updatedvbsi.cpp)

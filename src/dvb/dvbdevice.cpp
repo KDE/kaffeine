@@ -26,7 +26,6 @@
  */
 typedef quint64 __u64;
 
-#include <cmath>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/dvb/dmx.h>
@@ -34,6 +33,7 @@ typedef quint64 __u64;
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <cmath>
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>

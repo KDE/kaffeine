@@ -22,7 +22,6 @@
 #include <KCmdLineArgs>
 #include <KLocalizedString>
 #include <KUniqueApplication>
-
 #include "kaffeine.h"
 
 class KaffeineApplication : public KUniqueApplication
