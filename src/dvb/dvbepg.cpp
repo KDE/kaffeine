@@ -188,13 +188,15 @@ QVariant DvbEpgModel::data(const QModelIndex &index, int role) const
 		return QVariant();
 	}
 
+	const DvbEpgEntry *entry = filteredEntries.at(index.row());
+
 	switch (index.column()) {
 	case 0:
-		return filteredEntries.at(index.row())->begin;
+		return KGlobal::locale()->formatDateTime(entry->begin.toLocalTime());
 	case 1:
-		return filteredEntries.at(index.row())->duration;
+		return KGlobal::locale()->formatTime(entry->duration, false, true);
 	case 2:
-		return filteredEntries.at(index.row())->title;
+		return entry->title;
 	}
 
 	return QVariant();
@@ -321,7 +323,7 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 		epgEntry.serviceId = serviceId;
 
 		epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
-			bcdToTime(entry.startTime()), Qt::UTC).toLocalTime();
+					   bcdToTime(entry.startTime()), Qt::UTC);
 		epgEntry.duration = bcdToTime(entry.duration());
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
@@ -389,12 +391,12 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 
 	boxLayout = new QVBoxLayout();
 
-	QTreeView *treeView = new QTreeView(widget);
-	treeView->setMinimumWidth(450);
-	treeView->setModel(epgModel);
-	treeView->setRootIsDecorated(false);
-	connect(treeView, SIGNAL(activated(QModelIndex)), this, SLOT(entryActivated(QModelIndex)));
-	boxLayout->addWidget(treeView);
+	epgView = new QTreeView(widget);
+	epgView->setMinimumWidth(450);
+	epgView->setModel(epgModel);
+	epgView->setRootIsDecorated(false);
+	connect(epgView, SIGNAL(activated(QModelIndex)), this, SLOT(entryActivated(QModelIndex)));
+	boxLayout->addWidget(epgView);
 
 	contentLabel = new QLabel(widget);
 	contentLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -414,6 +416,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 	if (currentRow != -1) {
 		channelView->setCurrentIndex(channelModel->index(currentRow, 0));
 		epgModel->setChannel(currentChannel);
+		epgView->resizeColumnToContents(0);
+		epgView->resizeColumnToContents(1);
 	} else {
 		epgModel->resetChannel();
 	}
@@ -434,6 +438,8 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 	}
 
 	epgModel->setChannel(channel);
+	epgView->resizeColumnToContents(0);
+	epgView->resizeColumnToContents(1);
 	contentLabel->setText(QString());
 }
 
