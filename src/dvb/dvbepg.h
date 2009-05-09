@@ -42,6 +42,7 @@ public:
 
 	QDateTime begin;
 	QTime duration;
+	QDateTime end;
 	QString title;
 	QString subheading;
 	QString details;

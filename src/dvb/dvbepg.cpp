@@ -253,12 +253,16 @@ void DvbEpgModel::resetChannel()
 
 void DvbEpgModel::setChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
-	// FIXME eliminate entries which are too old
-
 	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries.constBegin(),
 		allEntries.constEnd(), channel, DvbEpgEntryLess());
 	QList<DvbEpgEntry>::const_iterator end = qUpperBound(allEntries.constBegin(),
 		allEntries.constEnd(), channel, DvbEpgEntryLess());
+
+	QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
+
+	while ((it != end) && (it->end <= currentDateTime)) {
+		++it;
+	}
 
 	filteredEntries.clear();
 
@@ -325,6 +329,7 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 		epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
 					   bcdToTime(entry.startTime()), Qt::UTC);
 		epgEntry.duration = bcdToTime(entry.duration());
+		epgEntry.end = epgEntry.begin.addSecs(QTime().secsTo(epgEntry.duration));
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
 		     descriptor.advance()) {
@@ -414,10 +419,9 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 	int currentRow = channelModel->indexOf(currentChannel);
 
 	if (currentRow != -1) {
-		channelView->setCurrentIndex(channelModel->index(currentRow, 0));
-		epgModel->setChannel(currentChannel);
-		epgView->resizeColumnToContents(0);
-		epgView->resizeColumnToContents(1);
+		QModelIndex index = channelModel->index(currentRow, 0);
+		channelView->setCurrentIndex(index);
+		channelActivated(index);
 	} else {
 		epgModel->resetChannel();
 	}
@@ -440,7 +444,14 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 	epgModel->setChannel(channel);
 	epgView->resizeColumnToContents(0);
 	epgView->resizeColumnToContents(1);
-	contentLabel->setText(QString());
+
+	if (epgModel->rowCount(QModelIndex()) >= 1) {
+		QModelIndex index = epgModel->index(0, 0);
+		epgView->setCurrentIndex(index);
+		entryActivated(index);
+	} else {
+		contentLabel->setText(QString());
+	}
 }
 
 void DvbEpgDialog::entryActivated(const QModelIndex &index)
@@ -452,10 +463,9 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		text += i18n("<font color=#808000>%1</font><br>", entry->subheading);
 	}
 
-	QString begin = KGlobal::locale()->formatDateTime(entry->begin, KLocale::LongDate);
-	QString end = KGlobal::locale()->formatTime(entry->begin.time().addSecs(QTime().secsTo(entry->duration)));
-
-	text += i18n("<font color=#800000>%1 - %2</font><br><br>", begin, end);
+	text += i18n("<font color=#800000>%1 - %2</font><br><br>",
+		   KGlobal::locale()->formatDateTime(entry->begin.toLocalTime(), KLocale::LongDate),
+		   KGlobal::locale()->formatTime(entry->end.toLocalTime().time()));
 
 	text += entry->details;
 	contentLabel->setText(text);
