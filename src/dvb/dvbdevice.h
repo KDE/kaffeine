@@ -28,7 +28,6 @@
 
 class DvbDeviceThread;
 class DvbManager;
-class DvbTransponder;
 
 class DvbPidFilter
 {

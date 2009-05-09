@@ -24,11 +24,11 @@
 #include <QSharedData>
 #include <QString>
 
+class AtscTransponder;
 class DvbCTransponder;
 class DvbSTransponder;
-class DvbTTransponder;
-class AtscTransponder;
 class DvbTransponder;
+class DvbTTransponder;
 
 class DvbTransponderBase : public QSharedData
 {

@@ -34,7 +34,6 @@ class DvbTab;
 class MediaWidget;
 class PlayerTab;
 class PlaylistTab;
-class StartTab;
 class TabBase;
 
 class Kaffeine : public KMainWindow

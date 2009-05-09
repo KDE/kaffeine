@@ -35,7 +35,6 @@ class DvbLiveStream;
 class DvbManager;
 class DvbTimeShiftCleaner;
 class MediaWidget;
-class ProxyTreeView;
 
 class DvbTab : public TabBase
 {

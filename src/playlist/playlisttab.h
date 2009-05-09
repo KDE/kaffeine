@@ -24,7 +24,6 @@
 #include "../tabbase.h"
 
 class QModelIndex;
-class QTreeView;
 class KActionCollection;
 class KMenu;
 class KUrl;

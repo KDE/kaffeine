@@ -26,6 +26,9 @@
 #include <Phonon/ObjectDescription>
 #include <KIcon>
 
+class QActionGroup;
+class QPushButton;
+class QSlider;
 namespace Phonon
 {
 class AudioOutput;
@@ -33,9 +36,6 @@ class MediaController;
 class MediaObject;
 class VideoWidget;
 }
-class QActionGroup;
-class QPushButton;
-class QSlider;
 class KAction;
 class KActionCollection;
 class KComboBox;

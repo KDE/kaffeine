@@ -27,10 +27,10 @@
 class AtscVctSection;
 class DvbDevice;
 class DvbNitSection;
-class DvbScanFilter;
 class DvbPatEntry;
 class DvbPatSection;
 class DvbPmtSection;
+class DvbScanFilter;
 class DvbSdtEntry;
 class DvbSdtSection;
 

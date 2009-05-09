@@ -26,11 +26,8 @@
 #include "dvbsi.h"
 
 class QLabel;
-class QModelIndex;
 class QTreeView;
-class DvbChannel;
 class DvbEpgChannelModel;
-class DvbManager;
 
 class DvbEpgEntry
 {

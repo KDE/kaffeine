@@ -43,7 +43,6 @@ class DvbConfigPage;
 class DvbDeviceConfig;
 class DvbManager;
 class DvbSConfigObject;
-class DvbSLnbConfigObject;
 
 class DvbConfigDialog : public KDialog
 {

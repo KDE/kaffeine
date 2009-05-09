@@ -30,12 +30,10 @@
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
-class DvbDeviceConfig;
 class DvbDeviceManager;
 class DvbEpgModel;
 class DvbRecordingModel;
 class DvbScanData;
-class DvbTransponder;
 
 class DvbDeviceConfig
 {
