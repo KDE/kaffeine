@@ -415,15 +415,17 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
-	QPushButton *pushButton = new QPushButton(i18n("New"), widget);
+	QPushButton *pushButton = new QPushButton(KIcon("list-add"),
+						  i18nc("add a new item to a list", "New"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(newRecording()));
 	boxLayout->addWidget(pushButton);
 
-	pushButton = new QPushButton(i18n("Edit"), widget);
+	pushButton = new QPushButton(KIcon("configure"), i18n("Edit"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(editRecording()));
 	boxLayout->addWidget(pushButton);
 
-	pushButton = new QPushButton(i18n("Remove"), widget);
+	pushButton = new QPushButton(KIcon("edit-delete"),
+				     i18nc("remove an item from a list", "Remove"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(removeRecording()));
 	boxLayout->addWidget(pushButton);
 
@@ -443,7 +445,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(editRecording()));
 	treeView->addAction(action);
 
-	action = new KAction(i18n("Remove"), this);
+	action = new KAction(i18nc("remove an item from a list", "Remove"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 

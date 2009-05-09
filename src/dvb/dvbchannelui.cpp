@@ -379,7 +379,7 @@ DvbChannelView::~DvbChannelView()
 
 void DvbChannelView::addDeleteAction()
 {
-	KAction *action = new KAction(i18n("Remove"), this);
+	KAction *action = new KAction(i18nc("remove an item from a list", "Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(deleteChannel()));
 	addAction(action);
 }

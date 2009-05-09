@@ -206,11 +206,13 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	connect(button, SIGNAL(clicked(bool)), channelView, SLOT(editChannel()));
 	boxLayout->addWidget(button);
 
-	button = new QPushButton(KIcon("edit-delete"), i18n("Remove"), groupBox);
+	button = new QPushButton(KIcon("edit-delete"),
+				 i18nc("remove an item from a list", "Remove"), groupBox);
 	connect(button, SIGNAL(clicked(bool)), channelView, SLOT(deleteChannel()));
 	boxLayout->addWidget(button);
 
-	button = new QPushButton(KIcon("edit-clear-list"), i18n("Remove All"), groupBox);
+	button = new QPushButton(KIcon("edit-clear-list"),
+				 i18nc("remove all items from a list", "Clear"), groupBox);
 	connect(button, SIGNAL(clicked(bool)), this, SLOT(removeAllChannels()));
 	boxLayout->addWidget(button);
 	groupLayout->addLayout(boxLayout);
