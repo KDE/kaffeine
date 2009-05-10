@@ -40,6 +40,9 @@ public:
 	explicit Playlist(const QString &name_) : name(name_) { }
 	~Playlist() { }
 
+	static Playlist *readPLSFile(const QString &file);
+	static Playlist *readM3UFile(const QString &file);
+
 	QString getName() const
 	{
 		return name;
@@ -64,6 +67,68 @@ private:
 	QString name;
 	QList<PlaylistTrack> tracks;
 };
+
+Playlist *Playlist::readPLSFile(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		return NULL;
+	}
+
+	QTextStream stream(&file);
+	stream.setCodec("UTF-8");
+
+	if (stream.readLine() != "[playlist]") {
+		return NULL;
+	}
+
+	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
+
+	while (!stream.atEnd()) {
+		QString line = stream.readLine();
+
+		if (line.startsWith("File")) {
+			KUrl url(line.mid(line.indexOf('=') + 1));
+
+			if (url.isValid()) {
+				playlist->tracks.append(PlaylistTrack(url));
+			}
+		}
+
+		// FIXME what about the other tags?
+	}
+
+	return playlist;
+}
+
+Playlist *Playlist::readM3UFile(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		return NULL;
+	}
+
+	QTextStream stream(&file);
+	stream.setCodec("UTF-8");
+
+	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
+
+	while (!stream.atEnd()) {
+		QString line = stream.readLine();
+
+		if (!line.startsWith('#')) {
+			KUrl url(line); // FIXME relative paths
+
+			if (url.isValid()) {
+				playlist->tracks.append(PlaylistTrack(url));
+			}
+		}
+	}
+
+	return playlist;
+}
 
 class PlaylistBrowserModel : public QAbstractListModel
 {
@@ -327,7 +392,42 @@ PlaylistTab::~PlaylistTab()
 
 void PlaylistTab::playUrls(const QList<KUrl> &urls)
 {
-	playlistModel->appendUrls(urls, false);
+	int playlistIndex = playlistBrowserModel->rowCount(QModelIndex());
+	bool playlists = false;
+
+	foreach (const KUrl &url, urls) {
+		QString localFile = url.toLocalFile();
+
+		if (localFile.endsWith(".pls", Qt::CaseInsensitive)) {
+			Playlist *playlist = Playlist::readPLSFile(localFile);
+
+			if (playlist != NULL) {
+				playlistBrowserModel->append(playlist);
+				playlists = true;
+			}
+		} else if (localFile.endsWith(".m3u", Qt::CaseInsensitive)) {
+			Playlist *playlist = Playlist::readM3UFile(localFile);
+
+			if (playlist != NULL) {
+				playlistBrowserModel->append(playlist);
+				playlists = true;
+			}
+		}
+	}
+
+	if (!playlists) {
+		playlistModel->appendUrls(urls, false);
+	} else {
+		QModelIndex index = playlistBrowserModel->index(playlistIndex, 0);
+		playlistBrowserView->setCurrentIndex(index);
+		playlistActivated(index);
+
+		if (playlistModel->rowCount(QModelIndex()) >= 1) {
+			index = playlistModel->index(0, 0);
+			playlistView->setCurrentIndex(index);
+			playlistModel->playTrack(index);
+		}
+	}
 }
 
 void PlaylistTab::newPlaylist()
