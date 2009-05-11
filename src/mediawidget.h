@@ -138,6 +138,7 @@ private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+	void wheelEvent(QWheelEvent *event);
 
 	void updateAudioChannelBox();
 	void updateSubtitleBox();

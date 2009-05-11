@@ -903,6 +903,21 @@ void MediaWidget::dropEvent(QDropEvent *event)
 	}
 }
 
+void MediaWidget::wheelEvent(QWheelEvent *event)
+{
+	if (playing && mediaObject->isSeekable()) {
+		qint64 time = mediaObject->currentTime();
+
+		time -= event->delta() * 125;
+
+		if (time < 0) {
+			time = 0;
+		}
+
+		mediaObject->seek(time);
+	}
+}
+
 void MediaWidget::updateAudioChannelBox()
 {
 	audioChannelsReady = false;
