@@ -213,6 +213,11 @@ Kaffeine::Kaffeine()
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
 
+	action = new KAction(this);
+	action->setShortcut(Qt::Key_Escape);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(leaveFullScreen()));
+	addAction(action);
+
 	QTimer *timer = new QTimer(this);
 	timer->start(50000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
@@ -421,6 +426,13 @@ void Kaffeine::toggleFullScreen()
 
 		stackedLayout->setCurrentIndex(currentTabIndex);
 		tabs.at(currentTabIndex)->activate();
+	}
+}
+
+void Kaffeine::leaveFullScreen()
+{
+	if (isFullScreen()) {
+		toggleFullScreen();
 	}
 }
 
