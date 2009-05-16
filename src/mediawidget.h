@@ -63,8 +63,6 @@ public:
 	void playVideoCd();
 	void playDvd();
 
-	bool shouldInhibitScreenSaver() const;
-
 	void playDvb(const QString &channelName); // starts dvb mode
 	void writeDvbData(const QByteArray &data);
 
@@ -132,6 +130,8 @@ private slots:
 	void angleCountChanged(int count);
 	void audioChannelsChanged();
 	void subtitlesChanged();
+
+	void checkScreenSaver();
 
 private:
 	void contextMenuEvent(QContextMenuEvent *event);

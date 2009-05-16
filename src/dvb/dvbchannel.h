@@ -27,8 +27,8 @@
 class AtscTransponder;
 class DvbCTransponder;
 class DvbSTransponder;
-class DvbTransponder;
 class DvbTTransponder;
+class DvbTransponder;
 
 class DvbTransponderBase : public QSharedData
 {

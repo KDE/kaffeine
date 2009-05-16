@@ -22,9 +22,11 @@
 
 #include <QBoxLayout>
 #include <QContextMenuEvent>
+#include <QDBusInterface>
 #include <QLabel>
 #include <QPushButton>
 #include <QTimeEdit>
+#include <QTimer>
 #include <Phonon/AbstractMediaStream>
 #include <Phonon/AudioOutput>
 #include <Phonon/MediaController>
@@ -328,6 +330,10 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setDefaultWidget(timeButton);
 	toolBar->addAction(collection->addAction("controls_time_button", action));
 
+	QTimer *timer = new QTimer(this);
+	timer->start(50000);
+	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
+
 	stateChanged(Phonon::StoppedState);
 }
 
@@ -383,12 +389,6 @@ void MediaWidget::playDvd()
 {
 	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Dvd));
 	mediaObject->play();
-}
-
-bool MediaWidget::shouldInhibitScreenSaver() const
-{
-	return (playing && (mediaObject->state() != Phonon::PausedState) &&
-		mediaObject->hasVideo());
 }
 
 void MediaWidget::playDvb(const QString &channelName)
@@ -873,6 +873,14 @@ void MediaWidget::subtitlesChanged()
 
 	if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty() && (subtitles.size() > 1)) {
 		mediaController->setCurrentSubtitle(subtitles.at(1));
+	}
+}
+
+void MediaWidget::checkScreenSaver()
+{
+	if (playing && (mediaObject->state() != Phonon::PausedState) && mediaObject->hasVideo()) {
+		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
+			"org.freedesktop.ScreenSaver").call(QDBus::NoBlock, "SimulateUserActivity");
 	}
 }
 

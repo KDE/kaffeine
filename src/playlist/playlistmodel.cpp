@@ -415,7 +415,7 @@ QList<PlaylistTrack> PlaylistModel::processUrls(const QList<KUrl> &urls)
 							    QDir::Name | QDir::LocaleAware);
 
 			foreach (const QString &entry, entries) {
-				newTracks.append(PlaylistTrack(QUrl::fromLocalFile(dir.filePath(entry))));
+				newTracks.append(PlaylistTrack(KUrl::fromLocalFile(dir.filePath(entry))));
 			}
 		} else {
 			newTracks.append(PlaylistTrack(url));

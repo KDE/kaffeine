@@ -2,6 +2,9 @@
 Kaffeine Changelog
 ------------------
 
+Version (unreleased):
+  - added screen saver inhibition (using DBUS; org.freedesktop.ScreenSaver)
+
 Version 1.0-pre1 (2009-04-26):
   - initial KDE4 release based on KDE4, QT4, Phonon and Solid
     much of the code base was rewritten;

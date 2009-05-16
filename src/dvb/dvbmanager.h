@@ -45,7 +45,7 @@ public:
 	QString frontendName;
 	DvbDevice *device;
 	QList<DvbConfig> configs;
-	int useCount; // -1 means exlusive use
+	int useCount; // -1 means exclusive use
 	QString source;
 	DvbTransponder transponder;
 };

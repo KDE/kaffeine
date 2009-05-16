@@ -20,7 +20,6 @@
 
 #include "kaffeine.h"
 
-#include <QDBusInterface>
 #include <QHoverEvent>
 #include <QPushButton>
 #include <QStackedLayout>
@@ -217,10 +216,6 @@ Kaffeine::Kaffeine()
 	action->setShortcut(Qt::Key_Escape);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(leaveFullScreen()));
 	addAction(action);
-
-	QTimer *timer = new QTimer(this);
-	timer->start(50000);
-	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
 
 	// tabs - keep in sync with TabIndex enum!
 
@@ -462,14 +457,6 @@ void Kaffeine::activateTab(int tabIndex)
 void Kaffeine::hideCursor()
 {
 	setCursor(Qt::BlankCursor);
-}
-
-void Kaffeine::checkScreenSaver()
-{
-	if (isFullScreen() || mediaWidget->shouldInhibitScreenSaver()) {
-		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-			"org.freedesktop.ScreenSaver").call(QDBus::NoBlock, "SimulateUserActivity");
-	}
 }
 
 bool Kaffeine::event(QEvent *event)
