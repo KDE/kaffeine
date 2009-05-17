@@ -449,6 +449,8 @@ void Kaffeine::hideCursor()
 
 bool Kaffeine::event(QEvent *event)
 {
+	bool retVal = KMainWindow::event(event); // this has to be done before calling setVisible()
+
 	// FIXME we depend on QEvent::HoverMove (instead of QEvent::MouseMove)
 	// but the latter depends on mouse tracking being enabled on this widget
 	// and all its children (especially the phonon video widget) ...
@@ -475,7 +477,7 @@ bool Kaffeine::event(QEvent *event)
 		}
 	}
 
-	return KMainWindow::event(event);
+	return retVal;
 }
 
 void Kaffeine::keyPressEvent(QKeyEvent *event)

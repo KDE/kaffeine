@@ -66,9 +66,6 @@ for an up-to-date version of this file.
 - seek slider
   - implement "jumping" behaviour, i.e. jump to the position where you click
 
-- cursor hiding
-  - sometimes flickering when hiding control bar
-
 - l10n
   - use klocale for all date / time conversations
   - use i18nc() where appropriate
@@ -82,3 +79,6 @@ for an up-to-date version of this file.
 
 - equalizer
   - mainly a phonon task
+
+- audio visualisation
+  - mainly a phonon task?
