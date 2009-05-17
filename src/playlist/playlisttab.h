@@ -21,9 +21,9 @@
 #ifndef PLAYLISTTAB_H
 #define PLAYLISTTAB_H
 
+#include <QTreeView>
 #include "../tabbase.h"
 
-class QModelIndex;
 class KActionCollection;
 class KMenu;
 class KUrl;
@@ -31,7 +31,21 @@ class MediaWidget;
 class PlaylistBrowserModel;
 class PlaylistBrowserView;
 class PlaylistModel;
-class PlaylistView;
+
+class PlaylistView : public QTreeView
+{
+	Q_OBJECT
+public:
+	explicit PlaylistView(QWidget *parent);
+	~PlaylistView();
+
+public slots:
+	void removeSelectedRows();
+
+protected:
+	void contextMenuEvent(QContextMenuEvent *event);
+	void keyPressEvent(QKeyEvent *event);
+};
 
 class PlaylistTab : public TabBase
 {

@@ -25,7 +25,6 @@
 #include <QListView>
 #include <QSplitter>
 #include <QToolButton>
-#include <QTreeView>
 #include <KAction>
 #include <KActionCollection>
 #include <kfilewidget.h>
@@ -138,7 +137,6 @@ public:
 
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
 	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 	bool setData(const QModelIndex &index, const QVariant &value, int role);
 
@@ -165,11 +163,6 @@ QVariant PlaylistBrowserModel::data(const QModelIndex &index, int role) const
 	}
 
 	return playlists.at(index.row())->getName();
-}
-
-Qt::ItemFlags PlaylistBrowserModel::flags(const QModelIndex &index) const
-{
-	return QAbstractListModel::flags(index) | Qt::ItemIsEditable;
 }
 
 bool PlaylistBrowserModel::removeRows(int row, int count, const QModelIndex &parent)
@@ -239,27 +232,38 @@ void PlaylistBrowserView::keyPressEvent(QKeyEvent *event)
 	QListView::keyPressEvent(event);
 }
 
-class PlaylistView : public QTreeView
+PlaylistView::PlaylistView(QWidget *parent) : QTreeView(parent)
 {
-public:
-	explicit PlaylistView(QWidget *parent) : QTreeView(parent) { }
-	~PlaylistView() { }
+}
 
-protected:
-	void keyPressEvent(QKeyEvent *event);
-};
+PlaylistView::~PlaylistView()
+{
+}
+
+void PlaylistView::removeSelectedRows()
+{
+	QModelIndexList selectedRows = selectionModel()->selectedRows();
+	qSort(selectedRows);
+
+	for (int i = selectedRows.size() - 1; i >= 0; --i) {
+		// FIXME compress
+		model()->removeRows(selectedRows.at(i).row(), 1);
+	}
+}
+
+void PlaylistView::contextMenuEvent(QContextMenuEvent *event)
+{
+	if (!currentIndex().isValid()) {
+		  return;
+	}
+
+	QMenu::exec(actions(), event->globalPos());
+}
 
 void PlaylistView::keyPressEvent(QKeyEvent *event)
 {
 	if (event->key() == Qt::Key_Delete) {
-		QModelIndexList selectedRows = selectionModel()->selectedRows();
-		qSort(selectedRows);
-
-		for (int i = selectedRows.size() - 1; i >= 0; --i) {
-			// FIXME compress
-			model()->removeRows(selectedRows.at(i).row(), 1);
-		}
-
+		removeSelectedRows();
 		return;
 	}
 
@@ -282,6 +286,10 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	connect(shuffleAction, SIGNAL(triggered(bool)), playlistModel, SLOT(shufflePlaylist()));
 	menu->addAction(collection->addAction("playlist_shuffle", shuffleAction));
 
+	KAction *removeTrackAction = new KAction(KIcon("edit-delete"),
+					       i18nc("remove an item from a list", "Remove"), this);
+	collection->addAction("playlist_remove_track", removeTrackAction);
+
 	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
 					   i18nc("remove all items from a list", "Clear"), this);
 	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearPlaylist()));
@@ -294,10 +302,10 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
 	menu->addAction(collection->addAction("playlist_new", newAction));
 
-	KAction *removeAction = new KAction(KIcon("edit-delete"),
-					    i18nc("remove an item from a list", "Remove"), this);
-	connect(removeAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
-	menu->addAction(collection->addAction("playlist_remove", removeAction));
+	KAction *removePlaylistAction = new KAction(KIcon("edit-delete"),
+					       i18nc("remove an item from a list", "Remove"), this);
+	connect(removePlaylistAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
+	menu->addAction(collection->addAction("playlist_remove", removePlaylistAction));
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
@@ -319,7 +327,7 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(widget);
-	toolButton->setDefaultAction(removeAction);
+	toolButton->setDefaultAction(removePlaylistAction);
 	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	boxLayout->addWidget(toolButton);
 
@@ -359,6 +367,11 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(widget);
+	toolButton->setDefaultAction(removeTrackAction);
+	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(widget);
 	toolButton->setDefaultAction(clearAction);
 	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	boxLayout->addWidget(toolButton);
@@ -374,6 +387,9 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	playlistView->setModel(playlistModel);
 	playlistView->sortByColumn(0, Qt::AscendingOrder);
 	playlistView->setSortingEnabled(true);
+	playlistView->addAction(removeTrackAction);
+	connect(removeTrackAction, SIGNAL(triggered(bool)),
+		playlistView, SLOT(removeSelectedRows()));
 	connect(playlistView, SIGNAL(activated(QModelIndex)),
 		playlistModel, SLOT(playTrack(QModelIndex)));
 	sideLayout->addWidget(playlistView);
