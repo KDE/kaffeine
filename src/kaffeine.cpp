@@ -212,11 +212,6 @@ Kaffeine::Kaffeine()
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
 
-	action = new KAction(this);
-	action->setShortcut(Qt::Key_Escape);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(leaveFullScreen()));
-	addAction(action);
-
 	// tabs - keep in sync with TabIndex enum!
 
 	TabBase *startTab = new StartTab(this);
@@ -424,13 +419,6 @@ void Kaffeine::toggleFullScreen()
 	}
 }
 
-void Kaffeine::leaveFullScreen()
-{
-	if (isFullScreen()) {
-		toggleFullScreen();
-	}
-}
-
 void Kaffeine::configureKeys()
 {
 	KShortcutsDialog::configure(collection);
@@ -488,4 +476,14 @@ bool Kaffeine::event(QEvent *event)
 	}
 
 	return KMainWindow::event(event);
+}
+
+void Kaffeine::keyPressEvent(QKeyEvent *event)
+{
+	if ((event->key() == Qt::Key_Escape) && isFullScreen()) {
+		toggleFullScreen();
+		return;
+	}
+
+	KMainWindow::keyPressEvent(event);
 }

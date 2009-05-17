@@ -54,7 +54,6 @@ private slots:
 	void openVideoCd();
 	void openDvd();
 	void toggleFullScreen();
-	void leaveFullScreen();
 	void configureKeys();
 	void activateDvbTab();
 	void activateTab(int tabIndex);
@@ -69,6 +68,7 @@ private:
 	};
 
 	bool event(QEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
