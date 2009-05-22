@@ -456,17 +456,22 @@ bool Kaffeine::event(QEvent *event)
 	// and all its children (especially the phonon video widget) ...
 
 	if ((event->type() == QEvent::HoverMove) && isFullScreen()) {
+		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
+
+		if ((y < 0) || (y >= height())) {
+			// QHoverEvent sometimes reports quite strange coordinates - ignore them
+			return retVal;
+		}
+
 		cursorHideTimer->stop();
 		unsetCursor();
 
-		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
-
 		switch (toolBarArea(controlBar)) {
 		case Qt::TopToolBarArea:
-			controlBar->setVisible((y < 60) && (y >= 0));
+			controlBar->setVisible(y < 60);
 			break;
 		case Qt::BottomToolBarArea:
-			controlBar->setVisible((y >= (height() - 60)) && (y < height()));
+			controlBar->setVisible(y >= (height() - 60));
 			break;
 		default:
 			break;
@@ -488,4 +493,13 @@ void Kaffeine::keyPressEvent(QKeyEvent *event)
 	}
 
 	KMainWindow::keyPressEvent(event);
+}
+
+void Kaffeine::leaveEvent(QEvent *event)
+{
+	if (isFullScreen()) {
+		controlBar->setVisible(false);
+	}
+
+	KMainWindow::leaveEvent(event);
 }

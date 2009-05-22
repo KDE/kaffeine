@@ -69,6 +69,7 @@ private:
 
 	bool event(QEvent *event);
 	void keyPressEvent(QKeyEvent *event);
+	void leaveEvent(QEvent *event);
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
