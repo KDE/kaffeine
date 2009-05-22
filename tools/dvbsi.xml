@@ -135,12 +135,12 @@
       <programNumber bits="16" type="int" />
       <unused bits="2" />
       <isScrambled bits="1" type="bool" />
-      <isHidden bits="1" type="bool" />
+      <unused bits="1" />
       <unused bits="2" />
       <unused bits="1" />
       <unused bits="3" />
       <unused bits="6" />
-      <unused bits="16" />
+      <sourceId bits="16" type="int" />
       <unused bits="6" />
       <entryLength bits="10" type="int" />
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />

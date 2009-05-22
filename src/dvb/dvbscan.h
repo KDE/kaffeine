@@ -64,7 +64,7 @@ public:
 	 */
 
 	// QString name;
-	// int networkId; // may be -1 (not present)
+	// int networkId; // may be -1 (not present); ATSC meaning: source id
 	// bool scrambled;
 	QString provider;
 

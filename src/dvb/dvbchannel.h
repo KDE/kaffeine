@@ -296,7 +296,7 @@ public:
 
 	QString source;
 	DvbTransponder transponder;
-	int networkId; // may be -1 (not present)
+	int networkId; // may be -1 (not present); ATSC meaning: source id
 	int transportStreamId;
 	int serviceId;
 	int pmtPid;

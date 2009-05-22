@@ -673,7 +673,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 	     --i, entry.advance()) {
 		QString majorminor = QString("%1-%2 ").arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
 
-		DvbSdtEntry sdtEntry(entry.programNumber(), -1, entry.isScrambled());
+		DvbSdtEntry sdtEntry(entry.programNumber(), entry.sourceId(), entry.isScrambled());
 
 		// Each VCT section has it's own list of descriptors
 		// See A/65C table 6.25a for the list of descriptors

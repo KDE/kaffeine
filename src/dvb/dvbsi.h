@@ -709,9 +709,9 @@ public:
 		return ((at(26) & 0x20) != 0);
 	}
 
-	bool isHidden() const
+	int sourceId() const
 	{
-		return ((at(26) & 0x10) != 0);
+		return (at(28) << 8) | at(29);
 	}
 
 	DvbDescriptor descriptors() const
