@@ -82,7 +82,7 @@ StartTab::StartTab(Kaffeine *kaffeine)
 
 	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), this);
 	button->setShortcut(Qt::Key_5);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(activateDvbTab()));
+	connect(button, SIGNAL(clicked()), kaffeine, SLOT(playDvb()));
 	gridLayout->addWidget(button, 1, 1);
 }
 
@@ -389,6 +389,12 @@ void Kaffeine::openDvd()
 {
 	activateTab(PlayerTabId);
 	mediaWidget->playDvd();
+}
+
+void Kaffeine::playDvb()
+{
+	activateTab(DvbTabId);
+	dvbTab->playLastChannel();
 }
 
 void Kaffeine::toggleFullScreen()

@@ -53,6 +53,7 @@ private slots:
 	void openAudioCd();
 	void openVideoCd();
 	void openDvd();
+	void playDvb();
 	void toggleFullScreen();
 	void configureKeys();
 	void activateDvbTab();

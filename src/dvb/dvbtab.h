@@ -52,6 +52,7 @@ public:
 	QSharedDataPointer<DvbChannel> getLiveChannel() const;
 
 	void playChannel(const QString &name);
+	void playLastChannel();
 
 private slots:
 	void showChannelDialog();

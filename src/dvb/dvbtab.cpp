@@ -355,6 +355,11 @@ void DvbTab::playChannel(const QString &name)
 	playChannel(dvbManager->getChannelModel()->channelForName(name));
 }
 
+void DvbTab::playLastChannel()
+{
+	playChannel(KConfigGroup(KGlobal::config(), "DVB").readEntry("LastChannel"));
+}
+
 void DvbTab::showChannelDialog()
 {
 	DvbScanDialog dialog(this);
@@ -601,4 +606,6 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 
 	liveStream->eitFilter = new DvbEitFilter(channel->source, dvbManager->getEpgModel());
 	device->addPidFilter(0x0012, liveStream->eitFilter);
+
+	KConfigGroup(KGlobal::config(), "DVB").writeEntry("LastChannel", channel->name);
 }
