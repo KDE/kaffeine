@@ -424,6 +424,8 @@ void MediaWidget::stopDvb()
 	if ((dvbFeed != NULL) && !dvbFeed->ignoreStop) {
 		delete dvbFeed;
 		dvbFeed = NULL;
+		updateAudioChannelBox();
+		updateSubtitleBox();
 		emit dvbStopped();
 	}
 }
