@@ -242,7 +242,9 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	groupLayout->addWidget(scanButton);
 
 	QString date = manager->getScanDataDate();
-	groupLayout->addWidget(new QLabel(i18n("Scan data last updated<br>on %1", date)));
+	QLabel *label = new QLabel(i18n("Scan data last updated on %1", date));
+	label->setWordWrap(true);
+	groupLayout->addWidget(label);
 
 	QGridLayout *gridLayout = new QGridLayout();
 
