@@ -43,6 +43,7 @@ class KMenu;
 class KToolBar;
 class KUrl;
 class DvbFeed;
+class OsdWidget;
 
 class MediaWidget : public QWidget
 {
@@ -138,6 +139,7 @@ private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+	void resizeEvent(QResizeEvent *event);
 	void wheelEvent(QWheelEvent *event);
 
 	void updateAudioChannelBox();
@@ -147,6 +149,7 @@ private:
 	Phonon::MediaObject *mediaObject;
 	Phonon::AudioOutput *audioOutput;
 	Phonon::VideoWidget *videoWidget;
+	OsdWidget *osdWidget;
 	Phonon::MediaController *mediaController;
 	DvbFeed *dvbFeed;
 	bool playing;

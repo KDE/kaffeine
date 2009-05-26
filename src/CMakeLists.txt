@@ -15,6 +15,7 @@ set(kaffeine_SRCS
     kaffeine.cpp
     main.cpp
     mediawidget.cpp
+    osdwidget.cpp
     proxytreeview.cpp)
 
 kde4_add_executable(kaffeine ${kaffeine_SRCS})

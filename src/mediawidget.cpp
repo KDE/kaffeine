@@ -41,6 +41,7 @@
 #include <KMenu>
 #include <KMessageBox>
 #include <KToolBar>
+#include "osdwidget.h"
 
 class DvbFeed : public Phonon::AbstractMediaStream
 {
@@ -137,6 +138,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	videoWidget = new Phonon::VideoWidget(this);
 	Phonon::createPath(mediaObject, videoWidget);
 	layout->addWidget(videoWidget);
+
+	osdWidget = new OsdWidget(this);
 
 	mediaController = new Phonon::MediaController(mediaObject);
 
@@ -247,9 +250,9 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	volumeSlider->setRange(0, 100);
 	volumeSlider->setToolTip(action->text());
 	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(changeVolume(int)));
-	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(volumeChanged(qreal)));
 	volumeSlider->setValue(KConfigGroup(KGlobal::config(), "MediaObject").
 		readEntry("Volume", 100));
+	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(volumeChanged(qreal)));
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
@@ -596,7 +599,9 @@ void MediaWidget::changeVolume(int volume)
 
 void MediaWidget::volumeChanged(qreal volume)
 {
-	volumeSlider->setValue(volume * 100 + qreal(0.5));
+	int percentage = volume * 100 + qreal(0.5);
+	volumeSlider->setValue(percentage);
+	osdWidget->showText(i18nc("osd", "Volume: %1%", percentage), 1500);
 }
 
 void MediaWidget::increaseVolume()
@@ -911,6 +916,12 @@ void MediaWidget::dropEvent(QDropEvent *event)
 		emit playlistUrlsDropped(KUrl::List::fromMimeData(mimeData));
 		event->acceptProposedAction();
 	}
+}
+
+void MediaWidget::resizeEvent(QResizeEvent *event)
+{
+	osdWidget->resize(event->size());
+	QWidget::resizeEvent(event);
 }
 
 void MediaWidget::wheelEvent(QWheelEvent *event)
