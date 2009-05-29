@@ -39,6 +39,7 @@ private slots:
 	void hideOsd();
 
 private:
+	QRect rect;
 	QPixmap pixmap;
 	QTimer *timer;
 };

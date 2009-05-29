@@ -40,7 +40,7 @@ void OsdWidget::showText(const QString &text, int duration)
 	QFont osdFont = font();
 	osdFont.setPointSize(25);
 
-	QRect rect = QFontMetrics(osdFont).boundingRect(text);
+	rect = QFontMetrics(osdFont).boundingRect(text);
 	rect.moveTo(0, 0);
 	rect.adjust(0, 0, 10, 0);
 
@@ -54,8 +54,6 @@ void OsdWidget::showText(const QString &text, int duration)
 		painter.drawText(rect, Qt::AlignCenter, text);
 	}
 
-	rect.moveTo(20, 20);
-	setMask(rect);
 	update();
 	show();
 
@@ -64,7 +62,16 @@ void OsdWidget::showText(const QString &text, int duration)
 
 void OsdWidget::paintEvent(QPaintEvent *)
 {
-	QPainter(this).drawPixmap(20, 20, pixmap);
+	if (layoutDirection() == Qt::LeftToRight) {
+		QPainter(this).drawPixmap(20, 20, pixmap);
+		rect.moveTo(20, 20);
+	} else {
+		int x = width() - pixmap.width() - 20;
+		QPainter(this).drawPixmap(x, 20, pixmap);
+		rect.moveTo(x, 20);
+	}
+
+	setMask(rect);
 }
 
 void OsdWidget::hideOsd()
