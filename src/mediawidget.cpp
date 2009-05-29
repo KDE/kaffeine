@@ -400,6 +400,11 @@ void MediaWidget::playDvb(const QString &channelName)
 	mediaObject->setCurrentSource(Phonon::MediaSource(feed));
 	mediaObject->play();
 	dvbFeed = feed; // don't set dvbFeed before setCurrentSource
+
+	if (!channelName.isEmpty()) {
+		osdWidget->showText(channelName, 2500);
+	}
+
 	emit changeCaption(channelName);
 }
 
@@ -843,6 +848,10 @@ void MediaWidget::updateCaption()
 		} else {
 			caption = KUrl(mediaObject->currentSource().url()).fileName();
 		}
+	}
+
+	if (!caption.isEmpty()) {
+		osdWidget->showText(caption, 2500);
 	}
 
 	emit changeCaption(caption);
