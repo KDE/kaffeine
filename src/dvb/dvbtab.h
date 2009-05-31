@@ -25,6 +25,7 @@
 #include "../tabbase.h"
 
 class QModelIndex;
+class QSplitter;
 class KAction;
 class KActionCollection;
 class KMenu;
@@ -79,6 +80,7 @@ private:
 	MediaWidget *mediaWidget;
 	DvbManager *dvbManager;
 	KAction *instantRecordAction;
+	QSplitter *splitter;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
 

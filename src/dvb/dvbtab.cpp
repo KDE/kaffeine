@@ -22,6 +22,7 @@
 
 #include <QBoxLayout>
 #include <QDir>
+#include <QHeaderView>
 #include <QSplitter>
 #include <QThread>
 #include <QToolButton>
@@ -259,7 +260,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
 	boxLayout->setMargin(0);
 
-	QSplitter *splitter = new QSplitter(this);
+	splitter = new QSplitter(this);
 	boxLayout->addWidget(splitter);
 
 	QWidget *leftWidget = new QWidget(splitter);
@@ -277,7 +278,12 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	channelView = new DvbChannelView(channelModel, leftWidget);
 	channelView->setModel(channelModel);
 	channelView->setRootIsDecorated(false);
-	channelView->sortByColumn(0, Qt::AscendingOrder);
+
+	if (!channelView->header()->restoreState(QByteArray::fromBase64(
+	    KGlobal::config()->group("DVB").readEntry("ChannelViewState", QByteArray())))) {
+		channelView->sortByColumn(0, Qt::AscendingOrder);
+	}
+
 	channelView->setSortingEnabled(true);
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playLive(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
@@ -317,6 +323,9 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	mediaLayout->setMargin(0);
 	splitter->setStretchFactor(1, 1);
 
+	splitter->restoreState(QByteArray::fromBase64(
+		KGlobal::config()->group("DVB").readEntry("TabSplitterState", QByteArray())));
+
 	fastRetuneTimer = new QTimer(this);
 	fastRetuneTimer->setInterval(500);
 	connect(fastRetuneTimer, SIGNAL(timeout()), this, SLOT(fastRetuneTimeout()));
@@ -330,6 +339,10 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 DvbTab::~DvbTab()
 {
+	KGlobal::config()->group("DVB").writeEntry("TabSplitterState",
+		splitter->saveState().toBase64());
+	KGlobal::config()->group("DVB").writeEntry("ChannelViewState",
+		channelView->header()->saveState().toBase64());
 }
 
 DvbDevice *DvbTab::getLiveDevice() const
