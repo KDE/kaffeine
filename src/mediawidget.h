@@ -78,6 +78,7 @@ public slots:
 signals:
 	void changeCaption(const QString &caption);
 	void toggleFullScreen();
+	void resizeToVideo(int factor);
 
 	void playlistPrevious();
 	void playlistPlay();
@@ -100,6 +101,7 @@ private slots:
 	void next();
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
+	void autoResize(QAction *action);
 	void toggleMuted();
 	void mutedChanged(bool muted);
 	void changeVolume(int volume);
@@ -169,6 +171,7 @@ private:
 	bool subtitlesReady;
 	QList<Phonon::AudioChannelDescription> audioChannels;
 	QList<Phonon::SubtitleDescription> subtitles;
+	int autoResizeFactor;
 	KAction *muteAction;
 	KIcon mutedIcon;
 	KIcon unmutedIcon;

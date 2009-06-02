@@ -173,6 +173,34 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	menu->addSeparator();
 
 	menu->addAction(collection->addAction("view_fullscreen", fullScreenAction));
+
+	KMenu *autoResizeMenu = new KMenu(i18n("Automatic Resize"), this);
+	QActionGroup *autoResizeGroup = new QActionGroup(this);
+	// we need an event even if you select the currently selected item
+	autoResizeGroup->setExclusive(false);
+	connect(autoResizeGroup, SIGNAL(triggered(QAction*)), this, SLOT(autoResize(QAction*)));
+
+	KAction *action = new KAction(i18nc("automatic resize", "Off"), autoResizeGroup);
+	action->setCheckable(true);
+	autoResizeMenu->addAction(collection->addAction("controls_autoresize_off", action));
+
+	action = new KAction(i18nc("automatic resize", "Original Size"), autoResizeGroup);
+	action->setCheckable(true);
+	autoResizeMenu->addAction(collection->addAction("controls_autoresize_original", action));
+
+	action = new KAction(i18nc("automatic resize", "Double Size"), autoResizeGroup);
+	action->setCheckable(true);
+	autoResizeMenu->addAction(collection->addAction("controls_autoresize_double", action));
+
+	autoResizeFactor = KGlobal::config()->group("MediaObject").readEntry("AutoResizeFactor", 0);
+
+	if ((autoResizeFactor < 0) || (autoResizeFactor > 2)) {
+		autoResizeFactor = 0;
+	}
+
+	autoResizeGroup->actions().at(autoResizeFactor)->setChecked(true);
+
+	menu->addMenu(autoResizeMenu);
 	menu->addSeparator();
 
 	audioChannelBox = new KComboBox(toolBar);
@@ -193,7 +221,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 
 	KMenu *audioMenu = new KMenu(i18n("Audio"), this);
 
-	KAction *action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
+	action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
 	audioMenu->addAction(collection->addAction("controls_increase_volume", action));
@@ -342,7 +370,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 
 MediaWidget::~MediaWidget()
 {
-	KConfigGroup(KGlobal::config(), "MediaObject").writeEntry("Volume", volumeSlider->value());
+	KGlobal::config()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
+	KGlobal::config()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
 }
 
 QString MediaWidget::extensionFilter()
@@ -475,6 +504,10 @@ void MediaWidget::stateChanged(Phonon::State state)
 		actionPrevious->setEnabled(true);
 		actionStop->setEnabled(true);
 		actionNext->setEnabled(true);
+
+		if (autoResizeFactor > 0) {
+			emit resizeToVideo(autoResizeFactor);
+		}
 	} else {
 		actionPlayPause->setText(textPlay);
 		actionPlayPause->setIcon(iconPlay);
@@ -580,6 +613,21 @@ void MediaWidget::changeSubtitle(int index)
 		} else {
 			mediaController->setCurrentSubtitle(subtitles.at(index));
 		}
+	}
+}
+
+void MediaWidget::autoResize(QAction *action)
+{
+	QList<QAction *> actions = action->actionGroup()->actions();
+
+	foreach (QAction *it, actions) {
+		it->setChecked(it == action);
+	}
+
+	autoResizeFactor = actions.indexOf(action);
+
+	if (autoResizeFactor > 0) {
+		emit resizeToVideo(autoResizeFactor);
 	}
 }
 

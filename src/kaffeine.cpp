@@ -211,6 +211,7 @@ Kaffeine::Kaffeine()
 	mediaWidget = new MediaWidget(playerMenu, fullScreenAction, controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
 	connect(mediaWidget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
+	connect(mediaWidget, SIGNAL(resizeToVideo(int)), this, SLOT(resizeToVideo(int)));
 
 	// tabs - keep in sync with TabIndex enum!
 
@@ -422,6 +423,13 @@ void Kaffeine::toggleFullScreen()
 
 		stackedLayout->setCurrentIndex(currentTabIndex);
 		tabs.at(currentTabIndex)->activate();
+	}
+}
+
+void Kaffeine::resizeToVideo(int factor)
+{
+	if (!isFullScreen()) {
+		resize(size() - mediaWidget->size() + factor * mediaWidget->sizeHint());
 	}
 }
 

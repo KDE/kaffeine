@@ -55,6 +55,7 @@ private slots:
 	void openDvd();
 	void playDvb();
 	void toggleFullScreen();
+	void resizeToVideo(int factor);
 	void configureKeys();
 	void activateDvbTab();
 	void activateTab(int tabIndex);
