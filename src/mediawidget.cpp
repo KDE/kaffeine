@@ -553,6 +553,7 @@ void MediaWidget::playPause(bool paused)
 		if (paused) {
 			actionPlayPause->setIcon(iconPlay);
 			actionPlayPause->setText(textPlay);
+			osdWidget->showText(i18nc("osd", "Paused"), 1500);
 			mediaObject->pause();
 
 			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
@@ -562,6 +563,7 @@ void MediaWidget::playPause(bool paused)
 		} else {
 			actionPlayPause->setIcon(iconPause);
 			actionPlayPause->setText(textPause);
+			osdWidget->showText(i18nc("osd", "Playing"), 1500);
 
 			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
 				dvbFeed->timeShiftActive = true;
