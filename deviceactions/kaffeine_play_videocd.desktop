@@ -5,6 +5,7 @@ X-KDE-Solid-Predicate=OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'
 
 [Desktop Action PlayVideoCd]
 Name=Play Video CD with Kaffeine
+Name[bg]=Възпроизвеждане на CD с видео с Kaffeine
 Name[cs]=Přehrát VCD v Kaffeine
 Name[da]=Afspil video-cd med Kaffeine
 Name[de]=Video-CD mit Kaffeine abspielen
@@ -16,6 +17,7 @@ Name[km]=ចាក់​ស៊ីឌី​វីដេអូ​ដោយ​ប�
 Name[nb]=Spill Video-VCD med Kaffeine 
 Name[pt]=Ver o CD de Vídeo com o Kaffeine
 Name[pt_BR]=Reproduzir CD de vídeo com o Kaffeine
+Name[ru]=Воспроизвести Video CD в Kaffeine
 Name[sv]=Spela video-cd med Kaffeine
 Name[tr]=Video CD'yi Kaffeine ile Oynat
 Name[uk]=Відтворити відео-КД за допомогою Kaffeine
