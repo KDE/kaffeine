@@ -21,6 +21,7 @@
 #include "playlisttab.h"
 
 #include <QBoxLayout>
+#include <QDomDocument>
 #include <QKeyEvent>
 #include <QListView>
 #include <QSplitter>
@@ -39,8 +40,9 @@ public:
 	explicit Playlist(const QString &name_) : name(name_) { }
 	~Playlist() { }
 
-	static Playlist *readPLSFile(const QString &file);
-	static Playlist *readM3UFile(const QString &file);
+	static Playlist *readPLSFile(const QString &path);
+	static Playlist *readM3UFile(const QString &path);
+	static Playlist *readXSPFFile(const QString &path);
 
 	QString getName() const
 	{
@@ -122,6 +124,74 @@ Playlist *Playlist::readM3UFile(const QString &path)
 
 			if (url.isValid()) {
 				playlist->tracks.append(PlaylistTrack(url));
+			}
+		}
+	}
+
+	return playlist;
+}
+
+Playlist *Playlist::readXSPFFile(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		return NULL;
+	}
+
+	QDomDocument document;
+
+	if (!document.setContent(&file)) {
+		return NULL;
+	}
+
+	QDomElement root = document.documentElement();
+
+	if (root.nodeName() != "playlist") {
+		return NULL;
+	}
+
+	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
+	KUrl baseUrl = KUrl::fromLocalFile(path);
+
+	for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling()) {
+		if (!node.isElement()) {
+			continue;
+		}
+
+		QString nodeName = node.nodeName();
+
+		if (nodeName == "title") {
+			playlist->setName(node.toElement().text());
+			continue;
+		}
+
+		if (nodeName == "tracklist") {
+			for (QDomNode childNode = node.firstChild(); !childNode.isNull();
+			     childNode = childNode.nextSibling()) {
+				if (!childNode.isElement()) {
+					continue;
+				}
+
+				for (QDomNode trackNode = childNode.firstChild();
+				     !trackNode.isNull(); trackNode = trackNode.nextSibling()) {
+					if (!trackNode.isElement()) {
+						continue;
+					}
+
+					if (trackNode.nodeName() == "location") {
+						KUrl url(trackNode.toElement().text());
+
+						if (url.isRelative()) {
+							url = baseUrl.resolved(url);
+						}
+
+						if (url.isValid()) {
+							playlist->tracks.append(PlaylistTrack(url));
+							break;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -423,6 +493,13 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 			}
 		} else if (localFile.endsWith(".m3u", Qt::CaseInsensitive)) {
 			Playlist *playlist = Playlist::readM3UFile(localFile);
+
+			if (playlist != NULL) {
+				playlistBrowserModel->append(playlist);
+				playlists = true;
+			}
+		} else if (localFile.endsWith(".xspf", Qt::CaseInsensitive)) {
+			Playlist *playlist = Playlist::readXSPFFile(localFile);
 
 			if (playlist != NULL) {
 				playlistBrowserModel->append(playlist);
