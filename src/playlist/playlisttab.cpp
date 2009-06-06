@@ -166,7 +166,7 @@ Playlist *Playlist::readXSPFFile(const QString &path)
 			continue;
 		}
 
-		if (nodeName == "tracklist") {
+		if (nodeName == "trackList") {
 			for (QDomNode childNode = node.firstChild(); !childNode.isNull();
 			     childNode = childNode.nextSibling()) {
 				if (!childNode.isElement()) {
