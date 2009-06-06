@@ -429,6 +429,10 @@ void Kaffeine::toggleFullScreen()
 void Kaffeine::resizeToVideo(int factor)
 {
 	if (!isFullScreen()) {
+		if (isMaximized()) {
+			setWindowState(windowState() & ~Qt::WindowMaximized);
+		}
+
 		resize(size() - centralWidget()->size() + factor * mediaWidget->sizeHint());
 	}
 }
