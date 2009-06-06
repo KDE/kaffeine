@@ -429,7 +429,7 @@ void Kaffeine::toggleFullScreen()
 void Kaffeine::resizeToVideo(int factor)
 {
 	if (!isFullScreen()) {
-		resize(size() - mediaWidget->size() + factor * mediaWidget->sizeHint());
+		resize(size() - centralWidget()->size() + factor * mediaWidget->sizeHint());
 	}
 }
 
