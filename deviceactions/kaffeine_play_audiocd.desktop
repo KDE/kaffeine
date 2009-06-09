@@ -35,6 +35,7 @@ Name[sv]=Spela ljud-cd med Kaffeine
 Name[tg]=Навозиши диски аудио бо Kaffeine
 Name[tr]=Ses CD'si Kaffeine ile Oynat
 Name[uk]=Відтворити Аудіо-КД за допомогою Kaffeine
+Name[x-test]=xxPlay Audio CD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放音频 CD
 Exec=kaffeine --audiocd %f
 Icon=kaffeine

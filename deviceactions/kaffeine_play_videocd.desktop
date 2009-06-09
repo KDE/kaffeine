@@ -21,6 +21,7 @@ Name[ru]=Воспроизвести Video CD в Kaffeine
 Name[sv]=Spela video-cd med Kaffeine
 Name[tr]=Video CD'yi Kaffeine ile Oynat
 Name[uk]=Відтворити відео-КД за допомогою Kaffeine
+Name[x-test]=xxPlay Video CD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放视频 CD
 Exec=kaffeine --videocd %f
 Icon=kaffeine

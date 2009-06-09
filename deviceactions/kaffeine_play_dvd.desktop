@@ -35,6 +35,7 @@ Name[sv]=Spela dvd med Kaffeine
 Name[tg]=Намоиши DVD бо Kaffeine
 Name[tr]=DVD'yi Kaffeine ile Oynat
 Name[uk]=Відтворити DVD за допомогою Kaffeine
+Name[x-test]=xxPlay DVD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放 DVD
 Exec=kaffeine --dvd %f
 Icon=kaffeine
