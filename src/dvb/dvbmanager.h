@@ -31,7 +31,6 @@ class DvbBackendDevice;
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
-class DvbDeviceManager;
 class DvbEpgModel;
 class DvbRecordingModel;
 class DvbScanData;

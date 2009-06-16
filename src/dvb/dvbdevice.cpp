@@ -23,9 +23,6 @@
 #include <unistd.h>
 #include <cmath>
 #include <QCoreApplication>
-#include <QDir>
-#include <QMutex>
-#include <QThread>
 #include <KDebug>
 #include "dvbmanager.h"
 

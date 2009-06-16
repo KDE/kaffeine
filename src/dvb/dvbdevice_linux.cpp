@@ -1,7 +1,7 @@
 /*
  * dvbdevice_linux.cpp
  *
- * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <QFile>
-#include <QMutex>
 #include <QThread>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
 #include <KDebug>
+#include "dvbchannel.h"
 
 extern "C" Q_DECL_EXPORT QObject *create_device_manager()
 {

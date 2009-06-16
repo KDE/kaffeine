@@ -1,7 +1,7 @@
 /*
  * dvbdevice_linux.h
  *
- * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DVBDEVICE_LINUX
-#define DVBDEVICE_LINUX
+#ifndef DVBDEVICE_LINUX_H
+#define DVBDEVICE_LINUX_H
 
 #include <Solid/Device>
-#include "dvbdevice.h"
+#include "dvbbackenddevice.h"
 
 class DvbDeviceThread;
 
@@ -118,4 +118,4 @@ private:
 	QMap<QString, DvbLinuxDevice *> udis;
 };
 
-#endif /* DVBDEVICE_LINUX */
+#endif /* DVBDEVICE_LINUX_H */
