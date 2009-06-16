@@ -59,7 +59,7 @@ public:
 		DvbTGuardIntervalAuto		= (1 << 3)
 	};
 
-	Q_DECLARE_FLAGS(Capabilities, Capability);
+	Q_DECLARE_FLAGS(Capabilities, Capability)
 
 	enum SecTone {
 		ToneOff = 0,
