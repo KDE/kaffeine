@@ -435,7 +435,7 @@ void DvbScan::deviceStateChanged()
 {
 	if (device->getDeviceState() == DvbDevice::DeviceNotReady) {
 		emit scanFinished();
-	} else if (state == ScanTune) {
+	} else if (state == ScanTuning) {
 		updateState();
 	}
 }
@@ -557,44 +557,47 @@ void DvbScan::updateState()
 			sdtEntries.clear();
 			channels.clear();
 
-			device->stop();
-
 			state = ScanTune;
 		    }
 			// fall through
 		case ScanTune: {
+			if (transponders.size() > 0) {
+				emit scanProgress((100 * transponderIndex) / transponders.size());
+			}
+
+			if (transponderIndex >= transponders.size()) {
+				emit scanFinished();
+				return;
+			}
+
+			transponder = transponders.at(transponderIndex);
+			++transponderIndex;
+
+			state = ScanTuning;
+
+			if (!isAuto) {
+				device->tune(transponder);
+			} else {
+				device->autoTune(transponder);
+			}
+
+			return;
+		    }
+
+		case ScanTuning: {
 			switch (device->getDeviceState()) {
 			case DvbDevice::DeviceIdle:
-			case DvbDevice::DeviceTuningFailed: {
-				if (transponders.size() > 0) {
-					emit scanProgress((100 * transponderIndex) / transponders.size());
-				}
-
-				if (transponderIndex >= transponders.size()) {
-					emit scanFinished();
-					return;
-				}
-
-				transponder = transponders.at(transponderIndex);
-				++transponderIndex;
-
-				if (!isAuto) {
-					device->tune(transponder);
-				} else {
-					device->autoTune(transponder);
-				}
-
+			case DvbDevice::DeviceTuningFailed:
+				state = ScanTune;
 				break;
-			    }
 
-			case DvbDevice::DeviceTuned: {
+			case DvbDevice::DeviceTuned:
 				if (isAuto) {
 					transponders[transponderIndex - 1] = device->getAutoTransponder();
 				}
 
 				state = ScanPat;
 				break;
-			    }
 
 			default:
 				return;

@@ -27,6 +27,7 @@
 #include <QStringList>
 #include "dvbchannel.h"
 
+class DvbBackendDevice;
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
@@ -86,7 +87,6 @@ public:
 		return recordingModel;
 	}
 
-	QList<DvbDevice *> getDevices() const;
 	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder);
 	// exclusive = you can freely tune() and stop(), because the device isn't shared
 	DvbDevice *requestExclusiveDevice(const QString &source);
@@ -106,16 +106,18 @@ public:
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
 
-	double getLatitude();
-	double getLongitude();
+	static double getLatitude();
+	static double getLongitude();
 	void setLatitude(double value);
 	void setLongitude(double value);
 
 private slots:
-	void deviceAdded(DvbDevice *device);
-	void deviceRemoved(DvbDevice *device);
+	void deviceAdded(DvbBackendDevice *backendDevice);
+	void deviceRemoved(DvbBackendDevice *backendDevice);
 
 private:
+	void loadDeviceManager();
+
 	void readDeviceConfigs();
 	void writeDeviceConfigs();
 
@@ -130,8 +132,6 @@ private:
 	QList<DvbDeviceConfig> deviceConfigs;
 	QMap<QString, QPair<TransmissionType, QString> > sourceMapping;
 	QStringList sources;
-
-	DvbDeviceManager *deviceManager;
 
 	QDate scanDataDate;
 	DvbScanData *scanData;

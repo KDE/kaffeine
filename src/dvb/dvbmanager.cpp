@@ -21,6 +21,7 @@
 #include "dvbmanager.h"
 
 #include <QDir>
+#include <QLibrary>
 #include <KDebug>
 #include <KLocale>
 #include <KStandardDirs>
@@ -282,21 +283,9 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
 	readDeviceConfigs();
 	updateSourceMapping();
 
-	deviceManager = new DvbDeviceManager(this);
-	connect(deviceManager, SIGNAL(deviceAdded(DvbDevice*)),
-		this, SLOT(deviceAdded(DvbDevice*)));
-	connect(deviceManager, SIGNAL(deviceRemoved(DvbDevice*)),
-		this, SLOT(deviceRemoved(DvbDevice*)));
+	loadDeviceManager();
 
-	// coldplug; we can't do it earlier because now the devices are sorted (by index)!
-	foreach (DvbDevice *device, getDevices()) {
-		if (device->getDeviceState() != DvbDevice::DeviceNotReady) {
-			deviceAdded(device);
-		}
-	}
-
-	scanDataDate = KConfigGroup(KGlobal::config(), "DVB").readEntry("ScanDataDate",
-									QDate(1900, 1, 1));
+	scanDataDate = KGlobal::config()->group("DVB").readEntry("ScanDataDate", QDate(1900, 1, 1));
 }
 
 DvbManager::~DvbManager()
@@ -305,11 +294,6 @@ DvbManager::~DvbManager()
 	writeDeviceConfigs();
 	channelModel->saveChannels();
 	delete scanData;
-}
-
-QList<DvbDevice *> DvbManager::getDevices() const
-{
-	return deviceManager->getDevices();
 }
 
 DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder)
@@ -338,15 +322,16 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 
 		foreach (const DvbConfig &config, it.configs) {
 			if (config->name == source) {
-				if (!it.device->checkUsable()) {
-					break;
+				DvbDevice *device = it.device;
+
+				if (!device->acquire()) {
+					continue;
 				}
 
 				++deviceConfigs[i].useCount;
 				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 
-				DvbDevice *device = it.device;
 				device->config = config;
 				device->tune(transponder);
 				return device;
@@ -368,13 +353,14 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 
 		foreach (const DvbConfig &config, it.configs) {
 			if (config->name == source) {
-				if (!it.device->checkUsable()) {
-					break;
+				DvbDevice *device = it.device;
+
+				if (!device->acquire()) {
+					continue;
 				}
 
 				deviceConfigs[i].useCount = -1;
 
-				DvbDevice *device = it.device;
 				device->config = config;
 				return device;
 			}
@@ -391,7 +377,7 @@ void DvbManager::releaseDevice(DvbDevice *device)
 
 		if (it.device == device) {
 			if ((--deviceConfigs[i].useCount) <= 0) {
-				deviceConfigs[i].device->stop();
+				deviceConfigs[i].device->release();
 				deviceConfigs[i].useCount = 0;
 			}
 
@@ -567,10 +553,11 @@ void DvbManager::setLongitude(double value)
 	KConfigGroup(KGlobal::config(), "DVB").writeEntry("Longitude", value);
 }
 
-void DvbManager::deviceAdded(DvbDevice *device)
+void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
 {
-	QString deviceId = device->getDeviceId();
-	QString frontendName = device->getFrontendName();
+	DvbDevice *device = new DvbDevice(backendDevice, this);
+	QString deviceId = backendDevice->getDeviceId();
+	QString frontendName = backendDevice->getFrontendName();
 
 	for (int i = 0;; ++i) {
 		if (i == deviceConfigs.size()) {
@@ -588,14 +575,52 @@ void DvbManager::deviceAdded(DvbDevice *device)
 	}
 }
 
-void DvbManager::deviceRemoved(DvbDevice *device)
+void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
-		if (deviceConfigs.at(i).device == device) {
+		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
 			deviceConfigs[i].device = NULL;
 			break;
 		}
 	}
+}
+
+void DvbManager::loadDeviceManager()
+{
+	QDir dir(KStandardDirs::installPath("module"));
+	QStringList entries = dir.entryList(QStringList("kaffeinedvb*"));
+	qSort(entries.begin(), entries.end(), qGreater<QString>());
+
+	foreach (const QString &entry, entries) {
+		QString path = dir.filePath(entry);
+
+		if (!QLibrary::isLibrary(path)) {
+			continue;
+		}
+
+		typedef QObject *(*funcPointer)();
+
+		funcPointer func = (funcPointer) QLibrary::resolve(path, "create_device_manager");
+
+		if (func == NULL) {
+			kWarning() << "couldn't load dvb module" << path;
+			return;
+		}
+
+		QObject *deviceManager = func();
+		deviceManager->setParent(this);
+		connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
+			this, SLOT(deviceAdded(DvbBackendDevice*)));
+		connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
+			this, SLOT(deviceRemoved(DvbBackendDevice*)));
+		QMetaObject::invokeMethod(deviceManager, "doColdPlug");
+
+		kDebug() << "successfully loaded" << path;
+		return;
+	}
+
+	kError() << "no dvb module found";
+	return;
 }
 
 void DvbManager::readDeviceConfigs()

@@ -50,6 +50,11 @@ DvbGradProgress::~DvbGradProgress()
 void DvbGradProgress::setValue(int value_)
 {
 	value = value_;
+
+	if (value == -1) {
+		value = 0;
+	}
+
 	Q_ASSERT((value >= 0) && (value <= 100));
 	setText(i18n("%1%", value));
 	update();

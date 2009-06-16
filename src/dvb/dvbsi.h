@@ -21,6 +21,7 @@
 #ifndef DVBSI_H
 #define DVBSI_H
 
+#include <QMap>
 #include "dvbdevice.h"
 
 class DvbPmtSection;

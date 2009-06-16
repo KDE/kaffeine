@@ -113,7 +113,8 @@ private:
 		ScanNit,
 		ScanSdt,
 		ScanPmt,
-		ScanTune
+		ScanTune,
+		ScanTuning
 	};
 
 	bool startFilter(int pid, FilterType type);

@@ -364,9 +364,9 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		}
 	}
 
-	DvbDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
+	DvbBackendDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
 
-	if ((transmissionTypes & DvbDevice::DvbC) != 0) {
+	if ((transmissionTypes & DvbBackendDevice::DvbC) != 0) {
 		DvbConfigBase *config;
 
 		if (dvbCConfig.constData() != NULL) {
@@ -380,11 +380,11 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		new DvbConfigObject(this, boxLayout, manager, config);
 	}
 
-	if ((transmissionTypes & DvbDevice::DvbS) != 0) {
+	if ((transmissionTypes & DvbBackendDevice::DvbS) != 0) {
 		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs);
 	}
 
-	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
+	if ((transmissionTypes & DvbBackendDevice::DvbT) != 0) {
 		DvbConfigBase *config;
 
 		if (dvbTConfig.constData() != NULL) {
@@ -398,7 +398,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		new DvbConfigObject(this, boxLayout, manager, config);
 	}
 
-	if ((transmissionTypes & DvbDevice::Atsc) != 0) {
+	if ((transmissionTypes & DvbBackendDevice::Atsc) != 0) {
 		DvbConfigBase *config;
 
 		if (atscConfig.constData() != NULL) {

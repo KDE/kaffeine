@@ -22,12 +22,85 @@
 #define DVBDEVICE_H
 
 #include <QTimer>
-#include <Solid/Device>
 #include "dvbchannel.h"
 #include "dvbconfig.h"
 
-class DvbDeviceThread;
+class DvbBackendDevice;
+class DvbFilterData;
+class DvbFilterInternal;
 class DvbManager;
+
+class DvbAbstractDeviceBuffer
+{
+public:
+	DvbAbstractDeviceBuffer() { }
+	virtual ~DvbAbstractDeviceBuffer() { }
+
+	// all those functions must be callable from a QThread
+
+	virtual int size() = 0; // must be a multiple of 188
+	virtual char *getCurrent() = 0;
+	virtual void submitCurrent(int packets) = 0;
+};
+
+class DvbBackendDevice
+{
+public:
+	enum TransmissionType {
+		DvbC = (1 << 0),
+		DvbS = (1 << 1),
+		DvbT = (1 << 2),
+		Atsc = (1 << 3)
+	};
+
+	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
+
+	enum Capability {
+		DvbTModulationAuto		= (1 << 0),
+		DvbTFecAuto			= (1 << 1),
+		DvbTTransmissionModeAuto	= (1 << 2),
+		DvbTGuardIntervalAuto		= (1 << 3)
+	};
+
+	Q_DECLARE_FLAGS(Capabilities, Capability);
+
+	enum SecTone {
+		ToneOff = 0,
+		ToneOn  = 1
+	};
+
+	enum SecVoltage {
+		Voltage13V = 0,
+		Voltage18V = 1
+	};
+
+	enum SecBurst {
+		BurstMiniA = 0,
+		BurstMiniB = 1
+	};
+
+	DvbBackendDevice() : buffer(NULL) { }
+	virtual ~DvbBackendDevice() { }
+
+	virtual QString getDeviceId() = 0;
+	virtual QString getFrontendName() = 0;
+	virtual TransmissionTypes getTransmissionTypes() = 0;
+	virtual Capabilities getCapabilities() = 0;
+	virtual bool acquire() = 0;
+	virtual bool setTone(SecTone tone) = 0;
+	virtual bool setVoltage(SecVoltage voltage) = 0;
+	virtual bool sendMessage(const char *message, int length) = 0;
+	virtual bool sendBurst(SecBurst burst) = 0;
+	virtual bool tune(const DvbTransponder &transponder) = 0;
+	virtual int getSignal() = 0;
+	virtual int getSnr() = 0;
+	virtual bool isTuned() = 0;
+	virtual bool addPidFilter(int pid) = 0;
+	virtual void removePidFilter(int pid) = 0;
+	virtual void release() = 0;
+
+	DvbAbstractDeviceBuffer *buffer;
+};
 
 class DvbPidFilter
 {
@@ -38,20 +111,10 @@ public:
 	virtual void processData(const char data[188]) = 0;
 };
 
-class DvbDevice : public QObject
+class DvbDevice : public QObject, private DvbAbstractDeviceBuffer
 {
 	Q_OBJECT
 public:
-	enum TransmissionType
-	{
-		DvbC = (1 << 0),
-		DvbS = (1 << 1),
-		DvbT = (1 << 2),
-		Atsc = (1 << 3)
-	};
-
-	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
-
 	enum DeviceState
 	{
 		DeviceNotReady,
@@ -62,45 +125,47 @@ public:
 		DeviceTuned
 	};
 
-	DvbDevice(DvbManager *manager_, int deviceIndex_);
+	DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent);
+	DvbDevice(int deviceIndex_, QObject *parent);
 	~DvbDevice();
 
-	int getIndex() const
+	DvbBackendDevice *getBackendDevice()
 	{
-		return deviceIndex;
+		return backendDevice;
 	}
-
-	void componentAdded(const Solid::Device &component);
-	bool componentRemoved(const QString &udi);
 
 	DeviceState getDeviceState() const
 	{
 		return deviceState;
 	}
 
-	TransmissionTypes getTransmissionTypes() const
+	DvbBackendDevice::TransmissionTypes getTransmissionTypes() const
 	{
 		Q_ASSERT(deviceState != DeviceNotReady);
-		return transmissionTypes;
-	}
-
-	QString getFrontendName() const
-	{
-		Q_ASSERT(deviceState != DeviceNotReady);
-		return frontendName;
+		return backendDevice->getTransmissionTypes();
 	}
 
 	QString getDeviceId() const
 	{
 		Q_ASSERT(deviceState != DeviceNotReady);
-		return deviceId;
+		return backendDevice->getDeviceId();
 	}
 
-	bool checkUsable();
+	QString getFrontendName() const
+	{
+		Q_ASSERT(deviceState != DeviceNotReady);
+		return backendDevice->getFrontendName();
+	}
+
+	bool acquire()
+	{
+		return backendDevice->acquire();
+	}
+
 	void tune(const DvbTransponder &transponder);
 	void autoTune(const DvbTransponder &transponder);
 	DvbTransponder getAutoTransponder() const;
-	void stop();
+	void release();
 
 	/*
 	 * signal and SNR are scaled from 0 to 100
@@ -131,81 +196,31 @@ private slots:
 	void frontendEvent();
 
 private:
-	Q_DISABLE_COPY(DvbDevice)
-
-	enum stateFlag {
-		CaPresent	= (1 << 0),
-		DemuxPresent	= (1 << 1),
-		DvrPresent	= (1 << 2),
-		FrontendPresent	= (1 << 3),
-
-		DevicePresent	= (DemuxPresent | DvrPresent | FrontendPresent)
-	};
-
-	Q_DECLARE_FLAGS(stateFlags, stateFlag)
-
-	void setInternalState(stateFlags newState);
 	void setDeviceState(DeviceState newState);
-	bool identifyDevice();
 
-	DvbManager *manager;
+	int size();
+	char *getCurrent();
+	void submitCurrent(int packets);
+	void customEvent(QEvent *);
 
-	Solid::Device caComponent;
-	Solid::Device demuxComponent;
-	Solid::Device dvrComponent;
-	Solid::Device frontendComponent;
-
-	QString caPath;
-	QString demuxPath;
-	QString dvrPath;
-	QString frontendPath;
-
-	int deviceIndex;
-	stateFlags internalState;
+	DvbBackendDevice *backendDevice;
 	DeviceState deviceState;
-	TransmissionTypes transmissionTypes;
-	int frontendCapabilities;
-	QString frontendName;
-	QString deviceId;
 
-	int frontendFd;
 	int frontendTimeout;
 	QTimer frontendTimer;
-
-	DvbDeviceThread *thread;
+	QList<DvbFilterInternal> activeFilters;
+	QList<DvbFilterInternal> pendingFilters;
+	DvbPidFilter *dummyFilter;
 
 	bool isAuto;
 	DvbTTransponder *autoTTransponder;
 	DvbTransponder autoTransponder;
-};
+	DvbBackendDevice::Capabilities capabilities;
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(DvbDevice::TransmissionTypes)
-
-class DvbDeviceManager : public QObject
-{
-	Q_OBJECT
-public:
-	explicit DvbDeviceManager(DvbManager *manager_);
-	~DvbDeviceManager();
-
-	QList<DvbDevice *> getDevices() const
-	{
-		return devices;
-	}
-
-signals:
-	void deviceAdded(DvbDevice *device);
-	void deviceRemoved(DvbDevice *device);
-
-private slots:
-	void componentAdded(const QString &udi);
-	void componentRemoved(const QString &udi);
-
-private:
-	void componentAdded(const Solid::Device &component);
-
-	DvbManager *manager;
-	QList<DvbDevice *> devices;
+	DvbFilterData *currentUnused;
+	DvbFilterData *currentUsed;
+	QAtomicInt usedBuffers;
+	int totalBuffers;
 };
 
 #endif /* DVBDEVICE_H */
