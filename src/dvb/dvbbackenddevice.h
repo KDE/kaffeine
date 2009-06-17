@@ -27,6 +27,8 @@ class DvbFilterInternal;
 class DvbManager;
 class DvbTransponder;
 
+static const int dvbBackendMagic = 0x58d9ca73;
+
 class DvbAbstractDeviceBuffer
 {
 public:

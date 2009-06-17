@@ -617,11 +617,17 @@ void DvbManager::loadDeviceManager()
 		funcPointer func = (funcPointer) QLibrary::resolve(path, "create_device_manager");
 
 		if (func == NULL) {
-			kWarning() << "couldn't load dvb module" << path;
+			kError() << "couldn't load dvb module" << path;
 			return;
 		}
 
 		QObject *deviceManager = func();
+
+		if (deviceManager->property("backendMagic") != dvbBackendMagic) {
+			kError() << "invalid magic number for dvb module" << path;
+			return;
+		}
+
 		deviceManager->setParent(this);
 		connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
 			this, SLOT(deviceAdded(DvbBackendDevice*)));

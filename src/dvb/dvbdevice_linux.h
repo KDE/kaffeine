@@ -96,9 +96,15 @@ private:
 class DvbDeviceManager : public QObject
 {
 	Q_OBJECT
+	Q_PROPERTY(int backendMagic READ backendMagic)
 public:
 	DvbDeviceManager();
 	~DvbDeviceManager();
+
+	int backendMagic()
+	{
+		return dvbBackendMagic;
+	}
 
 public slots:
 	void doColdPlug();
