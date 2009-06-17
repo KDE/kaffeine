@@ -21,6 +21,8 @@ set(kaffeine_SRCS
 set(kaffeinedvbmodule_SRCS
     dvb/dvbdevice_linux.cpp)
 
+configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
+
 kde4_add_executable(kaffeine ${kaffeine_SRCS})
 target_link_libraries(kaffeine ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})
 

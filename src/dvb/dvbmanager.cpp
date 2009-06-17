@@ -25,9 +25,23 @@
 #include <KDebug>
 #include <KLocale>
 #include <KStandardDirs>
+#include <config-kaffeine.h>
 #include "dvbchannelui.h"
 #include "dvbepg.h"
 #include "dvbrecording.h"
+
+static QString installPath(const char *component)
+{
+	if (strcmp(component, "data") == 0) {
+		return QString::fromUtf8(KAFFEINE_DATA_INSTALL_DIR "/");
+	}
+
+	if (strcmp(component, "module") == 0) {
+		return QString::fromUtf8(KAFFEINE_PLUGIN_INSTALL_DIR "/");
+	}
+
+	return QString();
+}
 
 class DvbScanData
 {
@@ -587,7 +601,7 @@ void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 
 void DvbManager::loadDeviceManager()
 {
-	QDir dir(KStandardDirs::installPath("module"));
+	QDir dir(installPath("module"));
 	QStringList entries = dir.entryList(QStringList("kaffeinedvb*"));
 	qSort(entries.begin(), entries.end(), qGreater<QString>());
 
@@ -784,7 +798,7 @@ void DvbManager::readScanData()
 		kDebug() << "can't open" << localFile.fileName();
 	}
 
-	QFile globalFile(KGlobal::dirs()->installPath("data") + "kaffeine/scanfile.dvb");
+	QFile globalFile(installPath("data") + "kaffeine/scanfile.dvb");
 	QDate globalDate;
 
 	if (globalFile.open(QIODevice::ReadOnly)) {
