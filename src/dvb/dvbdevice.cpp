@@ -357,12 +357,12 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 		pendingFilters.end(), pid);
 
 	if (it == pendingFilters.end()) {
-		kWarning() << "trying to remove a nonexistant filter";
+		kWarning() << "trying to remove a nonexistent filter";
 		return;
 	}
 
 	if (!it->filters.removeOne(filter)) {
-		kWarning() << "trying to remove a nonexistant filter";
+		kWarning() << "trying to remove a nonexistent filter";
 		return;
 	}
 
