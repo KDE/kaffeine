@@ -44,10 +44,11 @@ class DvbBackendDevice
 {
 public:
 	enum TransmissionType {
-		DvbC = (1 << 0),
-		DvbS = (1 << 1),
-		DvbT = (1 << 2),
-		Atsc = (1 << 3)
+		DvbC	= (1 << 0),
+		DvbS	= (1 << 1),
+		DvbS2	= (1 << 4),
+		DvbT	= (1 << 2),
+		Atsc	= (1 << 3)
 	};
 
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)

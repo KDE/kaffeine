@@ -20,10 +20,10 @@
 
 #include "dvbdevice_linux.h"
 
+#include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <linux/dvb/dmx.h>
-#include <linux/dvb/frontend.h>
+#include <frontend.h>
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -681,6 +681,14 @@ bool DvbLinuxDevice::identifyDevice()
 	switch (frontend_info.type) {
 	case FE_QPSK:
 		transmissionTypes = DvbS;
+
+		if (((frontend_info.caps & FE_CAN_2G_MODULATION) != 0) ||
+		    (strcmp(frontend_info.name, "Genpix 8psk-to-USB2 DVB-S") == 0) ||
+		    (strcmp(frontend_info.name, "Conexant CX24116/CX24118") == 0) ||
+		    (strcmp(frontend_info.name, "STB0899 Multistandard") == 0)) {
+			transmissionTypes |= DvbS2;
+		}
+
 		break;
 	case FE_QAM:
 		transmissionTypes = DvbC;
