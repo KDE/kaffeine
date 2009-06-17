@@ -89,7 +89,7 @@ Playlist *Playlist::readPLSFile(const QString &path)
 	while (!stream.atEnd()) {
 		QString line = stream.readLine();
 
-		if (line.startsWith("File")) {
+		if (line.startsWith(QLatin1String("File"))) {
 			KUrl url(line.mid(line.indexOf('=') + 1));
 
 			if (url.isValid()) {
@@ -484,21 +484,21 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 	foreach (const KUrl &url, urls) {
 		QString localFile = url.toLocalFile();
 
-		if (localFile.endsWith(".pls", Qt::CaseInsensitive)) {
+		if (localFile.endsWith(QLatin1String(".pls"), Qt::CaseInsensitive)) {
 			Playlist *playlist = Playlist::readPLSFile(localFile);
 
 			if (playlist != NULL) {
 				playlistBrowserModel->append(playlist);
 				playlists = true;
 			}
-		} else if (localFile.endsWith(".m3u", Qt::CaseInsensitive)) {
+		} else if (localFile.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive)) {
 			Playlist *playlist = Playlist::readM3UFile(localFile);
 
 			if (playlist != NULL) {
 				playlistBrowserModel->append(playlist);
 				playlists = true;
 			}
-		} else if (localFile.endsWith(".xspf", Qt::CaseInsensitive)) {
+		} else if (localFile.endsWith(QLatin1String(".xspf"), Qt::CaseInsensitive)) {
 			Playlist *playlist = Playlist::readXSPFFile(localFile);
 
 			if (playlist != NULL) {

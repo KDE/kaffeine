@@ -392,7 +392,7 @@ QString MediaWidget::extensionFilter()
 
 void MediaWidget::play(const KUrl &url)
 {
-	if (url.toLocalFile().endsWith(".iso", Qt::CaseInsensitive)) {
+	if (url.toLocalFile().endsWith(QLatin1String(".iso"), Qt::CaseInsensitive)) {
 		// FIXME move into phonon
 		KUrl copy(url);
 		copy.setProtocol("dvd");

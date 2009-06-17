@@ -438,7 +438,7 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 		return QString();
 	}
 
-	if ((scanSource.first == DvbT) && (scanSource.second.startsWith("AUTO"))) {
+	if ((scanSource.first == DvbT) && (scanSource.second.startsWith(QLatin1String("AUTO")))) {
 		return scanSource.second;
 	}
 
