@@ -34,6 +34,8 @@
 #include <KDebug>
 #include "dvbchannel.h"
 
+// krazy:excludeall=syscalls
+
 extern "C" Q_DECL_EXPORT QObject *create_device_manager()
 {
 	return new DvbDeviceManager;
