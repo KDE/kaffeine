@@ -105,6 +105,9 @@ public:
 	QList<DvbConfig> getConfigs();
 
 private:
+	void addHSeparator(const QString &title);
+
+	QBoxLayout *boxLayout;
 	QList<DvbConfig> configs;
 	DvbSConfigObject *dvbSObject;
 };

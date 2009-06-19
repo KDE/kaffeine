@@ -21,15 +21,23 @@ set(kaffeine_SRCS
 set(kaffeinedvbmodule_SRCS
     dvb/dvbdevice_linux.cpp)
 
+set(kaffeinedvbdebugmodule_SRCS
+    dvb/dvbdevice_debug.cpp)
+
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 kde4_add_executable(kaffeine ${kaffeine_SRCS})
 target_link_libraries(kaffeine ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS})
+install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
+install(FILES kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 kde4_add_plugin(kaffeinedvb ${kaffeinedvbmodule_SRCS})
 target_link_libraries(kaffeinedvb ${KDE4_KDECORE_LIBRARY} ${KDE4_SOLID_LIBS})
-
-install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS kaffeinedvb DESTINATION ${PLUGIN_INSTALL_DIR})
-install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
-install(FILES kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+
+if(BUILD_DEBUG_MODULE)
+  kde4_add_plugin(kaffeinedvbdebug ${kaffeinedvbdebugmodule_SRCS})
+  target_link_libraries(kaffeinedvbdebug ${KDE4_KDECORE_LIBRARY})
+  install(TARGETS kaffeinedvbdebug DESTINATION ${PLUGIN_INSTALL_DIR})
+endif(BUILD_DEBUG_MODULE)

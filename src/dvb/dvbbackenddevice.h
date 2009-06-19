@@ -92,8 +92,8 @@ public:
 	virtual bool sendMessage(const char *message, int length) = 0;
 	virtual bool sendBurst(SecBurst burst) = 0;
 	virtual bool tune(const DvbTransponder &transponder) = 0;
-	virtual int getSignal() = 0;
-	virtual int getSnr() = 0;
+	virtual int getSignal() = 0; // 0 - 100 ; -1 = unsupported
+	virtual int getSnr() = 0; // 0 - 100 ; -1 = unsupported
 	virtual bool isTuned() = 0;
 	virtual bool addPidFilter(int pid) = 0;
 	virtual void removePidFilter(int pid) = 0;

@@ -1,7 +1,7 @@
 /*
  * dvbconfig.h
  *
- * Copyright (C) 2007-2008 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -69,11 +69,11 @@ private:
 	TransmissionType transmissionType;
 };
 
-class DvbConfig : public QExplicitlySharedDataPointer<const DvbConfigBase>
+class DvbConfig : public QSharedDataPointer<DvbConfigBase>
 {
 public:
-	explicit DvbConfig(const DvbConfigBase *config = NULL) :
-		QExplicitlySharedDataPointer<const DvbConfigBase>(config) { }
+	explicit DvbConfig(DvbConfigBase *config = NULL) :
+		QSharedDataPointer<DvbConfigBase>(config) { }
 	~DvbConfig() { }
 };
 

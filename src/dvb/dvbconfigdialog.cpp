@@ -324,23 +324,21 @@ void DvbScanFileDownloadDialog::jobFinished()
 DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	const DvbDeviceConfig &deviceConfig) : QWidget(parent), dvbSObject(NULL)
 {
-	QBoxLayout *boxLayout = new QVBoxLayout(this);
+	boxLayout = new QVBoxLayout(this);
 	boxLayout->addWidget(new QLabel(i18n("Name: %1", deviceConfig.frontendName)));
 
-	DvbDevice *device = deviceConfig.device;
+	if (deviceConfig.device == NULL) {
+		addHSeparator(i18n("Device not connected."));
 
-	if (device == NULL) {
-		QFrame *frame = new QFrame(this);
-		frame->setFrameShape(QFrame::HLine);
-		boxLayout->addWidget(frame);
-
-		boxLayout->addWidget(new QLabel(i18n("device not connected")));
-
+		// FIXME preserve config
 		// FIXME option to remove device config
 
 		boxLayout->addStretch();
 		return;
 	}
+
+	DvbBackendDevice::TransmissionTypes transmissionTypes =
+		deviceConfig.device->getTransmissionTypes();
 
 	DvbConfig dvbCConfig;
 	QList<DvbConfig> dvbSConfigs;
@@ -364,52 +362,53 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		}
 	}
 
-	DvbBackendDevice::TransmissionTypes transmissionTypes = device->getTransmissionTypes();
-
 	if ((transmissionTypes & DvbBackendDevice::DvbC) != 0) {
-		DvbConfigBase *config;
+		addHSeparator(i18n("DVB-C"));
 
-		if (dvbCConfig.constData() != NULL) {
-			config = new DvbConfigBase(*dvbCConfig);
-		} else {
-			config = new DvbConfigBase(DvbConfigBase::DvbC);
+		if (dvbCConfig == NULL) {
+			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbC);
 			config->timeout = 1500;
+			dvbCConfig = DvbConfig(config);
 		}
 
-		configs.append(DvbConfig(config));
-		new DvbConfigObject(this, boxLayout, manager, config);
+		new DvbConfigObject(this, boxLayout, manager, dvbCConfig);
+		configs.append(dvbCConfig);
 	}
 
-	if ((transmissionTypes & DvbBackendDevice::DvbS) != 0) {
+	if ((transmissionTypes & (DvbBackendDevice::DvbS | DvbBackendDevice::DvbS2)) != 0) {
+		if ((transmissionTypes & DvbBackendDevice::DvbS2) != 0) {
+			addHSeparator(i18n("DVB-S2"));
+		} else {
+			addHSeparator(i18n("DVB-S"));
+		}
+
 		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs);
 	}
 
 	if ((transmissionTypes & DvbBackendDevice::DvbT) != 0) {
-		DvbConfigBase *config;
+		addHSeparator(i18n("DVB-T"));
 
-		if (dvbTConfig.constData() != NULL) {
-			config = new DvbConfigBase(*dvbTConfig);
-		} else {
-			config = new DvbConfigBase(DvbConfigBase::DvbT);
+		if (dvbTConfig == NULL) {
+			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbT);
 			config->timeout = 1500;
+			dvbTConfig = DvbConfig(config);
 		}
 
-		configs.append(DvbConfig(config));
-		new DvbConfigObject(this, boxLayout, manager, config);
+		new DvbConfigObject(this, boxLayout, manager, dvbTConfig);
+		configs.append(dvbTConfig);
 	}
 
 	if ((transmissionTypes & DvbBackendDevice::Atsc) != 0) {
-		DvbConfigBase *config;
+		addHSeparator(i18n("ATSC"));
 
-		if (atscConfig.constData() != NULL) {
-			config = new DvbConfigBase(*atscConfig);
-		} else {
-			config = new DvbConfigBase(DvbConfigBase::Atsc);
+		if (atscConfig == NULL) {
+			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::Atsc);
 			config->timeout = 1500;
+			atscConfig = DvbConfig(config);
 		}
 
-		configs.append(DvbConfig(config));
-		new DvbConfigObject(this, boxLayout, manager, config);
+		new DvbConfigObject(this, boxLayout, manager, atscConfig);
+		configs.append(atscConfig);
 	}
 
 	boxLayout->addStretch();
@@ -437,13 +436,17 @@ QList<DvbConfig> DvbConfigPage::getConfigs()
 	return configs;
 }
 
+void DvbConfigPage::addHSeparator(const QString &title)
+{
+	QFrame *frame = new QFrame(this);
+	frame->setFrameShape(QFrame::HLine);
+	boxLayout->addWidget(frame);
+	boxLayout->addWidget(new QLabel(title));
+}
+
 DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager *manager,
 	DvbConfigBase *config_) : QObject(parent), config(config_)
 {
-	QFrame *frame = new QFrame(parent);
-	frame->setFrameShape(QFrame::HLine);
-	layout->addWidget(frame);
-
 	QStringList sources;
 	int sourceIndex = -1;
 
@@ -452,7 +455,6 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 		defaultName = i18n("Cable");
 		sources = manager->getScanSources(DvbManager::DvbC);
 		sourceIndex = sources.indexOf(config->scanSource);
-		layout->addWidget(new QLabel(i18n("DVB-C")));
 		break;
 	case DvbConfigBase::DvbS:
 		// handled separately
@@ -471,13 +473,11 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 		sources.replace(2, i18n("Autoscan Australia"));
 		sources.replace(3, i18n("Autoscan Italy"));
 		sources.replace(4, i18n("Autoscan Taiwan"));
-		layout->addWidget(new QLabel(i18n("DVB-T")));
 		break;
 	case DvbConfigBase::Atsc:
 		defaultName = i18n("Atsc");
 		sources = manager->getScanSources(DvbManager::Atsc);
 		sourceIndex = sources.indexOf(config->scanSource);
-		layout->addWidget(new QLabel(i18n("ATSC")));
 		break;
 	}
 
@@ -577,12 +577,6 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	}
 
 	sources = manager->getScanSources(DvbManager::DvbS);
-
-	QFrame *frame = new QFrame(parent);
-	frame->setFrameShape(QFrame::HLine);
-	boxLayout->addWidget(frame);
-
-	boxLayout->addWidget(new QLabel(i18n("DVB-S")));
 
 	layout = new QGridLayout();
 	boxLayout->addLayout(layout);
