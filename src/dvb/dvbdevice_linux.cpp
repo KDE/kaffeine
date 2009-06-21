@@ -529,24 +529,26 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 	case DvbTransponderBase::DvbS2: {
 		const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
 
-		dtv_property properties[8];
+		dtv_property properties[9];
 		memset(properties, 0, sizeof(properties));
 
-		properties[0].cmd = DTV_CLEAR;
-		properties[1].cmd = DTV_DELIVERY_SYSTEM;
-		properties[1].u.data = SYS_DVBS2;
-		properties[2].cmd = DTV_FREQUENCY;
-		properties[2].u.data = dvbS2Transponder->frequency;
-		properties[3].cmd = DTV_SYMBOL_RATE;
-		properties[3].u.data = dvbS2Transponder->symbolRate;
-		properties[4].cmd = DTV_MODULATION;
-		properties[4].u.data = convertDvbModulation(dvbS2Transponder->modulation);
-		properties[5].cmd = DTV_ROLLOFF;
-		properties[5].u.data = convertDvbRollOff(dvbS2Transponder->rollOff);
-		properties[6].cmd = DTV_INVERSION;
-		properties[6].u.data = INVERSION_AUTO;
+		properties[0].cmd = DTV_DELIVERY_SYSTEM;
+		properties[0].u.data = SYS_DVBS2;
+		properties[1].cmd = DTV_FREQUENCY;
+		properties[1].u.data = dvbS2Transponder->frequency;
+		properties[2].cmd = DTV_SYMBOL_RATE;
+		properties[2].u.data = dvbS2Transponder->symbolRate;
+		properties[3].cmd = DTV_MODULATION;
+		properties[3].u.data = convertDvbModulation(dvbS2Transponder->modulation);
+		properties[4].cmd = DTV_ROLLOFF;
+		properties[4].u.data = convertDvbRollOff(dvbS2Transponder->rollOff);
+		properties[5].cmd = DTV_INVERSION;
+		properties[5].u.data = INVERSION_AUTO;
+		properties[6].cmd = DTV_PILOT;
+		properties[6].u.data = PILOT_AUTO;
 		properties[7].cmd = DTV_INNER_FEC;
 		properties[7].u.data = convertDvbFecRate(dvbS2Transponder->fecRate);
+		properties[8].cmd = DTV_TUNE;
 
 		dtv_properties propertyList;
 		memset(&propertyList, 0, sizeof(propertyList));
