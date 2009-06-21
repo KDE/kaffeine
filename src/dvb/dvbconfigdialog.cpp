@@ -330,7 +330,8 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	if (deviceConfig.device == NULL) {
 		addHSeparator(i18n("Device not connected."));
 
-		// FIXME preserve config
+		configs = deviceConfig.configs;
+
 		// FIXME option to remove device config
 
 		boxLayout->addStretch();
