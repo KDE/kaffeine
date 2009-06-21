@@ -58,6 +58,7 @@ private slots:
 	void resizeToVideo(int factor);
 	void configureKeys();
 	void activateDvbTab();
+	void navigationBarOrientationChanged(Qt::Orientation orientation);
 	void activateTab(int tabIndex);
 	void hideCursor();
 

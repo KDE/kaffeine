@@ -182,6 +182,8 @@ Kaffeine::Kaffeine()
 	// navigation bar - keep in sync with TabIndex enum!
 
 	navigationBar = new KToolBar("navigation_bar", this, Qt::LeftToolBarArea);
+	connect(navigationBar, SIGNAL(orientationChanged(Qt::Orientation)),
+		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
 	tabBar = new KTabBar(navigationBar);
 	tabBar->addTab(KIcon("start-here-kde"), i18n("Start"));
@@ -445,6 +447,15 @@ void Kaffeine::configureKeys()
 void Kaffeine::activateDvbTab()
 {
 	activateTab(DvbTabId);
+}
+
+void Kaffeine::navigationBarOrientationChanged(Qt::Orientation orientation)
+{
+	if (orientation == Qt::Horizontal) {
+		tabBar->setShape(KTabBar::RoundedNorth);
+	} else {
+		tabBar->setShape(KTabBar::RoundedWest);
+	}
 }
 
 void Kaffeine::activateTab(int tabIndex)
