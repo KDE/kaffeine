@@ -120,7 +120,7 @@ static const char *dvbS2ModulationTable[] = {
 static const char *dvbS2RollOffTable[] = {
 	/* RollOff20 = 0   */ "20",
 	/* RollOff25 = 1   */ "25",
-	/* RollOff30 = 2   */ "30",
+	/* RollOff35 = 2   */ "35",
 	/* RollOffAuto = 3 */ "AUTO"
 };
 
