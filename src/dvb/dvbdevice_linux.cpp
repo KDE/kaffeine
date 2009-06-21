@@ -375,6 +375,31 @@ static fe_modulation_t convertDvbModulation(DvbCTransponder::Modulation modulati
 	return QAM_AUTO;
 }
 
+static fe_modulation_t convertDvbModulation(DvbS2Transponder::Modulation modulation)
+{
+	switch (modulation) {
+	case DvbS2Transponder::Qpsk: return QPSK;
+	case DvbS2Transponder::Psk8: return PSK_8;
+	case DvbS2Transponder::Apsk16: return APSK_16;
+	case DvbS2Transponder::Apsk32: return APSK_32;
+	case DvbS2Transponder::ModulationAuto: return QAM_AUTO;
+	}
+
+	return QAM_AUTO;
+}
+
+static fe_rolloff convertDvbRollOff(DvbS2Transponder::RollOff rollOff)
+{
+	switch (rollOff) {
+	case DvbS2Transponder::RollOff20: return ROLLOFF_20;
+	case DvbS2Transponder::RollOff25: return ROLLOFF_25;
+	case DvbS2Transponder::RollOff35: return ROLLOFF_35;
+	case DvbS2Transponder::RollOffAuto: return ROLLOFF_AUTO;
+	}
+
+	return ROLLOFF_AUTO;
+}
+
 static fe_modulation_t convertDvbModulation(DvbTTransponder::Modulation modulation)
 {
 	switch (modulation) {
@@ -494,6 +519,42 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
 		params.u.qpsk.fec_inner = convertDvbFecRate(dvbSTransponder->fecRate);
 		break;
+	    }
+
+	case DvbTransponderBase::DvbS2: {
+		const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
+
+		dtv_property properties[8];
+		memset(properties, 0, sizeof(properties));
+
+		properties[0].cmd = DTV_CLEAR;
+		properties[1].cmd = DTV_DELIVERY_SYSTEM;
+		properties[1].u.data = SYS_DVBS2;
+		properties[2].cmd = DTV_FREQUENCY;
+		properties[2].u.data = dvbS2Transponder->frequency;
+		properties[3].cmd = DTV_SYMBOL_RATE;
+		properties[3].u.data = dvbS2Transponder->symbolRate;
+		properties[4].cmd = DTV_MODULATION;
+		properties[4].u.data = convertDvbModulation(dvbS2Transponder->modulation);
+		properties[5].cmd = DTV_ROLLOFF;
+		properties[5].u.data = convertDvbRollOff(dvbS2Transponder->rollOff);
+		properties[6].cmd = DTV_INVERSION;
+		properties[6].u.data = INVERSION_AUTO;
+		properties[7].cmd = DTV_INNER_FEC;
+		properties[7].u.data = convertDvbFecRate(dvbS2Transponder->fecRate);
+
+		dtv_properties propertyList;
+		memset(&propertyList, 0, sizeof(propertyList));
+
+		propertyList.num = sizeof(properties) / sizeof(properties[0]);
+		propertyList.props = properties;
+
+		if (ioctl(frontendFd, FE_SET_PROPERTY, &propertyList) != 0) {
+			kWarning() << "ioctl FE_SET_PROPERTY failed for" << frontendPath;
+			return false;
+		}
+
+		return true;
 	    }
 
 	case DvbTransponderBase::DvbT: {

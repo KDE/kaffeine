@@ -137,7 +137,7 @@ class DvbSConfigObject : public QObject
 	Q_OBJECT
 public:
 	DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
-		const QList<DvbConfig> &configs);
+		const QList<DvbConfig> &configs, bool dvbS2);
 	~DvbSConfigObject();
 
 	void appendConfigs(QList<DvbConfig> &list);

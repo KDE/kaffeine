@@ -27,6 +27,7 @@
 class AtscTransponder;
 class DvbCTransponder;
 class DvbSTransponder;
+class DvbS2Transponder;
 class DvbTTransponder;
 class DvbTransponder;
 
@@ -36,6 +37,7 @@ public:
 	enum TransmissionType {
 		DvbC = 0,
 		DvbS = 1,
+		DvbS2 = 4,
 		DvbT = 2,
 		Atsc = 3
 	};
@@ -65,6 +67,11 @@ public:
 	}
 
 	virtual const DvbSTransponder *getDvbSTransponder() const
+	{
+		return NULL;
+	}
+
+	virtual const DvbS2Transponder *getDvbS2Transponder() const
 	{
 		return NULL;
 	}
@@ -167,6 +174,52 @@ public:
 	int frequency; // kHz
 	int symbolRate; // symbols per second
 	FecRate fecRate;
+};
+
+class DvbS2Transponder : public DvbSTransponder
+{
+public:
+	enum Modulation {
+		Qpsk = 0,
+		Psk8 = 1,
+		Apsk16 = 2,
+		Apsk32 = 3,
+		ModulationAuto = 4,
+		ModulationMax = ModulationAuto
+	};
+
+	enum RollOff {
+		RollOff20 = 0,
+		RollOff25 = 1,
+		RollOff35 = 2,
+		RollOffAuto = 3,
+		RollOffMax = RollOffAuto
+	};
+
+	TransmissionType getTransmissionType() const
+	{
+		return DvbS2;
+	}
+
+	const DvbSTransponder *getDvbSTransponder() const
+	{
+		return NULL;
+	}
+
+	const DvbS2Transponder *getDvbS2Transponder() const
+	{
+		return this;
+	}
+
+	void readTransponder(QDataStream &stream);
+	void writeTransponder(QDataStream &stream) const;
+	bool fromString(const QString &string);
+	QString toString() const;
+
+	bool corresponds(const DvbTransponder &transponder) const;
+
+	Modulation modulation;
+	RollOff rollOff;
 };
 
 class DvbTTransponder : public DvbTransponderBase

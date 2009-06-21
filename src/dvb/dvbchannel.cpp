@@ -40,6 +40,16 @@ template<> DvbSTransponder::Polarization maxEnumValue()
 	return DvbSTransponder::PolarizationMax;
 }
 
+template<> DvbS2Transponder::Modulation maxEnumValue()
+{
+	return DvbS2Transponder::ModulationMax;
+}
+
+template<> DvbS2Transponder::RollOff maxEnumValue()
+{
+	return DvbS2Transponder::RollOffMax;
+}
+
 template<> DvbTTransponder::Bandwidth maxEnumValue()
 {
 	return DvbTTransponder::BandwidthMax;
@@ -97,6 +107,21 @@ static const char *dvbSPolarizationTable[] = {
 	/* Vertical = 1      */ "V",
 	/* CircularLeft = 2  */ "H",
 	/* CircularRight = 3 */ "V"
+};
+
+static const char *dvbS2ModulationTable[] = {
+	/* Qpsk = 0           */ "QPSK",
+	/* Psk8 = 1           */ "8PSK",
+	/* Apsk16 = 2         */ "16APSK",
+	/* Apsk32 = 3         */ "32APSK",
+	/* ModulationAuto = 4 */ "AUTO"
+};
+
+static const char *dvbS2RollOffTable[] = {
+	/* RollOff20 = 0   */ "20",
+	/* RollOff25 = 1   */ "25",
+	/* RollOff30 = 2   */ "30",
+	/* RollOffAuto = 3 */ "AUTO"
 };
 
 static const char *dvbTBandwidthTable[] = {
@@ -203,6 +228,16 @@ public:
 		}
 	}
 
+	void checkString(const QString &value)
+	{
+		QString string;
+		stream >> string;
+
+		if (string != value) {
+			stream.setStatus(QTextStream::ReadCorruptData);
+		}
+	}
+
 private:
 	QString string;
 	QTextStream stream;
@@ -235,6 +270,11 @@ public:
 	}
 
 	void writeChar(QChar value)
+	{
+		stream << value << ' ';
+	}
+
+	void writeString(const QString &value)
 	{
 		stream << value << ' ';
 	}
@@ -335,6 +375,61 @@ bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 	return (dvbSTransponder != NULL) &&
 	       (dvbSTransponder->polarization == polarization) &&
 	       (qAbs(dvbSTransponder->frequency - frequency) <= 2000);
+}
+
+void DvbS2Transponder::readTransponder(QDataStream &stream)
+{
+	stream >> polarization;
+	stream >> frequency;
+	stream >> symbolRate;
+	stream >> fecRate;
+	stream >> modulation;
+	stream >> rollOff;
+}
+
+void DvbS2Transponder::writeTransponder(QDataStream &stream) const
+{
+	stream << polarization;
+	stream << frequency;
+	stream << symbolRate;
+	stream << fecRate;
+	stream << modulation;
+	stream << rollOff;
+}
+
+bool DvbS2Transponder::fromString(const QString &string)
+{
+	DvbChannelStringReader reader(string);
+	reader.checkString("S2");
+	reader.readInt(frequency);
+	reader.readEnum(polarization, dvbSPolarizationTable);
+	reader.readInt(symbolRate);
+	reader.readEnum(fecRate, dvbFecRateTable);
+	reader.readEnum(rollOff, dvbS2RollOffTable);
+	reader.readEnum(modulation, dvbS2ModulationTable);
+	return reader.isValid();
+}
+
+QString DvbS2Transponder::toString() const
+{
+	DvbChannelStringWriter writer;
+	writer.writeString("S2");
+	writer.writeInt(frequency);
+	writer.writeEnum(polarization, dvbSPolarizationTable);
+	writer.writeInt(symbolRate);
+	writer.writeEnum(fecRate, dvbFecRateTable);
+	writer.writeEnum(rollOff, dvbS2RollOffTable);
+	writer.writeEnum(modulation, dvbS2ModulationTable);
+	return writer.getString();
+}
+
+bool DvbS2Transponder::corresponds(const DvbTransponder &transponder) const
+{
+	const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
+
+	return (dvbS2Transponder != NULL) &&
+	       (dvbS2Transponder->polarization == polarization) &&
+	       (qAbs(dvbS2Transponder->frequency - frequency) <= 2000);
 }
 
 void DvbTTransponder::readTransponder(QDataStream &stream)
@@ -450,6 +545,9 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 		break;
 	case DvbTransponderBase::DvbS:
 		transponderBase = new DvbSTransponder();
+		break;
+	case DvbTransponderBase::DvbS2:
+		transponderBase = new DvbS2Transponder();
 		break;
 	case DvbTransponderBase::DvbT:
 		transponderBase = new DvbTTransponder();

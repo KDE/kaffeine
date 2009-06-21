@@ -57,110 +57,28 @@ public:
 
 	bool checkEnd() const
 	{
-		return pos == end;
+		return (pos == end);
 	}
 
+	const char *getLine() const
+	{
+		return pos;
+	}
+
+	const char *readLine();
 	QDate readDate();
-	bool readSources(QStringList &sources, QList<int> &offsets, const char *tag);
-	QList<DvbTransponder> readTransponders(int offset, DvbManager::TransmissionType type);
 
 private:
-	const char *readLine();
-
 	QByteArray data;
 	char *begin;
 	char *pos;
 	const char *end;
-
 };
-
-QDate DvbScanData::readDate()
-{
-	if (strcmp(readLine(), "[date]") != 0) {
-		return QDate();
-	}
-
-	return QDate::fromString(readLine(), Qt::ISODate);
-}
-
-bool DvbScanData::readSources(QStringList &sources, QList<int> &offsets, const char *tag)
-{
-	int tagLen = strlen(tag);
-
-	while (strncmp(pos, tag, tagLen) == 0) {
-		const char *line = readLine();
-
-		QString name = QString(line + tagLen);
-
-		if ((name.size() < 2) || (name[name.size() - 1] != ']')) {
-			return false;
-		}
-
-		name.resize(name.size() - 1);
-
-		sources.append(name);
-		offsets.append(pos - begin);
-
-		while ((*pos != '[') && (*pos != 0)) {
-			readLine();
-		}
-	}
-
-	return true;
-}
-
-QList<DvbTransponder> DvbScanData::readTransponders(int offset, DvbManager::TransmissionType type)
-{
-	pos = begin + offset;
-
-	QList<DvbTransponder> list;
-	bool parseError = false;
-
-	while ((*pos != '[') && (*pos != 0)) {
-		DvbTransponderBase *transponder = NULL;
-
-		switch (type) {
-		case DvbManager::DvbC:
-			transponder = new DvbCTransponder;
-			break;
-		case DvbManager::DvbS:
-			transponder = new DvbSTransponder;
-			break;
-		case DvbManager::DvbT:
-			transponder = new DvbTTransponder;
-			break;
-		case DvbManager::Atsc:
-			transponder = new AtscTransponder;
-			break;
-		}
-
-		if ((transponder == NULL) || !transponder->fromString(QString::fromAscii(pos))) {
-			parseError = true;
-			delete transponder;
-		} else {
-			list.append(DvbTransponder(transponder));
-		}
-
-		while (pos != end) {
-			if (*pos == 0) {
-				++pos;
-				break;
-			}
-
-			++pos;
-		}
-	}
-
-	if (list.isEmpty() || parseError) {
-		kWarning() << "parse error";
-	}
-
-	return list;
-}
 
 const char *DvbScanData::readLine()
 {
 	// ignore comments
+
 	while (*pos == '#') {
 		do {
 			++pos;
@@ -186,6 +104,15 @@ const char *DvbScanData::readLine()
 	}
 
 	return line;
+}
+
+QDate DvbScanData::readDate()
+{
+	if (strcmp(readLine(), "[date]") != 0) {
+		return QDate();
+	}
+
+	return QDate::fromString(QString::fromAscii(readLine()), Qt::ISODate);
 }
 
 class DvbDeviceConfigReader : public QTextStream
@@ -285,7 +212,7 @@ DvbDeviceConfig::~DvbDeviceConfig()
 {
 }
 
-DvbManager::DvbManager(QObject *parent) : QObject(parent), scanData(NULL)
+DvbManager::DvbManager(QObject *parent) : QObject(parent)
 {
 	channelModel = new DvbChannelModel(this);
 	channelModel->loadChannels();
@@ -307,7 +234,6 @@ DvbManager::~DvbManager()
 	KConfigGroup(KGlobal::config(), "DVB").writeEntry("ScanDataDate", scanDataDate);
 	writeDeviceConfigs();
 	channelModel->saveChannels();
-	delete scanData;
 }
 
 DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder)
@@ -434,13 +360,11 @@ QString DvbManager::getScanDataDate()
 
 QStringList DvbManager::getScanSources(TransmissionType type)
 {
-	Q_ASSERT((type >= 0) && (type <= TransmissionTypeMax));
-
-	if (scanData == NULL) {
+	if (scanData.isEmpty()) {
 		readScanData();
 	}
 
-	return scanSources[type];
+	return scanSources.value(type);
 }
 
 QString DvbManager::getAutoScanSource(const QString &source) const
@@ -461,7 +385,7 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 
 QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 {
-	if (scanData == NULL) {
+	if (scanData.isEmpty()) {
 		readScanData();
 	}
 
@@ -472,15 +396,7 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 		return QList<DvbTransponder>();
 	}
 
-	TransmissionType type = scanSource.first;
-	int index = scanSources[type].indexOf(scanSource.second);
-
-	if (index == -1) {
-		kWarning() << "invalid source";
-		return QList<DvbTransponder>();
-	}
-
-	return scanData->readTransponders(scanOffsets[type].at(index), type);
+	return scanData.value(scanSource);
 }
 
 bool DvbManager::updateScanData(const QByteArray &data)
@@ -783,13 +699,8 @@ void DvbManager::updateSourceMapping()
 
 void DvbManager::readScanData()
 {
-	delete scanData;
-	scanData = NULL;
-
-	for (int i = 0; i <= TransmissionTypeMax; ++i) {
-		scanSources[i].clear();
-		scanOffsets[i].clear();
-	}
+	scanSources.clear();
+	scanData.clear();
 
 	QFile localFile(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
 	QDate localDate;
@@ -817,38 +728,113 @@ void DvbManager::readScanData()
 		kWarning() << "can't open" << globalFile.fileName();
 	}
 
+	QFile *file = NULL;
+
 	if (!localDate.isNull() && (globalDate.isNull() || (localDate >= globalDate))) {
-		// use local file
-		if (localFile.seek(0)) {
-			scanData = new DvbScanData(localFile.readAll());
-		} else {
-			kWarning() << "can't seek" << localFile.fileName();
-			return;
-		}
+		file = &localFile;
 	} else if (!globalDate.isNull()) {
-		// use global file
-		if (globalFile.seek(0)) {
-			scanData = new DvbScanData(globalFile.readAll());
-		} else {
-			kWarning() << "can't seek" << globalFile.fileName();
-			return;
-		}
+		file = &globalFile;
 	} else {
 		scanDataDate = QDate(1900, 1, 1);
 		return;
 	}
 
-	QDate date = scanData->readDate();
+	if (!file->seek(0)) {
+		kWarning() << "can't seek" << file->fileName();
+		return;
+	}
+
+	DvbScanData data(file->readAll());
+
+	QDate date = data.readDate();
 
 	if (scanDataDate < date) {
 		scanDataDate = date;
 	}
 
-	if (!scanData->readSources(scanSources[DvbC], scanOffsets[DvbC], "[dvb-c/") ||
-	    !scanData->readSources(scanSources[DvbS], scanOffsets[DvbS], "[dvb-s/") ||
-	    !scanData->readSources(scanSources[DvbT], scanOffsets[DvbT], "[dvb-t/") ||
-	    !scanData->readSources(scanSources[Atsc], scanOffsets[Atsc], "[atsc/") ||
-	    !scanData->checkEnd()) {
-		kWarning() << "parsing error occurred";
+	if (!readScanSources(data, "[dvb-c/", DvbC) ||
+	    !readScanSources(data, "[dvb-s/", DvbS) ||
+	    !readScanSources(data, "[dvb-t/", DvbT) ||
+	    !readScanSources(data, "[atsc/", Atsc) ||
+	    !data.checkEnd()) {
+		kWarning() << "can't parse" << file->fileName();
 	}
+}
+
+bool DvbManager::readScanSources(DvbScanData &data, const char *tag, TransmissionType type)
+{
+	int tagLen = strlen(tag);
+	bool parseError = false;
+
+	while (strncmp(data.getLine(), tag, tagLen) == 0) {
+		const char *line = data.readLine();
+
+		QString name = QString(line + tagLen);
+
+		if ((name.size() < 2) || (name.at(name.size() - 1) != ']')) {
+			return false;
+		}
+
+		name.chop(1);
+		QList<DvbTransponder> transponders;
+		bool containsDvbS1 = false;
+
+		while (true) {
+			line = data.getLine();
+
+			if ((*line == '[') || (*line == 0)) {
+				break;
+			}
+
+			line = data.readLine();
+			DvbTransponderBase *transponder = NULL;
+
+			switch (type) {
+			case DvbC:
+				transponder = new DvbCTransponder;
+				break;
+			case DvbS:
+			case DvbS2:
+				if (line[1] == '2') {
+					transponder = new DvbS2Transponder;
+				} else {
+					transponder = new DvbSTransponder;
+					containsDvbS1 = true;
+				}
+				break;
+			case DvbT:
+				transponder = new DvbTTransponder;
+				break;
+			case Atsc:
+				transponder = new AtscTransponder;
+				break;
+			}
+
+			if (!transponder->fromString(QString::fromAscii(line))) {
+				parseError = true;
+				delete transponder;
+			} else {
+				transponders.append(DvbTransponder(transponder));
+			}
+		}
+
+		if ((type != DvbS) && (type != DvbS2)) {
+			scanSources[type].append(name);
+			scanData.insert(qMakePair(type, name), transponders);
+		} else {
+			scanSources[DvbS2].append(name);
+			scanData.insert(qMakePair(DvbS2, name), transponders);
+
+			if (containsDvbS1) {
+				scanSources[DvbS].append(name);
+				scanData.insert(qMakePair(DvbS, name), transponders);
+			}
+		}
+	}
+
+	if (parseError) {
+		kWarning() << "can't parse complete scan data";
+	}
+
+	return true;
 }

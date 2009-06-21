@@ -54,13 +54,12 @@ class DvbManager : public QObject
 {
 	Q_OBJECT
 public:
-	enum TransmissionType
-	{
-		DvbC = 0,
-		DvbS = 1,
-		DvbT = 2,
-		Atsc = 3,
-		TransmissionTypeMax = Atsc
+	enum TransmissionType {
+		DvbC,
+		DvbS,
+		DvbS2, // includes DvbS
+		DvbT,
+		Atsc
 	};
 
 	explicit DvbManager(QObject *parent);
@@ -123,6 +122,7 @@ private:
 	void updateSourceMapping();
 
 	void readScanData();
+	bool readScanSources(DvbScanData &data, const char *tag, TransmissionType type);
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;
@@ -133,9 +133,8 @@ private:
 	QStringList sources;
 
 	QDate scanDataDate;
-	DvbScanData *scanData;
-	QStringList scanSources[TransmissionTypeMax + 1];
-	QList<int> scanOffsets[TransmissionTypeMax + 1];
+	QMap<TransmissionType, QStringList> scanSources;
+	QMap<QPair<TransmissionType, QString>, QList<DvbTransponder> > scanData;
 };
 
 #endif /* DVBMANAGER_H */

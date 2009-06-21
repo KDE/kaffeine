@@ -120,6 +120,15 @@ bool DvbDebugDevice::tune(const DvbTransponder &transponder)
 		break;
 	    }
 
+	case DvbTransponderBase::DvbS2: {
+		const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
+		kDebug() << "DvbS2:" << dvbS2Transponder->polarization
+			 << dvbS2Transponder->frequency << dvbS2Transponder->symbolRate
+			 << dvbS2Transponder->fecRate << dvbS2Transponder->modulation
+			 << dvbS2Transponder->rollOff;
+		break;
+	    }
+
 	case DvbTransponderBase::DvbT: {
 		const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
 		kDebug() << "DvbT:" << dvbTTransponder->frequency << dvbTTransponder->bandwidth

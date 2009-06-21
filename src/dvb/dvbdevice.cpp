@@ -94,7 +94,10 @@ DvbDevice::~DvbDevice()
 
 void DvbDevice::tune(const DvbTransponder &transponder)
 {
-	if (transponder->getTransmissionType() != DvbTransponderBase::DvbS) {
+	DvbTransponderBase::TransmissionType transmissionType = transponder->getTransmissionType();
+
+	if ((transmissionType != DvbTransponderBase::DvbS) &&
+	    (transmissionType != DvbTransponderBase::DvbS2)) {
 		if (backendDevice->tune(transponder)) {
 			setDeviceState(DeviceTuning);
 			frontendTimeout = config->timeout;
@@ -108,8 +111,16 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	bool moveRotor = false;
 
-	const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
-	Q_ASSERT(dvbSTransponder != NULL);
+	const DvbSTransponder *dvbSTransponder = NULL;
+	const DvbS2Transponder *dvbS2Transponder = NULL;
+
+	if (transmissionType == DvbTransponderBase::DvbS) {
+		dvbSTransponder = transponder->getDvbSTransponder();
+	} else {
+		// DVB-S2
+		dvbS2Transponder = transponder->getDvbS2Transponder();
+		dvbSTransponder = dvbS2Transponder;
+	}
 
 	// parameters
 
@@ -234,7 +245,15 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	// tune
 
-	DvbSTransponder *intermediate = new DvbSTransponder(*dvbSTransponder);
+	DvbSTransponder *intermediate = NULL;
+
+	if (transmissionType == DvbTransponderBase::DvbS) {
+		intermediate = new DvbSTransponder(*dvbSTransponder);
+	} else {
+		// DVB-S2
+		intermediate = new DvbS2Transponder(*dvbS2Transponder);
+	}
+
 	intermediate->frequency = frequency;
 
 	if (backendDevice->tune(DvbTransponder(intermediate))) {

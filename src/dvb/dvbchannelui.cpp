@@ -56,11 +56,11 @@ template<> QStringList displayStrings<DvbTransponderBase::FecRate>()
 template<> QStringList displayStrings<DvbCTransponder::Modulation>()
 {
 	QStringList strings;
-	strings.append(/* Qam16 = 0          */ "QAM16");
-	strings.append(/* Qam32 = 1          */ "QAM32");
-	strings.append(/* Qam64 = 2          */ "QAM64");
-	strings.append(/* Qam128 = 3         */ "QAM128");
-	strings.append(/* Qam256 = 4         */ "QAM256");
+	strings.append(/* Qam16 = 0          */ "16-QAM");
+	strings.append(/* Qam32 = 1          */ "32-QAM");
+	strings.append(/* Qam64 = 2          */ "64-QAM");
+	strings.append(/* Qam128 = 3         */ "128-QAM");
+	strings.append(/* Qam256 = 4         */ "256-QAM");
 	strings.append(/* ModulationAuto = 5 */ "AUTO");
 	return strings;
 }
@@ -72,6 +72,27 @@ template<> QStringList displayStrings<DvbSTransponder::Polarization>()
 	strings.append(/* Vertical = 1      */ i18n("Vertical"));
 	strings.append(/* CircularLeft = 2  */ i18n("Circular left"));
 	strings.append(/* CircularRight = 3 */ i18n("Circular right"));
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbS2Transponder::Modulation>()
+{
+	QStringList strings;
+	strings.append(/* Qpsk = 0           */ "QPSK");
+	strings.append(/* Psk8 = 1           */ "8-PSK");
+	strings.append(/* Apsk16 = 2         */ "16-APSK");
+	strings.append(/* Apsk32 = 3         */ "32-APSK");
+	strings.append(/* ModulationAuto = 4 */ "AUTO");
+	return strings;
+}
+
+template<> QStringList displayStrings<DvbS2Transponder::RollOff>()
+{
+	QStringList strings;
+	strings.append(/* RollOff20 = 0   */ "0.20");
+	strings.append(/* RollOff25 = 1   */ "0.25");
+	strings.append(/* RollOff35 = 2   */ "0.35");
+	strings.append(/* RollOffAuto = 3 */ "AUTO");
 	return strings;
 }
 
@@ -89,8 +110,8 @@ template<> QStringList displayStrings<DvbTTransponder::Modulation>()
 {
 	QStringList strings;
 	strings.append(/* Qpsk = 0           */ "QPSK");
-	strings.append(/* Qam16 = 1          */ "QAM16");
-	strings.append(/* Qam64 = 2          */ "QAM64");
+	strings.append(/* Qam16 = 1          */ "16-QAM");
+	strings.append(/* Qam64 = 2          */ "64-QAM");
 	strings.append(/* ModulationAuto = 3 */ "AUTO");
 	return strings;
 }
@@ -129,10 +150,10 @@ template<> QStringList displayStrings<DvbTTransponder::Hierarchy>()
 template<> QStringList displayStrings<AtscTransponder::Modulation>()
 {
 	QStringList strings;
-	strings.append(/* Qam64 = 0          */ "QAM64");
-	strings.append(/* Qam256 = 1         */ "QAM256");
-	strings.append(/* Vsb8 = 2           */ "VSB8");
-	strings.append(/* Vsb16 = 3          */ "VSB16");
+	strings.append(/* Qam64 = 0          */ "64-QAM");
+	strings.append(/* Qam256 = 1         */ "256-QAM");
+	strings.append(/* Vsb8 = 2           */ "8-VSB");
+	strings.append(/* Vsb16 = 3          */ "16-VSB");
 	strings.append(/* ModulationAuto = 4 */ "AUTO");
 	return strings;
 }
@@ -459,8 +480,15 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 		gridLayout->addWidget(new QLabel(enumToString(tp->fecRate)), 4, 1);
 		break;
 	    }
-	case DvbTransponderBase::DvbS: {
+	case DvbTransponderBase::DvbS:
+	case DvbTransponderBase::DvbS2: {
+		const DvbS2Transponder *tp2 = channel->transponder->getDvbS2Transponder();
 		const DvbSTransponder *tp = channel->transponder->getDvbSTransponder();
+
+		if (tp == NULL) {
+			tp = tp2;
+		}
+
 		gridLayout->addWidget(new QLabel(i18n("Polarization:")), 1, 0);
 		gridLayout->addWidget(new QLabel(enumToString(tp->polarization)), 1, 1);
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 2, 0);
@@ -469,6 +497,14 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 		gridLayout->addWidget(new QLabel(QString::number(tp->symbolRate / 1000.0)), 3, 1);
 		gridLayout->addWidget(new QLabel(i18n("FEC rate:")), 4, 0);
 		gridLayout->addWidget(new QLabel(enumToString(tp->fecRate)), 4, 1);
+
+		if (tp2 != NULL) {
+			gridLayout->addWidget(new QLabel(i18n("Modulation:")), 5, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp2->modulation)), 5, 1);
+			gridLayout->addWidget(new QLabel(i18n("Roll-off:")), 6, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp2->rollOff)), 6, 1);
+		}
+
 		break;
 	    }
 	case DvbTransponderBase::DvbT: {

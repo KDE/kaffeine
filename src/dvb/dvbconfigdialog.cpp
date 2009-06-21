@@ -376,13 +376,15 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	}
 
 	if ((transmissionTypes & (DvbBackendDevice::DvbS | DvbBackendDevice::DvbS2)) != 0) {
-		if ((transmissionTypes & DvbBackendDevice::DvbS2) != 0) {
+		bool dvbS2 = ((transmissionTypes & DvbBackendDevice::DvbS2) != 0);
+
+		if (dvbS2) {
 			addHSeparator(i18n("DVB-S2"));
 		} else {
 			addHSeparator(i18n("DVB-S"));
 		}
 
-		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs);
+		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs, dvbS2);
 	}
 
 	if ((transmissionTypes & DvbBackendDevice::DvbT) != 0) {
@@ -568,7 +570,7 @@ void DvbConfigObject::nameChanged()
 }
 
 DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
-	const QList<DvbConfig> &configs) : QObject(parent_), parent(parent_)
+	const QList<DvbConfig> &configs, bool dvbS2) : QObject(parent_), parent(parent_)
 {
 	if (!configs.isEmpty()) {
 		lnbConfig = new DvbConfigBase(*configs.at(0));
@@ -576,7 +578,11 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 		lnbConfig = createConfig(0);
 	}
 
-	sources = manager->getScanSources(DvbManager::DvbS);
+	if (dvbS2) {
+		sources = manager->getScanSources(DvbManager::DvbS2);
+	} else {
+		sources = manager->getScanSources(DvbManager::DvbS);
+	}
 
 	layout = new QGridLayout();
 	boxLayout->addLayout(layout);
