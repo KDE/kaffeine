@@ -383,7 +383,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 			QString autoScanSource = manager->getAutoScanSource(source);
 
 			if (autoScanSource.isEmpty()) {
-				internal = new DvbScan(device, source, manager->getTransponders(source));
+				internal = new DvbScan(device, source, manager->getTransponders(device, source));
 			} else {
 				internal = new DvbScan(device, source, autoScanSource);
 			}

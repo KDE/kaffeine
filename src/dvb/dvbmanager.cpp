@@ -383,7 +383,7 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 	return QString();
 }
 
-QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
+QList<DvbTransponder> DvbManager::getTransponders(DvbDevice *device, const QString &source)
 {
 	if (scanData.isEmpty()) {
 		readScanData();
@@ -394,6 +394,11 @@ QList<DvbTransponder> DvbManager::getTransponders(const QString &source)
 	if (scanSource.second.isEmpty()) {
 		kWarning() << "invalid source";
 		return QList<DvbTransponder>();
+	}
+
+	if ((scanSource.first == DvbS) &&
+	    ((device->getTransmissionTypes() & DvbBackendDevice::DvbS2) != 0)) {
+		scanSource.first = DvbS2;
 	}
 
 	return scanData.value(scanSource);
