@@ -81,16 +81,21 @@ template<> AtscTransponder::Modulation maxEnumValue()
 }
 
 static const char *dvbFecRateTable[] = {
-	/* FecNone = 0 */ "NONE",
-	/* Fec1_2 = 1  */ "1/2",
-	/* Fec2_3 = 2  */ "2/3",
-	/* Fec3_4 = 3  */ "3/4",
-	/* Fec4_5 = 4  */ "4/5",
-	/* Fec5_6 = 5  */ "5/6",
-	/* Fec6_7 = 6  */ "6/7",
-	/* Fec7_8 = 7  */ "7/8",
-	/* Fec8_9 = 8  */ "8/9",
-	/* FecAuto = 9 */ "AUTO"
+	/* FecNone = 0  */ "NONE",
+	/* Fec1_2 = 1   */ "1/2",
+	/* Fec2_3 = 2   */ "2/3",
+	/* Fec3_4 = 3   */ "3/4",
+	/* Fec4_5 = 4   */ "4/5",
+	/* Fec5_6 = 5   */ "5/6",
+	/* Fec6_7 = 6   */ "6/7",
+	/* Fec7_8 = 7   */ "7/8",
+	/* Fec8_9 = 8   */ "8/9",
+	/* FecAuto = 9  */ "AUTO",
+	/* Fec1_3 = 10  */ "1/3",
+	/* Fec1_4 = 11  */ "1/4",
+	/* Fec2_5 = 12  */ "2/5",
+	/* Fec3_5 = 13  */ "3/5",
+	/* Fec9_10 = 14 */ "9/10"
 };
 
 static const char *dvbCModulationTable[] = {

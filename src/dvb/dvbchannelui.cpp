@@ -40,16 +40,21 @@ template<class T> static QStringList displayStrings();
 template<> QStringList displayStrings<DvbTransponderBase::FecRate>()
 {
 	QStringList strings;
-	strings.append(/* FecNone = 0 */ "NONE");
-	strings.append(/* Fec1_2 = 1  */ "1/2");
-	strings.append(/* Fec2_3 = 2  */ "2/3");
-	strings.append(/* Fec3_4 = 3  */ "3/4");
-	strings.append(/* Fec4_5 = 4  */ "4/5");
-	strings.append(/* Fec5_6 = 5  */ "5/6");
-	strings.append(/* Fec6_7 = 6  */ "6/7");
-	strings.append(/* Fec7_8 = 7  */ "7/8");
-	strings.append(/* Fec8_9 = 8  */ "8/9");
-	strings.append(/* FecAuto = 9 */ "AUTO");
+	strings.append(/* FecNone = 0  */ "NONE");
+	strings.append(/* Fec1_2 = 1   */ "1/2");
+	strings.append(/* Fec2_3 = 2   */ "2/3");
+	strings.append(/* Fec3_4 = 3   */ "3/4");
+	strings.append(/* Fec4_5 = 4   */ "4/5");
+	strings.append(/* Fec5_6 = 5   */ "5/6");
+	strings.append(/* Fec6_7 = 6   */ "6/7");
+	strings.append(/* Fec7_8 = 7   */ "7/8");
+	strings.append(/* Fec8_9 = 8   */ "8/9");
+	strings.append(/* FecAuto = 9  */ "AUTO");
+	strings.append(/* Fec1_3 = 10  */ "1/3");
+	strings.append(/* Fec1_4 = 11  */ "1/4");
+	strings.append(/* Fec2_5 = 12  */ "2/5");
+	strings.append(/* Fec3_5 = 13  */ "3/5");
+	strings.append(/* Fec9_10 = 14 */ "9/10");
 	return strings;
 }
 

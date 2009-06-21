@@ -45,15 +45,20 @@ public:
 	enum FecRate {
 		FecNone = 0,
 		Fec1_2 = 1,
+		Fec1_3 = 10,
+		Fec1_4 = 11,
 		Fec2_3 = 2,
+		Fec2_5 = 12,
 		Fec3_4 = 3,
+		Fec3_5 = 13,
 		Fec4_5 = 4,
 		Fec5_6 = 5,
 		Fec6_7 = 6,
 		Fec7_8 = 7,
 		Fec8_9 = 8,
+		Fec9_10 = 14,
 		FecAuto = 9,
-		FecRateMax = FecAuto
+		FecRateMax = Fec9_10
 	};
 
 	DvbTransponderBase() { }

@@ -445,12 +445,7 @@ void DvbDevice::frontendEvent()
 				autoTTransponder->fecRateHigh = DvbTTransponder::Fec7_8;
 				carry = false;
 				break;
-			case DvbTTransponder::Fec4_5:
-			case DvbTTransponder::Fec6_7:
-			case DvbTTransponder::Fec7_8:
-			case DvbTTransponder::Fec8_9:
-			case DvbTTransponder::FecNone:
-			case DvbTTransponder::FecAuto:
+			default:
 				autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
 				break;
 			}
