@@ -831,6 +831,14 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 			scanData.insert(qMakePair(DvbS2, name), transponders);
 
 			if (containsDvbS1) {
+				for (int i = 0; i < transponders.size(); ++i) {
+					if (transponders.at(i)->getTransmissionType() ==
+					    DvbTransponderBase::DvbS2) {
+						transponders.removeAt(i);
+						--i;
+					}
+				}
+
 				scanSources[DvbS].append(name);
 				scanData.insert(qMakePair(DvbS, name), transponders);
 			}
