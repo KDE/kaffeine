@@ -411,6 +411,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 void DvbScanDialog::dialogAccepted()
 {
 	manager->getChannelModel()->setChannels(channelModel->getChannels());
+	manager->getChannelModel()->saveChannels();
 }
 
 static bool localeAwareLessThan2(const QString &x, const QString &y)
