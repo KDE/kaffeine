@@ -3,7 +3,9 @@ Installing Kaffeine
 -------------------
 
 You need development headers for QT 4.4, Phonon 4.3 and KDE 4.2
-(minimum versions) and gettext for translations.
+(minimum versions) and gettext for translations (building Kaffeine doesn't
+require any phonon backend; but during runtime you have to use phonon-xine in
+order to watch DVB / ATSC).
 
 Create an empty build dir and do the following steps:
 # cmake <path/to/kaffeine/source/directory> <options>
