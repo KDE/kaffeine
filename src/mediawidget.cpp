@@ -642,8 +642,10 @@ void MediaWidget::mutedChanged(bool muted)
 {
 	if (muted) {
 		muteAction->setIcon(mutedIcon);
+		osdWidget->showText(i18nc("osd", "Mute On"), 1500);
 	} else {
 		muteAction->setIcon(unmutedIcon);
+		osdWidget->showText(i18nc("osd", "Mute Off"), 1500);
 	}
 }
 
