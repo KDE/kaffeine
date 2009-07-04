@@ -44,7 +44,7 @@ public:
 			return source < x.source;
 		}
 
-		if (transportStreamId < x.transportStreamId) {
+		if (transportStreamId != x.transportStreamId) {
 			return transportStreamId < x.transportStreamId;
 		}
 
