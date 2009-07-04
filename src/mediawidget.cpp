@@ -583,6 +583,7 @@ void MediaWidget::stop()
 {
 	mediaObject->stop();
 	stopDvb();
+	osdWidget->showText(i18nc("osd", "Stopped"), 1500);
 }
 
 void MediaWidget::next()
