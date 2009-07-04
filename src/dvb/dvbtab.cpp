@@ -387,7 +387,7 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::showEpgDialog()
 {
-	DvbEpgDialog dialog(dvbManager, getLiveChannel(), this);
+	DvbEpgDialog dialog(dvbManager, getLiveChannel()->name, this);
 	dialog.exec();
 }
 
@@ -617,7 +617,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		mediaWidget->updateDvbSubtitles(subtitles, 0);
 	}
 
-	liveStream->eitFilter = new DvbEitFilter(channel->source, dvbManager->getEpgModel());
+	liveStream->eitFilter = new DvbEitFilter(dvbManager, channel->source);
 	device->addPidFilter(0x0012, liveStream->eitFilter);
 
 	KConfigGroup(KGlobal::config(), "DVB").writeEntry("LastChannel", channel->name);

@@ -26,23 +26,30 @@
 #include "dvbsi.h"
 
 class QLabel;
+class QListView;
+class QStringListModel;
 class QTreeView;
-class DvbEpgChannelModel;
+class DvbEitEntry;
 
 class DvbEpgEntry
 {
 public:
-	QString source;
-	int networkId;
-	int transportStreamId;
-	int serviceId;
-
+	QString channel;
 	QDateTime begin;
 	QTime duration;
 	QDateTime end;
 	QString title;
 	QString subheading;
 	QString details;
+
+	bool operator<(const DvbEpgEntry &x) const
+	{
+		if (channel != x.channel) {
+			return channel < x.channel;
+		}
+
+		return begin < x.begin;
+	}
 };
 
 class DvbEpgModel : public QAbstractTableModel
@@ -57,9 +64,9 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 	void addEntry(const DvbEpgEntry &entry);
-	bool contains(const QSharedDataPointer<DvbChannel> &channel);
+	bool contains(const QString &channel) const;
 	void resetChannel();
-	void setChannel(const QSharedDataPointer<DvbChannel> &channel);
+	void setChannel(const QString &channel);
 	const DvbEpgEntry *getEntry(int row) const;
 
 private:
@@ -70,7 +77,7 @@ private:
 class DvbEitFilter : public DvbSectionFilter
 {
 public:
-	DvbEitFilter(const QString &source_, DvbEpgModel *model_);
+	DvbEitFilter(DvbManager *manager_, const QString &source_);
 	~DvbEitFilter();
 
 private:
@@ -78,24 +85,28 @@ private:
 
 	void processSection(const DvbSectionData &data);
 
-	QString source;
+	DvbManager *manager;
 	DvbEpgModel *model;
+	QString source;
+	QMap<DvbEitEntry, QString> channelMapping;
 };
 
 class DvbEpgDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbEpgDialog(DvbManager *manager, const QSharedDataPointer<DvbChannel> &currentChannel,
-		QWidget *parent);
+	DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, QWidget *parent);
 	~DvbEpgDialog();
 
 private slots:
+	void refresh();
 	void channelActivated(const QModelIndex &index);
 	void entryActivated(const QModelIndex &index);
 
 private:
-	DvbEpgChannelModel *channelModel;
+	DvbManager *manager;
+	QStringListModel *channelModel;
+	QListView *channelView;
 	DvbEpgModel *epgModel;
 	QTreeView *epgView;
 	QLabel *contentLabel;

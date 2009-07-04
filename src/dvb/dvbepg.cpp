@@ -23,136 +23,54 @@
 #include <QBoxLayout>
 #include <QLabel>
 #include <QListView>
+#include <QPushButton>
 #include <QScrollArea>
+#include <QStringListModel>
 #include <KLocale>
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 
-class DvbEpgChannelModel : public QAbstractListModel
+class DvbEitEntry
 {
 public:
-	DvbEpgChannelModel(const QList<QSharedDataPointer<DvbChannel> > &channels_,
-		QObject *parent);
-	~DvbEpgChannelModel();
+	QString source;
+	int transportStreamId;
+	int serviceId;
+	int networkId;
 
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
+	bool operator<(const DvbEitEntry &x) const
+	{
+		if (source != x.source) {
+			return source < x.source;
+		}
 
-	QSharedDataPointer<DvbChannel> getChannel(int row) const;
-	int indexOf(const QSharedDataPointer<DvbChannel> &channel) const;
+		if (transportStreamId < x.transportStreamId) {
+			return transportStreamId < x.transportStreamId;
+		}
 
-private:
-	QList<QSharedDataPointer<DvbChannel> > channels;
+		if (serviceId != x.serviceId) {
+			return serviceId < x.serviceId;
+		}
+
+		return (networkId != -1) && (x.networkId != -1) && (networkId < x.networkId);
+	}
 };
-
-static bool localeAwareLessThan(const QSharedDataPointer<DvbChannel> &x,
-	const QSharedDataPointer<DvbChannel> &y)
-{
-	return x->name.localeAwareCompare(y->name) < 0;
-}
-
-DvbEpgChannelModel::DvbEpgChannelModel(const QList<QSharedDataPointer<DvbChannel> > &channels_,
-	QObject *parent) : QAbstractListModel(parent), channels(channels_)
-{
-	qSort(channels.begin(), channels.end(), localeAwareLessThan);
-}
-
-DvbEpgChannelModel::~DvbEpgChannelModel()
-{
-}
-
-int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return channels.size();
-}
-
-QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
-{
-	if (!index.isValid() || (role != Qt::DisplayRole) || (index.column() != 0) ||
-	    (index.row() >= channels.size())) {
-		return QVariant();
-	}
-
-	return channels.at(index.row())->name;
-}
-
-QSharedDataPointer<DvbChannel> DvbEpgChannelModel::getChannel(int row) const
-{
-	return channels.at(row);
-}
-
-int DvbEpgChannelModel::indexOf(const QSharedDataPointer<DvbChannel> &channel) const
-{
-	return channels.indexOf(channel);
-}
 
 class DvbEpgEntryLess
 {
 public:
-	bool operator()(const DvbEpgEntry &x, const DvbEpgEntry &y);
-	bool operator()(const DvbEpgEntry &entry, const QSharedDataPointer<DvbChannel> &channel);
-	bool operator()(const QSharedDataPointer<DvbChannel> &channel, const DvbEpgEntry &entry);
+	bool operator()(const DvbEpgEntry &x, const QString &y);
+	bool operator()(const QString &x, const DvbEpgEntry &y);
 };
 
-bool DvbEpgEntryLess::operator()(const DvbEpgEntry &x, const DvbEpgEntry &y)
+bool DvbEpgEntryLess::operator()(const DvbEpgEntry &x, const QString &y)
 {
-	if (x.source != y.source) {
-		return x.source < y.source;
-	}
-
-	if (x.serviceId != y.serviceId) {
-		return x.serviceId < y.serviceId;
-	}
-
-	if (x.transportStreamId != y.transportStreamId) {
-		return x.transportStreamId < y.transportStreamId;
-	}
-
-	if (x.networkId != y.networkId) {
-		return x.networkId < y.networkId;
-	}
-
-	return x.begin < y.begin;
+	return x.channel < y;
 }
 
-bool DvbEpgEntryLess::operator()(const DvbEpgEntry &entry,
-	const QSharedDataPointer<DvbChannel> &channel)
+bool DvbEpgEntryLess::operator()(const QString &x, const DvbEpgEntry &y)
 {
-	if (entry.source != channel->source) {
-		return entry.source < channel->source;
-	}
-
-	if (entry.serviceId != channel->serviceId) {
-		return entry.serviceId < channel->serviceId;
-	}
-
-	if (entry.transportStreamId != channel->transportStreamId) {
-		return entry.transportStreamId < channel->transportStreamId;
-	}
-
-	return (entry.networkId < channel->networkId) && (channel->networkId != -1);
-}
-
-bool DvbEpgEntryLess::operator()(const QSharedDataPointer<DvbChannel> &channel,
-	const DvbEpgEntry &entry)
-{
-	if (channel->source != entry.source) {
-		return channel->source < entry.source;
-	}
-
-	if (channel->serviceId != entry.serviceId) {
-		return channel->serviceId < entry.serviceId;
-	}
-
-	if (channel->transportStreamId != entry.transportStreamId) {
-		return channel->transportStreamId < entry.transportStreamId;
-	}
-
-	return (channel->networkId < entry.networkId) && (channel->networkId != -1);
+	return x < y.channel;
 }
 
 DvbEpgModel::DvbEpgModel(QObject *parent) : QAbstractTableModel(parent)
@@ -222,27 +140,22 @@ QVariant DvbEpgModel::headerData(int section, Qt::Orientation orientation, int r
 
 void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
-	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries.constBegin(),
-		allEntries.constEnd(), entry, DvbEpgEntryLess());
+	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries, entry);
 
 	if ((it != allEntries.constEnd()) &&
-	    (it->source == entry.source) &&
-	    (it->networkId == entry.networkId) &&
-	    (it->transportStreamId == entry.transportStreamId) &&
-	    (it->serviceId == entry.serviceId) &&
+	    (it->channel == entry.channel) &&
 	    (it->begin == entry.begin)) {
 		// FIXME handle overlap case better
 		return;
 	}
 
 	allEntries.insert(it - allEntries.constBegin(), entry);
-	// FIXME update filtered entries as well?
 }
 
-bool DvbEpgModel::contains(const QSharedDataPointer<DvbChannel> &channel)
+bool DvbEpgModel::contains(const QString &channel) const
 {
-	return (qBinaryFind(allEntries.constBegin(), allEntries.constEnd(), channel,
-		DvbEpgEntryLess()) != allEntries.constEnd());
+	return qBinaryFind(allEntries.constBegin(), allEntries.constEnd(), channel,
+		DvbEpgEntryLess()) != allEntries.constEnd();
 }
 
 void DvbEpgModel::resetChannel()
@@ -251,12 +164,12 @@ void DvbEpgModel::resetChannel()
 	reset();
 }
 
-void DvbEpgModel::setChannel(const QSharedDataPointer<DvbChannel> &channel)
+void DvbEpgModel::setChannel(const QString &channel)
 {
 	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries.constBegin(),
 		allEntries.constEnd(), channel, DvbEpgEntryLess());
-	QList<DvbEpgEntry>::const_iterator end = qUpperBound(allEntries.constBegin(),
-		allEntries.constEnd(), channel, DvbEpgEntryLess());
+	QList<DvbEpgEntry>::const_iterator end = qUpperBound(it, allEntries.constEnd(), channel,
+		DvbEpgEntryLess());
 
 	QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
 
@@ -279,9 +192,22 @@ const DvbEpgEntry *DvbEpgModel::getEntry(int row) const
 	return filteredEntries.at(row);
 }
 
-DvbEitFilter::DvbEitFilter(const QString &source_, DvbEpgModel *model_) : source(source_),
-	model(model_)
+DvbEitFilter::DvbEitFilter(DvbManager *manager_, const QString &source_) : manager(manager_),
+	source(source_)
 {
+	model = manager->getEpgModel();
+
+	foreach (const QSharedDataPointer<DvbChannel> &channel,
+		 manager->getChannelModel()->getChannels()) {
+		DvbEitEntry entry;
+		entry.source = channel->source;
+		entry.transportStreamId = channel->transportStreamId;
+		entry.serviceId = channel->serviceId;
+		entry.networkId = channel->networkId;
+		channelMapping.insert(entry, channel->name);
+	}
+
+	// FIXME monitor the channel model?
 }
 
 DvbEitFilter::~DvbEitFilter()
@@ -315,17 +241,25 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 		return;
 	}
 
-	int serviceId = eitSection.serviceId();
 	int transportStreamId = eitSection.transportStreamId();
+	int serviceId = eitSection.serviceId();
 	int networkId = eitSection.originalNetworkId();
 
 	for (DvbEitSectionEntry entry = eitSection.entries(); entry.isValid(); entry.advance()) {
-		DvbEpgEntry epgEntry;
-		epgEntry.source = source;
-		epgEntry.networkId = networkId;
-		epgEntry.transportStreamId = transportStreamId;
-		epgEntry.serviceId = serviceId;
+		DvbEitEntry eitEntry;
+		eitEntry.source = source;
+		eitEntry.transportStreamId = transportStreamId;
+		eitEntry.serviceId = serviceId;
+		eitEntry.networkId = networkId;
 
+		QString channel = channelMapping.value(eitEntry);
+
+		if (channel.isEmpty()) {
+			continue;
+		}
+
+		DvbEpgEntry epgEntry;
+		epgEntry.channel = channel;
 		epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
 					   bcdToTime(entry.startTime()), Qt::UTC);
 		epgEntry.duration = bcdToTime(entry.duration());
@@ -363,8 +297,8 @@ void DvbEitFilter::processSection(const DvbSectionData &data)
 	}
 }
 
-DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
-	const QSharedDataPointer<DvbChannel> &currentChannel, QWidget *parent) : KDialog(parent)
+DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, QWidget *parent) :
+	KDialog(parent), manager(manager_)
 {
 	setButtons(KDialog::Close);
 	setCaption(i18n("Program Guide"));
@@ -374,19 +308,13 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 
 	QBoxLayout *boxLayout = new QVBoxLayout();
 
-	epgModel = manager->getEpgModel();
-	QList<QSharedDataPointer<DvbChannel> > channels;
+	QPushButton *pushButton = new QPushButton(KIcon("view-refresh"), i18nc("epg", "Refresh"),
+		this);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(refresh()));
+	boxLayout->addWidget(pushButton);
 
-	foreach (const QSharedDataPointer<DvbChannel> &channel,
-		 manager->getChannelModel()->getChannels()) {
-		if (epgModel->contains(channel)) {
-			channels.append(channel);
-		}
-	}
-
-	channelModel = new DvbEpgChannelModel(channels, this);
-
-	QListView *channelView = new QListView(widget);
+	channelModel = new QStringListModel(this);
+	channelView = new QListView(widget);
 	channelView->setModel(channelModel);
 	channelView->setMaximumWidth(200);
 	connect(channelView, SIGNAL(activated(QModelIndex)),
@@ -396,6 +324,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 
 	boxLayout = new QVBoxLayout();
 
+	epgModel = manager->getEpgModel();
 	epgView = new QTreeView(widget);
 	epgView->setMinimumWidth(450);
 	epgView->setModel(epgModel);
@@ -416,7 +345,9 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager,
 	boxLayout->addWidget(scrollArea);
 	mainLayout->addLayout(boxLayout);
 
-	int currentRow = channelModel->indexOf(currentChannel);
+	refresh();
+
+	int currentRow = channelModel->stringList().indexOf(currentChannel);
 
 	if (currentRow != -1) {
 		QModelIndex index = channelModel->index(currentRow, 0);
@@ -433,15 +364,46 @@ DvbEpgDialog::~DvbEpgDialog()
 {
 }
 
-void DvbEpgDialog::channelActivated(const QModelIndex &index)
+static bool localeAwareLessThan(const QString &x, const QString &y)
 {
-	QSharedDataPointer<DvbChannel> channel = channelModel->getChannel(index.row());
+	return x.localeAwareCompare(y) < 0;
+}
 
-	if (channel == NULL) {
-		return;
+void DvbEpgDialog::refresh()
+{
+	QString currentChannel;
+	QModelIndex currentIndex = channelView->currentIndex();
+
+	if (currentIndex.isValid()) {
+		currentChannel = channelModel->stringList().at(currentIndex.row());
 	}
 
-	epgModel->setChannel(channel);
+	QStringList channels;
+
+	foreach (const QSharedDataPointer<DvbChannel> &channel,
+		 manager->getChannelModel()->getChannels()) {
+		if (epgModel->contains(channel->name)) {
+			channels.append(channel->name);
+		}
+	}
+
+	qSort(channels.begin(), channels.end(), localeAwareLessThan);
+	channelModel->setStringList(channels);
+
+	if (!currentChannel.isEmpty()) {
+		int index = channelModel->stringList().indexOf(currentChannel);
+
+		if (index != -1) {
+			currentIndex = channelModel->index(index, 0);
+			channelView->setCurrentIndex(currentIndex);
+			channelActivated(currentIndex);
+		}
+	}
+}
+
+void DvbEpgDialog::channelActivated(const QModelIndex &index)
+{
+	epgModel->setChannel(channelModel->stringList().at(index.row()));
 	epgView->resizeColumnToContents(0);
 	epgView->resizeColumnToContents(1);
 
