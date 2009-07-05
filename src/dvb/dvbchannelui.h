@@ -59,6 +59,8 @@ public:
 	void updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel);
 
 private:
+	QString findUniqueName(const QSet<QString> &names, const QString &name);
+
 	QList<QSharedDataPointer<DvbChannel> > channels;
 };
 

@@ -277,31 +277,36 @@ void DvbChannelModel::setChannels(const QList<QSharedDataPointer<DvbChannel> > &
 
 void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list)
 {
-	QBitArray numbers(2 * channels.size());
+	QSet<QString> names;
+	QSet<int> numbers;
 
 	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
-		int number = channel->number;
-
-		if (number >= numbers.size()) {
-			numbers.resize(2 * (number + 1));
-		}
-
-		numbers.setBit(number);
+		names.insert(channel->name);
+		numbers.insert(channel->number);
 	}
-
-	int candidate = 1;
 
 	beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
 
+	int number = 1;
+
 	foreach (const QSharedDataPointer<DvbChannel> &channel, list) {
-		while ((candidate < numbers.size()) && numbers.testBit(candidate)) {
-			++candidate;
+		QString name = channel->name;
+
+		if (names.contains(name)) {
+			name = findUniqueName(names, name);
+		}
+
+		names.insert(name);
+
+		while (numbers.contains(number)) {
+			++number;
 		}
 
 		channels.append(channel);
-		channels.last()->number = candidate;
+		channels.last()->name = name;
+		channels.last()->number = number;
 
-		++candidate;
+		++number;
 	}
 
 	endInsertRows();
@@ -309,41 +314,61 @@ void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> 
 
 void DvbChannelModel::updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel)
 {
+	QString oldName = channels.at(pos)->name;
+	QString newName = channel->name;
 	int oldNumber = channels.at(pos)->number;
 	int newNumber = channel->number;
 
+	channels.replace(pos, channel);
+	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
+
+	if (oldName != newName) {
+		QSet<QString> names;
+		int affectedPos = -1;
+
+		for (int i = 0; i < channels.size(); ++i) {
+			QString name = channels.at(i)->name;
+
+			if ((i != pos) && (name == newName)) {
+				affectedPos = i;
+			}
+
+			names.insert(name);
+		}
+
+		if (affectedPos != -1) {
+			channels[affectedPos]->name = findUniqueName(names, newName);
+			QModelIndex modelIndex = index(affectedPos, 0);
+			emit dataChanged(modelIndex, modelIndex);
+		}
+	}
+
 	if (oldNumber != newNumber) {
-		QBitArray numbers(2 * channels.size());
+		QSet<int> numbers;
 		int affectedPos = -1;
 
 		for (int i = 0; i < channels.size(); ++i) {
 			int number = channels.at(i)->number;
 
-			if (number > newNumber) {
-				if (number >= numbers.size()) {
-					numbers.resize(2 * (number + 1));
-				}
-
-				numbers.setBit(number);
-			} else if (number == newNumber) {
+			if ((i != pos) && (number == newNumber)) {
 				affectedPos = i;
 			}
+
+			numbers.insert(number);
 		}
 
 		if (affectedPos != -1) {
-			int candidate = newNumber + 1;
+			int number = newNumber + 1;
 
-			while ((candidate < numbers.size()) && numbers.testBit(candidate)) {
-				++candidate;
+			while (numbers.contains(number)) {
+				++number;
 			}
 
-			channels[affectedPos]->number = candidate;
-			emit dataChanged(index(affectedPos, 1), index(affectedPos, 1));
+			channels[affectedPos]->number = number;
+			QModelIndex modelIndex = index(affectedPos, 1);
+			emit dataChanged(modelIndex, modelIndex);
 		}
 	}
-
-	channels.replace(pos, channel);
-	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
 }
 
 void DvbChannelModel::loadChannels()
@@ -358,6 +383,9 @@ void DvbChannelModel::loadChannels()
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
+	QSet<QString> names;
+	QSet<int> numbers;
+
 	while (!stream.atEnd()) {
 		DvbChannel *channel = new DvbChannel;
 		channel->readChannel(stream);
@@ -367,6 +395,18 @@ void DvbChannelModel::loadChannels()
 			delete channel;
 			break;
 		}
+
+		if (names.contains(channel->name)) {
+			channel->name = findUniqueName(names, channel->name);
+		}
+
+		names.insert(channel->name);
+
+		while (numbers.contains(channel->number)) {
+			++channel->number;
+		}
+
+		numbers.insert(channel->number);
 
 		channels.append(QSharedDataPointer<DvbChannel>(channel));
 	}
@@ -387,6 +427,29 @@ void DvbChannelModel::saveChannels() const
 	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
 		channel->writeChannel(stream);
 	}
+}
+
+QString DvbChannelModel::findUniqueName(const QSet<QString> &names, const QString &name)
+{
+	QString baseName = name;
+	int index = baseName.lastIndexOf('-');
+
+	if (index > 0) {
+		QString suffixString = baseName.mid(index + 1);
+
+		if (suffixString == QString::number(suffixString.toInt())) {
+			baseName.truncate(index);
+		}
+	}
+
+	QString newName = baseName;
+	int suffix = 0;
+
+	while (names.contains(newName)) {
+		newName = baseName + '-' + QString::number(++suffix);
+	}
+
+	return newName;
 }
 
 DvbChannelView::DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent) :
