@@ -251,6 +251,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 		this, SLOT(changeAudioChannel(int)));
 	connect(mediaWidget, SIGNAL(changeDvbSubtitle(int)), this, SLOT(changeSubtitle(int)));
 	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
+	connect(mediaWidget, SIGNAL(osdKeyPressed(int)), this, SLOT(osdKeyPressed(int)));
 
 	dvbManager = new DvbManager(this);
 
@@ -335,6 +336,10 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	QTimer *timer = new QTimer(this);
 	timer->start(30000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(cleanTimeShiftFiles()));
+
+	osdChannelTimer = new QTimer(this);
+	osdChannelTimer->setInterval(1500);
+	connect(osdChannelTimer, SIGNAL(timeout()), this, SLOT(tuneOsdChannel()));
 }
 
 DvbTab::~DvbTab()
@@ -514,6 +519,28 @@ void DvbTab::liveStopped()
 	delete liveStream->eitFilter;
 	delete liveStream;
 	liveStream = NULL;
+}
+
+void DvbTab::osdKeyPressed(int key)
+{
+	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
+		osdChannel += QString::number(key - Qt::Key_0);
+		osdChannelTimer->start();
+		mediaWidget->showOsdText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
+	}
+}
+
+void DvbTab::tuneOsdChannel()
+{
+	QSharedDataPointer<DvbChannel> channel =
+		dvbManager->getChannelModel()->channelForNumber(osdChannel.toInt());
+
+	osdChannelTimer->stop();
+	osdChannel.clear();
+
+	if (channel != NULL) {
+		playChannel(channel);
+	}
 }
 
 void DvbTab::fastRetuneTimeout()

@@ -64,6 +64,8 @@ public:
 	void playVideoCd();
 	void playDvd();
 
+	void showOsdText(const QString &text, int duration); // duration: msecs
+
 	void playDvb(const QString &channelName); // starts dvb mode
 	void writeDvbData(const QByteArray &data);
 
@@ -92,6 +94,7 @@ signals:
 	void changeDvbAudioChannel(int index);
 	void changeDvbSubtitle(int index);
 	void dvbStopped();
+	void osdKeyPressed(int key);
 
 private slots:
 	void stateChanged(Phonon::State state);
@@ -141,6 +144,7 @@ private:
 	void mouseDoubleClickEvent(QMouseEvent *);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
+	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void wheelEvent(QWheelEvent *event);
 

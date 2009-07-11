@@ -423,6 +423,11 @@ void MediaWidget::playDvd()
 	mediaObject->play();
 }
 
+void MediaWidget::showOsdText(const QString &text, int duration)
+{
+	osdWidget->showText(text, duration);
+}
+
 void MediaWidget::playDvb(const QString &channelName)
 {
 	DvbFeed *feed = new DvbFeed();
@@ -977,6 +982,17 @@ void MediaWidget::dropEvent(QDropEvent *event)
 	if (mimeData->hasUrls()) {
 		emit playlistUrlsDropped(KUrl::List::fromMimeData(mimeData));
 		event->acceptProposedAction();
+	}
+}
+
+void MediaWidget::keyPressEvent(QKeyEvent *event)
+{
+	int key = event->key();
+
+	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
+		emit osdKeyPressed(key);
+	} else {
+		QWidget::keyPressEvent(event);
 	}
 }
 

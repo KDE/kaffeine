@@ -264,6 +264,17 @@ QSharedDataPointer<DvbChannel> DvbChannelModel::channelForName(const QString &na
 	return QSharedDataPointer<DvbChannel>();
 }
 
+QSharedDataPointer<DvbChannel> DvbChannelModel::channelForNumber(int number) const
+{
+	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
+		if (channel->number == number) {
+			return channel;
+		}
+	}
+
+	return QSharedDataPointer<DvbChannel>();
+}
+
 QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
 {
 	return channels;

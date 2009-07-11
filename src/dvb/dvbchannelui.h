@@ -50,6 +50,7 @@ public:
 
 	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
 	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;
+	QSharedDataPointer<DvbChannel> channelForNumber(int number) const;
 
 	/*
 	 * these two functions automatically adjust the channel numbers

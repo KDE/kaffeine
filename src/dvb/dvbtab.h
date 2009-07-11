@@ -70,6 +70,8 @@ private slots:
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
 	void liveStopped();
+	void osdKeyPressed(int key);
+	void tuneOsdChannel();
 	void fastRetuneTimeout();
 	void cleanTimeShiftFiles();
 
@@ -84,6 +86,8 @@ private:
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
 
+	QString osdChannel;
+	QTimer *osdChannelTimer;
 	QTimer *fastRetuneTimer;
 	DvbLiveStream *liveStream;
 
