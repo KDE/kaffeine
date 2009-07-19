@@ -44,8 +44,8 @@ QString PlaylistTrack::getTitle() const
 	return title;
 }
 
-PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
-	QAbstractTableModel(parent), mediaWidget(mediaWidget_), currentTrack(-1), repeat(false)
+PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, Playlist *playlist, QObject *parent) :
+	QAbstractTableModel(parent), mediaWidget(mediaWidget_), repeat(false)
 {
 	setSupportedDragActions(Qt::MoveAction);
 
@@ -54,6 +54,9 @@ PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, QObject *parent) :
 	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
 	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<KUrl>)),
 		this, SLOT(appendUrls(QList<KUrl>)));
+
+	visiblePlaylist = playlist;
+	activePlaylist = playlist;
 }
 
 PlaylistModel::~PlaylistModel()
@@ -75,17 +78,17 @@ int PlaylistModel::rowCount(const QModelIndex &parent) const
 		return 0;
 	}
 
-	return tracks.size();
+	return visiblePlaylist->tracks.size();
 }
 
 QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || (index.row() >= tracks.size())) {
+	if (!index.isValid() || (index.row() >= visiblePlaylist->tracks.size())) {
 		return QVariant();
 	}
 
 	if (role == Qt::DecorationRole) {
-		if ((index.row() == currentTrack) && (index.column() == 0)) {
+		if ((index.row() == visiblePlaylist->currentTrack) && (index.column() == 0)) {
 			return KIcon("arrow-right");
 		}
 	} else if (role == Qt::DisplayRole) {
@@ -93,7 +96,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 		case 0:
 			return index.row() + 1;
 		case 1:
-			return tracks.at(index.row()).getTitle();
+			return visiblePlaylist->tracks.at(index.row()).getTitle();
 		}
 	}
 
@@ -152,7 +155,7 @@ QMimeData *PlaylistModel::mimeData(const QModelIndexList &indexes) const
 	KUrl::List urls;
 
 	foreach (int row, rows) {
-		urls.append(tracks.at(row).getUrl());
+		urls.append(visiblePlaylist->tracks.at(row).getUrl());
 	}
 
 	QMimeData *mimeData = new QMimeData();
@@ -173,7 +176,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	} else if (parent.isValid()) {
 		beginRow = parent.row();
 	} else {
-		beginRow = tracks.size();
+		beginRow = visiblePlaylist->tracks.size();
 	}
 
 	if (!data->hasUrls()) {
@@ -189,13 +192,13 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	beginInsertRows(QModelIndex(), beginRow, beginRow + newTracks.size() - 1);
 
 	for (int i = 0; i < newTracks.size(); ++i) {
-		tracks.insert(beginRow + i, newTracks.at(i));
+		visiblePlaylist->tracks.insert(beginRow + i, newTracks.at(i));
 	}
 
 	endInsertRows();
 
-	if (beginRow <= currentTrack) {
-		currentTrack += newTracks.size();
+	if (visiblePlaylist->currentTrack >= beginRow) {
+		visiblePlaylist->currentTrack += newTracks.size();
 	}
 
 	return true;
@@ -209,14 +212,14 @@ void PlaylistModel::appendUrls(const QList<KUrl> &urls, bool enqueue)
 		return;
 	}
 
-	int oldTracksSize = tracks.size();
+	int oldTracksSize = visiblePlaylist->tracks.size();
 
-	beginInsertRows(QModelIndex(), tracks.size(), tracks.size() + newTracks.size() - 1);
-	tracks += newTracks;
+	beginInsertRows(QModelIndex(), visiblePlaylist->tracks.size(), visiblePlaylist->tracks.size() + newTracks.size() - 1);
+	visiblePlaylist->tracks += newTracks;
 	endInsertRows();
 
 	if ((oldTracksSize == 0) || !enqueue) {
-		playTrack(oldTracksSize);
+		playTrack(visiblePlaylist, oldTracksSize);
 	}
 }
 
@@ -229,14 +232,14 @@ bool PlaylistModel::removeRows(int row, int count, const QModelIndex &parent)
 	int end = row + count;
 
 	beginRemoveRows(QModelIndex(), row, end - 1);
-	tracks.erase(tracks.begin() + row, tracks.begin() + end);
+	visiblePlaylist->tracks.erase(visiblePlaylist->tracks.begin() + row, visiblePlaylist->tracks.begin() + end);
 	endRemoveRows();
 
-	if (row <= currentTrack) {
-		if (end <= currentTrack) {
-			currentTrack -= count;
+	if (visiblePlaylist->currentTrack >= row) {
+		if (visiblePlaylist->currentTrack >= end) {
+			visiblePlaylist->currentTrack -= count;
 		} else {
-			playTrack(-1);
+			playTrack(visiblePlaylist, -1);
 		}
 	}
 
@@ -263,26 +266,26 @@ static bool playlistTitleGreater(const PlaylistTrack &x, const PlaylistTrack &y)
 
 void PlaylistModel::sort(int column, Qt::SortOrder order)
 {
-	if ((tracks.size() < 2) || (column != 1)) {
+	if ((visiblePlaylist->tracks.size() < 2) || (column != 1)) {
 		return;
 	}
 
 	emit layoutAboutToBeChanged();
 
-	for (int i = 0; i < tracks.size(); ++i) {
-		tracks[i].index = i;
+	for (int i = 0; i < visiblePlaylist->tracks.size(); ++i) {
+		visiblePlaylist->tracks[i].index = i;
 	}
 
 	if (order == Qt::AscendingOrder) {
-		qSort(tracks.begin(), tracks.end(), playlistTitleLessThan);
+		qSort(visiblePlaylist->tracks.begin(), visiblePlaylist->tracks.end(), playlistTitleLessThan);
 	} else {
-		qSort(tracks.begin(), tracks.end(), playlistTitleGreater);
+		qSort(visiblePlaylist->tracks.begin(), visiblePlaylist->tracks.end(), playlistTitleGreater);
 	}
 
 	QMap<int, int> mapping;
 
-	for (int i = 0; i < tracks.size(); ++i) {
-		mapping.insert(tracks.at(i).index, i);
+	for (int i = 0; i < visiblePlaylist->tracks.size(); ++i) {
+		mapping.insert(visiblePlaylist->tracks.at(i).index, i);
 	}
 
 	QModelIndexList oldIndexes = persistentIndexList();
@@ -294,47 +297,55 @@ void PlaylistModel::sort(int column, Qt::SortOrder order)
 
 	changePersistentIndexList(oldIndexes, newIndexes);
 
-	if (currentTrack != -1) {
-		currentTrack = mapping.value(currentTrack);
+	if (visiblePlaylist->currentTrack != -1) {
+		visiblePlaylist->currentTrack = mapping.value(visiblePlaylist->currentTrack);
 	}
 
 	emit layoutChanged();
 }
 
-QList<PlaylistTrack> PlaylistModel::getPlaylist() const
+void PlaylistModel::setPlaylist(Playlist *playlist)
 {
-	return tracks;
+	if (visiblePlaylist != playlist) {
+		visiblePlaylist = playlist;
+		reset();
+	}
 }
 
-void PlaylistModel::setPlaylist(const QList<PlaylistTrack> &tracks_)
+void PlaylistModel::setCurrentPlaylist(Playlist *playlist)
 {
-	playTrack(-1);
-	tracks = tracks_;
-	reset();
+	if (visiblePlaylist != playlist) {
+		visiblePlaylist = playlist;
+		reset();
+	}
+
+	if (activePlaylist != playlist) {
+		playTrack(playlist, -1);
+	}
 }
 
 void PlaylistModel::playPreviousTrack()
 {
-	playTrack(currentTrack - 1);
+	playTrack(activePlaylist, activePlaylist->currentTrack - 1);
 }
 
 void PlaylistModel::playCurrentTrack()
 {
-	if (currentTrack != -1) {
-		playTrack(currentTrack);
+	if (activePlaylist->currentTrack != -1) {
+		playTrack(activePlaylist, activePlaylist->currentTrack);
 	} else {
-		playTrack(0);
+		playTrack(visiblePlaylist, 0);
 	}
 }
 
 void PlaylistModel::playNextTrack()
 {
-	playTrack(currentTrack + 1);
+	playTrack(activePlaylist, activePlaylist->currentTrack + 1);
 }
 
 void PlaylistModel::playTrack(const QModelIndex &index)
 {
-	playTrack(index.row());
+	playTrack(visiblePlaylist, index.row());
 }
 
 void PlaylistModel::repeatPlaylist(bool repeat_)
@@ -349,7 +360,7 @@ static bool playlistIndexLess(const PlaylistTrack &x, const PlaylistTrack &y)
 
 void PlaylistModel::shufflePlaylist()
 {
-	if (tracks.size() < 2) {
+	if (visiblePlaylist->tracks.size() < 2) {
 		return;
 	}
 
@@ -357,19 +368,19 @@ void PlaylistModel::shufflePlaylist()
 
 	QList<int> remainingIndexes;
 
-	for (int i = 0; i < tracks.size(); ++i) {
+	for (int i = 0; i < visiblePlaylist->tracks.size(); ++i) {
 		remainingIndexes.append(i);
 	}
 
 	QMap<int, int> mapping;
 
-	for (int i = 0; i < tracks.size(); ++i) {
+	for (int i = 0; i < visiblePlaylist->tracks.size(); ++i) {
 		int index = remainingIndexes.takeAt(qrand() % remainingIndexes.size());
-		tracks[i].index = index;
+		visiblePlaylist->tracks[i].index = index;
 		mapping.insert(i, index);
 	}
 
-	qSort(tracks.begin(), tracks.end(), playlistIndexLess);
+	qSort(visiblePlaylist->tracks.begin(), visiblePlaylist->tracks.end(), playlistIndexLess);
 
 	QModelIndexList oldIndexes = persistentIndexList();
 	QModelIndexList newIndexes;
@@ -380,8 +391,8 @@ void PlaylistModel::shufflePlaylist()
 
 	changePersistentIndexList(oldIndexes, newIndexes);
 
-	if (currentTrack != -1) {
-		currentTrack = mapping.value(currentTrack);
+	if (visiblePlaylist->currentTrack != -1) {
+		visiblePlaylist->currentTrack = mapping.value(visiblePlaylist->currentTrack);
 	}
 
 	emit layoutChanged();
@@ -389,10 +400,10 @@ void PlaylistModel::shufflePlaylist()
 
 void PlaylistModel::clearPlaylist()
 {
-	tracks.clear();
+	visiblePlaylist->tracks.clear();
 
-	if (currentTrack != -1) {
-		playTrack(-1);
+	if (visiblePlaylist->currentTrack != -1) {
+		playTrack(visiblePlaylist, -1);
 	}
 
 	reset();
@@ -425,36 +436,41 @@ QList<PlaylistTrack> PlaylistModel::processUrls(const QList<KUrl> &urls)
 	return newTracks;
 }
 
-void PlaylistModel::playTrack(int track)
+void PlaylistModel::playTrack(Playlist *playlist, int track)
 {
+	Playlist *oldPlaylist = activePlaylist;
+	activePlaylist = playlist;
+
 	if (track < 0) {
 		track = -1;
 	}
 
-	if (track >= tracks.size()) {
-		if (!repeat || tracks.isEmpty()) {
+	if (track >= activePlaylist->tracks.size()) {
+		if (!repeat || activePlaylist->tracks.isEmpty()) {
 			track = -1;
 		} else {
 			track = 0;
 		}
 	}
 
-	if (track != currentTrack) {
-		int oldTrack = currentTrack;
-		currentTrack = track;
-
-		if (oldTrack != -1) {
-			emit dataChanged(index(oldTrack, 0), index(oldTrack, 0));
-		}
-
-		if (track != -1) {
-			emit dataChanged(index(track, 0), index(track, 0));
-		}
+	if ((oldPlaylist == visiblePlaylist) && (visiblePlaylist->currentTrack != -1)) {
+		QModelIndex modelIndex = index(visiblePlaylist->currentTrack, 0);
+		emit dataChanged(modelIndex, modelIndex);
 	}
 
-	if (currentTrack != -1) {
-		mediaWidget->play(tracks.at(currentTrack).getUrl());
+	oldPlaylist->currentTrack = -1;
+	activePlaylist->currentTrack = track;
+
+	if ((activePlaylist == visiblePlaylist) && (track != -1)) {
+		QModelIndex modelIndex = index(track, 0);
+		emit dataChanged(modelIndex, modelIndex);
+	}
+
+	if (track != -1) {
+		mediaWidget->play(activePlaylist->tracks.at(track).getUrl());
+		emit currentPlaylistChanged(activePlaylist);
 	} else {
 		mediaWidget->stop();
+		emit currentPlaylistChanged(NULL);
 	}
 }

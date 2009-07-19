@@ -28,6 +28,7 @@ class KActionCollection;
 class KMenu;
 class KUrl;
 class MediaWidget;
+class Playlist;
 class PlaylistBrowserModel;
 class PlaylistBrowserView;
 class PlaylistModel;
@@ -47,6 +48,30 @@ protected:
 	void keyPressEvent(QKeyEvent *event);
 };
 
+class PlaylistBrowserModel : public QAbstractListModel
+{
+	Q_OBJECT
+public:
+	PlaylistBrowserModel(PlaylistModel *playlistModel_, QObject *parent);
+	~PlaylistBrowserModel();
+
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+	bool setData(const QModelIndex &index, const QVariant &value, int role);
+
+	void append(Playlist *playlist);
+	Playlist *getPlaylist(int row) const;
+
+private slots:
+	void setCurrentPlaylist(Playlist *playlist);
+
+private:
+	PlaylistModel *playlistModel;
+	QList<Playlist *> playlists;
+	int currentPlaylist;
+};
+
 class PlaylistTab : public TabBase
 {
 	Q_OBJECT
@@ -59,6 +84,7 @@ public:
 private slots:
 	void newPlaylist();
 	void removePlaylist();
+	void savePlaylist();
 	void playlistActivated(const QModelIndex &index);
 
 private:
@@ -68,7 +94,6 @@ private:
 	QLayout *mediaLayout;
 	PlaylistBrowserModel *playlistBrowserModel;
 	PlaylistBrowserView *playlistBrowserView;
-	int currentPlaylist;
 	PlaylistModel *playlistModel;
 	PlaylistView *playlistView;
 };

@@ -25,6 +25,7 @@
 #include <KUrl>
 
 class MediaWidget;
+class Playlist;
 
 class PlaylistTrack
 {
@@ -42,11 +43,49 @@ private:
 	QString title;
 };
 
+class Playlist
+{
+public:
+	explicit Playlist(const QString &name_) : currentTrack(-1), name(name_) { }
+	~Playlist() { }
+
+	static Playlist *readPLSFile(const QString &path);
+	static Playlist *readM3UFile(const QString &path);
+	static Playlist *readXSPFFile(const QString &path);
+
+	QString getName() const
+	{
+		return name;
+	}
+
+	void setName(const QString &name_)
+	{
+		name = name_;
+	}
+
+	KUrl getUrl() const
+	{
+		return url;
+	}
+
+	void setUrl(const KUrl &url_)
+	{
+		url = url_;
+	}
+
+	QList<PlaylistTrack> tracks;
+	int currentTrack;
+
+private:
+	QString name;
+	KUrl url;
+};
+
 class PlaylistModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	PlaylistModel(MediaWidget *mediaWidget_, QObject *parent);
+	PlaylistModel(MediaWidget *mediaWidget_, Playlist *playlist, QObject *parent);
 	~PlaylistModel();
 
 	int columnCount(const QModelIndex &parent) const;
@@ -62,8 +101,11 @@ public:
 	bool removeRows(int row, int count, const QModelIndex &parent);
 	void sort(int column, Qt::SortOrder order);
 
-	QList<PlaylistTrack> getPlaylist() const;
-	void setPlaylist(const QList<PlaylistTrack> &tracks_);
+	void setPlaylist(Playlist *playlist);
+	void setCurrentPlaylist(Playlist *playlist);
+
+signals:
+	void currentPlaylistChanged(Playlist *playlist);
 
 public slots:
 	void appendUrls(const QList<KUrl> &urls, bool enqueue = true);
@@ -78,11 +120,11 @@ public slots:
 private:
 	static QList<PlaylistTrack> processUrls(const QList<KUrl> &urls);
 
-	void playTrack(int track);
+	void playTrack(Playlist *playlist, int track);
 
 	MediaWidget *mediaWidget;
-	QList<PlaylistTrack> tracks;
-	int currentTrack;
+	Playlist *visiblePlaylist;
+	Playlist *activePlaylist;
 	bool repeat;
 };
 
