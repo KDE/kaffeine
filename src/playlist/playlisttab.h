@@ -58,6 +58,7 @@ public:
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+	Qt::ItemFlags flags(const QModelIndex &index) const;
 	bool setData(const QModelIndex &index, const QVariant &value, int role);
 
 	void append(Playlist *playlist);
@@ -83,6 +84,7 @@ public:
 
 private slots:
 	void newPlaylist();
+	void renamePlaylist();
 	void removePlaylist();
 	void savePlaylist();
 	void saveAsPlaylist();
