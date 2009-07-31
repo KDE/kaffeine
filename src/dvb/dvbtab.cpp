@@ -392,7 +392,14 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::showEpgDialog()
 {
-	DvbEpgDialog dialog(dvbManager, getLiveChannel()->name, this);
+	QSharedDataPointer<DvbChannel> channel = getLiveChannel();
+	QString channelName;
+
+	if (channel != NULL) {
+		channelName = channel->name;
+	}
+
+	DvbEpgDialog dialog(dvbManager, channelName, this);
 	dialog.exec();
 }
 
