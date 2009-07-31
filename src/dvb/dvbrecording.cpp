@@ -284,9 +284,9 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 	case 1:
 		return recordings.at(index.row())->channelName;
 	case 2:
-		return recordings.at(index.row())->begin;
+		return KGlobal::locale()->formatDateTime(recordings.at(index.row())->begin.toLocalTime());
 	case 3:
-		return recordings.at(index.row())->duration;
+		return KGlobal::locale()->formatTime(recordings.at(index.row())->duration, false, true);
 	}
 
 	return QVariant();
