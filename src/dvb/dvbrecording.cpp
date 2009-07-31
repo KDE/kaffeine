@@ -29,6 +29,7 @@
 #include <KComboBox>
 #include <KDebug>
 #include <KLineEdit>
+#include <KLocale>
 #include <KLocalizedString>
 #include <KStandardDirs>
 #include "dvbchannelui.h"
@@ -552,7 +553,7 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 
 	gridLayout->addWidget(new QLabel(i18n("Begin:")), 2, 0);
 
-	beginEdit = new QDateTimeEdit(recording->begin, widget);
+	beginEdit = new QDateTimeEdit(recording->begin.toLocalTime(), widget);
 	beginEdit->setCurrentSection(QDateTimeEdit::HourSection);
 	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(beginChanged(QDateTime)));
 	gridLayout->addWidget(beginEdit, 2, 1);
