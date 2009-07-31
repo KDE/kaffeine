@@ -21,12 +21,15 @@
 #include "dvbepg.h"
 
 #include <QBoxLayout>
+#include <QFile>
 #include <QLabel>
 #include <QListView>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QStringListModel>
+#include <KDebug>
 #include <KLocale>
+#include <KStandardDirs>
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 
@@ -75,10 +78,80 @@ bool DvbEpgEntryLess::operator()(const QString &x, const DvbEpgEntry &y)
 
 DvbEpgModel::DvbEpgModel(QObject *parent) : QAbstractTableModel(parent)
 {
+	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		kDebug() << "can't open" << file.fileName();
+		return;
+	}
+
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
+
+	int version;
+	stream >> version;
+
+	if (version != 0x1ce0eca7) {
+		kWarning() << "wrong version" << file.fileName();
+		return;
+	}
+
+	QDateTime currentDateTime = QDateTime::currentDateTime();
+
+	while (!stream.atEnd()) {
+		DvbEpgEntry entry;
+		stream >> entry.channel;
+		stream >> entry.begin;
+		stream >> entry.duration;
+		entry.end = entry.begin.addMSecs(QTime().msecsTo(entry.duration));
+		stream >> entry.title;
+		stream >> entry.subheading;
+		stream >> entry.details;
+
+		if (stream.status() != QDataStream::Ok) {
+			kWarning() << "corrupt data" << file.fileName();
+			break;
+		}
+
+		if (entry.end < currentDateTime) {
+			continue;
+		}
+
+		allEntries.append(entry);
+	}
+
+	qSort(allEntries);
 }
 
 DvbEpgModel::~DvbEpgModel()
 {
+	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "can't open" << file.fileName();
+		return;
+	}
+
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
+
+	int version = 0x1ce0eca7;
+	stream << version;
+
+	QDateTime currentDateTime = QDateTime::currentDateTime();
+
+	foreach (const DvbEpgEntry &entry, allEntries) {
+		if (entry.end < currentDateTime) {
+			continue;
+		}
+
+		stream << entry.channel;
+		stream << entry.begin;
+		stream << entry.duration;
+		stream << entry.title;
+		stream << entry.subheading;
+		stream << entry.details;
+	}
 }
 
 int DvbEpgModel::columnCount(const QModelIndex &parent) const
