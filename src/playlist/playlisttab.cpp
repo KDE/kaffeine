@@ -52,12 +52,17 @@ Playlist *Playlist::readPLSFile(const QString &path)
 	}
 
 	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
+	KUrl baseUrl = KUrl::fromLocalFile(file.fileName());
 
 	while (!stream.atEnd()) {
 		QString line = stream.readLine();
 
 		if (line.startsWith(QLatin1String("File"))) {
 			KUrl url(line.mid(line.indexOf('=') + 1));
+
+			if (url.isRelative()) {
+				url = baseUrl.resolved(url);
+			}
 
 			if (url.isValid()) {
 				playlist->tracks.append(PlaylistTrack(url));
@@ -68,6 +73,18 @@ Playlist *Playlist::readPLSFile(const QString &path)
 	}
 
 	return playlist;
+}
+
+void Playlist::writePLSFile(QFile *file) const
+{
+	QTextStream stream(file);
+	stream.setCodec("UTF-8");
+
+	stream << "[playlist]\n";
+
+	for (int i = 0; i < tracks.size(); ++i) {
+		stream << "File" << i << '=' << tracks.at(i).getUrl().url() << '\n';
+	}
 }
 
 Playlist *Playlist::readM3UFile(const QString &path)
@@ -82,12 +99,17 @@ Playlist *Playlist::readM3UFile(const QString &path)
 	stream.setCodec("UTF-8");
 
 	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
+	KUrl baseUrl = KUrl::fromLocalFile(file.fileName());
 
 	while (!stream.atEnd()) {
 		QString line = stream.readLine();
 
 		if (!line.startsWith('#')) {
 			KUrl url(line); // FIXME relative paths
+
+			if (url.isRelative()) {
+				url = baseUrl.resolved(url);
+			}
 
 			if (url.isValid()) {
 				playlist->tracks.append(PlaylistTrack(url));
@@ -96,6 +118,16 @@ Playlist *Playlist::readM3UFile(const QString &path)
 	}
 
 	return playlist;
+}
+
+void Playlist::writeM3UFile(QFile *file) const
+{
+	QTextStream stream(file);
+	stream.setCodec("UTF-8");
+
+	foreach (const PlaylistTrack &track, tracks) {
+		stream << track.getUrl().url() << '\n';
+	}
 }
 
 Playlist *Playlist::readXSPFFile(const QString &path)
@@ -164,6 +196,26 @@ Playlist *Playlist::readXSPFFile(const QString &path)
 	}
 
 	return playlist;
+}
+
+void Playlist::writeXSPFFile(QFile *file) const
+{
+	QTextStream stream(file);
+	stream.setCodec("UTF-8");
+
+	stream << "<?xml version='1.0' encoding='UTF-8'?>\n"
+		  "<playlist>\n"
+		  "  <title>" << name << "</title>\n"
+		  "  <trackList>\n";
+
+	foreach (const PlaylistTrack &track, tracks) {
+		stream << "    <track>\n"
+			  "      <location>" << track.getUrl().url() << "</location>\n"
+			  "    </track>\n";
+	}
+
+	stream << "  </trackList>\n"
+		  "</playlist>\n";
 }
 
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_, QObject *parent) :
@@ -594,11 +646,11 @@ void PlaylistTab::savePlaylist()
 	QString localFile = file.fileName();
 
 	if (localFile.endsWith(QLatin1String(".pls"), Qt::CaseInsensitive)) {
-		// playlist->writePLSFile(&file);
+		playlist->writePLSFile(&file);
 	} else if (localFile.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive)) {
-		// playlist->writeM3UFile(&file);
+		playlist->writeM3UFile(&file);
 	} else if (localFile.endsWith(QLatin1String(".xspf"), Qt::CaseInsensitive)) {
-		// playlist->writeXSPFFile(&file);
+		playlist->writeXSPFFile(&file);
 	} else {
 		KMessageBox::sorry(this, i18n("Unknown playlist format."));
 	}

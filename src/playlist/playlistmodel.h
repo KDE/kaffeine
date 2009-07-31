@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 #include <KUrl>
 
+class QFile;
 class MediaWidget;
 class Playlist;
 
@@ -49,10 +50,6 @@ public:
 	explicit Playlist(const QString &name_) : currentTrack(-1), name(name_) { }
 	~Playlist() { }
 
-	static Playlist *readPLSFile(const QString &path);
-	static Playlist *readM3UFile(const QString &path);
-	static Playlist *readXSPFFile(const QString &path);
-
 	QString getName() const
 	{
 		return name;
@@ -72,6 +69,14 @@ public:
 	{
 		url = url_;
 	}
+
+	static Playlist *readPLSFile(const QString &path);
+	static Playlist *readM3UFile(const QString &path);
+	static Playlist *readXSPFFile(const QString &path);
+
+	void writePLSFile(QFile *file) const;
+	void writeM3UFile(QFile *file) const;
+	void writeXSPFFile(QFile *file) const;
 
 	QList<PlaylistTrack> tracks;
 	int currentTrack;
