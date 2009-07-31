@@ -85,10 +85,12 @@ private slots:
 	void newPlaylist();
 	void removePlaylist();
 	void savePlaylist();
+	void saveAsPlaylist();
 	void playlistActivated(const QModelIndex &index);
 
 private:
 	void activate();
+	void savePlaylist(bool askName);
 
 	MediaWidget *mediaWidget;
 	QLayout *mediaLayout;

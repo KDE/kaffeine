@@ -447,6 +447,9 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	KAction *savePlaylistAction = KStandardAction::save(this, SLOT(savePlaylist()), this);
 	menu->addAction(collection->addAction("playlist_save", savePlaylistAction));
 
+	KAction *saveAsPlaylistAction = KStandardAction::saveAs(this, SLOT(savePlaylistAs()), this);
+	menu->addAction(collection->addAction("playlist_save_as", saveAsPlaylistAction));
+
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
 
@@ -473,6 +476,11 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 
 	toolButton = new QToolButton(widget);
 	toolButton->setDefaultAction(savePlaylistAction);
+	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+	boxLayout->addWidget(toolButton);
+
+	toolButton = new QToolButton(widget);
+	toolButton->setDefaultAction(saveAsPlaylistAction);
 	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	boxLayout->addWidget(toolButton);
 
@@ -617,6 +625,26 @@ void PlaylistTab::removePlaylist()
 
 void PlaylistTab::savePlaylist()
 {
+	savePlaylist(false);
+}
+
+void PlaylistTab::saveAsPlaylist()
+{
+	savePlaylist(true);
+}
+
+void PlaylistTab::playlistActivated(const QModelIndex &index)
+{
+	playlistModel->setPlaylist(playlistBrowserModel->getPlaylist(index.row()));
+}
+
+void PlaylistTab::activate()
+{
+	mediaLayout->addWidget(mediaWidget);
+}
+
+void PlaylistTab::savePlaylist(bool askName)
+{
 	QModelIndex index = playlistBrowserView->currentIndex();
 
 	if (!index.isValid()) {
@@ -626,8 +654,8 @@ void PlaylistTab::savePlaylist()
 	Playlist *playlist = playlistBrowserModel->getPlaylist(index.row());
 	KUrl url = playlist->getUrl();
 
-	if (!url.isValid()) {
-		url = KFileDialog::getSaveUrl(KUrl(), ".xxx|Test", this);
+	if (askName || !url.isValid()) {
+		url = KFileDialog::getSaveUrl(KUrl(), i18n("*.m3u|M3U Playlist\n*.pls|PLS Playlist\n*.xspf|XSPF Playlist"), this);
 
 		if (!url.isValid()) {
 			return;
@@ -653,15 +681,6 @@ void PlaylistTab::savePlaylist()
 		playlist->writeXSPFFile(&file);
 	} else {
 		KMessageBox::sorry(this, i18n("Unknown playlist format."));
+		playlist->setUrl(KUrl());
 	}
-}
-
-void PlaylistTab::playlistActivated(const QModelIndex &index)
-{
-	playlistModel->setPlaylist(playlistBrowserModel->getPlaylist(index.row()));
-}
-
-void PlaylistTab::activate()
-{
-	mediaLayout->addWidget(mediaWidget);
 }
