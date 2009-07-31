@@ -416,14 +416,18 @@ void DvbTab::instantRecord(bool checked)
 		// FIXME use epg for name
 		dvbManager->getRecordingModel()->startInstantRecording(
 			channelName + QTime::currentTime().toString("-hhmmss"), channelName);
+
+		mediaWidget->showOsdText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
 		dvbManager->getRecordingModel()->stopInstantRecording();
+		mediaWidget->showOsdText(i18nc("osd", "Instant Record Stopped"), 1500);
 	}
 }
 
 void DvbTab::instantRecordingRemoved()
 {
 	instantRecordAction->setChecked(false);
+	mediaWidget->showOsdText(i18nc("osd", "Instant Record Stopped"), 1500);
 }
 
 void DvbTab::configureDvb()
