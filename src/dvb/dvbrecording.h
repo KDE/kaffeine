@@ -51,6 +51,9 @@ public:
 	void removeRecording(int row);
 	void updateRecording(int row, DvbRecordingEditor *editor);
 
+	void scheduleProgram(const QString &name, const QString &channel, const QDateTime &begin,
+		const QTime &duration);
+
 	void startInstantRecording(const QString &name, const QString &channel);
 	void stopInstantRecording(); // stops the last started instant recording
 

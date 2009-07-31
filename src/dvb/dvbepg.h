@@ -102,6 +102,7 @@ private slots:
 	void refresh();
 	void channelActivated(const QModelIndex &index);
 	void entryActivated(const QModelIndex &index);
+	void scheduleProgram();
 
 private:
 	DvbManager *manager;

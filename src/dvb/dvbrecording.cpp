@@ -350,6 +350,20 @@ void DvbRecordingModel::updateRecording(int row, DvbRecordingEditor *editor)
 	checkStatus();
 }
 
+void DvbRecordingModel::scheduleProgram(const QString &name, const QString &channel,
+	const QDateTime &begin, const QTime &duration)
+{
+	DvbRecording *recording = new DvbRecording(manager);
+	recording->name = name;
+	recording->channelName = channel;
+	recording->begin = begin;
+	// the seconds aren't visible --> set them to zero
+	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
+	recording->duration = duration;
+	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
+	appendRecording(recording);
+}
+
 void DvbRecordingModel::startInstantRecording(const QString &name, const QString &channel)
 {
 	DvbRecording *recording = new DvbRecording(manager);

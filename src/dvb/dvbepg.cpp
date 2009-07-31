@@ -27,11 +27,14 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QStringListModel>
+#include <KAction>
 #include <KDebug>
 #include <KLocale>
+#include <KMessageBox>
 #include <KStandardDirs>
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
+#include "dvbrecording.h"
 
 class DvbEitEntry
 {
@@ -397,8 +400,20 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 
 	boxLayout = new QVBoxLayout();
 
+	KAction *scheduleAction = new KAction(KIcon("media-record"),
+		i18nc("program guide", "Schedule Program"), this);
+	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
+
+	pushButton = new QPushButton(KIcon("media-record"),
+		i18nc("program guide", "Schedule Program"), this);
+	pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
+	boxLayout->addWidget(pushButton);
+
 	epgModel = manager->getEpgModel();
 	epgView = new QTreeView(widget);
+	epgView->addAction(scheduleAction);
+	epgView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	epgView->setMinimumWidth(450);
 	epgView->setModel(epgModel);
 	epgView->setRootIsDecorated(false);
@@ -504,4 +519,20 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 
 	text += entry->details;
 	contentLabel->setText(text);
+}
+
+void DvbEpgDialog::scheduleProgram()
+{
+	QModelIndex index = epgView->currentIndex();
+
+	if (!index.isValid()) {
+		return;
+	}
+
+	const DvbEpgEntry *entry = epgModel->getEntry(index.row());
+
+	manager->getRecordingModel()->scheduleProgram(entry->title, entry->channel,
+		entry->begin.addSecs(-300), entry->duration.addSecs(900));
+
+	KMessageBox::information(this, i18nc("program guide", "Program successfully scheduled."));
 }
