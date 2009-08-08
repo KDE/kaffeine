@@ -14,14 +14,9 @@ for an up-to-date version of this file.
 
 - write a handbook
 
-- OSD / overlay
-  - show current / next program; descriptions (EPG)
-
 - EPG
   - ATSC support
-  - schedule recordings (and also have them marked)
-  - load / save events
-  - fix support for some channels
+  - mark scheduled recordings
 
 - audio CD
   - better track selection
@@ -33,11 +28,6 @@ for an up-to-date version of this file.
 
 - audio CD / video CD / DVD
   - deal nicely with multiple drives
-
-- playlist
-  - load / save playlists (m3u, pls, kaffeine, ...)
-  - drag and drop
-  - random and repeat mode
 
 - video settings
   - possibility to adjust hue, saturation, brightness and contrast
@@ -73,9 +63,6 @@ for an up-to-date version of this file.
 - broadcast support
   - receive and send
   - manage kaffeine remotely (headless backend?)
-
-- S2API support
-  - DVB-S2
 
 - equalizer
   - mainly a phonon task

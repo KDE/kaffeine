@@ -829,12 +829,21 @@ void DvbScan::processNit(const DvbNitSection &section)
 					break;
 				}
 
-				if (satDescriptor.isDvbS2()) {
-					// ignore DVB-S2 descriptor
-					break;
-				}
+				DvbS2Transponder *s2Transponder;
+				DvbSTransponder *transponder;
 
-				DvbSTransponder *transponder = new DvbSTransponder();
+				if (satDescriptor.isDvbS2()) {
+					if ((device->getTransmissionTypes() & DvbBackendDevice::DvbS2) == 0) {
+						// ignore DVB-S2 descriptor
+						break;
+					}
+
+					s2Transponder = new DvbS2Transponder;
+					transponder = s2Transponder;
+				} else {
+					s2Transponder = NULL;
+					transponder = new DvbSTransponder;
+				}
 
 				transponder->frequency =
 					DvbDescriptor::bcdToInt(satDescriptor.frequency(), 10);
@@ -884,6 +893,35 @@ void DvbScan::processNit(const DvbNitSection &section)
 					transponder->fecRate = DvbTransponderBase::FecAuto;
 				}
 
+				if (s2Transponder != NULL) {
+					switch (satDescriptor.modulation()) {
+					case 1:
+						s2Transponder->modulation = DvbS2Transponder::Qpsk;
+						break;
+					case 2:
+						s2Transponder->modulation = DvbS2Transponder::Psk8;
+						break;
+					default:
+						s2Transponder->modulation = DvbS2Transponder::ModulationAuto;
+						break;
+					}
+
+					switch (satDescriptor.rollOff()) {
+					case 0:
+						s2Transponder->rollOff = DvbS2Transponder::RollOff35;
+						break;
+					case 1:
+						s2Transponder->rollOff = DvbS2Transponder::RollOff25;
+						break;
+					case 2:
+						s2Transponder->rollOff = DvbS2Transponder::RollOff20;
+						break;
+					default:
+						s2Transponder->rollOff = DvbS2Transponder::RollOffAuto;
+						break;
+					}
+				}
+
 				for (int i = 0;; ++i) {
 					if (i == transponders.size()) {
 						transponders.append(DvbTransponder(transponder));
@@ -897,7 +935,8 @@ void DvbScan::processNit(const DvbNitSection &section)
 						continue;
 					}
 
-					if ((abs(it->frequency - transponder->frequency) < 2000) &&
+					if ((it->getTransmissionType() == transponder->getTransmissionType()) &&
+					    (abs(it->frequency - transponder->frequency) < 2000) &&
 					    (it->polarization == transponder->polarization)) {
 						delete transponder;
 						break;

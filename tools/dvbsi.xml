@@ -51,9 +51,9 @@
       <unused bits="16" />
       <unused bits="1" />
       <polarization bits="2" type="int" />
-      <unused bits="2" />
+      <rollOff bits="2" type="int" />
       <isDvbS2 bits="1" type="bool" />
-      <unused bits="2" />
+      <modulation bits="2" type="int" />
       <symbolRate bits="28" type="int" />
       <fecRate bits="4" type="int" />
     </DvbSatelliteDescriptor>

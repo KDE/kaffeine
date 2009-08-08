@@ -444,9 +444,19 @@ public:
 		return ((at(8) & 0x7f) >> 5);
 	}
 
+	int rollOff() const
+	{
+		return ((at(8) & 0x1f) >> 3);
+	}
+
 	bool isDvbS2() const
 	{
 		return ((at(8) & 0x4) != 0);
+	}
+
+	int modulation() const
+	{
+		return (at(8) & 0x3);
 	}
 
 	int symbolRate() const
