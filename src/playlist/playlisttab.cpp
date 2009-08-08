@@ -224,6 +224,56 @@ void Playlist::writeXSPFFile(QFile *file) const
 		  "</playlist>\n";
 }
 
+Playlist *Playlist::readKaffeineFile(const QString &path)
+{
+	QFile file(path);
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		return NULL;
+	}
+
+	QDomDocument document;
+
+	if (!document.setContent(&file)) {
+		return NULL;
+	}
+
+	QDomElement root = document.documentElement();
+
+	if (root.nodeName() != "playlist") {
+		return NULL;
+	}
+
+	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
+	KUrl baseUrl = KUrl::fromLocalFile(path);
+	playlist->setUrl(baseUrl);
+
+	for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling()) {
+		if (!node.isElement()) {
+			continue;
+		}
+
+		QString urlString = node.attributes().namedItem("url").nodeValue();
+
+		if (urlString.isEmpty()) {
+			continue;
+		}
+
+		KUrl url(urlString);
+
+		if (url.isRelative()) {
+			url = baseUrl.resolved(url);
+		}
+
+		if (url.isValid()) {
+			playlist->tracks.append(PlaylistTrack(url));
+			break;
+		}
+	}
+
+	return playlist;
+}
+
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_, QObject *parent) :
 	QAbstractListModel(parent), playlistModel(playlistModel_), currentPlaylist(-1)
 {
@@ -616,6 +666,13 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 			}
 		} else if (localFile.endsWith(QLatin1String(".xspf"), Qt::CaseInsensitive)) {
 			Playlist *playlist = Playlist::readXSPFFile(localFile);
+
+			if (playlist != NULL) {
+				playlistBrowserModel->append(playlist);
+				playlists = true;
+			}
+		} else if (localFile.endsWith(QLatin1String(".kaffeine"), Qt::CaseInsensitive)) {
+			Playlist *playlist = Playlist::readKaffeineFile(localFile);
 
 			if (playlist != NULL) {
 				playlistBrowserModel->append(playlist);

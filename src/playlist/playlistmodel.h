@@ -73,6 +73,7 @@ public:
 	static Playlist *readPLSFile(const QString &path);
 	static Playlist *readM3UFile(const QString &path);
 	static Playlist *readXSPFFile(const QString &path);
+	static Playlist *readKaffeineFile(const QString &path);
 
 	void writePLSFile(QFile *file) const;
 	void writeM3UFile(QFile *file) const;
