@@ -28,11 +28,13 @@
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
+#include <KDebug>
 #include <KFileDialog>
 #include <kfilewidget.h>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KMessageBox>
+#include <KStandardDirs>
 #include "../mediawidget.h"
 #include "playlistmodel.h"
 
@@ -274,15 +276,86 @@ Playlist *Playlist::readKaffeineFile(const QString &path)
 	return playlist;
 }
 
-PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_, QObject *parent) :
-	QAbstractListModel(parent), playlistModel(playlistModel_), currentPlaylist(-1)
+PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
+	Playlist *temporaryPlaylist, QObject *parent) : QAbstractListModel(parent),
+	playlistModel(playlistModel_), currentPlaylist(-1)
 {
 	connect(playlistModel, SIGNAL(currentPlaylistChanged(Playlist*)),
 		this, SLOT(setCurrentPlaylist(Playlist*)));
+
+	playlists.append(temporaryPlaylist);
+
+	QFile file(KStandardDirs::locateLocal("appdata", "playlists"));
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		kDebug() << "can't open" << file.fileName();
+		return;
+	}
+
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
+
+	unsigned int version;
+	stream >> version;
+
+	if (version != 0xc39637a1) {
+		kWarning() << "wrong version" << file.fileName();
+		return;
+	}
+
+	while (!stream.atEnd()) {
+		QString name;
+		stream >> name;
+		QString url;
+		stream >> url;
+		int count;
+		stream >> count;
+
+		Playlist playlist(name);
+		playlist.setUrl(url);
+
+		for (int i = 0; i < count; ++i) {
+			QString trackUrl;
+			stream >> trackUrl;
+			playlist.tracks.append(PlaylistTrack(trackUrl));
+		}
+		
+		if (stream.status() != QDataStream::Ok) {
+			kWarning() << "corrupt data" << file.fileName();
+			break;
+		}
+
+		playlists.append(new Playlist(playlist));
+	}
 }
 
 PlaylistBrowserModel::~PlaylistBrowserModel()
 {
+	QFile file(KStandardDirs::locateLocal("appdata", "playlists"));
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "can't open" << file.fileName();
+		return;
+	}
+
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
+
+	int version = 0xc39637a1;
+	stream << version;
+
+	for (int i = 1; i < playlists.size(); ++i) {
+		const Playlist *playlist = playlists.at(i);
+		stream << playlist->getName();
+		stream << playlist->getUrl();
+		stream << playlist->tracks.size();
+
+		foreach (const PlaylistTrack &track, playlist->tracks) {
+			stream << track.getUrl().url();
+		}
+	}
+
+	qDeleteAll(playlists);
 }
 
 int PlaylistBrowserModel::rowCount(const QModelIndex &parent) const
@@ -564,8 +637,7 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	boxLayout->addStretch();
 	sideLayout->addLayout(boxLayout);
 
-	playlistBrowserModel = new PlaylistBrowserModel(playlistModel, this);
-	playlistBrowserModel->append(temporaryPlaylist);
+	playlistBrowserModel = new PlaylistBrowserModel(playlistModel, temporaryPlaylist, this);
 
 	playlistBrowserView = new PlaylistBrowserView(widget);
 	playlistBrowserView->addAction(newAction);

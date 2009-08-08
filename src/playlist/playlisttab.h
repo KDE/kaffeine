@@ -52,7 +52,8 @@ class PlaylistBrowserModel : public QAbstractListModel
 {
 	Q_OBJECT
 public:
-	PlaylistBrowserModel(PlaylistModel *playlistModel_, QObject *parent);
+	PlaylistBrowserModel(PlaylistModel *playlistModel_, Playlist *temporaryPlaylist,
+		QObject *parent);
 	~PlaylistBrowserModel();
 
 	int rowCount(const QModelIndex &parent) const;

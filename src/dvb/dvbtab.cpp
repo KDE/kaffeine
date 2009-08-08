@@ -739,7 +739,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		return;
 	}
 
-	mediaWidget->playDvb(QString("%1 - %2").arg(channel->number).arg(channel->name));
+	mediaWidget->playDvb(channel->name);
 
 	QList<int> pids;
 
