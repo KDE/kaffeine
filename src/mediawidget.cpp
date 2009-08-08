@@ -423,9 +423,9 @@ void MediaWidget::playDvd()
 	mediaObject->play();
 }
 
-void MediaWidget::showOsdText(const QString &text, int duration)
+OsdWidget *MediaWidget::getOsdWidget()
 {
-	osdWidget->showText(text, duration);
+	return osdWidget;
 }
 
 void MediaWidget::playDvb(const QString &channelName)

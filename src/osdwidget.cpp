@@ -54,21 +54,59 @@ void OsdWidget::showText(const QString &text, int duration)
 		painter.drawText(rect, Qt::AlignCenter, text);
 	}
 
+	osdObject = NULL;
 	update();
 	show();
 
 	timer->start(duration);
 }
 
+void OsdWidget::showObject(OsdObject *osdObject_, int duration)
+{
+	osdObject = osdObject_;
+	update();
+	show();
+
+	if (duration >= 0) {
+		timer->start(duration);
+	} else {
+		timer->stop();
+	}
+}
+
+void OsdWidget::hideObject()
+{
+	if (osdObject != NULL) {
+		osdObject = NULL;
+		timer->stop();
+		hide();
+	}
+}
+
 void OsdWidget::paintEvent(QPaintEvent *)
 {
-	if (layoutDirection() == Qt::LeftToRight) {
-		QPainter(this).drawPixmap(20, 20, pixmap);
-		rect.moveTo(20, 20);
+	if (osdObject == NULL) {
+		if (layoutDirection() == Qt::LeftToRight) {
+			QPainter(this).drawPixmap(20, 20, pixmap);
+			rect.moveTo(20, 20);
+		} else {
+			int x = width() - pixmap.width() - 20;
+			QPainter(this).drawPixmap(x, 20, pixmap);
+			rect.moveTo(x, 20);
+		}
 	} else {
-		int x = width() - pixmap.width() - 20;
-		QPainter(this).drawPixmap(x, 20, pixmap);
-		rect.moveTo(x, 20);
+		rect = QWidget::rect();
+		rect.adjust(0, 0, -40, -60);
+		pixmap = osdObject->paintOsd(rect, font(), layoutDirection());
+
+		int y = (4 * height()) / 5 - rect.height();
+
+		if (y < 30) {
+			y = 30;
+		}
+
+		rect.moveTo(20, y);
+		QPainter(this).drawPixmap(rect.left(), rect.top(), pixmap);
 	}
 
 	setMask(rect);

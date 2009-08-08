@@ -23,16 +23,19 @@
 #include <QBoxLayout>
 #include <QDir>
 #include <QHeaderView>
+#include <QPainter>
 #include <QSplitter>
 #include <QThread>
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
 #include <KLineEdit>
+#include <KLocale>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KMessageBox>
 #include "../mediawidget.h"
+#include "../osdwidget.h"
 #include "dvbchannelui.h"
 #include "dvbconfigdialog.h"
 #include "dvbepg.h"
@@ -211,9 +214,83 @@ void DvbTimeShiftCleaner::run()
 	}
 }
 
-DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
-	mediaWidget(mediaWidget_), liveStream(NULL)
+class DvbOsd : public OsdObject
 {
+public:
+	DvbOsd(const QString &channelName_, const QList<DvbEpgEntry> &epgEntries_) : longOsd(false),
+		channelName(channelName_), epgEntries(epgEntries_) { }
+	~DvbOsd() { }
+
+	bool longOsd;
+
+private:
+	QPixmap paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection direction);
+
+	QString channelName;
+	QList<DvbEpgEntry> epgEntries;
+};
+
+QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
+{
+	QFont osdFont = font;
+	osdFont.setPointSize(20);
+
+	QString timeString = KGlobal::locale()->formatTime(QTime::currentTime());
+	QString entryString;
+
+	if (!epgEntries.isEmpty()) {
+		entryString = QString("%1 %2").arg(KGlobal::locale()->formatTime(epgEntries.at(0).begin.toLocalTime().time())).arg(epgEntries.at(0).title);
+
+		if (!longOsd && (epgEntries.size() > 1)) {
+			entryString += QString("\n%1 %2").arg(KGlobal::locale()->formatTime(epgEntries.at(1).begin.toLocalTime().time())).arg(epgEntries.at(1).title);
+		}
+	}
+
+	int lineHeight = QFontMetrics(osdFont).height();
+	QRect headerRect(5, 0, rect.width() - 10, lineHeight);
+	QRect entryRect;
+
+	if (!longOsd) {
+		entryRect = QRect(5, lineHeight + 2, rect.width() - 10, 2 * lineHeight);
+		rect.setHeight(entryRect.bottom() + 1);
+	} else {
+		entryRect = QRect(5, lineHeight + 2, rect.width() - 10, lineHeight);
+	}
+
+	QPixmap pixmap(rect.size());
+
+	{
+		QPainter painter(&pixmap);
+		painter.fillRect(rect, Qt::black);
+		painter.setFont(osdFont);
+		painter.setPen(Qt::white);
+		painter.drawText(headerRect, Qt::AlignLeft, channelName);
+		painter.drawText(headerRect, Qt::AlignRight, timeString);
+		painter.fillRect(5, lineHeight, rect.width() - 10, 2, Qt::white);
+		painter.drawText(entryRect, Qt::AlignLeft, entryString);
+
+		if (longOsd) {
+			QRect boundingRect = entryRect;
+
+			if (!epgEntries.isEmpty()) {
+				painter.drawText(entryRect.x(), (5 * lineHeight / 2) + 2, entryRect.width(), lineHeight, Qt::AlignLeft, epgEntries.at(0).subheading);
+				painter.drawText(entryRect.x(), 4 * lineHeight + 2, entryRect.width(), rect.height() - 4 * lineHeight - 2, Qt::AlignLeft | Qt::TextWordWrap, epgEntries.at(0).details, &boundingRect);
+			}
+
+			if (boundingRect.bottom() < rect.bottom()) {
+				rect.setBottom(boundingRect.bottom());
+			}
+		}
+	}
+
+	return pixmap;
+}
+
+DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
+	mediaWidget(mediaWidget_), liveStream(NULL), dvbOsd(NULL)
+{
+	osdWidget = mediaWidget->getOsdWidget();
+
 	KAction *channelsAction = new KAction(KIcon("video-television"), i18n("Channels"), this);
 	channelsAction->setShortcut(Qt::Key_C);
 	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
@@ -223,6 +300,11 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	epgAction->setShortcut(Qt::Key_G);
 	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(showEpgDialog()));
 	menu->addAction(collection->addAction("dvb_epg", epgAction));
+
+	KAction *osdAction = new KAction(KIcon("dialog-information"), i18n("OSD"), this);
+	osdAction->setShortcut(Qt::Key_O);
+	connect(osdAction, SIGNAL(triggered(bool)), this, SLOT(toggleOsd()));
+	menu->addAction(collection->addAction("dvb_osd", osdAction));
 
 	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"),
 						i18nc("dialog", "Recording Schedule"), this);
@@ -340,10 +422,15 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	osdChannelTimer = new QTimer(this);
 	osdChannelTimer->setInterval(1500);
 	connect(osdChannelTimer, SIGNAL(timeout()), this, SLOT(tuneOsdChannel()));
+
+	dvbOsdTimer = new QTimer(this);
+	connect(dvbOsdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
 }
 
 DvbTab::~DvbTab()
 {
+	delete dvbOsd;
+
 	KGlobal::config()->group("DVB").writeEntry("TabSplitterState",
 		splitter->saveState().toBase64());
 	KGlobal::config()->group("DVB").writeEntry("ChannelViewState",
@@ -417,17 +504,17 @@ void DvbTab::instantRecord(bool checked)
 		dvbManager->getRecordingModel()->startInstantRecording(
 			channelName + QTime::currentTime().toString("-hhmmss"), channelName);
 
-		mediaWidget->showOsdText(i18nc("osd", "Instant Record Started"), 1500);
+		osdWidget->showText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
 		dvbManager->getRecordingModel()->stopInstantRecording();
-		mediaWidget->showOsdText(i18nc("osd", "Instant Record Stopped"), 1500);
+		osdWidget->showText(i18nc("osd", "Instant Record Stopped"), 1500);
 	}
 }
 
 void DvbTab::instantRecordingRemoved()
 {
 	instantRecordAction->setChecked(false);
-	mediaWidget->showOsdText(i18nc("osd", "Instant Record Stopped"), 1500);
+	osdWidget->showText(i18nc("osd", "Instant Record Stopped"), 1500);
 }
 
 void DvbTab::configureDvb()
@@ -530,6 +617,12 @@ void DvbTab::liveStopped()
 	delete liveStream->eitFilter;
 	delete liveStream;
 	liveStream = NULL;
+
+	if (dvbOsd != NULL) {
+		osdWidget->hideObject();
+		delete dvbOsd;
+		dvbOsd = NULL;
+	}
 }
 
 void DvbTab::osdKeyPressed(int key)
@@ -537,7 +630,7 @@ void DvbTab::osdKeyPressed(int key)
 	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
 		osdChannel += QString::number(key - Qt::Key_0);
 		osdChannelTimer->start();
-		mediaWidget->showOsdText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
+		osdWidget->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
 	}
 }
 
@@ -552,6 +645,52 @@ void DvbTab::tuneOsdChannel()
 	if (channel != NULL) {
 		playChannel(channel);
 	}
+}
+
+void DvbTab::toggleOsd()
+{
+	const QSharedDataPointer<DvbChannel> channel = getLiveChannel();
+
+	if (channel == NULL) {
+		return;
+	}
+
+	if (dvbOsd != NULL) {
+		if (!dvbOsd->longOsd) {
+			dvbOsd->longOsd = true;
+			dvbOsdTimer->stop();
+			osdWidget->showObject(dvbOsd, -1);
+		} else {
+			dvbOsdTimer->stop();
+			osdWidget->hideObject();
+			delete dvbOsd;
+			dvbOsd = NULL;
+		}
+
+		return;
+	}
+
+	QString name = QString("%1 - %2").arg(channel->number).arg(channel->name);
+	QList<DvbEpgEntry> epgEntries = dvbManager->getEpgModel()->getCurrentNext(channel->name);
+
+	dvbOsd = new DvbOsd(name, epgEntries);
+	osdWidget->showObject(dvbOsd, 2500);
+	dvbOsdTimer->start(2500);
+}
+
+void DvbTab::showOsd()
+{
+	if ((getLiveChannel() != NULL) && (dvbOsd == NULL)) {
+		toggleOsd();
+	}
+}
+
+void DvbTab::osdTimeout()
+{
+	dvbOsdTimer->stop();
+	osdWidget->hideObject();
+	delete dvbOsd;
+	dvbOsd = NULL;
 }
 
 void DvbTab::fastRetuneTimeout()
@@ -600,7 +739,7 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 		return;
 	}
 
-	mediaWidget->playDvb(channel->name);
+	mediaWidget->playDvb(QString("%1 - %2").arg(channel->number).arg(channel->name));
 
 	QList<int> pids;
 
@@ -659,4 +798,6 @@ void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 	device->addPidFilter(0x0012, liveStream->eitFilter);
 
 	KConfigGroup(KGlobal::config(), "DVB").writeEntry("LastChannel", channel->name);
+
+	QTimer::singleShot(2000, this, SLOT(showOsd()));
 }

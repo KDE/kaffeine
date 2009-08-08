@@ -34,8 +34,10 @@ class DvbChannelView;
 class DvbDevice;
 class DvbLiveStream;
 class DvbManager;
+class DvbOsd;
 class DvbTimeShiftCleaner;
 class MediaWidget;
+class OsdWidget;
 
 class DvbTab : public TabBase
 {
@@ -72,6 +74,9 @@ private slots:
 	void liveStopped();
 	void osdKeyPressed(int key);
 	void tuneOsdChannel();
+	void toggleOsd();
+	void showOsd();
+	void osdTimeout();
 	void fastRetuneTimeout();
 	void cleanTimeShiftFiles();
 
@@ -80,6 +85,7 @@ private:
 	void playChannel(const QSharedDataPointer<DvbChannel> &channel);
 
 	MediaWidget *mediaWidget;
+	OsdWidget *osdWidget;
 	DvbManager *dvbManager;
 	KAction *instantRecordAction;
 	QSplitter *splitter;
@@ -90,6 +96,8 @@ private:
 	QTimer *osdChannelTimer;
 	QTimer *fastRetuneTimer;
 	DvbLiveStream *liveStream;
+	DvbOsd *dvbOsd;
+	QTimer *dvbOsdTimer;
 
 	DvbTimeShiftCleaner *timeShiftCleaner;
 };

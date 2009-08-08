@@ -268,6 +268,29 @@ const DvbEpgEntry *DvbEpgModel::getEntry(int row) const
 	return filteredEntries.at(row);
 }
 
+QList<DvbEpgEntry> DvbEpgModel::getCurrentNext(const QString &channel) const
+{
+	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries.constBegin(),
+		allEntries.constEnd(), channel, DvbEpgEntryLess());
+	QList<DvbEpgEntry>::const_iterator end = qUpperBound(it, allEntries.constEnd(), channel,
+		DvbEpgEntryLess());
+
+	QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
+
+	while ((it != end) && (it->end <= currentDateTime)) {
+		++it;
+	}
+
+	QList<DvbEpgEntry> result;
+
+	while ((it != end) && (result.size() < 2)) {
+		result.append(*it);
+		++it;
+	}
+
+	return result;
+}
+
 DvbEitFilter::DvbEitFilter(DvbManager *manager_, const QString &source_) : manager(manager_),
 	source(source_)
 {

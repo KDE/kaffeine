@@ -64,7 +64,7 @@ public:
 	void playVideoCd();
 	void playDvd();
 
-	void showOsdText(const QString &text, int duration); // duration: msecs
+	OsdWidget *getOsdWidget();
 
 	void playDvb(const QString &channelName); // starts dvb mode
 	void writeDvbData(const QByteArray &data);

@@ -23,6 +23,15 @@
 
 #include <QWidget>
 
+class OsdObject
+{
+public:
+	OsdObject() { }
+	virtual ~OsdObject() { }
+
+	virtual QPixmap paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection direction) = 0;
+};
+
 class OsdWidget : public QWidget
 {
 	Q_OBJECT
@@ -31,6 +40,9 @@ public:
 	~OsdWidget();
 
 	void showText(const QString &text, int duration); // duration: msecs
+
+	void showObject(OsdObject *osdObject_, int duration); // duration: msecs
+	void hideObject();
 
 protected:
 	void paintEvent(QPaintEvent *);
@@ -41,6 +53,7 @@ private slots:
 private:
 	QRect rect;
 	QPixmap pixmap;
+	OsdObject *osdObject;
 	QTimer *timer;
 };
 

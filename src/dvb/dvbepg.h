@@ -68,6 +68,7 @@ public:
 	void resetChannel();
 	void setChannel(const QString &channel);
 	const DvbEpgEntry *getEntry(int row) const;
+	QList<DvbEpgEntry> getCurrentNext(const QString &channel) const;
 
 private:
 	QList<DvbEpgEntry> allEntries;
