@@ -150,7 +150,7 @@ typedef enum fe_code_rate {
 	FEC_8_9,
 	FEC_AUTO,
 	FEC_3_5,
-	FEC_9_10
+	FEC_9_10,
 } fe_code_rate_t;
 
 
@@ -167,7 +167,7 @@ typedef enum fe_modulation {
 	PSK_8,
 	APSK_16,
 	APSK_32,
-	DQPSK
+	DQPSK,
 } fe_modulation_t;
 
 typedef enum fe_transmit_mode {
@@ -281,14 +281,14 @@ struct dvb_frontend_event {
 typedef enum fe_pilot {
 	PILOT_ON,
 	PILOT_OFF,
-	PILOT_AUTO
+	PILOT_AUTO,
 } fe_pilot_t;
 
 typedef enum fe_rolloff {
 	ROLLOFF_35, /* Implied value in DVB-S, default for DVB-S2 */
 	ROLLOFF_20,
 	ROLLOFF_25,
-	ROLLOFF_AUTO
+	ROLLOFF_AUTO,
 } fe_rolloff_t;
 
 typedef enum fe_delivery_system {
@@ -307,7 +307,7 @@ typedef enum fe_delivery_system {
 	SYS_ATSCMH,
 	SYS_DMBTH,
 	SYS_CMMB,
-	SYS_DAB
+	SYS_DAB,
 } fe_delivery_system_t;
 
 struct dtv_cmds_h {

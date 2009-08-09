@@ -3,7 +3,15 @@ Kaffeine Changelog
 ------------------
 
 Version (unreleased):
+
+Version 1.0-pre2 (2009-08-09):
   - added screen saver inhibition (using DBUS; org.freedesktop.ScreenSaver)
+  - added basic playlist features: .m3u, .pls, .xspf (+ old kaffeine format),
+    drag and drop, repeat mode and shuffle
+  - added OSD: various notifications, now and next epg
+  - added DVB-S2 support using S2 API (old API still supported for non-S2 usage)
+  - improved epg: save and restore events, possibility to schedule programs
+  - other fixes and improvements ...
 
 Version 1.0-pre1 (2009-04-26):
   - initial KDE4 release based on KDE4, QT4, Phonon and Solid
