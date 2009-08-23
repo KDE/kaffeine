@@ -25,11 +25,7 @@
 #define _DVBDMX_H_
 
 #include <linux/types.h>
-#ifdef __KERNEL__
-#include <linux/time.h>
-#else
 #include <time.h>
-#endif
 
 
 #define DMX_FILTER_SIZE 16
