@@ -21,6 +21,7 @@
 #include "dvbrecording.h"
 
 #include <QBoxLayout>
+#include <QCheckBox>
 #include <QDateTimeEdit>
 #include <QFile>
 #include <QLabel>
@@ -51,6 +52,7 @@ public:
 	QDateTime begin;
 	QTime duration;
 	QDateTime end;
+	int repeat; // 1 (monday) | 2 (tuesday) | 4 (wednesday) | etc
 
 private:
 	void processData(const char data[188]);
@@ -196,6 +198,15 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
+	int version;
+	stream >> version;
+
+	if (version != 0x4d848730) {
+		// the older version didn't store a magic number ...
+		file.seek(0);
+		version = 0;
+	}
+
 	while (!stream.atEnd()) {
 		DvbRecording *recording = new DvbRecording(manager);
 		stream >> recording->name;
@@ -203,6 +214,12 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel
 		stream >> recording->begin;
 		stream >> recording->duration;
 		stream >> recording->end;
+
+		if (version == 0) {
+			recording->repeat = 0;
+		} else {
+			stream >> recording->repeat;
+		}
 
 		if (stream.status() != QDataStream::Ok) {
 			kWarning() << "invalid recordings in file" << file.fileName();
@@ -236,12 +253,16 @@ DvbRecordingModel::~DvbRecordingModel()
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
+	int version = 0x4d848730;
+	stream << version;
+
 	foreach (DvbRecording *recording, recordings) {
 		stream << recording->name;
 		stream << recording->channelName;
 		stream << recording->begin;
 		stream << recording->duration;
 		stream << recording->end;
+		stream << recording->repeat;
 		delete recording;
 	}
 }
@@ -362,6 +383,7 @@ void DvbRecordingModel::scheduleProgram(const QString &name, const QString &chan
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = duration;
 	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
+	recording->repeat = 0;
 	appendRecording(recording);
 }
 
@@ -375,6 +397,7 @@ void DvbRecordingModel::startInstantRecording(const QString &name, const QString
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = QTime(2, 0);
 	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
+	recording->repeat = 0;
 	appendRecording(recording);
 
 	instantRecordingRow = recordings.size() - 1;
@@ -396,8 +419,30 @@ void DvbRecordingModel::checkStatus()
 		DvbRecording *recording = recordings.at(i);
 
 		if (recording->end <= current) {
-			removeRecording(i);
-			--i;
+			if (recording->repeat == 0) {
+				removeRecording(i);
+				--i;
+			} else {
+				int days = recording->end.daysTo(current);
+
+				if (recording->end.addDays(days) <= current) {
+					++days;
+				}
+
+				int dayOfWeek = recording->begin.date().dayOfWeek() - 1 + days;
+
+				for (int i = 0; i < 7; ++i) {
+					if ((recording->repeat & (1 << (dayOfWeek % 7))) != 0) {
+						break;
+					}
+
+					++days;
+					++dayOfWeek;
+				}
+
+				recording->begin = recording->begin.addDays(days);
+				recording->end = recording->end.addDays(days);
+			}
 		}
 	}
 
@@ -478,6 +523,7 @@ void DvbRecordingDialog::newRecording()
 	// the seconds aren't visible --> set them to zero
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = QTime(2, 0);
+	recording->repeat = 0;
 
 	DvbRecordingEditor editor(recording, manager->getChannelModel(), this);
 
@@ -533,7 +579,7 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	nameEdit = new KLineEdit(widget);
 	nameEdit->setText(recording->name);
 	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValid()));
-	gridLayout->addWidget(nameEdit, 0, 1);
+	gridLayout->addWidget(nameEdit, 0, 1, 1, 4);
 
 	gridLayout->addWidget(new QLabel(i18n("Channel:")), 1, 0);
 
@@ -549,37 +595,60 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	channelBox->addItems(channels);
 	channelBox->setCurrentIndex(channels.indexOf(recording->channelName));
 	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValid()));
-	gridLayout->addWidget(channelBox, 1, 1);
+	gridLayout->addWidget(channelBox, 1, 1, 1, 4);
 
 	gridLayout->addWidget(new QLabel(i18n("Begin:")), 2, 0);
 
 	beginEdit = new QDateTimeEdit(recording->begin.toLocalTime(), widget);
 	beginEdit->setCurrentSection(QDateTimeEdit::HourSection);
 	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(beginChanged(QDateTime)));
-	gridLayout->addWidget(beginEdit, 2, 1);
+	gridLayout->addWidget(beginEdit, 2, 1, 1, 4);
 
 	gridLayout->addWidget(new QLabel(i18n("Duration:")), 3, 0);
 
 	durationEdit = new QTimeEdit(recording->duration, widget);
 	connect(durationEdit, SIGNAL(timeChanged(QTime)), this, SLOT(durationChanged(QTime)));
-	gridLayout->addWidget(durationEdit, 3, 1);
+	gridLayout->addWidget(durationEdit, 3, 1, 1, 4);
 
 	gridLayout->addWidget(new QLabel(i18n("End:")), 4, 0);
 
 	endEdit = new QDateTimeEdit(widget);
 	endEdit->setCurrentSection(QDateTimeEdit::HourSection);
 	connect(endEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(endChanged(QDateTime)));
-	gridLayout->addWidget(endEdit, 4, 1);
+	gridLayout->addWidget(endEdit, 4, 1, 1, 4);
+
+	gridLayout->addWidget(new QLabel(i18n("Repeat:")), 5, 0);
+
+	QPushButton *pushButton = new QPushButton(i18n("Never"), widget);
+	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatNever()));
+	gridLayout->addWidget(pushButton, 5, 1, 1, 2);
+
+	pushButton = new QPushButton(i18n("Daily"), widget);
+	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatDaily()));
+	gridLayout->addWidget(pushButton, 5, 3, 1, 2);
+
+	for (int i = 0; i < 7; ++i) {
+		dayCheckBoxes[i] = new QCheckBox(QDate::shortDayName(i + 1), widget);
+		gridLayout->addWidget(dayCheckBoxes[i], 6 + (i / 4), 1 + (i % 4));
+	}
 
 	beginChanged(beginEdit->dateTime());
 	checkValid();
 
-	if (!recording->isRunning()) {
-		nameEdit->setFocus();
-	} else {
+	if (recording->isRunning()) {
 		nameEdit->setEnabled(false);
 		channelBox->setEnabled(false);
 		beginEdit->setEnabled(false);
+	}
+
+	for (int i = 0; i < 7; ++i) {
+		if ((recording->repeat & (1 << i)) != 0) {
+			dayCheckBoxes[i]->setChecked(true);
+		}
+	}
+
+	if (recording->name.isEmpty()) {
+		nameEdit->setFocus();
 	}
 
 	setMainWidget(widget);
@@ -596,11 +665,13 @@ void DvbRecordingEditor::updateRecording(DvbRecording *recording) const
 	recording->begin = beginEdit->dateTime();
 	recording->duration = durationEdit->time();
 	recording->end = endEdit->dateTime();
-}
+	recording->repeat = 0;
 
-void DvbRecordingEditor::checkValid()
-{
-	enableButtonOk(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
+	for (int i = 0; i < 7; ++i) {
+		if (dayCheckBoxes[i]->isChecked()) {
+			recording->repeat |= (1 << i);
+		}
+	}
 }
 
 void DvbRecordingEditor::beginChanged(const QDateTime &dateTime)
@@ -619,4 +690,23 @@ void DvbRecordingEditor::durationChanged(const QTime &time)
 void DvbRecordingEditor::endChanged(const QDateTime &dateTime)
 {
 	durationEdit->setTime(QTime().addSecs(beginEdit->dateTime().secsTo(dateTime)));
+}
+
+void DvbRecordingEditor::repeatNever()
+{
+	for (int i = 0; i < 7; ++i) {
+		dayCheckBoxes[i]->setChecked(false);
+	}
+}
+
+void DvbRecordingEditor::repeatDaily()
+{
+	for (int i = 0; i < 7; ++i) {
+		dayCheckBoxes[i]->setChecked(true);
+	}
+}
+
+void DvbRecordingEditor::checkValid()
+{
+	enableButtonOk(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
 }

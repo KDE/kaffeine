@@ -3,6 +3,7 @@ Kaffeine Changelog
 ------------------
 
 Version (unreleased):
+  - added configurable daily or weekly repetition of recording schedule entries
 
 Version 1.0-pre2 (2009-08-09):
   - added screen saver inhibition (using DBUS; org.freedesktop.ScreenSaver)

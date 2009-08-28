@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 #include <KDialog>
 
+class QCheckBox;
 class QDateTimeEdit;
 class QTimeEdit;
 class KComboBox;
@@ -102,6 +103,8 @@ public slots:
 	void beginChanged(const QDateTime &dateTime);
 	void durationChanged(const QTime &time);
 	void endChanged(const QDateTime &dateTime);
+	void repeatNever();
+	void repeatDaily();
 	void checkValid();
 
 private:
@@ -110,6 +113,7 @@ private:
 	QDateTimeEdit *beginEdit;
 	QTimeEdit *durationEdit;
 	QDateTimeEdit *endEdit;
+	QCheckBox *dayCheckBoxes[7];
 };
 
 #endif /* DVBRECORDING_H */
