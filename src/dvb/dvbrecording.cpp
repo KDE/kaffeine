@@ -40,12 +40,13 @@
 class DvbRecording : public DvbPidFilter, public QObject
 {
 public:
-	explicit DvbRecording(DvbManager *manager_) : manager(manager_), device(NULL) { }
+	explicit DvbRecording(DvbManager *manager_) : repeat(0), manager(manager_), device(NULL),
+		timerId(0) { }
 	~DvbRecording() { }
 
 	bool isRunning() const;
 	void start();
-	void releaseDevice();
+	void stop();
 
 	QString name;
 	QString channelName;
@@ -67,6 +68,7 @@ private:
 	DvbSectionGenerator patGenerator;
 	DvbSectionGenerator pmtGenerator;
 	QByteArray buffer;
+	int timerId;
 };
 
 bool DvbRecording::isRunning() const
@@ -140,7 +142,7 @@ void DvbRecording::start()
 		buffer.append(patGenerator.generatePackets());
 		buffer.append(pmtGenerator.generatePackets());
 
-		startTimer(500);
+		timerId = startTimer(500);
 	}
 
 	if ((device->getDeviceState() != DvbDevice::DeviceIdle) &&
@@ -151,18 +153,31 @@ void DvbRecording::start()
 	// FIXME retune
 }
 
-void DvbRecording::releaseDevice()
+void DvbRecording::stop()
 {
+	if (timerId != 0) {
+		killTimer(timerId);
+		timerId = 0;
+	}
+
 	if (device != NULL) {
 		foreach (int pid, pids) {
 			device->removePidFilter(pid, this);
 		}
 
 		manager->releaseDevice(device);
-
-		// flush pending data
-		file.write(buffer);
+		device = NULL;
 	}
+
+	pids.clear();
+
+	if (file.isOpen()) {
+		file.write(buffer);
+		file.close();
+	}
+
+	buffer.clear();
+	channel = NULL;
 }
 
 void DvbRecording::processData(const char data[188])
@@ -215,9 +230,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel
 		stream >> recording->duration;
 		stream >> recording->end;
 
-		if (version == 0) {
-			recording->repeat = 0;
-		} else {
+		if (version != 0) {
 			stream >> recording->repeat;
 		}
 
@@ -351,7 +364,7 @@ void DvbRecordingModel::removeRecording(int row)
 {
 	beginRemoveRows(QModelIndex(), row, row);
 	DvbRecording *recording = recordings.takeAt(row);
-	recording->releaseDevice();
+	recording->stop();
 	delete recording;
 	endRemoveRows();
 
@@ -383,7 +396,6 @@ void DvbRecordingModel::scheduleProgram(const QString &name, const QString &chan
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = duration;
 	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
-	recording->repeat = 0;
 	appendRecording(recording);
 }
 
@@ -397,7 +409,6 @@ void DvbRecordingModel::startInstantRecording(const QString &name, const QString
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = QTime(2, 0);
 	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
-	recording->repeat = 0;
 	appendRecording(recording);
 
 	instantRecordingRow = recordings.size() - 1;
@@ -419,6 +430,8 @@ void DvbRecordingModel::checkStatus()
 		DvbRecording *recording = recordings.at(i);
 
 		if (recording->end <= current) {
+			recording->stop();
+
 			if (recording->repeat == 0) {
 				removeRecording(i);
 				--i;
@@ -523,7 +536,6 @@ void DvbRecordingDialog::newRecording()
 	// the seconds aren't visible --> set them to zero
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = QTime(2, 0);
-	recording->repeat = 0;
 
 	DvbRecordingEditor editor(recording, manager->getChannelModel(), this);
 
