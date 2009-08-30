@@ -31,4 +31,12 @@ public:
 	~DateTimeEdit();
 };
 
+class DurationEdit : public QTimeEdit
+{
+public:
+	explicit DurationEdit(QWidget *parent);
+	DurationEdit(const QTime &time, QWidget *parent);
+	~DurationEdit();
+};
+
 #endif /* DATETIMEEDIT_H */

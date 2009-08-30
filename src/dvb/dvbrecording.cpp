@@ -618,7 +618,7 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 
 	gridLayout->addWidget(new QLabel(i18n("Duration:")), 3, 0);
 
-	durationEdit = new QTimeEdit(recording->duration, widget);
+	durationEdit = new DurationEdit(recording->duration, widget);
 	connect(durationEdit, SIGNAL(timeChanged(QTime)), this, SLOT(durationChanged(QTime)));
 	gridLayout->addWidget(durationEdit, 3, 1, 1, 4);
 

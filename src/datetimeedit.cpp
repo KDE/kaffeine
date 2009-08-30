@@ -163,3 +163,17 @@ DateTimeEdit::DateTimeEdit(const QDateTime &dateTime, QWidget *parent)
 DateTimeEdit::~DateTimeEdit()
 {
 }
+
+DurationEdit::DurationEdit(QWidget *parent) : QTimeEdit(parent)
+{
+	setDisplayFormat(localQtTimeFormat(false, true));
+}
+
+DurationEdit::DurationEdit(const QTime &time, QWidget *parent) : QTimeEdit(time, parent)
+{
+	setDisplayFormat(localQtTimeFormat(false, true));
+}
+
+DurationEdit::~DurationEdit()
+{
+}
