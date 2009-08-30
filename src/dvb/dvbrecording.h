@@ -25,10 +25,10 @@
 #include <KDialog>
 
 class QCheckBox;
-class QDateTimeEdit;
 class QTimeEdit;
 class KComboBox;
 class KLineEdit;
+class DateTimeEdit;
 class DvbChannelModel;
 class DvbManager;
 class DvbRecording;
@@ -110,9 +110,9 @@ public slots:
 private:
 	KLineEdit *nameEdit;
 	KComboBox *channelBox;
-	QDateTimeEdit *beginEdit;
+	DateTimeEdit *beginEdit;
 	QTimeEdit *durationEdit;
-	QDateTimeEdit *endEdit;
+	DateTimeEdit *endEdit;
 	QCheckBox *dayCheckBoxes[7];
 };
 

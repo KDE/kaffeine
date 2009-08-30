@@ -12,6 +12,7 @@ set(kaffeine_SRCS
     dvb/dvbtab.cpp
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
+    datetimeedit.cpp
     kaffeine.cpp
     main.cpp
     mediawidget.cpp

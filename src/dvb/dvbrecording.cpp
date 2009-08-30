@@ -22,7 +22,6 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QDateTimeEdit>
 #include <QFile>
 #include <QLabel>
 #include <QPushButton>
@@ -33,6 +32,7 @@
 #include <KLocale>
 #include <KLocalizedString>
 #include <KStandardDirs>
+#include "datetimeedit.h"
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
@@ -611,8 +611,8 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 
 	gridLayout->addWidget(new QLabel(i18n("Begin:")), 2, 0);
 
-	beginEdit = new QDateTimeEdit(recording->begin.toLocalTime(), widget);
-	beginEdit->setCurrentSection(QDateTimeEdit::HourSection);
+	beginEdit = new DateTimeEdit(recording->begin.toLocalTime(), widget);
+	beginEdit->setCurrentSection(DateTimeEdit::HourSection);
 	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(beginChanged(QDateTime)));
 	gridLayout->addWidget(beginEdit, 2, 1, 1, 4);
 
@@ -624,8 +624,8 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 
 	gridLayout->addWidget(new QLabel(i18n("End:")), 4, 0);
 
-	endEdit = new QDateTimeEdit(widget);
-	endEdit->setCurrentSection(QDateTimeEdit::HourSection);
+	endEdit = new DateTimeEdit(widget);
+	endEdit->setCurrentSection(DateTimeEdit::HourSection);
 	connect(endEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(endChanged(QDateTime)));
 	gridLayout->addWidget(endEdit, 4, 1, 1, 4);
 
