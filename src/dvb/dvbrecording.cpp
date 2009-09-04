@@ -586,14 +586,14 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
 
-	gridLayout->addWidget(new QLabel(i18n("Name:")), 0, 0);
-
 	nameEdit = new KLineEdit(widget);
 	nameEdit->setText(recording->name);
 	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValid()));
-	gridLayout->addWidget(nameEdit, 0, 1, 1, 4);
+	gridLayout->addWidget(nameEdit, 0, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Channel:")), 1, 0);
+	QLabel *label = new QLabel(i18n("Name:"), widget);
+	label->setBuddy(nameEdit);
+	gridLayout->addWidget(label, 0, 0);
 
 	QStringList channels;
 
@@ -607,42 +607,59 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	channelBox->addItems(channels);
 	channelBox->setCurrentIndex(channels.indexOf(recording->channelName));
 	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValid()));
-	gridLayout->addWidget(channelBox, 1, 1, 1, 4);
+	gridLayout->addWidget(channelBox, 1, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Begin:")), 2, 0);
+	label = new QLabel(i18n("Channel:"), widget);
+	label->setBuddy(channelBox);
+	gridLayout->addWidget(label, 1, 0);
 
 	beginEdit = new DateTimeEdit(recording->begin.toLocalTime(), widget);
 	beginEdit->setCurrentSection(DateTimeEdit::HourSection);
 	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(beginChanged(QDateTime)));
-	gridLayout->addWidget(beginEdit, 2, 1, 1, 4);
+	gridLayout->addWidget(beginEdit, 2, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Duration:")), 3, 0);
+	label = new QLabel(i18n("Begin:"), widget);
+	label->setBuddy(beginEdit);
+	gridLayout->addWidget(label, 2, 0);
 
 	durationEdit = new DurationEdit(recording->duration, widget);
 	connect(durationEdit, SIGNAL(timeChanged(QTime)), this, SLOT(durationChanged(QTime)));
-	gridLayout->addWidget(durationEdit, 3, 1, 1, 4);
+	gridLayout->addWidget(durationEdit, 3, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("End:")), 4, 0);
+	label = new QLabel(i18n("Duration:"), widget);
+	label->setBuddy(durationEdit);
+	gridLayout->addWidget(label, 3, 0);
 
 	endEdit = new DateTimeEdit(widget);
 	endEdit->setCurrentSection(DateTimeEdit::HourSection);
 	connect(endEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(endChanged(QDateTime)));
-	gridLayout->addWidget(endEdit, 4, 1, 1, 4);
+	gridLayout->addWidget(endEdit, 4, 1);
+
+	label = new QLabel(i18n("End:"), widget);
+	label->setBuddy(endEdit);
+	gridLayout->addWidget(label, 4, 0);
 
 	gridLayout->addWidget(new QLabel(i18n("Repeat:")), 5, 0);
 
+	QBoxLayout *boxLayout = new QHBoxLayout();
+
 	QPushButton *pushButton = new QPushButton(i18n("Never"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatNever()));
-	gridLayout->addWidget(pushButton, 5, 1, 1, 2);
+	boxLayout->addWidget(pushButton);
 
 	pushButton = new QPushButton(i18n("Daily"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatDaily()));
-	gridLayout->addWidget(pushButton, 5, 3, 1, 2);
+	boxLayout->addWidget(pushButton);
+	gridLayout->addLayout(boxLayout, 5, 1);
+
+	QGridLayout *dayLayout = new QGridLayout();
 
 	for (int i = 0; i < 7; ++i) {
 		dayCheckBoxes[i] = new QCheckBox(QDate::shortDayName(i + 1), widget);
-		gridLayout->addWidget(dayCheckBoxes[i], 6 + (i / 4), 1 + (i % 4));
+		dayLayout->addWidget(dayCheckBoxes[i], (i / 4), (i % 4));
 	}
+
+	gridLayout->addLayout(dayLayout, 6, 1);
 
 	beginChanged(beginEdit->dateTime());
 	checkValid();
