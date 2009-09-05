@@ -26,6 +26,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <KAction>
+#include <KCalendarSystem>
 #include <KComboBox>
 #include <KDebug>
 #include <KLineEdit>
@@ -643,11 +644,11 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
-	QPushButton *pushButton = new QPushButton(i18n("Never"), widget);
+	QPushButton *pushButton = new QPushButton(i18nc("button next to the 'Repeat:' label", "Never"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatNever()));
 	boxLayout->addWidget(pushButton);
 
-	pushButton = new QPushButton(i18n("Daily"), widget);
+	pushButton = new QPushButton(i18nc("button next to the 'Repeat:' label", "Daily"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatDaily()));
 	boxLayout->addWidget(pushButton);
 	gridLayout->addLayout(boxLayout, 5, 1);
@@ -655,7 +656,7 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	QGridLayout *dayLayout = new QGridLayout();
 
 	for (int i = 0; i < 7; ++i) {
-		dayCheckBoxes[i] = new QCheckBox(QDate::shortDayName(i + 1), widget);
+		dayCheckBoxes[i] = new QCheckBox(KGlobal::locale()->calendar()->weekDayName(i + 1, KCalendarSystem::ShortDayName), widget);
 		dayLayout->addWidget(dayCheckBoxes[i], (i / 4), (i % 4));
 	}
 
