@@ -32,6 +32,7 @@
 #include <KMenuBar>
 #include <KRecentFilesAction>
 #include <KShortcutsDialog>
+#include <KSystemTrayIcon>
 #include <KTabBar>
 #include <KToolBar>
 #include "dvb/dvbtab.h"
@@ -253,6 +254,9 @@ Kaffeine::Kaffeine()
 
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
+
+	KSystemTrayIcon *trayIcon = new KSystemTrayIcon(KIcon("kaffeine"), this);
+	trayIcon->show();
 
 	// initialize random number generator
 	qsrand(QTime().msecsTo(QTime::currentTime()));
