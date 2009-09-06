@@ -29,7 +29,6 @@ class KMenu;
 class KUrl;
 class MediaWidget;
 class Playlist;
-class PlaylistBrowserModel;
 class PlaylistBrowserView;
 class PlaylistModel;
 

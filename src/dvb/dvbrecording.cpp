@@ -30,8 +30,6 @@
 #include <KComboBox>
 #include <KDebug>
 #include <KLineEdit>
-#include <KLocale>
-#include <KLocalizedString>
 #include <KStandardDirs>
 #include "datetimeedit.h"
 #include "dvbchannelui.h"

@@ -31,7 +31,6 @@
 #include <KActionCollection>
 #include <KLineEdit>
 #include <KLocale>
-#include <KLocalizedString>
 #include <KMenu>
 #include <KMessageBox>
 #include "../mediawidget.h"

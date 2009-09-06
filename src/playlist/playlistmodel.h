@@ -26,7 +26,6 @@
 
 class QFile;
 class MediaWidget;
-class Playlist;
 
 class PlaylistTrack
 {

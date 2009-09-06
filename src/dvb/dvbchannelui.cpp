@@ -20,7 +20,6 @@
 
 #include "dvbchannelui.h"
 
-#include <QBitArray>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QFile>
