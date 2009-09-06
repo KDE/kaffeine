@@ -28,6 +28,7 @@ class DvbDeviceThread;
 
 class DvbLinuxDevice : public QObject, public DvbBackendDevice
 {
+	Q_OBJECT
 public:
 	DvbLinuxDevice(int adapter_, int index_, QObject *parent);
 	~DvbLinuxDevice();

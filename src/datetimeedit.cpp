@@ -154,22 +154,11 @@ DateTimeEdit::DateTimeEdit(QWidget *parent) : QDateTimeEdit(parent)
 	setDisplayFormat(localQtDateFormat() + ' ' + localQtTimeFormat(false, false));
 }
 
-DateTimeEdit::DateTimeEdit(const QDateTime &dateTime, QWidget *parent)
-	: QDateTimeEdit(dateTime, parent)
-{
-	setDisplayFormat(localQtDateFormat() + ' ' + localQtTimeFormat(false, false));
-}
-
 DateTimeEdit::~DateTimeEdit()
 {
 }
 
 DurationEdit::DurationEdit(QWidget *parent) : QTimeEdit(parent)
-{
-	setDisplayFormat(localQtTimeFormat(false, true));
-}
-
-DurationEdit::DurationEdit(const QTime &time, QWidget *parent) : QTimeEdit(time, parent)
 {
 	setDisplayFormat(localQtTimeFormat(false, true));
 }

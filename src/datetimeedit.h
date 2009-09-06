@@ -27,7 +27,6 @@ class DateTimeEdit : public QDateTimeEdit
 {
 public:
 	explicit DateTimeEdit(QWidget *parent);
-	DateTimeEdit(const QDateTime &dateTime, QWidget *parent);
 	~DateTimeEdit();
 };
 
@@ -35,7 +34,6 @@ class DurationEdit : public QTimeEdit
 {
 public:
 	explicit DurationEdit(QWidget *parent);
-	DurationEdit(const QTime &time, QWidget *parent);
 	~DurationEdit();
 };
 

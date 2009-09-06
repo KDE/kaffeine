@@ -582,7 +582,7 @@ static bool localeAwareLessThan3(const QString &x, const QString &y)
 DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannelModel *channelModel,
 	QWidget *parent) : KDialog(parent)
 {
-	setCaption(i18nc("subdialog of recording schedule", "Edit Schedule Entry"));
+	setCaption(i18nc("subdialog of 'Recording Schedule'", "Edit Schedule Entry"));
 
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
@@ -596,7 +596,7 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	label->setBuddy(nameEdit);
 	gridLayout->addWidget(label, 0, 0);
 
-	QStringList channels;
+	QStringList channels; // FIXME use proxy model?
 
 	foreach (const QSharedDataPointer<DvbChannel> &channel, channelModel->getChannels()) {
 		channels.append(channel->name);
@@ -614,7 +614,8 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	label->setBuddy(channelBox);
 	gridLayout->addWidget(label, 1, 0);
 
-	beginEdit = new DateTimeEdit(recording->begin.toLocalTime(), widget);
+	beginEdit = new DateTimeEdit(widget);
+	beginEdit->setDateTime(recording->begin.toLocalTime());
 	beginEdit->setCurrentSection(DateTimeEdit::HourSection);
 	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(beginChanged(QDateTime)));
 	gridLayout->addWidget(beginEdit, 2, 1);
@@ -623,7 +624,8 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	label->setBuddy(beginEdit);
 	gridLayout->addWidget(label, 2, 0);
 
-	durationEdit = new DurationEdit(recording->duration, widget);
+	durationEdit = new DurationEdit(widget);
+	durationEdit->setTime(recording->duration);
 	connect(durationEdit, SIGNAL(timeChanged(QTime)), this, SLOT(durationChanged(QTime)));
 	gridLayout->addWidget(durationEdit, 3, 1);
 
@@ -640,11 +642,12 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	label->setBuddy(endEdit);
 	gridLayout->addWidget(label, 4, 0);
 
-	gridLayout->addWidget(new QLabel(i18n("Repeat:")), 5, 0);
+	gridLayout->addWidget(new QLabel(i18n("Repeat:"), widget), 5, 0);
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
-	QPushButton *pushButton = new QPushButton(i18nc("button next to the 'Repeat:' label", "Never"), widget);
+	QPushButton *pushButton = new QPushButton(
+		i18nc("button next to the 'Repeat:' label", "Never"), widget);
 	connect(pushButton, SIGNAL(clicked(bool)), this, SLOT(repeatNever()));
 	boxLayout->addWidget(pushButton);
 
@@ -654,10 +657,12 @@ DvbRecordingEditor::DvbRecordingEditor(const DvbRecording *recording, DvbChannel
 	gridLayout->addLayout(boxLayout, 5, 1);
 
 	QGridLayout *dayLayout = new QGridLayout();
+	const KCalendarSystem *calendar = KGlobal::locale()->calendar();
 
 	for (int i = 0; i < 7; ++i) {
-		dayCheckBoxes[i] = new QCheckBox(KGlobal::locale()->calendar()->weekDayName(i + 1, KCalendarSystem::ShortDayName), widget);
-		dayLayout->addWidget(dayCheckBoxes[i], (i / 4), (i % 4));
+		dayCheckBoxes[i] = new QCheckBox(
+			calendar->weekDayName(i + 1, KCalendarSystem::ShortDayName), widget);
+		dayLayout->addWidget(dayCheckBoxes[i], (i >> 2), (i & 0x03));
 	}
 
 	gridLayout->addLayout(dayLayout, 6, 1);
