@@ -99,7 +99,7 @@ public:
 
 	void updateRecording(DvbRecording *recording) const;
 
-public slots:
+private slots:
 	void beginChanged(const QDateTime &dateTime);
 	void durationChanged(const QTime &time);
 	void endChanged(const QDateTime &dateTime);

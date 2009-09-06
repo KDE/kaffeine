@@ -301,28 +301,29 @@ int DvbRecordingModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || index.row() >= recordings.size()) {
+	if (!index.isValid() || (index.row() >= recordings.size())) {
 		return QVariant();
 	}
 
-	if (role != Qt::DisplayRole) {
-		if ((role == Qt::DecorationRole) && (index.column() == 0) &&
-		    recordings.at(index.row())->isRunning()) {
-			return KIcon("media-record");
+	if (role == Qt::DecorationRole) {
+		if (index.column() == 0) {
+			if (recordings.at(index.row())->isRunning()) {
+				return KIcon("media-record");
+			} else if (recordings.at(index.row())->repeat != 0) {
+				return KIcon("view-refresh");
+			}
 		}
-
-		return QVariant();
-	}
-
-	switch (index.column()) {
-	case 0:
-		return recordings.at(index.row())->name;
-	case 1:
-		return recordings.at(index.row())->channelName;
-	case 2:
-		return KGlobal::locale()->formatDateTime(recordings.at(index.row())->begin.toLocalTime());
-	case 3:
-		return KGlobal::locale()->formatTime(recordings.at(index.row())->duration, false, true);
+	} else if (role == Qt::DisplayRole) {
+		switch (index.column()) {
+		case 0:
+			return recordings.at(index.row())->name;
+		case 1:
+			return recordings.at(index.row())->channelName;
+		case 2:
+			return KGlobal::locale()->formatDateTime(recordings.at(index.row())->begin.toLocalTime());
+		case 3:
+			return KGlobal::locale()->formatTime(recordings.at(index.row())->duration, false, true);
+		}
 	}
 
 	return QVariant();
