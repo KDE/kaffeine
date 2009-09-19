@@ -21,7 +21,9 @@
 #include "kaffeine.h"
 
 #include <QHoverEvent>
+#include <QLabel>
 #include <QPushButton>
+#include <QSpinBox>
 #include <QStackedLayout>
 #include <QTimer>
 #include <KActionCollection>
@@ -118,6 +120,57 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 	layout->setMargin(0);
 }
 
+class ConfigurationDialog : public KDialog
+{
+public:
+	ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *parent);
+	~ConfigurationDialog();
+
+	void accept();
+
+private:
+	MediaWidget *mediaWidget;
+	QSpinBox *shortSkipBox;
+	QSpinBox *longSkipBox;
+};
+
+ConfigurationDialog::ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *parent) :
+	KDialog(parent), mediaWidget(mediaWidget_)
+{
+	setCaption(i18nc("dialog", "Configure Kaffeine"));
+
+	QWidget *widget = new QWidget(this);
+	QGridLayout *gridLayout = new QGridLayout(widget);
+
+	gridLayout->addWidget(new QLabel("Short skip duration", widget), 0, 0);
+
+	shortSkipBox = new QSpinBox(widget);
+	shortSkipBox->setRange(1, 600);
+	shortSkipBox->setValue(mediaWidget->getShortSkipDuration());
+	gridLayout->addWidget(shortSkipBox, 0, 1);
+
+	gridLayout->addWidget(new QLabel("Long skip duration", widget), 1, 0);
+
+	longSkipBox = new QSpinBox(widget);
+	longSkipBox->setRange(1, 600);
+	longSkipBox->setValue(mediaWidget->getLongSkipDuration());
+	gridLayout->addWidget(longSkipBox, 1, 1);
+
+	setMainWidget(widget);
+}
+
+ConfigurationDialog::~ConfigurationDialog()
+{
+}
+
+void ConfigurationDialog::accept()
+{
+	mediaWidget->setShortSkipDuration(shortSkipBox->value());
+	mediaWidget->setLongSkipDuration(longSkipBox->value());
+
+	KDialog::accept();
+}
+
 Kaffeine::Kaffeine()
 {
 	// menu structure
@@ -177,6 +230,10 @@ Kaffeine::Kaffeine()
 
 	action = KStandardAction::keyBindings(this, SLOT(configureKeys()), collection);
 	menu->addAction(collection->addAction("settings_keys", action));
+
+	action = new KAction(KIcon("configure"), i18nc("dialog", "Configure Kaffeine"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(configureKaffeine()));
+	menu->addAction(collection->addAction("settings_kaffeine", action));
 
 	menuBar->addMenu(helpMenu());
 
@@ -446,6 +503,12 @@ void Kaffeine::resizeToVideo(int factor)
 void Kaffeine::configureKeys()
 {
 	KShortcutsDialog::configure(collection);
+}
+
+void Kaffeine::configureKaffeine()
+{
+	ConfigurationDialog dialog(mediaWidget, this);
+	dialog.exec();
 }
 
 void Kaffeine::activateDvbTab()

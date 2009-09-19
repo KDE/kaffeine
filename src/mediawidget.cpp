@@ -286,29 +286,34 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 
 	navigationMenu = new KMenu(i18nc("playback menu", "Skip"), this);
 
-	action = new KAction(KIcon("media-skip-backward"),
-			     i18nc("submenu of skip", "Skip 1min Backward"), this);
-	action->setShortcut(Qt::SHIFT + Qt::Key_Left);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
-	navigationMenu->addAction(collection->addAction("controls_long_skip_backward", action));
+	shortSkipDuration =
+		KGlobal::config()->group("MediaObject").readEntry("ShortSkipDuration", 15);
+	longSkipDuration =
+		KGlobal::config()->group("MediaObject").readEntry("LongSkipDuration", 60);
 
-	action = new KAction(KIcon("media-skip-backward"),
-			     i18nc("submenu of skip", "Skip 10s Backward"), this);
-	action->setShortcut(Qt::Key_Left);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
-	navigationMenu->addAction(collection->addAction("controls_skip_backward", action));
+	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
+		i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration), this);
+	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
+	connect(longSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
+	navigationMenu->addAction(collection->addAction("controls_long_skip_backward", longSkipBackwardAction));
 
-	action = new KAction(KIcon("media-skip-forward"),
-			     i18nc("submenu of skip", "Skip 10s Forward"), this);
-	action->setShortcut(Qt::Key_Right);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
-	navigationMenu->addAction(collection->addAction("controls_skip_forward", action));
+	shortSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
+		i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration), this);
+	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
+	connect(shortSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
+	navigationMenu->addAction(collection->addAction("controls_skip_backward", shortSkipBackwardAction));
 
-	action = new KAction(KIcon("media-skip-forward"),
-			     i18nc("submenu of skip", "Skip 1min Forward"), this);
-	action->setShortcut(Qt::SHIFT + Qt::Key_Right);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
-	navigationMenu->addAction(collection->addAction("controls_long_skip_forward", action));
+	shortSkipForwardAction = new KAction(KIcon("media-skip-forward"),
+		i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration), this);
+	shortSkipForwardAction->setShortcut(Qt::Key_Right);
+	connect(shortSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
+	navigationMenu->addAction(collection->addAction("controls_skip_forward", shortSkipForwardAction));
+
+	longSkipForwardAction = new KAction(KIcon("media-skip-forward"),
+		i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration), this);
+	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
+	connect(longSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
+	navigationMenu->addAction(collection->addAction("controls_long_skip_forward", longSkipForwardAction));
 	menu->addMenu(navigationMenu);
 
 	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
@@ -372,6 +377,8 @@ MediaWidget::~MediaWidget()
 {
 	KGlobal::config()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
 	KGlobal::config()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
+	KGlobal::config()->group("MediaObject").writeEntry("ShortSkipDuration", shortSkipDuration);
+	KGlobal::config()->group("MediaObject").writeEntry("LongSkipDuration", longSkipDuration);
 }
 
 QString MediaWidget::extensionFilter()
@@ -460,6 +467,30 @@ void MediaWidget::updateDvbSubtitles(const QStringList &subtitles, int currentIn
 	dvbFeed->subtitles = subtitles;
 	dvbFeed->subtitleIndex = currentIndex;
 	updateSubtitleBox();
+}
+
+int MediaWidget::getShortSkipDuration() const
+{
+	return shortSkipDuration;
+}
+
+int MediaWidget::getLongSkipDuration() const
+{
+	return longSkipDuration;
+}
+
+void MediaWidget::setShortSkipDuration(int duration)
+{
+	shortSkipDuration = duration;
+	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", duration));
+	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
+}
+
+void MediaWidget::setLongSkipDuration(int duration)
+{
+	longSkipDuration = duration;
+	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", duration));
+	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
 }
 
 void MediaWidget::stopDvb()
@@ -815,7 +846,7 @@ void MediaWidget::updateSeekable()
 
 void MediaWidget::longSkipBackward()
 {
-	qint64 time = mediaObject->currentTime() - 60000;
+	qint64 time = mediaObject->currentTime() - 1000 * longSkipDuration;
 
 	if (time < 0) {
 		time = 0;
@@ -826,7 +857,7 @@ void MediaWidget::longSkipBackward()
 
 void MediaWidget::skipBackward()
 {
-	qint64 time = mediaObject->currentTime() - 10000;
+	qint64 time = mediaObject->currentTime() - 1000 * shortSkipDuration;
 
 	if (time < 0) {
 		time = 0;
@@ -837,12 +868,12 @@ void MediaWidget::skipBackward()
 
 void MediaWidget::skipForward()
 {
-	mediaObject->seek(mediaObject->currentTime() + 10000);
+	mediaObject->seek(mediaObject->currentTime() + 1000 * shortSkipDuration);
 }
 
 void MediaWidget::longSkipForward()
 {
-	mediaObject->seek(mediaObject->currentTime() + 60000);
+	mediaObject->seek(mediaObject->currentTime() + 1000 * longSkipDuration);
 }
 
 void MediaWidget::jumpToPosition()
@@ -1006,9 +1037,8 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
 	if (playing && mediaObject->isSeekable()) {
-		qint64 time = mediaObject->currentTime();
-
-		time -= event->delta() * 125;
+		qint64 time = mediaObject->currentTime() -
+			(25 * shortSkipDuration * event->delta()) / 3;
 
 		if (time < 0) {
 			time = 0;

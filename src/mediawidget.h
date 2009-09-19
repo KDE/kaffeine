@@ -73,6 +73,11 @@ public:
 	void updateDvbAudioChannels(const QStringList &audioChannels, int currentIndex);
 	void updateDvbSubtitles(const QStringList &subtitles, int currentIndex);
 
+	int getShortSkipDuration() const;
+	int getLongSkipDuration() const;
+	void setShortSkipDuration(int duration);
+	void setLongSkipDuration(int duration);
+
 public slots:
 	void stop();
 	void stopDvb();
@@ -180,6 +185,10 @@ private:
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
 	QSlider *volumeSlider;
+	KAction *longSkipBackwardAction;
+	KAction *shortSkipBackwardAction;
+	KAction *shortSkipForwardAction;
+	KAction *longSkipForwardAction;
 	KMenu *titleMenu;
 	KMenu *chapterMenu;
 	KMenu *angleMenu;
@@ -190,6 +199,8 @@ private:
 	int chapterCount;
 	int angleCount;
 	KMenu *navigationMenu;
+	int shortSkipDuration;
+	int longSkipDuration;
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 	bool showElapsedTime;

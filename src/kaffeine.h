@@ -57,6 +57,7 @@ private slots:
 	void toggleFullScreen();
 	void resizeToVideo(int factor);
 	void configureKeys();
+	void configureKaffeine();
 	void activateDvbTab();
 	void navigationBarOrientationChanged(Qt::Orientation orientation);
 	void activateTab(int tabIndex);
