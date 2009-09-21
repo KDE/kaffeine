@@ -291,24 +291,28 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	longSkipDuration =
 		KGlobal::config()->group("MediaObject").readEntry("LongSkipDuration", 60);
 
+	// xgettext: no-c-format
 	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration), this);
 	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
 	connect(longSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
 	navigationMenu->addAction(collection->addAction("controls_long_skip_backward", longSkipBackwardAction));
 
+	// xgettext: no-c-format
 	shortSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration), this);
 	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
 	connect(shortSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(skipBackward()));
 	navigationMenu->addAction(collection->addAction("controls_skip_backward", shortSkipBackwardAction));
 
+	// xgettext: no-c-format
 	shortSkipForwardAction = new KAction(KIcon("media-skip-forward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration), this);
 	shortSkipForwardAction->setShortcut(Qt::Key_Right);
 	connect(shortSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(skipForward()));
 	navigationMenu->addAction(collection->addAction("controls_skip_forward", shortSkipForwardAction));
 
+	// xgettext: no-c-format
 	longSkipForwardAction = new KAction(KIcon("media-skip-forward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration), this);
 	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
@@ -482,14 +486,18 @@ int MediaWidget::getLongSkipDuration() const
 void MediaWidget::setShortSkipDuration(int duration)
 {
 	shortSkipDuration = duration;
+	// xgettext: no-c-format
 	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", duration));
+	// xgettext: no-c-format
 	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
 }
 
 void MediaWidget::setLongSkipDuration(int duration)
 {
 	longSkipDuration = duration;
+	// xgettext: no-c-format
 	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", duration));
+	// xgettext: no-c-format
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
 }
 
