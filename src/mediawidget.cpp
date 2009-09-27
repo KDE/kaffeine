@@ -33,6 +33,8 @@
 #include <Phonon/MediaObject>
 #include <Phonon/SeekSlider>
 #include <Phonon/VideoWidget>
+#include <Solid/Block>
+#include <Solid/Device>
 #include <KAction>
 #include <KActionCollection>
 #include <KComboBox>
@@ -415,19 +417,55 @@ void MediaWidget::play(const KUrl &url)
 
 void MediaWidget::playAudioCd()
 {
-	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Cd));
+	QList<Solid::Device> devices =
+		Solid::Device::listFromQuery("OpticalDisc.availableContent & 'Audio'");
+	QString deviceName;
+
+	if (!devices.isEmpty()) {
+		Solid::Block *block = devices.first().as<Solid::Block>();
+
+		if (block != NULL) {
+			deviceName = block->device();
+		}
+	}
+
+	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Cd, deviceName));
 	mediaObject->play();
 }
 
 void MediaWidget::playVideoCd()
 {
-	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Vcd));
+	QList<Solid::Device> devices =
+		Solid::Device::listFromQuery("OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'");
+	QString deviceName;
+
+	if (!devices.isEmpty()) {
+		Solid::Block *block = devices.first().as<Solid::Block>();
+
+		if (block != NULL) {
+			deviceName = block->device();
+		}
+	}
+
+	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Vcd, deviceName));
 	mediaObject->play();
 }
 
 void MediaWidget::playDvd()
 {
-	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Dvd));
+	QList<Solid::Device> devices =
+		Solid::Device::listFromQuery("OpticalDisc.availableContent & 'VideoDvd'");
+	QString deviceName;
+
+	if (!devices.isEmpty()) {
+		Solid::Block *block = devices.first().as<Solid::Block>();
+
+		if (block != NULL) {
+			deviceName = block->device();
+		}
+	}
+
+	mediaObject->setCurrentSource(Phonon::MediaSource(Phonon::Dvd, deviceName));
 	mediaObject->play();
 }
 
