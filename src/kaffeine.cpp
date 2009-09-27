@@ -22,7 +22,6 @@
 
 #include <QHoverEvent>
 #include <QLabel>
-#include <QPushButton>
 #include <QSpinBox>
 #include <QStackedLayout>
 #include <QTimer>
@@ -50,7 +49,7 @@ public:
 private:
 	void activate() { }
 
-	QPushButton *addShortcut(const QString &name, const KIcon &icon, QWidget *parent);
+	QAbstractButton *addShortcut(const QString &name, const KIcon &icon, QWidget *parent);
 };
 
 StartTab::StartTab(Kaffeine *kaffeine)
@@ -63,7 +62,7 @@ StartTab::StartTab(Kaffeine *kaffeine)
 	gridLayout->setMargin(10);
 	gridLayout->setSpacing(15);
 
-	QPushButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
+	QAbstractButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
 	button->setShortcut(Qt::Key_1);
 	connect(button, SIGNAL(clicked()), kaffeine, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
@@ -89,13 +88,16 @@ StartTab::StartTab(Kaffeine *kaffeine)
 	gridLayout->addWidget(button, 1, 1);
 }
 
-QPushButton *StartTab::addShortcut(const QString &name, const KIcon &icon, QWidget *parent)
+QAbstractButton *StartTab::addShortcut(const QString &name, const KIcon &icon, QWidget *parent)
 {
-	QPushButton *button = new QPushButton(parent);
+	// QPushButton has visual problems with big icons
+	QToolButton *button = new QToolButton(parent);
 	button->setText(name);
 	button->setIcon(icon);
-	button->setIconSize(QSize(48, 48));
 	button->setFocusPolicy(Qt::NoFocus);
+	button->setIconSize(QSize(48, 48));
+	button->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	return button;
 }
 
