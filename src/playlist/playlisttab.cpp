@@ -314,7 +314,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		Playlist playlist(name);
 		playlist.setUrl(url);
 
-		for (int i = 0; i < count; ++i) {
+		for (int i = 0; (i < count) && !stream.atEnd(); ++i) {
 			QString trackUrl;
 			stream >> trackUrl;
 			playlist.tracks.append(PlaylistTrack(trackUrl));
