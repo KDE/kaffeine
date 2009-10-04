@@ -90,7 +90,7 @@ void DvbRecording::start()
 			return;
 		}
 
-		connect(device, SIGNAL(deviceStateChanged()), this, SLOT(deviceStateChanged()));
+		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 
 		pmtFilter = new DvbPmtFilter(channel->serviceId, this);
 		device->addPidFilter(channel->pmtPid, pmtFilter);
@@ -115,7 +115,7 @@ void DvbRecording::stop()
 			device->removePidFilter(pid, this);
 		}
 
-		disconnect(device, SIGNAL(deviceStateChanged()), this, SLOT(deviceStateChanged()));
+		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 		manager->releaseDevice(device);
 		device = NULL;
 	}
