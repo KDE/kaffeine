@@ -1198,6 +1198,34 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 	versionNumber = (versionNumber + 1) & 0x1f;
 }
 
+DvbPmtFilter::DvbPmtFilter(int programNumber_, QObject *parent) : QObject(parent),
+	programNumber(programNumber_), versionNumber(-1)
+{
+}
+
+DvbPmtFilter::~DvbPmtFilter()
+{
+}
+
+void DvbPmtFilter::processSection(const DvbSectionData &data)
+{
+	DvbSection section(data);
+
+	if (!section.isValid() || (section.tableId() != 0x2)) {
+		return;
+	}
+
+	DvbPmtSection pmtSection(section);
+
+	if (!pmtSection.isValid() || (pmtSection.programNumber() != programNumber) ||
+	    (pmtSection.versionNumber() == versionNumber)) {
+		return;
+	}
+
+	versionNumber = pmtSection.versionNumber();
+	emit pmtSectionChanged(pmtSection);
+}
+
 DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletextPid(-1)
 {
 	for (DvbPmtSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {

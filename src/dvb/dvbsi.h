@@ -280,6 +280,23 @@ private:
 	int continuityCounter;
 };
 
+class DvbPmtFilter : public QObject, public DvbSectionFilter
+{
+	Q_OBJECT
+public:
+	DvbPmtFilter(int programNumber_, QObject *parent);
+	~DvbPmtFilter();
+
+signals:
+	void pmtSectionChanged(const DvbPmtSection &section);
+
+private:
+	void processSection(const DvbSectionData &data);
+
+	int programNumber;
+	int versionNumber;
+};
+
 class DvbPmtParser
 {
 public:

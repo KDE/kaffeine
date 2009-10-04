@@ -24,12 +24,6 @@
 #include <QAbstractTableModel>
 #include <KDialog>
 
-class QCheckBox;
-class KComboBox;
-class KLineEdit;
-class DateTimeEdit;
-class DurationEdit;
-class DvbChannelModel;
 class DvbManager;
 class DvbRecording;
 class DvbRecordingEditor;
@@ -87,33 +81,6 @@ private:
 	DvbManager *manager;
 	DvbRecordingModel *model;
 	ProxyTreeView *treeView;
-};
-
-class DvbRecordingEditor : public KDialog
-{
-	Q_OBJECT
-public:
-	DvbRecordingEditor(const DvbRecording *recording, DvbChannelModel *channelModel,
-		QWidget *parent);
-	~DvbRecordingEditor();
-
-	void updateRecording(DvbRecording *recording) const;
-
-private slots:
-	void beginChanged(const QDateTime &dateTime);
-	void durationChanged(const QTime &time);
-	void endChanged(const QDateTime &dateTime);
-	void repeatNever();
-	void repeatDaily();
-	void checkValid();
-
-private:
-	KLineEdit *nameEdit;
-	KComboBox *channelBox;
-	DateTimeEdit *beginEdit;
-	DurationEdit *durationEdit;
-	DateTimeEdit *endEdit;
-	QCheckBox *dayCheckBoxes[7];
 };
 
 #endif /* DVBRECORDING_H */
