@@ -144,14 +144,16 @@ ConfigurationDialog::ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *par
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
 
-	gridLayout->addWidget(new QLabel("Short skip duration", widget), 0, 0);
+	gridLayout->addWidget(new QLabel(i18nc("'Configure Kaffeine' dialog",
+		"Short skip duration:"), widget), 0, 0);
 
 	shortSkipBox = new QSpinBox(widget);
 	shortSkipBox->setRange(1, 600);
 	shortSkipBox->setValue(mediaWidget->getShortSkipDuration());
 	gridLayout->addWidget(shortSkipBox, 0, 1);
 
-	gridLayout->addWidget(new QLabel("Long skip duration", widget), 1, 0);
+	gridLayout->addWidget(new QLabel(i18nc("'Configure Kaffeine' dialog",
+		"Short skip duration:"), widget), 1, 0);
 
 	longSkipBox = new QSpinBox(widget);
 	longSkipBox->setRange(1, 600);
