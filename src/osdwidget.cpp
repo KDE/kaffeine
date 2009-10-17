@@ -40,8 +40,7 @@ void OsdWidget::showText(const QString &text, int duration)
 	QFont osdFont = font();
 	osdFont.setPointSize(25);
 
-	rect = QFontMetrics(osdFont).boundingRect(text);
-	rect.moveTo(0, 0);
+	rect = QRect(QPoint(0, 0), QFontMetrics(osdFont).size(Qt::AlignLeft, text));
 	rect.adjust(0, 0, 10, 0);
 
 	pixmap = QPixmap(rect.size());
@@ -51,7 +50,7 @@ void OsdWidget::showText(const QString &text, int duration)
 		painter.fillRect(rect, Qt::black);
 		painter.setFont(osdFont);
 		painter.setPen(Qt::white);
-		painter.drawText(rect, Qt::AlignCenter, text);
+		painter.drawText(rect.adjusted(5, 0, 0, 0), Qt::AlignLeft, text);
 	}
 
 	osdObject = NULL;
