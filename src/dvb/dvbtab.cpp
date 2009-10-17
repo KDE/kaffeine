@@ -464,6 +464,11 @@ void DvbTab::playLastChannel()
 	playChannel(KConfigGroup(KGlobal::config(), "DVB").readEntry("LastChannel"));
 }
 
+void DvbTab::enableDvbDump()
+{
+	dvbManager->enableDvbDump();
+}
+
 void DvbTab::showChannelDialog()
 {
 	DvbScanDialog dialog(this);

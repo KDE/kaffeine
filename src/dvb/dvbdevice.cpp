@@ -23,14 +23,59 @@
 #include <unistd.h>
 #include <cmath>
 #include <QCoreApplication>
+#include <QDir>
+#include <QFile>
 #include <KDebug>
 #include "dvbmanager.h"
+
+class DvbFilterInternal
+{
+public:
+	DvbFilterInternal() : activeFilters(0) { }
+	~DvbFilterInternal() { }
+
+	QList<DvbPidFilter *> filters;
+	int activeFilters;
+};
 
 class DvbDummyFilter : public DvbPidFilter
 {
 public:
+	DvbDummyFilter() { }
+	~DvbDummyFilter() { }
+
 	void processData(const char [188]) { }
 };
+
+class DvbDataDumper : public DvbPidFilter
+{
+public:
+	DvbDataDumper();
+	~DvbDataDumper();
+
+	void processData(const char [188]);
+
+private:
+	QFile file;
+};
+
+DvbDataDumper::DvbDataDumper()
+{
+	file.setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" + QString::number(qrand(), 16) + ".bin");
+
+	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "couldn't open" << file.fileName();
+	}
+}
+
+DvbDataDumper::~DvbDataDumper()
+{
+}
+
+void DvbDataDumper::processData(const char data[188])
+{
+	file.write(data, 188);
+}
 
 struct DvbFilterData
 {
@@ -39,33 +84,9 @@ struct DvbFilterData
 	DvbFilterData *next;
 };
 
-class DvbFilterInternal
-{
-public:
-	explicit DvbFilterInternal(int pid_) : pid(pid_) { }
-	~DvbFilterInternal() { }
-
-	bool operator<(const DvbFilterInternal &x) const
-	{
-		return pid < x.pid;
-	}
-
-	int pid;
-	QList<DvbPidFilter *> filters;
-};
-
-static bool operator<(const DvbFilterInternal &x, int y)
-{
-	return x.pid < y;
-}
-
-static bool operator<(int x, const DvbFilterInternal &y)
-{
-	return x < y.pid;
-}
-
 DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObject(parent),
-	backendDevice(backendDevice_), deviceState(DeviceIdle), isAuto(false)
+	backendDevice(backendDevice_), deviceState(DeviceIdle), dataDumper(NULL),
+	cleanUpFilters(false), isAuto(false)
 {
 	backendDevice->buffer = this;
 
@@ -90,6 +111,7 @@ DvbDevice::~DvbDevice()
 	}
 
 	delete dummyFilter;
+	delete dataDumper;
 }
 
 void DvbDevice::tune(const DvbTransponder &transponder)
@@ -342,15 +364,18 @@ bool DvbDevice::isTuned()
 
 bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 {
-	QList<DvbFilterInternal>::iterator it = qLowerBound(pendingFilters.begin(),
-		pendingFilters.end(), pid);
+	QMap<int, DvbFilterInternal>::iterator it = filters.find(pid);
 
-	if ((it == pendingFilters.end()) || (it->pid != pid)) {
-		if (!backendDevice->addPidFilter(pid)) {
-			return false;
+	if (it == filters.end()) {
+		it = filters.insert(pid, DvbFilterInternal());
+
+		if (dataDumper != 0) {
+			it->filters.append(dataDumper);
 		}
+	}
 
-		it = pendingFilters.insert(it, DvbFilterInternal(pid));
+	if ((it->activeFilters == 0) && !backendDevice->addPidFilter(pid)) {
+		return false;
 	}
 
 	if (it->filters.contains(filter)) {
@@ -359,39 +384,50 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	it->filters.append(filter);
-
-	it = qLowerBound(activeFilters.begin(), activeFilters.end(), pid);
-
-	if ((it == activeFilters.end()) || (it->pid != pid)) {
-		it = activeFilters.insert(it, DvbFilterInternal(pid));
-	}
-
-	it->filters.append(filter);
+	++it->activeFilters;
 	return true;
 }
 
 void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 {
-	QList<DvbFilterInternal>::iterator it = qBinaryFind(pendingFilters.begin(),
-		pendingFilters.end(), pid);
+	QMap<int, DvbFilterInternal>::iterator it = filters.find(pid);
+	int index;
 
-	if (it == pendingFilters.end()) {
+	if (it != filters.end()) {
+		index = it->filters.indexOf(filter);
+	} else {
+		index = -1;
+	}
+
+	if (index < 0) {
 		kWarning() << "trying to remove a nonexistent filter";
 		return;
 	}
 
-	if (!it->filters.removeOne(filter)) {
-		kWarning() << "trying to remove a nonexistent filter";
-		return;
-	}
+	it->filters.replace(index, dummyFilter);
+	--it->activeFilters;
 
-	if (it->filters.isEmpty()) {
+	if (it->activeFilters == 0) {
 		backendDevice->removePidFilter(pid);
-		pendingFilters.erase(it);
 	}
 
-	it = qBinaryFind(activeFilters.begin(), activeFilters.end(), pid);
-	it->filters.replace(it->filters.indexOf(filter), dummyFilter);
+	cleanUpFilters = true;
+}
+
+void DvbDevice::enableDvbDump()
+{
+	if (dataDumper != NULL) {
+		return;
+	}
+
+	dataDumper = new DvbDataDumper();
+
+	QMap<int, DvbFilterInternal>::iterator it = filters.begin();
+	QMap<int, DvbFilterInternal>::iterator end = filters.end();
+
+	for (; it != end; ++it) {
+		it->filters.append(dataDumper);
+	}
 }
 
 void DvbDevice::frontendEvent()
@@ -548,6 +584,20 @@ void DvbDevice::submitCurrent(int packets)
 
 void DvbDevice::customEvent(QEvent *)
 {
+	if (cleanUpFilters) {
+		QMap<int, DvbFilterInternal>::iterator it = filters.begin();
+		QMap<int, DvbFilterInternal>::iterator end = filters.end();
+
+		while (it != end) {
+			if (it->activeFilters == 0) {
+				it = filters.erase(it);
+			} else {
+				it->filters.removeAll(dummyFilter);
+				++it;
+			}
+		}
+	}
+
 	Q_ASSERT(usedBuffers >= 1);
 
 	while (true) {
@@ -562,18 +612,16 @@ void DvbDevice::customEvent(QEvent *)
 			int pid = ((static_cast<unsigned char>(packet[1]) << 8) |
 				static_cast<unsigned char>(packet[2])) & ((1 << 13) - 1);
 
-			QList<DvbFilterInternal>::const_iterator it = qBinaryFind(
-				activeFilters.constBegin(), activeFilters.constEnd(), pid);
+			QMap<int, DvbFilterInternal>::const_iterator it = filters.constFind(pid);
 
-			if (it == activeFilters.constEnd()) {
+			if (it == filters.end()) {
 				continue;
 			}
 
-			const DvbFilterInternal &internalFilter = *it;
-			int filterSize = internalFilter.filters.size();
+			const QList<DvbPidFilter *> &pidFilters = it->filters;
 
-			for (int j = 0; j < filterSize; ++j) {
-				internalFilter.filters.at(j)->processData(packet);
+			for (int j = 0; j < pidFilters.size(); ++j) {
+				pidFilters.at(j)->processData(packet);
 			}
 		}
 
@@ -583,6 +631,4 @@ void DvbDevice::customEvent(QEvent *)
 			break;
 		}
 	}
-
-	activeFilters = pendingFilters;
 }

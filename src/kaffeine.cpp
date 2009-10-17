@@ -339,6 +339,7 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 	options.add("videocd", ki18n("Play Video CD"));
 	options.add("dvd", ki18n("Play DVD"));
 	options.add("tv <channel>", ki18n("Play TV channel"));
+	options.add("dumpdvb", ki18nc("command line option", "Dump dvb data (debug option)"));
 	options.add("+[file]", ki18n("Files or URLs to play"));
 	return options;
 }
@@ -349,6 +350,10 @@ void Kaffeine::parseArgs()
 
 	if (args->isSet("fullscreen") && !isFullScreen()) {
 		toggleFullScreen();
+	}
+
+	if (args->isSet("dumpdvb")) {
+		dvbTab->enableDvbDump();
 	}
 
 	if (args->isSet("audiocd")) {

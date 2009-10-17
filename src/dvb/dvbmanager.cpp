@@ -212,7 +212,7 @@ DvbDeviceConfig::~DvbDeviceConfig()
 {
 }
 
-DvbManager::DvbManager(QObject *parent) : QObject(parent)
+DvbManager::DvbManager(QObject *parent) : QObject(parent), dvbDumpEnabled(false)
 {
 	channelModel = new DvbChannelModel(this);
 	channelModel->loadChannels();
@@ -488,11 +488,30 @@ void DvbManager::setLongitude(double value)
 	KConfigGroup(KGlobal::config(), "DVB").writeEntry("Longitude", value);
 }
 
+void DvbManager::enableDvbDump()
+{
+	if (!dvbDumpEnabled) {
+		return;
+	}
+
+	dvbDumpEnabled = true;
+
+	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
+		if (deviceConfig.device != NULL) {
+			deviceConfig.device->enableDvbDump();
+		}
+	}
+}
+
 void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
 {
 	DvbDevice *device = new DvbDevice(backendDevice, this);
 	QString deviceId = backendDevice->getDeviceId();
 	QString frontendName = backendDevice->getFrontendName();
+
+	if (dvbDumpEnabled) {
+		device->enableDvbDump();
+	}
 
 	for (int i = 0;; ++i) {
 		if (i == deviceConfigs.size()) {

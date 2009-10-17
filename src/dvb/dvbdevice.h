@@ -21,10 +21,13 @@
 #ifndef DVBDEVICE_H
 #define DVBDEVICE_H
 
+#include <QMap>
 #include <QTimer>
 #include "dvbbackenddevice.h"
 #include "dvbchannel.h"
 #include "dvbconfig.h"
+
+class DvbFilterInternal;
 
 class DvbPidFilter
 {
@@ -107,6 +110,8 @@ public:
 	bool addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
 
+	void enableDvbDump();
+
 	/*
 	 * assigned by DvbManager::requestDevice()
 	 */
@@ -132,9 +137,10 @@ private:
 
 	int frontendTimeout;
 	QTimer frontendTimer;
-	QList<DvbFilterInternal> activeFilters;
-	QList<DvbFilterInternal> pendingFilters;
+	QMap<int, DvbFilterInternal> filters;
 	DvbPidFilter *dummyFilter;
+	DvbPidFilter *dataDumper;
+	bool cleanUpFilters;
 
 	bool isAuto;
 	DvbTTransponder *autoTTransponder;

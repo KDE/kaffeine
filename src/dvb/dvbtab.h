@@ -57,6 +57,8 @@ public:
 	void playChannel(const QString &name);
 	void playLastChannel();
 
+	void enableDvbDump();
+
 private slots:
 	void showChannelDialog();
 	void showEpgDialog();

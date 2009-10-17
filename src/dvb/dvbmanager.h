@@ -109,6 +109,8 @@ public:
 	void setLatitude(double value);
 	void setLongitude(double value);
 
+	void enableDvbDump();
+
 private slots:
 	void deviceAdded(DvbBackendDevice *backendDevice);
 	void deviceRemoved(DvbBackendDevice *backendDevice);
@@ -129,6 +131,7 @@ private:
 	DvbRecordingModel *recordingModel;
 
 	QList<DvbDeviceConfig> deviceConfigs;
+	bool dvbDumpEnabled;
 	QMap<QString, QPair<TransmissionType, QString> > sourceMapping;
 	QStringList sources;
 
