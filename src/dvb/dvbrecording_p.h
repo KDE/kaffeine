@@ -61,13 +61,14 @@ private:
 	DvbManager *manager;
 	QSharedDataPointer<DvbChannel> channel;
 	QFile file;
-	QByteArray buffer;
+	QList<QByteArray> buffers;
 	DvbDevice *device;
 	QList<int> pids;
 	DvbPmtFilter *pmtFilter;
 	DvbSectionGenerator patGenerator;
 	DvbSectionGenerator pmtGenerator;
 	QTimer patPmtTimer;
+	bool pmtValid;
 };
 
 class DvbRecordingEditor : public KDialog

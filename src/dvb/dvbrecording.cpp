@@ -37,7 +37,6 @@
 
 DvbRecording::DvbRecording(DvbManager *manager_) : repeat(0), manager(manager_), device(NULL)
 {
-	patPmtTimer.setInterval(500);
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 }
 
@@ -96,7 +95,11 @@ void DvbRecording::start()
 		device->addPidFilter(channel->pmtPid, pmtFilter);
 		connect(pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
 			this, SLOT(pmtSectionChanged(DvbPmtSection)));
-		pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+
+		patGenerator = DvbSectionGenerator();
+		patGenerator.initPat(channel->transportStreamId, channel->serviceId, channel->pmtPid);
+		pmtGenerator = DvbSectionGenerator();
+		pmtValid = false;
 	}
 }
 
@@ -121,13 +124,8 @@ void DvbRecording::stop()
 	}
 
 	pids.clear();
-
-	if (file.isOpen()) {
-		file.write(buffer);
-		file.close();
-	}
-
-	buffer.clear();
+	file.close();
+	buffers.clear();
 	channel = NULL;
 }
 
@@ -185,32 +183,56 @@ void DvbRecording::pmtSectionChanged(const DvbPmtSection &pmtSection)
 
 	pmtGenerator.initPmt(channel->pmtPid, pmtSection, pids);
 
-	if (patPmtTimer.isActive()) {
-		insertPatPmt();
+	if (!pmtValid) {
+		pmtValid = true;
+		file.write(patGenerator.generatePackets());
+		file.write(pmtGenerator.generatePackets());
+
+		foreach (const QByteArray &buffer, buffers) {
+			file.write(buffer);
+		}
+
+		buffers.clear();
+		patPmtTimer.start(500);
 	}
+
+	insertPatPmt();
 }
 
 void DvbRecording::insertPatPmt()
 {
-	buffer.append(patGenerator.generatePackets());
-	buffer.append(pmtGenerator.generatePackets());
+	if (!pmtValid) {
+		pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+		return;
+	}
+
+	file.write(patGenerator.generatePackets());
+	file.write(pmtGenerator.generatePackets());
 }
 
 void DvbRecording::processData(const char data[188])
 {
-	if (!patPmtTimer.isActive()) {
-		buffer.reserve(348 * 188);
-		patPmtTimer.start();
-		insertPatPmt();
+	if (!pmtValid) {
+		if (!patPmtTimer.isActive()) {
+			patPmtTimer.start(1000);
+			QByteArray nextBuffer;
+			nextBuffer.reserve(348 * 188);
+			buffers.append(nextBuffer);
+		}
+
+		QByteArray &buffer = buffers.last();
+		buffer.append(QByteArray::fromRawData(data, 188));
+
+		if (buffer.size() >= (348 * 188)) {
+			QByteArray nextBuffer;
+			nextBuffer.reserve(348 * 188);
+			buffers.append(nextBuffer);
+		}
+
+		return;
 	}
 
-	buffer.append(QByteArray::fromRawData(data, 188));
-
-	if (buffer.size() >= (332 * 188)) {
-		file.write(buffer);
-		buffer.clear();
-		buffer.reserve(348 * 188);
-	}
+	file.write(data, 188);
 }
 
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_) : QAbstractTableModel(manager_),
