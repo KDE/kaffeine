@@ -1232,6 +1232,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 		QString streamLanguage;
 		QString subtitleLanguage;
 		bool teletextPresent = false;
+		bool ac3Present = false;
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
 		     descriptor.advance()) {
@@ -1250,6 +1251,10 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				streamLanguage.append(QChar(languageDescriptor.languageCode3()));
 				break;
 			    }
+
+			case 0x56:
+				teletextPresent = true;
+				break;
 
 			case 0x59: {
 				DvbSubtitleDescriptor subtitleDescriptor(descriptor);
@@ -1272,8 +1277,9 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				break;
 			    }
 
-			case 0x56:
-				teletextPresent = true;
+			case 0x6a:
+			case 0x7a:
+				ac3Present = true;
 				break;
 			}
 		}
@@ -1299,7 +1305,15 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 			audioPids.insert(entry.pid(), streamLanguage);
 			break;
 
-		case 0x06: // private data - can be subtitle, teletext or something else
+		case 0x06: // private data - can be teletext, subtitle, ac3 or something else
+			if (teletextPresent) {
+				if (teletextPid != -1) {
+					kDebug() << "more than one teletext pid";
+				}
+
+				teletextPid = entry.pid();
+			}
+
 			if (!subtitleLanguage.isEmpty()) {
 				subtitlePids.insert(entry.pid(), subtitleLanguage);
 
@@ -1308,12 +1322,8 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				}
 			}
 
-			if (teletextPresent) {
-				if (teletextPid != -1) {
-					kDebug() << "more than one teletext pid";
-				}
-
-				teletextPid = entry.pid();
+			if (ac3Present) {
+				audioPids.insert(entry.pid(), streamLanguage);
 			}
 
 			break;
