@@ -840,7 +840,7 @@ void PlaylistTab::savePlaylist(bool askName)
 	QFile file(url.toLocalFile());
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		KMessageBox::sorry(this, i18n("Can't open %1.", file.fileName()));
+		KMessageBox::sorry(this, i18n("Cannot open %1.", file.fileName()));
 		return;
 	}
 
