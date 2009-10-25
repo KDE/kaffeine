@@ -490,7 +490,7 @@ void DvbManager::setLongitude(double value)
 
 void DvbManager::enableDvbDump()
 {
-	if (!dvbDumpEnabled) {
+	if (dvbDumpEnabled) {
 		return;
 	}
 
