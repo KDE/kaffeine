@@ -103,6 +103,8 @@ JumpToPositionDialog::JumpToPositionDialog(const QTime &time, QWidget *parent) :
 	timeEdit->setDisplayFormat("hh:mm:ss");
 	layout->addWidget(timeEdit);
 
+	timeEdit->setFocus();
+
 	setMainWidget(widget);
 }
 
