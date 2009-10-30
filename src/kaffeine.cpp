@@ -194,7 +194,7 @@ Kaffeine::Kaffeine()
 	menu->addAction(collection->addAction("file_open_url", action));
 
 	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(KUrl)), collection);
-	actionOpenRecent->loadEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
+	actionOpenRecent->loadEntries(KGlobal::config()->group("Recent Files"));
 	menu->addAction(collection->addAction("file_open_recent", actionOpenRecent));
 
 	menu->addSeparator();
@@ -327,7 +327,7 @@ Kaffeine::Kaffeine()
 
 Kaffeine::~Kaffeine()
 {
-	actionOpenRecent->saveEntries(KConfigGroup(KGlobal::config(), "Recent Files"));
+	actionOpenRecent->saveEntries(KGlobal::config()->group("Recent Files"));
 }
 
 KCmdLineOptions Kaffeine::cmdLineOptions()

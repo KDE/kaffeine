@@ -78,8 +78,11 @@ private:
 class DvbEitFilter : public DvbSectionFilter
 {
 public:
-	DvbEitFilter(DvbManager *manager_, const QString &source_);
+	DvbEitFilter();
 	~DvbEitFilter();
+
+	void setManager(DvbManager *manager_);
+	void setSource(const QString &source_);
 
 private:
 	static QTime bcdToTime(int bcd);

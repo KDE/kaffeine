@@ -25,9 +25,9 @@
 #include <QTimer>
 #include "dvbbackenddevice.h"
 #include "dvbchannel.h"
-#include "dvbconfig.h"
 
-class DvbFilterInternal;
+class DvbConfigBase;
+class DvbFilterData;
 
 class DvbPidFilter
 {
@@ -44,19 +44,17 @@ class DvbDevice : public QObject, private DvbAbstractDeviceBuffer
 public:
 	enum DeviceState
 	{
-		DeviceNotReady,
+		DeviceReleased,
 		DeviceIdle,
 		DeviceRotorMoving,
 		DeviceTuning,
-		DeviceTuningFailed,
 		DeviceTuned
 	};
 
 	DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent);
-	DvbDevice(int deviceIndex_, QObject *parent);
 	~DvbDevice();
 
-	DvbBackendDevice *getBackendDevice()
+	const DvbBackendDevice *getBackendDevice() const
 	{
 		return backendDevice;
 	}
@@ -66,57 +64,27 @@ public:
 		return deviceState;
 	}
 
-	DvbBackendDevice::TransmissionTypes getTransmissionTypes() const
-	{
-		Q_ASSERT(deviceState != DeviceNotReady);
-		return backendDevice->getTransmissionTypes();
-	}
-
-	QString getDeviceId() const
-	{
-		Q_ASSERT(deviceState != DeviceNotReady);
-		return backendDevice->getDeviceId();
-	}
-
-	QString getFrontendName() const
-	{
-		Q_ASSERT(deviceState != DeviceNotReady);
-		return backendDevice->getFrontendName();
-	}
-
-	bool acquire()
-	{
-		return backendDevice->acquire();
-	}
+	DvbBackendDevice::TransmissionTypes getTransmissionTypes() const;
+	QString getDeviceId() const;
+	QString getFrontendName() const;
 
 	void tune(const DvbTransponder &transponder);
 	void autoTune(const DvbTransponder &transponder);
-	DvbTransponder getAutoTransponder() const;
-	void release();
-
-	/*
-	 * signal and SNR are scaled from 0 to 100
-	 * the device has to be tuned / tuning when you call one of these functions
-	 */
-
-	int getSignal();
-	int getSnr();
-	bool isTuned();
-
-	/*
-	 * you can use the same filter object for different pids
-	 */
-
 	bool addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
-
-	void enableDvbDump();
+	bool isTuned() const;
+	int getSignal() const; // 0 - 100 [%]
+	int getSnr() const; // 0 - 100 [%]
+	DvbTransponder getAutoTransponder() const;
 
 	/*
-	 * assigned by DvbManager::requestDevice()
+	 * management functions (must be only called by DvbManager)
 	 */
 
-	DvbConfig config;
+	bool acquire(const QSharedDataPointer<DvbConfigBase> &config_);
+	void reacquire(const QSharedDataPointer<DvbConfigBase> &config_);
+	void release();
+	void enableDvbDump();
 
 signals:
 	void stateChanged();
@@ -126,6 +94,8 @@ private slots:
 
 private:
 	void setDeviceState(DeviceState newState);
+	void discardBuffers();
+	void stop();
 
 	int size();
 	char *getCurrent();
@@ -134,6 +104,7 @@ private:
 
 	DvbBackendDevice *backendDevice;
 	DeviceState deviceState;
+	QSharedDataPointer<DvbConfigBase> config;
 
 	int frontendTimeout;
 	QTimer frontendTimer;
@@ -149,8 +120,8 @@ private:
 
 	DvbFilterData *currentUnused;
 	DvbFilterData *currentUsed;
-	QAtomicInt usedBuffers;
 	int totalBuffers;
+	QAtomicInt usedBuffers;
 };
 
 #endif /* DVBDEVICE_H */

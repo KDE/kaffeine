@@ -22,7 +22,6 @@
 #define DVBBACKENDDEVICE_H
 
 class DvbBackendDevice;
-class DvbFilterData;
 class DvbFilterInternal;
 class DvbManager;
 class DvbTransponder;

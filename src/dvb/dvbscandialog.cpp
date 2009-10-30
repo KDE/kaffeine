@@ -32,9 +32,9 @@
 #include <KMessageBox>
 #include "dvbchannelui.h"
 #include "dvbdevice.h"
+#include "dvbliveview.h"
 #include "dvbmanager.h"
 #include "dvbscan.h"
-#include "dvbtab.h"
 
 DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
 {
@@ -189,10 +189,10 @@ QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orienta
 	return QVariant();
 }
 
-DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_), internal(NULL)
+DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
+	manager(manager_), internal(NULL)
 {
 	setCaption(i18n("Channels"));
-	manager = dvbTab->getDvbManager();
 
 	QWidget *mainWidget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
@@ -319,7 +319,7 @@ DvbScanDialog::DvbScanDialog(DvbTab *dvbTab_) : KDialog(dvbTab_), dvbTab(dvbTab_
 	groupLayout->addWidget(scanResultsView);
 	mainLayout->addWidget(groupBox);
 
-	setDevice(dvbTab->getLiveDevice());
+	setDevice(manager->getLiveView()->getDevice());
 
 	if (device != NULL) {
 		sourceBox->addItem(i18n("Current Transponder"));
@@ -372,7 +372,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	Q_ASSERT(internal == NULL);
 
 	if (isLive) {
-		const DvbChannel *channel = dvbTab->getLiveChannel();
+		const DvbChannel *channel = manager->getLiveView()->getChannel();
 		internal = new DvbScan(device, channel->source, channel->transponder);
 	} else {
 		QString source = sourceBox->currentText();
@@ -389,7 +389,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 			}
 		} else {
 			scanButton->setChecked(false);
-			KMessageBox::sorry(this, i18n("No suitable device found."));
+			KMessageBox::sorry(this, i18nc("message box", "No available device found."));
 			return;
 		}
 	}

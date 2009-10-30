@@ -433,9 +433,12 @@ void DvbScan::start()
 
 void DvbScan::deviceStateChanged()
 {
-	if (device->getDeviceState() == DvbDevice::DeviceNotReady) {
+	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
 		emit scanFinished();
-	} else if (state == ScanTuning) {
+		return;
+	}
+
+	if (state == ScanTuning) {
 		updateState();
 	}
 }
@@ -587,7 +590,6 @@ void DvbScan::updateState()
 		case ScanTuning: {
 			switch (device->getDeviceState()) {
 			case DvbDevice::DeviceIdle:
-			case DvbDevice::DeviceTuningFailed:
 				state = ScanTune;
 				break;
 

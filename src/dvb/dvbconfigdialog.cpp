@@ -35,6 +35,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KTabWidget>
+#include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 

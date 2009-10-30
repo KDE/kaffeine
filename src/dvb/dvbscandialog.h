@@ -36,14 +36,13 @@ class DvbManager;
 class DvbPreviewChannel;
 class DvbPreviewChannelModel;
 class DvbScan;
-class DvbTab;
 class ProxyTreeView;
 
 class DvbScanDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	explicit DvbScanDialog(DvbTab *dvbTab_);
+	DvbScanDialog(DvbManager *manager_, QWidget *parent);
 	~DvbScanDialog();
 
 private slots:
@@ -63,7 +62,6 @@ private:
 	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);
 	void setDevice(DvbDevice *newDevice);
 
-	DvbTab *dvbTab;
 	DvbManager *manager;
 	DvbChannelModel *channelModel;
 	KComboBox *sourceBox;

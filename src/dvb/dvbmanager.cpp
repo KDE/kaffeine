@@ -27,7 +27,9 @@
 #include <KStandardDirs>
 #include <config-kaffeine.h>
 #include "dvbchannelui.h"
+#include "dvbconfig.h"
 #include "dvbepg.h"
+#include "dvbliveview.h"
 #include "dvbrecording.h"
 
 static QString installPath(const char *component)
@@ -204,7 +206,7 @@ public:
 
 DvbDeviceConfig::DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
 	DvbDevice *device_) : deviceId(deviceId_), frontendName(frontendName_), device(device_),
-	useCount(0)
+	useCount(0), highPriorityUse(false)
 {
 }
 
@@ -212,12 +214,15 @@ DvbDeviceConfig::~DvbDeviceConfig()
 {
 }
 
-DvbManager::DvbManager(QObject *parent) : QObject(parent), dvbDumpEnabled(false)
+DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
+	parent(parent_), mediaWidget(mediaWidget_), dvbDumpEnabled(false)
 {
 	channelModel = new DvbChannelModel(this);
 	channelModel->loadChannels();
 
 	epgModel = new DvbEpgModel(this);
+
+	liveView = new DvbLiveView(this);
 
 	recordingModel = new DvbRecordingModel(this);
 
@@ -231,12 +236,17 @@ DvbManager::DvbManager(QObject *parent) : QObject(parent), dvbDumpEnabled(false)
 
 DvbManager::~DvbManager()
 {
-	KConfigGroup(KGlobal::config(), "DVB").writeEntry("ScanDataDate", scanDataDate);
+	KGlobal::config()->group("DVB").writeEntry("ScanDataDate", scanDataDate);
 	writeDeviceConfigs();
 	channelModel->saveChannels();
+
+	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
+		delete deviceConfig.device;
+	}
 }
 
-DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder)
+DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder,
+	bool highPriority)
 {
 	// first try to find a device that is already tuned to the selected transponder
 
@@ -249,6 +259,11 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 
 		if ((it.source == source) && it.transponder->corresponds(transponder)) {
 			++deviceConfigs[i].useCount;
+
+			if (highPriority) {
+				deviceConfigs[i].highPriorityUse = true;
+			}
+
 			return it.device;
 		}
 	}
@@ -264,15 +279,41 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 			if (config->name == source) {
 				DvbDevice *device = it.device;
 
-				if (!device->acquire()) {
+				if (!device->acquire(config)) {
 					continue;
 				}
 
-				++deviceConfigs[i].useCount;
+				deviceConfigs[i].useCount = 1;
+				deviceConfigs[i].highPriorityUse = highPriority;
 				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 
-				device->config = config;
+				device->tune(transponder);
+				return device;
+			}
+		}
+	}
+
+	if (!highPriority) {
+		return NULL;
+	}
+
+	for (int i = 0; i < deviceConfigs.size(); ++i) {
+		const DvbDeviceConfig &it = deviceConfigs.at(i);
+
+		if ((it.device == NULL) || (it.useCount == 0) || it.highPriorityUse) {
+			continue;
+		}
+
+		foreach (const DvbConfig &config, it.configs) {
+			if (config->name == source) {
+				deviceConfigs[i].useCount = 1;
+				deviceConfigs[i].highPriorityUse = true;
+				deviceConfigs[i].source = source;
+				deviceConfigs[i].transponder = transponder;
+
+				DvbDevice *device = it.device;
+				device->reacquire(config);
 				device->tune(transponder);
 				return device;
 			}
@@ -295,13 +336,13 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 			if (config->name == source) {
 				DvbDevice *device = it.device;
 
-				if (!device->acquire()) {
+				if (!device->acquire(config)) {
 					continue;
 				}
 
 				deviceConfigs[i].useCount = -1;
+				deviceConfigs[i].highPriorityUse = true;
 
-				device->config = config;
 				return device;
 			}
 		}
@@ -319,6 +360,7 @@ void DvbManager::releaseDevice(DvbDevice *device)
 			if ((--deviceConfigs[i].useCount) <= 0) {
 				deviceConfigs[i].device->release();
 				deviceConfigs[i].useCount = 0;
+				deviceConfigs[i].highPriorityUse = false;
 			}
 
 			break;
@@ -436,7 +478,7 @@ bool DvbManager::updateScanData(const QByteArray &data)
 
 QString DvbManager::getRecordingFolder()
 {
-	QString path = KConfigGroup(KGlobal::config(), "DVB").readEntry("RecordingFolder");
+	QString path = KGlobal::config()->group("DVB").readEntry("RecordingFolder");
 
 	if (path.isEmpty() || !QDir(path).exists()) {
 		path = QDir::homePath();
@@ -448,7 +490,7 @@ QString DvbManager::getRecordingFolder()
 
 QString DvbManager::getTimeShiftFolder()
 {
-	QString path = KConfigGroup(KGlobal::config(), "DVB").readEntry("TimeShiftFolder");
+	QString path = KGlobal::config()->group("DVB").readEntry("TimeShiftFolder");
 
 	if (path.isEmpty() || !QDir(path).exists()) {
 		path = QDir::homePath();
@@ -460,32 +502,32 @@ QString DvbManager::getTimeShiftFolder()
 
 void DvbManager::setRecordingFolder(const QString &path)
 {
-	KConfigGroup(KGlobal::config(), "DVB").writeEntry("RecordingFolder", path);
+	KGlobal::config()->group("DVB").writeEntry("RecordingFolder", path);
 }
 
 void DvbManager::setTimeShiftFolder(const QString &path)
 {
-	KConfigGroup(KGlobal::config(), "DVB").writeEntry("TimeShiftFolder", path);
+	KGlobal::config()->group("DVB").writeEntry("TimeShiftFolder", path);
 }
 
 double DvbManager::getLatitude()
 {
-	return KConfigGroup(KGlobal::config(), "DVB").readEntry("Latitude", 0.0);
+	return KGlobal::config()->group("DVB").readEntry("Latitude", 0.0);
 }
 
 double DvbManager::getLongitude()
 {
-	return KConfigGroup(KGlobal::config(), "DVB").readEntry("Longitude", 0.0);
+	return KGlobal::config()->group("DVB").readEntry("Longitude", 0.0);
 }
 
 void DvbManager::setLatitude(double value)
 {
-	KConfigGroup(KGlobal::config(), "DVB").writeEntry("Latitude", value);
+	KGlobal::config()->group("DVB").writeEntry("Latitude", value);
 }
 
 void DvbManager::setLongitude(double value)
 {
-	KConfigGroup(KGlobal::config(), "DVB").writeEntry("Longitude", value);
+	KGlobal::config()->group("DVB").writeEntry("Longitude", value);
 }
 
 void DvbManager::enableDvbDump()
@@ -533,6 +575,13 @@ void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
+			if (deviceConfigs[i].useCount != 0) {
+				deviceConfigs[i].device->release();
+				deviceConfigs[i].useCount = 0;
+				deviceConfigs[i].highPriorityUse = false;
+			}
+
+			delete deviceConfigs[i].device;
 			deviceConfigs[i].device = NULL;
 			break;
 		}

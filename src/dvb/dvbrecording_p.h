@@ -64,7 +64,7 @@ private:
 	QList<QByteArray> buffers;
 	DvbDevice *device;
 	QList<int> pids;
-	DvbPmtFilter *pmtFilter;
+	DvbPmtFilter pmtFilter;
 	DvbSectionGenerator patGenerator;
 	DvbSectionGenerator pmtGenerator;
 	QTimer patPmtTimer;

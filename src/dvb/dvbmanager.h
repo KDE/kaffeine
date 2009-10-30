@@ -32,8 +32,10 @@ class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
 class DvbEpgModel;
+class DvbLiveView;
 class DvbRecordingModel;
 class DvbScanData;
+class MediaWidget;
 
 class DvbDeviceConfig
 {
@@ -46,6 +48,7 @@ public:
 	DvbDevice *device;
 	QList<DvbConfig> configs;
 	int useCount; // -1 means exclusive use
+	bool highPriorityUse;
 	QString source;
 	DvbTransponder transponder;
 };
@@ -62,8 +65,18 @@ public:
 		Atsc
 	};
 
-	explicit DvbManager(QObject *parent);
+	DvbManager(MediaWidget *mediaWidget_, QWidget *parent_);
 	~DvbManager();
+
+	QWidget *getParentWidget() const
+	{
+		return parent;
+	}
+
+	MediaWidget *getMediaWidget() const
+	{
+		return mediaWidget;
+	}
 
 	QStringList getSources() const
 	{
@@ -80,12 +93,18 @@ public:
 		return epgModel;
 	}
 
+	DvbLiveView *getLiveView() const
+	{
+		return liveView;
+	}
+
 	DvbRecordingModel *getRecordingModel() const
 	{
 		return recordingModel;
 	}
 
-	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder);
+	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder,
+		bool highPriority = false);
 	// exclusive = you can freely tune() and stop(), because the device isn't shared
 	DvbDevice *requestExclusiveDevice(const QString &source);
 	void releaseDevice(DvbDevice *device);
@@ -126,8 +145,11 @@ private:
 	void readScanData();
 	bool readScanSources(DvbScanData &data, const char *tag, TransmissionType type);
 
+	QWidget *parent;
+	MediaWidget *mediaWidget;
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;
+	DvbLiveView *liveView;
 	DvbRecordingModel *recordingModel;
 
 	QList<DvbDeviceConfig> deviceConfigs;

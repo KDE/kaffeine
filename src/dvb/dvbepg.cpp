@@ -291,10 +291,19 @@ QList<DvbEpgEntry> DvbEpgModel::getCurrentNext(const QString &channel) const
 	return result;
 }
 
-DvbEitFilter::DvbEitFilter(DvbManager *manager_, const QString &source_) : manager(manager_),
-	source(source_)
+DvbEitFilter::DvbEitFilter() : manager(NULL), model(NULL)
 {
+}
+
+DvbEitFilter::~DvbEitFilter()
+{
+}
+
+void DvbEitFilter::setManager(DvbManager *manager_)
+{
+	manager = manager_;
 	model = manager->getEpgModel();
+	channelMapping.clear();
 
 	foreach (const QSharedDataPointer<DvbChannel> &channel,
 		 manager->getChannelModel()->getChannels()) {
@@ -309,8 +318,9 @@ DvbEitFilter::DvbEitFilter(DvbManager *manager_, const QString &source_) : manag
 	// FIXME monitor the channel model?
 }
 
-DvbEitFilter::~DvbEitFilter()
+void DvbEitFilter::setSource(const QString &source_)
 {
+	source = source_;
 }
 
 QTime DvbEitFilter::bcdToTime(int bcd)

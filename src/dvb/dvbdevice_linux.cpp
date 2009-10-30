@@ -561,6 +561,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 			return false;
 		}
 
+		// FIXME discard pending buffers
+
 		return true;
 	    }
 
@@ -600,6 +602,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
 		return false;
 	}
+
+	// FIXME discard pending buffers
 
 	return true;
 }
@@ -841,6 +845,9 @@ DvbDeviceManager::DvbDeviceManager()
 
 DvbDeviceManager::~DvbDeviceManager()
 {
+	foreach (DvbLinuxDevice *device, devices) {
+		delete device;
+	}
 }
 
 void DvbDeviceManager::doColdPlug()

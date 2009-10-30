@@ -21,7 +21,6 @@
 #ifndef DVBSI_H
 #define DVBSI_H
 
-#include <QMap>
 #include "dvbdevice.h"
 
 class DvbPmtSection;
@@ -284,8 +283,10 @@ class DvbPmtFilter : public QObject, public DvbSectionFilter
 {
 	Q_OBJECT
 public:
-	DvbPmtFilter(int programNumber_, QObject *parent);
-	~DvbPmtFilter();
+	DvbPmtFilter() : programNumber(-1), versionNumber(-1) { }
+	~DvbPmtFilter() { }
+
+	void setProgramNumber(int programNumber_);
 
 signals:
 	void pmtSectionChanged(const DvbPmtSection &section);

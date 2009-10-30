@@ -216,7 +216,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	toolBar->addWidget(audioChannelBox);
 
 	subtitleBox = new KComboBox(toolBar);
-	textSubtitlesOff = i18n("off");
+	textSubtitlesOff = i18nc("subtitle selection entry", "off");
 	subtitlesReady = false;
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)), this, SLOT(changeSubtitle(int)));
 	connect(mediaController, SIGNAL(availableSubtitlesChanged()),
@@ -282,8 +282,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	volumeSlider->setRange(0, 100);
 	volumeSlider->setToolTip(action->text());
 	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(changeVolume(int)));
-	volumeSlider->setValue(KConfigGroup(KGlobal::config(), "MediaObject").
-		readEntry("Volume", 100));
+	volumeSlider->setValue(KGlobal::config()->group("MediaObject").readEntry("Volume", 100));
 	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(volumeChanged(qreal)));
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
@@ -1093,10 +1092,10 @@ void MediaWidget::updateAudioChannelBox()
 	audioChannelsReady = false;
 	audioChannelBox->clear();
 
-	if ((dvbFeed != NULL) && !dvbFeed->audioChannels.isEmpty()) {
+	if ((dvbFeed != NULL) && (dvbFeed->audioChannels.size() > 1)) {
 		audioChannelBox->addItems(dvbFeed->audioChannels);
 		audioChannelBox->setCurrentIndex(dvbFeed->audioChannelIndex);
-		audioChannelBox->setEnabled(dvbFeed->audioChannels.size() > 1);
+		audioChannelBox->setEnabled(true);
 		audioChannelsReady = true;
 	} else if (playing) {
 		Phonon::AudioChannelDescription current = mediaController->currentAudioChannel();
@@ -1124,10 +1123,10 @@ void MediaWidget::updateSubtitleBox()
 	subtitlesReady = false;
 	subtitleBox->clear();
 
-	if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty()) {
+	if ((dvbFeed != NULL) && (dvbFeed->subtitles.size() > 1)) {
 		subtitleBox->addItems(dvbFeed->subtitles);
 		subtitleBox->setCurrentIndex(dvbFeed->subtitleIndex);
-		subtitleBox->setEnabled(dvbFeed->subtitles.size() > 1);
+		subtitleBox->setEnabled(true);
 		subtitlesReady = true;
 	} else if (playing) {
 		Phonon::SubtitleDescription current = mediaController->currentSubtitle();

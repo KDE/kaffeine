@@ -31,13 +31,9 @@ class KActionCollection;
 class KMenu;
 class DvbChannel;
 class DvbChannelView;
-class DvbDevice;
-class DvbLiveStream;
 class DvbManager;
-class DvbOsd;
 class DvbTimeShiftCleaner;
 class MediaWidget;
-class OsdWidget;
 
 class DvbTab : public TabBase
 {
@@ -45,14 +41,6 @@ class DvbTab : public TabBase
 public:
 	DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~DvbTab();
-
-	DvbManager *getDvbManager() const
-	{
-		return dvbManager;
-	}
-
-	DvbDevice *getLiveDevice() const;
-	QSharedDataPointer<DvbChannel> getLiveChannel() const;
 
 	void playChannel(const QString &name);
 	void playLastChannel();
@@ -69,17 +57,6 @@ private slots:
 	void playLive(const QModelIndex &index);
 	void previousChannel();
 	void nextChannel();
-	void prepareTimeShift();
-	void startTimeShift();
-	void changeAudioChannel(int index);
-	void changeSubtitle(int index);
-	void liveStopped();
-	void osdKeyPressed(int key);
-	void tuneOsdChannel();
-	void toggleOsd();
-	void showOsd();
-	void osdTimeout();
-	void fastRetuneTimeout();
 	void cleanTimeShiftFiles();
 
 private:
@@ -87,19 +64,11 @@ private:
 	void playChannel(const QSharedDataPointer<DvbChannel> &channel);
 
 	MediaWidget *mediaWidget;
-	OsdWidget *osdWidget;
-	DvbManager *dvbManager;
+	DvbManager *manager;
 	KAction *instantRecordAction;
 	QSplitter *splitter;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
-
-	QString osdChannel;
-	QTimer *osdChannelTimer;
-	QTimer *fastRetuneTimer;
-	DvbLiveStream *liveStream;
-	DvbOsd *dvbOsd;
-	QTimer *dvbOsdTimer;
 
 	DvbTimeShiftCleaner *timeShiftCleaner;
 };

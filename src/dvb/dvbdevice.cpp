@@ -24,9 +24,16 @@
 #include <cmath>
 #include <QCoreApplication>
 #include <QDir>
-#include <QFile>
 #include <KDebug>
+#include "dvbconfig.h"
 #include "dvbmanager.h"
+
+struct DvbFilterData
+{
+	char packets[21][188];
+	int count;
+	DvbFilterData *next;
+};
 
 class DvbFilterInternal
 {
@@ -61,7 +68,8 @@ private:
 
 DvbDataDumper::DvbDataDumper()
 {
-	file.setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" + QString::number(qrand(), 16) + ".bin");
+	file.setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" +
+		QString("%1").arg(qrand(), 16) + ".bin");
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		kWarning() << "couldn't open" << file.fileName();
@@ -77,41 +85,49 @@ void DvbDataDumper::processData(const char data[188])
 	file.write(data, 188);
 }
 
-struct DvbFilterData
-{
-	char packets[21][188];
-	int count;
-	DvbFilterData *next;
-};
-
 DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObject(parent),
-	backendDevice(backendDevice_), deviceState(DeviceIdle), dataDumper(NULL),
+	backendDevice(backendDevice_), deviceState(DeviceReleased), dataDumper(NULL),
 	cleanUpFilters(false), isAuto(false)
 {
 	backendDevice->buffer = this;
 
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
-
 	dummyFilter = new DvbDummyFilter;
 
 	currentUnused = new DvbFilterData;
 	currentUnused->next = currentUnused;
 	currentUsed = currentUnused;
-
-	usedBuffers = 0;
 	totalBuffers = 1;
+	usedBuffers = 0;
 }
 
 DvbDevice::~DvbDevice()
 {
+	release();
+
 	for (int i = 0; i < totalBuffers; ++i) {
 		DvbFilterData *temp = currentUnused->next;
 		delete currentUnused;
 		currentUnused = temp;
 	}
 
-	delete dummyFilter;
 	delete dataDumper;
+	delete dummyFilter;
+}
+
+DvbBackendDevice::TransmissionTypes DvbDevice::getTransmissionTypes() const
+{
+	return backendDevice->getTransmissionTypes();
+}
+
+QString DvbDevice::getDeviceId() const
+{
+	return backendDevice->getDeviceId();
+}
+
+QString DvbDevice::getFrontendName() const
+{
+	return backendDevice->getFrontendName();
 }
 
 void DvbDevice::tune(const DvbTransponder &transponder)
@@ -124,8 +140,9 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 			setDeviceState(DeviceTuning);
 			frontendTimeout = config->timeout;
 			frontendTimer.start(100);
+			discardBuffers();
 		} else {
-			setDeviceState(DeviceTuningFailed);
+			setDeviceState(DeviceIdle);
 		}
 
 		return;
@@ -288,8 +305,9 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		}
 
 		frontendTimer.start(100);
+		discardBuffers();
 	} else {
-		setDeviceState(DeviceTuningFailed);
+		setDeviceState(DeviceIdle);
 	}
 }
 
@@ -324,42 +342,6 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 	}
 
 	tune(autoTransponder);
-}
-
-DvbTransponder DvbDevice::getAutoTransponder() const
-{
-	// FIXME query back information like frequency - tuning parameters - ...
-	return autoTransponder;
-}
-
-void DvbDevice::release()
-{
-	if ((deviceState == DeviceNotReady) || (deviceState == DeviceIdle)) {
-		return;
-	}
-
-	// stop waiting for tuning
-	frontendTimer.stop();
-
-	backendDevice->release();
-
-	isAuto = false;
-	setDeviceState(DeviceIdle);
-}
-
-int DvbDevice::getSignal()
-{
-	return backendDevice->getSignal();
-}
-
-int DvbDevice::getSnr()
-{
-	return backendDevice->getSnr();
-}
-
-bool DvbDevice::isTuned()
-{
-	return backendDevice->isTuned();
 }
 
 bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
@@ -414,6 +396,56 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	cleanUpFilters = true;
 }
 
+bool DvbDevice::isTuned() const
+{
+	return backendDevice->isTuned();
+}
+
+int DvbDevice::getSignal() const
+{
+	return backendDevice->getSignal();
+}
+
+int DvbDevice::getSnr() const
+{
+	return backendDevice->getSnr();
+}
+
+DvbTransponder DvbDevice::getAutoTransponder() const
+{
+	// FIXME query back information like frequency - tuning parameters - ...
+	return autoTransponder;
+}
+
+bool DvbDevice::acquire(const QSharedDataPointer<DvbConfigBase> &config_)
+{
+	Q_ASSERT(deviceState == DeviceReleased);
+
+	if (backendDevice->acquire()) {
+		config = config_;
+		setDeviceState(DeviceIdle);
+		return true;
+	}
+
+	return false;
+}
+
+void DvbDevice::reacquire(const QSharedDataPointer<DvbConfigBase> &config_)
+{
+	Q_ASSERT(deviceState != DeviceReleased);
+	setDeviceState(DeviceReleased);
+	stop();
+	config = config_;
+	setDeviceState(DeviceIdle);
+}
+
+void DvbDevice::release()
+{
+	setDeviceState(DeviceReleased);
+	stop();
+	backendDevice->release();
+}
+
 void DvbDevice::enableDvbDump()
 {
 	if (dataDumper != NULL) {
@@ -448,7 +480,7 @@ void DvbDevice::frontendEvent()
 
 		if (!isAuto) {
 			kWarning() << "tuning failed";
-			setDeviceState(DeviceTuningFailed);
+			setDeviceState(DeviceIdle);
 			return;
 		}
 
@@ -457,7 +489,7 @@ void DvbDevice::frontendEvent()
 		if ((signal != -1) && (signal < 15)) {
 			// signal too weak
 			kWarning() << "tuning failed";
-			setDeviceState(DeviceTuningFailed);
+			setDeviceState(DeviceIdle);
 			return;
 		}
 
@@ -539,19 +571,65 @@ void DvbDevice::frontendEvent()
 		}
 
 		if (!carry) {
-			deviceState = DeviceTuningFailed;
 			tune(autoTransponder);
 		} else {
 			kWarning() << "tuning failed";
-			setDeviceState(DeviceTuningFailed);
+			setDeviceState(DeviceIdle);
 		}
 	}
 }
 
 void DvbDevice::setDeviceState(DeviceState newState)
 {
-	deviceState = newState;
-	emit stateChanged();
+	if (deviceState != newState) {
+		deviceState = newState;
+		emit stateChanged();
+	}
+}
+
+void DvbDevice::discardBuffers()
+{
+	if (usedBuffers > 0) {
+		while (true) {
+			currentUsed = currentUsed->next;
+
+			if (usedBuffers.fetchAndAddOrdered(-1) == 1) {
+				break;
+			}
+		}
+	}
+
+	currentUsed->count = 0;
+}
+
+void DvbDevice::stop()
+{
+	isAuto = false;
+	frontendTimer.stop();
+
+	QMap<int, DvbFilterInternal>::iterator end = filters.end();
+
+	for (QMap<int, DvbFilterInternal>::iterator it = filters.begin(); it != end; ++it) {
+		QList<DvbPidFilter *> &internalFilters = it->filters;
+
+		for (int i = 0; i < internalFilters.size(); ++i) {
+			DvbPidFilter *filter = internalFilters.at(i);
+
+			if ((filter != dummyFilter) && (filter != dataDumper)) {
+				int pid = it.key();
+				kWarning() << "removing pending filter" << pid << filter;
+
+				internalFilters.replace(i, dummyFilter);
+				--it->activeFilters;
+
+				if (it->activeFilters == 0) {
+					backendDevice->removePidFilter(pid);
+				}
+
+				cleanUpFilters = true;
+			}
+		}
+	}
 }
 
 int DvbDevice::size()
@@ -585,6 +663,7 @@ void DvbDevice::submitCurrent(int packets)
 void DvbDevice::customEvent(QEvent *)
 {
 	if (cleanUpFilters) {
+		cleanUpFilters = false;
 		QMap<int, DvbFilterInternal>::iterator it = filters.begin();
 		QMap<int, DvbFilterInternal>::iterator end = filters.end();
 
@@ -598,7 +677,9 @@ void DvbDevice::customEvent(QEvent *)
 		}
 	}
 
-	Q_ASSERT(usedBuffers >= 1);
+	if (usedBuffers <= 0) {
+		return;
+	}
 
 	while (true) {
 		for (int i = 0; i < currentUsed->count; ++i) {
@@ -619,8 +700,9 @@ void DvbDevice::customEvent(QEvent *)
 			}
 
 			const QList<DvbPidFilter *> &pidFilters = it->filters;
+			int pidFiltersSize = pidFilters.size();
 
-			for (int j = 0; j < pidFilters.size(); ++j) {
+			for (int j = 0; j < pidFiltersSize; ++j) {
 				pidFilters.at(j)->processData(packet);
 			}
 		}

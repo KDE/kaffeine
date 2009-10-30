@@ -38,6 +38,8 @@
 DvbRecording::DvbRecording(DvbManager *manager_) : repeat(0), manager(manager_), device(NULL)
 {
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
+	connect(&pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
+		this, SLOT(pmtSectionChanged(DvbPmtSection)));
 }
 
 DvbRecording::~DvbRecording()
@@ -82,7 +84,7 @@ void DvbRecording::start()
 	}
 
 	if (device == NULL) {
-		device = manager->requestDevice(channel->source, channel->transponder);
+		device = manager->requestDevice(channel->source, channel->transponder, true);
 
 		if (device == NULL) {
 			kWarning() << "couldn't find a suitable device";
@@ -91,10 +93,8 @@ void DvbRecording::start()
 
 		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 
-		pmtFilter = new DvbPmtFilter(channel->serviceId, this);
-		device->addPidFilter(channel->pmtPid, pmtFilter);
-		connect(pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
-			this, SLOT(pmtSectionChanged(DvbPmtSection)));
+		pmtFilter.setProgramNumber(channel->serviceId);
+		device->addPidFilter(channel->pmtPid, &pmtFilter);
 
 		patGenerator = DvbSectionGenerator();
 		patGenerator.initPat(channel->transportStreamId, channel->serviceId, channel->pmtPid);
@@ -107,17 +107,12 @@ void DvbRecording::stop()
 {
 	patPmtTimer.stop();
 
-	if (pmtFilter != NULL) {
-		device->removePidFilter(channel->pmtPid, pmtFilter);
-		delete pmtFilter;
-		pmtFilter = NULL;
-	}
-
 	if (device != NULL) {
 		foreach (int pid, pids) {
 			device->removePidFilter(pid, this);
 		}
 
+		device->removePidFilter(channel->pmtPid, &pmtFilter);
 		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 		manager->releaseDevice(device);
 		device = NULL;
@@ -133,11 +128,10 @@ void DvbRecording::deviceStateChanged()
 {
 	// FIXME
 	switch (device->getDeviceState()) {
-	case DvbDevice::DeviceNotReady:
+	case DvbDevice::DeviceReleased:
 	case DvbDevice::DeviceIdle:
 	case DvbDevice::DeviceRotorMoving:
 	case DvbDevice::DeviceTuning:
-	case DvbDevice::DeviceTuningFailed:
 	case DvbDevice::DeviceTuned:
 		break;
 	}

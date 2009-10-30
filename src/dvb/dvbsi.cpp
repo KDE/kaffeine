@@ -1198,13 +1198,9 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 	versionNumber = (versionNumber + 1) & 0x1f;
 }
 
-DvbPmtFilter::DvbPmtFilter(int programNumber_, QObject *parent) : QObject(parent),
-	programNumber(programNumber_), versionNumber(-1)
+void DvbPmtFilter::setProgramNumber(int programNumber_)
 {
-}
-
-DvbPmtFilter::~DvbPmtFilter()
-{
+	programNumber = programNumber_;
 }
 
 void DvbPmtFilter::processSection(const DvbSectionData &data)

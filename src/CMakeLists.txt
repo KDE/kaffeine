@@ -4,6 +4,7 @@ set(kaffeine_SRCS
     dvb/dvbconfigdialog.cpp
     dvb/dvbdevice.cpp
     dvb/dvbepg.cpp
+    dvb/dvbliveview.cpp
     dvb/dvbmanager.cpp
     dvb/dvbrecording.cpp
     dvb/dvbscan.cpp
