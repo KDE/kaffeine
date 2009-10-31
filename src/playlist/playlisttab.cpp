@@ -25,6 +25,7 @@
 #include <QKeyEvent>
 #include <QListView>
 #include <QSplitter>
+#include <QTimer>
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
@@ -651,10 +652,10 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 		this, SLOT(playlistActivated(QModelIndex)));
 	sideLayout->addWidget(playlistBrowserView);
 
-	KFileWidget *fileWidget = new KFileWidget(KUrl(), verticalSplitter);
-	fileWidget->setFilter(MediaWidget::extensionFilter());
-	fileWidget->setMode(KFile::Files | KFile::ExistingOnly);
-	verticalSplitter->setStretchFactor(1, 1);
+	// KFileWidget creates a local event loop which can cause bad
+	// side effects (because Kaffeine isn't fully constructed yet)
+	fileWidgetSplitter = verticalSplitter;
+	QTimer::singleShot(0, this, SLOT(createFileWidget()));
 
 	verticalSplitter = new QSplitter(Qt::Vertical, horizontalSplitter);
 
@@ -766,6 +767,14 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 			playlistModel->playTrack(index);
 		}
 	}
+}
+
+void PlaylistTab::createFileWidget()
+{
+	KFileWidget *fileWidget = new KFileWidget(KUrl(), fileWidgetSplitter);
+	fileWidget->setFilter(MediaWidget::extensionFilter());
+	fileWidget->setMode(KFile::Files | KFile::ExistingOnly);
+	fileWidgetSplitter->setStretchFactor(1, 1);
 }
 
 void PlaylistTab::newPlaylist()

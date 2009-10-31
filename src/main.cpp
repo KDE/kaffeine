@@ -26,10 +26,9 @@
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication() : firstInstance(true)
+	KaffeineApplication()
 	{
 		kaffeine = new Kaffeine();
-		kaffeine->parseArgs();
 	}
 
 	~KaffeineApplication()
@@ -41,18 +40,11 @@ private:
 	int newInstance();
 
 	Kaffeine *kaffeine;
-	bool firstInstance;
 };
 
 int KaffeineApplication::newInstance()
 {
-	if (firstInstance) {
-		// using KFileWidget, newInstance() might be called _during_ kaffeine construction
-		firstInstance = false;
-	} else {
-		kaffeine->parseArgs();
-	}
-
+	kaffeine->parseArgs();
 	return KUniqueApplication::newInstance();
 }
 

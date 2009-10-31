@@ -24,6 +24,7 @@
 #include <QTreeView>
 #include "../tabbase.h"
 
+class QSplitter;
 class KActionCollection;
 class KMenu;
 class KUrl;
@@ -83,6 +84,7 @@ public:
 	void playUrls(const QList<KUrl> &urls);
 
 private slots:
+	void createFileWidget();
 	void newPlaylist();
 	void renamePlaylist();
 	void removePlaylist();
@@ -96,6 +98,7 @@ private:
 
 	MediaWidget *mediaWidget;
 	QLayout *mediaLayout;
+	QSplitter *fileWidgetSplitter;
 	PlaylistBrowserModel *playlistBrowserModel;
 	PlaylistBrowserView *playlistBrowserView;
 	PlaylistModel *playlistModel;
