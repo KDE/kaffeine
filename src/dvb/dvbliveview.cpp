@@ -125,7 +125,7 @@ void DvbLiveViewInternal::processData(const char data[188])
 	if (!timeShiftFile.isOpen()) {
 		mediaWidget->writeDvbData(buffer);
 	} else {
-		timeShiftFile.write(buffer);
+		timeShiftFile.write(buffer); // FIXME avoid buffer reallocation
 	}
 
 	buffer.clear();
@@ -142,19 +142,21 @@ DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL)
 	internal->eitFilter.setManager(manager);
 	internal->mediaWidget = mediaWidget;
 
-	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
+	connect(&internal->pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
+		this, SLOT(pmtSectionChanged(DvbPmtSection)));
+	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
+	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
+	fastRetuneTimer.setSingleShot(true);
+
 	connect(mediaWidget, SIGNAL(changeDvbAudioChannel(int)),
 		this, SLOT(changeAudioStream(int)));
 	connect(mediaWidget, SIGNAL(changeDvbSubtitle(int)), this, SLOT(changeSubtitle(int)));
 	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
 	connect(mediaWidget, SIGNAL(startDvbTimeShift()), this, SLOT(startTimeShift()));
+	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
+
 	connect(mediaWidget, SIGNAL(osdKeyPressed(int)), this, SLOT(osdKeyPressed(int)));
-
-	fastRetuneTimer.setSingleShot(true);
-
-	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 	connect(&osdChannelTimer, SIGNAL(timeout()), this, SLOT(tuneOsdChannel()));
-	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
 }
 
 DvbLiveView::~DvbLiveView()
@@ -179,7 +181,7 @@ DvbDevice *DvbLiveView::getDevice() const
 void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 {
 	if (fastRetuneTimer.isActive()) {
-		// HACK
+		// FIXME find a better solution
 		return;
 	} else {
 		fastRetuneTimer.start(500);
@@ -208,44 +210,15 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 	audioPid = channel->audioPid;
 	subtitlePid = -1;
 	pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+	patPmtTimer.start(500);
 
 	internal->buffer.reserve(87 * 188);
-	patPmtTimer.start(500);
 	QTimer::singleShot(2000, this, SLOT(showOsd()));
-}
-
-void DvbLiveView::deviceStateChanged()
-{
-	switch (device->getDeviceState()) {
-	case DvbDevice::DeviceReleased:
-		stopDevice();
-		device = manager->requestDevice(channel->source, channel->transponder);
-
-		if (device != NULL) {
-			startDevice();
-		} else {
-			mediaWidget->stopDvb();
-			KMessageBox::sorry(manager->getParentWidget(),
-				i18nc("message box", "No available device found."));
-		}
-
-		break;
-	case DvbDevice::DeviceIdle:
-	case DvbDevice::DeviceRotorMoving:
-	case DvbDevice::DeviceTuning:
-	case DvbDevice::DeviceTuned:
-		break;
-	}
-}
-
-void DvbLiveView::insertPatPmt()
-{
-	internal->buffer.append(internal->patGenerator.generatePackets());
-	internal->buffer.append(internal->pmtGenerator.generatePackets());
 }
 
 void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 {
+	// FIXME find a better solution
 	channel->pmtSection = QByteArray(section.getData(), section.getSectionLength());
 
 	DvbPmtParser pmtParser(section);
@@ -257,6 +230,7 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 
 	if (!pmtParser.audioPids.contains(audioPid)) {
 		if (!pmtParser.audioPids.isEmpty()) {
+			// FIXME pay attention to the "recommended" audio pid
 			audioPid = pmtParser.audioPids.constBegin().key();
 		} else {
 			audioPid = -1;
@@ -332,27 +306,34 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	mediaWidget->updateDvbSubtitles(subtitles, 0);
 }
 
-void DvbLiveView::liveStopped()
+void DvbLiveView::insertPatPmt()
 {
-	channel = NULL;
+	internal->buffer.append(internal->patGenerator.generatePackets());
+	internal->buffer.append(internal->pmtGenerator.generatePackets());
+}
 
-	if (device != NULL) {
+void DvbLiveView::deviceStateChanged()
+{
+	switch (device->getDeviceState()) {
+	case DvbDevice::DeviceReleased:
 		stopDevice();
-		manager->releaseDevice(device);
-		device = NULL;
+		device = manager->requestDevice(channel->source, channel->transponder);
+
+		if (device != NULL) {
+			startDevice();
+		} else {
+			mediaWidget->stopDvb();
+			KMessageBox::sorry(manager->getParentWidget(),
+				i18nc("message box", "No available device found."));
+		}
+
+		break;
+	case DvbDevice::DeviceIdle:
+	case DvbDevice::DeviceRotorMoving:
+	case DvbDevice::DeviceTuning:
+	case DvbDevice::DeviceTuned:
+		break;
 	}
-
-	pids.clear();
-	patPmtTimer.stop();
-	osdWidget->hideObject();
-	osdTimer.stop();
-
-	internal->buffer.clear();
-	internal->timeShiftFile.close();
-	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbEpgEntry>());
-
-	mediaWidget->updateDvbAudioChannels(QStringList(), 0);
-	mediaWidget->updateDvbSubtitles(QStringList(), 0);
 }
 
 void DvbLiveView::changeAudioStream(int index)
@@ -372,7 +353,8 @@ void DvbLiveView::prepareTimeShift()
 	internal->timeShiftFile.setFileName(manager->getTimeShiftFolder() + "/TimeShift-" +
 		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
 
-	if (internal->timeShiftFile.exists() || !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
+	if (internal->timeShiftFile.exists() ||
+	    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
 		// FIXME error message
 		mediaWidget->stopDvb();
 		return;
@@ -390,28 +372,6 @@ void DvbLiveView::prepareTimeShift()
 void DvbLiveView::startTimeShift()
 {
 	mediaWidget->play(internal->timeShiftFile.fileName());
-}
-
-void DvbLiveView::osdKeyPressed(int key)
-{
-	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
-		osdChannel += QString::number(key - Qt::Key_0);
-		osdChannelTimer.start(1500);
-		osdWidget->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
-	}
-}
-
-void DvbLiveView::tuneOsdChannel()
-{
-	QSharedDataPointer<DvbChannel> channel =
-		manager->getChannelModel()->channelForNumber(osdChannel.toInt());
-
-	osdChannel.clear();
-	osdChannelTimer.stop();
-
-	if (channel != NULL) {
-		playChannel(channel);
-	}
 }
 
 void DvbLiveView::showOsd()
@@ -453,6 +413,50 @@ void DvbLiveView::osdTimeout()
 	internal->dvbOsd.level = DvbOsd::Off;
 	osdWidget->hideObject();
 	osdTimer.stop();
+}
+
+void DvbLiveView::liveStopped()
+{
+	channel = NULL;
+
+	if (device != NULL) {
+		stopDevice();
+		manager->releaseDevice(device);
+		device = NULL;
+	}
+
+	pids.clear();
+	patPmtTimer.stop();
+	osdTimer.stop();
+
+	internal->patGenerator = DvbSectionGenerator();
+	internal->pmtGenerator = DvbSectionGenerator();
+	internal->buffer.clear();
+	internal->timeShiftFile.close();
+	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbEpgEntry>());
+	osdWidget->hideObject();
+}
+
+void DvbLiveView::osdKeyPressed(int key)
+{
+	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
+		osdChannel += QString::number(key - Qt::Key_0);
+		osdChannelTimer.start(1500);
+		osdWidget->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
+	}
+}
+
+void DvbLiveView::tuneOsdChannel()
+{
+	QSharedDataPointer<DvbChannel> channel =
+		manager->getChannelModel()->channelForNumber(osdChannel.toInt());
+
+	osdChannel.clear();
+	osdChannelTimer.stop();
+
+	if (channel != NULL) {
+		playChannel(channel);
+	}
 }
 
 void DvbLiveView::startDevice()

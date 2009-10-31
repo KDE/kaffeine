@@ -240,6 +240,9 @@ DvbManager::~DvbManager()
 	writeDeviceConfigs();
 	channelModel->saveChannels();
 
+	// use an explicit order of destruction
+	delete liveView;
+
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
 		delete deviceConfig.device;
 	}

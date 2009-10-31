@@ -485,5 +485,7 @@ void DvbTab::cleanTimeShiftFiles()
 
 void DvbTab::playChannel(const QSharedDataPointer<DvbChannel> &channel)
 {
-	manager->getLiveView()->playChannel(channel);
+	if (channel != NULL) {
+		manager->getLiveView()->playChannel(channel);
+	}
 }
