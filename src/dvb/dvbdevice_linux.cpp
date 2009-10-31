@@ -64,6 +64,7 @@ public:
 	}
 
 	void start(int dvrFd_, DvbAbstractDeviceBuffer *buffer_);
+	void discardBuffers();
 	void stop();
 
 	bool isRunning()
@@ -84,6 +85,25 @@ void DvbDeviceThread::start(int dvrFd_, DvbAbstractDeviceBuffer *buffer_)
 	Q_ASSERT(dvrFd == -1);
 	dvrFd = dvrFd_;
 	buffer = buffer_;
+	QThread::start();
+}
+
+void DvbDeviceThread::discardBuffers()
+{
+	Q_ASSERT(dvrFd != -1);
+
+	if (write(pipes[1], " ", 1) != 1) {
+		kError() << "write() failed";
+	}
+
+	wait();
+
+	char temp;
+	read(pipes[0], &temp, 1);
+
+	while (read(dvrFd, buffer->getCurrent(), buffer->size()) > 0) {
+	}
+
 	QThread::start();
 }
 
@@ -561,8 +581,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 			return false;
 		}
 
-		// FIXME discard pending buffers
-
+		thread->discardBuffers();
 		return true;
 	    }
 
@@ -603,8 +622,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		return false;
 	}
 
-	// FIXME discard pending buffers
-
+	thread->discardBuffers();
 	return true;
 }
 
