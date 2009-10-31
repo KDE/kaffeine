@@ -19,13 +19,13 @@
  */
 
 #include "dvbliveview.h"
+#include "dvbliveview_p.h"
 
 #include <QPainter>
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"
 #include "dvbchannelui.h"
-#include "dvbliveview_p.h"
 #include "dvbmanager.h"
 
 void DvbOsd::init(OsdLevel level_, const QString &channelName_,

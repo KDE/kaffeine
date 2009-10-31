@@ -19,6 +19,7 @@
  */
 
 #include "dvbrecording.h"
+#include "dvbrecording_p.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -33,7 +34,6 @@
 #include "datetimeedit.h"
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
-#include "dvbrecording_p.h"
 
 DvbRecording::DvbRecording(DvbManager *manager_) : repeat(0), manager(manager_), device(NULL)
 {
