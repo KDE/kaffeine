@@ -30,6 +30,7 @@ class QListView;
 class QStringListModel;
 class QTreeView;
 class DvbEitEntry;
+class DvbManager;
 
 class DvbEpgEntry
 {

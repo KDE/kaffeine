@@ -28,6 +28,7 @@
 
 class DvbConfigBase;
 class DvbFilterData;
+class DvbFilterInternal;
 
 class DvbPidFilter
 {

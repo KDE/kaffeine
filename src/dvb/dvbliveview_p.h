@@ -22,7 +22,10 @@
 #define DVBLIVEVIEW_P_H
 
 #include <QFile>
-#include "dvbsi.h"
+#include "../osdwidget.h"
+#include "dvbepg.h"
+
+class MediaWidget;
 
 class DvbOsd : public OsdObject
 {

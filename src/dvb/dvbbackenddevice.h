@@ -21,9 +21,8 @@
 #ifndef DVBBACKENDDEVICE_H
 #define DVBBACKENDDEVICE_H
 
-class DvbBackendDevice;
-class DvbFilterInternal;
-class DvbManager;
+#include <QFlags>
+
 class DvbTransponder;
 
 static const int dvbBackendMagic = 0x58d9ca73;

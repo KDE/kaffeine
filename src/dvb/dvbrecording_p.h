@@ -31,6 +31,7 @@ class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
 class DvbChannelModel;
+class DvbManager;
 
 class DvbRecording : public QObject, private DvbPidFilter
 {

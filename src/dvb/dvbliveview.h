@@ -21,19 +21,16 @@
 #ifndef DVBLIVEVIEW_H
 #define DVBLIVEVIEW_H
 
-#include <QObject>
 #include <QSharedDataPointer>
 #include <QTimer>
 
 class DvbChannel;
 class DvbDevice;
-class DvbEitFilter;
 class DvbLiveViewInternal;
 class DvbManager;
-class DvbOsd;
 class DvbPmtSection;
-class OsdWidget;
 class MediaWidget;
+class OsdWidget;
 
 class DvbLiveView : public QObject
 {
@@ -42,15 +39,8 @@ public:
 	explicit DvbLiveView(DvbManager *manager_);
 	~DvbLiveView();
 
-	QSharedDataPointer<DvbChannel> getChannel() const
-	{
-		return channel;
-	}
-
-	DvbDevice *getDevice() const
-	{
-		return device;
-	}
+	QSharedDataPointer<DvbChannel> getChannel() const;
+	DvbDevice *getDevice() const;
 
 	void playChannel(const QSharedDataPointer<DvbChannel> &channel_);
 

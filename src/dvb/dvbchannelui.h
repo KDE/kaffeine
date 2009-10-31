@@ -29,13 +29,12 @@ class QSpinBox;
 class KComboBox;
 class KLineEdit;
 class DvbChannel;
-class ProxyTreeView;
 
 class DvbChannelModel : public QAbstractTableModel
 {
 public:
-	explicit DvbChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
-	~DvbChannelModel() { }
+	explicit DvbChannelModel(QObject *parent);
+	~DvbChannelModel();
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;

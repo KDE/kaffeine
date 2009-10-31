@@ -162,6 +162,14 @@ template<> QStringList displayStrings<AtscTransponder::Modulation>()
 	return strings;
 }
 
+DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
+{
+}
+
+DvbChannelModel::~DvbChannelModel()
+{
+}
+
 int DvbChannelModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {

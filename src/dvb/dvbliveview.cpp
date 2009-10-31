@@ -24,9 +24,7 @@
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"
-#include "../osdwidget.h"
 #include "dvbchannelui.h"
-#include "dvbepg.h"
 #include "dvbliveview_p.h"
 #include "dvbmanager.h"
 
@@ -166,6 +164,16 @@ DvbLiveView::~DvbLiveView()
 	}
 
 	delete internal;
+}
+
+QSharedDataPointer<DvbChannel> DvbLiveView::getChannel() const
+{
+	return channel;
+}
+
+DvbDevice *DvbLiveView::getDevice() const
+{
+	return device;
 }
 
 void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
