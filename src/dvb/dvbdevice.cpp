@@ -103,7 +103,7 @@ DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObjec
 
 DvbDevice::~DvbDevice()
 {
-	release();
+	backendDevice->release();
 
 	for (int i = 0; i < totalBuffers; ++i) {
 		DvbFilterData *temp = currentUnused->next;

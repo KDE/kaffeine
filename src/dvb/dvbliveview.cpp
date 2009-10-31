@@ -100,7 +100,8 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 			if ((firstEntry != NULL) && !firstEntry->details.isEmpty()) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
-					entryRect.width(), rect.height() - boundingRect.bottom() - 1,
+					entryRect.width(),
+					rect.height() - boundingRect.bottom() - 1,
 					Qt::AlignLeft | Qt::TextWordWrap, firstEntry->details,
 					&boundingRect);
 			}
@@ -161,10 +162,6 @@ DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL)
 
 DvbLiveView::~DvbLiveView()
 {
-	if (device != NULL) {
-		stopDevice();
-	}
-
 	delete internal;
 }
 
@@ -285,7 +282,7 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 		audioPids.append(it.key());
 	}
 
-	mediaWidget->updateDvbAudioChannels(audioChannels, audioPids.indexOf(channel->audioPid));
+	mediaWidget->updateDvbAudioChannels(audioChannels, audioPids.indexOf(audioPid));
 
 	QStringList subtitles;
 	subtitles.append(i18nc("subtitle selection entry", "off"));
@@ -303,7 +300,7 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 		subtitlePids.append(it.key());
 	}
 
-	mediaWidget->updateDvbSubtitles(subtitles, 0);
+	mediaWidget->updateDvbSubtitles(subtitles, subtitlePids.indexOf(subtitlePid));
 }
 
 void DvbLiveView::insertPatPmt()
