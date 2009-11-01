@@ -632,7 +632,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	gridLayout->addWidget(new QLabel(QString::number(channel->videoPid)), 12, 1);
 
 	int row = 13;
-	DvbPmtParser pmtParser(DvbPmtSection(DvbSection(channel->pmtSection)));
+	DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSection));
 
 	for (QMap<int, QString>::const_iterator it = pmtParser.subtitlePids.constBegin();
 	     it != pmtParser.subtitlePids.constEnd(); ++it) {

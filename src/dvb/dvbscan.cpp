@@ -68,7 +68,7 @@ public:
 
 private:
 	bool checkMultipleSection(const DvbStandardSection &section);
-	void processSection(const DvbSectionData &data);
+	void processSection(const QByteArray &data);
 	void timerEvent(QTimerEvent *);
 
 	DvbScan *scan;
@@ -143,23 +143,13 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	return true;
 }
 
-void DvbScanFilter::processSection(const DvbSectionData &data)
+void DvbScanFilter::processSection(const QByteArray &data)
 {
-	DvbSection section(data);
-
-	if (!section.isValid()) {
-		return;
-	}
-
 	switch (type) {
 	case DvbScan::PatFilter: {
-		if (section.tableId() != 0x0) {
-			return;
-		}
+		DvbPatSection patSection(data);
 
-		DvbPatSection patSection(section);
-
-		if (!patSection.isValid()) {
+		if (!patSection.isValid() || (patSection.tableId() != 0x0)) {
 			return;
 		}
 
@@ -174,13 +164,9 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	    }
 
 	case DvbScan::PmtFilter: {
-		if (section.tableId() != 0x2) {
-			return;
-		}
+		DvbPmtSection pmtSection(data);
 
-		DvbPmtSection pmtSection(section);
-
-		if (!pmtSection.isValid()) {
+		if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2)) {
 			return;
 		}
 
@@ -195,14 +181,10 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	    }
 
 	case DvbScan::SdtFilter: {
-		if (section.tableId() != 0x42) {
+		DvbSdtSection sdtSection(data);
+
+		if (!sdtSection.isValid() || (sdtSection.tableId() != 0x42)) {
 			// there are also other tables in the SDT
-			return;
-		}
-
-		DvbSdtSection sdtSection(section);
-
-		if (!sdtSection.isValid()) {
 			return;
 		}
 
@@ -217,14 +199,11 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	    }
 
 	case DvbScan::VctFilter: {
-		if ((section.tableId() != 0xc8) && (section.tableId() != 0xc9)) {
+		AtscVctSection vctSection(data);
+
+		if (!vctSection.isValid() ||
+		    ((vctSection.tableId() != 0xc8) && (vctSection.tableId() != 0xc9))) {
 			// there are also other tables in the VCT
-			return;
-		}
-
-		AtscVctSection vctSection(section);
-
-		if (!vctSection.isValid()) {
 			return;
 		}
 
@@ -239,14 +218,10 @@ void DvbScanFilter::processSection(const DvbSectionData &data)
 	    }
 
 	case DvbScan::NitFilter: {
-		if (section.tableId() != 0x40) {
+		DvbNitSection nitSection(data);
+
+		if (!nitSection.isValid() || (nitSection.tableId() != 0x40)) {
 			// we are only interested in the current network
-			return;
-		}
-
-		DvbNitSection nitSection(section);
-
-		if (!nitSection.isValid()) {
 			return;
 		}
 
@@ -637,7 +612,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		channel.transportStreamId = transportStreamId;
 		channel.serviceId = section.programNumber();
 		channel.pmtPid = pid;
-		channel.pmtSection = QByteArray(section.getData(), section.getSectionLength());
+		channel.pmtSection = section.toByteArray();
 		channel.snr = snr;
 		channels.append(channel);
 	}

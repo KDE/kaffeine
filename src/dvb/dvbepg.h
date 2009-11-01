@@ -88,7 +88,7 @@ public:
 private:
 	static QTime bcdToTime(int bcd);
 
-	void processSection(const DvbSectionData &data);
+	void processSection(const QByteArray &data);
 
 	DvbManager *manager;
 	DvbEpgModel *model;

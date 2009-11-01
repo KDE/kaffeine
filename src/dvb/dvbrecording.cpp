@@ -196,7 +196,7 @@ void DvbRecording::pmtSectionChanged(const DvbPmtSection &pmtSection)
 void DvbRecording::insertPatPmt()
 {
 	if (!pmtValid) {
-		pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+		pmtSectionChanged(DvbPmtSection(channel->pmtSection));
 		return;
 	}
 

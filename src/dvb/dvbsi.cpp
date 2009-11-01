@@ -88,7 +88,7 @@ void DvbSectionFilter::processData(const char data[188])
 			appendData(payload + 1, pointer);
 
 			if (!buffer.isEmpty()) {
-				processSection(DvbSectionData(buffer.constData(), buffer.size()));
+				processSection(buffer);
 				// be aware that the filter might have been reset
 				// (buffer cleared, bufferValid set to false)
 				// in this case don't poison the filter with new data
@@ -118,19 +118,20 @@ void DvbSectionFilter::appendData(const char *data, int length)
 	memcpy(buffer.data() + size, data, length);
 }
 
-DvbSection::DvbSection(const DvbSectionData &data) : DvbSectionData(data)
+DvbSection::DvbSection(const QByteArray &data) : DvbSectionData(data)
 {
-	if (size < 3) {
+	if (length < 3) {
 		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
 
-	length = (((at(1) & 0xf) << 8) | at(2)) + 3;
+	int sectionLength = (((at(1) & 0xf) << 8) | at(2)) + 3;
 
-	if (length > size) {
+	if (sectionLength <= length) {
+		length = sectionLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
@@ -321,10 +322,10 @@ const unsigned short Iso6937Codec::table[] = {
 
 QString DvbSiText::convertText(const DvbSectionData &text)
 {
-	const char *data = text.data;
-	int size = text.size;
+	const char *data = text.getData();
+	int length = text.getLength();
 
-	if (size < 1) {
+	if (length < 1) {
 		return QString();
 	}
 
@@ -350,7 +351,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		case 0x15: encoding = Utf_8; break;
 
 		case 0x10: {
-			if (size < 3) {
+			if (length < 3) {
 				return QString();
 			}
 
@@ -380,7 +381,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 			}
 
 			data += 2;
-			size -= 2;
+			length -= 2;
 
 			break;
 		    }
@@ -390,7 +391,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		}
 
 		data++;
-		size--;
+		length--;
 	}
 
 	if (codecTable[encoding] == NULL) {
@@ -425,10 +426,10 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 	if (encoding <= Iso8859_15) {
 		// only strip control codes for one-byte character tables
 
-		char *dest = new char[size];
+		char *dest = new char[length];
 		char *destIt = dest;
 
-		for (const char *it = data; it != (data + size); ++it) {
+		for (const char *it = data; it != (data + length); ++it) {
 			unsigned char value = *it;
 
 			if ((value < 0x80) || (value > 0x9f)) {
@@ -442,15 +443,15 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		return result;
 	}
 
-	return codecTable[encoding]->toUnicode(data, size);
+	return codecTable[encoding]->toUnicode(data, length);
 }
 
 QTextCodec *DvbSiText::codecTable[EncodingTypeMax + 1] = { NULL };
 
 DvbDescriptor::DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
 {
-	if (size < 2) {
-		if (size > 0) {
+	if (length < 2) {
+		if (length != 0) {
 			kDebug() << "invalid descriptor";
 		}
 
@@ -458,11 +459,12 @@ DvbDescriptor::DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
 		return;
 	}
 
-	length = descriptorLength() + 2;
+	int descriptorLength = at(1) + 2;
 
-	if (length > size) {
+	if (descriptorLength <= length) {
+		length = descriptorLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
@@ -500,10 +502,10 @@ QString AtscPsipText::interpretTextData(const char *data, unsigned int len,
 
 QString AtscPsipText::convertText(const DvbSectionData &text)
 {
-	int size = text.size;
+	int length = text.getLength();
 	QString result;
 
-	if (size < 1) {
+	if (length < 1) {
 		return QString();
 	}
 	unsigned int num_strings = text.at(0);
@@ -517,25 +519,25 @@ QString AtscPsipText::convertText(const DvbSectionData &text)
 
 	// First three bytes are the ISO 639 language code
 	offset += 3;
-	if (offset > size) {
+	if (offset > length) {
 		kWarning() << "Unexpected end";
 		return result;
 	}
 	int num_segments = text.at(offset++);
 	for (int j = 0; j < num_segments; j++) {
-		if (offset + 3 > size) {
+		if (offset + 3 > length) {
 			kWarning() << "Unexpected end";
 			return result;
 		}
 		int comp_type = text.at(offset++);
 		int mode = text.at(offset++);
 		int num_bytes = text.at(offset++);
-		if (offset + num_bytes > size) 
+		if (offset + num_bytes > length)
 		{
 			kWarning() << "Unexpected end";
 			return result;
 		}
-		const char *comp_string = text.data + offset;
+		const char *comp_string = text.getData() + offset;
 		if (comp_type == 0x00) {
 			// Uncompressed
 			result += interpretTextData(comp_string,
@@ -554,16 +556,15 @@ QString AtscPsipText::convertText(const DvbSectionData &text)
 	return result;
 }
 
-QString AtscHuffmanString::convertText(const char *data_, int size, 
-				       int table)
+QString AtscHuffmanString::convertText(const char *data_, int length, int table)
 {
-	AtscHuffmanString huffmanstring(data_, size, table);
+	AtscHuffmanString huffmanstring(data_, length, table);
 	huffmanstring.decompress();
 	return huffmanstring.result;
 }
 
-AtscHuffmanString::AtscHuffmanString(const char *data_, int size, 
-	int table) : data(data_), bitsLeft(8 * size)
+AtscHuffmanString::AtscHuffmanString(const char *data_, int length, int table) : data(data_),
+	bitsLeft(8 * length)
 {
 	if (table == 1) {
 		offsets = Huffman1Offsets;
@@ -1203,17 +1204,12 @@ void DvbPmtFilter::setProgramNumber(int programNumber_)
 	programNumber = programNumber_;
 }
 
-void DvbPmtFilter::processSection(const DvbSectionData &data)
+void DvbPmtFilter::processSection(const QByteArray &data)
 {
-	DvbSection section(data);
+	DvbPmtSection pmtSection(data);
 
-	if (!section.isValid() || (section.tableId() != 0x2)) {
-		return;
-	}
-
-	DvbPmtSection pmtSection(section);
-
-	if (!pmtSection.isValid() || (pmtSection.programNumber() != programNumber) ||
+	if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2) ||
+	    (pmtSection.programNumber() != programNumber) ||
 	    (pmtSection.versionNumber() == versionNumber)) {
 		return;
 	}
@@ -1465,8 +1461,8 @@ AtscChannelNameDescriptor::AtscChannelNameDescriptor(const DvbDescriptor &descri
 
 DvbPatSectionEntry::DvbPatSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
-	if (size < 4) {
-		if (size > 0) {
+	if (length < 4) {
+		if (length != 0) {
 			kDebug() << "invalid entry";
 		}
 
@@ -1479,8 +1475,8 @@ DvbPatSectionEntry::DvbPatSectionEntry(const DvbSectionData &data_) : DvbSection
 
 DvbPmtSectionEntry::DvbPmtSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
-	if (size < 5) {
-		if (size > 0) {
+	if (length < 5) {
+		if (length != 0) {
 			kDebug() << "invalid entry";
 		}
 
@@ -1488,18 +1484,19 @@ DvbPmtSectionEntry::DvbPmtSectionEntry(const DvbSectionData &data_) : DvbSection
 		return;
 	}
 
-	length = (((at(3) & 0xf) << 8) | at(4)) + 5;
+	int entryLength = (((at(3) & 0xf) << 8) | at(4)) + 5;
 
-	if (length > size) {
+	if (entryLength <= length) {
+		length = entryLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
 DvbSdtSectionEntry::DvbSdtSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
-	if (size < 5) {
-		if (size > 0) {
+	if (length < 5) {
+		if (length != 0) {
 			kDebug() << "invalid entry";
 		}
 
@@ -1507,18 +1504,19 @@ DvbSdtSectionEntry::DvbSdtSectionEntry(const DvbSectionData &data_) : DvbSection
 		return;
 	}
 
-	length = (((at(3) & 0xf) << 8) | at(4)) + 5;
+	int entryLength = (((at(3) & 0xf) << 8) | at(4)) + 5;
 
-	if (length > size) {
+	if (entryLength <= length) {
+		length = entryLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
 DvbEitSectionEntry::DvbEitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
-	if (size < 12) {
-		if (size > 0) {
+	if (length < 12) {
+		if (length != 0) {
 			kDebug() << "invalid entry";
 		}
 
@@ -1526,18 +1524,19 @@ DvbEitSectionEntry::DvbEitSectionEntry(const DvbSectionData &data_) : DvbSection
 		return;
 	}
 
-	length = (((at(10) & 0xf) << 8) | at(11)) + 12;
+	int entryLength = (((at(10) & 0xf) << 8) | at(11)) + 12;
 
-	if (length > size) {
+	if (entryLength <= length) {
+		length = entryLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
 DvbNitSectionEntry::DvbNitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
-	if (size < 6) {
-		if (size > 0) {
+	if (length < 6) {
+		if (length != 0) {
 			kDebug() << "invalid entry";
 		}
 
@@ -1545,18 +1544,19 @@ DvbNitSectionEntry::DvbNitSectionEntry(const DvbSectionData &data_) : DvbSection
 		return;
 	}
 
-	length = (((at(4) & 0xf) << 8) | at(5)) + 6;
+	int entryLength = (((at(4) & 0xf) << 8) | at(5)) + 6;
 
-	if (length > size) {
+	if (entryLength <= length) {
+		length = entryLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
 AtscVctSectionEntry::AtscVctSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
 {
-	if (size < 32) {
-		if (size > 0) {
+	if (length < 32) {
+		if (length != 0) {
 			kDebug() << "invalid entry";
 		}
 
@@ -1564,15 +1564,16 @@ AtscVctSectionEntry::AtscVctSectionEntry(const DvbSectionData &data_) : DvbSecti
 		return;
 	}
 
-	length = (((at(30) & 0x3) << 8) | at(31)) + 32;
+	int entryLength = (((at(30) & 0x3) << 8) | at(31)) + 32;
 
-	if (length > size) {
+	if (entryLength <= length) {
+		length = entryLength;
+	} else {
 		kDebug() << "adjusting length";
-		length = size;
 	}
 }
 
-DvbPatSection::DvbPatSection(const DvbSection &section) : DvbStandardSection(section)
+DvbPatSection::DvbPatSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 12) {
 		kDebug() << "invalid section";
@@ -1581,7 +1582,7 @@ DvbPatSection::DvbPatSection(const DvbSection &section) : DvbStandardSection(sec
 	}
 }
 
-DvbPmtSection::DvbPmtSection(const DvbSection &section) : DvbStandardSection(section)
+DvbPmtSection::DvbPmtSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 16) {
 		kDebug() << "invalid section";
@@ -1597,7 +1598,7 @@ DvbPmtSection::DvbPmtSection(const DvbSection &section) : DvbStandardSection(sec
 	}
 }
 
-DvbSdtSection::DvbSdtSection(const DvbSection &section) : DvbStandardSection(section)
+DvbSdtSection::DvbSdtSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 15) {
 		kDebug() << "invalid section";
@@ -1606,7 +1607,7 @@ DvbSdtSection::DvbSdtSection(const DvbSection &section) : DvbStandardSection(sec
 	}
 }
 
-DvbEitSection::DvbEitSection(const DvbSection &section) : DvbStandardSection(section)
+DvbEitSection::DvbEitSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 18) {
 		kDebug() << "invalid section";
@@ -1615,7 +1616,7 @@ DvbEitSection::DvbEitSection(const DvbSection &section) : DvbStandardSection(sec
 	}
 }
 
-DvbNitSection::DvbNitSection(const DvbSection &section) : DvbStandardSection(section)
+DvbNitSection::DvbNitSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 16) {
 		kDebug() << "invalid section";
@@ -1638,7 +1639,7 @@ DvbNitSection::DvbNitSection(const DvbSection &section) : DvbStandardSection(sec
 	}
 }
 
-AtscVctSection::AtscVctSection(const DvbSection &section) : DvbStandardSection(section)
+AtscVctSection::AtscVctSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 14) {
 		kDebug() << "invalid section";

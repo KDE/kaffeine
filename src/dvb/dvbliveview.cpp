@@ -207,7 +207,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 	videoPid = channel->videoPid;
 	audioPid = channel->audioPid;
 	subtitlePid = -1;
-	pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+	pmtSectionChanged(DvbPmtSection(channel->pmtSection));
 	patPmtTimer.start(500);
 
 	internal->buffer.reserve(87 * 188);
@@ -216,8 +216,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 
 void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 {
-	// FIXME find a better solution
-	channel->pmtSection = QByteArray(section.getData(), section.getSectionLength());
+	internal->pmtSection = section;
 
 	DvbPmtParser pmtParser(section);
 	videoPid = pmtParser.videoPid;
@@ -485,9 +484,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	}
 
 	if (updatePatPmt) {
-		// FIXME find a better solution
-		internal->pmtGenerator.initPmt(channel->pmtPid,
-			DvbPmtSection(DvbSection(channel->pmtSection)), pids);
+		internal->pmtGenerator.initPmt(channel->pmtPid, internal->pmtSection, pids);
 		insertPatPmt();
 	}
 }

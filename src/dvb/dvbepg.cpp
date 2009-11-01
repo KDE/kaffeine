@@ -330,23 +330,12 @@ QTime DvbEitFilter::bcdToTime(int bcd)
 		     ((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f));
 }
 
-void DvbEitFilter::processSection(const DvbSectionData &data)
+void DvbEitFilter::processSection(const QByteArray &data)
 {
-	DvbSection section(data);
+	DvbEitSection eitSection(data);
 
-	if (!section.isValid()) {
-		return;
-	}
-
-	int tableId = section.tableId();
-
-	if ((tableId < 0x4e) || (tableId > 0x6f)) {
-		return;
-	}
-
-	DvbEitSection eitSection(section);
-
-	if (!eitSection.isValid()) {
+	if (!eitSection.isValid() ||
+	    (eitSection.tableId() < 0x4e) || (eitSection.tableId() > 0x6f)) {
 		return;
 	}
 

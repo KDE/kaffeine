@@ -33,7 +33,7 @@ public:
 	~DvbSectionFilter() { }
 
 protected:
-	virtual void processSection(const DvbSectionData &data) = 0;
+	virtual void processSection(const QByteArray &data) = 0;
 
 	void resetFilter()
 	{
@@ -54,16 +54,16 @@ private:
 
 class DvbSectionData
 {
-	friend class DvbSiText;
-	friend class AtscPsipText;
 public:
-	DvbSectionData(const QByteArray &array) : size(array.size()), length(0), data(array.constData()) { }
-	DvbSectionData(const char *data_, int size_) : size(size_), length(0), data(data_) { }
-	~DvbSectionData() { }
-
-	bool isValid() const
+	explicit DvbSectionData(const QByteArray &byteArray_) : byteArray(byteArray_)
 	{
-		return length > 0;
+		data = byteArray.constData();
+		length = byteArray.size();
+	}
+
+	unsigned char at(int index) const
+	{
+		return data[index];
 	}
 
 	const char *getData() const
@@ -71,33 +71,47 @@ public:
 		return data;
 	}
 
-protected:
-	unsigned char at(int index) const
+	int getLength() const
 	{
-		return data[index];
+		return length;
 	}
 
+	bool isValid() const
+	{
+		return (length > 0);
+	}
+
+	QByteArray toByteArray() const
+	{
+		return QByteArray(data, length);
+	}
+
+protected:
 	DvbSectionData next() const
 	{
-		return DvbSectionData(data + length, size - length);
+		return DvbSectionData(byteArray, data + length,
+			byteArray.constData() + byteArray.size() - data);
 	}
 
 	DvbSectionData subArray(int index, int size) const
 	{
-		return DvbSectionData(data + index, size);
+		return DvbSectionData(byteArray, data + index, size);
 	}
 
-	int size;
 	int length;
 
 private:
+	DvbSectionData(const QByteArray &byteArray_, const char *data_, int length_) :
+		length(length_), byteArray(byteArray_), data(data_) { }
+
+	QByteArray byteArray;
 	const char *data;
 };
 
 class DvbSection : public DvbSectionData
 {
 public:
-	explicit DvbSection(const DvbSectionData &data);
+	explicit DvbSection(const QByteArray &data);
 	~DvbSection() { }
 
 	int getSectionLength() const
@@ -119,7 +133,7 @@ public:
 class DvbStandardSection : public DvbSection
 {
 public:
-	explicit DvbStandardSection(const DvbSection &section) : DvbSection(section)
+	explicit DvbStandardSection(const QByteArray &data) : DvbSection(data)
 	{
 		if (length < 12) {
 			length = 0;
@@ -196,11 +210,6 @@ public:
 	int descriptorTag() const
 	{
 		return at(0);
-	}
-
-	int descriptorLength() const
-	{
-		return at(1);
 	}
 
 	void advance()
@@ -292,7 +301,7 @@ signals:
 	void pmtSectionChanged(const DvbPmtSection &section);
 
 private:
-	void processSection(const DvbSectionData &data);
+	void processSection(const QByteArray &data);
 
 	int programNumber;
 	int versionNumber;
@@ -752,7 +761,7 @@ public:
 class DvbPatSection : public DvbStandardSection
 {
 public:
-	explicit DvbPatSection(const DvbSection &section);
+	explicit DvbPatSection(const QByteArray &data);
 	~DvbPatSection() { }
 
 	int transportStreamId() const
@@ -769,7 +778,7 @@ public:
 class DvbPmtSection : public DvbStandardSection
 {
 public:
-	explicit DvbPmtSection(const DvbSection &section);
+	explicit DvbPmtSection(const QByteArray &data);
 	~DvbPmtSection() { }
 
 	int programNumber() const
@@ -794,7 +803,7 @@ private:
 class DvbSdtSection : public DvbStandardSection
 {
 public:
-	explicit DvbSdtSection(const DvbSection &section);
+	explicit DvbSdtSection(const QByteArray &data);
 	~DvbSdtSection() { }
 
 	int originalNetworkId() const
@@ -811,7 +820,7 @@ public:
 class DvbEitSection : public DvbStandardSection
 {
 public:
-	explicit DvbEitSection(const DvbSection &section);
+	explicit DvbEitSection(const QByteArray &data);
 	~DvbEitSection() { }
 
 	int serviceId() const
@@ -838,7 +847,7 @@ public:
 class DvbNitSection : public DvbStandardSection
 {
 public:
-	explicit DvbNitSection(const DvbSection &section);
+	explicit DvbNitSection(const QByteArray &data);
 	~DvbNitSection() { }
 
 	DvbDescriptor descriptors() const
@@ -859,7 +868,7 @@ private:
 class AtscVctSection : public DvbStandardSection
 {
 public:
-	explicit AtscVctSection(const DvbSection &section);
+	explicit AtscVctSection(const QByteArray &data);
 	~AtscVctSection() { }
 
 	int entryCount() const
