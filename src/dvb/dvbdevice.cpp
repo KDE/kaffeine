@@ -69,7 +69,7 @@ private:
 DvbDataDumper::DvbDataDumper()
 {
 	file.setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" +
-		QString("%1").arg(qrand(), 16) + ".bin");
+		QString::number(qrand(), 16) + ".bin");
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		kWarning() << "couldn't open" << file.fileName();

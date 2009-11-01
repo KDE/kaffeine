@@ -24,7 +24,6 @@
 #include "dvbdevice.h"
 
 class DvbPmtSection;
-class DvbSectionData;
 
 class DvbSectionFilter : public DvbPidFilter
 {
@@ -58,8 +57,11 @@ public:
 	explicit DvbSectionData(const QByteArray &byteArray_) : byteArray(byteArray_)
 	{
 		data = byteArray.constData();
-		length = byteArray.size();
+		size = byteArray.size();
+		length = size;
 	}
+
+	~DvbSectionData() { }
 
 	unsigned char at(int index) const
 	{
@@ -89,8 +91,7 @@ public:
 protected:
 	DvbSectionData next() const
 	{
-		return DvbSectionData(byteArray, data + length,
-			byteArray.constData() + byteArray.size() - data);
+		return DvbSectionData(byteArray, data + length, size - length);
 	}
 
 	DvbSectionData subArray(int index, int size) const
@@ -101,11 +102,15 @@ protected:
 	int length;
 
 private:
-	DvbSectionData(const QByteArray &byteArray_, const char *data_, int length_) :
-		length(length_), byteArray(byteArray_), data(data_) { }
+	DvbSectionData(const QByteArray &byteArray_, const char *data_, int size_) :
+		size(size_), data(data_), byteArray(byteArray_)
+	{
+		length = size;
+	}
 
-	QByteArray byteArray;
+	int size;
 	const char *data;
+	QByteArray byteArray;
 };
 
 class DvbSection : public DvbSectionData

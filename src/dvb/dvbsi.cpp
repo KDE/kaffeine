@@ -121,7 +121,6 @@ void DvbSectionFilter::appendData(const char *data, int length)
 DvbSection::DvbSection(const QByteArray &data) : DvbSectionData(data)
 {
 	if (length < 3) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
@@ -1585,7 +1584,6 @@ DvbPatSection::DvbPatSection(const QByteArray &data) : DvbStandardSection(data)
 DvbPmtSection::DvbPmtSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 16) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
