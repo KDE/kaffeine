@@ -34,9 +34,11 @@ install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(FILES kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
+if(NOT WIN32)
 kde4_add_plugin(kaffeinedvb ${kaffeinedvbmodule_SRCS})
 target_link_libraries(kaffeinedvb ${KDE4_KDECORE_LIBRARY} ${KDE4_SOLID_LIBS})
 install(TARGETS kaffeinedvb DESTINATION ${PLUGIN_INSTALL_DIR})
+endif(NOT WIN32)
 
 if(BUILD_DEBUG_MODULE)
   kde4_add_plugin(kaffeinedvbdebug ${kaffeinedvbdebugmodule_SRCS})
