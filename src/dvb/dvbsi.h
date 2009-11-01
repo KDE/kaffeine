@@ -31,15 +31,15 @@ public:
 	DvbSectionFilter() : continuityCounter(-1), bufferValid(false) { }
 	~DvbSectionFilter() { }
 
-protected:
-	virtual void processSection(const QByteArray &data) = 0;
-
 	void resetFilter()
 	{
 		buffer.clear();
 		continuityCounter = -1;
 		bufferValid = false;
 	}
+
+protected:
+	virtual void processSection(const QByteArray &data) = 0;
 
 private:
 	void processData(const char data[188]);

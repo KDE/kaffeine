@@ -433,8 +433,8 @@ void DvbLiveView::startDevice()
 		device->addPidFilter(pid, internal);
 	}
 
-	device->addPidFilter(channel->pmtPid, &internal->pmtFilter);
 	device->addPidFilter(0x12, &internal->eitFilter);
+	device->addPidFilter(channel->pmtPid, &internal->pmtFilter);
 	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 }
 
@@ -444,9 +444,12 @@ void DvbLiveView::stopDevice()
 		device->removePidFilter(pid, internal);
 	}
 
-	device->removePidFilter(channel->pmtPid, &internal->pmtFilter);
 	device->removePidFilter(0x12, &internal->eitFilter);
+	device->removePidFilter(channel->pmtPid, &internal->pmtFilter);
 	disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+
+	internal->eitFilter.resetFilter();
+	internal->pmtFilter.resetFilter();
 }
 
 void DvbLiveView::updatePids(bool forcePatPmtUpdate)
