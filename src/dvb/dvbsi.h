@@ -21,6 +21,7 @@
 #ifndef DVBSI_H
 #define DVBSI_H
 
+#include <QPair>
 #include "dvbdevice.h"
 
 class DvbPmtSection;
@@ -319,8 +320,8 @@ public:
 	~DvbPmtParser() { }
 
 	int videoPid;
-	QMap<int, QString> audioPids; // QString = language code (may be empty)
-	QMap<int, QString> subtitlePids; // QString = language code
+	QList<QPair<int, QString> > audioPids; // QString = language code (may be empty)
+	QList<QPair<int, QString> > subtitlePids; // QString = language code
 	int teletextPid;
 };
 

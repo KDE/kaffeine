@@ -146,14 +146,12 @@ void DvbRecording::pmtSectionChanged(const DvbPmtSection &pmtSection)
 		newPids.insert(pmtParser.videoPid);
 	}
 
-	for (QMap<int, QString>::const_iterator it = pmtParser.audioPids.constBegin();
-	     it != pmtParser.audioPids.constEnd(); ++it) {
-		newPids.insert(it.key());
+	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+		newPids.insert(pmtParser.audioPids.at(i).first);
 	}
 
-	for (QMap<int, QString>::const_iterator it = pmtParser.subtitlePids.constBegin();
-	     it != pmtParser.subtitlePids.constEnd(); ++it) {
-		newPids.insert(it.key());
+	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
+		newPids.insert(pmtParser.subtitlePids.at(i).first);
 	}
 
 	if (pmtParser.teletextPid != -1) {

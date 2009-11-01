@@ -634,14 +634,14 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	int row = 13;
 	DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSection));
 
-	for (QMap<int, QString>::const_iterator it = pmtParser.subtitlePids.constBegin();
-	     it != pmtParser.subtitlePids.constEnd(); ++it) {
-		if (it == pmtParser.subtitlePids.constBegin()) {
-			gridLayout->addWidget(new QLabel(i18n("Subtitle PID:")), row, 0);
-		}
+	if (!pmtParser.subtitlePids.isEmpty()) {
+		gridLayout->addWidget(new QLabel(i18n("Subtitle PID:")), row, 0);
+	}
 
-		gridLayout->addWidget(new QLabel(QString("%1 (%2)").arg(it.key()).arg(it.value())),
-				      row++, 1);
+	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
+		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
+		gridLayout->addWidget(new QLabel(QString("%1 (%2)").arg(it.first).arg(it.second)),
+			row++, 1);
 	}
 
 	if (pmtParser.teletextPid != -1) {
@@ -680,16 +680,16 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 
 	audioChannelBox = new KComboBox(groupBox);
 
-	for (QMap<int, QString>::const_iterator it = pmtParser.audioPids.constBegin();
-	     it != pmtParser.audioPids.constEnd(); ++it) {
-		QString text = QString::number(it.key());
+	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
+		QString text = QString::number(it.first);
 
-		if (!it.value().isEmpty()) {
-			text = text + " (" + it.value() + ')';
+		if (!it.second.isEmpty()) {
+			text = text + " (" + it.second + ')';
 		}
 
 		audioChannelBox->addItem(text);
-		audioPids.append(it.key());
+		audioPids.append(it.first);
 	}
 
 	audioChannelBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));

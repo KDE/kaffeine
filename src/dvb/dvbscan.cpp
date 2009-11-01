@@ -604,7 +604,10 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 
 	DvbPmtParser parser(section);
 	channel.videoPid = parser.videoPid;
-	channel.audioPids = parser.audioPids.keys();
+
+	for (int i = 0; i < parser.audioPids.size(); ++i) {
+		channel.audioPids.append(parser.audioPids.at(i).first);
+	}
 
 	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
 		channel.source = source;

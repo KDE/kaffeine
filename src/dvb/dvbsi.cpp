@@ -1293,7 +1293,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 		case 0x11: // AAC / LATM audio
 		case 0x81: // AC-3 audio (ATSC specific)
 		case 0x87: // enhanced AC-3 audio (ATSC specific)
-			audioPids.insert(entry.pid(), streamLanguage);
+			audioPids.append(qMakePair(entry.pid(), streamLanguage));
 			break;
 
 		case 0x06: // private data - can be teletext, subtitle, ac3 or something else
@@ -1306,7 +1306,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 			}
 
 			if (!subtitleLanguage.isEmpty()) {
-				subtitlePids.insert(entry.pid(), subtitleLanguage);
+				subtitlePids.append(qMakePair(entry.pid(), subtitleLanguage));
 
 				if (teletextPresent) {
 					kDebug() << "subtitle and teletext on the same pid";
@@ -1314,7 +1314,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 			}
 
 			if (ac3Present) {
-				audioPids.insert(entry.pid(), streamLanguage);
+				audioPids.append(qMakePair(entry.pid(), streamLanguage));
 			}
 
 			break;

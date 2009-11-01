@@ -221,17 +221,31 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	DvbPmtParser pmtParser(section);
 	videoPid = pmtParser.videoPid;
 
-	if (!pmtParser.audioPids.contains(audioPid)) {
-		if (!pmtParser.audioPids.isEmpty()) {
-			// FIXME pay attention to the "recommended" audio pid
-			audioPid = pmtParser.audioPids.constBegin().key();
-		} else {
-			audioPid = -1;
+	for (int i = 0;; ++i) {
+		if (i == pmtParser.audioPids.size()) {
+			if (i > 0) {
+				audioPid = pmtParser.audioPids.at(0).first;
+			} else {
+				audioPid = -1;
+			}
+
+			break;
+		}
+
+		if (pmtParser.audioPids.at(i).first == audioPid) {
+			break;
 		}
 	}
 
-	if (!pmtParser.subtitlePids.contains(subtitlePid)) {
-		subtitlePid = -1;
+	for (int i = 0;; ++i) {
+		if (i == pmtParser.subtitlePids.size()) {
+			subtitlePid = -1;
+			break;
+		}
+
+		if (pmtParser.subtitlePids.at(i).first == subtitlePid) {
+			break;
+		}
 	}
 
 	updatePids(true);
@@ -243,15 +257,16 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	QStringList audioChannels;
 	audioPids.clear();
 
-	for (QMap<int, QString>::const_iterator it = pmtParser.audioPids.constBegin();
-	     it != pmtParser.audioPids.constEnd(); ++it) {
-		if (!it.value().isEmpty()) {
-			audioChannels.append(it.value());
+	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
+
+		if (!it.second.isEmpty()) {
+			audioChannels.append(it.second);
 		} else {
-			audioChannels.append(QString::number(it.key()));
+			audioChannels.append(QString::number(it.first));
 		}
 
-		audioPids.append(it.key());
+		audioPids.append(it.first);
 	}
 
 	mediaWidget->updateDvbAudioChannels(audioChannels, audioPids.indexOf(audioPid));
@@ -261,15 +276,16 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	subtitlePids.clear();
 	subtitlePids.append(-1);
 
-	for (QMap<int, QString>::const_iterator it = pmtParser.subtitlePids.constBegin();
-	     it != pmtParser.subtitlePids.constEnd(); ++it) {
-		if (!it.value().isEmpty()) {
-			subtitles.append(it.value());
+	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
+		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
+
+		if (!it.second.isEmpty()) {
+			subtitles.append(it.second);
 		} else {
-			subtitles.append(QString::number(it.key()));
+			subtitles.append(QString::number(it.first));
 		}
 
-		subtitlePids.append(it.key());
+		subtitlePids.append(it.first);
 	}
 
 	mediaWidget->updateDvbSubtitles(subtitles, subtitlePids.indexOf(subtitlePid));
