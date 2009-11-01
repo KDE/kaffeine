@@ -133,8 +133,8 @@ void DvbLiveViewInternal::processData(const char data[188])
 	buffer.reserve(87 * 188);
 }
 
-DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL), audioPid(-1),
-	subtitlePid(-1)
+DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL), videoPid(-1),
+	audioPid(-1), subtitlePid(-1)
 {
 	mediaWidget = manager->getMediaWidget();
 	osdWidget = mediaWidget->getOsdWidget();
@@ -204,6 +204,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 
 	internal->patGenerator.initPat(channel->transportStreamId, channel->serviceId,
 		channel->pmtPid);
+	videoPid = channel->videoPid;
 	audioPid = channel->audioPid;
 	subtitlePid = -1;
 	pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
@@ -219,11 +220,7 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	channel->pmtSection = QByteArray(section.getData(), section.getSectionLength());
 
 	DvbPmtParser pmtParser(section);
-	QSet<int> newPids;
-
-	if (pmtParser.videoPid != -1) {
-		newPids.insert(pmtParser.videoPid);
-	}
+	videoPid = pmtParser.videoPid;
 
 	if (!pmtParser.audioPids.contains(audioPid)) {
 		if (!pmtParser.audioPids.isEmpty()) {
@@ -234,35 +231,11 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 		}
 	}
 
-	if (audioPid != -1) {
-		newPids.insert(audioPid);
-	}
-
 	if (!pmtParser.subtitlePids.contains(subtitlePid)) {
 		subtitlePid = -1;
 	}
 
-	if (subtitlePid != -1) {
-		newPids.insert(subtitlePid);
-	}
-
-	for (int i = 0; i < pids.size(); ++i) {
-		int pid = pids.at(i);
-
-		if (!newPids.remove(pid)) {
-			device->removePidFilter(pid, internal);
-			pids.removeAt(i);
-			--i;
-		}
-	}
-
-	foreach (int pid, newPids) {
-		device->addPidFilter(pid, internal);
-		pids.append(pid);
-	}
-
-	internal->pmtGenerator.initPmt(channel->pmtPid, section, pids);
-	insertPatPmt();
+	updatePids(true);
 
 	if (internal->timeShiftFile.isOpen()) {
 		return;
@@ -336,13 +309,13 @@ void DvbLiveView::deviceStateChanged()
 void DvbLiveView::changeAudioStream(int index)
 {
 	audioPid = audioPids.at(index);
-	pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+	updatePids();
 }
 
 void DvbLiveView::changeSubtitle(int index)
 {
 	subtitlePid = subtitlePids.at(index);
-	pmtSectionChanged(DvbPmtSection(DvbSection(channel->pmtSection)));
+	updatePids();
 }
 
 void DvbLiveView::prepareTimeShift()
@@ -414,14 +387,13 @@ void DvbLiveView::osdTimeout()
 
 void DvbLiveView::liveStopped()
 {
-	channel = NULL;
-
 	if (device != NULL) {
 		stopDevice();
 		manager->releaseDevice(device);
 		device = NULL;
 	}
 
+	channel = NULL;
 	pids.clear();
 	patPmtTimer.stop();
 	osdTimer.stop();
@@ -476,4 +448,46 @@ void DvbLiveView::stopDevice()
 	device->removePidFilter(channel->pmtPid, &internal->pmtFilter);
 	device->removePidFilter(0x12, &internal->eitFilter);
 	disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+}
+
+void DvbLiveView::updatePids(bool forcePatPmtUpdate)
+{
+	QSet<int> newPids;
+	bool updatePatPmt = forcePatPmtUpdate;
+
+	if (videoPid != -1) {
+		newPids.insert(videoPid);
+	}
+
+	if (audioPid != -1) {
+		newPids.insert(audioPid);
+	}
+
+	if (subtitlePid != -1) {
+		newPids.insert(subtitlePid);
+	}
+
+	for (int i = 0; i < pids.size(); ++i) {
+		int pid = pids.at(i);
+
+		if (!newPids.remove(pid)) {
+			device->removePidFilter(pid, internal);
+			pids.removeAt(i);
+			updatePatPmt = true;
+			--i;
+		}
+	}
+
+	foreach (int pid, newPids) {
+		device->addPidFilter(pid, internal);
+		pids.append(pid);
+		updatePatPmt = true;
+	}
+
+	if (updatePatPmt) {
+		// FIXME find a better solution
+		internal->pmtGenerator.initPmt(channel->pmtPid,
+			DvbPmtSection(DvbSection(channel->pmtSection)), pids);
+		insertPatPmt();
+	}
 }

@@ -62,6 +62,7 @@ private slots:
 private:
 	void startDevice();
 	void stopDevice();
+	void updatePids(bool forcePatPmtUpdate = false);
 
 	DvbManager *manager;
 	MediaWidget *mediaWidget;
@@ -75,6 +76,7 @@ private:
 	QTimer osdTimer;
 	QTimer fastRetuneTimer;
 
+	int videoPid;
 	int audioPid;
 	int subtitlePid;
 	QList<int> audioPids;
