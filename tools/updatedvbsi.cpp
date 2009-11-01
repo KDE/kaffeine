@@ -213,8 +213,8 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		cppStream << "\n";
 		cppStream << entryName << "::" << entryName << "(const DvbSectionData &data_) : DvbSectionData(data_)\n";
 		cppStream << "{\n";
-		cppStream << "\tif (size < " << (minBits / 8) << ") {\n";
-		cppStream << "\t\tif (size > 0) {\n";
+		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
+		cppStream << "\t\tif (length != 0) {\n";
 		cppStream << "\t\t\tkDebug() << \"invalid entry\";\n";
 		cppStream << "\t\t}\n";
 		cppStream << "\n";
@@ -237,11 +237,12 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 				return;
 			}
 
-			cppStream << "\tlength = (" << element << ") + " << ((element.bitIndex + element.bits) / 8) << ";\n";
+			cppStream << "\tint entryLength = (" << element << ") + " << ((element.bitIndex + element.bits) / 8) << ";\n";
 			cppStream << "\n";
-			cppStream << "\tif (length > size) {\n";
+			cppStream << "\tif (entryLength <= length) {\n";
+			cppStream << "\t\tlength = entryLength;\n";
+			cppStream << "\t} else {\n";
 			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
-			cppStream << "\t\tlength = size;\n";
 			cppStream << "\t}\n";
 
 			elements.removeAt(i);
@@ -258,10 +259,9 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 	case Section:
 		cppStream << "\n";
-		cppStream << entryName << "::" << entryName << "(const DvbSection &section) : DvbStandardSection(section)\n";
+		cppStream << entryName << "::" << entryName << "(const QByteArray &data) : DvbStandardSection(data)\n";
 		cppStream << "{\n";
 		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
-		cppStream << "\t\tkDebug() << \"invalid section\";\n";
 		cppStream << "\t\tlength = 0;\n";
 		cppStream << "\t\treturn;\n";
 		cppStream << "\t}\n";
@@ -329,7 +329,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		headerStream << "class " << entryName << " : public DvbStandardSection\n";
 		headerStream << "{\n";
 		headerStream << "public:\n";
-		headerStream << "\texplicit " << entryName << "(const DvbSection &section);\n";
+		headerStream << "\texplicit " << entryName << "(const QByteArray &data);\n";
 		break;
 	}
 

@@ -1575,7 +1575,6 @@ AtscVctSectionEntry::AtscVctSectionEntry(const DvbSectionData &data_) : DvbSecti
 DvbPatSection::DvbPatSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 12) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
@@ -1599,7 +1598,6 @@ DvbPmtSection::DvbPmtSection(const QByteArray &data) : DvbStandardSection(data)
 DvbSdtSection::DvbSdtSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 15) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
@@ -1608,7 +1606,6 @@ DvbSdtSection::DvbSdtSection(const QByteArray &data) : DvbStandardSection(data)
 DvbEitSection::DvbEitSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 18) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
@@ -1617,7 +1614,6 @@ DvbEitSection::DvbEitSection(const QByteArray &data) : DvbStandardSection(data)
 DvbNitSection::DvbNitSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 16) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
@@ -1640,7 +1636,6 @@ DvbNitSection::DvbNitSection(const QByteArray &data) : DvbStandardSection(data)
 AtscVctSection::AtscVctSection(const QByteArray &data) : DvbStandardSection(data)
 {
 	if (length < 14) {
-		kDebug() << "invalid section";
 		length = 0;
 		return;
 	}
