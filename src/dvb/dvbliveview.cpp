@@ -186,7 +186,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 
 	mediaWidget->stopDvb();
 	channel = channel_;
-	device = manager->requestDevice(channel->transponder);
+	device = manager->requestDevice(channel->transponder, DvbManager::Shared);
 
 	if (device == NULL) {
 		channel = NULL;
@@ -302,7 +302,7 @@ void DvbLiveView::deviceStateChanged()
 	switch (device->getDeviceState()) {
 	case DvbDevice::DeviceReleased:
 		stopDevice();
-		device = manager->requestDevice(channel->transponder);
+		device = manager->requestDevice(channel->transponder, DvbManager::Shared);
 
 		if (device != NULL) {
 			startDevice();
@@ -404,7 +404,7 @@ void DvbLiveView::liveStopped()
 {
 	if (device != NULL) {
 		stopDevice();
-		manager->releaseDevice(device);
+		manager->releaseDevice(device, DvbManager::Shared);
 		device = NULL;
 	}
 

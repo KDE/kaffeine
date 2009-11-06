@@ -84,7 +84,7 @@ void DvbRecording::start()
 	}
 
 	if (device == NULL) {
-		device = manager->requestDevice(channel->transponder, true);
+		device = manager->requestDevice(channel->transponder, DvbManager::Prioritized);
 
 		if (device == NULL) {
 			kWarning() << "couldn't find a suitable device";
@@ -114,7 +114,7 @@ void DvbRecording::stop()
 
 		device->removePidFilter(channel->pmtPid, &pmtFilter);
 		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
-		manager->releaseDevice(device);
+		manager->releaseDevice(device, DvbManager::Prioritized);
 		device = NULL;
 	}
 

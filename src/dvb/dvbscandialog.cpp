@@ -361,7 +361,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		internal = NULL;
 
 		if (!isLive) {
-			manager->releaseDevice(device);
+			manager->releaseDevice(device, DvbManager::Exclusive);
 			setDevice(NULL);
 		}
 

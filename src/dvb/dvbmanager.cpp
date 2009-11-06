@@ -206,7 +206,7 @@ public:
 
 DvbDeviceConfig::DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
 	DvbDevice *device_) : deviceId(deviceId_), frontendName(frontendName_), device(device_),
-	useCount(0), highPriorityUse(false)
+	useCount(0), prioritizedUseCount(0)
 {
 }
 
@@ -245,9 +245,10 @@ DvbManager::~DvbManager()
 	}
 }
 
-DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder, bool highPriority)
+DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
+	DvbManager::RequestType requestType)
 {
-	// first try to find a device that is already tuned to the selected transponder
+	Q_ASSERT(requestType != Exclusive);
 
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
@@ -259,8 +260,8 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder, bool hig
 		if (it.transponder->corresponds(transponder)) {
 			++deviceConfigs[i].useCount;
 
-			if (highPriority) {
-				deviceConfigs[i].highPriorityUse = true;
+			if (requestType == Prioritized) {
+				++deviceConfigs[i].prioritizedUseCount;
 			}
 
 			return it.device;
@@ -283,30 +284,33 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder, bool hig
 				}
 
 				deviceConfigs[i].useCount = 1;
-				deviceConfigs[i].highPriorityUse = highPriority;
-				deviceConfigs[i].transponder = transponder;
 
+				if (requestType == Prioritized) {
+					deviceConfigs[i].prioritizedUseCount = 1;
+				}
+
+				deviceConfigs[i].transponder = transponder;
 				device->tune(transponder);
 				return device;
 			}
 		}
 	}
 
-	if (!highPriority) {
+	if (requestType != Prioritized) {
 		return NULL;
 	}
 
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
 
-		if ((it.device == NULL) || (it.useCount == 0) || it.highPriorityUse) {
+		if ((it.device == NULL) || (it.useCount == 0) || (it.prioritizedUseCount != 0)) {
 			continue;
 		}
 
 		foreach (const DvbConfig &config, it.configs) {
 			if (config->name == transponder->source) {
 				deviceConfigs[i].useCount = 1;
-				deviceConfigs[i].highPriorityUse = true;
+				deviceConfigs[i].prioritizedUseCount = 1;
 				deviceConfigs[i].transponder = transponder;
 
 				DvbDevice *device = it.device;
@@ -338,8 +342,7 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 				}
 
 				deviceConfigs[i].useCount = -1;
-				deviceConfigs[i].highPriorityUse = true;
-
+				deviceConfigs[i].transponder = NULL;
 				return device;
 			}
 		}
@@ -348,16 +351,33 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 	return NULL;
 }
 
-void DvbManager::releaseDevice(DvbDevice *device)
+void DvbManager::releaseDevice(DvbDevice *device, RequestType requestType)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
 
 		if (it.device == device) {
-			if ((--deviceConfigs[i].useCount) <= 0) {
-				deviceConfigs[i].device->release();
+			switch (requestType) {
+			case Prioritized:
+				--deviceConfigs[i].prioritizedUseCount;
+				Q_ASSERT(it.prioritizedUseCount >= 0);
+			// fall through
+			case Shared:
+				--deviceConfigs[i].useCount;
+				Q_ASSERT(it.useCount >= 0);
+				Q_ASSERT(it.useCount >= it.prioritizedUseCount);
+
+				if (it.useCount == 0) {
+					it.device->release();
+				}
+
+				break;
+			case Exclusive:
+				Q_ASSERT(it.useCount == -1);
+				Q_ASSERT(it.prioritizedUseCount == 0);
 				deviceConfigs[i].useCount = 0;
-				deviceConfigs[i].highPriorityUse = false;
+				it.device->release();
+				break;
 			}
 
 			break;
@@ -573,9 +593,9 @@ void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
 			if (deviceConfigs[i].useCount != 0) {
-				deviceConfigs[i].device->release();
 				deviceConfigs[i].useCount = 0;
-				deviceConfigs[i].highPriorityUse = false;
+				deviceConfigs[i].prioritizedUseCount = 0;
+				deviceConfigs[i].device->release();
 			}
 
 			delete deviceConfigs[i].device;

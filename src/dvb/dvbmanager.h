@@ -44,6 +44,12 @@ class DvbManager : public QObject
 {
 	Q_OBJECT
 public:
+	enum RequestType {
+		Shared,
+		Exclusive, // you can freely tune() and stop(), because the device isn't shared
+		Prioritized // takes precedence over 'Shared' and 'Exclusive'
+	};
+
 	enum TransmissionType {
 		DvbC,
 		DvbS,
@@ -90,10 +96,9 @@ public:
 		return recordingModel;
 	}
 
-	DvbDevice *requestDevice(const DvbTransponder &transponder, bool highPriority = false);
-	// exclusive = you can freely tune() and stop(), because the device isn't shared
+	DvbDevice *requestDevice(const DvbTransponder &transponder, RequestType requestType);
 	DvbDevice *requestExclusiveDevice(const QString &source);
-	void releaseDevice(DvbDevice *device);
+	void releaseDevice(DvbDevice *device, RequestType requestType);
 
 	QList<DvbDeviceConfig> getDeviceConfigs() const;
 	void setDeviceConfigs(const QList<QList<DvbConfig> > &configs);
@@ -159,7 +164,7 @@ public:
 	DvbDevice *device;
 	QList<DvbConfig> configs;
 	int useCount; // -1 means exclusive use
-	bool highPriorityUse;
+	int prioritizedUseCount;
 	QExplicitlySharedDataPointer<const DvbTransponderBase> transponder;
 };
 
