@@ -24,33 +24,21 @@
 #include <QDate>
 #include <QMap>
 #include <QPair>
+#include <QSharedData>
 #include <QStringList>
-#include "dvbchannel.h"
 
 class DvbBackendDevice;
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
+class DvbDeviceConfig;
 class DvbEpgModel;
 class DvbLiveView;
 class DvbRecordingModel;
 class DvbScanData;
+class DvbTransponder;
+class DvbTransponderBase;
 class MediaWidget;
-
-class DvbDeviceConfig
-{
-public:
-	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_);
-	~DvbDeviceConfig();
-
-	QString deviceId;
-	QString frontendName;
-	DvbDevice *device;
-	QList<DvbConfig> configs;
-	int useCount; // -1 means exclusive use
-	bool highPriorityUse;
-	DvbTransponder transponder;
-};
 
 class DvbManager : public QObject
 {
@@ -158,6 +146,21 @@ private:
 	QDate scanDataDate;
 	QMap<TransmissionType, QStringList> scanSources;
 	QMap<QPair<TransmissionType, QString>, QList<DvbTransponder> > scanData;
+};
+
+class DvbDeviceConfig
+{
+public:
+	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_);
+	~DvbDeviceConfig();
+
+	QString deviceId;
+	QString frontendName;
+	DvbDevice *device;
+	QList<DvbConfig> configs;
+	int useCount; // -1 means exclusive use
+	bool highPriorityUse;
+	QExplicitlySharedDataPointer<const DvbTransponderBase> transponder;
 };
 
 #endif /* DVBMANAGER_H */
