@@ -551,7 +551,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	QGroupBox *groupBox = new QGroupBox(widget);
 	QGridLayout *gridLayout = new QGridLayout(groupBox);
 	gridLayout->addWidget(new QLabel(i18n("Source:")), 0, 0);
-	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
+	gridLayout->addWidget(new QLabel(channel->transponder->source), 0, 1);
 
 	switch (channel->transponder->getTransmissionType()) {
 	case DvbTransponderBase::DvbC: {

@@ -49,7 +49,6 @@ public:
 	QList<DvbConfig> configs;
 	int useCount; // -1 means exclusive use
 	bool highPriorityUse;
-	QString source;
 	DvbTransponder transponder;
 };
 
@@ -103,8 +102,7 @@ public:
 		return recordingModel;
 	}
 
-	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder,
-		bool highPriority = false);
+	DvbDevice *requestDevice(const DvbTransponder &transponder, bool highPriority = false);
 	// exclusive = you can freely tune() and stop(), because the device isn't shared
 	DvbDevice *requestExclusiveDevice(const QString &source);
 	void releaseDevice(DvbDevice *device);

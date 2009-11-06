@@ -245,8 +245,7 @@ DvbManager::~DvbManager()
 	}
 }
 
-DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder,
-	bool highPriority)
+DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder, bool highPriority)
 {
 	// first try to find a device that is already tuned to the selected transponder
 
@@ -257,7 +256,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 			continue;
 		}
 
-		if ((it.source == source) && it.transponder->corresponds(transponder)) {
+		if (it.transponder->corresponds(transponder)) {
 			++deviceConfigs[i].useCount;
 
 			if (highPriority) {
@@ -276,7 +275,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 		}
 
 		foreach (const DvbConfig &config, it.configs) {
-			if (config->name == source) {
+			if (config->name == transponder->source) {
 				DvbDevice *device = it.device;
 
 				if (!device->acquire(config)) {
@@ -285,7 +284,6 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 
 				deviceConfigs[i].useCount = 1;
 				deviceConfigs[i].highPriorityUse = highPriority;
-				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 
 				device->tune(transponder);
@@ -306,10 +304,9 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 		}
 
 		foreach (const DvbConfig &config, it.configs) {
-			if (config->name == source) {
+			if (config->name == transponder->source) {
 				deviceConfigs[i].useCount = 1;
 				deviceConfigs[i].highPriorityUse = true;
-				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 
 				DvbDevice *device = it.device;

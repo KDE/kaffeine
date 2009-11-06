@@ -373,7 +373,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	if (isLive) {
 		const DvbChannel *channel = manager->getLiveView()->getChannel();
-		internal = new DvbScan(device, channel->source, channel->transponder);
+		internal = new DvbScan(device, channel->transponder);
 	} else {
 		QString source = sourceBox->currentText();
 		setDevice(manager->requestExclusiveDevice(source));
@@ -383,9 +383,9 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 			QString autoScanSource = manager->getAutoScanSource(source);
 
 			if (autoScanSource.isEmpty()) {
-				internal = new DvbScan(device, source, manager->getTransponders(device, source));
+				internal = new DvbScan(device, manager->getTransponders(device, source));
 			} else {
-				internal = new DvbScan(device, source, autoScanSource);
+				internal = new DvbScan(device, autoScanSource);
 			}
 		} else {
 			scanButton->setChecked(false);
@@ -526,7 +526,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 
 		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
 			// FIXME - algorithmic complexity is quite high
-			if ((currentChannel->source == (*it)->source) &&
+			if ((currentChannel->transponder->source == (*it)->transponder->source) &&
 			    (currentChannel->networkId == (*it)->networkId) &&
 			    (currentChannel->transportStreamId == (*it)->transportStreamId) &&
 			    (currentChannel->serviceId == (*it)->serviceId)) {

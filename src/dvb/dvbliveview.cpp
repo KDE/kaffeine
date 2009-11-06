@@ -186,7 +186,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 
 	mediaWidget->stopDvb();
 	channel = channel_;
-	device = manager->requestDevice(channel->source, channel->transponder);
+	device = manager->requestDevice(channel->transponder);
 
 	if (device == NULL) {
 		channel = NULL;
@@ -198,7 +198,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 	mediaWidget->playDvb(channel->name);
 	KGlobal::config()->group("DVB").writeEntry("LastChannel", channel->name);
 
-	internal->eitFilter.setSource(channel->source);
+	internal->eitFilter.setSource(channel->transponder->source);
 	internal->pmtFilter.setProgramNumber(channel->serviceId);
 	startDevice();
 
@@ -302,7 +302,7 @@ void DvbLiveView::deviceStateChanged()
 	switch (device->getDeviceState()) {
 	case DvbDevice::DeviceReleased:
 		stopDevice();
-		device = manager->requestDevice(channel->source, channel->transponder);
+		device = manager->requestDevice(channel->transponder);
 
 		if (device != NULL) {
 			startDevice();

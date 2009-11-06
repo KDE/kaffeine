@@ -84,7 +84,7 @@ void DvbRecording::start()
 	}
 
 	if (device == NULL) {
-		device = manager->requestDevice(channel->source, channel->transponder, true);
+		device = manager->requestDevice(channel->transponder, true);
 
 		if (device == NULL) {
 			kWarning() << "couldn't find a suitable device";
