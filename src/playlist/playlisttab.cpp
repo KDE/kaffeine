@@ -348,7 +348,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	for (int i = 1; i < playlists.size(); ++i) {
 		const Playlist *playlist = playlists.at(i);
 		stream << playlist->getName();
-		stream << playlist->getUrl();
+		stream << playlist->getUrl().url();
 		stream << playlist->tracks.size();
 
 		foreach (const PlaylistTrack &track, playlist->tracks) {
