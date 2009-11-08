@@ -14,6 +14,7 @@ set(kaffeine_SRCS
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
     datetimeedit.cpp
+    dbusobjects.cpp
     kaffeine.cpp
     main.cpp
     mediawidget.cpp

@@ -20,6 +20,7 @@
 
 #include "kaffeine.h"
 
+#include <QDBusConnection>
 #include <QHoverEvent>
 #include <QLabel>
 #include <QSpinBox>
@@ -38,6 +39,7 @@
 #include <KToolBar>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
+#include "dbusobjects.h"
 #include "mediawidget.h"
 
 class StartTab : public TabBase
@@ -321,6 +323,11 @@ Kaffeine::Kaffeine()
 
 	// initialize random number generator
 	qsrand(QTime().msecsTo(QTime::currentTime()));
+
+	// initialize dbus objects
+	QDBusConnection::sessionBus().registerObject("/", new MprisRootObject(this),
+		QDBusConnection::ExportAllContents);
+	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
 
 	show();
 }
