@@ -57,7 +57,7 @@ QString MprisRootObject::Identity()
 
 void MprisRootObject::Quit()
 {
-	KApplication::kApplication()->quit();
+	kapp->quit();
 }
 
 MprisVersionStruct MprisRootObject::MprisVersion()
