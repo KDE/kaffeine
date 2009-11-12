@@ -23,6 +23,7 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QDir>
 #include <QLabel>
 #include <QPushButton>
 #include <KAction>
@@ -63,7 +64,8 @@ void DvbRecording::start()
 	}
 
 	if (!file.isOpen()) {
-		QString path = manager->getRecordingFolder() + '/' + name;
+		QString folder = manager->getRecordingFolder();
+		QString path = folder + '/' + name;
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
@@ -72,9 +74,29 @@ void DvbRecording::start()
 				file.setFileName(path + '-' + QString::number(attempt) + ".m2t");
 			}
 
-			if (!file.exists() && file.open(QIODevice::WriteOnly)) {
+			if (file.exists()) {
+				continue;
+			}
+
+			if (file.open(QIODevice::WriteOnly)) {
 				break;
 			}
+
+			if ((attempt == 0) && !QDir(folder).exists()) {
+				if (QDir().mkpath(folder)) {
+					attempt = -1;
+					continue;
+				}
+			}
+
+			if (folder != QDir::homePath()) {
+				folder = QDir::homePath();
+				path = folder + '/' + name;
+				attempt = -1;
+				continue;
+			}
+
+			break;
 		}
 
 		if (!file.isOpen()) {
