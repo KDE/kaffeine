@@ -214,6 +214,15 @@ DvbDeviceConfig::~DvbDeviceConfig()
 {
 }
 
+DvbDeviceConfigUpdate::DvbDeviceConfigUpdate(const DvbDeviceConfig *deviceConfig_) :
+	deviceConfig(deviceConfig_)
+{
+}
+
+DvbDeviceConfigUpdate::~DvbDeviceConfigUpdate()
+{
+}
+
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), dvbDumpEnabled(false)
 {
@@ -390,16 +399,29 @@ QList<DvbDeviceConfig> DvbManager::getDeviceConfigs() const
 	return deviceConfigs;
 }
 
-void DvbManager::setDeviceConfigs(const QList<QList<DvbConfig> > &configs)
+void DvbManager::updateDeviceConfigs(const QList<DvbDeviceConfigUpdate> &configUpdates)
 {
-	Q_ASSERT(configs.size() <= deviceConfigs.size());
+	for (int i = 0; i < configUpdates.size(); ++i) {
+		const DvbDeviceConfigUpdate &configUpdate = configUpdates.at(i);
 
-	for (int i = 0; i < configs.size(); ++i) {
-		deviceConfigs[i].configs = configs.at(i);
+		for (int j = i;; ++j) {
+			Q_ASSERT(j < deviceConfigs.size());
+
+			if (&deviceConfigs.at(j) == configUpdate.deviceConfig) {
+				if (i != j) {
+					deviceConfigs.move(j, i);
+				}
+
+				deviceConfigs[i].configs = configUpdate.configs;
+				break;
+			}
+		}
 	}
 
-	for (int i = configs.size(); i < deviceConfigs.size(); ++i) {
-		if (deviceConfigs.at(i).device == NULL) {
+	for (int i = configUpdates.size(); i < deviceConfigs.size(); ++i) {
+		if (deviceConfigs.at(i).device != NULL) {
+			deviceConfigs[i].configs.clear();
+		} else {
 			deviceConfigs.removeAt(i);
 			--i;
 		}

@@ -32,6 +32,7 @@ class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
 class DvbDeviceConfig;
+class DvbDeviceConfigUpdate;
 class DvbEpgModel;
 class DvbLiveView;
 class DvbRecordingModel;
@@ -101,7 +102,7 @@ public:
 	void releaseDevice(DvbDevice *device, RequestType requestType);
 
 	QList<DvbDeviceConfig> getDeviceConfigs() const;
-	void setDeviceConfigs(const QList<QList<DvbConfig> > &configs);
+	void updateDeviceConfigs(const QList<DvbDeviceConfigUpdate> &configUpdates);
 
 	QString getScanDataDate(); // returns the formatted short date of the last scan file update
 	QStringList getScanSources(TransmissionType type);
@@ -166,6 +167,16 @@ public:
 	int useCount; // -1 means exclusive use
 	int prioritizedUseCount;
 	QExplicitlySharedDataPointer<const DvbTransponderBase> transponder;
+};
+
+class DvbDeviceConfigUpdate
+{
+public:
+	explicit DvbDeviceConfigUpdate(const DvbDeviceConfig *deviceConfig_);
+	~DvbDeviceConfigUpdate();
+
+	const DvbDeviceConfig *deviceConfig;
+	QList<DvbConfig> configs;
 };
 
 #endif /* DVBMANAGER_H */

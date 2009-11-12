@@ -24,6 +24,7 @@
 #include <KDialog>
 
 class QBoxLayout;
+class QButtonGroup;
 class QGridLayout;
 class QLabel;
 class QProgressBar;
@@ -32,6 +33,7 @@ class QTreeWidget;
 class KComboBox;
 class KJob;
 class KLineEdit;
+class KTabWidget;
 namespace KIO
 {
 class Job;
@@ -43,6 +45,7 @@ class DvbConfigPage;
 class DvbDeviceConfig;
 class DvbManager;
 class DvbSConfigObject;
+class DvbSLnbConfigObject;
 
 class DvbConfigDialog : public KDialog
 {
@@ -57,6 +60,9 @@ private slots:
 	void updateScanFile();
 	void latitudeChanged(const QString &text);
 	void longitudeChanged(const QString &text);
+	void moveLeft(DvbConfigPage *configPage);
+	void moveRight(DvbConfigPage *configPage);
+	void remove(DvbConfigPage *configPage);
 
 private:
 	static double toLatitude(const QString &text, bool *ok);
@@ -65,6 +71,7 @@ private:
 	void accept();
 
 	DvbManager *manager;
+	KTabWidget *tabWidget;
 	KLineEdit *recordingFolderEdit;
 	KLineEdit *timeShiftFolderEdit;
 	KLineEdit *latitudeEdit;
@@ -98,16 +105,35 @@ private:
 
 class DvbConfigPage : public QWidget
 {
+	Q_OBJECT
 public:
-	DvbConfigPage(QWidget *parent, DvbManager *manager, const DvbDeviceConfig &deviceConfig);
+	DvbConfigPage(QWidget *parent, DvbManager *manager, const DvbDeviceConfig *deviceConfig_);
 	~DvbConfigPage();
 
+	void setMoveLeftEnabled(bool enabled);
+	void setMoveRightEnabled(bool enabled);
+
+	const DvbDeviceConfig *getDeviceConfig() const;
 	QList<DvbConfig> getConfigs();
+
+signals:
+	void moveLeft(DvbConfigPage *page);
+	void moveRight(DvbConfigPage *page);
+	void remove(DvbConfigPage *page);
+	void resetConfig();
+
+private slots:
+	void moveLeft();
+	void moveRight();
+	void removeConfig();
 
 private:
 	void addHSeparator(const QString &title);
 
+	const DvbDeviceConfig *deviceConfig;
 	QBoxLayout *boxLayout;
+	QPushButton *moveLeftButton;
+	QPushButton *moveRightButton;
 	QList<DvbConfig> configs;
 	DvbSConfigObject *dvbSObject;
 };
@@ -124,10 +150,12 @@ private slots:
 	void timeoutChanged(int timeout);
 	void sourceChanged(int index);
 	void nameChanged();
+	void resetConfig();
 
 private:
 	DvbConfigBase *config;
 	QString defaultName;
+	QSpinBox *timeoutBox;
 	KComboBox *sourceBox;
 	KLineEdit *nameEdit;
 };
@@ -152,6 +180,7 @@ private slots:
 	void configChanged(int index);
 	void addSatellite();
 	void removeSatellite();
+	void resetConfig();
 
 private:
 	DvbConfigBase *createConfig(int lnbNumber);
@@ -159,8 +188,10 @@ private:
 	QWidget *parent;
 	DvbConfigBase *lnbConfig;
 	QList<DvbConfig> diseqcConfigs;
+	QList<DvbSLnbConfigObject *> lnbConfigs;
 	QStringList sources;
 	QGridLayout *layout;
+	QSpinBox *timeoutBox;
 	KComboBox *configBox;
 	KComboBox *sourceBox;
 	QSpinBox *rotorSpinBox;
@@ -175,6 +206,8 @@ public:
 		QPushButton *configureButton_, DvbConfigBase *config_);
 	~DvbSLnbConfigObject();
 
+	void resetConfig();
+
 private slots:
 	void timeoutChanged(int value);
 	void sourceChanged(int index);
@@ -187,6 +220,7 @@ private:
 	QPushButton *configureButton;
 	DvbConfigBase *config;
 
+	QButtonGroup *lnbSelectionGroup;
 	QLabel *lowBandLabel;
 	QLabel *switchLabel;
 	QLabel *highBandLabel;
