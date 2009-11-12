@@ -148,14 +148,25 @@ void DvbRecording::stop()
 
 void DvbRecording::deviceStateChanged()
 {
-	// FIXME
-	switch (device->getDeviceState()) {
-	case DvbDevice::DeviceReleased:
-	case DvbDevice::DeviceIdle:
-	case DvbDevice::DeviceRotorMoving:
-	case DvbDevice::DeviceTuning:
-	case DvbDevice::DeviceTuned:
-		break;
+	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
+		foreach (int pid, pids) {
+			device->removePidFilter(pid, this);
+		}
+
+		device->removePidFilter(channel->pmtPid, &pmtFilter);
+		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+		device = manager->requestDevice(channel->transponder, DvbManager::Prioritized);
+
+		if (device != NULL) {
+			connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+			device->addPidFilter(channel->pmtPid, &pmtFilter);
+
+			foreach (int pid, pids) {
+				device->addPidFilter(pid, this);
+			}
+		} else {
+			stop();
+		}
 	}
 }
 
