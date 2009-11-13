@@ -695,7 +695,7 @@ void DvbDevice::customEvent(QEvent *)
 
 			QMap<int, DvbFilterInternal>::const_iterator it = filters.constFind(pid);
 
-			if (it == filters.end()) {
+			if (it == filters.constEnd()) {
 				continue;
 			}
 
