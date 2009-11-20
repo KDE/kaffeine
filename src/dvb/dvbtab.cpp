@@ -118,7 +118,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(mediaWidget, SIGNAL(previousDvbChannel()), this, SLOT(previousChannel()));
 	connect(mediaWidget, SIGNAL(nextDvbChannel()), this, SLOT(nextChannel()));
 
-	connect(manager->getRecordingModel(), SIGNAL(instantRecordingRemoved()),
+	connect(manager->getRecordingManager(), SIGNAL(instantRecordingRemoved()),
 		this, SLOT(instantRecordingRemoved()));
 
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
@@ -228,8 +228,7 @@ void DvbTab::showChannelDialog()
 
 void DvbTab::showRecordingDialog()
 {
-	DvbRecordingDialog dialog(manager, this);
-	dialog.exec();
+	manager->getRecordingManager()->showDialog();
 }
 
 void DvbTab::showEpgDialog()
@@ -256,12 +255,12 @@ void DvbTab::instantRecord(bool checked)
 		}
 
 		// FIXME use epg for name
-		manager->getRecordingModel()->startInstantRecording(
+		manager->getRecordingManager()->startInstantRecording(
 			channelName + QTime::currentTime().toString("-hhmmss"), channelName);
 
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
-		manager->getRecordingModel()->stopInstantRecording();
+		manager->getRecordingManager()->stopInstantRecording();
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
 	}
 }

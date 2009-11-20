@@ -22,12 +22,17 @@
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
 #include "kaffeine.h"
+#include "sqlhelper.h"
 
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication()
+	KaffeineApplication() : kaffeine(NULL)
 	{
+		if (!SqlHelper::createInstance()) {
+			return;
+		}
+
 		kaffeine = new Kaffeine();
 	}
 
@@ -44,7 +49,10 @@ private:
 
 int KaffeineApplication::newInstance()
 {
-	kaffeine->parseArgs();
+	if (kaffeine != NULL) {
+		kaffeine->parseArgs();
+	}
+
 	return KUniqueApplication::newInstance();
 }
 

@@ -233,7 +233,7 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 
 	liveView = new DvbLiveView(this);
 
-	recordingModel = new DvbRecordingModel(this);
+	recordingManager = new DvbRecordingManager(this);
 
 	readDeviceConfigs();
 	updateSourceMapping();
@@ -248,6 +248,10 @@ DvbManager::~DvbManager()
 	KGlobal::config()->group("DVB").writeEntry("ScanDataDate", scanDataDate);
 	writeDeviceConfigs();
 	channelModel->saveChannels();
+
+	// we need an explicit deletion order (device users ; devices ; device manager)
+
+	delete recordingManager;
 
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
 		delete deviceConfig.device;

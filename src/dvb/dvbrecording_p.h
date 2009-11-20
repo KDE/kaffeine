@@ -23,6 +23,7 @@
 
 #include <QFile>
 #include <KDialog>
+#include "../tablemodel.h"
 #include "dvbsi.h"
 
 class QCheckBox;
@@ -33,7 +34,7 @@ class DurationEdit;
 class DvbChannelModel;
 class DvbManager;
 
-class DvbRecording : public QObject, private DvbPidFilter
+class DvbRecording : public QObject, public SqlTableRow, private DvbPidFilter
 {
 	Q_OBJECT
 public:
@@ -43,6 +44,18 @@ public:
 	bool isRunning() const;
 	void start();
 	void stop();
+
+	DvbRecording *toDvbRecording()
+	{
+		return this;
+	}
+
+	static QStringList modelHeaderLabels();
+	QVariant modelData(int column, int role) const;
+
+	static QStringList sqlColumnNames();
+	bool fromSqlQuery(const QSqlQuery &query, int index);
+	void bindToSqlQuery(QSqlQuery &query, int index) const;
 
 	QString name;
 	QString channelName;
@@ -97,6 +110,18 @@ private:
 	DurationEdit *durationEdit;
 	DateTimeEdit *endEdit;
 	QCheckBox *dayCheckBoxes[7];
+};
+
+class DvbRecordingModel : public SqlTableModel
+{
+public:
+	DvbRecordingModel(DvbManager *manager_, QObject *parent);
+	~DvbRecordingModel();
+
+private:
+	SqlTableRow *createRow(const QSqlQuery &query, int index) const;
+
+	DvbManager *manager;
 };
 
 #endif /* DVBRECORDING_P_H */

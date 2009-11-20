@@ -35,7 +35,7 @@ class DvbDeviceConfig;
 class DvbDeviceConfigUpdate;
 class DvbEpgModel;
 class DvbLiveView;
-class DvbRecordingModel;
+class DvbRecordingManager;
 class DvbScanData;
 class DvbTransponder;
 class DvbTransponderBase;
@@ -92,9 +92,9 @@ public:
 		return liveView;
 	}
 
-	DvbRecordingModel *getRecordingModel() const
+	DvbRecordingManager *getRecordingManager() const
 	{
-		return recordingModel;
+		return recordingManager;
 	}
 
 	DvbDevice *requestDevice(const DvbTransponder &transponder, RequestType requestType);
@@ -142,7 +142,7 @@ private:
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;
 	DvbLiveView *liveView;
-	DvbRecordingModel *recordingModel;
+	DvbRecordingManager *recordingManager;
 
 	QList<DvbDeviceConfig> deviceConfigs;
 	bool dvbDumpEnabled;

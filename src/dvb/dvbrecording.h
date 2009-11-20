@@ -21,30 +21,19 @@
 #ifndef DVBRECORDING_H
 #define DVBRECORDING_H
 
-#include <QAbstractTableModel>
-#include <KDialog>
+#include <QPersistentModelIndex>
+#include <QTimer>
 
 class DvbManager;
-class DvbRecording;
-class DvbRecordingEditor;
+class DvbRecordingModel;
 class ProxyTreeView;
 
-class DvbRecordingModel : public QAbstractTableModel
+class DvbRecordingManager : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DvbRecordingModel(DvbManager *manager_);
-	~DvbRecordingModel();
-
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-
-	const DvbRecording *getRecording(int row);
-	void appendRecording(DvbRecording *recording);
-	void removeRecording(int row);
-	void updateRecording(int row, DvbRecordingEditor *editor);
+	explicit DvbRecordingManager(DvbManager *manager_);
+	~DvbRecordingManager();
 
 	void scheduleProgram(const QString &name, const QString &channel, const QDateTime &begin,
 		const QTime &duration);
@@ -52,27 +41,14 @@ public:
 	void startInstantRecording(const QString &name, const QString &channel);
 	void stopInstantRecording(); // stops the last started instant recording
 
+	void showDialog();
+
 signals:
 	void instantRecordingRemoved(); // not emitted by stopInstantRecording()
 
 private slots:
 	void checkStatus();
-
-private:
-	DvbManager *manager;
-	QList<DvbRecording *> recordings;
-	int instantRecordingRow;
-	QTimer *checkStatusTimer;
-};
-
-class DvbRecordingDialog : public KDialog
-{
-	Q_OBJECT
-public:
-	DvbRecordingDialog(DvbManager *manager_, QWidget *parent);
-	~DvbRecordingDialog();
-
-private slots:
+	void checkInstantRecording();
 	void newRecording();
 	void editRecording();
 	void removeRecording();
@@ -80,6 +56,9 @@ private slots:
 private:
 	DvbManager *manager;
 	DvbRecordingModel *model;
+	bool instantRecordingActive;
+	QPersistentModelIndex instantRecordingIndex;
+	QTimer checkStatusTimer;
 	ProxyTreeView *treeView;
 };
 
