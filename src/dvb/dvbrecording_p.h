@@ -34,7 +34,7 @@ class DurationEdit;
 class DvbChannelModel;
 class DvbManager;
 
-class DvbRecording : public QObject, public SqlTableRow, private DvbPidFilter
+class DvbRecording : public QObject, private DvbPidFilter
 {
 	Q_OBJECT
 public:
@@ -44,18 +44,6 @@ public:
 	bool isRunning() const;
 	void start();
 	void stop();
-
-	DvbRecording *toDvbRecording()
-	{
-		return this;
-	}
-
-	static QStringList modelHeaderLabels();
-	QVariant modelData(int column, int role) const;
-
-	static QStringList sqlColumnNames();
-	bool fromSqlQuery(const QSqlQuery &query, int index);
-	void bindToSqlQuery(QSqlQuery &query, int index) const;
 
 	QString name;
 	QString channelName;
@@ -112,14 +100,29 @@ private:
 	QCheckBox *dayCheckBoxes[7];
 };
 
-class DvbRecordingModel : public SqlTableModel
+class DvbRecordingHelper
+{
+public:
+	typedef DvbRecording *Type;
+
+	static QStringList modelHeaderLabels();
+	static QVariant modelData(const DvbRecording *recording, int column, int role);
+	static void deleteObject(const DvbRecording *recording);
+
+	static QString sqlTableName();
+	static QStringList sqlColumnNames();
+	static bool fromSqlQuery(DvbRecording *recording, const QSqlQuery &query, int index);
+	static void bindToSqlQuery(const DvbRecording *recording, QSqlQuery &query, int index);
+};
+
+class DvbRecordingModel : public SqlTableModel<DvbRecordingHelper>
 {
 public:
 	DvbRecordingModel(DvbManager *manager_, QObject *parent);
 	~DvbRecordingModel();
 
 private:
-	SqlTableRow *createRow(const QSqlQuery &query, int index) const;
+	void handleRow(qint64 key, const QSqlQuery &query, int index);
 
 	DvbManager *manager;
 };

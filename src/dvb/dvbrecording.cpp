@@ -148,68 +148,6 @@ void DvbRecording::stop()
 	channel = NULL;
 }
 
-QStringList DvbRecording::modelHeaderLabels()
-{
-	return QStringList() << i18n("Name") << i18n("Channel") << i18n("Begin") <<
-		i18n("Duration");
-}
-
-QVariant DvbRecording::modelData(int column, int role) const
-{
-	if (role == Qt::DecorationRole) {
-		if (column == 0) {
-			if (isRunning()) {
-				return KIcon("media-record");
-			} else if (repeat != 0) {
-				return KIcon("view-refresh");
-			}
-		}
-	} else if (role == Qt::DisplayRole) {
-		switch (column) {
-		case 0:
-			return name;
-		case 1:
-			return channelName;
-		case 2:
-			return KGlobal::locale()->formatDateTime(begin.toLocalTime());
-		case 3:
-			return KGlobal::locale()->formatTime(duration, false, true);
-		}
-	}
-
-	return QVariant();
-}
-
-QStringList DvbRecording::sqlColumnNames()
-{
-	return QStringList() << "Name" << "Channel" << "Begin" << "Duration" << "Repeat";
-}
-
-bool DvbRecording::fromSqlQuery(const QSqlQuery &query, int index)
-{
-	name = query.value(index++).toString();
-	channelName = query.value(index++).toString();
-	begin = QDateTime::fromString(query.value(index++).toString(), Qt::ISODate);
-	duration = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
-	repeat = query.value(index++).toInt() & ((1 << 7) - 1);
-
-	if (name.isEmpty() || channelName.isEmpty() || !begin.isValid() || !duration.isValid()) {
-		return false;
-	}
-
-	end = begin.addSecs(QTime().secsTo(duration));
-	return true;
-}
-
-void DvbRecording::bindToSqlQuery(QSqlQuery &query, int index) const
-{
-	query.bindValue(index++, name);
-	query.bindValue(index++, channelName);
-	query.bindValue(index++, begin.toString(Qt::ISODate));
-	query.bindValue(index++, duration.toString(Qt::ISODate));
-	query.bindValue(index++, repeat);
-}
-
 void DvbRecording::deviceStateChanged()
 {
 	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
@@ -486,8 +424,7 @@ void DvbRecordingManager::checkStatus()
 	QDateTime current = QDateTime::currentDateTime();
 
 	for (int i = 0; i < model->rowCount(QModelIndex()); ++i) {
-		DvbRecording *recording = model->at(i)->toDvbRecording();
-		Q_ASSERT(recording != NULL);
+		DvbRecording *recording = model->at(i);
 
 		if (recording->end <= current) {
 			if (recording->repeat == 0) {
@@ -523,8 +460,7 @@ void DvbRecordingManager::checkStatus()
 	}
 
 	for (int i = 0; i < model->rowCount(QModelIndex()); ++i) {
-		DvbRecording *recording = model->at(i)->toDvbRecording();
-		Q_ASSERT(recording != NULL);
+		DvbRecording *recording = model->at(i);
 
 		if (recording->begin <= current) {
 			if (recording->isRunning()) {
@@ -574,10 +510,10 @@ void DvbRecordingManager::editRecording()
 		return;
 	}
 
-	DvbRecordingEditor editor(model->at(row)->toDvbRecording(), manager->getChannelModel(), manager->getParentWidget());
+	DvbRecordingEditor editor(model->at(row), manager->getChannelModel(), manager->getParentWidget());
 
 	if (editor.exec() == QDialog::Accepted) {
-		editor.updateRecording(model->at(row)->toDvbRecording());
+		editor.updateRecording(model->at(row));
 		model->rowUpdated(row);
 		checkStatus();
 	}
@@ -766,25 +702,96 @@ void DvbRecordingEditor::checkValid()
 	enableButtonOk(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
 }
 
-DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : SqlTableModel(parent),
-	manager(manager_)
+QStringList DvbRecordingHelper::modelHeaderLabels()
 {
-	setHeaderLabels(DvbRecording::modelHeaderLabels());
-	initSql("RecordingSchedule", DvbRecording::sqlColumnNames());
+	return QStringList() << i18n("Name") << i18n("Channel") << i18n("Begin") <<
+		i18n("Duration");
+}
+
+QVariant DvbRecordingHelper::modelData(const DvbRecording *recording, int column, int role)
+{
+	if (role == Qt::DecorationRole) {
+		if (column == 0) {
+			if (recording->isRunning()) {
+				return KIcon("media-record");
+			} else if (recording->repeat != 0) {
+				return KIcon("view-refresh");
+			}
+		}
+	} else if (role == Qt::DisplayRole) {
+		switch (column) {
+		case 0:
+			return recording->name;
+		case 1:
+			return recording->channelName;
+		case 2:
+			return KGlobal::locale()->formatDateTime(recording->begin.toLocalTime());
+		case 3:
+			return KGlobal::locale()->formatTime(recording->duration, false, true);
+		}
+	}
+
+	return QVariant();
+}
+
+void DvbRecordingHelper::deleteObject(const DvbRecording *recording)
+{
+	delete recording;
+}
+
+QString DvbRecordingHelper::sqlTableName()
+{
+	return "RecordingSchedule";
+}
+
+QStringList DvbRecordingHelper::sqlColumnNames()
+{
+	return QStringList() << "Name" << "Channel" << "Begin" << "Duration" << "Repeat";
+}
+
+bool DvbRecordingHelper::fromSqlQuery(DvbRecording *recording, const QSqlQuery &query, int index)
+{
+	recording->name = query.value(index++).toString();
+	recording->channelName = query.value(index++).toString();
+	recording->begin = QDateTime::fromString(query.value(index++).toString(), Qt::ISODate);
+	recording->duration = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
+	recording->repeat = query.value(index++).toInt() & ((1 << 7) - 1);
+
+	if (recording->name.isEmpty() || recording->channelName.isEmpty() ||
+	    !recording->begin.isValid() || !recording->duration.isValid()) {
+		return false;
+	}
+
+	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
+	return true;
+}
+
+void DvbRecordingHelper::bindToSqlQuery(const DvbRecording *recording, QSqlQuery &query, int index)
+{
+	query.bindValue(index++, recording->name);
+	query.bindValue(index++, recording->channelName);
+	query.bindValue(index++, recording->begin.toString(Qt::ISODate));
+	query.bindValue(index++, recording->duration.toString(Qt::ISODate));
+	query.bindValue(index++, recording->repeat);
+}
+
+DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
+	SqlTableModel<DvbRecordingHelper>(parent), manager(manager_)
+{
 }
 
 DvbRecordingModel::~DvbRecordingModel()
 {
 }
 
-SqlTableRow *DvbRecordingModel::createRow(const QSqlQuery &query, int index) const
+void DvbRecordingModel::handleRow(qint64 key, const QSqlQuery &query, int index)
 {
 	DvbRecording *recording = new DvbRecording(manager);
 
-	if (!recording->fromSqlQuery(query, index)) {
+	if (DvbRecordingHelper::fromSqlQuery(recording, query, index)) {
+		insert(key, recording);
+	} else {
 		delete recording;
-		return NULL;
+		insert(key, NULL);
 	}
-
-	return recording;
 }

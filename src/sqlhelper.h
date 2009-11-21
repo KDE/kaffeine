@@ -24,6 +24,8 @@
 #include <QSqlDatabase>
 #include <QTimer>
 
+class SqlTableHelper;
+
 class SqlHelper : public QObject
 {
 	Q_OBJECT
@@ -39,7 +41,7 @@ public:
 	QSqlQuery exec(const QString &statement);
 	void exec(QSqlQuery &query);
 
-	void requestSubmission(QObject *object);
+	void requestSubmission(SqlTableHelper *object);
 
 public slots:
 	void collectSubmissions();
@@ -50,7 +52,7 @@ private:
 
 	QSqlDatabase database;
 	QTimer timer;
-	QList<QObject *> objects;
+	QList<SqlTableHelper *> objects;
 };
 
 #endif /* SQLHELPER_H */

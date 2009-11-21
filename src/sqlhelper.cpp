@@ -22,11 +22,11 @@
 
 #include <QCoreApplication>
 #include <QSqlError>
-#include <QSqlQuery>
 #include <KDebug>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
+#include "tablemodel.h"
 
 SqlHelper::SqlHelper()
 {
@@ -108,7 +108,7 @@ void SqlHelper::exec(QSqlQuery &query)
 	}
 }
 
-void SqlHelper::requestSubmission(QObject *object)
+void SqlHelper::requestSubmission(SqlTableHelper *object)
 {
 	if (!timer.isActive()) {
 		timer.start();
@@ -119,11 +119,10 @@ void SqlHelper::requestSubmission(QObject *object)
 
 void SqlHelper::collectSubmissions()
 {
-	QEvent event(QEvent::User);
 	exec("BEGIN");
 
 	for (int i = 0; i < objects.size(); ++i) {
-		objects.at(i)->event(&event);
+		objects.at(i)->submit();
 	}
 
 	exec("COMMIT");

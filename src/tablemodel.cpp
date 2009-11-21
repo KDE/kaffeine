@@ -23,132 +23,64 @@
 #include <KDebug>
 #include "sqlhelper.h"
 
-TableModel::TableModel(QObject *model) : QAbstractTableModel(model)
-{
-}
-
-TableModel::~TableModel()
-{
-}
-
-TableRow *TableModel::at(int row) const
-{
-	return rows.at(row).data();
-}
-
-void TableModel::append(TableRow *row)
-{
-	beginInsertRows(QModelIndex(), rows.size(), rows.size());
-	rows.append(QExplicitlySharedDataPointer<TableRow>(row));
-	endInsertRows();
-}
-
-void TableModel::rowUpdated(int row)
-{
-	emit dataChanged(index(row, 0), index(row, headerLabels.size() - 1));
-}
-
-void TableModel::remove(int row)
-{
-	beginRemoveRows(QModelIndex(), row, row);
-	rows.removeAt(row);
-	endRemoveRows();
-}
-
-int TableModel::columnCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return headerLabels.size();
-}
-
-int TableModel::rowCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return rows.size();
-}
-
-QVariant TableModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if ((orientation != Qt::Horizontal) || (role != Qt::DisplayRole)) {
-		return QVariant();
-	}
-
-	return headerLabels.at(section);
-}
-
-QVariant TableModel::data(const QModelIndex &index, int role) const
-{
-	return rows.at(index.row())->modelData(index.column(), role);
-}
-
-void TableModel::setHeaderLabels(const QStringList &headerLabels_)
-{
-	headerLabels = headerLabels_;
-}
-
-SqlTableModel::SqlTableModel(QObject *parent) : TableModel(parent), freeIndex(0),
+SqlTableHelper::SqlTableHelper(SqlTableModelBase *model_) : model(model_), freeKey(0),
 	hasPendingStatements(false), createTable(false), sqlColumnCount(0)
 {
 	sqlHelper = SqlHelper::getInstance();
 }
 
-SqlTableModel::~SqlTableModel()
+SqlTableHelper::~SqlTableHelper()
 {
 	if (hasPendingStatements) {
 		sqlHelper->collectSubmissions();
 	}
 }
 
-void SqlTableModel::append(SqlTableRow *row)
+void SqlTableHelper::append()
 {
-	if (!pendingDeletionIndexes.isEmpty()) {
-		qint64 index = pendingDeletionIndexes.takeLast();
-		QList<qint64>::ConstIterator it = qLowerBound(usedIndexes, index);
-		Q_ASSERT((it == usedIndexes.constEnd()) || (*it != index));
+	SqlTableRow row;
 
-		usedIndexes.insert(it - usedIndexes.constBegin(), index);
-		row->sqlIndex = index;
-		row->sqlPendingStatement = SqlTableRow::Update;
+	if (!pendingDeletionKeys.isEmpty()) {
+		qint64 key = pendingDeletionKeys.takeLast();
+		QList<qint64>::ConstIterator it = qLowerBound(usedKeys, key);
+		Q_ASSERT((it == usedKeys.constEnd()) || (*it != key));
+
+		usedKeys.insert(it - usedKeys.constBegin(), key);
+		row.sqlKey = key;
+		row.sqlPendingStatement = SqlTableRow::Update;
 	} else {
-		QList<qint64>::ConstIterator it = qLowerBound(usedIndexes, freeIndex);
+		QList<qint64>::ConstIterator it = qLowerBound(usedKeys, freeKey);
 
-		while ((it != usedIndexes.constEnd()) && (*it == freeIndex)) {
-			++freeIndex;
+		while ((it != usedKeys.constEnd()) && (*it == freeKey)) {
+			++freeKey;
 			++it;
 		}
 
-		usedIndexes.insert(it - usedIndexes.constBegin(), freeIndex);
-		row->sqlIndex = freeIndex;
-		row->sqlPendingStatement = SqlTableRow::Insert;
+		usedKeys.insert(it - usedKeys.constBegin(), freeKey);
+		row.sqlKey = freeKey;
+		row.sqlPendingStatement = SqlTableRow::Insert;
 
-		++freeIndex;
+		++freeKey;
 	}
+
+	rows.append(row);
 
 	if (!hasPendingStatements) {
 		hasPendingStatements = true;
 		sqlHelper->requestSubmission(this);
 	}
-
-	TableModel::append(row);
 }
 
-void SqlTableModel::rowUpdated(int row)
+void SqlTableHelper::rowUpdated(int row)
 {
-	SqlTableRow *sqlRow = rows.at(row)->toSqlTableRow();
-	Q_ASSERT(sqlRow != NULL);
+	SqlTableRow &sqlRow = rows[row];
 
-	switch (sqlRow->sqlPendingStatement) {
+	switch (sqlRow.sqlPendingStatement) {
 	case SqlTableRow::Insert:
 	case SqlTableRow::Update:
 		break;
 	case SqlTableRow::None:
-		sqlRow->sqlPendingStatement = SqlTableRow::Update;
+		sqlRow.sqlPendingStatement = SqlTableRow::Update;
 
 		if (!hasPendingStatements) {
 			hasPendingStatements = true;
@@ -157,36 +89,28 @@ void SqlTableModel::rowUpdated(int row)
 
 		break;
 	}
-
-	TableModel::rowUpdated(row);
 }
 
-void SqlTableModel::rowUpdatedTrivially(int row)
+void SqlTableHelper::remove(int row)
 {
-	TableModel::rowUpdated(row);
-}
+	SqlTableRow sqlRow = rows.takeAt(row);
 
-void SqlTableModel::remove(int row)
-{
-	SqlTableRow *sqlRow = rows.at(row)->toSqlTableRow();
-	Q_ASSERT(sqlRow != NULL);
+	qint64 key = sqlRow.sqlKey;
+	QList<qint64>::ConstIterator it = qLowerBound(usedKeys, key);
+	Q_ASSERT((it != usedKeys.constEnd()) && (*it == key));
 
-	qint64 index = sqlRow->sqlIndex;
-	QList<qint64>::ConstIterator it = qLowerBound(usedIndexes, index);
-	Q_ASSERT((it != usedIndexes.constEnd()) && (*it == index));
+	usedKeys.removeAt(it - usedKeys.constBegin());
 
-	usedIndexes.removeAt(it - usedIndexes.constBegin());
-
-	if (index < freeIndex) {
-		freeIndex = index;
+	if (key < freeKey) {
+		freeKey = key;
 	}
 
-	switch (sqlRow->sqlPendingStatement) {
+	switch (sqlRow.sqlPendingStatement) {
 	case SqlTableRow::Insert:
 		break;
 	case SqlTableRow::None:
 	case SqlTableRow::Update:
-		pendingDeletionIndexes.append(index);
+		pendingDeletionKeys.append(key);
 
 		if (!hasPendingStatements) {
 			hasPendingStatements = true;
@@ -195,11 +119,9 @@ void SqlTableModel::remove(int row)
 
 		break;
 	}
-
-	TableModel::remove(row);
 }
 
-void SqlTableModel::initSql(const QString &tableName, const QStringList &columnNames)
+void SqlTableHelper::init(const QString &tableName, const QStringList &columnNames)
 {
 	QString existsStatement = "SELECT name FROM sqlite_master WHERE name='" +
 		tableName + "' AND type = 'table'";
@@ -256,30 +178,36 @@ void SqlTableModel::initSql(const QString &tableName, const QStringList &columnN
 	QSqlQuery query = sqlHelper->exec(selectStatement);
 
 	while (query.next()) {
-		qint64 index = query.value(0).toLongLong();
-		SqlTableRow *row = createRow(query, 1);
+		qint64 key = query.value(0).toLongLong();
+		QList<qint64>::ConstIterator it = qLowerBound(usedKeys, key);
 
-		if (row == NULL) {
-			pendingDeletionIndexes.append(index);
+		if ((it != usedKeys.constEnd()) && (*it == key)) {
+			kError() << "SQL primary key isn't unique" << key;
 			continue;
 		}
 
-		QList<qint64>::ConstIterator it = qLowerBound(usedIndexes, index);
-
-		if ((it != usedIndexes.constEnd()) && (*it == index)) {
-			kError() << "SQL primary key isn't unique" << index;
-			delete row;
-			continue;
-		}
-
-		usedIndexes.insert(it - usedIndexes.constBegin(), index);
-		row->sqlIndex = index;
-		row->sqlPendingStatement = SqlTableRow::None;
-		rows.append(QExplicitlySharedDataPointer<TableRow>(row));
+		usedKeys.insert(it - usedKeys.constBegin(), key);
+		model->handleRow(key, query, 1);
 	}
 }
 
-void SqlTableModel::customEvent(QEvent *)
+void SqlTableHelper::insert(qint64 key, bool successful)
+{
+	if (successful) {
+		SqlTableRow row;
+		row.sqlKey = key;
+		row.sqlPendingStatement = SqlTableRow::None;
+		rows.append(row);
+	} else {
+		QList<qint64>::ConstIterator it = qLowerBound(usedKeys, key);
+		Q_ASSERT((it != usedKeys.constEnd()) && (*it == key));
+
+		usedKeys.removeAt(it - usedKeys.constBegin());
+		pendingDeletionKeys.append(key);
+	}
+}
+
+void SqlTableHelper::submit()
 {
 	if (createTable) {
 		createTable = false;
@@ -291,33 +219,32 @@ void SqlTableModel::customEvent(QEvent *)
 		deleteQuery = sqlHelper->prepare(deleteStatement);
 	}
 
-	foreach (qint64 index, pendingDeletionIndexes) {
-		deleteQuery.bindValue(0, index);
+	foreach (qint64 key, pendingDeletionKeys) {
+		deleteQuery.bindValue(0, key);
 		sqlHelper->exec(deleteQuery);
 	}
 
-	pendingDeletionIndexes.clear();
+	pendingDeletionKeys.clear();
 
 	for (int i = 0; i < rows.size(); ++i) {
-		SqlTableRow *row = rows.at(i)->toSqlTableRow();
-		Q_ASSERT(row != NULL);
+		SqlTableRow &row = rows[i];
 
-		switch (row->sqlPendingStatement) {
+		switch (row.sqlPendingStatement) {
 		case SqlTableRow::None:
 			continue;
 		case SqlTableRow::Insert:
-			insertQuery.bindValue(0, row->sqlIndex);
-			row->bindToSqlQuery(insertQuery, 1);
+			insertQuery.bindValue(0, row.sqlKey);
+			model->bindToSqlQuery(i, insertQuery, 1);
 			sqlHelper->exec(insertQuery);
 			break;
 		case SqlTableRow::Update:
-			row->bindToSqlQuery(updateQuery, 0);
-			updateQuery.bindValue(sqlColumnCount, row->sqlIndex);
+			model->bindToSqlQuery(i, updateQuery, 0);
+			updateQuery.bindValue(sqlColumnCount, row.sqlKey);
 			sqlHelper->exec(updateQuery);
 			break;
 		}
 
-		row->sqlPendingStatement = SqlTableRow::None;
+		row.sqlPendingStatement = SqlTableRow::None;
 	}
 
 	hasPendingStatements = false;
