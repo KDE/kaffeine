@@ -62,7 +62,7 @@ bool SqlHelper::createInstance()
 
 		details.append(instance->database.lastError().driverText());
 		KMessageBox::queuedDetailedError(NULL,
-			i18nc("message box", "Can't open the SQLite database."), details);
+			i18nc("message box", "Cannot open the SQLite database."), details);
 		delete instance;
 		instance = NULL;
 		return false;
