@@ -778,6 +778,7 @@ void DvbRecordingHelper::bindToSqlQuery(const DvbRecording *recording, QSqlQuery
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
 	SqlTableModel<DvbRecordingHelper>(parent), manager(manager_)
 {
+	initSql();
 }
 
 DvbRecordingModel::~DvbRecordingModel()

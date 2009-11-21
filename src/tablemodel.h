@@ -179,7 +179,6 @@ template<class T> class SqlTableModel : public TableModel<T>, private SqlTableMo
 public:
 	explicit SqlTableModel(QObject *parent) : TableModel<T>(parent), helper(this)
 	{
-		helper.init(T::sqlTableName(), T::sqlColumnNames());
 	}
 
 	~SqlTableModel()
@@ -210,6 +209,11 @@ public:
 	}
 
 protected:
+	void initSql()
+	{
+		helper.init(T::sqlTableName(), T::sqlColumnNames());
+	}
+
 	void insert(qint64 key, const typename T::Type &row)
 	{
 		helper.insert(key, row);
