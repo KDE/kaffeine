@@ -26,7 +26,6 @@
 #include <QStringList>
 
 class SqlHelper;
-class SqlTableModelBase;
 
 template<class T> class TableModel : public QAbstractTableModel
 {
@@ -38,22 +37,22 @@ public:
 
 	~TableModel()
 	{
-		int size = rows.size();
-
-		for (int i = 0; i < size; ++i) {
-			T::deleteObject(rows.at(i));
-		}
 	}
 
-	const typename T::Type &at(int row) const
+	const typename T::Type *at(int row) const
 	{
-		return rows.at(row);
+		return rows.at(row).constData();
 	}
 
-	void append(const typename T::Type &row)
+	typename T::Type *writableAt(int row) const
+	{
+		return rows.at(row).data();
+	}
+
+	void append(typename T::Type *row)
 	{
 		beginInsertRows(QModelIndex(), rows.size(), rows.size());
-		rows.append(row);
+		rows.append(typename T::StorageType(row));
 		endInsertRows();
 	}
 
@@ -98,18 +97,33 @@ public:
 
 	QVariant data(const QModelIndex &index, int role) const
 	{
-		return T::modelData(rows.at(index.row()), index.column(), role);
+		return T::modelData(rows.at(index.row()).constData(), index.column(), role);
 	}
 
 protected:
-	void rawAppend(const typename T::Type &row)
+	void rawAppend(typename T::Type *row)
 	{
-		rows.append(row);
+		rows.append(typename T::StorageType(row));
 	}
 
 private:
-	QList<typename T::Type> rows;
+	QList<typename T::StorageType> rows;
 	QStringList headerLabels;
+};
+
+class SqlTableModelBase
+{
+public:
+	SqlTableModelBase() { }
+
+	virtual QAbstractItemModel *getModel() = 0;
+	virtual int insertFromSqlQuery(const QSqlQuery &query, int index) = 0;
+	virtual void bindToSqlQuery(int row, QSqlQuery &query, int index) const = 0;
+	virtual int getRowCount() const = 0;
+	virtual quintptr getRowIdent(int row) const = 0;
+
+protected:
+	~SqlTableModelBase() { }
 };
 
 class SqlTableRow
@@ -124,25 +138,47 @@ public:
 		Update
 	};
 
-	qint64 sqlKey;
-	PendingStatement sqlPendingStatement;
+	bool operator<(const SqlTableRow &other) const
+	{
+		return (ident < other.ident);
+	}
+
+	bool operator<(quintptr other) const
+	{
+		return (ident < other);
+	}
+
+	friend bool operator<(quintptr x, const SqlTableRow &y)
+	{
+		return (x < y.ident);
+	}
+
+	qint64 key;
+	quintptr ident;
+	PendingStatement pendingStatement;
 };
 
-class SqlTableHelper
+class SqlTableHandler : public QObject
 {
+	Q_OBJECT
+	friend class SqlHelper;
 public:
-	explicit SqlTableHelper(SqlTableModelBase *model_);
-	~SqlTableHelper();
-
-	void append();
-	void rowUpdated(int row);
-	void remove(int row);
+	explicit SqlTableHandler(SqlTableModelBase *model_);
+	~SqlTableHandler();
 
 	void init(const QString &tableName, const QStringList &columnNames);
-	void insert(qint64 key, bool successful);
-	void submit();
+	void flush();
+
+private slots:
+	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+	void layoutChanged();
+	void modelReset();
+	void rowsInserted(const QModelIndex &parent, int start, int end);
+	void rowsRemoved(const QModelIndex &parent, int start, int end);
 
 private:
+	void submit();
+
 	SqlTableModelBase *model;
 	SqlHelper *sqlHelper;
 	QList<SqlTableRow> rows;
@@ -160,76 +196,6 @@ private:
 	QSqlQuery insertQuery;
 	QSqlQuery updateQuery;
 	QSqlQuery deleteQuery;
-};
-
-class SqlTableModelBase
-{
-public:
-	SqlTableModelBase() { }
-
-	virtual void handleRow(qint64 key, const QSqlQuery &query, int index) = 0;
-	virtual void bindToSqlQuery(int row, QSqlQuery &query, int index) const = 0;
-
-protected:
-	~SqlTableModelBase() { }
-};
-
-template<class T> class SqlTableModel : public TableModel<T>, private SqlTableModelBase
-{
-public:
-	explicit SqlTableModel(QObject *parent) : TableModel<T>(parent), helper(this)
-	{
-	}
-
-	~SqlTableModel()
-	{
-	}
-
-	void append(const typename T::Type &row)
-	{
-		helper.append();
-		TableModel<T>::append(row);
-	}
-
-	void rowUpdated(int row)
-	{
-		helper.rowUpdated(row);
-		TableModel<T>::rowUpdated(row);
-	}
-
-	void rowUpdatedTrivially(int row) // doesn't trigger an SQL update
-	{
-		TableModel<T>::rowUpdated(row);
-	}
-
-	void remove(int row)
-	{
-		helper.remove(row);
-		TableModel<T>::remove(row);
-	}
-
-protected:
-	void initSql()
-	{
-		helper.init(T::sqlTableName(), T::sqlColumnNames());
-	}
-
-	void insert(qint64 key, const typename T::Type &row)
-	{
-		helper.insert(key, row);
-
-		if (row != NULL) {
-			TableModel<T>::rawAppend(row);
-		}
-	}
-
-private:
-	void bindToSqlQuery(int row, QSqlQuery &query, int index) const
-	{
-		T::bindToSqlQuery(TableModel<T>::at(row), query, index);
-	}
-
-	SqlTableHelper helper;
 };
 
 #endif /* TABLEMODEL_H */

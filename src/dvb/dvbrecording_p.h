@@ -34,7 +34,7 @@ class DurationEdit;
 class DvbChannelModel;
 class DvbManager;
 
-class DvbRecording : public QObject, private DvbPidFilter
+class DvbRecording : public QObject, public QSharedData, private DvbPidFilter
 {
 	Q_OBJECT
 public:
@@ -73,6 +73,8 @@ private:
 	bool pmtValid;
 };
 
+Q_DECLARE_TYPEINFO(QExplicitlySharedDataPointer<DvbRecording>, Q_MOVABLE_TYPE);
+
 class DvbRecordingEditor : public KDialog
 {
 	Q_OBJECT
@@ -103,28 +105,28 @@ private:
 class DvbRecordingHelper
 {
 public:
-	typedef DvbRecording *Type;
+	typedef QExplicitlySharedDataPointer<DvbRecording> StorageType;
+	typedef DvbRecording Type;
 
 	static QStringList modelHeaderLabels();
 	static QVariant modelData(const DvbRecording *recording, int column, int role);
-	static void deleteObject(const DvbRecording *recording);
-
-	static QString sqlTableName();
-	static QStringList sqlColumnNames();
-	static bool fromSqlQuery(DvbRecording *recording, const QSqlQuery &query, int index);
-	static void bindToSqlQuery(const DvbRecording *recording, QSqlQuery &query, int index);
 };
 
-class DvbRecordingModel : public SqlTableModel<DvbRecordingHelper>
+class DvbRecordingModel : public TableModel<DvbRecordingHelper>, private SqlTableModelBase
 {
 public:
 	DvbRecordingModel(DvbManager *manager_, QObject *parent);
 	~DvbRecordingModel();
 
 private:
-	void handleRow(qint64 key, const QSqlQuery &query, int index);
+	QAbstractItemModel *getModel();
+	int insertFromSqlQuery(const QSqlQuery &query, int index);
+	void bindToSqlQuery(int row, QSqlQuery &query, int index) const;
+	int getRowCount() const;
+	quintptr getRowIdent(int row) const;
 
 	DvbManager *manager;
+	SqlTableHandler *sqlHandler;
 };
 
 #endif /* DVBRECORDING_P_H */
