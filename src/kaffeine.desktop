@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Kaffeine
 Name[bg]=Kaffeine
+Name[ca]=Kaffeine
 Name[cs]=Kaffeine
 Name[csb]=Kaffeine
 Name[da]=Kaffeine
@@ -43,6 +44,7 @@ Name[zh_CN]=Kaffeine
 Exec=kaffeine %U
 GenericName=Media Player
 GenericName[bg]=Медия плеър
+GenericName[ca]=Reproductor de suports
 GenericName[cs]=Přehrávač médií
 GenericName[csb]=Mùltimedialny grôcz
 GenericName[da]=Medieafspiller
