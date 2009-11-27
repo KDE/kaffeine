@@ -294,18 +294,25 @@ QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
 	return channels;
 }
 
-void DvbChannelModel::setChannels(const QList<QSharedDataPointer<DvbChannel> > &channels_)
+void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 {
-	channels = channels_;
-	names.clear();
-	numbers.clear();
-
-	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
-		names.insert(channel->name);
-		numbers.insert(channel->number);
-	}
-
+	channels = other->channels;
+	names = other->names;
+	numbers = other->numbers;
 	reset();
+}
+
+void DvbChannelModel::clear()
+{
+	int size = channels.size();
+
+	if (size > 0) {
+		beginRemoveRows(QModelIndex(), 0, size - 1);
+		channels.clear();
+		names.clear();
+		numbers.clear();
+		endRemoveRows();
+	}
 }
 
 void DvbChannelModel::appendChannel(const QSharedDataPointer<DvbChannel> &channel)

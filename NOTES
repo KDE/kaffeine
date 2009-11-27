@@ -23,3 +23,9 @@ Time zones
 All dates in the recording schedule are local time (e.g. in the sql database). Although this
 solution is less flexible than UTC, knowledge about the local time zone is required anyway for
 repeated schedule entries (because the increment is +/- one hour when a DST switch occurs).
+
+-------------------------
+Channel names and numbers
+-------------------------
+
+Channel names and numbers are guaranteed to be unique.

@@ -44,7 +44,8 @@ public:
 	bool removeRows(int row, int count, const QModelIndex &parent);
 
 	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
-	void setChannels(const QList<QSharedDataPointer<DvbChannel> > &channels_);
+	void cloneFrom(const DvbChannelModel *other);
+	void clear();
 
 	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
 	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;

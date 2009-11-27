@@ -201,7 +201,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	QBoxLayout *groupLayout = new QVBoxLayout(groupBox);
 
 	channelModel = new DvbChannelModel(this);
-	channelModel->setChannels(manager->getChannelModel()->getChannels());
+	channelModel->cloneFrom(manager->getChannelModel());
 
 	DvbChannelView *channelView = new DvbChannelView(channelModel, groupBox);
 
@@ -410,7 +410,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 void DvbScanDialog::dialogAccepted()
 {
-	manager->getChannelModel()->setChannels(channelModel->getChannels());
+	manager->getChannelModel()->cloneFrom(channelModel);
 }
 
 static bool localeAwareLessThan2(const QString &x, const QString &y)
@@ -512,7 +512,7 @@ void DvbScanDialog::addFilteredChannels()
 
 void DvbScanDialog::removeAllChannels()
 {
-	channelModel->setChannels(QList<QSharedDataPointer<DvbChannel> >());
+	channelModel->clear();
 }
 
 void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
