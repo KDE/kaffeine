@@ -410,11 +410,12 @@ void DvbRecordingManager::showDialog(QWidget *parent)
 	treeView->setSortingEnabled(true);
 	mainLayout->addWidget(treeView);
 
-	KAction *action = new KAction(i18n("Edit"), widget);
+	KAction *action = new KAction(KIcon("configure"), i18n("Edit"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
 	treeView->addAction(action);
 
-	action = new KAction(i18nc("remove an item from a list", "Remove"), widget);
+	action = new KAction(KIcon("edit-delete"), i18nc("remove an item from a list", "Remove"),
+		widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 
