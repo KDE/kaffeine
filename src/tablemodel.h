@@ -164,9 +164,7 @@ private:
 	SqlTableModelBase *sqlModel;
 	SqlHelper *sqlHelper;
 	QList<SqlTableRow> rows;
-	QList<qint64> usedKeys;
 	QList<qint64> pendingDeletionKeys;
-	qint64 freeKey;
 	bool hasPendingStatements;
 	bool createTable;
 

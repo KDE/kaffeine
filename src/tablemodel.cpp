@@ -24,8 +24,8 @@
 #include "sqlhelper.h"
 
 SqlModelAdaptor::SqlModelAdaptor(QAbstractItemModel *model_, SqlTableModelBase *sqlModel_) :
-	QObject(model_), model(model_), sqlModel(sqlModel_), freeKey(0),
-	hasPendingStatements(false), createTable(false), sqlColumnCount(0)
+	QObject(model_), model(model_), sqlModel(sqlModel_), hasPendingStatements(false),
+	createTable(false), sqlColumnCount(0)
 {
 	sqlHelper = SqlHelper::getInstance();
 }
@@ -41,35 +41,36 @@ void SqlModelAdaptor::init(const QString &tableName, const QStringList &columnNa
 {
 	QString existsStatement = "SELECT name FROM sqlite_master WHERE name='" +
 		tableName + "' AND type = 'table'";
-	createStatement = "CREATE TABLE " + tableName + " (Id INTEGER PRIMARY KEY";
-	QString selectStatement = "SELECT Id";
-	insertStatement = "INSERT INTO " + tableName + " (Id";
+	createStatement = "CREATE TABLE " + tableName + " (Id INTEGER PRIMARY KEY, ";
+	QString selectStatement = "SELECT Id, ";
+	insertStatement = "INSERT INTO " + tableName + " (";
 	updateStatement = "UPDATE " + tableName + " SET ";
 	deleteStatement = "DELETE FROM " + tableName + " WHERE Id = ?";
 
 	sqlColumnCount = columnNames.size();
 
 	for (int i = 0; i < sqlColumnCount; ++i) {
-		const QString &columnName = columnNames.at(i);
+		if (i != 0) {
+			createStatement.append(", ");
+			selectStatement.append(", ");
+			insertStatement.append(", ");
+			updateStatement.append(" = ?, ");
+		}
 
-		createStatement.append(", ");
+		const QString &columnName = columnNames.at(i);
 		createStatement.append(columnName);
-		selectStatement.append(", ");
 		selectStatement.append(columnName);
-		insertStatement.append(", ");
 		insertStatement.append(columnName);
 		updateStatement.append(columnName);
-		updateStatement.append(" = ?, ");
 	}
 
 	createStatement.append(')');
 	selectStatement.append(" FROM ");
 	selectStatement.append(tableName);
 	insertStatement.append(") VALUES (?");
-	updateStatement.chop(2);
-	updateStatement.append(" WHERE Id = ?");
+	updateStatement.append(" = ? WHERE Id = ?");
 
-	for (int i = 0; i < sqlColumnCount; ++i) {
+	for (int i = 0; i < (sqlColumnCount - 1); ++i) {
 		insertStatement.append(", ?");
 	}
 
@@ -92,18 +93,9 @@ void SqlModelAdaptor::init(const QString &tableName, const QStringList &columnNa
 
 		while (query.next()) {
 			qint64 key = query.value(0).toLongLong();
-			QList<qint64>::ConstIterator it = qLowerBound(usedKeys, key);
-
-			if ((it != usedKeys.constEnd()) && (*it == key)) {
-				kError() << "SQL primary key isn't unique" << key;
-				continue;
-			}
-
 			int row = sqlModel->insertFromSqlQuery(query, 1);
 
 			if (row >= 0) {
-				usedKeys.insert(it - usedKeys.constBegin(), key);
-
 				SqlTableRow sqlRow;
 				sqlRow.key = key;
 				sqlRow.pendingStatement = SqlTableRow::None;
@@ -170,31 +162,17 @@ void SqlModelAdaptor::rowsInserted(const QModelIndex &parent, int start, int end
 	Q_UNUSED(parent);
 
 	for (int row = start; row <= end; ++row) {
-		SqlTableRow sqlRow;
-
 		if (!pendingDeletionKeys.isEmpty()) {
-			qint64 key = pendingDeletionKeys.takeLast();
-			QList<qint64>::ConstIterator it = qLowerBound(usedKeys, key);
-			Q_ASSERT((it == usedKeys.constEnd()) || (*it != key));
-			usedKeys.insert(it - usedKeys.constBegin(), key);
-
-			sqlRow.key = key;
+			SqlTableRow sqlRow;
+			sqlRow.key = pendingDeletionKeys.takeLast();
 			sqlRow.pendingStatement = SqlTableRow::Update;
+			rows.insert(row, sqlRow);
 		} else {
-			QList<qint64>::ConstIterator it = qLowerBound(usedKeys, freeKey);
-
-			while ((it != usedKeys.constEnd()) && (*it == freeKey)) {
-				++freeKey;
-				++it;
-			}
-
-			usedKeys.insert(it - usedKeys.constBegin(), freeKey);
-			sqlRow.key = freeKey;
+			SqlTableRow sqlRow;
+			sqlRow.key = 0;
 			sqlRow.pendingStatement = SqlTableRow::Insert;
-			++freeKey;
+			rows.insert(row, sqlRow);
 		}
-
-		rows.insert(row, sqlRow);
 	}
 
 	if (!hasPendingStatements) {
@@ -209,14 +187,6 @@ void SqlModelAdaptor::rowsRemoved(const QModelIndex &parent, int start, int end)
 
 	for (int row = end; row >= start; --row) {
 		SqlTableRow sqlRow = rows.takeAt(row);
-
-		QList<qint64>::ConstIterator it = qLowerBound(usedKeys, sqlRow.key);
-		Q_ASSERT((it != usedKeys.constEnd()) && (*it == sqlRow.key));
-		usedKeys.removeAt(it - usedKeys.constBegin());
-
-		if (sqlRow.key < freeKey) {
-			freeKey = sqlRow.key;
-		}
 
 		switch (sqlRow.pendingStatement) {
 		case SqlTableRow::Insert:
@@ -261,9 +231,9 @@ void SqlModelAdaptor::submit()
 		case SqlTableRow::None:
 			continue;
 		case SqlTableRow::Insert:
-			insertQuery.bindValue(0, sqlRow.key);
-			sqlModel->bindToSqlQuery(row, insertQuery, 1);
+			sqlModel->bindToSqlQuery(row, insertQuery, 0);
 			sqlHelper->exec(insertQuery);
+			rows[row].key = insertQuery.lastInsertId().toLongLong();
 			break;
 		case SqlTableRow::Update:
 			sqlModel->bindToSqlQuery(row, updateQuery, 0);
