@@ -15,3 +15,11 @@ Geneva 2006 Agreement (GE06) - http://www.itu.int/ITU-R/terrestrial/broadcast/pl
 
 Australia: 177.5 - 226.5 and 529.5 (?) - 816.5 (?) MHz ; bandwidth = 7 MHz
 Italy VHF band: 177.5, 186, 194.5, 203.5, 212.5, 219.5 and 226.5 MHz ; bandwidth = 7 or 8 (?) MHz
+
+----------
+Time zones
+----------
+
+All dates in the recording schedule are local time (e.g. in the sql database). Although this
+solution is less flexible than UTC, knowledge about the local time zone is required anyway for
+repeated schedule entries (because the increment is +/- one hour when a DST switch occurs).

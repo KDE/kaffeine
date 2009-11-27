@@ -344,12 +344,31 @@ public:
 class DvbChannelBase
 {
 public:
-	DvbChannelBase() : number(-1), networkId(-1), transportStreamId(-1), serviceId(-1),
-		pmtPid(-1), videoPid(-1), audioPid(-1), scrambled(false) { }
+	DvbChannelBase() : number(-1), networkId(-1), transportStreamId(-1), pmtPid(-1),
+		audioPid(-1), hasVideo(false), isScrambled(false) { }
 	~DvbChannelBase() { }
 
 	void readChannel(QDataStream &stream);
-	void writeChannel(QDataStream &stream) const;
+
+	int getServiceId() const
+	{
+		if (pmtSection.size() < 5) {
+			return -1;
+		}
+
+		return ((static_cast<unsigned char>(pmtSection.at(3)) << 8) |
+			static_cast<unsigned char>(pmtSection.at(4)));
+	}
+
+	void setServiceId(int serviceId)
+	{
+		if (pmtSection.size() < 5) {
+			return;
+		}
+
+		pmtSection[3] = (serviceId >> 8);
+		pmtSection[4] = (serviceId & 0xff);
+	}
 
 	QString name;
 	int number;
@@ -357,13 +376,12 @@ public:
 	DvbTransponder transponder;
 	int networkId; // may be -1 (not present); ATSC meaning: source id
 	int transportStreamId;
-	int serviceId;
 	int pmtPid;
 
 	QByteArray pmtSection;
-	int videoPid; // may be -1 (not present)
 	int audioPid; // may be -1 (not present)
-	bool scrambled;
+	bool hasVideo;
+	bool isScrambled;
 };
 
 class DvbChannel : public DvbChannelBase, public QSharedData

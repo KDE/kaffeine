@@ -24,6 +24,7 @@
 #include <QPersistentModelIndex>
 #include <QTimer>
 
+class KDialog;
 class DvbManager;
 class DvbRecordingModel;
 class ProxyTreeView;
@@ -36,12 +37,11 @@ public:
 	~DvbRecordingManager();
 
 	void scheduleProgram(const QString &name, const QString &channel, const QDateTime &begin,
-		const QTime &duration);
-
+		const QTime &duration); // begin must be local time!
 	void startInstantRecording(const QString &name, const QString &channel);
 	void stopInstantRecording(); // stops the last started instant recording
 
-	void showDialog();
+	void showDialog(QWidget *parent);
 
 signals:
 	void instantRecordingRemoved(); // not emitted by stopInstantRecording()
@@ -56,9 +56,11 @@ private slots:
 private:
 	DvbManager *manager;
 	DvbRecordingModel *model;
+	QTimer checkStatusTimer;
+	bool checkingStatus;
 	bool instantRecordingActive;
 	QPersistentModelIndex instantRecordingIndex;
-	QTimer checkStatusTimer;
+	KDialog *dialog;
 	ProxyTreeView *treeView;
 };
 

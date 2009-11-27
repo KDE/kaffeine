@@ -142,14 +142,14 @@ QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 		if (index.column() == 0) {
 			const DvbPreviewChannel &channel = channels.at(index.row());
 
-			if (channel.videoPid >= 0) {
-				if (!channel.scrambled) {
+			if (channel.hasVideo) {
+				if (!channel.isScrambled) {
 					return KIcon("video-television");
 				} else {
 					return KIcon("video-television-encrypted");
 				}
 			} else {
-				if (!channel.scrambled) {
+				if (!channel.isScrambled) {
 					return KIcon("text-speak");
 				} else {
 					return KIcon("audio-radio-encrypted");
@@ -411,7 +411,6 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 void DvbScanDialog::dialogAccepted()
 {
 	manager->getChannelModel()->setChannels(channelModel->getChannels());
-	manager->getChannelModel()->saveChannels();
 }
 
 static bool localeAwareLessThan2(const QString &x, const QString &y)
@@ -477,7 +476,7 @@ void DvbScanDialog::addFilteredChannels()
 	foreach (const DvbPreviewChannel &channel, previewModel->getChannels()) {
 		if (ftaCheckBox->isChecked()) {
 			// only fta channels
-			if (channel.scrambled) {
+			if (channel.isScrambled) {
 				continue;
 			}
 		}
@@ -485,14 +484,14 @@ void DvbScanDialog::addFilteredChannels()
 		if (radioCheckBox->isChecked()) {
 			if (!tvCheckBox->isChecked()) {
 				// only radio channels
-				if (channel.videoPid != -1) {
+				if (channel.hasVideo) {
 					continue;
 				}
 			}
 		} else {
 			if (tvCheckBox->isChecked()) {
 				// only tv channels
-				if (channel.videoPid == -1) {
+				if (channel.hasVideo) {
 					continue;
 				}
 			}
@@ -529,7 +528,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 			if ((currentChannel->transponder->source == (*it)->transponder->source) &&
 			    (currentChannel->networkId == (*it)->networkId) &&
 			    (currentChannel->transportStreamId == (*it)->transportStreamId) &&
-			    (currentChannel->serviceId == (*it)->serviceId)) {
+			    (currentChannel->getServiceId() == (*it)->getServiceId())) {
 				break;
 			}
 		}

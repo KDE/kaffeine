@@ -31,8 +31,8 @@ class KComboBox;
 class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
-class DvbChannelModel;
 class DvbManager;
+class DvbRecordingModel;
 
 class DvbRecording : public QObject, public QSharedData, private DvbPidFilter
 {
@@ -47,9 +47,9 @@ public:
 
 	QString name;
 	QString channelName;
-	QDateTime begin;
+	QDateTime begin; // local time
 	QTime duration;
-	QDateTime end;
+	QDateTime end; // local time
 	int repeat; // 1 (monday) | 2 (tuesday) | 4 (wednesday) | etc
 
 private slots:
@@ -79,21 +79,24 @@ class DvbRecordingEditor : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbRecordingEditor(const DvbRecording *recording, DvbChannelModel *channelModel,
+	DvbRecordingEditor(DvbManager *manager_, DvbRecordingModel *model_, int row_,
 		QWidget *parent);
 	~DvbRecordingEditor();
 
-	void updateRecording(DvbRecording *recording) const;
-
 private slots:
-	void beginChanged(const QDateTime &dateTime);
-	void durationChanged(const QTime &time);
-	void endChanged(const QDateTime &dateTime);
+	void beginChanged(const QDateTime &begin);
+	void durationChanged(const QTime &duration);
+	void endChanged(const QDateTime &end);
 	void repeatNever();
 	void repeatDaily();
 	void checkValid();
 
 private:
+	void accept();
+
+	DvbManager *manager;
+	DvbRecordingModel *model;
+	int row;
 	KLineEdit *nameEdit;
 	KComboBox *channelBox;
 	DateTimeEdit *beginEdit;
@@ -119,14 +122,11 @@ public:
 	~DvbRecordingModel();
 
 private:
-	QAbstractItemModel *getModel();
 	int insertFromSqlQuery(const QSqlQuery &query, int index);
 	void bindToSqlQuery(int row, QSqlQuery &query, int index) const;
-	int getRowCount() const;
-	quintptr getRowIdent(int row) const;
 
 	DvbManager *manager;
-	SqlTableHandler *sqlHandler;
+	SqlModelAdaptor *sqlAdaptor;
 };
 
 #endif /* DVBRECORDING_P_H */

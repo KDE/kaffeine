@@ -504,10 +504,10 @@ void DvbScan::updateState()
 				DvbPreviewChannel &channel = channels[i];
 
 				foreach (const DvbSdtEntry &sdtEntry, sdtEntries) {
-					if (channel.serviceId == sdtEntry.serviceId) {
+					if (channel.getServiceId() == sdtEntry.serviceId) {
 						channel.name = sdtEntry.name;
 						channel.networkId = sdtEntry.networkId;
-						channel.scrambled = sdtEntry.scrambled;
+						channel.isScrambled = sdtEntry.scrambled;
 						channel.provider = sdtEntry.provider;
 						break;
 					}
@@ -516,7 +516,7 @@ void DvbScan::updateState()
 				if (channel.name.isEmpty()) {
 					channel.name = QString("#0 %1:%2").
 						       arg(channel.transportStreamId).
-						       arg(channel.serviceId);
+						       arg(channel.getServiceId());
 				}
 			}
 
@@ -602,16 +602,15 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 	DvbPreviewChannel channel;
 
 	DvbPmtParser parser(section);
-	channel.videoPid = parser.videoPid;
+	channel.hasVideo = (parser.videoPid >= 0);
 
 	for (int i = 0; i < parser.audioPids.size(); ++i) {
 		channel.audioPids.append(parser.audioPids.at(i).first);
 	}
 
-	if ((channel.videoPid != -1) || !channel.audioPids.isEmpty()) {
+	if (channel.hasVideo || !channel.audioPids.isEmpty()) {
 		channel.transponder = transponder;
 		channel.transportStreamId = transportStreamId;
-		channel.serviceId = section.programNumber();
 		channel.pmtPid = pid;
 		channel.pmtSection = section.toByteArray();
 		channel.snr = snr;

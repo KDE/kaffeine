@@ -29,6 +29,7 @@ class QSpinBox;
 class KComboBox;
 class KLineEdit;
 class DvbChannel;
+class DvbSqlChannelModelAdaptor;
 
 class DvbChannelModel : public QAbstractTableModel
 {
@@ -42,8 +43,6 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	bool removeRows(int row, int count, const QModelIndex &parent);
 
-	void loadChannels();
-	void saveChannels() const;
 	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
 	void setChannels(const QList<QSharedDataPointer<DvbChannel> > &channels_);
 
@@ -52,16 +51,30 @@ public:
 	QSharedDataPointer<DvbChannel> channelForNumber(int number) const;
 
 	/*
-	 * these two functions automatically adjust the channel numbers
+	 * these three functions automatically adjust the channel numbers
 	 */
 
+	void appendChannel(const QSharedDataPointer<DvbChannel> &channel);
 	void appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list);
 	void updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel);
 
 private:
-	QString findUniqueName(const QSet<QString> &names, const QString &name);
+	QString findUniqueName(const QString &name) const;
+	int findUniqueNumber(int number) const;
 
 	QList<QSharedDataPointer<DvbChannel> > channels;
+	QSet<QString> names;
+	QSet<int> numbers;
+};
+
+class DvbSqlChannelModel : public DvbChannelModel
+{
+public:
+	explicit DvbSqlChannelModel(QObject *parent);
+	~DvbSqlChannelModel();
+
+private:
+	DvbSqlChannelModelAdaptor *sqlAdaptor;
 };
 
 class DvbChannelView : public ProxyTreeView

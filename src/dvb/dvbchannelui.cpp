@@ -32,6 +32,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KStandardDirs>
+#include "../tablemodel.h"
 #include "dvbsi.h"
 
 template<class T> static QStringList displayStrings();
@@ -198,14 +199,14 @@ QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 		if ((role == Qt::DecorationRole) && (index.column() == 0)) {
 			const QSharedDataPointer<DvbChannel> &channel = channels.at(index.row());
 
-			if (channel->videoPid >= 0) {
-				if (!channel->scrambled) {
+			if (channel->hasVideo) {
+				if (!channel->isScrambled) {
 					return KIcon("video-television");
 				} else {
 					return KIcon("video-television-encrypted");
 				}
 			} else {
-				if (!channel->scrambled) {
+				if (!channel->isScrambled) {
 					return KIcon("text-speak");
 				} else {
 					return KIcon("audio-radio-encrypted");
@@ -249,6 +250,12 @@ bool DvbChannelModel::removeRows(int row, int count, const QModelIndex &parent)
 	}
 
 	beginRemoveRows(QModelIndex(), row, row + count - 1);
+
+	for (int i = row; i < (row + count); ++i) {
+		names.remove(channels.at(i)->name);
+		numbers.remove(channels.at(i)->number);
+	}
+
 	channels.erase(channels.begin() + row, channels.begin() + row + count);
 	endRemoveRows();
 
@@ -290,19 +297,44 @@ QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
 void DvbChannelModel::setChannels(const QList<QSharedDataPointer<DvbChannel> > &channels_)
 {
 	channels = channels_;
-	reset();
-}
-
-void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list)
-{
-	QSet<QString> names;
-	QSet<int> numbers;
+	names.clear();
+	numbers.clear();
 
 	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
 		names.insert(channel->name);
 		numbers.insert(channel->number);
 	}
 
+	reset();
+}
+
+void DvbChannelModel::appendChannel(const QSharedDataPointer<DvbChannel> &channel)
+{
+	beginInsertRows(QModelIndex(), channels.size(), channels.size());
+	QString name = channel->name;
+
+	if (names.contains(name)) {
+		name = findUniqueName(name);
+	}
+
+	names.insert(name);
+
+	int number = channel->number;
+
+	if (numbers.contains(number)) {
+		number = findUniqueNumber(number);
+	}
+
+	numbers.insert(number);
+
+	channels.append(channel);
+	channels.last()->name = name;
+	channels.last()->number = number;
+	endInsertRows();
+}
+
+void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list)
+{
 	beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
 
 	int number = 1;
@@ -311,7 +343,7 @@ void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> 
 		QString name = channel->name;
 
 		if (names.contains(name)) {
-			name = findUniqueName(names, name);
+			name = findUniqueName(name);
 		}
 
 		names.insert(name);
@@ -319,6 +351,8 @@ void DvbChannelModel::appendChannels(const QList<QSharedDataPointer<DvbChannel> 
 		while (numbers.contains(number)) {
 			++number;
 		}
+
+		numbers.insert(number);
 
 		channels.append(channel);
 		channels.last()->name = name;
@@ -334,120 +368,53 @@ void DvbChannelModel::updateChannel(int pos, const QSharedDataPointer<DvbChannel
 {
 	QString oldName = channels.at(pos)->name;
 	QString newName = channel->name;
+
+	if (oldName != newName) {
+		names.remove(oldName);
+
+		for (int i = 0;; ++i) {
+			if (i == channels.size()) {
+				break;
+			}
+
+			if ((i != pos) && (channels.at(i)->name == newName)) {
+				newName = findUniqueName(newName);
+				channels[i]->name = newName;
+				QModelIndex modelIndex = index(i, 0);
+				emit dataChanged(modelIndex, modelIndex);
+			}
+		}
+
+		names.insert(newName);
+	}
+
 	int oldNumber = channels.at(pos)->number;
 	int newNumber = channel->number;
 
+	if (oldNumber != newNumber) {
+		numbers.remove(oldNumber);
+
+		for (int i = 0;; ++i) {
+			if (i == channels.size()) {
+				break;
+			}
+
+			if ((i != pos) && (channels.at(i)->number == newNumber)) {
+				newNumber = findUniqueNumber(newNumber);
+				channels[i]->number = newNumber;
+				QModelIndex modelIndex = index(i, 1);
+				emit dataChanged(modelIndex, modelIndex);
+			}
+		}
+
+		numbers.insert(newNumber);
+	}
+
 	channels.replace(pos, channel);
 	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
-
-	if (oldName != newName) {
-		QSet<QString> names;
-		int affectedPos = -1;
-
-		for (int i = 0; i < channels.size(); ++i) {
-			QString name = channels.at(i)->name;
-
-			if ((i != pos) && (name == newName)) {
-				affectedPos = i;
-			}
-
-			names.insert(name);
-		}
-
-		if (affectedPos != -1) {
-			channels[affectedPos]->name = findUniqueName(names, newName);
-			QModelIndex modelIndex = index(affectedPos, 0);
-			emit dataChanged(modelIndex, modelIndex);
-		}
-	}
-
-	if (oldNumber != newNumber) {
-		QSet<int> numbers;
-		int affectedPos = -1;
-
-		for (int i = 0; i < channels.size(); ++i) {
-			int number = channels.at(i)->number;
-
-			if ((i != pos) && (number == newNumber)) {
-				affectedPos = i;
-			}
-
-			numbers.insert(number);
-		}
-
-		if (affectedPos != -1) {
-			int number = newNumber + 1;
-
-			while (numbers.contains(number)) {
-				++number;
-			}
-
-			channels[affectedPos]->number = number;
-			QModelIndex modelIndex = index(affectedPos, 1);
-			emit dataChanged(modelIndex, modelIndex);
-		}
-	}
 }
 
-void DvbChannelModel::loadChannels()
-{
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "can't open" << file.fileName();
-		return;
-	}
-
-	QDataStream stream(&file);
-	stream.setVersion(QDataStream::Qt_4_4);
-
-	QSet<QString> names;
-	QSet<int> numbers;
-
-	while (!stream.atEnd()) {
-		DvbChannel *channel = new DvbChannel;
-		channel->readChannel(stream);
-
-		if (stream.status() != QDataStream::Ok) {
-			kWarning() << "invalid channels in file" << file.fileName();
-			delete channel;
-			break;
-		}
-
-		if (names.contains(channel->name)) {
-			channel->name = findUniqueName(names, channel->name);
-		}
-
-		names.insert(channel->name);
-
-		while (numbers.contains(channel->number)) {
-			++channel->number;
-		}
-
-		numbers.insert(channel->number);
-
-		channels.append(QSharedDataPointer<DvbChannel>(channel));
-	}
-}
-
-void DvbChannelModel::saveChannels() const
-{
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
-
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kWarning() << "can't open" << file.fileName();
-		return;
-	}
-
-	QDataStream stream(&file);
-	stream.setVersion(QDataStream::Qt_4_4);
-
-	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
-		channel->writeChannel(stream);
-	}
-}
-
-QString DvbChannelModel::findUniqueName(const QSet<QString> &names, const QString &name)
+QString DvbChannelModel::findUniqueName(const QString &name) const
 {
 	QString baseName = name;
 	int index = baseName.lastIndexOf('-');
@@ -468,6 +435,157 @@ QString DvbChannelModel::findUniqueName(const QSet<QString> &names, const QStrin
 	}
 
 	return newName;
+}
+
+int DvbChannelModel::findUniqueNumber(int number) const
+{
+	while (numbers.contains(number)) {
+		++number;
+	}
+
+	return number;
+}
+
+class DvbSqlChannelModelAdaptor : public SqlModelAdaptor, public SqlTableModelBase
+{
+public:
+	DvbSqlChannelModelAdaptor(DvbChannelModel *model_) : SqlModelAdaptor(model_, this),
+		model(model_)
+	{
+		init("Channels", QStringList() << "Name" << "Number" << "Source" << "Transponder" <<
+			"NetworkId" << "TransportStreamId" << "PmtPid" << "PmtSection" <<
+			"AudioPid" << "Flags");
+	}
+
+	~DvbSqlChannelModelAdaptor()
+	{
+	}
+
+private:
+	int insertFromSqlQuery(const QSqlQuery &query, int index)
+	{
+		DvbChannel *channel = new DvbChannel();
+		channel->name = query.value(index++).toString();
+		channel->number = query.value(index++).toInt();
+		QString source = query.value(index++).toString();
+		QString transponder = query.value(index++).toString();
+
+		DvbTransponderBase *transponderBase = NULL;
+
+		if (transponder.size() >= 2) {
+			if (transponder.at(0) == 'C') {
+				transponderBase = new DvbCTransponder();
+			} else if (transponder.at(0) == 'S') {
+				if (transponder.at(1) != '2') {
+					transponderBase = new DvbSTransponder();
+				} else {
+					transponderBase = new DvbS2Transponder();
+				}
+			} else if (transponder.at(0) == 'T') {
+				transponderBase = new DvbTTransponder();
+			} else if (transponder.at(0) == 'A') {
+				transponderBase = new AtscTransponder();
+			}
+		}
+
+		if (transponderBase != NULL) {
+			transponderBase->source = source;
+
+			if (source.isEmpty() || !transponderBase->fromString(transponder)) {
+				delete transponderBase;
+				delete channel;
+				return -1;
+			}
+		}
+
+		channel->transponder = DvbTransponder(transponderBase);
+		channel->networkId = query.value(index++).toInt();
+		channel->transportStreamId = query.value(index++).toInt();
+		channel->pmtPid = query.value(index++).toInt();
+		channel->pmtSection = query.value(index++).toByteArray();
+		channel->audioPid = query.value(index++).toInt();
+		int flags = query.value(index++).toInt();
+
+		channel->hasVideo = ((flags & 0x01) != 0);
+		channel->isScrambled = ((flags & 0x02) != 0);
+
+		if (channel->name.isEmpty() || (channel->number < 1) || (channel->networkId < -1) ||
+		    (channel->networkId > 0xffff) || (channel->transportStreamId < 0) ||
+		    (channel->transportStreamId > 0xffff) || (channel->pmtPid < 0) ||
+		    (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
+		    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
+			delete channel;
+			return -1;
+		}
+
+		model->appendChannel(QSharedDataPointer<DvbChannel>(channel));
+		return (model->rowCount(QModelIndex()) - 1);
+	}
+
+	void bindToSqlQuery(int row, QSqlQuery &query, int index) const
+	{
+		const DvbChannel *channel = model->getChannel(row).constData();
+		query.bindValue(index++, channel->name);
+		query.bindValue(index++, channel->number);
+		query.bindValue(index++, channel->transponder->source);
+		query.bindValue(index++, channel->transponder->toString());
+		query.bindValue(index++, channel->networkId);
+		query.bindValue(index++, channel->transportStreamId);
+		query.bindValue(index++, channel->pmtPid);
+		query.bindValue(index++, channel->pmtSection);
+		query.bindValue(index++, channel->audioPid);
+		query.bindValue(index++, (channel->hasVideo ? 0x01 : 0) |
+					 (channel->isScrambled ? 0x02 : 0));
+	}
+
+	DvbChannelModel *model;
+};
+
+DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent)
+{
+	sqlAdaptor = new DvbSqlChannelModelAdaptor(this);
+
+	// compatibility code
+
+	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
+
+	if (!file.exists()) {
+		return;
+	}
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		kDebug() << "can't open" << file.fileName();
+		return;
+	}
+
+	QDataStream stream(&file);
+	stream.setVersion(QDataStream::Qt_4_4);
+
+	QList<QSharedDataPointer<DvbChannel> > channels;
+
+	while (!stream.atEnd()) {
+		DvbChannel *channel = new DvbChannel;
+		channel->readChannel(stream);
+
+		if (stream.status() != QDataStream::Ok) {
+			kWarning() << "invalid channels in file" << file.fileName();
+			delete channel;
+			break;
+		}
+
+		channels.append(QSharedDataPointer<DvbChannel>(channel));
+	}
+
+	appendChannels(channels);
+
+	if (!file.remove()) {
+		kWarning() << "can't remove" << file.fileName();
+	}
+}
+
+DvbSqlChannelModel::~DvbSqlChannelModel()
+{
+	sqlAdaptor->flush();
 }
 
 DvbChannelView::DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent) :
@@ -628,11 +746,13 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), 11, 0);
 	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), 11, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Video PID:")), 12, 0);
-	gridLayout->addWidget(new QLabel(QString::number(channel->videoPid)), 12, 1);
-
-	int row = 13;
 	DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSection));
+	int row = 12;
+
+	if (pmtParser.videoPid >= 0) {
+		gridLayout->addWidget(new QLabel(i18n("Video PID:")), row, 0);
+		gridLayout->addWidget(new QLabel(QString::number(pmtParser.videoPid)), row++, 1);
+	}
 
 	if (!pmtParser.subtitlePids.isEmpty()) {
 		gridLayout->addWidget(new QLabel(i18n("Subtitle PID:")), row, 0);
@@ -673,7 +793,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 
 	serviceIdBox = new QSpinBox(groupBox);
 	serviceIdBox->setRange(0, (1 << 16) - 1);
-	serviceIdBox->setValue(channel->serviceId);
+	serviceIdBox->setValue(channel->getServiceId());
 	gridLayout->addWidget(serviceIdBox, 2, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
@@ -703,7 +823,7 @@ DvbChannelEditor::DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel
 	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), 4, 0);
 
 	scrambledBox = new QCheckBox(groupBox);
-	scrambledBox->setChecked(channel->scrambled);
+	scrambledBox->setChecked(channel->isScrambled);
 	gridLayout->addWidget(scrambledBox, 4, 1);
 
 	gridLayout->addItem(new QSpacerItem(0, 0), 5, 0, 1, 2);
@@ -724,13 +844,13 @@ QSharedDataPointer<DvbChannel> DvbChannelEditor::getChannel()
 	channel->number = numberBox->value();
 	channel->networkId = networkIdBox->value();
 	channel->transportStreamId = transportStreamIdBox->value();
-	channel->serviceId = serviceIdBox->value();
+	channel->setServiceId(serviceIdBox->value());
 
 	if (audioChannelBox->currentIndex() != -1) {
 		channel->audioPid = audioPids.at(audioChannelBox->currentIndex());
 	}
 
-	channel->scrambled = scrambledBox->isChecked();
+	channel->isScrambled = scrambledBox->isChecked();
 
 	return channel;
 }

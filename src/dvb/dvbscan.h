@@ -40,21 +40,15 @@ public:
 	DvbPreviewChannel() : snr(-1) { }
 	~DvbPreviewChannel() { }
 
-	bool isValid() const
-	{
-		return !name.isEmpty() && ((videoPid != -1) || !audioPids.isEmpty());
-	}
-
 	/*
 	 * assigned when reading PMT
 	 */
 
 	// DvbSharedTransponder transponder;
 	// int transportStreamId;
-	// int serviceId;
 	// int pmtPid;
 	// QByteArray pmtSection;
-	// int videoPid; // may be -1 (not present)
+	// bool hasVideo;
 	QList<int> audioPids;
 	int snr; // percent
 
@@ -64,7 +58,7 @@ public:
 
 	// QString name;
 	// int networkId; // may be -1 (not present); ATSC meaning: source id
-	// bool scrambled;
+	// bool isScrambled;
 	QString provider;
 
 	/*

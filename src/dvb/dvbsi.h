@@ -301,7 +301,17 @@ public:
 	DvbPmtFilter() : programNumber(-1), versionNumber(-1) { }
 	~DvbPmtFilter() { }
 
-	void setProgramNumber(int programNumber_);
+	void resetFilter()
+	{
+		DvbSectionFilter::resetFilter();
+		programNumber = -1;
+		versionNumber = -1;
+	}
+
+	void setProgramNumber(int programNumber_)
+	{
+		programNumber = programNumber_;
+	}
 
 signals:
 	void pmtSectionChanged(const DvbPmtSection &section);

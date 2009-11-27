@@ -199,12 +199,12 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 	KGlobal::config()->group("DVB").writeEntry("LastChannel", channel->name);
 
 	internal->eitFilter.setSource(channel->transponder->source);
-	internal->pmtFilter.setProgramNumber(channel->serviceId);
+	internal->pmtFilter.setProgramNumber(channel->getServiceId());
 	startDevice();
 
-	internal->patGenerator.initPat(channel->transportStreamId, channel->serviceId,
+	internal->patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
 		channel->pmtPid);
-	videoPid = channel->videoPid;
+	videoPid = -1;
 	audioPid = channel->audioPid;
 	subtitlePid = -1;
 	pmtSectionChanged(DvbPmtSection(channel->pmtSection));

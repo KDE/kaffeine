@@ -23,21 +23,21 @@
 #include <KDebug>
 #include "sqlhelper.h"
 
-SqlTableHandler::SqlTableHandler(SqlTableModelBase *model_) : model(model_), freeKey(0),
+SqlModelAdaptor::SqlModelAdaptor(QAbstractItemModel *model_, SqlTableModelBase *sqlModel_) :
+	QObject(model_), model(model_), sqlModel(sqlModel_), freeKey(0),
 	hasPendingStatements(false), createTable(false), sqlColumnCount(0)
 {
-	setParent(model->getModel());
 	sqlHelper = SqlHelper::getInstance();
 }
 
-SqlTableHandler::~SqlTableHandler()
+SqlModelAdaptor::~SqlModelAdaptor()
 {
 	if (hasPendingStatements) {
 		kError() << "pending statements at destruction";
 	}
 }
 
-void SqlTableHandler::init(const QString &tableName, const QStringList &columnNames)
+void SqlModelAdaptor::init(const QString &tableName, const QStringList &columnNames)
 {
 	QString existsStatement = "SELECT name FROM sqlite_master WHERE name='" +
 		tableName + "' AND type = 'table'";
@@ -99,7 +99,7 @@ void SqlTableHandler::init(const QString &tableName, const QStringList &columnNa
 				continue;
 			}
 
-			int row = model->insertFromSqlQuery(query, 1);
+			int row = sqlModel->insertFromSqlQuery(query, 1);
 
 			if (row >= 0) {
 				usedKeys.insert(it - usedKeys.constBegin(), key);
@@ -107,7 +107,6 @@ void SqlTableHandler::init(const QString &tableName, const QStringList &columnNa
 				SqlTableRow sqlRow;
 				sqlRow.key = key;
 				sqlRow.pendingStatement = SqlTableRow::None;
-				sqlRow.ident = model->getRowIdent(row);
 				rows.insert(row, sqlRow);
 			} else {
 				pendingDeletionKeys.append(key);
@@ -115,26 +114,24 @@ void SqlTableHandler::init(const QString &tableName, const QStringList &columnNa
 		}
 	}
 
-	QObject *itemModel = model->getModel();
-
-	connect(itemModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+	connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
 		this, SLOT(dataChanged(QModelIndex,QModelIndex)));
-	connect(itemModel, SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
-	connect(itemModel, SIGNAL(modelReset()), this, SLOT(modelReset()));
-	connect(itemModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+	connect(model, SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
+	connect(model, SIGNAL(modelReset()), this, SLOT(modelReset()));
+	connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
 		this, SLOT(rowsInserted(QModelIndex,int,int)));
-	connect(itemModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+	connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
 		this, SLOT(rowsRemoved(QModelIndex,int,int)));
 }
 
-void SqlTableHandler::flush()
+void SqlModelAdaptor::flush()
 {
 	if (hasPendingStatements) {
 		sqlHelper->collectSubmissions();
 	}
 }
 
-void SqlTableHandler::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void SqlModelAdaptor::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
 	for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
 		const SqlTableRow &sqlRow = rows.at(row);
@@ -156,27 +153,19 @@ void SqlTableHandler::dataChanged(const QModelIndex &topLeft, const QModelIndex 
 	}
 }
 
-void SqlTableHandler::layoutChanged()
+void SqlModelAdaptor::layoutChanged()
 {
-	qSort(rows);
-
-	for (int row = 0; row < rows.size(); ++row) {
-		int index = qBinaryFind(rows.constBegin() + row, rows.constEnd(),
-			model->getRowIdent(row)) - rows.constBegin();
-
-		if (index != row) {
-			rows.move(index, row);
-		}
-	}
+	// FIXME not implemented; but not used either
+	Q_ASSERT(false);
 }
 
-void SqlTableHandler::modelReset()
+void SqlModelAdaptor::modelReset()
 {
-	rowsRemoved(QModelIndex(), 0, rows.size());
-	rowsInserted(QModelIndex(), 0, model->getRowCount());
+	rowsRemoved(QModelIndex(), 0, rows.size() - 1);
+	rowsInserted(QModelIndex(), 0, model->rowCount(QModelIndex()) - 1);
 }
 
-void SqlTableHandler::rowsInserted(const QModelIndex &parent, int start, int end)
+void SqlModelAdaptor::rowsInserted(const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED(parent);
 
@@ -205,7 +194,6 @@ void SqlTableHandler::rowsInserted(const QModelIndex &parent, int start, int end
 			++freeKey;
 		}
 
-		sqlRow.ident = model->getRowIdent(row);
 		rows.insert(row, sqlRow);
 	}
 
@@ -215,7 +203,7 @@ void SqlTableHandler::rowsInserted(const QModelIndex &parent, int start, int end
 	}
 }
 
-void SqlTableHandler::rowsRemoved(const QModelIndex &parent, int start, int end)
+void SqlModelAdaptor::rowsRemoved(const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED(parent);
 
@@ -247,7 +235,7 @@ void SqlTableHandler::rowsRemoved(const QModelIndex &parent, int start, int end)
 	}
 }
 
-void SqlTableHandler::submit()
+void SqlModelAdaptor::submit()
 {
 	if (createTable) {
 		createTable = false;
@@ -274,11 +262,11 @@ void SqlTableHandler::submit()
 			continue;
 		case SqlTableRow::Insert:
 			insertQuery.bindValue(0, sqlRow.key);
-			model->bindToSqlQuery(row, insertQuery, 1);
+			sqlModel->bindToSqlQuery(row, insertQuery, 1);
 			sqlHelper->exec(insertQuery);
 			break;
 		case SqlTableRow::Update:
-			model->bindToSqlQuery(row, updateQuery, 0);
+			sqlModel->bindToSqlQuery(row, updateQuery, 0);
 			updateQuery.bindValue(sqlColumnCount, sqlRow.key);
 			sqlHelper->exec(updateQuery);
 			break;

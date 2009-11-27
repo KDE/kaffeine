@@ -116,11 +116,8 @@ class SqlTableModelBase
 public:
 	SqlTableModelBase() { }
 
-	virtual QAbstractItemModel *getModel() = 0;
 	virtual int insertFromSqlQuery(const QSqlQuery &query, int index) = 0;
 	virtual void bindToSqlQuery(int row, QSqlQuery &query, int index) const = 0;
-	virtual int getRowCount() const = 0;
-	virtual quintptr getRowIdent(int row) const = 0;
 
 protected:
 	~SqlTableModelBase() { }
@@ -138,33 +135,17 @@ public:
 		Update
 	};
 
-	bool operator<(const SqlTableRow &other) const
-	{
-		return (ident < other.ident);
-	}
-
-	bool operator<(quintptr other) const
-	{
-		return (ident < other);
-	}
-
-	friend bool operator<(quintptr x, const SqlTableRow &y)
-	{
-		return (x < y.ident);
-	}
-
 	qint64 key;
-	quintptr ident;
 	PendingStatement pendingStatement;
 };
 
-class SqlTableHandler : public QObject
+class SqlModelAdaptor : public QObject
 {
 	Q_OBJECT
 	friend class SqlHelper;
 public:
-	explicit SqlTableHandler(SqlTableModelBase *model_);
-	~SqlTableHandler();
+	SqlModelAdaptor(QAbstractItemModel *model_, SqlTableModelBase *sqlModel_);
+	~SqlModelAdaptor();
 
 	void init(const QString &tableName, const QStringList &columnNames);
 	void flush();
@@ -179,7 +160,8 @@ private slots:
 private:
 	void submit();
 
-	SqlTableModelBase *model;
+	QAbstractItemModel *model;
+	SqlTableModelBase *sqlModel;
 	SqlHelper *sqlHelper;
 	QList<SqlTableRow> rows;
 	QList<qint64> usedKeys;

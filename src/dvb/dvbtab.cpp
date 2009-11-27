@@ -228,7 +228,7 @@ void DvbTab::showChannelDialog()
 
 void DvbTab::showRecordingDialog()
 {
-	manager->getRecordingManager()->showDialog();
+	manager->getRecordingManager()->showDialog(this);
 }
 
 void DvbTab::showEpgDialog()

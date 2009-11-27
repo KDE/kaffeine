@@ -310,7 +310,7 @@ void DvbEitFilter::setManager(DvbManager *manager_)
 		DvbEitEntry entry;
 		entry.source = channel->transponder->source;
 		entry.transportStreamId = channel->transportStreamId;
-		entry.serviceId = channel->serviceId;
+		entry.serviceId = channel->getServiceId();
 		entry.networkId = channel->networkId;
 		channelMapping.insert(entry, channel->name);
 	}
@@ -554,7 +554,7 @@ void DvbEpgDialog::scheduleProgram()
 	const DvbEpgEntry *entry = epgModel->getEntry(index.row());
 
 	manager->getRecordingManager()->scheduleProgram(entry->title, entry->channel,
-		entry->begin.addSecs(-300), entry->duration.addSecs(900));
+		entry->begin.toLocalTime().addSecs(-300), entry->duration.addSecs(900));
 
 	KMessageBox::information(this, i18nc("program guide", "Program successfully scheduled."));
 }

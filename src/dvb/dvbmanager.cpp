@@ -226,13 +226,9 @@ DvbDeviceConfigUpdate::~DvbDeviceConfigUpdate()
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), dvbDumpEnabled(false)
 {
-	channelModel = new DvbChannelModel(this);
-	channelModel->loadChannels();
-
+	channelModel = new DvbSqlChannelModel(this);
 	epgModel = new DvbEpgModel(this);
-
 	liveView = new DvbLiveView(this);
-
 	recordingManager = new DvbRecordingManager(this);
 
 	readDeviceConfigs();
@@ -247,7 +243,6 @@ DvbManager::~DvbManager()
 {
 	KGlobal::config()->group("DVB").writeEntry("ScanDataDate", scanDataDate);
 	writeDeviceConfigs();
-	channelModel->saveChannels();
 
 	// we need an explicit deletion order (device users ; devices ; device manager)
 

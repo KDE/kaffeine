@@ -580,34 +580,17 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 	transponder = DvbTransponder(transponderBase);
 	stream >> networkId;
 	stream >> transportStreamId;
+	int serviceId;
 	stream >> serviceId;
 	stream >> pmtPid;
 
 	stream >> pmtSection;
+	int videoPid;
 	stream >> videoPid;
 	stream >> audioPid;
 
 	int flags;
 	stream >> flags;
-	scrambled = (flags & 0x1) != 0;
-}
-
-void DvbChannelBase::writeChannel(QDataStream &stream) const
-{
-	stream << transponder->getTransmissionType();
-
-	stream << name;
-	stream << number;
-
-	stream << transponder->source;
-	transponder->writeTransponder(stream);
-	stream << networkId;
-	stream << transportStreamId;
-	stream << serviceId;
-	stream << pmtPid;
-
-	stream << pmtSection;
-	stream << videoPid;
-	stream << audioPid;
-	stream << (scrambled ? 1 : 0);
+	hasVideo = (videoPid >= 0);
+	isScrambled = (flags & 0x1) != 0;
 }

@@ -108,7 +108,7 @@ void SqlHelper::exec(QSqlQuery &query)
 	}
 }
 
-void SqlHelper::requestSubmission(SqlTableHandler *object)
+void SqlHelper::requestSubmission(SqlModelAdaptor *object)
 {
 	if (!timer.isActive()) {
 		timer.start();
