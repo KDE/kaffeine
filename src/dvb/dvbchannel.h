@@ -92,7 +92,6 @@ public:
 	}
 
 	virtual void readTransponder(QDataStream &stream) = 0;
-	virtual void writeTransponder(QDataStream &stream) const = 0;
 
 	/*
 	 * convert from / to linuxtv scan file format
@@ -137,7 +136,6 @@ public:
 	}
 
 	void readTransponder(QDataStream &stream);
-	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -171,7 +169,6 @@ public:
 	}
 
 	void readTransponder(QDataStream &stream);
-	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -219,7 +216,6 @@ public:
 	}
 
 	void readTransponder(QDataStream &stream);
-	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -284,7 +280,6 @@ public:
 	}
 
 	void readTransponder(QDataStream &stream);
-	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 
@@ -323,7 +318,6 @@ public:
 	}
 
 	void readTransponder(QDataStream &stream);
-	void writeTransponder(QDataStream &stream) const;
 	bool fromString(const QString &string);
 	QString toString() const;
 

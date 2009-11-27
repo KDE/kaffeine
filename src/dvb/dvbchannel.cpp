@@ -297,14 +297,6 @@ void DvbCTransponder::readTransponder(QDataStream &stream)
 	stream >> fecRate;
 }
 
-void DvbCTransponder::writeTransponder(QDataStream &stream) const
-{
-	stream << frequency;
-	stream << symbolRate;
-	stream << modulation;
-	stream << fecRate;
-}
-
 bool DvbCTransponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
@@ -342,14 +334,6 @@ void DvbSTransponder::readTransponder(QDataStream &stream)
 	stream >> frequency;
 	stream >> symbolRate;
 	stream >> fecRate;
-}
-
-void DvbSTransponder::writeTransponder(QDataStream &stream) const
-{
-	stream << polarization;
-	stream << frequency;
-	stream << symbolRate;
-	stream << fecRate;
 }
 
 bool DvbSTransponder::fromString(const QString &string)
@@ -392,16 +376,6 @@ void DvbS2Transponder::readTransponder(QDataStream &stream)
 	stream >> fecRate;
 	stream >> modulation;
 	stream >> rollOff;
-}
-
-void DvbS2Transponder::writeTransponder(QDataStream &stream) const
-{
-	stream << polarization;
-	stream << frequency;
-	stream << symbolRate;
-	stream << fecRate;
-	stream << modulation;
-	stream << rollOff;
 }
 
 bool DvbS2Transponder::fromString(const QString &string)
@@ -452,18 +426,6 @@ void DvbTTransponder::readTransponder(QDataStream &stream)
 	stream >> hierarchy;
 }
 
-void DvbTTransponder::writeTransponder(QDataStream &stream) const
-{
-	stream << frequency;
-	stream << bandwidth;
-	stream << modulation;
-	stream << fecRateHigh;
-	stream << fecRateLow;
-	stream << transmissionMode;
-	stream << guardInterval;
-	stream << hierarchy;
-}
-
 bool DvbTTransponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
@@ -507,12 +469,6 @@ void AtscTransponder::readTransponder(QDataStream &stream)
 {
 	stream >> frequency;
 	stream >> modulation;
-}
-
-void AtscTransponder::writeTransponder(QDataStream &stream) const
-{
-	stream << frequency;
-	stream << modulation;
 }
 
 bool AtscTransponder::fromString(const QString &string)
