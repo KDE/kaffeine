@@ -110,8 +110,8 @@ static const char *dvbCModulationTable[] = {
 static const char *dvbSPolarizationTable[] = {
 	/* Horizontal = 0    */ "H",
 	/* Vertical = 1      */ "V",
-	/* CircularLeft = 2  */ "H",
-	/* CircularRight = 3 */ "V"
+	/* CircularLeft = 2  */ "L",
+	/* CircularRight = 3 */ "R"
 };
 
 static const char *dvbS2ModulationTable[] = {
