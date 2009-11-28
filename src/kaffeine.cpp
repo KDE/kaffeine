@@ -346,6 +346,7 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 	options.add("videocd", ki18n("Play Video CD"));
 	options.add("dvd", ki18n("Play DVD"));
 	options.add("tv <channel>", ki18n("Play TV channel"));
+	options.add("lastchannel", ki18nc("command line option", "Play last tuned TV channel"));
 	options.add("dumpdvb", ki18nc("command line option", "Dump dvb data (debug option)"));
 	options.add("+[file]", ki18n("Files or URLs to play"));
 	return options;
@@ -392,6 +393,14 @@ void Kaffeine::parseArgs()
 	if (!dvb.isEmpty()) {
 		activateTab(DvbTabId);
 		dvbTab->playChannel(dvb);
+
+		args->clear();
+		return;
+	}
+
+	if (args->isSet("lastchannel")) {
+		activateTab(DvbTabId);
+		dvbTab->playLastChannel();
 
 		args->clear();
 		return;
