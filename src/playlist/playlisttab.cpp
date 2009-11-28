@@ -556,13 +556,14 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	KAction *repeatAction = new KAction(KIcon("media-playlist-repeat"),
 					    i18nc("playlist menu", "Repeat"), this);
 	repeatAction->setCheckable(true);
-	connect(repeatAction, SIGNAL(triggered(bool)), playlistModel, SLOT(repeatPlaylist(bool)));
+	connect(repeatAction, SIGNAL(triggered(bool)), playlistModel, SLOT(setRepeat(bool)));
 	menu->addAction(collection->addAction("playlist_repeat", repeatAction));
 
-	KAction *shuffleAction = new KAction(KIcon("media-playlist-shuffle"),
-					     i18nc("playlist menu", "Shuffle"), this);
-	connect(shuffleAction, SIGNAL(triggered(bool)), playlistModel, SLOT(shufflePlaylist()));
-	menu->addAction(collection->addAction("playlist_shuffle", shuffleAction));
+	KAction *randomAction = new KAction(KIcon("media-playlist-shuffle"),
+					    i18nc("playlist menu", "Random"), this);
+	randomAction->setCheckable(true);
+	connect(randomAction, SIGNAL(triggered(bool)), playlistModel, SLOT(setRandom(bool)));
+	menu->addAction(collection->addAction("playlist_random", randomAction));
 
 	KAction *removeTrackAction = new KAction(KIcon("edit-delete"),
 					       i18nc("remove an item from a list", "Remove"), this);
@@ -671,7 +672,7 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(widget);
-	toolButton->setDefaultAction(shuffleAction);
+	toolButton->setDefaultAction(randomAction);
 	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	boxLayout->addWidget(toolButton);
 

@@ -45,7 +45,7 @@ QString PlaylistTrack::getTitle() const
 }
 
 PlaylistModel::PlaylistModel(MediaWidget *mediaWidget_, Playlist *playlist, QObject *parent) :
-	QAbstractTableModel(parent), mediaWidget(mediaWidget_), repeat(false)
+	QAbstractTableModel(parent), mediaWidget(mediaWidget_), random(false), repeat(false)
 {
 	setSupportedDragActions(Qt::MoveAction);
 
@@ -340,7 +340,26 @@ void PlaylistModel::playCurrentTrack()
 
 void PlaylistModel::playNextTrack()
 {
-	playTrack(activePlaylist, activePlaylist->currentTrack + 1);
+	if (random) {
+		int newTrack;
+
+		if (activePlaylist->currentTrack < 0) {
+			newTrack = qrand() % activePlaylist->tracks.size();
+		} else {
+			newTrack = qrand() % (activePlaylist->tracks.size() - 1);
+
+			if (newTrack >= activePlaylist->currentTrack) {
+				++newTrack;
+			}
+		}
+
+		playTrack(activePlaylist, newTrack);
+	} else if (repeat &&
+		   ((activePlaylist->currentTrack + 1) >= activePlaylist->tracks.size())) {
+		playTrack(activePlaylist, 0);
+	} else {
+		playTrack(activePlaylist, activePlaylist->currentTrack + 1);
+	}
 }
 
 void PlaylistModel::playTrack(const QModelIndex &index)
@@ -348,54 +367,14 @@ void PlaylistModel::playTrack(const QModelIndex &index)
 	playTrack(visiblePlaylist, index.row());
 }
 
-void PlaylistModel::repeatPlaylist(bool repeat_)
+void PlaylistModel::setRandom(bool random_)
+{
+	random = random_;
+}
+
+void PlaylistModel::setRepeat(bool repeat_)
 {
 	repeat = repeat_;
-}
-
-static bool playlistIndexLess(const PlaylistTrack &x, const PlaylistTrack &y)
-{
-	return x.index < y.index;
-}
-
-void PlaylistModel::shufflePlaylist()
-{
-	if (visiblePlaylist->tracks.size() < 2) {
-		return;
-	}
-
-	emit layoutAboutToBeChanged();
-
-	QList<int> remainingIndexes;
-
-	for (int i = 0; i < visiblePlaylist->tracks.size(); ++i) {
-		remainingIndexes.append(i);
-	}
-
-	QMap<int, int> mapping;
-
-	for (int i = 0; i < visiblePlaylist->tracks.size(); ++i) {
-		int index = remainingIndexes.takeAt(qrand() % remainingIndexes.size());
-		visiblePlaylist->tracks[i].index = index;
-		mapping.insert(i, index);
-	}
-
-	qSort(visiblePlaylist->tracks.begin(), visiblePlaylist->tracks.end(), playlistIndexLess);
-
-	QModelIndexList oldIndexes = persistentIndexList();
-	QModelIndexList newIndexes;
-
-	foreach (const QModelIndex &oldIndex, oldIndexes) {
-		newIndexes.append(index(mapping.value(oldIndex.row()), oldIndex.column()));
-	}
-
-	changePersistentIndexList(oldIndexes, newIndexes);
-
-	if (visiblePlaylist->currentTrack != -1) {
-		visiblePlaylist->currentTrack = mapping.value(visiblePlaylist->currentTrack);
-	}
-
-	emit layoutChanged();
 }
 
 void PlaylistModel::clearPlaylist()
@@ -441,16 +420,8 @@ void PlaylistModel::playTrack(Playlist *playlist, int track)
 	Playlist *oldPlaylist = activePlaylist;
 	activePlaylist = playlist;
 
-	if (track < 0) {
+	if ((track < 0) || (track >= activePlaylist->tracks.size())) {
 		track = -1;
-	}
-
-	if (track >= activePlaylist->tracks.size()) {
-		if (!repeat || activePlaylist->tracks.isEmpty()) {
-			track = -1;
-		} else {
-			track = 0;
-		}
 	}
 
 	if ((oldPlaylist == visiblePlaylist) && (visiblePlaylist->currentTrack != -1)) {

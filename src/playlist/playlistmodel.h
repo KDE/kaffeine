@@ -118,8 +118,8 @@ public slots:
 	void playCurrentTrack();
 	void playNextTrack();
 	void playTrack(const QModelIndex &index);
-	void repeatPlaylist(bool repeat_);
-	void shufflePlaylist();
+	void setRandom(bool random_);
+	void setRepeat(bool repeat_);
 	void clearPlaylist();
 
 private:
@@ -130,6 +130,7 @@ private:
 	MediaWidget *mediaWidget;
 	Playlist *visiblePlaylist;
 	Playlist *activePlaylist;
+	bool random;
 	bool repeat;
 };
 
