@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QSpinBox>
 #include <QStackedLayout>
-#include <QTimer>
 #include <KActionCollection>
 #include <KCmdLineOptions>
 #include <KFileDialog>

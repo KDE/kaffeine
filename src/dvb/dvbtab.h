@@ -21,7 +21,6 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
-#include <QSharedDataPointer>
 #include <QTimer>
 #include "../tabbase.h"
 
@@ -30,7 +29,6 @@ class QSplitter;
 class KAction;
 class KActionCollection;
 class KMenu;
-class DvbChannel;
 class DvbChannelView;
 class DvbManager;
 class DvbTimeShiftCleaner;
