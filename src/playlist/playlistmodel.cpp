@@ -350,7 +350,7 @@ void PlaylistModel::playCurrentTrack()
 
 void PlaylistModel::playNextTrack()
 {
-	if (random) {
+	if (random && !activePlaylist->tracks.isEmpty()) {
 		int newTrack;
 
 		if (activePlaylist->currentTrack < 0) {
