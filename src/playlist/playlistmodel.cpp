@@ -324,6 +324,16 @@ void PlaylistModel::setCurrentPlaylist(Playlist *playlist)
 	}
 }
 
+bool PlaylistModel::getRandom() const
+{
+	return random;
+}
+
+bool PlaylistModel::getRepeat() const
+{
+	return repeat;
+}
+
 void PlaylistModel::playPreviousTrack()
 {
 	playTrack(activePlaylist, activePlaylist->currentTrack - 1);

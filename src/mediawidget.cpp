@@ -159,7 +159,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	textPause = i18n("Pause");
 	iconPlay = KIcon("media-playback-start");
 	iconPause = KIcon("media-playback-pause");
-	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(playPause(bool)));
+	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(setPaused(bool)));
 	toolBar->addAction(collection->addAction("controls_play_pause", actionPlayPause));
 	menu->addAction(actionPlayPause);
 
@@ -532,6 +532,80 @@ void MediaWidget::setLongSkipDuration(int duration)
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
 }
 
+bool MediaWidget::isPlaying() const
+{
+	return playing;
+}
+
+bool MediaWidget::isPaused() const
+{
+	return actionPlayPause->isChecked();
+}
+
+int MediaWidget::getVolume() const
+{
+	return volumeSlider->value();
+}
+
+int MediaWidget::getPosition() const
+{
+	return mediaObject->currentTime();
+}
+
+void MediaWidget::play()
+{
+	// FIXME not the best behaviour
+
+	if (dvbFeed == NULL) {
+		emit playlistPlay();
+	}
+}
+
+void MediaWidget::togglePause()
+{
+	actionPlayPause->trigger();
+}
+
+void MediaWidget::setPosition(int position)
+{
+	mediaObject->seek(position);
+}
+
+void MediaWidget::setVolume(int volume)
+{
+	// QSlider ensures that the value is within the range
+	volumeSlider->setValue(volume);
+}
+
+void MediaWidget::previous()
+{
+	if (dvbFeed != NULL) {
+		emit previousDvbChannel();
+	} else if ((titleCount > 1) || (chapterCount > 1)) {
+		mediaController->previousTitle();
+	} else {
+		emit playlistPrevious();
+	}
+}
+
+void MediaWidget::next()
+{
+	if (dvbFeed != NULL) {
+		emit nextDvbChannel();
+	} else if ((titleCount > 1) || (chapterCount > 1)) {
+		mediaController->nextTitle();
+	} else {
+		emit playlistNext();
+	}
+}
+
+void MediaWidget::stop()
+{
+	mediaObject->stop();
+	stopDvb();
+	osdWidget->showText(i18nc("osd", "Stopped"), 1500);
+}
+
 void MediaWidget::stopDvb()
 {
 	if ((dvbFeed != NULL) && !dvbFeed->ignoreStop) {
@@ -612,18 +686,7 @@ void MediaWidget::playbackFinished()
 	}
 }
 
-void MediaWidget::previous()
-{
-	if (dvbFeed != NULL) {
-		emit previousDvbChannel();
-	} else if ((titleCount > 1) || (chapterCount > 1)) {
-		mediaController->previousTitle();
-	} else {
-		emit playlistPrevious();
-	}
-}
-
-void MediaWidget::playPause(bool paused)
+void MediaWidget::setPaused(bool paused)
 {
 	if (playing) {
 		if (paused) {
@@ -652,24 +715,6 @@ void MediaWidget::playPause(bool paused)
 		}
 	} else {
 		emit playlistPlay();
-	}
-}
-
-void MediaWidget::stop()
-{
-	mediaObject->stop();
-	stopDvb();
-	osdWidget->showText(i18nc("osd", "Stopped"), 1500);
-}
-
-void MediaWidget::next()
-{
-	if (dvbFeed != NULL) {
-		emit nextDvbChannel();
-	} else if ((titleCount > 1) || (chapterCount > 1)) {
-		mediaController->nextTitle();
-	} else {
-		emit playlistNext();
 	}
 }
 

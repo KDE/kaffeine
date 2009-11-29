@@ -21,8 +21,12 @@
 #ifndef DBUSOBJECTS_H
 #define DBUSOBJECTS_H
 
-#include <QMetaType>
+#include <QVariantMap>
 
+class MediaWidget;
+class PlaylistTab;
+
+struct MprisStatusStruct;
 struct MprisVersionStruct;
 
 class MprisRootObject : public QObject
@@ -38,6 +42,49 @@ public slots:
 	void Quit();
 	MprisVersionStruct MprisVersion();
 };
+
+class MprisPlayerObject : public QObject
+{
+	Q_OBJECT
+	Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer")
+public:
+	MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_);
+	~MprisPlayerObject();
+
+public slots:
+	void Next();
+	void Prev();
+	void Pause();
+	void Stop();
+	void Play();
+	void Repeat(bool repeat);
+	MprisStatusStruct GetStatus();
+	QVariantMap GetMetadata();
+	int GetCaps();
+	void VolumeSet(int volume);
+	int VolumeGet();
+	void PositionSet(int position);
+	int PositionGet();
+
+signals:
+	void TrackChange(const QVariantMap &metadata); // FIXME not emitted yet
+	void StatusChange(const MprisStatusStruct &status); // FIXME not emitted yet
+	void CapsChange(int capabilities); // FIXME not emitted yet
+
+private:
+	MediaWidget *mediaWidget;
+	PlaylistTab *playlistTab;
+};
+
+struct MprisStatusStruct
+{
+	int state;
+	int random;
+	int repeatTrack;
+	int repeatPlaylist;
+};
+
+Q_DECLARE_METATYPE(MprisStatusStruct)
 
 struct MprisVersionStruct
 {

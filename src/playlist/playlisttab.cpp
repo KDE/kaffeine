@@ -770,6 +770,16 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 	}
 }
 
+bool PlaylistTab::getRandom() const
+{
+	return playlistModel->getRandom();
+}
+
+bool PlaylistTab::getRepeat() const
+{
+	return playlistModel->getRepeat();
+}
+
 void PlaylistTab::createFileWidget()
 {
 	KFileWidget *fileWidget = new KFileWidget(KUrl(), fileWidgetSplitter);

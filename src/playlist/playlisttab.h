@@ -83,6 +83,9 @@ public:
 
 	void playUrls(const QList<KUrl> &urls);
 
+	bool getRandom() const;
+	bool getRepeat() const;
+
 private slots:
 	void createFileWidget();
 	void newPlaylist();

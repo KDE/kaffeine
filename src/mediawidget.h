@@ -50,7 +50,7 @@ class MediaWidget : public QWidget
 	Q_OBJECT
 public:
 	MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
-		    KActionCollection *collection, QWidget *parent);
+		KActionCollection *collection, QWidget *parent);
 	~MediaWidget();
 
 	static QString extensionFilter(); // usable for KFileDialog::setFilter()
@@ -78,7 +78,19 @@ public:
 	void setShortSkipDuration(int duration);
 	void setLongSkipDuration(int duration);
 
+	bool isPlaying() const;
+	bool isPaused() const;
+	int getPosition() const; // milliseconds
+	int getVolume() const; // 0 - 100
+
+	void play(); // (re-)starts the current media
+	void togglePause();
+	void setPosition(int position); // milliseconds
+	void setVolume(int volume); // 0 - 100
+
 public slots:
+	void previous();
+	void next();
 	void stop();
 	void stopDvb();
 
@@ -104,9 +116,7 @@ signals:
 private slots:
 	void stateChanged(Phonon::State state);
 	void playbackFinished();
-	void previous();
-	void playPause(bool paused);
-	void next();
+	void setPaused(bool paused);
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
 	void autoResize(QAction *action);

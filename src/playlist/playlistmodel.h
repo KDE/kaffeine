@@ -109,6 +109,9 @@ public:
 	void setPlaylist(Playlist *playlist);
 	void setCurrentPlaylist(Playlist *playlist);
 
+	bool getRandom() const;
+	bool getRepeat() const;
+
 signals:
 	void currentPlaylistChanged(Playlist *playlist);
 

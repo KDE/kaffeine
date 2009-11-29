@@ -327,6 +327,8 @@ Kaffeine::Kaffeine()
 	// initialize dbus objects
 	QDBusConnection::sessionBus().registerObject("/", new MprisRootObject(this),
 		QDBusConnection::ExportAllContents);
+	QDBusConnection::sessionBus().registerObject("/Player",
+		new MprisPlayerObject(mediaWidget, playlistTab), QDBusConnection::ExportAllContents);
 	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
 
 	show();
