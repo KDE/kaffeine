@@ -328,7 +328,12 @@ Kaffeine::Kaffeine()
 	QDBusConnection::sessionBus().registerObject("/", new MprisRootObject(this),
 		QDBusConnection::ExportAllContents);
 	QDBusConnection::sessionBus().registerObject("/Player",
-		new MprisPlayerObject(mediaWidget, playlistTab), QDBusConnection::ExportAllContents);
+		new MprisPlayerObject(mediaWidget, playlistTab, this),
+		QDBusConnection::ExportAllContents);
+	QDBusConnection::sessionBus().registerObject("/TrackList",
+		new MprisTrackListObject(playlistTab, this), QDBusConnection::ExportAllContents);
+	QDBusConnection::sessionBus().registerObject("/Television",
+		new DBusTelevisionObject(dvbTab, this), QDBusConnection::ExportAllContents);
 	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
 
 	show();
@@ -347,7 +352,8 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 	options.add("audiocd", ki18n("Play Audio CD"));
 	options.add("videocd", ki18n("Play Video CD"));
 	options.add("dvd", ki18n("Play DVD"));
-	options.add("tv <channel>", ki18n("Play TV channel"));
+	options.add("tv <channel>", ki18nc("command line option", "Deprecated"));
+	options.add("channel <name / number>", ki18nc("command line option", "Play TV channel"));
 	options.add("lastchannel", ki18nc("command line option", "Play last tuned TV channel"));
 	options.add("dumpdvb", ki18nc("command line option", "Dump dvb data (debug option)"));
 	options.add("+[file]", ki18n("Files or URLs to play"));
@@ -390,11 +396,21 @@ void Kaffeine::parseArgs()
 		return;
 	}
 
-	QString dvb = args->getOption("tv");
+	QString channel = args->getOption("channel");
 
-	if (!dvb.isEmpty()) {
+	if (!channel.isEmpty()) {
 		activateTab(DvbTabId);
-		dvbTab->playChannel(dvb);
+		dvbTab->playChannel(channel);
+
+		args->clear();
+		return;
+	}
+
+	channel = args->getOption("tv");
+
+	if (!channel.isEmpty()) {
+		activateTab(DvbTabId);
+		dvbTab->playChannel(channel);
 
 		args->clear();
 		return;
@@ -421,7 +437,7 @@ void Kaffeine::parseArgs()
 
 		if (urls.size() >= 2) {
 			activateTab(PlaylistTabId);
-			playlistTab->playUrls(urls);
+			playlistTab->appendUrls(urls, true);
 		} else if (!urls.isEmpty()) {
 			openUrl(urls.at(0));
 		}
@@ -436,7 +452,7 @@ void Kaffeine::open()
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
-		playlistTab->playUrls(urls);
+		playlistTab->appendUrls(urls, true);
 	} else if (!urls.isEmpty()) {
 		openUrl(urls.at(0));
 	}
@@ -461,7 +477,7 @@ void Kaffeine::openUrl(const KUrl &url)
 		activateTab(PlayerTabId);
 	}
 
-	playlistTab->playUrls(QList<KUrl>() << copy);
+	playlistTab->appendUrls(QList<KUrl>() << copy, true);
 }
 
 void Kaffeine::openAudioCd()

@@ -155,9 +155,6 @@ DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL)
 	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
 	connect(mediaWidget, SIGNAL(startDvbTimeShift()), this, SLOT(startTimeShift()));
 	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
-
-	connect(mediaWidget, SIGNAL(osdKeyPressed(int)), this, SLOT(osdKeyPressed(int)));
-	connect(&osdChannelTimer, SIGNAL(timeout()), this, SLOT(tuneOsdChannel()));
 }
 
 DvbLiveView::~DvbLiveView()
@@ -212,6 +209,33 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 
 	internal->buffer.reserve(87 * 188);
 	QTimer::singleShot(2000, this, SLOT(showOsd()));
+}
+
+void DvbLiveView::toggleOsd()
+{
+	if (channel == NULL) {
+		return;
+	}
+
+	switch (internal->dvbOsd.level) {
+	case DvbOsd::Off:
+		internal->dvbOsd.init(DvbOsd::ShortOsd,
+			QString("%1 - %2").arg(channel->number).arg(channel->name),
+			manager->getEpgModel()->getCurrentNext(channel->name));
+		osdWidget->showObject(&internal->dvbOsd, -1);
+		osdTimer.start(2500);
+		break;
+	case DvbOsd::ShortOsd:
+		internal->dvbOsd.level = DvbOsd::LongOsd;
+		osdWidget->showObject(&internal->dvbOsd, -1);
+		osdTimer.stop();
+		break;
+	case DvbOsd::LongOsd:
+		internal->dvbOsd.level = DvbOsd::Off;
+		osdWidget->hideObject();
+		osdTimer.stop();
+		break;
+	}
 }
 
 void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
@@ -366,33 +390,6 @@ void DvbLiveView::showOsd()
 	}
 }
 
-void DvbLiveView::toggleOsd()
-{
-	if (channel == NULL) {
-		return;
-	}
-
-	switch (internal->dvbOsd.level) {
-	case DvbOsd::Off:
-		internal->dvbOsd.init(DvbOsd::ShortOsd,
-			QString("%1 - %2").arg(channel->number).arg(channel->name),
-			manager->getEpgModel()->getCurrentNext(channel->name));
-		osdWidget->showObject(&internal->dvbOsd, -1);
-		osdTimer.start(2500);
-		break;
-	case DvbOsd::ShortOsd:
-		internal->dvbOsd.level = DvbOsd::LongOsd;
-		osdWidget->showObject(&internal->dvbOsd, -1);
-		osdTimer.stop();
-		break;
-	case DvbOsd::LongOsd:
-		internal->dvbOsd.level = DvbOsd::Off;
-		osdWidget->hideObject();
-		osdTimer.stop();
-		break;
-	}
-}
-
 void DvbLiveView::osdTimeout()
 {
 	internal->dvbOsd.level = DvbOsd::Off;
@@ -419,28 +416,6 @@ void DvbLiveView::liveStopped()
 	internal->timeShiftFile.close();
 	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbEpgEntry>());
 	osdWidget->hideObject();
-}
-
-void DvbLiveView::osdKeyPressed(int key)
-{
-	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
-		osdChannel += QString::number(key - Qt::Key_0);
-		osdChannelTimer.start(1500);
-		osdWidget->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
-	}
-}
-
-void DvbLiveView::tuneOsdChannel()
-{
-	QSharedDataPointer<DvbChannel> channel =
-		manager->getChannelModel()->channelForNumber(osdChannel.toInt());
-
-	osdChannel.clear();
-	osdChannelTimer.stop();
-
-	if (channel != NULL) {
-		playChannel(channel);
-	}
 }
 
 void DvbLiveView::startDevice()

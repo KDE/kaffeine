@@ -267,26 +267,26 @@ QSharedDataPointer<DvbChannel> DvbChannelModel::getChannel(int pos) const
 	return channels.at(pos);
 }
 
-QSharedDataPointer<DvbChannel> DvbChannelModel::channelForName(const QString &name) const
+int DvbChannelModel::indexOfName(const QString &name) const
 {
-	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
-		if (channel->name == name) {
-			return channel;
+	for (int row = 0; row < channels.size(); ++row) {
+		if (channels.at(row)->name == name) {
+			return row;
 		}
 	}
 
-	return QSharedDataPointer<DvbChannel>();
+	return -1;
 }
 
-QSharedDataPointer<DvbChannel> DvbChannelModel::channelForNumber(int number) const
+int DvbChannelModel::indexOfNumber(int number) const
 {
-	foreach (const QSharedDataPointer<DvbChannel> &channel, channels) {
-		if (channel->number == number) {
-			return channel;
+	for (int row = 0; row < channels.size(); ++row) {
+		if (channels.at(row)->number == number) {
+			return row;
 		}
 	}
 
-	return QSharedDataPointer<DvbChannel>();
+	return -1;
 }
 
 QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const

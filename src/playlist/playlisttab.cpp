@@ -553,14 +553,14 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	Playlist *temporaryPlaylist = new Playlist(i18n("Temporary Playlist"));
 	playlistModel = new PlaylistModel(mediaWidget, temporaryPlaylist, this);
 
-	KAction *repeatAction = new KAction(KIcon("media-playlist-repeat"),
-					    i18nc("playlist menu", "Repeat"), this);
+	repeatAction = new KAction(KIcon("media-playlist-repeat"), i18nc("playlist menu", "Repeat"),
+		this);
 	repeatAction->setCheckable(true);
 	connect(repeatAction, SIGNAL(triggered(bool)), playlistModel, SLOT(setRepeat(bool)));
 	menu->addAction(collection->addAction("playlist_repeat", repeatAction));
 
-	KAction *randomAction = new KAction(KIcon("media-playlist-shuffle"),
-					    i18nc("playlist menu", "Random"), this);
+	randomAction = new KAction(KIcon("media-playlist-shuffle"),
+		i18nc("playlist menu", "Random"), this);
 	randomAction->setCheckable(true);
 	connect(randomAction, SIGNAL(triggered(bool)), playlistModel, SLOT(setRandom(bool)));
 	menu->addAction(collection->addAction("playlist_random", randomAction));
@@ -716,7 +716,7 @@ PlaylistTab::~PlaylistTab()
 {
 }
 
-void PlaylistTab::playUrls(const QList<KUrl> &urls)
+void PlaylistTab::appendUrls(const QList<KUrl> &urls, bool playImmediately)
 {
 	int playlistIndex = playlistBrowserModel->rowCount(QModelIndex());
 	bool playlists = false;
@@ -756,7 +756,7 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 	}
 
 	if (!playlists) {
-		playlistModel->appendUrls(urls, false);
+		playlistModel->appendUrls(urls, playImmediately);
 	} else {
 		QModelIndex index = playlistBrowserModel->index(playlistIndex, 0);
 		playlistBrowserView->setCurrentIndex(index);
@@ -768,6 +768,31 @@ void PlaylistTab::playUrls(const QList<KUrl> &urls)
 			playlistModel->playTrack(index);
 		}
 	}
+}
+
+void PlaylistTab::removeTrack(int row)
+{
+	playlistModel->removeTrack(row);
+}
+
+void PlaylistTab::setRandom(bool random)
+{
+	randomAction->setChecked(random);
+}
+
+void PlaylistTab::setRepeat(bool repeat)
+{
+	repeatAction->setChecked(repeat);
+}
+
+int PlaylistTab::getCurrentTrack() const
+{
+	return playlistModel->getCurrentTrack();
+}
+
+int PlaylistTab::getTrackCount() const
+{
+	return playlistModel->getTrackCount();
 }
 
 bool PlaylistTab::getRandom() const

@@ -31,6 +31,7 @@ public:
 	explicit ProxyTreeView(QWidget *parent);
 	~ProxyTreeView() { }
 
+	QModelIndex mapFromSource(const QModelIndex &index) const;
 	int mapToSource(const QModelIndex &index) const;
 	int selectedRow() const;
 	QList<int> selectedRows() const;

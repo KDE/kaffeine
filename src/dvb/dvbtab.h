@@ -22,6 +22,7 @@
 #define DVBTAB_H
 
 #include <QSharedDataPointer>
+#include <QTimer>
 #include "../tabbase.h"
 
 class QModelIndex;
@@ -42,8 +43,11 @@ public:
 	DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~DvbTab();
 
-	void playChannel(const QString &name);
+	void playChannel(const QString &nameOrNumber);
 	void playLastChannel();
+
+	void toggleOsd();
+	void toggleInstantRecord();
 
 	void enableDvbDump();
 
@@ -54,14 +58,16 @@ private slots:
 	void instantRecord(bool checked);
 	void instantRecordingRemoved();
 	void configureDvb();
-	void playLive(const QModelIndex &index);
+	void osdKeyPressed(int key);
+	void tuneOsdChannel();
+	void playChannel(const QModelIndex &index);
 	void previousChannel();
 	void nextChannel();
 	void cleanTimeShiftFiles();
 
 private:
 	void activate();
-	void playChannel(const QSharedDataPointer<DvbChannel> &channel);
+	void playChannel(int row);
 
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
@@ -69,6 +75,10 @@ private:
 	QSplitter *splitter;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
+	QString osdChannel;
+	QTimer osdChannelTimer;
+	QString currentChannel;
+	QString lastChannel;
 
 	DvbTimeShiftCleaner *timeShiftCleaner;
 };

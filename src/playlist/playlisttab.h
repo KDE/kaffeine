@@ -25,6 +25,7 @@
 #include "../tabbase.h"
 
 class QSplitter;
+class KAction;
 class KActionCollection;
 class KMenu;
 class KUrl;
@@ -81,8 +82,13 @@ public:
 	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
-	void playUrls(const QList<KUrl> &urls);
+	void appendUrls(const QList<KUrl> &urls, bool playImmediately);
+	void removeTrack(int row);
+	void setRandom(bool random);
+	void setRepeat(bool repeat);
 
+	int getCurrentTrack() const;
+	int getTrackCount() const;
 	bool getRandom() const;
 	bool getRepeat() const;
 
@@ -106,6 +112,8 @@ private:
 	PlaylistBrowserView *playlistBrowserView;
 	PlaylistModel *playlistModel;
 	PlaylistView *playlistView;
+	KAction *randomAction;
+	KAction *repeatAction;
 };
 
 #endif /* PLAYLISTTAB_H */

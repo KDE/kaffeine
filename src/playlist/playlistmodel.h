@@ -109,6 +109,10 @@ public:
 	void setPlaylist(Playlist *playlist);
 	void setCurrentPlaylist(Playlist *playlist);
 
+	void removeTrack(int index);
+
+	int getCurrentTrack() const;
+	int getTrackCount() const;
 	bool getRandom() const;
 	bool getRepeat() const;
 
@@ -116,7 +120,7 @@ signals:
 	void currentPlaylistChanged(Playlist *playlist);
 
 public slots:
-	void appendUrls(const QList<KUrl> &urls, bool enqueue = true);
+	void appendUrls(const QList<KUrl> &urls, bool playImmediately = true);
 	void playPreviousTrack();
 	void playCurrentTrack();
 	void playNextTrack();

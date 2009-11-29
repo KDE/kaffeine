@@ -204,7 +204,7 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 	return true;
 }
 
-void PlaylistModel::appendUrls(const QList<KUrl> &urls, bool enqueue)
+void PlaylistModel::appendUrls(const QList<KUrl> &urls, bool playImmediately)
 {
 	QList<PlaylistTrack> newTracks = processUrls(urls);
 
@@ -218,7 +218,7 @@ void PlaylistModel::appendUrls(const QList<KUrl> &urls, bool enqueue)
 	visiblePlaylist->tracks += newTracks;
 	endInsertRows();
 
-	if ((oldTracksSize == 0) || !enqueue) {
+	if (playImmediately || (oldTracksSize == 0)) {
 		playTrack(visiblePlaylist, oldTracksSize);
 	}
 }
@@ -322,6 +322,35 @@ void PlaylistModel::setCurrentPlaylist(Playlist *playlist)
 	if (activePlaylist != playlist) {
 		playTrack(playlist, -1);
 	}
+}
+
+void PlaylistModel::removeTrack(int index)
+{
+	if ((index < 0) || (index >= activePlaylist->tracks.size())) {
+		return;
+	}
+
+	if (activePlaylist == visiblePlaylist) {
+		removeRow(index);
+	} else {
+		activePlaylist->tracks.removeAt(index);
+
+		if (activePlaylist->currentTrack > index) {
+			--activePlaylist->currentTrack;
+		} else if (activePlaylist->currentTrack == index) {
+			playTrack(activePlaylist, -1);
+		}
+	}
+}
+
+int PlaylistModel::getCurrentTrack() const
+{
+	return activePlaylist->currentTrack;
+}
+
+int PlaylistModel::getTrackCount() const
+{
+	return activePlaylist->tracks.size();
 }
 
 bool PlaylistModel::getRandom() const

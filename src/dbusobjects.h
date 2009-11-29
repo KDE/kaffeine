@@ -23,6 +23,7 @@
 
 #include <QVariantMap>
 
+class DvbTab;
 class MediaWidget;
 class PlaylistTab;
 
@@ -48,7 +49,7 @@ class MprisPlayerObject : public QObject
 	Q_OBJECT
 	Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer")
 public:
-	MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_);
+	MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_, QObject *parent);
 	~MprisPlayerObject();
 
 public slots:
@@ -66,6 +67,31 @@ public slots:
 	void PositionSet(int position);
 	int PositionGet();
 
+	// this functions are not part of the MPRIS specs // FIXME implement
+/*
+	void PlayPause();
+	void VolumeIncrease();
+	void VolumeDecrease();
+	void Play(const QString &url);
+	void PlayAudioCd();
+	void PlayVideoCd();
+	void PlayDvd();
+	void ChangeAudioChannel(int index);
+	void ChangeSubtitle(int index);
+	void ToggleMuted();
+	void LongSkipBackward();
+	void SkipBackward();
+	void SkipForward();
+	void LongSkipForward();
+	void TimeButtonClicked();
+	void UpdateTimeButton();
+	void AspectRatioAuto();
+	void AspectRatio4_3();
+	void AspectRatio16_9();
+	void AspectRatioWidget();
+	void ToggleFullScreen();
+*/
+
 signals:
 	void TrackChange(const QVariantMap &metadata); // FIXME not emitted yet
 	void StatusChange(const MprisStatusStruct &status); // FIXME not emitted yet
@@ -74,6 +100,48 @@ signals:
 private:
 	MediaWidget *mediaWidget;
 	PlaylistTab *playlistTab;
+};
+
+class MprisTrackListObject : public QObject
+{
+	Q_OBJECT
+	Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer")
+public:
+	MprisTrackListObject(PlaylistTab *playlistTab_, QObject *parent);
+	~MprisTrackListObject();
+
+public slots:
+	QVariantMap GetMetadata(int index);
+	int GetCurrentTrack();
+	int GetLength();
+	int AddTrack(const QString &url, bool playImmediately);
+	void DelTrack(int index);
+	void SetLoop(bool loop);
+	void SetRandom(bool random);
+
+signals:
+	void TrackListChange(int size); // FIXME not emitted yet
+
+private:
+	PlaylistTab *playlistTab;
+};
+
+class DBusTelevisionObject : public QObject
+{
+	Q_OBJECT
+	Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer")
+public:
+	DBusTelevisionObject(DvbTab *dvbTab_, QObject *parent);
+	~DBusTelevisionObject();
+
+public slots:
+	void PlayChannel(const QString &nameOrNumber);
+	void PlayLastChannel();
+	void ToggleInstantRecord();
+	void ToggleOsd();
+
+private:
+	DvbTab *dvbTab;
 };
 
 struct MprisStatusStruct

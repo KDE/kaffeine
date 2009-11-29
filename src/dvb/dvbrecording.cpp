@@ -57,12 +57,14 @@ bool DvbRecording::isRunning() const
 void DvbRecording::start()
 {
 	if (channel == NULL) {
-		channel = manager->getChannelModel()->channelForName(channelName);
+		int row = manager->getChannelModel()->indexOfName(channelName);
 
-		if (channel == NULL) {
+		if (row < 0) {
 			kWarning() << "cannot find channel" << channelName;
 			return;
 		}
+
+		channel = manager->getChannelModel()->getChannel(row);
 	}
 
 	if (!file.isOpen()) {

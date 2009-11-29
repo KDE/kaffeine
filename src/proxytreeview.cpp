@@ -33,6 +33,11 @@ ProxyTreeView::ProxyTreeView(QWidget *parent) : QTreeView(parent)
 	QTreeView::setModel(proxyModel);
 }
 
+QModelIndex ProxyTreeView::mapFromSource(const QModelIndex &index) const
+{
+	return proxyModel->mapFromSource(index);
+}
+
 int ProxyTreeView::mapToSource(const QModelIndex &index) const
 {
 	QModelIndex sourceIndex = proxyModel->mapToSource(index);

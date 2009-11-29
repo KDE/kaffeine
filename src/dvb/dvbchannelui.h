@@ -48,8 +48,8 @@ public:
 	void clear();
 
 	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
-	QSharedDataPointer<DvbChannel> channelForName(const QString &name) const;
-	QSharedDataPointer<DvbChannel> channelForNumber(int number) const;
+	int indexOfName(const QString &name) const;
+	int indexOfNumber(int number) const;
 
 	/*
 	 * these three functions automatically adjust the channel numbers

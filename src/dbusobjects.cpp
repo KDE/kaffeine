@@ -23,6 +23,8 @@
 #include <QDBusMetaType>
 #include <KAboutData>
 #include <KApplication>
+#include <KUrl>
+#include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 #include "mediawidget.h"
 
@@ -88,8 +90,8 @@ MprisVersionStruct MprisRootObject::MprisVersion()
 	return versionStruct;
 }
 
-MprisPlayerObject::MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_) :
-	mediaWidget(mediaWidget_), playlistTab(playlistTab_)
+MprisPlayerObject::MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_,
+	QObject *parent) : QObject(parent), mediaWidget(mediaWidget_), playlistTab(playlistTab_)
 {
 	qDBusRegisterMetaType<MprisStatusStruct>();
 }
@@ -160,8 +162,7 @@ MprisStatusStruct MprisPlayerObject::GetStatus()
 
 QVariantMap MprisPlayerObject::GetMetadata()
 {
-	// FIXME metadata handling not implemented yet
-	return QVariantMap();
+	return QVariantMap(); // FIXME metadata handling not implemented yet
 }
 
 int MprisPlayerObject::GetCaps()
@@ -197,4 +198,79 @@ void MprisPlayerObject::PositionSet(int position)
 int MprisPlayerObject::PositionGet()
 {
 	return mediaWidget->getPosition();
+}
+
+MprisTrackListObject::MprisTrackListObject(PlaylistTab *playlistTab_, QObject *parent) :
+	QObject(parent), playlistTab(playlistTab_)
+{
+}
+
+MprisTrackListObject::~MprisTrackListObject()
+{
+}
+
+QVariantMap MprisTrackListObject::GetMetadata(int index)
+{
+	Q_UNUSED(index);
+	return QVariantMap(); // FIXME metadata handling not implemented yet
+}
+
+int MprisTrackListObject::GetCurrentTrack()
+{
+	return playlistTab->getCurrentTrack();
+}
+
+int MprisTrackListObject::GetLength()
+{
+	return playlistTab->getTrackCount();
+}
+
+int MprisTrackListObject::AddTrack(const QString &url, bool playImmediately)
+{
+	playlistTab->appendUrls(QList<KUrl>() << url, playImmediately);
+	return 0;
+}
+
+void MprisTrackListObject::DelTrack(int index)
+{
+	playlistTab->removeTrack(index);
+}
+
+void MprisTrackListObject::SetLoop(bool loop)
+{
+	playlistTab->setRepeat(loop);
+}
+
+void MprisTrackListObject::SetRandom(bool random)
+{
+	playlistTab->setRandom(random);
+}
+
+DBusTelevisionObject::DBusTelevisionObject(DvbTab *dvbTab_, QObject *parent) : QObject(parent),
+	dvbTab(dvbTab_)
+{
+}
+
+DBusTelevisionObject::~DBusTelevisionObject()
+{
+}
+
+void DBusTelevisionObject::PlayChannel(const QString &nameOrNumber)
+{
+	dvbTab->playChannel(nameOrNumber);
+}
+
+void DBusTelevisionObject::PlayLastChannel()
+{
+	dvbTab->playLastChannel();
+}
+
+void DBusTelevisionObject::ToggleInstantRecord()
+{
+	dvbTab->toggleInstantRecord();
+}
+
+void DBusTelevisionObject::ToggleOsd()
+{
+	dvbTab->toggleOsd();
 }

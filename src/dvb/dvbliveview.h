@@ -44,6 +44,9 @@ public:
 
 	void playChannel(const QSharedDataPointer<DvbChannel> &channel_);
 
+public slots:
+	void toggleOsd();
+
 private slots:
 	void pmtSectionChanged(const DvbPmtSection &pmtSection);
 	void insertPatPmt();
@@ -53,11 +56,8 @@ private slots:
 	void prepareTimeShift();
 	void startTimeShift();
 	void showOsd();
-	void toggleOsd();
 	void osdTimeout();
 	void liveStopped();
-	void osdKeyPressed(int key);
-	void tuneOsdChannel();
 
 private:
 	void startDevice();
@@ -81,9 +81,6 @@ private:
 	int subtitlePid;
 	QList<int> audioPids;
 	QList<int> subtitlePids;
-
-	QString osdChannel;
-	QTimer osdChannelTimer;
 };
 
 #endif /* DVBLIVEVIEW_H */
