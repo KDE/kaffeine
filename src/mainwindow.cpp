@@ -351,7 +351,7 @@ KCmdLineOptions MainWindow::cmdLineOptions()
 	options.add("audiocd", ki18n("Play Audio CD"));
 	options.add("videocd", ki18n("Play Video CD"));
 	options.add("dvd", ki18n("Play DVD"));
-	options.add("tv <channel>", ki18nc("command line option", "Deprecated"));
+	options.add("tv <channel>", ki18nc("command line option", "(deprecated option)"));
 	options.add("channel <name / number>", ki18nc("command line option", "Play TV channel"));
 	options.add("lastchannel", ki18nc("command line option", "Play last tuned TV channel"));
 	options.add("dumpdvb", ki18nc("command line option", "Dump dvb data (debug option)"));
