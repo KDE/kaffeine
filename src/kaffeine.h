@@ -46,6 +46,9 @@ public:
 	static KCmdLineOptions cmdLineOptions();
 	void parseArgs();
 
+public slots:
+	void toggleFullScreen();
+
 private slots:
 	void open();
 	void openUrl();
@@ -54,7 +57,6 @@ private slots:
 	void openVideoCd();
 	void openDvd();
 	void playDvb();
-	void toggleFullScreen();
 	void resizeToVideo(int factor);
 	void configureKeys();
 	void configureKaffeine();

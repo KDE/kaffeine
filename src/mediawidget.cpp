@@ -240,8 +240,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	unmutedIcon = KIcon("audio-volume-medium");
 	muteAction->setIcon(unmutedIcon);
 	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
-	connect(muteAction, SIGNAL(triggered(bool)), this, SLOT(toggleMuted()));
-	connect(audioOutput, SIGNAL(mutedChanged(bool)), this, SLOT(mutedChanged(bool)));
+	connect(muteAction, SIGNAL(triggered(bool)), this, SLOT(mutedChanged(bool)));
+	connect(audioOutput, SIGNAL(mutedChanged(bool)), this, SLOT(setMuted(bool)));
 	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
 	audioMenu->addAction(muteAction);
 
@@ -281,9 +281,9 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	volumeSlider->setOrientation(Qt::Horizontal);
 	volumeSlider->setRange(0, 100);
 	volumeSlider->setToolTip(action->text());
-	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(changeVolume(int)));
+	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
 	volumeSlider->setValue(KGlobal::config()->group("MediaObject").readEntry("Volume", 100));
-	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(volumeChanged(qreal)));
+	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(setVolume(qreal)));
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
@@ -577,6 +577,11 @@ void MediaWidget::setVolume(int volume)
 	volumeSlider->setValue(volume);
 }
 
+void MediaWidget::toggleMuted()
+{
+	muteAction->trigger();
+}
+
 void MediaWidget::previous()
 {
 	if (dvbFeed != NULL) {
@@ -615,6 +620,18 @@ void MediaWidget::stopDvb()
 		updateSubtitleBox();
 		emit dvbStopped();
 	}
+}
+
+void MediaWidget::increaseVolume()
+{
+	// QSlider ensures that the value is within the range
+	volumeSlider->setValue(volumeSlider->value() + 5);
+}
+
+void MediaWidget::decreaseVolume()
+{
+	// QSlider ensures that the value is within the range
+	volumeSlider->setValue(volumeSlider->value() - 5);
 }
 
 void MediaWidget::stateChanged(Phonon::State state)
@@ -755,13 +772,15 @@ void MediaWidget::autoResize(QAction *action)
 	}
 }
 
-void MediaWidget::toggleMuted()
+void MediaWidget::setMuted(bool muted)
 {
-	audioOutput->setMuted(!audioOutput->isMuted());
+	muteAction->setChecked(muted);
 }
 
 void MediaWidget::mutedChanged(bool muted)
 {
+	audioOutput->setMuted(muted);
+
 	if (muted) {
 		muteAction->setIcon(mutedIcon);
 		osdWidget->showText(i18nc("osd", "Mute On"), 1500);
@@ -771,28 +790,15 @@ void MediaWidget::mutedChanged(bool muted)
 	}
 }
 
-void MediaWidget::changeVolume(int volume)
+void MediaWidget::setVolume(qreal volume)
+{
+	volumeSlider->setValue(volume * 100 + qreal(0.5));
+}
+
+void MediaWidget::volumeChanged(int volume)
 {
 	audioOutput->setVolume(volume * qreal(0.01));
-}
-
-void MediaWidget::volumeChanged(qreal volume)
-{
-	int percentage = volume * 100 + qreal(0.5);
-	volumeSlider->setValue(percentage);
-	osdWidget->showText(i18nc("osd", "Volume: %1%", percentage), 1500);
-}
-
-void MediaWidget::increaseVolume()
-{
-	// QSlider ensures that the value is within the range
-	volumeSlider->setValue(volumeSlider->value() + 5);
-}
-
-void MediaWidget::decreaseVolume()
-{
-	// QSlider ensures that the value is within the range
-	volumeSlider->setValue(volumeSlider->value() - 5);
+	osdWidget->showText(i18nc("osd", "Volume: %1%", volume), 1500);
 }
 
 void MediaWidget::aspectRatioAuto()

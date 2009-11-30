@@ -327,7 +327,7 @@ Kaffeine::Kaffeine()
 	QDBusConnection::sessionBus().registerObject("/", new MprisRootObject(this),
 		QDBusConnection::ExportAllContents);
 	QDBusConnection::sessionBus().registerObject("/Player",
-		new MprisPlayerObject(mediaWidget, playlistTab, this),
+		new MprisPlayerObject(this, mediaWidget, playlistTab, this),
 		QDBusConnection::ExportAllContents);
 	QDBusConnection::sessionBus().registerObject("/TrackList",
 		new MprisTrackListObject(playlistTab, this), QDBusConnection::ExportAllContents);
@@ -445,6 +445,34 @@ void Kaffeine::parseArgs()
 	args->clear();
 }
 
+void Kaffeine::toggleFullScreen()
+{
+	setWindowState(windowState() ^ Qt::WindowFullScreen);
+
+	if (isFullScreen()) {
+		menuBar()->hide();
+		navigationBar->hide();
+		controlBar->hide();
+		fullScreenAction->setText(i18n("Exit Full Screen Mode"));
+		fullScreenAction->setIcon(KIcon("view-restore"));
+		cursorHideTimer->start();
+
+		stackedLayout->setCurrentIndex(PlayerTabId);
+		playerTab->activate();
+	} else {
+		cursorHideTimer->stop();
+		unsetCursor();
+		fullScreenAction->setText(i18n("Full Screen Mode"));
+		fullScreenAction->setIcon(KIcon("view-fullscreen"));
+		menuBar()->show();
+		navigationBar->show();
+		controlBar->show();
+
+		stackedLayout->setCurrentIndex(currentTabIndex);
+		tabs.at(currentTabIndex)->activate();
+	}
+}
+
 void Kaffeine::open()
 {
 	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), MediaWidget::extensionFilter(), this);
@@ -501,34 +529,6 @@ void Kaffeine::playDvb()
 {
 	activateTab(DvbTabId);
 	dvbTab->playLastChannel();
-}
-
-void Kaffeine::toggleFullScreen()
-{
-	setWindowState(windowState() ^ Qt::WindowFullScreen);
-
-	if (isFullScreen()) {
-		menuBar()->hide();
-		navigationBar->hide();
-		controlBar->hide();
-		fullScreenAction->setText(i18n("Exit Full Screen Mode"));
-		fullScreenAction->setIcon(KIcon("view-restore"));
-		cursorHideTimer->start();
-
-		stackedLayout->setCurrentIndex(PlayerTabId);
-		playerTab->activate();
-	} else {
-		cursorHideTimer->stop();
-		unsetCursor();
-		fullScreenAction->setText(i18n("Full Screen Mode"));
-		fullScreenAction->setIcon(KIcon("view-fullscreen"));
-		menuBar()->show();
-		navigationBar->show();
-		controlBar->show();
-
-		stackedLayout->setCurrentIndex(currentTabIndex);
-		tabs.at(currentTabIndex)->activate();
-	}
 }
 
 void Kaffeine::resizeToVideo(int factor)

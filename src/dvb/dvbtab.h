@@ -49,6 +49,9 @@ public:
 
 	void enableDvbDump();
 
+public slots:
+	void osdKeyPressed(int key);
+
 private slots:
 	void showChannelDialog();
 	void showEpgDialog();
@@ -56,7 +59,6 @@ private slots:
 	void instantRecord(bool checked);
 	void instantRecordingRemoved();
 	void configureDvb();
-	void osdKeyPressed(int key);
 	void tuneOsdChannel();
 	void playChannel(const QModelIndex &index);
 	void previousChannel();

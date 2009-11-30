@@ -87,12 +87,15 @@ public:
 	void togglePause();
 	void setPosition(int position); // milliseconds
 	void setVolume(int volume); // 0 - 100
+	void toggleMuted();
 
 public slots:
 	void previous();
 	void next();
 	void stop();
 	void stopDvb();
+	void increaseVolume();
+	void decreaseVolume();
 
 signals:
 	void changeCaption(const QString &caption);
@@ -120,12 +123,10 @@ private slots:
 	void changeAudioChannel(int index);
 	void changeSubtitle(int index);
 	void autoResize(QAction *action);
-	void toggleMuted();
+	void setMuted(bool muted);
 	void mutedChanged(bool muted);
-	void changeVolume(int volume);
-	void volumeChanged(qreal volume);
-	void increaseVolume();
-	void decreaseVolume();
+	void setVolume(qreal volume);
+	void volumeChanged(int volume);
 	void aspectRatioAuto();
 	void aspectRatio4_3();
 	void aspectRatio16_9();

@@ -24,6 +24,7 @@
 #include <QVariantMap>
 
 class DvbTab;
+class Kaffeine;
 class MediaWidget;
 class PlaylistTab;
 
@@ -49,7 +50,8 @@ class MprisPlayerObject : public QObject
 	Q_OBJECT
 	Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer")
 public:
-	MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_, QObject *parent);
+	MprisPlayerObject(Kaffeine *kaffeine_, MediaWidget *mediaWidget_, PlaylistTab *playlistTab_,
+		QObject *parent);
 	~MprisPlayerObject();
 
 public slots:
@@ -67,29 +69,29 @@ public slots:
 	void PositionSet(int position);
 	int PositionGet();
 
-	// this functions are not part of the MPRIS specs // FIXME implement
-/*
-	void PlayPause();
-	void VolumeIncrease();
-	void VolumeDecrease();
-	void Play(const QString &url);
+	// this functions are not part of the MPRIS specs
+
+	void IncreaseVolume();
+	void DecreaseVolume();
+	void ToggleMuted();
+
+	void ToggleFullScreen();
+
+/* // FIXME candidates
 	void PlayAudioCd();
 	void PlayVideoCd();
 	void PlayDvd();
 	void ChangeAudioChannel(int index);
 	void ChangeSubtitle(int index);
-	void ToggleMuted();
 	void LongSkipBackward();
 	void SkipBackward();
 	void SkipForward();
 	void LongSkipForward();
 	void TimeButtonClicked();
-	void UpdateTimeButton();
 	void AspectRatioAuto();
 	void AspectRatio4_3();
 	void AspectRatio16_9();
 	void AspectRatioWidget();
-	void ToggleFullScreen();
 */
 
 signals:
@@ -98,6 +100,7 @@ signals:
 	void CapsChange(int capabilities); // FIXME not emitted yet
 
 private:
+	Kaffeine *kaffeine;
 	MediaWidget *mediaWidget;
 	PlaylistTab *playlistTab;
 };
@@ -135,6 +138,7 @@ public:
 	~DBusTelevisionObject();
 
 public slots:
+	void DigitPressed(int digit);
 	void PlayChannel(const QString &nameOrNumber);
 	void PlayLastChannel();
 	void ToggleInstantRecord();

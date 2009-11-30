@@ -251,6 +251,15 @@ void DvbTab::enableDvbDump()
 	manager->enableDvbDump();
 }
 
+void DvbTab::osdKeyPressed(int key)
+{
+	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
+		osdChannel += QString::number(key - Qt::Key_0);
+		osdChannelTimer.start(1500);
+		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
+	}
+}
+
 void DvbTab::showChannelDialog()
 {
 	DvbScanDialog dialog(manager, this);
@@ -306,15 +315,6 @@ void DvbTab::configureDvb()
 {
 	DvbConfigDialog dialog(manager, this);
 	dialog.exec();
-}
-
-void DvbTab::osdKeyPressed(int key)
-{
-	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
-		osdChannel += QString::number(key - Qt::Key_0);
-		osdChannelTimer.start(1500);
-		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
-	}
 }
 
 void DvbTab::tuneOsdChannel()

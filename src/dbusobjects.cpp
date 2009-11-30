@@ -26,6 +26,7 @@
 #include <KUrl>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
+#include "kaffeine.h"
 #include "mediawidget.h"
 
 QDBusArgument &operator<<(QDBusArgument &argument, const MprisStatusStruct &statusStruct)
@@ -90,8 +91,9 @@ MprisVersionStruct MprisRootObject::MprisVersion()
 	return versionStruct;
 }
 
-MprisPlayerObject::MprisPlayerObject(MediaWidget *mediaWidget_, PlaylistTab *playlistTab_,
-	QObject *parent) : QObject(parent), mediaWidget(mediaWidget_), playlistTab(playlistTab_)
+MprisPlayerObject::MprisPlayerObject(Kaffeine *kaffeine_, MediaWidget *mediaWidget_,
+	PlaylistTab *playlistTab_, QObject *parent) : QObject(parent), kaffeine(kaffeine_),
+	mediaWidget(mediaWidget_), playlistTab(playlistTab_)
 {
 	qDBusRegisterMetaType<MprisStatusStruct>();
 }
@@ -200,6 +202,26 @@ int MprisPlayerObject::PositionGet()
 	return mediaWidget->getPosition();
 }
 
+void MprisPlayerObject::IncreaseVolume()
+{
+	mediaWidget->increaseVolume();
+}
+
+void MprisPlayerObject::DecreaseVolume()
+{
+	mediaWidget->decreaseVolume();
+}
+
+void MprisPlayerObject::ToggleMuted()
+{
+	mediaWidget->toggleMuted();
+}
+
+void MprisPlayerObject::ToggleFullScreen()
+{
+	kaffeine->toggleFullScreen();
+}
+
 MprisTrackListObject::MprisTrackListObject(PlaylistTab *playlistTab_, QObject *parent) :
 	QObject(parent), playlistTab(playlistTab_)
 {
@@ -253,6 +275,13 @@ DBusTelevisionObject::DBusTelevisionObject(DvbTab *dvbTab_, QObject *parent) : Q
 
 DBusTelevisionObject::~DBusTelevisionObject()
 {
+}
+
+void DBusTelevisionObject::DigitPressed(int digit)
+{
+	if ((digit >= 0) && (digit <= 9)) {
+		dvbTab->osdKeyPressed(Qt::Key_0 + digit);
+	}
 }
 
 void DBusTelevisionObject::PlayChannel(const QString &nameOrNumber)
