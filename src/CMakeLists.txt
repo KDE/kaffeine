@@ -15,8 +15,8 @@ set(kaffeine_SRCS
     playlist/playlisttab.cpp
     datetimeedit.cpp
     dbusobjects.cpp
-    kaffeine.cpp
     main.cpp
+    mainwindow.cpp
     mediawidget.cpp
     osdwidget.cpp
     proxytreeview.cpp

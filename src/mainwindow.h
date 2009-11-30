@@ -1,5 +1,5 @@
 /*
- * kaffeine.h
+ * mainwindow.h
  *
  * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef KAFFEINE_H
-#define KAFFEINE_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include <KMainWindow>
 
@@ -36,12 +36,12 @@ class PlayerTab;
 class PlaylistTab;
 class TabBase;
 
-class Kaffeine : public KMainWindow
+class MainWindow : public KMainWindow
 {
 	Q_OBJECT
 public:
-	Kaffeine();
-	~Kaffeine();
+	MainWindow();
+	~MainWindow();
 
 	static KCmdLineOptions cmdLineOptions();
 	void parseArgs();
@@ -95,4 +95,4 @@ private:
 	DvbTab *dvbTab;
 };
 
-#endif /* KAFFEINE_H */
+#endif /* MAINWINDOW_H */

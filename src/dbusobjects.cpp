@@ -26,7 +26,7 @@
 #include <KUrl>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
-#include "kaffeine.h"
+#include "mainwindow.h"
 #include "mediawidget.h"
 
 QDBusArgument &operator<<(QDBusArgument &argument, const MprisStatusStruct &statusStruct)
@@ -91,8 +91,8 @@ MprisVersionStruct MprisRootObject::MprisVersion()
 	return versionStruct;
 }
 
-MprisPlayerObject::MprisPlayerObject(Kaffeine *kaffeine_, MediaWidget *mediaWidget_,
-	PlaylistTab *playlistTab_, QObject *parent) : QObject(parent), kaffeine(kaffeine_),
+MprisPlayerObject::MprisPlayerObject(MainWindow *mainWindow_, MediaWidget *mediaWidget_,
+	PlaylistTab *playlistTab_, QObject *parent) : QObject(parent), mainWindow(mainWindow_),
 	mediaWidget(mediaWidget_), playlistTab(playlistTab_)
 {
 	qDBusRegisterMetaType<MprisStatusStruct>();
@@ -219,7 +219,7 @@ void MprisPlayerObject::ToggleMuted()
 
 void MprisPlayerObject::ToggleFullScreen()
 {
-	kaffeine->toggleFullScreen();
+	mainWindow->toggleFullScreen();
 }
 
 MprisTrackListObject::MprisTrackListObject(PlaylistTab *playlistTab_, QObject *parent) :

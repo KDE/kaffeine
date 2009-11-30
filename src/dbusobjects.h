@@ -24,7 +24,7 @@
 #include <QVariantMap>
 
 class DvbTab;
-class Kaffeine;
+class MainWindow;
 class MediaWidget;
 class PlaylistTab;
 
@@ -50,8 +50,8 @@ class MprisPlayerObject : public QObject
 	Q_OBJECT
 	Q_CLASSINFO("D-Bus Interface", "org.freedesktop.MediaPlayer")
 public:
-	MprisPlayerObject(Kaffeine *kaffeine_, MediaWidget *mediaWidget_, PlaylistTab *playlistTab_,
-		QObject *parent);
+	MprisPlayerObject(MainWindow *mainWindow_, MediaWidget *mediaWidget_,
+		PlaylistTab *playlistTab_, QObject *parent);
 	~MprisPlayerObject();
 
 public slots:
@@ -100,7 +100,7 @@ signals:
 	void CapsChange(int capabilities); // FIXME not emitted yet
 
 private:
-	Kaffeine *kaffeine;
+	MainWindow *mainWindow;
 	MediaWidget *mediaWidget;
 	PlaylistTab *playlistTab;
 };

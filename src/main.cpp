@@ -21,19 +21,19 @@
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
-#include "kaffeine.h"
+#include "mainwindow.h"
 #include "sqlhelper.h"
 
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication() : kaffeine(NULL)
+	KaffeineApplication() : mainWindow(NULL)
 	{
 		if (!SqlHelper::createInstance()) {
 			return;
 		}
 
-		kaffeine = new Kaffeine();
+		mainWindow = new MainWindow();
 	}
 
 	~KaffeineApplication()
@@ -44,13 +44,13 @@ public:
 private:
 	int newInstance();
 
-	Kaffeine *kaffeine;
+	MainWindow *mainWindow;
 };
 
 int KaffeineApplication::newInstance()
 {
-	if (kaffeine != NULL) {
-		kaffeine->parseArgs();
+	if (mainWindow != NULL) {
+		mainWindow->parseArgs();
 	}
 
 	return KUniqueApplication::newInstance();
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 		"christophpfister@gmail.com");
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
-	KCmdLineArgs::addCmdLineOptions(Kaffeine::cmdLineOptions());
+	KCmdLineArgs::addCmdLineOptions(MainWindow::cmdLineOptions());
 
 	KaffeineApplication app;
 	return app.exec();

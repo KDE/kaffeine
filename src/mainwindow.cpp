@@ -1,5 +1,5 @@
 /*
- * kaffeine.cpp
+ * mainwindow.cpp
  *
  * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "kaffeine.h"
+#include "mainwindow.h"
 
 #include <QDBusConnection>
 #include <QHoverEvent>
@@ -44,7 +44,7 @@
 class StartTab : public TabBase
 {
 public:
-	explicit StartTab(Kaffeine *kaffeine);
+	explicit StartTab(MainWindow *mainWindow);
 	~StartTab() { }
 
 private:
@@ -53,7 +53,7 @@ private:
 	QAbstractButton *addShortcut(const QString &name, const KIcon &icon, QWidget *parent);
 };
 
-StartTab::StartTab(Kaffeine *kaffeine)
+StartTab::StartTab(MainWindow *mainWindow)
 {
 	setBackgroundRole(QPalette::Base);
 	setAutoFillBackground(true);
@@ -65,27 +65,27 @@ StartTab::StartTab(Kaffeine *kaffeine)
 
 	QAbstractButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
 	button->setShortcut(Qt::Key_1);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(open()));
+	connect(button, SIGNAL(clicked()), mainWindow, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
 
 	button = addShortcut(i18n("&2 Play Audio CD"), KIcon("media-optical-audio"), this);
 	button->setShortcut(Qt::Key_2);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openAudioCd()));
+	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
 	button = addShortcut(i18n("&3 Play Video CD"), KIcon("media-optical"), this);
 	button->setShortcut(Qt::Key_3);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openVideoCd()));
+	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
 	button = addShortcut(i18n("&4 Play DVD"), KIcon("media-optical"), this);
 	button->setShortcut(Qt::Key_4);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(openDvd()));
+	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
 	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), this);
 	button->setShortcut(Qt::Key_5);
-	connect(button, SIGNAL(clicked()), kaffeine, SLOT(playDvb()));
+	connect(button, SIGNAL(clicked()), mainWindow, SLOT(playDvb()));
 	gridLayout->addWidget(button, 1, 1);
 }
 
@@ -176,7 +176,7 @@ void ConfigurationDialog::accept()
 	KDialog::accept();
 }
 
-Kaffeine::Kaffeine()
+MainWindow::MainWindow()
 {
 	// menu structure
 
@@ -338,12 +338,12 @@ Kaffeine::Kaffeine()
 	show();
 }
 
-Kaffeine::~Kaffeine()
+MainWindow::~MainWindow()
 {
 	actionOpenRecent->saveEntries(KGlobal::config()->group("Recent Files"));
 }
 
-KCmdLineOptions Kaffeine::cmdLineOptions()
+KCmdLineOptions MainWindow::cmdLineOptions()
 {
 	KCmdLineOptions options;
 	options.add("f");
@@ -359,7 +359,7 @@ KCmdLineOptions Kaffeine::cmdLineOptions()
 	return options;
 }
 
-void Kaffeine::parseArgs()
+void MainWindow::parseArgs()
 {
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
@@ -445,7 +445,7 @@ void Kaffeine::parseArgs()
 	args->clear();
 }
 
-void Kaffeine::toggleFullScreen()
+void MainWindow::toggleFullScreen()
 {
 	setWindowState(windowState() ^ Qt::WindowFullScreen);
 
@@ -473,7 +473,7 @@ void Kaffeine::toggleFullScreen()
 	}
 }
 
-void Kaffeine::open()
+void MainWindow::open()
 {
 	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), MediaWidget::extensionFilter(), this);
 
@@ -485,12 +485,12 @@ void Kaffeine::open()
 	}
 }
 
-void Kaffeine::openUrl()
+void MainWindow::openUrl()
 {
 	openUrl(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
 }
 
-void Kaffeine::openUrl(const KUrl &url)
+void MainWindow::openUrl(const KUrl &url)
 {
 	if (!url.isValid()) {
 		return;
@@ -507,31 +507,31 @@ void Kaffeine::openUrl(const KUrl &url)
 	playlistTab->appendUrls(QList<KUrl>() << copy, true);
 }
 
-void Kaffeine::openAudioCd()
+void MainWindow::openAudioCd()
 {
 	activateTab(PlayerTabId); // FIXME
 	mediaWidget->playAudioCd();
 }
 
-void Kaffeine::openVideoCd()
+void MainWindow::openVideoCd()
 {
 	activateTab(PlayerTabId);
 	mediaWidget->playVideoCd();
 }
 
-void Kaffeine::openDvd()
+void MainWindow::openDvd()
 {
 	activateTab(PlayerTabId);
 	mediaWidget->playDvd();
 }
 
-void Kaffeine::playDvb()
+void MainWindow::playDvb()
 {
 	activateTab(DvbTabId);
 	dvbTab->playLastChannel();
 }
 
-void Kaffeine::resizeToVideo(int factor)
+void MainWindow::resizeToVideo(int factor)
 {
 	if (!isFullScreen()) {
 		if (isMaximized()) {
@@ -542,23 +542,23 @@ void Kaffeine::resizeToVideo(int factor)
 	}
 }
 
-void Kaffeine::configureKeys()
+void MainWindow::configureKeys()
 {
 	KShortcutsDialog::configure(collection);
 }
 
-void Kaffeine::configureKaffeine()
+void MainWindow::configureKaffeine()
 {
 	ConfigurationDialog dialog(mediaWidget, this);
 	dialog.exec();
 }
 
-void Kaffeine::activateDvbTab()
+void MainWindow::activateDvbTab()
 {
 	activateTab(DvbTabId);
 }
 
-void Kaffeine::navigationBarOrientationChanged(Qt::Orientation orientation)
+void MainWindow::navigationBarOrientationChanged(Qt::Orientation orientation)
 {
 	if (orientation == Qt::Horizontal) {
 		tabBar->setShape(KTabBar::RoundedNorth);
@@ -567,7 +567,7 @@ void Kaffeine::navigationBarOrientationChanged(Qt::Orientation orientation)
 	}
 }
 
-void Kaffeine::activateTab(int tabIndex)
+void MainWindow::activateTab(int tabIndex)
 {
 	currentTabIndex = tabIndex;
 	tabBar->setCurrentIndex(tabIndex);
@@ -580,12 +580,12 @@ void Kaffeine::activateTab(int tabIndex)
 	tabs.at(currentTabIndex)->activate();
 }
 
-void Kaffeine::hideCursor()
+void MainWindow::hideCursor()
 {
 	setCursor(Qt::BlankCursor);
 }
 
-bool Kaffeine::event(QEvent *event)
+bool MainWindow::event(QEvent *event)
 {
 	bool retVal = KMainWindow::event(event); // this has to be done before calling setVisible()
 
@@ -623,7 +623,7 @@ bool Kaffeine::event(QEvent *event)
 	return retVal;
 }
 
-void Kaffeine::keyPressEvent(QKeyEvent *event)
+void MainWindow::keyPressEvent(QKeyEvent *event)
 {
 	if ((event->key() == Qt::Key_Escape) && isFullScreen()) {
 		toggleFullScreen();
@@ -633,7 +633,7 @@ void Kaffeine::keyPressEvent(QKeyEvent *event)
 	KMainWindow::keyPressEvent(event);
 }
 
-void Kaffeine::leaveEvent(QEvent *event)
+void MainWindow::leaveEvent(QEvent *event)
 {
 	if (isFullScreen()) {
 		controlBar->setVisible(false);
