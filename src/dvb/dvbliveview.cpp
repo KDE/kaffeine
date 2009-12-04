@@ -161,9 +161,9 @@ DvbLiveView::~DvbLiveView()
 	delete internal;
 }
 
-QSharedDataPointer<DvbChannel> DvbLiveView::getChannel() const
+const DvbChannel *DvbLiveView::getChannel() const
 {
-	return channel;
+	return channel.constData();
 }
 
 DvbDevice *DvbLiveView::getDevice() const
@@ -171,7 +171,7 @@ DvbDevice *DvbLiveView::getDevice() const
 	return device;
 }
 
-void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
+void DvbLiveView::playChannel(const DvbChannel *channel_)
 {
 	if (fastRetuneTimer.isActive()) {
 		// FIXME find a better solution
@@ -188,11 +188,11 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 		channel = NULL;
 		KMessageBox::sorry(manager->getParentWidget(),
 			i18nc("message box", "No available device found."));
+		// FIXME better error message if devices are blocked by recordings
 		return;
 	}
 
 	mediaWidget->playDvb(channel->name);
-	KGlobal::config()->group("DVB").writeEntry("LastChannel", channel->name);
 
 	internal->eitFilter.setSource(channel->transponder->source);
 	internal->pmtFilter.setProgramNumber(channel->getServiceId());
@@ -212,7 +212,7 @@ void DvbLiveView::playChannel(const QSharedDataPointer<DvbChannel> &channel_)
 
 void DvbLiveView::toggleOsd()
 {
-	if (channel == NULL) {
+	if (channel.constData() == NULL) {
 		return;
 	}
 

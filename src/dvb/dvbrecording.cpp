@@ -56,7 +56,7 @@ bool DvbRecording::isRunning() const
 
 void DvbRecording::start()
 {
-	if (channel == NULL) {
+	if (channel.constData() == NULL) {
 		int row = manager->getChannelModel()->indexOfName(channelName);
 
 		if (row < 0) {
@@ -140,9 +140,9 @@ void DvbRecording::stop()
 
 	pmtValid = false;
 	patPmtTimer.stop();
-	patGenerator = DvbSectionGenerator();
-	pmtGenerator = DvbSectionGenerator();
-	pmtFilter.resetFilter();
+	patGenerator.reset();
+	pmtGenerator.reset();
+	pmtFilter.reset();
 	pids.clear();
 	buffers.clear();
 	file.close();
@@ -290,7 +290,7 @@ DvbRecordingManager::DvbRecordingManager(DvbManager *manager_) : QObject(manager
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "cannot open file" << file.fileName();
+		kWarning() << "cannot open file" << file.fileName();
 		return;
 	}
 
@@ -331,7 +331,7 @@ DvbRecordingManager::DvbRecordingManager(DvbManager *manager_) : QObject(manager
 	}
 
 	if (!file.remove()) {
-		kWarning() << "cannot remove" << file.fileName();
+		kWarning() << "cannot remove file" << file.fileName();
 	}
 }
 
@@ -364,10 +364,10 @@ void DvbRecordingManager::startInstantRecording(const QString &name, const QStri
 	recording->begin = recording->begin.addSecs(-recording->begin.time().second());
 	recording->duration = QTime(2, 0);
 	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
-	model->append(recording);
+	int row = model->append(recording);
 
 	instantRecordingActive = true;
-	instantRecordingIndex = model->index(model->rowCount(QModelIndex()) - 1, 0);
+	instantRecordingIndex = model->index(row, 0);
 }
 
 void DvbRecordingManager::stopInstantRecording()
@@ -435,7 +435,7 @@ void DvbRecordingManager::checkStatus()
 	checkingStatus = true;
 	QDateTime current = QDateTime::currentDateTime();
 
-	for (int i = 0; i < model->rowCount(QModelIndex()); ++i) {
+	for (int i = 0; i < model->size(); ++i) {
 		DvbRecording *recording = model->writableAt(i);
 
 		if (recording->end <= current) {
@@ -469,7 +469,7 @@ void DvbRecordingManager::checkStatus()
 		}
 	}
 
-	for (int i = 0; i < model->rowCount(QModelIndex()); ++i) {
+	for (int i = 0; i < model->size(); ++i) {
 		DvbRecording *recording = model->writableAt(i);
 
 		if (recording->begin <= current) {
@@ -560,7 +560,8 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, DvbRecordingModel *
 
 	beginEdit = new DateTimeEdit(widget);
 	beginEdit->setCurrentSection(DateTimeEdit::HourSection);
-	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(beginChanged(QDateTime)));
+	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)),
+		this, SLOT(beginChanged(QDateTime)));
 	gridLayout->addWidget(beginEdit, 2, 1);
 
 	label = new QLabel(i18n("Begin:"), widget);
@@ -777,8 +778,7 @@ int DvbRecordingModel::insertFromSqlQuery(const QSqlQuery &query, int index)
 	}
 
 	recording->end = recording->begin.addSecs(QTime().secsTo(recording->duration));
-	rawAppend(recording);
-	return (rowCount(QModelIndex()) - 1);
+	return rawAppend(recording);
 }
 
 void DvbRecordingModel::bindToSqlQuery(int row, QSqlQuery &query, int index) const

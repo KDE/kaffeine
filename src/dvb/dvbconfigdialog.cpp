@@ -475,13 +475,13 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	if ((transmissionTypes & DvbBackendDevice::DvbC) != 0) {
 		addHSeparator(i18n("DVB-C"));
 
-		if (dvbCConfig == NULL) {
+		if (dvbCConfig.constData() == NULL) {
 			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbC);
 			config->timeout = 1500;
 			dvbCConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, dvbCConfig);
+		new DvbConfigObject(this, boxLayout, manager, dvbCConfig.data());
 		configs.append(dvbCConfig);
 	}
 
@@ -500,26 +500,26 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	if ((transmissionTypes & DvbBackendDevice::DvbT) != 0) {
 		addHSeparator(i18n("DVB-T"));
 
-		if (dvbTConfig == NULL) {
+		if (dvbTConfig.constData() == NULL) {
 			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbT);
 			config->timeout = 1500;
 			dvbTConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, dvbTConfig);
+		new DvbConfigObject(this, boxLayout, manager, dvbTConfig.data());
 		configs.append(dvbTConfig);
 	}
 
 	if ((transmissionTypes & DvbBackendDevice::Atsc) != 0) {
 		addHSeparator(i18n("ATSC"));
 
-		if (atscConfig == NULL) {
+		if (atscConfig.constData() == NULL) {
 			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::Atsc);
 			config->timeout = 1500;
 			atscConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, atscConfig);
+		new DvbConfigObject(this, boxLayout, manager, atscConfig.data());
 		configs.append(atscConfig);
 	}
 

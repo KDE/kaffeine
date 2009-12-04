@@ -283,6 +283,13 @@ public:
 	void initPat(int transportStreamId, int programNumber, int pmtPid);
 	void initPmt(int pmtPid, const DvbPmtSection &section, const QList<int> &pids);
 
+	void reset()
+	{
+		packets.clear();
+		versionNumber = 0;
+		continuityCounter = 0;
+	}
+
 	QByteArray generatePackets();
 
 private:
@@ -301,7 +308,7 @@ public:
 	DvbPmtFilter() : programNumber(-1), versionNumber(-1) { }
 	~DvbPmtFilter() { }
 
-	void resetFilter()
+	void reset()
 	{
 		DvbSectionFilter::resetFilter();
 		programNumber = -1;

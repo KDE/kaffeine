@@ -82,8 +82,8 @@ public:
 	 * management functions (must be only called by DvbManager)
 	 */
 
-	bool acquire(const QSharedDataPointer<DvbConfigBase> &config_);
-	void reacquire(const QSharedDataPointer<DvbConfigBase> &config_);
+	bool acquire(const DvbConfigBase *config_);
+	void reacquire(const DvbConfigBase *config_);
 	void release();
 	void enableDvbDump();
 
@@ -105,7 +105,7 @@ private:
 
 	DvbBackendDevice *backendDevice;
 	DeviceState deviceState;
-	QSharedDataPointer<DvbConfigBase> config;
+	QExplicitlySharedDataPointer<const DvbConfigBase> config;
 
 	int frontendTimeout;
 	QTimer frontendTimer;

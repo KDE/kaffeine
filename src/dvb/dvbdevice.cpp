@@ -417,7 +417,7 @@ DvbTransponder DvbDevice::getAutoTransponder() const
 	return autoTransponder;
 }
 
-bool DvbDevice::acquire(const QSharedDataPointer<DvbConfigBase> &config_)
+bool DvbDevice::acquire(const DvbConfigBase *config_)
 {
 	Q_ASSERT(deviceState == DeviceReleased);
 
@@ -430,7 +430,7 @@ bool DvbDevice::acquire(const QSharedDataPointer<DvbConfigBase> &config_)
 	return false;
 }
 
-void DvbDevice::reacquire(const QSharedDataPointer<DvbConfigBase> &config_)
+void DvbDevice::reacquire(const DvbConfigBase *config_)
 {
 	Q_ASSERT(deviceState != DeviceReleased);
 	setDeviceState(DeviceReleased);

@@ -49,11 +49,17 @@ public:
 		return rows.at(row).data();
 	}
 
-	void append(typename T::Type *row)
+	int size() const
+	{
+		return rows.size();
+	}
+
+	int append(typename T::Type *row)
 	{
 		beginInsertRows(QModelIndex(), rows.size(), rows.size());
 		rows.append(typename T::StorageType(row));
 		endInsertRows();
+		return (rows.size() - 1);
 	}
 
 	void rowUpdated(int row)
@@ -101,9 +107,10 @@ public:
 	}
 
 protected:
-	void rawAppend(typename T::Type *row)
+	int rawAppend(typename T::Type *row)
 	{
 		rows.append(typename T::StorageType(row));
+		return (rows.size() - 1);
 	}
 
 private:

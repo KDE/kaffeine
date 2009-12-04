@@ -273,7 +273,7 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::showEpgDialog()
 {
-	QSharedDataPointer<DvbChannel> channel = manager->getLiveView()->getChannel();
+	const DvbChannel *channel = manager->getLiveView()->getChannel();
 	QString channelName;
 
 	if (channel != NULL) {
@@ -392,7 +392,7 @@ void DvbTab::playChannel(int row)
 		channelView->setCurrentIndex(index);
 	}
 
-	QSharedDataPointer<DvbChannel> channel = manager->getChannelModel()->getChannel(row);
+	const DvbChannel *channel = manager->getChannelModel()->getChannel(row);
 	currentChannel = channel->name;
 	manager->getLiveView()->playChannel(channel);
 }

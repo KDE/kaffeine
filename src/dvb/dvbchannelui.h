@@ -33,9 +33,14 @@ class DvbSqlChannelModelAdaptor;
 
 class DvbChannelModel : public QAbstractTableModel
 {
+	friend class DvbSqlChannelModelAdaptor;
 public:
 	explicit DvbChannelModel(QObject *parent);
 	~DvbChannelModel();
+
+	/*
+	 * channel names and numbers are guaranteed to be unique within this model
+	 */
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
@@ -47,21 +52,19 @@ public:
 	void cloneFrom(const DvbChannelModel *other);
 	void clear();
 
-	QSharedDataPointer<DvbChannel> getChannel(int pos) const;
+	const DvbChannel *getChannel(int row) const;
 	int indexOfName(const QString &name) const;
 	int indexOfNumber(int number) const;
 
 	/*
-	 * these three functions automatically adjust the channel numbers
+	 * these two functions automatically adjust the channel numbers
 	 */
 
-	void appendChannel(const QSharedDataPointer<DvbChannel> &channel);
-	void appendChannels(const QList<QSharedDataPointer<DvbChannel> > &list);
-	void updateChannel(int pos, const QSharedDataPointer<DvbChannel> &channel);
+	void appendChannels(const QList<DvbChannel *> &list);
+	void updateChannel(int pos, DvbChannel *channel);
 
 private:
-	QString findUniqueName(const QString &name) const;
-	int findUniqueNumber(int number) const;
+	bool adjustNameNumber(DvbChannel *channel) const;
 
 	QList<QSharedDataPointer<DvbChannel> > channels;
 	QSet<QString> names;
@@ -98,13 +101,14 @@ private:
 class DvbChannelEditor : public KDialog
 {
 public:
-	DvbChannelEditor(const QSharedDataPointer<DvbChannel> &channel_, QWidget *parent);
+	DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *parent);
 	~DvbChannelEditor();
 
-	QSharedDataPointer<DvbChannel> getChannel();
-
 private:
-	QSharedDataPointer<DvbChannel> channel;
+	void accept();
+
+	DvbChannelModel *model;
+	int row;
 	KLineEdit *nameEdit;
 	QSpinBox *numberBox;
 	QSpinBox *networkIdBox;

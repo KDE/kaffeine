@@ -518,7 +518,7 @@ void DvbScanDialog::removeAllChannels()
 void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
 {
 	QList<QSharedDataPointer<DvbChannel> > channels = channelModel->getChannels();
-	QList<QSharedDataPointer<DvbChannel> > newChannels;
+	QList<DvbChannel *> newChannels;
 
 	foreach (const DvbPreviewChannel *currentChannel, channelList) {
 		QList<QSharedDataPointer<DvbChannel> >::const_iterator it;
@@ -547,16 +547,15 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 				}
 			}
 
-			channelModel->updateChannel(it - channels.constBegin(),
-				QSharedDataPointer<DvbChannel>(channel));
+			channelModel->updateChannel(it - channels.constBegin(), channel);
 		} else {
 			// add channel
-			// number is assigned later
+			channel->number = 1; // DvbChannelModel will adjust the number
 			if (!currentChannel->audioPids.isEmpty()) {
 				channel->audioPid = currentChannel->audioPids.at(0);
 			}
 
-			newChannels.append(QSharedDataPointer<DvbChannel>(channel));
+			newChannels.append(channel);
 		}
 	}
 

@@ -61,7 +61,7 @@ private:
 	void processData(const char data[188]);
 
 	DvbManager *manager;
-	QSharedDataPointer<DvbChannel> channel;
+	QExplicitlySharedDataPointer<const DvbChannel> channel;
 	QFile file;
 	QList<QByteArray> buffers;
 	DvbDevice *device;

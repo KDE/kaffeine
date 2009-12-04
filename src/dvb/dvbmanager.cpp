@@ -287,7 +287,7 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
 			if (config->name == transponder->source) {
 				DvbDevice *device = it.device;
 
-				if (!device->acquire(config)) {
+				if (!device->acquire(config.constData())) {
 					continue;
 				}
 
@@ -322,7 +322,7 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
 				deviceConfigs[i].transponder = transponder;
 
 				DvbDevice *device = it.device;
-				device->reacquire(config);
+				device->reacquire(config.constData());
 				device->tune(transponder);
 				return device;
 			}
@@ -345,7 +345,7 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 			if (config->name == source) {
 				DvbDevice *device = it.device;
 
-				if (!device->acquire(config)) {
+				if (!device->acquire(config.constData())) {
 					continue;
 				}
 
