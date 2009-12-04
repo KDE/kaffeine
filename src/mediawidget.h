@@ -124,7 +124,7 @@ private slots:
 	void changeSubtitle(int index);
 	void autoResize(QAction *action);
 	void setMuted(bool muted);
-	void mutedChanged(bool muted);
+	void mutedChanged();
 	void setVolume(qreal volume);
 	void volumeChanged(int volume);
 	void aspectRatioAuto();
@@ -195,6 +195,7 @@ private:
 	KAction *muteAction;
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
+	bool isMuted;
 	QSlider *volumeSlider;
 	KAction *longSkipBackwardAction;
 	KAction *shortSkipBackwardAction;

@@ -240,7 +240,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	unmutedIcon = KIcon("audio-volume-medium");
 	muteAction->setIcon(unmutedIcon);
 	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
-	connect(muteAction, SIGNAL(triggered(bool)), this, SLOT(mutedChanged(bool)));
+	isMuted = false;
+	connect(muteAction, SIGNAL(triggered()), this, SLOT(mutedChanged()));
 	connect(audioOutput, SIGNAL(mutedChanged(bool)), this, SLOT(setMuted(bool)));
 	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
 	audioMenu->addAction(muteAction);
@@ -774,14 +775,17 @@ void MediaWidget::autoResize(QAction *action)
 
 void MediaWidget::setMuted(bool muted)
 {
-	muteAction->setChecked(muted);
+	if (muted != isMuted) {
+		muteAction->trigger();
+	}
 }
 
-void MediaWidget::mutedChanged(bool muted)
+void MediaWidget::mutedChanged()
 {
-	audioOutput->setMuted(muted);
+	isMuted = !isMuted;
+	audioOutput->setMuted(isMuted);
 
-	if (muted) {
+	if (isMuted) {
 		muteAction->setIcon(mutedIcon);
 		osdWidget->showText(i18nc("osd", "Mute On"), 1500);
 	} else {
