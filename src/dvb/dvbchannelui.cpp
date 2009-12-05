@@ -433,6 +433,10 @@ public:
 			if (model->adjustNameNumber(model->channels[i].data())) {
 				emit model->dataChanged(model->index(i, 0), model->index(i, 1));
 			}
+
+			const DvbChannel *channel = model->channels.at(i);
+			model->names.insert(channel->name);
+			model->numbers.insert(channel->number);
 		}
 	}
 
