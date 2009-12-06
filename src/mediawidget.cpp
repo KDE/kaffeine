@@ -282,8 +282,9 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	volumeSlider->setOrientation(Qt::Horizontal);
 	volumeSlider->setRange(0, 100);
 	volumeSlider->setToolTip(action->text());
-	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
 	volumeSlider->setValue(KGlobal::config()->group("MediaObject").readEntry("Volume", 100));
+	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
+	audioOutput->setVolume(volumeSlider->value() * qreal(0.01));
 	connect(audioOutput, SIGNAL(volumeChanged(qreal)), this, SLOT(setVolume(qreal)));
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
