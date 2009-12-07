@@ -707,6 +707,11 @@ void DvbDevice::customEvent(QEvent *)
 			}
 		}
 
+		if (usedBuffers == 0) {
+			// FIXME not a nice solution - side effect of discardBuffers()
+			break;
+		}
+
 		currentUsed = currentUsed->next;
 
 		if (usedBuffers.fetchAndAddOrdered(-1) == 1) {
