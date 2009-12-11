@@ -253,7 +253,7 @@ DvbManager::~DvbManager()
 	}
 }
 
-DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
+DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder &transponder,
 	DvbManager::RequestType requestType)
 {
 	Q_ASSERT(requestType != Exclusive);
@@ -265,7 +265,7 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
 			continue;
 		}
 
-		if (it.transponder->corresponds(transponder)) {
+		if ((it.source == source) && it.transponder->corresponds(transponder)) {
 			++deviceConfigs[i].useCount;
 
 			if (requestType == Prioritized) {
@@ -284,7 +284,7 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
 		}
 
 		foreach (const DvbConfig &config, it.configs) {
-			if (config->name == transponder->source) {
+			if (config->name == source) {
 				DvbDevice *device = it.device;
 
 				if (!device->acquire(config.constData())) {
@@ -297,6 +297,7 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
 					deviceConfigs[i].prioritizedUseCount = 1;
 				}
 
+				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 				device->tune(transponder);
 				return device;
@@ -316,9 +317,10 @@ DvbDevice *DvbManager::requestDevice(const DvbTransponder &transponder,
 		}
 
 		foreach (const DvbConfig &config, it.configs) {
-			if (config->name == transponder->source) {
+			if (config->name == source) {
 				deviceConfigs[i].useCount = 1;
 				deviceConfigs[i].prioritizedUseCount = 1;
+				deviceConfigs[i].source = source;
 				deviceConfigs[i].transponder = transponder;
 
 				DvbDevice *device = it.device;
@@ -350,6 +352,7 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 				}
 
 				deviceConfigs[i].useCount = -1;
+				deviceConfigs[i].source.clear();
 				deviceConfigs[i].transponder = NULL;
 				return device;
 			}

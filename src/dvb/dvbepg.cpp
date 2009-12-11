@@ -308,7 +308,7 @@ void DvbEitFilter::setManager(DvbManager *manager_)
 	foreach (const QSharedDataPointer<DvbChannel> &channel,
 		 manager->getChannelModel()->getChannels()) {
 		DvbEitEntry entry;
-		entry.source = channel->transponder->source;
+		entry.source = channel->source;
 		entry.transportStreamId = channel->transportStreamId;
 		entry.serviceId = channel->getServiceId();
 		entry.networkId = channel->networkId;

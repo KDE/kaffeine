@@ -324,7 +324,6 @@ bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 	const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
 
 	return (dvbCTransponder != NULL) &&
-	       (source == transponder->source) &&
 	       (qAbs(dvbCTransponder->frequency - frequency) <= 2000000);
 }
 
@@ -363,7 +362,6 @@ bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 	const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
 
 	return (dvbSTransponder != NULL) &&
-	       (source == transponder->source) &&
 	       (dvbSTransponder->polarization == polarization) &&
 	       (qAbs(dvbSTransponder->frequency - frequency) <= 2000);
 }
@@ -409,7 +407,6 @@ bool DvbS2Transponder::corresponds(const DvbTransponder &transponder) const
 	const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
 
 	return (dvbS2Transponder != NULL) &&
-	       (source == transponder->source) &&
 	       (dvbS2Transponder->polarization == polarization) &&
 	       (qAbs(dvbS2Transponder->frequency - frequency) <= 2000);
 }
@@ -461,7 +458,6 @@ bool DvbTTransponder::corresponds(const DvbTransponder &transponder) const
 	const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
 
 	return (dvbTTransponder != NULL) &&
-	       (source == transponder->source) &&
 	       (qAbs(dvbTTransponder->frequency - frequency) <= 2000000);
 }
 
@@ -494,7 +490,6 @@ bool AtscTransponder::corresponds(const DvbTransponder &transponder) const
 	const AtscTransponder *atscTransponder = transponder->getAtscTransponder();
 
 	return (atscTransponder != NULL) &&
-	       (source == transponder->source) &&
 	       (qAbs(atscTransponder->frequency - frequency) <= 2000000);
 }
 
@@ -531,7 +526,7 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 	stream >> name;
 	stream >> number;
 
-	stream >> transponderBase->source;
+	stream >> source;
 	transponderBase->readTransponder(stream);
 	transponder = DvbTransponder(transponderBase);
 	stream >> networkId;

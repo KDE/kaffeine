@@ -434,7 +434,7 @@ public:
 				emit model->dataChanged(model->index(i, 0), model->index(i, 1));
 			}
 
-			const DvbChannel *channel = model->channels.at(i);
+			const DvbChannel *channel = model->channels.at(i).constData();
 			model->names.insert(channel->name);
 			model->numbers.insert(channel->number);
 		}
@@ -450,7 +450,7 @@ private:
 		DvbChannel *channel = new DvbChannel();
 		channel->name = query.value(index++).toString();
 		channel->number = query.value(index++).toInt();
-		QString source = query.value(index++).toString();
+		channel->source = query.value(index++).toString();
 		QString transponder = query.value(index++).toString();
 
 		DvbTransponderBase *transponderBase = NULL;
@@ -471,14 +471,10 @@ private:
 			}
 		}
 
-		if (transponderBase != NULL) {
-			transponderBase->source = source;
-
-			if (source.isEmpty() || !transponderBase->fromString(transponder)) {
-				delete transponderBase;
-				delete channel;
-				return -1;
-			}
+		if ((transponderBase == NULL) || !transponderBase->fromString(transponder)) {
+			delete transponderBase;
+			delete channel;
+			return -1;
 		}
 
 		channel->transponder = DvbTransponder(transponderBase);
@@ -492,10 +488,11 @@ private:
 		channel->hasVideo = ((flags & 0x01) != 0);
 		channel->isScrambled = ((flags & 0x02) != 0);
 
-		if (channel->name.isEmpty() || (channel->number < 1) || (channel->networkId < -1) ||
-		    (channel->networkId > 0xffff) || (channel->transportStreamId < 0) ||
-		    (channel->transportStreamId > 0xffff) || (channel->pmtPid < 0) ||
-		    (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
+		if (channel->name.isEmpty() || (channel->number < 1) || channel->source.isEmpty() ||
+		    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
+		    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
+		    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) ||
+		    channel->pmtSection.isEmpty() ||
 		    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
 			delete channel;
 			return -1;
@@ -510,7 +507,7 @@ private:
 		const DvbChannel *channel = model->getChannel(row);
 		query.bindValue(index++, channel->name);
 		query.bindValue(index++, channel->number);
-		query.bindValue(index++, channel->transponder->source);
+		query.bindValue(index++, channel->source);
 		query.bindValue(index++, channel->transponder->toString());
 		query.bindValue(index++, channel->networkId);
 		query.bindValue(index++, channel->transportStreamId);
@@ -649,7 +646,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *p
 	QGroupBox *groupBox = new QGroupBox(widget);
 	QGridLayout *gridLayout = new QGridLayout(groupBox);
 	gridLayout->addWidget(new QLabel(i18n("Source:")), 0, 0);
-	gridLayout->addWidget(new QLabel(channel->transponder->source), 0, 1);
+	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
 
 	switch (channel->transponder->getTransmissionType()) {
 	case DvbTransponderBase::DvbC: {

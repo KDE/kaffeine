@@ -247,21 +247,22 @@ void DvbScanFilter::timerEvent(QTimerEvent *)
 	scan->filterFinished(this);
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const DvbTransponder &transponder_) : device(device_),
-	transponder(transponder_), isLive(true), isAuto(false), transponderIndex(-1),
-	state(ScanPat), patIndex(0), activeFilters(0)
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_) :
+	device(device_), source(source_), transponder(transponder_), isLive(true), isAuto(false),
+	transponderIndex(-1), state(ScanPat), patIndex(0), activeFilters(0)
 {
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const QList<DvbTransponder> &transponders_) : device(device_),
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_,
+	const QList<DvbTransponder> &transponders_) : device(device_), source(source_),
 	isLive(false), isAuto(false), transponders(transponders_), transponderIndex(0),
 	state(ScanTune), patIndex(0), activeFilters(0)
 {
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const QString &autoScanSource) : device(device_),
-	isLive(false), isAuto(true), transponderIndex(0), state(ScanTune), patIndex(0),
-	activeFilters(0)
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource) :
+	device(device_), source(source_), isLive(false), isAuto(true), transponderIndex(0),
+	state(ScanTune), patIndex(0), activeFilters(0)
 {
 	if ((autoScanSource == "AUTO-Normal") || (autoScanSource == "AUTO-Offsets")) {
 		bool offsets = (autoScanSource == "AUTO-Offsets");
@@ -609,6 +610,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 	}
 
 	if (channel.hasVideo || !channel.audioPids.isEmpty()) {
+		channel.source = source;
 		channel.transponder = transponder;
 		channel.transportStreamId = transportStreamId;
 		channel.pmtPid = pid;

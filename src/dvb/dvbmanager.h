@@ -97,7 +97,8 @@ public:
 		return recordingManager;
 	}
 
-	DvbDevice *requestDevice(const DvbTransponder &transponder, RequestType requestType);
+	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder,
+		RequestType requestType);
 	DvbDevice *requestExclusiveDevice(const QString &source);
 	void releaseDevice(DvbDevice *device, RequestType requestType);
 
@@ -166,6 +167,7 @@ public:
 	QList<DvbConfig> configs;
 	int useCount; // -1 means exclusive use
 	int prioritizedUseCount;
+	QString source;
 	QExplicitlySharedDataPointer<const DvbTransponderBase> transponder;
 };
 

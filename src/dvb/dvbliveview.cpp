@@ -182,7 +182,7 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 
 	mediaWidget->stopDvb();
 	channel = channel_;
-	device = manager->requestDevice(channel->transponder, DvbManager::Shared);
+	device = manager->requestDevice(channel->source, channel->transponder, DvbManager::Shared);
 
 	if (device == NULL) {
 		channel = NULL;
@@ -194,7 +194,7 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 
 	mediaWidget->playDvb(channel->name);
 
-	internal->eitFilter.setSource(channel->transponder->source);
+	internal->eitFilter.setSource(channel->source);
 	internal->pmtFilter.setProgramNumber(channel->getServiceId());
 	startDevice();
 
@@ -325,7 +325,8 @@ void DvbLiveView::deviceStateChanged()
 	switch (device->getDeviceState()) {
 	case DvbDevice::DeviceReleased:
 		stopDevice();
-		device = manager->requestDevice(channel->transponder, DvbManager::Shared);
+		device = manager->requestDevice(channel->source, channel->transponder,
+			DvbManager::Shared);
 
 		if (device != NULL) {
 			startDevice();
