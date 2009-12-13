@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QPointer>
 #include <KAboutData>
 #include <KCmdLineArgs>
 #include <KUniqueApplication>
@@ -27,25 +28,29 @@
 class KaffeineApplication : public KUniqueApplication
 {
 public:
-	KaffeineApplication() : mainWindow(NULL)
-	{
-		if (!SqlHelper::createInstance()) {
-			return;
-		}
-
-		mainWindow = new MainWindow();
-	}
-
-	~KaffeineApplication()
-	{
-		// unlike qt, kde sets Qt::WA_DeleteOnClose and needs it to work properly ...
-	}
+	KaffeineApplication();
+	~KaffeineApplication();
 
 private:
 	int newInstance();
 
-	MainWindow *mainWindow;
+	QPointer<MainWindow> mainWindow;
 };
+
+KaffeineApplication::KaffeineApplication()
+{
+	if (!SqlHelper::createInstance()) {
+		return;
+	}
+
+	mainWindow = new MainWindow();
+}
+
+KaffeineApplication::~KaffeineApplication()
+{
+	// unlike qt, kde sets Qt::WA_DeleteOnClose and needs it to work properly
+	delete mainWindow; // QPointer; needed if kaffeine is closed via QCoreApplication::quit()
+}
 
 int KaffeineApplication::newInstance()
 {
