@@ -43,11 +43,15 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 {
 	playlists.append(temporaryPlaylist);
 
-	QFile file(KStandardDirs::locateLocal("appdata", "playlists"));
+	QFile file(KStandardDirs::locateLocal("appdata", "playlistsK4"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "can't open" << file.fileName();
-		return;
+		file.setFileName(KStandardDirs::locateLocal("appdata", "playlists"));
+
+		if (!file.open(QIODevice::ReadOnly)) {
+			kDebug() << "cannot open file" << file.fileName();
+			return;
+		}
 	}
 
 	QDataStream stream(&file);
@@ -103,7 +107,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 PlaylistBrowserModel::~PlaylistBrowserModel()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", "playlists"));
+	QFile file(KStandardDirs::locateLocal("appdata", "playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		kWarning() << "can't open" << file.fileName();
