@@ -702,7 +702,7 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 
 void PlaylistTab::appendUrls(const QList<KUrl> &urls)
 {
-	playlistModel->appendUrls(playlistModel->getVisiblePlaylist(), urls, false);
+	playlistModel->appendUrls(playlistModel->getVisiblePlaylist(), urls, true);
 }
 
 void PlaylistTab::appendPlaylist(Playlist *playlist, bool playImmediately)
