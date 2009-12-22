@@ -712,15 +712,15 @@ QVariant PlaylistModel::headerData(int section, Qt::Orientation orientation, int
 	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
 		switch (section) {
 		case 0:
-			return i18n("Title");
+			return i18nc("playlist track", "Title");
 		case 1:
-			return i18n("Artist");
+			return i18nc("playlist track", "Artist");
 		case 2:
-			return i18n("Album");
+			return i18nc("playlist track", "Album");
 		case 3:
-			return i18n("Track");
+			return i18nc("playlist track", "Track Number");
 		case 4:
-			return i18n("Length");
+			return i18nc("playlist track", "Length");
 		}
 	}
 

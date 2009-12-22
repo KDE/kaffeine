@@ -340,7 +340,7 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	mediaWidget(mediaWidget_)
 {
 	Playlist *temporaryPlaylist = new Playlist();
-	temporaryPlaylist->title = i18n("Temporary Playlist");
+	temporaryPlaylist->title = i18nc("playlist browser", "Temporary Playlist");
 
 	playlistModel = new PlaylistModel(temporaryPlaylist, this);
 	connect(playlistModel, SIGNAL(playTrack(Playlist*,int)),
@@ -374,19 +374,19 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	collection->addAction("playlist_remove_track", removeTrackAction);
 
 	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
-					   i18nc("remove all items from a list", "Clear"), this);
+		i18nc("remove all items from a list", "Clear"), this);
 	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearVisiblePlaylist()));
 	menu->addAction(collection->addAction("playlist_clear", clearAction));
 
 	menu->addSeparator();
 
 	KAction *newAction = new KAction(KIcon("list-add"),
-					 i18nc("add a new item to a list", "New"), this);
+		i18nc("add a new item to a list", "New"), this);
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
 	menu->addAction(collection->addAction("playlist_new", newAction));
 
 	KAction *renameAction = new KAction(KIcon("edit-rename"),
-					    i18nc("rename an entry in a list", "Rename"), this);
+		i18nc("rename an entry in a list", "Rename"), this);
 	connect(renameAction, SIGNAL(triggered(bool)), this, SLOT(renamePlaylist()));
 	menu->addAction(collection->addAction("playlist_rename", renameAction));
 
@@ -586,7 +586,7 @@ void PlaylistTab::createFileWidget()
 void PlaylistTab::newPlaylist()
 {
 	Playlist *playlist = new Playlist();
-	playlist->title = i18n("Unnamed Playlist");
+	playlist->title = i18nc("playlist browser", "Unnamed Playlist");
 	playlistBrowserModel->append(playlist);
 }
 
@@ -730,9 +730,8 @@ void PlaylistTab::savePlaylist(bool askName)
 
 	if (askName || !url.isValid() ||
 	    url.fileName().endsWith(".kaffeine", Qt::CaseInsensitive)) {
-		url = KFileDialog::getSaveUrl(KUrl(),
-			i18n("*.xspf|XSPF Playlist\n*.m3u|M3U Playlist\n*.pls|PLS Playlist"),
-			this);
+		url = KFileDialog::getSaveUrl(KUrl(), i18nc("file filter",
+			"*.xspf|XSPF Playlist\n*.m3u|M3U Playlist\n*.pls|PLS Playlist"), this);
 
 		if (!url.isValid()) {
 			return;
