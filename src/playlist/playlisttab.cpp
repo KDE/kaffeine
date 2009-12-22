@@ -250,6 +250,7 @@ void PlaylistBrowserModel::setCurrentPlaylist(Playlist *playlist)
 	}
 
 	if (oldPlaylist != -1) {
+		playlistModel->setCurrentTrack(playlists.at(oldPlaylist), -1);
 		QModelIndex modelIndex = index(oldPlaylist, 0);
 		emit dataChanged(modelIndex, modelIndex);
 	}
