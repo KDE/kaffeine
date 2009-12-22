@@ -436,7 +436,7 @@ void MainWindow::parseArgs()
 
 		if (urls.size() >= 2) {
 			activateTab(PlaylistTabId);
-			playlistTab->appendUrls(urls, true);
+			playlistTab->appendToVisiblePlaylist(urls, true);
 		} else if (!urls.isEmpty()) {
 			openUrl(urls.at(0));
 		}
@@ -479,7 +479,7 @@ void MainWindow::open()
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
-		playlistTab->appendUrls(urls, true);
+		playlistTab->appendToVisiblePlaylist(urls, true);
 	} else if (!urls.isEmpty()) {
 		openUrl(urls.at(0));
 	}
@@ -504,7 +504,7 @@ void MainWindow::openUrl(const KUrl &url)
 		activateTab(PlayerTabId);
 	}
 
-	playlistTab->appendUrls(QList<KUrl>() << copy, true);
+	playlistTab->appendToVisiblePlaylist(QList<KUrl>() << copy, true);
 }
 
 void MainWindow::openAudioCd()

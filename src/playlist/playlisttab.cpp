@@ -21,7 +21,6 @@
 #include "playlisttab.h"
 
 #include <QBoxLayout>
-#include <QDomDocument>
 #include <QKeyEvent>
 #include <QListView>
 #include <QSplitter>
@@ -34,256 +33,14 @@
 #include <kfilewidget.h>
 #include <KLocalizedString>
 #include <KMenu>
-#include <KMessageBox>
 #include <KStandardDirs>
 #include "../mediawidget.h"
 #include "playlistmodel.h"
-
-Playlist *Playlist::readPLSFile(const QString &path)
-{
-	QFile file(path);
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		return NULL;
-	}
-
-	QTextStream stream(&file);
-	stream.setCodec("UTF-8");
-
-	if (stream.readLine() != "[playlist]") {
-		return NULL;
-	}
-
-	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
-	KUrl baseUrl = KUrl::fromLocalFile(file.fileName());
-	playlist->setUrl(baseUrl);
-
-	while (!stream.atEnd()) {
-		QString line = stream.readLine();
-
-		if (line.startsWith(QLatin1String("File"))) {
-			KUrl url(line.mid(line.indexOf('=') + 1));
-
-			if (url.isRelative()) {
-				url = baseUrl.resolved(url);
-			}
-
-			if (url.isValid()) {
-				playlist->tracks.append(PlaylistTrack(url));
-			}
-		}
-
-		// FIXME what about the other tags?
-	}
-
-	return playlist;
-}
-
-void Playlist::writePLSFile(QFile *file) const
-{
-	QTextStream stream(file);
-	stream.setCodec("UTF-8");
-
-	stream << "[playlist]\n"
-		  "NumberOfEntries=" << tracks.size() << '\n';
-
-	for (int i = 0; i < tracks.size(); ++i) {
-		stream << "File" << (i + 1) << '=' << tracks.at(i).getUrl().pathOrUrl() << '\n';
-	}
-
-	stream << "Version=2\n";
-}
-
-Playlist *Playlist::readM3UFile(const QString &path)
-{
-	QFile file(path);
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		return NULL;
-	}
-
-	QTextStream stream(&file);
-	stream.setCodec("UTF-8");
-
-	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
-	KUrl baseUrl = KUrl::fromLocalFile(file.fileName());
-	playlist->setUrl(baseUrl);
-
-	while (!stream.atEnd()) {
-		QString line = stream.readLine();
-
-		if (!line.startsWith('#')) {
-			KUrl url(line); // FIXME relative paths
-
-			if (url.isRelative()) {
-				url = baseUrl.resolved(url);
-			}
-
-			if (url.isValid()) {
-				playlist->tracks.append(PlaylistTrack(url));
-			}
-		}
-	}
-
-	return playlist;
-}
-
-void Playlist::writeM3UFile(QFile *file) const
-{
-	QTextStream stream(file);
-	stream.setCodec("UTF-8");
-
-	foreach (const PlaylistTrack &track, tracks) {
-		stream << track.getUrl().pathOrUrl() << '\n';
-	}
-}
-
-Playlist *Playlist::readXSPFFile(const QString &path)
-{
-	QFile file(path);
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		return NULL;
-	}
-
-	QDomDocument document;
-
-	if (!document.setContent(&file)) {
-		return NULL;
-	}
-
-	QDomElement root = document.documentElement();
-
-	if (root.nodeName() != "playlist") {
-		return NULL;
-	}
-
-	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
-	KUrl baseUrl = KUrl::fromLocalFile(path);
-	playlist->setUrl(baseUrl);
-
-	for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		if (!node.isElement()) {
-			continue;
-		}
-
-		QString nodeName = node.nodeName();
-
-		if (nodeName == "title") {
-			playlist->name = node.toElement().text();
-			continue;
-		}
-
-		if (nodeName == "trackList") {
-			for (QDomNode childNode = node.firstChild(); !childNode.isNull();
-			     childNode = childNode.nextSibling()) {
-				if (!childNode.isElement()) {
-					continue;
-				}
-
-				for (QDomNode trackNode = childNode.firstChild();
-				     !trackNode.isNull(); trackNode = trackNode.nextSibling()) {
-					if (!trackNode.isElement()) {
-						continue;
-					}
-
-					if (trackNode.nodeName() == "location") {
-						KUrl url(trackNode.toElement().text());
-
-						if (url.isRelative()) {
-							url = baseUrl.resolved(url);
-						}
-
-						if (url.isValid()) {
-							playlist->tracks.append(PlaylistTrack(url));
-							break;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	return playlist;
-}
-
-void Playlist::writeXSPFFile(QFile *file) const
-{
-	QTextStream stream(file);
-	stream.setCodec("UTF-8");
-
-	stream << "<?xml version='1.0' encoding='UTF-8'?>\n"
-		  "<playlist>\n"
-		  "  <title>" << name << "</title>\n"
-		  "  <trackList>\n";
-
-	foreach (const PlaylistTrack &track, tracks) {
-		stream << "    <track>\n"
-			  "      <location>" << track.getUrl().pathOrUrl() << "</location>\n"
-			  "    </track>\n";
-	}
-
-	stream << "  </trackList>\n"
-		  "</playlist>\n";
-}
-
-Playlist *Playlist::readKaffeineFile(const QString &path)
-{
-	QFile file(path);
-
-	if (!file.open(QIODevice::ReadOnly)) {
-		return NULL;
-	}
-
-	QDomDocument document;
-
-	if (!document.setContent(&file)) {
-		return NULL;
-	}
-
-	QDomElement root = document.documentElement();
-
-	if (root.nodeName() != "playlist") {
-		return NULL;
-	}
-
-	Playlist *playlist = new Playlist(path.mid(path.lastIndexOf('/') + 1));
-	KUrl baseUrl = KUrl::fromLocalFile(path);
-	playlist->setUrl(baseUrl);
-
-	for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		if (!node.isElement()) {
-			continue;
-		}
-
-		QString urlString = node.attributes().namedItem("url").nodeValue();
-
-		if (urlString.isEmpty()) {
-			continue;
-		}
-
-		KUrl url(urlString);
-
-		if (url.isRelative()) {
-			url = baseUrl.resolved(url);
-		}
-
-		if (url.isValid()) {
-			playlist->tracks.append(PlaylistTrack(url));
-			break;
-		}
-	}
-
-	return playlist;
-}
 
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 	Playlist *temporaryPlaylist, QObject *parent) : QAbstractListModel(parent),
 	playlistModel(playlistModel_), currentPlaylist(-1)
 {
-	connect(playlistModel, SIGNAL(currentPlaylistChanged(Playlist*)),
-		this, SLOT(setCurrentPlaylist(Playlist*)));
-
 	playlists.append(temporaryPlaylist);
 
 	QFile file(KStandardDirs::locateLocal("appdata", "playlists"));
@@ -298,35 +55,49 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 	unsigned int version;
 	stream >> version;
+	bool hasMetadata = true;
 
-	if (version != 0xc39637a1) {
+	if (version == 0xc39637a1) {
+		hasMetadata = false;
+	} else if (version != 0x2e00f3ea) {
 		kWarning() << "wrong version" << file.fileName();
 		return;
 	}
 
 	while (!stream.atEnd()) {
-		QString name;
-		stream >> name;
-		QString url;
-		stream >> url;
+		Playlist *playlist = new Playlist();
+		stream >> playlist->title;
+		QString urlString;
+		stream >> urlString;
+		playlist->url = urlString;
 		int count;
 		stream >> count;
 
-		Playlist playlist(name);
-		playlist.setUrl(url);
-
 		for (int i = 0; (i < count) && !stream.atEnd(); ++i) {
-			QString trackUrl;
-			stream >> trackUrl;
-			playlist.tracks.append(PlaylistTrack(trackUrl));
+			PlaylistTrack track;
+			stream >> urlString;
+			track.url = urlString;
+
+			if (hasMetadata) {
+				stream >> track.title;
+				stream >> track.artist;
+				stream >> track.album;
+				stream >> track.trackNumber;
+				stream >> track.length;
+			} else {
+				track.title = track.url.fileName();
+			}
+
+			playlist->tracks.append(track);
 		}
-		
+
 		if (stream.status() != QDataStream::Ok) {
 			kWarning() << "corrupt data" << file.fileName();
+			delete playlist;
 			break;
 		}
 
-		playlists.append(new Playlist(playlist));
+		playlists.append(playlist);
 	}
 }
 
@@ -342,17 +113,22 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
-	int version = 0xc39637a1;
+	int version = 0x2e00f3ea;
 	stream << version;
 
 	for (int i = 1; i < playlists.size(); ++i) {
 		const Playlist *playlist = playlists.at(i);
-		stream << playlist->getName();
-		stream << playlist->getUrl().url();
+		stream << playlist->title;
+		stream << playlist->url.url();
 		stream << playlist->tracks.size();
 
 		foreach (const PlaylistTrack &track, playlist->tracks) {
-			stream << track.getUrl().url();
+			stream << track.url.url();
+			stream << track.title;
+			stream << track.artist;
+			stream << track.album;
+			stream << track.trackNumber;
+			stream << track.length;
 		}
 	}
 
@@ -370,16 +146,12 @@ int PlaylistBrowserModel::rowCount(const QModelIndex &parent) const
 
 QVariant PlaylistBrowserModel::data(const QModelIndex &index, int role) const
 {
-	switch (role) {
-	case Qt::DecorationRole:
+	if (role == Qt::DecorationRole) {
 		if (index.row() == currentPlaylist) {
 			return KIcon("arrow-right");
 		}
-
-		break;
-
-	case Qt::DisplayRole:
-		return playlists.at(index.row())->getName();
+	} else if (role == Qt::DisplayRole) {
+		return playlists.at(index.row())->title;
 	}
 
 	return QVariant();
@@ -399,30 +171,34 @@ bool PlaylistBrowserModel::removeRows(int row, int count, const QModelIndex &par
 		}
 	}
 
-	int end = row + count;
+	beginRemoveRows(QModelIndex(), row, row + count - 1);
+	Playlist *visiblePlaylist = playlistModel->getVisiblePlaylist();
 
-	if ((currentPlaylist >= row) && (currentPlaylist < end)) {
-		if (end < playlists.size()) {
-			playlistModel->setCurrentPlaylist(playlists.at(end));
-		} else {
-			playlistModel->setCurrentPlaylist(playlists.at(row - 1));
-			setCurrentPlaylist(NULL);
+	for (int i = row; i < (row + count); ++i) {
+		if (playlists.at(i) == visiblePlaylist) {
+			if ((row + count) < playlists.size()) {
+				playlistModel->setVisiblePlaylist(playlists.at(row + count));
+			} else {
+				playlistModel->setVisiblePlaylist(playlists.at(row - 1));
+			}
 		}
 	}
 
-	QList<Playlist *>::iterator beginIt = playlists.begin() + row;
-	QList<Playlist *>::iterator endIt = beginIt + count;
+	QList<Playlist *>::Iterator begin = playlists.begin() + row;
+	QList<Playlist *>::Iterator end = begin + count;
+	qDeleteAll(begin, end);
+	playlists.erase(begin, end);
 
-	beginRemoveRows(QModelIndex(), row, row + count - 1);
-	qDeleteAll(beginIt, endIt);
-	playlists.erase(beginIt, endIt);
-
-	if (currentPlaylist >= (row + count)) {
-		currentPlaylist -= count;
+	if (currentPlaylist >= row) {
+		if (currentPlaylist >= (row + count)) {
+			currentPlaylist -= count;
+		} else {
+			currentPlaylist = -1;
+			emit playTrack(NULL, -1);
+		}
 	}
 
 	endRemoveRows();
-
 	return true;
 }
 
@@ -434,13 +210,13 @@ Qt::ItemFlags PlaylistBrowserModel::flags(const QModelIndex &index) const
 bool PlaylistBrowserModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
 	if (role == Qt::EditRole) {
-		QString name = value.toString();
+		QString title = value.toString();
 
-		if (name.isEmpty()) {
+		if (title.isEmpty()) {
 			return false;
 		}
 
-		playlists.at(index.row())->setName(name);
+		playlists.at(index.row())->title = title;
 		emit dataChanged(index, index);
 		return true;
 	}
@@ -462,23 +238,30 @@ Playlist *PlaylistBrowserModel::getPlaylist(int row) const
 
 void PlaylistBrowserModel::setCurrentPlaylist(Playlist *playlist)
 {
-	int newPlaylist = playlists.indexOf(playlist);
+	int oldPlaylist = currentPlaylist;
+	currentPlaylist = playlists.indexOf(playlist);
 
-	if (currentPlaylist == newPlaylist) {
+	if (oldPlaylist == currentPlaylist) {
 		return;
 	}
-
-	int oldPlaylist = currentPlaylist;
-	currentPlaylist = newPlaylist;
 
 	if (oldPlaylist != -1) {
 		QModelIndex modelIndex = index(oldPlaylist, 0);
 		emit dataChanged(modelIndex, modelIndex);
 	}
 
-	if (newPlaylist != -1) {
-		QModelIndex modelIndex = index(newPlaylist, 0);
+	if (currentPlaylist != -1) {
+		QModelIndex modelIndex = index(currentPlaylist, 0);
 		emit dataChanged(modelIndex, modelIndex);
+	}
+}
+
+Playlist *PlaylistBrowserModel::getCurrentPlaylist() const
+{
+	if (currentPlaylist >= 0) {
+		return playlists.at(currentPlaylist);
+	} else {
+		return playlistModel->getVisiblePlaylist();
 	}
 }
 
@@ -550,28 +333,43 @@ void PlaylistView::keyPressEvent(QKeyEvent *event)
 PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
 	mediaWidget(mediaWidget_)
 {
-	Playlist *temporaryPlaylist = new Playlist(i18n("Temporary Playlist"));
-	playlistModel = new PlaylistModel(mediaWidget, temporaryPlaylist, this);
+	Playlist *temporaryPlaylist = new Playlist();
+	temporaryPlaylist->title = i18n("Temporary Playlist");
 
-	repeatAction = new KAction(KIcon("media-playlist-repeat"), i18nc("playlist menu", "Repeat"),
-		this);
+	playlistModel = new PlaylistModel(temporaryPlaylist, this);
+	connect(playlistModel, SIGNAL(playTrack(Playlist*,int)),
+		this, SLOT(playTrack(Playlist*,int)));
+	connect(playlistModel, SIGNAL(appendPlaylist(Playlist*,bool)),
+		this, SLOT(appendPlaylist(Playlist*,bool)));
+
+	playlistBrowserModel = new PlaylistBrowserModel(playlistModel, temporaryPlaylist, this);
+	playlistModel->setVisiblePlaylist(playlistBrowserModel->getPlaylist(0));
+	connect(playlistBrowserModel, SIGNAL(playTrack(Playlist*,int)),
+		this, SLOT(playTrack(Playlist*,int)));
+
+	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(playPreviousTrack()));
+	connect(mediaWidget, SIGNAL(playlistPlay()), this, SLOT(playCurrentTrack()));
+	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
+	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<KUrl>)),
+		this, SLOT(appendUrls(QList<KUrl>)));
+
+	repeatAction = new KAction(KIcon("media-playlist-repeat"),
+		i18nc("playlist menu", "Repeat"), this);
 	repeatAction->setCheckable(true);
-	connect(repeatAction, SIGNAL(triggered(bool)), playlistModel, SLOT(setRepeat(bool)));
 	menu->addAction(collection->addAction("playlist_repeat", repeatAction));
 
 	randomAction = new KAction(KIcon("media-playlist-shuffle"),
 		i18nc("playlist menu", "Random"), this);
 	randomAction->setCheckable(true);
-	connect(randomAction, SIGNAL(triggered(bool)), playlistModel, SLOT(setRandom(bool)));
 	menu->addAction(collection->addAction("playlist_random", randomAction));
 
 	KAction *removeTrackAction = new KAction(KIcon("edit-delete"),
-					       i18nc("remove an item from a list", "Remove"), this);
+		i18nc("remove an item from a list", "Remove"), this);
 	collection->addAction("playlist_remove_track", removeTrackAction);
 
 	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
 					   i18nc("remove all items from a list", "Clear"), this);
-	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearPlaylist()));
+	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearVisiblePlaylist()));
 	menu->addAction(collection->addAction("playlist_clear", clearAction));
 
 	menu->addSeparator();
@@ -587,15 +385,16 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	menu->addAction(collection->addAction("playlist_rename", renameAction));
 
 	KAction *removePlaylistAction = new KAction(KIcon("edit-delete"),
-					       i18nc("remove an item from a list", "Remove"), this);
+		i18nc("remove an item from a list", "Remove"), this);
 	connect(removePlaylistAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
 	menu->addAction(collection->addAction("playlist_remove", removePlaylistAction));
 
 	KAction *savePlaylistAction = KStandardAction::save(this, SLOT(savePlaylist()), this);
 	menu->addAction(collection->addAction("playlist_save", savePlaylistAction));
 
-	KAction *saveAsPlaylistAction = KStandardAction::saveAs(this, SLOT(saveAsPlaylist()), this);
-	menu->addAction(collection->addAction("playlist_save_as", saveAsPlaylistAction));
+	KAction *savePlaylistAsAction =
+		KStandardAction::saveAs(this, SLOT(savePlaylistAs()), this);
+	menu->addAction(collection->addAction("playlist_save_as", savePlaylistAsAction));
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
@@ -632,21 +431,19 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(widget);
-	toolButton->setDefaultAction(saveAsPlaylistAction);
+	toolButton->setDefaultAction(savePlaylistAsAction);
 	toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 	boxLayout->addWidget(toolButton);
 
 	boxLayout->addStretch();
 	sideLayout->addLayout(boxLayout);
 
-	playlistBrowserModel = new PlaylistBrowserModel(playlistModel, temporaryPlaylist, this);
-
 	playlistBrowserView = new PlaylistBrowserView(widget);
 	playlistBrowserView->addAction(newAction);
 	playlistBrowserView->addAction(renameAction);
 	playlistBrowserView->addAction(removePlaylistAction);
 	playlistBrowserView->addAction(savePlaylistAction);
-	playlistBrowserView->addAction(saveAsPlaylistAction);
+	playlistBrowserView->addAction(savePlaylistAsAction);
 	playlistBrowserView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	playlistBrowserView->setModel(playlistBrowserModel);
 	connect(playlistBrowserView, SIGNAL(activated(QModelIndex)),
@@ -695,13 +492,13 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	playlistView->setRootIsDecorated(false);
 	playlistView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	playlistView->setModel(playlistModel);
-	playlistView->sortByColumn(0, Qt::AscendingOrder);
+	playlistView->sortByColumn(-1, Qt::AscendingOrder);
 	playlistView->setSortingEnabled(true);
 	playlistView->addAction(removeTrackAction);
 	connect(removeTrackAction, SIGNAL(triggered(bool)),
 		playlistView, SLOT(removeSelectedRows()));
 	connect(playlistView, SIGNAL(activated(QModelIndex)),
-		playlistModel, SLOT(playTrack(QModelIndex)));
+		this, SLOT(playTrack(QModelIndex)));
 	sideLayout->addWidget(playlistView);
 
 	QWidget *mediaContainer = new QWidget(verticalSplitter);
@@ -716,63 +513,24 @@ PlaylistTab::~PlaylistTab()
 {
 }
 
-void PlaylistTab::appendUrls(const QList<KUrl> &urls, bool playImmediately)
+void PlaylistTab::appendToCurrentPlaylist(const QList<KUrl> &urls, bool playImmediately)
 {
-	int playlistIndex = playlistBrowserModel->rowCount(QModelIndex());
-	bool playlists = false;
+	playlistModel->appendUrls(playlistBrowserModel->getCurrentPlaylist(), urls,
+		playImmediately);
+}
 
-	foreach (const KUrl &url, urls) {
-		QString localFile = url.toLocalFile();
-
-		if (localFile.endsWith(QLatin1String(".pls"), Qt::CaseInsensitive)) {
-			Playlist *playlist = Playlist::readPLSFile(localFile);
-
-			if (playlist != NULL) {
-				playlistBrowserModel->append(playlist);
-				playlists = true;
-			}
-		} else if (localFile.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive)) {
-			Playlist *playlist = Playlist::readM3UFile(localFile);
-
-			if (playlist != NULL) {
-				playlistBrowserModel->append(playlist);
-				playlists = true;
-			}
-		} else if (localFile.endsWith(QLatin1String(".xspf"), Qt::CaseInsensitive)) {
-			Playlist *playlist = Playlist::readXSPFFile(localFile);
-
-			if (playlist != NULL) {
-				playlistBrowserModel->append(playlist);
-				playlists = true;
-			}
-		} else if (localFile.endsWith(QLatin1String(".kaffeine"), Qt::CaseInsensitive)) {
-			Playlist *playlist = Playlist::readKaffeineFile(localFile);
-
-			if (playlist != NULL) {
-				playlistBrowserModel->append(playlist);
-				playlists = true;
-			}
-		}
-	}
-
-	if (!playlists) {
-		playlistModel->appendUrls(urls, playImmediately);
-	} else {
-		QModelIndex index = playlistBrowserModel->index(playlistIndex, 0);
-		playlistBrowserView->setCurrentIndex(index);
-		playlistActivated(index);
-
-		if (playlistModel->rowCount(QModelIndex()) >= 1) {
-			index = playlistModel->index(0, 0);
-			playlistView->setCurrentIndex(index);
-			playlistModel->playTrack(index);
-		}
-	}
+void PlaylistTab::appendToVisiblePlaylist(const QList<KUrl> &urls, bool playImmediately)
+{
+	playlistModel->appendUrls(playlistModel->getVisiblePlaylist(), urls, playImmediately);
 }
 
 void PlaylistTab::removeTrack(int row)
 {
-	playlistModel->removeTrack(row);
+	Playlist *currentPlaylist = playlistBrowserModel->getCurrentPlaylist();
+
+	if ((row >= 0) && (row < currentPlaylist->tracks.size())) {
+		playlistModel->removeRows(currentPlaylist, row, 1);
+	}
 }
 
 void PlaylistTab::setRandom(bool random)
@@ -787,22 +545,28 @@ void PlaylistTab::setRepeat(bool repeat)
 
 int PlaylistTab::getCurrentTrack() const
 {
-	return playlistModel->getCurrentTrack();
+	const Playlist *currentPlaylist = playlistBrowserModel->getCurrentPlaylist();
+
+	if (currentPlaylist->currentTrack >= 0) {
+		return currentPlaylist->currentTrack;
+	} else {
+		return 0;
+	}
 }
 
 int PlaylistTab::getTrackCount() const
 {
-	return playlistModel->getTrackCount();
+	return playlistBrowserModel->getCurrentPlaylist()->tracks.size();
 }
 
 bool PlaylistTab::getRandom() const
 {
-	return playlistModel->getRandom();
+	return randomAction->isChecked();
 }
 
 bool PlaylistTab::getRepeat() const
 {
-	return playlistModel->getRepeat();
+	return repeatAction->isChecked();
 }
 
 void PlaylistTab::createFileWidget()
@@ -815,7 +579,8 @@ void PlaylistTab::createFileWidget()
 
 void PlaylistTab::newPlaylist()
 {
-	Playlist *playlist = new Playlist("Unnamed Playlist"); // FIXME
+	Playlist *playlist = new Playlist();
+	playlist->title = "Unnamed Playlist"; // FIXME
 	playlistBrowserModel->append(playlist);
 }
 
@@ -846,19 +611,104 @@ void PlaylistTab::savePlaylist()
 	savePlaylist(false);
 }
 
-void PlaylistTab::saveAsPlaylist()
+void PlaylistTab::savePlaylistAs()
 {
 	savePlaylist(true);
 }
 
 void PlaylistTab::playlistActivated(const QModelIndex &index)
 {
-	playlistModel->setPlaylist(playlistBrowserModel->getPlaylist(index.row()));
+	playlistModel->setVisiblePlaylist(playlistBrowserModel->getPlaylist(index.row()));
+	
+}
+
+void PlaylistTab::playPreviousTrack()
+{
+	Playlist *currentPlaylist = playlistBrowserModel->getCurrentPlaylist();
+	playTrack(currentPlaylist, currentPlaylist->currentTrack - 1);
+}
+
+void PlaylistTab::playCurrentTrack()
+{
+	Playlist *currentPlaylist = playlistBrowserModel->getCurrentPlaylist();
+
+	if (currentPlaylist->currentTrack >= 0) {
+		playTrack(currentPlaylist, currentPlaylist->currentTrack);
+	} else {
+		playNextTrack();
+	}
+}
+
+void PlaylistTab::playNextTrack()
+{
+	Playlist *currentPlaylist = playlistBrowserModel->getCurrentPlaylist();
+
+	if (randomAction->isChecked()) {
+		int size = currentPlaylist->tracks.size();
+
+		if (size < 2) {
+			playTrack(currentPlaylist, 0);
+		} else if (currentPlaylist->currentTrack != -1) {
+			int track = (qrand() % (size - 1));
+
+			if (track >= currentPlaylist->currentTrack) {
+				++track;
+			}
+
+			playTrack(currentPlaylist, track);
+		} else {
+			playTrack(currentPlaylist, qrand() % size);
+		}
+	} else if (((currentPlaylist->currentTrack + 1) == currentPlaylist->tracks.size()) &&
+		   repeatAction->isChecked()) {
+		playTrack(currentPlaylist, 0);
+	} else {
+		playTrack(currentPlaylist, currentPlaylist->currentTrack + 1);
+	}
 }
 
 void PlaylistTab::activate()
 {
 	mediaLayout->addWidget(mediaWidget);
+}
+
+void PlaylistTab::playTrack(const QModelIndex &index)
+{
+	playTrack(playlistModel->getVisiblePlaylist(), index.row());
+}
+
+void PlaylistTab::playTrack(Playlist *playlist, int track)
+{
+	if ((track < 0) || (playlist == NULL) || (track >= playlist->tracks.size())) {
+		track = -1;
+	}
+
+	if (track != -1) {
+		mediaWidget->play(playlist->at(track).url);
+		playlistBrowserModel->setCurrentPlaylist(playlist);
+	} else {
+		mediaWidget->stop();
+	}
+
+	if (playlist != NULL) {
+		playlistModel->setCurrentTrack(playlist, track);
+	}
+}
+
+void PlaylistTab::appendUrls(const QList<KUrl> &urls)
+{
+	playlistModel->appendUrls(playlistModel->getVisiblePlaylist(), urls, false);
+}
+
+void PlaylistTab::appendPlaylist(Playlist *playlist, bool playImmediately)
+{
+	playlistBrowserModel->append(playlist);
+
+	if (playImmediately) {
+		playlistBrowserModel->setCurrentPlaylist(playlist);
+		playlistModel->setVisiblePlaylist(playlist);
+		playNextTrack();
+	}
 }
 
 void PlaylistTab::savePlaylist(bool askName)
@@ -870,35 +720,33 @@ void PlaylistTab::savePlaylist(bool askName)
 	}
 
 	Playlist *playlist = playlistBrowserModel->getPlaylist(index.row());
-	KUrl url = playlist->getUrl();
+	KUrl url = playlist->url;
 
-	if (askName || !url.isValid()) {
-		url = KFileDialog::getSaveUrl(KUrl(), i18n("*.m3u|M3U Playlist\n*.pls|PLS Playlist\n*.xspf|XSPF Playlist"), this);
+	if (askName || !url.isValid() ||
+	    url.fileName().endsWith(".kaffeine", Qt::CaseInsensitive)) {
+		url = KFileDialog::getSaveUrl(KUrl(),
+			i18n("*.m3u|M3U Playlist\n*.pls|PLS Playlist\n*.xspf|XSPF Playlist"),
+			this);
 
 		if (!url.isValid()) {
 			return;
 		}
 
-		playlist->setUrl(url);
+		playlist->url = url;
 	}
 
-	QFile file(url.toLocalFile());
+	QString fileName = url.fileName();
+	Playlist::Format format = Playlist::Invalid;
 
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		KMessageBox::sorry(this, i18n("Cannot open %1.", file.fileName()));
-		return;
+	if (fileName.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive)) {
+		format = Playlist::M3U;
+	} else if (fileName.endsWith(QLatin1String(".pls"), Qt::CaseInsensitive)) {
+		format = Playlist::PLS;
+	} else if (fileName.endsWith(QLatin1String(".xspf"), Qt::CaseInsensitive)) {
+		format = Playlist::XSPF;
 	}
 
-	QString localFile = file.fileName();
-
-	if (localFile.endsWith(QLatin1String(".pls"), Qt::CaseInsensitive)) {
-		playlist->writePLSFile(&file);
-	} else if (localFile.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive)) {
-		playlist->writeM3UFile(&file);
-	} else if (localFile.endsWith(QLatin1String(".xspf"), Qt::CaseInsensitive)) {
-		playlist->writeXSPFFile(&file);
-	} else {
-		KMessageBox::sorry(this, i18n("Unknown playlist format."));
-		playlist->setUrl(KUrl());
+	if (format != Playlist::Invalid) {
+		playlist->save(format);
 	}
 }

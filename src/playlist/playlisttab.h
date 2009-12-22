@@ -57,19 +57,21 @@ public:
 		QObject *parent);
 	~PlaylistBrowserModel();
 
+	void append(Playlist *playlist);
+	Playlist *getPlaylist(int row) const;
+	void setCurrentPlaylist(Playlist *playlist);
+	Playlist *getCurrentPlaylist() const;
+	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+
+signals:
+	void playTrack(Playlist *playlist, int track);
+
+private:
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
-	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	bool setData(const QModelIndex &index, const QVariant &value, int role);
 
-	void append(Playlist *playlist);
-	Playlist *getPlaylist(int row) const;
-
-private slots:
-	void setCurrentPlaylist(Playlist *playlist);
-
-private:
 	PlaylistModel *playlistModel;
 	QList<Playlist *> playlists;
 	int currentPlaylist;
@@ -82,7 +84,8 @@ public:
 	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
-	void appendUrls(const QList<KUrl> &urls, bool playImmediately);
+	void appendToCurrentPlaylist(const QList<KUrl> &urls, bool playImmediately);
+	void appendToVisiblePlaylist(const QList<KUrl> &urls, bool playImmediately);
 	void removeTrack(int row);
 	void setRandom(bool random);
 	void setRepeat(bool repeat);
@@ -98,8 +101,15 @@ private slots:
 	void renamePlaylist();
 	void removePlaylist();
 	void savePlaylist();
-	void saveAsPlaylist();
+	void savePlaylistAs();
 	void playlistActivated(const QModelIndex &index);
+	void playPreviousTrack();
+	void playCurrentTrack();
+	void playNextTrack();
+	void playTrack(Playlist *playlist, int track);
+	void playTrack(const QModelIndex &index);
+	void appendUrls(const QList<KUrl> &urls);
+	void appendPlaylist(Playlist *playlist, bool playImmediately);
 
 private:
 	void activate();

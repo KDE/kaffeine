@@ -22,123 +22,106 @@
 #define PLAYLISTMODEL_H
 
 #include <QAbstractTableModel>
+#include <QTime>
 #include <KUrl>
-
-class QFile;
-class MediaWidget;
 
 class PlaylistTrack
 {
 public:
-	explicit PlaylistTrack(const KUrl &url_);
-	~PlaylistTrack();
+	PlaylistTrack() : trackNumber(-1) { }
+	~PlaylistTrack() { }
 
-	KUrl getUrl() const;
-	QString getTitle() const;
-
-	int index; // only used for sorting
-
-private:
 	KUrl url;
 	QString title;
+	QString artist;
+	QString album;
+	int trackNumber;
+	QTime length;
 };
 
 class Playlist
 {
 public:
-	explicit Playlist(const QString &name_) : currentTrack(-1), name(name_) { }
+	Playlist() : currentTrack(-1) { }
 	~Playlist() { }
 
-	QString getName() const
+	const PlaylistTrack &at(int index) const
 	{
-		return name;
+		return tracks.at(index);
 	}
 
-	void setName(const QString &name_)
-	{
-		name = name_;
-	}
+	enum Format {
+		Invalid,
+		Kaffeine, // read-only
+		M3U,
+		PLS,
+		XSPF
+	};
 
-	KUrl getUrl() const
-	{
-		return url;
-	}
+	bool load(const KUrl &url_, Format format);
+	bool save(Format format) const;
 
-	void setUrl(const KUrl &url_)
-	{
-		url = url_;
-	}
-
-	static Playlist *readPLSFile(const QString &path);
-	static Playlist *readM3UFile(const QString &path);
-	static Playlist *readXSPFFile(const QString &path);
-	static Playlist *readKaffeineFile(const QString &path);
-
-	void writePLSFile(QFile *file) const;
-	void writeM3UFile(QFile *file) const;
-	void writeXSPFFile(QFile *file) const;
-
+	KUrl url;
+	QString title;
 	QList<PlaylistTrack> tracks;
 	int currentTrack;
 
 private:
-	QString name;
-	KUrl url;
+	void appendTrack(PlaylistTrack &track);
+	KUrl fromFileOrUrl(const QString &fileOrUrl) const;
+	KUrl fromRelativeUrl(const QString &trackUrlString) const;
+	QString toFileOrUrl(const KUrl &trackUrl) const;
+	QString toRelativeUrl(const KUrl &trackUrl) const;
+
+	bool loadKaffeinePlaylist(QIODevice *device);
+	bool loadM3UPlaylist(QIODevice *device);
+	void saveM3UPlaylist(QIODevice *device) const;
+	bool loadPLSPlaylist(QIODevice *device);
+	void savePLSPlaylist(QIODevice *device) const;
+	bool loadXSPFPlaylist(QIODevice *device);
+	void saveXSPFPlaylist(QIODevice *device) const;
 };
 
 class PlaylistModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	PlaylistModel(MediaWidget *mediaWidget_, Playlist *playlist, QObject *parent);
+	PlaylistModel(Playlist *visiblePlaylist_, QObject *parent);
 	~PlaylistModel();
+
+	void setVisiblePlaylist(Playlist *visiblePlaylist_);
+	Playlist *getVisiblePlaylist() const;
+
+	void appendUrls(Playlist *playlist, const QList<KUrl> &urls, bool playImmediately);
+	void removeRows(Playlist *playlist, int row, int count);
+	void setCurrentTrack(Playlist *playlist, int track);
+
+public slots:
+	void clearVisiblePlaylist();
+
+signals:
+	void appendPlaylist(Playlist *playlist, bool playImmediately);
+	void playTrack(Playlist *playlist, int track);
+
+private:
+	void insertUrls(Playlist *playlist, int row, const QList<KUrl> &urls,
+		bool playImmediately);
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-
-	Qt::DropActions supportedDropActions() const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QStringList mimeTypes() const;
-	QMimeData *mimeData(const QModelIndexList &indexes) const;
-	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
 	bool removeRows(int row, int count, const QModelIndex &parent);
 	void sort(int column, Qt::SortOrder order);
 
-	void setPlaylist(Playlist *playlist);
-	void setCurrentPlaylist(Playlist *playlist);
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QStringList mimeTypes() const;
+	Qt::DropActions supportedDropActions() const;
+	QMimeData *mimeData(const QModelIndexList &indexes) const;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+		const QModelIndex &parent);
 
-	void removeTrack(int index);
-
-	int getCurrentTrack() const;
-	int getTrackCount() const;
-	bool getRandom() const;
-	bool getRepeat() const;
-
-signals:
-	void currentPlaylistChanged(Playlist *playlist);
-
-public slots:
-	void appendUrls(const QList<KUrl> &urls, bool playImmediately = true);
-	void playPreviousTrack();
-	void playCurrentTrack();
-	void playNextTrack();
-	void playTrack(const QModelIndex &index);
-	void setRandom(bool random_);
-	void setRepeat(bool repeat_);
-	void clearPlaylist();
-
-private:
-	static QList<PlaylistTrack> processUrls(const QList<KUrl> &urls);
-
-	void playTrack(Playlist *playlist, int track);
-
-	MediaWidget *mediaWidget;
 	Playlist *visiblePlaylist;
-	Playlist *activePlaylist;
-	bool random;
-	bool repeat;
 };
 
 #endif /* PLAYLISTMODEL_H */
