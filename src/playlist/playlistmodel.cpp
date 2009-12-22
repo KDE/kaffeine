@@ -587,7 +587,8 @@ void PlaylistModel::insertUrls(Playlist *playlist, int row, const QList<KUrl> &u
 
 		if (fileName.endsWith(QLatin1String(".kaffeine"), Qt::CaseInsensitive)) {
 			format = Playlist::Kaffeine;
-		} else if (fileName.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive)) {
+		} else if (fileName.endsWith(QLatin1String(".m3u"), Qt::CaseInsensitive) ||
+			   fileName.endsWith(QLatin1String(".m3u8"), Qt::CaseInsensitive)) {
 			format = Playlist::M3U;
 		} else if (fileName.endsWith(QLatin1String(".pls"), Qt::CaseInsensitive)) {
 			format = Playlist::PLS;
