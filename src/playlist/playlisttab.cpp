@@ -62,9 +62,10 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 	bool hasMetadata = true;
 
 	if (version == 0xc39637a1) {
+		// compatibility code
 		hasMetadata = false;
 	} else if (version != 0x2e00f3ea) {
-		kWarning() << "wrong version" << file.fileName();
+		kWarning() << "cannot read file" << file.fileName();
 		return;
 	}
 
@@ -96,7 +97,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			kWarning() << "corrupt data" << file.fileName();
+			kWarning() << "cannot read file" << file.fileName();
 			delete playlist;
 			break;
 		}
@@ -110,7 +111,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QFile file(KStandardDirs::locateLocal("appdata", "playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kWarning() << "can't open" << file.fileName();
+		kWarning() << "cannot open file" << file.fileName();
 		return;
 	}
 
@@ -455,8 +456,8 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 		this, SLOT(playlistActivated(QModelIndex)));
 	sideLayout->addWidget(playlistBrowserView);
 
-	// KFileWidget creates a local event loop which can cause bad
-	// side effects (because Kaffeine isn't fully constructed yet)
+	// KFileWidget creates a local event loop which can cause bad side
+	// effects (because the main window isn't fully constructed yet)
 	fileWidgetSplitter = verticalSplitter;
 	QTimer::singleShot(0, this, SLOT(createFileWidget()));
 
@@ -585,7 +586,7 @@ void PlaylistTab::createFileWidget()
 void PlaylistTab::newPlaylist()
 {
 	Playlist *playlist = new Playlist();
-	playlist->title = "Unnamed Playlist"; // FIXME
+	playlist->title = i18n("Unnamed Playlist");
 	playlistBrowserModel->append(playlist);
 }
 
