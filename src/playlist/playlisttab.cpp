@@ -729,7 +729,7 @@ void PlaylistTab::savePlaylist(bool askName)
 	KUrl url = playlist->url;
 
 	if (askName || !url.isValid() ||
-	    url.fileName().endsWith(".kaffeine", Qt::CaseInsensitive)) {
+	    url.fileName().endsWith(QLatin1String(".kaffeine"), Qt::CaseInsensitive)) {
 		url = KFileDialog::getSaveUrl(KUrl(), i18nc("file filter",
 			"*.xspf|XSPF Playlist\n*.m3u|M3U Playlist\n*.pls|PLS Playlist"), this);
 

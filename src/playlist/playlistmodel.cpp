@@ -241,7 +241,7 @@ bool Playlist::loadM3UPlaylist(QIODevice *device)
 		QString line = stream.readLine();
 
 		if (line.startsWith('#')) {
-			if (line.startsWith("#EXTINF:")) {
+			if (line.startsWith(QLatin1String("#EXTINF:"))) {
 				int index = line.indexOf(',', 8);
 				bool ok;
 				int length = line.mid(8, index - 8).toInt(&ok);
@@ -296,11 +296,11 @@ bool Playlist::loadPLSPlaylist(QIODevice *device)
 		QString line = stream.readLine();
 		int start;
 
-		if (line.startsWith("File", Qt::CaseInsensitive)) {
+		if (line.startsWith(QLatin1String("File"), Qt::CaseInsensitive)) {
 			start = 4;
-		} else if (line.startsWith("Title", Qt::CaseInsensitive)) {
+		} else if (line.startsWith(QLatin1String("Title"), Qt::CaseInsensitive)) {
 			start = 5;
-		} else if (line.startsWith("Length", Qt::CaseInsensitive)) {
+		} else if (line.startsWith(QLatin1String("Length"), Qt::CaseInsensitive)) {
 			start = 6;
 		} else {
 			continue;
