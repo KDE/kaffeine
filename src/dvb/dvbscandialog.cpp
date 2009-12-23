@@ -560,9 +560,7 @@ void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &ch
 		}
 	}
 
-	if (!newChannels.isEmpty()) {
-		channelModel->appendChannels(newChannels);
-	}
+	channelModel->appendChannels(newChannels);
 }
 
 void DvbScanDialog::setDevice(DvbDevice *newDevice)

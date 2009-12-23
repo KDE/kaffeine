@@ -317,17 +317,18 @@ void DvbChannelModel::clear()
 
 void DvbChannelModel::appendChannels(const QList<DvbChannel *> &list)
 {
-	Q_ASSERT(!list.isEmpty());
-	beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
+	if (!list.isEmpty()) {
+		beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
 
-	foreach (DvbChannel *channel, list) {
-		adjustNameNumber(channel);
-		channels.append(QSharedDataPointer<DvbChannel>(channel));
-		names.insert(channel->name);
-		numbers.insert(channel->number);
+		foreach (DvbChannel *channel, list) {
+			adjustNameNumber(channel);
+			channels.append(QSharedDataPointer<DvbChannel>(channel));
+			names.insert(channel->name);
+			numbers.insert(channel->number);
+		}
+
+		endInsertRows();
 	}
-
-	endInsertRows();
 }
 
 void DvbChannelModel::updateChannel(int pos, DvbChannel *channel)
