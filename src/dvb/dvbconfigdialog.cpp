@@ -177,8 +177,10 @@ void DvbConfigDialog::changeTimeShiftFolder()
 
 void DvbConfigDialog::updateScanFile()
 {
-	DvbScanFileDownloadDialog dialog(manager, this);
-	dialog.exec();
+	KDialog *dialog = new DvbScanFileDownloadDialog(manager, this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbConfigDialog::latitudeChanged(const QString &text)

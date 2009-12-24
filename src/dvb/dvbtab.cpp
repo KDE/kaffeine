@@ -262,8 +262,10 @@ void DvbTab::osdKeyPressed(int key)
 
 void DvbTab::showChannelDialog()
 {
-	DvbScanDialog dialog(manager, this);
-	dialog.exec();
+	KDialog *dialog = new DvbScanDialog(manager, this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbTab::showRecordingDialog()
@@ -280,8 +282,10 @@ void DvbTab::showEpgDialog()
 		channelName = channel->name;
 	}
 
-	DvbEpgDialog dialog(manager, channelName, this);
-	dialog.exec();
+	KDialog *dialog = new DvbEpgDialog(manager, channelName, this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbTab::instantRecord(bool checked)
@@ -313,8 +317,10 @@ void DvbTab::instantRecordingRemoved()
 
 void DvbTab::configureDvb()
 {
-	DvbConfigDialog dialog(manager, this);
-	dialog.exec();
+	KDialog *dialog = new DvbConfigDialog(manager, this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbTab::tuneOsdChannel()

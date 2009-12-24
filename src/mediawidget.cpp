@@ -81,16 +81,18 @@ private:
 class JumpToPositionDialog : public KDialog
 {
 public:
-	JumpToPositionDialog(const QTime &time, QWidget *parent);
+	explicit JumpToPositionDialog(MediaWidget *mediaWidget_);
 	~JumpToPositionDialog();
 
-	QTime getPosition() const;
-
 private:
+	void accepted();
+
+	MediaWidget *mediaWidget;
 	QTimeEdit *timeEdit;
 };
 
-JumpToPositionDialog::JumpToPositionDialog(const QTime &time, QWidget *parent) : KDialog(parent)
+JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : KDialog(mediaWidget_),
+	mediaWidget(mediaWidget_)
 {
 	setCaption(i18n("Jump to Position"));
 
@@ -99,8 +101,9 @@ JumpToPositionDialog::JumpToPositionDialog(const QTime &time, QWidget *parent) :
 
 	layout->addWidget(new QLabel(i18n("Enter a position:")));
 
-	timeEdit = new QTimeEdit(time, this);
+	timeEdit = new QTimeEdit(this);
 	timeEdit->setDisplayFormat("hh:mm:ss");
+	timeEdit->setTime(QTime().addMSecs(mediaWidget->getPosition()));
 	layout->addWidget(timeEdit);
 
 	timeEdit->setFocus();
@@ -112,9 +115,10 @@ JumpToPositionDialog::~JumpToPositionDialog()
 {
 }
 
-QTime JumpToPositionDialog::getPosition() const
+void JumpToPositionDialog::accepted()
 {
-	return timeEdit->time();
+	mediaWidget->setPosition(QTime().msecsTo(timeEdit->time()));
+	KDialog::accepted();
 }
 
 MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
@@ -973,11 +977,10 @@ void MediaWidget::longSkipForward()
 
 void MediaWidget::jumpToPosition()
 {
-	JumpToPositionDialog dialog(QTime().addMSecs(mediaObject->currentTime()), this);
-
-	if (dialog.exec() == QDialog::Accepted) {
-		mediaObject->seek(QTime().msecsTo(dialog.getPosition()));
-	}
+	KDialog *dialog = new JumpToPositionDialog(this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void MediaWidget::timeButtonClicked()

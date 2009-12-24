@@ -594,11 +594,12 @@ void DvbChannelView::editChannel()
 {
 	int row = selectedRow();
 
-	if (row == -1) {
-		return;
+	if (row >= 0) {
+		KDialog *dialog = new DvbChannelEditor(channelModel, row, this);
+		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+		dialog->setModal(true);
+		dialog->show();
 	}
-
-	DvbChannelEditor(channelModel, row, this).exec();
 }
 
 void DvbChannelView::deleteChannel()

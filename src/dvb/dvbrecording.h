@@ -60,7 +60,7 @@ private:
 	bool checkingStatus;
 	bool instantRecordingActive;
 	QPersistentModelIndex instantRecordingIndex;
-	KDialog *dialog;
+	KDialog *scheduleDialog;
 	ProxyTreeView *treeView;
 };
 

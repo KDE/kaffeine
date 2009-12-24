@@ -266,8 +266,8 @@ void DvbRecording::processData(const char data[188])
 }
 
 DvbRecordingManager::DvbRecordingManager(DvbManager *manager_) : QObject(manager_),
-	manager(manager_), checkingStatus(false), instantRecordingActive(false), dialog(NULL),
-	treeView(NULL)
+	manager(manager_), checkingStatus(false), instantRecordingActive(false),
+	scheduleDialog(NULL), treeView(NULL)
 {
 	model = new DvbRecordingModel(manager, this);
 	connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(checkStatus()));
@@ -382,11 +382,11 @@ void DvbRecordingManager::stopInstantRecording()
 
 void DvbRecordingManager::showDialog(QWidget *parent)
 {
-	dialog = new KDialog(parent);
-	dialog->setButtons(KDialog::Close);
-	dialog->setCaption(i18nc("dialog", "Recording Schedule"));
+	scheduleDialog = new KDialog(parent);
+	scheduleDialog->setButtons(KDialog::Close);
+	scheduleDialog->setCaption(i18nc("dialog", "Recording Schedule"));
 
-	QWidget *widget = new QWidget(dialog);
+	QWidget *widget = new QWidget(scheduleDialog);
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
@@ -423,8 +423,10 @@ void DvbRecordingManager::showDialog(QWidget *parent)
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 
-	dialog->setMainWidget(widget);
-	dialog->exec();
+	scheduleDialog->setMainWidget(widget);
+	scheduleDialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	scheduleDialog->setModal(true);
+	scheduleDialog->show();
 }
 
 void DvbRecordingManager::checkStatus()
@@ -500,7 +502,10 @@ void DvbRecordingManager::checkInstantRecording()
 
 void DvbRecordingManager::newRecording()
 {
-	DvbRecordingEditor(manager, model, -1, dialog).exec();
+	KDialog *dialog = new DvbRecordingEditor(manager, model, -1, scheduleDialog);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbRecordingManager::editRecording()
@@ -508,7 +513,10 @@ void DvbRecordingManager::editRecording()
 	int row = treeView->selectedRow();
 
 	if (row >= 0) {
-		DvbRecordingEditor(manager, model, row, dialog).exec();
+		KDialog *dialog = new DvbRecordingEditor(manager, model, row, scheduleDialog);
+		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+		dialog->setModal(true);
+		dialog->show();
 	}
 }
 

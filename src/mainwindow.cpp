@@ -549,8 +549,10 @@ void MainWindow::configureKeys()
 
 void MainWindow::configureKaffeine()
 {
-	ConfigurationDialog dialog(mediaWidget, this);
-	dialog.exec();
+	KDialog *dialog = new ConfigurationDialog(mediaWidget, this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void MainWindow::activateDvbTab()
