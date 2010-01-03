@@ -85,19 +85,35 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 	    }
 
 	case DvbTransponderBase::DvbS: {
-		DvbSTransponder transponder;
+		if (line.startsWith("S ")) {
+			DvbSTransponder transponder;
 
-		if (!transponder.fromString(line)) {
-			break;
+			if (!transponder.fromString(line)) {
+				break;
+			}
+
+			if (transponder.fecRate == DvbSTransponder::FecNone) {
+				qWarning() << "Warning: fec rate == NONE in file" << fileName;
+			}
+
+			// fecRate == AUTO is ok
+
+			return transponder.toString();
+		} else {
+			DvbS2Transponder transponder;
+
+			if (!transponder.fromString(line)) {
+				break;
+			}
+
+			if (transponder.fecRate == DvbSTransponder::FecNone) {
+				qWarning() << "Warning: fec rate == NONE in file" << fileName;
+			}
+
+			// fecRate == AUTO is ok
+
+			return transponder.toString();
 		}
-
-		if (transponder.fecRate == DvbSTransponder::FecNone) {
-			qWarning() << "Warning: fec rate == NONE in file" << fileName;
-		}
-
-		// fecRate == AUTO is ok
-
-		return transponder.toString();
 	    }
 
 	case DvbTransponderBase::DvbT: {
@@ -166,6 +182,8 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 		break;
 	case DvbTransponderBase::DvbS:
 		dir.setPath(path + "/dvb-s");
+		break;
+	case DvbTransponderBase::DvbS2:
 		break;
 	case DvbTransponderBase::DvbT:
 		dir.setPath(path + "/dvb-t");
