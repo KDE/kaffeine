@@ -85,7 +85,7 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 	    }
 
 	case DvbTransponderBase::DvbS: {
-		if (line.startsWith("S ")) {
+		if (line.startsWith(QLatin1String("S "))) {
 			DvbSTransponder transponder;
 
 			if (!transponder.fromString(line)) {
