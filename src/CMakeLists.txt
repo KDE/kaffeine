@@ -1,4 +1,6 @@
 set(kaffeine_SRCS
+    backend-xine/xinecommands.cpp
+    backend-xine/xinemediawidget.cpp
     dvb/dvbchannel.cpp
     dvb/dvbchannelui.cpp
     dvb/dvbconfigdialog.cpp
@@ -23,6 +25,10 @@ set(kaffeine_SRCS
     sqlhelper.cpp
     tablemodel.cpp)
 
+set(kaffeinexbu_SRCS
+    backend-xine/xineapplication.cpp
+    backend-xine/xinecommands.cpp)
+
 set(kaffeinedvbmodule_SRCS
     dvb/dvbdevice_linux.cpp)
 
@@ -32,10 +38,14 @@ set(kaffeinedvbdebugmodule_SRCS
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 kde4_add_executable(kaffeine ${kaffeine_SRCS})
-target_link_libraries(kaffeine ${QT_QTSQL_LIBRARY} ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_PHONON_LIBS} ${KDE4_SOLID_LIBS})
+target_link_libraries(kaffeine ${QT_QTSQL_LIBRARY} ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS} ${KDE4_SOLID_LIBS})
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(FILES kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+
+kde4_add_executable(kaffeine-xbu ${kaffeinexbu_SRCS})
+target_link_libraries(kaffeine-xbu ${X11_X11_LIB} ${XINE_LIBRARY} ${KDE4_KDEUI_LIBS})
+install(TARGETS kaffeine-xbu ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 if(NOT WIN32)
 kde4_add_plugin(kaffeinedvb ${kaffeinedvbmodule_SRCS})

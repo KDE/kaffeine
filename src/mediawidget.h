@@ -22,20 +22,11 @@
 #define MEDIAWIDGET_H
 
 #include <QWidget>
-#include <Phonon/Global>
-#include <Phonon/ObjectDescription>
 #include <KIcon>
 
 class QActionGroup;
 class QPushButton;
 class QSlider;
-namespace Phonon
-{
-class AudioOutput;
-class MediaController;
-class MediaObject;
-class VideoWidget;
-}
 class KAction;
 class KActionCollection;
 class KComboBox;
@@ -44,6 +35,8 @@ class KToolBar;
 class KUrl;
 class DvbFeed;
 class OsdWidget;
+class SeekSlider;
+class XineMediaWidget;
 
 class MediaWidget : public QWidget
 {
@@ -93,7 +86,6 @@ public slots:
 	void previous();
 	void next();
 	void stop();
-	void stopDvb();
 	void increaseVolume();
 	void decreaseVolume();
 
@@ -117,64 +109,58 @@ signals:
 	void osdKeyPressed(int key);
 
 private slots:
-	void stateChanged(Phonon::State state);
+	void playbackChanged(bool playing);
+	void seekableChanged(bool seekable);
+	void totalTimeChanged(int totalTime);
+	void currentTimeChanged(int currentTime);
+	void metadataChanged(); // FIXME
+	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
+	void setCurrentAudioChannel(int currentAudioChannel);
+	void subtitlesChanged(const QStringList &subtitles, int currentSubtitle);
+	void setCurrentSubtitle(int currentSubtitle);
+	void dvdPlaybackChanged(bool playingDvd);
+	void titlesChanged(int titleCount, int currentTitle);
+	void setCurrentTitle(int currentTitle);
+	void chaptersChanged(int chapterCount, int currentChapter);
+	void setCurrentChapter(int currentChapter);
+	void anglesChanged(int angleCount, int currentAngle);
+	void setCurrentAngle(int currentAngle);
+	void dvbPlaybackFinished();
 	void playbackFinished();
-	void setPaused(bool paused);
-	void changeAudioChannel(int index);
-	void changeSubtitle(int index);
-	void autoResize(QAction *action);
-	void setMuted(bool muted);
-	void mutedChanged();
-	void setVolume(qreal volume);
-	void volumeChanged(int volume);
-	void aspectRatioAuto();
-	void aspectRatio4_3();
-	void aspectRatio16_9();
-	void aspectRatioWidget();
-	void updateTitleMenu();
-	void updateChapterMenu();
-	void updateAngleMenu();
-	void changeTitle(QAction *action);
-	void changeChapter(QAction *action);
-	void changeAngle(QAction *action);
-	void updateSeekable();
-	void longSkipBackward();
-	void skipBackward();
-	void skipForward();
-	void longSkipForward();
-	void jumpToPosition();
-	void timeButtonClicked();
-	void updateTimeButton();
-	void updateCaption();
-
-	void titleCountChanged(int count);
-	void chapterCountChanged(int count);
-	void angleCountChanged(int count);
-	void audioChannelsChanged();
-	void subtitlesChanged();
-
 	void checkScreenSaver();
 
+	void mutedChanged();
+	void volumeChanged(int volume);
+	void aspectRatioChanged(QAction *action);
+	void autoResizeTriggered(QAction *action);
+	void pausedChanged(bool paused);
+	void timeButtonClicked();
+	void longSkipBackward();
+	void shortSkipBackward();
+	void shortSkipForward();
+	void longSkipForward();
+	void jumpToPosition();
+	void currentAudioChannelChanged(int currentAudioChannel);
+	void currentSubtitleChanged(int currentSubtitle);
+	void currentTitleChanged(QAction *action);
+	void currentChapterChanged(QAction *action);
+	void currentAngleChanged(QAction *action);
+
 private:
+	void updateTimeButton(int currentTime);
+
 	void contextMenuEvent(QContextMenuEvent *event);
-	void mouseDoubleClickEvent(QMouseEvent *);
+	void mouseDoubleClickEvent(QMouseEvent *event);
 	void dragEnterEvent(QDragEnterEvent *event);
 	void dropEvent(QDropEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void wheelEvent(QWheelEvent *event);
 
-	void updateAudioChannelBox();
-	void updateSubtitleBox();
-
 	KMenu *menu;
-	Phonon::MediaObject *mediaObject;
-	Phonon::AudioOutput *audioOutput;
-	Phonon::VideoWidget *videoWidget;
+	XineMediaWidget *backend;
 	OsdWidget *osdWidget;
-	Phonon::MediaController *mediaController;
 	DvbFeed *dvbFeed;
-	bool playing;
 
 	KAction *actionPrevious;
 	KAction *actionPlayPause;
@@ -189,14 +175,13 @@ private:
 	QString textSubtitlesOff;
 	bool audioChannelsReady;
 	bool subtitlesReady;
-	QList<Phonon::AudioChannelDescription> audioChannels;
-	QList<Phonon::SubtitleDescription> subtitles;
 	int autoResizeFactor;
 	KAction *muteAction;
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
 	bool isMuted;
 	QSlider *volumeSlider;
+	SeekSlider *seekSlider;
 	KAction *longSkipBackwardAction;
 	KAction *shortSkipBackwardAction;
 	KAction *shortSkipForwardAction;
@@ -207,9 +192,6 @@ private:
 	QActionGroup *titleGroup;
 	QActionGroup *chapterGroup;
 	QActionGroup *angleGroup;
-	int titleCount;
-	int chapterCount;
-	int angleCount;
 	KMenu *navigationMenu;
 	int shortSkipDuration;
 	int longSkipDuration;

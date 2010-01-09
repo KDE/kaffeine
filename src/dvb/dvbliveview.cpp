@@ -22,6 +22,7 @@
 #include "dvbliveview_p.h"
 
 #include <QPainter>
+#include <QSet>
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"
@@ -180,7 +181,7 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 		fastRetuneTimer.start(500);
 	}
 
-	mediaWidget->stopDvb();
+	mediaWidget->stop();
 	channel = channel_;
 	device = manager->requestDevice(channel->source, channel->transponder, DvbManager::Shared);
 
@@ -331,7 +332,7 @@ void DvbLiveView::deviceStateChanged()
 		if (device != NULL) {
 			startDevice();
 		} else {
-			mediaWidget->stopDvb();
+			mediaWidget->stop();
 			osdWidget->showText(i18nc("message box", "No available device found."),
 				2500);
 		}
@@ -365,7 +366,7 @@ void DvbLiveView::prepareTimeShift()
 	if (internal->timeShiftFile.exists() ||
 	    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
 		// FIXME error message
-		mediaWidget->stopDvb();
+		mediaWidget->stop();
 		return;
 	}
 
