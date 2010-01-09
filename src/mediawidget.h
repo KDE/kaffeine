@@ -63,8 +63,8 @@ public:
 	void writeDvbData(const QByteArray &data);
 
 	// empty list = use audio channels / subtitles provided by phonon
-	void updateDvbAudioChannels(const QStringList &audioChannels, int currentIndex);
-	void updateDvbSubtitles(const QStringList &subtitles, int currentIndex);
+	void updateDvbAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
+	void updateDvbSubtitles(const QStringList &subtitles, int currentSubtitle);
 
 	int getShortSkipDuration() const;
 	int getLongSkipDuration() const;

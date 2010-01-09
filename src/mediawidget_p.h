@@ -42,8 +42,6 @@ public:
 	bool ignoreStop;
 	QStringList audioChannels;
 	QStringList subtitles;
-	int audioChannelIndex;
-	int subtitleIndex;
 
 private slots:
 	void readyWrite();

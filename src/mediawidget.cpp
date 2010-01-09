@@ -49,7 +49,7 @@
 #include "osdwidget.h"
 
 DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftActive(false), ignoreStop(false),
-	audioChannelIndex(0), subtitleIndex(0), readFd(-1), writeFd(-1), notifier(NULL)
+	readFd(-1), writeFd(-1), notifier(NULL)
 {
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -565,18 +565,38 @@ void MediaWidget::writeDvbData(const QByteArray &data)
 	dvbFeed->writeData(data);
 }
 
-void MediaWidget::updateDvbAudioChannels(const QStringList &audioChannels, int currentIndex)
+void MediaWidget::updateDvbAudioChannels(const QStringList &audioChannels, int currentAudioChannel)
 {
 	dvbFeed->audioChannels = audioChannels;
-	dvbFeed->audioChannelIndex = currentIndex;
-	audioChannelsChanged(backend->getAudioChannels(), backend->getCurrentAudioChannel());
+
+	if (!audioChannels.isEmpty()) {
+		audioChannelsReady = false;
+		audioChannelBox->clear();
+		audioChannelBox->addItems(audioChannels);
+		audioChannelBox->setCurrentIndex(currentAudioChannel);
+		audioChannelBox->setEnabled(audioChannelBox->count() > 1);
+		audioChannelsReady = true;
+	} else {
+		audioChannelsChanged(backend->getAudioChannels(),
+			backend->getCurrentAudioChannel());
+	}
 }
 
-void MediaWidget::updateDvbSubtitles(const QStringList &subtitles, int currentIndex)
+void MediaWidget::updateDvbSubtitles(const QStringList &subtitles, int currentSubtitle)
 {
 	dvbFeed->subtitles = subtitles;
-	dvbFeed->subtitleIndex = currentIndex;
-	subtitlesChanged(backend->getSubtitles(), backend->getCurrentSubtitle());
+
+	if (!subtitles.isEmpty()) {
+		subtitlesReady = false;
+		subtitleBox->clear();
+		subtitleBox->addItem(textSubtitlesOff);
+		subtitleBox->addItems(subtitles);
+		subtitleBox->setCurrentIndex(currentSubtitle + 1);
+		subtitleBox->setEnabled(subtitleBox->count() > 1);
+		subtitlesReady = true;
+	} else {
+		subtitlesChanged(backend->getSubtitles(), backend->getCurrentSubtitle());
+	}
 }
 
 int MediaWidget::getShortSkipDuration() const
@@ -769,54 +789,43 @@ void MediaWidget::metadataChanged()
 
 void MediaWidget::audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel)
 {
-	audioChannelsReady = false;
-	audioChannelBox->clear();
-
-	if ((dvbFeed != NULL) && !dvbFeed->audioChannels.isEmpty()) {
-		audioChannelBox->addItems(dvbFeed->audioChannels);
-		audioChannelBox->setCurrentIndex(dvbFeed->audioChannelIndex);
-	} else {
+	if ((dvbFeed == NULL) || dvbFeed->audioChannels.isEmpty()) {
+		audioChannelsReady = false;
+		audioChannelBox->clear();
 		audioChannelBox->addItems(audioChannels);
 		audioChannelBox->setCurrentIndex(currentAudioChannel);
+		audioChannelBox->setEnabled(audioChannelBox->count() > 1);
+		audioChannelsReady = true;
 	}
-
-	audioChannelBox->setEnabled(audioChannelBox->count() > 1);
-	audioChannelsReady = true;
 }
 
 void MediaWidget::setCurrentAudioChannel(int currentAudioChannel)
 {
-	if ((dvbFeed != NULL) && !dvbFeed->audioChannels.isEmpty()) {
-		// nothing to do
-	} else {
+	if ((dvbFeed == NULL) || dvbFeed->audioChannels.isEmpty()) {
 		audioChannelBox->setCurrentIndex(currentAudioChannel);
 	}
 }
 
 void MediaWidget::subtitlesChanged(const QStringList &subtitles, int currentSubtitle)
 {
-	subtitlesReady = false;
-	subtitleBox->clear();
-	subtitleBox->addItem(textSubtitlesOff);
-
-	if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty()) {
-		subtitleBox->addItems(dvbFeed->subtitles);
-		subtitleBox->setCurrentIndex(dvbFeed->subtitleIndex + 1);
-		backend->setCurrentSubtitle(1);
-	} else {
+	if ((dvbFeed == NULL) || dvbFeed->subtitles.isEmpty()) {
+		subtitlesReady = false;
+		subtitleBox->clear();
+		subtitleBox->addItem(textSubtitlesOff);
 		subtitleBox->addItems(subtitles);
 		subtitleBox->setCurrentIndex(currentSubtitle + 1);
+		subtitleBox->setEnabled(subtitleBox->count() > 1);
+		subtitlesReady = true;
+	} else {
+		if (!subtitles.isEmpty()) {
+			backend->setCurrentSubtitle(0);
+		}
 	}
-
-	subtitleBox->setEnabled(subtitleBox->count() > 1);
-	subtitlesReady = true;
 }
 
 void MediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
-	if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty()) {
-		backend->setCurrentSubtitle(1);
-	} else {
+	if ((dvbFeed == NULL) || dvbFeed->subtitles.isEmpty()) {
 		subtitleBox->setCurrentIndex(currentSubtitle + 1);
 	}
 }
@@ -1118,10 +1127,10 @@ void MediaWidget::jumpToPosition()
 void MediaWidget::currentAudioChannelChanged(int currentAudioChannel)
 {
 	if (audioChannelsReady) {
-		if ((dvbFeed != NULL) && !dvbFeed->audioChannels.isEmpty()) {
-			emit changeDvbAudioChannel(currentAudioChannel);
-		} else {
+		if ((dvbFeed == NULL) || dvbFeed->audioChannels.isEmpty()) {
 			backend->setCurrentAudioChannel(currentAudioChannel);
+		} else {
+			emit changeDvbAudioChannel(currentAudioChannel);
 		}
 	}
 }
@@ -1129,10 +1138,10 @@ void MediaWidget::currentAudioChannelChanged(int currentAudioChannel)
 void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 {
 	if (subtitlesReady) {
-		if ((dvbFeed != NULL) && !dvbFeed->subtitles.isEmpty()) {
-			emit changeDvbSubtitle(currentSubtitle);
+		if ((dvbFeed == NULL) || dvbFeed->subtitles.isEmpty()) {
+			backend->setCurrentSubtitle(currentSubtitle - 1);
 		} else {
-			backend->setCurrentSubtitle(currentSubtitle);
+			emit changeDvbSubtitle(currentSubtitle - 1);
 		}
 	}
 }
@@ -1164,20 +1173,17 @@ void MediaWidget::updateTimeButton(int currentTime)
 
 void MediaWidget::contextMenuEvent(QContextMenuEvent *event)
 {
-	kDebug() << event->isAccepted();
 	menu->popup(event->globalPos());
 }
 
 void MediaWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-	kDebug() << event->isAccepted();
 	Q_UNUSED(event)
 	emit toggleFullScreen();
 }
 
 void MediaWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-	kDebug() << event->isAccepted();
 	if (event->mimeData()->hasUrls()) {
 		event->acceptProposedAction();
 	}
@@ -1185,7 +1191,6 @@ void MediaWidget::dragEnterEvent(QDragEnterEvent *event)
 
 void MediaWidget::dropEvent(QDropEvent *event)
 {
-	kDebug() << event->isAccepted();
 	const QMimeData *mimeData = event->mimeData();
 
 	if (mimeData->hasUrls()) {
@@ -1196,7 +1201,6 @@ void MediaWidget::dropEvent(QDropEvent *event)
 
 void MediaWidget::keyPressEvent(QKeyEvent *event)
 {
-	kDebug() << event->isAccepted();
 	int key = event->key();
 
 	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
@@ -1214,7 +1218,6 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
-	kDebug() << event->isAccepted();
 	qint64 time = backend->getCurrentTime() - (25 * shortSkipDuration * event->delta()) / 3;
 
 	if (time < 0) {
