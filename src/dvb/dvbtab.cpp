@@ -291,16 +291,16 @@ void DvbTab::showEpgDialog()
 void DvbTab::instantRecord(bool checked)
 {
 	if (checked) {
-		QString channelName = manager->getLiveView()->getChannel()->name;
+		const DvbChannel *channel = manager->getLiveView()->getChannel();
 
-		if (channelName.isEmpty()) {
+		if (channel == NULL) {
 			instantRecordAction->setChecked(false);
 			return;
 		}
 
 		// FIXME use epg for name
 		manager->getRecordingManager()->startInstantRecording(
-			channelName + QTime::currentTime().toString("-hhmmss"), channelName);
+			channel->name + QTime::currentTime().toString("-hhmmss"), channel->name);
 
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
