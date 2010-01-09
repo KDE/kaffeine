@@ -296,9 +296,7 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	mediaWidget->updateDvbAudioChannels(audioChannels, audioPids.indexOf(audioPid));
 
 	QStringList subtitles;
-	subtitles.append(i18nc("subtitle selection entry", "off"));
 	subtitlePids.clear();
-	subtitlePids.append(-1);
 
 	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
@@ -354,7 +352,12 @@ void DvbLiveView::changeAudioStream(int index)
 
 void DvbLiveView::changeSubtitle(int index)
 {
-	subtitlePid = subtitlePids.at(index);
+	if (index < 0) {
+		subtitlePid = -1;
+	} else {
+		subtitlePid = subtitlePids.at(index);
+	}
+
 	updatePids();
 }
 
