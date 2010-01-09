@@ -204,6 +204,9 @@ void XineObject::readyRead()
 
 			break;
 		    }
+		case XineCommands::ToggleMenu:
+			dirtyFlags |= ToggleMenu;
+			break;
 		default:
 			kError() << "unknown command" << command;
 			continue;
@@ -546,6 +549,13 @@ void XineObject::customEvent(QEvent *event)
 			input.x = rectangle.x;
 			input.y = rectangle.y;
 			xine_event_send(stream, &input.event);
+			break;
+		    }
+		case ToggleMenu: {
+			xine_event_t event;
+			memset(&event, 0, sizeof(event));
+			event.type = XINE_EVENT_INPUT_MENU1;
+			xine_event_send(stream, &event);
 			break;
 		    }
 		case ProcessEvent:

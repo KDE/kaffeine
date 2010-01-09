@@ -380,6 +380,11 @@ void XineMediaWidget::setCurrentSubtitle(int currentSubtitle_)
 	Q_UNUSED(currentSubtitle_) // FIXME
 }
 
+void XineMediaWidget::toggleMenu()
+{
+	childProcess->toggleMenu();
+}
+
 void XineMediaWidget::setCurrentTitle(int currentTitle_)
 {
 	if (!encodedDvdUrl.isEmpty()) {

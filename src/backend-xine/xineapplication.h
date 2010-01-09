@@ -56,6 +56,7 @@ private:
 		Repaint		= (1 <<  9),
 		MouseMoved	= (1 << 10),
 		MousePressed	= (1 << 11),
+		ToggleMenu	= (1 << 12),
 		ProcessEvent	= (1 << 30)
 	};
 

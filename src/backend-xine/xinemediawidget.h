@@ -64,6 +64,7 @@ public:
 	void setPaused(bool paused);
 	void setCurrentAudioChannel(int currentAudioChannel_);
 	void setCurrentSubtitle(int currentSubtitle_);
+	void toggleMenu();
 	void setCurrentTitle(int currentTitle_); // first title = 1
 	void setCurrentChapter(int currentChapter_); // first chapter = 1
 	void setCurrentAngle(int currentAngle_); // first angle = 1

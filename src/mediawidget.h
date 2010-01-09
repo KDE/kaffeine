@@ -142,6 +142,7 @@ private slots:
 	void jumpToPosition();
 	void currentAudioChannelChanged(int currentAudioChannel);
 	void currentSubtitleChanged(int currentSubtitle);
+	void toggleMenu();
 	void currentTitleChanged(QAction *action);
 	void currentChapterChanged(QAction *action);
 	void currentAngleChanged(QAction *action);
@@ -186,6 +187,7 @@ private:
 	KAction *shortSkipBackwardAction;
 	KAction *shortSkipForwardAction;
 	KAction *longSkipForwardAction;
+	KAction *menuAction;
 	KMenu *titleMenu;
 	KMenu *chapterMenu;
 	KMenu *angleMenu;

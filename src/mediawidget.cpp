@@ -417,19 +417,24 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setDefaultWidget(seekSlider);
 	toolBar->addAction(collection->addAction("controls_position_slider", action));
 
-	titleMenu = new KMenu(i18n("Title"), this);
+	menuAction = new KAction(KIcon("media-optical-video"),
+		i18nc("dvd navigation", "Toggle Menu"), this);
+	connect(menuAction, SIGNAL(triggered()), this, SLOT(toggleMenu()));
+	menu->addAction(collection->addAction("controls_toggle_menu", menuAction));
+
+	titleMenu = new KMenu(i18nc("dvd navigation", "Title"), this);
 	titleGroup = new QActionGroup(this);
 	connect(titleGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(currentTitleChanged(QAction*)));
 	menu->addMenu(titleMenu);
 
-	chapterMenu = new KMenu(i18n("Chapter"), this);
+	chapterMenu = new KMenu(i18nc("dvd navigation", "Chapter"), this);
 	chapterGroup = new QActionGroup(this);
 	connect(chapterGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(currentChapterChanged(QAction*)));
 	menu->addMenu(chapterMenu);
 
-	angleMenu = new KMenu(i18n("Angle"), this);
+	angleMenu = new KMenu(i18nc("dvd navigation", "Angle"), this);
 	angleGroup = new QActionGroup(this);
 	connect(angleGroup, SIGNAL(triggered(QAction*)), this,
 		SLOT(currentAngleChanged(QAction*)));
@@ -836,17 +841,7 @@ void MediaWidget::setCurrentSubtitle(int currentSubtitle)
 
 void MediaWidget::dvdPlaybackChanged(bool playingDvd)
 {
-	// FIXME dvd menu button
-
-	if (playingDvd) {
-		titleMenu->setVisible(true);
-		chapterMenu->setVisible(true);
-		angleMenu->setVisible(true);
-	} else {
-		titleMenu->setVisible(false);
-		chapterMenu->setVisible(false);
-		angleMenu->setVisible(false);
-	}
+	menuAction->setEnabled(playingDvd);
 }
 
 void MediaWidget::titlesChanged(int titleCount, int currentTitle)
@@ -1149,6 +1144,11 @@ void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 			emit changeDvbSubtitle(currentSubtitle - 1);
 		}
 	}
+}
+
+void MediaWidget::toggleMenu()
+{
+	backend->toggleMenu();
 }
 
 void MediaWidget::currentTitleChanged(QAction *action)

@@ -37,7 +37,8 @@ namespace XineCommands
 		Seek		=  8,
 		Repaint		=  9,
 		MouseMoved	= 10,
-		MousePressed	= 11
+		MousePressed	= 11,
+		ToggleMenu	= 12
 	};
 
 	enum CommandFromChild {
@@ -202,6 +203,11 @@ public:
 	{
 		writer->write(XineCommands::MousePressed, reinterpret_cast<const char *>(&x),
 			sizeof(x), reinterpret_cast<const char *>(&y), sizeof(y));
+	}
+
+	void toggleMenu()
+	{
+		writer->write(XineCommands::ToggleMenu);
 	}
 
 	XinePipeWriterBase *writer;
