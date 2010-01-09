@@ -879,9 +879,9 @@ QMimeData *PlaylistModel::mimeData(const QModelIndexList &indexes) const
 bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
 	const QModelIndex &parent)
 {
-	Q_UNUSED(action);
-	Q_UNUSED(column);
-	Q_UNUSED(parent);
+	Q_UNUSED(action)
+	Q_UNUSED(column)
+	Q_UNUSED(parent)
 
 	if (row < 0) {
 		row = visiblePlaylist->tracks.size();

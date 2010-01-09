@@ -159,7 +159,7 @@ void SqlModelAdaptor::modelReset()
 
 void SqlModelAdaptor::rowsInserted(const QModelIndex &parent, int start, int end)
 {
-	Q_UNUSED(parent);
+	Q_UNUSED(parent)
 
 	for (int row = start; row <= end; ++row) {
 		if (!pendingDeletionKeys.isEmpty()) {
@@ -183,7 +183,7 @@ void SqlModelAdaptor::rowsInserted(const QModelIndex &parent, int start, int end
 
 void SqlModelAdaptor::rowsRemoved(const QModelIndex &parent, int start, int end)
 {
-	Q_UNUSED(parent);
+	Q_UNUSED(parent)
 
 	for (int row = end; row >= start; --row) {
 		SqlTableRow sqlRow = rows.takeAt(row);

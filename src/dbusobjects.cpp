@@ -129,7 +129,7 @@ void MprisPlayerObject::Play()
 
 void MprisPlayerObject::Repeat(bool repeat)
 {
-	Q_UNUSED(repeat);
+	Q_UNUSED(repeat)
 	// FIXME track repeat not implemented yet
 }
 
@@ -233,7 +233,7 @@ MprisTrackListObject::~MprisTrackListObject()
 
 QVariantMap MprisTrackListObject::GetMetadata(int index)
 {
-	Q_UNUSED(index);
+	Q_UNUSED(index)
 	return QVariantMap(); // FIXME metadata handling not implemented yet
 }
 
