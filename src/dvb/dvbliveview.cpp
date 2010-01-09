@@ -147,7 +147,6 @@ DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL)
 		this, SLOT(pmtSectionChanged(DvbPmtSection)));
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
-	fastRetuneTimer.setSingleShot(true);
 
 	connect(mediaWidget, SIGNAL(changeDvbAudioChannel(int)),
 		this, SLOT(changeAudioStream(int)));
@@ -174,19 +173,13 @@ DvbDevice *DvbLiveView::getDevice() const
 
 void DvbLiveView::playChannel(const DvbChannel *channel_)
 {
-	if (fastRetuneTimer.isActive()) {
-		// FIXME find a better solution
-		return;
-	} else {
-		fastRetuneTimer.start(500);
-	}
-
-	mediaWidget->stop();
+	liveStopped();
 	channel = channel_;
 	device = manager->requestDevice(channel->source, channel->transponder, DvbManager::Shared);
 
 	if (device == NULL) {
 		channel = NULL;
+		mediaWidget->stop();
 		KMessageBox::sorry(manager->getParentWidget(),
 			i18nc("message box", "No available device found."));
 		// FIXME better error message if devices are blocked by recordings

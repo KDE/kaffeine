@@ -74,7 +74,6 @@ private:
 	QList<int> pids;
 	QTimer patPmtTimer;
 	QTimer osdTimer;
-	QTimer fastRetuneTimer;
 
 	int videoPid;
 	int audioPid;
