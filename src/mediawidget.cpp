@@ -54,6 +54,7 @@ DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftActive(false), ign
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);
 	url = KUrl::fromLocalFile(fileName);
+	url.setScheme("fifo");
 
 	if (mkfifo(QFile::encodeName(fileName), 0600) != 0) {
 		kError() << "mkfifo failed";
