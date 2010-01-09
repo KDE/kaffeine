@@ -44,20 +44,22 @@ private slots:
 
 private:
 	enum DirtyFlag {
-		Quit		= (1 <<  0),
-		NotReady	= (1 <<  1),
-		SetMuted	= (1 <<  2),
-		SetVolume	= (1 <<  3),
-		SetAspectRatio	= (1 <<  4),
-		OpenStream	= (1 <<  5),
-		PlayStream	= (1 <<  6),
-		SetPaused	= (1 <<  7),
-		Seek		= (1 <<  8),
-		Repaint		= (1 <<  9),
-		MouseMoved	= (1 << 10),
-		MousePressed	= (1 << 11),
-		ToggleMenu	= (1 << 12),
-		ProcessEvent	= (1 << 30)
+		Quit			= (1 <<  0),
+		NotReady		= (1 <<  1),
+		SetMuted		= (1 <<  2),
+		SetVolume		= (1 <<  3),
+		SetAspectRatio		= (1 <<  4),
+		OpenStream		= (1 <<  5),
+		PlayStream		= (1 <<  6),
+		SetPaused		= (1 <<  7),
+		Seek			= (1 <<  8),
+		Repaint			= (1 <<  9),
+		MouseMoved		= (1 << 10),
+		MousePressed		= (1 << 11),
+		SetCurrentAudioChannel	= (1 << 12),
+		SetCurrentSubtitle	= (1 << 13),
+		ToggleMenu		= (1 << 14),
+		ProcessEvent		= (1 << 30)
 	};
 
 	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
@@ -106,6 +108,8 @@ private:
 	bool muted;
 	bool paused;
 	int aspectRatio;
+	int currentAudioChannel;
+	int currentSubtitle;
 	int seekTime;
 	int volume;
 	unsigned int mouseMovePosition;

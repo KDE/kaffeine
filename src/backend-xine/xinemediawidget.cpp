@@ -372,12 +372,12 @@ void XineMediaWidget::setPaused(bool paused)
 
 void XineMediaWidget::setCurrentAudioChannel(int currentAudioChannel_)
 {
-	Q_UNUSED(currentAudioChannel_) // FIXME
+	childProcess->setCurrentAudioChannel(currentAudioChannel_);
 }
 
 void XineMediaWidget::setCurrentSubtitle(int currentSubtitle_)
 {
-	Q_UNUSED(currentSubtitle_) // FIXME
+	childProcess->setCurrentSubtitle(currentSubtitle_);
 }
 
 void XineMediaWidget::toggleMenu()

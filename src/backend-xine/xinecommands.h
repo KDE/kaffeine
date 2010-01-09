@@ -26,19 +26,21 @@
 namespace XineCommands
 {
 	enum CommandToChild {
-		Quit		=  0,
-		Init		=  1,
-		Resize		=  2,
-		SetMuted	=  3,
-		SetVolume	=  4,
-		SetAspectRatio	=  5,
-		PlayUrl		=  6,
-		SetPaused	=  7,
-		Seek		=  8,
-		Repaint		=  9,
-		MouseMoved	= 10,
-		MousePressed	= 11,
-		ToggleMenu	= 12
+		Quit			=  0,
+		Init			=  1,
+		Resize			=  2,
+		SetMuted		=  3,
+		SetVolume		=  4,
+		SetAspectRatio		=  5,
+		PlayUrl			=  6,
+		SetPaused		=  7,
+		Seek			=  8,
+		Repaint			=  9,
+		MouseMoved		= 10,
+		MousePressed		= 11,
+		SetCurrentAudioChannel	= 12,
+		SetCurrentSubtitle	= 13,
+		ToggleMenu		= 14
 	};
 
 	enum CommandFromChild {
@@ -203,6 +205,19 @@ public:
 	{
 		writer->write(XineCommands::MousePressed, reinterpret_cast<const char *>(&x),
 			sizeof(x), reinterpret_cast<const char *>(&y), sizeof(y));
+	}
+
+	void setCurrentAudioChannel(qint8 currentAudioChannel)
+	{
+		writer->write(XineCommands::SetCurrentAudioChannel,
+			reinterpret_cast<const char *>(&currentAudioChannel),
+			sizeof(currentAudioChannel));
+	}
+
+	void setCurrentSubtitle(qint8 currentSubtitle)
+	{
+		writer->write(XineCommands::SetCurrentSubtitle,
+			reinterpret_cast<const char *>(&currentSubtitle), sizeof(currentSubtitle));
 	}
 
 	void toggleMenu()

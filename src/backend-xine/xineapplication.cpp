@@ -153,7 +153,9 @@ void XineObject::readyRead()
 				sequenceNumber = sequenceNumber_;
 				encodedUrl = encodedUrl_;
 				dirtyFlags &= ~(PlayStream | SetPaused | Seek | Repaint |
-						MouseMoved | MousePressed);
+						MouseMoved | MousePressed |
+						SetCurrentAudioChannel | SetCurrentSubtitle |
+						ToggleMenu);
 				dirtyFlags |= OpenStream;
 			}
 
@@ -200,6 +202,26 @@ void XineObject::readyRead()
 			if (reader->isValid()) {
 				mousePressPosition = ((x << 16) | y);
 				dirtyFlags |= MousePressed;
+			}
+
+			break;
+		    }
+		case XineCommands::SetCurrentAudioChannel: {
+			qint8 currentAudioChannel_ = reader->readChar();
+
+			if (reader->isValid()) {
+				currentAudioChannel = currentAudioChannel_;
+				dirtyFlags |= SetCurrentAudioChannel;
+			}
+
+			break;
+		    }
+		case XineCommands::SetCurrentSubtitle: {
+			qint8 currentSubtitle_ = reader->readChar();
+
+			if (reader->isValid()) {
+				currentSubtitle = currentSubtitle_;
+				dirtyFlags |= SetCurrentSubtitle;
 			}
 
 			break;
@@ -551,6 +573,13 @@ void XineObject::customEvent(QEvent *event)
 			xine_event_send(stream, &input.event);
 			break;
 		    }
+		case SetCurrentAudioChannel:
+			xine_set_param(stream, XINE_PARAM_AUDIO_CHANNEL_LOGICAL,
+				currentAudioChannel);
+			break;
+		case SetCurrentSubtitle:
+			xine_set_param(stream, XINE_PARAM_SPU_CHANNEL, currentSubtitle);
+			break;
 		case ToggleMenu: {
 			xine_event_t event;
 			memset(&event, 0, sizeof(event));
