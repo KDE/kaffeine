@@ -20,11 +20,11 @@
 
 #include "dvbdevice.h"
 
-#include <unistd.h>
-#include <cmath>
 #include <QCoreApplication>
 #include <QDir>
 #include <KDebug>
+#include <cmath>
+#include <unistd.h>
 #include "dvbconfig.h"
 #include "dvbmanager.h"
 

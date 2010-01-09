@@ -26,6 +26,7 @@
 
 class QSocketNotifier;
 class QTimeEdit;
+class MediaWidget;
 
 class DvbFeed : public QObject
 {

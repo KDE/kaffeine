@@ -1,7 +1,7 @@
 /*
  * mediawidget.cpp
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,12 @@
 #include <KActionCollection>
 #include <KComboBox>
 #include <KDebug>
-#include <KDialog>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KStandardDirs>
 #include <KToolBar>
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include "backend-xine/xinemediawidget.h"
 #include "osdwidget.h"
@@ -274,7 +272,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setData(2);
 	autoResizeMenu->addAction(collection->addAction("controls_autoresize_double", action));
 
-	autoResizeFactor = KGlobal::config()->group("MediaObject").readEntry("AutoResizeFactor", 0);
+	autoResizeFactor =
+		KGlobal::config()->group("MediaObject").readEntry("AutoResizeFactor", 0);
 
 	if ((autoResizeFactor < 0) || (autoResizeFactor > 2)) {
 		autoResizeFactor = 0;
@@ -376,25 +375,29 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration), this);
 	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
 	connect(longSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
-	navigationMenu->addAction(collection->addAction("controls_long_skip_backward", longSkipBackwardAction));
+	navigationMenu->addAction(
+		collection->addAction("controls_long_skip_backward", longSkipBackwardAction));
 
 	shortSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration), this);
 	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
 	connect(shortSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(shortSkipBackward()));
-	navigationMenu->addAction(collection->addAction("controls_skip_backward", shortSkipBackwardAction));
+	navigationMenu->addAction(
+		collection->addAction("controls_skip_backward", shortSkipBackwardAction));
 
 	shortSkipForwardAction = new KAction(KIcon("media-skip-forward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration), this);
 	shortSkipForwardAction->setShortcut(Qt::Key_Right);
 	connect(shortSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(shortSkipForward()));
-	navigationMenu->addAction(collection->addAction("controls_skip_forward", shortSkipForwardAction));
+	navigationMenu->addAction(
+		collection->addAction("controls_skip_forward", shortSkipForwardAction));
 
 	longSkipForwardAction = new KAction(KIcon("media-skip-forward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration), this);
 	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
 	connect(longSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
-	navigationMenu->addAction(collection->addAction("controls_long_skip_forward", longSkipForwardAction));
+	navigationMenu->addAction(
+		collection->addAction("controls_long_skip_forward", longSkipForwardAction));
 	menu->addMenu(navigationMenu);
 
 	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
@@ -507,8 +510,8 @@ void MediaWidget::playAudioCd()
 
 void MediaWidget::playVideoCd()
 {
-	QList<Solid::Device> devices =
-		Solid::Device::listFromQuery("OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'");
+	QList<Solid::Device> devices = Solid::Device::listFromQuery(
+		"OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'");
 	QString deviceName;
 
 	if (!devices.isEmpty()) {
@@ -612,7 +615,8 @@ int MediaWidget::getLongSkipDuration() const
 void MediaWidget::setShortSkipDuration(int duration)
 {
 	shortSkipDuration = duration;
-	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", duration));
+	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward",
+		duration));
 	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
 }
 
@@ -987,7 +991,8 @@ void MediaWidget::checkScreenSaver()
 		// FIXME check whether there's video or not
 		// FIXME DPMS
 		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-			"org.freedesktop.ScreenSaver").call(QDBus::NoBlock, "SimulateUserActivity");
+			"org.freedesktop.ScreenSaver").
+			call(QDBus::NoBlock, "SimulateUserActivity");
 	}
 }
 

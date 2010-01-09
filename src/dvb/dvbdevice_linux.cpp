@@ -20,6 +20,11 @@
 
 #include "dvbdevice_linux.h"
 
+#include <QFile>
+#include <QThread>
+#include <Solid/DeviceNotifier>
+#include <Solid/DvbInterface>
+#include <KDebug>
 #include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -27,11 +32,6 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include <QFile>
-#include <QThread>
-#include <Solid/DeviceNotifier>
-#include <Solid/DvbInterface>
-#include <KDebug>
 #include "dvbchannel.h"
 
 // krazy:excludeall=syscalls
