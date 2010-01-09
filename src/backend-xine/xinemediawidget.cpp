@@ -723,18 +723,18 @@ void XineMediaWidget::playEncodedUrl(const QByteArray &encodedUrl, PlayOption op
 			break;
 		case PlayDvb:
 			currentState = (Playing | PlayingDvb);
-			previousState |= (SourceChanged | PlayingDvb);
+			previousState |= SourceChanged;
 			break;
 		}
 	} else {
-		// emit dvbPlaybackFinished() immediately if necessary
+		// immediately emit dvbPlaybackFinished() if necessary
 		// don't emit playbackFinished() because stop() was called
 		currentState &= ~(PlayingDvb | PlaybackFinished);
+	}
 
-		if (option == PlayDvb) {
-			// immediately emit dvbPlaybackFinished() if necessary
-			previousState |= PlayingDvb;
-		}
+	if (option == PlayDvb) {
+		// immediately emit dvbPlaybackFinished() if necessary
+		previousState |= PlayingDvb;
 	}
 
 	stateChanged();
