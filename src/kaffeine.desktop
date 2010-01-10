@@ -2,6 +2,7 @@
 Name=Kaffeine
 Name[bg]=Kaffeine
 Name[ca]=Kaffeine
+Name[ca@valencia]=Kaffeine
 Name[cs]=Kaffeine
 Name[csb]=Kaffeine
 Name[da]=Kaffeine
@@ -45,6 +46,7 @@ Exec=kaffeine %U
 GenericName=Media Player
 GenericName[bg]=Медия плеър
 GenericName[ca]=Reproductor de suports
+GenericName[ca@valencia]=Reproductor de suports
 GenericName[cs]=Přehrávač médií
 GenericName[csb]=Mùltimedialny grôcz
 GenericName[da]=Medieafspiller
