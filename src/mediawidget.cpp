@@ -176,6 +176,15 @@ void JumpToPositionDialog::accept()
 	KDialog::accept();
 }
 
+void SeekSlider::mousePressEvent(QMouseEvent *event)
+{
+	int buttons = style()->styleHint(QStyle::SH_Slider_AbsoluteSetButtons);
+	Qt::MouseButton button = static_cast<Qt::MouseButton>(buttons & (~(buttons - 1)));
+	QMouseEvent modifiedEvent(event->type(), event->pos(), event->globalPos(), button,
+		event->buttons() ^ event->button() ^ button, event->modifiers());
+	QSlider::mousePressEvent(&modifiedEvent);
+}
+
 MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
 	KActionCollection *collection, QWidget *parent) : QWidget(parent), menu(menu_),
 	dvbFeed(NULL)

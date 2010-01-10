@@ -75,6 +75,9 @@ class SeekSlider : public QSlider
 public:
 	explicit SeekSlider(QWidget *parent) : QSlider(parent) { }
 	~SeekSlider() { }
+
+private:
+	void mousePressEvent(QMouseEvent *event);
 };
 
 #endif /* MEDIAWIDGET_P_H */
