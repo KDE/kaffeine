@@ -109,6 +109,9 @@ signals:
 	void osdKeyPressed(int key);
 
 private slots:
+	void sourceChanged();
+	void playbackFinished();
+	void playbackStopped();
 	void playbackChanged(bool playing);
 	void seekableChanged(bool seekable);
 	void totalTimeChanged(int totalTime);
@@ -125,8 +128,6 @@ private slots:
 	void setCurrentChapter(int currentChapter);
 	void anglesChanged(int angleCount, int currentAngle);
 	void setCurrentAngle(int currentAngle);
-	void dvbPlaybackFinished();
-	void playbackFinished();
 	void checkScreenSaver();
 
 	void mutedChanged();
@@ -148,7 +149,8 @@ private slots:
 	void currentAngleChanged(QAction *action);
 
 private:
-	void updateTimeButton(int currentTime);
+	void updateTimeButton();
+	void stopDvbPlayback();
 
 	void contextMenuEvent(QContextMenuEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);

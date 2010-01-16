@@ -40,7 +40,7 @@ public:
 	void endOfData();
 
 	bool timeShiftActive;
-	bool ignoreStop;
+	bool ignoreSourceChange;
 	QStringList audioChannels;
 	QStringList subtitles;
 

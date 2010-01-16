@@ -46,8 +46,8 @@
 #include "backend-xine/xinemediawidget.h"
 #include "osdwidget.h"
 
-DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftActive(false), ignoreStop(false),
-	readFd(-1), writeFd(-1), notifier(NULL)
+DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftActive(false),
+	ignoreSourceChange(false), readFd(-1), writeFd(-1), notifier(NULL)
 {
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -201,6 +201,9 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	setAutoFillBackground(true);
 
 	backend = new XineMediaWidget(this);
+	connect(backend, SIGNAL(sourceChanged()), this, SLOT(sourceChanged()));
+	connect(backend, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+	connect(backend, SIGNAL(playbackStopped()), this, SLOT(playbackStopped()));
 	connect(backend, SIGNAL(playbackChanged(bool)), this, SLOT(playbackChanged(bool)));
 	connect(backend, SIGNAL(seekableChanged(bool)), this, SLOT(seekableChanged(bool)));
 	connect(backend, SIGNAL(totalTimeChanged(int)), this, SLOT(totalTimeChanged(int)));
@@ -222,8 +225,6 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 		this, SLOT(setCurrentChapter(int)));
 	connect(backend, SIGNAL(anglesChanged(int,int)), this, SLOT(anglesChanged(int,int)));
 	connect(backend, SIGNAL(currentAngleChanged(int)), this, SLOT(setCurrentAngle(int)));
-	connect(backend, SIGNAL(dvbPlaybackFinished()), this, SLOT(dvbPlaybackFinished()));
-	connect(backend, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 	layout->addWidget(backend);
 
 	osdWidget = new OsdWidget(this);
@@ -565,16 +566,23 @@ void MediaWidget::playDvb(const QString &channelName)
 {
 	if (dvbFeed != NULL) {
 		delete dvbFeed;
+		dvbFeed = NULL;
 	}
-
-	dvbFeed = new DvbFeed(this);
-	backend->playDvb(dvbFeed->getUrl());
 
 	if (!channelName.isEmpty()) {
 		osdWidget->showText(channelName, 2500);
 	}
 
 	emit changeCaption(channelName);
+
+	seekableChanged(false);
+	totalTimeChanged(0);
+	currentTimeChanged(0);
+
+	dvbFeed = new DvbFeed(this);
+	dvbFeed->ignoreSourceChange = true;
+	backend->playUrl(dvbFeed->getUrl());
+	dvbFeed->ignoreSourceChange = false;
 }
 
 void MediaWidget::writeDvbData(const QByteArray &data)
@@ -727,6 +735,31 @@ void MediaWidget::decreaseVolume()
 	volumeSlider->setValue(volumeSlider->value() - 5);
 }
 
+void MediaWidget::sourceChanged()
+{
+	if ((dvbFeed != NULL) && !dvbFeed->ignoreSourceChange) {
+		stopDvbPlayback();
+	}
+}
+
+void MediaWidget::playbackFinished()
+{
+	if (dvbFeed != NULL) {
+		dvbFeed->ignoreSourceChange = true;
+		emit startDvbTimeShift();
+		dvbFeed->ignoreSourceChange = false;
+	} else {
+		emit playlistNext();
+	}
+}
+
+void MediaWidget::playbackStopped()
+{
+	if (dvbFeed != NULL) {
+		stopDvbPlayback();
+	}
+}
+
 void MediaWidget::playbackChanged(bool playing)
 {
 	if (playing) {
@@ -754,26 +787,26 @@ void MediaWidget::playbackChanged(bool playing)
 
 void MediaWidget::seekableChanged(bool seekable)
 {
-	if (seekable) {
-		seekSlider->setEnabled(true);
-		navigationMenu->setEnabled(true);
-		jumpToPositionAction->setEnabled(true);
-	} else {
-		seekSlider->setEnabled(false);
-		navigationMenu->setEnabled(false);
-		jumpToPositionAction->setEnabled(false);
+	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
+		seekSlider->setEnabled(seekable);
+		navigationMenu->setEnabled(seekable);
+		jumpToPositionAction->setEnabled(seekable);
 	}
 }
 
 void MediaWidget::totalTimeChanged(int totalTime)
 {
-	seekSlider->setRange(0, totalTime);
+	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
+		seekSlider->setRange(0, totalTime);
+	}
 }
 
 void MediaWidget::currentTimeChanged(int currentTime)
 {
-	seekSlider->setValue(currentTime);
-	updateTimeButton(currentTime);
+	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
+		seekSlider->setValue(currentTime);
+		updateTimeButton();
+	}
 }
 
 void MediaWidget::metadataChanged()
@@ -967,28 +1000,6 @@ void MediaWidget::setCurrentAngle(int currentAngle)
 	}
 }
 
-void MediaWidget::dvbPlaybackFinished()
-{
-	if ((dvbFeed != NULL) && !dvbFeed->ignoreStop) {
-		delete dvbFeed;
-		dvbFeed = NULL;
-		audioChannelsChanged(QStringList(), -1);
-		subtitlesChanged(QStringList(), -1);
-		emit dvbStopped();
-	}
-}
-
-void MediaWidget::playbackFinished()
-{
-	if ((dvbFeed != NULL) && dvbFeed->timeShiftActive) {
-		dvbFeed->ignoreStop = true;
-		emit startDvbTimeShift();
-		dvbFeed->ignoreStop = false;
-	} else {
-		emit playlistNext();
-	}
-}
-
 void MediaWidget::checkScreenSaver()
 {
 	if (backend->isPlaying() && !isPaused()) {
@@ -1075,9 +1086,9 @@ void MediaWidget::pausedChanged(bool paused)
 
 			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
 				dvbFeed->timeShiftActive = true;
-				dvbFeed->ignoreStop = true;
+				dvbFeed->ignoreSourceChange = true;
 				emit startDvbTimeShift();
-				dvbFeed->ignoreStop = false;
+				dvbFeed->ignoreSourceChange = false;
 			} else {
 				backend->setPaused(false);
 			}
@@ -1090,7 +1101,7 @@ void MediaWidget::pausedChanged(bool paused)
 void MediaWidget::timeButtonClicked()
 {
 	showElapsedTime = !showElapsedTime;
-	updateTimeButton(backend->getCurrentTime());
+	updateTimeButton();
 }
 
 void MediaWidget::longSkipBackward()
@@ -1175,14 +1186,26 @@ void MediaWidget::currentAngleChanged(QAction *action)
 	backend->setCurrentAngle(angleGroup->actions().indexOf(action) + 1);
 }
 
-void MediaWidget::updateTimeButton(int currentTime)
+void MediaWidget::updateTimeButton()
 {
 	if (showElapsedTime) {
-		timeButton->setText(' ' + QTime(0, 0).addMSecs(currentTime).toString());
+		timeButton->setText(' ' + QTime(0, 0).addMSecs(seekSlider->value()).toString());
 	} else {
-		int remainingTime = backend->getTotalTime() - currentTime;
+		int remainingTime = seekSlider->maximum() - seekSlider->value();
 		timeButton->setText('-' + QTime(0, 0).addMSecs(remainingTime).toString());
 	}
+}
+
+void MediaWidget::stopDvbPlayback()
+{
+	delete dvbFeed;
+	dvbFeed = NULL;
+	seekableChanged(backend->isSeekable());
+	totalTimeChanged(backend->getTotalTime());
+	currentTimeChanged(backend->getCurrentTime());
+	audioChannelsChanged(QStringList(), -1);
+	subtitlesChanged(QStringList(), -1);
+	emit dvbStopped();
 }
 
 void MediaWidget::contextMenuEvent(QContextMenuEvent *event)

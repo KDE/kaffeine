@@ -50,10 +50,10 @@ public:
 	void playAudioCd(const QString &device);
 	void playVideoCd(const QString &device);
 	void playDvd(const QString &device);
-	void playDvb(const KUrl &url);
 	void stop();
 
 	bool isPlaying() const;
+	bool isSeekable() const;
 	int getCurrentTime() const; // milliseconds
 	int getTotalTime() const; // milliseconds
 	QStringList getAudioChannels() const;
@@ -75,6 +75,9 @@ public slots:
 	void seek(int time);
 
 signals:
+	void sourceChanged();
+	void playbackFinished();
+	void playbackStopped();
 	void playbackChanged(bool playing);
 	void seekableChanged(bool seekable);
 	void totalTimeChanged(int totalTime);
@@ -91,40 +94,43 @@ signals:
 	void currentChapterChanged(int currentChapter);
 	void anglesChanged(int angleCount, int currentAngle);
 	void currentAngleChanged(int currentAngle);
-	void dvbPlaybackFinished();
-	void playbackFinished();
 
 public:
 	enum StateFlag {
-		SourceChanged			= (1 <<  0),
-		Playing				= (1 <<  1),
-		Seekable			= (1 <<  2),
-		TotalTimeChanged		= (1 <<  3),
-		CurrentTimeChanged		= (1 <<  4),
-		AudioChannelsChanged		= (1 <<  5),
-		CurrentAudioChannelChanged	= (1 <<  6),
-		SubtitlesChanged		= (1 <<  7),
-		CurrentSubtitleChanged		= (1 <<  8),
-		PlayingDvd			= (1 <<  9),
-		TitleCountChanged		= (1 << 10),
-		CurrentTitleChanged		= (1 << 11),
-		ChapterCountChanged		= (1 << 12),
-		CurrentChapterChanged		= (1 << 13),
-		AngleCountChanged		= (1 << 14),
-		CurrentAngleChanged		= (1 << 15),
-		PlayingDvb			= (1 << 16),
-		PlaybackFinished		= (1 << 17)
+		NotReady			= (1 << 0),
+		Playing				= (1 << 1),
+		PlayingDvd			= (1 << 2),
+		EmitPlaybackFinished		= (1 << 3),
+		Synchronized			= (1 << 4)
 	};
 
 	Q_DECLARE_FLAGS(StateFlags, StateFlag)
 
-private:
-	enum PlayOption {
-		Normal,
-		PlayDvd,
-		PlayDvb
+	enum DirtyFlag {
+		SourceChanged			= (1 <<  0),
+		PlaybackFinished		= (1 <<  1),
+		PlaybackStopped			= (1 <<  2),
+		PlayingChanged			= (1 <<  3),
+		ResetState			= (1 <<  4),
+		SeekableChanged			= (1 <<  5),
+		TotalTimeChanged		= (1 <<  6),
+		CurrentTimeChanged		= (1 <<  7),
+		AudioChannelsChanged		= (1 <<  8),
+		CurrentAudioChannelChanged	= (1 <<  9),
+		SubtitlesChanged		= (1 << 10),
+		CurrentSubtitleChanged		= (1 << 11),
+		PlayingDvdChanged		= (1 << 12),
+		TitleCountChanged		= (1 << 13),
+		CurrentTitleChanged		= (1 << 14),
+		ChapterCountChanged		= (1 << 15),
+		CurrentChapterChanged		= (1 << 16),
+		AngleCountChanged		= (1 << 17),
+		CurrentAngleChanged		= (1 << 18)
 	};
 
+	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
+
+private:
 	void mouseMoveEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *event);
@@ -134,7 +140,7 @@ private:
 	void sync(unsigned int sequenceNumber_);
 	void playbackFailed(const QString &errorMessage);
 	void playbackFinishedInternal();
-	void updateSeekable(bool seekable);
+	void updateSeekable(bool seekable_);
 	void updateCurrentTotalTime(int currentTime_, int totalTime_);
 	void updateAudioChannels(const QByteArray &audioChannels_, int currentAudioChannel_);
 	void updateSubtitles(const QByteArray &subtitles_, int currentSubtitle_);
@@ -144,19 +150,15 @@ private:
 	void updateMouseTracking(bool mouseTrackingEnabled);
 	void updateMouseCursor(bool pointingMouseCursor);
 
-	void playEncodedUrl(const QByteArray &encodedUrl, PlayOption option = Normal);
+	void playEncodedUrl(const QByteArray &encodedUrl, StateFlags stateFlags = 0);
 	void stateChanged();
-	void customEvent(QEvent *event);
 
 	XineProcess *process;
 	XineChildMarshaller *childProcess;
-	unsigned int sequenceNumber;
-	bool ready;
-	bool eventPosted;
-	StateFlags previousState;
 	StateFlags currentState;
-	QByteArray encodedDvdUrl;
-	bool synchronized;
+	DirtyFlags dirtyFlags;
+	unsigned int sequenceNumber;
+	bool seekable;
 	int currentTime;
 	int totalTime;
 	QByteArray rawAudioChannels;
@@ -165,6 +167,7 @@ private:
 	QByteArray rawSubtitles;
 	QStringList subtitles;
 	int currentSubtitle;
+	QByteArray encodedDvdUrl;
 	int titleCount;
 	int currentTitle;
 	int chapterCount;
@@ -174,5 +177,6 @@ private:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(XineMediaWidget::StateFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS(XineMediaWidget::DirtyFlags)
 
 #endif /* XINEMEDIAWIDGET_H */

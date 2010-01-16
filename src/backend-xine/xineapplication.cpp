@@ -20,10 +20,12 @@
 
 #include "xineapplication.h"
 
+#include <QFile>
 #include <KAboutData>
 #include <KApplication>
 #include <KCmdLineArgs>
 #include <KDebug>
+#include <KStandardDirs>
 #include <X11/Xlib.h>
 #include "xinecommands.h"
 
@@ -42,8 +44,7 @@ private:
 };
 
 XineObject::XineObject() : engine(NULL), audioOutput(NULL), videoOutput(NULL), stream(NULL),
-	eventQueue(NULL), pixelAspectRatio(1), widgetSize(0), dirtyFlags(NotReady),
-	aspectRatio(XineAspectRatioAuto)
+	eventQueue(NULL), widgetSize(0), dirtyFlags(NotReady), aspectRatio(XineAspectRatioAuto)
 {
 	reader = new XinePipeReader(3, this);
 	parentProcess = new XineParent(4, this);
@@ -70,6 +71,8 @@ XineObject::~XineObject()
 	}
 
 	if (engine != NULL) {
+		xine_config_save(engine, QFile::encodeName(
+			KStandardDirs::locateLocal("data", "kaffeine/xine-config")));
 		xine_exit(engine);
 	}
 
@@ -270,18 +273,67 @@ void XineObject::init(quint64 windowId)
 		return;
 	}
 
-	// FIXME load config file?
-
+	xine_config_load(engine,
+		QFile::encodeName(KStandardDirs::locateLocal("data", "kaffeine/xine-config")));
 	xine_init(engine);
 
-	// FIXME custom settings - audio driver, video driver,
-	//       monitor horizontal and vertical resolution
+	QVector<const char *> audioDrivers;
+	audioDrivers.append("auto");
 
-	audioOutput = xine_open_audio_driver(engine, NULL, NULL);
+	for (const char *const *it = xine_list_audio_output_plugins(engine); *it != NULL; ++it) {
+		audioDrivers.append(*it);
+	}
+
+	audioDrivers.append(NULL);
+	const char *audioDriver = audioDrivers.at(
+		xine_config_register_enum(engine, "audio.driver", 0,
+		const_cast<char **>(audioDrivers.constData()), "audio driver", NULL, 10,
+		&audio_driver_cb, this));
+	audioDrivers.clear();
+
+	QVector<const char *> videoDrivers;
+	videoDrivers.append("auto");
+
+	for (const char *const *it = xine_list_video_output_plugins(engine); *it != NULL; ++it) {
+		videoDrivers.append(*it);
+	}
+
+	videoDrivers.append(NULL);
+	const char *videoDriver = videoDrivers.at(
+		xine_config_register_enum(engine, "video.driver", 0,
+		const_cast<char **>(videoDrivers.constData()), "video driver", NULL, 10,
+		&video_driver_cb, this));
+	videoDrivers.clear();
+
+	QLatin1String pixelAspectRatioString(xine_config_register_string(engine,
+		"video.pixel_aspect_ratio", "", "override pixel aspect ratio", NULL, 10,
+		&pixel_aspect_ratio_cb, this));
+
+	bool ok;
+	pixelAspectRatio = QString(pixelAspectRatioString).toDouble(&ok);
+
+	if (!ok || (pixelAspectRatio < 0.1) || (pixelAspectRatio > 10)) {
+		if (qstrlen(pixelAspectRatioString.latin1()) != 0) {
+			kWarning() << "invalid pixel aspect ratio" << pixelAspectRatioString;
+		}
+
+		pixelAspectRatio = static_cast<double>(QX11Info::appDpiY()) / QX11Info::appDpiX();
+
+		if ((pixelAspectRatio >= 0.96) || (pixelAspectRatio <= 1.04)) {
+			pixelAspectRatio = 1;
+		}
+	}
+
+	audioOutput = xine_open_audio_driver(engine, audioDriver, NULL);
 
 	if (audioOutput == NULL) {
-		parentProcess->initFailed("Cannot create audio output.");
-		return;
+		kWarning() << "cannot create audio output" << QLatin1String(audioDriver);
+		audioOutput = xine_open_audio_driver(engine, NULL, NULL);
+
+		if (audioOutput == NULL) {
+			parentProcess->initFailed("Cannot create audio output.");
+			return;
+		}
 	}
 
 	x11_visual_t videoOutputData;
@@ -293,11 +345,18 @@ void XineObject::init(quint64 windowId)
 	videoOutputData.dest_size_cb = &dest_size_cb;
 	videoOutputData.frame_output_cb = &frame_output_cb;
 
-	videoOutput = xine_open_video_driver(engine, NULL, XINE_VISUAL_TYPE_X11, &videoOutputData);
+	videoOutput = xine_open_video_driver(engine, videoDriver, XINE_VISUAL_TYPE_X11,
+		&videoOutputData);
 
 	if (videoOutput == NULL) {
-		parentProcess->initFailed("Cannot create video output.");
-		return;
+		kWarning() << "cannot create video output" << QLatin1String(videoDriver);
+		videoOutput = xine_open_video_driver(engine, NULL, XINE_VISUAL_TYPE_X11,
+			&videoOutputData);
+
+		if (videoOutput == NULL) {
+			parentProcess->initFailed("Cannot create video output.");
+			return;
+		}
 	}
 
 	stream = xine_stream_new(engine, audioOutput, videoOutput);
@@ -621,6 +680,27 @@ void XineObject::postXineEvent()
 		QCoreApplication::postEvent(this, new QEvent(XineEvent));
 		xineDirtyFlags |= ProcessXineEvent;
 	}
+}
+
+void XineObject::audio_driver_cb(void *user_data, xine_cfg_entry_t *entry)
+{
+	kDebug() << "called";
+	Q_UNUSED(user_data)
+	Q_UNUSED(entry)
+}
+
+void XineObject::video_driver_cb(void *user_data, xine_cfg_entry_t *entry)
+{
+	kDebug() << "called";
+	Q_UNUSED(user_data)
+	Q_UNUSED(entry)
+}
+
+void XineObject::pixel_aspect_ratio_cb(void *user_data, xine_cfg_entry_t *entry)
+{
+	kDebug() << "called";
+	Q_UNUSED(user_data)
+	Q_UNUSED(entry)
 }
 
 void XineObject::dest_size_cb(void *user_data, int video_width, int video_height,

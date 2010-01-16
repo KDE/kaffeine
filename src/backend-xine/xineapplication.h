@@ -84,6 +84,9 @@ private:
 	QString xineErrorString(int errorCode) const;
 
 	void postXineEvent();
+	static void audio_driver_cb(void *user_data, xine_cfg_entry_t *entry);
+	static void video_driver_cb(void *user_data, xine_cfg_entry_t *entry);
+	static void pixel_aspect_ratio_cb(void *user_data, xine_cfg_entry_t *entry);
 	static void dest_size_cb(void *user_data, int video_width, int video_height,
 		double video_pixel_aspect, int *dest_width, int *dest_height,
 		double *dest_pixel_aspect);

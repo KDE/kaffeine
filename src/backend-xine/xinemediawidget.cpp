@@ -236,9 +236,9 @@ void XineProcess::setupChildProcess()
 }
 
 XineMediaWidget::XineMediaWidget(QWidget *parent) : QWidget(parent), sequenceNumber(0x71821680),
-	ready(true), eventPosted(false), synchronized(false), currentTime(0), totalTime(0),
-	currentAudioChannel(-1), currentSubtitle(-1), titleCount(0), currentTitle(0),
-	chapterCount(0), currentChapter(0), angleCount(0), currentAngle(0)
+	seekable(false), currentTime(0), totalTime(0), currentAudioChannel(-1),
+	currentSubtitle(-1), titleCount(0), currentTitle(0), chapterCount(0), currentChapter(0),
+	angleCount(0), currentAngle(0)
 {
 	setAttribute(Qt::WA_NativeWindow);
 	setAttribute(Qt::WA_DontCreateNativeAncestors);
@@ -298,9 +298,9 @@ void XineMediaWidget::playUrl(const KUrl &url)
 {
 	if (url.toLocalFile().endsWith(QLatin1String(".iso"), Qt::CaseInsensitive)) {
 		encodedDvdUrl = QByteArray("dvd://").append(url.encodedPath());
-		playEncodedUrl(encodedDvdUrl, PlayDvd);
+		playEncodedUrl(encodedDvdUrl, PlayingDvd);
 	} else {
-		playEncodedUrl(url.toEncoded());
+		playEncodedUrl(url.toEncoded(), EmitPlaybackFinished);
 	}
 }
 
@@ -317,12 +317,7 @@ void XineMediaWidget::playVideoCd(const QString &device)
 void XineMediaWidget::playDvd(const QString &device)
 {
 	encodedDvdUrl = QByteArray("dvd://").append(device.toUtf8().toPercentEncoding("/"));
-	playEncodedUrl(encodedDvdUrl, PlayDvd);
-}
-
-void XineMediaWidget::playDvb(const KUrl &url)
-{
-	playEncodedUrl(url.toEncoded(), PlayDvb);
+	playEncodedUrl(encodedDvdUrl, PlayingDvd);
 }
 
 void XineMediaWidget::stop()
@@ -333,6 +328,11 @@ void XineMediaWidget::stop()
 bool XineMediaWidget::isPlaying() const
 {
 	return ((currentState & Playing) != 0);
+}
+
+bool XineMediaWidget::isSeekable() const
+{
+	return seekable;
 }
 
 int XineMediaWidget::getCurrentTime() const
@@ -387,20 +387,20 @@ void XineMediaWidget::toggleMenu()
 
 void XineMediaWidget::setCurrentTitle(int currentTitle_)
 {
-	if (!encodedDvdUrl.isEmpty()) {
+	if ((currentState & PlayingDvd) != 0) {
 		if (!encodedDvdUrl.endsWith('/')) {
 			encodedDvdUrl.append('/');
 		}
 
 		QByteArray encodedUrl = encodedDvdUrl;
 		encodedUrl.append(QByteArray::number(currentTitle_));
-		playEncodedUrl(encodedUrl, PlayDvd);
+		playEncodedUrl(encodedUrl, PlayingDvd);
 	}
 }
 
 void XineMediaWidget::setCurrentChapter(int currentChapter_)
 {
-	if (!encodedDvdUrl.isEmpty()) {
+	if ((currentState & PlayingDvd) != 0) {
 		if (!encodedDvdUrl.endsWith('/')) {
 			encodedDvdUrl.append('/');
 		}
@@ -409,7 +409,7 @@ void XineMediaWidget::setCurrentChapter(int currentChapter_)
 		encodedUrl.append(QByteArray::number(currentTitle));
 		encodedUrl.append('.');
 		encodedUrl.append(QByteArray::number(currentChapter_));
-		playEncodedUrl(encodedUrl, PlayDvd);
+		playEncodedUrl(encodedUrl, PlayingDvd);
 	}
 }
 
@@ -421,7 +421,7 @@ void XineMediaWidget::setCurrentAngle(int currentAngle_)
 bool XineMediaWidget::playPreviousTitle()
 {
 	if (currentTitle > 1) {
-		setCurrentTitle(--currentTitle);
+		setCurrentTitle(currentTitle - 1);
 		return true;
 	}
 
@@ -440,7 +440,7 @@ bool XineMediaWidget::playNextTitle()
 
 void XineMediaWidget::seek(int time)
 {
-	if (((currentState & Seekable) != 0) && (time != currentTime)) {
+	if (isPlaying() && (time != currentTime)) {
 		childProcess->seek(time);
 	}
 }
@@ -474,27 +474,28 @@ void XineMediaWidget::resizeEvent(QResizeEvent *event)
 
 void XineMediaWidget::initFailed(const QString &errorMessage)
 {
-	if (ready) {
-		ready = false;
-		currentState = 0;
-		previousState &= ~PlaybackFinished;
-		previousState |= SourceChanged;
-		stateChanged();
+	if ((currentState & NotReady) == 0) {
+		playEncodedUrl(QByteArray(), NotReady);
 		KMessageBox::queuedMessageBox(this, KMessageBox::Sorry, errorMessage); // FIXME
 	}
 }
 
 void XineMediaWidget::sync(unsigned int sequenceNumber_)
 {
-	synchronized = ((sequenceNumber == sequenceNumber_) && isPlaying() && ready);
+	if ((sequenceNumber == sequenceNumber_) && isPlaying()) {
+		currentState |= Synchronized;
+	}
 }
 
 void XineMediaWidget::playbackFailed(const QString &errorMessage)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
+		if ((currentState & PlayingDvd) != 0) {
+			dirtyFlags |= PlayingDvdChanged;
+		}
+
 		currentState = 0;
-		previousState &= ~PlaybackFinished;
-		previousState |= SourceChanged;
+		dirtyFlags |= (PlaybackStopped | PlayingChanged | ResetState);
 		stateChanged();
 		KMessageBox::queuedMessageBox(this, KMessageBox::Sorry, errorMessage); // FIXME
 	}
@@ -502,45 +503,51 @@ void XineMediaWidget::playbackFailed(const QString &errorMessage)
 
 void XineMediaWidget::playbackFinishedInternal()
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
+		if ((currentState & PlayingDvd) != 0) {
+			dirtyFlags |= PlayingDvdChanged;
+		}
+
+		if ((currentState & EmitPlaybackFinished) != 0) {
+			dirtyFlags |= PlaybackFinished;
+		} else {
+			dirtyFlags |= PlaybackStopped;
+		}
+
 		currentState = 0;
-		previousState |= SourceChanged;
+		dirtyFlags |= (PlayingChanged | ResetState);
 		stateChanged();
 	}
 }
 
-void XineMediaWidget::updateSeekable(bool seekable)
+void XineMediaWidget::updateSeekable(bool seekable_)
 {
-	if (synchronized) {
-		if (seekable) {
-			currentState |= Seekable;
-		} else {
-			currentState &= ~Seekable;
-		}
-
+	if (((currentState & Synchronized) != 0) && (seekable != seekable_)) {
+		seekable = seekable_;
+		dirtyFlags |= SeekableChanged;
 		stateChanged();
 	}
 }
 
 void XineMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
 {
-	if (synchronized && ((currentState & PlayingDvb) == 0)) {
+	if ((currentState & Synchronized) != 0) {
 		if (currentTime_ < 0) {
 			currentTime_ = 0;
 		}
 
 		if (currentTime != currentTime_) {
 			currentTime = currentTime_;
-			previousState |= CurrentTimeChanged;
+			dirtyFlags |= CurrentTimeChanged;
 		}
 
-		if (totalTime_ < currentTime_) {
-			totalTime_ = currentTime_;
+		if (totalTime_ < currentTime) {
+			totalTime_ = currentTime;
 		}
 
 		if (totalTime != totalTime_) {
 			totalTime = totalTime_;
-			previousState |= TotalTimeChanged;
+			dirtyFlags |= TotalTimeChanged;
 		}
 
 		stateChanged();
@@ -550,7 +557,7 @@ void XineMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
 void XineMediaWidget::updateAudioChannels(const QByteArray &audioChannels_,
 	int currentAudioChannel_)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (rawAudioChannels != audioChannels_) {
 			rawAudioChannels = audioChannels_;
 			audioChannels.clear();
@@ -562,7 +569,7 @@ void XineMediaWidget::updateAudioChannels(const QByteArray &audioChannels_,
 				audioChannels.append(audioChannel);
 			}
 
-			previousState |= AudioChannelsChanged;
+			dirtyFlags |= AudioChannelsChanged;
 		}
 
 		if ((currentAudioChannel_ < 0) || (currentAudioChannel_ >= audioChannels.size())) {
@@ -571,7 +578,7 @@ void XineMediaWidget::updateAudioChannels(const QByteArray &audioChannels_,
 
 		if (currentAudioChannel != currentAudioChannel_) {
 			currentAudioChannel = currentAudioChannel_;
-			previousState |= CurrentAudioChannelChanged;
+			dirtyFlags |= CurrentAudioChannelChanged;
 		}
 
 		stateChanged();
@@ -580,7 +587,7 @@ void XineMediaWidget::updateAudioChannels(const QByteArray &audioChannels_,
 
 void XineMediaWidget::updateSubtitles(const QByteArray &subtitles_, int currentSubtitle_)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (rawSubtitles != subtitles_) {
 			rawSubtitles = subtitles_;
 			subtitles.clear();
@@ -592,7 +599,7 @@ void XineMediaWidget::updateSubtitles(const QByteArray &subtitles_, int currentS
 				subtitles.append(subtitle);
 			}
 
-			previousState |= SubtitlesChanged;
+			dirtyFlags |= SubtitlesChanged;
 		}
 
 		if ((currentSubtitle_ < 0) || (currentSubtitle_ >= subtitles.size())) {
@@ -601,7 +608,7 @@ void XineMediaWidget::updateSubtitles(const QByteArray &subtitles_, int currentS
 
 		if (currentSubtitle != currentSubtitle_) {
 			currentSubtitle = currentSubtitle_;
-			previousState |= CurrentSubtitleChanged;
+			dirtyFlags |= CurrentSubtitleChanged;
 		}
 
 		stateChanged();
@@ -610,14 +617,14 @@ void XineMediaWidget::updateSubtitles(const QByteArray &subtitles_, int currentS
 
 void XineMediaWidget::updateTitles(int titleCount_, int currentTitle_)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (titleCount_ < 0) {
 			titleCount_ = 0;
 		}
 
 		if (titleCount != titleCount_) {
 			titleCount = titleCount_;
-			previousState |= TitleCountChanged;
+			dirtyFlags |= TitleCountChanged;
 		}
 
 		if ((currentTitle_ < 0) || (currentTitle_ > titleCount)) {
@@ -626,7 +633,7 @@ void XineMediaWidget::updateTitles(int titleCount_, int currentTitle_)
 
 		if (currentTitle != currentTitle_) {
 			currentTitle = currentTitle_;
-			previousState |= CurrentTitleChanged;
+			dirtyFlags |= CurrentTitleChanged;
 		}
 
 		stateChanged();
@@ -635,14 +642,14 @@ void XineMediaWidget::updateTitles(int titleCount_, int currentTitle_)
 
 void XineMediaWidget::updateChapters(int chapterCount_, int currentChapter_)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (chapterCount_ < 0) {
 			chapterCount_ = 0;
 		}
 
 		if (chapterCount != chapterCount_) {
 			chapterCount = chapterCount_;
-			previousState |= ChapterCountChanged;
+			dirtyFlags |= ChapterCountChanged;
 		}
 
 		if ((currentChapter_ < 0) || (currentChapter_ > chapterCount)) {
@@ -651,7 +658,7 @@ void XineMediaWidget::updateChapters(int chapterCount_, int currentChapter_)
 
 		if (currentChapter != currentChapter_) {
 			currentChapter = currentChapter_;
-			previousState |= CurrentChapterChanged;
+			dirtyFlags |= CurrentChapterChanged;
 		}
 
 		stateChanged();
@@ -660,14 +667,14 @@ void XineMediaWidget::updateChapters(int chapterCount_, int currentChapter_)
 
 void XineMediaWidget::updateAngles(int angleCount_, int currentAngle_)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (angleCount_ < 0) {
 			angleCount_ = 0;
 		}
 
 		if (angleCount != angleCount_) {
 			angleCount = angleCount_;
-			previousState |= AngleCountChanged;
+			dirtyFlags |= AngleCountChanged;
 		}
 
 		if ((currentAngle_ < 0) || (currentAngle_ > angleCount)) {
@@ -676,7 +683,7 @@ void XineMediaWidget::updateAngles(int angleCount_, int currentAngle_)
 
 		if (currentAngle != currentAngle_) {
 			currentAngle = currentAngle_;
-			previousState |= CurrentAngleChanged;
+			dirtyFlags |= CurrentAngleChanged;
 		}
 
 		stateChanged();
@@ -685,7 +692,7 @@ void XineMediaWidget::updateAngles(int angleCount_, int currentAngle_)
 
 void XineMediaWidget::updateMouseTracking(bool mouseTrackingEnabled)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (mouseTrackingEnabled) {
 			setMouseTracking(true);
 		} else {
@@ -697,7 +704,7 @@ void XineMediaWidget::updateMouseTracking(bool mouseTrackingEnabled)
 
 void XineMediaWidget::updateMouseCursor(bool pointingMouseCursor)
 {
-	if (synchronized) {
+	if ((currentState & Synchronized) != 0) {
 		if (pointingMouseCursor && hasMouseTracking()) {
 			setCursor(Qt::PointingHandCursor);
 		} else {
@@ -706,35 +713,28 @@ void XineMediaWidget::updateMouseCursor(bool pointingMouseCursor)
 	}
 }
 
-void XineMediaWidget::playEncodedUrl(const QByteArray &encodedUrl, PlayOption option)
+void XineMediaWidget::playEncodedUrl(const QByteArray &encodedUrl, StateFlags stateFlags)
 {
 	++sequenceNumber;
 	childProcess->playUrl(sequenceNumber, encodedUrl);
 
-	if (ready && !encodedUrl.isEmpty()) {
-		switch (option) {
-		case Normal:
-			currentState = (Playing | Seekable | PlaybackFinished);
-			previousState |= (SourceChanged | PlaybackFinished);
-			break;
-		case PlayDvd:
-			currentState = (Playing | Seekable | PlayingDvd);
-			previousState |= SourceChanged;
-			break;
-		case PlayDvb:
-			currentState = (Playing | PlayingDvb);
-			previousState |= SourceChanged;
-			break;
-		}
+	if (!encodedUrl.isEmpty() && ((currentState & NotReady) == 0)) {
+		stateFlags |= Playing;
+		dirtyFlags |= (SourceChanged | ResetState);
 	} else {
-		// immediately emit dvbPlaybackFinished() if necessary
-		// don't emit playbackFinished() because stop() was called
-		currentState &= ~(PlayingDvb | PlaybackFinished);
+		stateFlags = ((currentState | stateFlags) & NotReady);
+		dirtyFlags |= (PlaybackStopped | ResetState);
 	}
 
-	if (option == PlayDvb) {
-		// immediately emit dvbPlaybackFinished() if necessary
-		previousState |= PlayingDvb;
+	StateFlags difference = currentState ^ stateFlags;
+	currentState = stateFlags;
+
+	if ((difference & Playing) != 0) {
+		dirtyFlags |= PlayingChanged;
+	}
+
+	if ((difference & PlayingDvd) != 0) {
+		dirtyFlags |= PlayingDvdChanged;
 	}
 
 	stateChanged();
@@ -742,108 +742,108 @@ void XineMediaWidget::playEncodedUrl(const QByteArray &encodedUrl, PlayOption op
 
 void XineMediaWidget::stateChanged()
 {
-	if ((previousState != currentState) && !eventPosted) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-		eventPosted = true;
-	}
-}
+	while (dirtyFlags != 0) {
+		int lowestDirtyFlag = dirtyFlags & (~(dirtyFlags - 1));
+		dirtyFlags &= ~lowestDirtyFlag;
 
-void XineMediaWidget::customEvent(QEvent *event)
-{
-	Q_UNUSED(event)
-
-	while (previousState != currentState) {
-		StateFlags difference = previousState ^ currentState;
-		int lowestFlag = difference & (~(difference - 1));
-		previousState = (previousState & (~lowestFlag)) | (currentState & lowestFlag);
-
-		switch (lowestFlag) {
+		switch (lowestDirtyFlag) {
 		case SourceChanged:
-			if ((currentState & PlayingDvd) == 0) {
-				encodedDvdUrl.clear();
+			emit sourceChanged();
+			break;
+		case PlaybackFinished:
+			emit playbackFinished();
+			break;
+		case PlaybackStopped:
+			emit playbackStopped();
+			break;
+		case ResetState:
+			if (seekable) {
+				seekable = false;
+				dirtyFlags |= SeekableChanged;
 			}
-
-			synchronized = false;
 
 			if (currentTime != 0) {
 				currentTime = 0;
-				previousState |= CurrentTimeChanged;
+				dirtyFlags |= CurrentTimeChanged;
 			}
 
 			if (totalTime != 0) {
 				totalTime = 0;
-				previousState |= TotalTimeChanged;
+				dirtyFlags |= TotalTimeChanged;
 			}
 
 			if (!audioChannels.isEmpty()) {
 				rawAudioChannels.clear();
 				audioChannels.clear();
-				previousState |= AudioChannelsChanged;
+				dirtyFlags |= AudioChannelsChanged;
 			}
 
 			if (currentAudioChannel != -1) {
 				currentAudioChannel = -1;
-				previousState |= CurrentAudioChannelChanged;
+				dirtyFlags |= CurrentAudioChannelChanged;
 			}
 
 			if (!subtitles.isEmpty()) {
 				rawSubtitles.clear();
 				subtitles.clear();
-				previousState |= SubtitlesChanged;
+				dirtyFlags |= SubtitlesChanged;
 			}
 
 			if (currentSubtitle != -1) {
 				currentSubtitle = -1;
-				previousState |= CurrentSubtitleChanged;
+				dirtyFlags |= CurrentSubtitleChanged;
+			}
+
+			if ((currentState & PlayingDvd) == 0) {
+				encodedDvdUrl.clear();
 			}
 
 			if (titleCount != 0) {
 				titleCount = 0;
-				previousState |= TitleCountChanged;
+				dirtyFlags |= TitleCountChanged;
 			}
 
 			if (currentTitle != 0) {
 				currentTitle = 0;
-				previousState |= CurrentTitleChanged;
+				dirtyFlags |= CurrentTitleChanged;
 			}
 
 			if (chapterCount != 0) {
 				chapterCount = 0;
-				previousState |= ChapterCountChanged;
+				dirtyFlags |= ChapterCountChanged;
 			}
 
 			if (currentChapter != 0) {
 				currentChapter = 0;
-				previousState |= CurrentChapterChanged;
+				dirtyFlags |= CurrentChapterChanged;
 			}
 
 			if (angleCount != 0) {
 				angleCount = 0;
-				previousState |= AngleCountChanged;
+				dirtyFlags |= AngleCountChanged;
 			}
 
 			if (currentAngle != 0) {
 				currentAngle = 0;
-				previousState |= CurrentAngleChanged;
+				dirtyFlags |= CurrentAngleChanged;
 			}
 
 			unsetCursor();
 			setMouseTracking(false);
 			break;
-		case Playing:
+		case PlayingChanged:
 			if (isPlaying()) {
 				show();
 				emit playbackChanged(true);
 			} else {
-				synchronized = false;
 				hide();
 				parentWidget()->update();
 				emit playbackChanged(false);
 			}
 
 			break;
-		case Seekable:
-			emit seekableChanged((currentState & Seekable) != 0);
+		case SeekableChanged:
+			emit seekableChanged(seekable);
 			break;
 		case TotalTimeChanged:
 			emit totalTimeChanged(totalTime);
@@ -853,52 +853,45 @@ void XineMediaWidget::customEvent(QEvent *event)
 			break;
 		case AudioChannelsChanged:
 			emit audioChannelsChanged(audioChannels, currentAudioChannel);
-			previousState &= ~CurrentAudioChannelChanged;
+			dirtyFlags &= ~CurrentAudioChannelChanged;
 			break;
 		case CurrentAudioChannelChanged:
 			emit currentAudioChannelChanged(currentAudioChannel);
 			break;
 		case SubtitlesChanged:
 			emit subtitlesChanged(subtitles, currentSubtitle);
-			previousState &= ~CurrentSubtitleChanged;
+			dirtyFlags &= ~CurrentSubtitleChanged;
 			break;
 		case CurrentSubtitleChanged:
 			emit currentSubtitleChanged(currentSubtitle);
 			break;
-		case PlayingDvd:
+		case PlayingDvdChanged:
 			emit dvdPlaybackChanged((currentState & PlayingDvd) != 0);
 			break;
 		case TitleCountChanged:
 			emit titlesChanged(titleCount, currentTitle);
-			previousState &= ~CurrentTitleChanged;
+			dirtyFlags &= ~CurrentTitleChanged;
 			break;
 		case CurrentTitleChanged:
 			emit currentTitleChanged(currentTitle);
 			break;
 		case ChapterCountChanged:
 			emit chaptersChanged(chapterCount, currentChapter);
-			previousState &= ~CurrentChapterChanged;
+			dirtyFlags &= ~CurrentChapterChanged;
 			break;
 		case CurrentChapterChanged:
 			emit currentChapterChanged(currentChapter);
 			break;
 		case AngleCountChanged:
 			emit anglesChanged(angleCount, currentAngle);
-			previousState &= ~CurrentAngleChanged;
+			dirtyFlags &= ~CurrentAngleChanged;
 			break;
 		case CurrentAngleChanged:
 			emit currentAngleChanged(currentAngle);
 			break;
-		case PlayingDvb:
-			emit dvbPlaybackFinished();
-			break;
-		case PlaybackFinished:
-			emit playbackFinished();
 		default:
-			kWarning() << "unknown flag" << lowestFlag;
+			kWarning() << "unknown flag" << lowestDirtyFlag;
 			break;
 		}
 	}
-
-	eventPosted = false;
 }
