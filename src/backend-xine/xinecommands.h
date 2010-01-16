@@ -56,7 +56,8 @@ namespace XineCommands
 		UpdateChapters		=  9,
 		UpdateAngles		= 10,
 		UpdateMouseTracking	= 11,
-		UpdateMouseCursor	= 12
+		UpdateMouseCursor	= 12,
+		UpdateVideoSize		= 13
 	};
 };
 
@@ -320,6 +321,12 @@ public:
 		writer->write(XineCommands::UpdateMouseCursor,
 			reinterpret_cast<const char *>(&pointingMouseCursor),
 			sizeof(pointingMouseCursor));
+	}
+
+	void updateVideoSize(quint32 videoSize)
+	{
+		writer->write(XineCommands::UpdateVideoSize,
+			reinterpret_cast<const char *>(&videoSize), sizeof(videoSize));
 	}
 
 	XinePipeWriterBase *writer;

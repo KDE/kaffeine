@@ -225,6 +225,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 		this, SLOT(setCurrentChapter(int)));
 	connect(backend, SIGNAL(anglesChanged(int,int)), this, SLOT(anglesChanged(int,int)));
 	connect(backend, SIGNAL(currentAngleChanged(int)), this, SLOT(setCurrentAngle(int)));
+	connect(backend, SIGNAL(videoSizeChanged()), this, SLOT(videoSizeChanged()));
 	layout->addWidget(backend);
 
 	osdWidget = new OsdWidget(this);
@@ -740,6 +741,10 @@ void MediaWidget::sourceChanged()
 	if ((dvbFeed != NULL) && !dvbFeed->ignoreSourceChange) {
 		stopDvbPlayback();
 	}
+
+	if (autoResizeFactor > 0) {
+		emit resizeToVideo(autoResizeFactor);
+	}
 }
 
 void MediaWidget::playbackFinished()
@@ -983,6 +988,13 @@ void MediaWidget::setCurrentAngle(int currentAngle)
 		angleGroup->actions().at(currentAngle - 1)->setChecked(true);
 	} else if (angleGroup->checkedAction() != NULL) {
 		angleGroup->checkedAction()->setChecked(false);
+	}
+}
+
+void MediaWidget::videoSizeChanged()
+{
+	if (autoResizeFactor > 0) {
+		emit resizeToVideo(autoResizeFactor);
 	}
 }
 

@@ -44,7 +44,8 @@ private:
 };
 
 XineObject::XineObject() : engine(NULL), audioOutput(NULL), videoOutput(NULL), stream(NULL),
-	eventQueue(NULL), widgetSize(0), dirtyFlags(NotReady), aspectRatio(XineAspectRatioAuto)
+	eventQueue(NULL), widgetSize(0), dirtyFlags(NotReady), aspectRatio(XineAspectRatioAuto),
+	videoSize(0)
 {
 	reader = new XinePipeReader(3, this);
 	parentProcess = new XineParent(4, this);
@@ -469,6 +470,9 @@ void XineObject::customEvent(QEvent *event)
 			case UpdateMouseCursor:
 				parentProcess->updateMouseCursor(pointingMouseCursor);
 				break;
+			case UpdateVideoSize:
+				parentProcess->updateVideoSize(videoSize);
+				break;
 			case ProcessXineEvent:
 				break;
 			default:
@@ -717,6 +721,15 @@ void XineObject::dest_size_cb(void *user_data, int video_width, int video_height
 		*dest_pixel_aspect = video_pixel_aspect * video_width * (widgetSize & 0xffff) /
 			(video_height * (widgetSize >> 16));
 	}
+
+	unsigned int videoSize = ((video_width << 16) | video_height);
+
+	if (instance->videoSize != videoSize) {
+		QMutexLocker locker(&instance->mutex);
+		instance->videoSize = videoSize;
+		instance->xineDirtyFlags |= UpdateVideoSize;
+		instance->postXineEvent();
+	}
 }
 
 void XineObject::frame_output_cb(void *user_data, int video_width, int video_height,
@@ -737,6 +750,15 @@ void XineObject::frame_output_cb(void *user_data, int video_width, int video_hei
 	} else {
 		*dest_pixel_aspect = video_pixel_aspect * video_width * (widgetSize & 0xffff) /
 			(video_height * (widgetSize >> 16));
+	}
+
+	unsigned int videoSize = ((video_width << 16) | video_height);
+
+	if (instance->videoSize != videoSize) {
+		QMutexLocker locker(&instance->mutex);
+		instance->videoSize = videoSize;
+		instance->xineDirtyFlags |= UpdateVideoSize;
+		instance->postXineEvent();
 	}
 }
 

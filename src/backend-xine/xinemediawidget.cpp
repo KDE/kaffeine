@@ -197,6 +197,15 @@ void XineProcess::readyRead()
 
 			break;
 		    }
+		case XineCommands::UpdateVideoSize: {
+			quint32 videoSize = reader->readInt();
+
+			if (reader->isValid()) {
+				parent->updateVideoSize(videoSize);
+			}
+
+			break;
+		    }
 		default:
 			kError() << "unknown command" << command;
 			continue;
@@ -238,7 +247,7 @@ void XineProcess::setupChildProcess()
 XineMediaWidget::XineMediaWidget(QWidget *parent) : QWidget(parent), sequenceNumber(0x71821680),
 	seekable(false), currentTime(0), totalTime(0), currentAudioChannel(-1),
 	currentSubtitle(-1), titleCount(0), currentTitle(0), chapterCount(0), currentChapter(0),
-	angleCount(0), currentAngle(0)
+	angleCount(0), currentAngle(0), videoSize(0)
 {
 	setAttribute(Qt::WA_NativeWindow);
 	setAttribute(Qt::WA_DontCreateNativeAncestors);
@@ -470,6 +479,11 @@ void XineMediaWidget::resizeEvent(QResizeEvent *event)
 {
 	QWidget::resizeEvent(event);
 	childProcess->resize(event->size().width(), event->size().height());
+}
+
+QSize XineMediaWidget::sizeHint() const
+{
+	return QSize(videoSize >> 16, videoSize & 0xffff);
 }
 
 void XineMediaWidget::initFailed(const QString &errorMessage)
@@ -713,6 +727,15 @@ void XineMediaWidget::updateMouseCursor(bool pointingMouseCursor)
 	}
 }
 
+void XineMediaWidget::updateVideoSize(unsigned int videoSize_)
+{
+	if (((currentState & Synchronized) != 0) && (videoSize != videoSize_)) {
+		videoSize = videoSize_;
+		dirtyFlags |= VideoSizeChanged;
+		stateChanged();
+	}
+}
+
 void XineMediaWidget::playEncodedUrl(const QByteArray &encodedUrl, StateFlags stateFlags)
 {
 	++sequenceNumber;
@@ -888,6 +911,10 @@ void XineMediaWidget::stateChanged()
 			break;
 		case CurrentAngleChanged:
 			emit currentAngleChanged(currentAngle);
+			break;
+		case VideoSizeChanged:
+			updateGeometry();
+			emit videoSizeChanged();
 			break;
 		default:
 			kWarning() << "unknown flag" << lowestDirtyFlag;

@@ -94,6 +94,7 @@ signals:
 	void currentChapterChanged(int currentChapter);
 	void anglesChanged(int angleCount, int currentAngle);
 	void currentAngleChanged(int currentAngle);
+	void videoSizeChanged();
 
 public:
 	enum StateFlag {
@@ -125,7 +126,8 @@ public:
 		ChapterCountChanged		= (1 << 15),
 		CurrentChapterChanged		= (1 << 16),
 		AngleCountChanged		= (1 << 17),
-		CurrentAngleChanged		= (1 << 18)
+		CurrentAngleChanged		= (1 << 18),
+		VideoSizeChanged		= (1 << 19)
 	};
 
 	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
@@ -135,6 +137,7 @@ private:
 	void mousePressEvent(QMouseEvent *event);
 	void paintEvent(QPaintEvent *event);
 	void resizeEvent(QResizeEvent *event);
+	QSize sizeHint() const;
 
 	void initFailed(const QString &errorMessage);
 	void sync(unsigned int sequenceNumber_);
@@ -149,6 +152,7 @@ private:
 	void updateAngles(int angleCount_, int currentAngle_);
 	void updateMouseTracking(bool mouseTrackingEnabled);
 	void updateMouseCursor(bool pointingMouseCursor);
+	void updateVideoSize(unsigned int videoSize_);
 
 	void playEncodedUrl(const QByteArray &encodedUrl, StateFlags stateFlags = 0);
 	void stateChanged();
@@ -174,6 +178,7 @@ private:
 	int currentChapter;
 	int angleCount;
 	int currentAngle;
+	unsigned int videoSize;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(XineMediaWidget::StateFlags)

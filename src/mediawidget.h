@@ -128,6 +128,7 @@ private slots:
 	void setCurrentChapter(int currentChapter);
 	void anglesChanged(int angleCount, int currentAngle);
 	void setCurrentAngle(int currentAngle);
+	void videoSizeChanged();
 	void checkScreenSaver();
 
 	void mutedChanged();

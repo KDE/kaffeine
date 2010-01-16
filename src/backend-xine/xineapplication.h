@@ -71,6 +71,7 @@ private:
 		UpdateStreamInfo	= (1 <<  3),
 		UpdateMouseTracking	= (1 <<  4),
 		UpdateMouseCursor	= (1 <<  5),
+		UpdateVideoSize		= (1 <<  6),
 		ProcessXineEvent	= (1 << 30)
 	};
 
@@ -124,6 +125,7 @@ private:
 	XineDirtyFlags xineDirtyFlags;
 	bool mouseTrackingEnabled;
 	bool pointingMouseCursor;
+	unsigned int videoSize;
 	QString errorMessage;
 };
 
