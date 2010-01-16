@@ -762,36 +762,13 @@ void MediaWidget::playbackStopped()
 
 void MediaWidget::playbackChanged(bool playing)
 {
-	if (playing) {
-		actionPlayPause->setText(textPause);
-		actionPlayPause->setIcon(iconPause);
-		actionPlayPause->setCheckable(true);
-		actionPrevious->setEnabled(true);
-		actionStop->setEnabled(true);
-		actionNext->setEnabled(true);
-		timeButton->setEnabled(true);
-
-		if (autoResizeFactor > 0) {
-			emit resizeToVideo(autoResizeFactor);
-		}
-	} else {
-		actionPlayPause->setText(textPlay);
-		actionPlayPause->setIcon(iconPlay);
-		actionPlayPause->setCheckable(false);
-		actionPrevious->setEnabled(false);
-		actionStop->setEnabled(false);
-		actionNext->setEnabled(false);
-		timeButton->setEnabled(false);
-	}
-}
-
-void MediaWidget::seekableChanged(bool seekable)
-{
-	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
-		seekSlider->setEnabled(seekable);
-		navigationMenu->setEnabled(seekable);
-		jumpToPositionAction->setEnabled(seekable);
-	}
+	actionPlayPause->setText(playing ? textPause : textPlay);
+	actionPlayPause->setIcon(playing ? iconPause : iconPlay);
+	actionPlayPause->setCheckable(playing);
+	actionPrevious->setEnabled(playing);
+	actionStop->setEnabled(playing);
+	actionNext->setEnabled(playing);
+	timeButton->setEnabled(playing);
 }
 
 void MediaWidget::totalTimeChanged(int totalTime)
@@ -806,6 +783,15 @@ void MediaWidget::currentTimeChanged(int currentTime)
 	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
 		seekSlider->setValue(currentTime);
 		updateTimeButton();
+	}
+}
+
+void MediaWidget::seekableChanged(bool seekable)
+{
+	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
+		seekSlider->setEnabled(seekable);
+		navigationMenu->setEnabled(seekable);
+		jumpToPositionAction->setEnabled(seekable);
 	}
 }
 
@@ -1200,9 +1186,9 @@ void MediaWidget::stopDvbPlayback()
 {
 	delete dvbFeed;
 	dvbFeed = NULL;
-	seekableChanged(backend->isSeekable());
 	totalTimeChanged(backend->getTotalTime());
 	currentTimeChanged(backend->getCurrentTime());
+	seekableChanged(backend->isSeekable());
 	audioChannelsChanged(QStringList(), -1);
 	subtitlesChanged(QStringList(), -1);
 	emit dvbStopped();

@@ -495,7 +495,7 @@ void XineMediaWidget::playbackFailed(const QString &errorMessage)
 		}
 
 		currentState = 0;
-		dirtyFlags |= (PlaybackStopped | PlayingChanged | ResetState);
+		dirtyFlags |= (ResetState | PlaybackStopped | PlaybackChanged);
 		stateChanged();
 		KMessageBox::queuedMessageBox(this, KMessageBox::Sorry, errorMessage); // FIXME
 	}
@@ -515,7 +515,7 @@ void XineMediaWidget::playbackFinishedInternal()
 		}
 
 		currentState = 0;
-		dirtyFlags |= (PlayingChanged | ResetState);
+		dirtyFlags |= (ResetState | PlaybackChanged);
 		stateChanged();
 	}
 }
@@ -730,7 +730,7 @@ void XineMediaWidget::playEncodedUrl(const QByteArray &encodedUrl, StateFlags st
 	currentState = stateFlags;
 
 	if ((difference & Playing) != 0) {
-		dirtyFlags |= PlayingChanged;
+		dirtyFlags |= PlaybackChanged;
 	}
 
 	if ((difference & PlayingDvd) != 0) {
@@ -747,18 +747,9 @@ void XineMediaWidget::stateChanged()
 		dirtyFlags &= ~lowestDirtyFlag;
 
 		switch (lowestDirtyFlag) {
-		case SourceChanged:
-			emit sourceChanged();
-			break;
-		case PlaybackFinished:
-			emit playbackFinished();
-			break;
-		case PlaybackStopped:
-			emit playbackStopped();
-			break;
 		case ResetState:
-			if (seekable) {
-				seekable = false;
+			if (seekable != isPlaying()) {
+				seekable = isPlaying();
 				dirtyFlags |= SeekableChanged;
 			}
 
@@ -831,7 +822,16 @@ void XineMediaWidget::stateChanged()
 			unsetCursor();
 			setMouseTracking(false);
 			break;
-		case PlayingChanged:
+		case SourceChanged:
+			emit sourceChanged();
+			break;
+		case PlaybackFinished:
+			emit playbackFinished();
+			break;
+		case PlaybackStopped:
+			emit playbackStopped();
+			break;
+		case PlaybackChanged:
 			if (isPlaying()) {
 				show();
 				emit playbackChanged(true);
@@ -842,14 +842,14 @@ void XineMediaWidget::stateChanged()
 			}
 
 			break;
-		case SeekableChanged:
-			emit seekableChanged(seekable);
-			break;
 		case TotalTimeChanged:
 			emit totalTimeChanged(totalTime);
 			break;
 		case CurrentTimeChanged:
 			emit currentTimeChanged(currentTime);
+			break;
+		case SeekableChanged:
+			emit seekableChanged(seekable);
 			break;
 		case AudioChannelsChanged:
 			emit audioChannelsChanged(audioChannels, currentAudioChannel);

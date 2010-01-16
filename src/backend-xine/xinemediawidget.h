@@ -79,9 +79,9 @@ signals:
 	void playbackFinished();
 	void playbackStopped();
 	void playbackChanged(bool playing);
-	void seekableChanged(bool seekable);
 	void totalTimeChanged(int totalTime);
 	void currentTimeChanged(int currentTime);
+	void seekableChanged(bool seekable);
 	void metadataChanged(); // FIXME
 	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
 	void currentAudioChannelChanged(int currentAudioChannel);
@@ -107,14 +107,14 @@ public:
 	Q_DECLARE_FLAGS(StateFlags, StateFlag)
 
 	enum DirtyFlag {
-		SourceChanged			= (1 <<  0),
-		PlaybackFinished		= (1 <<  1),
-		PlaybackStopped			= (1 <<  2),
-		PlayingChanged			= (1 <<  3),
-		ResetState			= (1 <<  4),
-		SeekableChanged			= (1 <<  5),
-		TotalTimeChanged		= (1 <<  6),
-		CurrentTimeChanged		= (1 <<  7),
+		ResetState			= (1 <<  0),
+		SourceChanged			= (1 <<  1),
+		PlaybackFinished		= (1 <<  2),
+		PlaybackStopped			= (1 <<  3),
+		PlaybackChanged			= (1 <<  4),
+		TotalTimeChanged		= (1 <<  5),
+		CurrentTimeChanged		= (1 <<  6),
+		SeekableChanged			= (1 <<  7),
 		AudioChannelsChanged		= (1 <<  8),
 		CurrentAudioChannelChanged	= (1 <<  9),
 		SubtitlesChanged		= (1 << 10),

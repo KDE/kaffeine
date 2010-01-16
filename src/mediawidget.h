@@ -113,9 +113,9 @@ private slots:
 	void playbackFinished();
 	void playbackStopped();
 	void playbackChanged(bool playing);
-	void seekableChanged(bool seekable);
 	void totalTimeChanged(int totalTime);
 	void currentTimeChanged(int currentTime);
+	void seekableChanged(bool seekable);
 	void metadataChanged(); // FIXME
 	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
 	void setCurrentAudioChannel(int currentAudioChannel);
