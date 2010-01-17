@@ -385,7 +385,14 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
+	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
+	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
+	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
+	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
+
 	navigationMenu = new KMenu(i18nc("playback menu", "Skip"), this);
+	menu->addMenu(navigationMenu);
+	menu->addSeparator();
 
 	shortSkipDuration =
 		KGlobal::config()->group("MediaObject").readEntry("ShortSkipDuration", 15);
@@ -419,13 +426,6 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	connect(longSkipForwardAction, SIGNAL(triggered()), this, SLOT(longSkipForward()));
 	navigationMenu->addAction(
 		collection->addAction("controls_long_skip_forward", longSkipForwardAction));
-	menu->addMenu(navigationMenu);
-
-	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
-	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
-	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
-	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
-	menu->addSeparator();
 
 	toolBar->addAction(KIcon("player-time"), i18n("Seek Slider"))->setEnabled(false);
 
