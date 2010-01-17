@@ -232,7 +232,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 
 	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), this);
 	actionPrevious->setShortcut(KShortcut(Qt::Key_PageUp, Qt::Key_MediaPrevious));
-	connect(actionPrevious, SIGNAL(triggered(bool)), this, SLOT(previous()));
+	connect(actionPrevious, SIGNAL(triggered()), this, SLOT(previous()));
 	toolBar->addAction(collection->addAction("controls_previous", actionPrevious));
 	menu->addAction(actionPrevious);
 
@@ -248,18 +248,96 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 
 	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), this);
 	actionStop->setShortcut(KShortcut(Qt::Key_Backspace, Qt::Key_MediaStop));
-	connect(actionStop, SIGNAL(triggered(bool)), this, SLOT(stop()));
+	connect(actionStop, SIGNAL(triggered()), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction("controls_stop", actionStop));
 	menu->addAction(actionStop);
 
 	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), this);
 	actionNext->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
-	connect(actionNext, SIGNAL(triggered(bool)), this, SLOT(next()));
+	connect(actionNext, SIGNAL(triggered()), this, SLOT(next()));
 	toolBar->addAction(collection->addAction("controls_next", actionNext));
 	menu->addAction(actionNext);
 	menu->addSeparator();
 
 	menu->addAction(collection->addAction("view_fullscreen", fullScreenAction));
+
+	audioChannelBox = new KComboBox(toolBar);
+	audioChannelsReady = false;
+	connect(audioChannelBox, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(currentAudioChannelChanged(int)));
+	toolBar->addWidget(audioChannelBox);
+
+	subtitleBox = new KComboBox(toolBar);
+	textSubtitlesOff = i18nc("subtitle selection entry", "off");
+	subtitlesReady = false;
+	connect(subtitleBox, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(currentSubtitleChanged(int)));
+	toolBar->addWidget(subtitleBox);
+
+	KMenu *audioMenu = new KMenu(i18nc("'Playback' menu", "Audio"), this);
+
+	KAction *action = new KAction(KIcon("audio-volume-high"),
+		i18nc("'Audio' menu", "Increase Volume"), this);
+	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
+	connect(action, SIGNAL(triggered()), this, SLOT(increaseVolume()));
+	audioMenu->addAction(collection->addAction("controls_increase_volume", action));
+
+	action = new KAction(KIcon("audio-volume-low"),
+		i18nc("'Audio' menu", "Decrease Volume"), this);
+	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
+	connect(action, SIGNAL(triggered()), this, SLOT(decreaseVolume()));
+	audioMenu->addAction(collection->addAction("controls_decrease_volume", action));
+
+	muteAction = new KAction(i18nc("'Audio' menu", "Mute Volume"), this);
+	mutedIcon = KIcon("audio-volume-muted");
+	unmutedIcon = KIcon("audio-volume-medium");
+	muteAction->setIcon(unmutedIcon);
+	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
+	isMuted = false;
+	connect(muteAction, SIGNAL(triggered()), this, SLOT(mutedChanged()));
+	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
+	audioMenu->addAction(muteAction);
+	menu->addMenu(audioMenu);
+
+	KMenu *videoMenu = new KMenu(i18nc("'Playback' menu", "Video"), this);
+	menu->addMenu(videoMenu);
+	menu->addSeparator();
+
+	deinterlaceAction = new KAction(KIcon("format-justify-center"),
+		i18nc("'Video' menu", "Deinterlace"), this);
+	deinterlaceAction->setCheckable(true);
+	deinterlaceAction->setShortcut(Qt::Key_I);
+	connect(deinterlaceAction, SIGNAL(toggled(bool)), this, SLOT(deinterlacingChanged(bool)));
+	deinterlaceAction->setChecked(
+		KGlobal::config()->group("MediaObject").readEntry("Deinterlace", true));
+	videoMenu->addAction(collection->addAction("controls_deinterlace", deinterlaceAction));
+
+	KMenu *aspectMenu = new KMenu(i18nc("'Video' menu", "Aspect Ratio"), this);
+	QActionGroup *aspectGroup = new QActionGroup(this);
+	connect(aspectGroup, SIGNAL(triggered(QAction*)),
+		this, SLOT(aspectRatioChanged(QAction*)));
+
+	action = new KAction(i18nc("'Aspect Ratio' menu", "Automatic"), aspectGroup);
+	action->setCheckable(true);
+	action->setChecked(true);
+	action->setData(XineMediaWidget::AspectRatioAuto);
+	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
+
+	action = new KAction(i18nc("'Aspect Ratio' menu", "Fit to Window"), aspectGroup);
+	action->setCheckable(true);
+	action->setData(XineMediaWidget::AspectRatioWidget);
+	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
+
+	action = new KAction(i18nc("'Aspect Ratio' menu", "4:3"), aspectGroup);
+	action->setCheckable(true);
+	action->setData(XineMediaWidget::AspectRatio4_3);
+	aspectMenu->addAction(collection->addAction("controls_aspect_4_3", action));
+
+	action = new KAction(i18nc("'Aspect Ratio' menu", "16:9"), aspectGroup);
+	action->setCheckable(true);
+	action->setData(XineMediaWidget::AspectRatio16_9);
+	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
+	videoMenu->addMenu(aspectMenu);
 
 	KMenu *autoResizeMenu = new KMenu(i18n("Automatic Resize"), this);
 	QActionGroup *autoResizeGroup = new QActionGroup(this);
@@ -268,7 +346,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	connect(autoResizeGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(autoResizeTriggered(QAction*)));
 
-	KAction *action = new KAction(i18nc("automatic resize", "Off"), autoResizeGroup);
+	action = new KAction(i18nc("automatic resize", "Off"), autoResizeGroup);
 	action->setCheckable(true);
 	action->setData(0);
 	autoResizeMenu->addAction(collection->addAction("controls_autoresize_off", action));
@@ -291,76 +369,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	}
 
 	autoResizeGroup->actions().at(autoResizeFactor)->setChecked(true);
-
-	menu->addMenu(autoResizeMenu);
-	menu->addSeparator();
-
-	audioChannelBox = new KComboBox(toolBar);
-	audioChannelsReady = false;
-	connect(audioChannelBox, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(currentAudioChannelChanged(int)));
-	toolBar->addWidget(audioChannelBox);
-
-	subtitleBox = new KComboBox(toolBar);
-	textSubtitlesOff = i18nc("subtitle selection entry", "off");
-	subtitlesReady = false;
-	connect(subtitleBox, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(currentSubtitleChanged(int)));
-	toolBar->addWidget(subtitleBox);
-
-	KMenu *audioMenu = new KMenu(i18n("Audio"), this);
-
-	action = new KAction(KIcon("audio-volume-high"), i18n("Increase Volume"), this);
-	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(increaseVolume()));
-	audioMenu->addAction(collection->addAction("controls_increase_volume", action));
-
-	action = new KAction(KIcon("audio-volume-low"), i18n("Decrease Volume"), this);
-	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(decreaseVolume()));
-	audioMenu->addAction(collection->addAction("controls_decrease_volume", action));
-
-	muteAction = new KAction(i18n("Mute Volume"), this);
-	mutedIcon = KIcon("audio-volume-muted");
-	unmutedIcon = KIcon("audio-volume-medium");
-	muteAction->setIcon(unmutedIcon);
-	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
-	isMuted = false;
-	connect(muteAction, SIGNAL(triggered()), this, SLOT(mutedChanged()));
-	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
-	audioMenu->addAction(muteAction);
-
-	menu->addMenu(audioMenu);
-	menu->addSeparator();
-
-	KMenu *aspectMenu = new KMenu(i18n("Aspect Ratio"), this);
-	QActionGroup *aspectGroup = new QActionGroup(this);
-	connect(aspectGroup, SIGNAL(triggered(QAction*)),
-		this, SLOT(aspectRatioChanged(QAction*)));
-
-	action = new KAction(i18nc("aspect ratio", "Automatic"), aspectGroup);
-	action->setCheckable(true);
-	action->setChecked(true);
-	action->setData(XineMediaWidget::AspectRatioAuto);
-	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
-
-	action = new KAction(i18nc("aspect ratio", "Fit to Window"), aspectGroup);
-	action->setCheckable(true);
-	action->setData(XineMediaWidget::AspectRatioWidget);
-	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
-
-	action = new KAction(i18nc("aspect ratio", "4:3"), aspectGroup);
-	action->setCheckable(true);
-	action->setData(XineMediaWidget::AspectRatio4_3);
-	aspectMenu->addAction(collection->addAction("controls_aspect_4_3", action));
-
-	action = new KAction(i18nc("aspect ratio", "16:9"), aspectGroup);
-	action->setCheckable(true);
-	action->setData(XineMediaWidget::AspectRatio16_9);
-	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
-
-	menu->addMenu(aspectMenu);
-	menu->addSeparator();
+	videoMenu->addMenu(autoResizeMenu);
 
 	action = new KAction(i18n("Volume Slider"), this);
 	volumeSlider = new QSlider(toolBar);
@@ -385,35 +394,35 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration), this);
 	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
-	connect(longSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipBackward()));
+	connect(longSkipBackwardAction, SIGNAL(triggered()), this, SLOT(longSkipBackward()));
 	navigationMenu->addAction(
 		collection->addAction("controls_long_skip_backward", longSkipBackwardAction));
 
 	shortSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration), this);
 	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
-	connect(shortSkipBackwardAction, SIGNAL(triggered(bool)), this, SLOT(shortSkipBackward()));
+	connect(shortSkipBackwardAction, SIGNAL(triggered()), this, SLOT(shortSkipBackward()));
 	navigationMenu->addAction(
 		collection->addAction("controls_skip_backward", shortSkipBackwardAction));
 
 	shortSkipForwardAction = new KAction(KIcon("media-skip-forward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration), this);
 	shortSkipForwardAction->setShortcut(Qt::Key_Right);
-	connect(shortSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(shortSkipForward()));
+	connect(shortSkipForwardAction, SIGNAL(triggered()), this, SLOT(shortSkipForward()));
 	navigationMenu->addAction(
 		collection->addAction("controls_skip_forward", shortSkipForwardAction));
 
 	longSkipForwardAction = new KAction(KIcon("media-skip-forward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration), this);
 	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
-	connect(longSkipForwardAction, SIGNAL(triggered(bool)), this, SLOT(longSkipForward()));
+	connect(longSkipForwardAction, SIGNAL(triggered()), this, SLOT(longSkipForward()));
 	navigationMenu->addAction(
 		collection->addAction("controls_long_skip_forward", longSkipForwardAction));
 	menu->addMenu(navigationMenu);
 
 	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
 	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
-	connect(jumpToPositionAction, SIGNAL(triggered(bool)), this, SLOT(jumpToPosition()));
+	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
 	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
 	menu->addSeparator();
 
@@ -480,6 +489,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 MediaWidget::~MediaWidget()
 {
 	KGlobal::config()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
+	KGlobal::config()->group("MediaObject").writeEntry("Deinterlace",
+		deinterlaceAction->isChecked());
 	KGlobal::config()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
 	KGlobal::config()->group("MediaObject").writeEntry("ShortSkipDuration", shortSkipDuration);
 	KGlobal::config()->group("MediaObject").writeEntry("LongSkipDuration", longSkipDuration);
@@ -1027,6 +1038,11 @@ void MediaWidget::volumeChanged(int volume)
 {
 	backend->setVolume(volume);
 	osdWidget->showText(i18nc("osd", "Volume: %1%", volume), 1500);
+}
+
+void MediaWidget::deinterlacingChanged(bool deinterlacing)
+{
+	backend->setDeinterlacing(deinterlacing);
 }
 
 void MediaWidget::aspectRatioChanged(QAction *action)

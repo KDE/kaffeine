@@ -303,6 +303,11 @@ void XineMediaWidget::setAspectRatio(AspectRatio aspectRatio)
 	childProcess->setAspectRatio(xineAspectRatio);
 }
 
+void XineMediaWidget::setDeinterlacing(bool deinterlacing)
+{
+	childProcess->setDeinterlacing(deinterlacing);
+}
+
 void XineMediaWidget::playUrl(const KUrl &url)
 {
 	if (url.toLocalFile().endsWith(QLatin1String(".iso"), Qt::CaseInsensitive)) {

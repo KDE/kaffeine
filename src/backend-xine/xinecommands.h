@@ -32,15 +32,16 @@ namespace XineCommands
 		SetMuted		=  3,
 		SetVolume		=  4,
 		SetAspectRatio		=  5,
-		PlayUrl			=  6,
-		SetPaused		=  7,
-		Seek			=  8,
-		Repaint			=  9,
-		MouseMoved		= 10,
-		MousePressed		= 11,
-		SetCurrentAudioChannel	= 12,
-		SetCurrentSubtitle	= 13,
-		ToggleMenu		= 14
+		SetDeinterlacing	=  6,
+		PlayUrl			=  7,
+		SetPaused		=  8,
+		Seek			=  9,
+		Repaint			= 10,
+		MouseMoved		= 11,
+		MousePressed		= 12,
+		SetCurrentAudioChannel	= 13,
+		SetCurrentSubtitle	= 14,
+		ToggleMenu		= 15
 	};
 
 	enum CommandFromChild {
@@ -170,6 +171,12 @@ public:
 	{
 		writer->write(XineCommands::SetAspectRatio,
 			reinterpret_cast<const char *>(&aspectRatio), sizeof(aspectRatio));
+	}
+
+	void setDeinterlacing(bool deinterlacing)
+	{
+		writer->write(XineCommands::SetDeinterlacing,
+			reinterpret_cast<const char *>(&deinterlacing), sizeof(deinterlacing));
 	}
 
 	void playUrl(quint32 sequenceNumber, const QByteArray &encodedUrl)

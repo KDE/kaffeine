@@ -49,16 +49,17 @@ private:
 		SetMuted		= (1 <<  2),
 		SetVolume		= (1 <<  3),
 		SetAspectRatio		= (1 <<  4),
-		OpenStream		= (1 <<  5),
-		PlayStream		= (1 <<  6),
-		SetPaused		= (1 <<  7),
-		Seek			= (1 <<  8),
-		Repaint			= (1 <<  9),
-		MouseMoved		= (1 << 10),
-		MousePressed		= (1 << 11),
-		SetCurrentAudioChannel	= (1 << 12),
-		SetCurrentSubtitle	= (1 << 13),
-		ToggleMenu		= (1 << 14),
+		SetDeinterlacing	= (1 <<  5),
+		OpenStream		= (1 <<  6),
+		PlayStream		= (1 <<  7),
+		SetPaused		= (1 <<  8),
+		Seek			= (1 <<  9),
+		Repaint			= (1 << 10),
+		MouseMoved		= (1 << 11),
+		MousePressed		= (1 << 12),
+		SetCurrentAudioChannel	= (1 << 13),
+		SetCurrentSubtitle	= (1 << 14),
+		ToggleMenu		= (1 << 15),
 		ProcessEvent		= (1 << 30)
 	};
 
@@ -104,12 +105,14 @@ private:
 	xine_video_port_t *videoOutput;
 	xine_stream_t *stream;
 	xine_event_queue_t *eventQueue;
+	xine_post_t *deinterlacer;
 	double pixelAspectRatio;
 	unsigned int widgetSize;
 	QTimer positionTimer;
 
 	DirtyFlags dirtyFlags;
 	bool muted;
+	bool deinterlacing;
 	bool paused;
 	int aspectRatio;
 	int currentAudioChannel;

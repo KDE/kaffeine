@@ -63,6 +63,10 @@ XineObject::~XineObject()
 		xine_dispose(stream);
 	}
 
+	if (deinterlacer != NULL) {
+		xine_post_dispose(engine, deinterlacer);
+	}
+
 	if (videoOutput != NULL) {
 		xine_close_video_driver(engine, videoOutput);
 	}
@@ -145,6 +149,16 @@ void XineObject::readyRead()
 			if (reader->isValid()) {
 				aspectRatio = aspectRatio_;
 				dirtyFlags |= SetAspectRatio;
+			}
+
+			break;
+		    }
+		case XineCommands::SetDeinterlacing: {
+			bool deinterlacing_ = reader->readBool();
+
+			if (reader->isValid()) {
+				deinterlacing = deinterlacing_;
+				dirtyFlags |= SetDeinterlacing;
 			}
 
 			break;
@@ -367,10 +381,49 @@ void XineObject::init(quint64 windowId)
 		return;
 	}
 
-	// FIXME gapless playback?
-
 	eventQueue = xine_event_new_queue(stream);
+
+	if (eventQueue == NULL) {
+		parentProcess->initFailed("Cannot create event queue.");
+		return;
+	}
+
 	xine_event_create_listener_thread(eventQueue, &event_listener_cb, this);
+	deinterlacer = xine_post_init(engine, "tvtime", 1, 0, &videoOutput);
+
+	if (deinterlacer == NULL) {
+		parentProcess->initFailed("Cannot create deinterlace plugin.");
+		return;
+	}
+
+	xine_post_api_t *deinterlacerApi =
+		static_cast<xine_post_api_t *>(xine_post_input(deinterlacer, "parameters")->data);
+	xine_post_api_descr_t *deinterlacerParameters = deinterlacerApi->get_param_descr();
+
+	for (int i = 0; deinterlacerParameters->parameter[i].type != POST_PARAM_TYPE_LAST; ++i) {
+		xine_post_api_parameter_t &parameter = deinterlacerParameters->parameter[i];
+
+		if ((parameter.type == POST_PARAM_TYPE_INT) &&
+		    (strcmp(parameter.name, "method") == 0)) {
+			QByteArray parameterData;
+			parameterData.resize(deinterlacerParameters->struct_size);
+			char *data = parameterData.data();
+			deinterlacerApi->get_parameters(deinterlacer, data);
+			int *method = reinterpret_cast<int *>(data + parameter.offset);
+
+			for (char **value = parameter.enum_values; *value != NULL; ++value) {
+				if (strcmp(*value, "Greedy2Frame") == 0) {
+					*method = value - parameter.enum_values;
+					break;
+				}
+			}
+
+			deinterlacerApi->set_parameters(deinterlacer, data);
+			break;
+		}
+	}
+
+	// FIXME gapless playback?
 
 	dirtyFlags &= ~NotReady;
 }
@@ -524,6 +577,15 @@ void XineObject::customEvent(QEvent *event)
 			xine_set_param(stream, XINE_PARAM_VO_ASPECT_RATIO, xineAspectRatio);
 			break;
 		    }
+		case SetDeinterlacing:
+			if (deinterlacing) {
+				xine_post_wire(xine_get_video_source(stream),
+					xine_post_input(deinterlacer, "video"));
+			} else {
+				xine_post_wire_video_port(xine_get_video_source(stream), videoOutput);
+			}
+
+			break;
 		case OpenStream:
 			parentProcess->sync(sequenceNumber);
 
@@ -688,21 +750,18 @@ void XineObject::postXineEvent()
 
 void XineObject::audio_driver_cb(void *user_data, xine_cfg_entry_t *entry)
 {
-	kDebug() << "called";
 	Q_UNUSED(user_data)
 	Q_UNUSED(entry)
 }
 
 void XineObject::video_driver_cb(void *user_data, xine_cfg_entry_t *entry)
 {
-	kDebug() << "called";
 	Q_UNUSED(user_data)
 	Q_UNUSED(entry)
 }
 
 void XineObject::pixel_aspect_ratio_cb(void *user_data, xine_cfg_entry_t *entry)
 {
-	kDebug() << "called";
 	Q_UNUSED(user_data)
 	Q_UNUSED(entry)
 }

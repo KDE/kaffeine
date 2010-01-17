@@ -133,6 +133,7 @@ private slots:
 
 	void mutedChanged();
 	void volumeChanged(int volume);
+	void deinterlacingChanged(bool deinterlacing);
 	void aspectRatioChanged(QAction *action);
 	void autoResizeTriggered(QAction *action);
 	void pausedChanged(bool paused);
@@ -190,6 +191,7 @@ private:
 	KAction *shortSkipBackwardAction;
 	KAction *shortSkipForwardAction;
 	KAction *longSkipForwardAction;
+	KAction *deinterlaceAction;
 	KAction *menuAction;
 	KMenu *titleMenu;
 	KMenu *chapterMenu;

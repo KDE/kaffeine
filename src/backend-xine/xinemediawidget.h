@@ -45,6 +45,7 @@ public:
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 100]
 	void setAspectRatio(AspectRatio aspectRatio);
+	void setDeinterlacing(bool deinterlacing);
 
 	void playUrl(const KUrl &url);
 	void playAudioCd(const QString &device);
