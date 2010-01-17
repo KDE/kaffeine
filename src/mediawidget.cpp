@@ -306,10 +306,11 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	deinterlaceAction = new KAction(KIcon("format-justify-center"),
 		i18nc("'Video' menu", "Deinterlace"), this);
 	deinterlaceAction->setCheckable(true);
-	deinterlaceAction->setShortcut(Qt::Key_I);
-	connect(deinterlaceAction, SIGNAL(toggled(bool)), this, SLOT(deinterlacingChanged(bool)));
 	deinterlaceAction->setChecked(
 		KGlobal::config()->group("MediaObject").readEntry("Deinterlace", true));
+	deinterlaceAction->setShortcut(Qt::Key_I);
+	connect(deinterlaceAction, SIGNAL(toggled(bool)), this, SLOT(deinterlacingChanged(bool)));
+	backend->setDeinterlacing(deinterlaceAction->isChecked());
 	videoMenu->addAction(collection->addAction("controls_deinterlace", deinterlaceAction));
 
 	KMenu *aspectMenu = new KMenu(i18nc("'Video' menu", "Aspect Ratio"), this);
@@ -1043,6 +1044,12 @@ void MediaWidget::volumeChanged(int volume)
 void MediaWidget::deinterlacingChanged(bool deinterlacing)
 {
 	backend->setDeinterlacing(deinterlacing);
+
+	if (deinterlacing) {
+		osdWidget->showText(i18nc("osd message", "Deinterlacing On"), 1500);
+	} else {
+		osdWidget->showText(i18nc("osd message", "Deinterlacing Off"), 1500);
+	}
 }
 
 void MediaWidget::aspectRatioChanged(QAction *action)
