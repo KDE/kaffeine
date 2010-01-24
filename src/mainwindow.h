@@ -46,10 +46,8 @@ public:
 	static KCmdLineOptions cmdLineOptions();
 	void parseArgs();
 
-public slots:
-	void toggleFullScreen();
-
 private slots:
+	void displayModeChanged();
 	void open();
 	void openUrl();
 	void openUrl(const KUrl &url);
@@ -79,10 +77,10 @@ private:
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
-	KAction *fullScreenAction;
 	KToolBar *navigationBar;
 	KTabBar *tabBar;
 	KToolBar *controlBar;
+	bool autoHideControlBar;
 	QTimer *cursorHideTimer;
 
 	MediaWidget *mediaWidget;

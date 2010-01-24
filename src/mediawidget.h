@@ -42,11 +42,27 @@ class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
-		KActionCollection *collection, QWidget *parent);
+	MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
+		QWidget *parent);
 	~MediaWidget();
 
 	static QString extensionFilter(); // usable for KFileDialog::setFilter()
+
+	enum AspectRatio {
+		AspectRatioAuto,
+		AspectRatio4_3,
+		AspectRatio16_9,
+		AspectRatioWidget
+	};
+
+	enum DisplayMode {
+		NormalMode,
+		FullScreenMode,
+		MinimalMode
+	};
+
+	DisplayMode getDisplayMode() const;
+	void setDisplayMode(DisplayMode displayMode_);
 
 	/*
 	 * loads the media and starts playback
@@ -88,10 +104,12 @@ public slots:
 	void stop();
 	void increaseVolume();
 	void decreaseVolume();
+	void toggleFullScreen();
+	void toggleMinimalMode();
 
 signals:
+	void displayModeChanged();
 	void changeCaption(const QString &caption);
-	void toggleFullScreen();
 	void resizeToVideo(int factor);
 
 	void playlistPrevious();
@@ -175,6 +193,9 @@ private:
 	KIcon iconPause;
 	KAction *actionStop;
 	KAction *actionNext;
+	DisplayMode displayMode;
+	KAction *fullScreenAction;
+	KAction *minimalModeAction;
 	KComboBox *audioChannelBox;
 	KComboBox *subtitleBox;
 	QString textSubtitlesOff;

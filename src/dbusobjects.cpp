@@ -219,7 +219,7 @@ void MprisPlayerObject::ToggleMuted()
 
 void MprisPlayerObject::ToggleFullScreen()
 {
-	mainWindow->toggleFullScreen();
+	mediaWidget->toggleFullScreen();
 }
 
 MprisTrackListObject::MprisTrackListObject(PlaylistTab *playlistTab_, QObject *parent) :

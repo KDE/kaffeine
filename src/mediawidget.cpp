@@ -185,9 +185,8 @@ void SeekSlider::mousePressEvent(QMouseEvent *event)
 	QSlider::mousePressEvent(&modifiedEvent);
 }
 
-MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *toolBar,
-	KActionCollection *collection, QWidget *parent) : QWidget(parent), menu(menu_),
-	dvbFeed(NULL)
+MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
+	QWidget *parent) : QWidget(parent), menu(menu_), dvbFeed(NULL)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -259,7 +258,19 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	menu->addAction(actionNext);
 	menu->addSeparator();
 
+	displayMode = NormalMode;
+
+	fullScreenAction = new KAction(KIcon("view-fullscreen"),
+		i18nc("'Playback' menu", "Full Screen Mode"), this);
+	fullScreenAction->setShortcut(Qt::Key_F);
+	connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 	menu->addAction(collection->addAction("view_fullscreen", fullScreenAction));
+
+	minimalModeAction = new KAction(KIcon("view-fullscreen"),
+		i18nc("'Playback' menu", "Minimal Mode"), this);
+	minimalModeAction->setShortcut(Qt::Key_Period);
+	connect(minimalModeAction, SIGNAL(triggered()), this, SLOT(toggleMinimalMode()));
+	menu->addAction(collection->addAction("view_minimal_mode", minimalModeAction));
 
 	audioChannelBox = new KComboBox(toolBar);
 	audioChannelsReady = false;
@@ -321,22 +332,22 @@ MediaWidget::MediaWidget(KMenu *menu_, KAction *fullScreenAction, KToolBar *tool
 	action = new KAction(i18nc("'Aspect Ratio' menu", "Automatic"), aspectGroup);
 	action->setCheckable(true);
 	action->setChecked(true);
-	action->setData(XineMediaWidget::AspectRatioAuto);
+	action->setData(AspectRatioAuto);
 	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
 
 	action = new KAction(i18nc("'Aspect Ratio' menu", "Fit to Window"), aspectGroup);
 	action->setCheckable(true);
-	action->setData(XineMediaWidget::AspectRatioWidget);
+	action->setData(AspectRatioWidget);
 	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
 
 	action = new KAction(i18nc("'Aspect Ratio' menu", "4:3"), aspectGroup);
 	action->setCheckable(true);
-	action->setData(XineMediaWidget::AspectRatio4_3);
+	action->setData(AspectRatio4_3);
 	aspectMenu->addAction(collection->addAction("controls_aspect_4_3", action));
 
 	action = new KAction(i18nc("'Aspect Ratio' menu", "16:9"), aspectGroup);
 	action->setCheckable(true);
-	action->setData(XineMediaWidget::AspectRatio16_9);
+	action->setData(AspectRatio16_9);
 	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
 	videoMenu->addMenu(aspectMenu);
 
@@ -512,6 +523,46 @@ QString MediaWidget::extensionFilter()
 		// manual entries
 		"*.kaffeine *.iso|") + i18nc("file filter", "Supported Media Files") +
 		"\n*|" + i18nc("file filter", "All Files");
+}
+
+MediaWidget::DisplayMode MediaWidget::getDisplayMode() const
+{
+	return displayMode;
+}
+
+void MediaWidget::setDisplayMode(DisplayMode displayMode_)
+{
+	if (displayMode != displayMode_) {
+		switch (displayMode) {
+		case NormalMode:
+			break;
+		case FullScreenMode:
+			fullScreenAction->setIcon(KIcon("view-fullscreen"));
+			fullScreenAction->setText(i18nc("'Playback' menu", "Full Screen Mode"));
+			break;
+		case MinimalMode:
+			minimalModeAction->setIcon(KIcon("view-restore"));
+			minimalModeAction->setText(i18nc("'Playback' menu", "Minimal Mode"));
+			break;
+		}
+
+		displayMode = displayMode_;
+
+		switch (displayMode) {
+		case NormalMode:
+			break;
+		case FullScreenMode:
+			fullScreenAction->setIcon(KIcon("view-restore"));
+			fullScreenAction->setText(i18nc("'Playback' menu", "Exit Full Screen Mode"));
+			break;
+		case MinimalMode:
+			minimalModeAction->setIcon(KIcon("view-fullscreen"));
+			minimalModeAction->setText(i18nc("'Playback' menu", "Exit Minimal Mode"));
+			break;
+		}
+
+		emit displayModeChanged();
+	}
 }
 
 void MediaWidget::play(const KUrl &url)
@@ -1041,6 +1092,24 @@ void MediaWidget::volumeChanged(int volume)
 	osdWidget->showText(i18nc("osd", "Volume: %1%", volume), 1500);
 }
 
+void MediaWidget::toggleFullScreen()
+{
+	if (displayMode == FullScreenMode) {
+		setDisplayMode(NormalMode);
+	} else {
+		setDisplayMode(FullScreenMode);
+	}
+}
+
+void MediaWidget::toggleMinimalMode()
+{
+	if (displayMode == MinimalMode) {
+		setDisplayMode(NormalMode);
+	} else {
+		setDisplayMode(MinimalMode);
+	}
+}
+
 void MediaWidget::deinterlacingChanged(bool deinterlacing)
 {
 	backend->setDeinterlacing(deinterlacing);
@@ -1057,8 +1126,8 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 	bool ok;
 	unsigned int aspectRatio_ = action->data().toInt(&ok);
 
-	if (ok && aspectRatio_ <= XineMediaWidget::AspectRatioWidget) {
-		backend->setAspectRatio(static_cast<XineMediaWidget::AspectRatio>(aspectRatio_));
+	if (ok && aspectRatio_ <= AspectRatioWidget) {
+		backend->setAspectRatio(static_cast<AspectRatio>(aspectRatio_));
 		return;
 	}
 

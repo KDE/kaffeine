@@ -220,10 +220,6 @@ MainWindow::MainWindow()
 	KMenu *playerMenu = new KMenu(i18n("&Playback"), this);
 	menuBar->addMenu(playerMenu);
 
-	fullScreenAction = new KAction(KIcon("view-fullscreen"), i18n("Full Screen Mode"), this);
-	fullScreenAction->setShortcut(Qt::Key_F);
-	connect(fullScreenAction, SIGNAL(triggered(bool)), this, SLOT(toggleFullScreen()));
-
 	KMenu *playlistMenu = new KMenu(i18nc("menu bar", "Play&list"), this);
 	menuBar->addMenu(playlistMenu);
 
@@ -262,6 +258,7 @@ MainWindow::MainWindow()
 	controlBar = new KToolBar("control_bar", this, Qt::BottomToolBarArea);
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
+	autoHideControlBar = false;
 	cursorHideTimer = new QTimer(this);
 	cursorHideTimer->setInterval(1500);
 	cursorHideTimer->setSingleShot(true);
@@ -273,9 +270,9 @@ MainWindow::MainWindow()
 	stackedLayout = new QStackedLayout(widget);
 	setCentralWidget(widget);
 
-	mediaWidget = new MediaWidget(playerMenu, fullScreenAction, controlBar, collection, widget);
+	mediaWidget = new MediaWidget(playerMenu, controlBar, collection, widget);
+	connect(mediaWidget, SIGNAL(displayModeChanged()), this, SLOT(displayModeChanged()));
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
-	connect(mediaWidget, SIGNAL(toggleFullScreen()), this, SLOT(toggleFullScreen()));
 	connect(mediaWidget, SIGNAL(resizeToVideo(int)), this, SLOT(resizeToVideo(int)));
 
 	// tabs - keep in sync with TabIndex enum!
@@ -363,8 +360,8 @@ void MainWindow::parseArgs()
 {
 	KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
 
-	if (args->isSet("fullscreen") && !isFullScreen()) {
-		toggleFullScreen();
+	if (args->isSet("fullscreen")) {
+		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
 	}
 
 	if (args->isSet("dumpdvb")) {
@@ -445,31 +442,37 @@ void MainWindow::parseArgs()
 	args->clear();
 }
 
-void MainWindow::toggleFullScreen()
+void MainWindow::displayModeChanged()
 {
-	setWindowState(windowState() ^ Qt::WindowFullScreen);
+	if (mediaWidget->getDisplayMode() == MediaWidget::FullScreenMode) {
+		setWindowState(windowState() | Qt::WindowFullScreen);
+	} else {
+		setWindowState(windowState() & (~Qt::WindowFullScreen));
+	}
 
-	if (isFullScreen()) {
+	switch (mediaWidget->getDisplayMode()) {
+	case MediaWidget::FullScreenMode:
+	case MediaWidget::MinimalMode:
 		menuBar()->hide();
 		navigationBar->hide();
 		controlBar->hide();
-		fullScreenAction->setText(i18n("Exit Full Screen Mode"));
-		fullScreenAction->setIcon(KIcon("view-restore"));
+		autoHideControlBar = true;
 		cursorHideTimer->start();
 
 		stackedLayout->setCurrentIndex(PlayerTabId);
 		playerTab->activate();
-	} else {
-		cursorHideTimer->stop();
-		unsetCursor();
-		fullScreenAction->setText(i18n("Full Screen Mode"));
-		fullScreenAction->setIcon(KIcon("view-fullscreen"));
+		break;
+	case MediaWidget::NormalMode:
 		menuBar()->show();
 		navigationBar->show();
 		controlBar->show();
+		autoHideControlBar = false;
+		cursorHideTimer->stop();
+		unsetCursor();
 
 		stackedLayout->setCurrentIndex(currentTabIndex);
 		tabs.at(currentTabIndex)->activate();
+		break;
 	}
 }
 
@@ -574,12 +577,10 @@ void MainWindow::activateTab(int tabIndex)
 	currentTabIndex = tabIndex;
 	tabBar->setCurrentIndex(tabIndex);
 
-	if (isFullScreen()) {
-		return;
+	if (!autoHideControlBar) {
+		stackedLayout->setCurrentIndex(currentTabIndex);
+		tabs.at(currentTabIndex)->activate();
 	}
-
-	stackedLayout->setCurrentIndex(currentTabIndex);
-	tabs.at(currentTabIndex)->activate();
 }
 
 void MainWindow::hideCursor()
@@ -595,7 +596,7 @@ bool MainWindow::event(QEvent *event)
 	// but the latter depends on mouse tracking being enabled on this widget
 	// and all its children (especially the phonon video widget) ...
 
-	if ((event->type() == QEvent::HoverMove) && isFullScreen()) {
+	if ((event->type() == QEvent::HoverMove) && autoHideControlBar) {
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
 
 		if ((y < 0) || (y >= height())) {
@@ -627,9 +628,8 @@ bool MainWindow::event(QEvent *event)
 
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
-	if ((event->key() == Qt::Key_Escape) && isFullScreen()) {
-		toggleFullScreen();
-		return;
+	if (event->key() == Qt::Key_Escape) {
+		mediaWidget->setDisplayMode(MediaWidget::NormalMode);
 	}
 
 	KMainWindow::keyPressEvent(event);
@@ -637,7 +637,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::leaveEvent(QEvent *event)
 {
-	if (isFullScreen()) {
+	if (autoHideControlBar) {
 		controlBar->setVisible(false);
 	}
 

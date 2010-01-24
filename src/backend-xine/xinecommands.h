@@ -49,16 +49,17 @@ namespace XineCommands
 		Sync			=  1,
 		PlaybackFailed		=  2,
 		PlaybackFinished	=  3,
-		UpdateSeekable		=  4,
-		UpdateCurrentTotalTime	=  5,
-		UpdateAudioChannels	=  6,
-		UpdateSubtitles		=  7,
-		UpdateTitles		=  8,
-		UpdateChapters		=  9,
-		UpdateAngles		= 10,
-		UpdateMouseTracking	= 11,
-		UpdateMouseCursor	= 12,
-		UpdateVideoSize		= 13
+		UpdateCurrentTotalTime	=  4,
+		UpdateMetaData		=  5,
+		UpdateSeekable		=  6,
+		UpdateAudioChannels	=  7,
+		UpdateSubtitles		=  8,
+		UpdateTitles		=  9,
+		UpdateChapters		= 10,
+		UpdateAngles		= 11,
+		UpdateMouseTracking	= 12,
+		UpdateMouseCursor	= 13,
+		UpdateVideoSize		= 14
 	};
 };
 
@@ -267,17 +268,17 @@ public:
 		writer->write(XineCommands::PlaybackFinished);
 	}
 
-	void updateSeekable(bool seekable)
-	{
-		writer->write(XineCommands::UpdateSeekable,
-			reinterpret_cast<const char *>(&seekable), sizeof(seekable));
-	}
-
 	void updateCurrentTotalTime(qint32 currentTime, qint32 totalTime)
 	{
 		writer->write(XineCommands::UpdateCurrentTotalTime,
 			reinterpret_cast<const char *>(&currentTime), sizeof(currentTime),
 			reinterpret_cast<const char *>(&totalTime), sizeof(totalTime));
+	}
+
+	void updateSeekable(bool seekable)
+	{
+		writer->write(XineCommands::UpdateSeekable,
+			reinterpret_cast<const char *>(&seekable), sizeof(seekable));
 	}
 
 	void updateAudioChannels(const QByteArray &audioChannels, qint8 currentAudioChannel)

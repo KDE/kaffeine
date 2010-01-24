@@ -278,21 +278,21 @@ void XineMediaWidget::setVolume(int volume)
 	childProcess->setVolume(volume);
 }
 
-void XineMediaWidget::setAspectRatio(AspectRatio aspectRatio)
+void XineMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 {
 	XineAspectRatio xineAspectRatio;
 
 	switch (aspectRatio) {
-	case AspectRatioAuto:
+	case MediaWidget::AspectRatioAuto:
 		xineAspectRatio = XineAspectRatioAuto;
 		break;
-	case AspectRatio4_3:
+	case MediaWidget::AspectRatio4_3:
 		xineAspectRatio = XineAspectRatio4_3;
 		break;
-	case AspectRatio16_9:
+	case MediaWidget::AspectRatio16_9:
 		xineAspectRatio = XineAspectRatio16_9;
 		break;
-	case AspectRatioWidget:
+	case MediaWidget::AspectRatioWidget:
 		xineAspectRatio = XineAspectRatioWidget;
 		break;
 	default:

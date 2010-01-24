@@ -22,6 +22,7 @@
 #define XINEMEDIAWIDGET_H
 
 #include <QWidget>
+#include "../mediawidget.h"
 
 class KUrl;
 class XineChildMarshaller;
@@ -35,16 +36,9 @@ public:
 	explicit XineMediaWidget(QWidget *parent);
 	~XineMediaWidget();
 
-	enum AspectRatio {
-		AspectRatioAuto,
-		AspectRatio4_3,
-		AspectRatio16_9,
-		AspectRatioWidget
-	};
-
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 100]
-	void setAspectRatio(AspectRatio aspectRatio);
+	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
 	void setDeinterlacing(bool deinterlacing);
 
 	void playUrl(const KUrl &url);
@@ -82,8 +76,8 @@ signals:
 	void playbackChanged(bool playing);
 	void totalTimeChanged(int totalTime);
 	void currentTimeChanged(int currentTime);
+	void metadataChanged();
 	void seekableChanged(bool seekable);
-	void metadataChanged(); // FIXME
 	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
 	void currentAudioChannelChanged(int currentAudioChannel);
 	void subtitlesChanged(const QStringList &subtitles, int currentSubtitle);
