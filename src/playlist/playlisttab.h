@@ -22,6 +22,7 @@
 #define PLAYLISTTAB_H
 
 #include <QTreeView>
+#include "../mediawidget.h"
 #include "../tabbase.h"
 
 class QSplitter;
@@ -110,6 +111,8 @@ private slots:
 	void playTrack(const QModelIndex &index);
 	void appendUrls(const QList<KUrl> &urls);
 	void appendPlaylist(Playlist *playlist, bool playImmediately);
+	void updateTrackLength(int length);
+	void updateTrackMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
 
 private:
 	void activate();

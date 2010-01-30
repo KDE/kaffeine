@@ -123,6 +123,9 @@ signals:
 	void playlistPlay();
 	void playlistNext();
 	void playlistUrlsDropped(const QList<KUrl> &urls);
+	void playlistTrackLengthChanged(int length);
+	void playlistTrackMetadataChanged(
+		const QMap<MediaWidget::MetadataType, QString> &metadata);
 
 	void previousDvbChannel();
 	void nextDvbChannel();
@@ -132,9 +135,6 @@ signals:
 	void changeDvbSubtitle(int index);
 	void dvbStopped();
 	void osdKeyPressed(int key);
-
-	void lengthChanged(int length);
-	void metadataChanged(const QMap<MetadataType, QString> &metadata);
 
 private slots:
 	void sourceChanged();

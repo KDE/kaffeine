@@ -24,6 +24,7 @@
 #include <QAbstractTableModel>
 #include <QTime>
 #include <KUrl>
+#include "../mediawidget.h"
 
 class PlaylistTrack
 {
@@ -95,6 +96,9 @@ public:
 	void appendUrls(Playlist *playlist, const QList<KUrl> &urls, bool playImmediately);
 	void removeRows(Playlist *playlist, int row, int count);
 	void setCurrentTrack(Playlist *playlist, int track);
+	void updateTrackLength(Playlist *playlist, int length);
+	void updateTrackMetadata(Playlist *playlist,
+		const QMap<MediaWidget::MetadataType, QString> &metadata);
 
 public slots:
 	void clearVisiblePlaylist();

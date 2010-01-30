@@ -358,6 +358,11 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
 	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<KUrl>)),
 		this, SLOT(appendUrls(QList<KUrl>)));
+	connect(mediaWidget, SIGNAL(playlistTrackLengthChanged(int)),
+		this, SLOT(updateTrackLength(int)));
+	connect(mediaWidget,
+		SIGNAL(playlistTrackMetadataChanged(QMap<MediaWidget::MetadataType,QString>)),
+		this, SLOT(updateTrackMetadata(QMap<MediaWidget::MetadataType,QString>)));
 
 	repeatAction = new KAction(KIcon("media-playlist-repeat"),
 		i18nc("playlist menu", "Repeat"), this);
@@ -722,6 +727,16 @@ void PlaylistTab::appendPlaylist(Playlist *playlist, bool playImmediately)
 		playlistModel->setVisiblePlaylist(playlist);
 		playNextTrack();
 	}
+}
+
+void PlaylistTab::updateTrackLength(int length)
+{
+	playlistModel->updateTrackLength(playlistBrowserModel->getCurrentPlaylist(), length);
+}
+
+void PlaylistTab::updateTrackMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata)
+{
+	playlistModel->updateTrackMetadata(playlistBrowserModel->getCurrentPlaylist(), metadata);
 }
 
 void PlaylistTab::savePlaylist(bool askName)

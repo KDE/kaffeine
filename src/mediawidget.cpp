@@ -787,8 +787,11 @@ void MediaWidget::next()
 
 void MediaWidget::stop()
 {
+	if (backend->isPlaying()) {
+		osdWidget->showText(i18nc("osd", "Stopped"), 1500);
+	}
+
 	backend->stop();
-	osdWidget->showText(i18nc("osd", "Stopped"), 1500);
 }
 
 void MediaWidget::increaseVolume()
@@ -853,7 +856,10 @@ void MediaWidget::totalTimeChanged(int totalTime)
 {
 	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
 		seekSlider->setRange(0, totalTime);
-		emit lengthChanged(totalTime);
+	}
+
+	if (!currentSourceName.isEmpty() && (dvbFeed == NULL)) {
+		emit playlistTrackLengthChanged(totalTime);
 	}
 }
 
@@ -890,9 +896,11 @@ void MediaWidget::setMetadata(const QMap<MetadataType, QString> &metadata)
 		}
 
 		emit changeCaption(caption);
-	}
 
-	emit metadataChanged(metadata);
+		if (!currentSourceName.isEmpty()) {
+			emit playlistTrackMetadataChanged(metadata);
+		}
+	}
 }
 
 void MediaWidget::seekableChanged(bool seekable)

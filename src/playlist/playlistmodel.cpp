@@ -564,6 +564,59 @@ void PlaylistModel::setCurrentTrack(Playlist *playlist, int track)
 	}
 }
 
+void PlaylistModel::updateTrackLength(Playlist *playlist, int length)
+{
+	if (playlist->currentTrack >= 0) {
+		if (QTime().msecsTo(playlist->tracks.at(playlist->currentTrack).length) < length) {
+			playlist->tracks[playlist->currentTrack].length = QTime().addMSecs(length);
+
+			if (playlist == visiblePlaylist) {
+				QModelIndex modelIndex = index(playlist->currentTrack, 4);
+				emit dataChanged(modelIndex, modelIndex);
+			}
+		}
+	}
+}
+
+void PlaylistModel::updateTrackMetadata(Playlist *playlist,
+	const QMap<MediaWidget::MetadataType, QString> &metadata)
+{
+	if (playlist->currentTrack >= 0) {
+		PlaylistTrack &currentTrack = playlist->tracks[playlist->currentTrack];
+
+		if (currentTrack.title != metadata.value(MediaWidget::Title)) {
+			currentTrack.title = metadata.value(MediaWidget::Title);
+			QModelIndex modelIndex = index(playlist->currentTrack, 0);
+			emit dataChanged(modelIndex, modelIndex);
+		}
+
+		if (currentTrack.artist != metadata.value(MediaWidget::Artist)) {
+			currentTrack.artist = metadata.value(MediaWidget::Artist);
+			QModelIndex modelIndex = index(playlist->currentTrack, 0);
+			emit dataChanged(modelIndex, modelIndex);
+		}
+
+		if (currentTrack.album != metadata.value(MediaWidget::Album)) {
+			currentTrack.album = metadata.value(MediaWidget::Album);
+			QModelIndex modelIndex = index(playlist->currentTrack, 0);
+			emit dataChanged(modelIndex, modelIndex);
+		}
+
+		bool ok;
+		int trackNumber = metadata.value(MediaWidget::TrackNumber).toInt(&ok);
+
+		if (!ok) {
+			trackNumber = -1;
+		}
+
+		if (currentTrack.trackNumber != trackNumber) {
+			currentTrack.trackNumber = trackNumber;
+			QModelIndex modelIndex = index(playlist->currentTrack, 3);
+			emit dataChanged(modelIndex, modelIndex);
+		}
+	}
+}
+
 void PlaylistModel::clearVisiblePlaylist()
 {
 	visiblePlaylist->tracks.clear();
