@@ -37,7 +37,7 @@ set(kaffeinedvbmodule_SRCS
 set(kaffeinedvbdebugmodule_SRCS
     dvb/dvbdevice_debug.cpp)
 
-check_include_files("sys/ioctl.h" HAVE_DVB)
+check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/../include/frontend.h HAVE_DVB)
 
 if(HAVE_DVB)
   set(kaffeine_SRCS ${kaffeine_SRCS} ${kaffeinedvb_SRCS})
