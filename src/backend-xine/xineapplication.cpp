@@ -457,6 +457,25 @@ void XineObject::customEvent(QEvent *event)
 				xine_close(stream);
 				break;
 			case UpdateStreamInfo: {
+				QString metadata;
+				metadata.append(QChar(XineMetadataTitle));
+				metadata.append(QString::fromUtf8(xine_get_meta_info(stream,
+					XINE_META_INFO_TITLE)));
+				metadata.append(QChar('\0'));
+				metadata.append(QChar(XineMetadataArtist));
+				metadata.append(QString::fromUtf8(xine_get_meta_info(stream,
+					XINE_META_INFO_ARTIST)));
+				metadata.append(QChar('\0'));
+				metadata.append(QChar(XineMetadataAlbum));
+				metadata.append(QString::fromUtf8(xine_get_meta_info(stream,
+					XINE_META_INFO_ALBUM)));
+				metadata.append(QChar('\0'));
+				metadata.append(QChar(XineMetadataTrackNumber));
+				metadata.append(QString::fromUtf8(xine_get_meta_info(stream,
+					XINE_META_INFO_TRACK_NUMBER)));
+				metadata.append(QChar('\0'));
+				parentProcess->updateMetadata(metadata);
+
 				bool seekable = (xine_get_stream_info(stream,
 					XINE_STREAM_INFO_SEEKABLE) != 0);
 				parentProcess->updateSeekable(seekable);

@@ -50,7 +50,7 @@ namespace XineCommands
 		PlaybackFailed		=  2,
 		PlaybackFinished	=  3,
 		UpdateCurrentTotalTime	=  4,
-		UpdateMetaData		=  5,
+		UpdateMetadata		=  5,
 		UpdateSeekable		=  6,
 		UpdateAudioChannels	=  7,
 		UpdateSubtitles		=  8,
@@ -68,6 +68,13 @@ enum XineAspectRatio {
 	XineAspectRatio4_3	= 1,
 	XineAspectRatio16_9	= 2,
 	XineAspectRatioWidget	= 3
+};
+
+enum XineMetadataType {
+	XineMetadataTitle	= 0,
+	XineMetadataArtist	= 1,
+	XineMetadataAlbum	= 2,
+	XineMetadataTrackNumber	= 3
 };
 
 class XinePipeReader
@@ -273,6 +280,13 @@ public:
 		writer->write(XineCommands::UpdateCurrentTotalTime,
 			reinterpret_cast<const char *>(&currentTime), sizeof(currentTime),
 			reinterpret_cast<const char *>(&totalTime), sizeof(totalTime));
+	}
+
+	void updateMetadata(const QString &metadata)
+	{
+		writer->write(XineCommands::UpdateMetadata,
+			reinterpret_cast<const char *>(metadata.constData()),
+			static_cast<unsigned int>(metadata.size()) * sizeof(QChar));
 	}
 
 	void updateSeekable(bool seekable)

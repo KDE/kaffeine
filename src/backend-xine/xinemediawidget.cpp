@@ -110,21 +110,30 @@ void XineProcess::readyRead()
 		case XineCommands::PlaybackFinished:
 			parent->playbackFinishedInternal();
 			break;
-		case XineCommands::UpdateSeekable: {
-			bool seekable = reader->readBool();
-
-			if (reader->isValid()) {
-				parent->updateSeekable(seekable);
-			}
-
-			break;
-		    }
 		case XineCommands::UpdateCurrentTotalTime: {
 			qint32 currentTime = reader->readInt();
 			qint32 totalTime = reader->readInt();
 
 			if (reader->isValid()) {
 				parent->updateCurrentTotalTime(currentTime, totalTime);
+			}
+
+			break;
+		    }
+		case XineCommands::UpdateMetadata: {
+			QString metadata = reader->readString();
+
+			if (reader->isValid()) {
+				parent->updateMetadata(metadata);
+			}
+
+			break;
+		    }
+		case XineCommands::UpdateSeekable: {
+			bool seekable = reader->readBool();
+
+			if (reader->isValid()) {
+				parent->updateSeekable(seekable);
 			}
 
 			break;
@@ -245,7 +254,7 @@ void XineProcess::setupChildProcess()
 }
 
 XineMediaWidget::XineMediaWidget(QWidget *parent) : QWidget(parent), sequenceNumber(0x71821680),
-	seekable(false), currentTime(0), totalTime(0), currentAudioChannel(-1),
+	currentTime(0), totalTime(0), seekable(false), currentAudioChannel(-1),
 	currentSubtitle(-1), titleCount(0), currentTitle(0), chapterCount(0), currentChapter(0),
 	angleCount(0), currentAngle(0), videoSize(0)
 {
@@ -539,15 +548,6 @@ void XineMediaWidget::playbackFinishedInternal()
 	}
 }
 
-void XineMediaWidget::updateSeekable(bool seekable_)
-{
-	if (((currentState & Synchronized) != 0) && (seekable != seekable_)) {
-		seekable = seekable_;
-		dirtyFlags |= SeekableChanged;
-		stateChanged();
-	}
-}
-
 void XineMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
 {
 	if ((currentState & Synchronized) != 0) {
@@ -569,6 +569,61 @@ void XineMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
 			dirtyFlags |= TotalTimeChanged;
 		}
 
+		stateChanged();
+	}
+}
+
+void XineMediaWidget::updateMetadata(const QString &metadata_)
+{
+	if (((currentState & Synchronized) != 0) && (rawMetadata != metadata_)) {
+		rawMetadata = metadata_;
+		metadata.clear();
+
+		for (int i = 0; i < rawMetadata.size(); ++i) {
+			int type = rawMetadata.at(i).unicode();
+			++i;
+			int end = i;
+
+			while ((end < rawMetadata.size()) && (rawMetadata.at(end) != '\0')) {
+				++end;
+			}
+
+			if (i == end) {
+				continue;
+			}
+
+			QString content = rawMetadata.mid(i, end - i);
+			i = end;
+
+			switch (type) {
+			case XineMetadataTitle:
+				metadata.insert(MediaWidget::Title, content);
+				break;
+			case XineMetadataArtist:
+				metadata.insert(MediaWidget::Artist, content);
+				break;
+			case XineMetadataAlbum:
+				metadata.insert(MediaWidget::Album, content);
+				break;
+			case XineMetadataTrackNumber:
+				metadata.insert(MediaWidget::TrackNumber, content);
+				break;
+			default:
+				kError() << "unknown metadata type" << type;
+				break;
+			}
+		}
+
+		dirtyFlags |= MetadataChanged;
+		stateChanged();
+	}
+}
+
+void XineMediaWidget::updateSeekable(bool seekable_)
+{
+	if (((currentState & Synchronized) != 0) && (seekable != seekable_)) {
+		seekable = seekable_;
+		dirtyFlags |= SeekableChanged;
 		stateChanged();
 	}
 }
@@ -776,11 +831,6 @@ void XineMediaWidget::stateChanged()
 
 		switch (lowestDirtyFlag) {
 		case ResetState:
-			if (seekable != isPlaying()) {
-				seekable = isPlaying();
-				dirtyFlags |= SeekableChanged;
-			}
-
 			if (currentTime != 0) {
 				currentTime = 0;
 				dirtyFlags |= CurrentTimeChanged;
@@ -789,6 +839,17 @@ void XineMediaWidget::stateChanged()
 			if (totalTime != 0) {
 				totalTime = 0;
 				dirtyFlags |= TotalTimeChanged;
+			}
+
+			if (!metadata.isEmpty()) {
+				rawMetadata.clear();
+				metadata.clear();
+				dirtyFlags |= MetadataChanged;
+			}
+
+			if (seekable != isPlaying()) {
+				seekable = isPlaying();
+				dirtyFlags |= SeekableChanged;
 			}
 
 			if (!audioChannels.isEmpty()) {
@@ -875,6 +936,9 @@ void XineMediaWidget::stateChanged()
 			break;
 		case CurrentTimeChanged:
 			emit currentTimeChanged(currentTime);
+			break;
+		case MetadataChanged:
+			emit metadataChanged(metadata);
 			break;
 		case SeekableChanged:
 			emit seekableChanged(seekable);

@@ -204,10 +204,11 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	connect(backend, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
 	connect(backend, SIGNAL(playbackStopped()), this, SLOT(playbackStopped()));
 	connect(backend, SIGNAL(playbackChanged(bool)), this, SLOT(playbackChanged(bool)));
-	connect(backend, SIGNAL(seekableChanged(bool)), this, SLOT(seekableChanged(bool)));
 	connect(backend, SIGNAL(totalTimeChanged(int)), this, SLOT(totalTimeChanged(int)));
 	connect(backend, SIGNAL(currentTimeChanged(int)), this, SLOT(currentTimeChanged(int)));
-	connect(backend, SIGNAL(metadataChanged()), this, SLOT(metadataChanged())); // FIXME
+	connect(backend, SIGNAL(metadataChanged(QMap<MediaWidget::MetadataType,QString>)),
+		this, SLOT(setMetadata(QMap<MediaWidget::MetadataType,QString>)));
+	connect(backend, SIGNAL(seekableChanged(bool)), this, SLOT(seekableChanged(bool)));
 	connect(backend, SIGNAL(audioChannelsChanged(QStringList,int)),
 		this, SLOT(audioChannelsChanged(QStringList,int)));
 	connect(backend, SIGNAL(currentAudioChannelChanged(int)),
@@ -489,7 +490,6 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	seekableChanged(false);
 	totalTimeChanged(0);
 	currentTimeChanged(0);
-	metadataChanged(); // FIXME
 	audioChannelsChanged(QStringList(), -1);
 	subtitlesChanged(QStringList(), -1);
 	dvdPlaybackChanged(false);
@@ -567,6 +567,12 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 
 void MediaWidget::play(const KUrl &url)
 {
+	currentSourceName = url.toLocalFile();
+
+	if (currentSourceName.isEmpty()) {
+		currentSourceName = url.prettyUrl();
+	}
+
 	backend->playUrl(url);
 }
 
@@ -584,6 +590,7 @@ void MediaWidget::playAudioCd()
 		}
 	}
 
+	currentSourceName.clear();
 	backend->playAudioCd(deviceName);
 }
 
@@ -601,6 +608,7 @@ void MediaWidget::playVideoCd()
 		}
 	}
 
+	currentSourceName.clear();
 	backend->playVideoCd(deviceName);
 }
 
@@ -618,6 +626,7 @@ void MediaWidget::playDvd()
 		}
 	}
 
+	currentSourceName.clear();
 	backend->playDvd(deviceName);
 }
 
@@ -633,18 +642,13 @@ void MediaWidget::playDvb(const QString &channelName)
 		dvbFeed = NULL;
 	}
 
-	if (!channelName.isEmpty()) {
-		osdWidget->showText(channelName, 2500);
-	}
-
-	emit changeCaption(channelName);
-
 	seekableChanged(false);
 	totalTimeChanged(0);
 	currentTimeChanged(0);
 
 	dvbFeed = new DvbFeed(this);
 	dvbFeed->ignoreSourceChange = true;
+	currentSourceName = channelName;
 	backend->playUrl(dvbFeed->getUrl());
 	dvbFeed->ignoreSourceChange = false;
 }
@@ -805,6 +809,8 @@ void MediaWidget::sourceChanged()
 		stopDvbPlayback();
 	}
 
+	setMetadata(QMap<MetadataType, QString>());
+
 	if (autoResizeFactor > 0) {
 		emit resizeToVideo(autoResizeFactor);
 	}
@@ -812,6 +818,8 @@ void MediaWidget::sourceChanged()
 
 void MediaWidget::playbackFinished()
 {
+	currentSourceName.clear();
+
 	if (dvbFeed != NULL) {
 		dvbFeed->ignoreSourceChange = true;
 		emit startDvbTimeShift();
@@ -823,6 +831,8 @@ void MediaWidget::playbackFinished()
 
 void MediaWidget::playbackStopped()
 {
+	currentSourceName.clear();
+
 	if (dvbFeed != NULL) {
 		stopDvbPlayback();
 	}
@@ -843,6 +853,7 @@ void MediaWidget::totalTimeChanged(int totalTime)
 {
 	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
 		seekSlider->setRange(0, totalTime);
+		emit lengthChanged(totalTime);
 	}
 }
 
@@ -854,6 +865,36 @@ void MediaWidget::currentTimeChanged(int currentTime)
 	}
 }
 
+void MediaWidget::setMetadata(const QMap<MetadataType, QString> &metadata)
+{
+	if (dvbFeed == NULL) {
+		QString caption = metadata.value(Title);
+		QString artist = metadata.value(Artist);
+
+		if (!caption.isEmpty() && !artist.isEmpty()) {
+			caption += ' ';
+		}
+
+		if (!artist.isEmpty()) {
+			caption += '(';
+			caption += artist;
+			caption += ')';
+		}
+
+		if (caption.isEmpty()) {
+			caption = currentSourceName;
+		}
+
+		if (!caption.isEmpty()) {
+			osdWidget->showText(caption, 2500);
+		}
+
+		emit changeCaption(caption);
+	}
+
+	emit metadataChanged(metadata);
+}
+
 void MediaWidget::seekableChanged(bool seekable)
 {
 	if ((dvbFeed == NULL) || dvbFeed->timeShiftActive) {
@@ -861,35 +902,6 @@ void MediaWidget::seekableChanged(bool seekable)
 		navigationMenu->setEnabled(seekable);
 		jumpToPositionAction->setEnabled(seekable);
 	}
-}
-
-void MediaWidget::metadataChanged()
-{
-/*
-	if (dvbFeed != NULL) {
-		return;
-	}
-
-	QString caption;
-
-	if (backend->isPlaying()) {
-		// FIXME include artist?
-		QStringList strings; // FIXME = backend->metaData(Phonon::TitleMetaData);
-
-		if (!strings.isEmpty() && !strings.at(0).isEmpty()) {
-			caption = strings.at(0);
-		} else {
-			// caption = KUrl(backend->currentSource().url()).fileName();
-			// FIXME
-		}
-	}
-
-	if (!caption.isEmpty()) {
-		osdWidget->showText(caption, 2500);
-	}
-
-	emit changeCaption(caption);
-*/
 }
 
 void MediaWidget::audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel)

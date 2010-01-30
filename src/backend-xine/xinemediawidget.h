@@ -21,6 +21,7 @@
 #ifndef XINEMEDIAWIDGET_H
 #define XINEMEDIAWIDGET_H
 
+#include <QMap>
 #include <QWidget>
 #include "../mediawidget.h"
 
@@ -76,7 +77,7 @@ signals:
 	void playbackChanged(bool playing);
 	void totalTimeChanged(int totalTime);
 	void currentTimeChanged(int currentTime);
-	void metadataChanged();
+	void metadataChanged(const QMap<MediaWidget::MetadataType, QString> &metadata);
 	void seekableChanged(bool seekable);
 	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
 	void currentAudioChannelChanged(int currentAudioChannel);
@@ -110,19 +111,20 @@ public:
 		PlaybackChanged			= (1 <<  4),
 		TotalTimeChanged		= (1 <<  5),
 		CurrentTimeChanged		= (1 <<  6),
-		SeekableChanged			= (1 <<  7),
-		AudioChannelsChanged		= (1 <<  8),
-		CurrentAudioChannelChanged	= (1 <<  9),
-		SubtitlesChanged		= (1 << 10),
-		CurrentSubtitleChanged		= (1 << 11),
-		PlayingDvdChanged		= (1 << 12),
-		TitleCountChanged		= (1 << 13),
-		CurrentTitleChanged		= (1 << 14),
-		ChapterCountChanged		= (1 << 15),
-		CurrentChapterChanged		= (1 << 16),
-		AngleCountChanged		= (1 << 17),
-		CurrentAngleChanged		= (1 << 18),
-		VideoSizeChanged		= (1 << 19)
+		MetadataChanged			= (1 <<  7),
+		SeekableChanged			= (1 <<  8),
+		AudioChannelsChanged		= (1 <<  9),
+		CurrentAudioChannelChanged	= (1 << 10),
+		SubtitlesChanged		= (1 << 11),
+		CurrentSubtitleChanged		= (1 << 12),
+		PlayingDvdChanged		= (1 << 13),
+		TitleCountChanged		= (1 << 14),
+		CurrentTitleChanged		= (1 << 15),
+		ChapterCountChanged		= (1 << 16),
+		CurrentChapterChanged		= (1 << 17),
+		AngleCountChanged		= (1 << 18),
+		CurrentAngleChanged		= (1 << 19),
+		VideoSizeChanged		= (1 << 20)
 	};
 
 	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
@@ -138,8 +140,9 @@ private:
 	void sync(unsigned int sequenceNumber_);
 	void playbackFailed(const QString &errorMessage);
 	void playbackFinishedInternal();
-	void updateSeekable(bool seekable_);
 	void updateCurrentTotalTime(int currentTime_, int totalTime_);
+	void updateMetadata(const QString &metadata_);
+	void updateSeekable(bool seekable_);
 	void updateAudioChannels(const QByteArray &audioChannels_, int currentAudioChannel_);
 	void updateSubtitles(const QByteArray &subtitles_, int currentSubtitle_);
 	void updateTitles(int titleCount_, int currentTitle_);
@@ -157,9 +160,11 @@ private:
 	StateFlags currentState;
 	DirtyFlags dirtyFlags;
 	unsigned int sequenceNumber;
-	bool seekable;
 	int currentTime;
 	int totalTime;
+	QString rawMetadata;
+	QMap<MediaWidget::MetadataType, QString> metadata;
+	bool seekable;
 	QByteArray rawAudioChannels;
 	QStringList audioChannels;
 	int currentAudioChannel;

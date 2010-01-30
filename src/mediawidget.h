@@ -61,6 +61,13 @@ public:
 		MinimalMode
 	};
 
+	enum MetadataType {
+		Title,
+		Artist,
+		Album,
+		TrackNumber
+	};
+
 	DisplayMode getDisplayMode() const;
 	void setDisplayMode(DisplayMode displayMode_);
 
@@ -126,6 +133,9 @@ signals:
 	void dvbStopped();
 	void osdKeyPressed(int key);
 
+	void lengthChanged(int length);
+	void metadataChanged(const QMap<MetadataType, QString> &metadata);
+
 private slots:
 	void sourceChanged();
 	void playbackFinished();
@@ -133,8 +143,8 @@ private slots:
 	void playbackChanged(bool playing);
 	void totalTimeChanged(int totalTime);
 	void currentTimeChanged(int currentTime);
+	void setMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
 	void seekableChanged(bool seekable);
-	void metadataChanged(); // FIXME
 	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
 	void setCurrentAudioChannel(int currentAudioChannel);
 	void subtitlesChanged(const QStringList &subtitles, int currentSubtitle);
@@ -185,6 +195,7 @@ private:
 	OsdWidget *osdWidget;
 	DvbFeed *dvbFeed;
 
+	QString currentSourceName;
 	KAction *actionPrevious;
 	KAction *actionPlayPause;
 	QString textPlay;
