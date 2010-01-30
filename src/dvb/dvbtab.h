@@ -22,6 +22,7 @@
 #define DVBTAB_H
 
 #include <QTimer>
+#include <config-kaffeine.h>
 #include "../tabbase.h"
 
 class QModelIndex;
@@ -82,5 +83,13 @@ private:
 
 	DvbTimeShiftCleaner *timeShiftCleaner;
 };
+
+#ifndef HAVE_DVB
+inline void DvbTab::playChannel(QString const &) { }
+inline void DvbTab::playLastChannel() { }
+inline void DvbTab::toggleOsd() { }
+inline void DvbTab::toggleInstantRecord() { }
+inline void DvbTab::osdKeyPressed(int) { }
+#endif /* HAVE_DVB */
 
 #endif /* DVBTAB_H */

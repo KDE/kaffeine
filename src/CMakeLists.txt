@@ -1,18 +1,6 @@
 set(kaffeine_SRCS
     backend-xine/xinecommands.cpp
     backend-xine/xinemediawidget.cpp
-    dvb/dvbchannel.cpp
-    dvb/dvbchannelui.cpp
-    dvb/dvbconfigdialog.cpp
-    dvb/dvbdevice.cpp
-    dvb/dvbepg.cpp
-    dvb/dvbliveview.cpp
-    dvb/dvbmanager.cpp
-    dvb/dvbrecording.cpp
-    dvb/dvbscan.cpp
-    dvb/dvbscandialog.cpp
-    dvb/dvbsi.cpp
-    dvb/dvbtab.cpp
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
     datetimeedit.cpp
@@ -25,6 +13,20 @@ set(kaffeine_SRCS
     sqlhelper.cpp
     tablemodel.cpp)
 
+set(kaffeinedvb_SRCS
+    dvb/dvbchannel.cpp
+    dvb/dvbchannelui.cpp
+    dvb/dvbconfigdialog.cpp
+    dvb/dvbdevice.cpp
+    dvb/dvbepg.cpp
+    dvb/dvbliveview.cpp
+    dvb/dvbmanager.cpp
+    dvb/dvbrecording.cpp
+    dvb/dvbscan.cpp
+    dvb/dvbscandialog.cpp
+    dvb/dvbsi.cpp
+    dvb/dvbtab.cpp)
+
 set(kaffeinexbu_SRCS
     backend-xine/xineapplication.cpp
     backend-xine/xinecommands.cpp)
@@ -34,6 +36,14 @@ set(kaffeinedvbmodule_SRCS
 
 set(kaffeinedvbdebugmodule_SRCS
     dvb/dvbdevice_debug.cpp)
+
+check_include_files("sys/ioctl.h" HAVE_DVB)
+
+if(HAVE_DVB)
+  set(kaffeine_SRCS ${kaffeine_SRCS} ${kaffeinedvb_SRCS})
+else(HAVE_DVB)
+  MESSAGE(STATUS "Disabled features:\nDVB  Digital television support for Linux\n")
+endif(HAVE_DVB)
 
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
@@ -47,11 +57,11 @@ kde4_add_executable(kaffeine-xbu ${kaffeinexbu_SRCS})
 target_link_libraries(kaffeine-xbu ${X11_X11_LIB} ${XINE_LIBRARY} ${KDE4_KDEUI_LIBS})
 install(TARGETS kaffeine-xbu ${INSTALL_TARGETS_DEFAULT_ARGS})
 
-if(NOT WIN32)
-kde4_add_plugin(kaffeinedvb ${kaffeinedvbmodule_SRCS})
-target_link_libraries(kaffeinedvb ${KDE4_KDECORE_LIBRARY} ${KDE4_SOLID_LIBS})
-install(TARGETS kaffeinedvb DESTINATION ${PLUGIN_INSTALL_DIR})
-endif(NOT WIN32)
+if(HAVE_DVB)
+  kde4_add_plugin(kaffeinedvb ${kaffeinedvbmodule_SRCS})
+  target_link_libraries(kaffeinedvb ${KDE4_KDECORE_LIBRARY} ${KDE4_SOLID_LIBS})
+  install(TARGETS kaffeinedvb DESTINATION ${PLUGIN_INSTALL_DIR})
+endif(HAVE_DVB)
 
 if(BUILD_DEBUG_MODULE)
   kde4_add_plugin(kaffeinedvbdebug ${kaffeinedvbdebugmodule_SRCS})
