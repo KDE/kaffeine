@@ -13,19 +13,21 @@ set(kaffeine_SRCS
     sqlhelper.cpp
     tablemodel.cpp)
 
-set(kaffeinedvb_SRCS
-    dvb/dvbchannel.cpp
-    dvb/dvbchannelui.cpp
-    dvb/dvbconfigdialog.cpp
-    dvb/dvbdevice.cpp
-    dvb/dvbepg.cpp
-    dvb/dvbliveview.cpp
-    dvb/dvbmanager.cpp
-    dvb/dvbrecording.cpp
-    dvb/dvbscan.cpp
-    dvb/dvbscandialog.cpp
-    dvb/dvbsi.cpp
-    dvb/dvbtab.cpp)
+if(HAVE_DVB)
+  set(kaffeine_SRCS ${kaffeine_SRCS}
+      dvb/dvbchannel.cpp
+      dvb/dvbchannelui.cpp
+      dvb/dvbconfigdialog.cpp
+      dvb/dvbdevice.cpp
+      dvb/dvbepg.cpp
+      dvb/dvbliveview.cpp
+      dvb/dvbmanager.cpp
+      dvb/dvbrecording.cpp
+      dvb/dvbscan.cpp
+      dvb/dvbscandialog.cpp
+      dvb/dvbsi.cpp
+      dvb/dvbtab.cpp)
+endif(HAVE_DVB)
 
 set(kaffeinexbu_SRCS
     backend-xine/xineapplication.cpp
@@ -36,14 +38,6 @@ set(kaffeinedvbmodule_SRCS
 
 set(kaffeinedvbdebugmodule_SRCS
     dvb/dvbdevice_debug.cpp)
-
-check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/../include/frontend.h HAVE_DVB)
-
-if(HAVE_DVB)
-  set(kaffeine_SRCS ${kaffeine_SRCS} ${kaffeinedvb_SRCS})
-else(HAVE_DVB)
-  MESSAGE(STATUS "Disabled features:\nDVB  Digital television support for Linux\n")
-endif(HAVE_DVB)
 
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 

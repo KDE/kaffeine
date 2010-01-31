@@ -6,6 +6,12 @@ find_package(Xine REQUIRED)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${X11_INCLUDE_DIR} ${XINE_INCLUDE_DIR})
 add_definitions(${KDE4_DEFINITIONS})
 
+check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
+
+if(NOT HAVE_DVB)
+  MESSAGE(STATUS "Disabled features:\nDVB  Digital television support for Linux\n")
+endif(HAVE_DVB)
+
 add_subdirectory(deviceactions)
 add_subdirectory(icons)
 add_subdirectory(src)
