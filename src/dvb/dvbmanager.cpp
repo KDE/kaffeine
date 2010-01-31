@@ -816,19 +816,6 @@ void DvbManager::readScanData()
 	scanSources.clear();
 	scanData.clear();
 
-	QFile localFile(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
-	QDate localDate;
-
-	if (localFile.open(QIODevice::ReadOnly)) {
-		localDate = DvbScanData(localFile.read(1024)).readDate();
-
-		if (localDate.isNull()) {
-			kWarning() << "can't read" << localFile.fileName();
-		}
-	} else {
-		kDebug() << "can't open" << localFile.fileName();
-	}
-
 	QFile globalFile(installPath("data") + "kaffeine/scanfile.dvb");
 	QDate globalDate;
 
@@ -836,34 +823,58 @@ void DvbManager::readScanData()
 		globalDate = DvbScanData(globalFile.read(1024)).readDate();
 
 		if (globalDate.isNull()) {
-			kWarning() << "can't read" << globalFile.fileName();
+			kWarning() << "cannot parse" << globalFile.fileName();
 		}
+
+		globalFile.close();
 	} else {
-		kWarning() << "can't open" << globalFile.fileName();
+		kWarning() << "cannot open" << globalFile.fileName();
 	}
 
-	QFile *file = NULL;
+	QFile localFile(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
+	QByteArray localData;
+	QDate localDate;
 
-	if (!localDate.isNull() && (globalDate.isNull() || (localDate >= globalDate))) {
-		file = &localFile;
-	} else if (!globalDate.isNull()) {
-		file = &globalFile;
-	} else {
+	if (localFile.open(QIODevice::ReadOnly)) {
+		localData = localFile.readAll();
+		localDate = DvbScanData(localData).readDate();
+
+		if (localDate.isNull()) {
+			kWarning() << "cannot parse" << localFile.fileName();
+		}
+
+		localFile.close();
+	}
+
+	if (localDate < globalDate) {
+		localData.clear();
+
+		if (localFile.exists() && !localFile.remove()) {
+			kWarning() << "cannot remove" << localFile.fileName();
+		}
+
+		if (!globalFile.copy(localFile.fileName())) {
+			kWarning() << "cannot copy" << globalFile.fileName() << "to" <<
+				localFile.fileName();
+		}
+
+		if (localFile.open(QIODevice::ReadOnly)) {
+			localData = localFile.readAll();
+			localFile.close();
+		} else {
+			kWarning() << "cannot open" << localFile.fileName();
+			scanDataDate = QDate(1900, 1, 1);
+			return;
+		}
+	}
+
+	DvbScanData data(localData);
+	scanDataDate = data.readDate();
+
+	if (scanDataDate.isNull()) {
+		kWarning() << "cannot parse" << localFile.fileName();
 		scanDataDate = QDate(1900, 1, 1);
 		return;
-	}
-
-	if (!file->seek(0)) {
-		kWarning() << "can't seek" << file->fileName();
-		return;
-	}
-
-	DvbScanData data(file->readAll());
-
-	QDate date = data.readDate();
-
-	if (scanDataDate < date) {
-		scanDataDate = date;
 	}
 
 	if (!readScanSources(data, "[dvb-c/", DvbC) ||
@@ -871,7 +882,7 @@ void DvbManager::readScanData()
 	    !readScanSources(data, "[dvb-t/", DvbT) ||
 	    !readScanSources(data, "[atsc/", Atsc) ||
 	    !data.checkEnd()) {
-		kWarning() << "can't parse" << file->fileName();
+		kWarning() << "cannot parse" << localFile.fileName();
 	}
 }
 
