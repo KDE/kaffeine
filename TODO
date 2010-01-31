@@ -23,38 +23,22 @@ for an up-to-date version of this file.
   - CDDB (or similar)
   - ripping
 
-- DVD
-  - menu selection (mainly a phonon task)
-
-- audio CD / video CD / DVD
-  - deal nicely with multiple drives
-
 - video settings
   - possibility to adjust hue, saturation, brightness and contrast
 
 - CICAM support
-
-- DBUS interface
-  - X-DBUS-ServiceName in the .desktop file?
 
 - quit actions
   - close / shutdown after playlist / recordings finished
 
 - allow more than one Kaffeine instance
 
-- profile performance
-
 - support for external subtitles
-  - mainly a phonon task
 
 - recordings
   - warning when quiting if there are active / pending recordings
-  - allow repetiton (daily, weekly, monthly)
 
 - DVB categories
-
-- seek slider
-  - implement "jumping" behaviour, i.e. jump to the position where you click
 
 - l10n
   - use klocale for all date / time conversations
@@ -65,7 +49,5 @@ for an up-to-date version of this file.
   - manage kaffeine remotely (headless backend?)
 
 - equalizer
-  - mainly a phonon task
 
 - audio visualisation
-  - mainly a phonon task?

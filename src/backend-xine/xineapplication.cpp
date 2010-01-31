@@ -925,9 +925,9 @@ int main(int argc, char *argv[])
 	}
 
 	KAboutData aboutData("kaffeine-xbu", "kaffeine", ki18n("Kaffeine"),
-		QByteArray("1.0-svn2 ").append(XineObject::version()),
+		QByteArray("1.0-svn3 ").append(XineObject::version()),
 		ki18nc("program description", "Internal utility for Kaffeine."),
-		KAboutData::License_GPL_V2, ki18n("(C) 2007-2009 The Kaffeine Authors"),
+		KAboutData::License_GPL_V2, ki18n("(C) 2007-2010 The Kaffeine Authors"),
 		KLocalizedString(), "http://kaffeine.kde.org");
 	aboutData.addAuthor(ki18n("Christoph Pfister"), ki18n("Maintainer"),
 		"christophpfister@gmail.com");
