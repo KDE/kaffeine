@@ -27,7 +27,6 @@
 #include <KDebug>
 #include <KGlobal>
 #include <KLocale>
-#include "../mediawidget.h"
 
 bool Playlist::load(const KUrl &url_, Format format)
 {

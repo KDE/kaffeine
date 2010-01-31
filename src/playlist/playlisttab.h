@@ -26,11 +26,6 @@
 #include "../tabbase.h"
 
 class QSplitter;
-class KAction;
-class KActionCollection;
-class KMenu;
-class KUrl;
-class MediaWidget;
 class Playlist;
 class PlaylistBrowserView;
 class PlaylistModel;

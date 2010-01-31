@@ -22,10 +22,8 @@
 #define XINEMEDIAWIDGET_H
 
 #include <QMap>
-#include <QWidget>
 #include "../mediawidget.h"
 
-class KUrl;
 class XineChildMarshaller;
 class XineProcess;
 

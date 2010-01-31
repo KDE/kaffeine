@@ -26,8 +26,6 @@
 #include <KUrl>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
-#include "mainwindow.h"
-#include "mediawidget.h"
 
 QDBusArgument &operator<<(QDBusArgument &argument, const MprisStatusStruct &statusStruct)
 {

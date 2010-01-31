@@ -21,7 +21,6 @@
 #include "xinemediawidget.h"
 #include "xinemediawidget_p.h"
 
-#include <QCoreApplication>
 #include <QResizeEvent>
 #include <KDebug>
 #include <KMessageBox>

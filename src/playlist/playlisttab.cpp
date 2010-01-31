@@ -34,7 +34,6 @@
 #include <KLocalizedString>
 #include <KMenu>
 #include <KStandardDirs>
-#include "../mediawidget.h"
 #include "playlistmodel.h"
 
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,

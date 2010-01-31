@@ -24,7 +24,6 @@
 #include <KMainWindow>
 
 class QStackedLayout;
-class KAction;
 class KActionCollection;
 class KCmdLineOptions;
 class KRecentFilesAction;

@@ -39,7 +39,6 @@
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 #include "dbusobjects.h"
-#include "mediawidget.h"
 
 class StartTab : public TabBase
 {
