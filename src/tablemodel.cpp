@@ -162,17 +162,10 @@ void SqlModelAdaptor::rowsInserted(const QModelIndex &parent, int start, int end
 	Q_UNUSED(parent)
 
 	for (int row = start; row <= end; ++row) {
-		if (!pendingDeletionKeys.isEmpty()) {
-			SqlTableRow sqlRow;
-			sqlRow.key = pendingDeletionKeys.takeLast();
-			sqlRow.pendingStatement = SqlTableRow::Update;
-			rows.insert(row, sqlRow);
-		} else {
-			SqlTableRow sqlRow;
-			sqlRow.key = 0;
-			sqlRow.pendingStatement = SqlTableRow::Insert;
-			rows.insert(row, sqlRow);
-		}
+		SqlTableRow sqlRow;
+		sqlRow.key = 0;
+		sqlRow.pendingStatement = SqlTableRow::Insert;
+		rows.insert(row, sqlRow);
 	}
 
 	if (!hasPendingStatements) {
