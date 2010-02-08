@@ -61,7 +61,7 @@ namespace XineCommands
 		UpdateMouseCursor	= 13,
 		UpdateVideoSize		= 14
 	};
-};
+}
 
 enum XineAspectRatio {
 	XineAspectRatioAuto	= 0,
