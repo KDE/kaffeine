@@ -24,12 +24,14 @@
 #include <QBoxLayout>
 #include <QContextMenuEvent>
 #include <QDBusInterface>
+#include <QDBusPendingReply>
 #include <QFile>
 #include <QLabel>
 #include <QPushButton>
 #include <QSocketNotifier>
 #include <QTimeEdit>
 #include <QTimer>
+#include <QX11Info>
 #include <Solid/Block>
 #include <Solid/Device>
 #include <KAction>
@@ -40,6 +42,7 @@
 #include <KMenu>
 #include <KStandardDirs>
 #include <KToolBar>
+#include <X11/extensions/scrnsaver.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -186,7 +189,8 @@ void SeekSlider::mousePressEvent(QMouseEvent *event)
 }
 
 MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
-	QWidget *parent) : QWidget(parent), menu(menu_), dvbFeed(NULL)
+	QWidget *parent) : QWidget(parent), menu(menu_), dvbFeed(NULL), screenSaverDBusCall(NULL),
+	screenSaverSuspended(false)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -1083,12 +1087,30 @@ void MediaWidget::videoSizeChanged()
 
 void MediaWidget::checkScreenSaver()
 {
-	if (backend->isPlaying() && !isPaused()) {
-		// FIXME check whether there's video or not
-		// FIXME DPMS
-		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-			"org.freedesktop.ScreenSaver").
-			call(QDBus::NoBlock, "SimulateUserActivity");
+	bool suspendScreenSaver = (backend->isPlaying() && !isPaused() && isVisible());
+
+	if (suspendScreenSaver && (screenSaverDBusCall == NULL)) {
+		screenSaverDBusCall = new QDBusPendingCall(
+			QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
+			"org.freedesktop.ScreenSaver").asyncCall("Inhibit", "Kaffeine", ""));
+	} else if (!suspendScreenSaver && (screenSaverDBusCall != NULL)) {
+		QDBusPendingReply<unsigned int> reply(*screenSaverDBusCall);
+
+		if (reply.isValid()) {
+			QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
+				"org.freedesktop.ScreenSaver").call(
+				QDBus::NoBlock, "UnInhibit", reply.value());
+		}
+
+		if (reply.isFinished()) {
+			delete screenSaverDBusCall;
+			screenSaverDBusCall = NULL;
+		}
+	}
+
+	if (screenSaverSuspended != suspendScreenSaver) {
+		screenSaverSuspended = suspendScreenSaver;
+		XScreenSaverSuspend(QX11Info::display(), suspendScreenSaver);
 	}
 }
 
