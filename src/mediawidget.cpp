@@ -652,7 +652,7 @@ void MediaWidget::playDvb(const QString &channelName)
 
 	dvbFeed = new DvbFeed(this);
 	dvbFeed->ignoreSourceChange = true;
-	currentSourceName = channelName;
+	emit changeCaption(channelName);
 	backend->playUrl(dvbFeed->getUrl());
 	dvbFeed->ignoreSourceChange = false;
 }
@@ -826,6 +826,7 @@ void MediaWidget::sourceChanged()
 void MediaWidget::playbackFinished()
 {
 	currentSourceName.clear();
+	emit changeCaption(QString());
 
 	if (dvbFeed != NULL) {
 		dvbFeed->ignoreSourceChange = true;
@@ -839,6 +840,7 @@ void MediaWidget::playbackFinished()
 void MediaWidget::playbackStopped()
 {
 	currentSourceName.clear();
+	emit changeCaption(QString());
 
 	if (dvbFeed != NULL) {
 		stopDvbPlayback();
