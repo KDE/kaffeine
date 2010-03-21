@@ -1,7 +1,7 @@
 /*
  * dvbdevice_linux.h
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,21 +22,49 @@
 #define DVBDEVICE_LINUX_H
 
 #include <Solid/Device>
+#include "dvbcam_linux.h"
 #include "dvbbackenddevice.h"
 
 class DvbDeviceThread;
+class DvbLinuxDeviceAdaptor;
+class DvbLinuxDeviceScramblingObject;
 
-class DvbLinuxDevice : public QObject, public DvbBackendDevice
+class DvbLinuxDevice : public QObject
 {
 	Q_OBJECT
 public:
-	DvbLinuxDevice(int adapter_, int index_, QObject *parent);
+	DvbLinuxDevice();
 	~DvbLinuxDevice();
 
 	bool componentAdded(const Solid::Device &component);
 	bool componentRemoved(const QString &udi);
 
+	void setBuffer(DvbAbstractDeviceBuffer *buffer_);
+	QString getDeviceId();
+	QString getFrontendName();
+	DvbBackendDevice::TransmissionTypes getTransmissionTypes();
+	DvbBackendDevice::Capabilities getCapabilities();
+	bool acquire();
+	bool setTone(DvbBackendDevice::SecTone tone);
+	bool setVoltage(DvbBackendDevice::SecVoltage voltage);
+	bool sendMessage(const char *message, int length);
+	bool sendBurst(DvbBackendDevice::SecBurst burst);
+	bool tune(const DvbTransponder &transponder);
+	int getSignal();
+	int getSnr();
+	bool isTuned();
+	bool addPidFilter(int pid);
+	void removePidFilter(int pid);
+	void startDescrambling(const DvbPmtSection &pmtSection);
+	void stopDescrambling(int serviceId);
+	void release();
+
+	int adapter;
+	int index;
+
 private:
+	Q_DISABLE_COPY(DvbLinuxDevice)
+
 	enum stateFlag {
 		CaPresent	= (1 << 0),
 		DemuxPresent	= (1 << 1),
@@ -48,27 +76,7 @@ private:
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
-	QString getDeviceId();
-	QString getFrontendName();
-	TransmissionTypes getTransmissionTypes();
-	Capabilities getCapabilities();
-	bool acquire();
-	bool setTone(SecTone tone);
-	bool setVoltage(SecVoltage voltage);
-	bool sendMessage(const char *message, int length);
-	bool sendBurst(SecBurst burst);
-	bool tune(const DvbTransponder &transponder);
-	int getSignal();
-	int getSnr();
-	bool isTuned();
-	bool addPidFilter(int pid);
-	void removePidFilter(int pid);
-	void release();
-
 	bool identifyDevice();
-
-	int adapter;
-	int index;
 
 	Solid::Device caComponent;
 	Solid::Device demuxComponent;
@@ -80,9 +88,10 @@ private:
 	QString dvrPath;
 	QString frontendPath;
 
+	DvbAbstractDeviceBuffer *buffer;
 	stateFlags internalState;
-	TransmissionTypes transmissionTypes;
-	Capabilities capabilities;
+	DvbBackendDevice::TransmissionTypes transmissionTypes;
+	DvbBackendDevice::Capabilities capabilities;
 	QString deviceId;
 	QString frontendName;
 	bool ready;
@@ -90,6 +99,7 @@ private:
 	int frontendFd;
 	int dvrFd;
 	QMap<int, int> dmxFds;
+	DvbLinuxCam cam;
 };
 
 class DvbDeviceManager : public QObject
@@ -119,8 +129,8 @@ private slots:
 private:
 	void componentAdded(const Solid::Device &component);
 
-	QMap<int, DvbLinuxDevice *> devices;
-	QMap<QString, DvbLinuxDevice *> udis;
+	QMap<int, DvbLinuxDeviceAdaptor *> devices;
+	QMap<QString, DvbLinuxDeviceAdaptor *> udis;
 };
 
 #endif /* DVBDEVICE_LINUX_H */

@@ -73,6 +73,8 @@ public:
 	void autoTune(const DvbTransponder &transponder);
 	bool addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
+	void startDescrambling(const DvbPmtSection &pmtSection);
+	void stopDescrambling(int serviceId);
 	bool isTuned() const;
 	int getSignal() const; // 0 - 100 [%]
 	int getSnr() const; // 0 - 100 [%]

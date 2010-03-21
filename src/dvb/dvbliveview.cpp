@@ -267,6 +267,10 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 
 	updatePids(true);
 
+	if (channel->isScrambled) {
+		device->startDescrambling(section);
+	}
+
 	if (internal->timeShiftFile.isOpen()) {
 		return;
 	}

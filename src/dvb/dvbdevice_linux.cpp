@@ -1,7 +1,7 @@
 /*
  * dvbdevice_linux.cpp
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
 
 #include "dvbdevice_linux.h"
 
+#include <QCoreApplication>
 #include <QFile>
 #include <QThread>
 #include <Solid/DeviceNotifier>
@@ -33,13 +34,9 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include "dvbchannel.h"
+#include "dvbsi.h"
 
 // krazy:excludeall=syscalls
-
-extern "C" Q_DECL_EXPORT QObject *create_device_manager()
-{
-	return new DvbDeviceManager;
-}
 
 class DvbDeviceThread : private QThread
 {
@@ -180,8 +177,18 @@ void DvbDeviceThread::run()
 	}
 }
 
-DvbLinuxDevice::DvbLinuxDevice(int adapter_, int index_, QObject *parent) : QObject(parent),
-	adapter(adapter_), index(index_), ready(false), frontendFd(-1), dvrFd(-1)
+class DvbLinuxDeviceAdaptor : public DvbBackendDeviceAdaptor<DvbLinuxDevice>
+{
+public:
+	DvbLinuxDeviceAdaptor(int adapter, int index, QObject *parent)
+	{
+		device.adapter = adapter;
+		device.index = index;
+		device.setParent(parent);
+	}
+};
+
+DvbLinuxDevice::DvbLinuxDevice() : buffer(NULL), ready(false), frontendFd(-1), dvrFd(-1)
 {
 	thread = new DvbDeviceThread(this);
 }
@@ -202,6 +209,7 @@ bool DvbLinuxDevice::componentAdded(const Solid::Device &component)
 		caComponent = component;
 		caPath = dvbInterface->device();
 		internalState |= CaPresent;
+		cam.startCa(caPath);
 		break;
 	case Solid::DvbInterface::DvbDemux:
 		demuxComponent = component;
@@ -235,6 +243,7 @@ bool DvbLinuxDevice::componentAdded(const Solid::Device &component)
 bool DvbLinuxDevice::componentRemoved(const QString &udi)
 {
 	if (caComponent.udi() == udi) {
+		cam.stopCa();
 		internalState &= ~CaPresent;
 	} else if (demuxComponent.udi() == udi) {
 		internalState &= ~DemuxPresent;
@@ -255,6 +264,11 @@ bool DvbLinuxDevice::componentRemoved(const QString &udi)
 	return false;
 }
 
+void DvbLinuxDevice::setBuffer(DvbAbstractDeviceBuffer *buffer_)
+{
+	buffer = buffer_;
+}
+
 QString DvbLinuxDevice::getDeviceId()
 {
 	Q_ASSERT(ready);
@@ -267,13 +281,13 @@ QString DvbLinuxDevice::getFrontendName()
 	return frontendName;
 }
 
-DvbLinuxDevice::TransmissionTypes DvbLinuxDevice::getTransmissionTypes()
+DvbBackendDevice::TransmissionTypes DvbLinuxDevice::getTransmissionTypes()
 {
 	Q_ASSERT(ready);
 	return transmissionTypes;
 }
 
-DvbLinuxDevice::Capabilities DvbLinuxDevice::getCapabilities()
+DvbBackendDevice::Capabilities DvbLinuxDevice::getCapabilities()
 {
 	Q_ASSERT(ready);
 	return capabilities;
@@ -326,11 +340,12 @@ void DvbLinuxDevice::release()
 	}
 }
 
-bool DvbLinuxDevice::setTone(SecTone tone)
+bool DvbLinuxDevice::setTone(DvbBackendDevice::SecTone tone)
 {
 	Q_ASSERT(frontendFd >= 0);
 
-	if (ioctl(frontendFd, FE_SET_TONE, (tone == ToneOff) ? SEC_TONE_OFF : SEC_TONE_ON) != 0) {
+	if (ioctl(frontendFd, FE_SET_TONE,
+	    (tone == DvbBackendDevice::ToneOff) ? SEC_TONE_OFF : SEC_TONE_ON) != 0) {
 		kWarning() << "ioctl FE_SET_TONE failed for" << frontendPath;
 		return false;
 	}
@@ -338,12 +353,12 @@ bool DvbLinuxDevice::setTone(SecTone tone)
 	return true;
 }
 
-bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
+bool DvbLinuxDevice::setVoltage(DvbBackendDevice::SecVoltage voltage)
 {
 	Q_ASSERT(frontendFd >= 0);
 
 	if (ioctl(frontendFd, FE_SET_VOLTAGE,
-		  (voltage == Voltage13V) ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18) != 0) {
+	    (voltage == DvbBackendDevice::Voltage13V) ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18) != 0) {
 		kWarning() << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
 		return false;
 	}
@@ -368,12 +383,12 @@ bool DvbLinuxDevice::sendMessage(const char *message, int length)
 	return true;
 }
 
-bool DvbLinuxDevice::sendBurst(SecBurst burst)
+bool DvbLinuxDevice::sendBurst(DvbBackendDevice::SecBurst burst)
 {
 	Q_ASSERT(frontendFd >= 0);
 
 	if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
-		  (burst == BurstMiniA) ? SEC_MINI_A : SEC_MINI_B) != 0) {
+	    (burst == DvbBackendDevice::BurstMiniA) ? SEC_MINI_A : SEC_MINI_B) != 0) {
 		kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
 		return false;
 	}
@@ -726,6 +741,16 @@ void DvbLinuxDevice::removePidFilter(int pid)
 	close(dmxFds.take(pid));
 }
 
+void DvbLinuxDevice::startDescrambling(const DvbPmtSection &pmtSection)
+{
+	cam.startDescrambling(pmtSection);
+}
+
+void DvbLinuxDevice::stopDescrambling(int serviceId)
+{
+	cam.stopDescrambling(serviceId);
+}
+
 static int DvbReadSysAttr(const QString &path)
 {
 	QFile file(path);
@@ -772,24 +797,24 @@ bool DvbLinuxDevice::identifyDevice()
 
 	switch (frontend_info.type) {
 	case FE_QPSK:
-		transmissionTypes = DvbS;
+		transmissionTypes = DvbBackendDevice::DvbS;
 
 		if (((frontend_info.caps & FE_CAN_2G_MODULATION) != 0) ||
 		    (strcmp(frontend_info.name, "Genpix 8psk-to-USB2 DVB-S") == 0) ||
 		    (strcmp(frontend_info.name, "Conexant CX24116/CX24118") == 0) ||
 		    (strcmp(frontend_info.name, "STB0899 Multistandard") == 0)) {
-			transmissionTypes |= DvbS2;
+			transmissionTypes |= DvbBackendDevice::DvbS2;
 		}
 
 		break;
 	case FE_QAM:
-		transmissionTypes = DvbC;
+		transmissionTypes = DvbBackendDevice::DvbC;
 		break;
 	case FE_OFDM:
-		transmissionTypes = DvbT;
+		transmissionTypes = DvbBackendDevice::DvbT;
 		break;
 	case FE_ATSC:
-		transmissionTypes = Atsc;
+		transmissionTypes = DvbBackendDevice::Atsc;
 		break;
 	default:
 		kWarning() << "unknown frontend type" << frontend_info.type << "for" << frontendPath;
@@ -799,19 +824,19 @@ bool DvbLinuxDevice::identifyDevice()
 	capabilities = 0;
 
 	if ((frontend_info.caps & FE_CAN_QAM_AUTO) != 0) {
-		capabilities |= DvbTModulationAuto;
+		capabilities |= DvbBackendDevice::DvbTModulationAuto;
 	}
 
 	if ((frontend_info.caps & FE_CAN_FEC_AUTO) != 0) {
-		capabilities |= DvbTFecAuto;
+		capabilities |= DvbBackendDevice::DvbTFecAuto;
 	}
 
 	if ((frontend_info.caps & FE_CAN_TRANSMISSION_MODE_AUTO) != 0) {
-		capabilities |= DvbTTransmissionModeAuto;
+		capabilities |= DvbBackendDevice::DvbTTransmissionModeAuto;
 	}
 
 	if ((frontend_info.caps & FE_CAN_GUARD_INTERVAL_AUTO) != 0) {
-		capabilities |= DvbTGuardIntervalAuto;
+		capabilities |= DvbBackendDevice::DvbTGuardIntervalAuto;
 	}
 
 	deviceId.clear();
@@ -863,7 +888,7 @@ DvbDeviceManager::DvbDeviceManager()
 
 DvbDeviceManager::~DvbDeviceManager()
 {
-	foreach (DvbLinuxDevice *device, devices) {
+	foreach (DvbLinuxDeviceAdaptor *device, devices) {
 		delete device;
 	}
 }
@@ -883,10 +908,10 @@ void DvbDeviceManager::componentAdded(const QString &udi)
 
 void DvbDeviceManager::componentRemoved(const QString &udi)
 {
-	DvbLinuxDevice *device = udis.value(udi, NULL);
+	DvbLinuxDeviceAdaptor *device = udis.value(udi, NULL);
 
 	if (device != NULL) {
-		if (device->componentRemoved(udi)) {
+		if (device->device.componentRemoved(udi)) {
 			emit deviceRemoved(device);
 		}
 	}
@@ -910,16 +935,16 @@ void DvbDeviceManager::componentAdded(const Solid::Device &component)
 
 	int deviceIndex = (adapter << 16) | index;
 
-	DvbLinuxDevice *device = devices.value(deviceIndex, NULL);
+	DvbLinuxDeviceAdaptor *device = devices.value(deviceIndex, NULL);
 
 	if (device == NULL) {
-		device = new DvbLinuxDevice(adapter, index, this);
+		device = new DvbLinuxDeviceAdaptor(adapter, index, this);
 		devices.insert(deviceIndex, device);
 	}
 
 	udis.insert(component.udi(), device);
 
-	if (device->componentAdded(component)) {
+	if (device->device.componentAdded(component)) {
 		emit deviceAdded(device);
 	}
 }

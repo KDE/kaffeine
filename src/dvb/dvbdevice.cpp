@@ -89,7 +89,7 @@ DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObjec
 	backendDevice(backendDevice_), deviceState(DeviceReleased), dataDumper(NULL),
 	cleanUpFilters(false), isAuto(false)
 {
-	backendDevice->buffer = this;
+	backendDevice->setBuffer(this);
 
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 	dummyFilter = new DvbDummyFilter;
@@ -394,6 +394,16 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	cleanUpFilters = true;
+}
+
+void DvbDevice::startDescrambling(const DvbPmtSection &pmtSection)
+{
+	backendDevice->startDescrambling(pmtSection);
+}
+
+void DvbDevice::stopDescrambling(int serviceId)
+{
+	backendDevice->stopDescrambling(serviceId);
 }
 
 bool DvbDevice::isTuned() const

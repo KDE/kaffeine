@@ -31,6 +31,7 @@
 #include "dvbepg.h"
 #include "dvbliveview.h"
 #include "dvbrecording.h"
+#include "dvbdevice_linux.h"
 
 static QString installPath(const char *component)
 {
@@ -631,6 +632,7 @@ void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 
 void DvbManager::loadDeviceManager()
 {
+	/*
 	QDir dir(installPath("module"));
 	QStringList entries = dir.entryList(QStringList("kaffeinedvb*"));
 	qSort(entries.begin(), entries.end(), qGreater<QString>());
@@ -670,6 +672,15 @@ void DvbManager::loadDeviceManager()
 	}
 
 	kError() << "no dvb module found";
+	*/
+
+	QObject *deviceManager = new DvbDeviceManager();
+	deviceManager->setParent(this);
+	connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
+		this, SLOT(deviceAdded(DvbBackendDevice*)));
+	connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
+		this, SLOT(deviceRemoved(DvbBackendDevice*)));
+	QMetaObject::invokeMethod(deviceManager, "doColdPlug");
 	return;
 }
 
