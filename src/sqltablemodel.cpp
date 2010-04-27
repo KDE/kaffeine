@@ -149,6 +149,7 @@ void SqlTableModelInterface::dataChanged(const QModelIndex &topLeft,
 		switch (pendingStatements.value(key, None)) {
 		case None:
 			pendingStatements.insert(key, Update);
+			requestSubmission();
 			break;
 		case RemoveAndInsert:
 		case Insert:
@@ -160,8 +161,6 @@ void SqlTableModelInterface::dataChanged(const QModelIndex &topLeft,
 			break;
 		}
 	}
-
-	requestSubmission();
 }
 
 void SqlTableModelInterface::layoutChanged()
@@ -190,9 +189,11 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 		switch (pendingStatements.value(key, None)) {
 		case None:
 			pendingStatements.insert(key, Insert);
+			requestSubmission();
 			break;
 		case Remove:
 			pendingStatements.insert(key, RemoveAndInsert);
+			requestSubmission();
 			break;
 		case RemoveAndInsert:
 		case Insert:
@@ -208,8 +209,6 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 	for (int row = start; row < rowToKeyMapping.size(); ++row) {
 		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
 	}
-
-	requestSubmission();
 }
 
 void SqlTableModelInterface::rowsRemoved(const QModelIndex &parent, int start, int end)
@@ -224,6 +223,7 @@ void SqlTableModelInterface::rowsRemoved(const QModelIndex &parent, int start, i
 		case RemoveAndInsert:
 		case Update:
 			pendingStatements.insert(key, Remove);
+			requestSubmission();
 			break;
 		case Insert:
 			pendingStatements.remove(key);
@@ -241,8 +241,6 @@ void SqlTableModelInterface::rowsRemoved(const QModelIndex &parent, int start, i
 	for (int row = start; row < rowToKeyMapping.size(); ++row) {
 		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
 	}
-
-	requestSubmission();
 }
 
 void SqlTableModelInterface::requestSubmission()

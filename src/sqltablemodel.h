@@ -35,7 +35,7 @@ class SqlTableModelInterface : public QObject
 	friend class SqlHelper;
 public:
 	explicit SqlTableModelInterface(QObject *parent);
-	virtual ~SqlTableModelInterface();
+	~SqlTableModelInterface();
 
 	void flush();
 	quint32 keyForRow(int row) const;
