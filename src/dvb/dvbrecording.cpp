@@ -431,7 +431,7 @@ int DvbRecordingModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbRecordingModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if ((role == Qt::DisplayRole) && (orientation == Qt::Vertical)) {
+	if ((role == Qt::DisplayRole) && (orientation == Qt::Horizontal)) {
 		switch (section) {
 		case 0:
 			return i18n("Name");
