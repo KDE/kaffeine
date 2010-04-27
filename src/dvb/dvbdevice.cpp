@@ -85,9 +85,8 @@ void DvbDataDumper::processData(const char data[188])
 	file.write(data, 188);
 }
 
-DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObject(parent),
-	backendDevice(backendDevice_), deviceState(DeviceReleased), dataDumper(NULL),
-	cleanUpFilters(false), isAuto(false)
+DvbDevice::DvbDevice(DvbBackendDevice *backendDevice, QObject *parent) : QObject(parent),
+	deviceState(DeviceReleased), dataDumper(NULL), cleanUpFilters(false), isAuto(false)
 {
 	backend.device = backendDevice;
 	backend.setBuffer(this);

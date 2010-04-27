@@ -52,12 +52,12 @@ public:
 		DeviceTuned
 	};
 
-	DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent);
+	DvbDevice(DvbBackendDevice *backendDevice, QObject *parent);
 	~DvbDevice();
 
 	const DvbBackendDevice *getBackendDevice() const
 	{
-		return backendDevice;
+		return backend.device;
 	}
 
 	DeviceState getDeviceState() const
@@ -105,7 +105,6 @@ private:
 	void submitCurrent(int packets);
 	void customEvent(QEvent *);
 
-	DvbBackendDevice *backendDevice;
 	DvbBackendDeviceAdapter backend;
 	DeviceState deviceState;
 	QExplicitlySharedDataPointer<const DvbConfigBase> config;
