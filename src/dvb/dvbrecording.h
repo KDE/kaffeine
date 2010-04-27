@@ -21,7 +21,7 @@
 #ifndef DVBRECORDING_H
 #define DVBRECORDING_H
 
-#include <QPersistentModelIndex>
+#include <QAbstractTableModel>
 #include <QTimer>
 
 class KDialog;
@@ -68,12 +68,9 @@ signals:
 	void programRemoved(const DvbRecordingIndex &index);
 
 protected:
-	int size() const;
-	DvbRecording *at(int row) const;
 	DvbRecordingIndex insert(DvbRecording *recording);
 	void update(int row);
 	void remove(int row);
-	void removeIndex(const DvbRecordingIndex &index);
 
 private slots:
 	void checkStatus();
@@ -83,11 +80,11 @@ private slots:
 
 private:
 	DvbManager *manager;
-	DvbSqlRecordingModelInterface *sqlInterface;
 	QList<DvbRecording *> recordings;
+	DvbSqlRecordingModelInterface *sqlInterface;
+	QTimer checkStatusTimer;
 	KDialog *scheduleDialog;
 	ProxyTreeView *treeView;
-	QTimer checkStatusTimer;
 };
 
 #endif /* DVBRECORDING_H */

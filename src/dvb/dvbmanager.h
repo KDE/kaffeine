@@ -157,7 +157,8 @@ private:
 class DvbDeviceConfig
 {
 public:
-	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_, DvbDevice *device_);
+	DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
+		DvbDevice *device_);
 	~DvbDeviceConfig();
 
 	QString deviceId;

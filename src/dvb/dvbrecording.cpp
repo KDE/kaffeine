@@ -355,7 +355,11 @@ DvbRecordingIndex DvbRecordingModel::scheduleProgram(const QString &name, const 
 
 void DvbRecordingModel::removeProgram(const DvbRecordingIndex &recordingIndex)
 {
-	removeIndex(recordingIndex);
+	int row = sqlInterface->rowForKey(recordingIndex.key);
+
+	if (row >= 0) {
+		remove(row);
+	}
 }
 
 void DvbRecordingModel::showDialog(QWidget *parent)
@@ -407,106 +411,6 @@ void DvbRecordingModel::showDialog(QWidget *parent)
 	scheduleDialog->show();
 }
 
-void DvbRecordingModel::checkStatus()
-{
-	QDateTime current = QDateTime::currentDateTime();
-
-	for (int row = 0; row < size(); ++row) {
-		DvbRecording *recording = at(row);
-
-		if (recording->end <= current) {
-			if (recording->repeat == 0) {
-				remove(row);
-				--row;
-			} else {
-				recording->stop();
-				int days = recording->end.daysTo(current);
-
-				if (recording->end.addDays(days) <= current) {
-					++days;
-				}
-
-				// QDate::dayOfWeek() and our dayOfWeek differ by one
-				int dayOfWeek = recording->begin.date().dayOfWeek() - 1 + days;
-
-				for (int j = 0; j < 7; ++j) {
-					if ((recording->repeat & (1 << (dayOfWeek % 7))) != 0) {
-						break;
-					}
-
-					++days;
-					++dayOfWeek;
-				}
-
-				recording->begin = recording->begin.addDays(days);
-				recording->end = recording->end.addDays(days);
-				emit dataChanged(index(row, 0), index(row, 3));
-			}
-		}
-	}
-
-	for (int row = 0; row < size(); ++row) {
-		DvbRecording *recording = at(row);
-
-		if (recording->begin <= current) {
-			if (recording->isRunning()) {
-				continue;
-			}
-
-			recording->start();
-
-			if (recording->isRunning()) {
-				emit dataChanged(index(row, 0), index(row, 3));
-			}
-		}
-	}
-}
-
-int DvbRecordingModel::size() const
-{
-	return recordings.size();
-}
-
-DvbRecording *DvbRecordingModel::at(int row) const
-{
-	return recordings.at(row);
-}
-
-DvbRecordingIndex DvbRecordingModel::insert(DvbRecording *recording)
-{
-	int row = recordings.size();
-	beginInsertRows(QModelIndex(), row, row);
-	recordings.insert(row, recording);
-	endInsertRows();
-	checkStatus();
-	return DvbRecordingIndex(sqlInterface->keyForRow(row));
-}
-
-void DvbRecordingModel::update(int row)
-{
-	emit dataChanged(index(row, 0), index(row, 3));
-	checkStatus();
-}
-
-void DvbRecordingModel::remove(int row)
-{
-	DvbRecordingIndex recordingIndex(sqlInterface->keyForRow(row));
-	beginRemoveRows(QModelIndex(), row, row);
-	delete recordings.at(row);
-	recordings.removeAt(row);
-	endRemoveRows();
-	emit programRemoved(recordingIndex);
-}
-
-void DvbRecordingModel::removeIndex(const DvbRecordingIndex &recordingIndex)
-{
-	int row = sqlInterface->rowForKey(recordingIndex.key);
-
-	if (row >= 0) {
-		remove(row);
-	}
-}
-
 int DvbRecordingModel::columnCount(const QModelIndex &parent) const
 {
 	if (!parent.isValid()) {
@@ -548,7 +452,7 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 	switch (role) {
 	case Qt::DecorationRole:
 		if (index.column() == 0) {
-			const DvbRecording *recording = at(index.row());
+			const DvbRecording *recording = recordings.at(index.row());
 
 			if (recording->isRunning()) {
 				return KIcon("media-record");
@@ -559,7 +463,7 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 
 		break;
 	case Qt::DisplayRole: {
-		const DvbRecording *recording = at(index.row());
+		const DvbRecording *recording = recordings.at(index.row());
 
 		switch (index.column()) {
 		case 0:
@@ -577,6 +481,87 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 	}
 
 	return QVariant();
+}
+
+DvbRecordingIndex DvbRecordingModel::insert(DvbRecording *recording)
+{
+	int row = recordings.size();
+	beginInsertRows(QModelIndex(), row, row);
+	recordings.insert(row, recording);
+	endInsertRows();
+	checkStatus();
+	return DvbRecordingIndex(sqlInterface->keyForRow(row));
+}
+
+void DvbRecordingModel::update(int row)
+{
+	emit dataChanged(index(row, 0), index(row, 3));
+	checkStatus();
+}
+
+void DvbRecordingModel::remove(int row)
+{
+	DvbRecordingIndex recordingIndex(sqlInterface->keyForRow(row));
+	beginRemoveRows(QModelIndex(), row, row);
+	delete recordings.at(row);
+	recordings.removeAt(row);
+	endRemoveRows();
+	emit programRemoved(recordingIndex);
+}
+
+void DvbRecordingModel::checkStatus()
+{
+	QDateTime current = QDateTime::currentDateTime();
+
+	for (int row = 0; row < recordings.size(); ++row) {
+		DvbRecording *recording = recordings.at(row);
+
+		if (recording->end <= current) {
+			if (recording->repeat == 0) {
+				remove(row);
+				--row;
+			} else {
+				recording->stop();
+				int days = recording->end.daysTo(current);
+
+				if (recording->end.addDays(days) <= current) {
+					++days;
+				}
+
+				// QDate::dayOfWeek() and our dayOfWeek differ by one
+				int dayOfWeek = recording->begin.date().dayOfWeek() - 1 + days;
+
+				for (int j = 0; j < 7; ++j) {
+					if ((recording->repeat & (1 << (dayOfWeek % 7))) != 0) {
+						break;
+					}
+
+					++days;
+					++dayOfWeek;
+				}
+
+				recording->begin = recording->begin.addDays(days);
+				recording->end = recording->end.addDays(days);
+				emit dataChanged(index(row, 0), index(row, 3));
+			}
+		}
+	}
+
+	for (int row = 0; row < recordings.size(); ++row) {
+		DvbRecording *recording = recordings.at(row);
+
+		if (recording->begin <= current) {
+			if (recording->isRunning()) {
+				continue;
+			}
+
+			recording->start();
+
+			if (recording->isRunning()) {
+				emit dataChanged(index(row, 0), index(row, 3));
+			}
+		}
+	}
 }
 
 void DvbRecordingModel::newRecording()
@@ -700,7 +685,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, DvbRecordingModel *
 	setMainWidget(widget);
 
 	if (row >= 0) {
-		const DvbRecording *recording = model->at(row);
+		const DvbRecording *recording = model->recordings.at(row);
 		nameEdit->setText(recording->name);
 		channelBox->setCurrentIndex(channels.indexOf(recording->channelName));
 		beginEdit->setDateTime(recording->begin);
@@ -779,7 +764,7 @@ void DvbRecordingEditor::accept()
 	DvbRecording *recording;
 
 	if (row >= 0) {
-		recording = model->at(row);
+		recording = model->recordings.at(row);
 	} else {
 		recording = new DvbRecording(manager);
 	}
