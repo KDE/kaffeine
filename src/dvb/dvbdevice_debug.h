@@ -30,7 +30,7 @@ public:
 	DvbDebugDevice();
 	~DvbDebugDevice();
 
-private:
+	void setBuffer(DvbAbstractDeviceBuffer *buffer);
 	QString getDeviceId();
 	QString getFrontendName();
 	TransmissionTypes getTransmissionTypes();
@@ -46,7 +46,12 @@ private:
 	bool isTuned();
 	bool addPidFilter(int pid);
 	void removePidFilter(int pid);
+	void startDescrambling(const DvbPmtSection &pmtSection);
+	void stopDescrambling(int serviceId);
 	void release();
+
+private:
+	void execute(Command command, ReturnData returnData, Data data);
 };
 
 class DvbDeviceManager : public QObject

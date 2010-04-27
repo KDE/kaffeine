@@ -38,7 +38,6 @@
 #include "dvbepg.h"
 #include "dvbliveview.h"
 #include "dvbmanager.h"
-#include "dvbrecording.h"
 #include "dvbscandialog.h"
 
 class DvbTimeShiftCleaner : public QThread
@@ -118,8 +117,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(mediaWidget, SIGNAL(previousDvbChannel()), this, SLOT(previousChannel()));
 	connect(mediaWidget, SIGNAL(nextDvbChannel()), this, SLOT(nextChannel()));
 
-	connect(manager->getRecordingManager(), SIGNAL(instantRecordingRemoved()),
-		this, SLOT(instantRecordingRemoved()));
+	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingIndex)),
+		this, SLOT(programRemoved(DvbRecordingIndex)));
 
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
 	boxLayout->setMargin(0);
@@ -270,7 +269,7 @@ void DvbTab::showChannelDialog()
 
 void DvbTab::showRecordingDialog()
 {
-	manager->getRecordingManager()->showDialog(this);
+	manager->getRecordingModel()->showDialog(this);
 }
 
 void DvbTab::showEpgDialog()
@@ -299,20 +298,24 @@ void DvbTab::instantRecord(bool checked)
 		}
 
 		// FIXME use epg for name
-		manager->getRecordingManager()->startInstantRecording(
-			channel->name + QTime::currentTime().toString("-hhmmss"), channel->name);
+		instantRecordingIndex = manager->getRecordingModel()->scheduleProgram(
+			channel->name + QTime::currentTime().toString("-hhmmss"), channel->name,
+			QDateTime::currentDateTime(), QTime(2, 0));
 
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
-		manager->getRecordingManager()->stopInstantRecording();
+		manager->getRecordingModel()->removeProgram(instantRecordingIndex);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
 	}
 }
 
-void DvbTab::instantRecordingRemoved()
+void DvbTab::programRemoved(const DvbRecordingIndex &recordingIndex)
 {
-	instantRecordAction->setChecked(false);
-	mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
+	if (instantRecordingIndex == recordingIndex) {
+		instantRecordingIndex = DvbRecordingIndex();
+		instantRecordAction->setChecked(false);
+		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
+	}
 }
 
 void DvbTab::configureDvb()

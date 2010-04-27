@@ -32,7 +32,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KStandardDirs>
-#include "../tablemodel.h"
+#include "../sqltablemodel.h"
 #include "dvbsi.h"
 
 template<class T> static QStringList displayStrings();
@@ -420,15 +420,15 @@ bool DvbChannelModel::adjustNameNumber(DvbChannel *channel) const
 	return dataModified;
 }
 
-class DvbSqlChannelModelAdaptor : public SqlModelAdaptor, public SqlTableModelBase
+class DvbSqlChannelModelAdaptor : public SqlTableModelInterface
 {
 public:
-	DvbSqlChannelModelAdaptor(DvbChannelModel *model_) : SqlModelAdaptor(model_, this),
+	DvbSqlChannelModelAdaptor(DvbChannelModel *model_) : SqlTableModelInterface(model_),
 		model(model_)
 	{
-		init("Channels", QStringList() << "Name" << "Number" << "Source" << "Transponder" <<
-			"NetworkId" << "TransportStreamId" << "PmtPid" << "PmtSection" <<
-			"AudioPid" << "Flags");
+		init(model, "Channels", QStringList() << "Name" << "Number" << "Source" <<
+			"Transponder" << "NetworkId" << "TransportStreamId" << "PmtPid" <<
+			"PmtSection" << "AudioPid" << "Flags");
 
 		for (int i = 0; i < model->channels.size(); ++i) {
 			if (model->adjustNameNumber(model->channels[i].data())) {
@@ -503,7 +503,7 @@ private:
 		return (model->channels.size() - 1);
 	}
 
-	void bindToSqlQuery(int row, QSqlQuery &query, int index) const
+	void bindToSqlQuery(QSqlQuery &query, int index, int row) const
 	{
 		const DvbChannel *channel = model->getChannel(row);
 		query.bindValue(index++, channel->name);

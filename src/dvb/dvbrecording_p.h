@@ -1,7 +1,7 @@
 /*
  * dvbrecording_p.h
  *
- * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@
 
 #include <QFile>
 #include <KDialog>
-#include "../tablemodel.h"
+#include "../sqltablemodel.h"
+#include "dvbrecording.h"
 #include "dvbsi.h"
 
 class QCheckBox;
@@ -31,8 +32,6 @@ class KComboBox;
 class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
-class DvbManager;
-class DvbRecordingModel;
 
 class DvbRecording : public QObject, public QSharedData, private DvbPidFilter
 {
@@ -73,8 +72,6 @@ private:
 	bool pmtValid;
 };
 
-Q_DECLARE_TYPEINFO(QExplicitlySharedDataPointer<DvbRecording>, Q_MOVABLE_TYPE);
-
 class DvbRecordingEditor : public KDialog
 {
 	Q_OBJECT
@@ -105,28 +102,18 @@ private:
 	QCheckBox *dayCheckBoxes[7];
 };
 
-class DvbRecordingHelper
+class DvbSqlRecordingModelInterface : public SqlTableModelInterface
 {
 public:
-	typedef QExplicitlySharedDataPointer<DvbRecording> StorageType;
-	typedef DvbRecording Type;
-
-	static QStringList modelHeaderLabels();
-	static QVariant modelData(const DvbRecording *recording, int column, int role);
-};
-
-class DvbRecordingModel : public TableModel<DvbRecordingHelper>, private SqlTableModelBase
-{
-public:
-	DvbRecordingModel(DvbManager *manager_, QObject *parent);
-	~DvbRecordingModel();
+	DvbSqlRecordingModelInterface(DvbManager *manager_, DvbRecordingModel *model_);
+	~DvbSqlRecordingModelInterface();
 
 private:
 	int insertFromSqlQuery(const QSqlQuery &query, int index);
-	void bindToSqlQuery(int row, QSqlQuery &query, int index) const;
+	void bindToSqlQuery(QSqlQuery &query, int index, int row) const;
 
 	DvbManager *manager;
-	SqlModelAdaptor *sqlAdaptor;
+	DvbRecordingModel *model;
 };
 
 #endif /* DVBRECORDING_P_H */

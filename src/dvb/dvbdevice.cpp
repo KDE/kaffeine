@@ -89,7 +89,8 @@ DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObjec
 	backendDevice(backendDevice_), deviceState(DeviceReleased), dataDumper(NULL),
 	cleanUpFilters(false), isAuto(false)
 {
-	backendDevice->setBuffer(this);
+	backend.device = backendDevice;
+	backend.setBuffer(this);
 
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 	dummyFilter = new DvbDummyFilter;
@@ -103,7 +104,7 @@ DvbDevice::DvbDevice(DvbBackendDevice *backendDevice_, QObject *parent) : QObjec
 
 DvbDevice::~DvbDevice()
 {
-	backendDevice->release();
+	backend.release();
 
 	for (int i = 0; i < totalBuffers; ++i) {
 		DvbFilterData *temp = currentUnused->next;
@@ -115,19 +116,19 @@ DvbDevice::~DvbDevice()
 	delete dummyFilter;
 }
 
-DvbBackendDevice::TransmissionTypes DvbDevice::getTransmissionTypes() const
+DvbBackendDevice::TransmissionTypes DvbDevice::getTransmissionTypes()
 {
-	return backendDevice->getTransmissionTypes();
+	return backend.getTransmissionTypes();
 }
 
-QString DvbDevice::getDeviceId() const
+QString DvbDevice::getDeviceId()
 {
-	return backendDevice->getDeviceId();
+	return backend.getDeviceId();
 }
 
-QString DvbDevice::getFrontendName() const
+QString DvbDevice::getFrontendName()
 {
-	return backendDevice->getFrontendName();
+	return backend.getFrontendName();
 }
 
 void DvbDevice::tune(const DvbTransponder &transponder)
@@ -136,7 +137,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	if ((transmissionType != DvbTransponderBase::DvbS) &&
 	    (transmissionType != DvbTransponderBase::DvbS2)) {
-		if (backendDevice->tune(transponder)) {
+		if (backend.tune(transponder)) {
 			setDeviceState(DeviceTuning);
 			frontendTimeout = config->timeout;
 			frontendTimer.start(100);
@@ -191,11 +192,11 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	// tone off
 
-	backendDevice->setTone(DvbBackendDevice::ToneOff);
+	backend.setTone(DvbBackendDevice::ToneOff);
 
 	// horizontal / circular left --> 18V ; vertical / circular right --> 13V
 
-	backendDevice->setVoltage(horPolar ? DvbBackendDevice::Voltage18V :
+	backend.setVoltage(horPolar ? DvbBackendDevice::Voltage18V :
 				  DvbBackendDevice::Voltage13V);
 
 	// diseqc / rotor
@@ -206,10 +207,10 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	case DvbConfigBase::DiseqcSwitch: {
 		char cmd[] = { 0xe0, 0x10, 0x38, 0x00 };
 		cmd[3] = 0xf0 | (config->lnbNumber << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
-		backendDevice->sendMessage(cmd, sizeof(cmd));
+		backend.sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 
-		backendDevice->sendBurst(((config->lnbNumber & 0x1) == 0) ?
+		backend.sendBurst(((config->lnbNumber & 0x1) == 0) ?
 			DvbBackendDevice::BurstMiniA : DvbBackendDevice::BurstMiniB);
 		usleep(15000);
 		break;
@@ -263,7 +264,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		}
 
 		char cmd[] = { 0xe0, 0x31, 0x6e, value / 256, value % 256 };
-		backendDevice->sendMessage(cmd, sizeof(cmd));
+		backend.sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
 		break;
@@ -271,7 +272,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	case DvbConfigBase::PositionsRotor: {
 		char cmd[] = { 0xe0, 0x31, 0x6b, config->lnbNumber };
-		backendDevice->sendMessage(cmd, sizeof(cmd));
+		backend.sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
 		break;
@@ -280,7 +281,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	// low band --> tone off ; high band --> tone on
 
-	backendDevice->setTone(highBand ? DvbBackendDevice::ToneOn : DvbBackendDevice::ToneOff);
+	backend.setTone(highBand ? DvbBackendDevice::ToneOn : DvbBackendDevice::ToneOff);
 
 	// tune
 
@@ -295,7 +296,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	intermediate->frequency = frequency;
 
-	if (backendDevice->tune(DvbTransponder(intermediate))) {
+	if (backend.tune(DvbTransponder(intermediate))) {
 		if (!moveRotor) {
 			setDeviceState(DeviceTuning);
 			frontendTimeout = config->timeout;
@@ -321,7 +322,7 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 	isAuto = true;
 	autoTTransponder = new DvbTTransponder(*transponder->getDvbTTransponder());
 	autoTransponder = DvbTransponder(autoTTransponder);
-	capabilities = backendDevice->getCapabilities();
+	capabilities = backend.getCapabilities();
 
 	// we have to iterate over unsupported AUTO values
 
@@ -356,7 +357,7 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 		}
 	}
 
-	if ((it->activeFilters == 0) && !backendDevice->addPidFilter(pid)) {
+	if ((it->activeFilters == 0) && !backend.addPidFilter(pid)) {
 		return false;
 	}
 
@@ -390,7 +391,7 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	--it->activeFilters;
 
 	if (it->activeFilters == 0) {
-		backendDevice->removePidFilter(pid);
+		backend.removePidFilter(pid);
 	}
 
 	cleanUpFilters = true;
@@ -398,27 +399,27 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 
 void DvbDevice::startDescrambling(const DvbPmtSection &pmtSection)
 {
-	backendDevice->startDescrambling(pmtSection);
+	backend.startDescrambling(pmtSection);
 }
 
 void DvbDevice::stopDescrambling(int serviceId)
 {
-	backendDevice->stopDescrambling(serviceId);
+	backend.stopDescrambling(serviceId);
 }
 
-bool DvbDevice::isTuned() const
+bool DvbDevice::isTuned()
 {
-	return backendDevice->isTuned();
+	return backend.isTuned();
 }
 
-int DvbDevice::getSignal() const
+int DvbDevice::getSignal()
 {
-	return backendDevice->getSignal();
+	return backend.getSignal();
 }
 
-int DvbDevice::getSnr() const
+int DvbDevice::getSnr()
 {
-	return backendDevice->getSnr();
+	return backend.getSnr();
 }
 
 DvbTransponder DvbDevice::getAutoTransponder() const
@@ -431,7 +432,7 @@ bool DvbDevice::acquire(const DvbConfigBase *config_)
 {
 	Q_ASSERT(deviceState == DeviceReleased);
 
-	if (backendDevice->acquire()) {
+	if (backend.acquire()) {
 		config = config_;
 		setDeviceState(DeviceIdle);
 		return true;
@@ -453,7 +454,7 @@ void DvbDevice::release()
 {
 	setDeviceState(DeviceReleased);
 	stop();
-	backendDevice->release();
+	backend.release();
 }
 
 void DvbDevice::enableDvbDump()
@@ -474,7 +475,7 @@ void DvbDevice::enableDvbDump()
 
 void DvbDevice::frontendEvent()
 {
-	if (backendDevice->isTuned()) {
+	if (backend.isTuned()) {
 		kDebug() << "tuning succeeded";
 		frontendTimer.stop();
 		setDeviceState(DeviceTuned);
@@ -494,7 +495,7 @@ void DvbDevice::frontendEvent()
 			return;
 		}
 
-		int signal = backendDevice->getSignal();
+		int signal = backend.getSignal();
 
 		if ((signal != -1) && (signal < 15)) {
 			// signal too weak
@@ -633,7 +634,7 @@ void DvbDevice::stop()
 				--it->activeFilters;
 
 				if (it->activeFilters == 0) {
-					backendDevice->removePidFilter(pid);
+					backend.removePidFilter(pid);
 				}
 
 				cleanUpFilters = true;

@@ -22,36 +22,33 @@
 #define DVBDEVICE_LINUX_H
 
 #include <Solid/Device>
-#include "dvbcam_linux.h"
 #include "dvbbackenddevice.h"
+#include "dvbcam_linux.h"
 
 class DvbDeviceThread;
-class DvbLinuxDeviceAdaptor;
-class DvbLinuxDeviceScramblingObject;
 
-class DvbLinuxDevice : public QObject
+class DvbLinuxDevice : public DvbBackendDevice
 {
-	Q_OBJECT
 public:
-	DvbLinuxDevice();
+	DvbLinuxDevice(int adapter_, int index_);
 	~DvbLinuxDevice();
 
 	bool componentAdded(const Solid::Device &component);
 	bool componentRemoved(const QString &udi);
 
-	void setBuffer(DvbAbstractDeviceBuffer *buffer_);
+	void setBuffer(DvbAbstractDeviceBuffer *buffer);
 	QString getDeviceId();
 	QString getFrontendName();
-	DvbBackendDevice::TransmissionTypes getTransmissionTypes();
-	DvbBackendDevice::Capabilities getCapabilities();
+	TransmissionTypes getTransmissionTypes();
+	Capabilities getCapabilities();
 	bool acquire();
-	bool setTone(DvbBackendDevice::SecTone tone);
-	bool setVoltage(DvbBackendDevice::SecVoltage voltage);
+	bool setTone(SecTone tone);
+	bool setVoltage(SecVoltage voltage);
 	bool sendMessage(const char *message, int length);
-	bool sendBurst(DvbBackendDevice::SecBurst burst);
+	bool sendBurst(SecBurst burst);
 	bool tune(const DvbTransponder &transponder);
-	int getSignal();
-	int getSnr();
+	int getSignal(); // 0 - 100 ; -1 = unsupported
+	int getSnr(); // 0 - 100 ; -1 = unsupported
 	bool isTuned();
 	bool addPidFilter(int pid);
 	void removePidFilter(int pid);
@@ -76,6 +73,7 @@ private:
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
+	void execute(Command command, ReturnData returnData, Data data);
 	bool identifyDevice();
 
 	Solid::Device caComponent;
@@ -90,8 +88,8 @@ private:
 
 	DvbAbstractDeviceBuffer *buffer;
 	stateFlags internalState;
-	DvbBackendDevice::TransmissionTypes transmissionTypes;
-	DvbBackendDevice::Capabilities capabilities;
+	TransmissionTypes transmissionTypes;
+	Capabilities capabilities;
 	QString deviceId;
 	QString frontendName;
 	bool ready;
@@ -129,8 +127,8 @@ private slots:
 private:
 	void componentAdded(const Solid::Device &component);
 
-	QMap<int, DvbLinuxDeviceAdaptor *> devices;
-	QMap<QString, DvbLinuxDeviceAdaptor *> udis;
+	QMap<int, DvbLinuxDevice *> devices;
+	QMap<QString, DvbLinuxDevice *> udis;
 };
 
 #endif /* DVBDEVICE_LINUX_H */

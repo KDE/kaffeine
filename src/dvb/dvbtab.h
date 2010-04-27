@@ -21,17 +21,15 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
-#include <QTimer>
 #include <config-kaffeine.h>
 #include "../tabbase.h"
+#include "dvbrecording.h"
 
-class QModelIndex;
 class QSplitter;
 class KAction;
 class KActionCollection;
 class KMenu;
 class DvbChannelView;
-class DvbManager;
 class DvbTimeShiftCleaner;
 class MediaWidget;
 
@@ -58,7 +56,7 @@ private slots:
 	void showEpgDialog();
 	void showRecordingDialog();
 	void instantRecord(bool checked);
-	void instantRecordingRemoved();
+	void programRemoved(const DvbRecordingIndex &recordingIndex);
 	void configureDvb();
 	void tuneOsdChannel();
 	void playChannel(const QModelIndex &index);
@@ -73,6 +71,7 @@ private:
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
 	KAction *instantRecordAction;
+	DvbRecordingIndex instantRecordingIndex;
 	QSplitter *splitter;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;

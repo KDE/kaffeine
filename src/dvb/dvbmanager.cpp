@@ -21,17 +21,16 @@
 #include "dvbmanager.h"
 
 #include <QDir>
-#include <QLibrary>
 #include <KDebug>
 #include <KLocale>
 #include <KStandardDirs>
 #include <config-kaffeine.h>
 #include "dvbchannelui.h"
 #include "dvbconfig.h"
+#include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
 #include "dvbrecording.h"
-#include "dvbdevice_linux.h"
 
 static QString installPath(const char *component)
 {
@@ -230,7 +229,7 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 	channelModel = new DvbSqlChannelModel(this);
 	epgModel = new DvbEpgModel(this);
 	liveView = new DvbLiveView(this);
-	recordingManager = new DvbRecordingManager(this);
+	recordingModel = new DvbRecordingModel(this);
 
 	readDeviceConfigs();
 	updateSourceMapping();
@@ -247,7 +246,7 @@ DvbManager::~DvbManager()
 
 	// we need an explicit deletion order (device users ; devices ; device manager)
 
-	delete recordingManager;
+	delete recordingModel;
 
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
 		delete deviceConfig.device;
@@ -590,8 +589,8 @@ void DvbManager::enableDvbDump()
 void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
 {
 	DvbDevice *device = new DvbDevice(backendDevice, this);
-	QString deviceId = backendDevice->getDeviceId();
-	QString frontendName = backendDevice->getFrontendName();
+	QString deviceId = device->getDeviceId();
+	QString frontendName = device->getFrontendName();
 
 	if (dvbDumpEnabled) {
 		device->enableDvbDump();

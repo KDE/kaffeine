@@ -20,16 +20,15 @@
 
 #include "dvbcam_linux.h"
 
+#include <QCoreApplication>
+#include <QFile>
+#include <QSocketNotifier>
+#include <KDebug>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/dvb/ca.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include <QCoreApplication>
-#include <QFile>
-#include <QSocketNotifier>
-#include <QTimer>
-#include <KDebug>
 #include "dvbsi.h"
 
 class DvbLinuxCamService

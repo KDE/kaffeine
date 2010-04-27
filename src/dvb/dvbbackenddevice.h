@@ -21,7 +21,7 @@
 #ifndef DVBBACKENDDEVICE_H
 #define DVBBACKENDDEVICE_H
 
-#include <QFlags>
+#include <QString>
 
 class DvbPmtSection;
 class DvbTransponder;
@@ -41,7 +41,7 @@ public:
 	virtual void submitCurrent(int packets) = 0;
 };
 
-class DvbBackendDevice
+class DvbBackendDeviceBase
 {
 public:
 	enum TransmissionType {
@@ -78,133 +78,6 @@ public:
 		BurstMiniB = 1
 	};
 
-	DvbBackendDevice() { }
-	virtual ~DvbBackendDevice() { }
-
-	void setBuffer(DvbAbstractDeviceBuffer *buffer)
-	{
-		execute(SetBuffer, ReturnData(), Data(buffer));
-	}
-
-	QString getDeviceId()
-	{
-		QString result;
-		execute(GetDeviceId, ReturnData(result), Data());
-		return result;
-	}
-
-	QString getFrontendName()
-	{
-		QString result;
-		execute(GetFrontendName, ReturnData(result), Data());
-		return result;
-	}
-
-	TransmissionTypes getTransmissionTypes()
-	{
-		TransmissionTypes result = 0;
-		execute(GetTransmissionTypes, ReturnData(result), Data());
-		return result;
-	}
-
-	Capabilities getCapabilities()
-	{
-		Capabilities result = 0;
-		execute(GetCapabilities, ReturnData(result), Data());
-		return result;
-	}
-
-	bool acquire()
-	{
-		bool result = false;
-		execute(Acquire, ReturnData(result), Data());
-		return result;
-	}
-
-	bool setTone(SecTone tone)
-	{
-		bool result = false;
-		execute(SetTone, ReturnData(result), Data(tone));
-		return result;
-	}
-
-	bool setVoltage(SecVoltage voltage)
-	{
-		bool result = false;
-		execute(SetVoltage, ReturnData(result), Data(voltage));
-		return result;
-	}
-
-	bool sendMessage(const char *message, int length)
-	{
-		bool result = false;
-		execute(SendMessage, ReturnData(result), Data(MessageData(message, length)));
-		return result;
-	}
-
-	bool sendBurst(SecBurst burst)
-	{
-		bool result = false;
-		execute(SendBurst, ReturnData(result), Data(burst));
-		return result;
-	}
-
-	bool tune(const DvbTransponder &transponder)
-	{
-		bool result = false;
-		execute(Tune, ReturnData(result), Data(transponder));
-		return result;
-	}
-
-	int getSignal() // 0 - 100 ; -1 = unsupported
-	{
-		int result = -1;
-		execute(GetSignal, ReturnData(result), Data());
-		return result;
-	}
-
-	int getSnr() // 0 - 100 ; -1 = unsupported
-	{
-		int result = -1;
-		execute(GetSnr, ReturnData(result), Data());
-		return result;
-	}
-
-	bool isTuned()
-	{
-		bool result = false;
-		execute(IsTuned, ReturnData(result), Data());
-		return result;
-	}
-
-	bool addPidFilter(int pid)
-	{
-		bool result = false;
-		execute(AddPidFilter, ReturnData(result), Data(pid));
-		return result;
-	}
-
-	void removePidFilter(int pid)
-	{
-		execute(RemovePidFilter, ReturnData(), Data(pid));
-	}
-
-	void startDescrambling(const DvbPmtSection &pmtSection)
-	{
-		execute(StartDescrambling, ReturnData(), Data(pmtSection));
-	}
-
-	void stopDescrambling(int serviceId)
-	{
-		execute(StopDescrambling, ReturnData(), Data(serviceId));
-	}
-
-	void release()
-	{
-		execute(Release, ReturnData(), Data());
-	}
-
-protected:
 	enum Command {
 		SetBuffer		=  0,
 		GetDeviceId		=  1,
@@ -287,78 +160,215 @@ protected:
 		} data;
 	};
 
+protected:
+	DvbBackendDeviceBase() { }
+	~DvbBackendDeviceBase() { }
+};
+
+class DvbBackendDevice : public DvbBackendDeviceBase
+{
+public:
+	DvbBackendDevice() { }
+	virtual ~DvbBackendDevice() { }
+
 	virtual void execute(Command command, ReturnData returnData, Data data) = 0;
 };
 
-template<class T> class DvbBackendDeviceAdaptor : public DvbBackendDevice
+class DvbBackendDeviceAdapter : public DvbBackendDeviceBase
 {
 public:
-	DvbBackendDeviceAdaptor() { }
-	~DvbBackendDeviceAdaptor() { }
+	DvbBackendDeviceAdapter() : device(NULL) { }
+	~DvbBackendDeviceAdapter() { }
 
-	T device;
+	void setBuffer(DvbAbstractDeviceBuffer *buffer)
+	{
+		device->execute(SetBuffer, ReturnData(), Data(buffer));
+	}
 
-private:
-	void execute(Command command, ReturnData returnData, Data data)
+	QString getDeviceId()
+	{
+		QString result;
+		device->execute(GetDeviceId, ReturnData(result), Data());
+		return result;
+	}
+
+	QString getFrontendName()
+	{
+		QString result;
+		device->execute(GetFrontendName, ReturnData(result), Data());
+		return result;
+	}
+
+	TransmissionTypes getTransmissionTypes()
+	{
+		TransmissionTypes result = 0;
+		device->execute(GetTransmissionTypes, ReturnData(result), Data());
+		return result;
+	}
+
+	Capabilities getCapabilities()
+	{
+		Capabilities result = 0;
+		device->execute(GetCapabilities, ReturnData(result), Data());
+		return result;
+	}
+
+	bool acquire()
+	{
+		bool result = false;
+		device->execute(Acquire, ReturnData(result), Data());
+		return result;
+	}
+
+	bool setTone(SecTone tone)
+	{
+		bool result = false;
+		device->execute(SetTone, ReturnData(result), Data(tone));
+		return result;
+	}
+
+	bool setVoltage(SecVoltage voltage)
+	{
+		bool result = false;
+		device->execute(SetVoltage, ReturnData(result), Data(voltage));
+		return result;
+	}
+
+	bool sendMessage(const char *message, int length)
+	{
+		bool result = false;
+		device->execute(SendMessage, ReturnData(result), Data(MessageData(message, length)));
+		return result;
+	}
+
+	bool sendBurst(SecBurst burst)
+	{
+		bool result = false;
+		device->execute(SendBurst, ReturnData(result), Data(burst));
+		return result;
+	}
+
+	bool tune(const DvbTransponder &transponder)
+	{
+		bool result = false;
+		device->execute(Tune, ReturnData(result), Data(transponder));
+		return result;
+	}
+
+	int getSignal() // 0 - 100 ; -1 = unsupported
+	{
+		int result = -1;
+		device->execute(GetSignal, ReturnData(result), Data());
+		return result;
+	}
+
+	int getSnr() // 0 - 100 ; -1 = unsupported
+	{
+		int result = -1;
+		device->execute(GetSnr, ReturnData(result), Data());
+		return result;
+	}
+
+	bool isTuned()
+	{
+		bool result = false;
+		device->execute(IsTuned, ReturnData(result), Data());
+		return result;
+	}
+
+	bool addPidFilter(int pid)
+	{
+		bool result = false;
+		device->execute(AddPidFilter, ReturnData(result), Data(pid));
+		return result;
+	}
+
+	void removePidFilter(int pid)
+	{
+		device->execute(RemovePidFilter, ReturnData(), Data(pid));
+	}
+
+	void startDescrambling(const DvbPmtSection &pmtSection)
+	{
+		device->execute(StartDescrambling, ReturnData(), Data(pmtSection));
+	}
+
+	void stopDescrambling(int serviceId)
+	{
+		device->execute(StopDescrambling, ReturnData(), Data(serviceId));
+	}
+
+	void release()
+	{
+		device->execute(Release, ReturnData(), Data());
+	}
+
+	DvbBackendDevice *device;
+};
+
+template<class T> class DvbBackendAdapter : public DvbBackendDeviceBase
+{
+public:
+	static void execute(T *instance, Command command, ReturnData returnData, Data data)
 	{
 		switch (command) {
 		case SetBuffer:
-			device.setBuffer(data.data.buffer);
+			instance->setBuffer(data.data.buffer);
 			break;
 		case GetDeviceId:
-			*returnData.data.string = device.getDeviceId();
+			*returnData.data.string = instance->getDeviceId();
 			break;
 		case GetFrontendName:
-			*returnData.data.string = device.getFrontendName();
+			*returnData.data.string = instance->getFrontendName();
 			break;
 		case GetTransmissionTypes:
-			*returnData.data.transmissionTypes = device.getTransmissionTypes();
+			*returnData.data.transmissionTypes = instance->getTransmissionTypes();
 			break;
 		case GetCapabilities:
-			*returnData.data.capabilities = device.getCapabilities();
+			*returnData.data.capabilities = instance->getCapabilities();
 			break;
 		case Acquire:
-			*returnData.data.boolean = device.acquire();
+			*returnData.data.boolean = instance->acquire();
 			break;
 		case SetTone:
-			*returnData.data.boolean = device.setTone(data.data.tone);
+			*returnData.data.boolean = instance->setTone(data.data.tone);
 			break;
 		case SetVoltage:
-			*returnData.data.boolean = device.setVoltage(data.data.voltage);
+			*returnData.data.boolean = instance->setVoltage(data.data.voltage);
 			break;
 		case SendMessage:
-			*returnData.data.boolean = device.sendMessage(data.data.message->messageData,
+			*returnData.data.boolean = instance->sendMessage(data.data.message->messageData,
 				data.data.message->messageLength);
 			break;
 		case SendBurst:
-			*returnData.data.boolean = device.sendBurst(data.data.burst);
+			*returnData.data.boolean = instance->sendBurst(data.data.burst);
 			break;
 		case Tune:
-			*returnData.data.boolean = device.tune(*data.data.transponder);
+			*returnData.data.boolean = instance->tune(*data.data.transponder);
 			break;
 		case GetSignal:
-			*returnData.data.integer = device.getSignal();
+			*returnData.data.integer = instance->getSignal();
 			break;
 		case GetSnr:
-			*returnData.data.integer = device.getSnr();
+			*returnData.data.integer = instance->getSnr();
 			break;
 		case IsTuned:
-			*returnData.data.boolean = device.isTuned();
+			*returnData.data.boolean = instance->isTuned();
 			break;
 		case AddPidFilter:
-			*returnData.data.boolean = device.addPidFilter(data.data.integer);
+			*returnData.data.boolean = instance->addPidFilter(data.data.integer);
 			break;
 		case RemovePidFilter:
-			device.removePidFilter(data.data.integer);
+			instance->removePidFilter(data.data.integer);
 			break;
 		case StartDescrambling:
-			device.startDescrambling(*data.data.pmtSection);
+			instance->startDescrambling(*data.data.pmtSection);
 			break;
 		case StopDescrambling:
-			device.stopDescrambling(data.data.integer);
+			instance->stopDescrambling(data.data.integer);
 			break;
 		case Release:
-			device.release();
+			instance->release();
 			break;
 		}
 	}

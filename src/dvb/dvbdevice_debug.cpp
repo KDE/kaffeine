@@ -38,6 +38,12 @@ DvbDebugDevice::~DvbDebugDevice()
 	kDebug();
 }
 
+void DvbDebugDevice::setBuffer(DvbAbstractDeviceBuffer *buffer)
+{
+	Q_UNUSED(buffer)
+	kDebug();
+}
+
 QString DvbDebugDevice::getDeviceId()
 {
 	kDebug();
@@ -66,11 +72,6 @@ bool DvbDebugDevice::acquire()
 {
 	kDebug();
 	return true;
-}
-
-void DvbDebugDevice::release()
-{
-	kDebug();
 }
 
 bool DvbDebugDevice::setTone(SecTone tone)
@@ -179,6 +180,27 @@ bool DvbDebugDevice::addPidFilter(int pid)
 void DvbDebugDevice::removePidFilter(int pid)
 {
 	kDebug() << pid;
+}
+
+void DvbDebugDevice::startDescrambling(const DvbPmtSection &pmtSection)
+{
+	Q_UNUSED(pmtSection)
+	kDebug();
+}
+
+void DvbDebugDevice::stopDescrambling(int serviceId)
+{
+	kDebug() << serviceId;
+}
+
+void DvbDebugDevice::release()
+{
+	kDebug();
+}
+
+void DvbDebugDevice::execute(Command command, ReturnData returnData, Data data)
+{
+	DvbBackendAdapter<DvbDebugDevice>::execute(this, command, returnData, data);
 }
 
 DvbDeviceManager::DvbDeviceManager() : device(NULL)

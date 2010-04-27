@@ -26,7 +26,7 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
-#include "tablemodel.h"
+#include "sqltablemodel.h"
 
 SqlHelper::SqlHelper()
 {
@@ -108,7 +108,7 @@ void SqlHelper::exec(QSqlQuery &query)
 	}
 }
 
-void SqlHelper::requestSubmission(SqlModelAdaptor *object)
+void SqlHelper::requestSubmission(SqlTableModelInterface *object)
 {
 	if (!timer.isActive()) {
 		timer.start();

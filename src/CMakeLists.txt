@@ -11,7 +11,7 @@ set(kaffeine_SRCS
     osdwidget.cpp
     proxytreeview.cpp
     sqlhelper.cpp
-    tablemodel.cpp)
+    sqltablemodel.cpp)
 
 if(HAVE_DVB)
   set(kaffeinedvb_SRCS

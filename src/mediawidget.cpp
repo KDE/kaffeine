@@ -42,10 +42,10 @@
 #include <KMenu>
 #include <KStandardDirs>
 #include <KToolBar>
-#include <X11/extensions/scrnsaver.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <X11/extensions/scrnsaver.h>
 #include "backend-xine/xinemediawidget.h"
 #include "osdwidget.h"
 

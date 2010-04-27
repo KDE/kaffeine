@@ -1,7 +1,7 @@
 /*
  * dvbrecording.h
  *
- * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,42 +26,68 @@
 
 class KDialog;
 class DvbManager;
-class DvbRecordingModel;
+class DvbRecording;
+class DvbSqlRecordingModelInterface;
 class ProxyTreeView;
 
-class DvbRecordingManager : public QObject
+class DvbRecordingIndex
+{
+public:
+	DvbRecordingIndex() : key(0) { }
+	explicit DvbRecordingIndex(quint32 key_) : key(key_) { }
+	~DvbRecordingIndex() { }
+
+	bool operator==(const DvbRecordingIndex &other) const
+	{
+		return (key == other.key);
+	}
+
+	quint32 key;
+};
+
+class DvbRecordingModel : public QAbstractTableModel
 {
 	Q_OBJECT
+	friend class DvbRecordingEditor;
+	friend class DvbSqlRecordingModelInterface;
 public:
-	explicit DvbRecordingManager(DvbManager *manager_);
-	~DvbRecordingManager();
+	explicit DvbRecordingModel(DvbManager *manager_);
+	~DvbRecordingModel();
 
-	void scheduleProgram(const QString &name, const QString &channel, const QDateTime &begin,
-		const QTime &duration); // begin must be local time!
-	void startInstantRecording(const QString &name, const QString &channel);
-	void stopInstantRecording(); // stops the last started instant recording
-
+	DvbRecordingIndex scheduleProgram(const QString &name, const QString &channel,
+		const QDateTime &begin, const QTime &duration); // begin must be local time!
+	void removeProgram(const DvbRecordingIndex &index);
 	void showDialog(QWidget *parent);
 
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const;
+
 signals:
-	void instantRecordingRemoved(); // not emitted by stopInstantRecording()
+	void programRemoved(const DvbRecordingIndex &index);
+
+protected:
+	int size() const;
+	DvbRecording *at(int row) const;
+	DvbRecordingIndex insert(DvbRecording *recording);
+	void update(int row);
+	void remove(int row);
+	void removeIndex(const DvbRecordingIndex &index);
 
 private slots:
 	void checkStatus();
-	void checkInstantRecording();
 	void newRecording();
 	void editRecording();
 	void removeRecording();
 
 private:
 	DvbManager *manager;
-	DvbRecordingModel *model;
-	QTimer checkStatusTimer;
-	bool checkingStatus;
-	bool instantRecordingActive;
-	QPersistentModelIndex instantRecordingIndex;
+	DvbSqlRecordingModelInterface *sqlInterface;
+	QList<DvbRecording *> recordings;
 	KDialog *scheduleDialog;
 	ProxyTreeView *treeView;
+	QTimer checkStatusTimer;
 };
 
 #endif /* DVBRECORDING_H */

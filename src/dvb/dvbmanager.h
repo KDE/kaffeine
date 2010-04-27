@@ -24,7 +24,6 @@
 #include <QDate>
 #include <QMap>
 #include <QPair>
-#include <QSharedData>
 #include <QStringList>
 
 class DvbBackendDevice;
@@ -35,7 +34,7 @@ class DvbDeviceConfig;
 class DvbDeviceConfigUpdate;
 class DvbEpgModel;
 class DvbLiveView;
-class DvbRecordingManager;
+class DvbRecordingModel;
 class DvbScanData;
 class DvbTransponder;
 class DvbTransponderBase;
@@ -92,9 +91,9 @@ public:
 		return liveView;
 	}
 
-	DvbRecordingManager *getRecordingManager() const
+	DvbRecordingModel *getRecordingModel() const
 	{
-		return recordingManager;
+		return recordingModel;
 	}
 
 	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder,
@@ -143,7 +142,7 @@ private:
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;
 	DvbLiveView *liveView;
-	DvbRecordingManager *recordingManager;
+	DvbRecordingModel *recordingModel;
 
 	QList<DvbDeviceConfig> deviceConfigs;
 	bool dvbDumpEnabled;
