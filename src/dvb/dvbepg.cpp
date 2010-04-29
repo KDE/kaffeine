@@ -473,6 +473,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 
 	channelModel = new QStringListModel(this);
 	channelView = new QListView(widget);
+	channelView->setEditTriggers(QListView::NoEditTriggers);
 	channelView->setModel(channelModel);
 	channelView->setMaximumWidth(200);
 	connect(channelView, SIGNAL(activated(QModelIndex)),
