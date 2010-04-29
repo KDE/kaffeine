@@ -1,0 +1,113 @@
+<?xml version='1.0'?>
+<!DOCTYPE profile SYSTEM 'profile.dtd'>
+<profile servicename="org.mpris.kaffeine" id="kaffeine">
+  <name>Kaffeine</name>
+  <author>Pascal Pollet [pascal@bongosoft.de]</author>
+  <instances unique="1"/>
+  <!-- Playback actions -->
+  <action prototype="int GetCaps()" objid="Player">
+    <name>Get Capabilities</name>
+    <comment>returns the players capabilities.</comment>
+  </action>
+  <action class="volumedown" prototype="void DecreaseVolume()" objid="Player">
+    <name>Decrease Volume</name>
+    <comment>Decrease the volume.</comment>
+  </action>
+  <action class="volumeup" prototype="void IncreaseVolume()" objid="Player">
+    <name>Increase Volume</name>
+    <comment>Increase the volume.</comment>
+  </action>
+  <action prototype="int VolumeGet()" objid="Player">
+    <name>Get Volume</name>
+    <comment>Gets the actual volume.</comment>
+  </action>
+  <action prototype="void VolumeSet(int volume)" objid="Player">
+    <name>Set Volume</name>
+    <comment>Sets the audio volume.</comment>
+    <argument type="int">
+      <comment>a number between 0 and 100.</comment>
+    </argument>
+  </action>
+  <action class="next" prototype="void Next()" objid="Player">
+    <name>Next</name>
+    <comment>Skips to the start of the next track.</comment>
+  </action>
+  <action class="previous" prototype="void Prev()" objid="Player">
+    <name>Previous</name>
+    <comment>Skips to the start of the previous track.</comment>
+  </action>
+  <action prototype="QVariantMap GetMetadata()" objid="Player">
+    <name>Get Metadata</name>
+    <comment>Gets the metadata of the current track.</comment>
+  </action>
+  <action class="play" prototype="void Play()" objid="Player">
+    <name>Start Playing</name>
+    <comment>Starts playback of the current track.</comment>
+  </action>
+  <action class="stop" prototype="void Stop()" objid="Player">
+    <name>Stop Playing</name>
+    <comment>Stops current playback, if any.</comment>
+  </action>
+  <action class="pause" prototype="void Pause()" objid="Player">
+    <name>Pause Playing</name>
+    <comment>Toggles between playback and pause.</comment>
+  </action>
+  <action prototype="int PositionGet()" objid="Player">
+    <name>Get Position</name>
+    <comment>Gets the current playback position (in milliseconds).</comment>
+  </action>
+  <action prototype="void PositionSet(int position)" objid="Player">
+    <name>Set Position</name>
+    <comment>Sets the  playback position (in milliseconds).</comment>
+    <argument type="int">
+      <comment>time from beginning of track in milliseconds.</comment>
+    </argument>
+  </action>
+  <action prototype="void Repeat(bool repeat)" objid="Player">
+    <name>Repeat</name>
+    <comment>Sets the repeat playback mode for the current track.</comment>
+    <argument type="bool">
+      <comment>true or false.</comment>
+    </argument>
+  </action>
+  <action prototype="void ToggleFullScreen()" objid="Player">
+    <name>Toggle Fullscreen</name>
+    <comment>Toggles fullscreen.</comment>
+  </action>
+  <action prototype="void ToggleMuted()" objid="Player">
+    <name>Toggle Muted</name>
+    <comment>Toggles muting of sound.</comment>
+  </action>
+  <!-- DVB actions -->
+  <action prototype="void DigitPressed(int digit)" objid="Television">
+    <name>Digit Pressed</name>
+    <comment>Enter a channel digit.</comment>
+    <argument type="int">
+      <comment>A digit.</comment>
+    </argument>
+  </action>
+  <action prototype="void PlayChannel(QString nameOrNumber)" objid="Television">
+    <name>Play Channel</name>
+    <comment>Plays the channel with given name or number.</comment>
+    <argument type="QString">
+      <comment>Can be a channel name or number.</comment>
+    </argument>
+  </action>
+  <action prototype="void PlayLastChannel()" objid="Television">
+    <name>Play Last Channel</name>
+    <comment>Recall last DVB channel.</comment>
+  </action>
+  <action prototype="void ToggleInstantRecord()" objid="Television">
+    <name>Toggle Instant Record</name>
+    <comment>Toggles the instant recording of the channel actually being played back.</comment>
+  </action>
+  <action prototype="void ToggleOsd()" objid="Television">
+    <name>Toggle OSD</name>
+    <comment>Toggles OSD.</comment>
+  </action>
+  <!-- General actions -->
+  <action prototype="void quit()" objid="MainApplication">
+    <name>Quit</name>
+    <comment>Quits application.</comment>
+  </action>
+</profile>

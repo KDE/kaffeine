@@ -14,6 +14,7 @@ endif(NOT HAVE_DVB)
 
 add_subdirectory(deviceactions)
 add_subdirectory(icons)
+add_subdirectory(profiles)
 add_subdirectory(src)
 macro_optional_add_subdirectory(po)
 
