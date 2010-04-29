@@ -22,6 +22,7 @@
 #define DVBMANAGER_H
 
 #include <QDate>
+#include <QExplicitlySharedDataPointer>
 #include <QMap>
 #include <QPair>
 #include <QStringList>
