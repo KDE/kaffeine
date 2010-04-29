@@ -115,17 +115,17 @@ DvbDevice::~DvbDevice()
 	delete dummyFilter;
 }
 
-DvbBackendDevice::TransmissionTypes DvbDevice::getTransmissionTypes()
+DvbBackendDevice::TransmissionTypes DvbDevice::getTransmissionTypes() const
 {
 	return backend.getTransmissionTypes();
 }
 
-QString DvbDevice::getDeviceId()
+QString DvbDevice::getDeviceId() const
 {
 	return backend.getDeviceId();
 }
 
-QString DvbDevice::getFrontendName()
+QString DvbDevice::getFrontendName() const
 {
 	return backend.getFrontendName();
 }
@@ -406,17 +406,17 @@ void DvbDevice::stopDescrambling(int serviceId)
 	backend.stopDescrambling(serviceId);
 }
 
-bool DvbDevice::isTuned()
+bool DvbDevice::isTuned() const
 {
 	return backend.isTuned();
 }
 
-int DvbDevice::getSignal()
+int DvbDevice::getSignal() const
 {
 	return backend.getSignal();
 }
 
-int DvbDevice::getSnr()
+int DvbDevice::getSnr() const
 {
 	return backend.getSnr();
 }

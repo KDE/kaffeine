@@ -37,9 +37,19 @@ public:
 	explicit DvbRecordingIndex(quint32 key_) : key(key_) { }
 	~DvbRecordingIndex() { }
 
+	bool isValid() const
+	{
+		return (key != 0);
+	}
+
 	bool operator==(const DvbRecordingIndex &other) const
 	{
 		return (key == other.key);
+	}
+
+	bool operator<(const DvbRecordingIndex &other) const
+	{
+		return (key < other.key);
 	}
 
 	quint32 key;

@@ -227,9 +227,9 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 	parent(parent_), mediaWidget(mediaWidget_), dvbDumpEnabled(false)
 {
 	channelModel = new DvbSqlChannelModel(this);
+	recordingModel = new DvbRecordingModel(this);
 	epgModel = new DvbEpgModel(this);
 	liveView = new DvbLiveView(this);
-	recordingModel = new DvbRecordingModel(this);
 
 	readDeviceConfigs();
 	updateSourceMapping();

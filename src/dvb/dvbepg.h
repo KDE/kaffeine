@@ -23,6 +23,7 @@
 
 #include <QAbstractTableModel>
 #include <KDialog>
+#include "dvbrecording.h"
 #include "dvbsi.h"
 
 class QLabel;
@@ -42,6 +43,7 @@ public:
 	QString title;
 	QString subheading;
 	QString details;
+	DvbRecordingIndex recordingIndex;
 
 	bool operator<(const DvbEpgEntry &x) const
 	{
@@ -55,8 +57,9 @@ public:
 
 class DvbEpgModel : public QAbstractTableModel
 {
+	Q_OBJECT
 public:
-	explicit DvbEpgModel(QObject *parent);
+	explicit DvbEpgModel(DvbManager *manager_);
 	~DvbEpgModel();
 
 	int columnCount(const QModelIndex &parent) const;
@@ -70,10 +73,16 @@ public:
 	void setChannel(const QString &channel);
 	const DvbEpgEntry *getEntry(int row) const;
 	QList<DvbEpgEntry> getCurrentNext(const QString &channel) const;
+	void scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter);
+
+private slots:
+	void programRemoved(const DvbRecordingIndex &recordingIndex);
 
 private:
+	DvbManager *manager;
 	QList<DvbEpgEntry> allEntries;
-	QList<const DvbEpgEntry *> filteredEntries;
+	QList<DvbEpgEntry *> filteredEntries;
+	QMap<DvbRecordingIndex, DvbEpgEntry *> recordingIndexes;
 };
 
 class DvbEitFilter : public DvbSectionFilter

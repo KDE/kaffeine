@@ -185,28 +185,28 @@ public:
 		device->execute(SetBuffer, ReturnData(), Data(buffer));
 	}
 
-	QString getDeviceId()
+	QString getDeviceId() const
 	{
 		QString result;
 		device->execute(GetDeviceId, ReturnData(result), Data());
 		return result;
 	}
 
-	QString getFrontendName()
+	QString getFrontendName() const
 	{
 		QString result;
 		device->execute(GetFrontendName, ReturnData(result), Data());
 		return result;
 	}
 
-	TransmissionTypes getTransmissionTypes()
+	TransmissionTypes getTransmissionTypes() const
 	{
 		TransmissionTypes result = 0;
 		device->execute(GetTransmissionTypes, ReturnData(result), Data());
 		return result;
 	}
 
-	Capabilities getCapabilities()
+	Capabilities getCapabilities() const
 	{
 		Capabilities result = 0;
 		device->execute(GetCapabilities, ReturnData(result), Data());
@@ -255,21 +255,21 @@ public:
 		return result;
 	}
 
-	int getSignal() // 0 - 100 ; -1 = unsupported
+	int getSignal() const // 0 - 100 ; -1 = unsupported
 	{
 		int result = -1;
 		device->execute(GetSignal, ReturnData(result), Data());
 		return result;
 	}
 
-	int getSnr() // 0 - 100 ; -1 = unsupported
+	int getSnr() const // 0 - 100 ; -1 = unsupported
 	{
 		int result = -1;
 		device->execute(GetSnr, ReturnData(result), Data());
 		return result;
 	}
 
-	bool isTuned()
+	bool isTuned() const
 	{
 		bool result = false;
 		device->execute(IsTuned, ReturnData(result), Data());

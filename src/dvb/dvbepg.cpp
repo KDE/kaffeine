@@ -79,7 +79,7 @@ bool DvbEpgEntryLess::operator()(const QString &x, const DvbEpgEntry &y)
 	return x < y.channel;
 }
 
-DvbEpgModel::DvbEpgModel(QObject *parent) : QAbstractTableModel(parent)
+DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), manager(manager_)
 {
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
 
@@ -91,10 +91,13 @@ DvbEpgModel::DvbEpgModel(QObject *parent) : QAbstractTableModel(parent)
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
+	bool hasRecordingIndex = true;
 	int version;
 	stream >> version;
 
-	if (version != 0x1ce0eca7) {
+	if (version == 0x1ce0eca7) {
+		hasRecordingIndex = false;
+	} else if (version != 0x79cffd36) {
 		kWarning() << "wrong version" << file.fileName();
 		return;
 	}
@@ -111,6 +114,10 @@ DvbEpgModel::DvbEpgModel(QObject *parent) : QAbstractTableModel(parent)
 		stream >> entry.subheading;
 		stream >> entry.details;
 
+		if (hasRecordingIndex) {
+			stream >> entry.recordingIndex.key;
+		}
+
 		if (stream.status() != QDataStream::Ok) {
 			kWarning() << "corrupt data" << file.fileName();
 			break;
@@ -121,9 +128,15 @@ DvbEpgModel::DvbEpgModel(QObject *parent) : QAbstractTableModel(parent)
 		}
 
 		allEntries.append(entry);
+
+		if (entry.recordingIndex.isValid()) {
+			recordingIndexes.insert(entry.recordingIndex, &allEntries.last());
+		}
 	}
 
 	qSort(allEntries);
+	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingIndex)),
+		this, SLOT(programRemoved(DvbRecordingIndex)));
 }
 
 DvbEpgModel::~DvbEpgModel()
@@ -138,7 +151,7 @@ DvbEpgModel::~DvbEpgModel()
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
-	int version = 0x1ce0eca7;
+	int version = 0x79cffd36;
 	stream << version;
 
 	QDateTime currentDateTime = QDateTime::currentDateTime();
@@ -154,6 +167,7 @@ DvbEpgModel::~DvbEpgModel()
 		stream << entry.title;
 		stream << entry.subheading;
 		stream << entry.details;
+		stream << entry.recordingIndex.key;
 	}
 }
 
@@ -177,20 +191,31 @@ int DvbEpgModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbEpgModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || (role != Qt::DisplayRole) ||
-	    (index.row() >= filteredEntries.size())) {
-		return QVariant();
-	}
+	switch (role) {
+	case Qt::DecorationRole:
+		if (index.column() == 2) {
+			const DvbEpgEntry *entry = filteredEntries.at(index.row());
 
-	const DvbEpgEntry *entry = filteredEntries.at(index.row());
+			if (entry->recordingIndex.isValid()) {
+				return KIcon("media-record");
+			}
+		}
 
-	switch (index.column()) {
-	case 0:
-		return KGlobal::locale()->formatDateTime(entry->begin.toLocalTime());
-	case 1:
-		return KGlobal::locale()->formatTime(entry->duration, false, true);
-	case 2:
-		return entry->title;
+		break;
+	case Qt::DisplayRole: {
+		const DvbEpgEntry *entry = filteredEntries.at(index.row());
+
+		switch (index.column()) {
+		case 0:
+			return KGlobal::locale()->formatDateTime(entry->begin.toLocalTime());
+		case 1:
+			return KGlobal::locale()->formatTime(entry->duration, false, true);
+		case 2:
+			return entry->title;
+		}
+
+		break;
+	    }
 	}
 
 	return QVariant();
@@ -242,9 +267,9 @@ void DvbEpgModel::resetChannel()
 
 void DvbEpgModel::setChannel(const QString &channel)
 {
-	QList<DvbEpgEntry>::const_iterator it = qLowerBound(allEntries.constBegin(),
-		allEntries.constEnd(), channel, DvbEpgEntryLess());
-	QList<DvbEpgEntry>::const_iterator end = qUpperBound(it, allEntries.constEnd(), channel,
+	QList<DvbEpgEntry>::iterator it = qLowerBound(allEntries.begin(), allEntries.end(),
+		channel, DvbEpgEntryLess());
+	QList<DvbEpgEntry>::iterator end = qUpperBound(it, allEntries.end(), channel,
 		DvbEpgEntryLess());
 
 	QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
@@ -289,6 +314,41 @@ QList<DvbEpgEntry> DvbEpgModel::getCurrentNext(const QString &channel) const
 	}
 
 	return result;
+}
+
+void DvbEpgModel::scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter)
+{
+	DvbEpgEntry *entry = filteredEntries.at(row);
+
+	if (!entry->recordingIndex.isValid()) {
+		entry->recordingIndex = manager->getRecordingModel()->scheduleProgram(entry->title,
+			entry->channel,
+			entry->begin.toLocalTime().addSecs(-extraSecondsBefore),
+			entry->duration.addSecs(extraSecondsBefore + extraSecondsAfter));
+		recordingIndexes.insert(entry->recordingIndex, entry);
+	} else {
+		recordingIndexes.remove(entry->recordingIndex);
+		manager->getRecordingModel()->removeProgram(entry->recordingIndex);
+		entry->recordingIndex = DvbRecordingIndex();
+	}
+
+	QModelIndex modelIndex = index(row, 2);
+	emit dataChanged(modelIndex, modelIndex);
+}
+
+void DvbEpgModel::programRemoved(const DvbRecordingIndex &recordingIndex)
+{
+	DvbEpgEntry *entry = recordingIndexes.value(recordingIndex, NULL);
+
+	if (entry != NULL) {
+		entry->recordingIndex = DvbRecordingIndex();
+		int row = filteredEntries.indexOf(entry);
+
+		if (row >= 0) {
+			QModelIndex modelIndex = index(row, 2);
+			emit dataChanged(modelIndex, modelIndex);
+		}
+	}
 }
 
 DvbEitFilter::DvbEitFilter() : manager(NULL), model(NULL)
@@ -547,14 +607,7 @@ void DvbEpgDialog::scheduleProgram()
 {
 	QModelIndex index = epgView->currentIndex();
 
-	if (!index.isValid()) {
-		return;
+	if (index.isValid()) {
+		epgModel->scheduleProgram(index.row(), 300, 600);
 	}
-
-	const DvbEpgEntry *entry = epgModel->getEntry(index.row());
-
-	manager->getRecordingModel()->scheduleProgram(entry->title, entry->channel,
-		entry->begin.toLocalTime().addSecs(-300), entry->duration.addSecs(900));
-
-	KMessageBox::information(this, i18nc("program guide", "Program successfully scheduled."));
 }

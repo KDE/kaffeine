@@ -65,9 +65,9 @@ public:
 		return deviceState;
 	}
 
-	DvbBackendDevice::TransmissionTypes getTransmissionTypes();
-	QString getDeviceId();
-	QString getFrontendName();
+	DvbBackendDevice::TransmissionTypes getTransmissionTypes() const;
+	QString getDeviceId() const;
+	QString getFrontendName() const;
 
 	void tune(const DvbTransponder &transponder);
 	void autoTune(const DvbTransponder &transponder);
@@ -75,9 +75,9 @@ public:
 	void removePidFilter(int pid, DvbPidFilter *filter);
 	void startDescrambling(const DvbPmtSection &pmtSection);
 	void stopDescrambling(int serviceId);
-	bool isTuned();
-	int getSignal(); // 0 - 100 [%]
-	int getSnr(); // 0 - 100 [%]
+	bool isTuned() const;
+	int getSignal() const; // 0 - 100 [%]
+	int getSnr() const; // 0 - 100 [%]
 	DvbTransponder getAutoTransponder() const;
 
 	/*
