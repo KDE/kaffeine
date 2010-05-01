@@ -389,16 +389,29 @@ void XineObject::init(quint64 windowId)
 	}
 
 	xine_event_create_listener_thread(eventQueue, &event_listener_cb, this);
+	dirtyFlags &= ~NotReady;
+
 	deinterlacer = xine_post_init(engine, "tvtime", 1, 0, &videoOutput);
 
 	if (deinterlacer == NULL) {
-		parentProcess->initFailed("Cannot create deinterlace plugin.");
+		kWarning() << "cannot create deinterlace plugin";
 		return;
 	}
 
 	xine_post_api_t *deinterlacerApi =
 		static_cast<xine_post_api_t *>(xine_post_input(deinterlacer, "parameters")->data);
+
+	if (deinterlacerApi == NULL) {
+		kWarning() << "cannot configure deinterlace plugin";
+		return;
+	}
+
 	xine_post_api_descr_t *deinterlacerParameters = deinterlacerApi->get_param_descr();
+
+	if (deinterlacerParameters == NULL) {
+		kWarning() << "cannot configure deinterlace plugin";
+		return;
+	}
 
 	for (int i = 0; deinterlacerParameters->parameter[i].type != POST_PARAM_TYPE_LAST; ++i) {
 		xine_post_api_parameter_t &parameter = deinterlacerParameters->parameter[i];
@@ -424,8 +437,6 @@ void XineObject::init(quint64 windowId)
 	}
 
 	// FIXME gapless playback?
-
-	dirtyFlags &= ~NotReady;
 }
 
 void XineObject::customEvent(QEvent *event)
@@ -597,7 +608,7 @@ void XineObject::customEvent(QEvent *event)
 			break;
 		    }
 		case SetDeinterlacing:
-			if (deinterlacing) {
+			if (deinterlacing && (deinterlacer != NULL)) {
 				xine_post_wire(xine_get_video_source(stream),
 					xine_post_input(deinterlacer, "video"));
 			} else {
