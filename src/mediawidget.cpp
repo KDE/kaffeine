@@ -1391,11 +1391,14 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
-	qint64 time = backend->getCurrentTime() - (25 * shortSkipDuration * event->delta()) / 3;
+	if (backend->isSeekable()) {
+		qint64 time = (backend->getCurrentTime() -
+			(25 * shortSkipDuration * event->delta()) / 3);
 
-	if (time < 0) {
-		time = 0;
+		if (time < 0) {
+			time = 0;
+		}
+
+		backend->seek(time);
 	}
-
-	backend->seek(time);
 }
