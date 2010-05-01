@@ -710,7 +710,6 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, DvbRecordingModel *
 		durationEdit->setTime(QTime(2, 0));
 	}
 
-	beginChanged(beginEdit->dateTime());
 	checkValid();
 
 	if (nameEdit->text().isEmpty()) {
