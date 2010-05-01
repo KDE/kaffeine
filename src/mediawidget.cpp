@@ -44,6 +44,8 @@
 #include <KToolBar>
 #include <errno.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
 #include <X11/extensions/scrnsaver.h>
 #include "backend-xine/xinemediawidget.h"
