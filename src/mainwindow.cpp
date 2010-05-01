@@ -302,10 +302,8 @@ MainWindow::MainWindow()
 
 	currentTabIndex = StartTabId;
 
-	// actions also have to work if the menu bar is hidden (fullscreen) - FIXME better solution?
-	foreach (QAction *action, collection->actions()) {
-		addAction(action);
-	}
+	// actions also have to work if the menu bar is hidden (fullscreen)
+	collection->addAssociatedWidget(this);
 
 	// restore custom key bindings
 	collection->readSettings();
