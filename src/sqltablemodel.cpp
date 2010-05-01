@@ -216,7 +216,7 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
 	}
 
-	for (int row = end; row < rowToKeyMapping.size(); ++row) {
+	for (int row = (end + 1); row < rowToKeyMapping.size(); ++row) {
 		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
 	}
 }
