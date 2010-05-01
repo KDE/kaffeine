@@ -828,13 +828,13 @@ void MediaWidget::sourceChanged()
 void MediaWidget::playbackFinished()
 {
 	currentSourceName.clear();
-	emit changeCaption(QString());
 
 	if (dvbFeed != NULL) {
 		dvbFeed->ignoreSourceChange = true;
 		emit startDvbTimeShift();
 		dvbFeed->ignoreSourceChange = false;
 	} else {
+		emit changeCaption(QString());
 		emit playlistNext();
 	}
 }
