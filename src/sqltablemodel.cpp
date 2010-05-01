@@ -181,7 +181,15 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 	Q_UNUSED(parent)
 
 	for (int row = start; row <= end; ++row) {
-		quint32 key = qrand();
+		quint32 key = 1;
+
+		if (!keyToRowMapping.isEmpty()) {
+			key += (keyToRowMapping.constEnd() - 1).key();
+		}
+
+		if (key == 0) {
+			key = qrand();
+		}
 
 		while (keyToRowMapping.contains(key) || (key == 0)) {
 			++key;
@@ -205,9 +213,10 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 		}
 
 		rowToKeyMapping.insert(row, key);
+		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
 	}
 
-	for (int row = start; row < rowToKeyMapping.size(); ++row) {
+	for (int row = end; row < rowToKeyMapping.size(); ++row) {
 		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
 	}
 }
