@@ -25,6 +25,7 @@
 #include "dvbchannel.h"
 
 class AtscVctSection;
+class DvbDescriptor;
 class DvbDevice;
 class DvbNitSection;
 class DvbPatEntry;
@@ -119,6 +120,7 @@ private:
 	void processSdt(const DvbSdtSection &section);
 	void processVct(const AtscVctSection &section);
 	void processNit(const DvbNitSection &section);
+	void processNitDescriptor(const DvbDescriptor &descriptor);
 	void filterFinished(DvbScanFilter *filter);
 
 	DvbDevice *device;
