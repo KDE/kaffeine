@@ -2,186 +2,186 @@
 <dvbsi>
   <descriptors>
     <DvbLanguageDescriptor>
-      <languageCode1 bits="8" type="int" />
-      <languageCode2 bits="8" type="int" />
-      <languageCode3 bits="8" type="int" />
-      <unused bits="8" />
+      <languageCode1 bits="8" type="int"/>
+      <languageCode2 bits="8" type="int"/>
+      <languageCode3 bits="8" type="int"/>
+      <unused bits="8"/>
     </DvbLanguageDescriptor>
     <DvbSubtitleDescriptor>
-      <languageCode1 bits="8" type="int" />
-      <languageCode2 bits="8" type="int" />
-      <languageCode3 bits="8" type="int" />
-      <subtitleType bits="8" type="int" />
-      <unused bits="16" />
-      <unused bits="16" />
+      <languageCode1 bits="8" type="int"/>
+      <languageCode2 bits="8" type="int"/>
+      <languageCode3 bits="8" type="int"/>
+      <subtitleType bits="8" type="int"/>
+      <unused bits="16"/>
+      <unused bits="16"/>
     </DvbSubtitleDescriptor>
     <DvbServiceDescriptor>
-      <unused bits="8" />
-      <providerNameLength bits="8" type="int" />
-      <providerName listType="DvbString" lengthFunc="providerNameLength" type="list" />
-      <serviceNameLength bits="8" type="int" />
-      <serviceName listType="DvbString" lengthFunc="serviceNameLength" type="list" />
+      <unused bits="8"/>
+      <providerNameLength bits="8" type="int"/>
+      <providerName listType="DvbString" lengthFunc="providerNameLength" type="list"/>
+      <serviceNameLength bits="8" type="int"/>
+      <serviceName listType="DvbString" lengthFunc="serviceNameLength" type="list"/>
     </DvbServiceDescriptor>
     <DvbShortEventDescriptor>
-      <unused bits="24" />
-      <eventNameLength bits="8" type="int" />
-      <eventName listType="DvbString" lengthFunc="eventNameLength" type="list" />
-      <textLength bits="8" type="int" />
-      <text listType="DvbString" lengthFunc="textLength" type="list" />
+      <unused bits="24"/>
+      <eventNameLength bits="8" type="int"/>
+      <eventName listType="DvbString" lengthFunc="eventNameLength" type="list"/>
+      <textLength bits="8" type="int"/>
+      <text listType="DvbString" lengthFunc="textLength" type="list"/>
     </DvbShortEventDescriptor>
     <DvbExtendedEventDescriptor>
-      <unused bits="4" />
-      <unused bits="4" />
-      <unused bits="24" />
-      <itemsLength bits="8" type="int" />
-      <items listType="unused" lengthFunc="itemsLength" type="list" />
-      <textLength bits="8" type="int" />
-      <text listType="DvbString" lengthFunc="textLength" type="list" />
+      <unused bits="4"/>
+      <unused bits="4"/>
+      <unused bits="24"/>
+      <itemsLength bits="8" type="int"/>
+      <items listType="unused" lengthFunc="itemsLength" type="list"/>
+      <textLength bits="8" type="int"/>
+      <text listType="DvbString" lengthFunc="textLength" type="list"/>
     </DvbExtendedEventDescriptor>
     <DvbCableDescriptor>
-      <frequency bits="32" type="int" />
-      <unused bits="12" />
-      <unused bits="4" />
-      <modulation bits="8" type="int" />
-      <symbolRate bits="28" type="int" />
-      <fecRate bits="4" type="int" />
+      <frequency bits="32" type="int"/>
+      <unused bits="12"/>
+      <unused bits="4"/>
+      <modulation bits="8" type="int"/>
+      <symbolRate bits="28" type="int"/>
+      <fecRate bits="4" type="int"/>
     </DvbCableDescriptor>
     <DvbSatelliteDescriptor>
-      <frequency bits="32" type="int" />
-      <unused bits="16" />
-      <unused bits="1" />
-      <polarization bits="2" type="int" />
-      <rollOff bits="2" type="int" />
-      <isDvbS2 bits="1" type="bool" />
-      <modulation bits="2" type="int" />
-      <symbolRate bits="28" type="int" />
-      <fecRate bits="4" type="int" />
+      <frequency bits="32" type="int"/>
+      <unused bits="16"/>
+      <unused bits="1"/>
+      <polarization bits="2" type="int"/>
+      <rollOff bits="2" type="int"/>
+      <isDvbS2 bits="1" type="bool"/>
+      <modulation bits="2" type="int"/>
+      <symbolRate bits="28" type="int"/>
+      <fecRate bits="4" type="int"/>
     </DvbSatelliteDescriptor>
     <DvbTerrestrialDescriptor>
-      <frequency bits="32" type="int" />
-      <bandwidth bits="3" type="int" />
-      <unused bits="1" />
-      <unused bits="1" />
-      <unused bits="1" />
-      <unused bits="2" />
-      <constellation bits="2" type="int" />
-      <hierarchy bits="3" type="int" />
-      <fecRateHigh bits="3" type="int" />
-      <fecRateLow bits="3" type="int" />
-      <guardInterval bits="2" type="int" />
-      <transmissionMode bits="2" type="int" />
-      <unused bits="1" />
-      <unused bits="32" />
+      <frequency bits="32" type="int"/>
+      <bandwidth bits="3" type="int"/>
+      <unused bits="1"/>
+      <unused bits="1"/>
+      <unused bits="1"/>
+      <unused bits="2"/>
+      <constellation bits="2" type="int"/>
+      <hierarchy bits="3" type="int"/>
+      <fecRateHigh bits="3" type="int"/>
+      <fecRateLow bits="3" type="int"/>
+      <guardInterval bits="2" type="int"/>
+      <transmissionMode bits="2" type="int"/>
+      <unused bits="1"/>
+      <unused bits="32"/>
     </DvbTerrestrialDescriptor>
     <AtscChannelNameDescriptor>
-      <name listType="AtscString" lengthFunc="" type="list" />
+      <name listType="AtscString" lengthFunc="" type="list"/>
     </AtscChannelNameDescriptor>
   </descriptors>
   <entries>
     <DvbPatSectionEntry>
-      <programNumber bits="16" type="int" />
-      <unused bits="3" />
-      <pid bits="13" type="int" />
+      <programNumber bits="16" type="int"/>
+      <unused bits="3"/>
+      <pid bits="13" type="int"/>
     </DvbPatSectionEntry>
     <DvbPmtSectionEntry>
-      <streamType bits="8" type="int" />
-      <unused bits="3" />
-      <pid bits="13" type="int" />
-      <unused bits="4" />
-      <entryLength bits="12" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+      <streamType bits="8" type="int"/>
+      <unused bits="3"/>
+      <pid bits="13" type="int"/>
+      <unused bits="4"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </DvbPmtSectionEntry>
     <DvbSdtSectionEntry>
-      <serviceId bits="16" type="int" />
-      <unused bits="6" />
-      <unused bits="1" />
-      <unused bits="1" />
-      <unused bits="3" />
-      <isScrambled bits="1" type="bool" />
-      <entryLength bits="12" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+      <serviceId bits="16" type="int"/>
+      <unused bits="6"/>
+      <unused bits="1"/>
+      <unused bits="1"/>
+      <unused bits="3"/>
+      <isScrambled bits="1" type="bool"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </DvbSdtSectionEntry>
     <DvbEitSectionEntry>
-      <unused bits="16" />
-      <startDate bits="16" type="int" />
-      <startTime bits="24" type="int" />
-      <duration bits="24" type="int" />
-      <unused bits="3" />
-      <unused bits="1" />
-      <entryLength bits="12" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+      <unused bits="16"/>
+      <startDate bits="16" type="int"/>
+      <startTime bits="24" type="int"/>
+      <duration bits="24" type="int"/>
+      <unused bits="3"/>
+      <unused bits="1"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </DvbEitSectionEntry>
     <DvbNitSectionEntry>
-      <unused bits="16" />
-      <unused bits="16" />
-      <unused bits="4" />
-      <entryLength bits="12" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+      <unused bits="16"/>
+      <unused bits="16"/>
+      <unused bits="4"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </DvbNitSectionEntry>
     <AtscVctSectionEntry>
-      <shortName1 bits="16" type="int" />
-      <shortName2 bits="16" type="int" />
-      <shortName3 bits="16" type="int" />
-      <shortName4 bits="16" type="int" />
-      <shortName5 bits="16" type="int" />
-      <shortName6 bits="16" type="int" />
-      <shortName7 bits="16" type="int" />
-      <unused bits="4" />
-      <majorNumber bits="10" type="int" />
-      <minorNumber bits="10" type="int" />
-      <unused bits="8" />
-      <unused bits="32" />
-      <unused bits="16" />
-      <programNumber bits="16" type="int" />
-      <unused bits="2" />
-      <isScrambled bits="1" type="bool" />
-      <unused bits="1" />
-      <unused bits="2" />
-      <unused bits="1" />
-      <unused bits="3" />
-      <unused bits="6" />
-      <sourceId bits="16" type="int" />
-      <unused bits="6" />
-      <entryLength bits="10" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list" />
+      <shortName1 bits="16" type="int"/>
+      <shortName2 bits="16" type="int"/>
+      <shortName3 bits="16" type="int"/>
+      <shortName4 bits="16" type="int"/>
+      <shortName5 bits="16" type="int"/>
+      <shortName6 bits="16" type="int"/>
+      <shortName7 bits="16" type="int"/>
+      <unused bits="4"/>
+      <majorNumber bits="10" type="int"/>
+      <minorNumber bits="10" type="int"/>
+      <unused bits="8"/>
+      <unused bits="32"/>
+      <unused bits="16"/>
+      <programNumber bits="16" type="int"/>
+      <unused bits="2"/>
+      <isScrambled bits="1" type="bool"/>
+      <unused bits="1"/>
+      <unused bits="2"/>
+      <unused bits="1"/>
+      <unused bits="3"/>
+      <unused bits="6"/>
+      <sourceId bits="16" type="int"/>
+      <unused bits="6"/>
+      <entryLength bits="10" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </AtscVctSectionEntry>
   </entries>
   <sections>
-    <DvbPatSection extension="transportStreamId" >
-      <entries listType="DvbPatSectionEntry" lengthFunc="" type="list" />
+    <DvbPatSection extension="transportStreamId">
+      <entries listType="DvbPatSectionEntry" lengthFunc="" type="list"/>
     </DvbPatSection>
-    <DvbPmtSection extension="programNumber" >
-      <unused bits="3" />
-      <unused bits="13" />
-      <unused bits="4" />
-      <descriptorsLength bits="12" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list" />
-      <entries listType="DvbPmtSectionEntry" lengthFunc="" type="list" />
+    <DvbPmtSection extension="programNumber">
+      <unused bits="3"/>
+      <unused bits="13"/>
+      <unused bits="4"/>
+      <descriptorsLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list"/>
+      <entries listType="DvbPmtSectionEntry" lengthFunc="" type="list"/>
     </DvbPmtSection>
     <DvbSdtSection>
-      <originalNetworkId bits="16" type="int" />
-      <unused bits="8" />
-      <entries listType="DvbSdtSectionEntry" lengthFunc="" type="list" />
+      <originalNetworkId bits="16" type="int"/>
+      <unused bits="8"/>
+      <entries listType="DvbSdtSectionEntry" lengthFunc="" type="list"/>
     </DvbSdtSection>
-    <DvbEitSection extension="serviceId" >
-      <transportStreamId bits="16" type="int" />
-      <originalNetworkId bits="16" type="int" />
-      <unused bits="8" />
-      <unused bits="8" />
-      <entries listType="DvbEitSectionEntry" lengthFunc="" type="list" />
+    <DvbEitSection extension="serviceId">
+      <transportStreamId bits="16" type="int"/>
+      <originalNetworkId bits="16" type="int"/>
+      <unused bits="8"/>
+      <unused bits="8"/>
+      <entries listType="DvbEitSectionEntry" lengthFunc="" type="list"/>
     </DvbEitSection>
     <DvbNitSection>
-      <unused bits="4" />
-      <descriptorsLength bits="12" type="int" />
-      <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list" />
-      <unused bits="4" />
-      <entriesLength bits="12" type="int" />
-      <entries listType="DvbNitSectionEntry" lengthFunc="entriesLength" type="list" />
+      <unused bits="4"/>
+      <descriptorsLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list"/>
+      <unused bits="4"/>
+      <entriesLength bits="12" type="int"/>
+      <entries listType="DvbNitSectionEntry" lengthFunc="entriesLength" type="list"/>
     </DvbNitSection>
     <AtscVctSection>
-      <unused bits="8" />
-      <entryCount bits="8" type="int" />
-      <entries listType="AtscVctSectionEntry" lengthFunc="" type="list" />
+      <unused bits="8"/>
+      <entryCount bits="8" type="int"/>
+      <entries listType="AtscVctSectionEntry" lengthFunc="" type="list"/>
     </AtscVctSection>
   </sections>
 </dvbsi>
