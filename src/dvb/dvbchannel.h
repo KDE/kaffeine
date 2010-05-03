@@ -244,9 +244,10 @@ public:
 
 	enum TransmissionMode {
 		TransmissionMode2k = 0,
+		TransmissionMode4k = 3,
 		TransmissionMode8k = 1,
 		TransmissionModeAuto = 2,
-		TransmissionModeMax = TransmissionModeAuto
+		TransmissionModeMax = TransmissionMode4k
 	};
 
 	enum GuardInterval {

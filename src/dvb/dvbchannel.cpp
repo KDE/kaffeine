@@ -146,7 +146,8 @@ static const char *dvbTModulationTable[] = {
 static const char *dvbTTransmissionModeTable[] = {
 	/* TransmissionMode2k = 0   */ "2k",
 	/* TransmissionMode8k = 1   */ "8k",
-	/* TransmissionModeAuto = 2 */ "AUTO"
+	/* TransmissionModeAuto = 2 */ "AUTO",
+	/* TransmissionMode4k = 3   */ "4k"
 };
 
 static const char *dvbTGuardIntervalTable[] = {

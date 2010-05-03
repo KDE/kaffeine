@@ -487,6 +487,7 @@ static fe_transmit_mode convertDvbTransmissionMode(DvbTTransponder::Transmission
 {
 	switch (mode) {
 	case DvbTTransponder::TransmissionMode2k: return TRANSMISSION_MODE_2K;
+	case DvbTTransponder::TransmissionMode4k: return TRANSMISSION_MODE_4K;
 	case DvbTTransponder::TransmissionMode8k: return TRANSMISSION_MODE_8K;
 	case DvbTTransponder::TransmissionModeAuto: return TRANSMISSION_MODE_AUTO;
 	}

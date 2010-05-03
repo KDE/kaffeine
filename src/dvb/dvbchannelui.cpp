@@ -127,6 +127,7 @@ template<> QStringList displayStrings<DvbTTransponder::TransmissionMode>()
 	strings.append(/* TransmissionMode2k = 0   */ "2k");
 	strings.append(/* TransmissionMode8k = 1   */ "8k");
 	strings.append(/* TransmissionModeAuto = 2 */ "AUTO");
+	strings.append(/* TransmissionMode4k = 3   */ "4k");
 	return strings;
 }
 

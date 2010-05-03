@@ -736,12 +736,15 @@ static DvbCTransponder::FecRate extractDvbCFecRate(const DvbCableDescriptor &des
 		return DvbTransponderBase::Fec7_8;
 	case 6:
 		return DvbTransponderBase::Fec8_9;
+	case 7:
+		return DvbTransponderBase::Fec3_5;
 	case 8:
 		return DvbTransponderBase::Fec4_5;
+	case 9:
+		return DvbTransponderBase::Fec9_10;
 	case 15:
 		return DvbTransponderBase::FecNone;
 	default:
-		// this includes rates like 3/5 and 9/10
 		return DvbTransponderBase::FecAuto;
 	}
 }
@@ -776,10 +779,13 @@ static DvbSTransponder::FecRate extractDvbSFecRate(const DvbSatelliteDescriptor 
 		return DvbTransponderBase::Fec7_8;
 	case 6:
 		return DvbTransponderBase::Fec8_9;
+	case 7:
+		return DvbTransponderBase::Fec3_5;
 	case 8:
 		return DvbTransponderBase::Fec4_5;
+	case 9:
+		return DvbTransponderBase::Fec9_10;
 	default:
-		// this includes rates like 3/5 and 9/10
 		return DvbTransponderBase::FecAuto;
 	}
 }
@@ -885,8 +891,9 @@ static DvbTTransponder::TransmissionMode extractDvbTTransmissionMode(
 		return DvbTTransponder::TransmissionMode2k;
 	case 1:
 		return DvbTTransponder::TransmissionMode8k;
+	case 2:
+		return DvbTTransponder::TransmissionMode4k;
 	default:
-		// this includes 4k
 		return DvbTTransponder::TransmissionModeAuto;
 	}
 }
