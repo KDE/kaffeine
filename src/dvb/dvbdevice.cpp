@@ -576,9 +576,11 @@ void DvbDevice::frontendEvent()
 				carry = false;
 				break;
 			case DvbTTransponder::TransmissionMode2k:
+/* outcommented so that clearly no compatibility problem arises
 				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode4k;
 				carry = false;
 				break;
+*/
 			case DvbTTransponder::TransmissionMode4k:
 			case DvbTTransponder::TransmissionModeAuto:
 				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
