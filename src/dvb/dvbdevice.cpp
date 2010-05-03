@@ -142,6 +142,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 			frontendTimer.start(100);
 			discardBuffers();
 		} else {
+			setDeviceState(DeviceTuning);
 			setDeviceState(DeviceIdle);
 		}
 
@@ -307,6 +308,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		frontendTimer.start(100);
 		discardBuffers();
 	} else {
+		setDeviceState(DeviceTuning);
 		setDeviceState(DeviceIdle);
 	}
 }

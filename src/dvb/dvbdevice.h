@@ -50,6 +50,7 @@ public:
 		DeviceRotorMoving,
 		DeviceTuning,
 		DeviceTuned
+		// FIXME introduce a TuningFailed state
 	};
 
 	DvbDevice(DvbBackendDevice *backendDevice, QObject *parent);
