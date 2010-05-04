@@ -43,6 +43,8 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 	QString timeString = KGlobal::locale()->formatTime(QTime::currentTime());
 	QString entryString;
+	int elapsedTime = 0;
+	int totalTime = 0;
 
 	const DvbEpgEntry *firstEntry = NULL;
 	const DvbEpgEntry *secondEntry = NULL;
@@ -58,6 +60,8 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	if (firstEntry != NULL) {
 		entryString = KGlobal::locale()->formatTime(firstEntry->begin.toLocalTime().time())
 			+ ' ' + firstEntry->title;
+		elapsedTime = firstEntry->begin.secsTo(QDateTime::currentDateTime());
+		totalTime = QTime().secsTo(firstEntry->duration);
 	}
 
 	if ((level == ShortOsd) && (secondEntry != NULL)) {
@@ -71,10 +75,10 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	QRect entryRect;
 
 	if (level == ShortOsd) {
-		entryRect = QRect(5, lineHeight + 2, rect.width() - 10, 2 * lineHeight);
+		entryRect = QRect(5, lineHeight + 9, rect.width() - 10, 2 * lineHeight);
 		rect.setHeight(entryRect.bottom() + 1);
 	} else {
-		entryRect = QRect(5, lineHeight + 2, rect.width() - 10, lineHeight);
+		entryRect = QRect(5, lineHeight + 9, rect.width() - 10, lineHeight);
 	}
 
 	QPixmap pixmap(rect.size());
@@ -86,7 +90,16 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 		painter.setPen(Qt::white);
 		painter.drawText(headerRect, Qt::AlignLeft, channelName);
 		painter.drawText(headerRect, Qt::AlignRight, timeString);
-		painter.fillRect(5, lineHeight, rect.width() - 10, 2, Qt::white);
+
+		painter.fillRect(5, lineHeight + 2, rect.width() - 10, 5, Qt::gray);
+		painter.fillRect(6, lineHeight + 3, rect.width() - 12, 3, Qt::black);
+
+		if ((elapsedTime > 0) && (elapsedTime <= totalTime)) {
+			int width = (((rect.width() - 12) * elapsedTime + (totalTime / 2)) /
+				     totalTime);
+			painter.fillRect(6, lineHeight + 3, width, 3, Qt::green);
+		}
+
 		painter.drawText(entryRect, Qt::AlignLeft, entryString);
 
 		if (level == LongOsd) {
