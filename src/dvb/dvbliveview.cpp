@@ -186,13 +186,22 @@ DvbDevice *DvbLiveView::getDevice() const
 
 void DvbLiveView::playChannel(const DvbChannel *channel_)
 {
-	if (channel == channel_) {
-		return;
+	DvbDevice *newDevice = NULL;
+
+	if ((channel.constData() != NULL) && (channel->source == channel_->source) &&
+	    (channel->transponder->corresponds(channel_->transponder))) {
+		newDevice = manager->requestDevice(channel->source, channel->transponder,
+			DvbManager::Shared);
 	}
 
 	liveStopped();
 	channel = channel_;
-	device = manager->requestDevice(channel->source, channel->transponder, DvbManager::Shared);
+	device = newDevice;
+
+	if (device == NULL) {
+		device = manager->requestDevice(channel->source, channel->transponder,
+			DvbManager::Shared);
+	}
 
 	if (device == NULL) {
 		channel = NULL;
@@ -232,7 +241,7 @@ void DvbLiveView::toggleOsd()
 		internal->dvbOsd.init(DvbOsd::ShortOsd,
 			QString("%1 - %2").arg(channel->number).arg(channel->name),
 			manager->getEpgModel()->getCurrentNext(channel->name));
-		osdWidget->showObject(&internal->dvbOsd, -1);
+		osdWidget->showObject(&internal->dvbOsd, 2500);
 		osdTimer.start(2500);
 		break;
 	case DvbOsd::ShortOsd:
@@ -411,7 +420,6 @@ void DvbLiveView::showOsd()
 void DvbLiveView::osdTimeout()
 {
 	internal->dvbOsd.level = DvbOsd::Off;
-	osdWidget->hideObject();
 	osdTimer.stop();
 }
 
