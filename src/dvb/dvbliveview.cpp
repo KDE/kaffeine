@@ -186,6 +186,10 @@ DvbDevice *DvbLiveView::getDevice() const
 
 void DvbLiveView::playChannel(const DvbChannel *channel_)
 {
+	if (channel == channel_) {
+		return;
+	}
+
 	liveStopped();
 	channel = channel_;
 	device = manager->requestDevice(channel->source, channel->transponder, DvbManager::Shared);
