@@ -300,7 +300,7 @@ void DvbTab::instantRecord(bool checked)
 		// FIXME use epg for name
 		instantRecordingIndex = manager->getRecordingModel()->scheduleProgram(
 			channel->name + QTime::currentTime().toString("-hhmmss"), channel->name,
-			QDateTime::currentDateTime(), QTime(2, 0));
+			QDateTime::currentDateTime(), QTime(12, 0));
 
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
