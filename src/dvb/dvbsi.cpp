@@ -33,7 +33,7 @@ void DvbSectionFilter::processData(const char data[188])
 		return;
 	}
 
-	unsigned char continuity = data[3] & 0x0f;
+	unsigned char continuity = (data[3] & 0x0f);
 
 	if (bufferValid) {
 		// check continuity
@@ -46,14 +46,12 @@ void DvbSectionFilter::processData(const char data[188])
 		if (continuity != ((continuityCounter + 1) & 0x0f)) {
 			// discontinuity
 			kDebug() << "discontinuity";
-			buffer.clear();
-			bufferValid = false;
 		}
 	}
 
 	continuityCounter = continuity;
 
-	bool sectionStart = (data[1] & 0x40) != 0;
+	bool sectionStart = ((data[1] & 0x40) != 0);
 	const char *payload;
 	int payloadLength;
 
@@ -86,18 +84,11 @@ void DvbSectionFilter::processData(const char data[188])
 
 		if (bufferValid) {
 			appendData(payload + 1, pointer);
-
-			if (!buffer.isEmpty()) {
-				processSection(buffer);
-				// be aware that the filter might have been reset
-				// (buffer cleared, bufferValid set to false)
-				// in this case don't poison the filter with new data
-				// --> check bufferValid before calling appendData()
-			} else {
-				kDebug() << "valid buffer is empty";
-			}
-
-			buffer.clear();
+			processSections(true);
+			// be aware that the filter might have been reset
+			// (buffer cleared, bufferValid set to false)
+			// in this case don't poison the filter with new data
+			// --> check bufferValid before calling appendData()
 		} else {
 			bufferValid = true;
 		}
@@ -108,6 +99,7 @@ void DvbSectionFilter::processData(const char data[188])
 
 	if (bufferValid) {
 		appendData(payload, payloadLength);
+		processSections();
 	}
 }
 
@@ -116,6 +108,43 @@ void DvbSectionFilter::appendData(const char *data, int length)
 	int size = buffer.size();
 	buffer.resize(size + length);
 	memcpy(buffer.data() + size, data, length);
+}
+
+void DvbSectionFilter::processSections(bool force)
+{
+	while (buffer.size() >= 3) {
+		int tableId = static_cast<unsigned char>(buffer.at(0));
+
+		if (tableId == 0xff) {
+			// padding
+			buffer.clear();
+			break;
+		}
+
+		int sectionLength = (((static_cast<unsigned char>(buffer.at(1)) & 0x0f) << 8) |
+				     static_cast<unsigned char>(buffer.at(2))) + 3;
+
+		if (sectionLength <= buffer.size()) {
+			QByteArray section = buffer.left(sectionLength);
+			buffer.remove(0, sectionLength);
+			processSection(section);
+			continue;
+		}
+
+		if (force) {
+			kDebug() << "short section";
+			QByteArray section = buffer;
+			buffer.clear();
+			processSection(section);
+		}
+
+		break;
+	}
+
+	if (force && !buffer.isEmpty()) {
+		kDebug() << "stray data";
+		buffer.clear();
+	}
 }
 
 DvbSection::DvbSection(const QByteArray &data) : DvbSectionData(data)

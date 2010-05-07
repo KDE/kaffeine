@@ -45,6 +45,7 @@ private:
 	void processData(const char data[188]);
 
 	void appendData(const char *data, int length);
+	void processSections(bool force = false);
 
 	QByteArray buffer;
 	int continuityCounter;
