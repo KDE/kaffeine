@@ -354,11 +354,11 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 				return QString();
 			}
 
-			if (text.at(2) != 0) {
+			if (text.at(1) != 0) {
 				return QString();
 			}
 
-			switch (text.at(3)) {
+			switch (text.at(2)) {
 			case 0x01: encoding = Iso8859_1; break;
 			case 0x02: encoding = Iso8859_2; break;
 			case 0x03: encoding = Iso8859_3; break;
