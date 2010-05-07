@@ -20,6 +20,9 @@
 
 #include "dvbdevice_debug.h"
 
+#include <QDir>
+#include <QFile>
+#include <QTimer>
 #include <KDebug>
 #include "dvbchannel.h"
 
@@ -28,7 +31,7 @@ extern "C" Q_DECL_EXPORT QObject *create_device_manager()
 	return new DvbDeviceManager;
 }
 
-DvbDebugDevice::DvbDebugDevice()
+DvbDebugDevice::DvbDebugDevice() : buffer(NULL)
 {
 	kDebug();
 }
@@ -38,10 +41,10 @@ DvbDebugDevice::~DvbDebugDevice()
 	kDebug();
 }
 
-void DvbDebugDevice::setBuffer(DvbAbstractDeviceBuffer *buffer)
+void DvbDebugDevice::setBuffer(DvbAbstractDeviceBuffer *buffer_)
 {
-	Q_UNUSED(buffer)
 	kDebug();
+	buffer = buffer_;
 }
 
 QString DvbDebugDevice::getDeviceId()
@@ -59,7 +62,7 @@ QString DvbDebugDevice::getFrontendName()
 DvbDebugDevice::TransmissionTypes DvbDebugDevice::getTransmissionTypes()
 {
 	kDebug();
-	return DvbDebugDevice::DvbS2;
+	return DvbDebugDevice::DvbT;
 }
 
 DvbDebugDevice::Capabilities DvbDebugDevice::getCapabilities()
@@ -150,6 +153,7 @@ bool DvbDebugDevice::tune(const DvbTransponder &transponder)
 		return false;
 	}
 
+	QTimer::singleShot(150, this, SLOT(submitData()));
 	return true;
 }
 
@@ -196,6 +200,27 @@ void DvbDebugDevice::stopDescrambling(int serviceId)
 void DvbDebugDevice::release()
 {
 	kDebug();
+}
+
+void DvbDebugDevice::submitData()
+{
+	QFile file(QDir::home().filePath("test.bin"));
+
+	if (!file.open(QIODevice::ReadOnly)) {
+		kWarning() << "cannot open" << file.fileName();
+		return;
+	}
+
+	int bufferSize = buffer->size();
+
+	while (true) {
+		int size = file.read(buffer->getCurrent(), bufferSize);
+		buffer->submitCurrent(size / 188);
+
+		if (size != bufferSize) {
+			break;
+		}
+	}
 }
 
 void DvbDebugDevice::execute(Command command, ReturnData returnData, Data data)

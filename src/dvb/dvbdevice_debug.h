@@ -24,13 +24,14 @@
 #include <QObject>
 #include "dvbbackenddevice.h"
 
-class DvbDebugDevice : public DvbBackendDevice
+class DvbDebugDevice : public QObject, public DvbBackendDevice
 {
+	Q_OBJECT
 public:
 	DvbDebugDevice();
 	~DvbDebugDevice();
 
-	void setBuffer(DvbAbstractDeviceBuffer *buffer);
+	void setBuffer(DvbAbstractDeviceBuffer *buffer_);
 	QString getDeviceId();
 	QString getFrontendName();
 	TransmissionTypes getTransmissionTypes();
@@ -50,8 +51,13 @@ public:
 	void stopDescrambling(int serviceId);
 	void release();
 
+private slots:
+	void submitData();
+
 private:
 	void execute(Command command, ReturnData returnData, Data data);
+
+	DvbAbstractDeviceBuffer *buffer;
 };
 
 class DvbDeviceManager : public QObject
