@@ -80,6 +80,7 @@ private:
 	KToolBar *controlBar;
 	bool autoHideControlBar;
 	QTimer *cursorHideTimer;
+	QList<KUrl> temporaryUrls;
 
 	MediaWidget *mediaWidget;
 	QStackedLayout *stackedLayout;

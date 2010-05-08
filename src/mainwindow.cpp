@@ -29,6 +29,7 @@
 #include <KCmdLineOptions>
 #include <KFileDialog>
 #include <KInputDialog>
+#include <kio/deletejob.h>
 #include <KMenu>
 #include <KMenuBar>
 #include <KRecentFilesAction>
@@ -345,6 +346,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	actionOpenRecent->saveEntries(KGlobal::config()->group("Recent Files"));
+	KIO::del(temporaryUrls);
 }
 
 KCmdLineOptions MainWindow::cmdLineOptions()
@@ -438,6 +440,10 @@ void MainWindow::parseArgs()
 			if (url.isValid()) {
 				urls.append(url);
 			}
+		}
+
+		if (args->isTempFileSet()) {
+			temporaryUrls.append(urls);
 		}
 
 		if (urls.size() >= 2) {

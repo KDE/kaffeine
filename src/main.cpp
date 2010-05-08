@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
 
 	KCmdLineArgs::init(argc, argv, &aboutData);
 	KCmdLineArgs::addCmdLineOptions(MainWindow::cmdLineOptions());
+	KCmdLineArgs::addTempFileOption();
 
 	KaffeineApplication app;
 	return app.exec();
