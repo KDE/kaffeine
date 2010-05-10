@@ -142,7 +142,10 @@ void DvbSectionFilter::processSections(bool force)
 	}
 
 	if (force && !buffer.isEmpty()) {
-		kDebug() << "stray data";
+		if (tableId != 0xff) {
+			kDebug() << "stray data";
+		}
+
 		buffer.clear();
 	}
 }
