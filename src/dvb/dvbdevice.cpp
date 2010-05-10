@@ -27,6 +27,7 @@
 #include <unistd.h>
 #include "dvbconfig.h"
 #include "dvbmanager.h"
+#include "dvbsi.h"
 
 struct DvbFilterData
 {
@@ -398,14 +399,31 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	cleanUpFilters = true;
 }
 
-void DvbDevice::startDescrambling(const DvbPmtSection &pmtSection)
+void DvbDevice::startDescrambling(const DvbPmtSection &pmtSection, QObject *user)
 {
-	backend.startDescrambling(pmtSection);
+	int serviceId = pmtSection.programNumber();
+
+	if (!descramblingServices.contains(serviceId)) {
+		backend.startDescrambling(pmtSection);
+	}
+
+	if (!descramblingServices.contains(serviceId, user)) {
+		descramblingServices.insert(serviceId, user);
+	}
 }
 
-void DvbDevice::stopDescrambling(int serviceId)
+void DvbDevice::stopDescrambling(int serviceId, QObject *user)
 {
-	backend.stopDescrambling(serviceId);
+	if (!descramblingServices.contains(serviceId, user)) {
+		kWarning() << "service has not been started";
+		return;
+	}
+
+	descramblingServices.remove(serviceId, user);
+
+	if (!descramblingServices.contains(serviceId)) {
+		backend.stopDescrambling(serviceId);
+	}
 }
 
 bool DvbDevice::isTuned() const

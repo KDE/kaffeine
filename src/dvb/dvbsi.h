@@ -24,7 +24,6 @@
 #include <QPair>
 #include "dvbdevice.h"
 
-
 class DvbSectionFilter : public DvbPidFilter
 {
 public:

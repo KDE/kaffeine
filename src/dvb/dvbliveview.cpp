@@ -216,6 +216,7 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 
 	internal->eitFilter.setSource(channel->source);
 	internal->pmtFilter.setProgramNumber(channel->getServiceId());
+	internal->pmtSection = DvbPmtSection(QByteArray());
 	startDevice();
 
 	internal->patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
@@ -294,7 +295,7 @@ void DvbLiveView::pmtSectionChanged(const DvbPmtSection &section)
 	updatePids(true);
 
 	if (channel->isScrambled) {
-		device->startDescrambling(section);
+		device->startDescrambling(section, this);
 	}
 
 	if (internal->timeShiftFile.isOpen()) {
@@ -453,10 +454,18 @@ void DvbLiveView::startDevice()
 	device->addPidFilter(0x12, &internal->eitFilter);
 	device->addPidFilter(channel->pmtPid, &internal->pmtFilter);
 	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+
+	if (channel->isScrambled && internal->pmtSection.isValid()) {
+		device->startDescrambling(internal->pmtSection, this);
+	}
 }
 
 void DvbLiveView::stopDevice()
 {
+	if (channel->isScrambled && internal->pmtSection.isValid()) {
+		device->stopDescrambling(internal->pmtSection.programNumber(), this);
+	}
+
 	foreach (int pid, pids) {
 		device->removePidFilter(pid, internal);
 	}

@@ -34,16 +34,16 @@
 class DvbLinuxCamService
 {
 public:
-	DvbLinuxCamService() : refCounter(0), pendingAction(Add), pmtSection(QByteArray()) { }
+	DvbLinuxCamService() : pendingAction(Add), pmtSection(QByteArray()) { }
 	~DvbLinuxCamService() { }
 
 	enum PendingActions {
 		None,
 		Add,
-		Update
+		Update,
+		Remove
 	};
 
-	int refCounter;
 	PendingActions pendingAction;
 	DvbPmtSection pmtSection;
 };
@@ -78,7 +78,11 @@ void DvbLinuxCam::startCa(const QString &path)
 
 void DvbLinuxCam::startDescrambling(const DvbPmtSection &pmtSection)
 {
-	Q_ASSERT(pmtSection.isValid());
+	if (!pmtSection.isValid()) {
+		kWarning() << "pmt section is invalid";
+		return;
+	}
+
 	int serviceId = pmtSection.programNumber();
 	QMap<int, DvbLinuxCamService>::iterator it = services.find(serviceId);
 
@@ -86,13 +90,11 @@ void DvbLinuxCam::startDescrambling(const DvbPmtSection &pmtSection)
 		it = services.insert(serviceId, DvbLinuxCamService());
 	}
 
-	it->pmtSection = pmtSection;
-
 	if (it->pendingAction != DvbLinuxCamService::Add) {
 		it->pendingAction = DvbLinuxCamService::Update;
 	}
 
-	++(it->refCounter);
+	it->pmtSection = pmtSection;
 
 	if (ready && !eventPosted) {
 		eventPosted = true;
@@ -105,11 +107,23 @@ void DvbLinuxCam::stopDescrambling(int serviceId)
 	QMap<int, DvbLinuxCamService>::iterator it = services.find(serviceId);
 
 	if (it == services.end()) {
-		kWarning() << "could not find service id" << serviceId;
+		kWarning() << "cannot find service id" << serviceId;
 		return;
 	}
 
-	--(it->refCounter);
+	switch (it->pendingAction) {
+	case DvbLinuxCamService::None:
+	case DvbLinuxCamService::Update:
+		it->pendingAction = DvbLinuxCamService::Remove;
+		break;
+	case DvbLinuxCamService::Add:
+		services.erase(it);
+		return;
+	case DvbLinuxCamService::Remove:
+		kWarning() << "service is already being removed";
+		services.erase(it);
+		return;
+	}
 
 	if (ready && !eventPosted) {
 		eventPosted = true;
@@ -500,11 +514,8 @@ void DvbLinuxCam::customEvent(QEvent *event)
 
 	for (QMap<int, DvbLinuxCamService>::iterator it = services.begin();
 	     it != services.end();) {
-		if (it->refCounter <= 0) {
-			if (it->pendingAction != DvbLinuxCamService::Add) {
-				sendCaPmt(it->pmtSection, Update, StopDescrambling);
-			}
-
+		if (it->pendingAction == DvbLinuxCamService::Remove) {
+			sendCaPmt(it->pmtSection, Update, StopDescrambling);
 			it = services.erase(it);
 		} else {
 			++activeCaPmts;
@@ -524,10 +535,12 @@ void DvbLinuxCam::customEvent(QEvent *event)
 				sendCaPmt(it->pmtSection, Add, Descramble);
 			}
 
-			++activeCaPmts;
 			break;
 		case DvbLinuxCamService::Update:
 			sendCaPmt(it->pmtSection, Update, Descramble);
+			break;
+		case DvbLinuxCamService::Remove:
+			kWarning() << "impossible";
 			break;
 		}
 

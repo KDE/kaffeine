@@ -74,8 +74,8 @@ public:
 	void autoTune(const DvbTransponder &transponder);
 	bool addPidFilter(int pid, DvbPidFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
-	void startDescrambling(const DvbPmtSection &pmtSection);
-	void stopDescrambling(int serviceId);
+	void startDescrambling(const DvbPmtSection &pmtSection, QObject *user);
+	void stopDescrambling(int serviceId, QObject *user);
 	bool isTuned() const;
 	int getSignal() const; // 0 - 100 [%]
 	int getSnr() const; // 0 - 100 [%]
@@ -116,6 +116,7 @@ private:
 	DvbPidFilter *dummyFilter;
 	DvbPidFilter *dataDumper;
 	bool cleanUpFilters;
+	QMultiMap<int, QObject *> descramblingServices;
 
 	bool isAuto;
 	DvbTTransponder *autoTTransponder;
