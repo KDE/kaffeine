@@ -36,7 +36,7 @@ bool Playlist::load(const KUrl &url_, Format format)
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		kWarning() << "opening remote files not supported yet";
+		kWarning() << "opening remote playlists not supported yet";
 		return false;
 	}
 
@@ -69,7 +69,7 @@ bool Playlist::save(Format format) const
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		kWarning() << "opening remote files not supported yet";
+		kWarning() << "opening remote playlists not supported yet";
 		return false;
 	}
 
