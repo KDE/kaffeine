@@ -142,6 +142,8 @@ void DvbSectionFilter::processSections(bool force)
 	}
 
 	if (force && !buffer.isEmpty()) {
+		int tableId = static_cast<unsigned char>(buffer.at(0));
+
 		if (tableId != 0xff) {
 			kDebug() << "stray data";
 		}
