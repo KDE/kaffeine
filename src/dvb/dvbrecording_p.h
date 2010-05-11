@@ -66,6 +66,7 @@ private:
 	DvbDevice *device;
 	QList<int> pids;
 	DvbPmtFilter pmtFilter;
+	DvbPmtSection pmtSection;
 	DvbSectionGenerator patGenerator;
 	DvbSectionGenerator pmtGenerator;
 	QTimer patPmtTimer;

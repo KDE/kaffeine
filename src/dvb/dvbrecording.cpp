@@ -37,7 +37,7 @@
 #include "dvbmanager.h"
 
 DvbRecording::DvbRecording(DvbManager *manager_) : repeat(0), manager(manager_), device(NULL),
-	pmtValid(false)
+	pmtSection(QByteArray()), pmtValid(false)
 {
 	connect(&pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
 		this, SLOT(pmtSectionChanged(DvbPmtSection)));
@@ -121,14 +121,23 @@ void DvbRecording::start()
 		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 		pmtFilter.setProgramNumber(channel->getServiceId());
 		device->addPidFilter(channel->pmtPid, &pmtFilter);
+		pmtSection = DvbPmtSection(channel->pmtSection);
 		patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
 			channel->pmtPid);
+
+		if (channel->isScrambled && pmtSection.isValid()) {
+			device->startDescrambling(pmtSection, this);
+		}
 	}
 }
 
 void DvbRecording::stop()
 {
 	if (device != NULL) {
+		if (channel->isScrambled && pmtSection.isValid()) {
+			device->stopDescrambling(pmtSection.programNumber(), this);
+		}
+
 		foreach (int pid, pids) {
 			device->removePidFilter(pid, this);
 		}
@@ -143,6 +152,7 @@ void DvbRecording::stop()
 	patPmtTimer.stop();
 	patGenerator.reset();
 	pmtGenerator.reset();
+	pmtSection = DvbPmtSection(QByteArray());
 	pmtFilter.reset();
 	pids.clear();
 	buffers.clear();
@@ -159,6 +169,11 @@ void DvbRecording::deviceStateChanged()
 
 		device->removePidFilter(channel->pmtPid, &pmtFilter);
 		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+
+		if (channel->isScrambled && pmtSection.isValid()) {
+			device->stopDescrambling(pmtSection.programNumber(), this);
+		}
+
 		device = manager->requestDevice(channel->source, channel->transponder,
 			DvbManager::Prioritized);
 
@@ -169,6 +184,10 @@ void DvbRecording::deviceStateChanged()
 			foreach (int pid, pids) {
 				device->addPidFilter(pid, this);
 			}
+
+			if (channel->isScrambled && pmtSection.isValid()) {
+				device->startDescrambling(pmtSection, this);
+			}
 		} else {
 			stop();
 		}
@@ -177,6 +196,7 @@ void DvbRecording::deviceStateChanged()
 
 void DvbRecording::pmtSectionChanged(const DvbPmtSection &pmtSection)
 {
+	DvbRecording::pmtSection = pmtSection;
 	DvbPmtParser pmtParser(pmtSection);
 	QSet<int> newPids;
 
@@ -227,6 +247,10 @@ void DvbRecording::pmtSectionChanged(const DvbPmtSection &pmtSection)
 	}
 
 	insertPatPmt();
+
+	if (channel->isScrambled) {
+		device->startDescrambling(pmtSection, this);
+	}
 }
 
 void DvbRecording::insertPatPmt()

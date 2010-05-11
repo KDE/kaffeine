@@ -216,7 +216,6 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 
 	internal->eitFilter.setSource(channel->source);
 	internal->pmtFilter.setProgramNumber(channel->getServiceId());
-	internal->pmtSection = DvbPmtSection(QByteArray());
 	startDevice();
 
 	internal->patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
@@ -437,6 +436,7 @@ void DvbLiveView::liveStopped()
 	patPmtTimer.stop();
 	osdTimer.stop();
 
+	internal->pmtSection = DvbPmtSection(QByteArray());
 	internal->patGenerator = DvbSectionGenerator();
 	internal->pmtGenerator = DvbSectionGenerator();
 	internal->buffer.clear();
