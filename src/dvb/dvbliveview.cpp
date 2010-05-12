@@ -396,9 +396,7 @@ void DvbLiveView::prepareTimeShift()
 		return;
 	}
 
-	// FIXME this gives wrong continuity counter values ...
-	internal->timeShiftFile.write(internal->patGenerator.generatePackets());
-	internal->timeShiftFile.write(internal->pmtGenerator.generatePackets());
+	updatePids();
 
 	// don't allow changes after starting time shift
 	mediaWidget->updateDvbAudioChannels(QStringList(), 0);
@@ -480,19 +478,37 @@ void DvbLiveView::stopDevice()
 
 void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 {
+	DvbPmtParser pmtParser(internal->pmtSection);
 	QSet<int> newPids;
 	bool updatePatPmt = forcePatPmtUpdate;
+	bool isTimeShifting = internal->timeShiftFile.isOpen();
 
 	if (videoPid != -1) {
 		newPids.insert(videoPid);
 	}
 
-	if (audioPid != -1) {
-		newPids.insert(audioPid);
+	if (!isTimeShifting) {
+		if (audioPid != -1) {
+			newPids.insert(audioPid);
+		}
+	} else {
+		for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+			newPids.insert(pmtParser.audioPids.at(i).first);
+		}
 	}
 
-	if (subtitlePid != -1) {
-		newPids.insert(subtitlePid);
+	if (!isTimeShifting) {
+		if (subtitlePid != -1) {
+			newPids.insert(subtitlePid);
+		}
+	} else {
+		for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
+			newPids.insert(pmtParser.subtitlePids.at(i).first);
+		}
+
+		if (pmtParser.teletextPid != -1) {
+			newPids.insert(pmtParser.teletextPid);
+		}
 	}
 
 	for (int i = 0; i < pids.size(); ++i) {
