@@ -609,6 +609,7 @@ void DvbEpgDialog::scheduleProgram()
 	QModelIndex index = epgView->currentIndex();
 
 	if (index.isValid()) {
-		epgModel->scheduleProgram(index.row(), 300, 600);
+		epgModel->scheduleProgram(index.row(), manager->getBeginMargin(),
+			manager->getEndMargin());
 	}
 }

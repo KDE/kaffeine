@@ -76,6 +76,22 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	gridLayout->addWidget(toolButton, 1, 2);
 	boxLayout->addLayout(gridLayout);
 
+	gridLayout = new QGridLayout();
+	gridLayout->addWidget(new QLabel(i18n("Begin margin (minutes):")), 2, 0);
+
+	beginMarginBox = new QSpinBox(widget);
+	beginMarginBox->setRange(0, 99);
+	beginMarginBox->setValue(manager->getBeginMargin() / 60);
+	gridLayout->addWidget(beginMarginBox, 2, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("End margin (minutes):")), 3, 0);
+
+	endMarginBox = new QSpinBox(widget);
+	endMarginBox->setRange(0, 99);
+	endMarginBox->setValue(manager->getEndMargin() / 60);
+	gridLayout->addWidget(endMarginBox, 3, 1);
+	boxLayout->addLayout(gridLayout);
+
 	QFrame *frame = new QFrame(widget);
 	frame->setFrameShape(QFrame::HLine);
 	boxLayout->addWidget(frame);
@@ -321,6 +337,8 @@ void DvbConfigDialog::accept()
 {
 	manager->setRecordingFolder(recordingFolderEdit->text());
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
+	manager->setBeginMargin(beginMarginBox->value() * 60);
+	manager->setEndMargin(endMarginBox->value() * 60);
 
 	bool latitudeOk;
 	bool longitudeOk;

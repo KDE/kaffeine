@@ -541,6 +541,16 @@ QString DvbManager::getTimeShiftFolder()
 	return path;
 }
 
+int DvbManager::getBeginMargin() const
+{
+	return KGlobal::config()->group("DVB").readEntry("BeginMargin", 300);
+}
+
+int DvbManager::getEndMargin() const
+{
+	return KGlobal::config()->group("DVB").readEntry("EndMargin", 600);
+}
+
 void DvbManager::setRecordingFolder(const QString &path)
 {
 	KGlobal::config()->group("DVB").writeEntry("RecordingFolder", path);
@@ -549,6 +559,16 @@ void DvbManager::setRecordingFolder(const QString &path)
 void DvbManager::setTimeShiftFolder(const QString &path)
 {
 	KGlobal::config()->group("DVB").writeEntry("TimeShiftFolder", path);
+}
+
+void DvbManager::setBeginMargin(int beginMargin)
+{
+	KGlobal::config()->group("DVB").writeEntry("BeginMargin", beginMargin);
+}
+
+void DvbManager::setEndMargin(int endMargin)
+{
+	KGlobal::config()->group("DVB").writeEntry("EndMargin", endMargin);
 }
 
 double DvbManager::getLatitude()

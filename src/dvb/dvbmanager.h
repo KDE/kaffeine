@@ -113,8 +113,12 @@ public:
 
 	QString getRecordingFolder();
 	QString getTimeShiftFolder();
+	int getBeginMargin() const; // seconds
+	int getEndMargin() const; // seconds
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
+	void setBeginMargin(int beginMargin); // seconds
+	void setEndMargin(int endMargin); // seconds
 
 	static double getLatitude();
 	static double getLongitude();

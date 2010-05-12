@@ -74,6 +74,8 @@ private:
 	KTabWidget *tabWidget;
 	KLineEdit *recordingFolderEdit;
 	KLineEdit *timeShiftFolderEdit;
+	QSpinBox *beginMarginBox;
+	QSpinBox *endMarginBox;
 	KLineEdit *latitudeEdit;
 	KLineEdit *longitudeEdit;
 	QPixmap validPixmap;
