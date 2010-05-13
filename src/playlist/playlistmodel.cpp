@@ -583,22 +583,34 @@ void PlaylistModel::updateTrackMetadata(Playlist *playlist,
 	if (playlist->currentTrack >= 0) {
 		PlaylistTrack &currentTrack = playlist->tracks[playlist->currentTrack];
 
-		if (currentTrack.title != metadata.value(MediaWidget::Title)) {
+		if ((currentTrack.title != metadata.value(MediaWidget::Title)) &&
+		    !metadata.value(MediaWidget::Title).isEmpty()) {
 			currentTrack.title = metadata.value(MediaWidget::Title);
-			QModelIndex modelIndex = index(playlist->currentTrack, 0);
-			emit dataChanged(modelIndex, modelIndex);
+
+			if (playlist == visiblePlaylist) {
+				QModelIndex modelIndex = index(playlist->currentTrack, 0);
+				emit dataChanged(modelIndex, modelIndex);
+			}
 		}
 
-		if (currentTrack.artist != metadata.value(MediaWidget::Artist)) {
+		if ((currentTrack.artist != metadata.value(MediaWidget::Artist)) &&
+		    !metadata.value(MediaWidget::Artist).isEmpty()) {
 			currentTrack.artist = metadata.value(MediaWidget::Artist);
-			QModelIndex modelIndex = index(playlist->currentTrack, 0);
-			emit dataChanged(modelIndex, modelIndex);
+
+			if (playlist == visiblePlaylist) {
+				QModelIndex modelIndex = index(playlist->currentTrack, 1);
+				emit dataChanged(modelIndex, modelIndex);
+			}
 		}
 
-		if (currentTrack.album != metadata.value(MediaWidget::Album)) {
+		if ((currentTrack.album != metadata.value(MediaWidget::Album)) &&
+		    !metadata.value(MediaWidget::Album).isEmpty()) {
 			currentTrack.album = metadata.value(MediaWidget::Album);
-			QModelIndex modelIndex = index(playlist->currentTrack, 0);
-			emit dataChanged(modelIndex, modelIndex);
+
+			if (playlist == visiblePlaylist) {
+				QModelIndex modelIndex = index(playlist->currentTrack, 2);
+				emit dataChanged(modelIndex, modelIndex);
+			}
 		}
 
 		bool ok;
@@ -608,10 +620,13 @@ void PlaylistModel::updateTrackMetadata(Playlist *playlist,
 			trackNumber = -1;
 		}
 
-		if (currentTrack.trackNumber != trackNumber) {
+		if ((currentTrack.trackNumber != trackNumber) && (trackNumber >= 0)) {
 			currentTrack.trackNumber = trackNumber;
-			QModelIndex modelIndex = index(playlist->currentTrack, 3);
-			emit dataChanged(modelIndex, modelIndex);
+
+			if (playlist == visiblePlaylist) {
+				QModelIndex modelIndex = index(playlist->currentTrack, 3);
+				emit dataChanged(modelIndex, modelIndex);
+			}
 		}
 	}
 }
