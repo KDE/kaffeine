@@ -465,7 +465,7 @@ void DvbLinuxCam::handlePendingCommands()
 				kWarning() << "cannot perform ioctl CA_RESET";
 			}
 
-			qDebug() << "--> reset";
+			kDebug() << "--> reset";
 			slot = -1;
 			pollTimer.start(100);
 			pendingCommands = 0;
