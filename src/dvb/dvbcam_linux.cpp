@@ -417,18 +417,18 @@ void DvbLinuxCam::handleApplicationLayer(const unsigned char *data, int size)
 
 		switch (tag) {
 		case ProfileEnquiry:
-			messageData[0] = (ResourceManager & 0xff);
-			messageData[1] = ((ResourceManager >> 8) & 0xff);
-			messageData[2] = ((ResourceManager >> 16) & 0xff);
-			messageData[3] = ((ResourceManager >> 24) & 0xff);
-			messageData[4] = (ApplicationInformation & 0xff);
-			messageData[5] = ((ApplicationInformation >> 8) & 0xff);
-			messageData[6] = ((ApplicationInformation >> 16) & 0xff);
-			messageData[7] = ((ApplicationInformation >> 24) & 0xff);
-			messageData[8] = (ConditionalAccess & 0xff);
-			messageData[9] = ((ConditionalAccess >> 8) & 0xff);
-			messageData[10] = ((ConditionalAccess >> 16) & 0xff);
-			messageData[11] = ((ConditionalAccess >> 24) & 0xff);
+			messageData[0] = ((ResourceManager >> 24) & 0xff);
+			messageData[1] = ((ResourceManager >> 16) & 0xff);
+			messageData[2] = ((ResourceManager >> 8) & 0xff);
+			messageData[3] = (ResourceManager & 0xff);
+			messageData[4] = ((ApplicationInformation >> 24) & 0xff);
+			messageData[5] = ((ApplicationInformation >> 16) & 0xff);
+			messageData[6] = ((ApplicationInformation >> 8) & 0xff);
+			messageData[7] = (ApplicationInformation & 0xff);
+			messageData[8] = ((ConditionalAccess >> 24) & 0xff);
+			messageData[9] = ((ConditionalAccess >> 16) & 0xff);
+			messageData[10] = ((ConditionalAccess >> 8) & 0xff);
+			messageData[11] = (ConditionalAccess & 0xff);
 			sendApplicationLayerMessage(ProfileReply, messageData, messageData + 12);
 			break;
 		case ProfileReply:
