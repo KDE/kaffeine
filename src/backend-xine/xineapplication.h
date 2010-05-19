@@ -105,6 +105,7 @@ private:
 	xine_video_port_t *videoOutput;
 	xine_stream_t *stream;
 	xine_event_queue_t *eventQueue;
+	xine_post_t *visualization;
 	xine_post_t *deinterlacer;
 	double pixelAspectRatio;
 	unsigned int widgetSize;

@@ -67,6 +67,10 @@ XineObject::~XineObject()
 		xine_post_dispose(engine, deinterlacer);
 	}
 
+	if (visualization != NULL) {
+		xine_post_dispose(engine, visualization);
+	}
+
 	if (videoOutput != NULL) {
 		xine_close_video_driver(engine, videoOutput);
 	}
@@ -391,6 +395,20 @@ void XineObject::init(quint64 windowId)
 	xine_event_create_listener_thread(eventQueue, &event_listener_cb, this);
 	dirtyFlags &= ~NotReady;
 
+	visualization = xine_post_init(engine, "goom", 1, &audioOutput, &videoOutput);
+
+	if (visualization == NULL) {
+		kWarning() << "cannot create audio visualization plugin";
+	} else {
+		xine_post_in_t *input = xine_post_input(visualization, "audio in");
+
+		if (input == NULL) {
+			kWarning() << "cannot connect audio visualization plugin";
+		} else {
+			xine_post_wire(xine_get_audio_source(stream), input);
+		}
+	}
+
 	deinterlacer = xine_post_init(engine, "tvtime", 1, 0, &videoOutput);
 
 	if (deinterlacer == NULL) {
@@ -398,8 +416,14 @@ void XineObject::init(quint64 windowId)
 		return;
 	}
 
-	xine_post_api_t *deinterlacerApi =
-		static_cast<xine_post_api_t *>(xine_post_input(deinterlacer, "parameters")->data);
+	xine_post_in_t *input = xine_post_input(deinterlacer, "parameters");
+
+	if (input == NULL) {
+		kWarning() << "cannot configure deinterlace plugin";
+		return;
+	}
+
+	xine_post_api_t *deinterlacerApi = static_cast<xine_post_api_t *>(input->data);
 
 	if (deinterlacerApi == NULL) {
 		kWarning() << "cannot configure deinterlace plugin";
@@ -609,8 +633,11 @@ void XineObject::customEvent(QEvent *event)
 		    }
 		case SetDeinterlacing:
 			if (deinterlacing && (deinterlacer != NULL)) {
-				xine_post_wire(xine_get_video_source(stream),
-					xine_post_input(deinterlacer, "video"));
+				xine_post_in_t *input = xine_post_input(deinterlacer, "video");
+
+				if (input != NULL) {
+					xine_post_wire(xine_get_video_source(stream), input);
+				}
 			} else {
 				xine_post_wire_video_port(xine_get_video_source(stream), videoOutput);
 			}
