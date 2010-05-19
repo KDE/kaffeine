@@ -395,7 +395,7 @@ void XineObject::init(quint64 windowId)
 	xine_event_create_listener_thread(eventQueue, &event_listener_cb, this);
 	dirtyFlags &= ~NotReady;
 
-	visualization = xine_post_init(engine, "goom", 1, &audioOutput, &videoOutput);
+	visualization = NULL; // xine_post_init(engine, "goom", 0, &audioOutput, &videoOutput);
 
 	if (visualization == NULL) {
 		kWarning() << "cannot create audio visualization plugin";
