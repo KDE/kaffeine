@@ -638,8 +638,8 @@ void XineMediaWidget::updateAudioChannels(const QByteArray &audioChannels_,
 
 			for (int i = 0; i < rawAudioChannels.size(); ++i) {
 				QString audioChannel = QString::fromLatin1(rawData + i);
-				i += (audioChannel.size() + 1);
 				audioChannels.append(audioChannel);
+				i += audioChannel.size();
 			}
 
 			dirtyFlags |= AudioChannelsChanged;
@@ -668,8 +668,8 @@ void XineMediaWidget::updateSubtitles(const QByteArray &subtitles_, int currentS
 
 			for (int i = 0; i < rawSubtitles.size(); ++i) {
 				QString subtitle = QString::fromLatin1(rawData + i);
-				i += (subtitle.size() + 1);
 				subtitles.append(subtitle);
+				i += subtitle.size();
 			}
 
 			dirtyFlags |= SubtitlesChanged;
