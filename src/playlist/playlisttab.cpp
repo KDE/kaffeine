@@ -1,7 +1,7 @@
 /*
  * playlisttab.cpp
  *
- * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,11 +59,16 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 	unsigned int version;
 	stream >> version;
 	bool hasMetadata = true;
+	bool hasSubtitles = true;
 
 	if (version == 0xc39637a1) {
 		// compatibility code
 		hasMetadata = false;
-	} else if (version != 0x2e00f3ea) {
+		hasSubtitles = false;
+	} else if (version == 0x2e00f3ea) {
+		// compatibility code
+		hasSubtitles = false;
+	} else if (version != 0x361c4a3c) {
 		kWarning() << "cannot read file" << file.fileName();
 		return;
 	}
@@ -92,6 +97,17 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 				track.title = track.url.fileName();
 			}
 
+			if (hasSubtitles) {
+				QStringList subtitleStrings;
+				stream >> subtitleStrings;
+
+				foreach (const QString &subtitleString, subtitleStrings) {
+					track.subtitles.append(subtitleString);
+				}
+
+				stream >> track.currentSubtitle;
+			}
+
 			playlist->tracks.append(track);
 		}
 
@@ -117,7 +133,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
-	int version = 0x2e00f3ea;
+	int version = 0x361c4a3c;
 	stream << version;
 
 	for (int i = 1; i < playlists.size(); ++i) {
@@ -133,6 +149,15 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 			stream << track.album;
 			stream << track.trackNumber;
 			stream << track.length;
+
+			QStringList subtitleStrings;
+
+			foreach (const KUrl &url, track.subtitles) {
+				subtitleStrings.append(url.url());
+			}
+
+			stream << subtitleStrings;
+			stream << track.currentSubtitle;
 		}
 	}
 
@@ -373,6 +398,10 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	randomAction->setCheckable(true);
 	menu->addAction(collection->addAction("playlist_random", randomAction));
 
+	KAction *addSubtitleAction = new KAction(KIcon("application-x-subrip"), i18n("Add Subtitle"),
+		this);
+	collection->addAction("playlist_add_subtitle", addSubtitleAction);
+
 	KAction *removeTrackAction = new KAction(KIcon("edit-delete"),
 		i18nc("remove an item from a list", "Remove"), this);
 	collection->addAction("playlist_remove_track", removeTrackAction);
@@ -504,6 +533,8 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	playlistView->setModel(playlistModel);
 	playlistView->sortByColumn(-1, Qt::AscendingOrder);
 	playlistView->setSortingEnabled(true);
+	playlistView->addAction(addSubtitleAction);
+	connect(addSubtitleAction, SIGNAL(triggered(bool)), this, SLOT(addSubtitle()));
 	playlistView->addAction(removeTrackAction);
 	connect(removeTrackAction, SIGNAL(triggered(bool)),
 		playlistView, SLOT(removeSelectedRows()));
@@ -633,10 +664,37 @@ void PlaylistTab::savePlaylistAs()
 	savePlaylist(true);
 }
 
+void PlaylistTab::addSubtitle()
+{
+	QModelIndexList selectedRows = playlistView->selectionModel()->selectedRows();
+
+	if (selectedRows.size() != 1) {
+		return;
+	}
+
+	int row = selectedRows.at(0).row();
+	Playlist *playlist = playlistModel->getVisiblePlaylist();
+	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), subtitleExtensionFilter(), this);
+
+	if ((row < playlist->tracks.size()) && !urls.isEmpty()) {
+		PlaylistTrack &track = playlist->tracks[row];
+		track.subtitles += urls;
+
+		if (track.subtitles.size() == urls.size()) {
+			track.currentSubtitle = 0;
+		}
+
+		if ((playlist == playlistBrowserModel->getCurrentPlaylist()) &&
+		    (playlist->currentTrack == row)) {
+			mediaWidget->updateExternalSubtitles(track.subtitles,
+				track.currentSubtitle);
+		}
+	}
+}
+
 void PlaylistTab::playlistActivated(const QModelIndex &index)
 {
 	playlistModel->setVisiblePlaylist(playlistBrowserModel->getPlaylist(index.row()));
-	
 }
 
 void PlaylistTab::playPreviousTrack()
@@ -701,7 +759,17 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 	}
 
 	if (track != -1) {
-		mediaWidget->play(playlist->at(track).url);
+		const PlaylistTrack &playlistTrack = playlist->tracks.at(track);
+		KUrl subtitleUrl;
+
+		if ((playlistTrack.currentSubtitle >= 0) &&
+		    (playlistTrack.currentSubtitle < playlistTrack.subtitles.size())) {
+			subtitleUrl = playlistTrack.subtitles.at(playlistTrack.currentSubtitle);
+		}
+
+		mediaWidget->play(playlistTrack.url, subtitleUrl);
+		mediaWidget->updateExternalSubtitles(playlistTrack.subtitles,
+			playlistTrack.currentSubtitle);
 		playlistBrowserModel->setCurrentPlaylist(playlist);
 	} else {
 		mediaWidget->stop();
@@ -736,6 +804,12 @@ void PlaylistTab::updateTrackLength(int length)
 void PlaylistTab::updateTrackMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata)
 {
 	playlistModel->updateTrackMetadata(playlistBrowserModel->getCurrentPlaylist(), metadata);
+}
+
+QString PlaylistTab::subtitleExtensionFilter()
+{
+	return QString("*.asc *.smi *.srt *.ssa *.sub *.txt|") +
+		i18nc("file filter", "Subtitle Files");
 }
 
 void PlaylistTab::savePlaylist(bool askName)

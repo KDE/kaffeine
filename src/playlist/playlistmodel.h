@@ -29,7 +29,7 @@
 class PlaylistTrack
 {
 public:
-	PlaylistTrack() : trackNumber(-1) { }
+	PlaylistTrack() : trackNumber(-1), currentSubtitle(-1) { }
 	~PlaylistTrack() { }
 
 	KUrl url;
@@ -38,6 +38,8 @@ public:
 	QString album;
 	int trackNumber;
 	QTime length;
+	QList<KUrl> subtitles;
+	int currentSubtitle;
 };
 
 class Playlist

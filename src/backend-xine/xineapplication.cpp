@@ -556,6 +556,23 @@ void XineObject::customEvent(QEvent *event)
 					XINE_STREAM_INFO_DVD_TITLE_COUNT);
 				int currentTitle = xine_get_stream_info(stream,
 					XINE_STREAM_INFO_DVD_TITLE_NUMBER);
+
+				if (!currentEncodedUrl.isEmpty()) {
+					if (currentEncodedUrl.startsWith("cdda:")) {
+						xine_get_autoplay_mrls(engine, "CD", &titleCount);
+						currentTitle = currentEncodedUrl.mid(
+							currentEncodedUrl.lastIndexOf('/') + 1).
+							toInt() + 1;
+					} else if (currentEncodedUrl.startsWith("vcd:")) {
+						xine_get_autoplay_mrls(engine, "VCD", &titleCount);
+						currentTitle = currentEncodedUrl.mid(
+							currentEncodedUrl.lastIndexOf('@') + 1).
+							toInt() + 1;
+					} else {
+						kWarning() << "internal error" << currentEncodedUrl;
+					}
+				}
+
 				parentProcess->updateTitles(titleCount, currentTitle);
 
 				int chapterCount = xine_get_stream_info(stream,
@@ -645,6 +662,12 @@ void XineObject::customEvent(QEvent *event)
 			break;
 		case OpenStream:
 			parentProcess->sync(sequenceNumber);
+
+			if (encodedUrl.startsWith("cdda:") || encodedUrl.startsWith("vcd:")) {
+				currentEncodedUrl = encodedUrl;
+			} else {
+				currentEncodedUrl.clear();
+			}
 
 			if (!encodedUrl.isEmpty()) {
 				if (xine_open(stream, encodedUrl.constData()) == 1) {

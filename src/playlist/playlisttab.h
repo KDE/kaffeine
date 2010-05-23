@@ -1,7 +1,7 @@
 /*
  * playlisttab.h
  *
- * Copyright (C) 2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -98,6 +98,7 @@ private slots:
 	void removePlaylist();
 	void savePlaylist();
 	void savePlaylistAs();
+	void addSubtitle();
 	void playlistActivated(const QModelIndex &index);
 	void playPreviousTrack();
 	void playCurrentTrack();
@@ -110,6 +111,7 @@ private slots:
 	void updateTrackMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
 
 private:
+	static QString subtitleExtensionFilter(); // usable for KFileDialog::setFilter()
 	void activate();
 	void savePlaylist(bool askName);
 

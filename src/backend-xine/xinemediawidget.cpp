@@ -316,34 +316,61 @@ void XineMediaWidget::setDeinterlacing(bool deinterlacing)
 	childProcess->setDeinterlacing(deinterlacing);
 }
 
-void XineMediaWidget::playUrl(const KUrl &url)
+void XineMediaWidget::playUrl(const KUrl &url, const KUrl &subtitleUrl)
 {
 	if (url.toLocalFile().endsWith(QLatin1String(".iso"), Qt::CaseInsensitive)) {
-		encodedDvdUrl = QByteArray("dvd://").append(url.encodedPath());
-		playEncodedUrl(encodedDvdUrl, PlayingDvd);
+		currentUrl = QByteArray("dvd://").append(url.encodedPath());
+		playEncodedUrl(currentUrl, PlayingDvd);
 	} else {
-		playEncodedUrl(url.toEncoded(), EmitPlaybackFinished);
+		currentUrl = url.toEncoded();
+		QByteArray encodedUrl = currentUrl;
+
+		if (subtitleUrl.isValid()) {
+			encodedUrl.append("#subtitle:");
+			encodedUrl.append(subtitleUrl.encodedPath());
+		}
+
+		playEncodedUrl(encodedUrl, EmitPlaybackFinished);
 	}
 }
 
 void XineMediaWidget::playAudioCd(const QString &device)
 {
-	playEncodedUrl(QByteArray("cdda://").append(device.toUtf8().toPercentEncoding("/")));
+	currentUrl = QByteArray("cdda://").append(device.toUtf8().toPercentEncoding("/"));
+	playEncodedUrl(currentUrl);
 }
 
 void XineMediaWidget::playVideoCd(const QString &device)
 {
-	playEncodedUrl(QByteArray("vcd://").append(device.toUtf8().toPercentEncoding("/")));
+	currentUrl = QByteArray("vcd://").append(device.toUtf8().toPercentEncoding("/"));
+	playEncodedUrl(currentUrl);
 }
 
 void XineMediaWidget::playDvd(const QString &device)
 {
-	encodedDvdUrl = QByteArray("dvd://").append(device.toUtf8().toPercentEncoding("/"));
-	playEncodedUrl(encodedDvdUrl, PlayingDvd);
+	currentUrl = QByteArray("dvd://").append(device.toUtf8().toPercentEncoding("/"));
+	playEncodedUrl(currentUrl, PlayingDvd);
+}
+
+void XineMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
+{
+	QByteArray encodedUrl = currentUrl;
+	int position = currentTime;
+	int audioChannel = currentAudioChannel;
+
+	if (subtitleUrl.isValid()) {
+		encodedUrl.append("#subtitle:");
+		encodedUrl.append(subtitleUrl.encodedPath());
+	}
+
+	playEncodedUrl(encodedUrl, EmitPlaybackFinished);
+	seek(position);
+	setCurrentAudioChannel(audioChannel);
 }
 
 void XineMediaWidget::stop()
 {
+	currentUrl.clear();
 	playEncodedUrl(QByteArray());
 }
 
@@ -409,14 +436,22 @@ void XineMediaWidget::toggleMenu()
 
 void XineMediaWidget::setCurrentTitle(int currentTitle_)
 {
-	if ((currentState & PlayingDvd) != 0) {
-		if (!encodedDvdUrl.endsWith('/')) {
-			encodedDvdUrl.append('/');
+	if (currentUrl.startsWith("cdda:") || currentUrl.startsWith("dvd:")) {
+		QByteArray encodedUrl = currentUrl;
+
+		if (!encodedUrl.endsWith('/')) {
+			encodedUrl.append('/');
 		}
 
-		QByteArray encodedUrl = encodedDvdUrl;
 		encodedUrl.append(QByteArray::number(currentTitle_));
-		playEncodedUrl(encodedUrl, PlayingDvd);
+
+		if (currentUrl.startsWith("dvd:")) {
+			playEncodedUrl(encodedUrl, PlayingDvd);
+		} else {
+			playEncodedUrl(encodedUrl);
+		}
+	} else if (currentUrl.startsWith("vcd:")) {
+		playEncodedUrl(currentUrl + '@' + QByteArray::number(currentTitle_));
 	}
 }
 
@@ -502,6 +537,7 @@ QSize XineMediaWidget::sizeHint() const
 void XineMediaWidget::initFailed(const QString &errorMessage)
 {
 	if ((currentState & NotReady) == 0) {
+		currentUrl.clear();
 		playEncodedUrl(QByteArray(), NotReady);
 		KMessageBox::queuedMessageBox(this, KMessageBox::Sorry, errorMessage); // FIXME
 	}

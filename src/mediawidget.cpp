@@ -571,15 +571,17 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 	}
 }
 
-void MediaWidget::play(const KUrl &url)
+void MediaWidget::play(const KUrl &url, const KUrl &subtitleUrl)
 {
 	currentSourceName = url.toLocalFile();
 
 	if (currentSourceName.isEmpty()) {
-		currentSourceName = url.prettyUrl();
+		currentSourceName = url.fileName();
 	}
 
-	backend->playUrl(url);
+	externalSubtitles.clear();
+	currentExternalSubtitle = subtitleUrl;
+	backend->playUrl(url, subtitleUrl);
 }
 
 void MediaWidget::playAudioCd()
@@ -597,6 +599,8 @@ void MediaWidget::playAudioCd()
 	}
 
 	currentSourceName.clear();
+	externalSubtitles.clear();
+	currentExternalSubtitle.clear();
 	backend->playAudioCd(deviceName);
 }
 
@@ -615,6 +619,8 @@ void MediaWidget::playVideoCd()
 	}
 
 	currentSourceName.clear();
+	externalSubtitles.clear();
+	currentExternalSubtitle.clear();
 	backend->playVideoCd(deviceName);
 }
 
@@ -633,7 +639,39 @@ void MediaWidget::playDvd()
 	}
 
 	currentSourceName.clear();
+	externalSubtitles.clear();
+	currentExternalSubtitle.clear();
 	backend->playDvd(deviceName);
+}
+
+void MediaWidget::updateExternalSubtitles(const QList<KUrl> &subtitles, int currentSubtitle)
+{
+	if (!currentSourceName.isEmpty()) {
+		subtitlesReady = false;
+		externalSubtitles = subtitles;
+		int currentIndex;
+		KUrl externalSubtitle;
+
+		if (currentSubtitle < 0) {
+			currentIndex = subtitleBox->currentIndex();
+		} else {
+			currentIndex = currentSubtitle + subtitleBox->count();
+			externalSubtitle = subtitles.at(currentSubtitle);
+		}
+
+		if (currentExternalSubtitle != externalSubtitle) {
+			currentExternalSubtitle = externalSubtitle;
+			backend->setExternalSubtitle(currentExternalSubtitle);
+		}
+
+		foreach (const KUrl &subtitleUrl, subtitles) {
+			subtitleBox->addItem(subtitleUrl.fileName());
+		}
+
+		subtitleBox->setCurrentIndex(currentIndex);
+		subtitleBox->setEnabled(subtitleBox->count() > 1);
+		subtitlesReady = true;
+	}
 }
 
 OsdWidget *MediaWidget::getOsdWidget()
@@ -655,7 +693,9 @@ void MediaWidget::playDvb(const QString &channelName)
 	dvbFeed = new DvbFeed(this);
 	dvbFeed->ignoreSourceChange = true;
 	emit changeCaption(channelName);
-	backend->playUrl(dvbFeed->getUrl());
+	externalSubtitles.clear();
+	currentExternalSubtitle.clear();
+	backend->playUrl(dvbFeed->getUrl(), KUrl());
 	dvbFeed->ignoreSourceChange = false;
 }
 
@@ -946,7 +986,20 @@ void MediaWidget::subtitlesChanged(const QStringList &subtitles, int currentSubt
 		subtitleBox->clear();
 		subtitleBox->addItem(textSubtitlesOff);
 		subtitleBox->addItems(subtitles);
-		subtitleBox->setCurrentIndex(currentSubtitle + 1);
+		int currentIndex;
+
+		if (currentExternalSubtitle.isValid()) {
+			currentIndex = (externalSubtitles.indexOf(currentExternalSubtitle) +
+				subtitleBox->count());
+		} else {
+			currentIndex = (currentSubtitle + 1);
+		}
+
+		foreach (const KUrl &subtitleUrl, externalSubtitles) {
+			subtitleBox->addItem(subtitleUrl.fileName());
+		}
+
+		subtitleBox->setCurrentIndex(currentIndex);
 		subtitleBox->setEnabled(subtitleBox->count() > 1);
 		subtitlesReady = true;
 	} else {
@@ -1295,7 +1348,20 @@ void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 {
 	if (subtitlesReady) {
 		if ((dvbFeed == NULL) || dvbFeed->subtitles.isEmpty()) {
-			backend->setCurrentSubtitle(currentSubtitle - 1);
+			KUrl externalSubtitle;
+
+			if (currentSubtitle < (subtitleBox->count() - externalSubtitles.count())) {
+				backend->setCurrentSubtitle(currentSubtitle - 1);
+			} else {
+				backend->setCurrentSubtitle(-1);
+				externalSubtitle = externalSubtitles.at(currentSubtitle -
+					(subtitleBox->count() - externalSubtitles.count()));
+			}
+
+			if (currentExternalSubtitle != externalSubtitle) {
+				currentExternalSubtitle = externalSubtitle;
+				backend->setExternalSubtitle(currentExternalSubtitle);
+			}
 		} else {
 			emit changeDvbSubtitle(currentSubtitle - 1);
 		}

@@ -40,10 +40,11 @@ public:
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
 	void setDeinterlacing(bool deinterlacing);
 
-	void playUrl(const KUrl &url);
+	void playUrl(const KUrl &url, const KUrl &subtitleUrl);
 	void playAudioCd(const QString &device);
 	void playVideoCd(const QString &device);
 	void playDvd(const QString &device);
+	void setExternalSubtitle(const KUrl &subtitleUrl);
 	void stop();
 
 	bool isPlaying() const;
@@ -157,6 +158,7 @@ private:
 	XineChildMarshaller *childProcess;
 	StateFlags currentState;
 	DirtyFlags dirtyFlags;
+	QByteArray currentUrl;
 	unsigned int sequenceNumber;
 	int currentTime;
 	int totalTime;

@@ -23,6 +23,7 @@
 
 #include <QWidget>
 #include <KIcon>
+#include <KUrl>
 
 class QActionGroup;
 class QDBusPendingCall;
@@ -76,10 +77,11 @@ public:
 	 * loads the media and starts playback
 	 */
 
-	void play(const KUrl &url);
+	void play(const KUrl &url, const KUrl &subtitleUrl = KUrl());
 	void playAudioCd();
 	void playVideoCd();
 	void playDvd();
+	void updateExternalSubtitles(const QList<KUrl> &subtitles, int currentSubtitle);
 
 	OsdWidget *getOsdWidget();
 
@@ -211,6 +213,8 @@ private:
 	KComboBox *audioChannelBox;
 	KComboBox *subtitleBox;
 	QString textSubtitlesOff;
+	QList<KUrl> externalSubtitles;
+	KUrl currentExternalSubtitle;
 	bool audioChannelsReady;
 	bool subtitlesReady;
 	int autoResizeFactor;

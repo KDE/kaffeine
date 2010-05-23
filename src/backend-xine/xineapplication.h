@@ -110,6 +110,7 @@ private:
 	double pixelAspectRatio;
 	unsigned int widgetSize;
 	QTimer positionTimer;
+	QByteArray currentEncodedUrl;
 
 	DirtyFlags dirtyFlags;
 	bool muted;
