@@ -69,7 +69,7 @@ void DvbRecording::start()
 
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
-		QString path = folder + '/' + name;
+		QString path = folder + '/' + name.replace('/', '_');
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
@@ -95,7 +95,7 @@ void DvbRecording::start()
 
 			if (folder != QDir::homePath()) {
 				folder = QDir::homePath();
-				path = folder + '/' + name;
+				path = folder + '/' + name.replace('/', '_');
 				attempt = -1;
 				continue;
 			}
