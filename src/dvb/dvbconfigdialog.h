@@ -25,6 +25,7 @@
 
 class QBoxLayout;
 class QButtonGroup;
+class QCheckBox;
 class QGridLayout;
 class QLabel;
 class QProgressBar;
@@ -76,6 +77,7 @@ private:
 	KLineEdit *timeShiftFolderEdit;
 	QSpinBox *beginMarginBox;
 	QSpinBox *endMarginBox;
+	QCheckBox *override6937CharsetBox;
 	KLineEdit *latitudeEdit;
 	KLineEdit *longitudeEdit;
 	QPixmap validPixmap;

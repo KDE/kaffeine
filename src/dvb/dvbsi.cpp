@@ -363,7 +363,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 	}
 
 	// determine encoding
-	TextEncoding encoding = Iso6937;
+	TextEncoding encoding = (override6937 ? Iso8859_1 : Iso6937);
 
 	if (text.at(0) < 0x20) {
 		switch (text.at(0)) {
@@ -479,7 +479,13 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 	return codecTable[encoding]->toUnicode(data, length);
 }
 
+void DvbSiText::setOverride6937(bool override)
+{
+	override6937 = override;
+}
+
 QTextCodec *DvbSiText::codecTable[EncodingTypeMax + 1] = { NULL };
+bool DvbSiText::override6937 = false;
 
 DvbDescriptor::DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
 {

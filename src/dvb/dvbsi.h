@@ -176,6 +176,7 @@ class DvbSiText
 {
 public:
 	static QString convertText(const DvbSectionData &text);
+	static void setOverride6937(bool override);
 
 private:
 	enum TextEncoding
@@ -204,6 +205,7 @@ private:
 	};
 
 	static QTextCodec *codecTable[EncodingTypeMax + 1];
+	static bool override6937;
 };
 
 class DvbDescriptor : public DvbSectionData

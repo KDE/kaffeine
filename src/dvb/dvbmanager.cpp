@@ -237,6 +237,8 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 	loadDeviceManager();
 
 	scanDataDate = KGlobal::config()->group("DVB").readEntry("ScanDataDate", QDate(1900, 1, 1));
+
+	DvbSiText::setOverride6937(override6937Charset());
 }
 
 DvbManager::~DvbManager()
@@ -551,6 +553,11 @@ int DvbManager::getEndMargin() const
 	return KGlobal::config()->group("DVB").readEntry("EndMargin", 600);
 }
 
+bool DvbManager::override6937Charset() const
+{
+	return KGlobal::config()->group("DVB").readEntry("Override6937", false);
+}
+
 void DvbManager::setRecordingFolder(const QString &path)
 {
 	KGlobal::config()->group("DVB").writeEntry("RecordingFolder", path);
@@ -569,6 +576,12 @@ void DvbManager::setBeginMargin(int beginMargin)
 void DvbManager::setEndMargin(int endMargin)
 {
 	KGlobal::config()->group("DVB").writeEntry("EndMargin", endMargin);
+}
+
+void DvbManager::setOverride6937Charset(bool override)
+{
+	KGlobal::config()->group("DVB").writeEntry("Override6937", override);
+	DvbSiText::setOverride6937(override);
 }
 
 double DvbManager::getLatitude()

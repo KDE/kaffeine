@@ -115,10 +115,12 @@ public:
 	QString getTimeShiftFolder();
 	int getBeginMargin() const; // seconds
 	int getEndMargin() const; // seconds
+	bool override6937Charset() const;
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
 	void setBeginMargin(int beginMargin); // seconds
 	void setEndMargin(int endMargin); // seconds
+	void setOverride6937Charset(bool override);
 
 	static double getLatitude();
 	static double getLongitude();

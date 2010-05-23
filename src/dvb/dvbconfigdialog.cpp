@@ -22,6 +22,7 @@
 
 #include <QBoxLayout>
 #include <QButtonGroup>
+#include <QCheckBox>
 #include <QLabel>
 #include <QProgressBar>
 #include <QPushButton>
@@ -90,6 +91,15 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	endMarginBox->setRange(0, 99);
 	endMarginBox->setValue(manager->getEndMargin() / 60);
 	gridLayout->addWidget(endMarginBox, 3, 1);
+	boxLayout->addLayout(gridLayout);
+
+	gridLayout = new QGridLayout();
+	gridLayout->addWidget(new QLabel(i18n("Use ISO 8859-1 charset instead of ISO 6937:")),
+		1, 0);
+
+	override6937CharsetBox = new QCheckBox(widget);
+	override6937CharsetBox->setChecked(manager->override6937Charset());
+	gridLayout->addWidget(override6937CharsetBox, 1, 1);
 	boxLayout->addLayout(gridLayout);
 
 	QFrame *frame = new QFrame(widget);
@@ -339,6 +349,7 @@ void DvbConfigDialog::accept()
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
 	manager->setBeginMargin(beginMarginBox->value() * 60);
 	manager->setEndMargin(endMarginBox->value() * 60);
+	manager->setOverride6937Charset(override6937CharsetBox->isChecked());
 
 	bool latitudeOk;
 	bool longitudeOk;
