@@ -759,12 +759,37 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 	}
 
 	if (track != -1) {
-		const PlaylistTrack &playlistTrack = playlist->tracks.at(track);
+		PlaylistTrack &playlistTrack = playlist->tracks[track];
 		KUrl subtitleUrl;
 
 		if ((playlistTrack.currentSubtitle >= 0) &&
 		    (playlistTrack.currentSubtitle < playlistTrack.subtitles.size())) {
 			subtitleUrl = playlistTrack.subtitles.at(playlistTrack.currentSubtitle);
+		} else if (playlistTrack.subtitles.isEmpty()) {
+			// check whether there's a possible subtitle file candidate
+			QString localFile = playlistTrack.url.toLocalFile();
+			localFile.truncate(localFile.lastIndexOf('.'));
+
+			if (!localFile.isEmpty()) {
+				if (QFile::exists(localFile + ".asc")) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + ".asc");
+				} else if (QFile::exists(localFile + ".smi")) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + ".smi");
+				} else if (QFile::exists(localFile + ".srt")) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + ".srt");
+				} else if (QFile::exists(localFile + ".ssa")) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + ".ssa");
+				} else if (QFile::exists(localFile + ".sub")) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + ".sub");
+				} else if (QFile::exists(localFile + ".txt")) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + ".txt");
+				}
+			}
+
+			if (subtitleUrl.isValid()) {
+				playlistTrack.subtitles += subtitleUrl;
+				playlistTrack.currentSubtitle = 0;
+			}
 		}
 
 		mediaWidget->play(playlistTrack.url, subtitleUrl);
