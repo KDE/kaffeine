@@ -47,7 +47,7 @@ install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(FILES kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 
 kde4_add_executable(kaffeine-xbu ${kaffeinexbu_SRCS})
-target_link_libraries(kaffeine-xbu ${X11_X11_LIB} ${XINE_LIBRARY} ${KDE4_KDEUI_LIBS})
+target_link_libraries(kaffeine-xbu ${X11_X11_LIB} ${XINE_LIBRARY} ${KDE4_KDEUI_LIBS} cdda_interface)
 install(TARGETS kaffeine-xbu ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 if(BUILD_DEBUG_MODULE)

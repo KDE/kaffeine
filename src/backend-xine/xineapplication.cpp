@@ -29,6 +29,10 @@
 #include <X11/Xlib.h>
 #include "xinecommands.h"
 
+extern "C" {
+#include <cdda_interface.h>
+};
+
 class XineParent : public XineParentMarshaller
 {
 public:
@@ -44,8 +48,8 @@ private:
 };
 
 XineObject::XineObject() : engine(NULL), audioOutput(NULL), videoOutput(NULL), stream(NULL),
-	eventQueue(NULL), widgetSize(0), dirtyFlags(NotReady), aspectRatio(XineAspectRatioAuto),
-	videoSize(0)
+	eventQueue(NULL), widgetSize(0), overrideTitleCount(0), overrideCurrentTitle(0),
+	dirtyFlags(NotReady), aspectRatio(XineAspectRatioAuto), videoSize(0)
 {
 	reader = new XinePipeReader(3, this);
 	parentProcess = new XineParent(4, this);
@@ -557,20 +561,12 @@ void XineObject::customEvent(QEvent *event)
 				int currentTitle = xine_get_stream_info(stream,
 					XINE_STREAM_INFO_DVD_TITLE_NUMBER);
 
-				if (!currentEncodedUrl.isEmpty()) {
-					if (currentEncodedUrl.startsWith("cdda:")) {
-						xine_get_autoplay_mrls(engine, "CD", &titleCount);
-						currentTitle = currentEncodedUrl.mid(
-							currentEncodedUrl.lastIndexOf('/') + 1).
-							toInt() + 1;
-					} else if (currentEncodedUrl.startsWith("vcd:")) {
-						xine_get_autoplay_mrls(engine, "VCD", &titleCount);
-						currentTitle = currentEncodedUrl.mid(
-							currentEncodedUrl.lastIndexOf('@') + 1).
-							toInt() + 1;
-					} else {
-						kWarning() << "internal error" << currentEncodedUrl;
-					}
+				if ((titleCount <= 0) && (overrideTitleCount > 0)) {
+					titleCount = overrideTitleCount;
+				}
+
+				if ((currentTitle <= 0) && (overrideCurrentTitle > 0)) {
+					currentTitle = overrideCurrentTitle;
 				}
 
 				parentProcess->updateTitles(titleCount, currentTitle);
@@ -662,11 +658,29 @@ void XineObject::customEvent(QEvent *event)
 			break;
 		case OpenStream:
 			parentProcess->sync(sequenceNumber);
+			overrideTitleCount = 0;
+			overrideCurrentTitle = 0;
 
-			if (encodedUrl.startsWith("cdda:") || encodedUrl.startsWith("vcd:")) {
-				currentEncodedUrl = encodedUrl;
-			} else {
-				currentEncodedUrl.clear();
+			if (encodedUrl.startsWith("cdda:")) {
+				overrideCurrentTitle =
+					encodedUrl.mid(encodedUrl.lastIndexOf('/') + 1).toInt();
+				QByteArray devicePath;
+
+				if (overrideCurrentTitle < 1) {
+					overrideCurrentTitle = 1;
+					devicePath = encodedUrl.mid(7);
+				} else {
+					devicePath = encodedUrl.mid(7, encodedUrl.lastIndexOf('/') - 7);
+				}
+
+				cdrom_drive *drive = cdda_identify(devicePath.constData(), 0, NULL);
+
+				if (drive != NULL) {
+					if (cdda_open(drive) == 0) {
+						overrideTitleCount = cdda_tracks(drive);
+						cdda_close(drive);
+					}
+				}
 			}
 
 			if (!encodedUrl.isEmpty()) {
