@@ -29,10 +29,6 @@
 #include <X11/Xlib.h>
 #include "xinecommands.h"
 
-extern "C" {
-#include <cdda_interface.h>
-};
-
 class XineParent : public XineParentMarshaller
 {
 public:
@@ -662,24 +658,13 @@ void XineObject::customEvent(QEvent *event)
 			overrideCurrentTitle = 0;
 
 			if (encodedUrl.startsWith("cdda:")) {
+				xine_get_autoplay_input_plugin_ids(engine);
+				xine_get_autoplay_mrls(engine, "CD", &overrideTitleCount);
 				overrideCurrentTitle =
 					encodedUrl.mid(encodedUrl.lastIndexOf('/') + 1).toInt();
-				QByteArray devicePath;
 
 				if (overrideCurrentTitle < 1) {
 					overrideCurrentTitle = 1;
-					devicePath = encodedUrl.mid(7);
-				} else {
-					devicePath = encodedUrl.mid(7, encodedUrl.lastIndexOf('/') - 7);
-				}
-
-				cdrom_drive *drive = cdda_identify(devicePath.constData(), 0, NULL);
-
-				if (drive != NULL) {
-					if (cdda_open(drive) == 0) {
-						overrideTitleCount = cdda_tracks(drive);
-						cdda_close(drive);
-					}
 				}
 			}
 

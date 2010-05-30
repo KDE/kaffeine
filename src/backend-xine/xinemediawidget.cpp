@@ -567,6 +567,11 @@ void XineMediaWidget::playbackFailed(const QString &errorMessage)
 void XineMediaWidget::playbackFinishedInternal()
 {
 	if ((currentState & Synchronized) != 0) {
+		if (currentUrl.startsWith("cdda") && (currentTitle < titleCount)) {
+			playNextTitle();
+			return;
+		}
+
 		if ((currentState & PlayingDvd) != 0) {
 			dirtyFlags |= PlayingDvdChanged;
 		}
