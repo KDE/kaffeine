@@ -51,8 +51,8 @@
 #include "backend-xine/xinemediawidget.h"
 #include "osdwidget.h"
 
-DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftActive(false),
-	ignoreSourceChange(false), readFd(-1), writeFd(-1), notifier(NULL)
+DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
+	timeShiftActive(false), ignoreSourceChange(false), readFd(-1), writeFd(-1), notifier(NULL)
 {
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -581,6 +581,9 @@ void MediaWidget::play(const KUrl &url, const KUrl &subtitleUrl)
 
 	externalSubtitles.clear();
 	currentExternalSubtitle = subtitleUrl;
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
 	backend->playUrl(url, subtitleUrl);
 }
 
@@ -601,6 +604,9 @@ void MediaWidget::playAudioCd()
 	currentSourceName.clear();
 	externalSubtitles.clear();
 	currentExternalSubtitle.clear();
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
 	backend->playAudioCd(deviceName);
 }
 
@@ -621,6 +627,9 @@ void MediaWidget::playVideoCd()
 	currentSourceName.clear();
 	externalSubtitles.clear();
 	currentExternalSubtitle.clear();
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
 	backend->playVideoCd(deviceName);
 }
 
@@ -641,6 +650,9 @@ void MediaWidget::playDvd()
 	currentSourceName.clear();
 	externalSubtitles.clear();
 	currentExternalSubtitle.clear();
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
 	backend->playDvd(deviceName);
 }
 
@@ -695,6 +707,9 @@ void MediaWidget::playDvb(const QString &channelName)
 	emit changeCaption(channelName);
 	externalSubtitles.clear();
 	currentExternalSubtitle.clear();
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
 	backend->playUrl(dvbFeed->getUrl(), KUrl());
 	dvbFeed->ignoreSourceChange = false;
 }
@@ -815,6 +830,10 @@ void MediaWidget::toggleMuted()
 
 void MediaWidget::previous()
 {
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
+
 	if (dvbFeed != NULL) {
 		emit previousDvbChannel();
 	} else if (!backend->playPreviousTitle()) {
@@ -824,6 +843,10 @@ void MediaWidget::previous()
 
 void MediaWidget::next()
 {
+	actionPlayPause->setText(textPause);
+	actionPlayPause->setIcon(iconPause);
+	actionPlayPause->setChecked(false);
+
 	if (dvbFeed != NULL) {
 		emit nextDvbChannel();
 	} else if (!backend->playNextTitle()) {
@@ -1264,7 +1287,8 @@ void MediaWidget::pausedChanged(bool paused)
 			osdWidget->showText(i18nc("osd", "Paused"), 1500);
 			backend->setPaused(true);
 
-			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
+			if ((dvbFeed != NULL) && !dvbFeed->timeShiftPrepared) {
+				dvbFeed->timeShiftPrepared = true;
 				dvbFeed->endOfData();
 				emit prepareDvbTimeShift();
 			}
@@ -1273,7 +1297,8 @@ void MediaWidget::pausedChanged(bool paused)
 			actionPlayPause->setText(textPause);
 			osdWidget->showText(i18nc("osd", "Playing"), 1500);
 
-			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive) {
+			if ((dvbFeed != NULL) && !dvbFeed->timeShiftActive &&
+			    dvbFeed->timeShiftPrepared) {
 				dvbFeed->timeShiftActive = true;
 				dvbFeed->ignoreSourceChange = true;
 				emit startDvbTimeShift();

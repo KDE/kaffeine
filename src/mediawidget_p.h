@@ -39,6 +39,7 @@ public:
 	void writeData(const QByteArray &data);
 	void endOfData();
 
+	bool timeShiftPrepared;
 	bool timeShiftActive;
 	bool ignoreSourceChange;
 	QStringList audioChannels;
