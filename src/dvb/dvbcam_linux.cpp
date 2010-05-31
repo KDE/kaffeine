@@ -38,7 +38,7 @@ public:
 	~DvbLinuxCamService() { }
 
 	enum PendingActions {
-		None,
+		Nothing,
 		Add,
 		Update,
 		Remove
@@ -112,7 +112,7 @@ void DvbLinuxCam::stopDescrambling(int serviceId)
 	}
 
 	switch (it->pendingAction) {
-	case DvbLinuxCamService::None:
+	case DvbLinuxCamService::Nothing:
 	case DvbLinuxCamService::Update:
 		it->pendingAction = DvbLinuxCamService::Remove;
 		break;
@@ -526,7 +526,7 @@ void DvbLinuxCam::customEvent(QEvent *event)
 	for (QMap<int, DvbLinuxCamService>::iterator it = services.begin();
 	     it != services.end(); ++it) {
 		switch (it->pendingAction) {
-		case DvbLinuxCamService::None:
+		case DvbLinuxCamService::Nothing:
 			continue;
 		case DvbLinuxCamService::Add:
 			if (activeCaPmts == 1) {
@@ -544,7 +544,7 @@ void DvbLinuxCam::customEvent(QEvent *event)
 			break;
 		}
 
-		it->pendingAction = DvbLinuxCamService::None;
+		it->pendingAction = DvbLinuxCamService::Nothing;
 	}
 
 	eventPosted = false;

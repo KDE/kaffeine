@@ -147,8 +147,8 @@ void SqlTableModelInterface::dataChanged(const QModelIndex &topLeft,
 	for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
 		quint32 key = rowToKeyMapping.at(row);
 
-		switch (pendingStatements.value(key, None)) {
-		case None:
+		switch (pendingStatements.value(key, Nothing)) {
+		case Nothing:
 			pendingStatements.insert(key, Update);
 			requestSubmission();
 			break;
@@ -158,7 +158,7 @@ void SqlTableModelInterface::dataChanged(const QModelIndex &topLeft,
 			break;
 		case Remove:
 			kError() << "invalid pending statement" <<
-				pendingStatements.value(key, None);
+				pendingStatements.value(key, Nothing);
 			break;
 		}
 	}
@@ -195,8 +195,8 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 			++key;
 		}
 
-		switch (pendingStatements.value(key, None)) {
-		case None:
+		switch (pendingStatements.value(key, Nothing)) {
+		case Nothing:
 			pendingStatements.insert(key, Insert);
 			requestSubmission();
 			break;
@@ -208,7 +208,7 @@ void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, 
 		case Insert:
 		case Update:
 			kError() << "invalid pending statement" <<
-				pendingStatements.value(key, None);
+				pendingStatements.value(key, Nothing);
 			break;
 		}
 
@@ -228,8 +228,8 @@ void SqlTableModelInterface::rowsRemoved(const QModelIndex &parent, int start, i
 	for (int row = end; row >= start; --row) {
 		quint32 key = rowToKeyMapping.at(row);
 
-		switch (pendingStatements.value(key, None)) {
-		case None:
+		switch (pendingStatements.value(key, Nothing)) {
+		case Nothing:
 		case RemoveAndInsert:
 		case Update:
 			pendingStatements.insert(key, Remove);
@@ -240,7 +240,7 @@ void SqlTableModelInterface::rowsRemoved(const QModelIndex &parent, int start, i
 			break;
 		case Remove:
 			kError() << "invalid pending statement" <<
-				pendingStatements.value(key, None);
+				pendingStatements.value(key, Nothing);
 			break;
 		}
 
@@ -276,7 +276,7 @@ void SqlTableModelInterface::submit()
 	for (QMap<quint32, PendingStatement>::const_iterator it = pendingStatements.constBegin();
 	     it != pendingStatements.constEnd(); ++it) {
 		switch (it.value()) {
-		case None:
+		case Nothing:
 			kError() << "invalid pending statement" << it.value();
 			break;
 		case RemoveAndInsert:

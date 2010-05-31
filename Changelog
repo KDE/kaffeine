@@ -4,6 +4,15 @@ Kaffeine Changelog
 
 Version (unreleased):
 
+Version 1.0 (2010-05-31):
+  - new dependency: libXss
+  - scheduled programs are shown in the program guide
+  - the begin and end margins for recordings are configurable
+  - CICAM is supported
+  - all audio pids are recorded during timeshift
+  - subtitle support (also autoloading)
+  - other fixes and improvements ...
+
 Version 1.0-pre3 (2010-01-31):
   - new dependencies: Qt SQLite plugin, xine-lib, libX11
     (Phonon is no longer needed)

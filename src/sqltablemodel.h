@@ -57,7 +57,7 @@ private slots:
 
 private:
 	enum PendingStatement {
-		None,
+		Nothing,
 		RemoveAndInsert,
 		Insert,
 		Update,
