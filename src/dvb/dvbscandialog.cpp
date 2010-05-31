@@ -371,6 +371,10 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	// start scan
 	Q_ASSERT(internal == NULL);
 
+	if (manager->getLiveView()->getChannel() == NULL) {
+		isLive = false; // FIXME workaround
+	}
+
 	if (isLive) {
 		const DvbChannel *channel = manager->getLiveView()->getChannel();
 		internal = new DvbScan(device, channel->source, channel->transponder);
