@@ -240,6 +240,7 @@ MainWindow::MainWindow()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(configureKaffeine()));
 	menu->addAction(collection->addAction("settings_kaffeine", action));
 
+	menuBar->addSeparator();
 	menuBar->addMenu(helpMenu());
 
 	// navigation bar - keep in sync with TabIndex enum!
