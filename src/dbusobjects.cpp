@@ -219,6 +219,26 @@ void MprisPlayerObject::ToggleFullScreen()
 	mediaWidget->toggleFullScreen();
 }
 
+void MprisPlayerObject::ShortSkipBackward()
+{
+	mediaWidget->shortSkipBackward();
+}
+
+void MprisPlayerObject::ShortSkipForward()
+{
+	mediaWidget->shortSkipForward();
+}
+
+void MprisPlayerObject::LongSkipBackward()
+{
+	mediaWidget->longSkipBackward();
+}
+
+void MprisPlayerObject::LongSkipForward()
+{
+	mediaWidget->longSkipForward();
+}
+
 MprisTrackListObject::MprisTrackListObject(PlaylistTab *playlistTab_, QObject *parent) :
 	QObject(parent), playlistTab(playlistTab_)
 {

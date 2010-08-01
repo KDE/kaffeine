@@ -115,6 +115,10 @@ public slots:
 	void decreaseVolume();
 	void toggleFullScreen();
 	void toggleMinimalMode();
+	void shortSkipBackward();
+	void shortSkipForward();
+	void longSkipBackward();
+	void longSkipForward();
 
 signals:
 	void displayModeChanged();
@@ -168,10 +172,6 @@ private slots:
 	void autoResizeTriggered(QAction *action);
 	void pausedChanged(bool paused);
 	void timeButtonClicked();
-	void longSkipBackward();
-	void shortSkipBackward();
-	void shortSkipForward();
-	void longSkipForward();
 	void jumpToPosition();
 	void currentAudioChannelChanged(int currentAudioChannel);
 	void currentSubtitleChanged(int currentSubtitle);

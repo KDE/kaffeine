@@ -74,8 +74,11 @@ public slots:
 	void IncreaseVolume();
 	void DecreaseVolume();
 	void ToggleMuted();
-
 	void ToggleFullScreen();
+	void ShortSkipBackward();
+	void ShortSkipForward();
+	void LongSkipBackward();
+	void LongSkipForward();
 
 /* // FIXME candidates
 	void PlayAudioCd();
@@ -83,10 +86,6 @@ public slots:
 	void PlayDvd();
 	void ChangeAudioChannel(int index);
 	void ChangeSubtitle(int index);
-	void LongSkipBackward();
-	void SkipBackward();
-	void SkipForward();
-	void LongSkipForward();
 	void TimeButtonClicked();
 	void AspectRatioAuto();
 	void AspectRatio4_3();
