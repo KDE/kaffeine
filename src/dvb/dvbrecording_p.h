@@ -28,28 +28,29 @@
 #include "dvbsi.h"
 
 class QCheckBox;
+class QTreeView;
 class KComboBox;
 class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
 
-class DvbRecording : public QObject, public QSharedData, private DvbPidFilter
+Q_DECLARE_METATYPE(DvbRecordingEntry)
+
+class DvbRecording : public QObject, public DvbRecordingEntry, public DvbPidFilter
 {
 	Q_OBJECT
 public:
-	explicit DvbRecording(DvbManager *manager_);
+	DvbRecording(DvbManager *manager_, const DvbRecordingEntry &entry);
 	~DvbRecording();
 
-	bool isRunning() const;
+	void assign(const DvbRecordingEntry &entry)
+	{
+		DvbRecordingEntry *thisEntry = this;
+		*thisEntry = entry;
+	}
+
 	void start();
 	void stop();
-
-	QString name;
-	QString channelName;
-	QDateTime begin; // local time
-	QTime duration;
-	QDateTime end; // local time
-	int repeat; // 1 (monday) | 2 (tuesday) | 4 (wednesday) | etc
 
 private slots:
 	void deviceStateChanged();
@@ -73,12 +74,46 @@ private:
 	bool pmtValid;
 };
 
+class DvbRecordingSqlInterface : public SqlTableModelInterface
+{
+public:
+	DvbRecordingSqlInterface(DvbManager *manager_, QAbstractItemModel *model,
+		QList<DvbRecording *> *recordings_, QObject *parent);
+	~DvbRecordingSqlInterface();
+
+private:
+	int insertFromSqlQuery(const QSqlQuery &query, int index);
+	void bindToSqlQuery(QSqlQuery &query, int index, int row) const;
+
+	DvbManager *manager;
+	QList<DvbRecording *> *recordings;
+};
+
+class DvbRecordingDialog : public KDialog
+{
+	Q_OBJECT
+public:
+	DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *recordingModel,
+		QWidget *parent);
+	~DvbRecordingDialog();
+
+private slots:
+	void newRecording();
+	void editRecording();
+	void removeRecording();
+
+private:
+	DvbManager *manager;
+	QAbstractItemModel *proxyModel;
+	QTreeView *treeView;
+};
+
 class DvbRecordingEditor : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbRecordingEditor(DvbManager *manager_, DvbRecordingModel *model_, int row_,
-		QWidget *parent);
+	DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *model_,
+		const QModelIndex &modelIndex_, QWidget *parent);
 	~DvbRecordingEditor();
 
 private slots:
@@ -92,29 +127,14 @@ private slots:
 private:
 	void accept();
 
-	DvbManager *manager;
-	DvbRecordingModel *model;
-	int row;
+	QAbstractItemModel *model;
+	QPersistentModelIndex persistentIndex;
 	KLineEdit *nameEdit;
 	KComboBox *channelBox;
 	DateTimeEdit *beginEdit;
 	DurationEdit *durationEdit;
 	DateTimeEdit *endEdit;
 	QCheckBox *dayCheckBoxes[7];
-};
-
-class DvbSqlRecordingModelInterface : public SqlTableModelInterface
-{
-public:
-	DvbSqlRecordingModelInterface(DvbManager *manager_, DvbRecordingModel *model_);
-	~DvbSqlRecordingModelInterface();
-
-private:
-	int insertFromSqlQuery(const QSqlQuery &query, int index);
-	void bindToSqlQuery(QSqlQuery &query, int index, int row) const;
-
-	DvbManager *manager;
-	DvbRecordingModel *model;
 };
 
 #endif /* DVBRECORDING_P_H */

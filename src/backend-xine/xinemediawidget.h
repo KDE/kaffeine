@@ -21,7 +21,6 @@
 #ifndef XINEMEDIAWIDGET_H
 #define XINEMEDIAWIDGET_H
 
-#include <QMap>
 #include "../mediawidget.h"
 
 class XineChildMarshaller;

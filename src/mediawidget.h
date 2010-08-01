@@ -34,7 +34,6 @@ class KActionCollection;
 class KComboBox;
 class KMenu;
 class KToolBar;
-class KUrl;
 class DvbFeed;
 class OsdWidget;
 class SeekSlider;

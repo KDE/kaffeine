@@ -23,7 +23,6 @@
 
 #include <QAbstractTableModel>
 #include <QTime>
-#include <KUrl>
 #include "../mediawidget.h"
 
 class PlaylistTrack

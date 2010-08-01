@@ -30,7 +30,6 @@
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
-#include "dvbrecording.h"
 
 static QString installPath(const char *component)
 {
@@ -227,7 +226,7 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 	parent(parent_), mediaWidget(mediaWidget_), dvbDumpEnabled(false)
 {
 	channelModel = new DvbSqlChannelModel(this);
-	recordingModel = new DvbRecordingModel(this);
+	recordingModel = new DvbRecordingModel(this, this);
 	epgModel = new DvbEpgModel(this);
 	liveView = new DvbLiveView(this);
 

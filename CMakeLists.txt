@@ -10,6 +10,7 @@ check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
 
 if(NOT HAVE_DVB)
   MESSAGE(STATUS "Disabled features:\nDVB  Digital television support for Linux\n")
+  set(HAVE_DVB 0)
 endif(NOT HAVE_DVB)
 
 add_subdirectory(deviceactions)

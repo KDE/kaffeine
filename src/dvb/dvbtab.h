@@ -21,6 +21,7 @@
 #ifndef DVBTAB_H
 #define DVBTAB_H
 
+#include <QTimer>
 #include <config-kaffeine.h>
 #include "../tabbase.h"
 #include "dvbrecording.h"
@@ -56,7 +57,7 @@ private slots:
 	void showEpgDialog();
 	void showRecordingDialog();
 	void instantRecord(bool checked);
-	void programRemoved(const DvbRecordingIndex &recordingIndex);
+	void programRemoved(const DvbRecordingKey &recordingKey);
 	void configureDvb();
 	void tuneOsdChannel();
 	void playChannel(const QModelIndex &index);
@@ -71,7 +72,7 @@ private:
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
 	KAction *instantRecordAction;
-	DvbRecordingIndex instantRecordingIndex;
+	DvbRecordingKey instantRecordingKey;
 	QSplitter *splitter;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
@@ -84,11 +85,15 @@ private:
 };
 
 #ifndef HAVE_DVB
+#error HAVE_DVB must be defined
+#endif /* HAVE_DVB */
+
+#if HAVE_DVB == 0
 inline void DvbTab::playChannel(QString const &) { }
 inline void DvbTab::playLastChannel() { }
 inline void DvbTab::toggleOsd() { }
 inline void DvbTab::toggleInstantRecord() { }
 inline void DvbTab::osdKeyPressed(int) { }
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 0 */
 
 #endif /* DVBTAB_H */

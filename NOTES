@@ -52,13 +52,8 @@ SQL table formats
   - column "Channel"
     - string; not empty
   - column "Begin"
-    - string; ISO 8601 encoded date and time; local time zone*
+    - string; ISO 8601 encoded date and time; UTC (ends with 'Z') or local time (older versions)
   - column "Duration"
     - string; ISO 8601 encoded time
   - column "Repeat"
     - int; (1 << 0) = on Mondays ... (1 << 6) = on Sundays
-
-*note about the time zone:
-Although local time is less flexible to use than UTC, knowledge about the local time zone is
-required anyway for repeated schedule entries (because the increment is +/- one hour when a DST
-switch occurs).

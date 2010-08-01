@@ -21,7 +21,6 @@
 #include "dvbdevice_debug.h"
 
 #include <QDir>
-#include <QFile>
 #include <QTimer>
 #include <KDebug>
 #include "dvbchannel.h"

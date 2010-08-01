@@ -30,11 +30,9 @@
 #include <KAction>
 #include <KDebug>
 #include <KLocale>
-#include <KMessageBox>
 #include <KStandardDirs>
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
-#include "dvbrecording.h"
 
 class DvbEitEntry
 {
@@ -91,12 +89,12 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), 
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
-	bool hasRecordingIndex = true;
+	bool hasRecordingKey = true;
 	int version;
 	stream >> version;
 
 	if (version == 0x1ce0eca7) {
-		hasRecordingIndex = false;
+		hasRecordingKey = false;
 	} else if (version != 0x79cffd36) {
 		kWarning() << "wrong version" << file.fileName();
 		return;
@@ -114,8 +112,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), 
 		stream >> entry.subheading;
 		stream >> entry.details;
 
-		if (hasRecordingIndex) {
-			stream >> entry.recordingIndex.key;
+		if (hasRecordingKey) {
+			stream >> entry.recordingKey.key;
 		}
 
 		if (stream.status() != QDataStream::Ok) {
@@ -129,14 +127,14 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), 
 
 		allEntries.append(entry);
 
-		if (entry.recordingIndex.isValid()) {
-			recordingIndexes.insert(entry.recordingIndex, &allEntries.last());
+		if (entry.recordingKey.isValid()) {
+			recordingKeys.insert(entry.recordingKey, &allEntries.last());
 		}
 	}
 
 	qSort(allEntries);
-	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingIndex)),
-		this, SLOT(programRemoved(DvbRecordingIndex)));
+	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingKey)),
+		this, SLOT(programRemoved(DvbRecordingKey)));
 }
 
 DvbEpgModel::~DvbEpgModel()
@@ -167,7 +165,7 @@ DvbEpgModel::~DvbEpgModel()
 		stream << entry.title;
 		stream << entry.subheading;
 		stream << entry.details;
-		stream << entry.recordingIndex.key;
+		stream << entry.recordingKey.key;
 	}
 }
 
@@ -196,7 +194,7 @@ QVariant DvbEpgModel::data(const QModelIndex &index, int role) const
 		if (index.column() == 2) {
 			const DvbEpgEntry *entry = filteredEntries.at(index.row());
 
-			if (entry->recordingIndex.isValid()) {
+			if (entry->recordingKey.isValid()) {
 				return KIcon("media-record");
 			}
 		}
@@ -320,28 +318,32 @@ void DvbEpgModel::scheduleProgram(int row, int extraSecondsBefore, int extraSeco
 {
 	DvbEpgEntry *entry = filteredEntries.at(row);
 
-	if (!entry->recordingIndex.isValid()) {
-		entry->recordingIndex = manager->getRecordingModel()->scheduleProgram(entry->title,
-			entry->channel,
-			entry->begin.toLocalTime().addSecs(-extraSecondsBefore),
-			entry->duration.addSecs(extraSecondsBefore + extraSecondsAfter));
-		recordingIndexes.insert(entry->recordingIndex, entry);
+	if (!entry->recordingKey.isValid()) {
+		DvbRecordingEntry recordingEntry;
+		recordingEntry.name = entry->title;
+		recordingEntry.channelName = entry->channel;
+		recordingEntry.begin = entry->begin.addSecs(-extraSecondsBefore);
+		recordingEntry.duration =
+			entry->duration.addSecs(extraSecondsBefore + extraSecondsAfter);
+		entry->recordingKey =
+			manager->getRecordingModel()->scheduleProgram(recordingEntry);
+		recordingKeys.insert(entry->recordingKey, entry);
 	} else {
-		recordingIndexes.remove(entry->recordingIndex);
-		manager->getRecordingModel()->removeProgram(entry->recordingIndex);
-		entry->recordingIndex = DvbRecordingIndex();
+		recordingKeys.remove(entry->recordingKey);
+		manager->getRecordingModel()->removeProgram(entry->recordingKey);
+		entry->recordingKey = DvbRecordingKey();
 	}
 
 	QModelIndex modelIndex = index(row, 2);
 	emit dataChanged(modelIndex, modelIndex);
 }
 
-void DvbEpgModel::programRemoved(const DvbRecordingIndex &recordingIndex)
+void DvbEpgModel::programRemoved(const DvbRecordingKey &recordingKey)
 {
-	DvbEpgEntry *entry = recordingIndexes.value(recordingIndex, NULL);
+	DvbEpgEntry *entry = recordingKeys.value(recordingKey, NULL);
 
 	if (entry != NULL) {
-		entry->recordingIndex = DvbRecordingIndex();
+		entry->recordingKey = DvbRecordingKey();
 		int row = filteredEntries.indexOf(entry);
 
 		if (row >= 0) {

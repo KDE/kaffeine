@@ -21,7 +21,6 @@
 #ifndef DVBEPG_H
 #define DVBEPG_H
 
-#include <QAbstractTableModel>
 #include <KDialog>
 #include "dvbrecording.h"
 #include "dvbsi.h"
@@ -31,7 +30,6 @@ class QListView;
 class QStringListModel;
 class QTreeView;
 class DvbEitEntry;
-class DvbManager;
 
 class DvbEpgEntry
 {
@@ -43,7 +41,7 @@ public:
 	QString title;
 	QString subheading;
 	QString details;
-	DvbRecordingIndex recordingIndex;
+	DvbRecordingKey recordingKey;
 
 	bool operator<(const DvbEpgEntry &x) const
 	{
@@ -76,13 +74,13 @@ public:
 	void scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter);
 
 private slots:
-	void programRemoved(const DvbRecordingIndex &recordingIndex);
+	void programRemoved(const DvbRecordingKey &recordingKey);
 
 private:
 	DvbManager *manager;
 	QList<DvbEpgEntry> allEntries;
 	QList<DvbEpgEntry *> filteredEntries;
-	QMap<DvbRecordingIndex, DvbEpgEntry *> recordingIndexes;
+	QMap<DvbRecordingKey, DvbEpgEntry *> recordingKeys;
 };
 
 class DvbEitFilter : public DvbSectionFilter

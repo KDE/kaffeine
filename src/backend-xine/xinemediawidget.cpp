@@ -24,7 +24,6 @@
 #include <QResizeEvent>
 #include <KDebug>
 #include <KMessageBox>
-#include <KUrl>
 #include <config-kaffeine.h>
 #include <errno.h>
 #include <unistd.h>

@@ -83,12 +83,12 @@ StartTab::StartTab(MainWindow *mainWindow)
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
-#ifdef HAVE_DVB
+#if HAVE_DVB == 1
 	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), this);
 	button->setShortcut(Qt::Key_5);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(playDvb()));
 	gridLayout->addWidget(button, 1, 1);
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 1 */
 }
 
 QAbstractButton *StartTab::addShortcut(const QString &name, const KIcon &icon, QWidget *parent)
@@ -225,10 +225,10 @@ MainWindow::MainWindow()
 	KMenu *playlistMenu = new KMenu(i18nc("menu bar", "Play&list"), this);
 	menuBar->addMenu(playlistMenu);
 
-#ifdef HAVE_DVB
+#if HAVE_DVB == 1
 	KMenu *dvbMenu = new KMenu(i18n("&Television"), this);
 	menuBar->addMenu(dvbMenu);
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 1 */
 
 	menu = new KMenu(i18n("&Settings"), this);
 	menuBar->addMenu(menu);
@@ -253,9 +253,9 @@ MainWindow::MainWindow()
 	tabBar->addTab(KIcon("start-here-kde"), i18n("Start"));
 	tabBar->addTab(KIcon("kaffeine"), i18n("Playback"));
 	tabBar->addTab(KIcon("view-media-playlist"), i18n("Playlist"));
-#ifdef HAVE_DVB
+#if HAVE_DVB == 1
 	tabBar->addTab(KIcon("video-television"), i18n("Television"));
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 1 */
 	tabBar->setShape(KTabBar::RoundedWest);
 	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
 	navigationBar->addWidget(tabBar);
@@ -296,11 +296,11 @@ MainWindow::MainWindow()
 	tabs.append(playlistTab);
 	stackedLayout->addWidget(playlistTab);
 
-#ifdef HAVE_DVB
+#if HAVE_DVB == 1
 	dvbTab = new DvbTab(dvbMenu, collection, mediaWidget);
 	tabs.append(dvbTab);
 	stackedLayout->addWidget(dvbTab);
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 1 */
 
 	currentTabIndex = StartTabId;
 
@@ -335,10 +335,10 @@ MainWindow::MainWindow()
 		QDBusConnection::ExportAllContents);
 	QDBusConnection::sessionBus().registerObject("/TrackList",
 		new MprisTrackListObject(playlistTab, this), QDBusConnection::ExportAllContents);
-#ifdef HAVE_DVB
+#if HAVE_DVB == 1
 	QDBusConnection::sessionBus().registerObject("/Television",
 		new DBusTelevisionObject(dvbTab, this), QDBusConnection::ExportAllContents);
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 1 */
 	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
 
 	show();
@@ -398,7 +398,7 @@ void MainWindow::parseArgs()
 		return;
 	}
 
-#ifdef HAVE_DVB
+#if HAVE_DVB == 1
 	if (args->isSet("dumpdvb")) {
 		dvbTab->enableDvbDump();
 	}
@@ -430,7 +430,7 @@ void MainWindow::parseArgs()
 		args->clear();
 		return;
 	}
-#endif /* HAVE_DVB */
+#endif /* HAVE_DVB == 1 */
 
 	if (args->count() > 0) {
 		QList<KUrl> urls;

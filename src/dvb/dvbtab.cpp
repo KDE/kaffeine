@@ -117,8 +117,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(mediaWidget, SIGNAL(previousDvbChannel()), this, SLOT(previousChannel()));
 	connect(mediaWidget, SIGNAL(nextDvbChannel()), this, SLOT(nextChannel()));
 
-	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingIndex)),
-		this, SLOT(programRemoved(DvbRecordingIndex)));
+	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingKey)),
+		this, SLOT(programRemoved(DvbRecordingKey)));
 
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
 	boxLayout->setMargin(0);
@@ -297,22 +297,25 @@ void DvbTab::instantRecord(bool checked)
 			return;
 		}
 
+		DvbRecordingEntry recordingEntry;
 		// FIXME use epg for name
-		instantRecordingIndex = manager->getRecordingModel()->scheduleProgram(
-			channel->name + QTime::currentTime().toString("-hhmmss"), channel->name,
-			QDateTime::currentDateTime(), QTime(12, 0));
-
+		recordingEntry.name = (channel->name + QTime::currentTime().toString("-hhmmss"));
+		recordingEntry.channelName = channel->name;
+		recordingEntry.begin = QDateTime::currentDateTime().toUTC();
+		recordingEntry.duration = QTime(12, 0);
+		instantRecordingKey =
+			manager->getRecordingModel()->scheduleProgram(recordingEntry);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"), 1500);
 	} else {
-		manager->getRecordingModel()->removeProgram(instantRecordingIndex);
+		manager->getRecordingModel()->removeProgram(instantRecordingKey);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
 	}
 }
 
-void DvbTab::programRemoved(const DvbRecordingIndex &recordingIndex)
+void DvbTab::programRemoved(const DvbRecordingKey &recordingKey)
 {
-	if (instantRecordingIndex == recordingIndex) {
-		instantRecordingIndex = DvbRecordingIndex();
+	if (instantRecordingKey == recordingKey) {
+		instantRecordingKey = DvbRecordingKey();
 		instantRecordAction->setChecked(false);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
 	}
