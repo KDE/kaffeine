@@ -298,6 +298,8 @@ MainWindow::MainWindow()
 
 #if HAVE_DVB == 1
 	dvbTab = new DvbTab(dvbMenu, collection, mediaWidget);
+	connect(this, SIGNAL(mayCloseApplication(bool*,QWidget*)),
+		dvbTab, SLOT(mayCloseApplication(bool*,QWidget*)));
 	tabs.append(dvbTab);
 	stackedLayout->addWidget(dvbTab);
 #endif /* HAVE_DVB == 1 */
@@ -597,6 +599,18 @@ void MainWindow::activateTab(int tabIndex)
 void MainWindow::hideCursor()
 {
 	setCursor(Qt::BlankCursor);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	bool ok = true;
+	emit mayCloseApplication(&ok, this);
+
+	if (!ok) {
+		event->ignore();
+	} else {
+		KMainWindow::closeEvent(event);
+	}
 }
 
 bool MainWindow::event(QEvent *event)

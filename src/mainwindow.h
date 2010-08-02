@@ -45,6 +45,9 @@ public:
 	static KCmdLineOptions cmdLineOptions();
 	void parseArgs();
 
+signals:
+	void mayCloseApplication(bool *ok, QWidget *parent);
+
 private slots:
 	void displayModeChanged();
 	void open();
@@ -69,6 +72,7 @@ private:
 		DvbTabId = 3
 	};
 
+	void closeEvent(QCloseEvent *event);
 	bool event(QEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 	void leaveEvent(QEvent *event);

@@ -32,13 +32,14 @@
 #include <KComboBox>
 #include <KDebug>
 #include <KLineEdit>
+#include <KMessageBox>
 #include <KStandardDirs>
 #include "../datetimeedit.h"
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
-	QAbstractTableModel(parent), manager(manager_)
+	QAbstractTableModel(parent), manager(manager_), hasActiveRecordings(false)
 {
 	sqlInterface = new DvbRecordingSqlInterface(manager, this, &recordings, this);
 
@@ -146,6 +147,31 @@ void DvbRecordingModel::showDialog(QWidget *parent)
 	dialog->show();
 }
 
+void DvbRecordingModel::mayCloseApplication(bool *ok, QWidget *parent)
+{
+	if (*ok) {
+		if (hasActiveRecordings) {
+			if (KMessageBox::warningYesNo(parent, i18nc("message box",
+			    "Kaffeine is currently recording programs.\n"
+			    "Do you really want to close the application?")) != KMessageBox::Yes) {
+				*ok = false;
+			}
+
+			return;
+		}
+
+		if (!recordings.isEmpty()) {
+			if (KMessageBox::questionYesNo(parent, i18nc("message box",
+			    "Kaffeine has scheduled recordings.\n"
+			    "Do you really want to close the application?")) != KMessageBox::Yes) {
+				*ok = false;
+			}
+
+			return;
+		}
+	}
+}
+
 void DvbRecordingModel::checkStatus()
 {
 	QDateTime currentLocalDateTime = QDateTime::currentDateTime();
@@ -192,15 +218,21 @@ void DvbRecordingModel::checkStatus()
 		}
 	}
 
+	hasActiveRecordings = false;
+
 	for (int row = 0; row < recordings.size(); ++row) {
 		DvbRecording *recording = recordings.at(row);
 		const DvbRecordingEntry &entry = recording->getEntry();
 
-		if (!entry.isRunning && (entry.begin <= currentDateTime)) {
-			recording->start();
+		if (entry.begin <= currentDateTime) {
+			hasActiveRecordings = true;
 
-			if (entry.isRunning) {
-				emit dataChanged(index(row, 0), index(row, 3));
+			if (!entry.isRunning) {
+				recording->start();
+
+				if (entry.isRunning) {
+					emit dataChanged(index(row, 0), index(row, 3));
+				}
 			}
 		}
 	}

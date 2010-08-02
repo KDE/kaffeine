@@ -51,6 +51,7 @@ public:
 
 public slots:
 	void osdKeyPressed(int key);
+	void mayCloseApplication(bool *ok, QWidget *parent);
 
 private slots:
 	void showChannelDialog();

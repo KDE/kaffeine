@@ -84,6 +84,7 @@ public:
 
 	QAbstractItemModel *createProxyModel(QObject *parent);
 	void showDialog(QWidget *parent);
+	void mayCloseApplication(bool *ok, QWidget *parent);
 
 signals:
 	void programRemoved(const DvbRecordingKey &key);
@@ -102,6 +103,7 @@ private:
 	DvbManager *manager;
 	QList<DvbRecording *> recordings;
 	SqlTableModelInterface *sqlInterface;
+	bool hasActiveRecordings;
 };
 
 #endif /* DVBRECORDING_H */

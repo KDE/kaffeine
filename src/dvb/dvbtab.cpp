@@ -259,6 +259,11 @@ void DvbTab::osdKeyPressed(int key)
 	}
 }
 
+void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
+{
+	manager->getRecordingModel()->mayCloseApplication(ok, parent);
+}
+
 void DvbTab::showChannelDialog()
 {
 	KDialog *dialog = new DvbScanDialog(manager, this);
