@@ -664,23 +664,6 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
-	QPushButton *pushButton = new QPushButton(KIcon("list-add"),
-		i18nc("add a new item to a list", "New"), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
-	boxLayout->addWidget(pushButton);
-
-	pushButton = new QPushButton(KIcon("configure"), i18n("Edit"), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
-	boxLayout->addWidget(pushButton);
-
-	pushButton = new QPushButton(KIcon("edit-delete"),
-		i18nc("remove an item from a list", "Remove"), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeRecording()));
-	boxLayout->addWidget(pushButton);
-
-	boxLayout->addStretch(1);
-	mainLayout->addLayout(boxLayout);
-
 	proxyModel = recordingModel->createProxyModel(widget);
 	treeView = new QTreeView(widget);
 	treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -689,17 +672,33 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *
 	treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	treeView->sortByColumn(2, Qt::AscendingOrder);
 	treeView->setSortingEnabled(true);
-	mainLayout->addWidget(treeView);
 
-	KAction *action = new KAction(KIcon("configure"), i18n("Edit"), widget);
+	KAction *action =
+		new KAction(KIcon("list-add"), i18nc("add a new item to a list", "New"), widget);
+	connect(action, SIGNAL(triggered()), this, SLOT(newRecording()));
+	treeView->addAction(action);
+	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), widget);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
+	boxLayout->addWidget(pushButton);
+
+	action = new KAction(KIcon("configure"), i18n("Edit"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
 	treeView->addAction(action);
+	pushButton = new QPushButton(action->icon(), action->text(), widget);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
+	boxLayout->addWidget(pushButton);
 
-	action = new KAction(KIcon("edit-delete"), i18nc("remove an item from a list", "Remove"),
-		widget);
+	action = new KAction(KIcon("edit-delete"),
+		i18nc("remove an item from a list", "Remove"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
+	pushButton = new QPushButton(action->icon(), action->text(), widget);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeRecording()));
+	boxLayout->addWidget(pushButton);
 
+	boxLayout->addStretch(1);
+	mainLayout->addLayout(boxLayout);
+	mainLayout->addWidget(treeView);
 	setMainWidget(widget);
 }
 
