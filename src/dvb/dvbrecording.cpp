@@ -730,7 +730,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeRecording()));
 	boxLayout->addWidget(pushButton);
 
-	boxLayout->addStretch(1);
+	boxLayout->addStretch();
 	mainLayout->addLayout(boxLayout);
 	mainLayout->addWidget(treeView);
 	setMainWidget(widget);
@@ -790,7 +790,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 	QGridLayout *gridLayout = new QGridLayout(widget);
 
 	nameEdit = new KLineEdit(widget);
-	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValid()));
+	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(nameEdit, 0, 1);
 
 	QLabel *label = new QLabel(i18n("Name:"), widget);
@@ -808,7 +808,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 
 	channelBox = new KComboBox(widget);
 	channelBox->addItems(channels);
-	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValid()));
+	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(channelBox, 1, 1);
 
 	label = new QLabel(i18n("Channel:"), widget);
@@ -845,8 +845,8 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 	gridLayout->addWidget(new QLabel(i18n("Repeat:"), widget), 5, 0);
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
-	QPushButton *pushButton = new QPushButton(
-		i18nc("button next to the 'Repeat:' label", "Never"), widget);
+	QPushButton *pushButton =
+		new QPushButton(i18nc("button next to the 'Repeat:' label", "Never"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(repeatNever()));
 	boxLayout->addWidget(pushButton);
 
@@ -892,7 +892,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 		durationEdit->setTime(QTime(2, 0));
 	}
 
-	checkValid();
+	checkValidity();
 
 	if (nameEdit->text().isEmpty()) {
 		nameEdit->setFocus();
@@ -935,7 +935,7 @@ void DvbRecordingEditor::repeatDaily()
 	}
 }
 
-void DvbRecordingEditor::checkValid()
+void DvbRecordingEditor::checkValidity()
 {
 	enableButtonOk(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
 }

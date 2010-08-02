@@ -120,7 +120,7 @@ private slots:
 	void endChanged(const QDateTime &end);
 	void repeatNever();
 	void repeatDaily();
-	void checkValid();
+	void checkValidity();
 
 private:
 	void accept();
