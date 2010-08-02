@@ -34,20 +34,17 @@ class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
 
-Q_DECLARE_METATYPE(DvbRecordingEntry)
+Q_DECLARE_METATYPE(const DvbRecordingEntry *)
 
-class DvbRecording : public QObject, public DvbRecordingEntry, public DvbPidFilter
+class DvbRecording : public QObject, public DvbPidFilter
 {
 	Q_OBJECT
 public:
-	DvbRecording(DvbManager *manager_, const DvbRecordingEntry &entry);
+	DvbRecording(DvbManager *manager_, const DvbRecordingEntry &entry_);
 	~DvbRecording();
 
-	void assign(const DvbRecordingEntry &entry)
-	{
-		DvbRecordingEntry *thisEntry = this;
-		*thisEntry = entry;
-	}
+	const DvbRecordingEntry &getEntry() const;
+	void setEntry(const DvbRecordingEntry &entry_);
 
 	void start();
 	void stop();
@@ -61,6 +58,7 @@ private:
 	void processData(const char data[188]);
 
 	DvbManager *manager;
+	DvbRecordingEntry entry;
 	QExplicitlySharedDataPointer<const DvbChannel> channel;
 	QFile file;
 	QList<QByteArray> buffers;
