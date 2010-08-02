@@ -24,6 +24,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QDir>
+#include <QHeaderView>
 #include <QLabel>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
@@ -698,6 +699,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *
 
 	proxyModel = recordingModel->createProxyModel(widget);
 	treeView = new QTreeView(widget);
+	treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
 	treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	treeView->setModel(proxyModel);
 	treeView->setRootIsDecorated(false);
@@ -732,6 +734,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *
 	mainLayout->addLayout(boxLayout);
 	mainLayout->addWidget(treeView);
 	setMainWidget(widget);
+	resize(100 * fontMetrics().averageCharWidth(), 20 * fontMetrics().height());
 }
 
 DvbRecordingDialog::~DvbRecordingDialog()
