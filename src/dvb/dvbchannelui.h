@@ -1,7 +1,7 @@
 /*
  * dvbchannelui.h
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,10 @@ class QSpinBox;
 class KComboBox;
 class KLineEdit;
 class DvbChannel;
-class DvbSqlChannelModelAdaptor;
+class SqlTableModelInterface;
 
 class DvbChannelModel : public QAbstractTableModel
 {
-	friend class DvbSqlChannelModelAdaptor;
 public:
 	explicit DvbChannelModel(QObject *parent);
 	~DvbChannelModel();
@@ -63,7 +62,7 @@ public:
 	void appendChannels(const QList<DvbChannel *> &list);
 	void updateChannel(int pos, DvbChannel *channel);
 
-private:
+protected:
 	bool adjustNameNumber(DvbChannel *channel) const;
 
 	QList<QSharedDataPointer<DvbChannel> > channels;
@@ -78,7 +77,7 @@ public:
 	~DvbSqlChannelModel();
 
 private:
-	DvbSqlChannelModelAdaptor *sqlAdaptor;
+	SqlTableModelInterface *sqlInterface;
 };
 
 class DvbChannelView : public ProxyTreeView

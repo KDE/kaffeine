@@ -1,7 +1,7 @@
 /*
  * dvbchannelui.cpp
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  */
 
 #include "dvbchannelui.h"
+#include "dvbchannelui_p.h"
 
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -32,7 +33,6 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KStandardDirs>
-#include "../sqltablemodel.h"
 #include "dvbsi.h"
 
 template<class T> static QStringList displayStrings();
@@ -421,111 +421,103 @@ bool DvbChannelModel::adjustNameNumber(DvbChannel *channel) const
 	return dataModified;
 }
 
-class DvbSqlChannelModelAdaptor : public SqlTableModelInterface
+DvbChannelSqlInterface::DvbChannelSqlInterface(QAbstractItemModel *model,
+	QList<QSharedDataPointer<DvbChannel> > *channels_, QObject *parent) :
+	SqlTableModelInterface(parent), channels(channels_)
 {
-public:
-	DvbSqlChannelModelAdaptor(DvbChannelModel *model_) : SqlTableModelInterface(model_),
-		model(model_)
-	{
-		init(model, "Channels", QStringList() << "Name" << "Number" << "Source" <<
-			"Transponder" << "NetworkId" << "TransportStreamId" << "PmtPid" <<
-			"PmtSection" << "AudioPid" << "Flags");
+	init(model, "Channels",
+		QStringList() << "Name" << "Number" << "Source" << "Transponder" << "NetworkId" <<
+		"TransportStreamId" << "PmtPid" << "PmtSection" << "AudioPid" << "Flags");
+}
 
-		for (int i = 0; i < model->channels.size(); ++i) {
-			if (model->adjustNameNumber(model->channels[i].data())) {
-				emit model->dataChanged(model->index(i, 0), model->index(i, 1));
+DvbChannelSqlInterface::~DvbChannelSqlInterface()
+{
+}
+
+int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index)
+{
+	DvbChannel *channel = new DvbChannel();
+	channel->name = query.value(index++).toString();
+	channel->number = query.value(index++).toInt();
+	channel->source = query.value(index++).toString();
+	QString transponder = query.value(index++).toString();
+	DvbTransponderBase *transponderBase = NULL;
+
+	if (transponder.size() >= 2) {
+		if (transponder.at(0) == 'C') {
+			transponderBase = new DvbCTransponder();
+		} else if (transponder.at(0) == 'S') {
+			if (transponder.at(1) != '2') {
+				transponderBase = new DvbSTransponder();
+			} else {
+				transponderBase = new DvbS2Transponder();
 			}
-
-			const DvbChannel *channel = model->channels.at(i).constData();
-			model->names.insert(channel->name);
-			model->numbers.insert(channel->number);
+		} else if (transponder.at(0) == 'T') {
+			transponderBase = new DvbTTransponder();
+		} else if (transponder.at(0) == 'A') {
+			transponderBase = new AtscTransponder();
 		}
 	}
 
-	~DvbSqlChannelModelAdaptor()
-	{
+	if ((transponderBase == NULL) || !transponderBase->fromString(transponder)) {
+		delete transponderBase;
+		delete channel;
+		return -1;
 	}
 
-private:
-	int insertFromSqlQuery(const QSqlQuery &query, int index)
-	{
-		DvbChannel *channel = new DvbChannel();
-		channel->name = query.value(index++).toString();
-		channel->number = query.value(index++).toInt();
-		channel->source = query.value(index++).toString();
-		QString transponder = query.value(index++).toString();
+	channel->transponder = DvbTransponder(transponderBase);
+	channel->networkId = query.value(index++).toInt();
+	channel->transportStreamId = query.value(index++).toInt();
+	channel->pmtPid = query.value(index++).toInt();
+	channel->pmtSection = query.value(index++).toByteArray();
+	channel->audioPid = query.value(index++).toInt();
+	int flags = query.value(index++).toInt();
+	channel->hasVideo = ((flags & 0x01) != 0);
+	channel->isScrambled = ((flags & 0x02) != 0);
 
-		DvbTransponderBase *transponderBase = NULL;
-
-		if (transponder.size() >= 2) {
-			if (transponder.at(0) == 'C') {
-				transponderBase = new DvbCTransponder();
-			} else if (transponder.at(0) == 'S') {
-				if (transponder.at(1) != '2') {
-					transponderBase = new DvbSTransponder();
-				} else {
-					transponderBase = new DvbS2Transponder();
-				}
-			} else if (transponder.at(0) == 'T') {
-				transponderBase = new DvbTTransponder();
-			} else if (transponder.at(0) == 'A') {
-				transponderBase = new AtscTransponder();
-			}
-		}
-
-		if ((transponderBase == NULL) || !transponderBase->fromString(transponder)) {
-			delete transponderBase;
-			delete channel;
-			return -1;
-		}
-
-		channel->transponder = DvbTransponder(transponderBase);
-		channel->networkId = query.value(index++).toInt();
-		channel->transportStreamId = query.value(index++).toInt();
-		channel->pmtPid = query.value(index++).toInt();
-		channel->pmtSection = query.value(index++).toByteArray();
-		channel->audioPid = query.value(index++).toInt();
-		int flags = query.value(index++).toInt();
-
-		channel->hasVideo = ((flags & 0x01) != 0);
-		channel->isScrambled = ((flags & 0x02) != 0);
-
-		if (channel->name.isEmpty() || (channel->number < 1) || channel->source.isEmpty() ||
-		    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
-		    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
-		    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) ||
-		    channel->pmtSection.isEmpty() ||
-		    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
-			delete channel;
-			return -1;
-		}
-
-		model->channels.append(QSharedDataPointer<DvbChannel>(channel));
-		return (model->channels.size() - 1);
+	if (channel->name.isEmpty() || (channel->number < 1) || channel->source.isEmpty() ||
+	    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
+	    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
+	    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
+	    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
+		delete channel;
+		return -1;
 	}
 
-	void bindToSqlQuery(QSqlQuery &query, int index, int row) const
-	{
-		const DvbChannel *channel = model->getChannel(row);
-		query.bindValue(index++, channel->name);
-		query.bindValue(index++, channel->number);
-		query.bindValue(index++, channel->source);
-		query.bindValue(index++, channel->transponder->toString());
-		query.bindValue(index++, channel->networkId);
-		query.bindValue(index++, channel->transportStreamId);
-		query.bindValue(index++, channel->pmtPid);
-		query.bindValue(index++, channel->pmtSection);
-		query.bindValue(index++, channel->audioPid);
-		query.bindValue(index++, (channel->hasVideo ? 0x01 : 0) |
-					 (channel->isScrambled ? 0x02 : 0));
-	}
+	int row = channels->size();
+	channels->append(QSharedDataPointer<DvbChannel>(channel));
+	return row;
+}
 
-	DvbChannelModel *model;
-};
+void DvbChannelSqlInterface::bindToSqlQuery(QSqlQuery &query, int index, int row) const
+{
+	const DvbChannel *channel = channels->at(row);
+	query.bindValue(index++, channel->name);
+	query.bindValue(index++, channel->number);
+	query.bindValue(index++, channel->source);
+	query.bindValue(index++, channel->transponder->toString());
+	query.bindValue(index++, channel->networkId);
+	query.bindValue(index++, channel->transportStreamId);
+	query.bindValue(index++, channel->pmtPid);
+	query.bindValue(index++, channel->pmtSection);
+	query.bindValue(index++, channel->audioPid);
+	query.bindValue(index++, (channel->hasVideo ? 0x01 : 0) |
+				 (channel->isScrambled ? 0x02 : 0));
+}
 
 DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent)
 {
-	sqlAdaptor = new DvbSqlChannelModelAdaptor(this);
+	sqlInterface = new DvbChannelSqlInterface(this, &channels, this);
+
+	for (int i = 0; i < channels.size(); ++i) {
+		if (adjustNameNumber(channels[i].data())) {
+			emit dataChanged(index(i, 0), index(i, 1));
+		}
+
+		const DvbChannel *channel = channels.at(i).constData();
+		names.insert(channel->name);
+		numbers.insert(channel->number);
+	}
 
 	// compatibility code
 
@@ -567,7 +559,7 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 
 DvbSqlChannelModel::~DvbSqlChannelModel()
 {
-	sqlAdaptor->flush();
+	sqlInterface->flush();
 }
 
 DvbChannelView::DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent) :
