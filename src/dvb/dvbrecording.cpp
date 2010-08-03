@@ -403,7 +403,7 @@ void DvbRecording::setEntry(const DvbRecordingEntry &entry_)
 		entry.begin = entry.begin.toUTC();
 	}
 
-	// the seconds and microseconds aren't visible --> set them to zero
+	// the seconds and milliseconds aren't visible --> set them to zero
 	entry.begin = entry.begin.addMSecs(-(QTime().msecsTo(entry.begin.time()) % 60000));
 }
 
