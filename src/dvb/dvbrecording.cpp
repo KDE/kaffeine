@@ -322,7 +322,7 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 
 		break;
 	    }
-	case DvbRecordingRole:
+	case DvbRecordingEntryRole:
 		return QVariant::fromValue(&recordings.at(index.row())->getEntry());
 	}
 
@@ -868,8 +868,9 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 	setMainWidget(widget);
 
 	if (persistentIndex.isValid()) {
-		const DvbRecordingEntry *entry = model->data(persistentIndex,
-			DvbRecordingModel::DvbRecordingRole).value<const DvbRecordingEntry *>();
+		const DvbRecordingEntry *entry =
+			model->data(persistentIndex, DvbRecordingModel::DvbRecordingEntryRole).
+			value<const DvbRecordingEntry *>();
 		nameEdit->setText(entry->name);
 		channelBox->setCurrentIndex(channels.indexOf(entry->channelName));
 		beginEdit->setDateTime(entry->begin.toLocalTime());
