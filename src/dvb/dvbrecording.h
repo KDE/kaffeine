@@ -79,7 +79,7 @@ public:
 	enum ItemDataRole
 	{
 		SortRole = Qt::UserRole,
-		EntryRole = Qt::UserRole + 1
+		DvbRecordingRole = Qt::UserRole + 1
 	};
 
 	QAbstractItemModel *createProxyModel(QObject *parent);
