@@ -647,7 +647,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *p
 	case DvbTransponderBase::DvbC: {
 		const DvbCTransponder *tp = channel->transponder->getDvbCTransponder();
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
-		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(
+			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
 		gridLayout->addWidget(new QLabel(i18n("Symbol rate (kS/s):")), 2, 0);
 		gridLayout->addWidget(new QLabel(QString::number(tp->symbolRate / 1000.0)), 2, 1);
 		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 3, 0);
@@ -686,7 +687,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *p
 	case DvbTransponderBase::DvbT: {
 		const DvbTTransponder *tp = channel->transponder->getDvbTTransponder();
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
-		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(
+			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
 		gridLayout->addWidget(new QLabel(i18n("Bandwidth:")), 2, 0);
 		gridLayout->addWidget(new QLabel(enumToString(tp->bandwidth)), 2, 1);
 		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 3, 0);
@@ -706,7 +708,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *p
 	case DvbTransponderBase::Atsc: {
 		const AtscTransponder *tp = channel->transponder->getAtscTransponder();
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
-		gridLayout->addWidget(new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(
+			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
 		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 2, 0);
 		gridLayout->addWidget(new QLabel(enumToString(tp->modulation)), 2, 1);
 		break;
@@ -738,7 +741,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *p
 
 	if (pmtParser.teletextPid != -1) {
 		gridLayout->addWidget(new QLabel(i18n("Teletext PID:")), row, 0);
-		gridLayout->addWidget(new QLabel(QString::number(pmtParser.teletextPid)), row++, 1);
+		gridLayout->addWidget(
+			new QLabel(QString::number(pmtParser.teletextPid)), row++, 1);
 	}
 
 	gridLayout->addItem(new QSpacerItem(0, 0), row, 0, 1, 2);
