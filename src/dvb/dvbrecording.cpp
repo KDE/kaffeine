@@ -277,11 +277,11 @@ QVariant DvbRecordingModel::headerData(int section, Qt::Orientation orientation,
 
 QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 {
+	const DvbRecordingEntry &entry = recordings.at(index.row())->getEntry();
+
 	switch (role) {
 	case Qt::DecorationRole:
 		if (index.column() == 0) {
-			const DvbRecordingEntry &entry = recordings.at(index.row())->getEntry();
-
 			if (entry.isRunning) {
 				return KIcon("media-record");
 			} else if (entry.repeat != 0) {
@@ -290,9 +290,7 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 		}
 
 		break;
-	case Qt::DisplayRole: {
-		const DvbRecordingEntry &entry = recordings.at(index.row())->getEntry();
-
+	case Qt::DisplayRole:
 		switch (index.column()) {
 		case 0:
 			return entry.name;
@@ -305,10 +303,7 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 		}
 
 		break;
-	    }
-	case SortRole: {
-		const DvbRecordingEntry &entry = recordings.at(index.row())->getEntry();
-
+	case SortRole:
 		switch (index.column()) {
 		case 0:
 			return entry.name;
@@ -321,9 +316,8 @@ QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
 		}
 
 		break;
-	    }
 	case DvbRecordingEntryRole:
-		return QVariant::fromValue(&recordings.at(index.row())->getEntry());
+		return QVariant::fromValue(&entry);
 	}
 
 	return QVariant();
