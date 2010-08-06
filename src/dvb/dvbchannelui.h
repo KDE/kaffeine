@@ -21,13 +21,10 @@
 #ifndef DVBCHANNELUI_H
 #define DVBCHANNELUI_H
 
-#include <KDialog>
-#include "../proxytreeview.h"
+#include <QTreeView>
 
-class QCheckBox;
-class QSpinBox;
-class KComboBox;
-class KLineEdit;
+class QAbstractProxyModel;
+class KAction;
 class DvbChannel;
 class SqlTableModelInterface;
 
@@ -41,19 +38,18 @@ public:
 	 * channel names and numbers are guaranteed to be unique within this model
 	 */
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	bool removeRows(int row, int count, const QModelIndex &parent);
+	enum ItemDataRole
+	{
+		DvbChannelRole = Qt::UserRole
+	};
+
+	QAbstractProxyModel *createProxyModel(QObject *parent);
 
 	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
 	void cloneFrom(const DvbChannelModel *other);
-	void clear();
 
-	const DvbChannel *getChannel(int row) const;
-	int indexOfName(const QString &name) const;
-	int indexOfNumber(int number) const;
+	QModelIndex findChannelByName(const QString &name) const;
+	QModelIndex findChannelByNumber(int number) const;
 
 	/*
 	 * these two functions automatically adjust the channel numbers
@@ -62,6 +58,13 @@ public:
 	void appendChannels(const QList<DvbChannel *> &list);
 	void updateChannel(int pos, DvbChannel *channel);
 
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	bool removeRows(int row, int count, const QModelIndex &parent);
+	bool setData(const QModelIndex &modelIndex, const QVariant &value, int role);
+
 protected:
 	bool adjustNameNumber(DvbChannel *channel) const;
 
@@ -69,6 +72,8 @@ protected:
 	QSet<QString> names;
 	QSet<int> numbers;
 };
+
+Q_DECLARE_METATYPE(const DvbChannel *)
 
 class DvbSqlChannelModel : public DvbChannelModel
 {
@@ -80,42 +85,20 @@ private:
 	SqlTableModelInterface *sqlInterface;
 };
 
-class DvbChannelView : public ProxyTreeView
+class DvbChannelView : public QTreeView
 {
 	Q_OBJECT
 public:
-	DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent);
+	explicit DvbChannelView(QWidget *parent);
 	~DvbChannelView();
 
-	void addDeleteAction(); // should only be used in the scan dialog
+	KAction *addEditAction();
+	KAction *addRemoveAction();
 
-private slots:
+public slots:
 	void editChannel();
-	void deleteChannel();
-
-private:
-	DvbChannelModel *channelModel;
-};
-
-class DvbChannelEditor : public KDialog
-{
-public:
-	DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *parent);
-	~DvbChannelEditor();
-
-private:
-	void accept();
-
-	DvbChannelModel *model;
-	int row;
-	KLineEdit *nameEdit;
-	QSpinBox *numberBox;
-	QSpinBox *networkIdBox;
-	QSpinBox *transportStreamIdBox;
-	QSpinBox *serviceIdBox;
-	KComboBox *audioChannelBox;
-	QList<int> audioPids;
-	QCheckBox *scrambledBox;
+	void removeChannel();
+	void removeAllChannels();
 };
 
 #endif /* DVBCHANNELUI_H */

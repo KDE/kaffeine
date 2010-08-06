@@ -26,10 +26,12 @@
 #include "../tabbase.h"
 #include "dvbrecording.h"
 
+class QAbstractProxyModel;
 class QSplitter;
 class KAction;
 class KActionCollection;
 class KMenu;
+class DvbChannel;
 class DvbChannelView;
 class DvbTimeShiftCleaner;
 class MediaWidget;
@@ -68,13 +70,14 @@ private slots:
 
 private:
 	void activate();
-	void playChannel(int row);
+	void playChannel(const DvbChannel *channel, const QModelIndex &index);
 
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
 	KAction *instantRecordAction;
 	DvbRecordingKey instantRecordingKey;
 	QSplitter *splitter;
+	QAbstractProxyModel *channelProxyModel;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
 	QString osdChannel;

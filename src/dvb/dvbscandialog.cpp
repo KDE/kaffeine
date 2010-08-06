@@ -26,6 +26,8 @@
 #include <QPainter>
 #include <QProgressBar>
 #include <QPushButton>
+#include <QSortFilterProxyModel>
+#include <KAction>
 #include <KComboBox>
 #include <KLed>
 #include <KLocalizedString>
@@ -82,6 +84,13 @@ public:
 	explicit DvbPreviewChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
 	~DvbPreviewChannelModel() { }
 
+	enum ItemDataRole
+	{
+		DvbPreviewChannelRole = Qt::UserRole
+	};
+
+	QAbstractItemModel *createProxyModel(QObject *parent);
+
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
@@ -114,6 +123,18 @@ private:
 	QList<DvbPreviewChannel> channels;
 };
 
+Q_DECLARE_METATYPE(const DvbPreviewChannel *)
+
+QAbstractItemModel *DvbPreviewChannelModel::createProxyModel(QObject *parent)
+{
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
+	proxyModel->setDynamicSortFilter(true);
+	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	proxyModel->setSortLocaleAware(true);
+	proxyModel->setSourceModel(this);
+	return proxyModel;
+}
+
 int DvbPreviewChannelModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
@@ -134,14 +155,11 @@ int DvbPreviewChannelModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || index.row() >= channels.size()) {
-		return QVariant();
-	}
+	const DvbPreviewChannel &channel = channels.at(index.row());
 
-	if (role == Qt::DecorationRole) {
+	switch (role) {
+	case Qt::DecorationRole:
 		if (index.column() == 0) {
-			const DvbPreviewChannel &channel = channels.at(index.row());
-
 			if (channel.hasVideo) {
 				if (!channel.isScrambled) {
 					return KIcon("video-television");
@@ -156,15 +174,21 @@ QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 				}
 			}
 		}
-	} else if (role == Qt::DisplayRole) {
+
+		break;
+	case Qt::DisplayRole:
 		switch (index.column()) {
 		case 0:
-			return channels.at(index.row()).name;
+			return channel.name;
 		case 1:
-			return channels.at(index.row()).provider;
+			return channel.provider;
 		case 2:
-			return channels.at(index.row()).snr;
+			return channel.snr;
 		}
+
+		break;
+	case DvbPreviewChannelRole:
+		return QVariant::fromValue(&channel);
 	}
 
 	return QVariant();
@@ -199,35 +223,35 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 
 	QGroupBox *groupBox = new QGroupBox(i18n("Channels"), mainWidget);
 	QBoxLayout *groupLayout = new QVBoxLayout(groupBox);
+	QBoxLayout *boxLayout = new QHBoxLayout();
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->cloneFrom(manager->getChannelModel());
 
-	DvbChannelView *channelView = new DvbChannelView(channelModel, groupBox);
-
-	QBoxLayout *boxLayout = new QHBoxLayout();
-
-	QPushButton *button = new QPushButton(KIcon("configure"), i18n("Edit"), groupBox);
-	connect(button, SIGNAL(clicked(bool)), channelView, SLOT(editChannel()));
-	boxLayout->addWidget(button);
-
-	button = new QPushButton(KIcon("edit-delete"),
-				 i18nc("remove an item from a list", "Remove"), groupBox);
-	connect(button, SIGNAL(clicked(bool)), channelView, SLOT(deleteChannel()));
-	boxLayout->addWidget(button);
-
-	button = new QPushButton(KIcon("edit-clear-list"),
-				 i18nc("remove all items from a list", "Clear"), groupBox);
-	connect(button, SIGNAL(clicked(bool)), this, SLOT(removeAllChannels()));
-	boxLayout->addWidget(button);
-	groupLayout->addLayout(boxLayout);
-
-	channelView->addDeleteAction();
-	channelView->setModel(channelModel);
+	DvbChannelView *channelView = new DvbChannelView(groupBox);
+	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	channelView->setModel(channelModel->createProxyModel(channelView));
 	channelView->setRootIsDecorated(false);
 	channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	channelView->sortByColumn(0, Qt::AscendingOrder);
 	channelView->setSortingEnabled(true);
+
+	KAction *action = channelView->addEditAction();
+	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), groupBox);
+	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(editChannel()));
+	boxLayout->addWidget(pushButton);
+
+	action = channelView->addRemoveAction();
+	pushButton = new QPushButton(action->icon(), action->text(), groupBox);
+	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(removeChannel()));
+	boxLayout->addWidget(pushButton);
+
+	pushButton = new QPushButton(KIcon("edit-clear-list"),
+		i18nc("remove all items from a list", "Clear"), groupBox);
+	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(removeAllChannels()));
+	boxLayout->addWidget(pushButton);
+	groupLayout->addLayout(boxLayout);
+
 	groupLayout->addWidget(channelView);
 	mainLayout->addWidget(groupBox);
 
@@ -296,13 +320,13 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	connect(providerCheckBox, SIGNAL(clicked(bool)), providerBox, SLOT(setEnabled(bool)));
 	groupLayout->addWidget(providerBox);
 
-	button = new QPushButton(i18n("Add Filtered"), groupBox);
-	connect(button, SIGNAL(clicked(bool)), this, SLOT(addFilteredChannels()));
-	groupLayout->addWidget(button);
+	pushButton = new QPushButton(i18n("Add Filtered"), groupBox);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addFilteredChannels()));
+	groupLayout->addWidget(pushButton);
 
-	button = new QPushButton(i18n("Add Selected"), groupBox);
-	connect(button, SIGNAL(clicked(bool)), this, SLOT(addSelectedChannels()));
-	groupLayout->addWidget(button);
+	pushButton = new QPushButton(i18n("Add Selected"), groupBox);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSelectedChannels()));
+	groupLayout->addWidget(pushButton);
 	boxLayout->addWidget(groupBox);
 	mainLayout->addLayout(boxLayout);
 
@@ -310,8 +334,8 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	groupLayout = new QVBoxLayout(groupBox);
 
 	previewModel = new DvbPreviewChannelModel(this);
-	scanResultsView = new ProxyTreeView(groupBox);
-	scanResultsView->setModel(previewModel);
+	scanResultsView = new QTreeView(groupBox);
+	scanResultsView->setModel(previewModel->createProxyModel(groupBox));
 	scanResultsView->setRootIsDecorated(false);
 	scanResultsView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	scanResultsView->sortByColumn(0, Qt::AscendingOrder);
@@ -466,9 +490,16 @@ void DvbScanDialog::updateStatus()
 void DvbScanDialog::addSelectedChannels()
 {
 	QList<const DvbPreviewChannel *> channels;
+	QSet<int> selectedRows;
 
-	foreach (int row, scanResultsView->selectedRows()) {
-		channels.append(&previewModel->getChannel(row));
+	foreach (const QModelIndex &modelIndex,
+		 scanResultsView->selectionModel()->selectedIndexes()) {
+		if (!selectedRows.contains(modelIndex.row())) {
+			selectedRows.insert(modelIndex.row());
+			channels.append(scanResultsView->model()->data(modelIndex,
+				DvbPreviewChannelModel::DvbPreviewChannelRole).
+				value<const DvbPreviewChannel *>());
+		}
 	}
 
 	addUpdateChannels(channels);
@@ -513,11 +544,6 @@ void DvbScanDialog::addFilteredChannels()
 	}
 
 	addUpdateChannels(channels);
-}
-
-void DvbScanDialog::removeAllChannels()
-{
-	channelModel->clear();
 }
 
 void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)

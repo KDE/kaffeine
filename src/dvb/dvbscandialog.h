@@ -27,6 +27,7 @@
 
 class QCheckBox;
 class QProgressBar;
+class QTreeView;
 class KComboBox;
 class KLed;
 class DvbChannelModel;
@@ -36,7 +37,6 @@ class DvbManager;
 class DvbPreviewChannel;
 class DvbPreviewChannelModel;
 class DvbScan;
-class ProxyTreeView;
 
 class DvbScanDialog : public KDialog
 {
@@ -56,7 +56,6 @@ private slots:
 
 	void addSelectedChannels();
 	void addFilteredChannels();
-	void removeAllChannels();
 
 private:
 	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);
@@ -77,7 +76,7 @@ private:
 	QStringList providers;
 	KComboBox *providerBox;
 	DvbPreviewChannelModel *previewModel;
-	ProxyTreeView *scanResultsView;
+	QTreeView *scanResultsView;
 
 	DvbDevice *device;
 	QTimer statusTimer;

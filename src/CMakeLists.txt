@@ -9,7 +9,6 @@ set(kaffeine_SRCS
     mainwindow.cpp
     mediawidget.cpp
     osdwidget.cpp
-    proxytreeview.cpp
     sqlhelper.cpp
     sqltablemodel.cpp)
 

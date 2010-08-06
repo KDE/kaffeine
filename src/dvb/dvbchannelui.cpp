@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QGroupBox>
 #include <QLabel>
+#include <QSortFilterProxyModel>
 #include <QSpinBox>
 #include <KAction>
 #include <KComboBox>
@@ -172,6 +173,16 @@ DvbChannelModel::~DvbChannelModel()
 {
 }
 
+QAbstractProxyModel *DvbChannelModel::createProxyModel(QObject *parent)
+{
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
+	proxyModel->setDynamicSortFilter(true);
+	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	proxyModel->setSortLocaleAware(true);
+	proxyModel->setSourceModel(this);
+	return proxyModel;
+}
+
 int DvbChannelModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
@@ -192,14 +203,11 @@ int DvbChannelModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 {
-	if (!index.isValid() || index.row() >= channels.size()) {
-		return QVariant();
-	}
+	const DvbChannel *channel = channels.at(index.row());
 
-	if (role != Qt::DisplayRole) {
-		if ((role == Qt::DecorationRole) && (index.column() == 0)) {
-			const DvbChannel *channel = channels.at(index.row()).constData();
-
+	switch (role) {
+	case Qt::DecorationRole:
+		if (index.column() == 0) {
 			if (channel->hasVideo) {
 				if (!channel->isScrambled) {
 					return KIcon("video-television");
@@ -215,14 +223,16 @@ QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 			}
 		}
 
-		return QVariant();
-	}
+		break;
+	case Qt::DisplayRole:
+		switch (index.column()) {
+		case 0:
+			return channel->name;
+		case 1:
+			return channel->number;
+		}
 
-	switch (index.column()) {
-	case 0:
-		return channels.at(index.row())->name;
-	case 1:
-		return channels.at(index.row())->number;
+		break;
 	}
 
 	return QVariant();
@@ -263,31 +273,39 @@ bool DvbChannelModel::removeRows(int row, int count, const QModelIndex &parent)
 	return true;
 }
 
-const DvbChannel *DvbChannelModel::getChannel(int row) const
+bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &value, int role)
 {
-	return channels.at(row).constData();
+	Q_UNUSED(role)
+	const DvbChannel *channel = value.value<const DvbChannel *>();
+
+	if (channel != NULL) {
+		updateChannel(modelIndex.row(), new DvbChannel(*channel));
+		return true;
+	}
+
+	return false;
 }
 
-int DvbChannelModel::indexOfName(const QString &name) const
+QModelIndex DvbChannelModel::findChannelByName(const QString &name) const
 {
 	for (int row = 0; row < channels.size(); ++row) {
 		if (channels.at(row)->name == name) {
-			return row;
+			return index(row, 0);
 		}
 	}
 
-	return -1;
+	return QModelIndex();
 }
 
-int DvbChannelModel::indexOfNumber(int number) const
+QModelIndex DvbChannelModel::findChannelByNumber(int number) const
 {
 	for (int row = 0; row < channels.size(); ++row) {
 		if (channels.at(row)->number == number) {
-			return row;
+			return index(row, 0);
 		}
 	}
 
-	return -1;
+	return QModelIndex();
 }
 
 QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
@@ -301,19 +319,6 @@ void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 	names = other->names;
 	numbers = other->numbers;
 	reset();
-}
-
-void DvbChannelModel::clear()
-{
-	int size = channels.size();
-
-	if (size > 0) {
-		beginRemoveRows(QModelIndex(), 0, size - 1);
-		channels.clear();
-		names.clear();
-		numbers.clear();
-		endRemoveRows();
-	}
 }
 
 void DvbChannelModel::appendChannels(const QList<DvbChannel *> &list)
@@ -562,47 +567,65 @@ DvbSqlChannelModel::~DvbSqlChannelModel()
 	sqlInterface->flush();
 }
 
-DvbChannelView::DvbChannelView(DvbChannelModel *channelModel_, QWidget *parent) :
-	ProxyTreeView(parent), channelModel(channelModel_)
+DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent)
 {
-	KAction *action = new KAction(i18n("Edit"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
-	addAction(action);
-
-	// FIXME Change Icon action
 }
 
 DvbChannelView::~DvbChannelView()
 {
 }
 
-void DvbChannelView::addDeleteAction()
+KAction *DvbChannelView::addEditAction()
+{
+	KAction *action = new KAction(i18n("Edit"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
+	addAction(action);
+	return action;
+}
+
+KAction *DvbChannelView::addRemoveAction()
 {
 	KAction *action = new KAction(i18nc("remove an item from a list", "Remove"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(deleteChannel()));
+	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
+	return action;
 }
 
 void DvbChannelView::editChannel()
 {
-	int row = selectedRow();
+	QModelIndex index = currentIndex();
 
-	if (row >= 0) {
-		KDialog *dialog = new DvbChannelEditor(channelModel, row, this);
+	if (index.isValid()) {
+		KDialog *dialog = new DvbChannelEditor(model(), index, this);
 		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 		dialog->setModal(true);
 		dialog->show();
 	}
 }
 
-void DvbChannelView::deleteChannel()
+void DvbChannelView::removeChannel()
 {
-	QList<int> rows = selectedRows();
-	qSort(rows);
+	QMap<int, char> selectedRows;
 
-	for (int i = rows.size() - 1; i >= 0; --i) {
-		// FIXME compress
-		channelModel->removeRow(rows.at(i));
+	foreach (const QModelIndex &modelIndex, selectionModel()->selectedIndexes()) {
+		selectedRows.insert(modelIndex.row(), 0);
+	}
+
+	QAbstractItemModel *channelModel = model();
+
+	for (QMap<int, char>::ConstIterator it = selectedRows.end(); it != selectedRows.begin();) {
+		--it;
+		channelModel->removeRow(it.key());
+	}
+}
+
+void DvbChannelView::removeAllChannels()
+{
+	QAbstractItemModel *channelModel = model();
+	int count = channelModel->rowCount();
+
+	if (count > 0) {
+		channelModel->removeRows(0, count);
 	}
 }
 
@@ -612,11 +635,12 @@ template<class T> static QString enumToString(T value)
 	return displayStrings<T>().at(value);
 }
 
-DvbChannelEditor::DvbChannelEditor(DvbChannelModel *model_, int row_, QWidget *parent) :
-	KDialog(parent), model(model_), row(row_)
+DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex &modelIndex_,
+	QWidget *parent) : KDialog(parent), model(model_), persistentIndex(modelIndex_)
 {
 	setCaption(i18n("Channel Settings"));
-	const DvbChannel *channel = model->getChannel(row);
+	channel = model->data(persistentIndex,
+		DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
@@ -816,19 +840,21 @@ DvbChannelEditor::~DvbChannelEditor()
 
 void DvbChannelEditor::accept()
 {
-	DvbChannel *channel = new DvbChannel(*model->getChannel(row));
-	channel->name = nameEdit->text();
-	channel->number = numberBox->value();
-	channel->networkId = networkIdBox->value();
-	channel->transportStreamId = transportStreamIdBox->value();
-	channel->setServiceId(serviceIdBox->value());
+	DvbChannel updatedChannel = *channel;
+	updatedChannel.name = nameEdit->text();
+	updatedChannel.number = numberBox->value();
+	updatedChannel.networkId = networkIdBox->value();
+	updatedChannel.transportStreamId = transportStreamIdBox->value();
+	updatedChannel.setServiceId(serviceIdBox->value());
 
 	if (audioChannelBox->currentIndex() != -1) {
-		channel->audioPid = audioPids.at(audioChannelBox->currentIndex());
+		updatedChannel.audioPid = audioPids.at(audioChannelBox->currentIndex());
 	}
 
-	channel->isScrambled = scrambledBox->isChecked();
-	model->updateChannel(row, channel);
+	updatedChannel.isScrambled = scrambledBox->isChecked();
+
+	const DvbChannel *constUpdatedChannel = &updatedChannel;
+	model->setData(persistentIndex, QVariant::fromValue(constUpdatedChannel));
 
 	KDialog::accept();
 }

@@ -20,6 +20,7 @@
 
 #include "dvbtab.h"
 
+#include <QAbstractProxyModel>
 #include <QBoxLayout>
 #include <QDir>
 #include <QHeaderView>
@@ -28,6 +29,7 @@
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
+#include <KDebug>
 #include <KLineEdit>
 #include <KLocale>
 #include <KMenu>
@@ -137,9 +139,10 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	boxLayout->addWidget(lineEdit);
 	leftLayout->addLayout(boxLayout);
 
-	DvbChannelModel *channelModel = manager->getChannelModel();
-	channelView = new DvbChannelView(channelModel, leftWidget);
-	channelView->setModel(channelModel);
+	channelView = new DvbChannelView(leftWidget);
+	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	channelProxyModel = manager->getChannelModel()->createProxyModel(channelView);
+	channelView->setModel(channelProxyModel);
 	channelView->setRootIsDecorated(false);
 
 	if (!channelView->header()->restoreState(QByteArray::fromBase64(
@@ -148,9 +151,10 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	}
 
 	channelView->setSortingEnabled(true);
+	channelView->addEditAction();
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playChannel(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
-		channelView->model(), SLOT(setFilterRegExp(QString)));
+		channelProxyModel, SLOT(setFilterRegExp(QString)));
 	leftLayout->addWidget(channelView);
 
 	boxLayout = new QHBoxLayout();
@@ -217,12 +221,22 @@ DvbTab::~DvbTab()
 
 void DvbTab::playChannel(const QString &nameOrNumber)
 {
+	DvbChannelModel *channelModel = manager->getChannelModel();
+	QModelIndex index;
 	int number = nameOrNumber.toInt();
 
-	if (number <= 0) {
-		playChannel(manager->getChannelModel()->indexOfName(nameOrNumber));
-	} else {
-		playChannel(manager->getChannelModel()->indexOfNumber(number));
+	if (number > 0) {
+		index = channelModel->findChannelByNumber(number);
+	}
+
+	if (!index.isValid()) {
+		index = channelModel->findChannelByName(nameOrNumber);
+	}
+
+	if (index.isValid()) {
+		const DvbChannel *channel = channelModel->data(index,
+			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
+		playChannel(channel, channelProxyModel->mapFromSource(index));
 	}
 }
 
@@ -232,7 +246,14 @@ void DvbTab::playLastChannel()
 		lastChannel = currentChannel;
 	}
 
-	playChannel(manager->getChannelModel()->indexOfName(lastChannel));
+	DvbChannelModel *channelModel = manager->getChannelModel();
+	QModelIndex index = channelModel->findChannelByName(lastChannel);
+
+	if (index.isValid()) {
+		const DvbChannel *channel = channelModel->data(index,
+			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
+		playChannel(channel, channelProxyModel->mapFromSource(index));
+	}
 }
 
 void DvbTab::toggleOsd()
@@ -336,36 +357,44 @@ void DvbTab::configureDvb()
 
 void DvbTab::tuneOsdChannel()
 {
-	int row = manager->getChannelModel()->indexOfNumber(osdChannel.toInt());
+	int number = osdChannel.toInt();
 	osdChannel.clear();
 	osdChannelTimer.stop();
-	playChannel(row);
+
+	DvbChannelModel *channelModel = manager->getChannelModel();
+	QModelIndex index = channelModel->findChannelByNumber(number);
+
+	if (index.isValid()) {
+		const DvbChannel *channel = channelModel->data(index,
+			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
+		playChannel(channel, channelProxyModel->mapFromSource(index));
+	}
 }
 
 void DvbTab::playChannel(const QModelIndex &index)
 {
-	playChannel(channelView->mapToSource(index));
+	if (index.isValid()) {
+		const DvbChannel *channel = channelProxyModel->data(index,
+			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
+		playChannel(channel, index);
+	}
 }
 
 void DvbTab::previousChannel()
 {
-	// it's enough to look at a single element if you can only select a single row
 	QModelIndex index = channelView->currentIndex();
 
 	if (index.isValid()) {
-		playChannel(channelView->mapToSource(
-			index.sibling(index.row() - 1, index.column())));
+		playChannel(index.sibling(index.row() - 1, index.column()));
 	}
 }
 
 void DvbTab::nextChannel()
 {
-	// it's enough to look at a single element if you can only select a single row
 	QModelIndex index = channelView->currentIndex();
 
 	if (index.isValid()) {
-		playChannel(channelView->mapToSource(
-			index.sibling(index.row() + 1, index.column())));
+		playChannel(index.sibling(index.row() + 1, index.column()));
 	}
 }
 
@@ -393,9 +422,10 @@ void DvbTab::activate()
 	mediaWidget->setFocus();
 }
 
-void DvbTab::playChannel(int row)
+void DvbTab::playChannel(const DvbChannel *channel, const QModelIndex &index)
 {
-	if (row < 0) {
+	if (channel == NULL) {
+		kWarning() << "channel is invalid";
 		return;
 	}
 
@@ -403,13 +433,7 @@ void DvbTab::playChannel(int row)
 		lastChannel = currentChannel;
 	}
 
-	QModelIndex index = channelView->mapFromSource(manager->getChannelModel()->index(row, 0));
-
-	if (index.isValid()) {
-		channelView->setCurrentIndex(index);
-	}
-
-	const DvbChannel *channel = manager->getChannelModel()->getChannel(row);
+	channelView->setCurrentIndex(index);
 	currentChannel = channel->name;
 	manager->getLiveView()->playChannel(channel);
 }

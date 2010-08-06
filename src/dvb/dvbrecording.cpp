@@ -404,14 +404,16 @@ void DvbRecording::setEntry(const DvbRecordingEntry &entry_)
 void DvbRecording::start()
 {
 	if (channel.constData() == NULL) {
-		int row = manager->getChannelModel()->indexOfName(entry.channelName);
+		DvbChannelModel *channelModel = manager->getChannelModel();
+		QModelIndex index = channelModel->findChannelByName(entry.channelName);
 
-		if (row < 0) {
+		if (!index.isValid()) {
 			kWarning() << "cannot find channel" << entry.channelName;
 			return;
 		}
 
-		channel = manager->getChannelModel()->getChannel(row);
+		channel = channelModel->data(index,
+			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
 	}
 
 	if (!file.isOpen()) {
@@ -769,11 +771,6 @@ void DvbRecordingDialog::removeRecording()
 	}
 }
 
-static bool localeAwareLessThan3(const QString &x, const QString &y)
-{
-	return (x.localeAwareCompare(y) < 0);
-}
-
 DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *model_,
 	const QModelIndex &modelIndex_, QWidget *parent) : KDialog(parent), model(model_),
 	persistentIndex(modelIndex_)
@@ -791,17 +788,11 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 	label->setBuddy(nameEdit);
 	gridLayout->addWidget(label, 0, 0);
 
-	QStringList channels; // FIXME use proxy model?
-
-	foreach (const QSharedDataPointer<DvbChannel> &channel,
-		 manager->getChannelModel()->getChannels()) {
-		channels.append(channel->name);
-	}
-
-	qSort(channels.begin(), channels.end(), localeAwareLessThan3);
-
 	channelBox = new KComboBox(widget);
-	channelBox->addItems(channels);
+	QAbstractProxyModel *channelProxyModel =
+		manager->getChannelModel()->createProxyModel(channelBox);
+	channelProxyModel->sort(0, Qt::AscendingOrder);
+	channelBox->setModel(channelProxyModel);
 	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(channelBox, 1, 1);
 
@@ -866,7 +857,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 			model->data(persistentIndex, DvbRecordingModel::DvbRecordingEntryRole).
 			value<const DvbRecordingEntry *>();
 		nameEdit->setText(entry->name);
-		channelBox->setCurrentIndex(channels.indexOf(entry->channelName));
+		channelBox->setCurrentIndex(channelBox->findText(entry->channelName));
 		beginEdit->setDateTime(entry->begin.toLocalTime());
 		durationEdit->setTime(entry->duration);
 

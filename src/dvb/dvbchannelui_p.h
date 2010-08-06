@@ -21,9 +21,14 @@
 #ifndef DVBCHANNELUI_P_H
 #define DVBCHANNELUI_P_H
 
-#include <QSharedDataPointer>
+#include <QPersistentModelIndex>
+#include <KDialog>
 #include "../sqltablemodel.h"
 
+class QCheckBox;
+class QSpinBox;
+class KComboBox;
+class KLineEdit;
 class DvbChannel;
 
 class DvbChannelSqlInterface : public SqlTableModelInterface
@@ -38,6 +43,29 @@ private:
 	void bindToSqlQuery(QSqlQuery &query, int index, int row) const;
 
 	QList<QSharedDataPointer<DvbChannel> > *channels;
+};
+
+class DvbChannelEditor : public KDialog
+{
+public:
+	DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex &modelIndex_,
+		QWidget *parent);
+	~DvbChannelEditor();
+
+private:
+	void accept();
+
+	QAbstractItemModel *model;
+	QPersistentModelIndex persistentIndex;
+	QExplicitlySharedDataPointer<const DvbChannel> channel;
+	KLineEdit *nameEdit;
+	QSpinBox *numberBox;
+	QSpinBox *networkIdBox;
+	QSpinBox *transportStreamIdBox;
+	QSpinBox *serviceIdBox;
+	KComboBox *audioChannelBox;
+	QList<int> audioPids;
+	QCheckBox *scrambledBox;
 };
 
 #endif /* DVBCHANNELUI_P_H */
