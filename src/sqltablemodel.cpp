@@ -55,7 +55,7 @@ int SqlTableModelInterface::rowForKey(quint32 key) const
 	return keyToRowMapping.value(key, -1);
 }
 
-void SqlTableModelInterface::init(QAbstractItemModel *model_, const QString &tableName,
+void SqlTableModelInterface::init(QAbstractItemModel *model, const QString &tableName,
 	const QStringList &columnNames)
 {
 	QString existsStatement = "SELECT name FROM sqlite_master WHERE name='" + tableName +
@@ -130,7 +130,6 @@ void SqlTableModelInterface::init(QAbstractItemModel *model_, const QString &tab
 		}
 	}
 
-	model = model_;
 	connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
 		this, SLOT(dataChanged(QModelIndex,QModelIndex)));
 	connect(model, SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
@@ -172,8 +171,8 @@ void SqlTableModelInterface::layoutChanged()
 
 void SqlTableModelInterface::modelReset()
 {
-	rowsRemoved(QModelIndex(), 0, rowToKeyMapping.size() - 1);
-	rowsInserted(QModelIndex(), 0, model->rowCount(QModelIndex()) - 1);
+	// not supported
+	Q_ASSERT(false);
 }
 
 void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, int end)

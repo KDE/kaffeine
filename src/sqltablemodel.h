@@ -42,7 +42,7 @@ public:
 	int rowForKey(quint32 key) const;
 
 protected:
-	void init(QAbstractItemModel *model_, const QString &tableName,
+	void init(QAbstractItemModel *model, const QString &tableName,
 		const QStringList &columnNames);
 
 	virtual int insertFromSqlQuery(const QSqlQuery &query, int index) = 0;
@@ -68,7 +68,6 @@ private:
 	void submit();
 
 	SqlHelper *sqlHelper;
-	QAbstractItemModel *model;
 	QList<quint32> rowToKeyMapping;
 	QHash<quint32, int> keyToRowMapping;
 	QMap<quint32, PendingStatement> pendingStatements;

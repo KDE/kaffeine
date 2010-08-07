@@ -222,10 +222,21 @@ QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
 
 void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 {
-	channels = other->channels;
-	names = other->names;
-	numbers = other->numbers;
-	reset();
+	if (!channels.isEmpty()) {
+		beginRemoveRows(QModelIndex(), 0, channels.size() - 1);
+		channels.clear();
+		names.clear();
+		numbers.clear();
+		endRemoveRows();
+	}
+
+	if (!other->channels.isEmpty()) {
+		beginInsertRows(QModelIndex(), 0, other->channels.size() - 1);
+		channels = other->channels;
+		names = other->names;
+		numbers = other->numbers;
+		endInsertRows();
+	}
 }
 
 void DvbChannelModel::appendChannels(const QList<DvbChannel *> &list)
