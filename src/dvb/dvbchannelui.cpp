@@ -36,133 +36,153 @@
 #include <KStandardDirs>
 #include "dvbsi.h"
 
-template<class T> static QStringList displayStrings();
-
-template<> QStringList displayStrings<DvbTransponderBase::FecRate>()
+static QString enumToString(DvbTransponderBase::FecRate fecRate)
 {
-	QStringList strings;
-	strings.append(/* FecNone = 0  */ "NONE");
-	strings.append(/* Fec1_2 = 1   */ "1/2");
-	strings.append(/* Fec2_3 = 2   */ "2/3");
-	strings.append(/* Fec3_4 = 3   */ "3/4");
-	strings.append(/* Fec4_5 = 4   */ "4/5");
-	strings.append(/* Fec5_6 = 5   */ "5/6");
-	strings.append(/* Fec6_7 = 6   */ "6/7");
-	strings.append(/* Fec7_8 = 7   */ "7/8");
-	strings.append(/* Fec8_9 = 8   */ "8/9");
-	strings.append(/* FecAuto = 9  */ "AUTO");
-	strings.append(/* Fec1_3 = 10  */ "1/3");
-	strings.append(/* Fec1_4 = 11  */ "1/4");
-	strings.append(/* Fec2_5 = 12  */ "2/5");
-	strings.append(/* Fec3_5 = 13  */ "3/5");
-	strings.append(/* Fec9_10 = 14 */ "9/10");
-	return strings;
+	switch (fecRate) {
+	case DvbTransponderBase::FecNone: return "NONE";
+	case DvbTransponderBase::Fec1_2: return "1/2";
+	case DvbTransponderBase::Fec1_3: return "1/3";
+	case DvbTransponderBase::Fec1_4: return "1/4";
+	case DvbTransponderBase::Fec2_3: return "2/3";
+	case DvbTransponderBase::Fec2_5: return "2/5";
+	case DvbTransponderBase::Fec3_4: return "3/4";
+	case DvbTransponderBase::Fec3_5: return "3/5";
+	case DvbTransponderBase::Fec4_5: return "4/5";
+	case DvbTransponderBase::Fec5_6: return "5/6";
+	case DvbTransponderBase::Fec6_7: return "6/7";
+	case DvbTransponderBase::Fec7_8: return "7/8";
+	case DvbTransponderBase::Fec8_9: return "8/9";
+	case DvbTransponderBase::Fec9_10: return "9/10";
+	case DvbTransponderBase::FecAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbCTransponder::Modulation>()
+static QString enumToString(DvbCTransponder::Modulation modulation)
 {
-	QStringList strings;
-	strings.append(/* Qam16 = 0          */ "16-QAM");
-	strings.append(/* Qam32 = 1          */ "32-QAM");
-	strings.append(/* Qam64 = 2          */ "64-QAM");
-	strings.append(/* Qam128 = 3         */ "128-QAM");
-	strings.append(/* Qam256 = 4         */ "256-QAM");
-	strings.append(/* ModulationAuto = 5 */ "AUTO");
-	return strings;
+	switch (modulation) {
+	case DvbCTransponder::Qam16: return "16-QAM";
+	case DvbCTransponder::Qam32: return "32-QAM";
+	case DvbCTransponder::Qam64: return "64-QAM";
+	case DvbCTransponder::Qam128: return "128-QAM";
+	case DvbCTransponder::Qam256: return "256-QAM";
+	case DvbCTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbSTransponder::Polarization>()
+static QString enumToString(DvbSTransponder::Polarization polarization)
 {
-	QStringList strings;
-	strings.append(/* Horizontal = 0    */ i18n("Horizontal"));
-	strings.append(/* Vertical = 1      */ i18n("Vertical"));
-	strings.append(/* CircularLeft = 2  */ i18n("Circular left"));
-	strings.append(/* CircularRight = 3 */ i18n("Circular right"));
-	return strings;
+	switch (polarization) {
+	case DvbSTransponder::Horizontal: return i18n("Horizontal");
+	case DvbSTransponder::Vertical: return i18n("Vertical");
+	case DvbSTransponder::CircularLeft: return i18n("Circular left");
+	case DvbSTransponder::CircularRight: return i18n("Circular right");
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbS2Transponder::Modulation>()
+static QString enumToString(DvbS2Transponder::Modulation modulation)
 {
-	QStringList strings;
-	strings.append(/* Qpsk = 0           */ "QPSK");
-	strings.append(/* Psk8 = 1           */ "8-PSK");
-	strings.append(/* Apsk16 = 2         */ "16-APSK");
-	strings.append(/* Apsk32 = 3         */ "32-APSK");
-	strings.append(/* ModulationAuto = 4 */ "AUTO");
-	return strings;
+	switch (modulation) {
+	case DvbS2Transponder::Qpsk: return "QPSK";
+	case DvbS2Transponder::Psk8: return "8-PSK";
+	case DvbS2Transponder::Apsk16: return "16-APSK";
+	case DvbS2Transponder::Apsk32: return "32-APSK";
+	case DvbS2Transponder::ModulationAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbS2Transponder::RollOff>()
+static QString enumToString(DvbS2Transponder::RollOff rollOff)
 {
-	QStringList strings;
-	strings.append(/* RollOff20 = 0   */ "0.20");
-	strings.append(/* RollOff25 = 1   */ "0.25");
-	strings.append(/* RollOff35 = 2   */ "0.35");
-	strings.append(/* RollOffAuto = 3 */ "AUTO");
-	return strings;
+	switch (rollOff) {
+	case DvbS2Transponder::RollOff20: return "0.20";
+	case DvbS2Transponder::RollOff25: return "0.25";
+	case DvbS2Transponder::RollOff35: return "0.35";
+	case DvbS2Transponder::RollOffAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbTTransponder::Bandwidth>()
+static QString enumToString(DvbTTransponder::Bandwidth bandwidth)
 {
-	QStringList strings;
-	strings.append(/* Bandwidth6MHz = 0 */ "6MHz");
-	strings.append(/* Bandwidth7MHz = 1 */ "7MHz");
-	strings.append(/* Bandwidth8MHz = 2 */ "8MHz");
-	strings.append(/* BandwidthAuto = 3 */ "AUTO");
-	return strings;
+	switch (bandwidth) {
+	case DvbTTransponder::Bandwidth6MHz: return "6MHz";
+	case DvbTTransponder::Bandwidth7MHz: return "7MHz";
+	case DvbTTransponder::Bandwidth8MHz: return "8MHz";
+	case DvbTTransponder::BandwidthAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbTTransponder::Modulation>()
+static QString enumToString(DvbTTransponder::Modulation modulation)
 {
-	QStringList strings;
-	strings.append(/* Qpsk = 0           */ "QPSK");
-	strings.append(/* Qam16 = 1          */ "16-QAM");
-	strings.append(/* Qam64 = 2          */ "64-QAM");
-	strings.append(/* ModulationAuto = 3 */ "AUTO");
-	return strings;
+	switch (modulation) {
+	case DvbTTransponder::Qpsk: return "QPSK";
+	case DvbTTransponder::Qam16: return "16-QAM";
+	case DvbTTransponder::Qam64: return "64-QAM";
+	case DvbTTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbTTransponder::TransmissionMode>()
+static QString enumToString(DvbTTransponder::TransmissionMode transmissionMode)
 {
-	QStringList strings;
-	strings.append(/* TransmissionMode2k = 0   */ "2k");
-	strings.append(/* TransmissionMode8k = 1   */ "8k");
-	strings.append(/* TransmissionModeAuto = 2 */ "AUTO");
-	strings.append(/* TransmissionMode4k = 3   */ "4k");
-	return strings;
+	switch (transmissionMode) {
+	case DvbTTransponder::TransmissionMode2k: return "2k";
+	case DvbTTransponder::TransmissionMode4k: return "4k";
+	case DvbTTransponder::TransmissionMode8k: return "8k";
+	case DvbTTransponder::TransmissionModeAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbTTransponder::GuardInterval>()
+static QString enumToString(DvbTTransponder::GuardInterval guardInterval)
 {
-	QStringList strings;
-	strings.append(/* GuardInterval1_4 = 0  */ "1/4");
-	strings.append(/* GuardInterval1_8 = 1  */ "1/8");
-	strings.append(/* GuardInterval1_16 = 2 */ "1/16");
-	strings.append(/* GuardInterval1_32 = 3 */ "1/32");
-	strings.append(/* GuardIntervalAuto = 4 */ "AUTO");
-	return strings;
+	switch (guardInterval) {
+	case DvbTTransponder::GuardInterval1_4: return "1/4";
+	case DvbTTransponder::GuardInterval1_8: return "1/8";
+	case DvbTTransponder::GuardInterval1_16: return "1/16";
+	case DvbTTransponder::GuardInterval1_32: return "1/32";
+	case DvbTTransponder::GuardIntervalAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<DvbTTransponder::Hierarchy>()
+static QString enumToString(DvbTTransponder::Hierarchy hierarchy)
 {
-	QStringList strings;
-	strings.append(/* HierarchyNone = 0 */ "NONE");
-	strings.append(/* Hierarchy1 = 1    */ "1");
-	strings.append(/* Hierarchy2 = 2    */ "2");
-	strings.append(/* Hierarchy4 = 3    */ "4");
-	strings.append(/* HierarchyAuto = 4 */ "AUTO");
-	return strings;
+	switch (hierarchy) {
+	case DvbTTransponder::HierarchyNone: return "NONE";
+	case DvbTTransponder::Hierarchy1: return "1";
+	case DvbTTransponder::Hierarchy2: return "2";
+	case DvbTTransponder::Hierarchy4: return "4";
+	case DvbTTransponder::HierarchyAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
-template<> QStringList displayStrings<AtscTransponder::Modulation>()
+static QString enumToString(AtscTransponder::Modulation modulation)
 {
-	QStringList strings;
-	strings.append(/* Qam64 = 0          */ "64-QAM");
-	strings.append(/* Qam256 = 1         */ "256-QAM");
-	strings.append(/* Vsb8 = 2           */ "8-VSB");
-	strings.append(/* Vsb16 = 3          */ "16-VSB");
-	strings.append(/* ModulationAuto = 4 */ "AUTO");
-	return strings;
+	switch (modulation) {
+	case AtscTransponder::Qam64: return "64-QAM";
+	case AtscTransponder::Qam256: return "256-QAM";
+	case AtscTransponder::Vsb8: return "8-VSB";
+	case AtscTransponder::Vsb16: return "16-VSB";
+	case AtscTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return QString();
 }
 
 DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
@@ -630,12 +650,6 @@ void DvbChannelView::removeAllChannels()
 	if (count > 0) {
 		channelModel->removeRows(0, count);
 	}
-}
-
-template<class T> static QString enumToString(T value)
-{
-	// FIXME efficiency
-	return displayStrings<T>().at(value);
 }
 
 DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex &modelIndex_,
