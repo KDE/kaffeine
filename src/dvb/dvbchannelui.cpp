@@ -233,6 +233,8 @@ QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
 		}
 
 		break;
+	case DvbChannelRole:
+		return QVariant::fromValue(channel);
 	}
 
 	return QVariant();
@@ -533,7 +535,7 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "can't open" << file.fileName();
+		kDebug() << "cannot open" << file.fileName();
 		return;
 	}
 
@@ -558,7 +560,7 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 	appendChannels(channels);
 
 	if (!file.remove()) {
-		kWarning() << "can't remove" << file.fileName();
+		kWarning() << "cannot remove" << file.fileName();
 	}
 }
 
