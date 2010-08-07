@@ -655,26 +655,30 @@ DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
-
-	QBoxLayout *boxLayout = new QHBoxLayout();
-	boxLayout->addWidget(new QLabel(i18n("Name:")));
+	QGridLayout *gridLayout = new QGridLayout();
 
 	nameEdit = new KLineEdit(widget);
 	nameEdit->setText(channel->name);
-	boxLayout->addWidget(nameEdit);
+	gridLayout->addWidget(nameEdit, 0, 1);
 
-	boxLayout->addWidget(new QLabel(i18n("Number:")));
+	QLabel *label = new QLabel(i18n("Name:"), widget);
+	label->setBuddy(nameEdit);
+	gridLayout->addWidget(label, 0, 0);
 
 	numberBox = new QSpinBox(widget);
 	numberBox->setRange(1, 99999);
 	numberBox->setValue(channel->number);
-	boxLayout->addWidget(numberBox);
-	mainLayout->addLayout(boxLayout);
+	gridLayout->addWidget(numberBox, 0, 3);
 
-	boxLayout = new QHBoxLayout();
+	label = new QLabel(i18n("Number:"), widget);
+	label->setBuddy(numberBox);
+	gridLayout->addWidget(label, 0, 2);
+	mainLayout->addLayout(gridLayout);
+
+	QBoxLayout *boxLayout = new QHBoxLayout();
 
 	QGroupBox *groupBox = new QGroupBox(widget);
-	QGridLayout *gridLayout = new QGridLayout(groupBox);
+	gridLayout = new QGridLayout(groupBox);
 	gridLayout->addWidget(new QLabel(i18n("Source:")), 0, 0);
 	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
 
