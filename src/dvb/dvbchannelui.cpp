@@ -193,121 +193,6 @@ DvbChannelModel::~DvbChannelModel()
 {
 }
 
-QAbstractProxyModel *DvbChannelModel::createProxyModel(QObject *parent)
-{
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
-	proxyModel->setDynamicSortFilter(true);
-	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	proxyModel->setSortLocaleAware(true);
-	proxyModel->setSourceModel(this);
-	return proxyModel;
-}
-
-int DvbChannelModel::columnCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return 2;
-}
-
-int DvbChannelModel::rowCount(const QModelIndex &parent) const
-{
-	if (parent.isValid()) {
-		return 0;
-	}
-
-	return channels.size();
-}
-
-QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
-{
-	const DvbChannel *channel = channels.at(index.row());
-
-	switch (role) {
-	case Qt::DecorationRole:
-		if (index.column() == 0) {
-			if (channel->hasVideo) {
-				if (!channel->isScrambled) {
-					return KIcon("video-television");
-				} else {
-					return KIcon("video-television-encrypted");
-				}
-			} else {
-				if (!channel->isScrambled) {
-					return KIcon("text-speak");
-				} else {
-					return KIcon("audio-radio-encrypted");
-				}
-			}
-		}
-
-		break;
-	case Qt::DisplayRole:
-		switch (index.column()) {
-		case 0:
-			return channel->name;
-		case 1:
-			return channel->number;
-		}
-
-		break;
-	case DvbChannelRole:
-		return QVariant::fromValue(channel);
-	}
-
-	return QVariant();
-}
-
-QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
-		return QVariant();
-	}
-
-	switch (section) {
-	case 0:
-		return i18n("Name");
-	case 1:
-		return i18n("Number");
-	}
-
-	return QVariant();
-}
-
-bool DvbChannelModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-	if (parent.isValid()) {
-		return false;
-	}
-
-	beginRemoveRows(QModelIndex(), row, row + count - 1);
-
-	for (int i = row; i < (row + count); ++i) {
-		names.remove(channels.at(i)->name);
-		numbers.remove(channels.at(i)->number);
-	}
-
-	channels.erase(channels.begin() + row, channels.begin() + row + count);
-	endRemoveRows();
-
-	return true;
-}
-
-bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &value, int role)
-{
-	Q_UNUSED(role)
-	const DvbChannel *channel = value.value<const DvbChannel *>();
-
-	if (channel != NULL) {
-		updateChannel(modelIndex.row(), new DvbChannel(*channel));
-		return true;
-	}
-
-	return false;
-}
-
 QModelIndex DvbChannelModel::findChannelByName(const QString &name) const
 {
 	for (int row = 0; row < channels.size(); ++row) {
@@ -407,6 +292,115 @@ void DvbChannelModel::updateChannel(int pos, DvbChannel *channel)
 	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
 }
 
+QAbstractProxyModel *DvbChannelModel::createProxyModel(QObject *parent)
+{
+	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
+	proxyModel->setDynamicSortFilter(true);
+	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
+	proxyModel->setSortLocaleAware(true);
+	proxyModel->setSourceModel(this);
+	return proxyModel;
+}
+
+int DvbChannelModel::columnCount(const QModelIndex &parent) const
+{
+	if (!parent.isValid()) {
+		return 2;
+	}
+
+	return 0;
+}
+
+int DvbChannelModel::rowCount(const QModelIndex &parent) const
+{
+	if (!parent.isValid()) {
+		return channels.size();
+	}
+
+	return 0;
+}
+
+QVariant DvbChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
+		switch (section) {
+		case 0:
+			return i18n("Name");
+		case 1:
+			return i18n("Number");
+		}
+	}
+
+	return QVariant();
+}
+
+QVariant DvbChannelModel::data(const QModelIndex &index, int role) const
+{
+	const DvbChannel *channel = channels.at(index.row());
+
+	switch (role) {
+	case Qt::DecorationRole:
+		if (index.column() == 0) {
+			if (channel->hasVideo) {
+				if (!channel->isScrambled) {
+					return KIcon("video-television");
+				} else {
+					return KIcon("video-television-encrypted");
+				}
+			} else {
+				if (!channel->isScrambled) {
+					return KIcon("text-speak");
+				} else {
+					return KIcon("audio-radio-encrypted");
+				}
+			}
+		}
+
+		break;
+	case Qt::DisplayRole:
+		switch (index.column()) {
+		case 0:
+			return channel->name;
+		case 1:
+			return channel->number;
+		}
+
+		break;
+	case DvbChannelRole:
+		return QVariant::fromValue(channel);
+	}
+
+	return QVariant();
+}
+
+bool DvbChannelModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+	Q_UNUSED(parent)
+	beginRemoveRows(QModelIndex(), row, row + count - 1);
+
+	for (int currentRow = row; currentRow < (row + count); ++currentRow) {
+		names.remove(channels.at(currentRow)->name);
+		numbers.remove(channels.at(currentRow)->number);
+	}
+
+	channels.erase(channels.begin() + row, channels.begin() + row + count);
+	endRemoveRows();
+	return true;
+}
+
+bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &value, int role)
+{
+	Q_UNUSED(role)
+	const DvbChannel *channel = value.value<const DvbChannel *>();
+
+	if (channel != NULL) {
+		updateChannel(modelIndex.row(), new DvbChannel(*channel));
+		return true;
+	}
+
+	return false;
+}
+
 bool DvbChannelModel::adjustNameNumber(DvbChannel *channel) const
 {
 	bool dataModified = false;
@@ -448,90 +442,6 @@ bool DvbChannelModel::adjustNameNumber(DvbChannel *channel) const
 	return dataModified;
 }
 
-DvbChannelSqlInterface::DvbChannelSqlInterface(QAbstractItemModel *model,
-	QList<QSharedDataPointer<DvbChannel> > *channels_, QObject *parent) :
-	SqlTableModelInterface(parent), channels(channels_)
-{
-	init(model, "Channels",
-		QStringList() << "Name" << "Number" << "Source" << "Transponder" << "NetworkId" <<
-		"TransportStreamId" << "PmtPid" << "PmtSection" << "AudioPid" << "Flags");
-}
-
-DvbChannelSqlInterface::~DvbChannelSqlInterface()
-{
-}
-
-int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index)
-{
-	DvbChannel *channel = new DvbChannel();
-	channel->name = query.value(index++).toString();
-	channel->number = query.value(index++).toInt();
-	channel->source = query.value(index++).toString();
-	QString transponder = query.value(index++).toString();
-	DvbTransponderBase *transponderBase = NULL;
-
-	if (transponder.size() >= 2) {
-		if (transponder.at(0) == 'C') {
-			transponderBase = new DvbCTransponder();
-		} else if (transponder.at(0) == 'S') {
-			if (transponder.at(1) != '2') {
-				transponderBase = new DvbSTransponder();
-			} else {
-				transponderBase = new DvbS2Transponder();
-			}
-		} else if (transponder.at(0) == 'T') {
-			transponderBase = new DvbTTransponder();
-		} else if (transponder.at(0) == 'A') {
-			transponderBase = new AtscTransponder();
-		}
-	}
-
-	if ((transponderBase == NULL) || !transponderBase->fromString(transponder)) {
-		delete transponderBase;
-		delete channel;
-		return -1;
-	}
-
-	channel->transponder = DvbTransponder(transponderBase);
-	channel->networkId = query.value(index++).toInt();
-	channel->transportStreamId = query.value(index++).toInt();
-	channel->pmtPid = query.value(index++).toInt();
-	channel->pmtSection = query.value(index++).toByteArray();
-	channel->audioPid = query.value(index++).toInt();
-	int flags = query.value(index++).toInt();
-	channel->hasVideo = ((flags & 0x01) != 0);
-	channel->isScrambled = ((flags & 0x02) != 0);
-
-	if (channel->name.isEmpty() || (channel->number < 1) || channel->source.isEmpty() ||
-	    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
-	    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
-	    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
-	    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
-		delete channel;
-		return -1;
-	}
-
-	int row = channels->size();
-	channels->append(QSharedDataPointer<DvbChannel>(channel));
-	return row;
-}
-
-void DvbChannelSqlInterface::bindToSqlQuery(QSqlQuery &query, int index, int row) const
-{
-	const DvbChannel *channel = channels->at(row);
-	query.bindValue(index++, channel->name);
-	query.bindValue(index++, channel->number);
-	query.bindValue(index++, channel->source);
-	query.bindValue(index++, channel->transponder->toString());
-	query.bindValue(index++, channel->networkId);
-	query.bindValue(index++, channel->transportStreamId);
-	query.bindValue(index++, channel->pmtPid);
-	query.bindValue(index++, channel->pmtSection);
-	query.bindValue(index++, channel->audioPid);
-	query.bindValue(index++, (channel->hasVideo ? 0x01 : 0) |
-				 (channel->isScrambled ? 0x02 : 0));
-}
-
 DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent)
 {
 	sqlInterface = new DvbChannelSqlInterface(this, &channels, this);
@@ -555,7 +465,7 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kDebug() << "cannot open" << file.fileName();
+		kWarning() << "cannot open" << file.fileName();
 		return;
 	}
 
@@ -650,6 +560,90 @@ void DvbChannelView::removeAllChannels()
 	if (count > 0) {
 		channelModel->removeRows(0, count);
 	}
+}
+
+DvbChannelSqlInterface::DvbChannelSqlInterface(QAbstractItemModel *model,
+	QList<QSharedDataPointer<DvbChannel> > *channels_, QObject *parent) :
+	SqlTableModelInterface(parent), channels(channels_)
+{
+	init(model, "Channels",
+		QStringList() << "Name" << "Number" << "Source" << "Transponder" << "NetworkId" <<
+		"TransportStreamId" << "PmtPid" << "PmtSection" << "AudioPid" << "Flags");
+}
+
+DvbChannelSqlInterface::~DvbChannelSqlInterface()
+{
+}
+
+int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index)
+{
+	DvbChannel *channel = new DvbChannel();
+	channel->name = query.value(index++).toString();
+	channel->number = query.value(index++).toInt();
+	channel->source = query.value(index++).toString();
+	QString transponder = query.value(index++).toString();
+	DvbTransponderBase *transponderBase = NULL;
+
+	if (transponder.size() >= 2) {
+		if (transponder.at(0) == 'C') {
+			transponderBase = new DvbCTransponder();
+		} else if (transponder.at(0) == 'S') {
+			if (transponder.at(1) != '2') {
+				transponderBase = new DvbSTransponder();
+			} else {
+				transponderBase = new DvbS2Transponder();
+			}
+		} else if (transponder.at(0) == 'T') {
+			transponderBase = new DvbTTransponder();
+		} else if (transponder.at(0) == 'A') {
+			transponderBase = new AtscTransponder();
+		}
+	}
+
+	if ((transponderBase == NULL) || !transponderBase->fromString(transponder)) {
+		delete transponderBase;
+		delete channel;
+		return -1;
+	}
+
+	channel->transponder = DvbTransponder(transponderBase);
+	channel->networkId = query.value(index++).toInt();
+	channel->transportStreamId = query.value(index++).toInt();
+	channel->pmtPid = query.value(index++).toInt();
+	channel->pmtSection = query.value(index++).toByteArray();
+	channel->audioPid = query.value(index++).toInt();
+	int flags = query.value(index++).toInt();
+	channel->hasVideo = ((flags & 0x01) != 0);
+	channel->isScrambled = ((flags & 0x02) != 0);
+
+	if (channel->name.isEmpty() || (channel->number < 1) || channel->source.isEmpty() ||
+	    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
+	    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
+	    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
+	    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
+		delete channel;
+		return -1;
+	}
+
+	int row = channels->size();
+	channels->append(QSharedDataPointer<DvbChannel>(channel));
+	return row;
+}
+
+void DvbChannelSqlInterface::bindToSqlQuery(QSqlQuery &query, int index, int row) const
+{
+	const DvbChannel *channel = channels->at(row);
+	query.bindValue(index++, channel->name);
+	query.bindValue(index++, channel->number);
+	query.bindValue(index++, channel->source);
+	query.bindValue(index++, channel->transponder->toString());
+	query.bindValue(index++, channel->networkId);
+	query.bindValue(index++, channel->transportStreamId);
+	query.bindValue(index++, channel->pmtPid);
+	query.bindValue(index++, channel->pmtSection);
+	query.bindValue(index++, channel->audioPid);
+	query.bindValue(index++, (channel->hasVideo ? 0x01 : 0) |
+				 (channel->isScrambled ? 0x02 : 0));
 }
 
 DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex &modelIndex_,

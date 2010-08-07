@@ -36,7 +36,15 @@ public:
 
 	/*
 	 * channel names and numbers are guaranteed to be unique within this model
+	 * they are automatically adjusted if necessary
 	 */
+
+	QModelIndex findChannelByName(const QString &name) const;
+	QModelIndex findChannelByNumber(int number) const;
+	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
+	void cloneFrom(const DvbChannelModel *other);
+	void appendChannels(const QList<DvbChannel *> &list);
+	void updateChannel(int pos, DvbChannel *channel);
 
 	enum ItemDataRole
 	{
@@ -44,24 +52,10 @@ public:
 	};
 
 	QAbstractProxyModel *createProxyModel(QObject *parent);
-
-	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
-	void cloneFrom(const DvbChannelModel *other);
-
-	QModelIndex findChannelByName(const QString &name) const;
-	QModelIndex findChannelByNumber(int number) const;
-
-	/*
-	 * these two functions automatically adjust the channel numbers
-	 */
-
-	void appendChannels(const QList<DvbChannel *> &list);
-	void updateChannel(int pos, DvbChannel *channel);
-
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const;
 	bool removeRows(int row, int count, const QModelIndex &parent);
 	bool setData(const QModelIndex &modelIndex, const QVariant &value, int role);
 
