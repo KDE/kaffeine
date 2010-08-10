@@ -42,7 +42,6 @@ public:
 	QModelIndex findChannelByName(const QString &name) const;
 	QModelIndex findChannelByNumber(int number) const;
 	void cloneFrom(const DvbChannelModel *other);
-	void addUpdateChannels(const QList<const DvbChannel *> &channelList);
 
 	enum ItemDataRole
 	{
@@ -55,7 +54,8 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	bool removeRows(int row, int count, const QModelIndex &parent);
-	bool setData(const QModelIndex &modelIndex, const QVariant &value, int role);
+	bool setData(const QModelIndex &modelIndex, const QVariant &value,
+		int role = Qt::EditRole);
 
 protected:
 	bool adjustNameNumber(DvbChannel *channel) const;

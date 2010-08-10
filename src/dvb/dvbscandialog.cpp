@@ -489,26 +489,23 @@ void DvbScanDialog::updateStatus()
 
 void DvbScanDialog::addSelectedChannels()
 {
-	QList<const DvbChannel *> channels;
 	QSet<int> selectedRows;
 
 	foreach (const QModelIndex &modelIndex,
 		 scanResultsView->selectionModel()->selectedIndexes()) {
 		if (!selectedRows.contains(modelIndex.row())) {
 			selectedRows.insert(modelIndex.row());
-			channels.append(scanResultsView->model()->data(modelIndex,
+			const DvbChannel *channel = scanResultsView->model()->data(modelIndex,
 				DvbPreviewChannelModel::DvbPreviewChannelRole).
-				value<const DvbPreviewChannel *>());
+				value<const DvbPreviewChannel *>();
+			// if the index is invalid, the channel is added
+			channelModel->setData(QModelIndex(), QVariant::fromValue(channel));
 		}
 	}
-
-	channelModel->addUpdateChannels(channels);
 }
 
 void DvbScanDialog::addFilteredChannels()
 {
-	QList<const DvbChannel *> channels;
-
 	foreach (const DvbPreviewChannel &channel, previewModel->getChannels()) {
 		if (ftaCheckBox->isChecked()) {
 			// only fta channels
@@ -540,10 +537,10 @@ void DvbScanDialog::addFilteredChannels()
 			}
 		}
 
-		channels.append(&channel);
+		const DvbChannel *constChannel = &channel;
+		// if the index is invalid, the channel is added
+		channelModel->setData(QModelIndex(), QVariant::fromValue(constChannel));
 	}
-
-	channelModel->addUpdateChannels(channels);
 }
 
 void DvbScanDialog::setDevice(DvbDevice *newDevice)
