@@ -43,7 +43,6 @@ public:
 	QModelIndex findChannelByName(const QString &name) const;
 	QModelIndex findChannelByNumber(int number) const;
 	void cloneFrom(const DvbChannelModel *other);
-	void appendChannels(const QList<DvbChannel *> &list);
 	void updateChannel(int pos, DvbChannel *channel);
 	void addUpdateChannels(const QList<const DvbChannelBase *> &channelList);
 

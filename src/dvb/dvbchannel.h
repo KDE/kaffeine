@@ -387,5 +387,6 @@ public:
 };
 
 Q_DECLARE_TYPEINFO(QSharedDataPointer<DvbChannel>, Q_MOVABLE_TYPE);
+Q_DECLARE_TYPEINFO(QExplicitlySharedDataPointer<const DvbChannel>, Q_MOVABLE_TYPE);
 
 #endif /* DVBCHANNEL_H */

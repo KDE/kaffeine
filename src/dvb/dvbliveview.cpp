@@ -22,7 +22,6 @@
 #include "dvbliveview_p.h"
 
 #include <QPainter>
-#include <QSet>
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"

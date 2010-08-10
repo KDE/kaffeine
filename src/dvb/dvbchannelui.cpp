@@ -234,22 +234,6 @@ void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 	}
 }
 
-void DvbChannelModel::appendChannels(const QList<DvbChannel *> &list)
-{
-	if (!list.isEmpty()) {
-		beginInsertRows(QModelIndex(), channels.size(), channels.size() + list.size() - 1);
-
-		foreach (DvbChannel *channel, list) {
-			adjustNameNumber(channel);
-			channels.append(QSharedDataPointer<DvbChannel>(channel));
-			names.insert(channel->name);
-			numbers.insert(channel->number);
-		}
-
-		endInsertRows();
-	}
-}
-
 void DvbChannelModel::updateChannel(int pos, DvbChannel *channel)
 {
 	QString oldName = channels.at(pos)->name;
@@ -351,7 +335,19 @@ void DvbChannelModel::addUpdateChannels(const QList<const DvbChannelBase *> &cha
 		}
 	}
 
-	appendChannels(newChannels);
+	if (!newChannels.isEmpty()) {
+		beginInsertRows(QModelIndex(), channels.size(),
+			channels.size() + newChannels.size() - 1);
+
+		foreach (DvbChannel *channel, newChannels) {
+			adjustNameNumber(channel);
+			channels.append(QSharedDataPointer<DvbChannel>(channel));
+			names.insert(channel->name);
+			numbers.insert(channel->number);
+		}
+
+		endInsertRows();
+	}
 }
 
 QAbstractProxyModel *DvbChannelModel::createProxyModel(QObject *parent)
@@ -534,7 +530,7 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 
-	QList<DvbChannel *> channels;
+	QList<DvbChannel *> newChannels;
 
 	while (!stream.atEnd()) {
 		DvbChannel *channel = new DvbChannel;
@@ -546,10 +542,22 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 			break;
 		}
 
-		channels.append(channel);
+		newChannels.append(channel);
 	}
 
-	appendChannels(channels);
+	if (!newChannels.isEmpty()) {
+		beginInsertRows(QModelIndex(), channels.size(),
+			channels.size() + newChannels.size() - 1);
+
+		foreach (DvbChannel *channel, newChannels) {
+			adjustNameNumber(channel);
+			channels.append(QSharedDataPointer<DvbChannel>(channel));
+			names.insert(channel->name);
+			numbers.insert(channel->number);
+		}
+
+		endInsertRows();
+	}
 
 	if (!file.remove()) {
 		kWarning() << "cannot remove" << file.fileName();
