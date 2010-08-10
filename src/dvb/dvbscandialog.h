@@ -58,7 +58,6 @@ private slots:
 	void addFilteredChannels();
 
 private:
-	void addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList);
 	void setDevice(DvbDevice *newDevice);
 
 	DvbManager *manager;

@@ -215,11 +215,6 @@ QModelIndex DvbChannelModel::findChannelByNumber(int number) const
 	return QModelIndex();
 }
 
-QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
-{
-	return channels;
-}
-
 void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 {
 	if (!channels.isEmpty()) {
@@ -301,6 +296,62 @@ void DvbChannelModel::updateChannel(int pos, DvbChannel *channel)
 
 	channels.replace(pos, QSharedDataPointer<DvbChannel>(channel));
 	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
+}
+
+void DvbChannelModel::addUpdateChannels(const QList<const DvbChannelBase *> &channelList)
+{
+	QList<DvbChannel *> newChannels;
+
+	foreach (const DvbChannelBase *currentChannel, channelList) {
+		QList<QSharedDataPointer<DvbChannel> >::const_iterator it;
+
+		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
+			// FIXME - algorithmic complexity is quite high
+			if ((currentChannel->source == (*it)->source) &&
+			    (currentChannel->networkId == (*it)->networkId) &&
+			    (currentChannel->transportStreamId == (*it)->transportStreamId) &&
+			    (currentChannel->getServiceId() == (*it)->getServiceId())) {
+				break;
+			}
+		}
+
+		DvbChannel *channel = new DvbChannel(*currentChannel);
+		DvbPmtParser pmtParser(DvbPmtSection(currentChannel->pmtSection));
+
+		if (it != channels.constEnd()) {
+			// update channel
+			channel->number = (*it)->number;
+			channel->audioPid = (*it)->audioPid;
+			bool containsAudioPid = false;
+
+			for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+				if (pmtParser.audioPids.at(i).first == channel->audioPid) {
+					containsAudioPid = true;
+					break;
+				}
+			}
+
+			if (!containsAudioPid) {
+				if (!pmtParser.audioPids.isEmpty()) {
+					channel->audioPid = pmtParser.audioPids.at(0).first;
+				} else {
+					channel->audioPid = -1;
+				}
+			}
+
+			updateChannel(it - channels.constBegin(), channel);
+		} else {
+			// add channel
+			channel->number = 1; // DvbChannelModel will adjust the number
+			if (!pmtParser.audioPids.isEmpty()) {
+				channel->audioPid = pmtParser.audioPids.at(0).first;
+			}
+
+			newChannels.append(channel);
+		}
+	}
+
+	appendChannels(newChannels);
 }
 
 QAbstractProxyModel *DvbChannelModel::createProxyModel(QObject *parent)

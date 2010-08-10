@@ -21,6 +21,7 @@
 #ifndef DVBEPG_H
 #define DVBEPG_H
 
+#include <QSet>
 #include <KDialog>
 #include "dvbrecording.h"
 #include "dvbsi.h"
@@ -29,6 +30,7 @@ class QLabel;
 class QListView;
 class QStringListModel;
 class QTreeView;
+class DvbChannelModel;
 class DvbEitEntry;
 
 class DvbEpgEntry
@@ -60,26 +62,40 @@ public:
 	explicit DvbEpgModel(DvbManager *manager_);
 	~DvbEpgModel();
 
+	void addEntry(const DvbEpgEntry &entry);
+	bool contains(const QString &channel) const;
+	void resetChannel();
+	void setChannel(const QString &channel);
+	QAbstractItemModel *createProxyEpgChannelModel(QObject *parent);
+	const DvbEpgEntry *getEntry(int row) const;
+	const DvbChannel *findChannelByEitEntry(const DvbEitEntry &eitEntry);
+	QList<DvbEpgEntry> getCurrentNext(const QString &channel) const;
+	void scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter);
+
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-	void addEntry(const DvbEpgEntry &entry);
-	bool contains(const QString &channel) const;
-	void resetChannel();
-	void setChannel(const QString &channel);
-	const DvbEpgEntry *getEntry(int row) const;
-	QList<DvbEpgEntry> getCurrentNext(const QString &channel) const;
-	void scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter);
-
 private slots:
+	void channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+	void channelLayoutChanged();
+	void channelModelReset();
+	void channelRowsInserted(const QModelIndex &parent, int start, int end);
+	void channelRowsRemoved(const QModelIndex &parent, int start, int end);
 	void programRemoved(const DvbRecordingKey &recordingKey);
 
 private:
 	DvbManager *manager;
+	DvbChannelModel *channelModel;
+	QStringListModel *epgChannelModel;
+	QList<QExplicitlySharedDataPointer<const DvbChannel> > channels;
+	QHash<DvbEitEntry, const DvbChannel *> eitMapping;
+	QSet<QString> epgChannels;
+
 	QList<DvbEpgEntry> allEntries;
 	QList<DvbEpgEntry *> filteredEntries;
+
 	QMap<DvbRecordingKey, DvbEpgEntry *> recordingKeys;
 };
 
@@ -100,7 +116,6 @@ private:
 	DvbManager *manager;
 	DvbEpgModel *model;
 	QString source;
-	QMap<DvbEitEntry, QString> channelMapping;
 };
 
 class DvbEpgDialog : public KDialog
@@ -111,16 +126,14 @@ public:
 	~DvbEpgDialog();
 
 private slots:
-	void refresh();
 	void channelActivated(const QModelIndex &index);
 	void entryActivated(const QModelIndex &index);
 	void scheduleProgram();
 
 private:
 	DvbManager *manager;
-	QStringListModel *channelModel;
-	QListView *channelView;
 	DvbEpgModel *epgModel;
+	QListView *channelView;
 	QTreeView *epgView;
 	QLabel *contentLabel;
 };

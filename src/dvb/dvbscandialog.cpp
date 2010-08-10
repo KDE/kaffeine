@@ -489,7 +489,7 @@ void DvbScanDialog::updateStatus()
 
 void DvbScanDialog::addSelectedChannels()
 {
-	QList<const DvbPreviewChannel *> channels;
+	QList<const DvbChannelBase *> channels;
 	QSet<int> selectedRows;
 
 	foreach (const QModelIndex &modelIndex,
@@ -502,12 +502,12 @@ void DvbScanDialog::addSelectedChannels()
 		}
 	}
 
-	addUpdateChannels(channels);
+	channelModel->addUpdateChannels(channels);
 }
 
 void DvbScanDialog::addFilteredChannels()
 {
-	QList<const DvbPreviewChannel *> channels;
+	QList<const DvbChannelBase *> channels;
 
 	foreach (const DvbPreviewChannel &channel, previewModel->getChannels()) {
 		if (ftaCheckBox->isChecked()) {
@@ -543,54 +543,7 @@ void DvbScanDialog::addFilteredChannels()
 		channels.append(&channel);
 	}
 
-	addUpdateChannels(channels);
-}
-
-void DvbScanDialog::addUpdateChannels(const QList<const DvbPreviewChannel *> &channelList)
-{
-	QList<QSharedDataPointer<DvbChannel> > channels = channelModel->getChannels();
-	QList<DvbChannel *> newChannels;
-
-	foreach (const DvbPreviewChannel *currentChannel, channelList) {
-		QList<QSharedDataPointer<DvbChannel> >::const_iterator it;
-
-		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
-			// FIXME - algorithmic complexity is quite high
-			if ((currentChannel->source == (*it)->source) &&
-			    (currentChannel->networkId == (*it)->networkId) &&
-			    (currentChannel->transportStreamId == (*it)->transportStreamId) &&
-			    (currentChannel->getServiceId() == (*it)->getServiceId())) {
-				break;
-			}
-		}
-
-		DvbChannel *channel = new DvbChannel(*currentChannel);
-
-		if (it != channels.constEnd()) {
-			// update channel
-			channel->number = (*it)->number;
-			channel->audioPid = (*it)->audioPid;
-			if (!currentChannel->audioPids.contains(channel->audioPid)) {
-				if (!currentChannel->audioPids.isEmpty()) {
-					channel->audioPid = currentChannel->audioPids.at(0);
-				} else {
-					channel->audioPid = -1;
-				}
-			}
-
-			channelModel->updateChannel(it - channels.constBegin(), channel);
-		} else {
-			// add channel
-			channel->number = 1; // DvbChannelModel will adjust the number
-			if (!currentChannel->audioPids.isEmpty()) {
-				channel->audioPid = currentChannel->audioPids.at(0);
-			}
-
-			newChannels.append(channel);
-		}
-	}
-
-	channelModel->appendChannels(newChannels);
+	channelModel->addUpdateChannels(channels);
 }
 
 void DvbScanDialog::setDevice(DvbDevice *newDevice)
