@@ -489,7 +489,7 @@ void DvbScanDialog::updateStatus()
 
 void DvbScanDialog::addSelectedChannels()
 {
-	QList<const DvbChannelBase *> channels;
+	QList<const DvbChannel *> channels;
 	QSet<int> selectedRows;
 
 	foreach (const QModelIndex &modelIndex,
@@ -507,7 +507,7 @@ void DvbScanDialog::addSelectedChannels()
 
 void DvbScanDialog::addFilteredChannels()
 {
-	QList<const DvbChannelBase *> channels;
+	QList<const DvbChannel *> channels;
 
 	foreach (const DvbPreviewChannel &channel, previewModel->getChannels()) {
 		if (ftaCheckBox->isChecked()) {

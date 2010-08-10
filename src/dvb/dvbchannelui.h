@@ -26,7 +26,6 @@
 class QAbstractProxyModel;
 class KAction;
 class DvbChannel;
-class DvbChannelBase;
 class SqlTableModelInterface;
 
 class DvbChannelModel : public QAbstractTableModel
@@ -43,8 +42,7 @@ public:
 	QModelIndex findChannelByName(const QString &name) const;
 	QModelIndex findChannelByNumber(int number) const;
 	void cloneFrom(const DvbChannelModel *other);
-	void updateChannel(int pos, DvbChannel *channel);
-	void addUpdateChannels(const QList<const DvbChannelBase *> &channelList);
+	void addUpdateChannels(const QList<const DvbChannel *> &channelList);
 
 	enum ItemDataRole
 	{

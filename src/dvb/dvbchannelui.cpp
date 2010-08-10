@@ -234,59 +234,11 @@ void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 	}
 }
 
-void DvbChannelModel::updateChannel(int pos, DvbChannel *channel)
-{
-	QString oldName = channels.at(pos)->name;
-	QString newName = channel->name;
-
-	if (oldName != newName) {
-		names.remove(oldName);
-
-		for (int i = 0;; ++i) {
-			if (i == channels.size()) {
-				names.insert(newName);
-				break;
-			}
-
-			if ((i != pos) && (channels.at(i)->name == newName)) {
-				adjustNameNumber(channels[i].data());
-				names.insert(channels.at(i)->name);
-				QModelIndex modelIndex = index(i, 0);
-				emit dataChanged(modelIndex, modelIndex);
-			}
-		}
-	}
-
-	int oldNumber = channels.at(pos)->number;
-	int newNumber = channel->number;
-
-	if (oldNumber != newNumber) {
-		numbers.remove(oldNumber);
-
-		for (int i = 0;; ++i) {
-			if (i == channels.size()) {
-				numbers.insert(newNumber);
-				break;
-			}
-
-			if ((i != pos) && (channels.at(i)->number == newNumber)) {
-				adjustNameNumber(channels[i].data());
-				numbers.insert(channels.at(i)->number);
-				QModelIndex modelIndex = index(i, 1);
-				emit dataChanged(modelIndex, modelIndex);
-			}
-		}
-	}
-
-	channels.replace(pos, QSharedDataPointer<DvbChannel>(channel));
-	emit dataChanged(index(pos, 0), index(pos, columnCount(QModelIndex()) - 1));
-}
-
-void DvbChannelModel::addUpdateChannels(const QList<const DvbChannelBase *> &channelList)
+void DvbChannelModel::addUpdateChannels(const QList<const DvbChannel *> &channelList)
 {
 	QList<DvbChannel *> newChannels;
 
-	foreach (const DvbChannelBase *currentChannel, channelList) {
+	foreach (const DvbChannel *currentChannel, channelList) {
 		QList<QSharedDataPointer<DvbChannel> >::const_iterator it;
 
 		for (it = channels.constBegin(); it != channels.constEnd(); ++it) {
@@ -299,17 +251,17 @@ void DvbChannelModel::addUpdateChannels(const QList<const DvbChannelBase *> &cha
 			}
 		}
 
-		DvbChannel *channel = new DvbChannel(*currentChannel);
+		DvbChannel channel(*currentChannel);
 		DvbPmtParser pmtParser(DvbPmtSection(currentChannel->pmtSection));
 
 		if (it != channels.constEnd()) {
 			// update channel
-			channel->number = (*it)->number;
-			channel->audioPid = (*it)->audioPid;
+			channel.number = (*it)->number;
+			channel.audioPid = (*it)->audioPid;
 			bool containsAudioPid = false;
 
 			for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
-				if (pmtParser.audioPids.at(i).first == channel->audioPid) {
+				if (pmtParser.audioPids.at(i).first == channel.audioPid) {
 					containsAudioPid = true;
 					break;
 				}
@@ -317,21 +269,23 @@ void DvbChannelModel::addUpdateChannels(const QList<const DvbChannelBase *> &cha
 
 			if (!containsAudioPid) {
 				if (!pmtParser.audioPids.isEmpty()) {
-					channel->audioPid = pmtParser.audioPids.at(0).first;
+					channel.audioPid = pmtParser.audioPids.at(0).first;
 				} else {
-					channel->audioPid = -1;
+					channel.audioPid = -1;
 				}
 			}
 
-			updateChannel(it - channels.constBegin(), channel);
+			const DvbChannel *constChannel = &channel;
+			setData(index(it - channels.constBegin(), 0),
+				QVariant::fromValue(constChannel), Qt::EditRole);
 		} else {
 			// add channel
-			channel->number = 1; // DvbChannelModel will adjust the number
+			channel.number = 1; // DvbChannelModel will adjust the number
 			if (!pmtParser.audioPids.isEmpty()) {
-				channel->audioPid = pmtParser.audioPids.at(0).first;
+				channel.audioPid = pmtParser.audioPids.at(0).first;
 			}
 
-			newChannels.append(channel);
+			newChannels.append(new DvbChannel(channel));
 		}
 	}
 
@@ -452,7 +406,51 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 	const DvbChannel *channel = value.value<const DvbChannel *>();
 
 	if (channel != NULL) {
-		updateChannel(modelIndex.row(), new DvbChannel(*channel));
+		int row = modelIndex.row();
+		QString oldName = channels.at(row)->name;
+		QString newName = channel->name;
+
+		if (oldName != newName) {
+			names.remove(oldName);
+
+			for (int i = 0;; ++i) {
+				if (i == channels.size()) {
+					names.insert(newName);
+					break;
+				}
+
+				if ((i != row) && (channels.at(i)->name == newName)) {
+					adjustNameNumber(channels[i].data());
+					names.insert(channels.at(i)->name);
+					QModelIndex modelIndex = index(i, 0);
+					emit dataChanged(modelIndex, modelIndex);
+				}
+			}
+		}
+
+		int oldNumber = channels.at(row)->number;
+		int newNumber = channel->number;
+
+		if (oldNumber != newNumber) {
+			numbers.remove(oldNumber);
+
+			for (int i = 0;; ++i) {
+				if (i == channels.size()) {
+					numbers.insert(newNumber);
+					break;
+				}
+
+				if ((i != row) && (channels.at(i)->number == newNumber)) {
+					adjustNameNumber(channels[i].data());
+					numbers.insert(channels.at(i)->number);
+					QModelIndex modelIndex = index(i, 1);
+					emit dataChanged(modelIndex, modelIndex);
+				}
+			}
+		}
+
+		channels.replace(row, QSharedDataPointer<DvbChannel>(new DvbChannel(*channel)));
+		emit dataChanged(index(row, 0), index(row, 1));
 		return true;
 	}
 

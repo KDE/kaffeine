@@ -35,7 +35,7 @@ class DvbScanFilter;
 class DvbSdtEntry;
 class DvbSdtSection;
 
-class DvbPreviewChannel : public DvbChannelBase
+class DvbPreviewChannel : public DvbChannel
 {
 public:
 	DvbPreviewChannel() : snr(-1) { }

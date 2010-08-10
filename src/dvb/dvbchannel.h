@@ -384,6 +384,13 @@ public:
 	DvbChannel() { }
 	explicit DvbChannel(const DvbChannelBase &channel) : DvbChannelBase(channel) { }
 	~DvbChannel() { }
+
+	DvbChannel &operator=(const DvbChannel &other)
+	{
+		DvbChannelBase *base = this;
+		*base = other;
+		return (*this);
+	}
 };
 
 Q_DECLARE_TYPEINFO(QSharedDataPointer<DvbChannel>, Q_MOVABLE_TYPE);
