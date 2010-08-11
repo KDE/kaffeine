@@ -353,6 +353,7 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 		// explicit update
 		row = modelIndex.row();
 	} else {
+		channel->number = 1;
 		row = -1;
 
 		for (int i = 0; i < channels.size(); ++i) {
@@ -376,6 +377,8 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 
 				if (channel->name == currentChannelBaseName) {
 					channel->name = currentChannel->name;
+				} else {
+					channel->name = findNextFreeName(channel->name);
 				}
 
 				channel->number = currentChannel->number;
@@ -386,27 +389,16 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 		}
 
 		DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSection));
+		bool containsAudioPid = false;
 
-		if (row >= 0) {
-			bool containsAudioPid = false;
-
-			for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
-				if (channel->audioPid == pmtParser.audioPids.at(i).first) {
-					containsAudioPid = true;
-					break;
-				}
+		for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+			if (channel->audioPid == pmtParser.audioPids.at(i).first) {
+				containsAudioPid = true;
+				break;
 			}
+		}
 
-			if (!containsAudioPid) {
-				if (!pmtParser.audioPids.isEmpty()) {
-					channel->audioPid = pmtParser.audioPids.at(0).first;
-				} else {
-					channel->audioPid = -1;
-				}
-			}
-		} else {
-			channel->number = 1;
-
+		if (!containsAudioPid) {
 			if (!pmtParser.audioPids.isEmpty()) {
 				channel->audioPid = pmtParser.audioPids.at(0).first;
 			} else {
@@ -422,18 +414,18 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 		if (oldName != newName) {
 			names.remove(oldName);
 
-			for (int i = 0;; ++i) {
-				if (i == channels.size()) {
-					names.insert(newName);
-					break;
-				}
-
-				if (channels.at(i)->name == newName) {
-					channels[i]->name = findNextFreeName(channels.at(i)->name);
-					names.insert(channels.at(i)->name);
-					QModelIndex modelIndex = index(i, 0);
-					emit dataChanged(modelIndex, modelIndex);
-					break;
+			if (!names.contains(newName)) {
+				names.insert(newName);
+			} else {
+				for (int i = 0; i < channels.size(); ++i) {
+					if (channels.at(i)->name == newName) {
+						channels[i]->name =
+							findNextFreeName(channels.at(i)->name);
+						names.insert(channels.at(i)->name);
+						QModelIndex modelIndex = index(i, 0);
+						emit dataChanged(modelIndex, modelIndex);
+						break;
+					}
 				}
 			}
 		}
@@ -444,19 +436,18 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 		if (oldNumber != newNumber) {
 			numbers.remove(oldNumber);
 
-			for (int i = 0;; ++i) {
-				if (i == channels.size()) {
-					numbers.insert(newNumber);
-					break;
-				}
-
-				if (channels.at(i)->number == newNumber) {
-					channels[i]->number =
-						findNextFreeNumber(channels.at(i)->number);
-					numbers.insert(channels.at(i)->number);
-					QModelIndex modelIndex = index(i, 1);
-					emit dataChanged(modelIndex, modelIndex);
-					break;
+			if (!numbers.contains(newNumber)) {
+				numbers.insert(newNumber);
+			} else {
+				for (int i = 0; i < channels.size(); ++i) {
+					if (channels.at(i)->number == newNumber) {
+						channels[i]->number =
+							findNextFreeNumber(channels.at(i)->number);
+						numbers.insert(channels.at(i)->number);
+						QModelIndex modelIndex = index(i, 1);
+						emit dataChanged(modelIndex, modelIndex);
+						break;
+					}
 				}
 			}
 		}
@@ -479,29 +470,30 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 
 QString DvbChannelModel::findNextFreeName(const QString &name) const
 {
-	if (names.contains(name)) {
-		QString baseName = name;
-		int index = baseName.lastIndexOf('-');
-
-		if (index > 0) {
-			QString suffixString = baseName.mid(index + 1);
-
-			if (suffixString == QString::number(suffixString.toInt())) {
-				baseName.truncate(index);
-			}
-		}
-
-		QString newName = baseName;
-		int suffix = 0;
-
-		while (names.contains(newName)) {
-			newName = baseName + '-' + QString::number(++suffix);
-		}
-
-		return newName;
+	if (!names.contains(name)) {
+		return name;
 	}
 
-	return name;
+	QString baseName = name;
+	int position = baseName.lastIndexOf('-');
+
+	if (position > 0) {
+		QString suffix = baseName.mid(position + 1);
+
+		if (suffix == QString::number(suffix.toInt())) {
+			baseName.truncate(position);
+		}
+	}
+
+	QString newName = baseName;
+	int suffix = 1;
+
+	while (names.contains(newName)) {
+		newName = baseName + '-' + QString::number(suffix);
+		++suffix;
+	}
+
+	return newName;
 }
 
 int DvbChannelModel::findNextFreeNumber(int number) const
@@ -517,20 +509,19 @@ DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent
 {
 	sqlInterface = new DvbChannelSqlInterface(this, &channels, this);
 
-	for (int i = 0; i < channels.size(); ++i) {
-		const DvbChannel *constChannel = channels.at(i);
+	for (int row = 0; row < channels.size(); ++row) {
+		const DvbChannel *constChannel = channels.at(row);
 		QString newName = findNextFreeName(constChannel->name);
 		int newNumber = findNextFreeNumber(constChannel->number);
-
-		if ((constChannel->name != newName) || (constChannel->number != newNumber)) {
-			DvbChannel *channel = channels[i];
-			channel->name = newName;
-			channel->number = newNumber;
-			emit dataChanged(index(i, 0), index(i, 1));
-		}
-
 		names.insert(newName);
 		numbers.insert(newNumber);
+
+		if ((constChannel->name != newName) || (constChannel->number != newNumber)) {
+			DvbChannel *channel = channels[row];
+			channel->name = newName;
+			channel->number = newNumber;
+			emit dataChanged(index(row, 0), index(row, 1));
+		}
 	}
 
 	// compatibility code

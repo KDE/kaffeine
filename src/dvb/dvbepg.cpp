@@ -98,8 +98,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), 
 	connect(channelModel, SIGNAL(rowsRemoved(QModelIndex,int,int)),
 		this, SLOT(channelRowsRemoved(QModelIndex,int,int)));
 
-	if (channelModel->rowCount(QModelIndex()) > 0) {
-		channelRowsInserted(QModelIndex(), 0, channelModel->rowCount(QModelIndex()) - 1);
+	if (channelModel->rowCount() > 0) {
+		channelRowsInserted(QModelIndex(), 0, channelModel->rowCount() - 1);
 	}
 
 	epgChannelModel = new QStringListModel(this);
@@ -633,7 +633,7 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 	epgView->resizeColumnToContents(0);
 	epgView->resizeColumnToContents(1);
 
-	if (epgModel->rowCount(QModelIndex()) >= 1) {
+	if (epgModel->rowCount() >= 1) {
 		QModelIndex index = epgModel->index(0, 0);
 		epgView->setCurrentIndex(index);
 		entryActivated(index);
