@@ -58,7 +58,8 @@ public:
 		int role = Qt::EditRole);
 
 protected:
-	bool adjustNameNumber(DvbChannel *channel) const;
+	QString findNextFreeName(const QString &name) const;
+	int findNextFreeNumber(int number) const;
 
 	QList<QSharedDataPointer<DvbChannel> > channels;
 	QSet<QString> names;
