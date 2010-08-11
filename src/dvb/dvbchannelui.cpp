@@ -650,18 +650,24 @@ int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index
 	DvbTransponderBase *transponderBase = NULL;
 
 	if (transponder.size() >= 2) {
-		if (transponder.at(0) == 'C') {
+		switch (transponder.at(0).unicode()) {
+		case 'C':
 			transponderBase = new DvbCTransponder();
-		} else if (transponder.at(0) == 'S') {
+			break;
+		case 'S':
 			if (transponder.at(1) != '2') {
 				transponderBase = new DvbSTransponder();
 			} else {
 				transponderBase = new DvbS2Transponder();
 			}
-		} else if (transponder.at(0) == 'T') {
+
+			break;
+		case 'T':
 			transponderBase = new DvbTTransponder();
-		} else if (transponder.at(0) == 'A') {
+			break;
+		case 'A':
 			transponderBase = new AtscTransponder();
+			break;
 		}
 	}
 
@@ -920,21 +926,23 @@ DvbChannelEditor::~DvbChannelEditor()
 
 void DvbChannelEditor::accept()
 {
-	DvbChannel updatedChannel = *channel;
-	updatedChannel.name = nameEdit->text();
-	updatedChannel.number = numberBox->value();
-	updatedChannel.networkId = networkIdBox->value();
-	updatedChannel.transportStreamId = transportStreamIdBox->value();
-	updatedChannel.setServiceId(serviceIdBox->value());
+	if (persistentIndex.isValid()) {
+		DvbChannel updatedChannel = *channel;
+		updatedChannel.name = nameEdit->text();
+		updatedChannel.number = numberBox->value();
+		updatedChannel.networkId = networkIdBox->value();
+		updatedChannel.transportStreamId = transportStreamIdBox->value();
+		updatedChannel.setServiceId(serviceIdBox->value());
 
-	if (audioChannelBox->currentIndex() != -1) {
-		updatedChannel.audioPid = audioPids.at(audioChannelBox->currentIndex());
+		if (audioChannelBox->currentIndex() != -1) {
+			updatedChannel.audioPid = audioPids.at(audioChannelBox->currentIndex());
+		}
+
+		updatedChannel.isScrambled = scrambledBox->isChecked();
+
+		const DvbChannel *constUpdatedChannel = &updatedChannel;
+		model->setData(persistentIndex, QVariant::fromValue(constUpdatedChannel));
 	}
-
-	updatedChannel.isScrambled = scrambledBox->isChecked();
-
-	const DvbChannel *constUpdatedChannel = &updatedChannel;
-	model->setData(persistentIndex, QVariant::fromValue(constUpdatedChannel));
 
 	KDialog::accept();
 }
