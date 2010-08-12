@@ -791,7 +791,8 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *
 	channelBox = new KComboBox(widget);
 	QAbstractProxyModel *channelProxyModel =
 		manager->getChannelModel()->createProxyModel(channelBox);
-	channelProxyModel->sort(0, Qt::AscendingOrder); // FIXME use channel view parameters
+	QHeaderView *header = manager->getChannelView()->header();
+	channelProxyModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelBox->setModel(channelProxyModel);
 	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(channelBox, 1, 1);

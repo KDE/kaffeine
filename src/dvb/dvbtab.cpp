@@ -155,6 +155,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playChannel(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		channelProxyModel, SLOT(setFilterRegExp(QString)));
+	manager->setChannelView(channelView);
 	leftLayout->addWidget(channelView);
 
 	boxLayout = new QHBoxLayout();

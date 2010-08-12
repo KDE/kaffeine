@@ -26,6 +26,7 @@
 #include <QPair>
 #include <QStringList>
 
+class QTreeView;
 class DvbBackendDevice;
 class DvbChannelModel;
 class DvbConfig;
@@ -81,6 +82,11 @@ public:
 		return channelModel;
 	}
 
+	QTreeView *getChannelView() const
+	{
+		return channelView;
+	}
+
 	DvbEpgModel *getEpgModel() const
 	{
 		return epgModel;
@@ -94,6 +100,11 @@ public:
 	DvbRecordingModel *getRecordingModel() const
 	{
 		return recordingModel;
+	}
+
+	void setChannelView(QTreeView *channelView_)
+	{
+		channelView = channelView_;
 	}
 
 	DvbDevice *requestDevice(const QString &source, const DvbTransponder &transponder,
@@ -146,6 +157,7 @@ private:
 	QWidget *parent;
 	MediaWidget *mediaWidget;
 	DvbChannelModel *channelModel;
+	QTreeView *channelView;
 	DvbEpgModel *epgModel;
 	DvbLiveView *liveView;
 	DvbRecordingModel *recordingModel;

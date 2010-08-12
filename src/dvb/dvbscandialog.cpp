@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QHeaderView>
 #include <QPainter>
 #include <QProgressBar>
 #include <QPushButton>
@@ -233,7 +234,8 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	channelView->setModel(channelModel->createProxyModel(channelView));
 	channelView->setRootIsDecorated(false);
 	channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	channelView->sortByColumn(0, Qt::AscendingOrder);
+	QHeaderView *header = manager->getChannelView()->header();
+	channelView->sortByColumn(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelView->setSortingEnabled(true);
 
 	KAction *action = channelView->addEditAction();

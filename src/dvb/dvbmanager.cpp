@@ -223,7 +223,7 @@ DvbDeviceConfigUpdate::~DvbDeviceConfigUpdate()
 }
 
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
-	parent(parent_), mediaWidget(mediaWidget_), dvbDumpEnabled(false)
+	parent(parent_), mediaWidget(mediaWidget_), channelView(NULL), dvbDumpEnabled(false)
 {
 	channelModel = new DvbSqlChannelModel(this);
 	recordingModel = new DvbRecordingModel(this, this);
