@@ -25,6 +25,7 @@
 #include <QCheckBox>
 #include <QFile>
 #include <QGroupBox>
+#include <QHeaderView>
 #include <QLabel>
 #include <QMimeData>
 #include <QSortFilterProxyModel>
@@ -34,6 +35,7 @@
 #include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
+#include <KMessageBox>
 #include <KStandardDirs>
 #include "dvbsi.h"
 
@@ -604,6 +606,13 @@ int DvbChannelModel::findNextFreeNumber(int number) const
 
 void DvbChannelModel::internalMove(const QList<QPersistentModelIndex> &indexes, int newNumber)
 {
+	bool ok = true;
+	emit checkInternalMove(&ok);
+
+	if (!ok) {
+		return;
+	}
+
 	QMap<int, int> mapping; // number --> row
 
 	foreach (const QPersistentModelIndex &index, indexes) {
@@ -720,6 +729,20 @@ KAction *DvbChannelView::addRemoveAction()
 	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
 	return action;
+}
+
+void DvbChannelView::checkInternalMove(bool *ok)
+{
+	if ((*ok) && ((header()->sortIndicatorSection() != 1) ||
+	    (header()->sortIndicatorOrder() != Qt::AscendingOrder))) {
+		if (KMessageBox::warningContinueCancel(this, i18nc("message box",
+			"The channels will be sorted by number to allow drag and drop.\n"
+			"Do you want to continue?")) == KMessageBox::Continue) {
+			sortByColumn(1, Qt::AscendingOrder);
+		} else {
+			*ok = false;
+		}
+	}
 }
 
 void DvbChannelView::editChannel()

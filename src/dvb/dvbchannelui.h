@@ -65,6 +65,9 @@ public:
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
 		const QModelIndex &parent);
 
+signals:
+	void checkInternalMove(bool *ok);
+
 protected:
 	QString findNextFreeName(const QString &name) const;
 	int findNextFreeNumber(int number) const;
@@ -103,6 +106,7 @@ public:
 	KAction *addRemoveAction();
 
 public slots:
+	void checkInternalMove(bool *ok);
 	void editChannel();
 	void removeChannel();
 	void removeAllChannels();

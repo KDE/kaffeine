@@ -238,6 +238,8 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	QHeaderView *header = manager->getChannelView()->header();
 	channelView->sortByColumn(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelView->setSortingEnabled(true);
+	connect(channelModel, SIGNAL(checkInternalMove(bool*)),
+		channelView, SLOT(checkInternalMove(bool*)));
 
 	KAction *action = channelView->addEditAction();
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), groupBox);
