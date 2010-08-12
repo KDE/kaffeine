@@ -30,6 +30,7 @@ class SqlTableModelInterface;
 
 class DvbChannelModel : public QAbstractTableModel
 {
+	Q_OBJECT
 public:
 	explicit DvbChannelModel(QObject *parent);
 	~DvbChannelModel();
@@ -71,6 +72,12 @@ protected:
 	QList<QSharedDataPointer<DvbChannel> > channels;
 	QSet<QString> names;
 	QSet<int> numbers;
+
+signals:
+	void queueInternalMove(const QList<QPersistentModelIndex> &indexes, int newNumber);
+
+private slots:
+	void internalMove(const QList<QPersistentModelIndex> &indexes, int newNumber);
 };
 
 Q_DECLARE_METATYPE(const DvbChannel *)

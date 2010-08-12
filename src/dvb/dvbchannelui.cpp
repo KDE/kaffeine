@@ -188,6 +188,9 @@ static QString enumToString(AtscTransponder::Modulation modulation)
 
 DvbChannelModel::DvbChannelModel(QObject *parent) : QAbstractTableModel(parent)
 {
+	qRegisterMetaType<QList<QPersistentModelIndex> >("QList<QPersistentModelIndex>");
+	connect(this, SIGNAL(queueInternalMove(QList<QPersistentModelIndex>,int)),
+		this, SLOT(internalMove(QList<QPersistentModelIndex>,int)), Qt::QueuedConnection);
 }
 
 DvbChannelModel::~DvbChannelModel()
@@ -558,39 +561,7 @@ bool DvbChannelModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 		}
 	}
 
-	QMap<int, int> mapping; // number --> row
-
-	foreach (const QPersistentModelIndex &index, indexes) {
-		if (index.isValid()) {
-			int row = index.row();
-			numbers.remove(channels.at(row)->number);
-			channels[row]->number = -1;
-			mapping.insert(newNumber, row);
-			++newNumber;
-		}
-	}
-
-	while (!mapping.isEmpty()) {
-		int number = mapping.constBegin().key();
-		int row = mapping.constBegin().value();
-
-		if (!numbers.contains(number)) {
-			numbers.insert(number);
-		} else {
-			for (int i = 0; i < channels.size(); ++i) {
-				if (channels.at(i)->number == number) {
-					mapping.insert(newNumber, i);
-					++newNumber;
-				}
-			}
-		}
-
-		channels[row]->number = number;
-		QModelIndex modelIndex = index(row, 1);
-		emit dataChanged(modelIndex, modelIndex);
-		mapping.erase(mapping.begin());
-	}
-
+	emit queueInternalMove(indexes, newNumber);
 	return false;
 }
 
@@ -629,6 +600,42 @@ int DvbChannelModel::findNextFreeNumber(int number) const
 	}
 
 	return number;
+}
+
+void DvbChannelModel::internalMove(const QList<QPersistentModelIndex> &indexes, int newNumber)
+{
+	QMap<int, int> mapping; // number --> row
+
+	foreach (const QPersistentModelIndex &index, indexes) {
+		if (index.isValid()) {
+			int row = index.row();
+			numbers.remove(channels.at(row)->number);
+			channels[row]->number = -1;
+			mapping.insert(newNumber, row);
+			++newNumber;
+		}
+	}
+
+	while (!mapping.isEmpty()) {
+		int number = mapping.constBegin().key();
+		int row = mapping.constBegin().value();
+
+		if (!numbers.contains(number)) {
+			numbers.insert(number);
+		} else {
+			for (int i = 0; i < channels.size(); ++i) {
+				if (channels.at(i)->number == number) {
+					mapping.insert(newNumber, i);
+					++newNumber;
+				}
+			}
+		}
+
+		channels[row]->number = number;
+		QModelIndex modelIndex = index(row, 1);
+		emit dataChanged(modelIndex, modelIndex);
+		mapping.erase(mapping.begin());
+	}
 }
 
 DvbSqlChannelModel::DvbSqlChannelModel(QObject *parent) : DvbChannelModel(parent)
