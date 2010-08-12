@@ -222,23 +222,40 @@ void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 		return;
 	}
 
-	// FIXME only replace changed entries
+	QList<QSharedDataPointer<DvbChannel> > newChannels = other->channels;
+	qSort(newChannels);
 
-	if (!channels.isEmpty()) {
-		beginRemoveRows(QModelIndex(), 0, channels.size() - 1);
-		channels.clear();
-		names.clear();
-		numbers.clear();
-		endRemoveRows();
+	for (int row = 0; row < channels.size(); ++row) {
+		int nextValidRow = row;
+
+		while (nextValidRow < channels.size()) {
+			int position = (qBinaryFind(newChannels, channels.at(nextValidRow)) -
+				newChannels.constBegin());
+
+			if (position < newChannels.size()) {
+				newChannels.removeAt(position);
+				break;
+			}
+
+			++nextValidRow;
+		}
+
+		if (nextValidRow > row) {
+			beginRemoveRows(QModelIndex(), row, nextValidRow - 1);
+			channels.erase(channels.begin() + row, channels.begin() + nextValidRow);
+			endRemoveRows();
+		}
 	}
 
-	if (!other->channels.isEmpty()) {
-		beginInsertRows(QModelIndex(), 0, other->channels.size() - 1);
-		channels = other->channels;
-		names = other->names;
-		numbers = other->numbers;
+	if (!newChannels.isEmpty()) {
+		int row = channels.size();
+		beginInsertRows(QModelIndex(), row, row + newChannels.size() - 1);
+		channels.append(newChannels);
 		endInsertRows();
 	}
+
+	names = other->names;
+	numbers = other->numbers;
 }
 
 QAbstractProxyModel *DvbChannelModel::createProxyModel(QObject *parent)
@@ -603,17 +620,31 @@ void DvbChannelView::editChannel()
 
 void DvbChannelView::removeChannel()
 {
-	QMap<int, char> selectedRows;
+	QList<int> selectedRows;
 
-	foreach (const QModelIndex &modelIndex, selectionModel()->selectedIndexes()) {
-		selectedRows.insert(modelIndex.row(), 0);
+	foreach (const QItemSelectionRange &range, selectionModel()->selection()) {
+		if (range.left() == 0) {
+			for (int row = range.top(); row <= range.bottom(); ++row) {
+				selectedRows.append(row);
+			}
+		}
 	}
 
-	QAbstractItemModel *channelModel = model();
+	qSort(selectedRows);
+	QAbstractItemModel *channelProxyModel = model();
+	int offset = 0;
 
-	for (QMap<int, char>::ConstIterator it = selectedRows.end(); it != selectedRows.begin();) {
-		--it;
-		channelModel->removeRow(it.key());
+	for (int i = 0; i < selectedRows.size(); ++i) {
+		int begin = selectedRows.at(i);
+		int end = (begin + 1);
+
+		while (((i + 1) < selectedRows.size()) && (selectedRows.at(i + 1) == end)) {
+			++end;
+			++i;
+		}
+
+		channelProxyModel->removeRows(begin - offset, end - begin);
+		offset += (end - begin);
 	}
 }
 
