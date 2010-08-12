@@ -26,6 +26,7 @@
 #include <QFile>
 #include <QGroupBox>
 #include <QLabel>
+#include <QMimeData>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
 #include <KAction>
@@ -483,6 +484,114 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 	}
 
 	return true;
+}
+
+Qt::ItemFlags DvbChannelModel::flags(const QModelIndex &index) const
+{
+	if (index.isValid()) {
+		return (QAbstractTableModel::flags(index) | Qt::ItemIsDragEnabled);
+	} else {
+		return (QAbstractTableModel::flags(index) | Qt::ItemIsDropEnabled);
+	}
+}
+
+QMimeData *DvbChannelModel::mimeData(const QModelIndexList &indexes) const
+{
+	QList<QPersistentModelIndex> persistentIndexes;
+	QSet<int> selectedRows;
+
+	foreach (const QModelIndex &index, indexes) {
+		int row = index.row();
+
+		if (!selectedRows.contains(row)) {
+			selectedRows.insert(row);
+			persistentIndexes.append(index);
+		}
+	}
+
+	QMimeData *mimeData = new QMimeData();
+	mimeData->setData("application/x-org.kde.kaffeine-channelindexes", QByteArray());
+	mimeData->setProperty("DvbChannelIndexes", QVariant::fromValue(persistentIndexes));
+	return mimeData;
+}
+
+QStringList DvbChannelModel::mimeTypes() const
+{
+	return QStringList("application/x-org.kde.kaffeine-channelindexes");
+}
+
+Qt::DropActions DvbChannelModel::supportedDropActions() const
+{
+	return Qt::MoveAction;
+}
+
+bool DvbChannelModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+	int column, const QModelIndex &parent)
+{
+	Q_UNUSED(column)
+	Q_UNUSED(parent)
+
+	if (action != Qt::MoveAction) {
+		return false;
+	}
+
+	QList<QPersistentModelIndex> indexes =
+		data->property("DvbChannelIndexes").value<QList<QPersistentModelIndex> >();
+
+	if (indexes.isEmpty()) {
+		return false;
+	}
+
+	int newNumber = 1;
+
+	if (row < 0) {
+		foreach (int number, numbers) {
+			if (newNumber <= number) {
+				newNumber = (number + 1);
+			}
+		}
+	} else {
+		newNumber = channels.at(row)->number;
+
+		while ((newNumber > 1) && !numbers.contains(newNumber - 1)) {
+			--newNumber;
+		}
+	}
+
+	QMap<int, int> mapping; // number --> row
+
+	foreach (const QPersistentModelIndex &index, indexes) {
+		if (index.isValid()) {
+			int row = index.row();
+			numbers.remove(channels.at(row)->number);
+			channels[row]->number = -1;
+			mapping.insert(newNumber, row);
+			++newNumber;
+		}
+	}
+
+	while (!mapping.isEmpty()) {
+		int number = mapping.constBegin().key();
+		int row = mapping.constBegin().value();
+
+		if (!numbers.contains(number)) {
+			numbers.insert(number);
+		} else {
+			for (int i = 0; i < channels.size(); ++i) {
+				if (channels.at(i)->number == number) {
+					mapping.insert(newNumber, i);
+					++newNumber;
+				}
+			}
+		}
+
+		channels[row]->number = number;
+		QModelIndex modelIndex = index(row, 1);
+		emit dataChanged(modelIndex, modelIndex);
+		mapping.erase(mapping.begin());
+	}
+
+	return false;
 }
 
 QString DvbChannelModel::findNextFreeName(const QString &name) const

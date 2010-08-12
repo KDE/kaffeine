@@ -231,6 +231,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 
 	DvbChannelView *channelView = new DvbChannelView(groupBox);
 	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
+	channelView->setDragDropMode(QAbstractItemView::InternalMove);
 	channelView->setModel(channelModel->createProxyModel(channelView));
 	channelView->setRootIsDecorated(false);
 	channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);

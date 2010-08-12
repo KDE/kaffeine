@@ -31,6 +31,8 @@ class KComboBox;
 class KLineEdit;
 class DvbChannel;
 
+Q_DECLARE_METATYPE(QList<QPersistentModelIndex>)
+
 class DvbChannelSqlInterface : public SqlTableModelInterface
 {
 public:

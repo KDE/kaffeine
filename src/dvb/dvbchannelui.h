@@ -57,6 +57,13 @@ public:
 	bool setData(const QModelIndex &modelIndex, const QVariant &value,
 		int role = Qt::EditRole);
 
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QMimeData *mimeData(const QModelIndexList &indexes) const;
+	QStringList mimeTypes() const;
+	Qt::DropActions supportedDropActions() const;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+		const QModelIndex &parent);
+
 protected:
 	QString findNextFreeName(const QString &name) const;
 	int findNextFreeNumber(int number) const;
