@@ -235,14 +235,11 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 
 	loadDeviceManager();
 
-	scanDataDate = KGlobal::config()->group("DVB").readEntry("ScanDataDate", QDate(1900, 1, 1));
-
 	DvbSiText::setOverride6937(override6937Charset());
 }
 
 DvbManager::~DvbManager()
 {
-	KGlobal::config()->group("DVB").writeEntry("ScanDataDate", scanDataDate);
 	writeDeviceConfigs();
 
 	// we need an explicit deletion order (device users ; devices ; device manager)
@@ -433,13 +430,13 @@ void DvbManager::updateDeviceConfigs(const QList<DvbDeviceConfigUpdate> &configU
 	updateSourceMapping();
 }
 
-QString DvbManager::getScanDataDate()
+QDate DvbManager::getScanDataDate()
 {
-	if (scanDataDate.isNull()) {
+	if (!scanDataDate.isValid()) {
 		readScanData();
 	}
 
-	return KGlobal::locale()->formatDate(scanDataDate, KLocale::ShortDate);
+	return scanDataDate;
 }
 
 QStringList DvbManager::getScanSources(TransmissionType type)
@@ -512,9 +509,7 @@ bool DvbManager::updateScanData(const QByteArray &data)
 	file.write(uncompressed);
 	file.close();
 
-	scanDataDate = QDate::currentDate();
 	readScanData();
-
 	return true;
 }
 
@@ -913,7 +908,7 @@ void DvbManager::readScanData()
 	DvbScanData data(localData);
 	scanDataDate = data.readDate();
 
-	if (scanDataDate.isNull()) {
+	if (!scanDataDate.isValid()) {
 		kWarning() << "cannot parse" << localFile.fileName();
 		scanDataDate = QDate(1900, 1, 1);
 		return;

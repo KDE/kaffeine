@@ -34,6 +34,7 @@
 #include <KFileDialog>
 #include <KIO/Job>
 #include <KLineEdit>
+#include <KLocale>
 #include <KLocalizedString>
 #include <KTabWidget>
 #include "dvbconfig.h"
@@ -107,7 +108,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	boxLayout->addWidget(frame);
 
 	boxLayout->addWidget(new QLabel(i18n("Scan data last updated on %1",
-		manager->getScanDataDate())));
+		KGlobal::locale()->formatDate(manager->getScanDataDate(), KLocale::ShortDate))));
 
 	QPushButton *pushButton = new QPushButton(i18n("Update scan data over Internet"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));

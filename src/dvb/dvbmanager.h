@@ -115,7 +115,7 @@ public:
 	QList<DvbDeviceConfig> getDeviceConfigs() const;
 	void updateDeviceConfigs(const QList<DvbDeviceConfigUpdate> &configUpdates);
 
-	QString getScanDataDate(); // returns the formatted short date of the last scan file update
+	QDate getScanDataDate();
 	QStringList getScanSources(TransmissionType type);
 	QString getAutoScanSource(const QString &source) const;
 	QList<DvbTransponder> getTransponders(DvbDevice *device, const QString &source);
