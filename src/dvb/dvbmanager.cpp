@@ -757,7 +757,7 @@ void DvbManager::readDeviceConfigs()
 
 			if (type == DvbConfigBase::DvbS) {
 				config->configuration = reader.readEnum("configuration",
-								   DvbConfigBase::ConfigurationMax);
+					DvbConfigBase::ConfigurationMax);
 				config->lnbNumber = reader.readInt("lnbNumber");
 				config->lowBandFrequency = reader.readInt("lowBandFrequency");
 				config->switchFrequency = reader.readInt("switchFrequency");

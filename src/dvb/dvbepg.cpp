@@ -652,8 +652,8 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	}
 
 	text += i18n("<font color=#800000>%1 - %2</font><br><br>",
-		   KGlobal::locale()->formatDateTime(entry->begin.toLocalTime(), KLocale::LongDate),
-		   KGlobal::locale()->formatTime(entry->end.toLocalTime().time()));
+		KGlobal::locale()->formatDateTime(entry->begin.toLocalTime(), KLocale::LongDate),
+		KGlobal::locale()->formatTime(entry->end.toLocalTime().time()));
 
 	text += entry->details;
 	contentLabel->setText(text);
