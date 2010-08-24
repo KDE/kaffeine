@@ -32,7 +32,6 @@
 #include <KComboBox>
 #include <KLed>
 #include <KLocale>
-#include <KLocalizedString>
 #include <KMessageBox>
 #include "dvbchannelui.h"
 #include "dvbdevice.h"

@@ -1,7 +1,7 @@
 /*
  * dvbmanager.cpp
  *
- * Copyright (C) 2008-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2008-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  */
 
 #include "dvbmanager.h"
+#include "dvbmanager_p.h"
 
 #include <QDir>
 #include <KDebug>
@@ -30,197 +31,6 @@
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
-
-static QString installPath(const char *component)
-{
-	if (strcmp(component, "data") == 0) {
-		return QString::fromUtf8(KAFFEINE_DATA_INSTALL_DIR "/");
-	}
-
-	if (strcmp(component, "module") == 0) {
-		return QString::fromUtf8(KAFFEINE_PLUGIN_INSTALL_DIR "/");
-	}
-
-	return QString();
-}
-
-class DvbScanData
-{
-public:
-	explicit DvbScanData(const QByteArray &data_) : data(data_)
-	{
-		begin = data.begin();
-		pos = data.begin();
-		end = data.constEnd();
-	}
-
-	~DvbScanData() { }
-
-	bool checkEnd() const
-	{
-		return (pos == end);
-	}
-
-	const char *getLine() const
-	{
-		return pos;
-	}
-
-	const char *readLine();
-	QDate readDate();
-
-private:
-	QByteArray data;
-	char *begin;
-	char *pos;
-	const char *end;
-};
-
-const char *DvbScanData::readLine()
-{
-	// ignore comments
-
-	while (*pos == '#') {
-		do {
-			++pos;
-
-			if (pos == end) {
-				return end;
-			}
-		} while (*pos != '\n');
-
-		++pos;
-	}
-
-	char *line = pos;
-
-	while (pos != end) {
-		if (*pos == '\n') {
-			*pos = 0;
-			++pos;
-			break;
-		}
-
-		++pos;
-	}
-
-	return line;
-}
-
-QDate DvbScanData::readDate()
-{
-	if (strcmp(readLine(), "[date]") != 0) {
-		return QDate();
-	}
-
-	return QDate::fromString(QString::fromAscii(readLine()), Qt::ISODate);
-}
-
-class DvbDeviceConfigReader : public QTextStream
-{
-public:
-	explicit DvbDeviceConfigReader(QIODevice *device) : QTextStream(device), valid(true)
-	{
-		setCodec("UTF-8");
-	}
-
-	~DvbDeviceConfigReader() { }
-
-	bool isValid() const
-	{
-		return valid;
-	}
-
-	template<typename T> T readEnum(const QString &entry, T maxValue)
-	{
-		int value = readInt(entry);
-
-		if (value > maxValue) {
-			valid = false;
-		}
-
-		return static_cast<T>(value);
-	}
-
-	int readInt(const QString &entry)
-	{
-		QString string = readString(entry);
-
-		if (string.isEmpty()) {
-			valid = false;
-			return -1;
-		}
-
-		bool ok;
-		int value = string.toInt(&ok);
-
-		if (!ok || (value < 0)) {
-			valid = false;
-		}
-
-		return value;
-	}
-
-	QString readString(const QString &entry)
-	{
-		QString line = readLine();
-
-		if (!line.startsWith(entry + '=')) {
-			valid = false;
-			return QString();
-		}
-
-		return line.remove(0, entry.size() + 1);
-	}
-
-private:
-	bool valid;
-};
-
-class DvbDeviceConfigWriter : public QTextStream
-{
-public:
-	explicit DvbDeviceConfigWriter(QIODevice *device) : QTextStream(device)
-	{
-		setCodec("UTF-8");
-	}
-
-	~DvbDeviceConfigWriter() { }
-
-	void write(const QString &string)
-	{
-		*this << string << '\n';
-	}
-
-	void write(const QString &entry, int value)
-	{
-		*this << entry << '=' << value << '\n';
-	}
-
-	void write(const QString &entry, const QString &string)
-	{
-		*this << entry << '=' << string << '\n';
-	}
-};
-
-DvbDeviceConfig::DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
-	DvbDevice *device_) : deviceId(deviceId_), frontendName(frontendName_), device(device_),
-	useCount(0), prioritizedUseCount(0)
-{
-}
-
-DvbDeviceConfig::~DvbDeviceConfig()
-{
-}
-
-DvbDeviceConfigUpdate::DvbDeviceConfigUpdate(const DvbDeviceConfig *deviceConfig_) :
-	deviceConfig(deviceConfig_)
-{
-}
-
-DvbDeviceConfigUpdate::~DvbDeviceConfigUpdate()
-{
-}
 
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), channelView(NULL), dvbDumpEnabled(false)
@@ -659,7 +469,7 @@ void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 void DvbManager::loadDeviceManager()
 {
 	/*
-	QDir dir(installPath("module"));
+	QDir dir(QString::fromUtf8(KAFFEINE_PLUGIN_INSTALL_DIR "/module"));
 	QStringList entries = dir.entryList(QStringList("kaffeinedvb*"));
 	qSort(entries.begin(), entries.end(), qGreater<QString>());
 
@@ -853,7 +663,7 @@ void DvbManager::readScanData()
 	scanSources.clear();
 	scanData.clear();
 
-	QFile globalFile(installPath("data") + "kaffeine/scanfile.dvb");
+	QFile globalFile(QString::fromUtf8(KAFFEINE_DATA_INSTALL_DIR "/kaffeine/scanfile.dvb"));
 	QDate globalDate;
 
 	if (globalFile.open(QIODevice::ReadOnly)) {
@@ -1007,4 +817,84 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 	}
 
 	return true;
+}
+
+DvbDeviceConfig::DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
+	DvbDevice *device_) : deviceId(deviceId_), frontendName(frontendName_), device(device_),
+	useCount(0), prioritizedUseCount(0)
+{
+}
+
+DvbDeviceConfig::~DvbDeviceConfig()
+{
+}
+
+DvbDeviceConfigUpdate::DvbDeviceConfigUpdate(const DvbDeviceConfig *deviceConfig_) :
+	deviceConfig(deviceConfig_)
+{
+}
+
+DvbDeviceConfigUpdate::~DvbDeviceConfigUpdate()
+{
+}
+
+DvbScanData::DvbScanData(const QByteArray &data_) : data(data_)
+{
+	begin = data.begin();
+	pos = data.begin();
+	end = data.constEnd();
+}
+
+DvbScanData::~DvbScanData()
+{
+}
+
+bool DvbScanData::checkEnd() const
+{
+	return (pos == end);
+}
+
+const char *DvbScanData::getLine() const
+{
+	return pos;
+}
+
+const char *DvbScanData::readLine()
+{
+	// ignore comments
+
+	while (*pos == '#') {
+		do {
+			++pos;
+
+			if (pos == end) {
+				return end;
+			}
+		} while (*pos != '\n');
+
+		++pos;
+	}
+
+	char *line = pos;
+
+	while (pos != end) {
+		if (*pos == '\n') {
+			*pos = 0;
+			++pos;
+			break;
+		}
+
+		++pos;
+	}
+
+	return line;
+}
+
+QDate DvbScanData::readDate()
+{
+	if (strcmp(readLine(), "[date]") != 0) {
+		return QDate();
+	}
+
+	return QDate::fromString(QString::fromAscii(readLine()), Qt::ISODate);
 }
