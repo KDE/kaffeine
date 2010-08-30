@@ -257,7 +257,6 @@ XineMediaWidget::XineMediaWidget(QWidget *parent) : QWidget(parent), sequenceNum
 	angleCount(0), currentAngle(0), videoSize(0)
 {
 	setAttribute(Qt::WA_NativeWindow);
-	setAttribute(Qt::WA_DontCreateNativeAncestors);
 	setAttribute(Qt::WA_PaintOnScreen);
 
 	QPalette palette = QWidget::palette();
