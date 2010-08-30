@@ -289,6 +289,7 @@ MainWindow::MainWindow()
 	stackedLayout->addWidget(startTab);
 
 	playerTab = new PlayerTab(mediaWidget);
+	playerTab->activate();
 	tabs.append(playerTab);
 	stackedLayout->addWidget(playerTab);
 
