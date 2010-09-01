@@ -257,6 +257,7 @@ MainWindow::MainWindow()
 	tabBar->addTab(KIcon("video-television"), i18n("Television"));
 #endif /* HAVE_DVB == 1 */
 	tabBar->setShape(KTabBar::RoundedWest);
+	tabBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
 	navigationBar->addWidget(tabBar);
 
