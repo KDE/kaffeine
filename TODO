@@ -16,7 +16,6 @@ for an up-to-date version of this file.
 
 - EPG
   - ATSC support
-  - mark scheduled recordings
 
 - audio CD
   - better track selection
@@ -26,23 +25,12 @@ for an up-to-date version of this file.
 - video settings
   - possibility to adjust hue, saturation, brightness and contrast
 
-- CICAM support
-
 - quit actions
   - close / shutdown after playlist / recordings finished
 
 - allow more than one Kaffeine instance
 
-- support for external subtitles
-
-- recordings
-  - warning when quiting if there are active / pending recordings
-
 - DVB categories
-
-- l10n
-  - use klocale for all date / time conversations
-  - use i18nc() where appropriate
 
 - broadcast support
   - receive and send

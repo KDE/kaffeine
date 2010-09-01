@@ -4,6 +4,14 @@ Kaffeine Changelog
 
 Version (unreleased):
 
+Version 1.1 (2010-09-01):
+  - adapt to new shared-mime-info (so that .m2t is assigned to kaffeine again)
+  - workaround issue that video isn't shown without changing tabs when using QT 4.7
+  - recording schedule: fix sorting, improve column and dialog sizes,
+      show a warning about active and pending recordings when closing kaffeine
+  - program guide: remove the "Refresh" button (not necessary anymore)
+  - channel editor: allow sorting by drag and drop
+
 Version 1.0 (2010-05-31):
   - new dependency: libXss
   - scheduled programs are shown in the program guide

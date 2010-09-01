@@ -2,8 +2,8 @@
 Installing Kaffeine
 -------------------
 
-You need development headers for QT 4.4, KDE 4.2 (minimum versions), xine-lib
-and libX11. For the translations gettext is needed.
+You need development headers for QT 4.4, KDE 4.2 (minimum versions), xine-lib,
+libXss and libX11. For the translations gettext is needed.
 
 Create an empty build dir and do the following steps:
 # cmake <path/to/kaffeine/source/directory> <options>
