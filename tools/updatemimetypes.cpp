@@ -58,7 +58,8 @@ int main(int argc, char *argv[])
 	for (int i = 0; i < lines.size(); ++i) {
 		if (lines.at(i).startsWith("MimeType=")) {
 			if (mimeTypeIndex >= 0) {
-				qCritical() << "more than one MimeType entry in file" << file.fileName();
+				qCritical() << "more than one MimeType entry found in file" <<
+					file.fileName();
 				return 1;
 			}
 
@@ -68,7 +69,7 @@ int main(int argc, char *argv[])
 	}
 
 	if (mimeTypeIndex < 0) {
-		qCritical() << "cannot find MimeType entry in file" << file.fileName();
+		qCritical() << "cannot find a MimeType entry in file" << file.fileName();
 		return 1;
 	}
 
@@ -77,12 +78,13 @@ int main(int argc, char *argv[])
 
 	QStringList realExtensions;
 
-	for (int tryRemoveMimeType = -1; tryRemoveMimeType < mimeTypes.size(); ++tryRemoveMimeType) {
+	for (int skipMimeType = -1; skipMimeType < mimeTypes.size(); ++skipMimeType) {
 		QStringList extensions;
 
 		for (int i = 0; i < mimeTypes.size(); ++i) {
-			if (i != tryRemoveMimeType) {
-				KMimeType::Ptr mimetype = KMimeType::mimeType(mimeTypes.at(i), KMimeType::DontResolveAlias);
+			if (i != skipMimeType) {
+				KMimeType::Ptr mimetype = KMimeType::mimeType(mimeTypes.at(i),
+					KMimeType::DontResolveAlias);
 
 				if (mimetype.isNull()) {
 					qCritical() << "unknown mime type" << mimeTypes.at(i);
@@ -122,7 +124,8 @@ int main(int argc, char *argv[])
 		if (realExtensions.isEmpty()) {
 			realExtensions = extensions;
 		} else if (extensions.size() == realExtensions.size()) {
-			qWarning() << "possibly unneeded mime type found" << mimeTypes.at(tryRemoveMimeType);
+			qWarning() << "possibly unneeded mime type found" <<
+				mimeTypes.at(skipMimeType);
 		}
 	}
 
@@ -190,7 +193,8 @@ int main(int argc, char *argv[])
 
 				stream << line << "\"\n";
 
-				while ((i < lines.size()) && (lines.at(i) != "\t\t// manual entries")) {
+				while ((i < lines.size()) &&
+				       (lines.at(i) != "\t\t// manual entries")) {
 					++i;
 				}
 
