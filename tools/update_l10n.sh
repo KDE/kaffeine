@@ -8,13 +8,13 @@ cd po
 cat >CMakeLists.txt << EOF
 find_package(Gettext REQUIRED)
 
-if(NOT GETTEXT_MSGMERGE_EXECUTABLE)
-   MESSAGE(FATAL_ERROR "Please install the msgmerge binary")
-endif(NOT GETTEXT_MSGMERGE_EXECUTABLE)
-
 IF(NOT GETTEXT_MSGFMT_EXECUTABLE)
    MESSAGE(FATAL_ERROR "Please install the msgfmt binary")
 endif(NOT GETTEXT_MSGFMT_EXECUTABLE)
+
+if(NOT GETTEXT_MSGMERGE_EXECUTABLE)
+   MESSAGE(FATAL_ERROR "Please install the msgmerge binary")
+endif(NOT GETTEXT_MSGMERGE_EXECUTABLE)
 
 EOF
 

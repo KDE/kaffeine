@@ -3,10 +3,8 @@ set -eu
 
 cd kaffeine/include
 rm -fr *
-wget http://linuxtv.org/hg/v4l-dvb/raw-file/tip/linux/include/linux/dvb/dmx.h
-wget http://linuxtv.org/hg/v4l-dvb/raw-file/tip/linux/include/linux/dvb/frontend.h
-mv dmx.h dmx.h.1
-mv frontend.h frontend.h.1
+wget "http://git.linuxtv.org/linux-2.6.git?a=blob_plain;f=include/linux/dvb/dmx.h;hb=HEAD" -O dmx.h.1
+wget "http://git.linuxtv.org/linux-2.6.git?a=blob_plain;f=include/linux/dvb/frontend.h;hb=HEAD" -O frontend.h.1
 unifdef -k -U__KERNEL__ dmx.h.1 >dmx.h || true
 unifdef -k -U__KERNEL__ frontend.h.1 >frontend.h || true
 sed 'N;s/,\n\}/\n\}/;P;D;' -i dmx.h
