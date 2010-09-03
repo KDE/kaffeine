@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 	QStringList mimeTypes;
 
 	for (int i = 0; i < lines.size(); ++i) {
-		if (lines.at(i).startsWith("MimeType=")) {
+		if (lines.at(i).startsWith(QLatin1String("MimeType="))) {
 			if (mimeTypeIndex >= 0) {
 				qCritical() << "more than one MimeType entry found in file" <<
 					file.fileName();
