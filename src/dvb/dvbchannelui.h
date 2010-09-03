@@ -21,6 +21,7 @@
 #ifndef DVBCHANNELUI_H
 #define DVBCHANNELUI_H
 
+#include <QSharedDataPointer> // qt 4.5 compatibility
 #include <QTreeView>
 
 class QAbstractProxyModel;
