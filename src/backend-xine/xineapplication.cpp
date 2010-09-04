@@ -648,7 +648,8 @@ void XineObject::customEvent(QEvent *event)
 					xine_post_wire(xine_get_video_source(stream), input);
 				}
 			} else {
-				xine_post_wire_video_port(xine_get_video_source(stream), videoOutput);
+				xine_post_wire_video_port(xine_get_video_source(stream),
+					videoOutput);
 			}
 
 			break;
