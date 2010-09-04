@@ -31,6 +31,8 @@
 #include <unistd.h>
 #include "dvbsi.h"
 
+// krazy:excludeall=syscalls
+
 class DvbLinuxCamService
 {
 public:
