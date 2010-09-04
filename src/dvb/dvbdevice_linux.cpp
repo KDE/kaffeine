@@ -811,7 +811,8 @@ bool DvbLinuxDevice::identifyDevice()
 		transmissionTypes = Atsc;
 		break;
 	default:
-		kWarning() << "unknown frontend type" << frontend_info.type << "for" << frontendPath;
+		kWarning() << "unknown frontend type" << frontend_info.type << "for" <<
+			frontendPath;
 		return false;
 	}
 

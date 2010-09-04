@@ -29,7 +29,8 @@ public:
 	OsdObject() { }
 	virtual ~OsdObject() { }
 
-	virtual QPixmap paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection direction) = 0;
+	virtual QPixmap paintOsd(QRect &rect, const QFont &font,
+		Qt::LayoutDirection direction) = 0;
 };
 
 class OsdWidget : public QWidget

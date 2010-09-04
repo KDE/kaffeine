@@ -585,7 +585,8 @@ QString AtscPsipText::convertText(const DvbSectionData &text)
 			   mode == 0x00) {
 			// Huffman Compression
 			// As per the spec, only mode 0x00 supports Huffman coding
-			result += AtscHuffmanString::convertText(comp_string, num_bytes, comp_type);
+			result +=
+				AtscHuffmanString::convertText(comp_string, num_bytes, comp_type);
 		} else {
 			kWarning() << "Unsupported compression type:" 
 				   << comp_type << "mode:" << mode;
@@ -643,7 +644,8 @@ unsigned char AtscHuffmanString::getByte()
 		// Note this takes advantage of the fact that there is always
 		// at least one byte remaining (to avoid a read-past end
 		// condition)
-		unsigned char value = (((data[0] << 8) | ((unsigned char) data[1])) >> (shift + 1)) & 0xff;
+		unsigned char value =
+			((((data[0] << 8) | ((unsigned char) data[1])) >> (shift + 1)) & 0xff);
 
 		bitsLeft -= 8;
 		data++;

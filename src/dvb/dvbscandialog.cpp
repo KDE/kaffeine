@@ -423,7 +423,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 			}
 		} else {
 			scanButton->setChecked(false);
-			KMessageBox::sorry(this, i18nc("message box", "No available device found."));
+			KMessageBox::sorry(this,
+				i18nc("message box", "No available device found."));
 			return;
 		}
 	}
@@ -437,7 +438,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
 	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(int)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
-	connect(internal, SIGNAL(scanFinished()), this, SLOT(scanFinished()), Qt::QueuedConnection);
+	connect(internal, SIGNAL(scanFinished()),
+		this, SLOT(scanFinished()), Qt::QueuedConnection);
 
 	internal->start();
 }

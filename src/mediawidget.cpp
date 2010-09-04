@@ -560,7 +560,8 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 			break;
 		case FullScreenMode:
 			fullScreenAction->setIcon(KIcon("view-restore"));
-			fullScreenAction->setText(i18nc("'Playback' menu", "Exit Full Screen Mode"));
+			fullScreenAction->setText(i18nc("'Playback' menu",
+				"Exit Full Screen Mode"));
 			break;
 		case MinimalMode:
 			minimalModeAction->setIcon(KIcon("view-fullscreen"));

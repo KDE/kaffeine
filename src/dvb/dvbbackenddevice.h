@@ -237,7 +237,8 @@ public:
 	bool sendMessage(const char *message, int length)
 	{
 		bool result = false;
-		device->execute(SendMessage, ReturnData(result), Data(MessageData(message, length)));
+		device->execute(SendMessage, ReturnData(result),
+			Data(MessageData(message, length)));
 		return result;
 	}
 
@@ -337,7 +338,8 @@ public:
 			*returnData.data.boolean = instance->setVoltage(data.data.voltage);
 			break;
 		case SendMessage:
-			*returnData.data.boolean = instance->sendMessage(data.data.message->messageData,
+			*returnData.data.boolean =
+				instance->sendMessage(data.data.message->messageData,
 				data.data.message->messageLength);
 			break;
 		case SendBurst:

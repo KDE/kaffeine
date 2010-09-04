@@ -472,7 +472,8 @@ void DvbLinuxCam::handlePendingCommands()
 			break;
 		case SendCreateTransportConnection:
 			messageData[0] = ConnectionId;
-			sendTransportLayerMessage(CreateTransportConnection, messageData, messageData + 1);
+			sendTransportLayerMessage(CreateTransportConnection, messageData,
+				messageData + 1);
 			pendingCommands |= SendCreateTransportConnection;
 			break;
 		case SendPoll:
@@ -490,7 +491,8 @@ void DvbLinuxCam::handlePendingCommands()
 			sendApplicationLayerMessage(ProfileChange, messageData, messageData);
 			break;
 		case SendApplicationInfoEnquiry:
-			sendApplicationLayerMessage(ApplicationInfoEnquiry, messageData, messageData);
+			sendApplicationLayerMessage(ApplicationInfoEnquiry, messageData,
+				messageData);
 			break;
 		case SendCaInfoEnquiry:
 			sendApplicationLayerMessage(CaInfoEnquiry, messageData, messageData);

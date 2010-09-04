@@ -102,9 +102,9 @@ public:
 
 	/*
 	 * corresponding in this context means that both tuning parameters will lead to the same
-	 * transponder; note the tuning parameters don't have to be equal, it's sufficient that they
-	 * can't coexist at the same time (for example the frequency difference between two channels
-	 * in the same network has to be big enough because of bandwith)
+	 * transponder; note the tuning parameters don't have to be equal, it's sufficient that
+	 * they can't coexist at the same time (for example the frequency difference between two
+	 * channels in the same network has to be big enough because of bandwidth)
 	 */
 
 	virtual bool corresponds(const DvbTransponder &transponder) const = 0;

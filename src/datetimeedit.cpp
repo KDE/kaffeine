@@ -122,20 +122,25 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 			    (timeFormat.at(beginRemove - 1) != '%')) {
 				--beginRemove;
 
-				while ((beginRemove > 0) && timeFormat.at(beginRemove - 1).isSpace()) {
+				while ((beginRemove > 0) &&
+				       timeFormat.at(beginRemove - 1).isSpace()) {
 					--beginRemove;
 				}
 			}
 
 			if (beginRemove == 0) {
-				while ((endRemove < timeFormat.size()) && timeFormat.at(endRemove).isSpace()) {
+				while ((endRemove < timeFormat.size()) &&
+				       timeFormat.at(endRemove).isSpace()) {
 					++endRemove;
 				}
 
-				if ((endRemove < timeFormat.size()) && timeFormat.at(endRemove).isPunct() && (timeFormat.at(endRemove) != '%')) {
+				if ((endRemove < timeFormat.size()) &&
+				    timeFormat.at(endRemove).isPunct() &&
+				    (timeFormat.at(endRemove) != '%')) {
 					++endRemove;
 
-					while ((endRemove < timeFormat.size()) && timeFormat.at(endRemove).isSpace()) {
+					while ((endRemove < timeFormat.size()) &&
+					       timeFormat.at(endRemove).isSpace()) {
 						++endRemove;
 					}
 				}

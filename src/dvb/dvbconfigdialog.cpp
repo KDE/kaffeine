@@ -140,7 +140,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 
 	longitudeEdit = new KLineEdit(widget);
 	longitudeEdit->setText(QString::number(manager->getLongitude(), 'g', 10));
-	connect(longitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(longitudeChanged(QString)));
+	connect(longitudeEdit, SIGNAL(textChanged(QString)),
+		this, SLOT(longitudeChanged(QString)));
 	gridLayout->addWidget(longitudeEdit, 1, 2);
 
 	longitudeValidLabel = new QLabel(widget);
@@ -461,7 +462,8 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		connect(pushButton, SIGNAL(clicked()), this, SIGNAL(resetConfig()));
 		horizontalLayout->addWidget(pushButton);
 	} else {
-		QPushButton *pushButton = new QPushButton(KIcon("edit-delete"), i18n("Remove"), this);
+		QPushButton *pushButton =
+			new QPushButton(KIcon("edit-delete"), i18n("Remove"), this);
 		connect(pushButton, SIGNAL(clicked()), this, SLOT(removeConfig()));
 		horizontalLayout->addWidget(pushButton);
 	}
@@ -809,7 +811,8 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 		layout->addWidget(comboBox, lnbNumber + 2, 1);
 
 		diseqcConfigs.append(DvbConfig(config));
-		lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, comboBox, pushButton, config));
+		lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, comboBox, pushButton,
+			config));
 	}
 
 	// USALS rotor / Positions rotor

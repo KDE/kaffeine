@@ -63,7 +63,8 @@ StartTab::StartTab(MainWindow *mainWindow)
 	gridLayout->setMargin(10);
 	gridLayout->setSpacing(15);
 
-	QAbstractButton *button = addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
+	QAbstractButton *button =
+		addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
 	button->setShortcut(Qt::Key_1);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);

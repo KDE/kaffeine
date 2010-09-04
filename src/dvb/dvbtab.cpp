@@ -112,7 +112,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	menu->addSeparator();
 
-	KAction *configureAction = new KAction(KIcon("configure"), i18n("Configure Television"), this);
+	KAction *configureAction =
+		new KAction(KIcon("configure"), i18n("Configure Television"), this);
 	connect(configureAction, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", configureAction));
 
@@ -277,7 +278,8 @@ void DvbTab::osdKeyPressed(int key)
 	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
 		osdChannel += QString::number(key - Qt::Key_0);
 		osdChannelTimer.start(1500);
-		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Channel: %1_", osdChannel), 1500);
+		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Channel: %1_", osdChannel),
+			1500);
 	}
 }
 
@@ -332,10 +334,12 @@ void DvbTab::instantRecord(bool checked)
 		recordingEntry.duration = QTime(12, 0);
 		instantRecordingKey =
 			manager->getRecordingModel()->scheduleProgram(recordingEntry);
-		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"), 1500);
+		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"),
+			1500);
 	} else {
 		manager->getRecordingModel()->removeProgram(instantRecordingKey);
-		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
+		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"),
+			1500);
 	}
 }
 
@@ -344,7 +348,8 @@ void DvbTab::programRemoved(const DvbRecordingKey &recordingKey)
 	if (instantRecordingKey == recordingKey) {
 		instantRecordingKey = DvbRecordingKey();
 		instantRecordAction->setChecked(false);
-		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"), 1500);
+		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"),
+			1500);
 	}
 }
 
@@ -406,7 +411,8 @@ void DvbTab::cleanTimeShiftFiles()
 	}
 
 	QDir dir(manager->getTimeShiftFolder());
-	QStringList entries = dir.entryList(QStringList("TimeShift-*.m2t"), QDir::Files, QDir::Name);
+	QStringList entries =
+		dir.entryList(QStringList("TimeShift-*.m2t"), QDir::Files, QDir::Name);
 
 	if (entries.count() < 2) {
 		return;

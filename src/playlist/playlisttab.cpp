@@ -398,8 +398,8 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	randomAction->setCheckable(true);
 	menu->addAction(collection->addAction("playlist_random", randomAction));
 
-	KAction *addSubtitleAction = new KAction(KIcon("application-x-subrip"), i18n("Add Subtitle"),
-		this);
+	KAction *addSubtitleAction =
+		new KAction(KIcon("application-x-subrip"), i18n("Add Subtitle"), this);
 	collection->addAction("playlist_add_subtitle", addSubtitleAction);
 
 	KAction *removeTrackAction = new KAction(KIcon("edit-delete"),

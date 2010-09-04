@@ -552,20 +552,24 @@ void DvbDevice::frontendEvent()
 		if (carry && ((capabilities & DvbBackendDevice::DvbTGuardIntervalAuto) == 0)) {
 			switch (autoTTransponder->guardInterval) {
 			case DvbTTransponder::GuardInterval1_8:
-				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_32;
+				autoTTransponder->guardInterval =
+					DvbTTransponder::GuardInterval1_32;
 				carry = false;
 				break;
 			case DvbTTransponder::GuardInterval1_32:
-				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_4;
+				autoTTransponder->guardInterval =
+					DvbTTransponder::GuardInterval1_4;
 				carry = false;
 				break;
 			case DvbTTransponder::GuardInterval1_4:
-				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_16;
+				autoTTransponder->guardInterval =
+					DvbTTransponder::GuardInterval1_16;
 				carry = false;
 				break;
 			case DvbTTransponder::GuardInterval1_16:
 			case DvbTTransponder::GuardIntervalAuto:
-				autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_8;
+				autoTTransponder->guardInterval =
+					DvbTTransponder::GuardInterval1_8;
 				break;
 			}
 		}
@@ -590,18 +594,21 @@ void DvbDevice::frontendEvent()
 		if (carry && ((capabilities & DvbBackendDevice::DvbTTransmissionModeAuto) == 0)) {
 			switch (autoTTransponder->transmissionMode) {
 			case DvbTTransponder::TransmissionMode8k:
-				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode2k;
+				autoTTransponder->transmissionMode =
+					DvbTTransponder::TransmissionMode2k;
 				carry = false;
 				break;
 			case DvbTTransponder::TransmissionMode2k:
 /* outcommented so that clearly no compatibility problem arises
-				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode4k;
+				autoTTransponder->transmissionMode =
+					DvbTTransponder::TransmissionMode4k;
 				carry = false;
 				break;
 */
 			case DvbTTransponder::TransmissionMode4k:
 			case DvbTTransponder::TransmissionModeAuto:
-				autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
+				autoTTransponder->transmissionMode =
+					DvbTTransponder::TransmissionMode8k;
 				break;
 			}
 		}

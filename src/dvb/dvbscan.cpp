@@ -300,7 +300,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponder->modulation = DvbTTransponder::ModulationAuto;
 				transponder->fecRateHigh = DvbTTransponder::FecAuto;
 				transponder->fecRateLow = DvbTTransponder::FecNone;
-				transponder->transmissionMode = DvbTTransponder::TransmissionModeAuto;
+				transponder->transmissionMode =
+					DvbTTransponder::TransmissionModeAuto;
 				transponder->guardInterval = DvbTTransponder::GuardIntervalAuto;
 				transponder->hierarchy = DvbTTransponder::HierarchyNone;
 				transponders.append(DvbTransponder(transponder));
@@ -321,7 +322,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponder->modulation = DvbTTransponder::ModulationAuto;
 				transponder->fecRateHigh = DvbTTransponder::FecAuto;
 				transponder->fecRateLow = DvbTTransponder::FecNone;
-				transponder->transmissionMode = DvbTTransponder::TransmissionModeAuto;
+				transponder->transmissionMode =
+					DvbTTransponder::TransmissionModeAuto;
 				transponder->guardInterval = DvbTTransponder::GuardIntervalAuto;
 				transponder->hierarchy = DvbTTransponder::HierarchyNone;
 				transponders.append(DvbTransponder(transponder));
@@ -342,7 +344,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponder->modulation = DvbTTransponder::ModulationAuto;
 				transponder->fecRateHigh = DvbTTransponder::FecAuto;
 				transponder->fecRateLow = DvbTTransponder::FecNone;
-				transponder->transmissionMode = DvbTTransponder::TransmissionModeAuto;
+				transponder->transmissionMode =
+					DvbTTransponder::TransmissionModeAuto;
 				transponder->guardInterval = DvbTTransponder::GuardIntervalAuto;
 				transponder->hierarchy = DvbTTransponder::HierarchyNone;
 				transponders.append(DvbTransponder(transponder));
@@ -356,11 +359,13 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			for (int j = 0; j < 2; ++j) {
 				DvbTTransponder *transponder = new DvbTTransponder;
 				transponder->frequency = italyVhf[i];
-				transponder->bandwidth = (j == 0) ? DvbTTransponder::Bandwidth7MHz : DvbTTransponder::Bandwidth8MHz;
+				transponder->bandwidth = ((j == 0) ? DvbTTransponder::Bandwidth7MHz
+					: DvbTTransponder::Bandwidth8MHz);
 				transponder->modulation = DvbTTransponder::ModulationAuto;
 				transponder->fecRateHigh = DvbTTransponder::FecAuto;
 				transponder->fecRateLow = DvbTTransponder::FecNone;
-				transponder->transmissionMode = DvbTTransponder::TransmissionModeAuto;
+				transponder->transmissionMode =
+					DvbTTransponder::TransmissionModeAuto;
 				transponder->guardInterval = DvbTTransponder::GuardIntervalAuto;
 				transponder->hierarchy = DvbTTransponder::HierarchyNone;
 				transponders.append(DvbTransponder(transponder));
@@ -570,7 +575,8 @@ void DvbScan::updateState()
 
 			case DvbDevice::DeviceTuned:
 				if (isAuto) {
-					transponders[transponderIndex - 1] = device->getAutoTransponder();
+					transponders[transponderIndex - 1] =
+						device->getAutoTransponder();
 				}
 
 				state = ScanPat;
@@ -653,7 +659,8 @@ void DvbScan::processVct(const AtscVctSection &section)
 
 	for (AtscVctSectionEntry entry = section.entries(); (i > 0) && (entry.isValid());
 	     --i, entry.advance()) {
-		QString majorminor = QString("%1-%2 ").arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
+		QString majorminor = QString("%1-%2 ").
+			arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
 
 		DvbSdtEntry sdtEntry(entry.programNumber(), entry.sourceId(), entry.isScrambled());
 
