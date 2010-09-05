@@ -308,6 +308,7 @@ DBusTelevisionObject::DBusTelevisionObject(DvbTab *dvbTab_, QObject *parent) : Q
 	dvbTab(dvbTab_)
 {
 	qDBusRegisterMetaType<TelevisionScheduleEntryStruct>();
+	qDBusRegisterMetaType<QList<TelevisionScheduleEntryStruct> >();
 }
 
 DBusTelevisionObject::~DBusTelevisionObject()

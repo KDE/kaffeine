@@ -182,5 +182,6 @@ struct TelevisionScheduleEntryStruct
 };
 
 Q_DECLARE_METATYPE(TelevisionScheduleEntryStruct)
+Q_DECLARE_METATYPE(QList<TelevisionScheduleEntryStruct>)
 
 #endif /* DBUSOBJECTS_H */
