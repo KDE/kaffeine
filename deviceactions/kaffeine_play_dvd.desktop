@@ -51,5 +51,5 @@ Name[uk]=Відтворити DVD за допомогою Kaffeine
 Name[x-test]=xxPlay DVD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放 DVD
 Name[zh_TW]=用 Kaffeine 播放 DVD
-Exec=kaffeine --dvd %f
+Exec=kaffeine --dvd %d
 Icon=kaffeine

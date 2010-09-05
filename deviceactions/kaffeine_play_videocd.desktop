@@ -42,5 +42,5 @@ Name[tr]=Video CD'sini Kaffeine ile Oynat
 Name[uk]=Відтворити відео-КД за допомогою Kaffeine
 Name[x-test]=xxPlay Video CD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放视频 CD
-Exec=kaffeine --videocd %f
+Exec=kaffeine --videocd %d
 Icon=kaffeine
