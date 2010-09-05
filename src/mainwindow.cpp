@@ -380,24 +380,33 @@ void MainWindow::parseArgs()
 	}
 
 	if (args->isSet("audiocd")) {
-		// FIXME device is ignored
-		openAudioCd();
+		if (args->count() > 0) {
+			openAudioCd(args->arg(0));
+		} else {
+			openAudioCd();
+		}
 
 		args->clear();
 		return;
 	}
 
 	if (args->isSet("videocd")) {
-		// FIXME device is ignored
-		openVideoCd();
+		if (args->count() > 0) {
+			openVideoCd(args->arg(0));
+		} else {
+			openVideoCd();
+		}
 
 		args->clear();
 		return;
 	}
 
 	if (args->isSet("dvd")) {
-		// FIXME device is ignored
-		openDvd();
+		if (args->count() > 0) {
+			openDvd(args->arg(0));
+		} else {
+			openDvd();
+		}
 
 		args->clear();
 		return;
@@ -531,22 +540,22 @@ void MainWindow::openUrl(const KUrl &url)
 	playlistTab->appendToVisiblePlaylist(QList<KUrl>() << copy, true);
 }
 
-void MainWindow::openAudioCd()
-{
-	activateTab(PlayerTabId); // FIXME
-	mediaWidget->playAudioCd();
-}
-
-void MainWindow::openVideoCd()
+void MainWindow::openAudioCd(const QString &device)
 {
 	activateTab(PlayerTabId);
-	mediaWidget->playVideoCd();
+	mediaWidget->playAudioCd(device);
 }
 
-void MainWindow::openDvd()
+void MainWindow::openVideoCd(const QString &device)
 {
 	activateTab(PlayerTabId);
-	mediaWidget->playDvd();
+	mediaWidget->playVideoCd(device);
+}
+
+void MainWindow::openDvd(const QString &device)
+{
+	activateTab(PlayerTabId);
+	mediaWidget->playDvd(device);
 }
 
 void MainWindow::playDvb()

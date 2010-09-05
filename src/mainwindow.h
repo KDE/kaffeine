@@ -53,9 +53,9 @@ private slots:
 	void open();
 	void openUrl();
 	void openUrl(const KUrl &url);
-	void openAudioCd();
-	void openVideoCd();
-	void openDvd();
+	void openAudioCd(const QString &device = QString());
+	void openVideoCd(const QString &device = QString());
+	void openDvd(const QString &device = QString());
 	void playDvb();
 	void resizeToVideo(int factor);
 	void configureKeys();

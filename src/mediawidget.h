@@ -77,9 +77,9 @@ public:
 	 */
 
 	void play(const KUrl &url, const KUrl &subtitleUrl = KUrl());
-	void playAudioCd();
-	void playVideoCd();
-	void playDvd();
+	void playAudioCd(const QString &device);
+	void playVideoCd(const QString &device);
+	void playDvd(const QString &device);
 	void updateExternalSubtitles(const QList<KUrl> &subtitles, int currentSubtitle);
 
 	OsdWidget *getOsdWidget();

@@ -589,17 +589,20 @@ void MediaWidget::play(const KUrl &url, const KUrl &subtitleUrl)
 	backend->playUrl(url, subtitleUrl);
 }
 
-void MediaWidget::playAudioCd()
+void MediaWidget::playAudioCd(const QString &device)
 {
-	QList<Solid::Device> devices =
-		Solid::Device::listFromQuery("OpticalDisc.availableContent & 'Audio'");
-	QString deviceName;
+	QString deviceName = device;
 
-	if (!devices.isEmpty()) {
-		Solid::Block *block = devices.first().as<Solid::Block>();
+	if (deviceName.isEmpty()) {
+		QList<Solid::Device> devices =
+			Solid::Device::listFromQuery("OpticalDisc.availableContent & 'Audio'");
 
-		if (block != NULL) {
-			deviceName = block->device();
+		if (!devices.isEmpty()) {
+			Solid::Block *block = devices.first().as<Solid::Block>();
+
+			if (block != NULL) {
+				deviceName = block->device();
+			}
 		}
 	}
 
@@ -612,17 +615,20 @@ void MediaWidget::playAudioCd()
 	backend->playAudioCd(deviceName);
 }
 
-void MediaWidget::playVideoCd()
+void MediaWidget::playVideoCd(const QString &device)
 {
-	QList<Solid::Device> devices = Solid::Device::listFromQuery(
-		"OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'");
-	QString deviceName;
+	QString deviceName = device;
 
-	if (!devices.isEmpty()) {
-		Solid::Block *block = devices.first().as<Solid::Block>();
+	if (deviceName.isEmpty()) {
+		QList<Solid::Device> devices = Solid::Device::listFromQuery(
+			"OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'");
 
-		if (block != NULL) {
-			deviceName = block->device();
+		if (!devices.isEmpty()) {
+			Solid::Block *block = devices.first().as<Solid::Block>();
+
+			if (block != NULL) {
+				deviceName = block->device();
+			}
 		}
 	}
 
@@ -635,17 +641,20 @@ void MediaWidget::playVideoCd()
 	backend->playVideoCd(deviceName);
 }
 
-void MediaWidget::playDvd()
+void MediaWidget::playDvd(const QString &device)
 {
-	QList<Solid::Device> devices =
-		Solid::Device::listFromQuery("OpticalDisc.availableContent & 'VideoDvd'");
-	QString deviceName;
+	QString deviceName = device;
 
-	if (!devices.isEmpty()) {
-		Solid::Block *block = devices.first().as<Solid::Block>();
+	if (deviceName.isEmpty()) {
+		QList<Solid::Device> devices =
+			Solid::Device::listFromQuery("OpticalDisc.availableContent & 'VideoDvd'");
 
-		if (block != NULL) {
-			deviceName = block->device();
+		if (!devices.isEmpty()) {
+			Solid::Block *block = devices.first().as<Solid::Block>();
+
+			if (block != NULL) {
+				deviceName = block->device();
+			}
 		}
 	}
 
