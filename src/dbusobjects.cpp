@@ -23,7 +23,6 @@
 #include <QDBusMetaType>
 #include <KAboutData>
 #include <KApplication>
-#include "dvb/dvbrecording.h"
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 
