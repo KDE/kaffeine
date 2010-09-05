@@ -1199,6 +1199,11 @@ void MediaWidget::checkScreenSaver()
 		}
 	}
 
+	if (suspendScreenSaver) {
+		QDBusInterface("org.gnome.ScreenSaver", "/", "org.gnome.ScreenSaver").
+			call(QDBus::NoBlock, "SimulateUserActivity");
+	}
+
 	if (screenSaverSuspended != suspendScreenSaver) {
 		screenSaverSuspended = suspendScreenSaver;
 		XScreenSaverSuspend(QX11Info::display(), suspendScreenSaver);
