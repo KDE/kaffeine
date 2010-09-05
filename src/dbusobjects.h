@@ -30,6 +30,7 @@ class PlaylistTab;
 
 struct MprisStatusStruct;
 struct MprisVersionStruct;
+struct TelevisionScheduleEntryStruct;
 
 class MprisRootObject : public QObject
 {
@@ -142,6 +143,10 @@ public slots:
 	void PlayLastChannel();
 	void ToggleInstantRecord();
 	void ToggleOsd();
+	QList<TelevisionScheduleEntryStruct> ListProgramSchedule();
+	quint32 ScheduleProgram(const QString &name, const QString &channel, const QString &begin,
+		const QString &duration, int repeat);
+	void RemoveProgram(quint32 key);
 
 private:
 	DvbTab *dvbTab;
@@ -164,5 +169,18 @@ struct MprisVersionStruct
 };
 
 Q_DECLARE_METATYPE(MprisVersionStruct)
+
+struct TelevisionScheduleEntryStruct
+{
+	quint32 key;
+	QString name;
+	QString channel;
+	QString begin;
+	QString duration;
+	int repeat;
+	bool isRunning;
+};
+
+Q_DECLARE_METATYPE(TelevisionScheduleEntryStruct)
 
 #endif /* DBUSOBJECTS_H */

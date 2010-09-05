@@ -49,6 +49,10 @@ public:
 	void toggleOsd();
 	void toggleInstantRecord();
 
+	QMap<DvbRecordingKey, DvbRecordingEntry> listProgramSchedule();
+	DvbRecordingKey scheduleProgram(const DvbRecordingEntry &entry);
+	void removeProgram(const DvbRecordingKey &key);
+
 	void enableDvbDump();
 
 public slots:

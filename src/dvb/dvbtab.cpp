@@ -268,6 +268,21 @@ void DvbTab::toggleInstantRecord()
 	instantRecordAction->trigger();
 }
 
+QMap<DvbRecordingKey, DvbRecordingEntry> DvbTab::listProgramSchedule()
+{
+	return manager->getRecordingModel()->listProgramSchedule();
+}
+
+DvbRecordingKey DvbTab::scheduleProgram(const DvbRecordingEntry &entry)
+{
+	return manager->getRecordingModel()->scheduleProgram(entry);
+}
+
+void DvbTab::removeProgram(const DvbRecordingKey &key)
+{
+	manager->getRecordingModel()->removeProgram(key);
+}
+
 void DvbTab::enableDvbDump()
 {
 	manager->enableDvbDump();

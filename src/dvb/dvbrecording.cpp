@@ -110,6 +110,18 @@ DvbRecordingModel::~DvbRecordingModel()
 	qDeleteAll(recordings);
 }
 
+QMap<DvbRecordingKey, DvbRecordingEntry> DvbRecordingModel::listProgramSchedule()
+{
+	QMap<DvbRecordingKey, DvbRecordingEntry> schedule;
+
+	for (int row = 0; row < recordings.size(); ++row) {
+		schedule.insert(DvbRecordingKey(sqlInterface->keyForRow(row)),
+			recordings.at(row)->getEntry());
+	}
+
+	return schedule;
+}
+
 DvbRecordingKey DvbRecordingModel::scheduleProgram(const DvbRecordingEntry &entry)
 {
 	int row = recordings.size();

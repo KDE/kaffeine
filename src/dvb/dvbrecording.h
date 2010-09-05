@@ -73,6 +73,7 @@ public:
 	DvbRecordingModel(DvbManager *manager_, QObject *parent);
 	~DvbRecordingModel();
 
+	QMap<DvbRecordingKey, DvbRecordingEntry> listProgramSchedule();
 	DvbRecordingKey scheduleProgram(const DvbRecordingEntry &entry);
 	void removeProgram(const DvbRecordingKey &key);
 

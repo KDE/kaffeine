@@ -23,6 +23,7 @@
 #include <QDBusMetaType>
 #include <KAboutData>
 #include <KApplication>
+#include "dvb/dvbrecording.h"
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 
@@ -56,6 +57,25 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, MprisVersionStruc
 {
 	argument.beginStructure();
 	argument >> versionStruct.major >> versionStruct.minor;
+	argument.endStructure();
+	return argument;
+}
+
+QDBusArgument &operator<<(QDBusArgument &argument, const TelevisionScheduleEntryStruct &entry)
+{
+	argument.beginStructure();
+	argument << entry.key << entry.name << entry.channel << entry.begin << entry.duration <<
+		entry.repeat << entry.isRunning;
+	argument.endStructure();
+	return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument,
+	TelevisionScheduleEntryStruct &entry)
+{
+	argument.beginStructure();
+	argument >> entry.key >> entry.name >> entry.channel >> entry.begin >> entry.duration >>
+		entry.repeat >> entry.isRunning;
 	argument.endStructure();
 	return argument;
 }
@@ -288,6 +308,7 @@ void MprisTrackListObject::SetRandom(bool random)
 DBusTelevisionObject::DBusTelevisionObject(DvbTab *dvbTab_, QObject *parent) : QObject(parent),
 	dvbTab(dvbTab_)
 {
+	qDBusRegisterMetaType<TelevisionScheduleEntryStruct>();
 }
 
 DBusTelevisionObject::~DBusTelevisionObject()
@@ -319,4 +340,48 @@ void DBusTelevisionObject::ToggleInstantRecord()
 void DBusTelevisionObject::ToggleOsd()
 {
 	dvbTab->toggleOsd();
+}
+
+QList<TelevisionScheduleEntryStruct> DBusTelevisionObject::ListProgramSchedule()
+{
+	QList<TelevisionScheduleEntryStruct> entries;
+	QMap<DvbRecordingKey, DvbRecordingEntry> schedule = dvbTab->listProgramSchedule();
+
+	for (QMap<DvbRecordingKey, DvbRecordingEntry>::ConstIterator it = schedule.constBegin();
+	     it != schedule.constEnd(); ++it) {
+		TelevisionScheduleEntryStruct entry;
+		entry.key = it.key().key;
+		entry.name = it->name;
+		entry.channel = it->channelName;
+		entry.begin = (it->begin.toString(Qt::ISODate) + 'Z');
+		entry.duration = it->duration.toString(Qt::ISODate);
+		entry.repeat = it->repeat;
+		entry.isRunning = it->isRunning;
+		entries.append(entry);
+	}
+
+	return entries;
+}
+
+quint32 DBusTelevisionObject::ScheduleProgram(const QString &name, const QString &channel,
+	const QString &begin, const QString &duration, int repeat)
+{
+	DvbRecordingEntry entry;
+	entry.name = name;
+	entry.channelName = channel;
+	entry.begin = QDateTime::fromString(begin, Qt::ISODate).toUTC();
+	entry.duration = QTime::fromString(duration, Qt::ISODate);
+	entry.repeat = (repeat & ((1 << 7) - 1));
+
+	if (!entry.name.isEmpty() && !entry.channelName.isEmpty() && entry.begin.isValid() &&
+	    entry.duration.isValid()) {
+		return dvbTab->scheduleProgram(entry).key;
+	}
+
+	return 0;
+}
+
+void DBusTelevisionObject::RemoveProgram(quint32 key)
+{
+	dvbTab->removeProgram(DvbRecordingKey(key));
 }
