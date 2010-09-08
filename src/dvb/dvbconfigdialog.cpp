@@ -480,7 +480,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		return;
 	}
 
-	DvbBackendDevice::TransmissionTypes transmissionTypes =
+	DvbDevice::TransmissionTypes transmissionTypes =
 		deviceConfig->device->getTransmissionTypes();
 
 	DvbConfig dvbCConfig;
@@ -505,7 +505,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		}
 	}
 
-	if ((transmissionTypes & DvbBackendDevice::DvbC) != 0) {
+	if ((transmissionTypes & DvbDevice::DvbC) != 0) {
 		addHSeparator(i18n("DVB-C"));
 
 		if (dvbCConfig.constData() == NULL) {
@@ -518,8 +518,8 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		configs.append(dvbCConfig);
 	}
 
-	if ((transmissionTypes & (DvbBackendDevice::DvbS | DvbBackendDevice::DvbS2)) != 0) {
-		bool dvbS2 = ((transmissionTypes & DvbBackendDevice::DvbS2) != 0);
+	if ((transmissionTypes & (DvbDevice::DvbS | DvbDevice::DvbS2)) != 0) {
+		bool dvbS2 = ((transmissionTypes & DvbDevice::DvbS2) != 0);
 
 		if (dvbS2) {
 			addHSeparator(i18n("DVB-S2"));
@@ -530,7 +530,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs, dvbS2);
 	}
 
-	if ((transmissionTypes & DvbBackendDevice::DvbT) != 0) {
+	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
 		addHSeparator(i18n("DVB-T"));
 
 		if (dvbTConfig.constData() == NULL) {
@@ -543,7 +543,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		configs.append(dvbTConfig);
 	}
 
-	if ((transmissionTypes & DvbBackendDevice::Atsc) != 0) {
+	if ((transmissionTypes & DvbDevice::Atsc) != 0) {
 		addHSeparator(i18n("ATSC"));
 
 		if (atscConfig.constData() == NULL) {

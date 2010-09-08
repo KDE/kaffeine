@@ -977,7 +977,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		if (!satelliteDescriptor.isDvbS2()) {
 			dvbSTransponder = new DvbSTransponder();
 		} else {
-			if ((device->getTransmissionTypes() & DvbBackendDevice::DvbS2) == 0) {
+			if ((device->getTransmissionTypes() & DvbDevice::DvbS2) == 0) {
 				break;
 			}
 

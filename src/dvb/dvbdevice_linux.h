@@ -26,9 +26,11 @@
 #include "dvbcam_linux.h"
 
 class DvbDeviceThread;
+class DvbTransponder;
 
-class DvbLinuxDevice : public DvbBackendDevice
+class DvbLinuxDevice : public QObject, public DvbBackendDeviceBase
 {
+	Q_OBJECT
 public:
 	DvbLinuxDevice(int adapter_, int index_);
 	~DvbLinuxDevice();
@@ -36,32 +38,31 @@ public:
 	bool componentAdded(const Solid::Device &component);
 	bool componentRemoved(const QString &udi);
 
+	int adapter;
+	int index;
+
+public slots:
 	void setBuffer(DvbAbstractDeviceBuffer *buffer);
-	QString getDeviceId();
-	QString getFrontendName();
-	TransmissionTypes getTransmissionTypes();
-	Capabilities getCapabilities();
-	bool acquire();
-	bool setTone(SecTone tone);
-	bool setVoltage(SecVoltage voltage);
-	bool sendMessage(const char *message, int length);
-	bool sendBurst(SecBurst burst);
-	bool tune(const DvbTransponder &transponder);
-	int getSignal(); // 0 - 100 ; -1 = unsupported
-	int getSnr(); // 0 - 100 ; -1 = unsupported
-	bool isTuned();
-	bool addPidFilter(int pid);
+	void getDeviceId(QString &result) const;
+	void getFrontendName(QString &result) const;
+	void getTransmissionTypes(TransmissionTypes &result) const;
+	void getCapabilities(Capabilities &result) const;
+	void acquire(bool &ok);
+	void setTone(SecTone tone, bool &ok);
+	void setVoltage(SecVoltage voltage, bool &ok);
+	void sendMessage(const char *message, int length, bool &ok);
+	void sendBurst(SecBurst burst, bool &ok);
+	void tune(const DvbTransponder &transponder, bool &ok);
+	void getSignal(int &result) const; // 0 - 100 ; -1 = unsupported
+	void getSnr(int &result) const; // 0 - 100 ; -1 = unsupported
+	void isTuned(bool &result) const;
+	void addPidFilter(int pid, bool &ok);
 	void removePidFilter(int pid);
 	void startDescrambling(const DvbPmtSection &pmtSection);
 	void stopDescrambling(int serviceId);
 	void release();
 
-	int adapter;
-	int index;
-
 private:
-	Q_DISABLE_COPY(DvbLinuxDevice)
-
 	enum stateFlag {
 		CaPresent	= (1 << 0),
 		DemuxPresent	= (1 << 1),
@@ -73,7 +74,6 @@ private:
 
 	Q_DECLARE_FLAGS(stateFlags, stateFlag)
 
-	void execute(Command command, ReturnData returnData, Data data);
 	bool identifyDevice();
 
 	Solid::Device caComponent;
@@ -117,8 +117,8 @@ public slots:
 	void doColdPlug();
 
 signals:
-	void deviceAdded(DvbBackendDevice *device);
-	void deviceRemoved(DvbBackendDevice *device);
+	void deviceAdded(QObject *device);
+	void deviceRemoved(QObject *device);
 
 private slots:
 	void componentAdded(const QString &udi);

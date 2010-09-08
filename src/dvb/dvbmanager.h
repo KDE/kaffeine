@@ -141,8 +141,8 @@ public:
 	void enableDvbDump();
 
 private slots:
-	void deviceAdded(DvbBackendDevice *backendDevice);
-	void deviceRemoved(DvbBackendDevice *backendDevice);
+	void deviceAdded(QObject *backendDevice);
+	void deviceRemoved(QObject *backendDevice);
 
 private:
 	void loadDeviceManager();

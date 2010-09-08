@@ -288,7 +288,7 @@ QList<DvbTransponder> DvbManager::getTransponders(DvbDevice *device, const QStri
 	}
 
 	if ((scanSource.first == DvbS) &&
-	    ((device->getTransmissionTypes() & DvbBackendDevice::DvbS2) != 0)) {
+	    ((device->getTransmissionTypes() & DvbDevice::DvbS2) != 0)) {
 		scanSource.first = DvbS2;
 	}
 
@@ -423,7 +423,7 @@ void DvbManager::enableDvbDump()
 	}
 }
 
-void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
+void DvbManager::deviceAdded(QObject *backendDevice)
 {
 	DvbDevice *device = new DvbDevice(backendDevice, this);
 	QString deviceId = device->getDeviceId();
@@ -449,7 +449,7 @@ void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
 	}
 }
 
-void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
+void DvbManager::deviceRemoved(QObject *backendDevice)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
@@ -512,10 +512,9 @@ void DvbManager::loadDeviceManager()
 
 	QObject *deviceManager = new DvbDeviceManager();
 	deviceManager->setParent(this);
-	connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
-		this, SLOT(deviceAdded(DvbBackendDevice*)));
-	connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
-		this, SLOT(deviceRemoved(DvbBackendDevice*)));
+	connect(deviceManager, SIGNAL(deviceAdded(QObject*)), this, SLOT(deviceAdded(QObject*)));
+	connect(deviceManager, SIGNAL(deviceRemoved(QObject*)),
+		this, SLOT(deviceRemoved(QObject*)));
 	QMetaObject::invokeMethod(deviceManager, "doColdPlug");
 	return;
 }

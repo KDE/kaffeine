@@ -258,52 +258,55 @@ void DvbLinuxDevice::setBuffer(DvbAbstractDeviceBuffer *buffer_)
 	buffer = buffer_;
 }
 
-QString DvbLinuxDevice::getDeviceId()
+void DvbLinuxDevice::getDeviceId(QString &result) const
 {
 	Q_ASSERT(ready);
-	return deviceId;
+	result = deviceId;
 }
 
-QString DvbLinuxDevice::getFrontendName()
+void DvbLinuxDevice::getFrontendName(QString &result) const
 {
 	Q_ASSERT(ready);
-	return frontendName;
+	result = frontendName;
 }
 
-DvbBackendDevice::TransmissionTypes DvbLinuxDevice::getTransmissionTypes()
+void DvbLinuxDevice::getTransmissionTypes(TransmissionTypes &result) const
 {
 	Q_ASSERT(ready);
-	return transmissionTypes;
+	result = transmissionTypes;
 }
 
-DvbBackendDevice::Capabilities DvbLinuxDevice::getCapabilities()
+void DvbLinuxDevice::getCapabilities(Capabilities &result) const
 {
 	Q_ASSERT(ready);
-	return capabilities;
+	result = capabilities;
 }
 
-bool DvbLinuxDevice::acquire()
+void DvbLinuxDevice::acquire(bool &ok)
 {
 	Q_ASSERT(ready && (frontendFd < 0) && (dvrFd < 0));
 
 	frontendFd = open(QFile::encodeName(frontendPath), O_RDWR | O_NONBLOCK);
 
 	if (frontendFd < 0) {
-		kWarning() << "couldn't open" << frontendPath;
-		return false;
+		kWarning() << "cannot open frontend" << frontendPath;
+		ok = false;
+		return;
 	}
 
 	dvrFd = open(QFile::encodeName(dvrPath), O_RDONLY | O_NONBLOCK);
 
 	if (dvrFd < 0) {
-		kWarning() << "couldn't open" << dvrPath;
+		kWarning() << "cannot open dvr" << dvrPath;
 		close(frontendFd);
 		frontendFd = -1;
-		return false;
+		ok = false;
+		return;
 	}
 
 	thread->start(dvrFd, buffer);
-	return true;
+	ok = true;
+	return;
 }
 
 void DvbLinuxDevice::release()
@@ -329,32 +332,36 @@ void DvbLinuxDevice::release()
 	}
 }
 
-bool DvbLinuxDevice::setTone(SecTone tone)
+void DvbLinuxDevice::setTone(SecTone tone, bool &ok)
 {
 	Q_ASSERT(frontendFd >= 0);
 
 	if (ioctl(frontendFd, FE_SET_TONE, (tone == ToneOff) ? SEC_TONE_OFF : SEC_TONE_ON) != 0) {
 		kWarning() << "ioctl FE_SET_TONE failed for" << frontendPath;
-		return false;
+		ok = false;
+		return;
 	}
 
-	return true;
+	ok = true;
+	return;
 }
 
-bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
+void DvbLinuxDevice::setVoltage(SecVoltage voltage, bool &ok)
 {
 	Q_ASSERT(frontendFd >= 0);
 
 	if (ioctl(frontendFd, FE_SET_VOLTAGE,
 		  (voltage == Voltage13V) ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18) != 0) {
 		kWarning() << "ioctl FE_SET_VOLTAGE failed for" << frontendPath;
-		return false;
+		ok = false;
+		return;
 	}
 
-	return true;
+	ok = true;
+	return;
 }
 
-bool DvbLinuxDevice::sendMessage(const char *message, int length)
+void DvbLinuxDevice::sendMessage(const char *message, int length, bool &ok)
 {
 	Q_ASSERT((frontendFd >= 0) && (length >= 0) && (length <= 6));
 
@@ -365,23 +372,27 @@ bool DvbLinuxDevice::sendMessage(const char *message, int length)
 
 	if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
 		kWarning() << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for" << frontendPath;
-		return false;
+		ok = false;
+		return;
 	}
 
-	return true;
+	ok = true;
+	return;
 }
 
-bool DvbLinuxDevice::sendBurst(SecBurst burst)
+void DvbLinuxDevice::sendBurst(SecBurst burst, bool &ok)
 {
 	Q_ASSERT(frontendFd >= 0);
 
 	if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
 		  (burst == BurstMiniA) ? SEC_MINI_A : SEC_MINI_B) != 0) {
 		kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for" << frontendPath;
-		return false;
+		ok = false;
+		return;
 	}
 
-	return true;
+	ok = true;
+	return;
 }
 
 static fe_modulation_t convertDvbModulation(DvbCTransponder::Modulation modulation)
@@ -521,7 +532,7 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 	return HIERARCHY_AUTO;
 }
 
-bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
+void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 {
 	Q_ASSERT(frontendFd >= 0);
 
@@ -582,11 +593,13 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 		if (ioctl(frontendFd, FE_SET_PROPERTY, &propertyList) != 0) {
 			kWarning() << "ioctl FE_SET_PROPERTY failed for" << frontendPath;
-			return false;
+			ok = false;
+			return;
 		}
 
 		thread->discardBuffers();
-		return true;
+		ok = true;
+		return;
 	    }
 
 	case DvbTransponderBase::DvbT: {
@@ -618,19 +631,22 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 	default:
 		kWarning() << "unknown transmission type" << transponder->getTransmissionType();
-		return false;
+		ok = false;
+		return;
 	}
 
 	if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
 		kWarning() << "ioctl FE_SET_FRONTEND failed for" << frontendPath;
-		return false;
+		ok = false;
+		return;
 	}
 
 	thread->discardBuffers();
-	return true;
+	ok = true;
+	return;
 }
 
-int DvbLinuxDevice::getSignal()
+void DvbLinuxDevice::getSignal(int &result) const
 {
 	Q_ASSERT(frontendFd >= 0);
 
@@ -638,18 +654,21 @@ int DvbLinuxDevice::getSignal()
 
 	if (ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH, &signal) != 0) {
 		kWarning() << "ioctl FE_READ_SIGNAL_STRENGTH failed for" << frontendPath;
-		return -1;
+		result = -1;
+		return;
 	}
 
 	if (signal == 0) {
 		// assume that reading signal strength isn't supported
-		return -1;
+		result = -1;
+		return;
 	}
 
-	return ((signal * 100 + 0x8001) >> 16);
+	result = ((signal * 100 + 0x8001) >> 16);
+	return;
 }
 
-int DvbLinuxDevice::getSnr()
+void DvbLinuxDevice::getSnr(int &result) const
 {
 	Q_ASSERT(frontendFd >= 0);
 
@@ -657,18 +676,21 @@ int DvbLinuxDevice::getSnr()
 
 	if (ioctl(frontendFd, FE_READ_SNR, &snr) != 0) {
 		kWarning() << "ioctl FE_READ_SNR failed for" << frontendPath;
-		return -1;
+		result = -1;
+		return;
 	}
 
 	if (snr == 0) {
 		// assume that reading snr isn't supported
-		return -1;
+		result = -1;
+		return;
 	}
 
-	return ((snr * 100 + 0x8001) >> 16);
+	result = ((snr * 100 + 0x8001) >> 16);
+	return;
 }
 
-bool DvbLinuxDevice::isTuned()
+void DvbLinuxDevice::isTuned(bool &result) const
 {
 	Q_ASSERT(frontendFd >= 0);
 
@@ -677,26 +699,30 @@ bool DvbLinuxDevice::isTuned()
 
 	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
 		kWarning() << "ioctl FE_READ_STATUS failed for" << frontendPath;
-		return false;
+		result = false;
+		return;
 	}
 
-	return ((status & FE_HAS_LOCK) != 0);
+	result = ((status & FE_HAS_LOCK) != 0);
+	return;
 }
 
-bool DvbLinuxDevice::addPidFilter(int pid)
+void DvbLinuxDevice::addPidFilter(int pid, bool &ok)
 {
 	Q_ASSERT(frontendFd >= 0);
 
 	if (dmxFds.contains(pid)) {
 		kWarning() << "filter already set up for" << pid;
-		return false;
+		ok = false;
+		return;
 	}
 
 	int dmxFd = open(QFile::encodeName(demuxPath), O_RDONLY | O_NONBLOCK);
 
 	if (dmxFd < 0) {
-		kWarning() << "couldn't open" << demuxPath;
-		return false;
+		kWarning() << "cannot open demux" << demuxPath;
+		ok = false;
+		return;
 	}
 
 	dmx_pes_filter_params pes_filter;
@@ -709,13 +735,15 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 	pes_filter.flags = DMX_IMMEDIATE_START;
 
 	if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
-		kWarning() << "couldn't set up filter for" << demuxPath;
+		kWarning() << "cannot set up filter for demux" << demuxPath;
 		close(dmxFd);
-		return false;
+		ok = false;
+		return;
 	}
 
 	dmxFds.insert(pid, dmxFd);
-	return true;
+	ok = true;
+	return;
 }
 
 void DvbLinuxDevice::removePidFilter(int pid)
@@ -738,11 +766,6 @@ void DvbLinuxDevice::startDescrambling(const DvbPmtSection &pmtSection)
 void DvbLinuxDevice::stopDescrambling(int serviceId)
 {
 	cam.stopDescrambling(serviceId);
-}
-
-void DvbLinuxDevice::execute(Command command, ReturnData returnData, Data data)
-{
-	DvbBackendAdapter<DvbLinuxDevice>::execute(this, command, returnData, data);
 }
 
 static int DvbReadSysAttr(const QString &path)

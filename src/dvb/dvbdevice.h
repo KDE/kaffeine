@@ -29,6 +29,7 @@
 class DvbConfigBase;
 class DvbFilterData;
 class DvbFilterInternal;
+class DvbPmtSection;
 
 class DvbPidFilter
 {
@@ -39,7 +40,7 @@ public:
 	virtual void processData(const char data[188]) = 0;
 };
 
-class DvbDevice : public QObject, private DvbAbstractDeviceBuffer
+class DvbDevice : public QObject, private DvbAbstractDeviceBuffer, public DvbBackendDeviceBase
 {
 	Q_OBJECT
 public:
@@ -53,12 +54,12 @@ public:
 		// FIXME introduce a TuningFailed state
 	};
 
-	DvbDevice(DvbBackendDevice *backendDevice, QObject *parent);
+	DvbDevice(QObject *backendDevice, QObject *parent);
 	~DvbDevice();
 
-	const DvbBackendDevice *getBackendDevice() const
+	const QObject *getBackendDevice() const
 	{
-		return backend.device;
+		return backend;
 	}
 
 	DeviceState getDeviceState() const
@@ -66,7 +67,7 @@ public:
 		return deviceState;
 	}
 
-	DvbBackendDevice::TransmissionTypes getTransmissionTypes() const;
+	TransmissionTypes getTransmissionTypes() const;
 	QString getDeviceId() const;
 	QString getFrontendName() const;
 
@@ -96,6 +97,27 @@ signals:
 private slots:
 	void frontendEvent();
 
+signals:
+	void backendSetBuffer(DvbAbstractDeviceBuffer *buffer);
+	void backendGetDeviceId(QString &result) const;
+	void backendGetFrontendName(QString &result) const;
+	void backendGetTransmissionTypes(TransmissionTypes &result) const;
+	void backendGetCapabilities(Capabilities &result) const;
+	void backendAcquire(bool &ok);
+	void backendSetTone(SecTone tone, bool &ok);
+	void backendSetVoltage(SecVoltage voltage, bool &ok);
+	void backendSendMessage(const char *message, int length, bool &ok);
+	void backendSendBurst(SecBurst burst, bool &ok);
+	void backendTune(const DvbTransponder &transponder, bool &ok);
+	void backendGetSignal(int &result) const; // 0 - 100 ; -1 = unsupported
+	void backendGetSnr(int &result) const; // 0 - 100 ; -1 = unsupported
+	void backendIsTuned(bool &result) const;
+	void backendAddPidFilter(int pid, bool &ok);
+	void backendRemovePidFilter(int pid);
+	void backendStartDescrambling(const DvbPmtSection &pmtSection);
+	void backendStopDescrambling(int serviceId);
+	void backendRelease();
+
 private:
 	void setDeviceState(DeviceState newState);
 	void discardBuffers();
@@ -106,7 +128,7 @@ private:
 	void submitCurrent(int packets);
 	void customEvent(QEvent *);
 
-	DvbBackendDeviceAdapter backend;
+	QObject *backend;
 	DeviceState deviceState;
 	QExplicitlySharedDataPointer<const DvbConfigBase> config;
 
@@ -121,7 +143,7 @@ private:
 	bool isAuto;
 	DvbTTransponder *autoTTransponder;
 	DvbTransponder autoTransponder;
-	DvbBackendDevice::Capabilities capabilities;
+	Capabilities capabilities;
 
 	DvbFilterData *currentUnused;
 	DvbFilterData *currentUsed;
