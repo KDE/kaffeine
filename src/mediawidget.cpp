@@ -24,7 +24,6 @@
 #include <QBoxLayout>
 #include <QContextMenuEvent>
 #include <QDBusInterface>
-#include <QDBusPendingReply>
 #include <QFile>
 #include <QLabel>
 #include <QPushButton>
@@ -191,8 +190,7 @@ void SeekSlider::mousePressEvent(QMouseEvent *event)
 }
 
 MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
-	QWidget *parent) : QWidget(parent), menu(menu_), dvbFeed(NULL), screenSaverDBusCall(NULL),
-	screenSaverSuspended(false)
+	QWidget *parent) : QWidget(parent), menu(menu_), dvbFeed(NULL), screenSaverSuspended(false)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
@@ -1180,31 +1178,19 @@ void MediaWidget::checkScreenSaver()
 {
 	bool suspendScreenSaver = (backend->isPlaying() && !isPaused() && isVisible());
 
-	if (suspendScreenSaver && (screenSaverDBusCall == NULL)) {
-		screenSaverDBusCall = new QDBusPendingCall(
-			QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-			"org.freedesktop.ScreenSaver").asyncCall("Inhibit", "Kaffeine", ""));
-	} else if (!suspendScreenSaver && (screenSaverDBusCall != NULL)) {
-		QDBusPendingReply<unsigned int> reply(*screenSaverDBusCall);
-
-		if (reply.isValid()) {
-			QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-				"org.freedesktop.ScreenSaver").call(
-				QDBus::NoBlock, "UnInhibit", reply.value());
-		}
-
-		if (reply.isFinished()) {
-			delete screenSaverDBusCall;
-			screenSaverDBusCall = NULL;
-		}
-	}
-
 	if (suspendScreenSaver) {
+		// KDE - Inhibit doesn't inhibit "lock screen after inactivity"
+		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
+			"org.freedesktop.ScreenSaver").call(QDBus::NoBlock,
+			"SimulateUserActivity");
+
+		// GNOME - Inhibit doesn't inhibit power management functions
 		QDBusInterface("org.gnome.ScreenSaver", "/", "org.gnome.ScreenSaver").
 			call(QDBus::NoBlock, "SimulateUserActivity");
 	}
 
 	if (screenSaverSuspended != suspendScreenSaver) {
+		// X11 - needed if none of the above applications is running
 		screenSaverSuspended = suspendScreenSaver;
 		XScreenSaverSuspend(QX11Info::display(), suspendScreenSaver);
 	}

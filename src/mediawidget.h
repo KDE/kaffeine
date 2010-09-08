@@ -26,7 +26,6 @@
 #include <KUrl>
 
 class QActionGroup;
-class QDBusPendingCall;
 class QPushButton;
 class QSlider;
 class KAction;
@@ -241,7 +240,6 @@ private:
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 	bool showElapsedTime;
-	QDBusPendingCall *screenSaverDBusCall;
 	bool screenSaverSuspended;
 };
 
