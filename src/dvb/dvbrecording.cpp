@@ -445,12 +445,16 @@ void DvbRecording::start()
 
 			if (file.open(QIODevice::WriteOnly)) {
 				break;
+			} else {
+				kWarning() << "cannot open file" << file.fileName();
 			}
 
 			if ((attempt == 0) && !QDir(folder).exists()) {
 				if (QDir().mkpath(folder)) {
 					attempt = -1;
 					continue;
+				} else {
+					kWarning() << "cannot create folder" << folder;
 				}
 			}
 
@@ -465,7 +469,7 @@ void DvbRecording::start()
 		}
 
 		if (!file.isOpen()) {
-			kWarning() << "cannot open file" << (path + ".m2t");
+			kWarning() << "cannot open file" << file.fileName();
 			return;
 		}
 	}
