@@ -122,8 +122,8 @@ public:
 	QList<DvbTransponder> getTransponders(DvbDevice *device, const QString &source);
 	bool updateScanData(const QByteArray &data);
 
-	QString getRecordingFolder();
-	QString getTimeShiftFolder();
+	QString getRecordingFolder() const;
+	QString getTimeShiftFolder() const;
 	int getBeginMargin() const; // seconds
 	int getEndMargin() const; // seconds
 	bool override6937Charset() const;

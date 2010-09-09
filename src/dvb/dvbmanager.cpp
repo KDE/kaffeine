@@ -323,28 +323,14 @@ bool DvbManager::updateScanData(const QByteArray &data)
 	return true;
 }
 
-QString DvbManager::getRecordingFolder()
+QString DvbManager::getRecordingFolder() const
 {
-	QString path = KGlobal::config()->group("DVB").readEntry("RecordingFolder");
-
-	if (path.isEmpty() || !QDir(path).exists()) {
-		path = QDir::homePath();
-		setRecordingFolder(path);
-	}
-
-	return path;
+	return KGlobal::config()->group("DVB").readEntry("RecordingFolder", QDir::homePath());
 }
 
-QString DvbManager::getTimeShiftFolder()
+QString DvbManager::getTimeShiftFolder() const
 {
-	QString path = KGlobal::config()->group("DVB").readEntry("TimeShiftFolder");
-
-	if (path.isEmpty() || !QDir(path).exists()) {
-		path = QDir::homePath();
-		setTimeShiftFolder(path);
-	}
-
-	return path;
+	return KGlobal::config()->group("DVB").readEntry("TimeShiftFolder", QDir::homePath());
 }
 
 int DvbManager::getBeginMargin() const

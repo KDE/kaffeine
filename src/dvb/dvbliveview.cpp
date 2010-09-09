@@ -21,7 +21,9 @@
 #include "dvbliveview.h"
 #include "dvbliveview_p.h"
 
+#include <QDir>
 #include <QPainter>
+#include <KDebug>
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"
@@ -390,9 +392,16 @@ void DvbLiveView::prepareTimeShift()
 
 	if (internal->timeShiftFile.exists() ||
 	    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-		// FIXME error message
-		mediaWidget->stop();
-		return;
+		kWarning() << "cannot open file" << internal->timeShiftFile.fileName();
+		internal->timeShiftFile.setFileName(QDir::homePath() + "/TimeShift-" +
+			QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
+
+		if (internal->timeShiftFile.exists() ||
+		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
+			kWarning() << "cannot open file" << internal->timeShiftFile.fileName();
+			mediaWidget->stop();
+			return;
+		}
 	}
 
 	updatePids();
