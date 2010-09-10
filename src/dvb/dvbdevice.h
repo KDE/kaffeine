@@ -80,8 +80,8 @@ public:
 	void startDescrambling(const DvbPmtSection &pmtSection, QObject *user);
 	void stopDescrambling(int serviceId, QObject *user);
 	bool isTuned() const;
-	int getSignal() const; // 0 - 100 [%]
-	int getSnr() const; // 0 - 100 [%]
+	int getSignal() const; // 0 - 100 [%] or -1 = not supported
+	int getSnr() const; // 0 - 100 [%] or -1 = not supported
 	DvbTransponder getAutoTransponder() const;
 
 	/*
@@ -100,20 +100,21 @@ private slots:
 	void frontendEvent();
 
 signals:
-	void backendSetDataChannel(DvbAbstractDataChannel *dataChannel);
 	void backendGetDeviceId(QString &result) const;
 	void backendGetFrontendName(QString &result) const;
 	void backendGetTransmissionTypes(TransmissionTypes &result) const;
 	void backendGetCapabilities(Capabilities &result) const;
+	void backendSetDataChannel(DvbAbstractDataChannel *dataChannel);
+	void backendSetDeviceEnabled(bool enabled);
 	void backendAcquire(bool &ok);
 	void backendSetTone(SecTone tone, bool &ok);
 	void backendSetVoltage(SecVoltage voltage, bool &ok);
 	void backendSendMessage(const char *message, int length, bool &ok);
 	void backendSendBurst(SecBurst burst, bool &ok);
-	void backendTune(const DvbTransponder &transponder, bool &ok);
-	void backendGetSignal(int &result) const; // 0 - 100 ; -1 = unsupported
-	void backendGetSnr(int &result) const; // 0 - 100 ; -1 = unsupported
+	void backendTune(const DvbTransponder &transponder, bool &ok); // discards obsolete data
 	void backendIsTuned(bool &result) const;
+	void backendGetSignal(int &result) const; // 0 - 100 [%] or -1 = not supported
+	void backendGetSnr(int &result) const; // 0 - 100 [%] or -1 = not supported
 	void backendAddPidFilter(int pid, bool &ok);
 	void backendRemovePidFilter(int pid);
 	void backendStartDescrambling(const DvbPmtSection &pmtSection);

@@ -42,20 +42,21 @@ public:
 	int index;
 
 public slots:
-	void setDataChannel(DvbAbstractDataChannel *dataChannel_);
 	void getDeviceId(QString &result) const;
 	void getFrontendName(QString &result) const;
 	void getTransmissionTypes(TransmissionTypes &result) const;
 	void getCapabilities(Capabilities &result) const;
+	void setDataChannel(DvbAbstractDataChannel *dataChannel_);
+	void setDeviceEnabled(bool enabled);
 	void acquire(bool &ok);
 	void setTone(SecTone tone, bool &ok);
 	void setVoltage(SecVoltage voltage, bool &ok);
 	void sendMessage(const char *message, int length, bool &ok);
 	void sendBurst(SecBurst burst, bool &ok);
-	void tune(const DvbTransponder &transponder, bool &ok);
-	void getSignal(int &result) const; // 0 - 100 ; -1 = unsupported
-	void getSnr(int &result) const; // 0 - 100 ; -1 = unsupported
+	void tune(const DvbTransponder &transponder, bool &ok); // discards obsolete data
 	void isTuned(bool &result) const;
+	void getSignal(int &result) const; // 0 - 100 [%] or -1 = not supported
+	void getSnr(int &result) const; // 0 - 100 [%] or -1 = not supported
 	void addPidFilter(int pid, bool &ok);
 	void removePidFilter(int pid);
 	void startDescrambling(const DvbPmtSection &pmtSection);

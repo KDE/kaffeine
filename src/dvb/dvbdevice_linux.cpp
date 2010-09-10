@@ -276,6 +276,11 @@ void DvbLinuxDevice::setDataChannel(DvbAbstractDataChannel *dataChannel_)
 	dataChannel = dataChannel_;
 }
 
+void DvbLinuxDevice::setDeviceEnabled(bool enabled)
+{
+	Q_UNUSED(enabled) // FIXME
+}
+
 void DvbLinuxDevice::getDeviceId(QString &result) const
 {
 	Q_ASSERT(ready);

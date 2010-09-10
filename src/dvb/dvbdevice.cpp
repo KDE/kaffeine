@@ -85,8 +85,6 @@ DvbDevice::DvbDevice(QObject *backendDevice, QObject *parent) : QObject(parent),
 	cleanUpFilters(false), isAuto(false), unusedBuffersHead(NULL), usedBuffersHead(NULL),
 	usedBuffersTail(NULL)
 {
-	connect(this, SIGNAL(backendSetDataChannel(DvbAbstractDataChannel*)),
-		backend, SLOT(setDataChannel(DvbAbstractDataChannel*)));
 	connect(this, SIGNAL(backendGetDeviceId(QString&)), backend, SLOT(getDeviceId(QString&)));
 	connect(this, SIGNAL(backendGetFrontendName(QString&)),
 		backend, SLOT(getFrontendName(QString&)));
@@ -94,6 +92,10 @@ DvbDevice::DvbDevice(QObject *backendDevice, QObject *parent) : QObject(parent),
 		backend, SLOT(getTransmissionTypes(TransmissionTypes&)));
 	connect(this, SIGNAL(backendGetCapabilities(Capabilities&)),
 		backend, SLOT(getCapabilities(Capabilities&)));
+	connect(this, SIGNAL(backendSetDataChannel(DvbAbstractDataChannel*)),
+		backend, SLOT(setDataChannel(DvbAbstractDataChannel*)));
+	connect(this, SIGNAL(backendSetDeviceEnabled(bool)),
+		backend, SLOT(setDeviceEnabled(bool)));
 	connect(this, SIGNAL(backendAcquire(bool&)), backend, SLOT(acquire(bool&)));
 	connect(this, SIGNAL(backendSetTone(SecTone,bool&)),
 		backend, SLOT(setTone(SecTone,bool&)));
@@ -105,9 +107,9 @@ DvbDevice::DvbDevice(QObject *backendDevice, QObject *parent) : QObject(parent),
 		backend, SLOT(sendBurst(SecBurst,bool&)));
 	connect(this, SIGNAL(backendTune(DvbTransponder,bool&)),
 		backend, SLOT(tune(DvbTransponder,bool&)));
+	connect(this, SIGNAL(backendIsTuned(bool&)), backend, SLOT(isTuned(bool&)));
 	connect(this, SIGNAL(backendGetSignal(int&)), backend, SLOT(getSignal(int&)));
 	connect(this, SIGNAL(backendGetSnr(int&)), backend, SLOT(getSnr(int&)));
-	connect(this, SIGNAL(backendIsTuned(bool&)), backend, SLOT(isTuned(bool&)));
 	connect(this, SIGNAL(backendAddPidFilter(int,bool&)),
 		backend, SLOT(addPidFilter(int,bool&)));
 	connect(this, SIGNAL(backendRemovePidFilter(int)), backend, SLOT(removePidFilter(int)));
@@ -116,6 +118,7 @@ DvbDevice::DvbDevice(QObject *backendDevice, QObject *parent) : QObject(parent),
 	connect(this, SIGNAL(backendStopDescrambling(int)), backend, SLOT(stopDescrambling(int)));
 	connect(this, SIGNAL(backendRelease()), backend, SLOT(release()));
 	emit backendSetDataChannel(this);
+	emit backendSetDeviceEnabled(true); // FIXME
 
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 	dummyFilter = new DvbDummyFilter;
