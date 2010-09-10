@@ -28,7 +28,6 @@
 #include <QStringList>
 
 class QTreeView;
-class DvbBackendDevice;
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;

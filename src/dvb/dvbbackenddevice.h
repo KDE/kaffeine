@@ -21,6 +21,8 @@
 #ifndef DVBBACKENDDEVICE_H
 #define DVBBACKENDDEVICE_H
 
+#include <QtGlobal>
+
 class DvbDataBuffer
 {
 public:

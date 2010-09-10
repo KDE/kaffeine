@@ -29,7 +29,6 @@
 
 class DvbConfigBase;
 class DvbDeviceDataBuffer;
-class DvbFilterData;
 class DvbFilterInternal;
 class DvbPmtSection;
 
