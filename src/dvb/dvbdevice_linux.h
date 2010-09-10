@@ -42,7 +42,7 @@ public:
 	int index;
 
 public slots:
-	void setBuffer(DvbAbstractDeviceBuffer *buffer);
+	void setDataChannel(DvbAbstractDataChannel *dataChannel_);
 	void getDeviceId(QString &result) const;
 	void getFrontendName(QString &result) const;
 	void getTransmissionTypes(TransmissionTypes &result) const;
@@ -86,7 +86,7 @@ private:
 	QString dvrPath;
 	QString frontendPath;
 
-	DvbAbstractDeviceBuffer *buffer;
+	DvbAbstractDataChannel *dataChannel;
 	stateFlags internalState;
 	TransmissionTypes transmissionTypes;
 	Capabilities capabilities;
@@ -103,20 +103,15 @@ private:
 class DvbDeviceManager : public QObject
 {
 	Q_OBJECT
-	Q_PROPERTY(int backendMagic READ backendMagic)
 public:
 	DvbDeviceManager();
 	~DvbDeviceManager();
-
-	int backendMagic()
-	{
-		return dvbBackendMagic;
-	}
 
 public slots:
 	void doColdPlug();
 
 signals:
+	void requestBuiltinDeviceManager(QObject *&bultinDeviceManager);
 	void deviceAdded(QObject *device);
 	void deviceRemoved(QObject *device);
 

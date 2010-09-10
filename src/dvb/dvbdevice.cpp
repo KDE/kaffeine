@@ -1,7 +1,7 @@
 /*
  * dvbdevice.cpp
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +19,7 @@
  */
 
 #include "dvbdevice.h"
+#include "dvbdevice_p.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -28,13 +29,6 @@
 #include "dvbconfig.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
-
-struct DvbFilterData
-{
-	char packets[21][188];
-	int count;
-	DvbFilterData *next;
-};
 
 class DvbFilterInternal
 {
@@ -88,10 +82,11 @@ void DvbDataDumper::processData(const char data[188])
 
 DvbDevice::DvbDevice(QObject *backendDevice, QObject *parent) : QObject(parent),
 	backend(backendDevice), deviceState(DeviceReleased), dataDumper(NULL),
-	cleanUpFilters(false), isAuto(false)
+	cleanUpFilters(false), isAuto(false), unusedBuffersHead(NULL), usedBuffersHead(NULL),
+	usedBuffersTail(NULL)
 {
-	connect(this, SIGNAL(backendSetBuffer(DvbAbstractDeviceBuffer*)),
-		backend, SLOT(setBuffer(DvbAbstractDeviceBuffer*)));
+	connect(this, SIGNAL(backendSetDataChannel(DvbAbstractDataChannel*)),
+		backend, SLOT(setDataChannel(DvbAbstractDataChannel*)));
 	connect(this, SIGNAL(backendGetDeviceId(QString&)), backend, SLOT(getDeviceId(QString&)));
 	connect(this, SIGNAL(backendGetFrontendName(QString&)),
 		backend, SLOT(getFrontendName(QString&)));
@@ -120,26 +115,26 @@ DvbDevice::DvbDevice(QObject *backendDevice, QObject *parent) : QObject(parent),
 		backend, SLOT(startDescrambling(DvbPmtSection)));
 	connect(this, SIGNAL(backendStopDescrambling(int)), backend, SLOT(stopDescrambling(int)));
 	connect(this, SIGNAL(backendRelease()), backend, SLOT(release()));
-	emit backendSetBuffer(this);
+	emit backendSetDataChannel(this);
 
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 	dummyFilter = new DvbDummyFilter;
-
-	currentUnused = new DvbFilterData;
-	currentUnused->next = currentUnused;
-	currentUsed = currentUnused;
-	totalBuffers = 1;
-	usedBuffers = 0;
 }
 
 DvbDevice::~DvbDevice()
 {
 	emit backendRelease();
 
-	for (int i = 0; i < totalBuffers; ++i) {
-		DvbFilterData *temp = currentUnused->next;
-		delete currentUnused;
-		currentUnused = temp;
+	for (DvbDeviceDataBuffer *buffer = unusedBuffersHead; buffer != NULL;) {
+		DvbDeviceDataBuffer *nextBuffer = buffer->next;
+		delete buffer;
+		buffer = nextBuffer;
+	}
+
+	for (DvbDeviceDataBuffer *buffer = usedBuffersHead; buffer != NULL;) {
+		DvbDeviceDataBuffer *nextBuffer = buffer->next;
+		delete buffer;
+		buffer = nextBuffer;
 	}
 
 	delete dataDumper;
@@ -693,17 +688,20 @@ void DvbDevice::setDeviceState(DeviceState newState)
 
 void DvbDevice::discardBuffers()
 {
-	if (usedBuffers > 0) {
-		while (true) {
-			currentUsed = currentUsed->next;
+	dataChannelMutex.lock();
 
-			if (usedBuffers.fetchAndAddOrdered(-1) == 1) {
-				break;
-			}
+	if (usedBuffersHead != NULL) {
+		usedBuffersHead->size = 0;
+		DvbDeviceDataBuffer *nextBuffer = usedBuffersHead->next;
+		usedBuffersHead->next = NULL;
+
+		if (nextBuffer != NULL) {
+			nextBuffer->next = unusedBuffersHead;
+			unusedBuffersHead = nextBuffer;
 		}
 	}
 
-	currentUsed->count = 0;
+	dataChannelMutex.unlock();
 }
 
 void DvbDevice::stop()
@@ -736,31 +734,51 @@ void DvbDevice::stop()
 	}
 }
 
-int DvbDevice::size()
+DvbDataBuffer DvbDevice::getBuffer()
 {
-	return 21 * 188;
-}
+	dataChannelMutex.lock();
+	DvbDeviceDataBuffer *buffer = unusedBuffersHead;
 
-char *DvbDevice::getCurrent()
-{
-	return currentUnused->packets[0];
-}
-
-void DvbDevice::submitCurrent(int packets)
-{
-	currentUnused->count = packets;
-
-	if ((usedBuffers + 1) >= totalBuffers) {
-		DvbFilterData *newBuffer = new DvbFilterData;
-		newBuffer->next = currentUnused->next;
-		currentUnused->next = newBuffer;
-		++totalBuffers;
+	if (buffer != NULL) {
+		unusedBuffersHead = buffer->next;
+		dataChannelMutex.unlock();
+	} else {
+		dataChannelMutex.unlock();
+		buffer = new DvbDeviceDataBuffer;
 	}
 
-	currentUnused = currentUnused->next;
+	return DvbDataBuffer(buffer->data, sizeof(buffer->data));
+}
 
-	if (usedBuffers.fetchAndAddOrdered(1) == 0) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+void DvbDevice::writeBuffer(const DvbDataBuffer &dataBuffer)
+{
+	DvbDeviceDataBuffer *buffer = reinterpret_cast<DvbDeviceDataBuffer *>(dataBuffer.data);
+	Q_ASSERT(buffer->data == dataBuffer.data);
+
+	if (dataBuffer.dataSize > 0) {
+		buffer->size = dataBuffer.dataSize;
+		dataChannelMutex.lock();
+		bool wakeUp = false;
+
+		if (usedBuffersHead != NULL) {
+			usedBuffersTail->next = buffer;
+		} else {
+			usedBuffersHead = buffer;
+			wakeUp = true;
+		}
+
+		usedBuffersTail = buffer;
+		usedBuffersTail->next = NULL;
+		dataChannelMutex.unlock();
+
+		if (wakeUp) {
+			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+		}
+	} else {
+		dataChannelMutex.lock();
+		buffer->next = unusedBuffersHead;
+		unusedBuffersHead = buffer;
+		dataChannelMutex.unlock();
 	}
 }
 
@@ -781,13 +799,26 @@ void DvbDevice::customEvent(QEvent *)
 		}
 	}
 
-	if (usedBuffers <= 0) {
-		return;
-	}
+	DvbDeviceDataBuffer *buffer = NULL;
 
 	while (true) {
-		for (int i = 0; i < currentUsed->count; ++i) {
-			char *packet = currentUsed->packets[i];
+		dataChannelMutex.lock();
+
+		if (buffer != NULL) {
+			usedBuffersHead = buffer->next;
+			buffer->next = unusedBuffersHead;
+			unusedBuffersHead = buffer;
+		}
+
+		buffer = usedBuffersHead;
+		dataChannelMutex.unlock();
+
+		if (buffer == NULL) {
+			break;
+		}
+
+		for (int i = 0; i < buffer->size; i += 188) {
+			char *packet = (buffer->data + i);
 
 			if ((packet[1] & 0x80) != 0) {
 				// transport error indicator
@@ -809,17 +840,6 @@ void DvbDevice::customEvent(QEvent *)
 			for (int j = 0; j < pidFiltersSize; ++j) {
 				pidFilters.at(j)->processData(packet);
 			}
-		}
-
-		if (usedBuffers == 0) {
-			// FIXME not a nice solution - side effect of discardBuffers()
-			break;
-		}
-
-		currentUsed = currentUsed->next;
-
-		if (usedBuffers.fetchAndAddOrdered(-1) == 1) {
-			break;
 		}
 	}
 }

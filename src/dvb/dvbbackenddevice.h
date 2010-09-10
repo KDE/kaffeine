@@ -21,19 +21,27 @@
 #ifndef DVBBACKENDDEVICE_H
 #define DVBBACKENDDEVICE_H
 
-static const int dvbBackendMagic = 0x67a2c7f2;
-
-class DvbAbstractDeviceBuffer
+class DvbDataBuffer
 {
 public:
-	DvbAbstractDeviceBuffer() { }
-	virtual ~DvbAbstractDeviceBuffer() { }
+	DvbDataBuffer(char *data_, int bufferSize_) : data(data_), bufferSize(bufferSize_) { }
+	~DvbDataBuffer() { }
 
-	// all those functions must be callable from a QThread
+	char *data;
+	int dataSize; // must be a multiple of 188 (can also be negative)
+	int bufferSize; // must be a multiple of 188
+};
 
-	virtual int size() = 0; // must be a multiple of 188
-	virtual char *getCurrent() = 0;
-	virtual void submitCurrent(int packets) = 0;
+class DvbAbstractDataChannel
+{
+public:
+	// these functions are thread-safe
+	virtual DvbDataBuffer getBuffer() = 0;
+	virtual void writeBuffer(const DvbDataBuffer &dataBuffer) = 0;
+
+protected:
+	DvbAbstractDataChannel() { }
+	~DvbAbstractDataChannel() { }
 };
 
 class DvbBackendDeviceBase
@@ -75,6 +83,7 @@ public:
 };
 
 /*
+
 class DvbXXXDevice : public QObject, public DvbBackendDeviceBase
 {
 	Q_OBJECT
@@ -83,7 +92,7 @@ public:
 	~DvbXXXDevice();
 
 public slots:
-	void setBuffer(DvbAbstractDeviceBuffer *buffer);
+	void setDataChannel(DvbAbstractDataChannel *dataChannel);
 	void getDeviceId(QString &result) const;
 	void getFrontendName(QString &result) const;
 	void getTransmissionTypes(TransmissionTypes &result) const;
@@ -94,8 +103,8 @@ public slots:
 	void sendMessage(const char *message, int length, bool &ok);
 	void sendBurst(SecBurst burst, bool &ok);
 	void tune(const DvbTransponder &transponder, bool &ok);
-	void getSignal(int &result) const; // 0 - 100 ; -1 = unsupported
-	void getSnr(int &result) const; // 0 - 100 ; -1 = unsupported
+	void getSignal(int &result) const; // 0 - 100 [%] or -1 = unsupported
+	void getSnr(int &result) const; // 0 - 100 [%] or -1 = unsupported
 	void isTuned(bool &result) const;
 	void addPidFilter(int pid, bool &ok);
 	void removePidFilter(int pid);
@@ -103,6 +112,23 @@ public slots:
 	void stopDescrambling(int serviceId);
 	void release();
 };
+
+class DvbXXXDeviceManager : public QObject
+{
+	Q_OBJECT
+public:
+	DvbXXXDeviceManager();
+	~DvbXXXDeviceManager();
+
+public slots:
+	void doColdPlug();
+
+signals:
+	void requestBuiltinDeviceManager(QObject *&bultinDeviceManager);
+	void deviceAdded(QObject *device);
+	void deviceRemoved(QObject *device);
+};
+
 */
 
 #endif /* DVBBACKENDDEVICE_H */

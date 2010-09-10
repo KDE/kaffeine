@@ -39,7 +39,7 @@
 class DvbDeviceThread : private QThread
 {
 public:
-	DvbDeviceThread() : dvrFd(-1)
+	DvbDeviceThread() : dvrFd(-1), buffer(NULL, 0)
 	{
 		if (pipe(pipes) != 0) {
 			kError() << "pipe() failed";
@@ -54,11 +54,16 @@ public:
 			stop();
 		}
 
+		if (buffer.data != NULL) {
+			buffer.dataSize = 0;
+			dataChannel->writeBuffer(buffer);
+		}
+
 		close(pipes[0]);
 		close(pipes[1]);
 	}
 
-	void start(int dvrFd_, DvbAbstractDeviceBuffer *buffer_);
+	void start(int dvrFd_, DvbAbstractDataChannel *dataChannel_);
 	void discardBuffers();
 	void stop();
 
@@ -72,14 +77,20 @@ private:
 
 	int pipes[2];
 	int dvrFd;
-	DvbAbstractDeviceBuffer *buffer;
+	DvbAbstractDataChannel *dataChannel;
+	DvbDataBuffer buffer;
 };
 
-void DvbDeviceThread::start(int dvrFd_, DvbAbstractDeviceBuffer *buffer_)
+void DvbDeviceThread::start(int dvrFd_, DvbAbstractDataChannel *dataChannel_)
 {
 	Q_ASSERT(dvrFd == -1);
 	dvrFd = dvrFd_;
-	buffer = buffer_;
+	dataChannel = dataChannel_;
+
+	if (buffer.data == NULL) {
+		buffer = dataChannel->getBuffer();
+	}
+
 	QThread::start();
 }
 
@@ -96,7 +107,7 @@ void DvbDeviceThread::discardBuffers()
 	char temp;
 	read(pipes[0], &temp, 1);
 
-	while (read(dvrFd, buffer->getCurrent(), buffer->size()) > 0) {
+	while (read(dvrFd, buffer.data, buffer.bufferSize) > 0) {
 	}
 
 	QThread::start();
@@ -115,6 +126,12 @@ void DvbDeviceThread::stop()
 	char temp;
 	read(pipes[0], &temp, 1);
 	dvrFd = -1;
+
+	if (buffer.data != NULL) {
+		buffer.dataSize = 0;
+		dataChannel->writeBuffer(buffer);
+		buffer = DvbDataBuffer(NULL, 0);
+	}
 }
 
 void DvbDeviceThread::run()
@@ -127,8 +144,6 @@ void DvbDeviceThread::run()
 
 	pfds[1].fd = dvrFd;
 	pfds[1].events = POLLIN;
-
-	int bufferSize = buffer->size();
 
 	while (true) {
 		if (poll(pfds, 2, -1) < 0) {
@@ -145,16 +160,16 @@ void DvbDeviceThread::run()
 		}
 
 		while (true) {
-			int size = read(dvrFd, buffer->getCurrent(), bufferSize);
+			buffer.dataSize = read(dvrFd, buffer.data, buffer.bufferSize);
 
-			if (size < 0) {
+			if (buffer.dataSize < 0) {
 				if (errno == EAGAIN) {
 					break;
 				}
 
-				size = read(dvrFd, buffer->getCurrent(), bufferSize);
+				buffer.dataSize = read(dvrFd, buffer.data, buffer.bufferSize);
 
-				if (size < 0) {
+				if (buffer.dataSize < 0) {
 					if (errno == EAGAIN) {
 						break;
 					}
@@ -164,9 +179,12 @@ void DvbDeviceThread::run()
 				}
 			}
 
-			buffer->submitCurrent(size / 188);
+			if (buffer.dataSize > 0) {
+				dataChannel->writeBuffer(buffer);
+				buffer = dataChannel->getBuffer();
+			}
 
-			if (size != bufferSize) {
+			if (buffer.dataSize != buffer.bufferSize) {
 				break;
 			}
 		}
@@ -176,7 +194,7 @@ void DvbDeviceThread::run()
 }
 
 DvbLinuxDevice::DvbLinuxDevice(int adapter_, int index_) : adapter(adapter_), index(index_),
-	buffer(NULL), ready(false), frontendFd(-1), dvrFd(-1)
+	dataChannel(NULL), ready(false), frontendFd(-1), dvrFd(-1)
 {
 	thread = new DvbDeviceThread();
 }
@@ -253,9 +271,9 @@ bool DvbLinuxDevice::componentRemoved(const QString &udi)
 	return false;
 }
 
-void DvbLinuxDevice::setBuffer(DvbAbstractDeviceBuffer *buffer_)
+void DvbLinuxDevice::setDataChannel(DvbAbstractDataChannel *dataChannel_)
 {
-	buffer = buffer_;
+	dataChannel = dataChannel_;
 }
 
 void DvbLinuxDevice::getDeviceId(QString &result) const
@@ -304,7 +322,7 @@ void DvbLinuxDevice::acquire(bool &ok)
 		return;
 	}
 
-	thread->start(dvrFd, buffer);
+	thread->start(dvrFd, dataChannel);
 	ok = true;
 	return;
 }

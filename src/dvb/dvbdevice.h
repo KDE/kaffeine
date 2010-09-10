@@ -1,7 +1,7 @@
 /*
  * dvbdevice.h
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,13 @@
 #define DVBDEVICE_H
 
 #include <QMap>
+#include <QMutex>
 #include <QTimer>
 #include "dvbbackenddevice.h"
 #include "dvbchannel.h"
 
 class DvbConfigBase;
+class DvbDeviceDataBuffer;
 class DvbFilterData;
 class DvbFilterInternal;
 class DvbPmtSection;
@@ -40,7 +42,7 @@ public:
 	virtual void processData(const char data[188]) = 0;
 };
 
-class DvbDevice : public QObject, private DvbAbstractDeviceBuffer, public DvbBackendDeviceBase
+class DvbDevice : public QObject, private DvbAbstractDataChannel, public DvbBackendDeviceBase
 {
 	Q_OBJECT
 public:
@@ -98,7 +100,7 @@ private slots:
 	void frontendEvent();
 
 signals:
-	void backendSetBuffer(DvbAbstractDeviceBuffer *buffer);
+	void backendSetDataChannel(DvbAbstractDataChannel *dataChannel);
 	void backendGetDeviceId(QString &result) const;
 	void backendGetFrontendName(QString &result) const;
 	void backendGetTransmissionTypes(TransmissionTypes &result) const;
@@ -123,9 +125,8 @@ private:
 	void discardBuffers();
 	void stop();
 
-	int size();
-	char *getCurrent();
-	void submitCurrent(int packets);
+	DvbDataBuffer getBuffer();
+	void writeBuffer(const DvbDataBuffer &dataBuffer);
 	void customEvent(QEvent *);
 
 	QObject *backend;
@@ -145,10 +146,10 @@ private:
 	DvbTransponder autoTransponder;
 	Capabilities capabilities;
 
-	DvbFilterData *currentUnused;
-	DvbFilterData *currentUsed;
-	int totalBuffers;
-	QAtomicInt usedBuffers;
+	DvbDeviceDataBuffer *unusedBuffersHead;
+	DvbDeviceDataBuffer *usedBuffersHead;
+	DvbDeviceDataBuffer *usedBuffersTail;
+	QMutex dataChannelMutex;
 };
 
 #endif /* DVBDEVICE_H */
