@@ -260,49 +260,38 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		source.remove(0, source.lastIndexOf('-') + 1);
 
 		bool ok = false;
-		double position = 0;
+		double orbitalPosition = 0;
 
 		if (source.endsWith('E')) {
 			source.chop(1);
-			position = source.toDouble(&ok);
+			orbitalPosition = source.toDouble(&ok);
 		} else if (source.endsWith('W')) {
 			source.chop(1);
-			position = -source.toDouble(&ok);
+			orbitalPosition = (-source.toDouble(&ok));
 		}
 
 		if (!ok) {
-			kWarning() << "couldn't extract orbital position";
+			kWarning() << "cannot extract orbital position from" << config->scanSource;
 		}
 
-		double longitudeDiff = DvbManager::getLongitude() - position;
+		double radius = 6378;
+		double semiMajorAxis = 42164;
+		double temp = (radius * cos(DvbManager::getLatitude() * M_PI / 180));
+		double temp2 = ((orbitalPosition - DvbManager::getLongitude()) * M_PI / 180);
+		double angle = (temp2 + atan(sin(temp2) / ((semiMajorAxis / temp) - cos(temp2))));
+		int value = 0;
 
-		double latRad = DvbManager::getLatitude() * M_PI / 180;
-		double longDiffRad = longitudeDiff * M_PI / 180;
-		double temp = cos(latRad) * cos(longDiffRad);
-		double temp2 = -sin(latRad) * cos(longDiffRad) / sqrt(1 - temp * temp);
-
-		// deal with corner cases
-		if (temp2 < -1) {
-			temp2 = -1;
-		} else if (temp2 > 1) {
-			temp2 = 1;
-		} else if (temp2 != temp2) {
-			temp2 = 1;
+		if (angle >= 0) {
+			// east
+			value = ((16 * angle * 180 / M_PI) + 0.5);
+			value |= 0xe000;
+		} else {
+			// west
+			value = ((16 * (-angle) * 180 / M_PI) + 0.5);
+			value |= 0xd000;
 		}
 
-		double azimuth = acos(temp2) * 180 / M_PI;
-
-		if (((longitudeDiff > 0) && (longitudeDiff < 180)) || (longitudeDiff < -180)) {
-			azimuth = 360 - azimuth;
-		}
-
-		int value = (azimuth * 16) + 0.5;
-
-		if (value == (360 * 16)) {
-			value = 0;
-		}
-
-		char cmd[] = { 0xe0, 0x31, 0x6e, value / 256, value % 256 };
+		char cmd[] = { 0xe0, 0x31, 0x6e, (value / 256), (value % 256) };
 		emit backendSendMessage(cmd, sizeof(cmd), ok);
 		usleep(15000);
 		moveRotor = true;
