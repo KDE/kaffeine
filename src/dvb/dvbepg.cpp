@@ -648,6 +648,16 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 	QBoxLayout *rightLayout = new QVBoxLayout();
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
+	KAction *scheduleAction = new KAction(KIcon("media-record"),
+		i18nc("program guide", "Schedule Program"), this);
+	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
+
+	QPushButton *pushButton =
+		new QPushButton(scheduleAction->icon(), scheduleAction->text(), this);
+	pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
+	boxLayout->addWidget(pushButton);
+
 	boxLayout->addWidget(new QLabel(i18n("Search:"), widget));
 
 	KLineEdit *lineEdit = new KLineEdit(widget);
@@ -655,10 +665,6 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 	connect(lineEdit, SIGNAL(textChanged(QString)), epgModel, SLOT(setFilter(QString)));
 	boxLayout->addWidget(lineEdit);
 	rightLayout->addLayout(boxLayout);
-
-	KAction *scheduleAction = new KAction(KIcon("media-record"),
-		i18nc("program guide", "Schedule Program"), this);
-	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 
 	epgView = new QTreeView(widget);
 	epgView->addAction(scheduleAction);
@@ -670,12 +676,6 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 	connect(epgView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(entryActivated(QModelIndex)));
 	rightLayout->addWidget(epgView);
-
-	QPushButton *pushButton =
-		new QPushButton(scheduleAction->icon(), scheduleAction->text(), this);
-	pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
-	rightLayout->addWidget(pushButton);
 
 	contentLabel = new QLabel(widget);
 	contentLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
