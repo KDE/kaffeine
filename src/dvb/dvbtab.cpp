@@ -342,8 +342,18 @@ void DvbTab::instantRecord(bool checked)
 		}
 
 		DvbRecordingEntry recordingEntry;
-		// FIXME use epg for name
-		recordingEntry.name = (channel->name + QTime::currentTime().toString("-hhmmss"));
+		QList<DvbEpgEntry> epgEntries =
+			manager->getEpgModel()->getCurrentNext(channel->name);
+
+		if (!epgEntries.isEmpty()) {
+			recordingEntry.name = epgEntries.at(0).title;
+		}
+
+		if (recordingEntry.name.isEmpty()) {
+			recordingEntry.name =
+				(channel->name + QTime::currentTime().toString("-hhmmss"));
+		}
+
 		recordingEntry.channelName = channel->name;
 		recordingEntry.begin = QDateTime::currentDateTime().toUTC();
 		recordingEntry.duration = QTime(12, 0);
