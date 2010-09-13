@@ -22,6 +22,7 @@
 
 #include <QBoxLayout>
 #include <QFile>
+#include <QHeaderView>
 #include <QLabel>
 #include <QListView>
 #include <QPushButton>
@@ -30,6 +31,7 @@
 #include <QStringListModel>
 #include <KAction>
 #include <KDebug>
+#include <KLineEdit>
 #include <KLocale>
 #include <KStandardDirs>
 #include "dvbchannelui.h"
@@ -86,7 +88,8 @@ bool DvbEpgEntryLess::operator()(const QString &x, const DvbEpgEntry &y)
 	return x < y.channel;
 }
 
-DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), manager(manager_)
+DvbEpgModel::DvbEpgModel(DvbManager *manager_) : QAbstractTableModel(manager_), manager(manager_),
+	filterActive(false)
 {
 	channelModel = manager->getChannelModel();
 	connect(channelModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
@@ -210,7 +213,12 @@ int DvbEpgModel::columnCount(const QModelIndex &parent) const
 		return 0;
 	}
 
-	return 3;
+	if (!filterActive) {
+		return 3;
+	} else {
+		// also show channel
+		return 4;
+	}
 }
 
 int DvbEpgModel::rowCount(const QModelIndex &parent) const
@@ -245,6 +253,8 @@ QVariant DvbEpgModel::data(const QModelIndex &index, int role) const
 			return KGlobal::locale()->formatTime(entry->duration, false, true);
 		case 2:
 			return entry->title;
+		case 3:
+			return entry->channel;
 		}
 
 		break;
@@ -267,6 +277,8 @@ QVariant DvbEpgModel::headerData(int section, Qt::Orientation orientation, int r
 		return i18n("Duration");
 	case 2:
 		return i18n("Title");
+	case 3:
+		return i18n("Channel");
 	}
 
 	return QVariant();
@@ -301,8 +313,11 @@ bool DvbEpgModel::contains(const QString &channel) const
 
 void DvbEpgModel::resetChannel()
 {
-	filteredEntries.clear();
-	reset();
+	if (!filteredEntries.isEmpty()) {
+		beginRemoveRows(QModelIndex(), 0, filteredEntries.size() - 1);
+		filteredEntries.clear();
+		endRemoveRows();
+	}
 }
 
 void DvbEpgModel::setChannel(const QString &channel)
@@ -318,14 +333,69 @@ void DvbEpgModel::setChannel(const QString &channel)
 		++it;
 	}
 
-	filteredEntries.clear();
+	QList<DvbEpgEntry *> newEntries;
 
 	while (it != end) {
-		filteredEntries.append(&(*it));
+		newEntries.append(&(*it));
 		++it;
 	}
 
-	reset();
+	currentChannel = channel;
+
+	if (!filteredEntries.isEmpty()) {
+		beginRemoveRows(QModelIndex(), 0, filteredEntries.size() - 1);
+		filteredEntries.clear();
+		endRemoveRows();
+	}
+
+	if (filterActive) {
+		beginRemoveColumns(QModelIndex(), 3, 3);
+		filterActive = false;
+		endRemoveColumns();
+	}
+
+	if (!newEntries.isEmpty()) {
+		beginInsertRows(QModelIndex(), 0, newEntries.size() - 1);
+		filteredEntries = newEntries;
+		endInsertRows();
+	}
+}
+
+void DvbEpgModel::setFilter(const QString &filter)
+{
+	if (!filter.isEmpty()) {
+		QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
+		QStringMatcher matcher(filter, Qt::CaseInsensitive);
+		QList<DvbEpgEntry *> newEntries;
+
+		for (QList<DvbEpgEntry>::iterator it = allEntries.begin(); it != allEntries.end();
+		     ++it) {
+			if ((it->end > currentDateTime) && ((matcher.indexIn(it->title) >= 0) ||
+			    (matcher.indexIn(it->details) >= 0))) {
+				newEntries.append(&(*it));
+			}
+		}
+
+		if (!filteredEntries.isEmpty()) {
+			beginRemoveRows(QModelIndex(), 0, filteredEntries.size() - 1);
+			filteredEntries.clear();
+			endRemoveRows();
+		}
+
+		if (!filterActive) {
+			beginInsertColumns(QModelIndex(), 3, 3);
+			filterActive = true;
+			endInsertColumns();
+		}
+
+		if (!newEntries.isEmpty()) {
+			beginInsertRows(QModelIndex(), 0, newEntries.size() - 1);
+			filteredEntries = newEntries;
+			endInsertRows();
+		}
+	} else {
+		setChannel(currentChannel);
+	}
 }
 
 QAbstractItemModel *DvbEpgModel::createProxyEpgChannelModel(QObject *parent)
@@ -571,30 +641,41 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 	channelModel->sort(0, Qt::AscendingOrder);
 	channelView->setModel(channelModel);
 	channelView->setMaximumWidth(200);
-	connect(channelView, SIGNAL(activated(QModelIndex)),
+	connect(channelView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(channelActivated(QModelIndex)));
 	mainLayout->addWidget(channelView);
 
-	QBoxLayout *boxLayout = new QVBoxLayout();
+	QBoxLayout *rightLayout = new QVBoxLayout();
+	QBoxLayout *boxLayout = new QHBoxLayout();
+
+	boxLayout->addWidget(new QLabel(i18n("Search:"), widget));
+
+	KLineEdit *lineEdit = new KLineEdit(widget);
+	lineEdit->setClearButtonShown(true);
+	connect(lineEdit, SIGNAL(textChanged(QString)), epgModel, SLOT(setFilter(QString)));
+	boxLayout->addWidget(lineEdit);
+	rightLayout->addLayout(boxLayout);
 
 	KAction *scheduleAction = new KAction(KIcon("media-record"),
 		i18nc("program guide", "Schedule Program"), this);
 	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 
-	QPushButton *pushButton = new QPushButton(KIcon("media-record"),
-		i18nc("program guide", "Schedule Program"), this);
-	pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
-	boxLayout->addWidget(pushButton);
-
 	epgView = new QTreeView(widget);
 	epgView->addAction(scheduleAction);
+	epgView->header()->setResizeMode(QHeaderView::ResizeToContents);
 	epgView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	epgView->setMinimumWidth(450);
 	epgView->setModel(epgModel);
 	epgView->setRootIsDecorated(false);
-	connect(epgView, SIGNAL(activated(QModelIndex)), this, SLOT(entryActivated(QModelIndex)));
-	boxLayout->addWidget(epgView);
+	connect(epgView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+		this, SLOT(entryActivated(QModelIndex)));
+	rightLayout->addWidget(epgView);
+
+	QPushButton *pushButton =
+		new QPushButton(scheduleAction->icon(), scheduleAction->text(), this);
+	pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
+	rightLayout->addWidget(pushButton);
 
 	contentLabel = new QLabel(widget);
 	contentLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
@@ -606,16 +687,14 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannel, 
 	scrollArea->setMinimumHeight(175);
 	scrollArea->setWidget(contentLabel);
 	scrollArea->setWidgetResizable(true);
-	boxLayout->addWidget(scrollArea);
-	mainLayout->addLayout(boxLayout);
+	rightLayout->addWidget(scrollArea);
+	mainLayout->addLayout(rightLayout);
 
 	QModelIndexList currentIndexes = channelModel->match(channelModel->index(0, 0),
 		Qt::DisplayRole, currentChannel, 1, Qt::MatchExactly);
 
 	if (!currentIndexes.isEmpty()) {
-		QModelIndex index = currentIndexes.at(0);
-		channelView->setCurrentIndex(index);
-		channelActivated(index);
+		channelView->setCurrentIndex(currentIndexes.at(0));
 	} else {
 		epgModel->resetChannel();
 	}
@@ -629,14 +708,16 @@ DvbEpgDialog::~DvbEpgDialog()
 
 void DvbEpgDialog::channelActivated(const QModelIndex &index)
 {
+	if (!index.isValid()) {
+		epgModel->resetChannel();
+		contentLabel->setText(QString());
+		return;
+	}
+
 	epgModel->setChannel(channelView->model()->data(index).toString());
-	epgView->resizeColumnToContents(0);
-	epgView->resizeColumnToContents(1);
 
 	if (epgModel->rowCount() >= 1) {
-		QModelIndex index = epgModel->index(0, 0);
-		epgView->setCurrentIndex(index);
-		entryActivated(index);
+		epgView->setCurrentIndex(epgModel->index(0, 0));
 	} else {
 		contentLabel->setText(QString());
 	}
@@ -644,6 +725,11 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 
 void DvbEpgDialog::entryActivated(const QModelIndex &index)
 {
+	if (!index.isValid()) {
+		contentLabel->setText(QString());
+		return;
+	}
+
 	const DvbEpgEntry *entry = epgModel->getEntry(index.row());
 	QString text = i18n("<font color=#008000 size=\"+1\">%1</font><br>", entry->title);
 

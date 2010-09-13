@@ -32,6 +32,7 @@ class QStringListModel;
 class QTreeView;
 class DvbChannelModel;
 class DvbEitEntry;
+class KLineEdit;
 
 class DvbEpgEntry
 {
@@ -66,6 +67,7 @@ public:
 	bool contains(const QString &channel) const;
 	void resetChannel();
 	void setChannel(const QString &channel);
+
 	QAbstractItemModel *createProxyEpgChannelModel(QObject *parent);
 	const DvbEpgEntry *getEntry(int row) const;
 	const DvbChannel *findChannelByEitEntry(const DvbEitEntry &eitEntry);
@@ -76,6 +78,9 @@ public:
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+public slots:
+	void setFilter(const QString &filter);
 
 private slots:
 	void channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
@@ -97,6 +102,8 @@ private:
 	QList<DvbEpgEntry *> filteredEntries;
 
 	QMap<DvbRecordingKey, DvbEpgEntry *> recordingKeys;
+	QString currentChannel;
+	bool filterActive;
 };
 
 class DvbEitFilter : public DvbSectionFilter
