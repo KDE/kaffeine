@@ -258,7 +258,6 @@ MainWindow::MainWindow()
 	tabBar->addTab(KIcon("video-television"), i18n("Television"));
 #endif /* HAVE_DVB == 1 */
 	tabBar->setShape(KTabBar::RoundedWest);
-	tabBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
 	navigationBar->addWidget(tabBar);
 
@@ -346,6 +345,7 @@ MainWindow::MainWindow()
 #endif /* HAVE_DVB == 1 */
 	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
 
+	setMinimumSize(160, 120);
 	show();
 }
 
