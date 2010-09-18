@@ -584,7 +584,7 @@ void MainWindow::playDvb()
 
 void MainWindow::resizeToVideo(int factor)
 {
-	if (!isFullScreen()) {
+	if (!isFullScreen() && !mediaWidget->sizeHint()->isEmpty()) {
 		if (isMaximized()) {
 			setWindowState(windowState() & ~Qt::WindowMaximized);
 		}
