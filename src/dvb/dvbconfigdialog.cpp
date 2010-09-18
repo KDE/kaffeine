@@ -43,7 +43,7 @@
 DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
 	manager(manager_)
 {
-	setCaption(i18n("Configure Television"));
+	setCaption(i18nc("@title:window", "Configure Television"));
 
 	tabWidget = new KTabWidget(this);
 	setMainWidget(tabWidget);

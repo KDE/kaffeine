@@ -112,9 +112,9 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	menu->addSeparator();
 
-	KAction *configureAction =
-		new KAction(KIcon("configure"), i18n("Configure Television"), this);
-	connect(configureAction, SIGNAL(triggered(bool)), this, SLOT(configureDvb()));
+	KAction *configureAction = new KAction(KIcon("configure"),
+		i18nc("@action:inmenu", "Configure Television..."), this);
+	connect(configureAction, SIGNAL(triggered()), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", configureAction));
 
 	connect(mediaWidget, SIGNAL(previousDvbChannel()), this, SLOT(previousChannel()));

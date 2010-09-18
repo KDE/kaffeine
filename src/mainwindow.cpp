@@ -192,7 +192,8 @@ MainWindow::MainWindow()
 	KAction *action = KStandardAction::open(this, SLOT(open()), collection);
 	menu->addAction(collection->addAction("file_open", action));
 
-	action = new KAction(KIcon("uri-mms"), i18n("Open URL"), collection);
+	action = new KAction(KIcon("text-html"),
+		i18nc("@action:inmenu", "Open URL..."), collection);
 	action->setShortcut(Qt::CTRL | Qt::Key_U);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
 	menu->addAction(collection->addAction("file_open_url", action));
@@ -237,8 +238,7 @@ MainWindow::MainWindow()
 	action = KStandardAction::keyBindings(this, SLOT(configureKeys()), collection);
 	menu->addAction(collection->addAction("settings_keys", action));
 
-	action = new KAction(KIcon("configure"), i18nc("dialog", "Configure Kaffeine"), this);
-	connect(action, SIGNAL(triggered(bool)), this, SLOT(configureKaffeine()));
+	action = KStandardAction::preferences(this, SLOT(configureKaffeine()), collection);
 	menu->addAction(collection->addAction("settings_kaffeine", action));
 
 	menuBar->addSeparator();
@@ -520,7 +520,7 @@ void MainWindow::open()
 
 void MainWindow::openUrl()
 {
-	openUrl(KInputDialog::getText(i18n("Open URL"), i18n("Enter a URL:")));
+	openUrl(KInputDialog::getText(i18nc("@title:window", "Open URL"), i18n("Enter a URL:")));
 }
 
 void MainWindow::openUrl(const KUrl &url)

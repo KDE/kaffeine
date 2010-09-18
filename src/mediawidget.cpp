@@ -153,7 +153,7 @@ bool DvbFeed::flush()
 JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : KDialog(mediaWidget_),
 	mediaWidget(mediaWidget_)
 {
-	setCaption(i18n("Jump to Position"));
+	setCaption(i18nc("@window:title", "Jump to Position"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *layout = new QVBoxLayout(widget);
@@ -401,7 +401,8 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	action->setDefaultWidget(volumeSlider);
 	toolBar->addAction(collection->addAction("controls_volume_slider", action));
 
-	jumpToPositionAction = new KAction(KIcon("go-jump"), i18n("Jump to Position"), this);
+	jumpToPositionAction = new KAction(KIcon("go-jump"),
+		i18nc("@action:inmenu", "Jump to Position..."), this);
 	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
 	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
 	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
