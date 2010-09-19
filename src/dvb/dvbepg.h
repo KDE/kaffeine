@@ -32,7 +32,6 @@ class QStringListModel;
 class QTreeView;
 class DvbChannelModel;
 class DvbEitEntry;
-class KLineEdit;
 
 class DvbEpgEntry
 {

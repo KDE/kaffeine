@@ -22,11 +22,9 @@
 #define DVBDEVICE_LINUX_H
 
 #include <QThread>
-#include <QMap>
 #include "dvbbackenddevice.h"
 #include "dvbcam_linux.h"
 
-class DvbPmtSection;
 class DvbTransponder;
 
 class DvbLinuxDevice : public QThread, public DvbBackendDeviceBase

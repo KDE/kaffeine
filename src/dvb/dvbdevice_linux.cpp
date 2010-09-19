@@ -21,7 +21,6 @@
 #include "dvbdevice_linux.h"
 
 #include <QFile>
-#include <QThread>
 #include <Solid/Device>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
