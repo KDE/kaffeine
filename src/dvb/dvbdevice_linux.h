@@ -21,25 +21,35 @@
 #ifndef DVBDEVICE_LINUX_H
 #define DVBDEVICE_LINUX_H
 
-#include <Solid/Device>
+#include <QThread>
+#include <QMap>
 #include "dvbbackenddevice.h"
 #include "dvbcam_linux.h"
 
-class DvbDeviceThread;
+class DvbPmtSection;
 class DvbTransponder;
 
-class DvbLinuxDevice : public QObject, public DvbBackendDeviceBase
+class DvbLinuxDevice : public QThread, public DvbBackendDeviceBase
 {
 	Q_OBJECT
 public:
-	DvbLinuxDevice(int adapter_, int index_);
+	explicit DvbLinuxDevice(QObject *parent);
 	~DvbLinuxDevice();
 
-	bool componentAdded(const Solid::Device &component);
-	bool componentRemoved(const QString &udi);
+	bool isReady() const;
+	void startDevice(const QString &deviceId_);
+	void startCa();
+	void stopCa();
+	void stopDevice();
 
-	int adapter;
-	int index;
+	QString caPath;
+	QString caUdi;
+	QString demuxPath;
+	QString demuxUdi;
+	QString dvrPath;
+	QString dvrUdi;
+	QString frontendPath;
+	QString frontendUdi;
 
 public slots:
 	void getDeviceId(QString &result) const;
@@ -47,7 +57,7 @@ public slots:
 	void getTransmissionTypes(TransmissionTypes &result) const;
 	void getCapabilities(Capabilities &result) const;
 	void setDataChannel(DvbAbstractDataChannel *dataChannel_);
-	void setDeviceEnabled(bool enabled);
+	void setDeviceEnabled(bool enabled_);
 	void acquire(bool &ok);
 	void setTone(SecTone tone, bool &ok);
 	void setVoltage(SecVoltage voltage, bool &ok);
@@ -64,49 +74,33 @@ public slots:
 	void release();
 
 private:
-	enum stateFlag {
-		CaPresent	= (1 << 0),
-		DemuxPresent	= (1 << 1),
-		DvrPresent	= (1 << 2),
-		FrontendPresent	= (1 << 3),
+	void startDvr();
+	void stopDvr();
+	void run();
 
-		DevicePresent	= (DemuxPresent | DvrPresent | FrontendPresent)
-	};
-
-	Q_DECLARE_FLAGS(stateFlags, stateFlag)
-
-	bool identifyDevice();
-
-	Solid::Device caComponent;
-	Solid::Device demuxComponent;
-	Solid::Device dvrComponent;
-	Solid::Device frontendComponent;
-
-	QString caPath;
-	QString demuxPath;
-	QString dvrPath;
-	QString frontendPath;
-
-	DvbAbstractDataChannel *dataChannel;
-	stateFlags internalState;
-	TransmissionTypes transmissionTypes;
-	Capabilities capabilities;
+	bool ready;
 	QString deviceId;
 	QString frontendName;
-	bool ready;
-	DvbDeviceThread *thread;
+	TransmissionTypes transmissionTypes;
+	Capabilities capabilities;
+	DvbAbstractDataChannel *dataChannel;
+	bool enabled;
 	int frontendFd;
-	int dvrFd;
 	QMap<int, int> dmxFds;
+
+	int dvrFd;
+	int dvrPipe[2];
+	DvbDataBuffer dvrBuffer;
+
 	DvbLinuxCam cam;
 };
 
-class DvbDeviceManager : public QObject
+class DvbLinuxDeviceManager : public QObject
 {
 	Q_OBJECT
 public:
-	DvbDeviceManager();
-	~DvbDeviceManager();
+	explicit DvbLinuxDeviceManager(QObject *parent);
+	~DvbLinuxDeviceManager();
 
 public slots:
 	void doColdPlug();
@@ -121,7 +115,7 @@ private slots:
 	void componentRemoved(const QString &udi);
 
 private:
-	void componentAdded(const Solid::Device &component);
+	int readSysAttr(const QString &path);
 
 	QMap<int, DvbLinuxDevice *> devices;
 	QMap<QString, DvbLinuxDevice *> udis;

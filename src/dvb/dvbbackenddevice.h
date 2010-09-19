@@ -30,7 +30,7 @@ public:
 	~DvbDataBuffer() { }
 
 	char *data;
-	int dataSize; // must be a multiple of 188 (can also be negative)
+	int dataSize; // must be a multiple of 188
 	int bufferSize; // must be a multiple of 188
 };
 

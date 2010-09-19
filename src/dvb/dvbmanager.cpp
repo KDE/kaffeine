@@ -496,8 +496,7 @@ void DvbManager::loadDeviceManager()
 	kError() << "no dvb module found";
 	*/
 
-	QObject *deviceManager = new DvbDeviceManager();
-	deviceManager->setParent(this);
+	QObject *deviceManager = new DvbLinuxDeviceManager(this);
 	connect(deviceManager, SIGNAL(deviceAdded(QObject*)), this, SLOT(deviceAdded(QObject*)));
 	connect(deviceManager, SIGNAL(deviceRemoved(QObject*)),
 		this, SLOT(deviceRemoved(QObject*)));
