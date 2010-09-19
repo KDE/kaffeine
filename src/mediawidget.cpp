@@ -153,7 +153,7 @@ bool DvbFeed::flush()
 JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : KDialog(mediaWidget_),
 	mediaWidget(mediaWidget_)
 {
-	setCaption(i18nc("@window:title", "Jump to Position"));
+	setCaption(i18nc("@title:window", "Jump to Position"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *layout = new QVBoxLayout(widget);
