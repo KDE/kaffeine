@@ -50,27 +50,27 @@ class DvbBackendDeviceBase
 {
 public:
 	enum TransmissionType {
-		DvbC	= (1 << 0),
-		DvbS	= (1 << 1),
-		DvbS2	= (1 << 4),
-		DvbT	= (1 << 2),
-		Atsc	= (1 << 3)
+		DvbC = (1 << 0),
+		DvbS = (1 << 1),
+		DvbS2 = (1 << 4),
+		DvbT = (1 << 2),
+		Atsc = (1 << 3)
 	};
 
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
 
 	enum Capability {
-		DvbTModulationAuto		= (1 << 0),
-		DvbTFecAuto			= (1 << 1),
-		DvbTTransmissionModeAuto	= (1 << 2),
-		DvbTGuardIntervalAuto		= (1 << 3)
+		DvbTModulationAuto = (1 << 0),
+		DvbTFecAuto = (1 << 1),
+		DvbTTransmissionModeAuto = (1 << 2),
+		DvbTGuardIntervalAuto = (1 << 3)
 	};
 
 	Q_DECLARE_FLAGS(Capabilities, Capability)
 
 	enum SecTone {
 		ToneOff = 0,
-		ToneOn  = 1
+		ToneOn = 1
 	};
 
 	enum SecVoltage {
