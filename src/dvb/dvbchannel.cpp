@@ -1,7 +1,7 @@
 /*
  * dvbchannel.cpp
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -174,18 +174,16 @@ static const char *atscModulationTable[] = {
 	/* ModulationAuto = 4 */ "AUTO"
 };
 
-template<class T> static QDataStream &operator>>(QDataStream &stream, T &value)
+template<class T> static T readEnum(QDataStream &stream)
 {
 	int intValue;
 	stream >> intValue;
 
 	if ((intValue < 0) || (intValue > maxEnumValue<T>())) {
 		stream.setStatus(QDataStream::ReadCorruptData);
-	} else {
-		value = static_cast<T>(intValue);
 	}
 
-	return stream;
+	return static_cast<T>(intValue);
 }
 
 class DvbChannelStringReader
@@ -209,19 +207,19 @@ public:
 		stream >> value;
 	}
 
-	template<class T> void readEnum(T &value, const char **table)
+	template<class T> T readEnum(const char **table)
 	{
 		QString string;
 		stream >> string;
 
 		for (int i = 0; i <= maxEnumValue<T>(); ++i) {
 			if (string == table[i]) {
-				value = static_cast<T>(i);
-				return;
+				return static_cast<T>(i);
 			}
 		}
 
 		stream.setStatus(QTextStream::ReadCorruptData);
+		return T();
 	}
 
 	void checkChar(QChar value)
@@ -294,8 +292,8 @@ void DvbCTransponder::readTransponder(QDataStream &stream)
 {
 	stream >> frequency;
 	stream >> symbolRate;
-	stream >> modulation;
-	stream >> fecRate;
+	modulation = readEnum<Modulation>(stream);
+	fecRate = readEnum<FecRate>(stream);
 }
 
 bool DvbCTransponder::fromString(const QString &string)
@@ -304,8 +302,8 @@ bool DvbCTransponder::fromString(const QString &string)
 	reader.checkChar('C');
 	reader.readInt(frequency);
 	reader.readInt(symbolRate);
-	reader.readEnum(fecRate, dvbFecRateTable);
-	reader.readEnum(modulation, dvbCModulationTable);
+	fecRate = reader.readEnum<FecRate>(dvbFecRateTable);
+	modulation = reader.readEnum<Modulation>(dvbCModulationTable);
 	return reader.isValid();
 }
 
@@ -322,7 +320,7 @@ QString DvbCTransponder::toString() const
 
 bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 {
-	const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
+	const DvbCTransponder *dvbCTransponder = transponder.as<DvbCTransponder>();
 
 	return (dvbCTransponder != NULL) &&
 	       (qAbs(dvbCTransponder->frequency - frequency) <= 2000000);
@@ -330,10 +328,10 @@ bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 
 void DvbSTransponder::readTransponder(QDataStream &stream)
 {
-	stream >> polarization;
+	polarization = readEnum<Polarization>(stream);
 	stream >> frequency;
 	stream >> symbolRate;
-	stream >> fecRate;
+	fecRate = readEnum<FecRate>(stream);
 }
 
 bool DvbSTransponder::fromString(const QString &string)
@@ -341,9 +339,9 @@ bool DvbSTransponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkChar('S');
 	reader.readInt(frequency);
-	reader.readEnum(polarization, dvbSPolarizationTable);
+	polarization = reader.readEnum<Polarization>(dvbSPolarizationTable);
 	reader.readInt(symbolRate);
-	reader.readEnum(fecRate, dvbFecRateTable);
+	fecRate = reader.readEnum<FecRate>(dvbFecRateTable);
 	return reader.isValid();
 }
 
@@ -360,7 +358,7 @@ QString DvbSTransponder::toString() const
 
 bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 {
-	const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
+	const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
 
 	return (dvbSTransponder != NULL) &&
 	       (dvbSTransponder->polarization == polarization) &&
@@ -369,12 +367,12 @@ bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 
 void DvbS2Transponder::readTransponder(QDataStream &stream)
 {
-	stream >> polarization;
+	polarization = readEnum<Polarization>(stream);
 	stream >> frequency;
 	stream >> symbolRate;
-	stream >> fecRate;
-	stream >> modulation;
-	stream >> rollOff;
+	fecRate = readEnum<FecRate>(stream);
+	modulation = readEnum<Modulation>(stream);
+	rollOff = readEnum<RollOff>(stream);
 }
 
 bool DvbS2Transponder::fromString(const QString &string)
@@ -382,11 +380,11 @@ bool DvbS2Transponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkString("S2");
 	reader.readInt(frequency);
-	reader.readEnum(polarization, dvbSPolarizationTable);
+	polarization = reader.readEnum<Polarization>(dvbSPolarizationTable);
 	reader.readInt(symbolRate);
-	reader.readEnum(fecRate, dvbFecRateTable);
-	reader.readEnum(rollOff, dvbS2RollOffTable);
-	reader.readEnum(modulation, dvbS2ModulationTable);
+	fecRate = reader.readEnum<FecRate>(dvbFecRateTable);
+	rollOff = reader.readEnum<RollOff>(dvbS2RollOffTable);
+	modulation = reader.readEnum<Modulation>(dvbS2ModulationTable);
 	return reader.isValid();
 }
 
@@ -405,7 +403,7 @@ QString DvbS2Transponder::toString() const
 
 bool DvbS2Transponder::corresponds(const DvbTransponder &transponder) const
 {
-	const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
+	const DvbS2Transponder *dvbS2Transponder = transponder.as<DvbS2Transponder>();
 
 	return (dvbS2Transponder != NULL) &&
 	       (dvbS2Transponder->polarization == polarization) &&
@@ -415,13 +413,13 @@ bool DvbS2Transponder::corresponds(const DvbTransponder &transponder) const
 void DvbTTransponder::readTransponder(QDataStream &stream)
 {
 	stream >> frequency;
-	stream >> bandwidth;
-	stream >> modulation;
-	stream >> fecRateHigh;
-	stream >> fecRateLow;
-	stream >> transmissionMode;
-	stream >> guardInterval;
-	stream >> hierarchy;
+	bandwidth = readEnum<Bandwidth>(stream);
+	modulation = readEnum<Modulation>(stream);
+	fecRateHigh = readEnum<FecRate>(stream);
+	fecRateLow = readEnum<FecRate>(stream);
+	transmissionMode = readEnum<TransmissionMode>(stream);
+	guardInterval = readEnum<GuardInterval>(stream);
+	hierarchy = readEnum<Hierarchy>(stream);
 }
 
 bool DvbTTransponder::fromString(const QString &string)
@@ -429,13 +427,13 @@ bool DvbTTransponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkChar('T');
 	reader.readInt(frequency);
-	reader.readEnum(bandwidth, dvbTBandwidthTable);
-	reader.readEnum(fecRateHigh, dvbFecRateTable);
-	reader.readEnum(fecRateLow, dvbFecRateTable);
-	reader.readEnum(modulation, dvbTModulationTable);
-	reader.readEnum(transmissionMode, dvbTTransmissionModeTable);
-	reader.readEnum(guardInterval, dvbTGuardIntervalTable);
-	reader.readEnum(hierarchy, dvbTHierarchyTable);
+	bandwidth = reader.readEnum<Bandwidth>(dvbTBandwidthTable);
+	fecRateHigh = reader.readEnum<FecRate>(dvbFecRateTable);
+	fecRateLow = reader.readEnum<FecRate>(dvbFecRateTable);
+	modulation = reader.readEnum<Modulation>(dvbTModulationTable);
+	transmissionMode = reader.readEnum<TransmissionMode>(dvbTTransmissionModeTable);
+	guardInterval = reader.readEnum<GuardInterval>(dvbTGuardIntervalTable);
+	hierarchy = reader.readEnum<Hierarchy>(dvbTHierarchyTable);
 	return reader.isValid();
 }
 
@@ -456,7 +454,7 @@ QString DvbTTransponder::toString() const
 
 bool DvbTTransponder::corresponds(const DvbTransponder &transponder) const
 {
-	const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
+	const DvbTTransponder *dvbTTransponder = transponder.as<DvbTTransponder>();
 
 	return (dvbTTransponder != NULL) &&
 	       (qAbs(dvbTTransponder->frequency - frequency) <= 2000000);
@@ -465,7 +463,7 @@ bool DvbTTransponder::corresponds(const DvbTransponder &transponder) const
 void AtscTransponder::readTransponder(QDataStream &stream)
 {
 	stream >> frequency;
-	stream >> modulation;
+	modulation = readEnum<Modulation>(stream);
 }
 
 bool AtscTransponder::fromString(const QString &string)
@@ -473,7 +471,7 @@ bool AtscTransponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkChar('A');
 	reader.readInt(frequency);
-	reader.readEnum(modulation, atscModulationTable);
+	modulation = reader.readEnum<Modulation>(atscModulationTable);
 	return reader.isValid();
 }
 
@@ -488,7 +486,7 @@ QString AtscTransponder::toString() const
 
 bool AtscTransponder::corresponds(const DvbTransponder &transponder) const
 {
-	const AtscTransponder *atscTransponder = transponder->getAtscTransponder();
+	const AtscTransponder *atscTransponder = transponder.as<AtscTransponder>();
 
 	return (atscTransponder != NULL) &&
 	       (qAbs(atscTransponder->frequency - frequency) <= 2000000);
@@ -499,37 +497,47 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 	int type;
 	stream >> type;
 
-	DvbTransponderBase *transponderBase = NULL;
-
-	switch (type) {
-	case DvbTransponderBase::DvbC:
-		transponderBase = new DvbCTransponder();
-		break;
-	case DvbTransponderBase::DvbS:
-		transponderBase = new DvbSTransponder();
-		break;
-	case DvbTransponderBase::DvbS2:
-		transponderBase = new DvbS2Transponder();
-		break;
-	case DvbTransponderBase::DvbT:
-		transponderBase = new DvbTTransponder();
-		break;
-	case DvbTransponderBase::Atsc:
-		transponderBase = new AtscTransponder();
-		break;
-	}
-
-	if (transponderBase == NULL) {
-		stream.setStatus(QDataStream::ReadCorruptData);
-		return;
-	}
-
 	stream >> name;
 	stream >> number;
 
 	stream >> source;
-	transponderBase->readTransponder(stream);
-	transponder = DvbTransponder(transponderBase);
+
+	switch (type) {
+	case DvbTransponderBase::DvbC: {
+		DvbCTransponder dvbCTransponder;
+		dvbCTransponder.readTransponder(stream);
+		transponder = DvbTransponder(dvbCTransponder);
+		break;
+	    }
+	case DvbTransponderBase::DvbS: {
+		DvbSTransponder dvbSTransponder;
+		dvbSTransponder.readTransponder(stream);
+		transponder = DvbTransponder(dvbSTransponder);
+		break;
+	    }
+	case DvbTransponderBase::DvbS2: {
+		DvbS2Transponder dvbS2Transponder;
+		dvbS2Transponder.readTransponder(stream);
+		transponder = DvbTransponder(dvbS2Transponder);
+		break;
+	    }
+	case DvbTransponderBase::DvbT: {
+		DvbTTransponder dvbTTransponder;
+		dvbTTransponder.readTransponder(stream);
+		transponder = DvbTransponder(dvbTTransponder);
+		break;
+	    }
+	case DvbTransponderBase::Atsc: {
+		AtscTransponder atscTransponder;
+		atscTransponder.readTransponder(stream);
+		transponder = DvbTransponder(atscTransponder);
+		break;
+	    }
+	default:
+		stream.setStatus(QDataStream::ReadCorruptData);
+		return;
+	}
+
 	stream >> networkId;
 	stream >> transportStreamId;
 	int serviceId;
@@ -545,4 +553,97 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 	stream >> flags;
 	hasVideo = (videoPid >= 0);
 	isScrambled = (flags & 0x1) != 0;
+}
+
+bool DvbTransponder::corresponds(const DvbTransponder &transponder) const
+{
+	switch (data.transmissionType) {
+	case DvbTransponderBase::Invalid:
+		break;
+	case DvbTransponderBase::DvbC:
+		return as<DvbCTransponder>()->corresponds(transponder);
+	case DvbTransponderBase::DvbS:
+		return as<DvbSTransponder>()->corresponds(transponder);
+	case DvbTransponderBase::DvbS2:
+		return as<DvbS2Transponder>()->corresponds(transponder);
+	case DvbTransponderBase::DvbT:
+		return as<DvbTTransponder>()->corresponds(transponder);
+	case DvbTransponderBase::Atsc:
+		return as<AtscTransponder>()->corresponds(transponder);
+	}
+
+	return false;
+}
+
+QString DvbTransponder::toString() const
+{
+	switch (data.transmissionType) {
+	case DvbTransponderBase::Invalid:
+		break;
+	case DvbTransponderBase::DvbC:
+		return as<DvbCTransponder>()->toString();
+	case DvbTransponderBase::DvbS:
+		return as<DvbSTransponder>()->toString();
+	case DvbTransponderBase::DvbS2:
+		return as<DvbS2Transponder>()->toString();
+	case DvbTransponderBase::DvbT:
+		return as<DvbTTransponder>()->toString();
+	case DvbTransponderBase::Atsc:
+		return as<AtscTransponder>()->toString();
+	}
+
+	return QString();
+}
+
+DvbTransponder DvbTransponder::fromString(const QString &string)
+{
+	if (string.size() >= 2) {
+		switch (string.at(0).unicode()) {
+		case 'C': {
+			DvbCTransponder dvbCTransponder;
+
+			if (dvbCTransponder.fromString(string)) {
+				return DvbTransponder(dvbCTransponder);
+			}
+
+			break;
+		    }
+		case 'S':
+			if (string.at(1) != '2') {
+				DvbSTransponder dvbSTransponder;
+
+				if (dvbSTransponder.fromString(string)) {
+					return DvbTransponder(dvbSTransponder);
+				}
+			} else {
+				DvbS2Transponder dvbS2Transponder;
+
+				if (dvbS2Transponder.fromString(string)) {
+					return DvbTransponder(dvbS2Transponder);
+				}
+			}
+
+			break;
+		case 'T': {
+			DvbTTransponder dvbTTransponder;
+
+			if (dvbTTransponder.fromString(string)) {
+				return DvbTransponder(dvbTTransponder);
+			}
+
+			break;
+		    }
+		case 'A': {
+			AtscTransponder atscTransponder;
+
+			if (atscTransponder.fromString(string)) {
+				return DvbTransponder(atscTransponder);
+			}
+
+			break;
+		    }
+		}
+	}
+
+	return DvbTransponder();
 }

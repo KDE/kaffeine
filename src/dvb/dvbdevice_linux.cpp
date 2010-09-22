@@ -422,9 +422,9 @@ void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 	stopDvr();
 	dvb_frontend_parameters params;
 
-	switch (transponder->getTransmissionType()) {
+	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::DvbC: {
-		const DvbCTransponder *dvbCTransponder = transponder->getDvbCTransponder();
+		const DvbCTransponder *dvbCTransponder = transponder.as<DvbCTransponder>();
 		memset(&params, 0, sizeof(params));
 		params.frequency = dvbCTransponder->frequency;
 		params.inversion = INVERSION_AUTO;
@@ -434,7 +434,7 @@ void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 		break;
 	    }
 	case DvbTransponderBase::DvbS: {
-		const DvbSTransponder *dvbSTransponder = transponder->getDvbSTransponder();
+		const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
 		memset(&params, 0, sizeof(params));
 		params.frequency = dvbSTransponder->frequency;
 		params.inversion = INVERSION_AUTO;
@@ -443,7 +443,7 @@ void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 		break;
 	    }
 	case DvbTransponderBase::DvbS2: {
-		const DvbS2Transponder *dvbS2Transponder = transponder->getDvbS2Transponder();
+		const DvbS2Transponder *dvbS2Transponder = transponder.as<DvbS2Transponder>();
 		dtv_property properties[9];
 		memset(properties, 0, sizeof(properties));
 		properties[0].cmd = DTV_DELIVERY_SYSTEM;
@@ -479,7 +479,7 @@ void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 		return;
 	    }
 	case DvbTransponderBase::DvbT: {
-		const DvbTTransponder *dvbTTransponder = transponder->getDvbTTransponder();
+		const DvbTTransponder *dvbTTransponder = transponder.as<DvbTTransponder>();
 		memset(&params, 0, sizeof(params));
 		params.frequency = dvbTTransponder->frequency;
 		params.inversion = INVERSION_AUTO;
@@ -496,7 +496,7 @@ void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 		break;
 	    }
 	case DvbTransponderBase::Atsc: {
-		const AtscTransponder *atscTransponder = transponder->getAtscTransponder();
+		const AtscTransponder *atscTransponder = transponder.as<AtscTransponder>();
 		memset(&params, 0, sizeof(params));
 		params.frequency = atscTransponder->frequency;
 		params.inversion = INVERSION_AUTO;
@@ -504,7 +504,7 @@ void DvbLinuxDevice::tune(const DvbTransponder &transponder, bool &ok)
 		break;
 	    }
 	default:
-		kWarning() << "unknown transmission type" << transponder->getTransmissionType();
+		kWarning() << "unknown transmission type" << transponder.getTransmissionType();
 		ok = false;
 		return;
 	}

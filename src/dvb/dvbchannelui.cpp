@@ -816,38 +816,7 @@ int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index
 	channel->name = query.value(index++).toString();
 	channel->number = query.value(index++).toInt();
 	channel->source = query.value(index++).toString();
-	QString transponder = query.value(index++).toString();
-	DvbTransponderBase *transponderBase = NULL;
-
-	if (transponder.size() >= 2) {
-		switch (transponder.at(0).unicode()) {
-		case 'C':
-			transponderBase = new DvbCTransponder();
-			break;
-		case 'S':
-			if (transponder.at(1) != '2') {
-				transponderBase = new DvbSTransponder();
-			} else {
-				transponderBase = new DvbS2Transponder();
-			}
-
-			break;
-		case 'T':
-			transponderBase = new DvbTTransponder();
-			break;
-		case 'A':
-			transponderBase = new AtscTransponder();
-			break;
-		}
-	}
-
-	if ((transponderBase == NULL) || !transponderBase->fromString(transponder)) {
-		delete transponderBase;
-		delete channel;
-		return -1;
-	}
-
-	channel->transponder = DvbTransponder(transponderBase);
+	channel->transponder = DvbTransponder::fromString(query.value(index++).toString());
 	channel->networkId = query.value(index++).toInt();
 	channel->transportStreamId = query.value(index++).toInt();
 	channel->pmtPid = query.value(index++).toInt();
@@ -858,6 +827,7 @@ int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index
 	channel->isScrambled = ((flags & 0x02) != 0);
 
 	if (channel->name.isEmpty() || (channel->number < 1) || channel->source.isEmpty() ||
+	    !channel->transponder.isValid() ||
 	    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
 	    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
 	    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
@@ -877,7 +847,7 @@ void DvbChannelSqlInterface::bindToSqlQuery(QSqlQuery &query, int index, int row
 	query.bindValue(index++, channel->name);
 	query.bindValue(index++, channel->number);
 	query.bindValue(index++, channel->source);
-	query.bindValue(index++, channel->transponder->toString());
+	query.bindValue(index++, channel->transponder.toString());
 	query.bindValue(index++, channel->networkId);
 	query.bindValue(index++, channel->transportStreamId);
 	query.bindValue(index++, channel->pmtPid);
@@ -923,9 +893,11 @@ DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex
 	gridLayout->addWidget(new QLabel(i18n("Source:")), 0, 0);
 	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
 
-	switch (channel->transponder->getTransmissionType()) {
+	switch (channel->transponder.getTransmissionType()) {
+	case DvbTransponderBase::Invalid:
+		break;
 	case DvbTransponderBase::DvbC: {
-		const DvbCTransponder *tp = channel->transponder->getDvbCTransponder();
+		const DvbCTransponder *tp = channel->transponder.as<DvbCTransponder>();
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
 		gridLayout->addWidget(
 			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
@@ -939,8 +911,8 @@ DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex
 	    }
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2: {
-		const DvbS2Transponder *tp2 = channel->transponder->getDvbS2Transponder();
-		const DvbSTransponder *tp = channel->transponder->getDvbSTransponder();
+		const DvbS2Transponder *tp2 = channel->transponder.as<DvbS2Transponder>();
+		const DvbSTransponder *tp = channel->transponder.as<DvbSTransponder>();
 
 		if (tp == NULL) {
 			tp = tp2;
@@ -965,7 +937,7 @@ DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex
 		break;
 	    }
 	case DvbTransponderBase::DvbT: {
-		const DvbTTransponder *tp = channel->transponder->getDvbTTransponder();
+		const DvbTTransponder *tp = channel->transponder.as<DvbTTransponder>();
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
 		gridLayout->addWidget(
 			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
@@ -986,7 +958,7 @@ DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex
 		break;
 	    }
 	case DvbTransponderBase::Atsc: {
-		const AtscTransponder *tp = channel->transponder->getAtscTransponder();
+		const AtscTransponder *tp = channel->transponder.as<AtscTransponder>();
 		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
 		gridLayout->addWidget(
 			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);

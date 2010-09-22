@@ -142,7 +142,6 @@ private:
 	QMultiMap<int, QObject *> descramblingServices;
 
 	bool isAuto;
-	DvbTTransponder *autoTTransponder;
 	DvbTransponder autoTransponder;
 	Capabilities capabilities;
 

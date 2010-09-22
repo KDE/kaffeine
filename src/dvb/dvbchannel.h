@@ -1,7 +1,7 @@
 /*
  * dvbchannel.h
  *
- * Copyright (C) 2007-2009 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,17 +24,13 @@
 #include <QSharedData>
 #include <QString>
 
-class AtscTransponder;
-class DvbCTransponder;
-class DvbSTransponder;
-class DvbS2Transponder;
-class DvbTTransponder;
 class DvbTransponder;
 
-class DvbTransponderBase : public QSharedData
+class DvbTransponderBase
 {
 public:
 	enum TransmissionType {
+		Invalid = 5,
 		DvbC = 0,
 		DvbS = 1,
 		DvbS2 = 4,
@@ -61,53 +57,8 @@ public:
 		FecRateMax = Fec9_10
 	};
 
-	DvbTransponderBase() { }
-	virtual ~DvbTransponderBase() { }
-
-	virtual TransmissionType getTransmissionType() const = 0;
-
-	virtual const DvbCTransponder *getDvbCTransponder() const
-	{
-		return NULL;
-	}
-
-	virtual const DvbSTransponder *getDvbSTransponder() const
-	{
-		return NULL;
-	}
-
-	virtual const DvbS2Transponder *getDvbS2Transponder() const
-	{
-		return NULL;
-	}
-
-	virtual const DvbTTransponder *getDvbTTransponder() const
-	{
-		return NULL;
-	}
-
-	virtual const AtscTransponder *getAtscTransponder() const
-	{
-		return NULL;
-	}
-
-	virtual void readTransponder(QDataStream &stream) = 0;
-
-	/*
-	 * convert from / to linuxtv scan file format
-	 */
-
-	virtual bool fromString(const QString &string) = 0;
-	virtual QString toString() const = 0;
-
-	/*
-	 * corresponding in this context means that both tuning parameters will lead to the same
-	 * transponder; note the tuning parameters don't have to be equal, it's sufficient that
-	 * they can't coexist at the same time (for example the frequency difference between two
-	 * channels in the same network has to be big enough because of bandwidth)
-	 */
-
-	virtual bool corresponds(const DvbTransponder &transponder) const = 0;
+private:
+	TransmissionType transmissionType : 8;
 };
 
 class DvbCTransponder : public DvbTransponderBase
@@ -123,26 +74,15 @@ public:
 		ModulationMax = ModulationAuto
 	};
 
-	TransmissionType getTransmissionType() const
-	{
-		return DvbC;
-	}
-
-	const DvbCTransponder *getDvbCTransponder() const
-	{
-		return this;
-	}
-
 	void readTransponder(QDataStream &stream);
 	bool fromString(const QString &string);
 	QString toString() const;
-
 	bool corresponds(const DvbTransponder &transponder) const;
 
+	Modulation modulation : 8;
+	FecRate fecRate : 8;
 	int frequency; // Hz
 	int symbolRate; // symbols per second
-	Modulation modulation;
-	FecRate fecRate;
 };
 
 class DvbSTransponder : public DvbTransponderBase
@@ -156,26 +96,15 @@ public:
 		PolarizationMax = CircularRight
 	};
 
-	TransmissionType getTransmissionType() const
-	{
-		return DvbS;
-	}
-
-	const DvbSTransponder *getDvbSTransponder() const
-	{
-		return this;
-	}
-
 	void readTransponder(QDataStream &stream);
 	bool fromString(const QString &string);
 	QString toString() const;
-
 	bool corresponds(const DvbTransponder &transponder) const;
 
-	Polarization polarization;
+	Polarization polarization : 8;
+	FecRate fecRate : 8;
 	int frequency; // kHz
 	int symbolRate; // symbols per second
-	FecRate fecRate;
 };
 
 class DvbS2Transponder : public DvbSTransponder
@@ -198,29 +127,13 @@ public:
 		RollOffMax = RollOffAuto
 	};
 
-	TransmissionType getTransmissionType() const
-	{
-		return DvbS2;
-	}
-
-	const DvbSTransponder *getDvbSTransponder() const
-	{
-		return NULL;
-	}
-
-	const DvbS2Transponder *getDvbS2Transponder() const
-	{
-		return this;
-	}
-
 	void readTransponder(QDataStream &stream);
 	bool fromString(const QString &string);
 	QString toString() const;
-
 	bool corresponds(const DvbTransponder &transponder) const;
 
-	Modulation modulation;
-	RollOff rollOff;
+	Modulation modulation : 8;
+	RollOff rollOff : 8;
 };
 
 class DvbTTransponder : public DvbTransponderBase
@@ -268,30 +181,19 @@ public:
 		HierarchyMax = HierarchyAuto
 	};
 
-	TransmissionType getTransmissionType() const
-	{
-		return DvbT;
-	}
-
-	const DvbTTransponder *getDvbTTransponder() const
-	{
-		return this;
-	}
-
 	void readTransponder(QDataStream &stream);
 	bool fromString(const QString &string);
 	QString toString() const;
-
 	bool corresponds(const DvbTransponder &transponder) const;
 
+	Bandwidth bandwidth : 8;
+	Modulation modulation : 8;
+	FecRate fecRateHigh : 8; // high priority stream
+	FecRate fecRateLow : 8; // low priority stream
+	TransmissionMode transmissionMode : 8;
+	GuardInterval guardInterval : 8;
+	Hierarchy hierarchy : 8;
 	int frequency; // Hz
-	Bandwidth bandwidth;
-	Modulation modulation;
-	FecRate fecRateHigh; // high priority stream
-	FecRate fecRateLow; // low priority stream
-	TransmissionMode transmissionMode;
-	GuardInterval guardInterval;
-	Hierarchy hierarchy;
 };
 
 class AtscTransponder : public DvbTransponderBase
@@ -306,32 +208,105 @@ public:
 		ModulationMax = ModulationAuto
 	};
 
-	TransmissionType getTransmissionType() const
-	{
-		return Atsc;
-	}
-
-	const AtscTransponder *getAtscTransponder() const
-	{
-		return this;
-	}
-
 	void readTransponder(QDataStream &stream);
 	bool fromString(const QString &string);
 	QString toString() const;
+	bool corresponds(const DvbTransponder &transponder) const;
+
+	Modulation modulation : 8;
+	int frequency; // Hz
+};
+
+class DvbTransponder
+{
+public:
+	DvbTransponder()
+	{
+		data.transmissionType = DvbTransponderBase::Invalid;
+	}
+
+	template<class T> explicit DvbTransponder(const T &transponder)
+	{
+		*reinterpret_cast<T *>(&data) = transponder;
+		data.transmissionType = transmissionTypeFor(static_cast<T *>(NULL));
+	}
+
+	~DvbTransponder() { }
+
+	DvbTransponderBase::TransmissionType getTransmissionType() const
+	{
+		return data.transmissionType;
+	}
+
+	bool isValid() const
+	{
+		return (data.transmissionType != DvbTransponderBase::Invalid);
+	}
+
+	static DvbTransponder fromString(const QString &string); // linuxtv scan file format
+	QString toString() const; // linuxtv scan file format
+
+	/*
+	 * corresponding in this context means that both tuning parameters will lead to the same
+	 * transponder; note the tuning parameters don't have to be equal, it's sufficient that
+	 * they can't coexist at the same time (for example the frequency difference between two
+	 * channels in the same network has to be big enough because of bandwidth)
+	 */
 
 	bool corresponds(const DvbTransponder &transponder) const;
 
-	int frequency; // Hz
-	Modulation modulation;
-};
+	template<class T> const T *as() const
+	{
+		if (data.transmissionType == transmissionTypeFor(static_cast<T *>(NULL))) {
+			return reinterpret_cast<const T *>(&data);
+		}
 
-class DvbTransponder : public QExplicitlySharedDataPointer<const DvbTransponderBase>
-{
-public:
-	explicit DvbTransponder(const DvbTransponderBase *transponder = NULL) :
-		QExplicitlySharedDataPointer<const DvbTransponderBase>(transponder) { }
-	~DvbTransponder() { }
+		return NULL;
+	}
+
+	template<class T> T *as()
+	{
+		if (data.transmissionType == transmissionTypeFor(static_cast<T *>(NULL))) {
+			return reinterpret_cast<T *>(&data);
+		}
+
+		return NULL;
+	}
+
+private:
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const DvbCTransponder *) const
+	{
+		return DvbTransponderBase::DvbC;
+	}
+
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const DvbSTransponder *) const
+	{
+		return DvbTransponderBase::DvbS;
+	}
+
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const DvbS2Transponder *) const
+	{
+		return DvbTransponderBase::DvbS2;
+	}
+
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const DvbTTransponder *) const
+	{
+		return DvbTransponderBase::DvbT;
+	}
+
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const AtscTransponder *) const
+	{
+		return DvbTransponderBase::Atsc;
+	}
+
+	union {
+		DvbTransponderBase::TransmissionType transmissionType : 8;
+		DvbCTransponder dvbCTransponder;
+		DvbSTransponder dvbSTransponder;
+		DvbS2Transponder dvbS2Transponder;
+		DvbTTransponder dvbTTransponder;
+		AtscTransponder atscTransponder;
+	} data;
 };
 
 class DvbChannelBase

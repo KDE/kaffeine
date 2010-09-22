@@ -73,7 +73,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 			continue;
 		}
 
-		if ((it.source == source) && it.transponder->corresponds(transponder)) {
+		if ((it.source == source) && it.transponder.corresponds(transponder)) {
 			++deviceConfigs[i].useCount;
 
 			if (requestType == Prioritized) {
@@ -161,7 +161,6 @@ DvbDevice *DvbManager::requestExclusiveDevice(const QString &source)
 
 				deviceConfigs[i].useCount = -1;
 				deviceConfigs[i].source.clear();
-				deviceConfigs[i].transponder = NULL;
 				return device;
 			}
 		}
@@ -743,34 +742,12 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 			}
 
 			line = data.readLine();
-			DvbTransponderBase *transponder = NULL;
+			DvbTransponder transponder = DvbTransponder::fromString(QString::fromAscii(line));
 
-			switch (type) {
-			case DvbC:
-				transponder = new DvbCTransponder;
-				break;
-			case DvbS:
-			case DvbS2:
-				if (line[1] == '2') {
-					transponder = new DvbS2Transponder;
-				} else {
-					transponder = new DvbSTransponder;
-					containsDvbS1 = true;
-				}
-				break;
-			case DvbT:
-				transponder = new DvbTTransponder;
-				break;
-			case Atsc:
-				transponder = new AtscTransponder;
-				break;
-			}
-
-			if (!transponder->fromString(QString::fromAscii(line))) {
+			if (!transponder.isValid()) {
 				parseError = true;
-				delete transponder;
 			} else {
-				transponders.append(DvbTransponder(transponder));
+				transponders.append(transponder);
 			}
 		}
 
@@ -783,7 +760,7 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 
 			if (containsDvbS1) {
 				for (int i = 0; i < transponders.size(); ++i) {
-					if (transponders.at(i)->getTransmissionType() ==
+					if (transponders.at(i).getTransmissionType() ==
 					    DvbTransponderBase::DvbS2) {
 						transponders.removeAt(i);
 						--i;

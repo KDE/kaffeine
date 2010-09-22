@@ -167,7 +167,7 @@ QString DvbDevice::getFrontendName() const
 
 void DvbDevice::tune(const DvbTransponder &transponder)
 {
-	DvbTransponderBase::TransmissionType transmissionType = transponder->getTransmissionType();
+	DvbTransponderBase::TransmissionType transmissionType = transponder.getTransmissionType();
 
 	if ((transmissionType != DvbTransponderBase::DvbS) &&
 	    (transmissionType != DvbTransponderBase::DvbS2)) {
@@ -193,10 +193,10 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	const DvbS2Transponder *dvbS2Transponder = NULL;
 
 	if (transmissionType == DvbTransponderBase::DvbS) {
-		dvbSTransponder = transponder->getDvbSTransponder();
+		dvbSTransponder = transponder.as<DvbSTransponder>();
 	} else {
 		// DVB-S2
-		dvbS2Transponder = transponder->getDvbS2Transponder();
+		dvbS2Transponder = transponder.as<DvbS2Transponder>();
 		dvbSTransponder = dvbS2Transponder;
 	}
 
@@ -313,18 +313,10 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	// tune
 
-	DvbSTransponder *intermediate = NULL;
-
-	if (transmissionType == DvbTransponderBase::DvbS) {
-		intermediate = new DvbSTransponder(*dvbSTransponder);
-	} else {
-		// DVB-S2
-		intermediate = new DvbS2Transponder(*dvbS2Transponder);
-	}
-
-	intermediate->frequency = frequency;
+	DvbTransponder intermediate = transponder;
+	intermediate.as<DvbSTransponder>()->frequency = frequency;
 	ok = false;
-	emit backendTune(DvbTransponder(intermediate), ok);
+	emit backendTune(intermediate, ok);
 
 	if (ok) {
 		if (!moveRotor) {
@@ -345,14 +337,14 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 void DvbDevice::autoTune(const DvbTransponder &transponder)
 {
-	if (transponder->getTransmissionType() != DvbTransponderBase::DvbT) {
+	if (transponder.getTransmissionType() != DvbTransponderBase::DvbT) {
 		kWarning() << "can't handle != DVB-T";
 		return;
 	}
 
 	isAuto = true;
-	autoTTransponder = new DvbTTransponder(*transponder->getDvbTTransponder());
-	autoTransponder = DvbTransponder(autoTTransponder);
+	autoTransponder = transponder;
+	DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
 	capabilities = 0;
 	emit backendGetCapabilities(capabilities);
 
@@ -561,6 +553,7 @@ void DvbDevice::frontendEvent()
 			return;
 		}
 
+		DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
 		int signal = -1;
 		emit backendGetSignal(signal);
 

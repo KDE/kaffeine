@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QPair>
 #include <QStringList>
+#include "dvbchannel.h"
 
 class QTreeView;
 class DvbChannelModel;
@@ -186,7 +187,7 @@ public:
 	int useCount; // -1 means exclusive use
 	int prioritizedUseCount;
 	QString source;
-	QExplicitlySharedDataPointer<const DvbTransponderBase> transponder;
+	DvbTransponder transponder;
 };
 
 class DvbDeviceConfigUpdate

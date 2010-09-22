@@ -190,7 +190,7 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 	DvbDevice *newDevice = NULL;
 
 	if ((channel.constData() != NULL) && (channel->source == channel_->source) &&
-	    (channel->transponder->corresponds(channel_->transponder))) {
+	    (channel->transponder.corresponds(channel_->transponder))) {
 		newDevice = manager->requestDevice(channel->source, channel->transponder,
 			DvbManager::Shared);
 	}
