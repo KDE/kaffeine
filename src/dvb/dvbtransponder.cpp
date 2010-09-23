@@ -23,167 +23,166 @@
 #include <QDataStream>
 #include <QTextStream>
 
-template<class T> static T maxEnumValue();
-
-template<> DvbTransponderBase::FecRate maxEnumValue()
+static const char *enumToLinuxtv(DvbTransponderBase::FecRate fecRate)
 {
-	return DvbTransponderBase::FecRateMax;
+	switch (fecRate) {
+	case DvbTransponderBase::FecNone: return "NONE";
+	case DvbTransponderBase::Fec1_2: return "1/2";
+	case DvbTransponderBase::Fec1_3: return "1/3";
+	case DvbTransponderBase::Fec1_4: return "1/4";
+	case DvbTransponderBase::Fec2_3: return "2/3";
+	case DvbTransponderBase::Fec2_5: return "2/5";
+	case DvbTransponderBase::Fec3_4: return "3/4";
+	case DvbTransponderBase::Fec3_5: return "3/5";
+	case DvbTransponderBase::Fec4_5: return "4/5";
+	case DvbTransponderBase::Fec5_6: return "5/6";
+	case DvbTransponderBase::Fec6_7: return "6/7";
+	case DvbTransponderBase::Fec7_8: return "7/8";
+	case DvbTransponderBase::Fec8_9: return "8/9";
+	case DvbTransponderBase::Fec9_10: return "9/10";
+	case DvbTransponderBase::FecAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbCTransponder::Modulation maxEnumValue()
+static const char *enumToLinuxtv(DvbCTransponder::Modulation modulation)
 {
-	return DvbCTransponder::ModulationMax;
+	switch (modulation) {
+	case DvbCTransponder::Qam16: return "QAM16";
+	case DvbCTransponder::Qam32: return "QAM32";
+	case DvbCTransponder::Qam64: return "QAM64";
+	case DvbCTransponder::Qam128: return "QAM128";
+	case DvbCTransponder::Qam256: return "QAM256";
+	case DvbCTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbSTransponder::Polarization maxEnumValue()
+static const char *enumToLinuxtv(DvbSTransponder::Polarization polarization)
 {
-	return DvbSTransponder::PolarizationMax;
+	switch (polarization) {
+	case DvbSTransponder::Horizontal: return "H";
+	case DvbSTransponder::Vertical: return "V";
+	case DvbSTransponder::CircularLeft: return "L";
+	case DvbSTransponder::CircularRight: return "R";
+	}
+
+	return NULL;
 }
 
-template<> DvbS2Transponder::Modulation maxEnumValue()
+static const char *enumToLinuxtv(DvbS2Transponder::Modulation modulation)
 {
-	return DvbS2Transponder::ModulationMax;
+	switch (modulation) {
+	case DvbS2Transponder::Qpsk: return "QPSK";
+	case DvbS2Transponder::Psk8: return "8PSK";
+	case DvbS2Transponder::Apsk16: return "16APSK";
+	case DvbS2Transponder::Apsk32: return "32APSK";
+	case DvbS2Transponder::ModulationAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbS2Transponder::RollOff maxEnumValue()
+static const char *enumToLinuxtv(DvbS2Transponder::RollOff rollOff)
 {
-	return DvbS2Transponder::RollOffMax;
+	switch (rollOff) {
+	case DvbS2Transponder::RollOff20: return "20";
+	case DvbS2Transponder::RollOff25: return "25";
+	case DvbS2Transponder::RollOff35: return "35";
+	case DvbS2Transponder::RollOffAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbTTransponder::Bandwidth maxEnumValue()
+static const char *enumToLinuxtv(DvbTTransponder::Bandwidth bandwidth)
 {
-	return DvbTTransponder::BandwidthMax;
+	switch (bandwidth) {
+	case DvbTTransponder::Bandwidth6MHz: return "6MHz";
+	case DvbTTransponder::Bandwidth7MHz: return "7MHz";
+	case DvbTTransponder::Bandwidth8MHz: return "8MHz";
+	case DvbTTransponder::BandwidthAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbTTransponder::Modulation maxEnumValue()
+static const char *enumToLinuxtv(DvbTTransponder::Modulation modulation)
 {
-	return DvbTTransponder::ModulationMax;
+	switch (modulation) {
+	case DvbTTransponder::Qpsk: return "QPSK";
+	case DvbTTransponder::Qam16: return "QAM16";
+	case DvbTTransponder::Qam64: return "QAM64";
+	case DvbTTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbTTransponder::TransmissionMode maxEnumValue()
+static const char *enumToLinuxtv(DvbTTransponder::TransmissionMode transmissionMode)
 {
-	return DvbTTransponder::TransmissionModeMax;
+	switch (transmissionMode) {
+	case DvbTTransponder::TransmissionMode2k: return "2k";
+	case DvbTTransponder::TransmissionMode4k: return "4k";
+	case DvbTTransponder::TransmissionMode8k: return "8k";
+	case DvbTTransponder::TransmissionModeAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbTTransponder::GuardInterval maxEnumValue()
+static const char *enumToLinuxtv(DvbTTransponder::GuardInterval guardInterval)
 {
-	return DvbTTransponder::GuardIntervalMax;
+	switch (guardInterval) {
+	case DvbTTransponder::GuardInterval1_4: return "1/4";
+	case DvbTTransponder::GuardInterval1_8: return "1/8";
+	case DvbTTransponder::GuardInterval1_16: return "1/16";
+	case DvbTTransponder::GuardInterval1_32: return "1/32";
+	case DvbTTransponder::GuardIntervalAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> DvbTTransponder::Hierarchy maxEnumValue()
+static const char *enumToLinuxtv(DvbTTransponder::Hierarchy hierarchy)
 {
-	return DvbTTransponder::HierarchyMax;
+	switch (hierarchy) {
+	case DvbTTransponder::HierarchyNone: return "NONE";
+	case DvbTTransponder::Hierarchy1: return "1";
+	case DvbTTransponder::Hierarchy2: return "2";
+	case DvbTTransponder::Hierarchy4: return "4";
+	case DvbTTransponder::HierarchyAuto: return "AUTO";
+	}
+
+	return NULL;
 }
 
-template<> AtscTransponder::Modulation maxEnumValue()
+static const char *enumToLinuxtv(AtscTransponder::Modulation modulation)
 {
-	return AtscTransponder::ModulationMax;
+	switch (modulation) {
+	case AtscTransponder::Qam64: return "QAM64";
+	case AtscTransponder::Qam256: return "QAM256";
+	case AtscTransponder::Vsb8: return "8VSB";
+	case AtscTransponder::Vsb16: return "16VSB";
+	case AtscTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return NULL;
 }
-
-static const char *dvbFecRateTable[] = {
-	/* FecNone = 0  */ "NONE",
-	/* Fec1_2 = 1   */ "1/2",
-	/* Fec2_3 = 2   */ "2/3",
-	/* Fec3_4 = 3   */ "3/4",
-	/* Fec4_5 = 4   */ "4/5",
-	/* Fec5_6 = 5   */ "5/6",
-	/* Fec6_7 = 6   */ "6/7",
-	/* Fec7_8 = 7   */ "7/8",
-	/* Fec8_9 = 8   */ "8/9",
-	/* FecAuto = 9  */ "AUTO",
-	/* Fec1_3 = 10  */ "1/3",
-	/* Fec1_4 = 11  */ "1/4",
-	/* Fec2_5 = 12  */ "2/5",
-	/* Fec3_5 = 13  */ "3/5",
-	/* Fec9_10 = 14 */ "9/10"
-};
-
-static const char *dvbCModulationTable[] = {
-	/* Qam16 = 0          */ "QAM16",
-	/* Qam32 = 1          */ "QAM32",
-	/* Qam64 = 2          */ "QAM64",
-	/* Qam128 = 3         */ "QAM128",
-	/* Qam256 = 4         */ "QAM256",
-	/* ModulationAuto = 5 */ "AUTO"
-};
-
-static const char *dvbSPolarizationTable[] = {
-	/* Horizontal = 0    */ "H",
-	/* Vertical = 1      */ "V",
-	/* CircularLeft = 2  */ "L",
-	/* CircularRight = 3 */ "R"
-};
-
-static const char *dvbS2ModulationTable[] = {
-	/* Qpsk = 0           */ "QPSK",
-	/* Psk8 = 1           */ "8PSK",
-	/* Apsk16 = 2         */ "16APSK",
-	/* Apsk32 = 3         */ "32APSK",
-	/* ModulationAuto = 4 */ "AUTO"
-};
-
-static const char *dvbS2RollOffTable[] = {
-	/* RollOff20 = 0   */ "20",
-	/* RollOff25 = 1   */ "25",
-	/* RollOff35 = 2   */ "35",
-	/* RollOffAuto = 3 */ "AUTO"
-};
-
-static const char *dvbTBandwidthTable[] = {
-	/* Bandwidth6MHz = 0 */ "6MHz",
-	/* Bandwidth7MHz = 1 */ "7MHz",
-	/* Bandwidth8MHz = 2 */ "8MHz",
-	/* BandwidthAuto = 3 */ "AUTO"
-};
-
-static const char *dvbTModulationTable[] = {
-	/* Qpsk = 0           */ "QPSK",
-	/* Qam16 = 1          */ "QAM16",
-	/* Qam64 = 2          */ "QAM64",
-	/* ModulationAuto = 3 */ "AUTO"
-};
-
-static const char *dvbTTransmissionModeTable[] = {
-	/* TransmissionMode2k = 0   */ "2k",
-	/* TransmissionMode8k = 1   */ "8k",
-	/* TransmissionModeAuto = 2 */ "AUTO",
-	/* TransmissionMode4k = 3   */ "4k"
-};
-
-static const char *dvbTGuardIntervalTable[] = {
-	/* GuardInterval1_4 = 0  */ "1/4",
-	/* GuardInterval1_8 = 1  */ "1/8",
-	/* GuardInterval1_16 = 2 */ "1/16",
-	/* GuardInterval1_32 = 3 */ "1/32",
-	/* GuardIntervalAuto = 4 */ "AUTO"
-};
-
-static const char *dvbTHierarchyTable[] = {
-	/* HierarchyNone = 0 */ "NONE",
-	/* Hierarchy1 = 1    */ "1",
-	/* Hierarchy2 = 2    */ "2",
-	/* Hierarchy4 = 3    */ "4",
-	/* HierarchyAuto = 4 */ "AUTO"
-};
-
-static const char *atscModulationTable[] = {
-	/* Qam64 = 0          */ "QAM64",
-	/* Qam256 = 1         */ "QAM256",
-	/* Vsb8 = 2           */ "8VSB",
-	/* Vsb16 = 3          */ "16VSB",
-	/* ModulationAuto = 4 */ "AUTO"
-};
 
 template<class T> static T readEnum(QDataStream &stream)
 {
 	int intValue;
 	stream >> intValue;
+	T value = static_cast<T>(intValue);
 
-	if ((intValue < 0) || (intValue > maxEnumValue<T>())) {
+	if ((value != intValue) || (enumToLinuxtv(value) == 0)) {
 		stream.setStatus(QDataStream::ReadCorruptData);
 	}
 
-	return static_cast<T>(intValue);
+	return value;
 }
 
 class DvbChannelStringReader
@@ -207,14 +206,26 @@ public:
 		stream >> value;
 	}
 
-	template<class T> T readEnum(const char **table)
+	template<class T> T readEnum()
 	{
 		QString string;
 		stream >> string;
 
-		for (int i = 0; i <= maxEnumValue<T>(); ++i) {
-			if (string == table[i]) {
-				return static_cast<T>(i);
+		for (int i = 0;; ++i) {
+			T value = static_cast<T>(i);
+
+			if (value != i) {
+				break;
+			}
+
+			const char *entry = enumToLinuxtv(value);
+
+			if (entry == NULL) {
+				break;
+			}
+
+			if (string == entry) {
+				return value;
 			}
 		}
 
@@ -268,9 +279,9 @@ public:
 		stream << value << ' ';
 	}
 
-	void writeEnum(int value, const char **table)
+	template<class T> void writeEnum(T value)
 	{
-		stream << table[value] << ' ';
+		stream << enumToLinuxtv(value) << ' ';
 	}
 
 	void writeChar(QChar value)
@@ -302,8 +313,8 @@ bool DvbCTransponder::fromString(const QString &string)
 	reader.checkChar('C');
 	reader.readInt(frequency);
 	reader.readInt(symbolRate);
-	fecRate = reader.readEnum<FecRate>(dvbFecRateTable);
-	modulation = reader.readEnum<Modulation>(dvbCModulationTable);
+	fecRate = reader.readEnum<FecRate>();
+	modulation = reader.readEnum<Modulation>();
 	return reader.isValid();
 }
 
@@ -313,8 +324,8 @@ QString DvbCTransponder::toString() const
 	writer.writeChar('C');
 	writer.writeInt(frequency);
 	writer.writeInt(symbolRate);
-	writer.writeEnum(fecRate, dvbFecRateTable);
-	writer.writeEnum(modulation, dvbCModulationTable);
+	writer.writeEnum(fecRate);
+	writer.writeEnum(modulation);
 	return writer.getString();
 }
 
@@ -322,8 +333,8 @@ bool DvbCTransponder::corresponds(const DvbTransponder &transponder) const
 {
 	const DvbCTransponder *dvbCTransponder = transponder.as<DvbCTransponder>();
 
-	return (dvbCTransponder != NULL) &&
-	       (qAbs(dvbCTransponder->frequency - frequency) <= 2000000);
+	return ((dvbCTransponder != NULL) &&
+		(qAbs(dvbCTransponder->frequency - frequency) <= 2000000));
 }
 
 void DvbSTransponder::readTransponder(QDataStream &stream)
@@ -339,9 +350,9 @@ bool DvbSTransponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkChar('S');
 	reader.readInt(frequency);
-	polarization = reader.readEnum<Polarization>(dvbSPolarizationTable);
+	polarization = reader.readEnum<Polarization>();
 	reader.readInt(symbolRate);
-	fecRate = reader.readEnum<FecRate>(dvbFecRateTable);
+	fecRate = reader.readEnum<FecRate>();
 	return reader.isValid();
 }
 
@@ -350,9 +361,9 @@ QString DvbSTransponder::toString() const
 	DvbChannelStringWriter writer;
 	writer.writeChar('S');
 	writer.writeInt(frequency);
-	writer.writeEnum(polarization, dvbSPolarizationTable);
+	writer.writeEnum(polarization);
 	writer.writeInt(symbolRate);
-	writer.writeEnum(fecRate, dvbFecRateTable);
+	writer.writeEnum(fecRate);
 	return writer.getString();
 }
 
@@ -360,9 +371,9 @@ bool DvbSTransponder::corresponds(const DvbTransponder &transponder) const
 {
 	const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
 
-	return (dvbSTransponder != NULL) &&
-	       (dvbSTransponder->polarization == polarization) &&
-	       (qAbs(dvbSTransponder->frequency - frequency) <= 2000);
+	return ((dvbSTransponder != NULL) &&
+		(dvbSTransponder->polarization == polarization) &&
+		(qAbs(dvbSTransponder->frequency - frequency) <= 2000));
 }
 
 void DvbS2Transponder::readTransponder(QDataStream &stream)
@@ -380,11 +391,11 @@ bool DvbS2Transponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkString("S2");
 	reader.readInt(frequency);
-	polarization = reader.readEnum<Polarization>(dvbSPolarizationTable);
+	polarization = reader.readEnum<Polarization>();
 	reader.readInt(symbolRate);
-	fecRate = reader.readEnum<FecRate>(dvbFecRateTable);
-	rollOff = reader.readEnum<RollOff>(dvbS2RollOffTable);
-	modulation = reader.readEnum<Modulation>(dvbS2ModulationTable);
+	fecRate = reader.readEnum<FecRate>();
+	rollOff = reader.readEnum<RollOff>();
+	modulation = reader.readEnum<Modulation>();
 	return reader.isValid();
 }
 
@@ -393,11 +404,11 @@ QString DvbS2Transponder::toString() const
 	DvbChannelStringWriter writer;
 	writer.writeString("S2");
 	writer.writeInt(frequency);
-	writer.writeEnum(polarization, dvbSPolarizationTable);
+	writer.writeEnum(polarization);
 	writer.writeInt(symbolRate);
-	writer.writeEnum(fecRate, dvbFecRateTable);
-	writer.writeEnum(rollOff, dvbS2RollOffTable);
-	writer.writeEnum(modulation, dvbS2ModulationTable);
+	writer.writeEnum(fecRate);
+	writer.writeEnum(rollOff);
+	writer.writeEnum(modulation);
 	return writer.getString();
 }
 
@@ -405,9 +416,9 @@ bool DvbS2Transponder::corresponds(const DvbTransponder &transponder) const
 {
 	const DvbS2Transponder *dvbS2Transponder = transponder.as<DvbS2Transponder>();
 
-	return (dvbS2Transponder != NULL) &&
-	       (dvbS2Transponder->polarization == polarization) &&
-	       (qAbs(dvbS2Transponder->frequency - frequency) <= 2000);
+	return ((dvbS2Transponder != NULL) &&
+		(dvbS2Transponder->polarization == polarization) &&
+		(qAbs(dvbS2Transponder->frequency - frequency) <= 2000));
 }
 
 void DvbTTransponder::readTransponder(QDataStream &stream)
@@ -427,13 +438,13 @@ bool DvbTTransponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkChar('T');
 	reader.readInt(frequency);
-	bandwidth = reader.readEnum<Bandwidth>(dvbTBandwidthTable);
-	fecRateHigh = reader.readEnum<FecRate>(dvbFecRateTable);
-	fecRateLow = reader.readEnum<FecRate>(dvbFecRateTable);
-	modulation = reader.readEnum<Modulation>(dvbTModulationTable);
-	transmissionMode = reader.readEnum<TransmissionMode>(dvbTTransmissionModeTable);
-	guardInterval = reader.readEnum<GuardInterval>(dvbTGuardIntervalTable);
-	hierarchy = reader.readEnum<Hierarchy>(dvbTHierarchyTable);
+	bandwidth = reader.readEnum<Bandwidth>();
+	fecRateHigh = reader.readEnum<FecRate>();
+	fecRateLow = reader.readEnum<FecRate>();
+	modulation = reader.readEnum<Modulation>();
+	transmissionMode = reader.readEnum<TransmissionMode>();
+	guardInterval = reader.readEnum<GuardInterval>();
+	hierarchy = reader.readEnum<Hierarchy>();
 	return reader.isValid();
 }
 
@@ -442,13 +453,13 @@ QString DvbTTransponder::toString() const
 	DvbChannelStringWriter writer;
 	writer.writeChar('T');
 	writer.writeInt(frequency);
-	writer.writeEnum(bandwidth, dvbTBandwidthTable);
-	writer.writeEnum(fecRateHigh, dvbFecRateTable);
-	writer.writeEnum(fecRateLow, dvbFecRateTable);
-	writer.writeEnum(modulation, dvbTModulationTable);
-	writer.writeEnum(transmissionMode, dvbTTransmissionModeTable);
-	writer.writeEnum(guardInterval, dvbTGuardIntervalTable);
-	writer.writeEnum(hierarchy, dvbTHierarchyTable);
+	writer.writeEnum(bandwidth);
+	writer.writeEnum(fecRateHigh);
+	writer.writeEnum(fecRateLow);
+	writer.writeEnum(modulation);
+	writer.writeEnum(transmissionMode);
+	writer.writeEnum(guardInterval);
+	writer.writeEnum(hierarchy);
 	return writer.getString();
 }
 
@@ -456,8 +467,8 @@ bool DvbTTransponder::corresponds(const DvbTransponder &transponder) const
 {
 	const DvbTTransponder *dvbTTransponder = transponder.as<DvbTTransponder>();
 
-	return (dvbTTransponder != NULL) &&
-	       (qAbs(dvbTTransponder->frequency - frequency) <= 2000000);
+	return ((dvbTTransponder != NULL) &&
+		(qAbs(dvbTTransponder->frequency - frequency) <= 2000000));
 }
 
 void AtscTransponder::readTransponder(QDataStream &stream)
@@ -471,7 +482,7 @@ bool AtscTransponder::fromString(const QString &string)
 	DvbChannelStringReader reader(string);
 	reader.checkChar('A');
 	reader.readInt(frequency);
-	modulation = reader.readEnum<Modulation>(atscModulationTable);
+	modulation = reader.readEnum<Modulation>();
 	return reader.isValid();
 }
 
@@ -480,7 +491,7 @@ QString AtscTransponder::toString() const
 	DvbChannelStringWriter writer;
 	writer.writeChar('A');
 	writer.writeInt(frequency);
-	writer.writeEnum(modulation, atscModulationTable);
+	writer.writeEnum(modulation);
 	return writer.getString();
 }
 
@@ -488,8 +499,8 @@ bool AtscTransponder::corresponds(const DvbTransponder &transponder) const
 {
 	const AtscTransponder *atscTransponder = transponder.as<AtscTransponder>();
 
-	return (atscTransponder != NULL) &&
-	       (qAbs(atscTransponder->frequency - frequency) <= 2000000);
+	return ((atscTransponder != NULL) &&
+		(qAbs(atscTransponder->frequency - frequency) <= 2000000));
 }
 
 bool DvbTransponder::corresponds(const DvbTransponder &transponder) const

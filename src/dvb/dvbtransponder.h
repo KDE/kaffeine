@@ -52,8 +52,7 @@ public:
 		Fec7_8 = 7,
 		Fec8_9 = 8,
 		Fec9_10 = 14,
-		FecAuto = 9,
-		FecRateMax = Fec9_10
+		FecAuto = 9
 	};
 
 private:
@@ -69,8 +68,7 @@ public:
 		Qam64 = 2,
 		Qam128 = 3,
 		Qam256 = 4,
-		ModulationAuto = 5,
-		ModulationMax = ModulationAuto
+		ModulationAuto = 5
 	};
 
 	void readTransponder(QDataStream &stream);
@@ -91,8 +89,7 @@ public:
 		Horizontal = 0,
 		Vertical = 1,
 		CircularLeft = 2,
-		CircularRight = 3,
-		PolarizationMax = CircularRight
+		CircularRight = 3
 	};
 
 	void readTransponder(QDataStream &stream);
@@ -114,16 +111,14 @@ public:
 		Psk8 = 1,
 		Apsk16 = 2,
 		Apsk32 = 3,
-		ModulationAuto = 4,
-		ModulationMax = ModulationAuto
+		ModulationAuto = 4
 	};
 
 	enum RollOff {
 		RollOff20 = 0,
 		RollOff25 = 1,
 		RollOff35 = 2,
-		RollOffAuto = 3,
-		RollOffMax = RollOffAuto
+		RollOffAuto = 3
 	};
 
 	void readTransponder(QDataStream &stream);
@@ -142,24 +137,21 @@ public:
 		Bandwidth6MHz = 0,
 		Bandwidth7MHz = 1,
 		Bandwidth8MHz = 2,
-		BandwidthAuto = 3,
-		BandwidthMax = BandwidthAuto
+		BandwidthAuto = 3
 	};
 
 	enum Modulation {
 		Qpsk = 0,
 		Qam16 = 1,
 		Qam64 = 2,
-		ModulationAuto = 3,
-		ModulationMax = ModulationAuto
+		ModulationAuto = 3
 	};
 
 	enum TransmissionMode {
 		TransmissionMode2k = 0,
 		TransmissionMode4k = 3,
 		TransmissionMode8k = 1,
-		TransmissionModeAuto = 2,
-		TransmissionModeMax = TransmissionMode4k
+		TransmissionModeAuto = 2
 	};
 
 	enum GuardInterval {
@@ -167,8 +159,7 @@ public:
 		GuardInterval1_8 = 1,
 		GuardInterval1_16 = 2,
 		GuardInterval1_32 = 3,
-		GuardIntervalAuto = 4,
-		GuardIntervalMax = GuardIntervalAuto
+		GuardIntervalAuto = 4
 	};
 
 	enum Hierarchy {
@@ -176,8 +167,7 @@ public:
 		Hierarchy1 = 1,
 		Hierarchy2 = 2,
 		Hierarchy4 = 3,
-		HierarchyAuto = 4,
-		HierarchyMax = HierarchyAuto
+		HierarchyAuto = 4
 	};
 
 	void readTransponder(QDataStream &stream);
@@ -203,8 +193,7 @@ public:
 		Qam256 = 1,
 		Vsb8 = 2,
 		Vsb16 = 3,
-		ModulationAuto = 4,
-		ModulationMax = ModulationAuto
+		ModulationAuto = 4
 	};
 
 	void readTransponder(QDataStream &stream);
