@@ -27,7 +27,8 @@ if(HAVE_DVB)
       dvb/dvbscan.cpp
       dvb/dvbscandialog.cpp
       dvb/dvbsi.cpp
-      dvb/dvbtab.cpp)
+      dvb/dvbtab.cpp
+      dvb/dvbtransponder.cpp)
 endif(HAVE_DVB)
 
 set(kaffeinexbu_SRCS

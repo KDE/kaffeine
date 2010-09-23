@@ -27,6 +27,7 @@
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"
+#include "dvbchannel.h"
 #include "dvbmanager.h"
 
 void DvbOsd::init(OsdLevel level_, const QString &channelName_,

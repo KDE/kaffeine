@@ -37,6 +37,7 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
+#include "dvbchannel.h"
 #include "dvbsi.h"
 
 static QString enumToString(DvbTransponderBase::FecRate fecRate)

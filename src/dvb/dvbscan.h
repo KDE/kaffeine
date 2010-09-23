@@ -23,6 +23,7 @@
 
 #include <QObject>
 #include "dvbchannel.h"
+#include "dvbtransponder.h"
 
 class AtscVctSection;
 class DvbDescriptor;

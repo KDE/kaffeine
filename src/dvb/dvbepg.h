@@ -30,6 +30,7 @@ class QLabel;
 class QListView;
 class QStringListModel;
 class QTreeView;
+class DvbChannel;
 class DvbChannelModel;
 class DvbEitEntry;
 

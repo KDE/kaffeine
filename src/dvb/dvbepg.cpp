@@ -34,6 +34,7 @@
 #include <KLineEdit>
 #include <KLocale>
 #include <KStandardDirs>
+#include "dvbchannel.h"
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 

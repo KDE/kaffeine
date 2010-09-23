@@ -35,6 +35,7 @@
 #include <KMenu>
 #include "../mediawidget.h"
 #include "../osdwidget.h"
+#include "dvbchannel.h"
 #include "dvbchannelui.h"
 #include "dvbconfigdialog.h"
 #include "dvbepg.h"

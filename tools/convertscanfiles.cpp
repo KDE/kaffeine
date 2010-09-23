@@ -22,7 +22,7 @@
 #include <QDate>
 #include <QDebug>
 #include <QDir>
-#include "../src/dvb/dvbchannel.h"
+#include "../src/dvb/dvbtransponder.h"
 
 class NumericalLessThan
 {

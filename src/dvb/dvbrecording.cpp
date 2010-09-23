@@ -36,6 +36,7 @@
 #include <KMessageBox>
 #include <KStandardDirs>
 #include "../datetimeedit.h"
+#include "dvbchannel.h"
 #include "dvbchannelui.h"
 #include "dvbmanager.h"
 

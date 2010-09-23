@@ -21,11 +21,12 @@
 #ifndef DVBDEVICE_H
 #define DVBDEVICE_H
 
+#include <QExplicitlySharedDataPointer>
 #include <QMap>
 #include <QMutex>
 #include <QTimer>
 #include "dvbbackenddevice.h"
-#include "dvbchannel.h"
+#include "dvbtransponder.h"
 
 class DvbConfigBase;
 class DvbDeviceDataBuffer;

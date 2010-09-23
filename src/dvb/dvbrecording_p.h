@@ -33,6 +33,7 @@ class KComboBox;
 class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
+class DvbChannel;
 
 Q_DECLARE_METATYPE(const DvbRecordingEntry *)
 
