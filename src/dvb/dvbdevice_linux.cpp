@@ -782,6 +782,7 @@ void DvbLinuxDevice::run()
 					continue;
 				}
 
+				kWarning() << "cannot read from dvr" << dvrPath;
 				dataSize = read(dvrFd, dvrBuffer.data, bufferSize);
 
 				if (dataSize < 0) {
@@ -808,6 +809,8 @@ void DvbLinuxDevice::run()
 				break;
 			}
 		}
+
+		msleep(10);
 	}
 }
 
