@@ -26,7 +26,7 @@
 #include <KLocale>
 #include <KStandardDirs>
 #include <config-kaffeine.h>
-#include "dvbchannelui.h"
+#include "dvbchannel.h"
 #include "dvbconfig.h"
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"

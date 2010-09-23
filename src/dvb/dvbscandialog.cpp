@@ -33,7 +33,7 @@
 #include <KLed>
 #include <KLocale>
 #include <KMessageBox>
-#include "dvbchannelui.h"
+#include "dvbchannel.h"
 #include "dvbdevice.h"
 #include "dvbliveview.h"
 #include "dvbmanager.h"

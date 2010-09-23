@@ -37,7 +37,6 @@
 #include <KStandardDirs>
 #include "../datetimeedit.h"
 #include "dvbchannel.h"
-#include "dvbchannelui.h"
 #include "dvbmanager.h"
 
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :

@@ -21,9 +21,16 @@
 #ifndef DVBCHANNEL_H
 #define DVBCHANNEL_H
 
-#include <QSharedData>
+#include <QSharedData> // qt 4.5 compatibility
+#include <QSharedDataPointer>
+#include <QTreeView>
 #include <QString>
 #include "dvbtransponder.h"
+
+class QAbstractProxyModel;
+class KAction;
+class DvbChannel;
+class SqlTableModelInterface;
 
 class DvbChannelBase
 {
@@ -86,5 +93,89 @@ public:
 
 Q_DECLARE_TYPEINFO(QSharedDataPointer<DvbChannel>, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(QExplicitlySharedDataPointer<const DvbChannel>, Q_MOVABLE_TYPE);
+
+class DvbChannelModel : public QAbstractTableModel
+{
+	Q_OBJECT
+public:
+	explicit DvbChannelModel(QObject *parent);
+	~DvbChannelModel();
+
+	/*
+	 * channel names and numbers are guaranteed to be unique within this model
+	 * they are automatically adjusted if necessary
+	 */
+
+	QModelIndex findChannelByName(const QString &name) const;
+	QModelIndex findChannelByNumber(int number) const;
+	void cloneFrom(const DvbChannelModel *other);
+
+	enum ItemDataRole
+	{
+		DvbChannelRole = Qt::UserRole
+	};
+
+	QAbstractProxyModel *createProxyModel(QObject *parent);
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent = QModelIndex()) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	bool removeRows(int row, int count, const QModelIndex &parent);
+	bool setData(const QModelIndex &modelIndex, const QVariant &value,
+		int role = Qt::EditRole);
+
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QMimeData *mimeData(const QModelIndexList &indexes) const;
+	QStringList mimeTypes() const;
+	Qt::DropActions supportedDropActions() const;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+		const QModelIndex &parent);
+
+signals:
+	void checkInternalMove(bool *ok);
+
+protected:
+	QString findNextFreeName(const QString &name) const;
+	int findNextFreeNumber(int number) const;
+
+	QList<QSharedDataPointer<DvbChannel> > channels;
+	QSet<QString> names;
+	QSet<int> numbers;
+
+signals:
+	void queueInternalMove(const QList<QPersistentModelIndex> &indexes, int newNumber);
+
+private slots:
+	void internalMove(const QList<QPersistentModelIndex> &indexes, int newNumber);
+};
+
+Q_DECLARE_METATYPE(const DvbChannel *)
+
+class DvbSqlChannelModel : public DvbChannelModel
+{
+public:
+	explicit DvbSqlChannelModel(QObject *parent);
+	~DvbSqlChannelModel();
+
+private:
+	SqlTableModelInterface *sqlInterface;
+};
+
+class DvbChannelView : public QTreeView
+{
+	Q_OBJECT
+public:
+	explicit DvbChannelView(QWidget *parent);
+	~DvbChannelView();
+
+	KAction *addEditAction();
+	KAction *addRemoveAction();
+
+public slots:
+	void checkInternalMove(bool *ok);
+	void editChannel();
+	void removeChannel();
+	void removeAllChannels();
+};
 
 #endif /* DVBCHANNEL_H */

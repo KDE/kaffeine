@@ -16,7 +16,6 @@ if(HAVE_DVB)
   set(kaffeinedvb_SRCS
       dvb/dvbcam_linux.cpp
       dvb/dvbchannel.cpp
-      dvb/dvbchannelui.cpp
       dvb/dvbconfigdialog.cpp
       dvb/dvbdevice.cpp
       dvb/dvbdevice_linux.cpp
