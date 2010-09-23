@@ -22,14 +22,11 @@
 #define DVBCHANNEL_H
 
 #include <QSharedData> // qt 4.5 compatibility
-#include <QSharedDataPointer>
 #include <QTreeView>
-#include <QString>
 #include "dvbtransponder.h"
 
 class QAbstractProxyModel;
 class KAction;
-class DvbChannel;
 class SqlTableModelInterface;
 
 class DvbChannelBase

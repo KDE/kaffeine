@@ -38,8 +38,6 @@ class DvbEpgModel;
 class DvbLiveView;
 class DvbRecordingModel;
 class DvbScanData;
-class DvbTransponder;
-class DvbTransponderBase;
 class MediaWidget;
 
 class DvbManager : public QObject

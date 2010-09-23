@@ -23,7 +23,6 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QDataStream>
 #include <QFile>
 #include <QGroupBox>
 #include <QHeaderView>
@@ -31,7 +30,6 @@
 #include <QMimeData>
 #include <QSortFilterProxyModel>
 #include <QSpinBox>
-#include <QTextStream>
 #include <KAction>
 #include <KComboBox>
 #include <KDebug>
@@ -39,7 +37,6 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
-#include "dvbchannel.h"
 #include "dvbsi.h"
 
 void DvbChannelBase::readChannel(QDataStream &stream)

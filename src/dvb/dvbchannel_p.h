@@ -1,5 +1,5 @@
 /*
- * dvbchannelui_p.h
+ * dvbchannel_p.h
  *
  * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DVBCHANNELUI_P_H
-#define DVBCHANNELUI_P_H
+#ifndef DVBCHANNEL_P_H
+#define DVBCHANNEL_P_H
 
 #include <QPersistentModelIndex>
 #include <KDialog>
@@ -70,4 +70,4 @@ private:
 	QCheckBox *scrambledBox;
 };
 
-#endif /* DVBCHANNELUI_P_H */
+#endif /* DVBCHANNEL_P_H */

@@ -21,9 +21,7 @@
 #ifndef DVBSCAN_H
 #define DVBSCAN_H
 
-#include <QObject>
 #include "dvbchannel.h"
-#include "dvbtransponder.h"
 
 class AtscVctSection;
 class DvbDescriptor;

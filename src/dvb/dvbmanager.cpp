@@ -742,7 +742,8 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 			}
 
 			line = data.readLine();
-			DvbTransponder transponder = DvbTransponder::fromString(QString::fromAscii(line));
+			DvbTransponder transponder =
+				DvbTransponder::fromString(QString::fromAscii(line));
 
 			if (!transponder.isValid()) {
 				parseError = true;
