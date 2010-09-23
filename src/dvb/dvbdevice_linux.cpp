@@ -32,7 +32,7 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include "dvbsi.h"
+#include "dvbtransponder.h"
 
 // krazy:excludeall=syscalls
 

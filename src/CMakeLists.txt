@@ -26,6 +26,7 @@ if(HAVE_DVB)
       dvb/dvbscan.cpp
       dvb/dvbscandialog.cpp
       dvb/dvbsi.cpp
+      dvb/dvbsifilter.cpp
       dvb/dvbtab.cpp
       dvb/dvbtransponder.cpp)
 endif(HAVE_DVB)

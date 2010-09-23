@@ -23,6 +23,7 @@
 #include <QBitArray>
 #include <KDebug>
 #include "dvbsi.h"
+#include "dvbsifilter.h"
 
 class DvbPatEntry
 {

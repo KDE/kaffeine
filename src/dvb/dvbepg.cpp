@@ -36,6 +36,7 @@
 #include <KStandardDirs>
 #include "dvbchannel.h"
 #include "dvbmanager.h"
+#include "dvbsi.h"
 
 class DvbEitEntry
 {

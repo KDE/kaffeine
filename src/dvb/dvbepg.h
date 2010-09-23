@@ -24,7 +24,7 @@
 #include <QSet>
 #include <KDialog>
 #include "dvbrecording.h"
-#include "dvbsi.h"
+#include "dvbsifilter.h"
 
 class QLabel;
 class QListView;
