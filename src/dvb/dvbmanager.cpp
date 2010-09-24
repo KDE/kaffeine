@@ -22,6 +22,8 @@
 #include "dvbmanager_p.h"
 
 #include <QDir>
+#include <QLibrary>
+#include <QPluginLoader>
 #include <KDebug>
 #include <KLocale>
 #include <KStandardDirs>
@@ -409,6 +411,11 @@ void DvbManager::enableDvbDump()
 	}
 }
 
+void DvbManager::requestBuiltinDeviceManager(QObject *&builtinDeviceManager)
+{
+	builtinDeviceManager = new DvbLinuxDeviceManager(this);
+}
+
 void DvbManager::deviceAdded(QObject *backendDevice)
 {
 	DvbDevice *device = new DvbDevice(backendDevice, this);
@@ -454,10 +461,9 @@ void DvbManager::deviceRemoved(QObject *backendDevice)
 
 void DvbManager::loadDeviceManager()
 {
-	/*
-	QDir dir(QString::fromUtf8(KAFFEINE_PLUGIN_INSTALL_DIR "/module"));
-	QStringList entries = dir.entryList(QStringList("kaffeinedvb*"));
-	qSort(entries.begin(), entries.end(), qGreater<QString>());
+	QDir dir(QString::fromUtf8(KAFFEINE_LIB_INSTALL_DIR "/"));
+	QStringList entries = dir.entryList(QStringList("*kaffeinedvb*"), QDir::NoFilter,
+		QDir::Name | QDir::Reversed);
 
 	foreach (const QString &entry, entries) {
 		QString path = dir.filePath(entry);
@@ -466,42 +472,31 @@ void DvbManager::loadDeviceManager()
 			continue;
 		}
 
-		typedef QObject *(*funcPointer)();
+		QObject *deviceManager = QPluginLoader(path).instance();
 
-		funcPointer func = (funcPointer) QLibrary::resolve(path, "create_device_manager");
-
-		if (func == NULL) {
-			kError() << "couldn't load dvb module" << path;
-			return;
+		if (deviceManager == NULL) {
+			kWarning() << "cannot load dvb device manager" << path;
+			break;
 		}
 
-		QObject *deviceManager = func();
-
-		if (deviceManager->property("backendMagic") != dvbBackendMagic) {
-			kError() << "invalid magic number for dvb module" << path;
-			return;
-		}
-
+		kDebug() << "using dvb device manager" << path;
 		deviceManager->setParent(this);
-		connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
-			this, SLOT(deviceAdded(DvbBackendDevice*)));
-		connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
-			this, SLOT(deviceRemoved(DvbBackendDevice*)));
+		connect(deviceManager, SIGNAL(requestBuiltinDeviceManager(QObject*&)),
+			this, SLOT(requestBuiltinDeviceManager(QObject*&)));
+		connect(deviceManager, SIGNAL(deviceAdded(QObject*)),
+			this, SLOT(deviceAdded(QObject*)));
+		connect(deviceManager, SIGNAL(deviceRemoved(QObject*)),
+			this, SLOT(deviceRemoved(QObject*)));
 		QMetaObject::invokeMethod(deviceManager, "doColdPlug");
-
-		kDebug() << "successfully loaded" << path;
 		return;
 	}
 
-	kError() << "no dvb module found";
-	*/
-
-	QObject *deviceManager = new DvbLinuxDeviceManager(this);
+	kDebug() << "using built-in dvb device manager";
+	DvbLinuxDeviceManager *deviceManager = new DvbLinuxDeviceManager(this);
 	connect(deviceManager, SIGNAL(deviceAdded(QObject*)), this, SLOT(deviceAdded(QObject*)));
 	connect(deviceManager, SIGNAL(deviceRemoved(QObject*)),
 		this, SLOT(deviceRemoved(QObject*)));
-	QMetaObject::invokeMethod(deviceManager, "doColdPlug");
-	return;
+	deviceManager->doColdPlug();
 }
 
 void DvbManager::readDeviceConfigs()

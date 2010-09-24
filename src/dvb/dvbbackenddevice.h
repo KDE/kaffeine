@@ -127,7 +127,7 @@ public slots:
 	void doColdPlug();
 
 signals:
-	void requestBuiltinDeviceManager(QObject *&bultinDeviceManager);
+	void requestBuiltinDeviceManager(QObject *&builtinDeviceManager);
 	void deviceAdded(QObject *device);
 	void deviceRemoved(QObject *device);
 };
