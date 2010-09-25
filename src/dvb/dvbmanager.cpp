@@ -416,7 +416,7 @@ void DvbManager::requestBuiltinDeviceManager(QObject *&builtinDeviceManager)
 	builtinDeviceManager = new DvbLinuxDeviceManager(this);
 }
 
-void DvbManager::deviceAdded(QObject *backendDevice)
+void DvbManager::deviceAdded(DvbAbstractBackendDeviceV1 *backendDevice)
 {
 	DvbDevice *device = new DvbDevice(backendDevice, this);
 	QString deviceId = device->getDeviceId();
@@ -442,7 +442,7 @@ void DvbManager::deviceAdded(QObject *backendDevice)
 	}
 }
 
-void DvbManager::deviceRemoved(QObject *backendDevice)
+void DvbManager::deviceRemoved(DvbAbstractBackendDeviceV1 *backendDevice)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
@@ -483,19 +483,20 @@ void DvbManager::loadDeviceManager()
 		deviceManager->setParent(this);
 		connect(deviceManager, SIGNAL(requestBuiltinDeviceManager(QObject*&)),
 			this, SLOT(requestBuiltinDeviceManager(QObject*&)));
-		connect(deviceManager, SIGNAL(deviceAdded(QObject*)),
-			this, SLOT(deviceAdded(QObject*)));
-		connect(deviceManager, SIGNAL(deviceRemoved(QObject*)),
-			this, SLOT(deviceRemoved(QObject*)));
+		connect(deviceManager, SIGNAL(deviceAdded(DvbAbstractBackendDeviceV1*)),
+			this, SLOT(deviceAdded(DvbAbstractBackendDeviceV1*)));
+		connect(deviceManager, SIGNAL(deviceRemoved(DvbAbstractBackendDeviceV1*)),
+			this, SLOT(deviceRemoved(DvbAbstractBackendDeviceV1*)));
 		QMetaObject::invokeMethod(deviceManager, "doColdPlug");
 		return;
 	}
 
 	kDebug() << "using built-in dvb device manager";
 	DvbLinuxDeviceManager *deviceManager = new DvbLinuxDeviceManager(this);
-	connect(deviceManager, SIGNAL(deviceAdded(QObject*)), this, SLOT(deviceAdded(QObject*)));
-	connect(deviceManager, SIGNAL(deviceRemoved(QObject*)),
-		this, SLOT(deviceRemoved(QObject*)));
+	connect(deviceManager, SIGNAL(deviceAdded(DvbAbstractBackendDeviceV1*)),
+		this, SLOT(deviceAdded(DvbAbstractBackendDeviceV1*)));
+	connect(deviceManager, SIGNAL(deviceRemoved(DvbAbstractBackendDeviceV1*)),
+		this, SLOT(deviceRemoved(DvbAbstractBackendDeviceV1*)));
 	deviceManager->doColdPlug();
 }
 

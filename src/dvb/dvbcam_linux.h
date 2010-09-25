@@ -36,7 +36,7 @@ public:
 	~DvbLinuxCam();
 
 	void startCa(const QString &path);
-	void startDescrambling(const DvbPmtSection &pmtSection);
+	void startDescrambling(const QByteArray &pmtSection);
 	void stopDescrambling(int serviceId);
 	void stopCa();
 

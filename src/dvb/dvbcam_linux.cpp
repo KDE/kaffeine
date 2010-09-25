@@ -78,8 +78,10 @@ void DvbLinuxCam::startCa(const QString &path)
 	}
 }
 
-void DvbLinuxCam::startDescrambling(const DvbPmtSection &pmtSection)
+void DvbLinuxCam::startDescrambling(const QByteArray &pmtSectionData)
 {
+	DvbPmtSection pmtSection(pmtSectionData);
+
 	if (!pmtSection.isValid()) {
 		kWarning() << "pmt section is invalid";
 		return;

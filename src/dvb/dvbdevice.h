@@ -42,7 +42,7 @@ public:
 	virtual void processData(const char data[188]) = 0;
 };
 
-class DvbDevice : public QObject, private DvbAbstractDataChannel, public DvbBackendDeviceBase
+class DvbDevice : public QObject, private DvbAbstractDataChannel, public DvbDeviceBase
 {
 	Q_OBJECT
 public:
@@ -56,10 +56,10 @@ public:
 		// FIXME introduce a TuningFailed state
 	};
 
-	DvbDevice(QObject *backendDevice, QObject *parent);
+	DvbDevice(DvbAbstractBackendDeviceV1 *backend_, QObject *parent);
 	~DvbDevice();
 
-	const QObject *getBackendDevice() const
+	const DvbAbstractBackendDeviceV1 *getBackendDevice() const
 	{
 		return backend;
 	}
@@ -99,28 +99,6 @@ signals:
 private slots:
 	void frontendEvent();
 
-signals:
-	void backendGetDeviceId(QString &result) const;
-	void backendGetFrontendName(QString &result) const;
-	void backendGetTransmissionTypes(TransmissionTypes &result) const;
-	void backendGetCapabilities(Capabilities &result) const;
-	void backendSetDataChannel(DvbAbstractDataChannel *dataChannel);
-	void backendSetDeviceEnabled(bool enabled);
-	void backendAcquire(bool &ok);
-	void backendSetTone(SecTone tone, bool &ok);
-	void backendSetVoltage(SecVoltage voltage, bool &ok);
-	void backendSendMessage(const char *message, int length, bool &ok);
-	void backendSendBurst(SecBurst burst, bool &ok);
-	void backendTune(const DvbTransponder &transponder, bool &ok); // discards obsolete data
-	void backendIsTuned(bool &result) const;
-	void backendGetSignal(int &result) const; // 0 - 100 [%] or -1 = not supported
-	void backendGetSnr(int &result) const; // 0 - 100 [%] or -1 = not supported
-	void backendAddPidFilter(int pid, bool &ok);
-	void backendRemovePidFilter(int pid);
-	void backendStartDescrambling(const DvbPmtSection &pmtSection);
-	void backendStopDescrambling(int serviceId);
-	void backendRelease();
-
 private:
 	void setDeviceState(DeviceState newState);
 	void discardBuffers();
@@ -130,7 +108,7 @@ private:
 	void writeBuffer(const DvbDataBuffer &dataBuffer);
 	void customEvent(QEvent *);
 
-	QObject *backend;
+	DvbAbstractBackendDeviceV1 *backend;
 	DeviceState deviceState;
 	QExplicitlySharedDataPointer<const DvbConfigBase> config;
 

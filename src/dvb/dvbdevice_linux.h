@@ -27,9 +27,8 @@
 
 class DvbTransponder;
 
-class DvbLinuxDevice : public QThread, public DvbBackendDeviceBase
+class DvbLinuxDevice : public QThread, public DvbAbstractBackendDeviceV1
 {
-	Q_OBJECT
 public:
 	explicit DvbLinuxDevice(QObject *parent);
 	~DvbLinuxDevice();
@@ -49,25 +48,25 @@ public:
 	QString frontendPath;
 	QString frontendUdi;
 
-public slots:
-	void getDeviceId(QString &result) const;
-	void getFrontendName(QString &result) const;
-	void getTransmissionTypes(TransmissionTypes &result) const;
-	void getCapabilities(Capabilities &result) const;
+protected:
+	QString getDeviceId();
+	QString getFrontendName();
+	TransmissionTypes getTransmissionTypes();
+	Capabilities getCapabilities();
 	void setDataChannel(DvbAbstractDataChannel *dataChannel_);
 	void setDeviceEnabled(bool enabled_);
-	void acquire(bool &ok);
-	void setTone(SecTone tone, bool &ok);
-	void setVoltage(SecVoltage voltage, bool &ok);
-	void sendMessage(const char *message, int length, bool &ok);
-	void sendBurst(SecBurst burst, bool &ok);
-	void tune(const DvbTransponder &transponder, bool &ok); // discards obsolete data
-	void isTuned(bool &result) const;
-	void getSignal(int &result) const; // 0 - 100 [%] or -1 = not supported
-	void getSnr(int &result) const; // 0 - 100 [%] or -1 = not supported
-	void addPidFilter(int pid, bool &ok);
+	bool acquire();
+	bool setTone(SecTone tone);
+	bool setVoltage(SecVoltage voltage);
+	bool sendMessage(const char *message, int length);
+	bool sendBurst(SecBurst burst);
+	bool tune(const DvbTransponder &transponder); // discards obsolete data
+	bool isTuned();
+	int getSignal(); // 0 - 100 [%] or -1 = not supported
+	int getSnr(); // 0 - 100 [%] or -1 = not supported
+	bool addPidFilter(int pid);
 	void removePidFilter(int pid);
-	void startDescrambling(const DvbPmtSection &pmtSection);
+	void startDescrambling(const QByteArray &pmtSectionData);
 	void stopDescrambling(int serviceId);
 	void release();
 
@@ -105,8 +104,8 @@ public slots:
 
 signals:
 	void requestBuiltinDeviceManager(QObject *&bultinDeviceManager);
-	void deviceAdded(QObject *device);
-	void deviceRemoved(QObject *device);
+	void deviceAdded(DvbAbstractBackendDeviceV1 *device);
+	void deviceRemoved(DvbAbstractBackendDeviceV1 *device);
 
 private slots:
 	void componentAdded(const QString &udi);

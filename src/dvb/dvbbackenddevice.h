@@ -23,6 +23,8 @@
 
 #include <QtGlobal>
 
+class DvbTransponder;
+
 class DvbDataBuffer
 {
 public:
@@ -46,7 +48,7 @@ protected:
 	~DvbAbstractDataChannel() { }
 };
 
-class DvbBackendDeviceBase
+class DvbDeviceBase
 {
 public:
 	enum TransmissionType {
@@ -84,37 +86,36 @@ public:
 	};
 };
 
-/*
-
-class DvbXXXDevice : public QObject, public DvbBackendDeviceBase
+class DvbAbstractBackendDeviceV1 : public DvbDeviceBase
 {
-	Q_OBJECT
 public:
-	DvbXXXDevice();
-	~DvbXXXDevice();
+	virtual QString getDeviceId() = 0;
+	virtual QString getFrontendName() = 0;
+	virtual TransmissionTypes getTransmissionTypes() = 0;
+	virtual Capabilities getCapabilities() = 0;
+	virtual void setDataChannel(DvbAbstractDataChannel *dataChannel) = 0;
+	virtual void setDeviceEnabled(bool enabled) = 0;
+	virtual bool acquire() = 0;
+	virtual bool setTone(SecTone tone) = 0;
+	virtual bool setVoltage(SecVoltage voltage) = 0;
+	virtual bool sendMessage(const char *message, int length) = 0;
+	virtual bool sendBurst(SecBurst burst) = 0;
+	virtual bool tune(const DvbTransponder &transponder) = 0; // discards obsolete data
+	virtual bool isTuned() = 0;
+	virtual int getSignal() = 0; // 0 - 100 [%] or -1 = not supported
+	virtual int getSnr() = 0; // 0 - 100 [%] or -1 = not supported
+	virtual bool addPidFilter(int pid) = 0;
+	virtual void removePidFilter(int pid) = 0;
+	virtual void startDescrambling(const QByteArray &pmtSectionData) = 0;
+	virtual void stopDescrambling(int serviceId) = 0;
+	virtual void release() = 0;
 
-public slots:
-	void getDeviceId(QString &result) const;
-	void getFrontendName(QString &result) const;
-	void getTransmissionTypes(TransmissionTypes &result) const;
-	void getCapabilities(Capabilities &result) const;
-	void setDataChannel(DvbAbstractDataChannel *dataChannel);
-	void setDeviceEnabled(bool enabled);
-	void acquire(bool &ok);
-	void setTone(SecTone tone, bool &ok);
-	void setVoltage(SecVoltage voltage, bool &ok);
-	void sendMessage(const char *message, int length, bool &ok);
-	void sendBurst(SecBurst burst, bool &ok);
-	void tune(const DvbTransponder &transponder, bool &ok); // discards obsolete data
-	void isTuned(bool &result) const;
-	void getSignal(int &result) const; // 0 - 100 [%] or -1 = not supported
-	void getSnr(int &result) const; // 0 - 100 [%] or -1 = not supported
-	void addPidFilter(int pid, bool &ok);
-	void removePidFilter(int pid);
-	void startDescrambling(const DvbPmtSection &pmtSection);
-	void stopDescrambling(int serviceId);
-	void release();
+protected:
+	DvbAbstractBackendDeviceV1() { }
+	~DvbAbstractBackendDeviceV1() { }
 };
+
+/*
 
 class DvbXXXDeviceManager : public QObject
 {
@@ -128,8 +129,8 @@ public slots:
 
 signals:
 	void requestBuiltinDeviceManager(QObject *&builtinDeviceManager);
-	void deviceAdded(QObject *device);
-	void deviceRemoved(QObject *device);
+	void deviceAdded(DvbAbstractBackendDeviceV1 *device);
+	void deviceRemoved(DvbAbstractBackendDeviceV1 *device);
 };
 
 */
