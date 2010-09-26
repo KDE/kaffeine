@@ -555,9 +555,10 @@ QTime DvbEitFilter::bcdToTime(int bcd)
 		     ((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f));
 }
 
-void DvbEitFilter::processSection(const QByteArray &data)
+void DvbEitFilter::processSection(const char *data, int size, int crc)
 {
-	DvbEitSection eitSection(data);
+	Q_UNUSED(crc)
+	DvbEitSection eitSection(QByteArray::fromRawData(data, size));
 
 	if (!eitSection.isValid() ||
 	    (eitSection.tableId() < 0x4e) || (eitSection.tableId() > 0x6f)) {

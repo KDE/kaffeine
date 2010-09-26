@@ -22,8 +22,8 @@
 
 #include <QBitArray>
 #include <KDebug>
+#include "dvbdevice.h"
 #include "dvbsi.h"
-#include "dvbsifilter.h"
 
 class DvbPatEntry
 {
@@ -69,7 +69,7 @@ public:
 
 private:
 	bool checkMultipleSection(const DvbStandardSection &section);
-	void processSection(const QByteArray &data);
+	void processSection(const char *data, int size, int crc);
 	void timerEvent(QTimerEvent *);
 
 	DvbScan *scan;
@@ -84,13 +84,11 @@ bool DvbScanFilter::startFilter(int pid_, DvbScan::FilterType type_)
 {
 	Q_ASSERT(pid == -1);
 
-	resetFilter();
-
 	pid = pid_;
 	type = type_;
 	multipleSections.clear();
 
-	if (!scan->device->addPidFilter(pid, this)) {
+	if (!scan->device->addSectionFilter(pid, this)) {
 		pid = -1;
 		return false;
 	}
@@ -109,7 +107,7 @@ void DvbScanFilter::stopFilter()
 {
 	if (pid != -1) {
 		killTimer(timerId);
-		scan->device->removePidFilter(pid, this);
+		scan->device->removeSectionFilter(pid, this);
 
 		pid = -1;
 	}
@@ -144,11 +142,13 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	return true;
 }
 
-void DvbScanFilter::processSection(const QByteArray &data)
+void DvbScanFilter::processSection(const char *data, int size, int crc)
 {
+	Q_UNUSED(crc)
+
 	switch (type) {
 	case DvbScan::PatFilter: {
-		DvbPatSection patSection(data);
+		DvbPatSection patSection(QByteArray::fromRawData(data, size));
 
 		if (!patSection.isValid() || (patSection.tableId() != 0x0)) {
 			return;
@@ -165,7 +165,7 @@ void DvbScanFilter::processSection(const QByteArray &data)
 	    }
 
 	case DvbScan::PmtFilter: {
-		DvbPmtSection pmtSection(data);
+		DvbPmtSection pmtSection(QByteArray::fromRawData(data, size));
 
 		if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2)) {
 			return;
@@ -182,7 +182,7 @@ void DvbScanFilter::processSection(const QByteArray &data)
 	    }
 
 	case DvbScan::SdtFilter: {
-		DvbSdtSection sdtSection(data);
+		DvbSdtSection sdtSection(QByteArray::fromRawData(data, size));
 
 		if (!sdtSection.isValid() || (sdtSection.tableId() != 0x42)) {
 			// there are also other tables in the SDT
@@ -200,7 +200,7 @@ void DvbScanFilter::processSection(const QByteArray &data)
 	    }
 
 	case DvbScan::VctFilter: {
-		AtscVctSection vctSection(data);
+		AtscVctSection vctSection(QByteArray::fromRawData(data, size));
 
 		if (!vctSection.isValid() ||
 		    ((vctSection.tableId() != 0xc8) && (vctSection.tableId() != 0xc9))) {
@@ -219,7 +219,7 @@ void DvbScanFilter::processSection(const QByteArray &data)
 	    }
 
 	case DvbScan::NitFilter: {
-		DvbNitSection nitSection(data);
+		DvbNitSection nitSection(QByteArray::fromRawData(data, size));
 
 		if (!nitSection.isValid() || (nitSection.tableId() != 0x40)) {
 			// we are only interested in the current network

@@ -24,7 +24,7 @@
 #include <QSet>
 #include <KDialog>
 #include "dvbrecording.h"
-#include "dvbsifilter.h"
+#include "dvbsi.h"
 
 class QLabel;
 class QListView;
@@ -118,7 +118,7 @@ public:
 private:
 	static QTime bcdToTime(int bcd);
 
-	void processSection(const QByteArray &data);
+	void processSection(const char *data, int size, int crc);
 
 	DvbManager *manager;
 	DvbEpgModel *model;

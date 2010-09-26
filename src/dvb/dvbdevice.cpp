@@ -40,34 +40,163 @@ public:
 	int activeFilters;
 };
 
-class DvbDummyFilter : public DvbPidFilter
+class DvbSectionFilterInternal : public DvbPidFilter
 {
 public:
-	DvbDummyFilter() { }
-	~DvbDummyFilter() { }
+	DvbSectionFilterInternal() : activeSectionFilters(0), continuityCounter(0),
+		bufferValid(false) { }
+	~DvbSectionFilterInternal() { }
 
-	void processData(const char [188]) { }
+	QList<DvbSectionFilter *> sectionFilters;
+	int activeSectionFilters;
+
+private:
+	void processData(const char [188]);
+	void processSections(bool force);
+
+	QByteArray buffer;
+	int continuityCounter;
+	bool bufferValid;
 };
 
-class DvbDataDumper : public DvbPidFilter
+// FIXME some debug messages may be printed too often
+
+void DvbSectionFilterInternal::processData(const char data[188])
+{
+	if ((data[3] & 0x10) == 0) {
+		// no payload
+		kDebug() << "no payload";
+		return;
+	}
+
+	unsigned char continuity = (data[3] & 0x0f);
+
+	if (bufferValid) {
+		if (continuity == continuityCounter) {
+			kDebug() << "duplicate packets";
+			return;
+		}
+
+		if (continuity != ((continuityCounter + 1) & 0x0f)) {
+			kDebug() << "discontinuity";
+			bufferValid = false;
+		}
+	}
+
+	continuityCounter = continuity;
+
+	bool sectionStart = ((data[1] & 0x40) != 0);
+	const char *payload;
+	int payloadLength;
+
+	if ((data[3] & 0x20) == 0) {
+		// adaptation field not present
+		payload = (data + 4);
+		payloadLength = (188 - 4);
+	} else {
+		// adaptation field present
+		unsigned char length = data[4];
+
+		if (length > 182) {
+			kDebug() << "no payload or corrupt";
+			return;
+		}
+
+		payload = (data + 5 + length);
+		payloadLength = (188 - 5 - length);
+	}
+
+	// be careful that playloadLength is > 0 at this point
+
+	if (sectionStart) {
+		unsigned char pointer = payload[0];
+
+		if (pointer >= payloadLength) {
+			kDebug() << "invalid pointer";
+			pointer = (payloadLength - 1);
+		}
+
+		if (bufferValid) {
+			buffer.append(payload + 1, pointer);
+			processSections(true);
+		} else {
+			bufferValid = true;
+		}
+
+		payload += (pointer + 1);
+		payloadLength -= (pointer + 1);
+	}
+
+	buffer.append(payload, payloadLength);
+	processSections(false);
+}
+
+void DvbSectionFilterInternal::processSections(bool force)
+{
+	const char *data = buffer.constBegin();
+	const char *end = buffer.constEnd();
+
+	while (true) {
+		if (data >= end) {
+			break;
+		}
+
+		if (static_cast<unsigned char>(data[0]) == 0xff) {
+			// table id == 0xff means padding
+			data = end;
+			break;
+		}
+
+		if ((end - data) < 3) {
+			if (force) {
+				kDebug() << "stray data";
+				data = end;
+			}
+
+			break;
+		}
+
+		const char *sectionEnd = ((((static_cast<unsigned char>(data[1]) & 0x0f) << 8) |
+			static_cast<unsigned char>(data[2])) + 3 + data);
+
+		if (force && (sectionEnd > end)) {
+			kDebug() << "short section";
+			sectionEnd = end;
+		}
+
+		if (sectionEnd <= end) {
+			int size = (sectionEnd - data);
+
+			for (int i = 0; i < sectionFilters.size(); ++i) {
+				sectionFilters.at(i)->processSection(data, size, 0); // FIXME
+			}
+
+			data = sectionEnd;
+			continue;
+		}
+
+		break;
+	}
+
+	buffer.remove(0, end - data);
+}
+
+class DvbDataDumper : public QFile, public DvbPidFilter
 {
 public:
 	DvbDataDumper();
 	~DvbDataDumper();
 
 	void processData(const char [188]);
-
-private:
-	QFile file;
 };
 
 DvbDataDumper::DvbDataDumper()
 {
-	file.setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" +
-		QString::number(qrand(), 16) + ".bin");
+	setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" + QString::number(qrand(), 16) +
+		".bin");
 
-	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kWarning() << "couldn't open" << file.fileName();
+	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+		kWarning() << "cannot open" << fileName();
 	}
 }
 
@@ -77,18 +206,17 @@ DvbDataDumper::~DvbDataDumper()
 
 void DvbDataDumper::processData(const char data[188])
 {
-	file.write(data, 188);
+	write(data, 188);
 }
 
-DvbDevice::DvbDevice(DvbAbstractBackendDeviceV1 *backend_, QObject *parent) : QObject(parent),
+DvbDevice::DvbDevice(DvbBackendDevice *backend_, QObject *parent) : QObject(parent),
 	backend(backend_), deviceState(DeviceReleased), dataDumper(NULL), cleanUpFilters(false),
 	isAuto(false), unusedBuffersHead(NULL), usedBuffersHead(NULL), usedBuffersTail(NULL)
 {
-	backend->setDataChannel(this);
+	backend->setFrontendDevice(this);
 	backend->setDeviceEnabled(true); // FIXME
 
 	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
-	dummyFilter = new DvbDummyFilter;
 }
 
 DvbDevice::~DvbDevice()
@@ -106,9 +234,6 @@ DvbDevice::~DvbDevice()
 		delete buffer;
 		buffer = nextBuffer;
 	}
-
-	delete dataDumper;
-	delete dummyFilter;
 }
 
 DvbDevice::TransmissionTypes DvbDevice::getTransmissionTypes() const
@@ -328,7 +453,7 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	if (it == filters.end()) {
 		it = filters.insert(pid, DvbFilterInternal());
 
-		if (dataDumper != 0) {
+		if (dataDumper != NULL) {
 			it->filters.append(dataDumper);
 		}
 	}
@@ -349,6 +474,29 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	return true;
 }
 
+bool DvbDevice::addSectionFilter(int pid, DvbSectionFilter *filter)
+{
+	QMap<int, DvbSectionFilterInternal>::iterator it = sectionFilters.find(pid);
+
+	if (it == sectionFilters.end()) {
+		it = sectionFilters.insert(pid, DvbSectionFilterInternal());
+
+		if (!addPidFilter(pid, &(*it))) {
+			sectionFilters.remove(pid);
+			return false;
+		}
+	}
+
+	if (it->sectionFilters.contains(filter)) {
+		kWarning() << "using the same filter for the same pid more than once";
+		return true;
+	}
+
+	it->sectionFilters.append(filter);
+	++it->activeSectionFilters;
+	return true;
+}
+
 void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 {
 	QMap<int, DvbFilterInternal>::iterator it = filters.find(pid);
@@ -365,11 +513,37 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 		return;
 	}
 
-	it->filters.replace(index, dummyFilter);
+	it->filters.replace(index, &dummyPidFilter);
 	--it->activeFilters;
 
 	if (it->activeFilters == 0) {
 		backend->removePidFilter(pid);
+	}
+
+	cleanUpFilters = true;
+}
+
+void DvbDevice::removeSectionFilter(int pid, DvbSectionFilter *filter)
+{
+	QMap<int, DvbSectionFilterInternal>::iterator it = sectionFilters.find(pid);
+	int index;
+
+	if (it != sectionFilters.end()) {
+		index = it->sectionFilters.indexOf(filter);
+	} else {
+		index = -1;
+	}
+
+	if (index < 0) {
+		kWarning() << "trying to remove a nonexistent filter";
+		return;
+	}
+
+	it->sectionFilters.replace(index, &dummySectionFilter);
+	--it->activeSectionFilters;
+
+	if (it->activeSectionFilters == 0) {
+		removePidFilter(pid, &(*it));
 	}
 
 	cleanUpFilters = true;
@@ -630,26 +804,24 @@ void DvbDevice::stop()
 	isAuto = false;
 	frontendTimer.stop();
 
-	QMap<int, DvbFilterInternal>::iterator end = filters.end();
-
-	for (QMap<int, DvbFilterInternal>::iterator it = filters.begin(); it != end; ++it) {
-		QList<DvbPidFilter *> &internalFilters = it->filters;
-
-		for (int i = 0; i < internalFilters.size(); ++i) {
-			DvbPidFilter *filter = internalFilters.at(i);
-
-			if ((filter != dummyFilter) && (filter != dataDumper)) {
+	for (QMap<int, DvbFilterInternal>::ConstIterator it = filters.constBegin();
+	     it != filters.constEnd(); ++it) {
+		foreach (DvbPidFilter *filter, it->filters) {
+			if ((filter != &dummyPidFilter) && (filter != dataDumper)) {
 				int pid = it.key();
 				kWarning() << "removing pending filter" << pid << filter;
+				removePidFilter(pid, filter);
+			}
+		}
+	}
 
-				internalFilters.replace(i, dummyFilter);
-				--it->activeFilters;
-
-				if (it->activeFilters == 0) {
-					backend->removePidFilter(pid);
-				}
-
-				cleanUpFilters = true;
+	for (QMap<int, DvbSectionFilterInternal>::ConstIterator it = sectionFilters.constBegin();
+	     it != sectionFilters.constEnd(); ++it) {
+		foreach (DvbSectionFilter *sectionFilter, it->sectionFilters) {
+			if (sectionFilter != &dummySectionFilter) {
+				int pid = it.key();
+				kWarning() << "removing pending filter" << pid << sectionFilter;
+				removeSectionFilter(pid, sectionFilter);
 			}
 		}
 	}
@@ -707,15 +879,32 @@ void DvbDevice::customEvent(QEvent *)
 {
 	if (cleanUpFilters) {
 		cleanUpFilters = false;
-		QMap<int, DvbFilterInternal>::iterator it = filters.begin();
-		QMap<int, DvbFilterInternal>::iterator end = filters.end();
 
-		while (it != end) {
-			if (it->activeFilters == 0) {
-				it = filters.erase(it);
-			} else {
-				it->filters.removeAll(dummyFilter);
-				++it;
+		{
+			QMap<int, DvbFilterInternal>::iterator it = filters.begin();
+			QMap<int, DvbFilterInternal>::iterator end = filters.end();
+
+			while (it != end) {
+				if (it->activeFilters == 0) {
+					it = filters.erase(it);
+				} else {
+					it->filters.removeAll(&dummyPidFilter);
+					++it;
+				}
+			}
+		}
+
+		{
+			QMap<int, DvbSectionFilterInternal>::iterator it = sectionFilters.begin();
+			QMap<int, DvbSectionFilterInternal>::iterator end = sectionFilters.end();
+
+			while (it != end) {
+				if (it->activeSectionFilters == 0) {
+					it = sectionFilters.erase(it);
+				} else {
+					it->sectionFilters.removeAll(&dummySectionFilter);
+					++it;
+				}
 			}
 		}
 	}

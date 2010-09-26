@@ -30,6 +30,7 @@
 #include <config-kaffeine.h>
 #include "dvbchannel.h"
 #include "dvbconfig.h"
+#include "dvbdevice.h"
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
@@ -416,7 +417,7 @@ void DvbManager::requestBuiltinDeviceManager(QObject *&builtinDeviceManager)
 	builtinDeviceManager = new DvbLinuxDeviceManager(this);
 }
 
-void DvbManager::deviceAdded(DvbAbstractBackendDeviceV1 *backendDevice)
+void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
 {
 	DvbDevice *device = new DvbDevice(backendDevice, this);
 	QString deviceId = device->getDeviceId();
@@ -442,7 +443,7 @@ void DvbManager::deviceAdded(DvbAbstractBackendDeviceV1 *backendDevice)
 	}
 }
 
-void DvbManager::deviceRemoved(DvbAbstractBackendDeviceV1 *backendDevice)
+void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
@@ -483,20 +484,20 @@ void DvbManager::loadDeviceManager()
 		deviceManager->setParent(this);
 		connect(deviceManager, SIGNAL(requestBuiltinDeviceManager(QObject*&)),
 			this, SLOT(requestBuiltinDeviceManager(QObject*&)));
-		connect(deviceManager, SIGNAL(deviceAdded(DvbAbstractBackendDeviceV1*)),
-			this, SLOT(deviceAdded(DvbAbstractBackendDeviceV1*)));
-		connect(deviceManager, SIGNAL(deviceRemoved(DvbAbstractBackendDeviceV1*)),
-			this, SLOT(deviceRemoved(DvbAbstractBackendDeviceV1*)));
+		connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
+			this, SLOT(deviceAdded(DvbBackendDevice*)));
+		connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
+			this, SLOT(deviceRemoved(DvbBackendDevice*)));
 		QMetaObject::invokeMethod(deviceManager, "doColdPlug");
 		return;
 	}
 
 	kDebug() << "using built-in dvb device manager";
 	DvbLinuxDeviceManager *deviceManager = new DvbLinuxDeviceManager(this);
-	connect(deviceManager, SIGNAL(deviceAdded(DvbAbstractBackendDeviceV1*)),
-		this, SLOT(deviceAdded(DvbAbstractBackendDeviceV1*)));
-	connect(deviceManager, SIGNAL(deviceRemoved(DvbAbstractBackendDeviceV1*)),
-		this, SLOT(deviceRemoved(DvbAbstractBackendDeviceV1*)));
+	connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
+		this, SLOT(deviceAdded(DvbBackendDevice*)));
+	connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
+		this, SLOT(deviceRemoved(DvbBackendDevice*)));
 	deviceManager->doColdPlug();
 }
 

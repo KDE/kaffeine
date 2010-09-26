@@ -27,7 +27,7 @@
 
 class DvbTransponder;
 
-class DvbLinuxDevice : public QThread, public DvbAbstractBackendDeviceV1
+class DvbLinuxDevice : public QThread, public DvbBackendDevice
 {
 public:
 	explicit DvbLinuxDevice(QObject *parent);
@@ -53,7 +53,7 @@ protected:
 	QString getFrontendName();
 	TransmissionTypes getTransmissionTypes();
 	Capabilities getCapabilities();
-	void setDataChannel(DvbAbstractDataChannel *dataChannel_);
+	void setFrontendDevice(DvbFrontendDevice *frontend_);
 	void setDeviceEnabled(bool enabled_);
 	bool acquire();
 	bool setTone(SecTone tone);
@@ -80,7 +80,7 @@ private:
 	QString frontendName;
 	TransmissionTypes transmissionTypes;
 	Capabilities capabilities;
-	DvbAbstractDataChannel *dataChannel;
+	DvbFrontendDevice *frontend;
 	bool enabled;
 	int frontendFd;
 	QMap<int, int> dmxFds;
@@ -104,8 +104,8 @@ public slots:
 
 signals:
 	void requestBuiltinDeviceManager(QObject *&bultinDeviceManager);
-	void deviceAdded(DvbAbstractBackendDeviceV1 *device);
-	void deviceRemoved(DvbAbstractBackendDeviceV1 *device);
+	void deviceAdded(DvbBackendDevice *device);
+	void deviceRemoved(DvbBackendDevice *device);
 
 private slots:
 	void componentAdded(const QString &udi);

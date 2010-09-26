@@ -22,6 +22,7 @@
 #define DVBSI_H
 
 #include <QPair>
+#include "dvbbackenddevice.h"
 
 class DvbPmtSection;
 
@@ -247,6 +248,28 @@ private:
 
 	static const unsigned short Huffman2Offsets[128];
 	static const unsigned char Huffman2Tables[];
+};
+
+class DvbPmtFilter : public QObject, public DvbSectionFilter
+{
+	Q_OBJECT
+public:
+	DvbPmtFilter() : programNumber(-1), versionNumber(-1) { }
+	~DvbPmtFilter() { }
+
+	void setProgramNumber(int programNumber_)
+	{
+		programNumber = programNumber_;
+	}
+
+signals:
+	void pmtSectionChanged(const DvbPmtSection &section);
+
+private:
+	void processSection(const char *data, int size, int crc);
+
+	int programNumber;
+	int versionNumber;
 };
 
 class DvbSectionGenerator

@@ -36,7 +36,7 @@
 
 // krazy:excludeall=syscalls
 
-DvbLinuxDevice::DvbLinuxDevice(QObject *parent) : QThread(parent), ready(false), dataChannel(NULL),
+DvbLinuxDevice::DvbLinuxDevice(QObject *parent) : QThread(parent), ready(false), frontend(NULL),
 	enabled(false), frontendFd(-1), dvrFd(-1), dvrBuffer(NULL, 0)
 {
 	dvrPipe[0] = -1;
@@ -173,9 +173,9 @@ DvbLinuxDevice::Capabilities DvbLinuxDevice::getCapabilities()
 	return capabilities;
 }
 
-void DvbLinuxDevice::setDataChannel(DvbAbstractDataChannel *dataChannel_)
+void DvbLinuxDevice::setFrontendDevice(DvbFrontendDevice *frontend_)
 {
-	dataChannel = dataChannel_;
+	frontend = frontend_;
 }
 
 void DvbLinuxDevice::setDeviceEnabled(bool enabled_)
@@ -621,7 +621,7 @@ void DvbLinuxDevice::release()
 
 	if (dvrBuffer.data != NULL) {
 		dvrBuffer.dataSize = 0;
-		dataChannel->writeBuffer(dvrBuffer);
+		frontend->writeBuffer(dvrBuffer);
 		dvrBuffer.data = NULL;
 	}
 
@@ -669,7 +669,7 @@ void DvbLinuxDevice::startDvr()
 	}
 
 	if (dvrBuffer.data == NULL) {
-		dvrBuffer = dataChannel->getBuffer();
+		dvrBuffer = frontend->getBuffer();
 	}
 
 	while (true) {
@@ -783,8 +783,8 @@ void DvbLinuxDevice::run()
 
 			if (dataSize > 0) {
 				dvrBuffer.dataSize = dataSize;
-				dataChannel->writeBuffer(dvrBuffer);
-				dvrBuffer = dataChannel->getBuffer();
+				frontend->writeBuffer(dvrBuffer);
+				dvrBuffer = frontend->getBuffer();
 			}
 
 			if (dataSize != bufferSize) {

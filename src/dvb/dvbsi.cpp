@@ -1004,6 +1004,21 @@ const unsigned char AtscHuffmanString::Huffman2Tables[] = {
 	0x02, 0x03, 0x04, 0x05, 0x9b, 0x9b, 0x9b, 0x9b,
 	0x9b, 0x9b, 0x9b, 0x9b, 0x9b, 0x9b };
 
+void DvbPmtFilter::processSection(const char *data, int size, int crc)
+{
+	Q_UNUSED(crc)
+	DvbPmtSection pmtSection(QByteArray::fromRawData(data, size));
+
+	if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2) ||
+	    (pmtSection.programNumber() != programNumber) ||
+	    (pmtSection.versionNumber() == versionNumber)) {
+		return;
+	}
+
+	versionNumber = pmtSection.versionNumber();
+	emit pmtSectionChanged(pmtSection);
+}
+
 void DvbSectionGenerator::initPat(int transportStreamId, int programNumber, int pmtPid)
 {
 	Q_ASSERT((pmtPid >= 0) && (pmtPid <= 0x1fff));

@@ -37,6 +37,7 @@
 #include <KStandardDirs>
 #include "../datetimeedit.h"
 #include "dvbchannel.h"
+#include "dvbdevice.h"
 #include "dvbmanager.h"
 
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
@@ -485,7 +486,7 @@ void DvbRecording::start()
 
 		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 		pmtFilter.setProgramNumber(channel->getServiceId());
-		device->addPidFilter(channel->pmtPid, &pmtFilter);
+		device->addSectionFilter(channel->pmtPid, &pmtFilter);
 		pmtSection = DvbPmtSection(channel->pmtSection);
 		patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
 			channel->pmtPid);
@@ -511,7 +512,7 @@ void DvbRecording::stop()
 			device->removePidFilter(pid, this);
 		}
 
-		device->removePidFilter(channel->pmtPid, &pmtFilter);
+		device->removeSectionFilter(channel->pmtPid, &pmtFilter);
 		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 		manager->releaseDevice(device, DvbManager::Prioritized);
 		device = NULL;
@@ -522,7 +523,6 @@ void DvbRecording::stop()
 	patGenerator.reset();
 	pmtGenerator.reset();
 	pmtSection = DvbPmtSection(QByteArray());
-	pmtFilter.reset();
 	pids.clear();
 	buffers.clear();
 	file.close();
@@ -536,7 +536,7 @@ void DvbRecording::deviceStateChanged()
 			device->removePidFilter(pid, this);
 		}
 
-		device->removePidFilter(channel->pmtPid, &pmtFilter);
+		device->removeSectionFilter(channel->pmtPid, &pmtFilter);
 		disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 
 		if (channel->isScrambled && pmtSection.isValid()) {
@@ -548,7 +548,7 @@ void DvbRecording::deviceStateChanged()
 
 		if (device != NULL) {
 			connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
-			device->addPidFilter(channel->pmtPid, &pmtFilter);
+			device->addSectionFilter(channel->pmtPid, &pmtFilter);
 
 			foreach (int pid, pids) {
 				device->addPidFilter(pid, this);

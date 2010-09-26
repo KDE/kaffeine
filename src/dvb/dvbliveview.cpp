@@ -28,6 +28,7 @@
 #include <KMessageBox>
 #include "../mediawidget.h"
 #include "dvbchannel.h"
+#include "dvbdevice.h"
 #include "dvbmanager.h"
 
 void DvbOsd::init(OsdLevel level_, const QString &channelName_,
@@ -458,8 +459,8 @@ void DvbLiveView::startDevice()
 		device->addPidFilter(pid, internal);
 	}
 
-	device->addPidFilter(0x12, &internal->eitFilter);
-	device->addPidFilter(channel->pmtPid, &internal->pmtFilter);
+	device->addSectionFilter(0x12, &internal->eitFilter);
+	device->addSectionFilter(channel->pmtPid, &internal->pmtFilter);
 	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 
 	if (channel->isScrambled && internal->pmtSection.isValid()) {
@@ -477,12 +478,9 @@ void DvbLiveView::stopDevice()
 		device->removePidFilter(pid, internal);
 	}
 
-	device->removePidFilter(0x12, &internal->eitFilter);
-	device->removePidFilter(channel->pmtPid, &internal->pmtFilter);
+	device->removeSectionFilter(0x12, &internal->eitFilter);
+	device->removeSectionFilter(channel->pmtPid, &internal->pmtFilter);
 	disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
-
-	internal->eitFilter.resetFilter();
-	internal->pmtFilter.resetFilter();
 }
 
 void DvbLiveView::updatePids(bool forcePatPmtUpdate)

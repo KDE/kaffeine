@@ -29,20 +29,31 @@
 #include "dvbtransponder.h"
 
 class DvbConfigBase;
+class DvbDataDumper;
 class DvbDeviceDataBuffer;
 class DvbFilterInternal;
 class DvbPmtSection;
+class DvbSectionFilterInternal;
 
-class DvbPidFilter
+class DvbDummyPidFilter : public DvbPidFilter
 {
 public:
-	DvbPidFilter() { }
-	virtual ~DvbPidFilter() { }
+	DvbDummyPidFilter() { }
+	~DvbDummyPidFilter() { }
 
-	virtual void processData(const char data[188]) = 0;
+	void processData(const char [188]) { }
 };
 
-class DvbDevice : public QObject, private DvbAbstractDataChannel, public DvbDeviceBase
+class DvbDummySectionFilter : public DvbSectionFilter
+{
+public:
+	DvbDummySectionFilter() { }
+	~DvbDummySectionFilter() { }
+
+	void processSection(const char *, int, int) { }
+};
+
+class DvbDevice : public QObject, public DvbFrontendDevice
 {
 	Q_OBJECT
 public:
@@ -56,10 +67,10 @@ public:
 		// FIXME introduce a TuningFailed state
 	};
 
-	DvbDevice(DvbAbstractBackendDeviceV1 *backend_, QObject *parent);
+	DvbDevice(DvbBackendDevice *backend_, QObject *parent);
 	~DvbDevice();
 
-	const DvbAbstractBackendDeviceV1 *getBackendDevice() const
+	const DvbBackendDevice *getBackendDevice() const
 	{
 		return backend;
 	}
@@ -76,7 +87,9 @@ public:
 	void tune(const DvbTransponder &transponder);
 	void autoTune(const DvbTransponder &transponder);
 	bool addPidFilter(int pid, DvbPidFilter *filter);
+	bool addSectionFilter(int pid, DvbSectionFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
+	void removeSectionFilter(int pid, DvbSectionFilter *filter);
 	void startDescrambling(const DvbPmtSection &pmtSection, QObject *user);
 	void stopDescrambling(int serviceId, QObject *user);
 	bool isTuned() const;
@@ -104,19 +117,22 @@ private:
 	void discardBuffers();
 	void stop();
 
+	void processData(const char data[188]);
 	DvbDataBuffer getBuffer();
 	void writeBuffer(const DvbDataBuffer &dataBuffer);
 	void customEvent(QEvent *);
 
-	DvbAbstractBackendDeviceV1 *backend;
+	DvbBackendDevice *backend;
 	DeviceState deviceState;
 	QExplicitlySharedDataPointer<const DvbConfigBase> config;
 
 	int frontendTimeout;
 	QTimer frontendTimer;
 	QMap<int, DvbFilterInternal> filters;
-	DvbPidFilter *dummyFilter;
-	DvbPidFilter *dataDumper;
+	QMap<int, DvbSectionFilterInternal> sectionFilters;
+	DvbDummyPidFilter dummyPidFilter;
+	DvbDummySectionFilter dummySectionFilter;
+	DvbDataDumper *dataDumper;
 	bool cleanUpFilters;
 	QMultiMap<int, QObject *> descramblingServices;
 

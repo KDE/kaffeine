@@ -25,29 +25,6 @@
 
 class DvbTransponder;
 
-class DvbDataBuffer
-{
-public:
-	DvbDataBuffer(char *data_, int bufferSize_) : data(data_), bufferSize(bufferSize_) { }
-	~DvbDataBuffer() { }
-
-	char *data;
-	int dataSize; // must be a multiple of 188
-	int bufferSize; // must be a multiple of 188
-};
-
-class DvbAbstractDataChannel
-{
-public:
-	// these functions are thread-safe
-	virtual DvbDataBuffer getBuffer() = 0;
-	virtual void writeBuffer(const DvbDataBuffer &dataBuffer) = 0;
-
-protected:
-	DvbAbstractDataChannel() { }
-	~DvbAbstractDataChannel() { }
-};
-
 class DvbDeviceBase
 {
 public:
@@ -84,16 +61,69 @@ public:
 		BurstMiniA = 0,
 		BurstMiniB = 1
 	};
+
+protected:
+	DvbDeviceBase() { }
+	virtual ~DvbDeviceBase() { }
 };
 
-class DvbAbstractBackendDeviceV1 : public DvbDeviceBase
+class DvbDataBuffer
+{
+public:
+	DvbDataBuffer(char *data_, int bufferSize_) : data(data_), bufferSize(bufferSize_) { }
+	~DvbDataBuffer() { }
+
+	char *data;
+	int dataSize; // must be a multiple of 188
+	int bufferSize; // must be a multiple of 188
+};
+
+class DvbPidFilter
+{
+public:
+	virtual void processData(const char data[188]) = 0;
+
+protected:
+	DvbPidFilter() { }
+	virtual ~DvbPidFilter() { }
+};
+
+class DvbSectionFilter
+{
+public:
+	// crc == 0 means valid
+	virtual void processSection(const char *data, int size, int crc) = 0;
+
+protected:
+	DvbSectionFilter() { }
+	virtual ~DvbSectionFilter() { }
+};
+
+class DvbFrontendDevice : public DvbDeviceBase
+{
+public:
+	virtual bool addPidFilter(int pid, DvbPidFilter *filter) = 0;
+	virtual bool addSectionFilter(int pid, DvbSectionFilter *filter) = 0;
+	virtual void removePidFilter(int pid, DvbPidFilter *filter) = 0;
+	virtual void removeSectionFilter(int pid, DvbSectionFilter *filter) = 0;
+
+	// these two functions are thread-safe
+	virtual DvbDataBuffer getBuffer() = 0;
+	virtual void writeBuffer(const DvbDataBuffer &dataBuffer) = 0;
+
+protected:
+	DvbFrontendDevice() { }
+	virtual ~DvbFrontendDevice() { }
+};
+
+class DvbBackendDevice : public DvbDeviceBase
 {
 public:
 	virtual QString getDeviceId() = 0;
 	virtual QString getFrontendName() = 0;
 	virtual TransmissionTypes getTransmissionTypes() = 0;
 	virtual Capabilities getCapabilities() = 0;
-	virtual void setDataChannel(DvbAbstractDataChannel *dataChannel) = 0;
+	virtual void setFrontendDevice(DvbFrontendDevice *frontend) = 0;
 	virtual void setDeviceEnabled(bool enabled) = 0;
 	virtual bool acquire() = 0;
 	virtual bool setTone(SecTone tone) = 0;
@@ -111,8 +141,8 @@ public:
 	virtual void release() = 0;
 
 protected:
-	DvbAbstractBackendDeviceV1() { }
-	~DvbAbstractBackendDeviceV1() { }
+	DvbBackendDevice() { }
+	virtual ~DvbBackendDevice() { }
 };
 
 /*
@@ -129,8 +159,8 @@ public slots:
 
 signals:
 	void requestBuiltinDeviceManager(QObject *&builtinDeviceManager);
-	void deviceAdded(DvbAbstractBackendDeviceV1 *device);
-	void deviceRemoved(DvbAbstractBackendDeviceV1 *device);
+	void deviceAdded(DvbBackendDevice *device);
+	void deviceRemoved(DvbBackendDevice *device);
 };
 
 */

@@ -29,7 +29,7 @@
 #include "dvbtransponder.h"
 
 class QTreeView;
-class DvbAbstractBackendDeviceV1;
+class DvbBackendDevice;
 class DvbChannelModel;
 class DvbConfig;
 class DvbDevice;
@@ -141,8 +141,8 @@ public:
 
 private slots:
 	void requestBuiltinDeviceManager(QObject *&builtinDeviceManager);
-	void deviceAdded(DvbAbstractBackendDeviceV1 *backendDevice);
-	void deviceRemoved(DvbAbstractBackendDeviceV1 *backendDevice);
+	void deviceAdded(DvbBackendDevice *backendDevice);
+	void deviceRemoved(DvbBackendDevice *backendDevice);
 
 private:
 	void loadDeviceManager();

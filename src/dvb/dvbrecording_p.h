@@ -22,11 +22,11 @@
 #define DVBRECORDING_P_H
 
 #include <QFile>
+#include <QTimer>
 #include <KDialog>
 #include "../sqltablemodel.h"
 #include "dvbrecording.h"
 #include "dvbsi.h"
-#include "dvbsifilter.h"
 
 class QCheckBox;
 class QTreeView;
@@ -35,6 +35,7 @@ class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
 class DvbChannel;
+class DvbDevice;
 
 Q_DECLARE_METATYPE(const DvbRecordingEntry *)
 
