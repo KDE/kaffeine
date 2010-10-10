@@ -21,6 +21,7 @@
 #ifndef DVBTRANSPONDER_H
 #define DVBTRANSPONDER_H
 
+#include <string.h>
 #include <QtGlobal>
 
 class DvbTransponder;
@@ -213,10 +214,10 @@ public:
 		data.transmissionType = DvbTransponderBase::Invalid;
 	}
 
-	template<class T> explicit DvbTransponder(const T &transponder)
+	explicit DvbTransponder(DvbTransponderBase::TransmissionType transmissionType_)
 	{
-		*reinterpret_cast<T *>(&data) = transponder;
-		data.transmissionType = transmissionTypeFor(static_cast<T *>(NULL));
+		memset(&data, 0, sizeof(data));
+		data.transmissionType = transmissionType_;
 	}
 
 	~DvbTransponder() { }

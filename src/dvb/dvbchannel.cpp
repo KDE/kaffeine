@@ -50,36 +50,26 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 	stream >> source;
 
 	switch (type) {
-	case DvbTransponderBase::DvbC: {
-		DvbCTransponder dvbCTransponder;
-		dvbCTransponder.readTransponder(stream);
-		transponder = DvbTransponder(dvbCTransponder);
+	case DvbTransponderBase::DvbC:
+		transponder = DvbTransponder(DvbTransponderBase::DvbC);
+		transponder.as<DvbCTransponder>()->readTransponder(stream);
 		break;
-	    }
-	case DvbTransponderBase::DvbS: {
-		DvbSTransponder dvbSTransponder;
-		dvbSTransponder.readTransponder(stream);
-		transponder = DvbTransponder(dvbSTransponder);
+	case DvbTransponderBase::DvbS:
+		transponder = DvbTransponder(DvbTransponderBase::DvbS);
+		transponder.as<DvbSTransponder>()->readTransponder(stream);
 		break;
-	    }
-	case DvbTransponderBase::DvbS2: {
-		DvbS2Transponder dvbS2Transponder;
-		dvbS2Transponder.readTransponder(stream);
-		transponder = DvbTransponder(dvbS2Transponder);
+	case DvbTransponderBase::DvbS2:
+		transponder = DvbTransponder(DvbTransponderBase::DvbS2);
+		transponder.as<DvbS2Transponder>()->readTransponder(stream);
 		break;
-	    }
-	case DvbTransponderBase::DvbT: {
-		DvbTTransponder dvbTTransponder;
-		dvbTTransponder.readTransponder(stream);
-		transponder = DvbTransponder(dvbTTransponder);
+	case DvbTransponderBase::DvbT:
+		transponder = DvbTransponder(DvbTransponderBase::DvbT);
+		transponder.as<DvbTTransponder>()->readTransponder(stream);
 		break;
-	    }
-	case DvbTransponderBase::Atsc: {
-		AtscTransponder atscTransponder;
-		atscTransponder.readTransponder(stream);
-		transponder = DvbTransponder(atscTransponder);
+	case DvbTransponderBase::Atsc:
+		transponder = DvbTransponder(DvbTransponderBase::Atsc);
+		transponder.as<AtscTransponder>()->readTransponder(stream);
 		break;
-	    }
 	default:
 		stream.setStatus(QDataStream::ReadCorruptData);
 		return;

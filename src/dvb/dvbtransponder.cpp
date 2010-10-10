@@ -548,44 +548,44 @@ DvbTransponder DvbTransponder::fromString(const QString &string)
 	if (string.size() >= 2) {
 		switch (string.at(0).unicode()) {
 		case 'C': {
-			DvbCTransponder dvbCTransponder;
+			DvbTransponder transponder(DvbTransponderBase::DvbC);
 
-			if (dvbCTransponder.fromString(string)) {
-				return DvbTransponder(dvbCTransponder);
+			if (transponder.as<DvbCTransponder>()->fromString(string)) {
+				return transponder;
 			}
 
 			break;
 		    }
 		case 'S':
 			if (string.at(1) != '2') {
-				DvbSTransponder dvbSTransponder;
+				DvbTransponder transponder(DvbTransponderBase::DvbS);
 
-				if (dvbSTransponder.fromString(string)) {
-					return DvbTransponder(dvbSTransponder);
+				if (transponder.as<DvbSTransponder>()->fromString(string)) {
+					return transponder;
 				}
 			} else {
-				DvbS2Transponder dvbS2Transponder;
+				DvbTransponder transponder(DvbTransponderBase::DvbS2);
 
-				if (dvbS2Transponder.fromString(string)) {
-					return DvbTransponder(dvbS2Transponder);
+				if (transponder.as<DvbS2Transponder>()->fromString(string)) {
+					return transponder;
 				}
 			}
 
 			break;
 		case 'T': {
-			DvbTTransponder dvbTTransponder;
+			DvbTransponder transponder(DvbTransponderBase::DvbT);
 
-			if (dvbTTransponder.fromString(string)) {
-				return DvbTransponder(dvbTTransponder);
+			if (transponder.as<DvbTTransponder>()->fromString(string)) {
+				return transponder;
 			}
 
 			break;
 		    }
 		case 'A': {
-			AtscTransponder atscTransponder;
+			DvbTransponder transponder(DvbTransponderBase::Atsc);
 
-			if (atscTransponder.fromString(string)) {
-				return DvbTransponder(atscTransponder);
+			if (transponder.as<AtscTransponder>()->fromString(string)) {
+				return transponder;
 			}
 
 			break;
