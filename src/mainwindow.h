@@ -56,6 +56,7 @@ private slots:
 	void openAudioCd(const QString &device = QString());
 	void openVideoCd(const QString &device = QString());
 	void openDvd(const QString &device = QString());
+	void playDvdFolder();
 	void playDvb();
 	void resizeToVideo(int factor);
 	void configureKeys();

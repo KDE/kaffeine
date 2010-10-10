@@ -234,6 +234,11 @@ MainWindow::MainWindow()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openDvd()));
 	menu->addAction(collection->addAction("file_play_dvd", action));
 
+	action = new KAction(KIcon("media-optical"), i18nc("@action:inmenu", "Play DVD Folder"),
+		collection);
+	connect(action, SIGNAL(triggered()), this, SLOT(playDvdFolder()));
+	menu->addAction(collection->addAction("file_play_dvd_folder", action));
+
 	menu->addSeparator();
 
 	action = KStandardAction::quit(this, SLOT(close()), collection);
@@ -574,6 +579,15 @@ void MainWindow::openDvd(const QString &device)
 {
 	activateTab(PlayerTabId);
 	mediaWidget->playDvd(device);
+}
+
+void MainWindow::playDvdFolder()
+{
+	QString folder = KFileDialog::getExistingDirectory(KUrl(), this);
+
+	if (!folder.isEmpty()) {
+		openDvd(folder);
+	}
 }
 
 void MainWindow::playDvb()
