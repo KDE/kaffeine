@@ -25,8 +25,6 @@
 #include "dvbbackenddevice.h"
 #include "dvbcam_linux.h"
 
-class DvbTransponder;
-
 class DvbLinuxDevice : public QThread, public DvbBackendDevice
 {
 public:

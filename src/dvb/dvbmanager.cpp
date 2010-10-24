@@ -22,7 +22,6 @@
 #include "dvbmanager_p.h"
 
 #include <QDir>
-#include <QLibrary>
 #include <QPluginLoader>
 #include <KDebug>
 #include <KLocale>
@@ -34,7 +33,6 @@
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
-#include "dvbsi.h"
 
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), channelView(NULL), dvbDumpEnabled(false)

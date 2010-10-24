@@ -24,7 +24,6 @@
 #include <QFile>
 #include "../osdwidget.h"
 #include "dvbepg.h"
-#include "dvbsi.h"
 
 class MediaWidget;
 

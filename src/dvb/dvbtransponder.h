@@ -21,8 +21,8 @@
 #ifndef DVBTRANSPONDER_H
 #define DVBTRANSPONDER_H
 
-#include <string.h>
 #include <QtGlobal>
+#include <string.h>
 
 class DvbTransponder;
 

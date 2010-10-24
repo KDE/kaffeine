@@ -781,7 +781,8 @@ void DvbRecordingDialog::removeRecording()
 		selectedRows.insert(modelIndex.row(), 0);
 	}
 
-	for (QMap<int, char>::ConstIterator it = selectedRows.constEnd(); it != selectedRows.constBegin();) {
+	for (QMap<int, char>::ConstIterator it = selectedRows.constEnd();
+	     it != selectedRows.constBegin();) {
 		--it;
 		proxyModel->removeRow(it.key());
 	}
