@@ -21,9 +21,10 @@
 #ifndef DVBTRANSPONDER_H
 #define DVBTRANSPONDER_H
 
-#include <QtGlobal>
 #include <string.h>
 
+class QDataStream;
+class QString;
 class DvbTransponder;
 
 class DvbTransponderBase

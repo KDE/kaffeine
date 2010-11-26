@@ -23,6 +23,7 @@
 
 #include <QDir>
 #include <QPluginLoader>
+#include <KConfigGroup>
 #include <KDebug>
 #include <KLocale>
 #include <KStandardDirs>
@@ -33,13 +34,14 @@
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
+#include "dvbsi.h"
 
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), channelView(NULL), dvbDumpEnabled(false)
 {
 	channelModel = new DvbSqlChannelModel(this);
 	recordingModel = new DvbRecordingModel(this, this);
-	epgModel = new DvbEpgModel(this);
+	epgModel = new DvbEpgModel(this, this);
 	liveView = new DvbLiveView(this);
 
 	readDeviceConfigs();

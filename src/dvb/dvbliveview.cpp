@@ -156,7 +156,6 @@ DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL)
 	osdWidget = mediaWidget->getOsdWidget();
 
 	internal = new DvbLiveViewInternal();
-	internal->eitFilter.setManager(manager);
 	internal->mediaWidget = mediaWidget;
 
 	connect(&internal->pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
@@ -217,7 +216,6 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 
 	mediaWidget->playDvb(channel->name);
 
-	internal->eitFilter.setSource(channel->source);
 	internal->pmtFilter.setProgramNumber(channel->getServiceId());
 	startDevice();
 
@@ -459,17 +457,20 @@ void DvbLiveView::startDevice()
 		device->addPidFilter(pid, internal);
 	}
 
-	device->addSectionFilter(0x12, &internal->eitFilter);
 	device->addSectionFilter(channel->pmtPid, &internal->pmtFilter);
 	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 
 	if (channel->isScrambled && internal->pmtSection.isValid()) {
 		device->startDescrambling(internal->pmtSection, this);
 	}
+
+	manager->getEpgModel()->startEventFilter(channel.constData());
 }
 
 void DvbLiveView::stopDevice()
 {
+	manager->getEpgModel()->stopEventFilter(channel.constData());
+
 	if (channel->isScrambled && internal->pmtSection.isValid()) {
 		device->stopDescrambling(internal->pmtSection.programNumber(), this);
 	}
@@ -478,7 +479,6 @@ void DvbLiveView::stopDevice()
 		device->removePidFilter(pid, internal);
 	}
 
-	device->removeSectionFilter(0x12, &internal->eitFilter);
 	device->removeSectionFilter(channel->pmtPid, &internal->pmtFilter);
 	disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 }
