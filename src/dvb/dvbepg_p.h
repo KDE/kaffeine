@@ -55,8 +55,8 @@ public:
 	explicit DvbEpgChannelModel(QObject *parent);
 	~DvbEpgChannelModel();
 
-	void insertChannel(const DvbChannel *channel);
-	void removeChannel(const DvbChannel *channel);
+	void insertChannelName(const QString &channelName);
+	void removeChannelName(const QString &channelName);
 
 private:
 	int columnCount(const QModelIndex &parent) const;
@@ -64,7 +64,7 @@ private:
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-	QList<const DvbChannel *> channels;
+	QList<QString> channelNames;
 };
 
 class DvbEpgProxyModel : public QAbstractTableModel

@@ -151,12 +151,11 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		if ((channel != NULL) &&
 		    (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc)) {
 			entries.append(entry);
+			epgChannelModel->insertChannelName(entry.channelName);
 
 			if (entry.recordingKey.isValid()) {
 				recordingKeyMapping.insert(entry.recordingKey, &entries.last());
 			}
-
-			epgChannelModel->insertChannel(channel);
 		}
 	}
 
@@ -235,6 +234,7 @@ void DvbEpgModel::startEventFilter(const DvbChannel *channel)
 	DvbEitFilter &eitFilter = dvbEitFilters.last();
 	eitFilter.source = channel->source;
 	eitFilter.transponder = channel->transponder;
+	eitFilter.useCount = 1;
 	eitFilter.device = manager->requestDevice(eitFilter.source, eitFilter.transponder,
 		DvbManager::Shared);
 
@@ -340,6 +340,7 @@ void DvbEpgModel::addEntry(const DvbEpgEntry &epgEntry)
 
 	if ((row >= entries.size()) || (entries.at(row) != epgEntry)) {
 		entries.insert(row, epgEntry);
+		epgChannelModel->insertChannelName(epgEntry.channelName);
 		emit entryAdded(&entries.at(row));
 	}
 }
@@ -417,24 +418,24 @@ DvbEpgChannelModel::~DvbEpgChannelModel()
 {
 }
 
-void DvbEpgChannelModel::insertChannel(const DvbChannel *channel)
+void DvbEpgChannelModel::insertChannelName(const QString &channelName)
 {
-	int row = (qLowerBound(channels, channel) - channels.constBegin());
+	int row = (qLowerBound(channelNames, channelName) - channelNames.constBegin());
 
-	if ((row >= channels.size()) || (channels.at(row) != channel)) {
+	if ((row >= channelNames.size()) || (channelNames.at(row) != channelName)) {
 		beginInsertRows(QModelIndex(), row, row);
-		channels.insert(row, channel);
+		channelNames.insert(row, channelName);
 		endInsertRows();
 	}
 }
 
-void DvbEpgChannelModel::removeChannel(const DvbChannel *channel)
+void DvbEpgChannelModel::removeChannelName(const QString &channelName)
 {
-	int row = (qLowerBound(channels, channel) - channels.constBegin());
+	int row = (qLowerBound(channelNames, channelName) - channelNames.constBegin());
 
-	if ((row < channels.size()) && (channels.at(row) == channel)) {
+	if ((row < channelNames.size()) && (channelNames.at(row) == channelName)) {
 		beginRemoveRows(QModelIndex(), row, row);
-		channels.removeAt(row);
+		channelNames.removeAt(row);
 		endRemoveRows();
 	}
 }
@@ -451,7 +452,7 @@ int DvbEpgChannelModel::columnCount(const QModelIndex &parent) const
 int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
 {
 	if (!parent.isValid()) {
-		return channels.size();
+		return channelNames.size();
 	}
 
 	return 0;
@@ -459,8 +460,8 @@ int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
 {
-	if (role == Qt::DisplayRole) {
-		return channels.at(index.row())->name;
+	if ((role == Qt::DisplayRole) && (index.column() == 0)) {
+		return channelNames.at(index.row());
 	}
 
 	return QVariant();
@@ -483,6 +484,8 @@ DvbEpgProxyModel::DvbEpgProxyModel(DvbEpgModel *epgModel_,
 		this, SLOT(sourceEntryAdded(const DvbEpgEntry*)));
 	connect(epgModel, SIGNAL(entryRecordingKeyChanged(const DvbEpgEntry*)),
 		this, SLOT(sourceEntryRecordingKeyChanged(const DvbEpgEntry*)));
+
+	contentFilter.setCaseSensitivity(Qt::CaseInsensitive);
 }
 
 DvbEpgProxyModel::~DvbEpgProxyModel()
