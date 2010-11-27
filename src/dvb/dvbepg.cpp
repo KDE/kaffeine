@@ -576,7 +576,7 @@ QVariant DvbEpgProxyModel::data(const QModelIndex &index, int role) const
 
 		break;
 	case DvbEpgEntryRole:
-		return entry;
+		return QVariant::fromValue(entry);
 	}
 
 	return QVariant();
@@ -696,6 +696,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	epgChannelModel->sort(0, Qt::AscendingOrder);
 	channelView->setModel(epgChannelModel);
 	channelView->setMaximumWidth(200);
+	channelView->setRootIsDecorated(false);
 	connect(channelView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(channelActivated(QModelIndex)));
 	mainLayout->addWidget(channelView);
