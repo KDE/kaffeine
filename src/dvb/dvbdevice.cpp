@@ -178,7 +178,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 		break;
 	}
 
-	buffer.remove(0, end - data);
+	buffer.remove(0, buffer.size() - (end - data));
 }
 
 class DvbDataDumper : public QFile, public DvbPidFilter
