@@ -131,6 +131,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		DvbEpgEntry entry;
 		stream >> entry.channelName;
 		stream >> entry.begin;
+		entry.begin = entry.begin.toUTC();
 		stream >> entry.duration;
 		stream >> entry.title;
 		stream >> entry.subheading;
@@ -767,10 +768,12 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		text += i18n("<font color=#808000>%1</font><br>", entry->subheading);
 	}
 
+	QDateTime begin = entry->begin.toLocalTime();
+	QTime end = entry->begin.addSecs(QTime().secsTo(entry->duration)).toLocalTime().time();
+
 	text += i18n("<font color=#800000>%1 - %2</font><br><br>",
-		KGlobal::locale()->formatDateTime(entry->begin.toLocalTime(), KLocale::LongDate),
-		KGlobal::locale()->formatTime(
-			entry->begin.addSecs(QTime().secsTo(entry->duration)).time()));
+		KGlobal::locale()->formatDateTime(begin, KLocale::LongDate),
+		KGlobal::locale()->formatTime(end));
 
 	text += entry->details;
 	contentLabel->setText(text);
