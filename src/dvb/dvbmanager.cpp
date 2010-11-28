@@ -747,6 +747,10 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 				parseError = true;
 			} else {
 				transponders.append(transponder);
+
+				if (transponder.getTransmissionType() == DvbTransponderBase::DvbS) {
+					containsDvbS1 = true;
+				}
 			}
 		}
 
