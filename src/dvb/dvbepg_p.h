@@ -23,10 +23,10 @@
 
 #include <KDialog>
 #include "dvbbackenddevice.h"
+#include "dvbepg.h"
 #include "dvbtransponder.h"
 
 class QLabel;
-class QListView;
 class QTreeView;
 class DvbDevice;
 
@@ -149,15 +149,13 @@ public:
 class DvbEitFilter : public DvbSectionFilter
 {
 public:
-	explicit DvbEitFilter(DvbEpgModel *epgModel_) : epgModel(epgModel_), device(NULL),
-		useCount(0) { }
+	explicit DvbEitFilter(DvbEpgModel *epgModel_) : epgModel(epgModel_), device(NULL) { }
 	~DvbEitFilter() { }
 
 	DvbEpgModel *epgModel;
 	DvbDevice *device;
 	QString source;
 	DvbTransponder transponder;
-	int useCount;
 
 private:
 	static QTime bcdToTime(int bcd);

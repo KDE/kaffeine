@@ -26,7 +26,6 @@
 #include <QFile>
 #include <QHeaderView>
 #include <QLabel>
-#include <QListView>
 #include <QPushButton>
 #include <QScrollArea>
 #include <QSortFilterProxyModel>
@@ -122,10 +121,10 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	}
 
 	QDateTime currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
-	QHash<QString, const DvbChannel *> channelMapping;
+	QSet<QString> channelNames;
 
 	foreach (const QExplicitlySharedDataPointer<const DvbChannel> &channel, channels) {
-		channelMapping.insert(channel->name, channel.constData());
+		channelNames.insert(channel->name);
 	}
 
 	while (!stream.atEnd()) {
@@ -146,9 +145,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 			break;
 		}
 
-		const DvbChannel *channel = channelMapping.value(entry.channelName, NULL);
-
-		if ((channel != NULL) &&
+		if (channelNames.contains(entry.channelName) &&
 		    (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc)) {
 			entries.append(entry);
 			epgChannelModel->insertChannelName(entry.channelName);
@@ -218,54 +215,30 @@ QList<DvbEpgEntry> DvbEpgModel::getCurrentNext(const QString &channelName) const
 	return result;
 }
 
-void DvbEpgModel::startEventFilter(const DvbChannel *channel)
+void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
-	for (int i = 0; i < dvbEitFilters.size(); ++i) {
-		const DvbEitFilter &eitFilter = dvbEitFilters.at(i);
-
-		if ((eitFilter.source == channel->source) &&
-		    (eitFilter.transponder.corresponds(channel->transponder))) {
-			++dvbEitFilters[i].useCount;
-			return;
-		}
-	}
-
+	// TODO deal with ATSC epg
 	dvbEitFilters.append(DvbEitFilter(this));
 	DvbEitFilter &eitFilter = dvbEitFilters.last();
+	eitFilter.device = device;
 	eitFilter.source = channel->source;
 	eitFilter.transponder = channel->transponder;
-	eitFilter.useCount = 1;
-	eitFilter.device = manager->requestDevice(eitFilter.source, eitFilter.transponder,
-		DvbManager::Shared);
-
-	if (eitFilter.device == NULL) {
-		dvbEitFilters.removeLast();
-		return;
-	}
-
 	eitFilter.device->addSectionFilter(0x12, &eitFilter);
 }
 
-void DvbEpgModel::stopEventFilter(const DvbChannel *channel)
+void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
+	// TODO deal with ATSC epg
+
 	for (int i = 0; i < dvbEitFilters.size(); ++i) {
 		const DvbEitFilter &constEitFilter = dvbEitFilters.at(i);
 
-		if ((constEitFilter.source == channel->source) &&
+		if ((constEitFilter.device == device) &&
+		    (constEitFilter.source == channel->source) &&
 		    (constEitFilter.transponder.corresponds(channel->transponder))) {
 			DvbEitFilter &eitFilter = dvbEitFilters[i];
-			--eitFilter.useCount;
-
-			if (eitFilter.useCount == 0) {
-				if (eitFilter.device != NULL) {
-					eitFilter.device->removeSectionFilter(0x12, &eitFilter);
-					manager->releaseDevice(eitFilter.device,
-						DvbManager::Shared);
-				}
-
-				dvbEitFilters.removeAt(i);
-			}
-
+			eitFilter.device->removeSectionFilter(0x12, &eitFilter);
+			dvbEitFilters.removeAt(i);
 			return;
 		}
 	}
@@ -694,7 +667,6 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	epgProxyModel = epgModel->createEpgProxyModel(this);
 
 	channelView = new QTreeView(widget);
-	channelView->setEditTriggers(QListView::NoEditTriggers);
 	QAbstractItemModel *epgChannelModel = epgModel->createEpgProxyChannelModel(this);
 	epgChannelModel->sort(0, Qt::AscendingOrder);
 	channelView->setModel(epgChannelModel);

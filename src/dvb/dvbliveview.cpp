@@ -464,12 +464,12 @@ void DvbLiveView::startDevice()
 		device->startDescrambling(internal->pmtSection, this);
 	}
 
-	manager->getEpgModel()->startEventFilter(channel.constData());
+	manager->getEpgModel()->startEventFilter(device, channel.constData());
 }
 
 void DvbLiveView::stopDevice()
 {
-	manager->getEpgModel()->stopEventFilter(channel.constData());
+	manager->getEpgModel()->stopEventFilter(device, channel.constData());
 
 	if (channel->isScrambled && internal->pmtSection.isValid()) {
 		device->stopDescrambling(internal->pmtSection.programNumber(), this);

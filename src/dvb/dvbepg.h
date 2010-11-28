@@ -24,6 +24,7 @@
 #include "dvbrecording.h"
 
 class DvbChannel;
+class DvbDevice;
 class DvbEitEntry;
 class DvbEitFilter;
 class DvbEpgChannelModel;
@@ -64,8 +65,8 @@ public:
 	~DvbEpgModel();
 
 	QList<DvbEpgEntry> getCurrentNext(const QString &channelName) const;
-	void startEventFilter(const DvbChannel *channel);
-	void stopEventFilter(const DvbChannel *channel);
+	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
+	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
 	void showDialog(const QString &currentChannelName, QWidget *parent);
 	QAbstractItemModel *createEpgProxyChannelModel(QObject *parent);
