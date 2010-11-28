@@ -668,7 +668,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 
 	channelView = new QTreeView(widget);
 	QAbstractItemModel *epgChannelModel = epgModel->createEpgProxyChannelModel(this);
-	epgChannelModel->sort(0, Qt::AscendingOrder);
+	epgChannelModel->sort(0, Qt::AscendingOrder); // TODO same sort order as main channel list
 	channelView->setModel(epgChannelModel);
 	channelView->setMaximumWidth(200);
 	channelView->setRootIsDecorated(false);
@@ -809,7 +809,7 @@ QTime DvbEitFilter::bcdToTime(int bcd)
 
 void DvbEitFilter::processSection(const char *data, int size, int crc)
 {
-	Q_UNUSED(crc)
+	Q_UNUSED(crc) // TODO check crc: (a) valid (b) invalid, but occurs more than once --> ok
 	DvbEitSection eitSection(QByteArray::fromRawData(data, size));
 
 	if (!eitSection.isValid() ||
@@ -827,7 +827,6 @@ void DvbEitFilter::processSection(const char *data, int size, int crc)
 		eitEntry.transportStreamId = transportStreamId;
 		eitEntry.serviceId = serviceId;
 		eitEntry.networkId = networkId;
-
 		QString channelName = epgModel->findChannelNameByDvbEitEntry(eitEntry);
 
 		if (channelName.isEmpty()) {
@@ -842,7 +841,7 @@ void DvbEitFilter::processSection(const char *data, int size, int crc)
 		DvbEpgEntry epgEntry;
 		epgEntry.channelName = channelName;
 		epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
-					   bcdToTime(entry.startTime()), Qt::UTC);
+			bcdToTime(entry.startTime()), Qt::UTC);
 		epgEntry.duration = bcdToTime(entry.duration());
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
@@ -859,7 +858,6 @@ void DvbEitFilter::processSection(const char *data, int size, int crc)
 				epgEntry.subheading = eventDescriptor.text();
 				break;
 			    }
-
 			case 0x4e: {
 				DvbExtendedEventDescriptor eventDescriptor(descriptor);
 
