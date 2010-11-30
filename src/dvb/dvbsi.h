@@ -142,8 +142,7 @@ public:
 		return at(7);
 	}
 
-	int verifyCrc32() const;
-
+	static int verifyCrc32(const char *data, int size);
 	static const unsigned int crc32Table[];
 };
 

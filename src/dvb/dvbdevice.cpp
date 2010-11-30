@@ -133,31 +133,27 @@ void DvbSectionFilterInternal::processData(const char data[188])
 
 void DvbSectionFilterInternal::processSections(bool force)
 {
-	const char *data = buffer.constBegin();
+	const char *it = buffer.constBegin();
 	const char *end = buffer.constEnd();
 
-	while (true) {
-		if (data >= end) {
-			break;
-		}
-
-		if (static_cast<unsigned char>(data[0]) == 0xff) {
+	while (it != end) {
+		if (static_cast<unsigned char>(it[0]) == 0xff) {
 			// table id == 0xff means padding
-			data = end;
+			it = end;
 			break;
 		}
 
-		if ((end - data) < 3) {
+		if ((end - it) < 3) {
 			if (force) {
 				kDebug() << "stray data";
-				data = end;
+				it = end;
 			}
 
 			break;
 		}
 
-		const char *sectionEnd = ((((static_cast<unsigned char>(data[1]) & 0x0f) << 8) |
-			static_cast<unsigned char>(data[2])) + 3 + data);
+		const char *sectionEnd = (it + (((static_cast<unsigned char>(it[1]) & 0x0f) << 8) |
+			static_cast<unsigned char>(it[2])) + 3);
 
 		if (force && (sectionEnd > end)) {
 			kDebug() << "short section";
@@ -165,20 +161,21 @@ void DvbSectionFilterInternal::processSections(bool force)
 		}
 
 		if (sectionEnd <= end) {
-			int size = (sectionEnd - data);
+			int size = (sectionEnd - it);
+			int crc = DvbStandardSection::verifyCrc32(it, size);
 
 			for (int i = 0; i < sectionFilters.size(); ++i) {
-				sectionFilters.at(i)->processSection(data, size, 0); // FIXME
+				sectionFilters.at(i)->processSection(it, size, crc);
 			}
 
-			data = sectionEnd;
+			it = sectionEnd;
 			continue;
 		}
 
 		break;
 	}
 
-	buffer.remove(0, buffer.size() - (end - data));
+	buffer.remove(0, it - buffer.constBegin());
 }
 
 class DvbDataDumper : public QFile, public DvbPidFilter

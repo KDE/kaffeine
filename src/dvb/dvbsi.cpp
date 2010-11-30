@@ -39,12 +39,13 @@ DvbSection::DvbSection(const QByteArray &data) : DvbSectionData(data)
 	}
 }
 
-int DvbStandardSection::verifyCrc32() const
+int DvbStandardSection::verifyCrc32(const char *data, int size)
 {
 	unsigned int crc32 = 0xffffffff;
 
-	for (int i = 0; i < length; ++i) {
-		crc32 = (crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ at(i)];
+	for (int i = 0; i < size; ++i) {
+		crc32 = ((crc32 << 8) ^
+			crc32Table[(crc32 >> 24) ^ static_cast<unsigned char>(data[i])]);
 	}
 
 	return crc32;
