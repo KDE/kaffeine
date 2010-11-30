@@ -28,7 +28,6 @@
 
 class QLabel;
 class QTreeView;
-class DvbDevice;
 
 Q_DECLARE_METATYPE(const DvbEpgEntry *)
 
