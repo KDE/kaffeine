@@ -50,5 +50,6 @@ Name[tr]=Ses CD'sini Kaffeine ile Oynat
 Name[uk]=Відтворити Аудіо-КД за допомогою Kaffeine
 Name[x-test]=xxPlay Audio CD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放音频 CD
+Name[zh_TW]=用 Kaffeine 播放音樂光碟
 Exec=kaffeine --audiocd %d
 Icon=kaffeine
