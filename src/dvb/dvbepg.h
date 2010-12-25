@@ -21,6 +21,7 @@
 #ifndef DVBEPG_H
 #define DVBEPG_H
 
+#include <QSharedData> // qt 4.5 compatibility
 #include "dvbrecording.h"
 
 class DvbChannel;
