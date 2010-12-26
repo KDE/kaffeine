@@ -457,6 +457,7 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 
 	if (it->activeFilters == 0) {
 		if (!backend->addPidFilter(pid)) {
+			cleanUpFilters = true;
 			return false;
 		}
 	}
@@ -477,9 +478,11 @@ bool DvbDevice::addSectionFilter(int pid, DvbSectionFilter *filter)
 
 	if (it == sectionFilters.end()) {
 		it = sectionFilters.insert(pid, DvbSectionFilterInternal());
+	}
 
+	if (it->activeSectionFilters == 0) {
 		if (!addPidFilter(pid, &(*it))) {
-			sectionFilters.remove(pid);
+			cleanUpFilters = true;
 			return false;
 		}
 	}
