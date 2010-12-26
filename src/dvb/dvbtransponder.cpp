@@ -178,7 +178,7 @@ template<class T> static T readEnum(QDataStream &stream)
 	stream >> intValue;
 	T value = static_cast<T>(intValue);
 
-	if ((value != intValue) || (enumToLinuxtv(value) == 0)) {
+	if ((value != intValue) || (enumToLinuxtv(value) == NULL)) {
 		stream.setStatus(QDataStream::ReadCorruptData);
 	}
 
@@ -188,7 +188,7 @@ template<class T> static T readEnum(QDataStream &stream)
 class DvbChannelStringReader
 {
 public:
-	DvbChannelStringReader(const QString &string_) : string(string_)
+	explicit DvbChannelStringReader(const QString &string_) : string(string_)
 	{
 		stream.setString(&string);
 		stream.setIntegerBase(10);
@@ -198,7 +198,7 @@ public:
 
 	bool isValid() const
 	{
-		return stream.status() == QTextStream::Ok;
+		return (stream.status() == QTextStream::Ok);
 	}
 
 	void readInt(int &value)
@@ -233,7 +233,7 @@ public:
 		return T();
 	}
 
-	void checkChar(QChar value)
+	void checkChar(const QChar &value)
 	{
 		QString string;
 		stream >> string;
@@ -284,7 +284,7 @@ public:
 		stream << enumToLinuxtv(value) << ' ';
 	}
 
-	void writeChar(QChar value)
+	void writeChar(const QChar &value)
 	{
 		stream << value << ' ';
 	}
