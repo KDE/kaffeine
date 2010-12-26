@@ -36,7 +36,7 @@ class DvbLiveView : public QObject
 {
 	Q_OBJECT
 public:
-	explicit DvbLiveView(DvbManager *manager_);
+	DvbLiveView(DvbManager *manager_, QObject *parent);
 	~DvbLiveView();
 
 	const DvbChannel *getChannel() const;

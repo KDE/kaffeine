@@ -23,7 +23,7 @@
 #include <QPainter>
 #include <QTimer>
 
-OsdWidget::OsdWidget(QWidget *parent) : QWidget(parent)
+OsdWidget::OsdWidget(QWidget *parent) : QWidget(parent), osdObject(NULL)
 {
 	timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(hideOsd()));

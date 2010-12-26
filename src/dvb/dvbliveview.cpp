@@ -149,8 +149,8 @@ void DvbLiveViewInternal::processData(const char data[188])
 	buffer.reserve(87 * 188);
 }
 
-DvbLiveView::DvbLiveView(DvbManager *manager_) : manager(manager_), device(NULL), videoPid(-1),
-	audioPid(-1), subtitlePid(-1)
+DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent),
+	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1)
 {
 	mediaWidget = manager->getMediaWidget();
 	osdWidget = mediaWidget->getOsdWidget();
