@@ -813,7 +813,7 @@ QTime DvbEitFilter::bcdToTime(int bcd)
 void DvbEitFilter::processSection(const char *data, int size, int crc)
 {
 	Q_UNUSED(crc) // TODO check crc: (a) valid (b) invalid, but occurs more than once --> ok
-	DvbEitSection eitSection(QByteArray::fromRawData(data, size));
+	DvbEitSection eitSection(QByteArray(data, size));
 
 	if (!eitSection.isValid() ||
 	    (eitSection.tableId() < 0x4e) || (eitSection.tableId() > 0x6f)) {

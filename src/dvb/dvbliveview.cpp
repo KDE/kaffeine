@@ -133,7 +133,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 void DvbLiveViewInternal::processData(const char data[188])
 {
-	buffer.append(QByteArray::fromRawData(data, 188));
+	buffer.append(data, 188);
 
 	if (buffer.size() < (87 * 188)) {
 		return;

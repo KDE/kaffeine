@@ -1008,7 +1008,7 @@ const unsigned char AtscHuffmanString::Huffman2Tables[] = {
 void DvbPmtFilter::processSection(const char *data, int size, int crc)
 {
 	Q_UNUSED(crc)
-	DvbPmtSection pmtSection(QByteArray::fromRawData(data, size));
+	DvbPmtSection pmtSection(QByteArray(data, size));
 
 	if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2) ||
 	    (pmtSection.programNumber() != programNumber) ||

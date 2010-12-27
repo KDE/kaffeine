@@ -644,7 +644,7 @@ void DvbRecording::processData(const char data[188])
 		}
 
 		QByteArray &buffer = buffers.last();
-		buffer.append(QByteArray::fromRawData(data, 188));
+		buffer.append(data, 188);
 
 		if (buffer.size() >= (348 * 188)) {
 			QByteArray nextBuffer;

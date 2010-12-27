@@ -148,7 +148,7 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 
 	switch (type) {
 	case DvbScan::PatFilter: {
-		DvbPatSection patSection(QByteArray::fromRawData(data, size));
+		DvbPatSection patSection(QByteArray(data, size));
 
 		if (!patSection.isValid() || (patSection.tableId() != 0x0)) {
 			return;
@@ -160,12 +160,10 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		}
 
 		scan->processPat(patSection);
-
 		break;
 	    }
-
 	case DvbScan::PmtFilter: {
-		DvbPmtSection pmtSection(QByteArray::fromRawData(data, size));
+		DvbPmtSection pmtSection(QByteArray(data, size));
 
 		if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2)) {
 			return;
@@ -177,12 +175,10 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		}
 
 		scan->processPmt(pmtSection, pid);
-
 		break;
 	    }
-
 	case DvbScan::SdtFilter: {
-		DvbSdtSection sdtSection(QByteArray::fromRawData(data, size));
+		DvbSdtSection sdtSection(QByteArray(data, size));
 
 		if (!sdtSection.isValid() || (sdtSection.tableId() != 0x42)) {
 			// there are also other tables in the SDT
@@ -195,12 +191,10 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		}
 
 		scan->processSdt(sdtSection);
-
 		break;
 	    }
-
 	case DvbScan::VctFilter: {
-		AtscVctSection vctSection(QByteArray::fromRawData(data, size));
+		AtscVctSection vctSection(QByteArray(data, size));
 
 		if (!vctSection.isValid() ||
 		    ((vctSection.tableId() != 0xc8) && (vctSection.tableId() != 0xc9))) {
@@ -214,12 +208,10 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		}
 
 		scan->processVct(vctSection);
-
 		break;
 	    }
-
 	case DvbScan::NitFilter: {
-		DvbNitSection nitSection(QByteArray::fromRawData(data, size));
+		DvbNitSection nitSection(QByteArray(data, size));
 
 		if (!nitSection.isValid() || (nitSection.tableId() != 0x40)) {
 			// we are only interested in the current network
@@ -232,7 +224,6 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		}
 
 		scan->processNit(nitSection);
-
 		break;
 	    }
 	}
