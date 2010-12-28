@@ -62,6 +62,7 @@ private slots:
 private:
 	void startDevice();
 	void stopDevice();
+	void pmtSectionChanged();
 	void updatePids(bool forcePatPmtUpdate = false);
 
 	DvbManager *manager;

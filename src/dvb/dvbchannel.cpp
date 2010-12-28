@@ -81,7 +81,7 @@ void DvbChannelBase::readChannel(QDataStream &stream)
 	stream >> serviceId;
 	stream >> pmtPid;
 
-	stream >> pmtSection;
+	stream >> pmtSectionData;
 	int videoPid;
 	stream >> videoPid;
 	stream >> audioPid;
@@ -464,7 +464,7 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 			}
 		}
 
-		DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSection));
+		DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSectionData));
 		bool containsAudioPid = false;
 
 		for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
@@ -873,7 +873,7 @@ int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index
 	channel->networkId = query.value(index++).toInt();
 	channel->transportStreamId = query.value(index++).toInt();
 	channel->pmtPid = query.value(index++).toInt();
-	channel->pmtSection = query.value(index++).toByteArray();
+	channel->pmtSectionData = query.value(index++).toByteArray();
 	channel->audioPid = query.value(index++).toInt();
 	int flags = query.value(index++).toInt();
 	channel->hasVideo = ((flags & 0x01) != 0);
@@ -883,7 +883,8 @@ int DvbChannelSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index
 	    !channel->transponder.isValid() ||
 	    (channel->networkId < -1) || (channel->networkId > 0xffff) ||
 	    (channel->transportStreamId < 0) || (channel->transportStreamId > 0xffff) ||
-	    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) || channel->pmtSection.isEmpty() ||
+	    (channel->pmtPid < 0) || (channel->pmtPid > 0x1fff) ||
+	    channel->pmtSectionData.isEmpty() ||
 	    (channel->audioPid < -1) || (channel->audioPid > 0x1fff)) {
 		delete channel;
 		return -1;
@@ -904,7 +905,7 @@ void DvbChannelSqlInterface::bindToSqlQuery(QSqlQuery &query, int index, int row
 	query.bindValue(index++, channel->networkId);
 	query.bindValue(index++, channel->transportStreamId);
 	query.bindValue(index++, channel->pmtPid);
-	query.bindValue(index++, channel->pmtSection);
+	query.bindValue(index++, channel->pmtSectionData);
 	query.bindValue(index++, channel->audioPid);
 	query.bindValue(index++, (channel->hasVideo ? 0x01 : 0) |
 				 (channel->isScrambled ? 0x02 : 0));
@@ -1026,7 +1027,7 @@ DvbChannelEditor::DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex
 	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), 11, 0);
 	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), 11, 1);
 
-	DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSection));
+	DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSectionData));
 	int row = 12;
 
 	if (pmtParser.videoPid >= 0) {

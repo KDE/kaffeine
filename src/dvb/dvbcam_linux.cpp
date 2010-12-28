@@ -36,7 +36,7 @@
 class DvbLinuxCamService
 {
 public:
-	DvbLinuxCamService() : pendingAction(Add), pmtSection(QByteArray()) { }
+	DvbLinuxCamService() : pendingAction(Add) { }
 	~DvbLinuxCamService() { }
 
 	enum PendingActions {
@@ -47,7 +47,7 @@ public:
 	};
 
 	PendingActions pendingAction;
-	DvbPmtSection pmtSection;
+	QByteArray pmtSectionData;
 };
 
 DvbLinuxCam::DvbLinuxCam() : caFd(-1), socketNotifier(NULL), ready(false), eventPosted(false)
@@ -98,7 +98,7 @@ void DvbLinuxCam::startDescrambling(const QByteArray &pmtSectionData)
 		it->pendingAction = DvbLinuxCamService::Update;
 	}
 
-	it->pmtSection = pmtSection;
+	it->pmtSectionData = pmtSectionData;
 
 	if (ready && !eventPosted) {
 		eventPosted = true;
@@ -521,7 +521,7 @@ void DvbLinuxCam::customEvent(QEvent *event)
 	for (QMap<int, DvbLinuxCamService>::iterator it = services.begin();
 	     it != services.end();) {
 		if (it->pendingAction == DvbLinuxCamService::Remove) {
-			sendCaPmt(it->pmtSection, Update, StopDescrambling);
+			sendCaPmt(DvbPmtSection(it->pmtSectionData), Update, StopDescrambling);
 			it = services.erase(it);
 		} else {
 			++activeCaPmts;
@@ -536,14 +536,14 @@ void DvbLinuxCam::customEvent(QEvent *event)
 			continue;
 		case DvbLinuxCamService::Add:
 			if (activeCaPmts == 1) {
-				sendCaPmt(it->pmtSection, Only, Descramble);
+				sendCaPmt(DvbPmtSection(it->pmtSectionData), Only, Descramble);
 			} else {
-				sendCaPmt(it->pmtSection, Add, Descramble);
+				sendCaPmt(DvbPmtSection(it->pmtSectionData), Add, Descramble);
 			}
 
 			break;
 		case DvbLinuxCamService::Update:
-			sendCaPmt(it->pmtSection, Update, Descramble);
+			sendCaPmt(DvbPmtSection(it->pmtSectionData), Update, Descramble);
 			break;
 		case DvbLinuxCamService::Remove:
 			kWarning() << "impossible";

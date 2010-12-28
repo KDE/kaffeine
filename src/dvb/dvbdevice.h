@@ -90,8 +90,8 @@ public:
 	bool addSectionFilter(int pid, DvbSectionFilter *filter);
 	void removePidFilter(int pid, DvbPidFilter *filter);
 	void removeSectionFilter(int pid, DvbSectionFilter *filter);
-	void startDescrambling(const DvbPmtSection &pmtSection, QObject *user);
-	void stopDescrambling(int serviceId, QObject *user);
+	void startDescrambling(const QByteArray &pmtSectionData, QObject *user);
+	void stopDescrambling(const QByteArray &pmtSectionData, QObject *user);
 	bool isTuned() const;
 	int getSignal() const; // 0 - 100 [%] or -1 = not supported
 	int getSnr() const; // 0 - 100 [%] or -1 = not supported

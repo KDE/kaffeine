@@ -29,14 +29,10 @@ class DvbPmtSection;
 class DvbSectionData
 {
 public:
-	explicit DvbSectionData(const QByteArray &byteArray_) : byteArray(byteArray_)
+	bool isValid() const
 	{
-		data = byteArray.constData();
-		size = byteArray.size();
-		length = size;
+		return (length > 0);
 	}
-
-	~DvbSectionData() { }
 
 	unsigned char at(int index) const
 	{
@@ -53,50 +49,46 @@ public:
 		return length;
 	}
 
-	bool isValid() const
-	{
-		return (length > 0);
-	}
-
 	QByteArray toByteArray() const
 	{
 		return QByteArray(data, length);
 	}
 
 protected:
-	DvbSectionData next() const
+	DvbSectionData() { }
+	~DvbSectionData() { }
+
+	void initSectionData()
 	{
-		return DvbSectionData(byteArray, data + length, size - length);
+		data = NULL;
+		length = 0;
+		size = 0;
 	}
 
-	DvbSectionData subArray(int index, int size) const
+	void initSectionData(const char *data_, int length_, int size_)
 	{
-		return DvbSectionData(byteArray, data + index, size);
+		data = data_;
+		length = length_;
+		size = size_;
 	}
 
-	int length;
+	int getSize() const
+	{
+		return size;
+	}
 
 private:
-	DvbSectionData(const QByteArray &byteArray_, const char *data_, int size_) :
-		size(size_), data(data_), byteArray(byteArray_)
-	{
-		length = size;
-	}
-
-	int size;
 	const char *data;
-	QByteArray byteArray;
+	int length;
+	int size;
 };
 
 class DvbSection : public DvbSectionData
 {
 public:
-	explicit DvbSection(const QByteArray &data);
-	~DvbSection() { }
-
 	int getSectionLength() const
 	{
-		return length;
+		return getLength();
 	}
 
 	int tableId() const
@@ -108,20 +100,20 @@ public:
 	{
 		return (at(1) & 0x80) != 0;
 	}
+
+protected:
+	DvbSection() { }
+	~DvbSection() { }
+
+	void initSection(const char *data, int size);
+
+private:
+	Q_DISABLE_COPY(DvbSection)
 };
 
 class DvbStandardSection : public DvbSection
 {
 public:
-	explicit DvbStandardSection(const QByteArray &data) : DvbSection(data)
-	{
-		if (length < 12) {
-			length = 0;
-		}
-	}
-
-	~DvbStandardSection() { }
-
 	int versionNumber() const
 	{
 		return (at(5) >> 1) & ((1 << 5) - 1);
@@ -144,12 +136,21 @@ public:
 
 	static int verifyCrc32(const char *data, int size);
 	static const unsigned int crc32Table[];
+
+protected:
+	DvbStandardSection() { }
+	~DvbStandardSection() { }
+
+	void initStandardSection(const char *data, int size);
+
+private:
+	Q_DISABLE_COPY(DvbStandardSection)
 };
 
 class DvbSiText
 {
 public:
-	static QString convertText(const DvbSectionData &text);
+	static QString convertText(const char *data, int size);
 	static void setOverride6937(bool override);
 
 private:
@@ -185,7 +186,11 @@ private:
 class DvbDescriptor : public DvbSectionData
 {
 public:
-	explicit DvbDescriptor(const DvbSectionData &data);
+	DvbDescriptor(const char *data, int size)
+	{
+		initDescriptor(data, size);
+	}
+
 	~DvbDescriptor() { }
 
 	int descriptorTag() const
@@ -195,7 +200,7 @@ public:
 
 	void advance()
 	{
-		*this = DvbDescriptor(next());
+		initDescriptor(getData() + getLength(), getSize() - getLength());
 	}
 
 	static int bcdToInt(unsigned int bcd, int multiplier)
@@ -210,13 +215,17 @@ public:
 
 		return value;
 	}
+
+private:
+	void initDescriptor(const char *data, int size);
 };
 
 // ATSC "Multiple String Structure".  See A/65C Section 6.10
 class AtscPsipText
 {
 public:
-	static QString convertText(const DvbSectionData &text);
+	static QString convertText(const char *data, int size);
+
 private:
 	static QString interpretTextData(const char *data, unsigned int len,
 					 unsigned int mode);
@@ -262,7 +271,7 @@ public:
 	}
 
 signals:
-	void pmtSectionChanged(const DvbPmtSection &section);
+	void pmtSectionChanged(const DvbPmtSection &pmtSection);
 
 private:
 	void processSection(const char *data, int size, int crc);
@@ -332,6 +341,9 @@ public:
 	{
 		return at(4);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbLanguageDescriptor)
 };
 
 class DvbSubtitleDescriptor : public DvbDescriptor
@@ -359,6 +371,9 @@ public:
 	{
 		return at(5);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbSubtitleDescriptor)
 };
 
 class DvbServiceDescriptor : public DvbDescriptor
@@ -369,15 +384,17 @@ public:
 
 	QString providerName() const
 	{
-		return DvbSiText::convertText(subArray(4, providerNameLength));
+		return DvbSiText::convertText(getData() + 4, providerNameLength);
 	}
 
 	QString serviceName() const
 	{
-		return DvbSiText::convertText(subArray(5 + providerNameLength, serviceNameLength));
+		return DvbSiText::convertText(getData() + 5 + providerNameLength, serviceNameLength);
 	}
 
 private:
+	Q_DISABLE_COPY(DvbServiceDescriptor)
+
 	int providerNameLength;
 	int serviceNameLength;
 };
@@ -390,15 +407,17 @@ public:
 
 	QString eventName() const
 	{
-		return DvbSiText::convertText(subArray(6, eventNameLength));
+		return DvbSiText::convertText(getData() + 6, eventNameLength);
 	}
 
 	QString text() const
 	{
-		return DvbSiText::convertText(subArray(7 + eventNameLength, textLength));
+		return DvbSiText::convertText(getData() + 7 + eventNameLength, textLength);
 	}
 
 private:
+	Q_DISABLE_COPY(DvbShortEventDescriptor)
+
 	int eventNameLength;
 	int textLength;
 };
@@ -411,10 +430,12 @@ public:
 
 	QString text() const
 	{
-		return DvbSiText::convertText(subArray(8 + itemsLength, textLength));
+		return DvbSiText::convertText(getData() + 8 + itemsLength, textLength);
 	}
 
 private:
+	Q_DISABLE_COPY(DvbExtendedEventDescriptor)
+
 	int itemsLength;
 	int textLength;
 };
@@ -444,6 +465,9 @@ public:
 	{
 		return (at(12) & 0xf);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbCableDescriptor)
 };
 
 class DvbSatelliteDescriptor : public DvbDescriptor
@@ -486,6 +510,9 @@ public:
 	{
 		return (at(12) & 0xf);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbSatelliteDescriptor)
 };
 
 class DvbTerrestrialDescriptor : public DvbDescriptor
@@ -533,6 +560,9 @@ public:
 	{
 		return ((at(8) & 0x7) >> 1);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbTerrestrialDescriptor)
 };
 
 class AtscChannelNameDescriptor : public DvbDescriptor
@@ -543,19 +573,26 @@ public:
 
 	QString name() const
 	{
-		return AtscPsipText::convertText(subArray(2, length - 2));
+		return AtscPsipText::convertText(getData() + 2, getLength() - 2);
 	}
+
+private:
+	Q_DISABLE_COPY(AtscChannelNameDescriptor)
 };
 
 class DvbPatSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbPatSectionEntry(const DvbSectionData &data_);
+	DvbPatSectionEntry(const char *data, int size)
+	{
+		initPatSectionEntry(data, size);
+	}
+
 	~DvbPatSectionEntry() { }
 
 	void advance()
 	{
-		*this = DvbPatSectionEntry(next());
+		initPatSectionEntry(getData() + getLength(), getSize() - getLength());
 	}
 
 	int programNumber() const
@@ -567,17 +604,24 @@ public:
 	{
 		return ((at(2) & 0x1f) << 8) | at(3);
 	}
+
+private:
+	void initPatSectionEntry(const char *data, int size);
 };
 
 class DvbPmtSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbPmtSectionEntry(const DvbSectionData &data_);
+	DvbPmtSectionEntry(const char *data, int size)
+	{
+		initPmtSectionEntry(data, size);
+	}
+
 	~DvbPmtSectionEntry() { }
 
 	void advance()
 	{
-		*this = DvbPmtSectionEntry(next());
+		initPmtSectionEntry(getData() + getLength(), getSize() - getLength());
 	}
 
 	int streamType() const
@@ -592,19 +636,26 @@ public:
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(5, length - 5));
+		return DvbDescriptor(getData() + 5, getLength() - 5);
 	}
+
+private:
+	void initPmtSectionEntry(const char *data, int size);
 };
 
 class DvbSdtSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbSdtSectionEntry(const DvbSectionData &data_);
+	DvbSdtSectionEntry(const char *data, int size)
+	{
+		initSdtSectionEntry(data, size);
+	}
+
 	~DvbSdtSectionEntry() { }
 
 	void advance()
 	{
-		*this = DvbSdtSectionEntry(next());
+		initSdtSectionEntry(getData() + getLength(), getSize() - getLength());
 	}
 
 	int serviceId() const
@@ -619,19 +670,26 @@ public:
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(5, length - 5));
+		return DvbDescriptor(getData() + 5, getLength() - 5);
 	}
+
+private:
+	void initSdtSectionEntry(const char *data, int size);
 };
 
 class DvbEitSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbEitSectionEntry(const DvbSectionData &data_);
+	DvbEitSectionEntry(const char *data, int size)
+	{
+		initEitSectionEntry(data, size);
+	}
+
 	~DvbEitSectionEntry() { }
 
 	void advance()
 	{
-		*this = DvbEitSectionEntry(next());
+		initEitSectionEntry(getData() + getLength(), getSize() - getLength());
 	}
 
 	int startDate() const
@@ -651,36 +709,50 @@ public:
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(12, length - 12));
+		return DvbDescriptor(getData() + 12, getLength() - 12);
 	}
+
+private:
+	void initEitSectionEntry(const char *data, int size);
 };
 
 class DvbNitSectionEntry : public DvbSectionData
 {
 public:
-	explicit DvbNitSectionEntry(const DvbSectionData &data_);
+	DvbNitSectionEntry(const char *data, int size)
+	{
+		initNitSectionEntry(data, size);
+	}
+
 	~DvbNitSectionEntry() { }
 
 	void advance()
 	{
-		*this = DvbNitSectionEntry(next());
+		initNitSectionEntry(getData() + getLength(), getSize() - getLength());
 	}
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(6, length - 6));
+		return DvbDescriptor(getData() + 6, getLength() - 6);
 	}
+
+private:
+	void initNitSectionEntry(const char *data, int size);
 };
 
 class AtscVctSectionEntry : public DvbSectionData
 {
 public:
-	explicit AtscVctSectionEntry(const DvbSectionData &data_);
+	AtscVctSectionEntry(const char *data, int size)
+	{
+		initVctSectionEntry(data, size);
+	}
+
 	~AtscVctSectionEntry() { }
 
 	void advance()
 	{
-		*this = AtscVctSectionEntry(next());
+		initVctSectionEntry(getData() + getLength(), getSize() - getLength());
 	}
 
 	int shortName1() const
@@ -745,14 +817,21 @@ public:
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(32, length - 32));
+		return DvbDescriptor(getData() + 32, getLength() - 32);
 	}
+
+private:
+	void initVctSectionEntry(const char *data, int size);
 };
 
 class DvbPatSection : public DvbStandardSection
 {
 public:
-	explicit DvbPatSection(const QByteArray &data);
+	DvbPatSection(const char *data, int size)
+	{
+		initPatSection(data, size);
+	}
+
 	~DvbPatSection() { }
 
 	int transportStreamId() const
@@ -762,14 +841,27 @@ public:
 
 	DvbPatSectionEntry entries() const
 	{
-		return DvbPatSectionEntry(subArray(8, length - 12));
+		return DvbPatSectionEntry(getData() + 8, getLength() - 12);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbPatSection)
+	void initPatSection(const char *data, int size);
 };
 
 class DvbPmtSection : public DvbStandardSection
 {
 public:
-	explicit DvbPmtSection(const QByteArray &data);
+	DvbPmtSection(const char *data, int size)
+	{
+		initPmtSection(data, size);
+	}
+
+	explicit DvbPmtSection(const QByteArray &byteArray)
+	{
+		initPmtSection(byteArray.constData(), byteArray.size());
+	}
+
 	~DvbPmtSection() { }
 
 	int programNumber() const
@@ -779,22 +871,29 @@ public:
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(12, descriptorsLength));
+		return DvbDescriptor(getData() + 12, descriptorsLength);
 	}
 
 	DvbPmtSectionEntry entries() const
 	{
-		return DvbPmtSectionEntry(subArray(12 + descriptorsLength, length - (16 + descriptorsLength)));
+		return DvbPmtSectionEntry(getData() + 12 + descriptorsLength, getLength() - (16 + descriptorsLength));
 	}
 
 private:
+	Q_DISABLE_COPY(DvbPmtSection)
+	void initPmtSection(const char *data, int size);
+
 	int descriptorsLength;
 };
 
 class DvbSdtSection : public DvbStandardSection
 {
 public:
-	explicit DvbSdtSection(const QByteArray &data);
+	DvbSdtSection(const char *data, int size)
+	{
+		initSdtSection(data, size);
+	}
+
 	~DvbSdtSection() { }
 
 	int originalNetworkId() const
@@ -804,14 +903,22 @@ public:
 
 	DvbSdtSectionEntry entries() const
 	{
-		return DvbSdtSectionEntry(subArray(11, length - 15));
+		return DvbSdtSectionEntry(getData() + 11, getLength() - 15);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbSdtSection)
+	void initSdtSection(const char *data, int size);
 };
 
 class DvbEitSection : public DvbStandardSection
 {
 public:
-	explicit DvbEitSection(const QByteArray &data);
+	DvbEitSection(const char *data, int size)
+	{
+		initEitSection(data, size);
+	}
+
 	~DvbEitSection() { }
 
 	int serviceId() const
@@ -831,27 +938,38 @@ public:
 
 	DvbEitSectionEntry entries() const
 	{
-		return DvbEitSectionEntry(subArray(14, length - 18));
+		return DvbEitSectionEntry(getData() + 14, getLength() - 18);
 	}
+
+private:
+	Q_DISABLE_COPY(DvbEitSection)
+	void initEitSection(const char *data, int size);
 };
 
 class DvbNitSection : public DvbStandardSection
 {
 public:
-	explicit DvbNitSection(const QByteArray &data);
+	DvbNitSection(const char *data, int size)
+	{
+		initNitSection(data, size);
+	}
+
 	~DvbNitSection() { }
 
 	DvbDescriptor descriptors() const
 	{
-		return DvbDescriptor(subArray(10, descriptorsLength));
+		return DvbDescriptor(getData() + 10, descriptorsLength);
 	}
 
 	DvbNitSectionEntry entries() const
 	{
-		return DvbNitSectionEntry(subArray(12 + descriptorsLength, entriesLength));
+		return DvbNitSectionEntry(getData() + 12 + descriptorsLength, entriesLength);
 	}
 
 private:
+	Q_DISABLE_COPY(DvbNitSection)
+	void initNitSection(const char *data, int size);
+
 	int descriptorsLength;
 	int entriesLength;
 };
@@ -859,7 +977,11 @@ private:
 class AtscVctSection : public DvbStandardSection
 {
 public:
-	explicit AtscVctSection(const QByteArray &data);
+	AtscVctSection(const char *data, int size)
+	{
+		initVctSection(data, size);
+	}
+
 	~AtscVctSection() { }
 
 	int entryCount() const
@@ -869,8 +991,12 @@ public:
 
 	AtscVctSectionEntry entries() const
 	{
-		return AtscVctSectionEntry(subArray(10, length - 14));
+		return AtscVctSectionEntry(getData() + 10, getLength() - 14);
 	}
+
+private:
+	Q_DISABLE_COPY(AtscVctSection)
+	void initVctSection(const char *data, int size);
 };
 
 #endif /* DVBSI_H */

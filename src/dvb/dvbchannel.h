@@ -40,22 +40,22 @@ public:
 
 	int getServiceId() const
 	{
-		if (pmtSection.size() < 5) {
+		if (pmtSectionData.size() < 5) {
 			return -1;
 		}
 
-		return ((static_cast<unsigned char>(pmtSection.at(3)) << 8) |
-			static_cast<unsigned char>(pmtSection.at(4)));
+		return ((static_cast<unsigned char>(pmtSectionData.at(3)) << 8) |
+			static_cast<unsigned char>(pmtSectionData.at(4)));
 	}
 
 	void setServiceId(int serviceId)
 	{
-		if (pmtSection.size() < 5) {
+		if (pmtSectionData.size() < 5) {
 			return;
 		}
 
-		pmtSection[3] = (serviceId >> 8);
-		pmtSection[4] = (serviceId & 0xff);
+		pmtSectionData[3] = (serviceId >> 8);
+		pmtSectionData[4] = (serviceId & 0xff);
 	}
 
 	QString name;
@@ -67,7 +67,7 @@ public:
 	int transportStreamId;
 	int pmtPid;
 
-	QByteArray pmtSection;
+	QByteArray pmtSectionData;
 	int audioPid; // may be -1 (not present)
 	bool hasVideo;
 	bool isScrambled;

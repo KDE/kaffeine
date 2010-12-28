@@ -148,7 +148,7 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 
 	switch (type) {
 	case DvbScan::PatFilter: {
-		DvbPatSection patSection(QByteArray(data, size));
+		DvbPatSection patSection(data, size);
 
 		if (!patSection.isValid() || (patSection.tableId() != 0x0)) {
 			return;
@@ -163,7 +163,7 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		break;
 	    }
 	case DvbScan::PmtFilter: {
-		DvbPmtSection pmtSection(QByteArray(data, size));
+		DvbPmtSection pmtSection(data, size);
 
 		if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2)) {
 			return;
@@ -178,7 +178,7 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		break;
 	    }
 	case DvbScan::SdtFilter: {
-		DvbSdtSection sdtSection(QByteArray(data, size));
+		DvbSdtSection sdtSection(data, size);
 
 		if (!sdtSection.isValid() || (sdtSection.tableId() != 0x42)) {
 			// there are also other tables in the SDT
@@ -194,7 +194,7 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		break;
 	    }
 	case DvbScan::VctFilter: {
-		AtscVctSection vctSection(QByteArray(data, size));
+		AtscVctSection vctSection(data, size);
 
 		if (!vctSection.isValid() ||
 		    ((vctSection.tableId() != 0xc8) && (vctSection.tableId() != 0xc9))) {
@@ -211,7 +211,7 @@ void DvbScanFilter::processSection(const char *data, int size, int crc)
 		break;
 	    }
 	case DvbScan::NitFilter: {
-		DvbNitSection nitSection(QByteArray(data, size));
+		DvbNitSection nitSection(data, size);
 
 		if (!nitSection.isValid() || (nitSection.tableId() != 0x40)) {
 			// we are only interested in the current network
@@ -630,7 +630,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		channel.transponder = transponder;
 		channel.transportStreamId = transportStreamId;
 		channel.pmtPid = pid;
-		channel.pmtSection = section.toByteArray();
+		channel.pmtSectionData = section.toByteArray();
 		channel.snr = snr;
 		channels.append(channel);
 	}

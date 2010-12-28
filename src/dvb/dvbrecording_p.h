@@ -58,6 +58,7 @@ private slots:
 	void insertPatPmt();
 
 private:
+	void pmtSectionChanged();
 	void processData(const char data[188]);
 
 	DvbManager *manager;
@@ -68,7 +69,7 @@ private:
 	DvbDevice *device;
 	QList<int> pids;
 	DvbPmtFilter pmtFilter;
-	DvbPmtSection pmtSection;
+	QByteArray pmtSectionData;
 	DvbSectionGenerator patGenerator;
 	DvbSectionGenerator pmtGenerator;
 	QTimer patPmtTimer;

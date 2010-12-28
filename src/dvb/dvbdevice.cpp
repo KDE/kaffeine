@@ -549,12 +549,18 @@ void DvbDevice::removeSectionFilter(int pid, DvbSectionFilter *filter)
 	cleanUpFilters = true;
 }
 
-void DvbDevice::startDescrambling(const DvbPmtSection &pmtSection, QObject *user)
+void DvbDevice::startDescrambling(const QByteArray &pmtSectionData, QObject *user)
 {
+	DvbPmtSection pmtSection(pmtSectionData);
+
+	if (!pmtSection.isValid()) {
+		kWarning() << "pmt section is not valid";
+	}
+
 	int serviceId = pmtSection.programNumber();
 
 	if (!descramblingServices.contains(serviceId)) {
-		backend->startDescrambling(pmtSection.toByteArray());
+		backend->startDescrambling(pmtSectionData);
 	}
 
 	if (!descramblingServices.contains(serviceId, user)) {
@@ -562,8 +568,16 @@ void DvbDevice::startDescrambling(const DvbPmtSection &pmtSection, QObject *user
 	}
 }
 
-void DvbDevice::stopDescrambling(int serviceId, QObject *user)
+void DvbDevice::stopDescrambling(const QByteArray &pmtSectionData, QObject *user)
 {
+	DvbPmtSection pmtSection(pmtSectionData);
+
+	if (!pmtSection.isValid()) {
+		kWarning() << "pmt section is not valid";
+	}
+
+	int serviceId = pmtSection.programNumber();
+
 	if (!descramblingServices.contains(serviceId, user)) {
 		kWarning() << "service has not been started";
 		return;

@@ -55,12 +55,12 @@ private:
 class DvbLiveViewInternal : public DvbPidFilter
 {
 public:
-	DvbLiveViewInternal() : mediaWidget(NULL), pmtSection(QByteArray()) { }
+	DvbLiveViewInternal() : mediaWidget(NULL) { }
 	~DvbLiveViewInternal() { }
 
 	MediaWidget *mediaWidget;
 	DvbPmtFilter pmtFilter;
-	DvbPmtSection pmtSection;
+	QByteArray pmtSectionData;
 	DvbSectionGenerator patGenerator;
 	DvbSectionGenerator pmtGenerator;
 	QByteArray buffer;

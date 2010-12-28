@@ -23,20 +23,22 @@
 #include <QTextCodec>
 #include <KDebug>
 
-DvbSection::DvbSection(const QByteArray &data) : DvbSectionData(data)
+void DvbSection::initSection(const char *data, int size)
 {
-	if (length < 3) {
-		length = 0;
+	if (size < 3) {
+		initSectionData();
 		return;
 	}
 
-	int sectionLength = (((at(1) & 0xf) << 8) | at(2)) + 3;
+	int sectionLength = ((((static_cast<unsigned char>(data[1]) & 0xf) << 8) |
+		static_cast<unsigned char>(data[2])) + 3);
 
-	if (sectionLength <= length) {
-		length = sectionLength;
-	} else {
-		kDebug() << "adjusting length";
+	if (sectionLength > size) {
+		kDebug() << "adjusting section length";
+		sectionLength = size;
 	}
+
+	initSectionData(data, sectionLength, size);
 }
 
 int DvbStandardSection::verifyCrc32(const char *data, int size)
@@ -136,6 +138,16 @@ const unsigned int DvbStandardSection::crc32Table[] =
 	0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
 };
 
+void DvbStandardSection::initStandardSection(const char *data, int size)
+{
+	if (size < 12) {
+		initSectionData();
+		return;
+	}
+
+	initSection(data, size);
+}
+
 class Iso6937Codec : public QTextCodec
 {
 public:
@@ -225,20 +237,17 @@ const unsigned short Iso6937Codec::table[] = {
 	0x0142, 0x00f8, 0x0153, 0x00df, 0x00fe, 0x0167, 0x014b, 0x00ad
 };
 
-QString DvbSiText::convertText(const DvbSectionData &text)
+QString DvbSiText::convertText(const char *data, int size)
 {
-	const char *data = text.getData();
-	int length = text.getLength();
-
-	if (length < 1) {
+	if (size < 1) {
 		return QString();
 	}
 
 	// determine encoding
 	TextEncoding encoding = (override6937 ? Iso8859_1 : Iso6937);
 
-	if (text.at(0) < 0x20) {
-		switch (text.at(0)) {
+	if (static_cast<unsigned char>(data[0]) < 0x20) {
+		switch (data[0]) {
 		case 0x01: encoding = Iso8859_5; break;
 		case 0x02: encoding = Iso8859_6; break;
 		case 0x03: encoding = Iso8859_7; break;
@@ -250,21 +259,19 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		case 0x09: encoding = Iso8859_13; break;
 		case 0x0a: encoding = Iso8859_14; break;
 		case 0x0b: encoding = Iso8859_15; break;
-
 		case 0x13: encoding = Gb2312; break;
 		case 0x14: encoding = Big5; break;
 		case 0x15: encoding = Utf_8; break;
-
 		case 0x10: {
-			if (length < 3) {
+			if (size < 3) {
 				return QString();
 			}
 
-			if (text.at(1) != 0) {
+			if (data[1] != 0) {
 				return QString();
 			}
 
-			switch (text.at(2)) {
+			switch (data[2]) {
 			case 0x01: encoding = Iso8859_1; break;
 			case 0x02: encoding = Iso8859_2; break;
 			case 0x03: encoding = Iso8859_3; break;
@@ -280,23 +287,20 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 			case 0x0d: encoding = Iso8859_13; break;
 			case 0x0e: encoding = Iso8859_14; break;
 			case 0x0f: encoding = Iso8859_15; break;
-
 			default:
 				return QString();
 			}
 
 			data += 2;
-			length -= 2;
-
+			size -= 2;
 			break;
 		    }
-
 		default:
 			return QString();
 		}
 
 		data++;
-		length--;
+		size--;
 	}
 
 	if (codecTable[encoding] == NULL) {
@@ -331,10 +335,10 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 	if (encoding <= Iso8859_15) {
 		// only strip control codes for one-byte character tables
 
-		char *dest = new char[length];
+		char *dest = new char[size];
 		char *destIt = dest;
 
-		for (const char *it = data; it != (data + length); ++it) {
+		for (const char *it = data; it != (data + size); ++it) {
 			unsigned char value = *it;
 
 			if ((value < 0x80) || (value > 0x9f)) {
@@ -348,7 +352,7 @@ QString DvbSiText::convertText(const DvbSectionData &text)
 		return result;
 	}
 
-	return codecTable[encoding]->toUnicode(data, length);
+	return codecTable[encoding]->toUnicode(data, size);
 }
 
 void DvbSiText::setOverride6937(bool override)
@@ -359,24 +363,25 @@ void DvbSiText::setOverride6937(bool override)
 QTextCodec *DvbSiText::codecTable[EncodingTypeMax + 1] = { NULL };
 bool DvbSiText::override6937 = false;
 
-DvbDescriptor::DvbDescriptor(const DvbSectionData &data) : DvbSectionData(data)
+void DvbDescriptor::initDescriptor(const char *data, int size)
 {
-	if (length < 2) {
-		if (length != 0) {
+	if (size < 2) {
+		if (size != 0) {
 			kDebug() << "invalid descriptor";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	int descriptorLength = at(1) + 2;
+	int descriptorLength = (static_cast<unsigned char>(data[1]) + 2);
 
-	if (descriptorLength <= length) {
-		length = descriptorLength;
-	} else {
-		kDebug() << "adjusting length";
+	if (descriptorLength > size) {
+		kDebug() << "adjusting descriptor length";
+		descriptorLength = size;
 	}
+
+	initSectionData(data, descriptorLength, size);
 }
 
 QString AtscPsipText::interpretTextData(const char *data, unsigned int len,
@@ -411,15 +416,16 @@ QString AtscPsipText::interpretTextData(const char *data, unsigned int len,
 	return result;
 }
 
-QString AtscPsipText::convertText(const DvbSectionData &text)
+QString AtscPsipText::convertText(const char *data, int size)
 {
-	int length = text.getLength();
 	QString result;
 
-	if (length < 1) {
+	if (size < 1) {
 		return QString();
 	}
-	unsigned int num_strings = text.at(0);
+
+	unsigned int num_strings = static_cast<unsigned char>(data[0]);
+
 	if (num_strings == 0) {
 		return result;
 	}
@@ -430,25 +436,31 @@ QString AtscPsipText::convertText(const DvbSectionData &text)
 
 	// First three bytes are the ISO 639 language code
 	offset += 3;
-	if (offset > length) {
+
+	if (offset > size) {
 		kWarning() << "Unexpected end";
 		return result;
 	}
-	int num_segments = text.at(offset++);
+
+	int num_segments = static_cast<unsigned char>(data[offset++]);
+
 	for (int j = 0; j < num_segments; j++) {
-		if (offset + 3 > length) {
+		if ((offset + 3) > size) {
 			kWarning() << "Unexpected end";
 			return result;
 		}
-		int comp_type = text.at(offset++);
-		int mode = text.at(offset++);
-		int num_bytes = text.at(offset++);
-		if (offset + num_bytes > length)
-		{
+
+		int comp_type = static_cast<unsigned char>(data[offset++]);
+		int mode = static_cast<unsigned char>(data[offset++]);
+		int num_bytes = static_cast<unsigned char>(data[offset++]);
+
+		if ((offset + num_bytes) > size) {
 			kWarning() << "Unexpected end";
 			return result;
 		}
-		const char *comp_string = text.getData() + offset;
+
+		const char *comp_string = (data + offset);
+
 		if (comp_type == 0x00) {
 			// Uncompressed
 			result += interpretTextData(comp_string,
@@ -463,8 +475,10 @@ QString AtscPsipText::convertText(const DvbSectionData &text)
 			kWarning() << "Unsupported compression type:" 
 				   << comp_type << "mode:" << mode;
 		}
+
 		offset += num_bytes;
 	}
+
 	return result;
 }
 
@@ -1008,7 +1022,7 @@ const unsigned char AtscHuffmanString::Huffman2Tables[] = {
 void DvbPmtFilter::processSection(const char *data, int size, int crc)
 {
 	Q_UNUSED(crc)
-	DvbPmtSection pmtSection(QByteArray(data, size));
+	DvbPmtSection pmtSection(data, size);
 
 	if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2) ||
 	    (pmtSection.programNumber() != programNumber) ||
@@ -1247,306 +1261,325 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 
 DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 6) {
+	if (getLength() < 6) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 }
 
 DvbSubtitleDescriptor::DvbSubtitleDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 10) {
+	if (getLength() < 10) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 }
 
 DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 5) {
+	if (getLength() < 5) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 
 	providerNameLength = at(3);
 
-	if (providerNameLength > (length - 5)) {
+	if (providerNameLength > (getLength() - 5)) {
 		kDebug() << "adjusting length";
-		providerNameLength = length - 5;
+		providerNameLength = (getLength() - 5);
 	}
 
 	serviceNameLength = at(4 + providerNameLength);
 
-	if (serviceNameLength > (length - (5 + providerNameLength))) {
+	if (serviceNameLength > (getLength() - (5 + providerNameLength))) {
 		kDebug() << "adjusting length";
-		serviceNameLength = length - (5 + providerNameLength);
+		serviceNameLength = (getLength() - (5 + providerNameLength));
 	}
 }
 
 DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 7) {
+	if (getLength() < 7) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 
 	eventNameLength = at(5);
 
-	if (eventNameLength > (length - 7)) {
+	if (eventNameLength > (getLength() - 7)) {
 		kDebug() << "adjusting length";
-		eventNameLength = length - 7;
+		eventNameLength = (getLength() - 7);
 	}
 
 	textLength = at(6 + eventNameLength);
 
-	if (textLength > (length - (7 + eventNameLength))) {
+	if (textLength > (getLength() - (7 + eventNameLength))) {
 		kDebug() << "adjusting length";
-		textLength = length - (7 + eventNameLength);
+		textLength = (getLength() - (7 + eventNameLength));
 	}
 }
 
 DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 8) {
+	if (getLength() < 8) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 
 	itemsLength = at(6);
 
-	if (itemsLength > (length - 8)) {
+	if (itemsLength > (getLength() - 8)) {
 		kDebug() << "adjusting length";
-		itemsLength = length - 8;
+		itemsLength = (getLength() - 8);
 	}
 
 	textLength = at(7 + itemsLength);
 
-	if (textLength > (length - (8 + itemsLength))) {
+	if (textLength > (getLength() - (8 + itemsLength))) {
 		kDebug() << "adjusting length";
-		textLength = length - (8 + itemsLength);
+		textLength = (getLength() - (8 + itemsLength));
 	}
 }
 
 DvbCableDescriptor::DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 13) {
+	if (getLength() < 13) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 }
 
 DvbSatelliteDescriptor::DvbSatelliteDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 13) {
+	if (getLength() < 13) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 }
 
 DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 13) {
+	if (getLength() < 13) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 }
 
 AtscChannelNameDescriptor::AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
-	if (length < 2) {
+	if (getLength() < 2) {
 		kDebug() << "invalid descriptor";
-		length = 0;
+		initSectionData();
 		return;
 	}
 }
 
-DvbPatSectionEntry::DvbPatSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+void DvbPatSectionEntry::initPatSectionEntry(const char *data, int size)
 {
-	if (length < 4) {
-		if (length != 0) {
+	if (size < 4) {
+		if (size != 0) {
 			kDebug() << "invalid entry";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	length = 4;
+	initSectionData(data, 4, size);
 }
 
-DvbPmtSectionEntry::DvbPmtSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+void DvbPmtSectionEntry::initPmtSectionEntry(const char *data, int size)
 {
-	if (length < 5) {
-		if (length != 0) {
+	if (size < 5) {
+		if (size != 0) {
 			kDebug() << "invalid entry";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	int entryLength = (((at(3) & 0xf) << 8) | at(4)) + 5;
+	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) | static_cast<unsigned char>(data[4])) + 5);
 
-	if (entryLength <= length) {
-		length = entryLength;
-	} else {
+	if (entryLength > size) {
 		kDebug() << "adjusting length";
+		entryLength = size;
 	}
+
+	initSectionData(data, entryLength, size);
 }
 
-DvbSdtSectionEntry::DvbSdtSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+void DvbSdtSectionEntry::initSdtSectionEntry(const char *data, int size)
 {
-	if (length < 5) {
-		if (length != 0) {
+	if (size < 5) {
+		if (size != 0) {
 			kDebug() << "invalid entry";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	int entryLength = (((at(3) & 0xf) << 8) | at(4)) + 5;
+	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) |
+		static_cast<unsigned char>(data[4])) + 5);
 
-	if (entryLength <= length) {
-		length = entryLength;
-	} else {
+	if (entryLength > size) {
 		kDebug() << "adjusting length";
+		entryLength = size;
 	}
+
+	initSectionData(data, entryLength, size);
 }
 
-DvbEitSectionEntry::DvbEitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+void DvbEitSectionEntry::initEitSectionEntry(const char *data, int size)
 {
-	if (length < 12) {
-		if (length != 0) {
+	if (size < 12) {
+		if (size != 0) {
 			kDebug() << "invalid entry";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	int entryLength = (((at(10) & 0xf) << 8) | at(11)) + 12;
+	int entryLength = ((((static_cast<unsigned char>(data[10]) & 0xf) << 8) |
+		static_cast<unsigned char>(data[11])) + 12);
 
-	if (entryLength <= length) {
-		length = entryLength;
-	} else {
+	if (entryLength > size) {
 		kDebug() << "adjusting length";
+		entryLength = size;
 	}
+
+	initSectionData(data, entryLength, size);
 }
 
-DvbNitSectionEntry::DvbNitSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 {
-	if (length < 6) {
-		if (length != 0) {
+	if (size < 6) {
+		if (size != 0) {
 			kDebug() << "invalid entry";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	int entryLength = (((at(4) & 0xf) << 8) | at(5)) + 6;
+	int entryLength = ((((static_cast<unsigned char>(data[4]) & 0xf) << 8) |
+		static_cast<unsigned char>(data[5])) + 6);
 
-	if (entryLength <= length) {
-		length = entryLength;
-	} else {
+	if (entryLength > size) {
 		kDebug() << "adjusting length";
+		entryLength = size;
 	}
+
+	initSectionData(data, entryLength, size);
 }
 
-AtscVctSectionEntry::AtscVctSectionEntry(const DvbSectionData &data_) : DvbSectionData(data_)
+void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 {
-	if (length < 32) {
-		if (length != 0) {
+	if (size < 32) {
+		if (size != 0) {
 			kDebug() << "invalid entry";
 		}
 
-		length = 0;
+		initSectionData();
 		return;
 	}
 
-	int entryLength = (((at(30) & 0x3) << 8) | at(31)) + 32;
+	int entryLength = ((((static_cast<unsigned char>(data[30]) & 0xf) << 8) |
+		static_cast<unsigned char>(data[31])) + 32);
 
-	if (entryLength <= length) {
-		length = entryLength;
-	} else {
+	if (entryLength > size) {
 		kDebug() << "adjusting length";
+		entryLength = size;
 	}
+
+	initSectionData(data, entryLength, size);
 }
 
-DvbPatSection::DvbPatSection(const QByteArray &data) : DvbStandardSection(data)
+void DvbPatSection::initPatSection(const char *data, int size)
 {
-	if (length < 12) {
-		length = 0;
-		return;
-	}
-}
-
-DvbPmtSection::DvbPmtSection(const QByteArray &data) : DvbStandardSection(data)
-{
-	if (length < 16) {
-		length = 0;
+	if (size < 12) {
+		initSectionData();
 		return;
 	}
 
+	initStandardSection(data, size);
+}
+
+void DvbPmtSection::initPmtSection(const char *data, int size)
+{
+	if (size < 16) {
+		initSectionData();
+		return;
+	}
+
+	initStandardSection(data, size);
 	descriptorsLength = ((at(10) & 0xf) << 8) | at(11);
 
-	if (descriptorsLength > (length - 16)) {
+	if (descriptorsLength > (getLength() - 16)) {
 		kDebug() << "adjusting length";
-		descriptorsLength = length - 16;
+		descriptorsLength = (getLength() - 16);
 	}
 }
 
-DvbSdtSection::DvbSdtSection(const QByteArray &data) : DvbStandardSection(data)
+void DvbSdtSection::initSdtSection(const char *data, int size)
 {
-	if (length < 15) {
-		length = 0;
+	if (size < 15) {
+		initSectionData();
 		return;
 	}
+
+	initStandardSection(data, size);
 }
 
-DvbEitSection::DvbEitSection(const QByteArray &data) : DvbStandardSection(data)
+void DvbEitSection::initEitSection(const char *data, int size)
 {
-	if (length < 18) {
-		length = 0;
+	if (size < 18) {
+		initSectionData();
 		return;
 	}
+
+	initStandardSection(data, size);
 }
 
-DvbNitSection::DvbNitSection(const QByteArray &data) : DvbStandardSection(data)
+void DvbNitSection::initNitSection(const char *data, int size)
 {
-	if (length < 16) {
-		length = 0;
+	if (size < 16) {
+		initSectionData();
 		return;
 	}
 
+	initStandardSection(data, size);
 	descriptorsLength = ((at(8) & 0xf) << 8) | at(9);
 
-	if (descriptorsLength > (length - 16)) {
+	if (descriptorsLength > (getLength() - 16)) {
 		kDebug() << "adjusting length";
-		descriptorsLength = length - 16;
+		descriptorsLength = (getLength() - 16);
 	}
 
 	entriesLength = ((at(10 + descriptorsLength) & 0xf) << 8) | at(11 + descriptorsLength);
 
-	if (entriesLength > (length - (16 + descriptorsLength))) {
+	if (entriesLength > (getLength() - (16 + descriptorsLength))) {
 		kDebug() << "adjusting length";
-		entriesLength = length - (16 + descriptorsLength);
+		entriesLength = (getLength() - (16 + descriptorsLength));
 	}
 }
 
-AtscVctSection::AtscVctSection(const QByteArray &data) : DvbStandardSection(data)
+void AtscVctSection::initVctSection(const char *data, int size)
 {
-	if (length < 14) {
-		length = 0;
+	if (size < 14) {
+		initSectionData();
 		return;
 	}
+
+	initStandardSection(data, size);
 }
