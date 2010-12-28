@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDomDocument>
 #include <QFile>
+#include <QRegExp>
 
 class Element
 {
@@ -35,6 +36,8 @@ public:
 	Element() { }
 	~Element() { }
 
+	QString toString() const;
+
 	Type type;
 	QString name;
 	int bits;
@@ -44,62 +47,64 @@ public:
 	QString listType;
 };
 
-QTextStream &operator<<(QTextStream &stream, const Element &element)
+QString Element::toString() const
 {
-	if (element.type == Element::Bool) {
-		int bitsLeft = 8 - (element.bitIndex % 8);
+	if (type == Bool) {
+		int bitsLeft = 8 - (bitIndex % 8);
 		int andValue = (1 << (bitsLeft - 1));
-
-		stream << "(at(" << (element.bitIndex / 8) << element.offsetString << ") & 0x" << QString::number(andValue, 16) << ") != 0";
-
-		return stream;
+		return (QString("(at(") + QString::number(bitIndex / 8) + offsetString + ") & 0x" + QString::number(andValue, 16) + ") != 0");
 	}
 
-	if (element.type == Element::List) {
-		stream << (element.bitIndex / 8) << element.offsetString;
-
-		return stream;
+	if (type == List) {
+		return (QString::number(bitIndex / 8) + offsetString);
 	}
 
-	int bitIndex = element.bitIndex;
-	int bits = element.bits;
+	QString result;
+	int currentBitIndex = bitIndex;
+	int currentBits = bits;
 
 	while (true) {
-		int bitsLeft = 8 - (bitIndex % 8);
+		int bitsLeft = 8 - (currentBitIndex % 8);
 		int andValue = (1 << (bitsLeft)) - 1;
-		int leftShift = bits - bitsLeft;
+		int leftShift = currentBits - bitsLeft;
 
 		if (leftShift != 0) {
-			stream << "(";
+			result += "(";
 		}
 
 		if (andValue != 255) {
-			stream << "(";
+			result += "(";
 		}
 
-		stream << "at(" << (bitIndex / 8) << element.offsetString << ")";
+		result += "at(" + QString::number(currentBitIndex / 8) + offsetString + ")";
 
 		if (andValue != 255) {
-			stream << " & 0x" << QString::number(andValue, 16) << ")";
+			result += " & 0x" + QString::number(andValue, 16) + ")";
 		}
 
 		if (leftShift != 0) {
 			if (leftShift > 0) {
-				stream << " << " << leftShift << ")";
+				result += " << " + QString::number(leftShift) + ")";
 			} else {
-				stream << " >> " << (-leftShift) << ")";
+				result += " >> " + QString::number(-leftShift) + ")";
 			}
 		}
 
-		if (bits <= bitsLeft) {
+		if (currentBits <= bitsLeft) {
 			break;
 		}
 
-		stream << " | ";
-		bitIndex += bitsLeft;
-		bits -= bitsLeft;
+		result += " | ";
+		currentBitIndex += bitsLeft;
+		currentBits -= bitsLeft;
 	}
 
+	return result;
+}
+
+QTextStream &operator<<(QTextStream &stream, const Element &element)
+{
+	stream << element.toString();
 	return stream;
 }
 
@@ -196,29 +201,31 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 	}
 
 	QString entryName = node.nodeName();
+	QString initFunctionName = QString(entryName).replace(QRegExp("^Dvb|^Atsc"), "init");
+	bool ignoreFirstNewLine = false;
 
 	switch (type) {
 	case Descriptor:
 		cppStream << "\n";
 		cppStream << entryName << "::" << entryName << "(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)\n";
 		cppStream << "{\n";
-		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
+		cppStream << "\tif (getLength() < " << (minBits / 8) << ") {\n";
 		cppStream << "\t\tkDebug() << \"invalid descriptor\";\n";
-		cppStream << "\t\tlength = 0;\n";
+		cppStream << "\t\tinitSectionData();\n";
 		cppStream << "\t\treturn;\n";
 		cppStream << "\t}\n";
 		break;
 
 	case Entry: {
 		cppStream << "\n";
-		cppStream << entryName << "::" << entryName << "(const DvbSectionData &data_) : DvbSectionData(data_)\n";
+		cppStream << "void " << entryName << "::" << initFunctionName << "(const char *data, int size)\n";
 		cppStream << "{\n";
-		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
-		cppStream << "\t\tif (length != 0) {\n";
+		cppStream << "\tif (size < " << (minBits / 8) << ") {\n";
+		cppStream << "\t\tif (size != 0) {\n";
 		cppStream << "\t\t\tkDebug() << \"invalid entry\";\n";
 		cppStream << "\t\t}\n";
 		cppStream << "\n";
-		cppStream << "\t\tlength = 0;\n";
+		cppStream << "\t\tinitSectionData();\n";
 		cppStream << "\t\treturn;\n";
 		cppStream << "\t}\n";
 		cppStream << "\n";
@@ -237,13 +244,26 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 				return;
 			}
 
-			cppStream << "\tint entryLength = (" << element << ") + " << ((element.bitIndex + element.bits) / 8) << ";\n";
+			QString entryLengthCalculation = element.toString();
+
+			while (true) {
+				int oldSize = entryLengthCalculation.size();
+				entryLengthCalculation.replace(QRegExp("at\\(([0-9]*)\\)"), "static_cast<unsigned char>(data[\\1])");
+
+				if (entryLengthCalculation.size() == oldSize) {
+					break;
+				}
+			}
+
+			cppStream << "\tint entryLength = ((" << entryLengthCalculation << ") + " << ((element.bitIndex + element.bits) / 8) << ");\n";
 			cppStream << "\n";
-			cppStream << "\tif (entryLength <= length) {\n";
-			cppStream << "\t\tlength = entryLength;\n";
-			cppStream << "\t} else {\n";
+			cppStream << "\tif (entryLength > size) {\n";
 			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\tentryLength = size;\n";
 			cppStream << "\t}\n";
+			cppStream << "\n";
+			cppStream << "\tinitSectionData(data, entryLength, size);\n";
+			ignoreFirstNewLine = true;
 
 			elements.removeAt(i);
 			fixedLength = false;
@@ -251,7 +271,8 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		}
 
 		if (fixedLength) {
-			cppStream << "\tlength = " << (minBits / 8) << ";\n";
+			cppStream << "\tinitSectionData(data, " << (minBits / 8) << ", size);\n";
+			ignoreFirstNewLine = true;
 		}
 
 		break;
@@ -259,13 +280,15 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 	case Section:
 		cppStream << "\n";
-		cppStream << entryName << "::" << entryName << "(const QByteArray &data) : DvbStandardSection(data)\n";
+		cppStream << "void " << entryName << "::" << initFunctionName << "(const char *data, int size)\n";
 		cppStream << "{\n";
-		cppStream << "\tif (length < " << (minBits / 8) << ") {\n";
-		cppStream << "\t\tlength = 0;\n";
+		cppStream << "\tif (size < " << (minBits / 8) << ") {\n";
+		cppStream << "\t\tinitSectionData();\n";
 		cppStream << "\t\treturn;\n";
 		cppStream << "\t}\n";
-
+		cppStream << "\n";
+		cppStream << "\tinitStandardSection(data, size);\n";
+		ignoreFirstNewLine = true;
 		break;
 	}
 
@@ -283,18 +306,23 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 			return;
 		}
 
-		cppStream << "\n";
+		if (ignoreFirstNewLine) {
+			ignoreFirstNewLine = false;
+		} else {
+			cppStream << "\n";
+		}
+
 		cppStream << "\t" << element.name << "Length = " << elements.at(i - 1) << ";\n";
 		cppStream << "\n";
 
 		if (element.offsetString.isEmpty()) {
-			cppStream << "\tif (" << element.name << "Length > (length - " << (minBits / 8) << ")) {\n";
+			cppStream << "\tif (" << element.name << "Length > (getLength() - " << (minBits / 8) << ")) {\n";
 			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
-			cppStream << "\t\t" << element.name << "Length = length - " << (minBits / 8) << ";\n";
+			cppStream << "\t\t" << element.name << "Length = (getLength() - " << (minBits / 8) << ");\n";
 		} else {
-			cppStream << "\tif (" << element.name << "Length > (length - (" << (minBits / 8) << element.offsetString << "))) {\n";
+			cppStream << "\tif (" << element.name << "Length > (getLength() - (" << (minBits / 8) << element.offsetString << "))) {\n";
 			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
-			cppStream << "\t\t" << element.name << "Length = length - (" << (minBits / 8) << element.offsetString << ");\n";
+			cppStream << "\t\t" << element.name << "Length = (getLength() - (" << (minBits / 8) << element.offsetString << "));\n";
 		}
 
 		cppStream << "\t}\n";
@@ -321,7 +349,11 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		headerStream << "class " << entryName << " : public DvbSectionData\n";
 		headerStream << "{\n";
 		headerStream << "public:\n";
-		headerStream << "\texplicit " << entryName << "(const DvbSectionData &data_);\n";
+		headerStream << "\t" << entryName << "(const char *data, int size)\n";
+		headerStream << "\t{\n";
+		headerStream << "\t\t" << initFunctionName << "(data, size);\n";
+		headerStream << "\t}\n";
+		headerStream << "\n";
 		break;
 
 	case Section:
@@ -329,7 +361,16 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		headerStream << "class " << entryName << " : public DvbStandardSection\n";
 		headerStream << "{\n";
 		headerStream << "public:\n";
-		headerStream << "\texplicit " << entryName << "(const QByteArray &data);\n";
+		headerStream << "\t" << entryName << "(const char *data, int size)\n";
+		headerStream << "\t{\n";
+		headerStream << "\t\t" << initFunctionName << "(data, size);\n";
+		headerStream << "\t}\n";
+		headerStream << "\n";
+		headerStream << "\texplicit " << entryName << "(const QByteArray &byteArray)\n";
+		headerStream << "\t{\n";
+		headerStream << "\t\t" << initFunctionName << "(byteArray.constData(), byteArray.size());\n";
+		headerStream << "\t}\n";
+		headerStream << "\n";
 		break;
 	}
 
@@ -339,7 +380,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		headerStream << "\n";
 		headerStream << "\tvoid advance()\n";
 		headerStream << "\t{\n";
-		headerStream << "\t\t*this = " << entryName << "(next());\n";
+		headerStream << "\t\t" << initFunctionName << "(getData() + getLength(), getSize() - getLength());\n";
 		headerStream << "\t}\n";
 	}
 
@@ -382,27 +423,27 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 				headerStream << "\n";
 				headerStream << "\tQString " << element.name << "() const\n";
 				headerStream << "\t{\n";
-				headerStream << "\t\treturn DvbSiText::convertText(subArray(" << element << ", ";
+				headerStream << "\t\treturn DvbSiText::convertText(getData() + " << element << ", ";
 			} else if (element.listType == "AtscString") {
 				headerStream << "\n";
 				headerStream << "\tQString " << element.name << "() const\n";
 				headerStream << "\t{\n";
-				headerStream << "\t\treturn AtscPsipText::convertText(subArray(" << element << ", ";
+				headerStream << "\t\treturn AtscPsipText::convertText(getData() + " << element << ", ";
 			} else {
 				headerStream << "\n";
 				headerStream << "\t" << element.listType << " " << element.name << "() const\n";
 				headerStream << "\t{\n";
-				headerStream << "\t\treturn " << element.listType << "(subArray(" << element << ", ";
+				headerStream << "\t\treturn " << element.listType << "(getData() + " << element << ", ";
 			}
 
 			if (element.lengthFunc.isEmpty()) {
 				if (element.offsetString.isEmpty()) {
-					headerStream << "length - " << (minBits / 8) << "));\n";
+					headerStream << "getLength() - " << (minBits / 8) << ");\n";
 				} else {
-					headerStream << "length - (" << (minBits / 8) << element.offsetString << ")));\n";
+					headerStream << "getLength() - (" << (minBits / 8) << element.offsetString << "));\n";
 				}
 			} else {
-				headerStream << element.name << "Length));\n";
+				headerStream << element.name << "Length);\n";
 			}
 
 			headerStream << "\t}\n";
@@ -410,9 +451,19 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		}
 	}
 
+	headerStream << "\n";
+	headerStream << "private:\n";
+
+	if ((type == Descriptor) || (type == Section)) {
+		headerStream << "\tQ_DISABLE_COPY(" << entryName << ")\n";
+	}
+
+	if ((type == Entry) || (type == Section)) {
+		headerStream << "\tvoid " << initFunctionName << "(const char *data, int size);\n";
+	}
+
 	if (!privateVars.isEmpty()) {
-		headerStream << "\n";
-		headerStream << "private:\n";
+		headerStream << '\n';
 
 		foreach (const QString &privateVar, privateVars) {
 			headerStream << "\tint " << privateVar << ";\n";

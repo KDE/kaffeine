@@ -48,7 +48,7 @@ public:
 	// DvbTransponder transponder;
 	// int transportStreamId;
 	// int pmtPid;
-	// QByteArray pmtSection;
+	// QByteArray pmtSectionData;
 	// bool hasVideo;
 	QList<int> audioPids;
 	int snr; // percent

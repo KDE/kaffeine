@@ -1428,8 +1428,7 @@ void DvbSdtSectionEntry::initSdtSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) |
-		static_cast<unsigned char>(data[4])) + 5);
+	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) | static_cast<unsigned char>(data[4])) + 5);
 
 	if (entryLength > size) {
 		kDebug() << "adjusting length";
@@ -1450,8 +1449,7 @@ void DvbEitSectionEntry::initEitSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[10]) & 0xf) << 8) |
-		static_cast<unsigned char>(data[11])) + 12);
+	int entryLength = ((((static_cast<unsigned char>(data[10]) & 0xf) << 8) | static_cast<unsigned char>(data[11])) + 12);
 
 	if (entryLength > size) {
 		kDebug() << "adjusting length";
@@ -1472,8 +1470,7 @@ void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[4]) & 0xf) << 8) |
-		static_cast<unsigned char>(data[5])) + 6);
+	int entryLength = ((((static_cast<unsigned char>(data[4]) & 0xf) << 8) | static_cast<unsigned char>(data[5])) + 6);
 
 	if (entryLength > size) {
 		kDebug() << "adjusting length";
@@ -1494,8 +1491,7 @@ void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[30]) & 0xf) << 8) |
-		static_cast<unsigned char>(data[31])) + 32);
+	int entryLength = ((((static_cast<unsigned char>(data[30]) & 0x3) << 8) | static_cast<unsigned char>(data[31])) + 32);
 
 	if (entryLength > size) {
 		kDebug() << "adjusting length";

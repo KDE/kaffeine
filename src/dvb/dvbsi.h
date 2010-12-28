@@ -832,6 +832,11 @@ public:
 		initPatSection(data, size);
 	}
 
+	explicit DvbPatSection(const QByteArray &byteArray)
+	{
+		initPatSection(byteArray.constData(), byteArray.size());
+	}
+
 	~DvbPatSection() { }
 
 	int transportStreamId() const
@@ -894,6 +899,11 @@ public:
 		initSdtSection(data, size);
 	}
 
+	explicit DvbSdtSection(const QByteArray &byteArray)
+	{
+		initSdtSection(byteArray.constData(), byteArray.size());
+	}
+
 	~DvbSdtSection() { }
 
 	int originalNetworkId() const
@@ -917,6 +927,11 @@ public:
 	DvbEitSection(const char *data, int size)
 	{
 		initEitSection(data, size);
+	}
+
+	explicit DvbEitSection(const QByteArray &byteArray)
+	{
+		initEitSection(byteArray.constData(), byteArray.size());
 	}
 
 	~DvbEitSection() { }
@@ -954,6 +969,11 @@ public:
 		initNitSection(data, size);
 	}
 
+	explicit DvbNitSection(const QByteArray &byteArray)
+	{
+		initNitSection(byteArray.constData(), byteArray.size());
+	}
+
 	~DvbNitSection() { }
 
 	DvbDescriptor descriptors() const
@@ -980,6 +1000,11 @@ public:
 	AtscVctSection(const char *data, int size)
 	{
 		initVctSection(data, size);
+	}
+
+	explicit AtscVctSection(const QByteArray &byteArray)
+	{
+		initVctSection(byteArray.constData(), byteArray.size());
 	}
 
 	~AtscVctSection() { }
