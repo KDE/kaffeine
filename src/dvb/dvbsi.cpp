@@ -34,7 +34,7 @@ void DvbSection::initSection(const char *data, int size)
 		static_cast<unsigned char>(data[2])) + 3);
 
 	if (sectionLength > size) {
-		kDebug() << "adjusting section length";
+		kDebug() << "adjusting length";
 		sectionLength = size;
 	}
 
@@ -377,7 +377,7 @@ void DvbDescriptor::initDescriptor(const char *data, int size)
 	int descriptorLength = (static_cast<unsigned char>(data[1]) + 2);
 
 	if (descriptorLength > size) {
-		kDebug() << "adjusting descriptor length";
+		kDebug() << "adjusting length";
 		descriptorLength = size;
 	}
 
@@ -438,7 +438,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 	offset += 3;
 
 	if (offset > size) {
-		kWarning() << "Unexpected end";
+		kDebug() << "adjusting length";
 		return result;
 	}
 
@@ -446,7 +446,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 
 	for (int j = 0; j < num_segments; j++) {
 		if ((offset + 3) > size) {
-			kWarning() << "Unexpected end";
+			kDebug() << "adjusting length";
 			return result;
 		}
 
@@ -455,7 +455,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 		int num_bytes = static_cast<unsigned char>(data[offset++]);
 
 		if ((offset + num_bytes) > size) {
-			kWarning() << "Unexpected end";
+			kDebug() << "adjusting length";
 			return result;
 		}
 
@@ -472,8 +472,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 			result +=
 				AtscHuffmanString::convertText(comp_string, num_bytes, comp_type);
 		} else {
-			kWarning() << "Unsupported compression type:" 
-				   << comp_type << "mode:" << mode;
+			kWarning() << "Unsupported compression / mode:" << comp_type << mode;
 		}
 
 		offset += num_bytes;
@@ -1204,11 +1203,12 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 		case 0x02: // MPEG2 video
 		case 0x10: // MPEG4 video
 		case 0x1b: // H264 video
-			if (videoPid != -1) {
+			if (videoPid < 0) {
+				videoPid = entry.pid();
+			} else {
 				kDebug() << "more than one video pid";
 			}
 
-			videoPid = entry.pid();
 			break;
 
 		case 0x03: // MPEG1 audio
@@ -1222,11 +1222,11 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 
 		case 0x06: // private data - can be teletext, subtitle, ac3 or something else
 			if (teletextPresent) {
-				if (teletextPid != -1) {
+				if (teletextPid < 0) {
+					teletextPid = entry.pid();
+				} else {
 					kDebug() << "more than one teletext pid";
 				}
-
-				teletextPid = entry.pid();
 			}
 
 			if (!subtitleLanguage.isEmpty()) {
