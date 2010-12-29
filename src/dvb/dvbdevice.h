@@ -32,7 +32,6 @@ class DvbConfigBase;
 class DvbDataDumper;
 class DvbDeviceDataBuffer;
 class DvbFilterInternal;
-class DvbPmtSection;
 class DvbSectionFilterInternal;
 
 class DvbDummyPidFilter : public DvbPidFilter

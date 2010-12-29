@@ -490,7 +490,8 @@ void DvbLiveView::pmtSectionChanged()
 
 void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 {
-	DvbPmtParser pmtParser(DvbPmtSection(internal->pmtSectionData));
+	DvbPmtSection pmtSection(internal->pmtSectionData);
+	DvbPmtParser pmtParser(pmtSection);
 	QSet<int> newPids;
 	bool updatePatPmt = forcePatPmtUpdate;
 	bool isTimeShifting = internal->timeShiftFile.isOpen();
@@ -541,7 +542,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	}
 
 	if (updatePatPmt) {
-		internal->pmtGenerator.initPmt(channel->pmtPid, DvbPmtSection(internal->pmtSectionData), pids);
+		internal->pmtGenerator.initPmt(channel->pmtPid, pmtSection, pids);
 		insertPatPmt();
 	}
 }
