@@ -320,6 +320,47 @@ public:
 	int teletextPid;
 };
 
+class AtscEitSectionEntry : public DvbSectionData
+{
+public:
+	AtscEitSectionEntry(const char *data, int size)
+	{
+		initEitSectionEntry(data, size);
+	}
+
+	~AtscEitSectionEntry() { }
+
+	void advance()
+	{
+		initEitSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int eventId() const
+	{
+		return ((at(0) & 0x3f) << 8) | at(1);
+	}
+
+	int startTime() const
+	{
+		return (at(2) << 24) | (at(3) << 16) | (at(4) << 8) | at(5);
+	}
+
+	int duration() const
+	{
+		return ((at(6) & 0xf) << 16) | (at(7) << 8) | at(8);
+	}
+
+	QString title() const
+	{
+		return AtscPsipText::convertText(getData() + 10, titleLength);
+	}
+
+private:
+	void initEitSectionEntry(const char *data, int size);
+
+	int titleLength;
+};
+
 // everything below this line is automatically generated
 
 class DvbLanguageDescriptor : public DvbDescriptor
@@ -1087,6 +1128,81 @@ public:
 private:
 	Q_DISABLE_COPY(AtscVctSection)
 	void initVctSection(const char *data, int size);
+};
+
+class AtscEitSection : public DvbStandardSection
+{
+public:
+	AtscEitSection(const char *data, int size)
+	{
+		initEitSection(data, size);
+	}
+
+	explicit AtscEitSection(const QByteArray &byteArray)
+	{
+		initEitSection(byteArray.constData(), byteArray.size());
+	}
+
+	~AtscEitSection() { }
+
+	int sourceId() const
+	{
+		return (at(3) << 8) | at(4);
+	}
+
+	int entryCount() const
+	{
+		return at(9);
+	}
+
+	AtscEitSectionEntry entries() const
+	{
+		return AtscEitSectionEntry(getData() + 10, getLength() - 14);
+	}
+
+private:
+	Q_DISABLE_COPY(AtscEitSection)
+	void initEitSection(const char *data, int size);
+};
+
+class AtscEttSection : public DvbStandardSection
+{
+public:
+	AtscEttSection(const char *data, int size)
+	{
+		initEttSection(data, size);
+	}
+
+	explicit AtscEttSection(const QByteArray &byteArray)
+	{
+		initEttSection(byteArray.constData(), byteArray.size());
+	}
+
+	~AtscEttSection() { }
+
+	int sourceId() const
+	{
+		return (at(9) << 8) | at(10);
+	}
+
+	int eventId() const
+	{
+		return (at(11) << 6) | (at(12) >> 2);
+	}
+
+	int messageType() const
+	{
+		return (at(12) & 0x3);
+	}
+
+	QString text() const
+	{
+		return AtscPsipText::convertText(getData() + 13, getLength() - 17);
+	}
+
+private:
+	Q_DISABLE_COPY(AtscEttSection)
+	void initEttSection(const char *data, int size);
 };
 
 #endif /* DVBSI_H */

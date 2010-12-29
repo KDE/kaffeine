@@ -1285,6 +1285,36 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 	}
 }
 
+void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
+{
+	if (size < 12) {
+		if (size != 0) {
+			kDebug() << "invalid entry";
+		}
+
+		initSectionData();
+		return;
+	}
+
+	titleLength = static_cast<unsigned char>(data[9]);
+
+	if (titleLength > (size - 12)) {
+		kDebug() << "adjusting length";
+		titleLength = (size - 12);
+	}
+
+	// too ugly to be automatically generated
+	int entryLength = ((((static_cast<unsigned char>(data[10 + titleLength]) & 0xf) << 8) |
+		static_cast<unsigned char>(data[11 + titleLength])) + 12 + titleLength);
+
+	if (entryLength > size) {
+		kDebug() << "adjusting length";
+		entryLength = size;
+	}
+
+	initSectionData(data, entryLength, size);
+}
+
 // everything below this line is automatically generated
 
 DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
@@ -1632,6 +1662,26 @@ void AtscMgtSection::initMgtSection(const char *data, int size)
 void AtscVctSection::initVctSection(const char *data, int size)
 {
 	if (size < 14) {
+		initSectionData();
+		return;
+	}
+
+	initStandardSection(data, size);
+}
+
+void AtscEitSection::initEitSection(const char *data, int size)
+{
+	if (size < 14) {
+		initSectionData();
+		return;
+	}
+
+	initStandardSection(data, size);
+}
+
+void AtscEttSection::initEttSection(const char *data, int size)
+{
+	if (size < 17) {
 		initSectionData();
 		return;
 	}
