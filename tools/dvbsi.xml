@@ -118,6 +118,17 @@
       <entryLength bits="12" type="int"/>
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </DvbNitSectionEntry>
+    <AtscMgtSectionEntry>
+      <tableType bits="16" type="int"/>
+      <unused bits="3"/>
+      <pid bits="13" type="int"/>
+      <unused bits="3"/>
+      <unused bits="5"/>
+      <unused bits="32"/>
+      <unused bits="4"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </AtscMgtSectionEntry>
     <AtscVctSectionEntry>
       <shortName1 bits="16" type="int"/>
       <shortName2 bits="16" type="int"/>
@@ -178,6 +189,11 @@
       <entriesLength bits="12" type="int"/>
       <entries listType="DvbNitSectionEntry" lengthFunc="entriesLength" type="list"/>
     </DvbNitSection>
+    <AtscMgtSection>
+      <unused bits="8"/>
+      <entryCount bits="16" type="int"/>
+      <entries listType="AtscMgtSectionEntry" lengthFunc="" type="list"/>
+    </AtscMgtSection>
     <AtscVctSection>
       <unused bits="8"/>
       <entryCount bits="8" type="int"/>

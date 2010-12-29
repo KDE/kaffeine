@@ -1508,6 +1508,27 @@ void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 	initSectionData(data, entryLength, size);
 }
 
+void AtscMgtSectionEntry::initMgtSectionEntry(const char *data, int size)
+{
+	if (size < 11) {
+		if (size != 0) {
+			kDebug() << "invalid entry";
+		}
+
+		initSectionData();
+		return;
+	}
+
+	int entryLength = ((((static_cast<unsigned char>(data[9]) & 0xf) << 8) | static_cast<unsigned char>(data[10])) + 11);
+
+	if (entryLength > size) {
+		kDebug() << "adjusting length";
+		entryLength = size;
+	}
+
+	initSectionData(data, entryLength, size);
+}
+
 void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 {
 	if (size < 32) {
@@ -1596,6 +1617,16 @@ void DvbNitSection::initNitSection(const char *data, int size)
 		kDebug() << "adjusting length";
 		entriesLength = (getLength() - (16 + descriptorsLength));
 	}
+}
+
+void AtscMgtSection::initMgtSection(const char *data, int size)
+{
+	if (size < 15) {
+		initSectionData();
+		return;
+	}
+
+	initStandardSection(data, size);
 }
 
 void AtscVctSection::initVctSection(const char *data, int size)

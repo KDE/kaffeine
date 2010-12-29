@@ -741,6 +741,40 @@ private:
 	void initNitSectionEntry(const char *data, int size);
 };
 
+class AtscMgtSectionEntry : public DvbSectionData
+{
+public:
+	AtscMgtSectionEntry(const char *data, int size)
+	{
+		initMgtSectionEntry(data, size);
+	}
+
+	~AtscMgtSectionEntry() { }
+
+	void advance()
+	{
+		initMgtSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int tableType() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	int pid() const
+	{
+		return ((at(2) & 0x1f) << 8) | at(3);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 11, getLength() - 11);
+	}
+
+private:
+	void initMgtSectionEntry(const char *data, int size);
+};
+
 class AtscVctSectionEntry : public DvbSectionData
 {
 public:
@@ -993,6 +1027,36 @@ private:
 
 	int descriptorsLength;
 	int entriesLength;
+};
+
+class AtscMgtSection : public DvbStandardSection
+{
+public:
+	AtscMgtSection(const char *data, int size)
+	{
+		initMgtSection(data, size);
+	}
+
+	explicit AtscMgtSection(const QByteArray &byteArray)
+	{
+		initMgtSection(byteArray.constData(), byteArray.size());
+	}
+
+	~AtscMgtSection() { }
+
+	int entryCount() const
+	{
+		return (at(9) << 8) | at(10);
+	}
+
+	AtscMgtSectionEntry entries() const
+	{
+		return AtscMgtSectionEntry(getData() + 11, getLength() - 15);
+	}
+
+private:
+	Q_DISABLE_COPY(AtscMgtSection)
+	void initMgtSection(const char *data, int size);
 };
 
 class AtscVctSection : public DvbStandardSection
