@@ -262,7 +262,7 @@ class DvbPmtFilter : public QObject, public DvbSectionFilter
 {
 	Q_OBJECT
 public:
-	DvbPmtFilter() : programNumber(-1), versionNumber(-1) { }
+	DvbPmtFilter();
 	~DvbPmtFilter() { }
 
 	void setProgramNumber(int programNumber_)
@@ -271,13 +271,14 @@ public:
 	}
 
 signals:
-	void pmtSectionChanged(const DvbPmtSection &pmtSection);
+	void pmtSectionChanged(const QByteArray &pmtSectionData);
 
 private:
 	void processSection(const char *data, int size, int crc);
 
 	int programNumber;
-	int versionNumber;
+	QByteArray lastPmtSectionData;
+	int wrongCrcs[4];
 };
 
 class DvbSectionGenerator

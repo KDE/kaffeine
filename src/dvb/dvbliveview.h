@@ -48,7 +48,7 @@ public slots:
 	void toggleOsd();
 
 private slots:
-	void pmtSectionChanged(const DvbPmtSection &pmtSection);
+	void pmtSectionChanged(const QByteArray &pmtSectionData);
 	void insertPatPmt();
 	void deviceStateChanged();
 	void changeAudioStream(int index);
@@ -62,7 +62,6 @@ private slots:
 private:
 	void startDevice();
 	void stopDevice();
-	void pmtSectionChanged();
 	void updatePids(bool forcePatPmtUpdate = false);
 
 	DvbManager *manager;

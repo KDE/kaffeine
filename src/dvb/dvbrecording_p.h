@@ -54,11 +54,10 @@ public:
 
 private slots:
 	void deviceStateChanged();
-	void pmtSectionChanged(const DvbPmtSection &pmtSection);
+	void pmtSectionChanged(const QByteArray &pmtSectionData_);
 	void insertPatPmt();
 
 private:
-	void pmtSectionChanged();
 	void processData(const char data[188]);
 
 	DvbManager *manager;

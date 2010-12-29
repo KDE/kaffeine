@@ -381,8 +381,8 @@ DvbRecording::DvbRecording(DvbManager *manager_, const DvbRecordingEntry &entry_
 	manager(manager_), device(NULL), pmtValid(false)
 {
 	setEntry(entry_);
-	connect(&pmtFilter, SIGNAL(pmtSectionChanged(DvbPmtSection)),
-		this, SLOT(pmtSectionChanged(DvbPmtSection)));
+	connect(&pmtFilter, SIGNAL(pmtSectionChanged(QByteArray)),
+		this, SLOT(pmtSectionChanged(QByteArray)));
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 }
 
@@ -563,26 +563,9 @@ void DvbRecording::deviceStateChanged()
 	}
 }
 
-void DvbRecording::pmtSectionChanged(const DvbPmtSection &pmtSection)
+void DvbRecording::pmtSectionChanged(const QByteArray &pmtSectionData_)
 {
-	pmtSectionData = pmtSection.toByteArray();
-	pmtSectionChanged();
-}
-
-void DvbRecording::insertPatPmt()
-{
-	if (!pmtValid) {
-		pmtSectionData = channel->pmtSectionData;
-		pmtSectionChanged();
-		return;
-	}
-
-	file.write(patGenerator.generatePackets());
-	file.write(pmtGenerator.generatePackets());
-}
-
-void DvbRecording::pmtSectionChanged()
-{
+	pmtSectionData = pmtSectionData_;
 	DvbPmtSection pmtSection(pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
 	QSet<int> newPids;
@@ -638,6 +621,17 @@ void DvbRecording::pmtSectionChanged()
 	if (channel->isScrambled) {
 		device->startDescrambling(pmtSectionData, this);
 	}
+}
+
+void DvbRecording::insertPatPmt()
+{
+	if (!pmtValid) {
+		pmtSectionChanged(channel->pmtSectionData);
+		return;
+	}
+
+	file.write(patGenerator.generatePackets());
+	file.write(pmtGenerator.generatePackets());
 }
 
 void DvbRecording::processData(const char data[188])

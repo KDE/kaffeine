@@ -1018,19 +1018,47 @@ const unsigned char AtscHuffmanString::Huffman2Tables[] = {
 	0x02, 0x03, 0x04, 0x05, 0x9b, 0x9b, 0x9b, 0x9b,
 	0x9b, 0x9b, 0x9b, 0x9b, 0x9b, 0x9b };
 
+DvbPmtFilter::DvbPmtFilter() : programNumber(-1)
+{
+	memset(wrongCrcs, sizeof(wrongCrcs), 0);
+}
+
 void DvbPmtFilter::processSection(const char *data, int size, int crc)
 {
-	Q_UNUSED(crc)
 	DvbPmtSection pmtSection(data, size);
 
 	if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2) ||
-	    (pmtSection.programNumber() != programNumber) ||
-	    (pmtSection.versionNumber() == versionNumber)) {
+	    (pmtSection.programNumber() != programNumber)) {
 		return;
 	}
 
-	versionNumber = pmtSection.versionNumber();
-	emit pmtSectionChanged(pmtSection);
+	if (crc != 0) {
+		bool found = false;
+
+		for (uint i = 0; i < (sizeof(wrongCrcs) / sizeof(wrongCrcs[0])); ++i) {
+			if (wrongCrcs[i] == crc) {
+				found = true;
+				break;
+			}
+		}
+
+		if (!found) {
+			for (uint i = 1; i < (sizeof(wrongCrcs) / sizeof(wrongCrcs[0])); ++i) {
+				wrongCrcs[i] = wrongCrcs[i - 1];
+			}
+
+			wrongCrcs[0] = crc;
+			return;
+		}
+	}
+
+	if ((size == lastPmtSectionData.size()) &&
+	    (memcmp(data, lastPmtSectionData.constData(), size) == 0)) {
+		return;
+	}
+
+	lastPmtSectionData = pmtSection.toByteArray();
+	emit pmtSectionChanged(lastPmtSectionData);
 }
 
 void DvbSectionGenerator::initPat(int transportStreamId, int programNumber, int pmtPid)
