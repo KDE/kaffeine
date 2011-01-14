@@ -703,10 +703,8 @@ OsdWidget *MediaWidget::getOsdWidget()
 
 void MediaWidget::playDvb(const QString &channelName)
 {
-	if (dvbFeed != NULL) {
-		delete dvbFeed;
-		dvbFeed = NULL;
-	}
+	delete dvbFeed;
+	dvbFeed = NULL;
 
 	seekableChanged(false);
 	totalTimeChanged(0);

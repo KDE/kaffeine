@@ -141,10 +141,8 @@ void DvbLinuxCam::stopCa()
 	ready = false;
 	eventPosted = false;
 
-	if (socketNotifier != NULL) {
-		delete socketNotifier;
-		socketNotifier = NULL;
-	}
+	delete socketNotifier;
+	socketNotifier = NULL;
 
 	pollTimer.stop();
 
