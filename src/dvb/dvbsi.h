@@ -168,15 +168,13 @@ private:
 		Iso8859_9	=  9,
 		Iso8859_10	= 10,
 		Iso8859_11	= 11,
-		Iso8859_12	= 12,
-		Iso8859_13	= 13,
-		Iso8859_14	= 14,
-		Iso8859_15	= 15,
-		Gb2312		= 16,
-		Big5		= 17,
-		Utf_8		= 18,
-
-		EncodingTypeMax	= 18
+		Iso8859_13	= 12,
+		Iso8859_14	= 13,
+		Iso8859_15	= 14,
+		Gb2312		= 15,
+		Big5		= 16,
+		Utf_8		= 17,
+		EncodingTypeMax	= 17
 	};
 
 	static QTextCodec *codecTable[EncodingTypeMax + 1];

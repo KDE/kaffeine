@@ -255,7 +255,6 @@ QString DvbSiText::convertText(const char *data, int size)
 		case 0x05: encoding = Iso8859_9; break;
 		case 0x06: encoding = Iso8859_10; break;
 		case 0x07: encoding = Iso8859_11; break;
-		case 0x08: encoding = Iso8859_12; break;
 		case 0x09: encoding = Iso8859_13; break;
 		case 0x0a: encoding = Iso8859_14; break;
 		case 0x0b: encoding = Iso8859_15; break;
@@ -283,7 +282,6 @@ QString DvbSiText::convertText(const char *data, int size)
 			case 0x09: encoding = Iso8859_9; break;
 			case 0x0a: encoding = Iso8859_10; break;
 			case 0x0b: encoding = Iso8859_11; break;
-			case 0x0c: encoding = Iso8859_12; break;
 			case 0x0d: encoding = Iso8859_13; break;
 			case 0x0e: encoding = Iso8859_14; break;
 			case 0x0f: encoding = Iso8859_15; break;
@@ -319,7 +317,6 @@ QString DvbSiText::convertText(const char *data, int size)
 		case Iso8859_9: codec = QTextCodec::codecForName("ISO 8859-9"); break;
 		case Iso8859_10: codec = QTextCodec::codecForName("ISO 8859-10"); break;
 		case Iso8859_11: codec = QTextCodec::codecForName("ISO 8859-11"); break;
-		case Iso8859_12: codec = QTextCodec::codecForName("ISO 8859-12"); break;
 		case Iso8859_13: codec = QTextCodec::codecForName("ISO 8859-13"); break;
 		case Iso8859_14: codec = QTextCodec::codecForName("ISO 8859-14"); break;
 		case Iso8859_15: codec = QTextCodec::codecForName("ISO 8859-15"); break;
