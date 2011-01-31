@@ -20,6 +20,7 @@
 
 #include "mainwindow.h"
 
+#include <QComboBox>
 #include <QDBusConnection>
 #include <QHoverEvent>
 #include <QLabel>
@@ -147,6 +148,16 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 class ConfigurationDialog : public KDialog
 {
 public:
+	enum StartupDisplayMode {
+		StartupNormalMode,
+		StartupMinimalMode,
+		StartupFullScreenMode,
+		StartupRememberLastSetting
+	};
+
+	static StartupDisplayMode getStartupDisplayMode();
+	static void setStartupDisplayMode(StartupDisplayMode startupDisplayMode);
+
 	ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *parent);
 	~ConfigurationDialog();
 
@@ -154,9 +165,38 @@ public:
 
 private:
 	MediaWidget *mediaWidget;
+	QComboBox *startupDisplayModeBox;
 	QSpinBox *shortSkipBox;
 	QSpinBox *longSkipBox;
 };
+
+ConfigurationDialog::StartupDisplayMode ConfigurationDialog::getStartupDisplayMode()
+{
+	StartupDisplayMode startupDisplayMode = StartupNormalMode;
+
+	switch (KGlobal::config()->group("MainWindow").readEntry("StartupDisplayMode", 0)) {
+	case 0: startupDisplayMode = StartupNormalMode; break;
+	case 1: startupDisplayMode = StartupMinimalMode; break;
+	case 2: startupDisplayMode = StartupFullScreenMode; break;
+	case 3: startupDisplayMode = StartupRememberLastSetting; break;
+	}
+
+	return startupDisplayMode;
+}
+
+void ConfigurationDialog::setStartupDisplayMode(StartupDisplayMode startupDisplayMode)
+{
+	int value = 0;
+
+	switch (startupDisplayMode) {
+	case StartupNormalMode: value = 0; break;
+	case StartupMinimalMode: value = 1; break;
+	case StartupFullScreenMode: value = 2; break;
+	case StartupRememberLastSetting: value = 3; break;
+	}
+
+	KGlobal::config()->group("MainWindow").writeEntry("StartupDisplayMode", value);
+}
 
 ConfigurationDialog::ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *parent) :
 	KDialog(parent), mediaWidget(mediaWidget_)
@@ -166,21 +206,45 @@ ConfigurationDialog::ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *par
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
 
+	gridLayout->addWidget(new QLabel(i18nc("@label:listbox", "Startup display mode:"), widget),
+		0, 0);
+
+	int index = 0;
+
+	switch (getStartupDisplayMode()) {
+	case StartupNormalMode: index = 0; break;
+	case StartupMinimalMode: index = 1; break;
+	case StartupFullScreenMode: index = 2; break;
+	case StartupRememberLastSetting: index = 3; break;
+	}
+
+	startupDisplayModeBox = new QComboBox(widget);
+	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
+		"Normal Mode"));
+	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
+		"Minimal Mode"));
+	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
+		"Full Screen Mode"));
+	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
+		"Remember Last Setting"));
+	startupDisplayModeBox->setCurrentIndex(index);
+	gridLayout->addWidget(startupDisplayModeBox, 0, 1);
+
 	gridLayout->addWidget(new QLabel(i18nc("'Configure Kaffeine' dialog",
-		"Short skip duration:"), widget), 0, 0);
+		"Short skip duration:"), widget), 1, 0);
 
 	shortSkipBox = new QSpinBox(widget);
 	shortSkipBox->setRange(1, 600);
 	shortSkipBox->setValue(mediaWidget->getShortSkipDuration());
-	gridLayout->addWidget(shortSkipBox, 0, 1);
+	gridLayout->addWidget(shortSkipBox, 1, 1);
 
 	gridLayout->addWidget(new QLabel(i18nc("'Configure Kaffeine' dialog",
-		"Long skip duration:"), widget), 1, 0);
+		"Long skip duration:"), widget), 2, 0);
 
 	longSkipBox = new QSpinBox(widget);
 	longSkipBox->setRange(1, 600);
 	longSkipBox->setValue(mediaWidget->getLongSkipDuration());
-	gridLayout->addWidget(longSkipBox, 1, 1);
+	gridLayout->addWidget(longSkipBox, 2, 1);
 
 	setMainWidget(widget);
 }
@@ -191,6 +255,16 @@ ConfigurationDialog::~ConfigurationDialog()
 
 void ConfigurationDialog::accept()
 {
+	StartupDisplayMode displayMode = StartupNormalMode;
+
+	switch (startupDisplayModeBox->currentIndex()) {
+	case 0: displayMode = StartupNormalMode; break;
+	case 1: displayMode = StartupMinimalMode; break;
+	case 2: displayMode = StartupFullScreenMode; break;
+	case 3: displayMode = StartupRememberLastSetting; break;
+	}
+
+	setStartupDisplayMode(displayMode);
 	mediaWidget->setShortSkipDuration(shortSkipBox->value());
 	mediaWidget->setLongSkipDuration(longSkipBox->value());
 
@@ -370,12 +444,55 @@ MainWindow::MainWindow()
 	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
 
 	show();
+
+	// set display mode
+	switch (ConfigurationDialog::getStartupDisplayMode()) {
+	case ConfigurationDialog::StartupNormalMode:
+		// nothing to do
+		break;
+	case ConfigurationDialog::StartupMinimalMode:
+		mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
+		break;
+	case ConfigurationDialog::StartupFullScreenMode:
+		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
+		break;
+	case ConfigurationDialog::StartupRememberLastSetting: {
+		int value = KGlobal::config()->group("MainWindow").readEntry("DisplayMode", 0);
+
+		switch (value) {
+		case 0:
+			// nothing to do
+			break;
+		case 1:
+			mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
+			break;
+		case 2:
+			mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
+			break;
+		}
+
+		break;
+	    }
+	}
 }
 
 MainWindow::~MainWindow()
 {
 	actionOpenRecent->saveEntries(KGlobal::config()->group("Recent Files"));
-	KIO::del(temporaryUrls);
+
+	if (!temporaryUrls.isEmpty()) {
+		KIO::del(temporaryUrls);
+	}
+
+	int value = 0;
+
+	switch (mediaWidget->getDisplayMode()) {
+	case MediaWidget::NormalMode: value = 0; break;
+	case MediaWidget::MinimalMode: value = 1; break;
+	case MediaWidget::FullScreenMode: value = 2; break;
+	}
+
+	KGlobal::config()->group("MainWindow").writeEntry("DisplayMode", value);
 }
 
 KCmdLineOptions MainWindow::cmdLineOptions()
