@@ -123,6 +123,7 @@ public:
 	DvbTransponder transponder;
 
 private:
+	Q_DISABLE_COPY(DvbEpgFilter)
 	static QTime bcdToTime(int bcd);
 
 	void processSection(const char *data, int size, int crc);

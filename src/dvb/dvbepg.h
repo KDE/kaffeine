@@ -91,8 +91,8 @@ private:
 	QHash<DvbEitEntry, const DvbChannel *> dvbEitMapping;
 	QHash<AtscEitEntry, const DvbChannel *> atscEitMapping;
 	QDateTime currentDateTimeUtc;
-	QList<DvbEpgFilter> dvbEpgFilters;
-	QList<AtscEpgFilter> atscEpgFilters;
+	QList<DvbEpgFilter *> dvbEpgFilters;
+	QList<AtscEpgFilter *> atscEpgFilters;
 	mutable bool hasPendingOperation;
 };
 

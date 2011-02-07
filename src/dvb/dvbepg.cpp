@@ -48,8 +48,11 @@ DvbEpg::DvbEpg(DvbManager *manager_, QObject *parent) : QObject(parent), manager
 	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingKey)),
 		this, SLOT(programRemoved(DvbRecordingKey)));
 
-	if (channelModel->rowCount() > 0) {
-		channelRowsInserted(QModelIndex(), 0, channelModel->rowCount() - 1);
+	for (int row = 0; row < channelModel->rowCount(); ++row) {
+		const DvbChannel *channel = channelModel->data(channelModel->index(row, 0),
+			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
+		channels.insert(row, QExplicitlySharedDataPointer<const DvbChannel>(channel));
+		addChannelEitMapping(channel);
 	}
 
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
@@ -117,6 +120,8 @@ DvbEpg::~DvbEpg()
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
 		kWarning() << "filter list not empty";
+		qDeleteAll(dvbEpgFilters);
+		qDeleteAll(atscEpgFilters);
 	}
 
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
@@ -176,10 +181,10 @@ void DvbEpg::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
-		dvbEpgFilters.append(DvbEpgFilter(this, device, channel));
+		dvbEpgFilters.append(new DvbEpgFilter(this, device, channel));
 		break;
 	case DvbTransponderBase::Atsc:
-		atscEpgFilters.append(AtscEpgFilter(this, device, channel));
+		atscEpgFilters.append(new AtscEpgFilter(this, device, channel));
 		break;
 	}
 }
@@ -196,12 +201,13 @@ void DvbEpg::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
 		for (int i = 0; i < dvbEpgFilters.size(); ++i) {
-			const DvbEpgFilter &epgFilter = dvbEpgFilters.at(i);
+			const DvbEpgFilter *epgFilter = dvbEpgFilters.at(i);
 
-			if ((epgFilter.device == device) &&
-			    (epgFilter.source == channel->source) &&
-			    (epgFilter.transponder.corresponds(channel->transponder))) {
+			if ((epgFilter->device == device) &&
+			    (epgFilter->source == channel->source) &&
+			    (epgFilter->transponder.corresponds(channel->transponder))) {
 				dvbEpgFilters.removeAt(i);
+				delete epgFilter;
 				break;
 			}
 		}
@@ -209,12 +215,13 @@ void DvbEpg::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 		break;
 	case DvbTransponderBase::Atsc:
 		for (int i = 0; i < atscEpgFilters.size(); ++i) {
-			const AtscEpgFilter &epgFilter = atscEpgFilters.at(i);
+			const AtscEpgFilter *epgFilter = atscEpgFilters.at(i);
 
-			if ((epgFilter.device == device) &&
-			    (epgFilter.source == channel->source) &&
-			    (epgFilter.transponder.corresponds(channel->transponder))) {
+			if ((epgFilter->device == device) &&
+			    (epgFilter->source == channel->source) &&
+			    (epgFilter->transponder.corresponds(channel->transponder))) {
 				atscEpgFilters.removeAt(i);
+				delete epgFilter;
 				break;
 			}
 		}
