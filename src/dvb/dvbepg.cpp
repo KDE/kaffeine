@@ -425,7 +425,9 @@ void DvbEpg::channelRowsRemoved(const QModelIndex &parent, int start, int end)
 			channel->name, DvbEpgLessThan()) - entries.constBegin());
 
 		for (int i = lowerBound; i < upperBound; ++i) {
-			emit entryAboutToBeRemoved(&entries.at(i));
+			const DvbEpgEntry *entry = &entries.at(i);
+			emit entryAboutToBeRemoved(entry);
+			recordingKeyMapping.remove(entry->recordingKey);
 		}
 
 		entries.erase(entries.begin() + lowerBound, entries.begin() + upperBound);
