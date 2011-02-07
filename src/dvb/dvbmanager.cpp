@@ -69,6 +69,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 	DvbManager::RequestType requestType)
 {
 	Q_ASSERT(requestType != Exclusive);
+	// FIXME call DvbEpg::startEventFilter / DvbEpg::stopEventFilter here?
 
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
