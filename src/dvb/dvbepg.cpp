@@ -679,7 +679,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size, int crc)
 			int pid = entry.pid();
 			int index = (qLowerBound(eitPids, pid) - eitPids.constBegin());
 
-			if ((index > eitPids.size()) || (eitPids.at(index) != pid)) {
+			if ((index >= eitPids.size()) || (eitPids.at(index) != pid)) {
 				eitPids.insert(index, pid);
 			}
 		}
@@ -688,7 +688,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size, int crc)
 			int pid = entry.pid();
 			int index = (qLowerBound(ettPids, pid) - ettPids.constBegin());
 
-			if ((index > ettPids.size()) || (ettPids.at(index) != pid)) {
+			if ((index >= ettPids.size()) || (ettPids.at(index) != pid)) {
 				ettPids.insert(index, pid);
 			}
 		}
