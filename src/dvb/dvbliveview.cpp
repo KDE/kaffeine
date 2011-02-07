@@ -241,7 +241,7 @@ void DvbLiveView::toggleOsd()
 	case DvbOsd::Off:
 		internal->dvbOsd.init(DvbOsd::ShortOsd,
 			QString("%1 - %2").arg(channel->number).arg(channel->name),
-			manager->getEpgModel()->getCurrentNext(channel->name));
+			manager->getEpg()->getCurrentNext(channel->name));
 		osdWidget->showObject(&internal->dvbOsd, 2500);
 		osdTimer.start(2500);
 		break;
@@ -463,12 +463,12 @@ void DvbLiveView::startDevice()
 		device->startDescrambling(internal->pmtSectionData, this);
 	}
 
-	manager->getEpgModel()->startEventFilter(device, channel.constData());
+	manager->getEpg()->startEventFilter(device, channel.constData());
 }
 
 void DvbLiveView::stopDevice()
 {
-	manager->getEpgModel()->stopEventFilter(device, channel.constData());
+	manager->getEpg()->stopEventFilter(device, channel.constData());
 
 	if (channel->isScrambled && !internal->pmtSectionData.isEmpty()) {
 		device->stopDescrambling(internal->pmtSectionData, this);

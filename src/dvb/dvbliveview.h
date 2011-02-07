@@ -28,7 +28,6 @@ class DvbChannel;
 class DvbDevice;
 class DvbLiveViewInternal;
 class DvbManager;
-class DvbPmtSection;
 class MediaWidget;
 class OsdWidget;
 

@@ -1,7 +1,7 @@
 /*
  * dvbepg.h
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,12 +24,12 @@
 #include <QSharedData> // qt 4.5 compatibility
 #include "dvbrecording.h"
 
+class AtscEitEntry;
+class AtscEpgFilter;
 class DvbChannel;
 class DvbDevice;
 class DvbEitEntry;
-class DvbEitFilter;
-class DvbEpgChannelModel;
-class DvbEpgProxyModel;
+class DvbEpgFilter;
 
 class DvbEpgEntry
 {
@@ -44,42 +44,31 @@ public:
 	QString subheading;
 	QString details;
 	DvbRecordingKey recordingKey;
-
-	int compare(const DvbEpgEntry &other) const;
-
-	bool operator<(const DvbEpgEntry &other) const
-	{
-		return (compare(other) < 0);
-	}
-
-	bool operator!=(const DvbEpgEntry &other) const
-	{
-		return (compare(other) != 0);
-	}
 };
 
-class DvbEpgModel : public QObject
+class DvbEpg : public QObject
 {
 	Q_OBJECT
 public:
-	DvbEpgModel(DvbManager *manager_, QObject *parent);
-	~DvbEpgModel();
+	DvbEpg(DvbManager *manager_, QObject *parent);
+	~DvbEpg();
 
 	QList<DvbEpgEntry> getCurrentNext(const QString &channelName) const;
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
-	void showDialog(const QString &currentChannelName, QWidget *parent);
-	QAbstractItemModel *createEpgProxyChannelModel(QObject *parent);
-	DvbEpgProxyModel *createEpgProxyModel(QObject *parent);
-	void scheduleProgram(const DvbEpgEntry &constEntry, int extraSecondsBefore,
+	QList<DvbEpgEntry> getEntries() const;
+	QString findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const;
+	QString findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const;
+	void addEntry(const DvbEpgEntry &entry);
+	void scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 		int extraSecondsAfter);
-	QString findChannelNameByDvbEitEntry(const DvbEitEntry &eitEntry);
-	void addEntry(const DvbEpgEntry &epgEntry);
 
 signals:
 	void entryAdded(const DvbEpgEntry *entry);
-	void entryRecordingKeyChanged(const DvbEpgEntry *entry);
+	// entryChanged() doesn't change entry pointers (oldEntry is a temporary copy)
+	void entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
+	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
 
 private slots:
 	void channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
@@ -90,13 +79,21 @@ private slots:
 	void programRemoved(const DvbRecordingKey &recordingKey);
 
 private:
+	void timerEvent(QTimerEvent *event);
+
+	void addChannelEitMapping(const DvbChannel *channel);
+	void removeChannelEitMapping(const DvbChannel *channel);
+
 	DvbManager *manager;
 	QList<DvbEpgEntry> entries;
 	QMap<DvbRecordingKey, const DvbEpgEntry *> recordingKeyMapping;
-	DvbEpgChannelModel *epgChannelModel;
 	QList<QExplicitlySharedDataPointer<const DvbChannel> > channels;
 	QHash<DvbEitEntry, const DvbChannel *> dvbEitMapping;
-	QList<DvbEitFilter> dvbEitFilters;
+	QHash<AtscEitEntry, const DvbChannel *> atscEitMapping;
+	QDateTime currentDateTimeUtc;
+	QList<DvbEpgFilter> dvbEpgFilters;
+	QList<AtscEpgFilter> atscEpgFilters;
+	mutable bool hasPendingOperation;
 };
 
 #endif /* DVBEPG_H */

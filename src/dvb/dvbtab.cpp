@@ -38,6 +38,7 @@
 #include "dvbchannel.h"
 #include "dvbconfigdialog.h"
 #include "dvbepg.h"
+#include "dvbepgdialog.h"
 #include "dvbliveview.h"
 #include "dvbmanager.h"
 #include "dvbscandialog.h"
@@ -325,7 +326,7 @@ void DvbTab::showEpgDialog()
 		currentChannelName = currentChannel->name;
 	}
 
-	manager->getEpgModel()->showDialog(currentChannelName, this);
+	DvbEpgDialog::showDialog(manager, currentChannelName, this);
 }
 
 void DvbTab::instantRecord(bool checked)
@@ -339,8 +340,7 @@ void DvbTab::instantRecord(bool checked)
 		}
 
 		DvbRecordingEntry recordingEntry;
-		QList<DvbEpgEntry> epgEntries =
-			manager->getEpgModel()->getCurrentNext(channel->name);
+		QList<DvbEpgEntry> epgEntries = manager->getEpg()->getCurrentNext(channel->name);
 
 		if (!epgEntries.isEmpty()) {
 			recordingEntry.name = epgEntries.at(0).title;

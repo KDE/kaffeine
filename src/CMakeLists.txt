@@ -20,6 +20,7 @@ if(HAVE_DVB)
       dvb/dvbdevice.cpp
       dvb/dvbdevice_linux.cpp
       dvb/dvbepg.cpp
+      dvb/dvbepgdialog.cpp
       dvb/dvbliveview.cpp
       dvb/dvbmanager.cpp
       dvb/dvbrecording.cpp

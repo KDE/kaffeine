@@ -1,7 +1,7 @@
 /*
  * dvbepg_p.h
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,108 +21,74 @@
 #ifndef DVBEPG_P_H
 #define DVBEPG_P_H
 
-#include <KDialog>
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
 #include "dvbtransponder.h"
 
-class QLabel;
-class QTreeView;
-
-Q_DECLARE_METATYPE(const DvbEpgEntry *)
-
-class DvbEpgEntryLessThan
+class DvbEpgEnsureNoPendingOperation
 {
 public:
-	DvbEpgEntryLessThan() { }
-	~DvbEpgEntryLessThan() { }
+	explicit DvbEpgEnsureNoPendingOperation(bool *hasPendingOperation_) :
+		hasPendingOperation(hasPendingOperation_)
+	{
+		if (*hasPendingOperation) {
+			printFatalErrorMessage();
+		}
+
+		*hasPendingOperation = true;
+	}
+
+	~DvbEpgEnsureNoPendingOperation()
+	{
+		*hasPendingOperation = false;
+	}
+
+private:
+	void printFatalErrorMessage();
+
+	bool *hasPendingOperation;
+};
+
+class DvbEpgLessThan
+{
+public:
+	DvbEpgLessThan() { }
+	~DvbEpgLessThan() { }
+
+	bool operator()(const DvbEpgEntry &x, const DvbEpgEntry &y) const
+	{
+		if (x.channelName != y.channelName) {
+			return (x.channelName < y.channelName);
+		}
+
+		if (x.begin != y.begin) {
+			return (x.begin < y.begin);
+		}
+
+		if (x.duration != y.duration) {
+			return (x.duration < y.duration);
+		}
+
+		if (x.title != y.title) {
+			return (x.title < y.title);
+		}
+
+		if (x.subheading != y.subheading) {
+			return (x.subheading < y.subheading);
+		}
+
+		return (x.details < y.details);
+	}
 
 	bool operator()(const DvbEpgEntry &x, const QString &channelName) const
 	{
 		return (x.channelName < channelName);
 	}
 
-	bool operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const
+	bool operator()(const QString &channelName, const DvbEpgEntry &y) const
 	{
-		return (*x < *y);
+		return (channelName < y.channelName);
 	}
-};
-
-class DvbEpgChannelModel : public QAbstractTableModel
-{
-public:
-	explicit DvbEpgChannelModel(QObject *parent);
-	~DvbEpgChannelModel();
-
-	void insertChannelName(const QString &channelName);
-	void removeChannelName(const QString &channelName);
-
-private:
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-
-	QList<QString> channelNames;
-};
-
-class DvbEpgProxyModel : public QAbstractTableModel
-{
-	Q_OBJECT
-public:
-	DvbEpgProxyModel(DvbEpgModel *epgModel_, const QList<DvbEpgEntry> *epgModelEntries_,
-		QObject *parent);
-	~DvbEpgProxyModel();
-
-	enum ItemDataRole
-	{
-		DvbEpgEntryRole = Qt::UserRole
-	};
-
-	void setChannelNameFilter(const QString &channelName);
-	void scheduleProgram(int proxyRow, int extraSecondsBefore, int extraSecondsAfter);
-
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-
-public slots:
-	void setContentFilter(const QString &pattern);
-
-private slots:
-	void sourceEntryAdded(const DvbEpgEntry *entry);
-	void sourceEntryRecordingKeyChanged(const DvbEpgEntry *entry);
-
-private:
-	void customEvent(QEvent *event);
-
-	DvbEpgModel *epgModel;
-	const QList<DvbEpgEntry> *epgModelEntries;
-	QList<const DvbEpgEntry *> entries;
-	QString channelNameFilter;
-	QStringMatcher contentFilter;
-	bool contentFilterEventPending;
-};
-
-class DvbEpgDialog : public KDialog
-{
-	Q_OBJECT
-public:
-	DvbEpgDialog(DvbManager *manager_, const QString &currentChannelName, QWidget *parent);
-	~DvbEpgDialog();
-
-private slots:
-	void channelActivated(const QModelIndex &index);
-	void entryActivated(const QModelIndex &index);
-	void scheduleProgram();
-
-private:
-	DvbManager *manager;
-	DvbEpgProxyModel *epgProxyModel;
-	QTreeView *channelView;
-	QTreeView *epgView;
-	QLabel *contentLabel;
 };
 
 class DvbEitEntry
@@ -145,13 +111,13 @@ public:
 	int serviceId;
 };
 
-class DvbEitFilter : public DvbSectionFilter
+class DvbEpgFilter : public DvbSectionFilter
 {
 public:
-	explicit DvbEitFilter(DvbEpgModel *epgModel_) : epgModel(epgModel_), device(NULL) { }
-	~DvbEitFilter() { }
+	DvbEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel);
+	~DvbEpgFilter();
 
-	DvbEpgModel *epgModel;
+	DvbEpg *epg;
 	DvbDevice *device;
 	QString source;
 	DvbTransponder transponder;
@@ -160,6 +126,97 @@ private:
 	static QTime bcdToTime(int bcd);
 
 	void processSection(const char *data, int size, int crc);
+};
+
+class AtscEitEntry
+{
+public:
+	AtscEitEntry() : sourceId(0) { }
+	explicit AtscEitEntry(const DvbChannel *channel);
+	~AtscEitEntry() { }
+
+	bool operator==(const AtscEitEntry &other) const
+	{
+		return ((source == other.source) && (sourceId == other.sourceId));
+	}
+
+	QString source;
+	int sourceId;
+};
+
+class AtscEpgMgtFilter : public DvbSectionFilter
+{
+public:
+	explicit AtscEpgMgtFilter(AtscEpgFilter *epgFilter_) : epgFilter(epgFilter_) { }
+	~AtscEpgMgtFilter() { }
+
+private:
+	void processSection(const char *data, int size, int crc);
+
+	AtscEpgFilter *epgFilter;
+};
+
+class AtscEpgEitFilter : public DvbSectionFilter
+{
+public:
+	AtscEpgEitFilter(int pid_, AtscEpgFilter *epgFilter_) : pid(pid_),
+		epgFilter(epgFilter_) { }
+	~AtscEpgEitFilter() { }
+
+	int getPid() const
+	{
+		return pid;
+	}
+
+private:
+	void processSection(const char *data, int size, int crc);
+
+	int pid;
+	AtscEpgFilter *epgFilter;
+};
+
+class AtscEpgEttFilter : public DvbSectionFilter
+{
+public:
+	AtscEpgEttFilter(int pid_, AtscEpgFilter *epgFilter_) : pid(pid_),
+		epgFilter(epgFilter_) { }
+	~AtscEpgEttFilter() { }
+
+	int getPid() const
+	{
+		return pid;
+	}
+
+private:
+	void processSection(const char *data, int size, int crc);
+
+	int pid;
+	AtscEpgFilter *epgFilter;
+};
+
+class AtscEpgFilter
+{
+	friend class AtscEpgMgtFilter;
+	friend class AtscEpgEitFilter;
+	friend class AtscEpgEttFilter;
+public:
+	AtscEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel);
+	~AtscEpgFilter();
+
+	DvbEpg *epg;
+	DvbDevice *device;
+	QString source;
+	DvbTransponder transponder;
+
+private:
+	void processMgtSection(const char *data, int size, int crc);
+	void processEitSection(const char *data, int size, int crc);
+	void processEttSection(const char *data, int size, int crc);
+
+	AtscEpgMgtFilter mgtFilter;
+	QList<AtscEpgEitFilter> eitFilters;
+	QList<AtscEpgEttFilter> ettFilters;
+	QMap<quint32, DvbEpgEntry> epgEntryMapping;
 };
 
 #endif /* DVBEPG_P_H */
