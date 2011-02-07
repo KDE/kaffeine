@@ -326,23 +326,22 @@ void DvbEpg::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 		DvbEpgLessThan()) - entries.constBegin());
 
 	if (index < entries.size()) {
-		const DvbEpgEntry &constEntry = entries.at(index);
+		DvbEpgEntry *epgEntry = &entries[index];
 
-		if (!constEntry.recordingKey.isValid()) {
-			DvbEpgEntry &epgEntry = entries[index];
-			DvbEpgEntry oldEntry = epgEntry;
+		if (!epgEntry->recordingKey.isValid()) {
+			DvbEpgEntry oldEntry = *epgEntry;
 			DvbRecordingEntry recordingEntry;
-			recordingEntry.name = epgEntry.title;
-			recordingEntry.channelName = epgEntry.channelName;
-			recordingEntry.begin = epgEntry.begin.addSecs(-extraSecondsBefore);
+			recordingEntry.name = epgEntry->title;
+			recordingEntry.channelName = epgEntry->channelName;
+			recordingEntry.begin = epgEntry->begin.addSecs(-extraSecondsBefore);
 			recordingEntry.duration =
-				epgEntry.duration.addSecs(extraSecondsBefore + extraSecondsAfter);
-			epgEntry.recordingKey =
+				epgEntry->duration.addSecs(extraSecondsBefore + extraSecondsAfter);
+			epgEntry->recordingKey =
 				manager->getRecordingModel()->scheduleProgram(recordingEntry);
-			recordingKeyMapping.insert(epgEntry.recordingKey, &epgEntry);
-			emit entryChanged(&epgEntry, oldEntry);
+			recordingKeyMapping.insert(epgEntry->recordingKey, epgEntry);
+			emit entryChanged(epgEntry, oldEntry);
 		} else {
-			manager->getRecordingModel()->removeProgram(constEntry.recordingKey);
+			manager->getRecordingModel()->removeProgram(epgEntry->recordingKey);
 			// programRemoved() does the rest
 		}
 	}
@@ -460,11 +459,11 @@ void DvbEpg::timerEvent(QTimerEvent *event)
 	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
 
 	for (int i = 0; i < entries.size(); ++i) {
-		const DvbEpgEntry &entry = entries.at(i);
+		const DvbEpgEntry *entry = &entries.at(i);
 
-		if (entry.begin.addSecs(QTime().secsTo(entry.duration)) <= currentDateTimeUtc) {
-			emit entryAboutToBeRemoved(&entry);
-			recordingKeyMapping.remove(entry.recordingKey);
+		if (entry->begin.addSecs(QTime().secsTo(entry->duration)) <= currentDateTimeUtc) {
+			emit entryAboutToBeRemoved(entry);
+			recordingKeyMapping.remove(entry->recordingKey);
 			entries.removeAt(i);
 			--i;
 		}
