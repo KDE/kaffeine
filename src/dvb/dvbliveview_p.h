@@ -41,7 +41,7 @@ public:
 	~DvbOsd() { }
 
 	void init(OsdLevel level_, const QString &channelName_,
-		const QList<DvbEpgEntry> &epgEntries_);
+		const QList<const DvbEpgEntry *> &epgEntries);
 
 	OsdLevel level;
 
@@ -49,7 +49,8 @@ private:
 	QPixmap paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection direction);
 
 	QString channelName;
-	QList<DvbEpgEntry> epgEntries;
+	DvbEpgEntry firstEntry;
+	DvbEpgEntry secondEntry;
 };
 
 class DvbLiveViewInternal : public DvbPidFilter

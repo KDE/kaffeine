@@ -137,16 +137,16 @@ DvbEpg::~DvbEpg()
 	}
 }
 
-QList<DvbEpgEntry> DvbEpg::getCurrentNext(const QString &channelName) const
+QList<const DvbEpgEntry *> DvbEpg::getCurrentNext(const QString &channelName) const
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
-	QList<DvbEpgEntry> result;
+	QList<const DvbEpgEntry *> result;
 
 	for (int i = (qLowerBound(entries.constBegin(), entries.constEnd(), channelName,
 	     DvbEpgLessThan()) - entries.constBegin()); i < entries.size(); ++i) {
-		const DvbEpgEntry &entry = entries.at(i);
+		const DvbEpgEntry *entry = &entries.at(i);
 
-		if (entry.channelName != channelName) {
+		if (entry->channelName != channelName) {
 			break;
 		}
 

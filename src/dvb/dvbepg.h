@@ -53,7 +53,7 @@ public:
 	DvbEpg(DvbManager *manager_, QObject *parent);
 	~DvbEpg();
 
-	QList<DvbEpgEntry> getCurrentNext(const QString &channelName) const;
+	QList<const DvbEpgEntry *> getCurrentNext(const QString &channelName) const;
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 

@@ -32,11 +32,18 @@
 #include "dvbmanager.h"
 
 void DvbOsd::init(OsdLevel level_, const QString &channelName_,
-	const QList<DvbEpgEntry> &epgEntries_)
+	const QList<const DvbEpgEntry *> &epgEntries)
 {
 	level = level_;
 	channelName = channelName_;
-	epgEntries = epgEntries_;
+
+	if (epgEntries.size() >= 1) {
+		firstEntry = *epgEntries.at(0);
+	}
+
+	if (epgEntries.size() >= 2) {
+		secondEntry = *epgEntries.at(1);
+	}
 }
 
 QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
@@ -49,28 +56,17 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	int elapsedTime = 0;
 	int totalTime = 0;
 
-	const DvbEpgEntry *firstEntry = NULL;
-	const DvbEpgEntry *secondEntry = NULL;
-
-	if (!epgEntries.isEmpty()) {
-		firstEntry = &epgEntries.at(0);
+	if (!firstEntry.channelName.isEmpty()) {
+		entryString = KGlobal::locale()->formatTime(firstEntry.begin.toLocalTime().time())
+			+ ' ' + firstEntry.title;
+		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
+		totalTime = QTime().secsTo(firstEntry.duration);
 	}
 
-	if (epgEntries.size() >= 2) {
-		secondEntry = &epgEntries.at(1);
-	}
-
-	if (firstEntry != NULL) {
-		entryString = KGlobal::locale()->formatTime(firstEntry->begin.toLocalTime().time())
-			+ ' ' + firstEntry->title;
-		elapsedTime = firstEntry->begin.secsTo(QDateTime::currentDateTime());
-		totalTime = QTime().secsTo(firstEntry->duration);
-	}
-
-	if ((level == ShortOsd) && (secondEntry != NULL)) {
+	if ((level == ShortOsd) && !secondEntry.channelName.isEmpty()) {
 		entryString = entryString + '\n' +
-			KGlobal::locale()->formatTime(secondEntry->begin.toLocalTime().time()) +
-			' ' + secondEntry->title;
+			KGlobal::locale()->formatTime(secondEntry.begin.toLocalTime().time()) +
+			' ' + secondEntry.title;
 	}
 
 	int lineHeight = QFontMetrics(osdFont).height();
@@ -108,17 +104,17 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 		if (level == LongOsd) {
 			QRect boundingRect = entryRect;
 
-			if ((firstEntry != NULL) && !firstEntry->subheading.isEmpty()) {
+			if (!firstEntry.subheading.isEmpty()) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(), lineHeight, Qt::AlignLeft,
-					firstEntry->subheading, &boundingRect);
+					firstEntry.subheading, &boundingRect);
 			}
 
-			if ((firstEntry != NULL) && !firstEntry->details.isEmpty()) {
+			if (!firstEntry.details.isEmpty()) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(),
 					rect.height() - boundingRect.bottom() - 1,
-					Qt::AlignLeft | Qt::TextWordWrap, firstEntry->details,
+					Qt::AlignLeft | Qt::TextWordWrap, firstEntry.details,
 					&boundingRect);
 			}
 
@@ -446,7 +442,7 @@ void DvbLiveView::liveStopped()
 	internal->pmtGenerator = DvbSectionGenerator();
 	internal->buffer.clear();
 	internal->timeShiftFile.close();
-	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbEpgEntry>());
+	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<const DvbEpgEntry *>());
 	osdWidget->hideObject();
 }
 
