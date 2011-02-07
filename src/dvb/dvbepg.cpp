@@ -114,6 +114,11 @@ DvbEpg::DvbEpg(DvbManager *manager_, QObject *parent) : QObject(parent), manager
 DvbEpg::~DvbEpg()
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+
+	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
+		kWarning() << "filter list is not empty";
+	}
+
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
@@ -502,7 +507,7 @@ void DvbEpg::removeChannelEitMapping(const DvbChannel *channel)
 
 void DvbEpgEnsureNoPendingOperation::printFatalErrorMessage()
 {
-	kFatal() << "illegal recurive call";
+	kFatal() << "illegal recursive call";
 }
 
 DvbEitEntry::DvbEitEntry(const DvbChannel *channel)
