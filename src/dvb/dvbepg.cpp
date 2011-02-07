@@ -116,7 +116,7 @@ DvbEpg::~DvbEpg()
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
-		kWarning() << "filter list is not empty";
+		kWarning() << "filter list not empty";
 	}
 
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
@@ -296,7 +296,7 @@ void DvbEpg::addEntry(const DvbEpgEntry &entry)
 			break;
 		}
 
-		if (updateIndex > 0) {
+		if (updateIndex >= 0) {
 			// needed for atsc epg
 			DvbEpgEntry *existingEntry = &entries[updateIndex];
 			DvbEpgEntry oldEntry = *existingEntry;
@@ -326,22 +326,23 @@ void DvbEpg::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 		DvbEpgLessThan()) - entries.constBegin());
 
 	if (index < entries.size()) {
-		DvbEpgEntry *epgEntry = &entries[index];
-		DvbEpgEntry oldEntry = *epgEntry;
+		const DvbEpgEntry &constEntry = entries.at(index);
 
-		if (!epgEntry->recordingKey.isValid()) {
+		if (!constEntry.recordingKey.isValid()) {
+			DvbEpgEntry &epgEntry = entries[index];
+			DvbEpgEntry oldEntry = epgEntry;
 			DvbRecordingEntry recordingEntry;
-			recordingEntry.name = epgEntry->title;
-			recordingEntry.channelName = epgEntry->channelName;
-			recordingEntry.begin = epgEntry->begin.addSecs(-extraSecondsBefore);
+			recordingEntry.name = epgEntry.title;
+			recordingEntry.channelName = epgEntry.channelName;
+			recordingEntry.begin = epgEntry.begin.addSecs(-extraSecondsBefore);
 			recordingEntry.duration =
-				epgEntry->duration.addSecs(extraSecondsBefore + extraSecondsAfter);
-			epgEntry->recordingKey =
+				epgEntry.duration.addSecs(extraSecondsBefore + extraSecondsAfter);
+			epgEntry.recordingKey =
 				manager->getRecordingModel()->scheduleProgram(recordingEntry);
-			recordingKeyMapping.insert(epgEntry->recordingKey, epgEntry);
-			emit entryChanged(epgEntry, oldEntry);
+			recordingKeyMapping.insert(epgEntry.recordingKey, &epgEntry);
+			emit entryChanged(&epgEntry, oldEntry);
 		} else {
-			manager->getRecordingModel()->removeProgram(epgEntry->recordingKey);
+			manager->getRecordingModel()->removeProgram(constEntry.recordingKey);
 			// programRemoved() does the rest
 		}
 	}
@@ -459,12 +460,11 @@ void DvbEpg::timerEvent(QTimerEvent *event)
 	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
 
 	for (int i = 0; i < entries.size(); ++i) {
-		const DvbEpgEntry *entry = &entries.at(i);
+		const DvbEpgEntry &entry = entries.at(i);
 
-		if (entry->begin.addSecs(QTime().secsTo(entry->duration)) <= currentDateTimeUtc) {
-			emit entryAboutToBeRemoved(entry);
-			recordingKeyMapping.remove(entry->recordingKey);
-			delete entry;
+		if (entry.begin.addSecs(QTime().secsTo(entry.duration)) <= currentDateTimeUtc) {
+			emit entryAboutToBeRemoved(&entry);
+			recordingKeyMapping.remove(entry.recordingKey);
 			entries.removeAt(i);
 			--i;
 		}
