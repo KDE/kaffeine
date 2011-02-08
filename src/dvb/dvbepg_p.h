@@ -196,6 +196,7 @@ public:
 	DvbTransponder transponder;
 
 private:
+	Q_DISABLE_COPY(AtscEpgFilter)
 	void processMgtSection(const char *data, int size, int crc);
 	void processEitSection(const char *data, int size, int crc);
 	void processEttSection(const char *data, int size, int crc);
