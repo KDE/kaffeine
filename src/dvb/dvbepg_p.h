@@ -160,38 +160,24 @@ private:
 class AtscEpgEitFilter : public DvbSectionFilter
 {
 public:
-	AtscEpgEitFilter(int pid_, AtscEpgFilter *epgFilter_) : pid(pid_),
-		epgFilter(epgFilter_) { }
+	explicit AtscEpgEitFilter(AtscEpgFilter *epgFilter_) : epgFilter(epgFilter_) { }
 	~AtscEpgEitFilter() { }
-
-	int getPid() const
-	{
-		return pid;
-	}
 
 private:
 	void processSection(const char *data, int size, int crc);
 
-	int pid;
 	AtscEpgFilter *epgFilter;
 };
 
 class AtscEpgEttFilter : public DvbSectionFilter
 {
 public:
-	AtscEpgEttFilter(int pid_, AtscEpgFilter *epgFilter_) : pid(pid_),
-		epgFilter(epgFilter_) { }
+	explicit AtscEpgEttFilter(AtscEpgFilter *epgFilter_) : epgFilter(epgFilter_) { }
 	~AtscEpgEttFilter() { }
-
-	int getPid() const
-	{
-		return pid;
-	}
 
 private:
 	void processSection(const char *data, int size, int crc);
 
-	int pid;
 	AtscEpgFilter *epgFilter;
 };
 
@@ -215,9 +201,11 @@ private:
 	void processEttSection(const char *data, int size, int crc);
 
 	AtscEpgMgtFilter mgtFilter;
-	QList<AtscEpgEitFilter> eitFilters;
-	QList<AtscEpgEttFilter> ettFilters;
-	QMap<quint32, DvbEpgEntry> epgEntryMapping;
+	AtscEpgEitFilter eitFilter;
+	AtscEpgEttFilter ettFilter;
+	QList<int> eitPids;
+	QList<int> ettPids;
+	QHash<quint32, DvbEpgEntry> epgEntryMapping; // TODO use less memory
 };
 
 #endif /* DVBEPG_P_H */

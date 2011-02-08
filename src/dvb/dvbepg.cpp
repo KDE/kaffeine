@@ -643,7 +643,7 @@ void AtscEpgEttFilter::processSection(const char *data, int size, int crc)
 }
 
 AtscEpgFilter::AtscEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel) :
-	epg(epg_), device(device_), mgtFilter(this)
+	epg(epg_), device(device_), mgtFilter(this), eitFilter(this), ettFilter(this)
 {
 	source = channel->source;
 	transponder = channel->transponder;
@@ -652,14 +652,12 @@ AtscEpgFilter::AtscEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel 
 
 AtscEpgFilter::~AtscEpgFilter()
 {
-	for (int i = 0; i < eitFilters.size(); ++i) {
-		AtscEpgEitFilter *filter = &eitFilters[i];
-		device->removeSectionFilter(filter->getPid(), filter);
+	foreach (int pid, eitPids) {
+		device->removeSectionFilter(pid, &eitFilter);
 	}
 
-	for (int i = 0; i < ettFilters.size(); ++i) {
-		AtscEpgEttFilter *filter = &ettFilters[i];
-		device->removeSectionFilter(filter->getPid(), filter);
+	foreach (int pid, ettPids) {
+		device->removeSectionFilter(pid, &ettFilter);
 	}
 
 	device->removeSectionFilter(0x1ffb, &mgtFilter);
@@ -675,8 +673,8 @@ void AtscEpgFilter::processMgtSection(const char *data, int size, int crc)
 	}
 
 	int entryCount = mgtSection.entryCount();
-	QList<int> eitPids;
-	QList<int> ettPids;
+	QList<int> newEitPids;
+	QList<int> newEttPids;
 
 	for (AtscMgtSectionEntry entry = mgtSection.entries(); (entryCount > 0) && entry.isValid();
 	     --entryCount, entry.advance()) {
@@ -684,59 +682,59 @@ void AtscEpgFilter::processMgtSection(const char *data, int size, int crc)
 
 		if ((tableType >= 0x0100) && (tableType <= 0x017f)) {
 			int pid = entry.pid();
-			int index = (qLowerBound(eitPids, pid) - eitPids.constBegin());
+			int index = (qLowerBound(newEitPids, pid) - newEitPids.constBegin());
 
-			if ((index >= eitPids.size()) || (eitPids.at(index) != pid)) {
-				eitPids.insert(index, pid);
+			if ((index >= newEitPids.size()) || (newEitPids.at(index) != pid)) {
+				newEitPids.insert(index, pid);
 			}
 		}
 
 		if ((tableType >= 0x0200) && (tableType <= 0x027f)) {
 			int pid = entry.pid();
-			int index = (qLowerBound(ettPids, pid) - ettPids.constBegin());
+			int index = (qLowerBound(newEttPids, pid) - newEttPids.constBegin());
 
-			if ((index >= ettPids.size()) || (ettPids.at(index) != pid)) {
-				ettPids.insert(index, pid);
+			if ((index >= newEttPids.size()) || (newEttPids.at(index) != pid)) {
+				newEttPids.insert(index, pid);
 			}
-		}
-	}
-
-	for (int i = 0; i < eitFilters.size(); ++i) {
-		int pid = eitFilters.at(i).getPid();
-		int index = (qBinaryFind(eitPids, pid) - eitPids.constBegin());
-
-		if (index < eitPids.size()) {
-			eitPids.removeAt(index);
-		} else {
-			device->removeSectionFilter(pid, &eitFilters[i]);
-			eitFilters.removeAt(i);
-			--i;
-		}
-	}
-
-	for (int i = 0; i < ettFilters.size(); ++i) {
-		int pid = ettFilters.at(i).getPid();
-		int index = (qBinaryFind(ettPids, pid) - ettPids.constBegin());
-
-		if (index < ettPids.size()) {
-			ettPids.removeAt(index);
-		} else {
-			device->removeSectionFilter(pid, &ettFilters[i]);
-			ettFilters.removeAt(i);
-			--i;
 		}
 	}
 
 	for (int i = 0; i < eitPids.size(); ++i) {
 		int pid = eitPids.at(i);
-		eitFilters.append(AtscEpgEitFilter(pid, this));
-		device->addSectionFilter(pid, &eitFilters.last());
+		int index = (qBinaryFind(newEitPids, pid) - newEitPids.constBegin());
+
+		if (index < newEitPids.size()) {
+			newEitPids.removeAt(index);
+		} else {
+			device->removeSectionFilter(pid, &eitFilter);
+			eitPids.removeAt(i);
+			--i;
+		}
 	}
 
 	for (int i = 0; i < ettPids.size(); ++i) {
 		int pid = ettPids.at(i);
-		ettFilters.append(AtscEpgEttFilter(pid, this));
-		device->addSectionFilter(pid, &ettFilters.last());
+		int index = (qBinaryFind(newEttPids, pid) - newEttPids.constBegin());
+
+		if (index < newEttPids.size()) {
+			newEttPids.removeAt(index);
+		} else {
+			device->removeSectionFilter(pid, &ettFilter);
+			ettPids.removeAt(i);
+			--i;
+		}
+	}
+
+	for (int i = 0; i < newEitPids.size(); ++i) {
+		int pid = newEitPids.at(i);
+		eitPids.append(pid);
+		device->addSectionFilter(pid, &eitFilter);
+	}
+
+	for (int i = 0; i < newEttPids.size(); ++i) {
+		int pid = newEttPids.at(i);
+		ettPids.append(pid);
+		device->addSectionFilter(pid, &ettFilter);
 	}
 }
 
@@ -771,7 +769,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size, int crc)
 		epgEntry.title = entry.title();
 
 		quint32 id = ((quint32(eitEntry.sourceId) << 16) | quint32(entry.eventId()));
-		QMap<quint32, DvbEpgEntry>::ConstIterator it = epgEntryMapping.constFind(id);
+		QHash<quint32, DvbEpgEntry>::ConstIterator it = epgEntryMapping.constFind(id);
 
 		if (it != epgEntryMapping.constEnd()) {
 			if ((epgEntry.channelName == it->channelName) &&
@@ -800,7 +798,7 @@ void AtscEpgFilter::processEttSection(const char *data, int size, int crc)
 	}
 
 	quint32 id = ((quint32(ettSection.sourceId()) << 16) | quint32(ettSection.eventId()));
-	QMap<quint32, DvbEpgEntry>::Iterator it = epgEntryMapping.find(id);
+	QHash<quint32, DvbEpgEntry>::Iterator it = epgEntryMapping.find(id);
 
 	if (it != epgEntryMapping.end()) {
 		QString text = ettSection.text();
