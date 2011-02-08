@@ -20,7 +20,6 @@
 
 #include "mainwindow.h"
 
-#include <QComboBox>
 #include <QDBusConnection>
 #include <QHoverEvent>
 #include <QLabel>
@@ -28,6 +27,7 @@
 #include <QStackedLayout>
 #include <KActionCollection>
 #include <KCmdLineOptions>
+#include <KComboBox>
 #include <KFileDialog>
 #include <KInputDialog>
 #include <kio/deletejob.h>
@@ -165,7 +165,7 @@ public:
 
 private:
 	MediaWidget *mediaWidget;
-	QComboBox *startupDisplayModeBox;
+	KComboBox *startupDisplayModeBox;
 	QSpinBox *shortSkipBox;
 	QSpinBox *longSkipBox;
 };
@@ -218,7 +218,7 @@ ConfigurationDialog::ConfigurationDialog(MediaWidget *mediaWidget_, QWidget *par
 	case StartupRememberLastSetting: index = 3; break;
 	}
 
-	startupDisplayModeBox = new QComboBox(widget);
+	startupDisplayModeBox = new KComboBox(widget);
 	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
 		"Normal Mode"));
 	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
