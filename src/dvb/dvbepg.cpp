@@ -456,6 +456,7 @@ void DvbEpg::programRemoved(const DvbRecordingKey &recordingKey)
 			DvbEpgEntry *entry = &entries[index];
 			DvbEpgEntry oldEntry = *entry;
 			entry->recordingKey = DvbRecordingKey();
+			recordingKeyMapping.remove(recordingKey);
 			emit entryChanged(entry, oldEntry);
 		}
 	}
