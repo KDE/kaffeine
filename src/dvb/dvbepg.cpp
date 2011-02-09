@@ -317,6 +317,7 @@ void DvbEpg::addEntry(const DvbEpgEntry &entry)
 			entries.move(updateIndex, index);
 			emit entryChanged(existingEntry, oldEntry);
 		} else {
+			Q_ASSERT(entry.begin.timeSpec() == Qt::UTC);
 			entries.insert(index, entry);
 			DvbEpgEntry *newEntry = &entries[index];
 			newEntry->recordingKey = DvbRecordingKey();
