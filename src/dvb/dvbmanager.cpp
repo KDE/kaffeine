@@ -41,7 +41,7 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 {
 	channelModel = new DvbSqlChannelModel(this);
 	recordingModel = new DvbRecordingModel(this, this);
-	epg = new DvbEpg(this, this);
+	epgModel = new DvbEpgModel(this, this);
 	liveView = new DvbLiveView(this, this);
 
 	readDeviceConfigs();
@@ -58,7 +58,7 @@ DvbManager::~DvbManager()
 
 	// we need an explicit deletion order (device users ; devices ; device manager)
 
-	delete epg;
+	delete epgModel;
 	delete recordingModel;
 
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
@@ -70,7 +70,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 	DvbManager::RequestType requestType)
 {
 	Q_ASSERT(requestType != Exclusive);
-	// FIXME call DvbEpg::startEventFilter / DvbEpg::stopEventFilter here?
+	// FIXME call DvbEpgModel::startEventFilter / DvbEpgModel::stopEventFilter here?
 
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);

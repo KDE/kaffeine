@@ -94,12 +94,12 @@ private:
 	QList<QString> channelNames;
 };
 
-class DvbEpgModel : public QAbstractTableModel
+class DvbEpgTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	DvbEpgModel(DvbEpg *epg_, QObject *parent);
-	~DvbEpgModel();
+	DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent);
+	~DvbEpgTableModel();
 
 	QAbstractItemModel *createEpgProxyChannelModel(QObject *parent);
 	const DvbEpgEntry *getEntry(int row) const;
@@ -122,7 +122,7 @@ private slots:
 private:
 	void customEvent(QEvent *event);
 
-	DvbEpg *epg;
+	DvbEpgModel *epgModel;
 	QList<const DvbEpgEntry *> entries;
 	QHash<QString, int> channelNameCount;
 	DvbEpgChannelModel epgChannelModel;

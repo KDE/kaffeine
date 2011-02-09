@@ -35,7 +35,7 @@ class DvbConfig;
 class DvbDevice;
 class DvbDeviceConfig;
 class DvbDeviceConfigUpdate;
-class DvbEpg;
+class DvbEpgModel;
 class DvbLiveView;
 class DvbRecordingModel;
 class DvbScanData;
@@ -87,9 +87,9 @@ public:
 		return channelView;
 	}
 
-	DvbEpg *getEpg() const
+	DvbEpgModel *getEpgModel() const
 	{
-		return epg;
+		return epgModel;
 	}
 
 	DvbLiveView *getLiveView() const
@@ -159,7 +159,7 @@ private:
 	MediaWidget *mediaWidget;
 	DvbChannelModel *channelModel;
 	QTreeView *channelView;
-	DvbEpg *epg;
+	DvbEpgModel *epgModel;
 	DvbLiveView *liveView;
 	DvbRecordingModel *recordingModel;
 

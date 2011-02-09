@@ -341,7 +341,7 @@ void DvbTab::instantRecord(bool checked)
 
 		DvbRecordingEntry recordingEntry;
 		QList<const DvbEpgEntry *> epgEntries =
-			manager->getEpg()->getCurrentNext(channel->name);
+			manager->getEpgModel()->getCurrentNext(channel->name);
 
 		if (!epgEntries.isEmpty()) {
 			recordingEntry.name = epgEntries.at(0)->title;

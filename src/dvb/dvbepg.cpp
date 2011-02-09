@@ -29,8 +29,8 @@
 #include "dvbmanager.h"
 #include "dvbsi.h"
 
-DvbEpg::DvbEpg(DvbManager *manager_, QObject *parent) : QObject(parent), manager(manager_),
-	hasPendingOperation(false)
+DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent),
+	manager(manager_), hasPendingOperation(false)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
@@ -114,7 +114,7 @@ DvbEpg::DvbEpg(DvbManager *manager_, QObject *parent) : QObject(parent), manager
 	qSort(entries.begin(), entries.end(), DvbEpgLessThan());
 }
 
-DvbEpg::~DvbEpg()
+DvbEpgModel::~DvbEpgModel()
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 
@@ -147,7 +147,7 @@ DvbEpg::~DvbEpg()
 	}
 }
 
-QList<const DvbEpgEntry *> DvbEpg::getCurrentNext(const QString &channelName) const
+QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const QString &channelName) const
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	QList<const DvbEpgEntry *> result;
@@ -170,7 +170,7 @@ QList<const DvbEpgEntry *> DvbEpg::getCurrentNext(const QString &channelName) co
 	return result;
 }
 
-void DvbEpg::startEventFilter(DvbDevice *device, const DvbChannel *channel)
+void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 
@@ -189,7 +189,7 @@ void DvbEpg::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 	}
 }
 
-void DvbEpg::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
+void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 
@@ -230,13 +230,13 @@ void DvbEpg::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 	}
 }
 
-QList<DvbEpgEntry> DvbEpg::getEntries() const
+QList<DvbEpgEntry> DvbEpgModel::getEntries() const
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	return entries;
 }
 
-QString DvbEpg::findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const
+QString DvbEpgModel::findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	const DvbChannel *channel = dvbEitMapping.value(eitEntry, NULL);
@@ -248,7 +248,7 @@ QString DvbEpg::findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const
 	return QString();
 }
 
-QString DvbEpg::findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const
+QString DvbEpgModel::findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	const DvbChannel *channel = atscEitMapping.value(eitEntry, NULL);
@@ -260,7 +260,7 @@ QString DvbEpg::findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const
 	return QString();
 }
 
-void DvbEpg::addEntry(const DvbEpgEntry &entry)
+void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 
@@ -326,7 +326,7 @@ void DvbEpg::addEntry(const DvbEpgEntry &entry)
 	}
 }
 
-void DvbEpg::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
+void DvbEpgModel::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 	int extraSecondsAfter)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
@@ -355,7 +355,7 @@ void DvbEpg::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 	}
 }
 
-void DvbEpg::channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void DvbEpgModel::channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	DvbChannelModel *channelModel = manager->getChannelModel();
@@ -394,17 +394,17 @@ void DvbEpg::channelDataChanged(const QModelIndex &topLeft, const QModelIndex &b
 	}
 }
 
-void DvbEpg::channelLayoutChanged()
+void DvbEpgModel::channelLayoutChanged()
 {
 	kFatal() << "not supported";
 }
 
-void DvbEpg::channelModelReset()
+void DvbEpgModel::channelModelReset()
 {
 	kFatal() << "not supported";
 }
 
-void DvbEpg::channelRowsInserted(const QModelIndex &parent, int start, int end)
+void DvbEpgModel::channelRowsInserted(const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED(parent)
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
@@ -418,7 +418,7 @@ void DvbEpg::channelRowsInserted(const QModelIndex &parent, int start, int end)
 	}
 }
 
-void DvbEpg::channelRowsRemoved(const QModelIndex &parent, int start, int end)
+void DvbEpgModel::channelRowsRemoved(const QModelIndex &parent, int start, int end)
 {
 	Q_UNUSED(parent)
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
@@ -444,7 +444,7 @@ void DvbEpg::channelRowsRemoved(const QModelIndex &parent, int start, int end)
 	channels.erase(channels.begin() + start, channels.begin() + end + 1);
 }
 
-void DvbEpg::programRemoved(const DvbRecordingKey &recordingKey)
+void DvbEpgModel::programRemoved(const DvbRecordingKey &recordingKey)
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
 	const DvbEpgEntry *constEntry = recordingKeyMapping.value(recordingKey, NULL);
@@ -463,7 +463,7 @@ void DvbEpg::programRemoved(const DvbRecordingKey &recordingKey)
 	}
 }
 
-void DvbEpg::timerEvent(QTimerEvent *event)
+void DvbEpgModel::timerEvent(QTimerEvent *event)
 {
 	Q_UNUSED(event)
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
@@ -481,7 +481,7 @@ void DvbEpg::timerEvent(QTimerEvent *event)
 	}
 }
 
-void DvbEpg::addChannelEitMapping(const DvbChannel *channel)
+void DvbEpgModel::addChannelEitMapping(const DvbChannel *channel)
 {
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -498,7 +498,7 @@ void DvbEpg::addChannelEitMapping(const DvbChannel *channel)
 	}
 }
 
-void DvbEpg::removeChannelEitMapping(const DvbChannel *channel)
+void DvbEpgModel::removeChannelEitMapping(const DvbChannel *channel)
 {
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -534,8 +534,8 @@ static uint qHash(const DvbEitEntry &eitEntry)
 		(uint(eitEntry.transportStreamId) << 8) ^ (uint(eitEntry.serviceId) << 16));
 }
 
-DvbEpgFilter::DvbEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel) :
-	epg(epg_), device(device_)
+DvbEpgFilter::DvbEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel) :
+	epgModel(epgModel_), device(device_)
 {
 	source = channel->source;
 	transponder = channel->transponder;
@@ -569,11 +569,11 @@ void DvbEpgFilter::processSection(const char *data, int size, int crc)
 	eitEntry.networkId = eitSection.originalNetworkId();
 	eitEntry.transportStreamId = eitSection.transportStreamId();
 	eitEntry.serviceId = eitSection.serviceId();
-	QString channelName = epg->findChannelNameByEitEntry(eitEntry);
+	QString channelName = epgModel->findChannelNameByEitEntry(eitEntry);
 
 	if (channelName.isEmpty()) {
 		eitEntry.networkId = -1;
-		channelName = epg->findChannelNameByEitEntry(eitEntry);
+		channelName = epgModel->findChannelNameByEitEntry(eitEntry);
 	}
 
 	if (channelName.isEmpty()) {
@@ -614,7 +614,7 @@ void DvbEpgFilter::processSection(const char *data, int size, int crc)
 			}
 		}
 
-		epg->addEntry(epgEntry);
+		epgModel->addEntry(epgEntry);
 	}
 }
 
@@ -644,8 +644,8 @@ void AtscEpgEttFilter::processSection(const char *data, int size, int crc)
 	epgFilter->processEttSection(data, size, crc);
 }
 
-AtscEpgFilter::AtscEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel) :
-	epg(epg_), device(device_), mgtFilter(this), eitFilter(this), ettFilter(this)
+AtscEpgFilter::AtscEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel)
+	: epgModel(epgModel_), device(device_), mgtFilter(this), eitFilter(this), ettFilter(this)
 {
 	source = channel->source;
 	transponder = channel->transponder;
@@ -752,7 +752,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size, int crc)
 	AtscEitEntry eitEntry;
 	eitEntry.source = source;
 	eitEntry.sourceId = eitSection.sourceId();
-	QString channelName = epg->findChannelNameByEitEntry(eitEntry);
+	QString channelName = epgModel->findChannelNameByEitEntry(eitEntry);
 
 	if (channelName.isEmpty()) {
 		return;
@@ -782,7 +782,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size, int crc)
 		}
 
 		epgEntryMapping.insert(id, epgEntry);
-		epg->addEntry(epgEntry);
+		epgModel->addEntry(epgEntry);
 	}
 }
 
@@ -807,7 +807,7 @@ void AtscEpgFilter::processEttSection(const char *data, int size, int crc)
 
 		if (it->details != text) {
 			it->details = text;
-			epg->addEntry(*it);
+			epgModel->addEntry(*it);
 		}
 	}
 }

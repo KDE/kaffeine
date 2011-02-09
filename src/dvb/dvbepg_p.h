@@ -114,10 +114,10 @@ public:
 class DvbEpgFilter : public DvbSectionFilter
 {
 public:
-	DvbEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel);
+	DvbEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel);
 	~DvbEpgFilter();
 
-	DvbEpg *epg;
+	DvbEpgModel *epgModel;
 	DvbDevice *device;
 	QString source;
 	DvbTransponder transponder;
@@ -187,10 +187,10 @@ class AtscEpgFilter
 	friend class AtscEpgEitFilter;
 	friend class AtscEpgEttFilter;
 public:
-	AtscEpgFilter(DvbEpg *epg_, DvbDevice *device_, const DvbChannel *channel);
+	AtscEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel);
 	~AtscEpgFilter();
 
-	DvbEpg *epg;
+	DvbEpgModel *epgModel;
 	DvbDevice *device;
 	QString source;
 	DvbTransponder transponder;

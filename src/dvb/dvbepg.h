@@ -46,12 +46,12 @@ public:
 	DvbRecordingKey recordingKey;
 };
 
-class DvbEpg : public QObject
+class DvbEpgModel : public QObject
 {
 	Q_OBJECT
 public:
-	DvbEpg(DvbManager *manager_, QObject *parent);
-	~DvbEpg();
+	DvbEpgModel(DvbManager *manager_, QObject *parent);
+	~DvbEpgModel();
 
 	QList<const DvbEpgEntry *> getCurrentNext(const QString &channelName) const;
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
