@@ -37,6 +37,10 @@ public:
 	DvbEpgEntry() { }
 	~DvbEpgEntry() { }
 
+	// recordingKey is ignored in comparisons
+	bool operator==(const DvbEpgEntry &other) const;
+	bool operator<(const DvbEpgEntry &other) const;
+
 	QString channelName;
 	QDateTime begin; // UTC
 	QTime duration;
@@ -44,6 +48,10 @@ public:
 	QString subheading;
 	QString details;
 	DvbRecordingKey recordingKey;
+};
+
+class DvbEpgEmptyClass
+{
 };
 
 class DvbEpgModel : public QObject
@@ -57,7 +65,7 @@ public:
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
-	QList<DvbEpgEntry> getEntries() const;
+	QMap<DvbEpgEntry, DvbEpgEmptyClass> getEntries() const;
 	QString findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const;
 	QString findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const;
 	void addEntry(const DvbEpgEntry &entry);
@@ -66,7 +74,7 @@ public:
 
 signals:
 	void entryAdded(const DvbEpgEntry *entry);
-	// entryChanged() doesn't change entry pointers (oldEntry is a temporary copy)
+	// entryChanged() may invalidate the old entry pointer
 	void entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
 	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
 
@@ -85,7 +93,7 @@ private:
 	void removeChannelEitMapping(const DvbChannel *channel);
 
 	DvbManager *manager;
-	QList<DvbEpgEntry> entries;
+	QMap<DvbEpgEntry, DvbEpgEmptyClass> entries;
 	QMap<DvbRecordingKey, const DvbEpgEntry *> recordingKeyMapping;
 	QList<QExplicitlySharedDataPointer<const DvbChannel> > channels;
 	QHash<DvbEitEntry, const DvbChannel *> dvbEitMapping;

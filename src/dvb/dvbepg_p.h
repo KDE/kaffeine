@@ -49,48 +49,6 @@ private:
 	bool *hasPendingOperation;
 };
 
-class DvbEpgLessThan
-{
-public:
-	DvbEpgLessThan() { }
-	~DvbEpgLessThan() { }
-
-	bool operator()(const DvbEpgEntry &x, const DvbEpgEntry &y) const
-	{
-		if (x.channelName != y.channelName) {
-			return (x.channelName < y.channelName);
-		}
-
-		if (x.begin != y.begin) {
-			return (x.begin < y.begin);
-		}
-
-		if (x.duration != y.duration) {
-			return (x.duration < y.duration);
-		}
-
-		if (x.title != y.title) {
-			return (x.title < y.title);
-		}
-
-		if (x.subheading != y.subheading) {
-			return (x.subheading < y.subheading);
-		}
-
-		return (x.details < y.details);
-	}
-
-	bool operator()(const DvbEpgEntry &x, const QString &channelName) const
-	{
-		return (x.channelName < channelName);
-	}
-
-	bool operator()(const QString &channelName, const DvbEpgEntry &y) const
-	{
-		return (channelName < y.channelName);
-	}
-};
-
 class DvbEitEntry
 {
 public:

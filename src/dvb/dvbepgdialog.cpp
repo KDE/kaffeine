@@ -112,9 +112,11 @@ DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
 	connect(epgModel, SIGNAL(entryAboutToBeRemoved(const DvbEpgEntry*)),
 		this, SLOT(entryAboutToBeRemoved(const DvbEpgEntry*)));
 
-	foreach (const DvbEpgEntry &entry, epgModel->getEntries()) {
-		if (++channelNameCount[entry.channelName] == 1) {
-			epgChannelModel.insertChannelName(entry.channelName);
+	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
+	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = allEntries.constBegin();
+	     it != allEntries.constEnd(); ++it) {
+		if (++channelNameCount[it.key().channelName] == 1) {
+			epgChannelModel.insertChannelName(it.key().channelName);
 		}
 	}
 }
@@ -135,7 +137,7 @@ QAbstractItemModel *DvbEpgTableModel::createEpgProxyChannelModel(QObject *parent
 
 const DvbEpgEntry *DvbEpgTableModel::getEntry(int row) const
 {
-	return entries.at(row);
+	return entries.at(row).constData();
 }
 
 void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
@@ -149,23 +151,28 @@ void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
 		endRemoveRows();
 	}
 
-	const QList<DvbEpgEntry> allEntries = epgModel->getEntries();
-	QList<DvbEpgEntry>::ConstIterator begin = qLowerBound(allEntries.constBegin(),
-		allEntries.constEnd(), channelName, DvbEpgEntryLessThan());
-	QList<DvbEpgEntry>::ConstIterator end = allEntries.constEnd();
+	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
+	DvbEpgEntry pseudoEntry;
+	pseudoEntry.channelName = channelName;
+	QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator begin =
+		allEntries.lowerBound(pseudoEntry);
+	int count = 0;
 
-	for (QList<DvbEpgEntry>::ConstIterator it = begin; it != end; ++it) {
-		if (it->channelName != channelName) {
-			end = it;
+	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = begin;
+	     it != allEntries.constEnd(); ++it) {
+		if (it.key().channelName != channelName) {
 			break;
 		}
+
+		++count;
 	}
 
-	if (begin != end) {
-		beginInsertRows(QModelIndex(), 0, end - begin - 1);
+	if (count > 0) {
+		beginInsertRows(QModelIndex(), 0, count - 1);
 
-		for (QList<DvbEpgEntry>::ConstIterator it = begin; it != end; ++it) {
-			entries.append(&(*it));
+		for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = begin; count > 0;
+		     ++it, --count) {
+			entries.append(DvbEpgTableModelEntry(&it.key()));
 		}
 
 		endInsertRows();
@@ -174,7 +181,8 @@ void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
 
 void DvbEpgTableModel::scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter)
 {
-	epgModel->scheduleProgram(entries.at(row), extraSecondsBefore, extraSecondsAfter);
+	epgModel->scheduleProgram(entries.at(row).constData(), extraSecondsBefore,
+		extraSecondsAfter);
 }
 
 int DvbEpgTableModel::columnCount(const QModelIndex &parent) const
@@ -197,7 +205,7 @@ int DvbEpgTableModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 {
-	const DvbEpgEntry *entry = entries.at(index.row());
+	const DvbEpgEntry *entry = entries.at(index.row()).constData();
 
 	switch (role) {
 	case Qt::DecorationRole:
@@ -264,10 +272,10 @@ void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 	     ((contentFilter.indexIn(entry->title) >= 0) ||
 	      (contentFilter.indexIn(entry->subheading) >= 0) ||
 	      (contentFilter.indexIn(entry->details) >= 0)))) {
-		int row = (qLowerBound(entries.constBegin(), entries.constEnd(), *entry,
-			DvbEpgEntryLessThan()) - entries.constBegin());
+		int row = (qLowerBound(entries, DvbEpgTableModelEntry(entry)) -
+			entries.constBegin());
 		beginInsertRows(QModelIndex(), row, row);
-		entries.insert(row, entry);
+		entries.insert(row, DvbEpgTableModelEntry(entry));
 		endInsertRows();
 	}
 }
@@ -284,24 +292,24 @@ void DvbEpgTableModel::entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry 
 		}
 	}
 
-	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), oldEntry,
-		DvbEpgEntryLessThan()) - entries.constBegin());
+	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(&oldEntry)) - entries.constBegin());
 
 	if (row < entries.size()) {
+		entries[row] = DvbEpgTableModelEntry(entry);
 		emit dataChanged(index(row, 0), index(row, 3));
 
 		if (((row > 0) && !(entries.at(row - 1) < entries.at(row))) ||
 		    ((row < (entries.size() - 1)) && !(entries.at(row) < entries.at(row + 1)))) {
-			int targetRow = (qLowerBound(entries.constBegin(), entries.constEnd(),
-				*entry, DvbEpgEntryLessThan()) - entries.constBegin());
-			beginMoveRows(QModelIndex(), row, row, QModelIndex(), targetRow);
+			int targetRow = (qLowerBound(entries, DvbEpgTableModelEntry(entry)) -
+				entries.constBegin());
+			emit layoutAboutToBeChanged();
 
 			if (targetRow > row) {
 				--targetRow;
 			}
 
 			entries.move(row, targetRow);
-			endMoveRows();
+			emit layoutChanged();
 		}
 	}
 }
@@ -312,8 +320,7 @@ void DvbEpgTableModel::entryAboutToBeRemoved(const DvbEpgEntry *entry)
 		epgChannelModel.removeChannelName(entry->channelName);
 	}
 
-	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), *entry,
-		DvbEpgEntryLessThan()) - entries.constBegin());
+	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(entry)) - entries.constBegin());
 
 	if (row < entries.size()) {
 		beginRemoveRows(QModelIndex(), row, row);
@@ -337,18 +344,17 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 		endRemoveRows();
 	}
 
-	const QList<DvbEpgEntry> allEntries = epgModel->getEntries();
-	QList<DvbEpgEntry>::ConstIterator constEnd = allEntries.constEnd();
-	QList<const DvbEpgEntry *> filteredEntries;
+	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
+	QList<DvbEpgTableModelEntry> filteredEntries;
 
-	for (QList<DvbEpgEntry>::ConstIterator it = allEntries.constBegin(); it != constEnd;
-	     ++it) {
-		const DvbEpgEntry &entry = *it;
+	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = allEntries.constBegin();
+	     it != allEntries.constEnd(); ++it) {
+		const DvbEpgEntry &entry = it.key();
 
 		if (((contentFilter.indexIn(entry.title) >= 0) ||
 		     (contentFilter.indexIn(entry.subheading) >= 0) ||
 		     (contentFilter.indexIn(entry.details) >= 0))) {
-			filteredEntries.append(&entry);
+			filteredEntries.append(DvbEpgTableModelEntry(&entry));
 		}
 	}
 
