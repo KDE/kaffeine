@@ -111,13 +111,13 @@ DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
 		this, SLOT(entryChanged(const DvbEpgEntry*,DvbEpgEntry)));
 	connect(epgModel, SIGNAL(entryAboutToBeRemoved(const DvbEpgEntry*)),
 		this, SLOT(entryAboutToBeRemoved(const DvbEpgEntry*)));
+	connect(epgModel, SIGNAL(epgChannelAdded(QString)),
+		&epgChannelModel, SLOT(insertChannelName(QString)));
+	connect(epgModel, SIGNAL(epgChannelRemoved(QString)),
+		&epgChannelModel, SLOT(removeChannelName(QString)));
 
-	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
-	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = allEntries.constBegin();
-	     it != allEntries.constEnd(); ++it) {
-		if (++channelNameCount[it.key().channelName] == 1) {
-			epgChannelModel.insertChannelName(it.key().channelName);
-		}
+	foreach (const QString &channelName, epgModel->getEpgChannels()) {
+		epgChannelModel.insertChannelName(channelName);
 	}
 }
 
@@ -263,10 +263,6 @@ void DvbEpgTableModel::setContentFilter(const QString &pattern)
 
 void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 {
-	if (++channelNameCount[entry->channelName] == 1) {
-		epgChannelModel.insertChannelName(entry->channelName);
-	}
-
 	if ((entry->channelName == channelNameFilter) ||
 	    (!contentFilter.pattern().isEmpty() &&
 	     ((contentFilter.indexIn(entry->title) >= 0) ||
@@ -282,16 +278,6 @@ void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 
 void DvbEpgTableModel::entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry)
 {
-	if (entry->channelName != oldEntry.channelName) {
-		if (++channelNameCount[entry->channelName] == 1) {
-			epgChannelModel.insertChannelName(entry->channelName);
-		}
-
-		if (--channelNameCount[oldEntry.channelName] == 0) {
-			epgChannelModel.removeChannelName(oldEntry.channelName);
-		}
-	}
-
 	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(&oldEntry)) - entries.constBegin());
 
 	if (row < entries.size()) {
@@ -316,10 +302,6 @@ void DvbEpgTableModel::entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry 
 
 void DvbEpgTableModel::entryAboutToBeRemoved(const DvbEpgEntry *entry)
 {
-	if (--channelNameCount[entry->channelName] == 0) {
-		epgChannelModel.removeChannelName(entry->channelName);
-	}
-
 	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(entry)) - entries.constBegin());
 
 	if (row < entries.size()) {

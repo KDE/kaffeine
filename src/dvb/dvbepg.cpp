@@ -140,6 +140,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 			if (newEntry->recordingKey.isValid()) {
 				recordingKeyMapping.insert(newEntry->recordingKey, newEntry);
 			}
+
+			epgChannels.insert(newEntry->channelName);
 		}
 	}
 }
@@ -270,6 +272,12 @@ QMap<DvbEpgEntry, DvbEpgEmptyClass> DvbEpgModel::getEntries() const
 	return entries;
 }
 
+QSet<QString> DvbEpgModel::getEpgChannels() const
+{
+	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	return epgChannels;
+}
+
 QString DvbEpgModel::findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const
 {
 	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
@@ -343,6 +351,11 @@ void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		Q_ASSERT(!entry.recordingKey.isValid());
 		const DvbEpgEntry *newEntry = &entries.insert(entry, DvbEpgEmptyClass()).key();
 		emit entryAdded(newEntry);
+
+		if (!epgChannels.contains(newEntry->channelName)) {
+			epgChannels.insert(newEntry->channelName);
+			emit epgChannelAdded(newEntry->channelName);
+		}
 	}
 }
 
@@ -416,6 +429,13 @@ void DvbEpgModel::channelDataChanged(const QModelIndex &topLeft, const QModelInd
 				++it;
 				entries.remove(oldEntry);
 			}
+
+			if (epgChannels.contains(oldChannelName)) {
+				epgChannels.remove(oldChannelName);
+				emit epgChannelRemoved(oldChannelName);
+				epgChannels.insert(channel->name);
+				emit epgChannelAdded(channel->name);
+			}
 		}
 	}
 }
@@ -469,6 +489,11 @@ void DvbEpgModel::channelRowsRemoved(const QModelIndex &parent, int start, int e
 			++it;
 			entries.remove(*entry);
 		}
+
+		if (epgChannels.contains(channel->name)) {
+			epgChannels.remove(channel->name);
+			emit epgChannelRemoved(channel->name);
+		}
 	}
 
 	channels.erase(channels.begin() + start, channels.begin() + end + 1);
@@ -509,6 +534,12 @@ void DvbEpgModel::timerEvent(QTimerEvent *event)
 
 			if (entry->recordingKey.isValid()) {
 				recordingKeyMapping.remove(entry->recordingKey);
+			}
+
+			if ((it == entries.constEnd()) ||
+			    (it.key().channelName != entry->channelName)) {
+				epgChannels.remove(entry->channelName);
+				emit epgChannelRemoved(entry->channelName);
 			}
 
 			entries.remove(*entry);

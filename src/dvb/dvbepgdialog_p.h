@@ -26,10 +26,12 @@
 
 class DvbEpgChannelModel : public QAbstractTableModel
 {
+	Q_OBJECT
 public:
 	explicit DvbEpgChannelModel(QObject *parent);
 	~DvbEpgChannelModel();
 
+public slots:
 	void insertChannelName(const QString &channelName);
 	void removeChannelName(const QString &channelName);
 
@@ -99,7 +101,6 @@ private:
 
 	DvbEpgModel *epgModel;
 	QList<DvbEpgTableModelEntry> entries;
-	QHash<QString, int> channelNameCount;
 	DvbEpgChannelModel epgChannelModel;
 	QString channelNameFilter;
 	QStringMatcher contentFilter;

@@ -21,6 +21,7 @@
 #ifndef DVBEPG_H
 #define DVBEPG_H
 
+#include <QSet>
 #include <QSharedData> // qt 4.5 compatibility
 #include "dvbrecording.h"
 
@@ -66,6 +67,7 @@ public:
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
 	QMap<DvbEpgEntry, DvbEpgEmptyClass> getEntries() const;
+	QSet<QString> getEpgChannels() const;
 	QString findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const;
 	QString findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const;
 	void addEntry(const DvbEpgEntry &entry);
@@ -77,6 +79,8 @@ signals:
 	// entryChanged() may invalidate the old entry pointer
 	void entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
 	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
+	void epgChannelAdded(const QString &channelName);
+	void epgChannelRemoved(const QString &channelName);
 
 private slots:
 	void channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
@@ -95,6 +99,7 @@ private:
 	DvbManager *manager;
 	QMap<DvbEpgEntry, DvbEpgEmptyClass> entries;
 	QMap<DvbRecordingKey, const DvbEpgEntry *> recordingKeyMapping;
+	QSet<QString> epgChannels;
 	QList<QExplicitlySharedDataPointer<const DvbChannel> > channels;
 	QHash<DvbEitEntry, const DvbChannel *> dvbEitMapping;
 	QHash<AtscEitEntry, const DvbChannel *> atscEitMapping;
