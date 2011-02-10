@@ -1084,14 +1084,12 @@ void DvbSectionGenerator::initPmt(int pmtPid, const DvbPmtSection &section, cons
 	int size = entry.getData() - section.getData();
 
 	while (entry.isValid()) {
-		const char *begin = entry.getData();
-		bool selected = pids.contains(entry.pid());
-		entry.advance();
-
-		if (selected) {
-			memcpy(data + size, begin, entry.getData() - begin);
-			size += entry.getData() - begin;
+		if (pids.contains(entry.pid())) {
+			memcpy(data + size, entry.getData(), entry.getLength());
+			size += entry.getLength();
 		}
+
+		entry.advance();
 	}
 
 	endSection(size + 4, pmtPid);
