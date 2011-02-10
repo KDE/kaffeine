@@ -44,7 +44,11 @@ class DvbSectionFilterInternal : public DvbPidFilter
 {
 public:
 	DvbSectionFilterInternal() : activeSectionFilters(0), continuityCounter(0),
-		bufferValid(false) { }
+		wrongCrcIndex(0), bufferValid(false)
+	{
+		memset(wrongCrcs, 0, sizeof(wrongCrcs));
+	}
+
 	~DvbSectionFilterInternal() { }
 
 	QList<DvbSectionFilter *> sectionFilters;
@@ -54,9 +58,11 @@ private:
 	void processData(const char [188]);
 	void processSections(bool force);
 
-	QByteArray buffer;
-	int continuityCounter;
+	unsigned char continuityCounter;
+	unsigned char wrongCrcIndex;
 	bool bufferValid;
+	QByteArray buffer;
+	int wrongCrcs[8];
 };
 
 // FIXME some debug messages may be printed too often
@@ -163,9 +169,34 @@ void DvbSectionFilterInternal::processSections(bool force)
 		if (sectionEnd <= end) {
 			int size = (sectionEnd - it);
 			int crc = DvbStandardSection::verifyCrc32(it, size);
+			bool crcOk;
 
-			for (int i = 0; i < sectionFilters.size(); ++i) {
-				sectionFilters.at(i)->processSection(it, size, crc);
+			if (crc == 0) {
+				crcOk = true;
+			} else {
+				for (int i = 0;; ++i) {
+					if (i == (sizeof(wrongCrcs) / sizeof(wrongCrcs[0]))) {
+						crcOk = false;
+						wrongCrcs[wrongCrcIndex] = crc;
+
+						if ((++wrongCrcIndex) == i) {
+							wrongCrcIndex = 0;
+						}
+
+						break;
+					}
+
+					if (wrongCrcs[i] == crc) {
+						crcOk = true;
+						break;
+					}
+				}
+			}
+
+			if (crcOk) {
+				for (int i = 0; i < sectionFilters.size(); ++i) {
+					sectionFilters.at(i)->processSection(it, size);
+				}
 			}
 
 			it = sectionEnd;

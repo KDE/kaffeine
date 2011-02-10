@@ -620,13 +620,17 @@ QTime DvbEpgFilter::bcdToTime(int bcd)
 		((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f));
 }
 
-void DvbEpgFilter::processSection(const char *data, int size, int crc)
+void DvbEpgFilter::processSection(const char *data, int size)
 {
-	Q_UNUSED(crc) // TODO check crc: (a) valid (b) invalid, but occurs more than once --> ok
+	unsigned char tableId = data[0];
+
+	if ((tableId < 0x4e) || (tableId > 0x6f)) {
+		return;
+	}
+
 	DvbEitSection eitSection(data, size);
 
-	if (!eitSection.isValid() ||
-	    (eitSection.tableId() < 0x4e) || (eitSection.tableId() > 0x6f)) {
+	if (!eitSection.isValid()) {
 		return;
 	}
 
@@ -695,19 +699,19 @@ static uint qHash(const AtscEitEntry &eitEntry)
 	return (qHash(eitEntry.source) ^ uint(eitEntry.sourceId));
 }
 
-void AtscEpgMgtFilter::processSection(const char *data, int size, int crc)
+void AtscEpgMgtFilter::processSection(const char *data, int size)
 {
-	epgFilter->processMgtSection(data, size, crc);
+	epgFilter->processMgtSection(data, size);
 }
 
-void AtscEpgEitFilter::processSection(const char *data, int size, int crc)
+void AtscEpgEitFilter::processSection(const char *data, int size)
 {
-	epgFilter->processEitSection(data, size, crc);
+	epgFilter->processEitSection(data, size);
 }
 
-void AtscEpgEttFilter::processSection(const char *data, int size, int crc)
+void AtscEpgEttFilter::processSection(const char *data, int size)
 {
-	epgFilter->processEttSection(data, size, crc);
+	epgFilter->processEttSection(data, size);
 }
 
 AtscEpgFilter::AtscEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel)
@@ -731,12 +735,17 @@ AtscEpgFilter::~AtscEpgFilter()
 	device->removeSectionFilter(0x1ffb, &mgtFilter);
 }
 
-void AtscEpgFilter::processMgtSection(const char *data, int size, int crc)
+void AtscEpgFilter::processMgtSection(const char *data, int size)
 {
-	Q_UNUSED(crc) // TODO check crc: (a) valid (b) invalid, but occurs more than once --> ok
+	unsigned char tableId = data[0];
+
+	if (tableId != 0xc7) {
+		return;
+	}
+
 	AtscMgtSection mgtSection(data, size);
 
-	if (!mgtSection.isValid() || (mgtSection.tableId() != 0xc7)) {
+	if (!mgtSection.isValid()) {
 		return;
 	}
 
@@ -806,12 +815,17 @@ void AtscEpgFilter::processMgtSection(const char *data, int size, int crc)
 	}
 }
 
-void AtscEpgFilter::processEitSection(const char *data, int size, int crc)
+void AtscEpgFilter::processEitSection(const char *data, int size)
 {
-	Q_UNUSED(crc) // TODO check crc: (a) valid (b) invalid, but occurs more than once --> ok
+	unsigned char tableId = data[0];
+
+	if (tableId != 0xcb) {
+		return;
+	}
+
 	AtscEitSection eitSection(data, size);
 
-	if (!eitSection.isValid() || (eitSection.tableId() != 0xcb)) {
+	if (!eitSection.isValid()) {
 		return;
 	}
 
@@ -852,16 +866,17 @@ void AtscEpgFilter::processEitSection(const char *data, int size, int crc)
 	}
 }
 
-void AtscEpgFilter::processEttSection(const char *data, int size, int crc)
+void AtscEpgFilter::processEttSection(const char *data, int size)
 {
-	Q_UNUSED(crc) // TODO check crc: (a) valid (b) invalid, but occurs more than once --> ok
-	AtscEttSection ettSection(data, size);
+	unsigned char tableId = data[0];
 
-	if (!ettSection.isValid() || (ettSection.tableId() != 0xcc)) {
+	if (tableId != 0xcc) {
 		return;
 	}
 
-	if (ettSection.messageType() != 0x02) {
+	AtscEttSection ettSection(data, size);
+
+	if (!ettSection.isValid() || (ettSection.messageType() != 0x02)) {
 		return;
 	}
 

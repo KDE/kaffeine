@@ -49,7 +49,7 @@ public:
 	DvbDummySectionFilter() { }
 	~DvbDummySectionFilter() { }
 
-	void processSection(const char *, int, int) { }
+	void processSection(const char *, int) { }
 };
 
 class DvbDevice : public QObject, public DvbFrontendDevice

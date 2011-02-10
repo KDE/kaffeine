@@ -1015,38 +1015,18 @@ const unsigned char AtscHuffmanString::Huffman2Tables[] = {
 	0x02, 0x03, 0x04, 0x05, 0x9b, 0x9b, 0x9b, 0x9b,
 	0x9b, 0x9b, 0x9b, 0x9b, 0x9b, 0x9b };
 
-DvbPmtFilter::DvbPmtFilter() : programNumber(-1)
+void DvbPmtFilter::processSection(const char *data, int size)
 {
-	memset(wrongCrcs, sizeof(wrongCrcs), 0);
-}
+	unsigned char tableId = data[0];
 
-void DvbPmtFilter::processSection(const char *data, int size, int crc)
-{
-	DvbPmtSection pmtSection(data, size);
-
-	if (!pmtSection.isValid() || (pmtSection.tableId() != 0x2) ||
-	    (pmtSection.programNumber() != programNumber)) {
+	if (tableId != 0x02) {
 		return;
 	}
 
-	if (crc != 0) {
-		bool found = false;
+	DvbPmtSection pmtSection(data, size);
 
-		for (uint i = 0; i < (sizeof(wrongCrcs) / sizeof(wrongCrcs[0])); ++i) {
-			if (wrongCrcs[i] == crc) {
-				found = true;
-				break;
-			}
-		}
-
-		if (!found) {
-			for (uint i = 1; i < (sizeof(wrongCrcs) / sizeof(wrongCrcs[0])); ++i) {
-				wrongCrcs[i] = wrongCrcs[i - 1];
-			}
-
-			wrongCrcs[0] = crc;
-			return;
-		}
+	if (!pmtSection.isValid() || (pmtSection.programNumber() != programNumber)) {
+		return;
 	}
 
 	if ((size == lastPmtSectionData.size()) &&

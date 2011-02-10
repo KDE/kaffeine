@@ -91,8 +91,8 @@ protected:
 class DvbSectionFilter
 {
 public:
-	// crc == 0 means valid
-	virtual void processSection(const char *data, int size, int crc) = 0;
+	// the crc is either valid or has appeared at least twice
+	virtual void processSection(const char *data, int size) = 0;
 
 protected:
 	DvbSectionFilter() { }

@@ -84,7 +84,7 @@ private:
 	Q_DISABLE_COPY(DvbEpgFilter)
 	static QTime bcdToTime(int bcd);
 
-	void processSection(const char *data, int size, int crc);
+	void processSection(const char *data, int size);
 };
 
 class AtscEitEntry
@@ -110,7 +110,7 @@ public:
 	~AtscEpgMgtFilter() { }
 
 private:
-	void processSection(const char *data, int size, int crc);
+	void processSection(const char *data, int size);
 
 	AtscEpgFilter *epgFilter;
 };
@@ -122,7 +122,7 @@ public:
 	~AtscEpgEitFilter() { }
 
 private:
-	void processSection(const char *data, int size, int crc);
+	void processSection(const char *data, int size);
 
 	AtscEpgFilter *epgFilter;
 };
@@ -134,7 +134,7 @@ public:
 	~AtscEpgEttFilter() { }
 
 private:
-	void processSection(const char *data, int size, int crc);
+	void processSection(const char *data, int size);
 
 	AtscEpgFilter *epgFilter;
 };
@@ -155,9 +155,9 @@ public:
 
 private:
 	Q_DISABLE_COPY(AtscEpgFilter)
-	void processMgtSection(const char *data, int size, int crc);
-	void processEitSection(const char *data, int size, int crc);
-	void processEttSection(const char *data, int size, int crc);
+	void processMgtSection(const char *data, int size);
+	void processEitSection(const char *data, int size);
+	void processEttSection(const char *data, int size);
 
 	AtscEpgMgtFilter mgtFilter;
 	AtscEpgEitFilter eitFilter;

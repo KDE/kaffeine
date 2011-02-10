@@ -69,7 +69,7 @@ public:
 
 private:
 	bool checkMultipleSection(const DvbStandardSection &section);
-	void processSection(const char *data, int size, int crc);
+	void processSection(const char *data, int size);
 	void timerEvent(QTimerEvent *);
 
 	DvbScan *scan;
@@ -142,10 +142,8 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	return true;
 }
 
-void DvbScanFilter::processSection(const char *data, int size, int crc)
+void DvbScanFilter::processSection(const char *data, int size)
 {
-	Q_UNUSED(crc)
-
 	switch (type) {
 	case DvbScan::PatFilter: {
 		DvbPatSection patSection(data, size);
