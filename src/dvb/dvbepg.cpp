@@ -87,6 +87,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		addChannelEitMapping(channel);
 	}
 
+	// TODO use SQL to store epg data
+
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
