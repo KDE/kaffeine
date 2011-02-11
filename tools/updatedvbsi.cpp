@@ -69,24 +69,24 @@ QString Element::toString() const
 		int leftShift = currentBits - bitsLeft;
 
 		if (leftShift != 0) {
-			result += "(";
+			result += '(';
 		}
 
 		if (andValue != 255) {
-			result += "(";
+			result += '(';
 		}
 
-		result += "at(" + QString::number(currentBitIndex / 8) + offsetString + ")";
+		result += "at(" + QString::number(currentBitIndex / 8) + offsetString + ')';
 
 		if (andValue != 255) {
-			result += " & 0x" + QString::number(andValue, 16) + ")";
+			result += " & 0x" + QString::number(andValue, 16) + ')';
 		}
 
 		if (leftShift != 0) {
 			if (leftShift > 0) {
-				result += " << " + QString::number(leftShift) + ")";
+				result += " << " + QString::number(leftShift) + ')';
 			} else {
-				result += " >> " + QString::number(-leftShift) + ")";
+				result += " >> " + QString::number(-leftShift) + ')';
 			}
 		}
 
