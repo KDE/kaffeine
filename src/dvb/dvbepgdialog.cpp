@@ -179,12 +179,6 @@ void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
 	}
 }
 
-void DvbEpgTableModel::scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter)
-{
-	epgModel->scheduleProgram(entries.at(row).constData(), extraSecondsBefore,
-		extraSecondsAfter);
-}
-
 int DvbEpgTableModel::columnCount(const QModelIndex &parent) const
 {
 	if (!parent.isValid()) {
@@ -484,7 +478,7 @@ void DvbEpgDialog::scheduleProgram()
 	QModelIndex index = epgView->currentIndex();
 
 	if (index.isValid()) {
-		epgTableModel->scheduleProgram(index.row(), manager->getBeginMargin(),
-			manager->getEndMargin());
+		manager->getEpgModel()->scheduleProgram(epgTableModel->getEntry(index.row()),
+			manager->getBeginMargin(), manager->getEndMargin());
 	}
 }

@@ -81,7 +81,6 @@ public:
 	QAbstractItemModel *createEpgProxyChannelModel(QObject *parent);
 	const DvbEpgEntry *getEntry(int row) const;
 	void setChannelNameFilter(const QString &channelName);
-	void scheduleProgram(int row, int extraSecondsBefore, int extraSecondsAfter);
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
