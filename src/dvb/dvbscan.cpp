@@ -35,6 +35,8 @@ public:
 	int pid;
 };
 
+Q_DECLARE_TYPEINFO(DvbPatEntry, Q_MOVABLE_TYPE);
+
 class DvbSdtEntry
 {
 public:

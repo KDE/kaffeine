@@ -77,4 +77,6 @@ public:
 	~DvbConfig() { }
 };
 
+Q_DECLARE_TYPEINFO(DvbConfig, Q_MOVABLE_TYPE);
+
 #endif /* DVBCONFIG_H */
