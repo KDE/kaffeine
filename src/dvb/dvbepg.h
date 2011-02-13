@@ -22,7 +22,6 @@
 #define DVBEPG_H
 
 #include <QSet>
-#include <QSharedData> // qt 4.5 compatibility
 #include "dvbrecording.h"
 
 class AtscEitEntry;
@@ -83,11 +82,9 @@ signals:
 	void epgChannelRemoved(const QString &channelName);
 
 private slots:
-	void channelDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-	void channelLayoutChanged();
-	void channelModelReset();
-	void channelRowsInserted(const QModelIndex &parent, int start, int end);
-	void channelRowsRemoved(const QModelIndex &parent, int start, int end);
+	void channelAdded(const DvbChannel *channel);
+	void channelChanged(const DvbChannel *channel, const DvbChannel &oldChannel);
+	void channelAboutToBeRemoved(const DvbChannel *channel);
 	void programRemoved(const DvbRecordingKey &recordingKey);
 
 private:
@@ -100,7 +97,6 @@ private:
 	QMap<DvbEpgEntry, DvbEpgEmptyClass> entries;
 	QMap<DvbRecordingKey, const DvbEpgEntry *> recordingKeyMapping;
 	QSet<QString> epgChannels;
-	QList<QExplicitlySharedDataPointer<const DvbChannel> > channels;
 	QHash<DvbEitEntry, const DvbChannel *> dvbEitMapping;
 	QHash<AtscEitEntry, const DvbChannel *> atscEitMapping;
 	QDateTime currentDateTimeUtc;
