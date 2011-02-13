@@ -252,6 +252,11 @@ DvbChannelModel::~DvbChannelModel()
 {
 }
 
+QList<QSharedDataPointer<DvbChannel> > DvbChannelModel::getChannels() const
+{
+	return channels;
+}
+
 QModelIndex DvbChannelModel::findChannelByName(const QString &name) const
 {
 	for (int row = 0; row < channels.size(); ++row) {
@@ -301,6 +306,11 @@ void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 
 		if (nextValidRow > row) {
 			beginRemoveRows(QModelIndex(), row, nextValidRow - 1);
+
+			for (int i = row; i < nextValidRow; ++i) {
+				emit channelAboutToBeRemoved(channels.at(i));
+			}
+
 			channels.erase(channels.begin() + row, channels.begin() + nextValidRow);
 			endRemoveRows();
 		}
@@ -310,6 +320,11 @@ void DvbChannelModel::cloneFrom(const DvbChannelModel *other)
 		int row = channels.size();
 		beginInsertRows(QModelIndex(), row, row + newChannels.size() - 1);
 		channels.append(newChannels);
+
+		for (int i = row; i < channels.size(); ++i) {
+			emit channelAdded(channels.at(i));
+		}
+
 		endInsertRows();
 	}
 
@@ -406,6 +421,7 @@ bool DvbChannelModel::removeRows(int row, int count, const QModelIndex &parent)
 	for (int currentRow = row; currentRow < (row + count); ++currentRow) {
 		names.remove(channels.at(currentRow)->name);
 		numbers.remove(channels.at(currentRow)->number);
+		emit channelAboutToBeRemoved(channels.at(currentRow));
 	}
 
 	channels.erase(channels.begin() + row, channels.begin() + row + count);
@@ -495,9 +511,12 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 			} else {
 				for (int i = 0; i < channels.size(); ++i) {
 					if (channels.at(i)->name == newName) {
+						const QSharedDataPointer<DvbChannel> oldChannel =
+							channels.at(i);
 						channels[i]->name =
 							findNextFreeName(channels.at(i)->name);
 						names.insert(channels.at(i)->name);
+						emit channelChanged(channels.at(i), *oldChannel);
 						QModelIndex modelIndex = index(i, 0);
 						emit dataChanged(modelIndex, modelIndex);
 						break;
@@ -517,9 +536,12 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 			} else {
 				for (int i = 0; i < channels.size(); ++i) {
 					if (channels.at(i)->number == newNumber) {
+						const QSharedDataPointer<DvbChannel> oldChannel =
+							channels.at(i);
 						channels[i]->number =
 							findNextFreeNumber(channels.at(i)->number);
 						numbers.insert(channels.at(i)->number);
+						emit channelChanged(channels.at(i), *oldChannel);
 						QModelIndex modelIndex = index(i, 1);
 						emit dataChanged(modelIndex, modelIndex);
 						break;
@@ -528,7 +550,9 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 			}
 		}
 
+		const QSharedDataPointer<DvbChannel> oldChannel = channels.at(row);
 		channels.replace(row, QSharedDataPointer<DvbChannel>(channel));
+		emit channelChanged(channels.at(row), *oldChannel);
 		emit dataChanged(index(row, 0), index(row, 1));
 	} else {
 		row = channels.size();
@@ -538,6 +562,7 @@ bool DvbChannelModel::setData(const QModelIndex &modelIndex, const QVariant &val
 		channels.append(QSharedDataPointer<DvbChannel>(channel));
 		names.insert(channel->name);
 		numbers.insert(channel->number);
+		emit channelAdded(channel);
 		endInsertRows();
 	}
 
@@ -693,7 +718,9 @@ void DvbChannelModel::internalMove(const QList<QPersistentModelIndex> &indexes, 
 			}
 		}
 
+		const QSharedDataPointer<DvbChannel> oldChannel = channels.at(row);
 		channels[row]->number = number;
+		emit channelChanged(channels.at(row), *oldChannel);
 		QModelIndex modelIndex = index(row, 1);
 		emit dataChanged(modelIndex, modelIndex);
 		mapping.erase(mapping.begin());

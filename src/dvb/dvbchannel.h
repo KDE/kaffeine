@@ -103,6 +103,7 @@ public:
 	 * they are automatically adjusted if necessary
 	 */
 
+	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
 	QModelIndex findChannelByName(const QString &name) const;
 	QModelIndex findChannelByNumber(int number) const;
 	void cloneFrom(const DvbChannelModel *other);
@@ -129,6 +130,10 @@ public:
 		const QModelIndex &parent);
 
 signals:
+	void channelAdded(const DvbChannel *channel);
+	// channelChanged() may invalidate the old channel pointer
+	void channelChanged(const DvbChannel *channel, const DvbChannel &oldChannel);
+	void channelAboutToBeRemoved(const DvbChannel *channel);
 	void checkInternalMove(bool *ok);
 
 protected:
