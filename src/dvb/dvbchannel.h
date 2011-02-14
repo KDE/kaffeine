@@ -89,22 +89,22 @@ public:
 
 	bool operator==(const DvbChannel &other) const
 	{
-		return (name == other.name);
+		return (number == other.number);
 	}
 
 	bool operator!=(const DvbChannel &other) const
 	{
-		return (name != other.name);
+		return (number != other.number);
 	}
 
 	bool operator<(const DvbChannel &other) const
 	{
-		return (name < other.name);
+		return (number < other.number);
 	}
 
 	friend uint qHash(const DvbChannel &channel)
 	{
-		return qHash(channel.name);
+		return qHash(channel.number);
 	}
 };
 

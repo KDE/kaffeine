@@ -30,6 +30,8 @@ public:
 	DvbEpgChannelModel(DvbManager *manager, QObject *parent);
 	~DvbEpgChannelModel();
 
+	const DvbChannel *getChannel(int row) const;
+
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
@@ -113,7 +115,7 @@ public:
 	~DvbEpgTableModel();
 
 	const DvbEpgEntry *getEntry(int row) const;
-	void setChannelNameFilter(const QString &channelName);
+	void setChannelFilter(const DvbChannel *channel);
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -133,7 +135,7 @@ private:
 
 	DvbEpgModel *epgModel;
 	QList<DvbEpgTableModelEntry> entries;
-	QString channelNameFilter;
+	DvbSharedChannel channelFilter;
 	QStringMatcher contentFilter;
 	bool contentFilterEventPending;
 };

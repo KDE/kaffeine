@@ -26,6 +26,7 @@
 class QLabel;
 class QModelIndex;
 class QTreeView;
+class DvbEpgChannelModel;
 class DvbEpgTableModel;
 class DvbManager;
 
@@ -46,6 +47,7 @@ private slots:
 
 private:
 	DvbManager *manager;
+	DvbEpgChannelModel *epgChannelModel;
 	DvbEpgTableModel *epgTableModel;
 	QTreeView *channelView;
 	QTreeView *epgView;

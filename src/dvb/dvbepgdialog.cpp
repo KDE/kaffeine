@@ -44,7 +44,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	epgTableModel = new DvbEpgTableModel(manager->getEpgModel(), this);
 
 	channelView = new QTreeView(widget);
-	QAbstractItemModel *epgChannelModel = new DvbEpgChannelModel(manager, this);
+	epgChannelModel = new DvbEpgChannelModel(manager, this);
 	channelView->setModel(epgChannelModel);
 	channelView->setMaximumWidth(200);
 	channelView->setRootIsDecorated(false);
@@ -124,11 +124,11 @@ void DvbEpgDialog::showDialog(DvbManager *manager_, const QString &currentChanne
 void DvbEpgDialog::channelActivated(const QModelIndex &index)
 {
 	if (!index.isValid()) {
-		epgTableModel->setChannelNameFilter(QString());
+		epgTableModel->setChannelFilter(NULL);
 		return;
 	}
 
-	epgTableModel->setChannelNameFilter(channelView->model()->data(index).toString());
+	epgTableModel->setChannelFilter(epgChannelModel->getChannel(index.row()));
 
 	if (epgTableModel->rowCount() >= 1) {
 		epgView->setCurrentIndex(epgTableModel->index(0, 0));
@@ -209,6 +209,11 @@ DvbEpgChannelModel::DvbEpgChannelModel(DvbManager *manager, QObject *parent) :
 
 DvbEpgChannelModel::~DvbEpgChannelModel()
 {
+}
+
+const DvbChannel *DvbEpgChannelModel::getChannel(int row) const
+{
+	return channels.at(row).constData();
 }
 
 int DvbEpgChannelModel::columnCount(const QModelIndex &parent) const
@@ -308,9 +313,9 @@ const DvbEpgEntry *DvbEpgTableModel::getEntry(int row) const
 	return entries.at(row).constData();
 }
 
-void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
+void DvbEpgTableModel::setChannelFilter(const DvbChannel *channel)
 {
-	channelNameFilter = channelName;
+	channelFilter = DvbSharedChannel(channel);
 	contentFilter.setPattern(QString());
 
 	if (!entries.isEmpty()) {
@@ -319,12 +324,13 @@ void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
 		endRemoveRows();
 	}
 
+	if (!channelFilter.isValid()) {
+		return;
+	}
+
 	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
 	DvbEpgEntry pseudoEntry;
-	DvbChannel pseudoChannel; // FIXME (and adjust DvbSharedChannel afterwards)
-	pseudoChannel.ref = 1;
-	pseudoChannel.name = channelName;
-	pseudoEntry.channel = DvbSharedChannel(&pseudoChannel);
+	pseudoEntry.channel = channelFilter;
 	QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator begin =
 		allEntries.lowerBound(pseudoEntry);
 	int count = 0;
@@ -374,7 +380,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 
 	switch (role) {
 	case Qt::DecorationRole:
-		if ((index.column() == 2) && (entry->recordingKey.isValid())) {
+		if ((index.column() == 2) && entry->recordingKey.isValid()) {
 			return KIcon("media-record");
 		}
 
@@ -417,7 +423,7 @@ QVariant DvbEpgTableModel::headerData(int section, Qt::Orientation orientation, 
 
 void DvbEpgTableModel::setContentFilter(const QString &pattern)
 {
-	channelNameFilter.clear();
+	channelFilter = DvbSharedChannel();
 	contentFilter.setPattern(pattern);
 
 	if (!contentFilterEventPending) {
@@ -428,7 +434,7 @@ void DvbEpgTableModel::setContentFilter(const QString &pattern)
 
 void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 {
-	if ((entry->channel->name == channelNameFilter) ||
+	if ((channelFilter.isValid() && (channelFilter == entry->channel)) ||
 	    (!contentFilter.pattern().isEmpty() &&
 	     ((contentFilter.indexIn(entry->title) >= 0) ||
 	      (contentFilter.indexIn(entry->subheading) >= 0) ||
@@ -446,19 +452,18 @@ void DvbEpgTableModel::entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEnt
 	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(oldEntry)) - entries.constBegin());
 
 	if (row < entries.size()) {
+		int targetRow = (qLowerBound(entries, DvbEpgTableModelEntry(newEntry)) -
+			entries.constBegin());
+
+		if (targetRow > row) {
+			--targetRow;
+		}
+
 		entries[row] = DvbEpgTableModelEntry(newEntry);
 		emit dataChanged(index(row, 0), index(row, 3));
 
-		if (((row > 0) && !(entries.at(row - 1) < entries.at(row))) ||
-		    ((row < (entries.size() - 1)) && !(entries.at(row) < entries.at(row + 1)))) {
-			int targetRow = (qLowerBound(entries, DvbEpgTableModelEntry(newEntry)) -
-				entries.constBegin());
+		if (row != targetRow) {
 			emit layoutAboutToBeChanged();
-
-			if (targetRow > row) {
-				--targetRow;
-			}
-
 			entries.move(row, targetRow);
 			emit layoutChanged();
 		}
@@ -496,12 +501,12 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 
 	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = allEntries.constBegin();
 	     it != allEntries.constEnd(); ++it) {
-		const DvbEpgEntry &entry = it.key();
+		const DvbEpgEntry *entry = &it.key();
 
-		if (((contentFilter.indexIn(entry.title) >= 0) ||
-		     (contentFilter.indexIn(entry.subheading) >= 0) ||
-		     (contentFilter.indexIn(entry.details) >= 0))) {
-			filteredEntries.append(DvbEpgTableModelEntry(&entry));
+		if (((contentFilter.indexIn(entry->title) >= 0) ||
+		     (contentFilter.indexIn(entry->subheading) >= 0) ||
+		     (contentFilter.indexIn(entry->details) >= 0))) {
+			filteredEntries.append(DvbEpgTableModelEntry(entry));
 		}
 	}
 
