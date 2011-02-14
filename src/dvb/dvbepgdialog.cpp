@@ -27,7 +27,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QSortFilterProxyModel>
 #include <KAction>
 #include <KLineEdit>
 #include <KLocale>

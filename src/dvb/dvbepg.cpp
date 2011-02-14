@@ -286,7 +286,6 @@ void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		DvbEpgEntry modifiedEntry = entry;
 		modifiedEntry.subheading.clear();
 		modifiedEntry.details.clear();
-
 		Iterator it = entries.find(modifiedEntry);
 
 		if (ConstIterator(it) != entries.constEnd()) {
@@ -432,6 +431,8 @@ DvbEpgModel::Iterator DvbEpgModel::internalChangeEntry(Iterator it, const DvbEpg
 	const DvbEpgEntry *newEntry = &entries.insertMulti(entry, DvbEpgEmptyClass()).key();
 
 	if (newEntry->recordingKey.isValid()) {
+		Q_ASSERT(!oldEntry->recordingKey.isValid() ||
+			 (oldEntry->recordingKey == newEntry->recordingKey));
 		recordingKeyMapping.insert(newEntry->recordingKey, newEntry);
 	} else if (oldEntry->recordingKey.isValid()) {
 		recordingKeyMapping.remove(oldEntry->recordingKey);
@@ -448,7 +449,7 @@ DvbEpgModel::Iterator DvbEpgModel::internalChangeEntry(Iterator it, const DvbEpg
 		}
 	}
 
-	emit entryChanged(newEntry, oldEntry);
+	emit entryChanged(oldEntry, newEntry);
 	return entries.erase(it);
 }
 
