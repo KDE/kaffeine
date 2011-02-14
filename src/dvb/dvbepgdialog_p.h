@@ -27,20 +27,40 @@ class DvbEpgChannelModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	explicit DvbEpgChannelModel(QObject *parent);
+	DvbEpgChannelModel(DvbEpgModel *epgModel, QObject *parent);
 	~DvbEpgChannelModel();
 
-public slots:
-	void insertChannelName(const QString &channelName);
-	void removeChannelName(const QString &channelName);
+private slots:
+	void epgChannelAdded(const DvbChannel *channel);
+	void epgChannelAboutToBeRemoved(const DvbChannel *channel);
 
 private:
+	class LessThan
+	{
+	public:
+		bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
+		{
+			return (x->name.localeAwareCompare(y->name) < 0);
+		}
+
+		bool operator()(const DvbSharedChannel &x, const DvbChannel *y) const
+		{
+			return (x->name.localeAwareCompare(y->name) < 0);
+		}
+
+		bool operator()(const DvbChannel *x, const DvbSharedChannel &y) const
+		{
+			return (x->name.localeAwareCompare(y->name) < 0);
+		}
+	};
+
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
-	QList<QString> channelNames;
+	QList<DvbSharedChannel> channels;
+	LessThan lessThan;
 };
 
 class DvbEpgTableModelEntry
@@ -77,7 +97,6 @@ public:
 	DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent);
 	~DvbEpgTableModel();
 
-	QAbstractItemModel *createEpgProxyChannelModel(QObject *parent);
 	const DvbEpgEntry *getEntry(int row) const;
 	void setChannelNameFilter(const QString &channelName);
 
@@ -91,7 +110,7 @@ public slots:
 
 private slots:
 	void entryAdded(const DvbEpgEntry *entry);
-	void entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
+	void entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry);
 	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
 
 private:
@@ -99,7 +118,6 @@ private:
 
 	DvbEpgModel *epgModel;
 	QList<DvbEpgTableModelEntry> entries;
-	DvbEpgChannelModel epgChannelModel;
 	QString channelNameFilter;
 	QStringMatcher contentFilter;
 	bool contentFilterEventPending;

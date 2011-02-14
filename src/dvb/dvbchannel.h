@@ -86,6 +86,26 @@ public:
 		*base = other;
 		return (*this);
 	}
+
+	bool operator==(const DvbChannel &other) const
+	{
+		return (name == other.name);
+	}
+
+	bool operator!=(const DvbChannel &other) const
+	{
+		return (name != other.name);
+	}
+
+	bool operator<(const DvbChannel &other) const
+	{
+		return (name < other.name);
+	}
+
+	friend uint qHash(const DvbChannel &channel)
+	{
+		return qHash(channel.name);
+	}
 };
 
 Q_DECLARE_TYPEINFO(QSharedDataPointer<DvbChannel>, Q_MOVABLE_TYPE);
@@ -108,6 +128,11 @@ public:
 		return channel.constData();
 	}
 
+	const DvbChannel &operator*() const
+	{
+		return *channel;
+	}
+
 	const DvbChannel *operator->() const
 	{
 		return channel.constData();
@@ -115,27 +140,29 @@ public:
 
 	bool operator==(const DvbSharedChannel &other) const
 	{
-		return (channel->name == other.channel->name);
+		return (*channel == *other.channel);
 	}
 
 	bool operator!=(const DvbSharedChannel &other) const
 	{
-		return (channel->name != other.channel->name);
+		return (*channel != *other.channel);
 	}
 
 	bool operator<(const DvbSharedChannel &other) const
 	{
-		return (channel->name < other.channel->name);
+		return (*channel < *other.channel);
 	}
 
 	friend uint qHash(const DvbSharedChannel &sharedChannel)
 	{
-		return qHash(sharedChannel.channel->name);
+		return qHash(*sharedChannel.channel);
 	}
 
 private:
 	QExplicitlySharedDataPointer<const DvbChannel> channel;
 };
+
+Q_DECLARE_TYPEINFO(DvbSharedChannel, Q_MOVABLE_TYPE);
 
 class DvbChannelModel : public QAbstractTableModel
 {

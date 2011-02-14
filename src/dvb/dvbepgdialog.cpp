@@ -46,8 +46,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	epgTableModel = new DvbEpgTableModel(epgModel, this);
 
 	channelView = new QTreeView(widget);
-	QAbstractItemModel *epgChannelModel = epgTableModel->createEpgProxyChannelModel(this);
-	epgChannelModel->sort(0, Qt::AscendingOrder); // TODO same sort order as main channel list
+	// TODO same sort order as main channel list
+	QAbstractItemModel *epgChannelModel = new DvbEpgChannelModel(epgModel, this);
 	channelView->setModel(epgChannelModel);
 	channelView->setMaximumWidth(200);
 	channelView->setRootIsDecorated(false);
@@ -175,32 +175,47 @@ void DvbEpgDialog::scheduleProgram()
 	}
 }
 
-DvbEpgChannelModel::DvbEpgChannelModel(QObject *parent) : QAbstractTableModel(parent)
+DvbEpgChannelModel::DvbEpgChannelModel(DvbEpgModel *epgModel, QObject *parent) : QAbstractTableModel(parent)
 {
+	connect(epgModel, SIGNAL(epgChannelAdded(const DvbChannel*)),
+		this, SLOT(epgChannelAdded(const DvbChannel*)));
+	connect(epgModel, SIGNAL(epgChannelAboutToBeRemoved(const DvbChannel*)),
+		this, SLOT(epgChannelAboutToBeRemoved(const DvbChannel*)));
+
+	const QHash<DvbSharedChannel, int> epgChannels = epgModel->getEpgChannels();
+
+	for (QHash<DvbSharedChannel, int>::ConstIterator it = epgChannels.constBegin();
+	     it != epgChannels.constEnd(); ++it) {
+		channels.append(it.key());
+	}
+
+	qSort(channels.begin(), channels.end(), lessThan);
 }
 
 DvbEpgChannelModel::~DvbEpgChannelModel()
 {
 }
 
-void DvbEpgChannelModel::insertChannelName(const QString &channelName)
+void DvbEpgChannelModel::epgChannelAdded(const DvbChannel *channel)
 {
-	int row = (qLowerBound(channelNames, channelName) - channelNames.constBegin());
+	int row = (qLowerBound(channels.constBegin(), channels.constEnd(), channel, lessThan) -
+		channels.constBegin());
 
-	if ((row >= channelNames.size()) || (channelNames.at(row) != channelName)) {
+	if ((row >= channels.size()) || (*channels.at(row) != *channel)) {
 		beginInsertRows(QModelIndex(), row, row);
-		channelNames.insert(row, channelName);
+		channels.insert(row, DvbSharedChannel(channel));
 		endInsertRows();
 	}
 }
 
-void DvbEpgChannelModel::removeChannelName(const QString &channelName)
+void DvbEpgChannelModel::epgChannelAboutToBeRemoved(const DvbChannel *channel)
 {
-	int row = (qBinaryFind(channelNames, channelName) - channelNames.constBegin());
+	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan) -
+		channels.constBegin());
 
-	if (row < channelNames.size()) {
+	if (row < channels.size()) {
 		beginRemoveRows(QModelIndex(), row, row);
-		channelNames.removeAt(row);
+		channels.removeAt(row);
 		endRemoveRows();
 	}
 }
@@ -217,7 +232,7 @@ int DvbEpgChannelModel::columnCount(const QModelIndex &parent) const
 int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
 {
 	if (!parent.isValid()) {
-		return channelNames.size();
+		return channels.size();
 	}
 
 	return 0;
@@ -226,7 +241,7 @@ int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
 QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
 {
 	if ((role == Qt::DisplayRole) && (index.column() == 0)) {
-		return channelNames.at(index.row());
+		return channels.at(index.row())->name;
 	}
 
 	return QVariant();
@@ -242,41 +257,19 @@ QVariant DvbEpgChannelModel::headerData(int section, Qt::Orientation orientation
 }
 
 DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
-	QAbstractTableModel(parent), epgModel(epgModel_), epgChannelModel(NULL),
-	contentFilterEventPending(false)
+	QAbstractTableModel(parent), epgModel(epgModel_), contentFilterEventPending(false)
 {
 	contentFilter.setCaseSensitivity(Qt::CaseInsensitive);
 	connect(epgModel, SIGNAL(entryAdded(const DvbEpgEntry*)),
 		this, SLOT(entryAdded(const DvbEpgEntry*)));
-	connect(epgModel, SIGNAL(entryChanged(const DvbEpgEntry*,DvbEpgEntry)),
-		this, SLOT(entryChanged(const DvbEpgEntry*,DvbEpgEntry)));
+	connect(epgModel, SIGNAL(entryChanged(const DvbEpgEntry*,const DvbEpgEntry*)),
+		this, SLOT(entryChanged(const DvbEpgEntry*,const DvbEpgEntry*)));
 	connect(epgModel, SIGNAL(entryAboutToBeRemoved(const DvbEpgEntry*)),
 		this, SLOT(entryAboutToBeRemoved(const DvbEpgEntry*)));
-	connect(epgModel, SIGNAL(epgChannelAdded(QString)),
-		&epgChannelModel, SLOT(insertChannelName(QString)));
-	connect(epgModel, SIGNAL(epgChannelRemoved(QString)),
-		&epgChannelModel, SLOT(removeChannelName(QString)));
-
-	const QHash<DvbSharedChannel, int> epgChannels = epgModel->getEpgChannels();
-
-	for (QHash<DvbSharedChannel, int>::ConstIterator it = epgChannels.constBegin();
-	     it != epgChannels.constEnd(); ++it) {
-		epgChannelModel.insertChannelName(it.key()->name);
-	}
 }
 
 DvbEpgTableModel::~DvbEpgTableModel()
 {
-}
-
-QAbstractItemModel *DvbEpgTableModel::createEpgProxyChannelModel(QObject *parent)
-{
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
-	proxyModel->setDynamicSortFilter(true);
-	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	proxyModel->setSortLocaleAware(true);
-	proxyModel->setSourceModel(&epgChannelModel);
-	return proxyModel;
 }
 
 const DvbEpgEntry *DvbEpgTableModel::getEntry(int row) const
@@ -417,17 +410,17 @@ void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 	}
 }
 
-void DvbEpgTableModel::entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry)
+void DvbEpgTableModel::entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry)
 {
-	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(&oldEntry)) - entries.constBegin());
+	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(oldEntry)) - entries.constBegin());
 
 	if (row < entries.size()) {
-		entries[row] = DvbEpgTableModelEntry(entry);
+		entries[row] = DvbEpgTableModelEntry(newEntry);
 		emit dataChanged(index(row, 0), index(row, 3));
 
 		if (((row > 0) && !(entries.at(row - 1) < entries.at(row))) ||
 		    ((row < (entries.size() - 1)) && !(entries.at(row) < entries.at(row + 1)))) {
-			int targetRow = (qLowerBound(entries, DvbEpgTableModelEntry(entry)) -
+			int targetRow = (qLowerBound(entries, DvbEpgTableModelEntry(newEntry)) -
 				entries.constBegin());
 			emit layoutAboutToBeChanged();
 
