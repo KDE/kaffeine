@@ -55,9 +55,9 @@ class DvbEpgEmptyClass
 
 class DvbEpgModel : public QObject
 {
+	Q_OBJECT
 	typedef QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator ConstIterator;
 	typedef QMap<DvbEpgEntry, DvbEpgEmptyClass>::Iterator Iterator;
-	Q_OBJECT
 public:
 	DvbEpgModel(DvbManager *manager_, QObject *parent);
 	~DvbEpgModel();
@@ -76,7 +76,7 @@ public:
 
 signals:
 	void entryAdded(const DvbEpgEntry *entry);
-	// entryChanged() invalidates the old entry pointer
+	// oldEntry becomes invalid -after- emitting entryChanged()
 	void entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry);
 	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
 	void epgChannelAdded(const DvbChannel *channel);
