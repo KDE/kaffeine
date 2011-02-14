@@ -70,8 +70,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	DvbChannelModel *channelModel = manager->getChannelModel();
 	connect(channelModel, SIGNAL(channelAdded(const DvbChannel*)),
 		this, SLOT(channelAdded(const DvbChannel*)));
-	connect(channelModel, SIGNAL(channelChanged(const DvbChannel*,DvbChannel)),
-		this, SLOT(channelChanged(const DvbChannel*,DvbChannel)));
+	connect(channelModel, SIGNAL(channelChanged(const DvbChannel*,const DvbChannel*)),
+		this, SLOT(channelChanged(const DvbChannel*,const DvbChannel*)));
 	connect(channelModel, SIGNAL(channelAboutToBeRemoved(const DvbChannel*)),
 		this, SLOT(channelAboutToBeRemoved(const DvbChannel*)));
 	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingKey)),

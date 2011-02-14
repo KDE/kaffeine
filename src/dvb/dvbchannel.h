@@ -177,8 +177,7 @@ public:
 
 signals:
 	void channelAdded(const DvbChannel *channel);
-	// channelChanged() may invalidate the old channel pointer
-	void channelChanged(const DvbChannel *channel, const DvbChannel &oldChannel);
+	void channelChanged(const DvbChannel *oldChannel, const DvbChannel *newChannel);
 	void channelAboutToBeRemoved(const DvbChannel *channel);
 	void checkInternalMove(bool *ok);
 
