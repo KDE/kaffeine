@@ -80,33 +80,6 @@ private:
 	LessThan lessThan;
 };
 
-class DvbEpgTableModelEntry
-{
-public:
-	explicit DvbEpgTableModelEntry(const DvbEpgEntry *entry_) : entry(entry_) { }
-	~DvbEpgTableModelEntry() { }
-
-	const DvbEpgEntry *constData() const
-	{
-		return entry;
-	}
-
-	const DvbEpgEntry *operator->() const
-	{
-		return entry;
-	}
-
-	bool operator<(const DvbEpgTableModelEntry &other) const
-	{
-		return (*entry < *other.entry);
-	}
-
-private:
-	const DvbEpgEntry *entry;
-};
-
-Q_DECLARE_TYPEINFO(DvbEpgTableModelEntry, Q_MOVABLE_TYPE);
-
 class DvbEpgTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
@@ -133,8 +106,14 @@ private slots:
 private:
 	void customEvent(QEvent *event);
 
+	class LessThan
+	{
+	public:
+		bool operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const;
+	};
+
 	DvbEpgModel *epgModel;
-	QList<DvbEpgTableModelEntry> entries;
+	QList<const DvbEpgEntry *> entries;
 	DvbSharedChannel channelFilter;
 	QStringMatcher contentFilter;
 	bool contentFilterEventPending;

@@ -296,6 +296,7 @@ DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
 	QAbstractTableModel(parent), epgModel(epgModel_), contentFilterEventPending(false)
 {
 	contentFilter.setCaseSensitivity(Qt::CaseInsensitive);
+
 	connect(epgModel, SIGNAL(entryAdded(const DvbEpgEntry*)),
 		this, SLOT(entryAdded(const DvbEpgEntry*)));
 	connect(epgModel, SIGNAL(entryChanged(const DvbEpgEntry*,const DvbEpgEntry*)),
@@ -310,7 +311,7 @@ DvbEpgTableModel::~DvbEpgTableModel()
 
 const DvbEpgEntry *DvbEpgTableModel::getEntry(int row) const
 {
-	return entries.at(row).constData();
+	return entries.at(row);
 }
 
 void DvbEpgTableModel::setChannelFilter(const DvbChannel *channel)
@@ -349,9 +350,10 @@ void DvbEpgTableModel::setChannelFilter(const DvbChannel *channel)
 
 		for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = begin; count > 0;
 		     ++it, --count) {
-			entries.append(DvbEpgTableModelEntry(&it.key()));
+			entries.append(&it.key());
 		}
 
+		// qSort isn't needed here
 		endInsertRows();
 	}
 }
@@ -376,7 +378,7 @@ int DvbEpgTableModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 {
-	const DvbEpgEntry *entry = entries.at(index.row()).constData();
+	const DvbEpgEntry *entry = entries.at(index.row());
 
 	switch (role) {
 	case Qt::DecorationRole:
@@ -439,27 +441,28 @@ void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 	     ((contentFilter.indexIn(entry->title) >= 0) ||
 	      (contentFilter.indexIn(entry->subheading) >= 0) ||
 	      (contentFilter.indexIn(entry->details) >= 0)))) {
-		int row = (qLowerBound(entries, DvbEpgTableModelEntry(entry)) -
-			entries.constBegin());
+		int row = (qLowerBound(entries.constBegin(), entries.constEnd(), entry,
+			LessThan()) - entries.constBegin());
 		beginInsertRows(QModelIndex(), row, row);
-		entries.insert(row, DvbEpgTableModelEntry(entry));
+		entries.insert(row, entry);
 		endInsertRows();
 	}
 }
 
 void DvbEpgTableModel::entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry)
 {
-	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(oldEntry)) - entries.constBegin());
+	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), oldEntry, LessThan()) -
+		entries.constBegin());
 
 	if (row < entries.size()) {
-		int targetRow = (qLowerBound(entries, DvbEpgTableModelEntry(newEntry)) -
-			entries.constBegin());
+		int targetRow = (qLowerBound(entries.constBegin(), entries.constEnd(), newEntry,
+			LessThan()) - entries.constBegin());
 
 		if (targetRow > row) {
 			--targetRow;
 		}
 
-		entries[row] = DvbEpgTableModelEntry(newEntry);
+		entries.replace(row, newEntry);
 		emit dataChanged(index(row, 0), index(row, 3));
 
 		if (row != targetRow) {
@@ -472,7 +475,8 @@ void DvbEpgTableModel::entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEnt
 
 void DvbEpgTableModel::entryAboutToBeRemoved(const DvbEpgEntry *entry)
 {
-	int row = (qBinaryFind(entries, DvbEpgTableModelEntry(entry)) - entries.constBegin());
+	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), entry, LessThan()) -
+		entries.constBegin());
 
 	if (row < entries.size()) {
 		beginRemoveRows(QModelIndex(), row, row);
@@ -497,7 +501,7 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 	}
 
 	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
-	QList<DvbEpgTableModelEntry> filteredEntries;
+	QList<const DvbEpgEntry *> filteredEntries;
 
 	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = allEntries.constBegin();
 	     it != allEntries.constEnd(); ++it) {
@@ -506,13 +510,39 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 		if (((contentFilter.indexIn(entry->title) >= 0) ||
 		     (contentFilter.indexIn(entry->subheading) >= 0) ||
 		     (contentFilter.indexIn(entry->details) >= 0))) {
-			filteredEntries.append(DvbEpgTableModelEntry(entry));
+			filteredEntries.append(entry);
 		}
 	}
 
 	if (!filteredEntries.isEmpty()) {
+		qSort(filteredEntries.begin(), filteredEntries.end(), LessThan());
 		beginInsertRows(QModelIndex(), 0, filteredEntries.size() - 1);
 		entries = filteredEntries;
 		endInsertRows();
 	}
+}
+
+bool DvbEpgTableModel::LessThan::operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const
+{
+	if (x->channel != y->channel) {
+		return (x->channel->name.localeAwareCompare(y->channel->name) < 0);
+	}
+
+	if (x->begin != y->begin) {
+		return (x->begin < y->begin);
+	}
+
+	if (x->duration != y->duration) {
+		return (x->duration < y->duration);
+	}
+
+	if (x->title != y->title) {
+		return (x->title < y->title);
+	}
+
+	if (x->subheading != y->subheading) {
+		return (x->subheading < y->subheading);
+	}
+
+	return (x->details < y->details);
 }
