@@ -31,7 +31,6 @@
 #include <KAction>
 #include <KLineEdit>
 #include <KLocale>
-#include "dvbchannel.h"
 #include "dvbmanager.h"
 
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelName,
@@ -258,8 +257,11 @@ DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
 	connect(epgModel, SIGNAL(epgChannelRemoved(QString)),
 		&epgChannelModel, SLOT(removeChannelName(QString)));
 
-	foreach (const QString &channelName, epgModel->getEpgChannels()) {
-		epgChannelModel.insertChannelName(channelName);
+	const QHash<DvbSharedChannel, int> epgChannels = epgModel->getEpgChannels();
+
+	for (QHash<DvbSharedChannel, int>::ConstIterator it = epgChannels.constBegin();
+	     it != epgChannels.constEnd(); ++it) {
+		epgChannelModel.insertChannelName(it.key()->name);
 	}
 }
 
@@ -295,14 +297,17 @@ void DvbEpgTableModel::setChannelNameFilter(const QString &channelName)
 
 	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
 	DvbEpgEntry pseudoEntry;
-	pseudoEntry.channelName = channelName;
+	DvbChannel pseudoChannel; // FIXME (and adjust DvbSharedChannel afterwards)
+	pseudoChannel.ref = 1;
+	pseudoChannel.name = channelName;
+	pseudoEntry.channel = DvbSharedChannel(&pseudoChannel);
 	QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator begin =
 		allEntries.lowerBound(pseudoEntry);
 	int count = 0;
 
 	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = begin;
 	     it != allEntries.constEnd(); ++it) {
-		if (it.key().channelName != channelName) {
+		if (it.key().channel != pseudoEntry.channel) {
 			break;
 		}
 
@@ -359,7 +364,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 		case 2:
 			return entry->title;
 		case 3:
-			return entry->channelName;
+			return entry->channel->name;
 		}
 
 		break;
@@ -399,7 +404,7 @@ void DvbEpgTableModel::setContentFilter(const QString &pattern)
 
 void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 {
-	if ((entry->channelName == channelNameFilter) ||
+	if ((entry->channel->name == channelNameFilter) ||
 	    (!contentFilter.pattern().isEmpty() &&
 	     ((contentFilter.indexIn(entry->title) >= 0) ||
 	      (contentFilter.indexIn(entry->subheading) >= 0) ||

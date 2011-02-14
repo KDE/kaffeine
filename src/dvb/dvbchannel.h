@@ -91,6 +91,52 @@ public:
 Q_DECLARE_TYPEINFO(QSharedDataPointer<DvbChannel>, Q_MOVABLE_TYPE);
 Q_DECLARE_TYPEINFO(QExplicitlySharedDataPointer<const DvbChannel>, Q_MOVABLE_TYPE);
 
+class DvbSharedChannel
+{
+public:
+	DvbSharedChannel() { }
+	explicit DvbSharedChannel(const DvbChannel *channel_) : channel(channel_) { }
+	~DvbSharedChannel() { }
+
+	bool isValid() const
+	{
+		return (channel.constData() != NULL);
+	}
+
+	const DvbChannel *constData() const
+	{
+		return channel.constData();
+	}
+
+	const DvbChannel *operator->() const
+	{
+		return channel.constData();
+	}
+
+	bool operator==(const DvbSharedChannel &other) const
+	{
+		return (channel->name == other.channel->name);
+	}
+
+	bool operator!=(const DvbSharedChannel &other) const
+	{
+		return (channel->name != other.channel->name);
+	}
+
+	bool operator<(const DvbSharedChannel &other) const
+	{
+		return (channel->name < other.channel->name);
+	}
+
+	friend uint qHash(const DvbSharedChannel &sharedChannel)
+	{
+		return qHash(sharedChannel.channel->name);
+	}
+
+private:
+	QExplicitlySharedDataPointer<const DvbChannel> channel;
+};
+
 class DvbChannelModel : public QAbstractTableModel
 {
 	Q_OBJECT

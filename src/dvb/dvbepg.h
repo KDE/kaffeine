@@ -21,12 +21,11 @@
 #ifndef DVBEPG_H
 #define DVBEPG_H
 
-#include <QSet>
+#include "dvbchannel.h"
 #include "dvbrecording.h"
 
 class AtscEitEntry;
 class AtscEpgFilter;
-class DvbChannel;
 class DvbDevice;
 class DvbEitEntry;
 class DvbEpgFilter;
@@ -41,7 +40,7 @@ public:
 	bool operator==(const DvbEpgEntry &other) const;
 	bool operator<(const DvbEpgEntry &other) const;
 
-	QString channelName;
+	DvbSharedChannel channel;
 	QDateTime begin; // UTC
 	QTime duration;
 	QString title;
@@ -56,49 +55,54 @@ class DvbEpgEmptyClass
 
 class DvbEpgModel : public QObject
 {
+	typedef QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator ConstIterator;
+	typedef QMap<DvbEpgEntry, DvbEpgEmptyClass>::Iterator Iterator;
 	Q_OBJECT
 public:
 	DvbEpgModel(DvbManager *manager_, QObject *parent);
 	~DvbEpgModel();
 
-	QList<const DvbEpgEntry *> getCurrentNext(const QString &channelName) const;
+	QList<const DvbEpgEntry *> getCurrentNext(const DvbChannel *channel) const;
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
 	QMap<DvbEpgEntry, DvbEpgEmptyClass> getEntries() const;
-	QSet<QString> getEpgChannels() const;
-	QString findChannelNameByEitEntry(const DvbEitEntry &eitEntry) const;
-	QString findChannelNameByEitEntry(const AtscEitEntry &eitEntry) const;
+	QHash<DvbSharedChannel, int> getEpgChannels() const;
+	const DvbChannel *findChannelByEitEntry(const DvbEitEntry &eitEntry) const;
+	const DvbChannel *findChannelByEitEntry(const AtscEitEntry &eitEntry) const;
 	void addEntry(const DvbEpgEntry &entry);
 	void scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 		int extraSecondsAfter);
 
 signals:
 	void entryAdded(const DvbEpgEntry *entry);
-	// entryChanged() may invalidate the old entry pointer
-	void entryChanged(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
+	// entryChanged() invalidates the old entry pointer
+	void entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry);
 	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
-	void epgChannelAdded(const QString &channelName);
-	void epgChannelRemoved(const QString &channelName);
+	void epgChannelAdded(const DvbChannel *channel);
+	void epgChannelAboutToBeRemoved(const DvbChannel *channel);
 
 private slots:
 	void channelAdded(const DvbChannel *channel);
-	void channelChanged(const DvbChannel *channel, const DvbChannel &oldChannel);
+	void channelChanged(const DvbChannel *oldChannel, const DvbChannel *newChannel);
 	void channelAboutToBeRemoved(const DvbChannel *channel);
 	void programRemoved(const DvbRecordingKey &recordingKey);
 
 private:
 	void timerEvent(QTimerEvent *event);
 
+	void internalAddEntry(const DvbEpgEntry &entry);
+	Iterator internalChangeEntry(Iterator it, const DvbEpgEntry &entry);
+	Iterator internalRemoveEntry(Iterator it);
 	void addChannelEitMapping(const DvbChannel *channel);
 	void removeChannelEitMapping(const DvbChannel *channel);
 
 	DvbManager *manager;
 	QMap<DvbEpgEntry, DvbEpgEmptyClass> entries;
 	QMap<DvbRecordingKey, const DvbEpgEntry *> recordingKeyMapping;
-	QSet<QString> epgChannels;
-	QHash<DvbEitEntry, const DvbChannel *> dvbEitMapping;
-	QHash<AtscEitEntry, const DvbChannel *> atscEitMapping;
+	QHash<DvbSharedChannel, int> epgChannels;
+	QHash<DvbEitEntry, DvbSharedChannel> dvbEitMapping;
+	QHash<AtscEitEntry, DvbSharedChannel> atscEitMapping;
 	QDateTime currentDateTimeUtc;
 	QList<DvbEpgFilter *> dvbEpgFilters;
 	QList<AtscEpgFilter *> atscEpgFilters;

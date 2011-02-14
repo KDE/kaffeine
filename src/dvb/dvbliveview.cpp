@@ -27,7 +27,6 @@
 #include <KLocale>
 #include <KMessageBox>
 #include "../mediawidget.h"
-#include "dvbchannel.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
@@ -56,14 +55,14 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	int elapsedTime = 0;
 	int totalTime = 0;
 
-	if (!firstEntry.channelName.isEmpty()) {
+	if (firstEntry.channel.isValid()) {
 		entryString = KGlobal::locale()->formatTime(firstEntry.begin.toLocalTime().time())
 			+ ' ' + firstEntry.title;
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
 		totalTime = QTime().secsTo(firstEntry.duration);
 	}
 
-	if ((level == ShortOsd) && !secondEntry.channelName.isEmpty()) {
+	if ((level == ShortOsd) && secondEntry.channel.isValid()) {
 		entryString = entryString + '\n' +
 			KGlobal::locale()->formatTime(secondEntry.begin.toLocalTime().time()) +
 			' ' + secondEntry.title;
@@ -237,7 +236,7 @@ void DvbLiveView::toggleOsd()
 	case DvbOsd::Off:
 		internal->dvbOsd.init(DvbOsd::ShortOsd,
 			QString("%1 - %2").arg(channel->number).arg(channel->name),
-			manager->getEpgModel()->getCurrentNext(channel->name));
+			manager->getEpgModel()->getCurrentNext(channel.constData()));
 		osdWidget->showObject(&internal->dvbOsd, 2500);
 		osdTimer.start(2500);
 		break;

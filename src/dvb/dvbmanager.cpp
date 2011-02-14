@@ -28,7 +28,6 @@
 #include <KLocale>
 #include <KStandardDirs>
 #include <config-kaffeine.h>
-#include "dvbchannel.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbdevice_linux.h"

@@ -23,7 +23,6 @@
 
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
-#include "dvbtransponder.h"
 
 class DvbEpgEnsureNoPendingOperation
 {

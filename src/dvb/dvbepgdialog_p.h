@@ -21,7 +21,6 @@
 #ifndef DVBEPGDIALOG_P_H
 #define DVBEPGDIALOG_P_H
 
-#include <QStringMatcher>
 #include "dvbepg.h"
 
 class DvbEpgChannelModel : public QAbstractTableModel

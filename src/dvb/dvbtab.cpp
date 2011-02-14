@@ -35,7 +35,6 @@
 #include <KMenu>
 #include "../mediawidget.h"
 #include "../osdwidget.h"
-#include "dvbchannel.h"
 #include "dvbconfigdialog.h"
 #include "dvbepg.h"
 #include "dvbepgdialog.h"
@@ -341,7 +340,7 @@ void DvbTab::instantRecord(bool checked)
 
 		DvbRecordingEntry recordingEntry;
 		QList<const DvbEpgEntry *> epgEntries =
-			manager->getEpgModel()->getCurrentNext(channel->name);
+			manager->getEpgModel()->getCurrentNext(channel);
 
 		if (!epgEntries.isEmpty()) {
 			recordingEntry.name = epgEntries.at(0)->title;
