@@ -41,12 +41,10 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(widget);
 
-	DvbEpgModel *epgModel = manager->getEpgModel();
-	epgTableModel = new DvbEpgTableModel(epgModel, this);
+	epgTableModel = new DvbEpgTableModel(manager->getEpgModel(), this);
 
 	channelView = new QTreeView(widget);
-	// TODO same sort order as main channel list
-	QAbstractItemModel *epgChannelModel = new DvbEpgChannelModel(epgModel, this);
+	QAbstractItemModel *epgChannelModel = new DvbEpgChannelModel(manager, this);
 	channelView->setModel(epgChannelModel);
 	channelView->setMaximumWidth(200);
 	channelView->setRootIsDecorated(false);
@@ -174,8 +172,10 @@ void DvbEpgDialog::scheduleProgram()
 	}
 }
 
-DvbEpgChannelModel::DvbEpgChannelModel(DvbEpgModel *epgModel, QObject *parent) : QAbstractTableModel(parent)
+DvbEpgChannelModel::DvbEpgChannelModel(DvbManager *manager, QObject *parent) :
+	QAbstractTableModel(parent)
 {
+	DvbEpgModel *epgModel = manager->getEpgModel();
 	connect(epgModel, SIGNAL(epgChannelAdded(const DvbChannel*)),
 		this, SLOT(epgChannelAdded(const DvbChannel*)));
 	connect(epgModel, SIGNAL(epgChannelAboutToBeRemoved(const DvbChannel*)),
@@ -188,35 +188,27 @@ DvbEpgChannelModel::DvbEpgChannelModel(DvbEpgModel *epgModel, QObject *parent) :
 		channels.append(it.key());
 	}
 
+	QHeaderView *headerView = manager->getChannelView()->header();
+
+	if (headerView->sortIndicatorOrder() == Qt::AscendingOrder) {
+		if (headerView->sortIndicatorSection() == 0) {
+			lessThan.sortOrder = LessThan::ChannelNameAscending;
+		} else {
+			lessThan.sortOrder = LessThan::ChannelNumberAscending;
+		}
+	} else {
+		if (headerView->sortIndicatorSection() == 0) {
+			lessThan.sortOrder = LessThan::ChannelNameDescending;
+		} else {
+			lessThan.sortOrder = LessThan::ChannelNumberDescending;
+		}
+	}
+
 	qSort(channels.begin(), channels.end(), lessThan);
 }
 
 DvbEpgChannelModel::~DvbEpgChannelModel()
 {
-}
-
-void DvbEpgChannelModel::epgChannelAdded(const DvbChannel *channel)
-{
-	int row = (qLowerBound(channels.constBegin(), channels.constEnd(), channel, lessThan) -
-		channels.constBegin());
-
-	if ((row >= channels.size()) || (*channels.at(row) != *channel)) {
-		beginInsertRows(QModelIndex(), row, row);
-		channels.insert(row, DvbSharedChannel(channel));
-		endInsertRows();
-	}
-}
-
-void DvbEpgChannelModel::epgChannelAboutToBeRemoved(const DvbChannel *channel)
-{
-	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan) -
-		channels.constBegin());
-
-	if (row < channels.size()) {
-		beginRemoveRows(QModelIndex(), row, row);
-		channels.removeAt(row);
-		endRemoveRows();
-	}
 }
 
 int DvbEpgChannelModel::columnCount(const QModelIndex &parent) const
@@ -253,6 +245,46 @@ QVariant DvbEpgChannelModel::headerData(int section, Qt::Orientation orientation
 	}
 
 	return QVariant();
+}
+
+void DvbEpgChannelModel::epgChannelAdded(const DvbChannel *channel)
+{
+	int row = (qLowerBound(channels.constBegin(), channels.constEnd(), channel, lessThan) -
+		channels.constBegin());
+
+	if ((row >= channels.size()) || (*channels.at(row) != *channel)) {
+		beginInsertRows(QModelIndex(), row, row);
+		channels.insert(row, DvbSharedChannel(channel));
+		endInsertRows();
+	}
+}
+
+void DvbEpgChannelModel::epgChannelAboutToBeRemoved(const DvbChannel *channel)
+{
+	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan) -
+		channels.constBegin());
+
+	if (row < channels.size()) {
+		beginRemoveRows(QModelIndex(), row, row);
+		channels.removeAt(row);
+		endRemoveRows();
+	}
+}
+
+bool DvbEpgChannelModel::LessThan::operator()(const DvbChannel &x, const DvbChannel &y) const
+{
+	switch (sortOrder) {
+	case ChannelNameAscending:
+		return (x.name.localeAwareCompare(y.name) < 0);
+	case ChannelNameDescending:
+		return (x.name.localeAwareCompare(y.name) > 0);
+	case ChannelNumberAscending:
+		return (x.number < y.number);
+	case ChannelNumberDescending:
+		return (x.number > y.number);
+	}
+
+	return false;
 }
 
 DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :

@@ -27,8 +27,13 @@ class DvbEpgChannelModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	DvbEpgChannelModel(DvbEpgModel *epgModel, QObject *parent);
+	DvbEpgChannelModel(DvbManager *manager, QObject *parent);
 	~DvbEpgChannelModel();
+
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private slots:
 	void epgChannelAdded(const DvbChannel *channel);
@@ -38,26 +43,36 @@ private:
 	class LessThan
 	{
 	public:
-		bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
+		LessThan() : sortOrder(ChannelNumberAscending) { }
+		~LessThan() { }
+
+		enum SortOrder
 		{
-			return (x->name.localeAwareCompare(y->name) < 0);
+			ChannelNameAscending,
+			ChannelNameDescending,
+			ChannelNumberAscending,
+			ChannelNumberDescending
+		};
+
+		bool operator()(const DvbChannel &x, const DvbChannel &y) const;
+
+		bool operator()(const DvbChannel *x, const DvbSharedChannel &y) const
+		{
+			return (*this)(*x, *y);
 		}
 
 		bool operator()(const DvbSharedChannel &x, const DvbChannel *y) const
 		{
-			return (x->name.localeAwareCompare(y->name) < 0);
+			return (*this)(*x, *y);
 		}
 
-		bool operator()(const DvbChannel *x, const DvbSharedChannel &y) const
+		bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
 		{
-			return (x->name.localeAwareCompare(y->name) < 0);
+			return (*this)(*x, *y);
 		}
-	};
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+		SortOrder sortOrder;
+	};
 
 	QList<DvbSharedChannel> channels;
 	LessThan lessThan;
