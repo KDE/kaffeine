@@ -56,7 +56,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
 	KAction *scheduleAction = new KAction(KIcon("media-record"),
-		i18nc("program guide", "Schedule Program"), this);
+		i18nc("@action:inmenu tv show", "Record Show"), this);
 	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 
 	QPushButton *pushButton =
@@ -65,7 +65,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
 	boxLayout->addWidget(pushButton);
 
-	boxLayout->addWidget(new QLabel(i18n("Search:"), widget));
+	boxLayout->addWidget(new QLabel(i18nc("@label:textbox", "Search:"), widget));
 
 	KLineEdit *lineEdit = new KLineEdit(widget);
 	lineEdit->setClearButtonShown(true);
@@ -145,16 +145,18 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	}
 
 	const DvbEpgEntry *entry = epgTableModel->getEntry(index.row());
-	QString text = i18n("<font color=#008000 size=\"+1\">%1</font><br>", entry->title);
+	QString text = i18nc("@info tv show title",
+		"<font color=#008000 size=\"+1\">%1</font><br>", entry->title);
 
 	if (!entry->subheading.isEmpty()) {
-		text += i18n("<font color=#808000>%1</font><br>", entry->subheading);
+		text += i18nc("@info tv show subheading", "<font color=#808000>%1</font><br>",
+			entry->subheading);
 	}
 
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime().secsTo(entry->duration)).toLocalTime().time();
 
-	text += i18n("<font color=#800000>%1 - %2</font><br><br>",
+	text += i18nc("@info tv show start, end", "<font color=#800000>%1 - %2</font><br><br>",
 		KGlobal::locale()->formatDateTime(begin, KLocale::LongDate),
 		KGlobal::locale()->formatTime(end));
 
@@ -246,7 +248,7 @@ QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
 QVariant DvbEpgChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if ((section == 0) && (orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
-		return i18nc("@title:column tv channel name", "Name");
+		return i18nc("@title:column tv show", "Channel");
 	}
 
 	return QVariant();
