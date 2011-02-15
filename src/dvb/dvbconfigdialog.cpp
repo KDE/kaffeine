@@ -379,7 +379,7 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	KDialog(parent), manager(manager_)
 {
 	setButtons(KDialog::Cancel);
-	setCaption("Update Scan Data");
+	setCaption(i18n("Update Scan Data"));
 
 	QWidget *widget = new QWidget(this);
 	setMainWidget(widget);
