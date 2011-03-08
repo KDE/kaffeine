@@ -172,7 +172,7 @@ void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 	}
 
 	DvbRecording oldRecording = *recording;
-	*const_cast<DvbRecording *>(recording.data()) = modifiedRecording;
+	*const_cast<DvbRecording *>(recording.constData()) = modifiedRecording;
 	sqlUpdate(*recording);
 	emit recordingUpdated(recording, oldRecording);
 }

@@ -35,4 +35,59 @@ public:
 	}
 };
 
+template<class T> class ExplicitlySharedDataPointer
+{
+public:
+	explicit ExplicitlySharedDataPointer(T *data_ = NULL) : data(data_) { }
+	~ExplicitlySharedDataPointer() { }
+
+	void detach()
+	{
+		data.detach();
+	}
+
+	bool isValid() const
+	{
+		return (data.constData() != NULL);
+	}
+
+	const T *constData() const
+	{
+		return data.constData();
+	}
+
+	const T &operator*() const
+	{
+		return *data;
+	}
+
+	const T *operator->() const
+	{
+		return data.constData();
+	}
+
+	bool operator==(const ExplicitlySharedDataPointer<T> &other) const
+	{
+		return (data.constData() == other.data.constData());
+	}
+
+	bool operator!=(const ExplicitlySharedDataPointer<T> &other) const
+	{
+		return (data.constData() != other.data.constData());
+	}
+
+	bool operator<(const ExplicitlySharedDataPointer<T> &other) const
+	{
+		return (data.constData() < other.data.constData());
+	}
+
+	friend uint qHash(const ExplicitlySharedDataPointer<T> &pointer)
+	{
+		return qHash(pointer.data.constData());
+	}
+
+private:
+	QExplicitlySharedDataPointer<T> data;
+};
+
 #endif /* SHAREDDATA_H */

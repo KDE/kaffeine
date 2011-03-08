@@ -526,8 +526,8 @@ void DvbChannelModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index)
 
 bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index)
 {
-	DvbSharedChannel sharedChannel(new DvbChannel());
-	DvbChannel *channel = sharedChannel.data();
+	DvbChannel *channel = new DvbChannel();
+	DvbSharedChannel sharedChannel(channel);
 	channel->setSqlKey(sqlKey);
 	channel->name = query.value(index++).toString();
 	channel->number = query.value(index++).toInt();
@@ -614,14 +614,14 @@ void DvbChannelModel::internalAddChannel(const DvbSharedChannel &channel)
 	channelContentMapping.insert(DvbComparableChannel(channel), channel);
 
 	if (isSqlModel) {
-		channel.data()->setSqlKey(sqlFindFreeKey(channels));
+		const_cast<DvbChannel *>(channel.constData())->setSqlKey(sqlFindFreeKey(channels));
 		sqlInsert(*channel);
 	}
 
 	emit channelAdded(channel);
 }
 
-void DvbChannelModel::internalUpdateChannel(const DvbSharedChannel &channel,
+void DvbChannelModel::internalUpdateChannel(DvbSharedChannel channel,
 	const DvbChannel &modifiedChannel)
 {
 	if (!isSqlModel && channel->isSqlKeyValid()) {
@@ -629,7 +629,7 @@ void DvbChannelModel::internalUpdateChannel(const DvbSharedChannel &channel,
 	}
 
 	DvbChannel oldChannel = *channel;
-	*channel.data() = modifiedChannel;
+	*const_cast<DvbChannel *>(channel.constData()) = modifiedChannel;
 
 	if (channel->name != oldChannel.name) {
 		channelNameMapping.remove(oldChannel.name);

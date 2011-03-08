@@ -73,69 +73,7 @@ public:
 	bool isScrambled;
 };
 
-class DvbSharedChannel
-{
-	friend class DvbChannelModel;
-public:
-	DvbSharedChannel() { }
-	~DvbSharedChannel() { }
-
-	bool isValid() const
-	{
-		return (channel.constData() != NULL);
-	}
-
-	const DvbChannel *constData() const
-	{
-		return channel.constData();
-	}
-
-	const DvbChannel &operator*() const
-	{
-		return *channel;
-	}
-
-	const DvbChannel *operator->() const
-	{
-		return channel.constData();
-	}
-
-	bool operator==(const DvbSharedChannel &other) const
-	{
-		return (channel.constData() == other.channel.constData());
-	}
-
-	bool operator!=(const DvbSharedChannel &other) const
-	{
-		return (channel.constData() != other.channel.constData());
-	}
-
-	bool operator<(const DvbSharedChannel &other) const
-	{
-		return (channel.constData() < other.channel.constData());
-	}
-
-	friend uint qHash(const DvbSharedChannel &sharedChannel) // FIXME remove??
-	{
-		return qHash(sharedChannel.channel.constData());
-	}
-
-private:
-	explicit DvbSharedChannel(DvbChannel *channel_) : channel(channel_) { }
-
-	DvbChannel *data() const
-	{
-		return channel.data();
-	}
-
-	void detach() const
-	{
-		const_cast<DvbSharedChannel *>(this)->channel.detach();
-	}
-
-	QExplicitlySharedDataPointer<DvbChannel> channel;
-};
-
+typedef ExplicitlySharedDataPointer<const DvbChannel> DvbSharedChannel;
 Q_DECLARE_TYPEINFO(DvbSharedChannel, Q_MOVABLE_TYPE);
 
 class DvbChannelLessThan
@@ -230,8 +168,7 @@ private:
 	QString findNextFreeChannelName(const QString &name) const;
 	int findNextFreeChannelNumber(int number) const;
 	void internalAddChannel(const DvbSharedChannel &channel);
-	void internalUpdateChannel(const DvbSharedChannel &channel,
-		const DvbChannel &modifiedChannel);
+	void internalUpdateChannel(DvbSharedChannel channel, const DvbChannel &modifiedChannel);
 	void internalRemoveChannel(const DvbSharedChannel &channel);
 
 	QMap<SqlKey, DvbSharedChannel> channels;

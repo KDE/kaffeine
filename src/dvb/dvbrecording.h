@@ -34,7 +34,7 @@ public:
 	~DvbRecording() { }
 
 	// checks that all variables are ok and updates 'end'
-	// 'sqlKey' and 'status are ignored
+	// 'sqlKey' and 'status' are ignored
 	bool validate();
 
 	enum Status {
@@ -52,19 +52,7 @@ public:
 	Status status; // read-only
 };
 
-class DvbSharedRecording : public QExplicitlySharedDataPointer<const DvbRecording>
-{
-public:
-	explicit DvbSharedRecording(DvbRecording *recording = NULL) :
-		QExplicitlySharedDataPointer<const DvbRecording>(recording) { }
-	~DvbSharedRecording() { }
-
-	bool isValid() const
-	{
-		return (constData() != NULL);
-	}
-};
-
+typedef ExplicitlySharedDataPointer<const DvbRecording> DvbSharedRecording;
 Q_DECLARE_TYPEINFO(DvbSharedRecording, Q_MOVABLE_TYPE);
 
 class DvbRecordingModel : public QObject, protected SqlInterface
