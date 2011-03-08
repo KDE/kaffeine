@@ -50,9 +50,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
 
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(checkStatus()));
-	timer->start(5000);
+	startTimer(5000);
 
 	// compatibility code
 
@@ -190,8 +188,9 @@ void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
 	emit recordingRemoved(recording);
 }
 
-void DvbRecordingModel::checkStatus()
+void DvbRecordingModel::timerEvent(QTimerEvent *event)
 {
+	Q_UNUSED(event)
 	QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
 
 	foreach (const DvbSharedRecording &recording, recordings) {

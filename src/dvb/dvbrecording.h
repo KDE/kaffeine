@@ -55,7 +55,7 @@ public:
 typedef ExplicitlySharedDataPointer<const DvbRecording> DvbSharedRecording;
 Q_DECLARE_TYPEINFO(DvbSharedRecording, Q_MOVABLE_TYPE);
 
-class DvbRecordingModel : public QObject, protected SqlInterface
+class DvbRecordingModel : public QObject, private SqlInterface
 {
 	Q_OBJECT
 public:
@@ -77,10 +77,9 @@ signals:
 		const DvbRecording &oldRecording);
 	void recordingRemoved(const DvbSharedRecording &recording);
 
-private slots:
-	void checkStatus();
-
 private:
+	void timerEvent(QTimerEvent *event);
+
 	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
 	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
 	bool updateStatus(DvbRecording &recording);
