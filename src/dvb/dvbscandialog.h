@@ -35,7 +35,7 @@ class DvbDevice;
 class DvbGradProgress;
 class DvbManager;
 class DvbPreviewChannel;
-class DvbPreviewChannelModel;
+class DvbPreviewChannelTableModel;
 class DvbScan;
 
 class DvbScanDialog : public KDialog
@@ -74,7 +74,7 @@ private:
 	QCheckBox *providerCheckBox;
 	QStringList providers;
 	KComboBox *providerBox;
-	DvbPreviewChannelModel *previewModel;
+	DvbPreviewChannelTableModel *previewModel;
 	QTreeView *scanResultsView;
 
 	DvbDevice *device;

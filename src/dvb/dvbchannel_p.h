@@ -21,45 +21,54 @@
 #ifndef DVBCHANNEL_P_H
 #define DVBCHANNEL_P_H
 
-#include <QPersistentModelIndex>
 #include <KDialog>
 #include "../sqltablemodel.h"
+#include "dvbchannel.h"
 
 class QCheckBox;
 class QSpinBox;
 class KComboBox;
 class KLineEdit;
-class DvbChannel;
 
-Q_DECLARE_METATYPE(QList<QPersistentModelIndex>)
+Q_DECLARE_METATYPE(QList<DvbSharedChannel>)
 
-class DvbChannelSqlInterface : public SqlTableModelInterface
+class DvbChannelEnsureNoPendingOperation
 {
 public:
-	DvbChannelSqlInterface(QAbstractItemModel *model,
-		QList<QSharedDataPointer<DvbChannel> > *channels_, QObject *parent);
-	~DvbChannelSqlInterface();
+	explicit DvbChannelEnsureNoPendingOperation(bool *hasPendingOperation_) :
+		hasPendingOperation(hasPendingOperation_)
+	{
+		if (*hasPendingOperation) {
+			printFatalErrorMessage();
+		}
+
+		*hasPendingOperation = true;
+	}
+
+	~DvbChannelEnsureNoPendingOperation()
+	{
+		*hasPendingOperation = false;
+	}
 
 private:
-	int insertFromSqlQuery(const QSqlQuery &query, int index);
-	void bindToSqlQuery(QSqlQuery &query, int index, int row) const;
+	void printFatalErrorMessage();
 
-	QList<QSharedDataPointer<DvbChannel> > *channels;
+	bool *hasPendingOperation;
 };
 
 class DvbChannelEditor : public KDialog
 {
 public:
-	DvbChannelEditor(QAbstractItemModel *model_, const QModelIndex &modelIndex_,
+	DvbChannelEditor(DvbChannelTableModel *model_, const QModelIndex &modelIndex_,
 		QWidget *parent);
 	~DvbChannelEditor();
 
 private:
 	void accept();
 
-	QAbstractItemModel *model;
+	DvbChannelTableModel *model;
 	QPersistentModelIndex persistentIndex;
-	QExplicitlySharedDataPointer<const DvbChannel> channel;
+	DvbSharedChannel channel;
 	KLineEdit *nameEdit;
 	QSpinBox *numberBox;
 	QSpinBox *networkIdBox;

@@ -78,11 +78,11 @@ void DvbGradProgress::paintEvent(QPaintEvent *event)
 	QLabel::paintEvent(event);
 }
 
-class DvbPreviewChannelModel : public QAbstractTableModel
+class DvbPreviewChannelTableModel : public QAbstractTableModel
 {
 public:
-	explicit DvbPreviewChannelModel(QObject *parent) : QAbstractTableModel(parent) { }
-	~DvbPreviewChannelModel() { }
+	explicit DvbPreviewChannelTableModel(QObject *parent) : QAbstractTableModel(parent) { }
+	~DvbPreviewChannelTableModel() { }
 
 	enum ItemDataRole
 	{
@@ -125,7 +125,7 @@ private:
 
 Q_DECLARE_METATYPE(const DvbPreviewChannel *)
 
-QAbstractItemModel *DvbPreviewChannelModel::createProxyModel(QObject *parent)
+QAbstractItemModel *DvbPreviewChannelTableModel::createProxyModel(QObject *parent)
 {
 	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
 	proxyModel->setDynamicSortFilter(true);
@@ -135,7 +135,7 @@ QAbstractItemModel *DvbPreviewChannelModel::createProxyModel(QObject *parent)
 	return proxyModel;
 }
 
-int DvbPreviewChannelModel::columnCount(const QModelIndex &parent) const
+int DvbPreviewChannelTableModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
 		return 0;
@@ -144,7 +144,7 @@ int DvbPreviewChannelModel::columnCount(const QModelIndex &parent) const
 	return 3;
 }
 
-int DvbPreviewChannelModel::rowCount(const QModelIndex &parent) const
+int DvbPreviewChannelTableModel::rowCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
 		return 0;
@@ -153,7 +153,7 @@ int DvbPreviewChannelModel::rowCount(const QModelIndex &parent) const
 	return channels.size();
 }
 
-QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
+QVariant DvbPreviewChannelTableModel::data(const QModelIndex &index, int role) const
 {
 	const DvbPreviewChannel &channel = channels.at(index.row());
 
@@ -194,8 +194,8 @@ QVariant DvbPreviewChannelModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-QVariant DvbPreviewChannelModel::headerData(int section, Qt::Orientation orientation, int role)
-	const
+QVariant DvbPreviewChannelTableModel::headerData(int section, Qt::Orientation orientation,
+	int role) const
 {
 	if (orientation != Qt::Horizontal || role != Qt::DisplayRole) {
 		return QVariant();
@@ -227,18 +227,19 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->cloneFrom(manager->getChannelModel());
+	DvbChannelTableModel *channelTableModel = new DvbChannelTableModel(channelModel, this);
 
 	DvbChannelView *channelView = new DvbChannelView(groupBox);
 	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	channelView->setDragDropMode(QAbstractItemView::InternalMove);
-	channelView->setModel(channelModel->createProxyModel(channelView));
+	channelView->setModel(channelTableModel);
 	channelView->setRootIsDecorated(false);
 	channelView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	QHeaderView *header = manager->getChannelView()->header();
 	channelView->sortByColumn(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelView->setSortingEnabled(true);
-	connect(channelModel, SIGNAL(checkInternalMove(bool*)),
-		channelView, SLOT(checkInternalMove(bool*)));
+	connect(channelTableModel, SIGNAL(checkChannelDragAndDrop(bool*)),
+		channelView, SLOT(checkChannelDragAndDrop(bool*)));
 
 	KAction *action = channelView->addEditAction();
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), groupBox);
@@ -337,7 +338,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	groupBox = new QGroupBox(i18n("Scan Results"), mainWidget);
 	groupLayout = new QVBoxLayout(groupBox);
 
-	previewModel = new DvbPreviewChannelModel(this);
+	previewModel = new DvbPreviewChannelTableModel(this);
 	scanResultsView = new QTreeView(groupBox);
 	scanResultsView->setModel(previewModel->createProxyModel(groupBox));
 	scanResultsView->setRootIsDecorated(false);
@@ -399,12 +400,12 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	// start scan
 	Q_ASSERT(internal == NULL);
 
-	if (manager->getLiveView()->getChannel() == NULL) {
+	if (!manager->getLiveView()->getChannel().isValid()) {
 		isLive = false; // FIXME workaround
 	}
 
 	if (isLive) {
-		const DvbChannel *channel = manager->getLiveView()->getChannel();
+		const DvbSharedChannel &channel = manager->getLiveView()->getChannel();
 		internal = new DvbScan(device, channel->source, channel->transponder);
 	} else {
 		QString source = sourceBox->currentText();
@@ -502,10 +503,9 @@ void DvbScanDialog::addSelectedChannels()
 		if (!selectedRows.contains(modelIndex.row())) {
 			selectedRows.insert(modelIndex.row());
 			const DvbChannel *channel = scanResultsView->model()->data(modelIndex,
-				DvbPreviewChannelModel::DvbPreviewChannelRole).
+				DvbPreviewChannelTableModel::DvbPreviewChannelRole).
 				value<const DvbPreviewChannel *>();
-			// if the index is invalid, the channel is added
-			channelModel->setData(QModelIndex(), QVariant::fromValue(channel));
+			channelModel->addChannel(*channel);
 		}
 	}
 }
@@ -543,9 +543,7 @@ void DvbScanDialog::addFilteredChannels()
 			}
 		}
 
-		const DvbChannel *constChannel = &channel;
-		// if the index is invalid, the channel is added
-		channelModel->setData(QModelIndex(), QVariant::fromValue(constChannel));
+		channelModel->addChannel(channel);
 	}
 }
 

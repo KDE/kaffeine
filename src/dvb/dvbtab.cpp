@@ -20,7 +20,6 @@
 
 #include "dvbtab.h"
 
-#include <QAbstractProxyModel>
 #include <QBoxLayout>
 #include <QDir>
 #include <QHeaderView>
@@ -40,6 +39,7 @@
 #include "dvbepgdialog.h"
 #include "dvbliveview.h"
 #include "dvbmanager.h"
+#include "dvbrecordingdialog.h"
 #include "dvbscandialog.h"
 
 class DvbTimeShiftCleaner : public QThread
@@ -98,7 +98,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	menu->addAction(collection->addAction("dvb_osd", osdAction));
 
 	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"),
-						i18nc("dialog", "Recording Schedule"), this);
+		i18nc("dialog", "Recording Schedule"), this);
 	recordingsAction->setShortcut(Qt::Key_R);
 	connect(recordingsAction, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
 	menu->addAction(collection->addAction("dvb_recordings", recordingsAction));
@@ -120,8 +120,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(mediaWidget, SIGNAL(previousDvbChannel()), this, SLOT(previousChannel()));
 	connect(mediaWidget, SIGNAL(nextDvbChannel()), this, SLOT(nextChannel()));
 
-	connect(manager->getRecordingModel(), SIGNAL(programRemoved(DvbRecordingKey)),
-		this, SLOT(programRemoved(DvbRecordingKey)));
+	connect(manager->getRecordingModel(), SIGNAL(recordingRemoved(DvbSharedRecording)),
+		this, SLOT(recordingRemoved(DvbSharedRecording)));
 
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
 	boxLayout->setMargin(0);
@@ -142,7 +142,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	channelView = new DvbChannelView(leftWidget);
 	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	channelProxyModel = manager->getChannelModel()->createProxyModel(channelView);
+	channelProxyModel = new DvbChannelTableModel(manager->getChannelModel(), this);
 	channelView->setModel(channelProxyModel);
 	channelView->setRootIsDecorated(false);
 
@@ -155,7 +155,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	channelView->addEditAction();
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playChannel(QModelIndex)));
 	connect(lineEdit, SIGNAL(textChanged(QString)),
-		channelProxyModel, SLOT(setFilterRegExp(QString)));
+		channelProxyModel, SLOT(setFilter(QString)));
 	manager->setChannelView(channelView);
 	leftLayout->addWidget(channelView);
 
@@ -224,37 +224,32 @@ DvbTab::~DvbTab()
 void DvbTab::playChannel(const QString &nameOrNumber)
 {
 	DvbChannelModel *channelModel = manager->getChannelModel();
-	QModelIndex index;
+	DvbSharedChannel channel;
 	int number = nameOrNumber.toInt();
 
 	if (number > 0) {
-		index = channelModel->findChannelByNumber(number);
+		channel = channelModel->findChannelByNumber(number);
 	}
 
-	if (!index.isValid()) {
-		index = channelModel->findChannelByName(nameOrNumber);
+	if (!channel.isValid()) {
+		channel = channelModel->findChannelByName(nameOrNumber);
 	}
 
-	if (index.isValid()) {
-		const DvbChannel *channel = channelModel->data(index,
-			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
-		playChannel(channel, channelProxyModel->mapFromSource(index));
+	if (channel.isValid()) {
+		playChannel(channel, channelProxyModel->indexForChannel(channel));
 	}
 }
 
 void DvbTab::playLastChannel()
 {
-	if ((manager->getLiveView()->getChannel() == NULL) && !currentChannel.isEmpty()) {
+	if (!manager->getLiveView()->getChannel().isValid() && !currentChannel.isEmpty()) {
 		lastChannel = currentChannel;
 	}
 
-	DvbChannelModel *channelModel = manager->getChannelModel();
-	QModelIndex index = channelModel->findChannelByName(lastChannel);
+	DvbSharedChannel channel = manager->getChannelModel()->findChannelByName(lastChannel);
 
-	if (index.isValid()) {
-		const DvbChannel *channel = channelModel->data(index,
-			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
-		playChannel(channel, channelProxyModel->mapFromSource(index));
+	if (channel.isValid()) {
+		playChannel(channel, channelProxyModel->indexForChannel(channel));
 	}
 }
 
@@ -268,19 +263,19 @@ void DvbTab::toggleInstantRecord()
 	instantRecordAction->trigger();
 }
 
-QMap<DvbRecordingKey, DvbRecordingEntry> DvbTab::listProgramSchedule()
+QMap<SqlKey, DvbSharedRecording> DvbTab::listProgramSchedule()
 {
 	return manager->getRecordingModel()->listProgramSchedule();
 }
 
-DvbRecordingKey DvbTab::scheduleProgram(const DvbRecordingEntry &entry)
+DvbSharedRecording DvbTab::scheduleProgram(DvbRecording &recording)
 {
-	return manager->getRecordingModel()->scheduleProgram(entry);
+	return manager->getRecordingModel()->addRecording(recording);
 }
 
-void DvbTab::removeProgram(const DvbRecordingKey &key)
+void DvbTab::removeRecording(const DvbSharedRecording &recording)
 {
-	manager->getRecordingModel()->removeProgram(key);
+	manager->getRecordingModel()->removeRecording(recording);
 }
 
 void DvbTab::enableDvbDump()
@@ -300,7 +295,7 @@ void DvbTab::osdKeyPressed(int key)
 
 void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 {
-	manager->getRecordingModel()->mayCloseApplication(ok, parent);
+	// manager->getRecordingModel()->mayCloseApplication(ok, parent); // FIXME !!
 }
 
 void DvbTab::showChannelDialog()
@@ -313,15 +308,15 @@ void DvbTab::showChannelDialog()
 
 void DvbTab::showRecordingDialog()
 {
-	manager->getRecordingModel()->showDialog(this);
+	DvbRecordingDialog::showDialog(manager, this);
 }
 
 void DvbTab::showEpgDialog()
 {
 	QString currentChannelName;
-	const DvbChannel *currentChannel = manager->getLiveView()->getChannel();
+	const DvbSharedChannel &currentChannel = manager->getLiveView()->getChannel();
 
-	if (currentChannel != NULL) {
+	if (currentChannel.isValid()) {
 		currentChannelName = currentChannel->name;
 	}
 
@@ -331,44 +326,43 @@ void DvbTab::showEpgDialog()
 void DvbTab::instantRecord(bool checked)
 {
 	if (checked) {
-		const DvbChannel *channel = manager->getLiveView()->getChannel();
+		const DvbSharedChannel &channel = manager->getLiveView()->getChannel();
 
-		if (channel == NULL) {
+		if (!channel.isValid()) {
 			instantRecordAction->setChecked(false);
 			return;
 		}
 
-		DvbRecordingEntry recordingEntry;
+		DvbRecording recording;
 		QList<const DvbEpgEntry *> epgEntries =
 			manager->getEpgModel()->getCurrentNext(channel);
 
 		if (!epgEntries.isEmpty()) {
-			recordingEntry.name = epgEntries.at(0)->title;
+			recording.name = epgEntries.at(0)->title;
 		}
 
-		if (recordingEntry.name.isEmpty()) {
-			recordingEntry.name =
+		if (recording.name.isEmpty()) {
+			recording.name =
 				(channel->name + QTime::currentTime().toString("-hhmmss"));
 		}
 
-		recordingEntry.channelName = channel->name;
-		recordingEntry.begin = QDateTime::currentDateTime().toUTC();
-		recordingEntry.duration = QTime(12, 0);
-		instantRecordingKey =
-			manager->getRecordingModel()->scheduleProgram(recordingEntry);
+		recording.channel = channel;
+		recording.begin = QDateTime::currentDateTime().toUTC();
+		recording.duration = QTime(12, 0);
+		instantRecording = manager->getRecordingModel()->addRecording(recording);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"),
 			1500);
 	} else {
-		manager->getRecordingModel()->removeProgram(instantRecordingKey);
+		manager->getRecordingModel()->removeRecording(instantRecording);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"),
 			1500);
 	}
 }
 
-void DvbTab::programRemoved(const DvbRecordingKey &recordingKey)
+void DvbTab::recordingRemoved(const DvbSharedRecording &recording)
 {
-	if (instantRecordingKey == recordingKey) {
-		instantRecordingKey = DvbRecordingKey();
+	if (instantRecording == recording) {
+		instantRecording = DvbSharedRecording();
 		instantRecordAction->setChecked(false);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"),
 			1500);
@@ -389,22 +383,17 @@ void DvbTab::tuneOsdChannel()
 	osdChannel.clear();
 	osdChannelTimer.stop();
 
-	DvbChannelModel *channelModel = manager->getChannelModel();
-	QModelIndex index = channelModel->findChannelByNumber(number);
+	DvbSharedChannel channel = manager->getChannelModel()->findChannelByNumber(number);
 
-	if (index.isValid()) {
-		const DvbChannel *channel = channelModel->data(index,
-			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
-		playChannel(channel, channelProxyModel->mapFromSource(index));
+	if (channel.isValid()) {
+		playChannel(channel, channelProxyModel->indexForChannel(channel));
 	}
 }
 
 void DvbTab::playChannel(const QModelIndex &index)
 {
 	if (index.isValid()) {
-		const DvbChannel *channel = channelProxyModel->data(index,
-			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
-		playChannel(channel, index);
+		playChannel(channelProxyModel->getChannel(index), index);
 	}
 }
 
@@ -451,9 +440,9 @@ void DvbTab::activate()
 	mediaWidget->setFocus();
 }
 
-void DvbTab::playChannel(const DvbChannel *channel, const QModelIndex &index)
+void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
-	if (channel == NULL) {
+	if (!channel.isValid()) {
 		kWarning() << "channel is invalid";
 		return;
 	}

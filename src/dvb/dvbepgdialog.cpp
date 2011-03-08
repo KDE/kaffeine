@@ -44,8 +44,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	epgTableModel = new DvbEpgTableModel(manager->getEpgModel(), this);
 
 	channelView = new QTreeView(widget);
-	epgChannelModel = new DvbEpgChannelModel(manager, this);
-	channelView->setModel(epgChannelModel);
+	epgChannelTableModel = new DvbEpgChannelTableModel(manager, this);
+	channelView->setModel(epgChannelTableModel);
 	channelView->setMaximumWidth(200);
 	channelView->setRootIsDecorated(false);
 	connect(channelView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
@@ -98,8 +98,9 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	rightLayout->addWidget(scrollArea);
 	mainLayout->addLayout(rightLayout);
 
-	QModelIndexList currentIndexes = epgChannelModel->match(epgChannelModel->index(0, 0),
-		Qt::DisplayRole, currentChannelName, 1, Qt::MatchExactly);
+	QModelIndexList currentIndexes = epgChannelTableModel->match(
+		epgChannelTableModel->index(0, 0), Qt::DisplayRole, currentChannelName, 1,
+		Qt::MatchExactly);
 
 	if (!currentIndexes.isEmpty()) {
 		channelView->setCurrentIndex(currentIndexes.at(0));
@@ -124,11 +125,11 @@ void DvbEpgDialog::showDialog(DvbManager *manager_, const QString &currentChanne
 void DvbEpgDialog::channelActivated(const QModelIndex &index)
 {
 	if (!index.isValid()) {
-		epgTableModel->setChannelFilter(NULL);
+		epgTableModel->setChannelFilter(DvbSharedChannel());
 		return;
 	}
 
-	epgTableModel->setChannelFilter(epgChannelModel->getChannel(index.row()));
+	epgTableModel->setChannelFilter(epgChannelTableModel->getChannel(index.row()));
 
 	if (epgTableModel->rowCount() >= 1) {
 		epgView->setCurrentIndex(epgTableModel->index(0, 0));
@@ -174,14 +175,14 @@ void DvbEpgDialog::scheduleProgram()
 	}
 }
 
-DvbEpgChannelModel::DvbEpgChannelModel(DvbManager *manager, QObject *parent) :
+DvbEpgChannelTableModel::DvbEpgChannelTableModel(DvbManager *manager, QObject *parent) :
 	QAbstractTableModel(parent)
 {
 	DvbEpgModel *epgModel = manager->getEpgModel();
-	connect(epgModel, SIGNAL(epgChannelAdded(const DvbChannel*)),
-		this, SLOT(epgChannelAdded(const DvbChannel*)));
-	connect(epgModel, SIGNAL(epgChannelAboutToBeRemoved(const DvbChannel*)),
-		this, SLOT(epgChannelAboutToBeRemoved(const DvbChannel*)));
+	connect(epgModel, SIGNAL(epgChannelAdded(DvbSharedChannel)),
+		this, SLOT(epgChannelAdded(DvbSharedChannel)));
+	connect(epgModel, SIGNAL(epgChannelRemoved(DvbSharedChannel)),
+		this, SLOT(epgChannelRemoved(DvbSharedChannel)));
 
 	const QHash<DvbSharedChannel, int> epgChannels = epgModel->getEpgChannels();
 
@@ -194,31 +195,31 @@ DvbEpgChannelModel::DvbEpgChannelModel(DvbManager *manager, QObject *parent) :
 
 	if (headerView->sortIndicatorOrder() == Qt::AscendingOrder) {
 		if (headerView->sortIndicatorSection() == 0) {
-			lessThan.sortOrder = LessThan::ChannelNameAscending;
+			lessThan.sortOrder = DvbChannelLessThan::ChannelNameAscending;
 		} else {
-			lessThan.sortOrder = LessThan::ChannelNumberAscending;
+			lessThan.sortOrder = DvbChannelLessThan::ChannelNumberAscending;
 		}
 	} else {
 		if (headerView->sortIndicatorSection() == 0) {
-			lessThan.sortOrder = LessThan::ChannelNameDescending;
+			lessThan.sortOrder = DvbChannelLessThan::ChannelNameDescending;
 		} else {
-			lessThan.sortOrder = LessThan::ChannelNumberDescending;
+			lessThan.sortOrder = DvbChannelLessThan::ChannelNumberDescending;
 		}
 	}
 
 	qSort(channels.begin(), channels.end(), lessThan);
 }
 
-DvbEpgChannelModel::~DvbEpgChannelModel()
+DvbEpgChannelTableModel::~DvbEpgChannelTableModel()
 {
 }
 
-const DvbChannel *DvbEpgChannelModel::getChannel(int row) const
+const DvbSharedChannel &DvbEpgChannelTableModel::getChannel(int row) const
 {
-	return channels.at(row).constData();
+	return channels.at(row);
 }
 
-int DvbEpgChannelModel::columnCount(const QModelIndex &parent) const
+int DvbEpgChannelTableModel::columnCount(const QModelIndex &parent) const
 {
 	if (!parent.isValid()) {
 		return 1;
@@ -227,7 +228,7 @@ int DvbEpgChannelModel::columnCount(const QModelIndex &parent) const
 	return 0;
 }
 
-int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
+int DvbEpgChannelTableModel::rowCount(const QModelIndex &parent) const
 {
 	if (!parent.isValid()) {
 		return channels.size();
@@ -236,7 +237,7 @@ int DvbEpgChannelModel::rowCount(const QModelIndex &parent) const
 	return 0;
 }
 
-QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
+QVariant DvbEpgChannelTableModel::data(const QModelIndex &index, int role) const
 {
 	if ((role == Qt::DisplayRole) && (index.column() == 0)) {
 		return channels.at(index.row())->name;
@@ -245,7 +246,8 @@ QVariant DvbEpgChannelModel::data(const QModelIndex &index, int role) const
 	return QVariant();
 }
 
-QVariant DvbEpgChannelModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DvbEpgChannelTableModel::headerData(int section, Qt::Orientation orientation,
+	int role) const
 {
 	if ((section == 0) && (orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
 		return i18nc("@title:column tv show", "Channel");
@@ -254,19 +256,19 @@ QVariant DvbEpgChannelModel::headerData(int section, Qt::Orientation orientation
 	return QVariant();
 }
 
-void DvbEpgChannelModel::epgChannelAdded(const DvbChannel *channel)
+void DvbEpgChannelTableModel::epgChannelAdded(const DvbSharedChannel &channel)
 {
 	int row = (qLowerBound(channels.constBegin(), channels.constEnd(), channel, lessThan) -
 		channels.constBegin());
 
-	if ((row >= channels.size()) || (*channels.at(row) != *channel)) {
+	if ((row >= channels.size()) || (channels.at(row) != channel)) {
 		beginInsertRows(QModelIndex(), row, row);
 		channels.insert(row, DvbSharedChannel(channel));
 		endInsertRows();
 	}
 }
 
-void DvbEpgChannelModel::epgChannelAboutToBeRemoved(const DvbChannel *channel)
+void DvbEpgChannelTableModel::epgChannelRemoved(const DvbSharedChannel &channel)
 {
 	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan) -
 		channels.constBegin());
@@ -278,22 +280,6 @@ void DvbEpgChannelModel::epgChannelAboutToBeRemoved(const DvbChannel *channel)
 	}
 }
 
-bool DvbEpgChannelModel::LessThan::operator()(const DvbChannel &x, const DvbChannel &y) const
-{
-	switch (sortOrder) {
-	case ChannelNameAscending:
-		return (x.name.localeAwareCompare(y.name) < 0);
-	case ChannelNameDescending:
-		return (x.name.localeAwareCompare(y.name) > 0);
-	case ChannelNumberAscending:
-		return (x.number < y.number);
-	case ChannelNumberDescending:
-		return (x.number > y.number);
-	}
-
-	return false;
-}
-
 DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
 	QAbstractTableModel(parent), epgModel(epgModel_), contentFilterEventPending(false)
 {
@@ -301,10 +287,10 @@ DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
 
 	connect(epgModel, SIGNAL(entryAdded(const DvbEpgEntry*)),
 		this, SLOT(entryAdded(const DvbEpgEntry*)));
-	connect(epgModel, SIGNAL(entryChanged(const DvbEpgEntry*,const DvbEpgEntry*)),
-		this, SLOT(entryChanged(const DvbEpgEntry*,const DvbEpgEntry*)));
-	connect(epgModel, SIGNAL(entryAboutToBeRemoved(const DvbEpgEntry*)),
-		this, SLOT(entryAboutToBeRemoved(const DvbEpgEntry*)));
+	connect(epgModel, SIGNAL(entryUpdated(const DvbEpgEntry*,DvbEpgEntry)),
+		this, SLOT(entryUpdated(const DvbEpgEntry*,DvbEpgEntry)));
+	connect(epgModel, SIGNAL(entryRemoved(const DvbEpgEntry*)),
+		this, SLOT(entryRemoved(const DvbEpgEntry*)));
 }
 
 DvbEpgTableModel::~DvbEpgTableModel()
@@ -316,9 +302,9 @@ const DvbEpgEntry *DvbEpgTableModel::getEntry(int row) const
 	return entries.at(row);
 }
 
-void DvbEpgTableModel::setChannelFilter(const DvbChannel *channel)
+void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)
 {
-	channelFilter = DvbSharedChannel(channel);
+	channelFilter = channel;
 	contentFilter.setPattern(QString());
 
 	if (!entries.isEmpty()) {
@@ -384,7 +370,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 
 	switch (role) {
 	case Qt::DecorationRole:
-		if ((index.column() == 2) && entry->recordingKey.isValid()) {
+		if ((index.column() == 2) && entry->recording.isValid()) {
 			return KIcon("media-record");
 		}
 
@@ -451,31 +437,18 @@ void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 	}
 }
 
-void DvbEpgTableModel::entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry)
+void DvbEpgTableModel::entryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry)
 {
+	Q_UNUSED(entry)
 	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), oldEntry, LessThan()) -
 		entries.constBegin());
 
 	if (row < entries.size()) {
-		int targetRow = (qLowerBound(entries.constBegin(), entries.constEnd(), newEntry,
-			LessThan()) - entries.constBegin());
-
-		if (targetRow > row) {
-			--targetRow;
-		}
-
-		entries.replace(row, newEntry);
 		emit dataChanged(index(row, 0), index(row, 3));
-
-		if (row != targetRow) {
-			emit layoutAboutToBeChanged();
-			entries.move(row, targetRow);
-			emit layoutChanged();
-		}
 	}
 }
 
-void DvbEpgTableModel::entryAboutToBeRemoved(const DvbEpgEntry *entry)
+void DvbEpgTableModel::entryRemoved(const DvbEpgEntry *entry)
 {
 	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), entry, LessThan()) -
 		entries.constBegin());
@@ -524,27 +497,27 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 	}
 }
 
-bool DvbEpgTableModel::LessThan::operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const
+bool DvbEpgTableModel::LessThan::operator()(const DvbEpgEntry &x, const DvbEpgEntry &y) const
 {
-	if (x->channel != y->channel) {
-		return (x->channel->name.localeAwareCompare(y->channel->name) < 0);
+	if (x.channel != y.channel) {
+		return (x.channel->name.localeAwareCompare(y.channel->name) < 0);
 	}
 
-	if (x->begin != y->begin) {
-		return (x->begin < y->begin);
+	if (x.begin != y.begin) {
+		return (x.begin < y.begin);
 	}
 
-	if (x->duration != y->duration) {
-		return (x->duration < y->duration);
+	if (x.duration != y.duration) {
+		return (x.duration < y.duration);
 	}
 
-	if (x->title != y->title) {
-		return (x->title < y->title);
+	if (x.title != y.title) {
+		return (x.title < y.title);
 	}
 
-	if (x->subheading != y->subheading) {
-		return (x->subheading < y->subheading);
+	if (x.subheading != y.subheading) {
+		return (x.subheading < y.subheading);
 	}
 
-	return (x->details < y->details);
+	return (x.details < y.details);
 }

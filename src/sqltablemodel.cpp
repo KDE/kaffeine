@@ -25,38 +25,32 @@
 #include <KDebug>
 #include "sqlhelper.h"
 
-SqlTableModelInterface::SqlTableModelInterface(QObject *parent) : QObject(parent),
-	createTable(false), hasPendingStatements(false), sqlColumnCount(0)
+SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
+	sqlColumnCount(0)
 {
 	sqlHelper = SqlHelper::getInstance();
 }
 
-SqlTableModelInterface::~SqlTableModelInterface()
+SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
 		kError() << "pending statements at destruction";
+		/* data isn't valid anymore */
+		pendingStatements.clear();
+		createTable = false;
+		/* make sure we don't get called after destruction */
+		sqlHelper->collectSubmissions();
 	}
 }
 
-void SqlTableModelInterface::flush()
+void SqlInterface::sqlFlush()
 {
 	if (hasPendingStatements) {
 		sqlHelper->collectSubmissions();
 	}
 }
 
-quint32 SqlTableModelInterface::keyForRow(int row) const
-{
-	return rowToKeyMapping.at(row);
-}
-
-int SqlTableModelInterface::rowForKey(quint32 key) const
-{
-	return keyToRowMapping.value(key, -1);
-}
-
-void SqlTableModelInterface::init(QAbstractItemModel *model, const QString &tableName,
-	const QStringList &columnNames)
+void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNames)
 {
 	QString existsStatement = "SELECT name FROM sqlite_master WHERE name='" + tableName +
 		"' AND type = 'table'";
@@ -104,155 +98,78 @@ void SqlTableModelInterface::init(QAbstractItemModel *model, const QString &tabl
 		updateQuery = sqlHelper->prepare(updateStatement);
 		deleteQuery = sqlHelper->prepare(deleteStatement);
 
-		QSqlQuery query = sqlHelper->exec(selectStatement);
-
-		while (query.next()) {
+		for (QSqlQuery query = sqlHelper->exec(selectStatement); query.next();) {
 			qint64 fullKey = query.value(0).toLongLong();
-			quint32 key = fullKey;
+			SqlKey sqlKey(fullKey);
 
-			if ((key == 0) || (key != fullKey)) {
+			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
 				kWarning() << "invalid key" << fullKey;
 				continue;
 			}
 
-			int row = insertFromSqlQuery(query, 1);
-
-			if (row >= 0) {
-				rowToKeyMapping.insert(row, key);
-			} else {
-				pendingStatements.insert(key, Remove);
+			if (!insertFromSqlQuery(sqlKey, query, 1)) {
+				pendingStatements.insert(sqlKey, Remove);
 				requestSubmission();
 			}
 		}
-
-		for (int row = 0; row < rowToKeyMapping.size(); ++row) {
-			keyToRowMapping.insert(rowToKeyMapping.at(row), row);
-		}
 	}
-
-	connect(model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-		this, SLOT(dataChanged(QModelIndex,QModelIndex)));
-	connect(model, SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
-	connect(model, SIGNAL(modelReset()), this, SLOT(modelReset()));
-	connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)),
-		this, SLOT(rowsInserted(QModelIndex,int,int)));
-	connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
-		this, SLOT(rowsRemoved(QModelIndex,int,int)));
 }
 
-void SqlTableModelInterface::dataChanged(const QModelIndex &topLeft,
-	const QModelIndex &bottomRight)
+void SqlInterface::sqlInsert(SqlKey key)
 {
-	for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
-		quint32 key = rowToKeyMapping.at(row);
-
-		switch (pendingStatements.value(key, Nothing)) {
-		case Nothing:
-			pendingStatements.insert(key, Update);
-			requestSubmission();
-			break;
-		case RemoveAndInsert:
-		case Insert:
-		case Update:
-			break;
-		case Remove:
-			kError() << "invalid pending statement" <<
-				pendingStatements.value(key, Nothing);
-			break;
-		}
+	switch (pendingStatements.value(key, Nothing)) {
+	case Nothing:
+		pendingStatements.insert(key, Insert);
+		requestSubmission();
+		break;
+	case Remove:
+		pendingStatements.insert(key, RemoveAndInsert);
+		requestSubmission();
+		break;
+	case RemoveAndInsert:
+	case Insert:
+	case Update:
+		kError() << "invalid pending statement" << pendingStatements.value(key, Nothing);
+		break;
 	}
 }
 
-void SqlTableModelInterface::layoutChanged()
+void SqlInterface::sqlUpdate(SqlKey key)
 {
-	// not supported
-	Q_ASSERT(false);
+	switch (pendingStatements.value(key, Nothing)) {
+	case Nothing:
+		pendingStatements.insert(key, Update);
+		requestSubmission();
+		break;
+	case RemoveAndInsert:
+	case Insert:
+	case Update:
+		break;
+	case Remove:
+		kError() << "invalid pending statement" << pendingStatements.value(key, Nothing);
+		break;
+	}
 }
 
-void SqlTableModelInterface::modelReset()
+void SqlInterface::sqlRemove(SqlKey key)
 {
-	// not supported
-	Q_ASSERT(false);
-}
-
-void SqlTableModelInterface::rowsInserted(const QModelIndex &parent, int start, int end)
-{
-	Q_UNUSED(parent)
-
-	for (int row = start; row <= end; ++row) {
-		quint32 key = 1;
-
-		if (!keyToRowMapping.isEmpty()) {
-			key += (keyToRowMapping.constEnd() - 1).key();
-		}
-
-		if (key == 0) {
-			key = qrand();
-		}
-
-		while (keyToRowMapping.contains(key) || (key == 0)) {
-			++key;
-		}
-
-		switch (pendingStatements.value(key, Nothing)) {
-		case Nothing:
-			pendingStatements.insert(key, Insert);
-			requestSubmission();
-			break;
-		case Remove:
-			pendingStatements.insert(key, RemoveAndInsert);
-			requestSubmission();
-			break;
-		case RemoveAndInsert:
-		case Insert:
-		case Update:
-			kError() << "invalid pending statement" <<
-				pendingStatements.value(key, Nothing);
-			break;
-		}
-
-		rowToKeyMapping.insert(row, key);
-		keyToRowMapping.insert(key, row);
-	}
-
-	for (int row = (end + 1); row < rowToKeyMapping.size(); ++row) {
-		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
+	switch (pendingStatements.value(key, Nothing)) {
+	case Nothing:
+	case RemoveAndInsert:
+	case Update:
+		pendingStatements.insert(key, Remove);
+		requestSubmission();
+		break;
+	case Insert:
+		pendingStatements.remove(key);
+		break;
+	case Remove:
+		kError() << "invalid pending statement" << pendingStatements.value(key, Nothing);
+		break;
 	}
 }
 
-void SqlTableModelInterface::rowsRemoved(const QModelIndex &parent, int start, int end)
-{
-	Q_UNUSED(parent)
-
-	for (int row = end; row >= start; --row) {
-		quint32 key = rowToKeyMapping.at(row);
-
-		switch (pendingStatements.value(key, Nothing)) {
-		case Nothing:
-		case RemoveAndInsert:
-		case Update:
-			pendingStatements.insert(key, Remove);
-			requestSubmission();
-			break;
-		case Insert:
-			pendingStatements.remove(key);
-			break;
-		case Remove:
-			kError() << "invalid pending statement" <<
-				pendingStatements.value(key, Nothing);
-			break;
-		}
-
-		rowToKeyMapping.removeAt(row);
-		keyToRowMapping.remove(key);
-	}
-
-	for (int row = start; row < rowToKeyMapping.size(); ++row) {
-		keyToRowMapping.insert(rowToKeyMapping.at(row), row);
-	}
-}
-
-void SqlTableModelInterface::requestSubmission()
+void SqlInterface::requestSubmission()
 {
 	if (!hasPendingStatements) {
 		hasPendingStatements = true;
@@ -260,7 +177,7 @@ void SqlTableModelInterface::requestSubmission()
 	}
 }
 
-void SqlTableModelInterface::submit()
+void SqlInterface::sqlSubmit()
 {
 	if (createTable) {
 		createTable = false;
@@ -272,28 +189,28 @@ void SqlTableModelInterface::submit()
 		deleteQuery = sqlHelper->prepare(deleteStatement);
 	}
 
-	for (QMap<quint32, PendingStatement>::const_iterator it = pendingStatements.constBegin();
+	for (QMap<SqlKey, PendingStatement>::ConstIterator it = pendingStatements.constBegin();
 	     it != pendingStatements.constEnd(); ++it) {
 		switch (it.value()) {
 		case Nothing:
 			kError() << "invalid pending statement" << it.value();
 			break;
 		case RemoveAndInsert:
-			deleteQuery.bindValue(0, it.key());
+			deleteQuery.bindValue(0, it.key().sqlKey);
 			sqlHelper->exec(deleteQuery);
 			// fall through
 		case Insert:
-			insertQuery.bindValue(0, it.key());
-			bindToSqlQuery(insertQuery, 1, keyToRowMapping.value(it.key(), -1));
+			bindToSqlQuery(it.key(), insertQuery, 1);
+			insertQuery.bindValue(0, it.key().sqlKey);
 			sqlHelper->exec(insertQuery);
 			break;
 		case Update:
-			bindToSqlQuery(updateQuery, 0, keyToRowMapping.value(it.key(), -1));
-			updateQuery.bindValue(sqlColumnCount, it.key());
+			bindToSqlQuery(it.key(), updateQuery, 0);
+			updateQuery.bindValue(sqlColumnCount, it.key().sqlKey);
 			sqlHelper->exec(updateQuery);
 			break;
 		case Remove:
-			deleteQuery.bindValue(0, it.key());
+			deleteQuery.bindValue(0, it.key().sqlKey);
 			sqlHelper->exec(deleteQuery);
 			break;
 		}

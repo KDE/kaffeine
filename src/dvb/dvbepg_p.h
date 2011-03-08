@@ -48,33 +48,12 @@ private:
 	bool *hasPendingOperation;
 };
 
-class DvbEitEntry
-{
-public:
-	DvbEitEntry() : networkId(0), transportStreamId(0), serviceId(0) { }
-	explicit DvbEitEntry(const DvbChannel *channel);
-	~DvbEitEntry() { }
-
-	bool operator==(const DvbEitEntry &other) const
-	{
-		return ((source == other.source) && (networkId == other.networkId) &&
-			(transportStreamId == other.transportStreamId) &&
-			(serviceId == other.serviceId));
-	}
-
-	QString source;
-	int networkId;
-	int transportStreamId;
-	int serviceId;
-};
-
 class DvbEpgFilter : public DvbSectionFilter
 {
 public:
-	DvbEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel);
+	DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel);
 	~DvbEpgFilter();
 
-	DvbEpgModel *epgModel;
 	DvbDevice *device;
 	QString source;
 	DvbTransponder transponder;
@@ -84,22 +63,9 @@ private:
 	static QTime bcdToTime(int bcd);
 
 	void processSection(const char *data, int size);
-};
 
-class AtscEitEntry
-{
-public:
-	AtscEitEntry() : sourceId(0) { }
-	explicit AtscEitEntry(const DvbChannel *channel);
-	~AtscEitEntry() { }
-
-	bool operator==(const AtscEitEntry &other) const
-	{
-		return ((source == other.source) && (sourceId == other.sourceId));
-	}
-
-	QString source;
-	int sourceId;
+	DvbChannelModel *channelModel;
+	DvbEpgModel *epgModel;
 };
 
 class AtscEpgMgtFilter : public DvbSectionFilter
@@ -144,10 +110,9 @@ class AtscEpgFilter
 	friend class AtscEpgEitFilter;
 	friend class AtscEpgEttFilter;
 public:
-	AtscEpgFilter(DvbEpgModel *epgModel_, DvbDevice *device_, const DvbChannel *channel);
+	AtscEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel);
 	~AtscEpgFilter();
 
-	DvbEpgModel *epgModel;
 	DvbDevice *device;
 	QString source;
 	DvbTransponder transponder;
@@ -158,6 +123,8 @@ private:
 	void processEitSection(const char *data, int size);
 	void processEttSection(const char *data, int size);
 
+	DvbChannelModel *channelModel;
+	DvbEpgModel *epgModel;
 	AtscEpgMgtFilter mgtFilter;
 	AtscEpgEitFilter eitFilter;
 	AtscEpgEttFilter ettFilter;

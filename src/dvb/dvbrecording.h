@@ -21,90 +21,100 @@
 #ifndef DVBRECORDING_H
 #define DVBRECORDING_H
 
-#include <QAbstractTableModel>
 #include <QDateTime>
+#include <QMap>
+#include "dvbchannel.h"
+#include "../sqltablemodel.h"
 
+class QSqlQuery;
 class DvbManager;
 class DvbRecording;
-class SqlTableModelInterface;
+class DvbRecordingFile;
+class DvbRecordingModelSqlInterface;
 
-class DvbRecordingKey
+class DvbRecordingBase : public QSharedData
 {
 public:
-	explicit DvbRecordingKey(quint32 key_ = 0) : key(key_) { }
-	~DvbRecordingKey() { }
+	DvbRecordingBase() { }
+	~DvbRecordingBase() { }
+
+	DvbRecordingBase &operator=(const DvbRecordingBase &)
+	{
+		return *this;
+	}
+};
+
+class DvbRecording : public DvbRecordingBase, public SqlKey
+{
+public:
+	DvbRecording() : repeat(0), status(Inactive) { }
+	~DvbRecording() { }
+
+	// checks that all variables are ok and updates 'end'
+	// 'sqlKey' and 'status are ignored
+	bool validate();
+
+	enum Status {
+		Inactive,
+		Recording,
+		Error
+	};
+
+	QString name;
+	DvbSharedChannel channel;
+	QDateTime begin; // UTC
+	QDateTime end; // UTC, read-only
+	QTime duration;
+	int repeat; // (1 << 0) (monday) | (1 << 1) (tuesday) | ... | (1 << 6) (sunday)
+	Status status; // read-only
+};
+
+class DvbSharedRecording : public QExplicitlySharedDataPointer<const DvbRecording>
+{
+public:
+	explicit DvbSharedRecording(DvbRecording *recording = NULL) :
+		QExplicitlySharedDataPointer<const DvbRecording>(recording) { }
+	~DvbSharedRecording() { }
 
 	bool isValid() const
 	{
-		return (key != 0);
+		return (constData() != NULL);
 	}
-
-	bool operator==(const DvbRecordingKey &other) const
-	{
-		return (key == other.key);
-	}
-
-	bool operator<(const DvbRecordingKey &other) const
-	{
-		return (key < other.key);
-	}
-
-	quint32 key;
 };
 
-class DvbRecordingEntry
-{
-public:
-	DvbRecordingEntry() : repeat(0), isRunning(false) { }
-	~DvbRecordingEntry() { }
+Q_DECLARE_TYPEINFO(DvbSharedRecording, Q_MOVABLE_TYPE);
 
-	QString name;
-	QString channelName;
-	QDateTime begin; // UTC
-	QTime duration;
-	int repeat; // 1 (monday) | 2 (tuesday) | 4 (wednesday) | etc
-	bool isRunning;
-};
-
-class DvbRecordingModel : public QAbstractTableModel
+class DvbRecordingModel : public QObject, protected SqlInterface
 {
 	Q_OBJECT
 public:
 	DvbRecordingModel(DvbManager *manager_, QObject *parent);
 	~DvbRecordingModel();
 
-	QMap<DvbRecordingKey, DvbRecordingEntry> listProgramSchedule();
-	DvbRecordingKey scheduleProgram(const DvbRecordingEntry &entry);
-	void removeProgram(const DvbRecordingKey &key);
-
-	enum ItemDataRole
-	{
-		SortRole = Qt::UserRole,
-		DvbRecordingEntryRole = Qt::UserRole + 1
-	};
-
-	QAbstractItemModel *createProxyModel(QObject *parent);
-	void showDialog(QWidget *parent);
-	void mayCloseApplication(bool *ok, QWidget *parent);
+	DvbSharedRecording findRecordingByKey(const SqlKey &key) const;
+	QMap<SqlKey, DvbSharedRecording> listProgramSchedule() const;
+	DvbSharedRecording addRecording(DvbRecording &recording);
+	void updateRecording(const DvbSharedRecording &recording, DvbRecording &modifiedRecording);
+	void removeRecording(const DvbSharedRecording &recording);
 
 signals:
-	void programRemoved(const DvbRecordingKey &key);
+	void recordingAdded(const DvbSharedRecording &recording);
+	// oldRecording is a temporary copy
+	void recordingUpdated(const DvbSharedRecording &recording,
+		const DvbRecording &oldRecording);
+	void recordingRemoved(const DvbSharedRecording &recording);
 
 private slots:
 	void checkStatus();
 
 private:
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	bool removeRows(int row, int count, const QModelIndex &parent);
-	bool setData(const QModelIndex &modelIndex, const QVariant &value, int role);
+	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
+	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
+	bool updateStatus(DvbRecording &recording);
 
 	DvbManager *manager;
-	QList<DvbRecording *> recordings;
-	SqlTableModelInterface *sqlInterface;
-	bool hasActiveRecordings;
+	QMap<SqlKey, DvbSharedRecording> recordings;
+	QMap<SqlKey, QExplicitlySharedDataPointer<DvbRecordingFile> > recordingFiles;
 };
 
 #endif /* DVBRECORDING_H */

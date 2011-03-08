@@ -23,18 +23,31 @@
 
 #include <QSharedData> // qt 4.5 compatibility
 #include <QTreeView>
+#include "../sqltablemodel.h"
 #include "dvbtransponder.h"
 
-class QAbstractProxyModel;
+class QSqlQuery;
 class KAction;
-class SqlTableModelInterface;
+class DvbSqlChannelModelInterface;
 
-class DvbChannelBase
+class DvbChannelBase : public QSharedData
 {
 public:
-	DvbChannelBase() : number(-1), networkId(-1), transportStreamId(-1), pmtPid(-1),
-		audioPid(-1), hasVideo(false), isScrambled(false) { }
+	DvbChannelBase() { }
 	~DvbChannelBase() { }
+
+	DvbChannelBase &operator=(const DvbChannelBase &)
+	{
+		return *this;
+	}
+};
+
+class DvbChannel : public SqlKey, public DvbChannelBase
+{
+public:
+	DvbChannel() : number(-1), networkId(-1), transportStreamId(-1), pmtPid(-1), audioPid(-1),
+		hasVideo(false), isScrambled(false) { }
+	~DvbChannel() { }
 
 	void readChannel(QDataStream &stream);
 
@@ -51,7 +64,7 @@ public:
 	void setServiceId(int serviceId)
 	{
 		if (pmtSectionData.size() < 5) {
-			return;
+			pmtSectionData = QByteArray(5, 0);
 		}
 
 		pmtSectionData[3] = (serviceId >> 8);
@@ -73,49 +86,11 @@ public:
 	bool isScrambled;
 };
 
-class DvbChannel : public DvbChannelBase, public QSharedData
-{
-public:
-	DvbChannel() { }
-	explicit DvbChannel(const DvbChannelBase &channel) : DvbChannelBase(channel) { }
-	~DvbChannel() { }
-
-	DvbChannel &operator=(const DvbChannel &other)
-	{
-		DvbChannelBase *base = this;
-		*base = other;
-		return (*this);
-	}
-
-	bool operator==(const DvbChannel &other) const
-	{
-		return (number == other.number);
-	}
-
-	bool operator!=(const DvbChannel &other) const
-	{
-		return (number != other.number);
-	}
-
-	bool operator<(const DvbChannel &other) const
-	{
-		return (number < other.number);
-	}
-
-	friend uint qHash(const DvbChannel &channel)
-	{
-		return qHash(channel.number);
-	}
-};
-
-Q_DECLARE_TYPEINFO(QSharedDataPointer<DvbChannel>, Q_MOVABLE_TYPE);
-Q_DECLARE_TYPEINFO(QExplicitlySharedDataPointer<const DvbChannel>, Q_MOVABLE_TYPE);
-
 class DvbSharedChannel
 {
+	friend class DvbChannelModel;
 public:
 	DvbSharedChannel() { }
-	explicit DvbSharedChannel(const DvbChannel *channel_) : channel(channel_) { }
 	~DvbSharedChannel() { }
 
 	bool isValid() const
@@ -140,31 +115,98 @@ public:
 
 	bool operator==(const DvbSharedChannel &other) const
 	{
-		return (*channel == *other.channel);
+		return (channel.constData() == other.channel.constData());
 	}
 
 	bool operator!=(const DvbSharedChannel &other) const
 	{
-		return (*channel != *other.channel);
+		return (channel.constData() != other.channel.constData());
 	}
 
 	bool operator<(const DvbSharedChannel &other) const
 	{
-		return (*channel < *other.channel);
+		return (channel.constData() < other.channel.constData());
 	}
 
-	friend uint qHash(const DvbSharedChannel &sharedChannel)
+	friend uint qHash(const DvbSharedChannel &sharedChannel) // FIXME remove??
 	{
-		return qHash(*sharedChannel.channel);
+		return qHash(sharedChannel.channel.constData());
 	}
 
 private:
-	QExplicitlySharedDataPointer<const DvbChannel> channel;
+	explicit DvbSharedChannel(DvbChannel *channel_) : channel(channel_) { }
+
+	DvbChannel *data() const
+	{
+		return channel.data();
+	}
+
+	void detach() const
+	{
+		const_cast<DvbSharedChannel *>(this)->channel.detach();
+	}
+
+	QExplicitlySharedDataPointer<DvbChannel> channel;
 };
 
 Q_DECLARE_TYPEINFO(DvbSharedChannel, Q_MOVABLE_TYPE);
 
-class DvbChannelModel : public QAbstractTableModel
+class DvbChannelLessThan
+{
+public:
+	DvbChannelLessThan() : sortOrder(ChannelNameAscending) { }
+	~DvbChannelLessThan() { }
+
+	enum SortOrder
+	{
+		ChannelNameAscending,
+		ChannelNameDescending,
+		ChannelNumberAscending,
+		ChannelNumberDescending
+	};
+
+	bool operator()(const DvbChannel &x, const DvbChannel &y) const;
+
+	bool operator()(const DvbChannel &x, const DvbSharedChannel &y) const
+	{
+		return (*this)(x, *y);
+	}
+
+	bool operator()(const DvbSharedChannel &x, const DvbChannel &y) const
+	{
+		return (*this)(*x, y);
+	}
+
+	bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
+	{
+		return (*this)(*x, *y);
+	}
+
+	SortOrder sortOrder;
+};
+
+class DvbComparableChannel
+{
+public:
+	explicit DvbComparableChannel(const DvbChannel *channel_) : channel(channel_) { }
+	explicit DvbComparableChannel(const DvbSharedChannel &channel_) :
+		channel(channel_.constData()) { }
+	~DvbComparableChannel() { }
+
+	bool operator==(const DvbComparableChannel &other) const;
+
+	bool operator!=(const DvbComparableChannel &other) const
+	{
+		return !(*this == other);
+	}
+
+	friend uint qHash(const DvbComparableChannel &channel);
+
+private:
+	const DvbChannel *channel;
+};
+
+class DvbChannelModel : public QObject, protected SqlInterface
 {
 	Q_OBJECT
 public:
@@ -173,66 +215,105 @@ public:
 
 	/*
 	 * channel names and numbers are guaranteed to be unique within this model
-	 * they are automatically adjusted if necessary
 	 */
 
-	QList<QSharedDataPointer<DvbChannel> > getChannels() const;
-	QModelIndex findChannelByName(const QString &name) const;
-	QModelIndex findChannelByNumber(int number) const;
-	void cloneFrom(const DvbChannelModel *other);
+	QMap<int, DvbSharedChannel> getChannels() const;
+	DvbSharedChannel findChannelByName(const QString &channelName) const;
+	DvbSharedChannel findChannelByNumber(int channelNumber) const;
+	DvbSharedChannel findChannelByContent(const DvbChannel &channel) const;
 
-	enum ItemDataRole
-	{
-		DvbChannelRole = Qt::UserRole
-	};
-
-	QAbstractProxyModel *createProxyModel(QObject *parent);
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	bool removeRows(int row, int count, const QModelIndex &parent);
-	bool setData(const QModelIndex &modelIndex, const QVariant &value,
-		int role = Qt::EditRole);
-
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QMimeData *mimeData(const QModelIndexList &indexes) const;
-	QStringList mimeTypes() const;
-	Qt::DropActions supportedDropActions() const;
-	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
-		const QModelIndex &parent);
+	void cloneFrom(DvbChannelModel *other);
+	void addChannel(const DvbChannel &channel);
+	void updateChannel(const DvbSharedChannel &channel, const DvbChannel &updatedChannel);
+	void removeChannel(const DvbSharedChannel &channel);
+	void dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
+		const DvbSharedChannel &insertBeforeChannel);
 
 signals:
-	void channelAdded(const DvbChannel *channel);
-	void channelChanged(const DvbChannel *oldChannel, const DvbChannel *newChannel);
-	void channelAboutToBeRemoved(const DvbChannel *channel);
-	void checkInternalMove(bool *ok);
+	void channelAdded(const DvbSharedChannel &channel);
+	// oldChannel is a temporary copy (channel remains the same if this is the main model)
+	void channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel);
+	void channelRemoved(const DvbSharedChannel &channel);
+
+private:
+	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
+	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
+
+	QString extractBaseName(const QString &name) const;
+	QString findNextFreeChannelName(const QString &name) const;
+	int findNextFreeChannelNumber(int number) const;
+	void internalAddChannel(const DvbSharedChannel &channel);
+	void internalUpdateChannel(const DvbSharedChannel &channel,
+		const DvbChannel &modifiedChannel);
+	void internalRemoveChannel(const DvbSharedChannel &channel);
+
+	QMap<SqlKey, DvbSharedChannel> channels;
+	QMap<QString, DvbSharedChannel> channelNameMapping;
+	QMap<int, DvbSharedChannel> channelNumberMapping;
+	QMultiHash<DvbComparableChannel, DvbSharedChannel> channelContentMapping;
+	mutable bool hasPendingOperation;
 
 protected:
-	QString findNextFreeName(const QString &name) const;
-	int findNextFreeNumber(int number) const;
-
-	QList<QSharedDataPointer<DvbChannel> > channels;
-	QSet<QString> names;
-	QSet<int> numbers;
-
-signals:
-	void queueInternalMove(const QList<QPersistentModelIndex> &indexes, int newNumber);
-
-private slots:
-	void internalMove(const QList<QPersistentModelIndex> &indexes, int newNumber);
+	bool isSqlModel;
 };
-
-Q_DECLARE_METATYPE(const DvbChannel *)
 
 class DvbSqlChannelModel : public DvbChannelModel
 {
 public:
 	explicit DvbSqlChannelModel(QObject *parent);
 	~DvbSqlChannelModel();
+};
+
+class DvbChannelTableModel : public QAbstractTableModel
+{
+	Q_OBJECT
+public:
+	DvbChannelTableModel(DvbChannelModel *channelModel_, QObject *parent);
+	~DvbChannelTableModel();
+
+	/*
+	 * channel names and numbers are guaranteed to be unique within this model
+	 * they are automatically adjusted if necessary
+	 */
+
+	DvbChannelModel *getChannelModel() const;
+	const DvbSharedChannel &getChannel(const QModelIndex &index) const;
+	QModelIndex indexForChannel(const DvbSharedChannel &channel) const;
+
+	int columnCount(const QModelIndex &parent) const;
+	int rowCount(const QModelIndex &parent) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+
+	Qt::ItemFlags flags(const QModelIndex &index) const;
+	QMimeData *mimeData(const QModelIndexList &indexes) const;
+	QStringList mimeTypes() const;
+	Qt::DropActions supportedDropActions() const;
+	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
+	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
+		const QModelIndex &parent);
+	void sort(int column, Qt::SortOrder order);
+
+public slots:
+	void setFilter(const QString &filter);
+
+signals:
+	void checkChannelDragAndDrop(bool *ok);
+
+private slots:
+	void channelAdded(const DvbSharedChannel &channel);
+	void channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel);
+	void channelRemoved(const DvbSharedChannel &channel);
 
 private:
-	SqlTableModelInterface *sqlInterface;
+	void customEvent(QEvent *event);
+
+	DvbChannelModel *channelModel;
+	QList<DvbSharedChannel> channels;
+	DvbChannelLessThan lessThan;
+	QList<DvbSharedChannel> dndSelectedChannels;
+	DvbSharedChannel dndInsertBeforeChannel;
+	bool dndEventPosted;
 };
 
 class DvbChannelView : public QTreeView
@@ -245,11 +326,18 @@ public:
 	KAction *addEditAction();
 	KAction *addRemoveAction();
 
+	void setModel(DvbChannelTableModel *tableModel_);
+
 public slots:
-	void checkInternalMove(bool *ok);
+	void checkChannelDragAndDrop(bool *ok);
 	void editChannel();
 	void removeChannel();
 	void removeAllChannels();
+
+private:
+	void setModel(QAbstractItemModel *) { }
+
+	DvbChannelTableModel *tableModel;
 };
 
 #endif /* DVBCHANNEL_H */

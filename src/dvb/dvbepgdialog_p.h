@@ -23,14 +23,14 @@
 
 #include "dvbepg.h"
 
-class DvbEpgChannelModel : public QAbstractTableModel
+class DvbEpgChannelTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
 public:
-	DvbEpgChannelModel(DvbManager *manager, QObject *parent);
-	~DvbEpgChannelModel();
+	DvbEpgChannelTableModel(DvbManager *manager, QObject *parent);
+	~DvbEpgChannelTableModel();
 
-	const DvbChannel *getChannel(int row) const;
+	const DvbSharedChannel &getChannel(int row) const;
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
@@ -38,46 +38,12 @@ public:
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private slots:
-	void epgChannelAdded(const DvbChannel *channel);
-	void epgChannelAboutToBeRemoved(const DvbChannel *channel);
+	void epgChannelAdded(const DvbSharedChannel &channel);
+	void epgChannelRemoved(const DvbSharedChannel &channel);
 
 private:
-	class LessThan
-	{
-	public:
-		LessThan() : sortOrder(ChannelNumberAscending) { }
-		~LessThan() { }
-
-		enum SortOrder
-		{
-			ChannelNameAscending,
-			ChannelNameDescending,
-			ChannelNumberAscending,
-			ChannelNumberDescending
-		};
-
-		bool operator()(const DvbChannel &x, const DvbChannel &y) const;
-
-		bool operator()(const DvbChannel *x, const DvbSharedChannel &y) const
-		{
-			return (*this)(*x, *y);
-		}
-
-		bool operator()(const DvbSharedChannel &x, const DvbChannel *y) const
-		{
-			return (*this)(*x, *y);
-		}
-
-		bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
-		{
-			return (*this)(*x, *y);
-		}
-
-		SortOrder sortOrder;
-	};
-
 	QList<DvbSharedChannel> channels;
-	LessThan lessThan;
+	DvbChannelLessThan lessThan;
 };
 
 class DvbEpgTableModel : public QAbstractTableModel
@@ -88,7 +54,7 @@ public:
 	~DvbEpgTableModel();
 
 	const DvbEpgEntry *getEntry(int row) const;
-	void setChannelFilter(const DvbChannel *channel);
+	void setChannelFilter(const DvbSharedChannel &channel);
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -100,8 +66,8 @@ public slots:
 
 private slots:
 	void entryAdded(const DvbEpgEntry *entry);
-	void entryChanged(const DvbEpgEntry *oldEntry, const DvbEpgEntry *newEntry);
-	void entryAboutToBeRemoved(const DvbEpgEntry *entry);
+	void entryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
+	void entryRemoved(const DvbEpgEntry *entry);
 
 private:
 	void customEvent(QEvent *event);
@@ -109,7 +75,22 @@ private:
 	class LessThan
 	{
 	public:
-		bool operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const;
+		bool operator()(const DvbEpgEntry &x, const DvbEpgEntry &y) const;
+
+		bool operator()(const DvbEpgEntry &x, const DvbEpgEntry *y) const
+		{
+			return (*this)(x, *y);
+		}
+
+		bool operator()(const DvbEpgEntry *x, const DvbEpgEntry &y) const
+		{
+			return (*this)(*x, y);
+		}
+
+		bool operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const
+		{
+			return (*this)(*x, *y);
+		}
 	};
 
 	DvbEpgModel *epgModel;

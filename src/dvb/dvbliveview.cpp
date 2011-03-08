@@ -171,9 +171,9 @@ DvbLiveView::~DvbLiveView()
 	delete internal;
 }
 
-const DvbChannel *DvbLiveView::getChannel() const
+const DvbSharedChannel &DvbLiveView::getChannel() const
 {
-	return channel.constData();
+	return channel;
 }
 
 DvbDevice *DvbLiveView::getDevice() const
@@ -181,7 +181,7 @@ DvbDevice *DvbLiveView::getDevice() const
 	return device;
 }
 
-void DvbLiveView::playChannel(const DvbChannel *channel_)
+void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 {
 	DvbDevice *newDevice = NULL;
 
@@ -201,7 +201,7 @@ void DvbLiveView::playChannel(const DvbChannel *channel_)
 	}
 
 	if (device == NULL) {
-		channel = NULL;
+		channel = DvbSharedChannel();
 		mediaWidget->stop();
 		KMessageBox::sorry(manager->getParentWidget(),
 			i18nc("message box", "No available device found."));
@@ -236,7 +236,7 @@ void DvbLiveView::toggleOsd()
 	case DvbOsd::Off:
 		internal->dvbOsd.init(DvbOsd::ShortOsd,
 			QString("%1 - %2").arg(channel->number).arg(channel->name),
-			manager->getEpgModel()->getCurrentNext(channel.constData()));
+			manager->getEpgModel()->getCurrentNext(channel));
 		osdWidget->showObject(&internal->dvbOsd, 2500);
 		osdTimer.start(2500);
 		break;
@@ -431,7 +431,7 @@ void DvbLiveView::liveStopped()
 		device = NULL;
 	}
 
-	channel = NULL;
+	channel = DvbSharedChannel();
 	pids.clear();
 	patPmtTimer.stop();
 	osdTimer.stop();

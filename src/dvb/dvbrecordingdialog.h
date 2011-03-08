@@ -1,7 +1,7 @@
 /*
- * dvbepgdialog.h
+ * dvbrecording.h
  *
- * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,40 +18,41 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DVBEPGDIALOG_H
-#define DVBEPGDIALOG_H
+#ifndef DVBRECORDINGDIALOG_H
+#define DVBRECORDINGDIALOG_H
 
+#include <QAbstractTableModel>
+#include <QDateTime>
 #include <KDialog>
+#include "../sqltablemodel.h"
 
-class QLabel;
-class QModelIndex;
+class QSqlQuery;
 class QTreeView;
-class DvbEpgChannelTableModel;
-class DvbEpgTableModel;
 class DvbManager;
+class DvbRecording;
+class DvbRecordingFile;
+class DvbRecordingModel;
+class DvbRecordingModelSqlInterface;
+class DvbRecordingTableModel;
 
-class DvbEpgDialog : public KDialog
+class DvbRecordingDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbEpgDialog(DvbManager *manager_, const QString &currentChannelName, QWidget *parent);
-	~DvbEpgDialog();
+	DvbRecordingDialog(DvbManager *manager_, QWidget *parent);
+	~DvbRecordingDialog();
 
-	static void showDialog(DvbManager *manager_, const QString &currentChannelName,
-		QWidget *parent);
+	static void showDialog(DvbManager *manager_, QWidget *parent);
 
 private slots:
-	void channelActivated(const QModelIndex &index);
-	void entryActivated(const QModelIndex &index);
-	void scheduleProgram();
+	void newRecording();
+	void editRecording();
+	void removeRecording();
 
 private:
 	DvbManager *manager;
-	DvbEpgChannelTableModel *epgChannelTableModel;
-	DvbEpgTableModel *epgTableModel;
-	QTreeView *channelView;
-	QTreeView *epgView;
-	QLabel *contentLabel;
+	DvbRecordingTableModel *model;
+	QTreeView *treeView;
 };
 
-#endif /* DVBEPGDIALOG_H */
+#endif /* DVBRECORDINGDIALOG_H */

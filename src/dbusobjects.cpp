@@ -23,6 +23,7 @@
 #include <QDBusMetaType>
 #include <KAboutData>
 #include <KApplication>
+#include "dvb/dvbmanager.h"
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 
@@ -345,18 +346,16 @@ void DBusTelevisionObject::ToggleOsd()
 QList<TelevisionScheduleEntryStruct> DBusTelevisionObject::ListProgramSchedule()
 {
 	QList<TelevisionScheduleEntryStruct> entries;
-	QMap<DvbRecordingKey, DvbRecordingEntry> schedule = dvbTab->listProgramSchedule();
 
-	for (QMap<DvbRecordingKey, DvbRecordingEntry>::ConstIterator it = schedule.constBegin();
-	     it != schedule.constEnd(); ++it) {
+	foreach (const DvbSharedRecording &recording, dvbTab->listProgramSchedule()) {
 		TelevisionScheduleEntryStruct entry;
-		entry.key = it.key().key;
-		entry.name = it->name;
-		entry.channel = it->channelName;
-		entry.begin = (it->begin.toString(Qt::ISODate) + 'Z');
-		entry.duration = it->duration.toString(Qt::ISODate);
-		entry.repeat = it->repeat;
-		entry.isRunning = it->isRunning;
+		entry.key = recording->sqlKey;
+		entry.name = recording->name;
+		entry.channel = recording->channel->name;
+		entry.begin = (recording->begin.toString(Qt::ISODate) + 'Z');
+		entry.duration = recording->duration.toString(Qt::ISODate);
+		entry.repeat = recording->repeat;
+		entry.isRunning = (recording->status != DvbRecording::Inactive);
 		entries.append(entry);
 	}
 
@@ -366,16 +365,16 @@ QList<TelevisionScheduleEntryStruct> DBusTelevisionObject::ListProgramSchedule()
 quint32 DBusTelevisionObject::ScheduleProgram(const QString &name, const QString &channel,
 	const QString &begin, const QString &duration, int repeat)
 {
-	DvbRecordingEntry entry;
+	DvbRecording entry;
 	entry.name = name;
-	entry.channelName = channel;
+	entry.channel = dvbTab->getManager()->getChannelModel()->findChannelByName(channel);
 	entry.begin = QDateTime::fromString(begin, Qt::ISODate).toUTC();
 	entry.duration = QTime::fromString(duration, Qt::ISODate);
 	entry.repeat = (repeat & ((1 << 7) - 1));
+	DvbSharedRecording recording = dvbTab->scheduleProgram(entry);
 
-	if (!entry.name.isEmpty() && !entry.channelName.isEmpty() && entry.begin.isValid() &&
-	    entry.duration.isValid()) {
-		return dvbTab->scheduleProgram(entry).key;
+	if (recording.isValid()) {
+		return recording->sqlKey;
 	}
 
 	return 0;
@@ -383,5 +382,11 @@ quint32 DBusTelevisionObject::ScheduleProgram(const QString &name, const QString
 
 void DBusTelevisionObject::RemoveProgram(quint32 key)
 {
-	dvbTab->removeProgram(DvbRecordingKey(key));
+	SqlKey sqlKey;
+	sqlKey.sqlKey = key;
+	DvbSharedRecording recording = dvbTab->listProgramSchedule().value(sqlKey);
+
+	if (recording.isValid()) {
+		dvbTab->removeRecording(recording);
+	}
 }

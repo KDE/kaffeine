@@ -26,13 +26,14 @@
 #include "../tabbase.h"
 #include "dvbrecording.h"
 
-class QAbstractProxyModel;
+class QModelIndex;
 class QSplitter;
 class KAction;
 class KActionCollection;
 class KMenu;
-class DvbChannel;
+class DvbChannelTableModel;
 class DvbChannelView;
+class DvbSharedChannel;
 class DvbTimeShiftCleaner;
 class MediaWidget;
 
@@ -49,9 +50,14 @@ public:
 	void toggleOsd();
 	void toggleInstantRecord();
 
-	QMap<DvbRecordingKey, DvbRecordingEntry> listProgramSchedule();
-	DvbRecordingKey scheduleProgram(const DvbRecordingEntry &entry);
-	void removeProgram(const DvbRecordingKey &key);
+	DvbManager *getManager() const
+	{
+		return manager;
+	}
+
+	QMap<SqlKey, DvbSharedRecording> listProgramSchedule();
+	DvbSharedRecording scheduleProgram(DvbRecording &recording);
+	void removeRecording(const DvbSharedRecording &recording);
 
 	void enableDvbDump();
 
@@ -64,7 +70,7 @@ private slots:
 	void showEpgDialog();
 	void showRecordingDialog();
 	void instantRecord(bool checked);
-	void programRemoved(const DvbRecordingKey &recordingKey);
+	void recordingRemoved(const DvbSharedRecording &recording);
 	void configureDvb();
 	void tuneOsdChannel();
 	void playChannel(const QModelIndex &index);
@@ -74,14 +80,14 @@ private slots:
 
 private:
 	void activate();
-	void playChannel(const DvbChannel *channel, const QModelIndex &index);
+	void playChannel(const DvbSharedChannel &channel, const QModelIndex &index);
 
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
 	KAction *instantRecordAction;
-	DvbRecordingKey instantRecordingKey;
+	DvbSharedRecording instantRecording;
 	QSplitter *splitter;
-	QAbstractProxyModel *channelProxyModel;
+	DvbChannelTableModel *channelProxyModel;
 	DvbChannelView *channelView;
 	QLayout *mediaLayout;
 	QString osdChannel;

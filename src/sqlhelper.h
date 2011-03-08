@@ -21,12 +21,13 @@
 #ifndef SQLHELPER_H
 #define SQLHELPER_H
 
+#include <QSharedData>
 #include <QSqlDatabase>
 #include <QTimer>
 
-class SqlTableModelInterface;
+class SqlInterface;
 
-class SqlHelper : public QObject
+class SqlHelper : public QObject, public QSharedData
 {
 	Q_OBJECT
 private:
@@ -41,18 +42,17 @@ public:
 	QSqlQuery exec(const QString &statement);
 	void exec(QSqlQuery &query);
 
-	void requestSubmission(SqlTableModelInterface *object);
+	void requestSubmission(SqlInterface *object);
 
 public slots:
 	void collectSubmissions();
 
 private:
-	static void deleteInstance();
 	static SqlHelper *instance;
 
 	QSqlDatabase database;
 	QTimer timer;
-	QList<SqlTableModelInterface *> objects;
+	QList<SqlInterface *> objects;
 };
 
 #endif /* SQLHELPER_H */

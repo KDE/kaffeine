@@ -25,31 +25,26 @@
 #include <QTimer>
 #include <KDialog>
 #include "../sqltablemodel.h"
+#include "dvbchannel.h"
 #include "dvbrecording.h"
 #include "dvbsi.h"
 
 class QCheckBox;
-class QTreeView;
 class KComboBox;
 class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
-class DvbChannel;
 class DvbDevice;
 
-Q_DECLARE_METATYPE(const DvbRecordingEntry *)
-
-class DvbRecording : public QObject, public DvbPidFilter
+class DvbRecordingFile : public QObject, public QSharedData, public DvbPidFilter
 {
 	Q_OBJECT
 public:
-	DvbRecording(DvbManager *manager_, const DvbRecordingEntry &entry_);
-	~DvbRecording();
+	explicit DvbRecordingFile(DvbManager *manager_);
+	~DvbRecordingFile();
 
-	const DvbRecordingEntry &getEntry() const;
-	void setEntry(const DvbRecordingEntry &entry_);
-
-	void start();
+	// start() returns true if the recording is already running
+	bool start(const DvbRecording &recording);
 	void stop();
 
 private slots:
@@ -61,8 +56,7 @@ private:
 	void processData(const char data[188]);
 
 	DvbManager *manager;
-	DvbRecordingEntry entry;
-	QExplicitlySharedDataPointer<const DvbChannel> channel;
+	DvbSharedChannel channel;
 	QFile file;
 	QList<QByteArray> buffers;
 	DvbDevice *device;
@@ -73,69 +67,6 @@ private:
 	DvbSectionGenerator pmtGenerator;
 	QTimer patPmtTimer;
 	bool pmtValid;
-};
-
-class DvbRecordingSqlInterface : public SqlTableModelInterface
-{
-public:
-	DvbRecordingSqlInterface(DvbManager *manager_, QAbstractItemModel *model,
-		QList<DvbRecording *> *recordings_, QObject *parent);
-	~DvbRecordingSqlInterface();
-
-private:
-	int insertFromSqlQuery(const QSqlQuery &query, int index);
-	void bindToSqlQuery(QSqlQuery &query, int index, int row) const;
-
-	DvbManager *manager;
-	QList<DvbRecording *> *recordings;
-};
-
-class DvbRecordingDialog : public KDialog
-{
-	Q_OBJECT
-public:
-	DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *recordingModel,
-		QWidget *parent);
-	~DvbRecordingDialog();
-
-private slots:
-	void newRecording();
-	void editRecording();
-	void removeRecording();
-
-private:
-	DvbManager *manager;
-	QAbstractItemModel *proxyModel;
-	QTreeView *treeView;
-};
-
-class DvbRecordingEditor : public KDialog
-{
-	Q_OBJECT
-public:
-	DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *model_,
-		const QModelIndex &modelIndex_, QWidget *parent);
-	~DvbRecordingEditor();
-
-private slots:
-	void beginChanged(const QDateTime &begin);
-	void durationChanged(const QTime &duration);
-	void endChanged(const QDateTime &end);
-	void repeatNever();
-	void repeatDaily();
-	void checkValidity();
-
-private:
-	void accept();
-
-	QAbstractItemModel *model;
-	QPersistentModelIndex persistentIndex;
-	KLineEdit *nameEdit;
-	KComboBox *channelBox;
-	DateTimeEdit *beginEdit;
-	DurationEdit *durationEdit;
-	DateTimeEdit *endEdit;
-	QCheckBox *dayCheckBoxes[7];
 };
 
 #endif /* DVBRECORDING_P_H */

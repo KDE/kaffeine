@@ -36,18 +36,31 @@
 #include <KMessageBox>
 #include <KStandardDirs>
 #include "../datetimeedit.h"
-#include "dvbchannel.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
-DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
-	QAbstractTableModel(parent), manager(manager_), hasActiveRecordings(false)
+bool DvbRecording::validate()
 {
-	sqlInterface = new DvbRecordingSqlInterface(manager, this, &recordings, this);
+	if (!name.isEmpty() && channel.isValid() && begin.isValid() &&
+	    (begin.timeSpec() == Qt::UTC) && duration.isValid()) {
+		// the seconds and milliseconds aren't visible --> set them to zero
+		begin = begin.addMSecs(-(QTime().msecsTo(begin.time()) % 60000));
+		end = begin.addSecs(QTime().secsTo(duration));
+		repeat &= ((1 << 7) - 1);
+		return true;
+	}
+
+	return false;
+}
+
+DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
+	QObject(parent), manager(manager_)
+{
+	sqlInit("RecordingSchedule",
+		QStringList() << "Name" << "Channel" << "Begin" << "Duration" << "Repeat");
 
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
-	// we don't call checkStatus() here, because the devices maybe aren't set up yet
 
 	QTimer *timer = new QTimer(this);
 	connect(timer, SIGNAL(timeout()), this, SLOT(checkStatus()));
@@ -66,9 +79,9 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
 		return;
 	}
 
+	DvbChannelModel *channelModel = manager->getChannelModel();
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
-
 	int version;
 	stream >> version;
 
@@ -79,17 +92,18 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
 	}
 
 	while (!stream.atEnd()) {
-		DvbRecordingEntry entry;
-		stream >> entry.name;
-		stream >> entry.channelName;
-		stream >> entry.begin;
-		entry.begin = entry.begin.toUTC();
-		stream >> entry.duration;
+		DvbRecording recording;
+		QString channelName;
+		stream >> channelName;
+		recording.channel = channelModel->findChannelByName(channelName);
+		stream >> recording.begin;
+		recording.begin = recording.begin.toUTC();
+		stream >> recording.duration;
 		QDateTime end;
 		stream >> end;
 
 		if (version != 0) {
-			stream >> entry.repeat;
+			stream >> recording.repeat;
 		}
 
 		if (stream.status() != QDataStream::Ok) {
@@ -97,7 +111,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
 			break;
 		}
 
-		scheduleProgram(entry);
+		addRecording(recording);
 	}
 
 	if (!file.remove()) {
@@ -107,60 +121,194 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
 
 DvbRecordingModel::~DvbRecordingModel()
 {
-	sqlInterface->flush();
-	qDeleteAll(recordings);
+	sqlFlush();
 }
 
-QMap<DvbRecordingKey, DvbRecordingEntry> DvbRecordingModel::listProgramSchedule()
+DvbSharedRecording DvbRecordingModel::findRecordingByKey(const SqlKey &key) const
 {
-	QMap<DvbRecordingKey, DvbRecordingEntry> schedule;
+	return recordings.value(key);
+}
 
-	for (int row = 0; row < recordings.size(); ++row) {
-		schedule.insert(DvbRecordingKey(sqlInterface->keyForRow(row)),
-			recordings.at(row)->getEntry());
+QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::listProgramSchedule() const
+{
+	return recordings;
+}
+
+DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
+{
+	if (!recording.validate()) {
+		kWarning() << "invalid recording";
+		return DvbSharedRecording();
 	}
 
-	return schedule;
+	recording.setSqlKey(sqlFindFreeKey(recordings));
+
+	if (!updateStatus(recording)) {
+		return DvbSharedRecording();
+	}
+
+	DvbSharedRecording newRecording(new DvbRecording(recording));
+	recordings.insert(*newRecording, newRecording);
+	sqlInsert(*newRecording);
+	emit recordingAdded(newRecording);
+	return newRecording;
 }
 
-DvbRecordingKey DvbRecordingModel::scheduleProgram(const DvbRecordingEntry &entry)
+void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
+	DvbRecording &modifiedRecording)
 {
-	int row = recordings.size();
-	beginInsertRows(QModelIndex(), row, row);
-	recordings.append(new DvbRecording(manager, entry));
-	endInsertRows();
-	QTimer::singleShot(0, this, SLOT(checkStatus()));
-	return DvbRecordingKey(sqlInterface->keyForRow(row));
+	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
+	    !modifiedRecording.validate()) {
+		kWarning() << "invalid recording";
+		return;
+	}
+
+	modifiedRecording.setSqlKey(*recording);
+
+	if (!updateStatus(modifiedRecording)) {
+		recordings.remove(*recording);
+		recordingFiles.remove(*recording);
+		sqlRemove(*recording);
+		emit recordingRemoved(recording);
+		return;
+	}
+
+	DvbRecording oldRecording = *recording;
+	*const_cast<DvbRecording *>(recording.data()) = modifiedRecording;
+	sqlUpdate(*recording);
+	emit recordingUpdated(recording, oldRecording);
 }
 
-void DvbRecordingModel::removeProgram(const DvbRecordingKey &key)
+void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
 {
-	int row = sqlInterface->rowForKey(key.key);
+	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
+		kWarning() << "invalid recording";
+		return;
+	}
 
-	if (row >= 0) {
-		removeRow(row);
+	recordings.remove(*recording);
+	recordingFiles.remove(*recording);
+	sqlRemove(*recording);
+	emit recordingRemoved(recording);
+}
+
+void DvbRecordingModel::checkStatus()
+{
+	QDateTime currentDateTime = QDateTime::currentDateTime().toUTC();
+
+	foreach (const DvbSharedRecording &recording, recordings) {
+		if (recording->end <= currentDateTime) {
+			DvbRecording modifiedRecording = *recording;
+			updateRecording(recording, modifiedRecording);
+		}
+	}
+
+	foreach (const DvbSharedRecording &recording, recordings) {
+		if ((recording->status != DvbRecording::Recording) &&
+		    (recording->begin <= currentDateTime)) {
+			DvbRecording modifiedRecording = *recording;
+			updateRecording(recording, modifiedRecording);
+		}
 	}
 }
 
-QAbstractItemModel *DvbRecordingModel::createProxyModel(QObject *parent)
+void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const
 {
-	QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(parent);
-	proxyModel->setDynamicSortFilter(true);
-	proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
-	proxyModel->setSortLocaleAware(true);
-	proxyModel->setSortRole(SortRole);
-	proxyModel->setSourceModel(this);
-	return proxyModel;
+	DvbSharedRecording recording = recordings.value(sqlKey);
+
+	if (!recording.isValid()) {
+		kError() << "invalid recording";
+		return;
+	}
+
+	query.bindValue(index++, recording->name);
+	query.bindValue(index++, recording->channel->name);
+	query.bindValue(index++, recording->begin.toString(Qt::ISODate) + 'Z');
+	query.bindValue(index++, recording->duration.toString(Qt::ISODate));
+	query.bindValue(index++, recording->repeat);
 }
 
-void DvbRecordingModel::showDialog(QWidget *parent)
+bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index)
 {
-	KDialog *dialog = new DvbRecordingDialog(manager, this, parent);
-	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-	dialog->setModal(true);
-	dialog->show();
+	DvbRecording *recording = new DvbRecording();
+	DvbSharedRecording newRecording(recording);
+	recording->name = query.value(index++).toString();
+	recording->channel =
+		manager->getChannelModel()->findChannelByName(query.value(index++).toString());
+	recording->begin =
+		QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toUTC();
+	recording->duration = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
+	recording->repeat = query.value(index++).toInt();
+
+	if (recording->validate()) {
+		recording->setSqlKey(sqlKey);
+		recordings.insert(*newRecording, newRecording);
+		return true;
+	}
+
+	return false;
 }
 
+bool DvbRecordingModel::updateStatus(DvbRecording &recording)
+{
+	QDateTime currentDateTimeLocal = QDateTime::currentDateTime();
+	QDateTime currentDateTime = currentDateTimeLocal.toUTC();
+
+	if (recording.end <= currentDateTime) {
+		if (recording.repeat == 0) {
+			return false;
+		}
+
+		recordingFiles.remove(recording);
+
+		// take care of DST switches
+		QDateTime beginLocal = recording.begin.toLocalTime();
+		QDateTime endLocal = recording.end.toLocalTime();
+		int days = endLocal.daysTo(currentDateTimeLocal);
+
+		if (endLocal.addDays(days) <= currentDateTimeLocal) {
+			++days;
+		}
+
+		// QDate::dayOfWeek() and our dayOfWeek differ by one
+		int dayOfWeek = (beginLocal.date().dayOfWeek() - 1 + days);
+
+		for (int j = 0; j < 7; ++j) {
+			if ((recording.repeat & (1 << (dayOfWeek % 7))) != 0) {
+				break;
+			}
+
+			++days;
+			++dayOfWeek;
+		}
+
+		recording.begin = recording.begin.addDays(days);
+		recording.end = recording.end.addDays(days);
+	}
+
+	if (recording.begin <= currentDateTime) {
+		QExplicitlySharedDataPointer<DvbRecordingFile> recordingFile =
+			recordingFiles.value(recording);
+
+		if (recordingFile.constData() == NULL) {
+			recordingFile = new DvbRecordingFile(manager);
+			recordingFiles.insert(recording, recordingFile);
+		}
+
+		if (recordingFile->start(recording)) {
+			recording.status = DvbRecording::Recording;
+		} else {
+			recording.status = DvbRecording::Error;
+		}
+	} else {
+		recording.status = DvbRecording::Inactive;
+		recordingFiles.remove(recording);
+	}
+
+	return true;
+}
+
+/*
 void DvbRecordingModel::mayCloseApplication(bool *ok, QWidget *parent)
 {
 	if (*ok) {
@@ -185,218 +333,23 @@ void DvbRecordingModel::mayCloseApplication(bool *ok, QWidget *parent)
 		}
 	}
 }
+*/
 
-void DvbRecordingModel::checkStatus()
+DvbRecordingFile::DvbRecordingFile(DvbManager *manager_) : manager(manager_), device(NULL),
+	pmtValid(false)
 {
-	QDateTime currentLocalDateTime = QDateTime::currentDateTime();
-	QDateTime currentDateTime = currentLocalDateTime.toUTC();
-
-	for (int row = 0; row < recordings.size(); ++row) {
-		DvbRecording *recording = recordings.at(row);
-		const DvbRecordingEntry &entry = recording->getEntry();
-		QDateTime end = entry.begin.addSecs(QTime().secsTo(entry.duration));
-
-		if (end <= currentDateTime) {
-			if (entry.repeat == 0) {
-				removeRow(row);
-				--row;
-			} else {
-				recording->stop();
-
-				// take care of DST switches
-				DvbRecordingEntry nextEntry = entry;
-				nextEntry.begin = nextEntry.begin.toLocalTime();
-				end = end.toLocalTime();
-				int days = end.daysTo(currentLocalDateTime);
-
-				if (end.addDays(days) <= currentLocalDateTime) {
-					++days;
-				}
-
-				// QDate::dayOfWeek() and our dayOfWeek differ by one
-				int dayOfWeek = (nextEntry.begin.date().dayOfWeek() - 1 + days);
-
-				for (int j = 0; j < 7; ++j) {
-					if ((nextEntry.repeat & (1 << (dayOfWeek % 7))) != 0) {
-						break;
-					}
-
-					++days;
-					++dayOfWeek;
-				}
-
-				nextEntry.begin = nextEntry.begin.addDays(days).toUTC();
-				recording->setEntry(nextEntry);
-				emit dataChanged(index(row, 0), index(row, 3));
-			}
-		}
-	}
-
-	hasActiveRecordings = false;
-
-	for (int row = 0; row < recordings.size(); ++row) {
-		DvbRecording *recording = recordings.at(row);
-		const DvbRecordingEntry &entry = recording->getEntry();
-
-		if (entry.begin <= currentDateTime) {
-			hasActiveRecordings = true;
-
-			if (!entry.isRunning) {
-				recording->start();
-
-				if (entry.isRunning) {
-					emit dataChanged(index(row, 0), index(row, 3));
-				}
-			}
-		}
-	}
-}
-
-int DvbRecordingModel::columnCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return 4;
-	}
-
-	return 0;
-}
-
-int DvbRecordingModel::rowCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return recordings.size();
-	}
-
-	return 0;
-}
-
-QVariant DvbRecordingModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
-		switch (section) {
-		case 0:
-			return i18n("Name");
-		case 1:
-			return i18n("Channel");
-		case 2:
-			return i18n("Begin");
-		case 3:
-			return i18n("Duration");
-		}
-	}
-
-	return QVariant();
-}
-
-QVariant DvbRecordingModel::data(const QModelIndex &index, int role) const
-{
-	const DvbRecordingEntry &entry = recordings.at(index.row())->getEntry();
-
-	switch (role) {
-	case Qt::DecorationRole:
-		if (index.column() == 0) {
-			if (entry.isRunning) {
-				return KIcon("media-record");
-			} else if (entry.repeat != 0) {
-				return KIcon("view-refresh");
-			}
-		}
-
-		break;
-	case Qt::DisplayRole:
-		switch (index.column()) {
-		case 0:
-			return entry.name;
-		case 1:
-			return entry.channelName;
-		case 2:
-			return KGlobal::locale()->formatDateTime(entry.begin.toLocalTime());
-		case 3:
-			return KGlobal::locale()->formatTime(entry.duration, false, true);
-		}
-
-		break;
-	case SortRole:
-		switch (index.column()) {
-		case 0:
-			return entry.name;
-		case 1:
-			return entry.channelName;
-		case 2:
-			return entry.begin;
-		case 3:
-			return entry.duration;
-		}
-
-		break;
-	case DvbRecordingEntryRole:
-		return QVariant::fromValue(&entry);
-	}
-
-	return QVariant();
-}
-
-bool DvbRecordingModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-	Q_UNUSED(parent)
-	QList<quint32> keys;
-
-	for (int currentRow = row; currentRow < (row + count); ++currentRow) {
-		keys.append(sqlInterface->keyForRow(currentRow));
-	}
-
-	beginRemoveRows(QModelIndex(), row, row + count - 1);
-	qDeleteAll(recordings.begin() + row, recordings.begin() + row + count);
-	recordings.erase(recordings.begin() + row, recordings.begin() + row + count);
-	endRemoveRows();
-
-	foreach (quint32 key, keys) {
-		emit programRemoved(DvbRecordingKey(key));
-	}
-
-	return true;
-}
-
-bool DvbRecordingModel::setData(const QModelIndex &modelIndex, const QVariant &value, int role)
-{
-	Q_UNUSED(role)
-	const DvbRecordingEntry *entry = value.value<const DvbRecordingEntry *>();
-
-	if (entry != NULL) {
-		if (modelIndex.isValid()) {
-			int row = modelIndex.row();
-			recordings.at(row)->setEntry(*entry);
-			emit dataChanged(index(row, 0), index(row, 3));
-		} else {
-			scheduleProgram(*entry);
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
-DvbRecording::DvbRecording(DvbManager *manager_, const DvbRecordingEntry &entry_) :
-	manager(manager_), device(NULL), pmtValid(false)
-{
-	setEntry(entry_);
 	connect(&pmtFilter, SIGNAL(pmtSectionChanged(QByteArray)),
 		this, SLOT(pmtSectionChanged(QByteArray)));
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 }
 
-DvbRecording::~DvbRecording()
+DvbRecordingFile::~DvbRecordingFile()
 {
 	stop();
 }
 
-const DvbRecordingEntry &DvbRecording::getEntry() const
-{
-	return entry;
-}
-
-void DvbRecording::setEntry(const DvbRecordingEntry &entry_)
+/*
+void DvbRecordingFile::setEntry(const DvbRecordingEntry &entry_)
 {
 	entry.name = entry_.name;
 	entry.channelName = entry_.channelName;
@@ -413,25 +366,13 @@ void DvbRecording::setEntry(const DvbRecordingEntry &entry_)
 	// the seconds and milliseconds aren't visible --> set them to zero
 	entry.begin = entry.begin.addMSecs(-(QTime().msecsTo(entry.begin.time()) % 60000));
 }
+*/
 
-void DvbRecording::start()
+bool DvbRecordingFile::start(const DvbRecording &recording)
 {
-	if (channel.constData() == NULL) {
-		DvbChannelModel *channelModel = manager->getChannelModel();
-		QModelIndex index = channelModel->findChannelByName(entry.channelName);
-
-		if (!index.isValid()) {
-			kWarning() << "cannot find channel" << entry.channelName;
-			return;
-		}
-
-		channel = channelModel->data(index,
-			DvbChannelModel::DvbChannelRole).value<const DvbChannel *>();
-	}
-
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
-		QString path = folder + '/' + entry.name.replace('/', '_');
+		QString path = folder + '/' + QString(recording.name).replace('/', '_');
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
@@ -461,7 +402,7 @@ void DvbRecording::start()
 
 			if (folder != QDir::homePath()) {
 				folder = QDir::homePath();
-				path = folder + '/' + entry.name.replace('/', '_');
+				path = folder + '/' + QString(recording.name).replace('/', '_');
 				attempt = -1;
 				continue;
 			}
@@ -471,7 +412,7 @@ void DvbRecording::start()
 
 		if (!file.isOpen()) {
 			kWarning() << "cannot open file" << file.fileName();
-			return;
+			return false;
 		}
 	}
 
@@ -481,7 +422,7 @@ void DvbRecording::start()
 
 		if (device == NULL) {
 			kWarning() << "cannot find a suitable device";
-			return;
+			return false;
 		}
 
 		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
@@ -496,13 +437,11 @@ void DvbRecording::start()
 		}
 	}
 
-	entry.isRunning = true;
+	return true;
 }
 
-void DvbRecording::stop()
+void DvbRecordingFile::stop()
 {
-	entry.isRunning = false;
-
 	if (device != NULL) {
 		if (channel->isScrambled && !pmtSectionData.isEmpty()) {
 			device->stopDescrambling(pmtSectionData, this);
@@ -526,10 +465,10 @@ void DvbRecording::stop()
 	pids.clear();
 	buffers.clear();
 	file.close();
-	channel = NULL;
+	channel = DvbSharedChannel();
 }
 
-void DvbRecording::deviceStateChanged()
+void DvbRecordingFile::deviceStateChanged()
 {
 	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
 		foreach (int pid, pids) {
@@ -563,7 +502,7 @@ void DvbRecording::deviceStateChanged()
 	}
 }
 
-void DvbRecording::pmtSectionChanged(const QByteArray &pmtSectionData_)
+void DvbRecordingFile::pmtSectionChanged(const QByteArray &pmtSectionData_)
 {
 	pmtSectionData = pmtSectionData_;
 	DvbPmtSection pmtSection(pmtSectionData);
@@ -623,7 +562,7 @@ void DvbRecording::pmtSectionChanged(const QByteArray &pmtSectionData_)
 	}
 }
 
-void DvbRecording::insertPatPmt()
+void DvbRecordingFile::insertPatPmt()
 {
 	if (!pmtValid) {
 		pmtSectionChanged(channel->pmtSectionData);
@@ -634,7 +573,7 @@ void DvbRecording::insertPatPmt()
 	file.write(pmtGenerator.generatePackets());
 }
 
-void DvbRecording::processData(const char data[188])
+void DvbRecordingFile::processData(const char data[188])
 {
 	if (!pmtValid) {
 		if (!patPmtTimer.isActive()) {
@@ -657,311 +596,4 @@ void DvbRecording::processData(const char data[188])
 	}
 
 	file.write(data, 188);
-}
-
-DvbRecordingSqlInterface::DvbRecordingSqlInterface(DvbManager *manager_, QAbstractItemModel *model,
-	QList<DvbRecording *> *recordings_, QObject *parent) : SqlTableModelInterface(parent),
-	manager(manager_), recordings(recordings_)
-{
-	init(model, "RecordingSchedule",
-		QStringList() << "Name" << "Channel" << "Begin" << "Duration" << "Repeat");
-}
-
-DvbRecordingSqlInterface::~DvbRecordingSqlInterface()
-{
-}
-
-int DvbRecordingSqlInterface::insertFromSqlQuery(const QSqlQuery &query, int index)
-{
-	DvbRecordingEntry entry;
-	entry.name = query.value(index++).toString();
-	entry.channelName = query.value(index++).toString();
-	entry.begin = QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toUTC();
-	entry.duration = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
-	entry.repeat = (query.value(index++).toInt() & ((1 << 7) - 1));
-
-	if (!entry.name.isEmpty() && !entry.channelName.isEmpty() &&
-	    entry.begin.isValid() && entry.duration.isValid()) {
-		int row = recordings->size();
-		recordings->append(new DvbRecording(manager, entry));
-		return row;
-	}
-
-	return -1;
-}
-
-void DvbRecordingSqlInterface::bindToSqlQuery(QSqlQuery &query, int index, int row) const
-{
-	const DvbRecordingEntry &entry = recordings->at(row)->getEntry();
-	query.bindValue(index++, entry.name);
-	query.bindValue(index++, entry.channelName);
-	query.bindValue(index++, entry.begin.toString(Qt::ISODate) + 'Z');
-	query.bindValue(index++, entry.duration.toString(Qt::ISODate));
-	query.bindValue(index++, entry.repeat);
-}
-
-DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, DvbRecordingModel *recordingModel,
-	QWidget *parent) : KDialog(parent), manager(manager_)
-{
-	setButtons(KDialog::Close);
-	setCaption(i18nc("dialog", "Recording Schedule"));
-
-	QWidget *widget = new QWidget(this);
-	QBoxLayout *mainLayout = new QVBoxLayout(widget);
-	QBoxLayout *boxLayout = new QHBoxLayout();
-
-	proxyModel = recordingModel->createProxyModel(widget);
-	treeView = new QTreeView(widget);
-	treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
-	treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	treeView->setModel(proxyModel);
-	treeView->setRootIsDecorated(false);
-	treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	treeView->sortByColumn(2, Qt::AscendingOrder);
-	treeView->setSortingEnabled(true);
-
-	KAction *action =
-		new KAction(KIcon("list-add"), i18nc("add a new item to a list", "New"), widget);
-	connect(action, SIGNAL(triggered()), this, SLOT(newRecording()));
-	treeView->addAction(action);
-	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
-	boxLayout->addWidget(pushButton);
-
-	action = new KAction(KIcon("configure"), i18n("Edit"), widget);
-	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
-	treeView->addAction(action);
-	pushButton = new QPushButton(action->icon(), action->text(), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
-	boxLayout->addWidget(pushButton);
-
-	action = new KAction(KIcon("edit-delete"),
-		i18nc("remove an item from a list", "Remove"), widget);
-	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
-	treeView->addAction(action);
-	pushButton = new QPushButton(action->icon(), action->text(), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeRecording()));
-	boxLayout->addWidget(pushButton);
-
-	boxLayout->addStretch();
-	mainLayout->addLayout(boxLayout);
-	mainLayout->addWidget(treeView);
-	setMainWidget(widget);
-	resize(100 * fontMetrics().averageCharWidth(), 20 * fontMetrics().height());
-}
-
-DvbRecordingDialog::~DvbRecordingDialog()
-{
-}
-
-void DvbRecordingDialog::newRecording()
-{
-	KDialog *dialog = new DvbRecordingEditor(manager, proxyModel, QModelIndex(), this);
-	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-	dialog->setModal(true);
-	dialog->show();
-}
-
-void DvbRecordingDialog::editRecording()
-{
-	QModelIndex index = treeView->currentIndex();
-
-	if (index.isValid()) {
-		KDialog *dialog = new DvbRecordingEditor(manager, proxyModel, index, this);
-		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-		dialog->setModal(true);
-		dialog->show();
-	}
-}
-
-void DvbRecordingDialog::removeRecording()
-{
-	QMap<int, char> selectedRows;
-
-	foreach (const QModelIndex &modelIndex, treeView->selectionModel()->selectedIndexes()) {
-		selectedRows.insert(modelIndex.row(), 0);
-	}
-
-	for (QMap<int, char>::ConstIterator it = selectedRows.constEnd();
-	     it != selectedRows.constBegin();) {
-		--it;
-		proxyModel->removeRow(it.key());
-	}
-}
-
-DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager, QAbstractItemModel *model_,
-	const QModelIndex &modelIndex_, QWidget *parent) : KDialog(parent), model(model_),
-	persistentIndex(modelIndex_)
-{
-	setCaption(i18nc("subdialog of 'Recording Schedule'", "Edit Schedule Entry"));
-
-	QWidget *widget = new QWidget(this);
-	QGridLayout *gridLayout = new QGridLayout(widget);
-
-	nameEdit = new KLineEdit(widget);
-	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
-	gridLayout->addWidget(nameEdit, 0, 1);
-
-	QLabel *label = new QLabel(i18n("Name:"), widget);
-	label->setBuddy(nameEdit);
-	gridLayout->addWidget(label, 0, 0);
-
-	channelBox = new KComboBox(widget);
-	QAbstractProxyModel *channelProxyModel =
-		manager->getChannelModel()->createProxyModel(channelBox);
-	QHeaderView *header = manager->getChannelView()->header();
-	channelProxyModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
-	channelBox->setModel(channelProxyModel);
-	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
-	gridLayout->addWidget(channelBox, 1, 1);
-
-	label = new QLabel(i18n("Channel:"), widget);
-	label->setBuddy(channelBox);
-	gridLayout->addWidget(label, 1, 0);
-
-	beginEdit = new DateTimeEdit(widget);
-	beginEdit->setCurrentSection(DateTimeEdit::HourSection);
-	connect(beginEdit, SIGNAL(dateTimeChanged(QDateTime)),
-		this, SLOT(beginChanged(QDateTime)));
-	gridLayout->addWidget(beginEdit, 2, 1);
-
-	label = new QLabel(i18n("Begin:"), widget);
-	label->setBuddy(beginEdit);
-	gridLayout->addWidget(label, 2, 0);
-
-	durationEdit = new DurationEdit(widget);
-	connect(durationEdit, SIGNAL(timeChanged(QTime)), this, SLOT(durationChanged(QTime)));
-	gridLayout->addWidget(durationEdit, 3, 1);
-
-	label = new QLabel(i18n("Duration:"), widget);
-	label->setBuddy(durationEdit);
-	gridLayout->addWidget(label, 3, 0);
-
-	endEdit = new DateTimeEdit(widget);
-	endEdit->setCurrentSection(DateTimeEdit::HourSection);
-	connect(endEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(endChanged(QDateTime)));
-	gridLayout->addWidget(endEdit, 4, 1);
-
-	label = new QLabel(i18n("End:"), widget);
-	label->setBuddy(endEdit);
-	gridLayout->addWidget(label, 4, 0);
-
-	gridLayout->addWidget(new QLabel(i18n("Repeat:"), widget), 5, 0);
-
-	QBoxLayout *boxLayout = new QHBoxLayout();
-	QPushButton *pushButton =
-		new QPushButton(i18nc("button next to the 'Repeat:' label", "Never"), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(repeatNever()));
-	boxLayout->addWidget(pushButton);
-
-	pushButton = new QPushButton(i18nc("button next to the 'Repeat:' label", "Daily"), widget);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(repeatDaily()));
-	boxLayout->addWidget(pushButton);
-	gridLayout->addLayout(boxLayout, 5, 1);
-
-	QGridLayout *dayLayout = new QGridLayout();
-	const KCalendarSystem *calendar = KGlobal::locale()->calendar();
-
-	for (int i = 0; i < 7; ++i) {
-		dayCheckBoxes[i] = new QCheckBox(
-			calendar->weekDayName(i + 1, KCalendarSystem::ShortDayName), widget);
-		dayLayout->addWidget(dayCheckBoxes[i], (i >> 2), (i & 0x03));
-	}
-
-	gridLayout->addLayout(dayLayout, 6, 1);
-	setMainWidget(widget);
-
-	if (persistentIndex.isValid()) {
-		const DvbRecordingEntry *entry =
-			model->data(persistentIndex, DvbRecordingModel::DvbRecordingEntryRole).
-			value<const DvbRecordingEntry *>();
-		nameEdit->setText(entry->name);
-		channelBox->setCurrentIndex(channelBox->findText(entry->channelName));
-		beginEdit->setDateTime(entry->begin.toLocalTime());
-		durationEdit->setTime(entry->duration);
-
-		for (int i = 0; i < 7; ++i) {
-			if ((entry->repeat & (1 << i)) != 0) {
-				dayCheckBoxes[i]->setChecked(true);
-			}
-		}
-
-		if (entry->isRunning) {
-			nameEdit->setEnabled(false);
-			channelBox->setEnabled(false);
-			beginEdit->setEnabled(false);
-		}
-	} else {
-		channelBox->setCurrentIndex(-1);
-		beginEdit->setDateTime(QDateTime::currentDateTime());
-		durationEdit->setTime(QTime(2, 0));
-	}
-
-	checkValidity();
-
-	if (nameEdit->text().isEmpty()) {
-		nameEdit->setFocus();
-	}
-}
-
-DvbRecordingEditor::~DvbRecordingEditor()
-{
-}
-
-void DvbRecordingEditor::beginChanged(const QDateTime &begin)
-{
-	// attention: setDateTimeRange and setDateTime influence each other!
-	QTime duration = durationEdit->time();
-	endEdit->setDateTimeRange(begin, begin.addSecs((23 * 60 + 59) * 60));
-	endEdit->setDateTime(begin.addSecs(QTime().secsTo(duration)));
-}
-
-void DvbRecordingEditor::durationChanged(const QTime &duration)
-{
-	endEdit->setDateTime(beginEdit->dateTime().addSecs(QTime().secsTo(duration)));
-}
-
-void DvbRecordingEditor::endChanged(const QDateTime &end)
-{
-	durationEdit->setTime(QTime().addSecs(beginEdit->dateTime().secsTo(end)));
-}
-
-void DvbRecordingEditor::repeatNever()
-{
-	for (int i = 0; i < 7; ++i) {
-		dayCheckBoxes[i]->setChecked(false);
-	}
-}
-
-void DvbRecordingEditor::repeatDaily()
-{
-	for (int i = 0; i < 7; ++i) {
-		dayCheckBoxes[i]->setChecked(true);
-	}
-}
-
-void DvbRecordingEditor::checkValidity()
-{
-	enableButtonOk(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
-}
-
-void DvbRecordingEditor::accept()
-{
-	DvbRecordingEntry entry;
-	entry.name = nameEdit->text();
-	entry.channelName = channelBox->currentText();
-	entry.begin = beginEdit->dateTime().toUTC();
-	entry.duration = durationEdit->time();
-
-	for (int i = 0; i < 7; ++i) {
-		if (dayCheckBoxes[i]->isChecked()) {
-			entry.repeat |= (1 << i);
-		}
-	}
-
-	// if persistentIndex is invalid, the entry is appended
-	const DvbRecordingEntry *constEntry = &entry;
-	model->setData(persistentIndex, QVariant::fromValue(constEntry));
-
-	KDialog::accept();
 }

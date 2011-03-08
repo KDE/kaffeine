@@ -68,7 +68,6 @@ bool SqlHelper::createInstance()
 		return false;
 	}
 
-	qAddPostRoutine(deleteInstance);
 	return true;
 }
 
@@ -108,7 +107,7 @@ void SqlHelper::exec(QSqlQuery &query)
 	}
 }
 
-void SqlHelper::requestSubmission(SqlTableModelInterface *object)
+void SqlHelper::requestSubmission(SqlInterface *object)
 {
 	if (!timer.isActive()) {
 		timer.start();
@@ -122,18 +121,12 @@ void SqlHelper::collectSubmissions()
 	exec("BEGIN");
 
 	for (int i = 0; i < objects.size(); ++i) {
-		objects.at(i)->submit();
+		objects.at(i)->sqlSubmit();
 	}
 
 	exec("COMMIT");
 	timer.stop();
 	objects.clear();
-}
-
-void SqlHelper::deleteInstance()
-{
-	delete instance;
-	instance = NULL;
 }
 
 SqlHelper *SqlHelper::instance = NULL;

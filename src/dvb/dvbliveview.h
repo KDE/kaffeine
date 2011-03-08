@@ -21,10 +21,9 @@
 #ifndef DVBLIVEVIEW_H
 #define DVBLIVEVIEW_H
 
-#include <QExplicitlySharedDataPointer>
 #include <QTimer>
+#include "dvbchannel.h"
 
-class DvbChannel;
 class DvbDevice;
 class DvbLiveViewInternal;
 class DvbManager;
@@ -38,10 +37,10 @@ public:
 	DvbLiveView(DvbManager *manager_, QObject *parent);
 	~DvbLiveView();
 
-	const DvbChannel *getChannel() const;
+	const DvbSharedChannel &getChannel() const;
 	DvbDevice *getDevice() const;
 
-	void playChannel(const DvbChannel *channel_);
+	void playChannel(const DvbSharedChannel &channel_);
 
 public slots:
 	void toggleOsd();
@@ -68,7 +67,7 @@ private:
 	OsdWidget *osdWidget;
 	DvbLiveViewInternal *internal;
 
-	QExplicitlySharedDataPointer<const DvbChannel> channel;
+	DvbSharedChannel channel;
 	DvbDevice *device;
 	QList<int> pids;
 	QTimer patPmtTimer;

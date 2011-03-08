@@ -1,5 +1,5 @@
 /*
- * sqltablemodel.h
+ * sqlmodel.h
  *
  * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,42 +18,85 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SQLTABLEMODEL_H
-#define SQLTABLEMODEL_H
+#ifndef SQLMODEL_H
+#define SQLMODEL_H
 
-#include <QHash>
+#include <QDataStream>
+#include <QExplicitlySharedDataPointer>
 #include <QMap>
 #include <QSqlQuery>
 
-class QAbstractItemModel;
-class QModelIndex;
 class SqlHelper;
 
-class SqlTableModelInterface : public QObject
+class SqlKey
 {
-	Q_OBJECT
-	friend class SqlHelper;
 public:
-	explicit SqlTableModelInterface(QObject *parent);
-	~SqlTableModelInterface();
+	explicit SqlKey(quint32 key = 0) : sqlKey(key) { }
+	~SqlKey() { }
 
-	void flush();
-	quint32 keyForRow(int row) const;
-	int rowForKey(quint32 key) const;
+	bool isSqlKeyValid() const
+	{
+		return (sqlKey != 0);
+	}
+
+	void setSqlKey(const SqlKey &other)
+	{
+		sqlKey = other.sqlKey;
+	}
+
+	bool operator==(const SqlKey &other) const
+	{
+		return (sqlKey == other.sqlKey);
+	}
+
+	bool operator!=(const SqlKey &other) const
+	{
+		return (sqlKey != other.sqlKey);
+	}
+
+	bool operator<(const SqlKey &other) const
+	{
+		return (sqlKey < other.sqlKey);
+	}
+
+	quint32 sqlKey;
+};
+
+Q_DECLARE_TYPEINFO(SqlKey, Q_MOVABLE_TYPE);
+
+class SqlInterface
+{
+public:
+	SqlInterface();
+	virtual ~SqlInterface();
+
+	void sqlInit(const QString &tableName, const QStringList &columnNames);
+	void sqlInsert(SqlKey key);
+	void sqlUpdate(SqlKey key);
+	void sqlRemove(SqlKey key);
+	void sqlFlush();
+
+	/* for SqlHelper */
+	void sqlSubmit();
+
+	template<class Container> SqlKey sqlFindFreeKey(const Container &container) const
+	{
+		SqlKey sqlKey(1);
+
+		if (!container.isEmpty()) {
+			sqlKey = SqlKey((container.constEnd() - 1).key().sqlKey + 1);
+
+			while (container.contains(sqlKey) || !sqlKey.isSqlKeyValid()) {
+				sqlKey = SqlKey(qrand());
+			}
+		}
+
+		return sqlKey;
+	}
 
 protected:
-	void init(QAbstractItemModel *model, const QString &tableName,
-		const QStringList &columnNames);
-
-	virtual int insertFromSqlQuery(const QSqlQuery &query, int index) = 0;
-	virtual void bindToSqlQuery(QSqlQuery &query, int index, int row) const = 0;
-
-private slots:
-	void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-	void layoutChanged();
-	void modelReset();
-	void rowsInserted(const QModelIndex &parent, int start, int end);
-	void rowsRemoved(const QModelIndex &parent, int start, int end);
+	virtual void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const = 0;
+	virtual bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index) = 0;
 
 private:
 	enum PendingStatement {
@@ -65,12 +108,9 @@ private:
 	};
 
 	void requestSubmission();
-	void submit();
 
-	SqlHelper *sqlHelper;
-	QList<quint32> rowToKeyMapping;
-	QHash<quint32, int> keyToRowMapping;
-	QMap<quint32, PendingStatement> pendingStatements;
+	QExplicitlySharedDataPointer<SqlHelper> sqlHelper;
+	QMap<SqlKey, PendingStatement> pendingStatements;
 	bool createTable;
 	bool hasPendingStatements;
 
@@ -84,4 +124,4 @@ private:
 	QSqlQuery deleteQuery;
 };
 
-#endif /* SQLTABLEMODEL_H */
+#endif /* SQLMODEL_H */
