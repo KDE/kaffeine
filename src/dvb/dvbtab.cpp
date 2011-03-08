@@ -32,6 +32,7 @@
 #include <KLineEdit>
 #include <KLocale>
 #include <KMenu>
+#include <KMessageBox>
 #include "../mediawidget.h"
 #include "../osdwidget.h"
 #include "dvbconfigdialog.h"
@@ -295,7 +296,29 @@ void DvbTab::osdKeyPressed(int key)
 
 void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 {
-	// manager->getRecordingModel()->mayCloseApplication(ok, parent); // FIXME !!
+	if (*ok) {
+		DvbRecordingModel *recordingModel = manager->getRecordingModel();
+
+		if (recordingModel->hasActiveRecordings()) {
+			if (KMessageBox::warningYesNo(parent, i18nc("message box",
+			    "Kaffeine is currently recording programs.\n"
+			    "Do you really want to close the application?")) != KMessageBox::Yes) {
+				*ok = false;
+			}
+
+			return;
+		}
+
+		if (recordingModel->hasRecordings()) {
+			if (KMessageBox::questionYesNo(parent, i18nc("message box",
+			    "Kaffeine has scheduled recordings.\n"
+			    "Do you really want to close the application?")) != KMessageBox::Yes) {
+				*ok = false;
+			}
+
+			return;
+		}
+	}
 }
 
 void DvbTab::showChannelDialog()

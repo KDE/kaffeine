@@ -124,6 +124,16 @@ DvbRecordingModel::~DvbRecordingModel()
 	sqlFlush();
 }
 
+bool DvbRecordingModel::hasRecordings() const
+{
+	return !recordings.isEmpty();
+}
+
+bool DvbRecordingModel::hasActiveRecordings() const
+{
+	return !recordingFiles.isEmpty();
+}
+
 DvbSharedRecording DvbRecordingModel::findRecordingByKey(const SqlKey &key) const
 {
 	return recordings.value(key);
@@ -308,33 +318,6 @@ bool DvbRecordingModel::updateStatus(DvbRecording &recording)
 	return true;
 }
 
-/*
-void DvbRecordingModel::mayCloseApplication(bool *ok, QWidget *parent)
-{
-	if (*ok) {
-		if (hasActiveRecordings) {
-			if (KMessageBox::warningYesNo(parent, i18nc("message box",
-			    "Kaffeine is currently recording programs.\n"
-			    "Do you really want to close the application?")) != KMessageBox::Yes) {
-				*ok = false;
-			}
-
-			return;
-		}
-
-		if (!recordings.isEmpty()) {
-			if (KMessageBox::questionYesNo(parent, i18nc("message box",
-			    "Kaffeine has scheduled recordings.\n"
-			    "Do you really want to close the application?")) != KMessageBox::Yes) {
-				*ok = false;
-			}
-
-			return;
-		}
-	}
-}
-*/
-
 DvbRecordingFile::DvbRecordingFile(DvbManager *manager_) : manager(manager_), device(NULL),
 	pmtValid(false)
 {
@@ -347,26 +330,6 @@ DvbRecordingFile::~DvbRecordingFile()
 {
 	stop();
 }
-
-/*
-void DvbRecordingFile::setEntry(const DvbRecordingEntry &entry_)
-{
-	entry.name = entry_.name;
-	entry.channelName = entry_.channelName;
-	entry.begin = entry_.begin;
-	entry.duration = entry_.duration;
-	entry.repeat = entry_.repeat;
-	// isRunning is read-only
-
-	if (entry.begin.timeSpec() != Qt::UTC) {
-		kWarning() << "wrong time spec";
-		entry.begin = entry.begin.toUTC();
-	}
-
-	// the seconds and milliseconds aren't visible --> set them to zero
-	entry.begin = entry.begin.addMSecs(-(QTime().msecsTo(entry.begin.time()) % 60000));
-}
-*/
 
 bool DvbRecordingFile::start(const DvbRecording &recording)
 {

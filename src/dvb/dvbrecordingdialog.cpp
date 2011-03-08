@@ -253,6 +253,7 @@ void DvbRecordingTableModel::recordingAdded(const DvbSharedRecording &recording)
 void DvbRecordingTableModel::recordingUpdated(const DvbSharedRecording &recording,
 	const DvbRecording &oldRecording)
 {
+	Q_UNUSED(recording)
 	int row = (qBinaryFind(recordings.constBegin(), recordings.constEnd(), oldRecording,
 		DvbRecordingLessThan()) - recordings.constBegin());
 

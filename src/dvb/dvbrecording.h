@@ -91,6 +91,8 @@ public:
 	DvbRecordingModel(DvbManager *manager_, QObject *parent);
 	~DvbRecordingModel();
 
+	bool hasRecordings() const;
+	bool hasActiveRecordings() const;
 	DvbSharedRecording findRecordingByKey(const SqlKey &key) const;
 	QMap<SqlKey, DvbSharedRecording> listProgramSchedule() const;
 	DvbSharedRecording addRecording(DvbRecording &recording);
