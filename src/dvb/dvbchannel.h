@@ -23,24 +23,13 @@
 
 #include <QSharedData> // qt 4.5 compatibility
 #include <QTreeView>
+#include "../shareddata.h"
 #include "../sqlinterface.h"
 #include "dvbtransponder.h"
 
 class KAction;
 
-class DvbChannelBase : public QSharedData
-{
-public:
-	DvbChannelBase() { }
-	~DvbChannelBase() { }
-
-	DvbChannelBase &operator=(const DvbChannelBase &)
-	{
-		return *this;
-	}
-};
-
-class DvbChannel : public SqlKey, public DvbChannelBase
+class DvbChannel : public SharedData, public SqlKey
 {
 public:
 	DvbChannel() : number(-1), networkId(-1), transportStreamId(-1), pmtPid(-1), audioPid(-1),

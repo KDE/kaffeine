@@ -27,19 +27,7 @@
 class DvbManager;
 class DvbRecordingFile;
 
-class DvbRecordingBase : public QSharedData
-{
-public:
-	DvbRecordingBase() { }
-	~DvbRecordingBase() { }
-
-	DvbRecordingBase &operator=(const DvbRecordingBase &)
-	{
-		return *this;
-	}
-};
-
-class DvbRecording : public DvbRecordingBase, public SqlKey
+class DvbRecording : public SharedData, public SqlKey
 {
 public:
 	DvbRecording() : repeat(0), status(Inactive) { }
