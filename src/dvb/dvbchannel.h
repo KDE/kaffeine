@@ -23,12 +23,10 @@
 
 #include <QSharedData> // qt 4.5 compatibility
 #include <QTreeView>
-#include "../sqltablemodel.h"
+#include "../sqlinterface.h"
 #include "dvbtransponder.h"
 
-class QSqlQuery;
 class KAction;
-class DvbSqlChannelModelInterface;
 
 class DvbChannelBase : public QSharedData
 {

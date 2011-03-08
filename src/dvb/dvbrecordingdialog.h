@@ -1,5 +1,5 @@
 /*
- * dvbrecording.h
+ * dvbrecordingdialog.h
  *
  * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -21,18 +21,10 @@
 #ifndef DVBRECORDINGDIALOG_H
 #define DVBRECORDINGDIALOG_H
 
-#include <QAbstractTableModel>
-#include <QDateTime>
 #include <KDialog>
-#include "../sqltablemodel.h"
 
-class QSqlQuery;
 class QTreeView;
 class DvbManager;
-class DvbRecording;
-class DvbRecordingFile;
-class DvbRecordingModel;
-class DvbRecordingModelSqlInterface;
 class DvbRecordingTableModel;
 
 class DvbRecordingDialog : public KDialog

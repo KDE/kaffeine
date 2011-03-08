@@ -21,21 +21,9 @@
 #include "dvbrecording.h"
 #include "dvbrecording_p.h"
 
-#include <QBoxLayout>
-#include <QCheckBox>
 #include <QDir>
-#include <QHeaderView>
-#include <QLabel>
-#include <QPushButton>
-#include <QSortFilterProxyModel>
-#include <KAction>
-#include <KCalendarSystem>
-#include <KComboBox>
 #include <KDebug>
-#include <KLineEdit>
-#include <KMessageBox>
 #include <KStandardDirs>
-#include "../datetimeedit.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 

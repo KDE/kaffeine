@@ -1,5 +1,5 @@
 /*
- * dvbrecording.cpp
+ * dvbrecordingdialog.cpp
  *
  * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -23,20 +23,14 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
-#include <QDir>
 #include <QHeaderView>
 #include <QLabel>
 #include <QPushButton>
-#include <QSortFilterProxyModel>
 #include <KAction>
 #include <KCalendarSystem>
 #include <KComboBox>
-#include <KDebug>
 #include <KLineEdit>
-#include <KMessageBox>
-#include <KStandardDirs>
 #include "../datetimeedit.h"
-#include "dvbdevice.h"
 #include "dvbmanager.h"
 
 DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
@@ -182,7 +176,8 @@ int DvbRecordingTableModel::rowCount(const QModelIndex &parent) const
 	return 0;
 }
 
-QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orientation,
+	int role) const
 {
 	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
 		switch (section) {

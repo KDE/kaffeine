@@ -20,13 +20,12 @@
 
 #include "sqlhelper.h"
 
-#include <QCoreApplication>
 #include <QSqlError>
 #include <KDebug>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
-#include "sqltablemodel.h"
+#include "sqlinterface.h"
 
 SqlHelper::SqlHelper()
 {

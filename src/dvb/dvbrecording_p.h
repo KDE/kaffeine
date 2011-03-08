@@ -23,17 +23,9 @@
 
 #include <QFile>
 #include <QTimer>
-#include <KDialog>
-#include "../sqltablemodel.h"
-#include "dvbchannel.h"
 #include "dvbrecording.h"
 #include "dvbsi.h"
 
-class QCheckBox;
-class KComboBox;
-class KLineEdit;
-class DateTimeEdit;
-class DurationEdit;
 class DvbDevice;
 
 class DvbRecordingFile : public QObject, public QSharedData, public DvbPidFilter

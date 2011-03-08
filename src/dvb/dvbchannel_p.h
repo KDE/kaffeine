@@ -22,7 +22,6 @@
 #define DVBCHANNEL_P_H
 
 #include <KDialog>
-#include "../sqltablemodel.h"
 #include "dvbchannel.h"
 
 class QCheckBox;

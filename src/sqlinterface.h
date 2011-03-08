@@ -1,5 +1,5 @@
 /*
- * sqlmodel.h
+ * sqlinterface.h
  *
  * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,10 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef SQLMODEL_H
-#define SQLMODEL_H
+#ifndef SQLINTERFACE_H
+#define SQLINTERFACE_H
 
-#include <QDataStream>
 #include <QExplicitlySharedDataPointer>
 #include <QMap>
 #include <QSqlQuery>
@@ -124,4 +123,4 @@ private:
 	QSqlQuery deleteQuery;
 };
 
-#endif /* SQLMODEL_H */
+#endif /* SQLINTERFACE_H */

@@ -37,7 +37,6 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
-#include "../sqltablemodel.h"
 #include "dvbsi.h"
 
 void DvbChannel::readChannel(QDataStream &stream)

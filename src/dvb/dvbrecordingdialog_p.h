@@ -1,5 +1,5 @@
 /*
- * dvbrecording_p.h
+ * dvbrecordingdialog_p.h
  *
  * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -21,20 +21,14 @@
 #ifndef DVBRECORDINGDIALOG_P_H
 #define DVBRECORDINGDIALOG_P_H
 
-#include <QFile>
-#include <QTimer>
 #include <KDialog>
-#include "../sqltablemodel.h"
-#include "dvbchannel.h"
 #include "dvbrecording.h"
-#include "dvbsi.h"
 
 class QCheckBox;
 class KComboBox;
 class KLineEdit;
 class DateTimeEdit;
 class DurationEdit;
-class DvbDevice;
 
 class DvbRecordingLessThan
 {

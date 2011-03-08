@@ -10,7 +10,7 @@ set(kaffeine_SRCS
     mediawidget.cpp
     osdwidget.cpp
     sqlhelper.cpp
-    sqltablemodel.cpp)
+    sqlinterface.cpp)
 
 if(HAVE_DVB)
   set(kaffeinedvb_SRCS

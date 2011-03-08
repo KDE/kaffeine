@@ -21,7 +21,6 @@
 #ifndef DVBEPG_H
 #define DVBEPG_H
 
-#include "dvbchannel.h"
 #include "dvbrecording.h"
 
 class AtscEpgFilter;

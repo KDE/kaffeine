@@ -1,5 +1,5 @@
 /*
- * sqltablemodel.cpp
+ * sqlinterface.cpp
  *
  * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,7 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "sqltablemodel.h"
+#include "sqlinterface.h"
 
 #include <QAbstractItemModel>
 #include <QStringList>

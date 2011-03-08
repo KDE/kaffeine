@@ -22,15 +22,10 @@
 #define DVBRECORDING_H
 
 #include <QDateTime>
-#include <QMap>
 #include "dvbchannel.h"
-#include "../sqltablemodel.h"
 
-class QSqlQuery;
 class DvbManager;
-class DvbRecording;
 class DvbRecordingFile;
-class DvbRecordingModelSqlInterface;
 
 class DvbRecordingBase : public QSharedData
 {
