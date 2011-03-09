@@ -87,6 +87,7 @@ private:
 	DvbManager *manager;
 	QMap<SqlKey, DvbSharedRecording> recordings;
 	QMap<SqlKey, QExplicitlySharedDataPointer<DvbRecordingFile> > recordingFiles;
+	bool hasPendingOperation;
 };
 
 #endif /* DVBRECORDING_H */

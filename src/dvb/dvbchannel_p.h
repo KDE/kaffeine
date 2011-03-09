@@ -31,30 +31,6 @@ class KLineEdit;
 
 Q_DECLARE_METATYPE(QList<DvbSharedChannel>)
 
-class DvbChannelEnsureNoPendingOperation
-{
-public:
-	explicit DvbChannelEnsureNoPendingOperation(bool *hasPendingOperation_) :
-		hasPendingOperation(hasPendingOperation_)
-	{
-		if (*hasPendingOperation) {
-			printFatalErrorMessage();
-		}
-
-		*hasPendingOperation = true;
-	}
-
-	~DvbChannelEnsureNoPendingOperation()
-	{
-		*hasPendingOperation = false;
-	}
-
-private:
-	void printFatalErrorMessage();
-
-	bool *hasPendingOperation;
-};
-
 class DvbChannelEditor : public KDialog
 {
 public:

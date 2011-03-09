@@ -37,6 +37,7 @@
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KStandardDirs>
+#include "../ensurenopendingoperation.h"
 #include "dvbsi.h"
 
 void DvbChannel::readChannel(QDataStream &stream)
@@ -306,41 +307,41 @@ uint qHash(const DvbComparableChannel &channel)
 DvbChannelModel::DvbChannelModel(QObject *parent) : QObject(parent), hasPendingOperation(false),
 	isSqlModel(false)
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 }
 
 DvbChannelModel::~DvbChannelModel()
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 }
 
 QMap<int, DvbSharedChannel> DvbChannelModel::getChannels() const
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return channelNumberMapping;
 }
 
 DvbSharedChannel DvbChannelModel::findChannelByName(const QString &channelName) const
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return channelNameMapping.value(channelName);
 }
 
 DvbSharedChannel DvbChannelModel::findChannelByNumber(int channelNumber) const
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return channelNumberMapping.value(channelNumber);
 }
 
 DvbSharedChannel DvbChannelModel::findChannelByContent(const DvbChannel &channel) const
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return channelContentMapping.value(DvbComparableChannel(&channel));
 }
 
 void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (isSqlModel == other->isSqlModel) {
 		kError() << "cloning is only supported between sql model and auxiliary model";
@@ -386,7 +387,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 
 void DvbChannelModel::addChannel(const DvbChannel &channel)
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	QHash<DvbComparableChannel, DvbSharedChannel>::ConstIterator it =
 		channelContentMapping.constFind(DvbComparableChannel(&channel));
 	DvbPmtParser pmtParser(DvbPmtSection(channel.pmtSectionData));
@@ -429,7 +430,7 @@ void DvbChannelModel::addChannel(const DvbChannel &channel)
 void DvbChannelModel::updateChannel(const DvbSharedChannel &channel,
 	const DvbChannel &updatedChannel)
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (channel->name != updatedChannel.name) {
 		DvbSharedChannel existingChannel = channelNameMapping.value(updatedChannel.name);
@@ -463,7 +464,7 @@ void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
 	const DvbSharedChannel &insertBeforeChannel)
 {
-	DvbChannelEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	int newNumberBegin = 1;
 
 	if (insertBeforeChannel.isValid()) {
@@ -664,11 +665,6 @@ void DvbChannelModel::internalRemoveChannel(const DvbSharedChannel &channel)
 	}
 
 	emit channelRemoved(channel);
-}
-
-void DvbChannelEnsureNoPendingOperation::printFatalErrorMessage()
-{
-	kFatal() << "illegal recursive call";
 }
 
 DvbChannelTableModel::DvbChannelTableModel(DvbChannelModel *channelModel_, QObject *parent) :

@@ -24,30 +24,6 @@
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
 
-class DvbEpgEnsureNoPendingOperation
-{
-public:
-	explicit DvbEpgEnsureNoPendingOperation(bool *hasPendingOperation_) :
-		hasPendingOperation(hasPendingOperation_)
-	{
-		if (*hasPendingOperation) {
-			printFatalErrorMessage();
-		}
-
-		*hasPendingOperation = true;
-	}
-
-	~DvbEpgEnsureNoPendingOperation()
-	{
-		*hasPendingOperation = false;
-	}
-
-private:
-	void printFatalErrorMessage();
-
-	bool *hasPendingOperation;
-};
-
 class DvbEpgFilter : public DvbSectionFilter
 {
 public:

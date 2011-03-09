@@ -23,12 +23,14 @@
 
 #include <QFile>
 #include <QTimer>
-#include "dvbrecording.h"
+#include "dvbchannel.h"
 #include "dvbsi.h"
 
 class DvbDevice;
+class DvbManager;
+class DvbRecording;
 
-class DvbRecordingFile : public QObject, public QSharedData, public DvbPidFilter
+class DvbRecordingFile : public QObject, public QSharedData, private DvbPidFilter
 {
 	Q_OBJECT
 public:

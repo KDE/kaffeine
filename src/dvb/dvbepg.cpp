@@ -24,6 +24,7 @@
 #include <QFile>
 #include <KDebug>
 #include <KStandardDirs>
+#include "../ensurenopendingoperation.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
@@ -63,7 +64,7 @@ bool DvbEpgEntry::operator<(const DvbEpgEntry &other) const
 DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent),
 	manager(manager_), hasPendingOperation(false)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
 	startTimer(54000);
 
@@ -134,7 +135,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 
 DvbEpgModel::~DvbEpgModel()
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
 		kWarning() << "filter list not empty";
@@ -174,7 +175,7 @@ DvbEpgModel::~DvbEpgModel()
 
 QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const DvbSharedChannel &channel) const
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	QList<const DvbEpgEntry *> result;
 
 	for (ConstIterator it = entries.lowerBound(DvbEpgEntry(channel)); it != entries.constEnd();
@@ -197,7 +198,7 @@ QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const DvbSharedChannel &c
 
 void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -216,7 +217,7 @@ void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 
 void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -257,19 +258,19 @@ void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 
 QMap<DvbEpgEntry, DvbEpgEmptyClass> DvbEpgModel::getEntries() const
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return entries;
 }
 
 QHash<DvbSharedChannel, int> DvbEpgModel::getEpgChannels() const
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return epgChannels;
 }
 
 void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc) {
 		Iterator it = entries.lowerBound(entry);
@@ -323,7 +324,7 @@ void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 void DvbEpgModel::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
 	int extraSecondsAfter)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	Iterator it = entries.find(*entry);
 
 	if (ConstIterator(it) != entries.constEnd()) {
@@ -354,7 +355,7 @@ void DvbEpgModel::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefo
 
 void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (DvbComparableChannel(channel) != DvbComparableChannel(&oldChannel)) {
 		Iterator it = entries.lowerBound(DvbEpgEntry(channel));
@@ -368,7 +369,7 @@ void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChann
 
 void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	Iterator it = entries.lowerBound(DvbEpgEntry(channel));
 
 	while ((ConstIterator(it) != entries.constEnd()) && (it.key().channel == channel)) {
@@ -378,7 +379,7 @@ void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 
 void DvbEpgModel::recordingRemoved(const DvbSharedRecording &recording)
 {
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	const DvbEpgEntry *constEntry = recordingMapping.take(recording);
 
 	if (constEntry != NULL) {
@@ -396,7 +397,7 @@ void DvbEpgModel::recordingRemoved(const DvbSharedRecording &recording)
 void DvbEpgModel::timerEvent(QTimerEvent *event)
 {
 	Q_UNUSED(event)
-	DvbEpgEnsureNoPendingOperation ensureNoPendingOperation(&hasPendingOperation);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
 	Iterator it = entries.begin();
 
@@ -460,11 +461,6 @@ DvbEpgModel::Iterator DvbEpgModel::internalRemoveEntry(Iterator it)
 
 	emit entryRemoved(entry);
 	return entries.erase(it);
-}
-
-void DvbEpgEnsureNoPendingOperation::printFatalErrorMessage()
-{
-	kFatal() << "illegal recursive call";
 }
 
 DvbEpgFilter::DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel) :

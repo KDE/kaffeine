@@ -24,6 +24,7 @@
 #include <QDir>
 #include <KDebug>
 #include <KStandardDirs>
+#include "../ensurenopendingoperation.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
@@ -41,8 +42,8 @@ bool DvbRecording::validate()
 	return false;
 }
 
-DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) :
-	QObject(parent), manager(manager_)
+DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QObject(parent),
+	manager(manager_), hasPendingOperation(false)
 {
 	sqlInit("RecordingSchedule",
 		QStringList() << "Name" << "Channel" << "Begin" << "Duration" << "Repeat");
@@ -132,6 +133,8 @@ QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::listProgramSchedule() const
 
 DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
 {
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+
 	if (!recording.validate()) {
 		kWarning() << "invalid recording";
 		return DvbSharedRecording();
@@ -153,6 +156,8 @@ DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
 void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 	DvbRecording &modifiedRecording)
 {
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+
 	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
 	    !modifiedRecording.validate()) {
 		kWarning() << "invalid recording";
@@ -177,6 +182,8 @@ void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 
 void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
 {
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+
 	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
 		kWarning() << "invalid recording";
 		return;
