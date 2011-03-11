@@ -1,7 +1,7 @@
 /*
  * dvbrecording_p.h
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ class DvbDevice;
 class DvbManager;
 class DvbRecording;
 
-class DvbRecordingFile : public QObject, public QSharedData, private DvbPidFilter
+class DvbRecordingFile : private QObject, public QSharedData, private DvbPidFilter
 {
 	Q_OBJECT
 public:

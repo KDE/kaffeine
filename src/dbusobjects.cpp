@@ -346,8 +346,9 @@ void DBusTelevisionObject::ToggleOsd()
 QList<TelevisionScheduleEntryStruct> DBusTelevisionObject::ListProgramSchedule()
 {
 	QList<TelevisionScheduleEntryStruct> entries;
+	DvbRecordingModel *recordingModel = dvbTab->getManager()->getRecordingModel();
 
-	foreach (const DvbSharedRecording &recording, dvbTab->listProgramSchedule()) {
+	foreach (const DvbSharedRecording &recording, recordingModel->getRecordings()) {
 		TelevisionScheduleEntryStruct entry;
 		entry.key = recording->sqlKey;
 		entry.name = recording->name;
@@ -365,16 +366,17 @@ QList<TelevisionScheduleEntryStruct> DBusTelevisionObject::ListProgramSchedule()
 quint32 DBusTelevisionObject::ScheduleProgram(const QString &name, const QString &channel,
 	const QString &begin, const QString &duration, int repeat)
 {
-	DvbRecording entry;
-	entry.name = name;
-	entry.channel = dvbTab->getManager()->getChannelModel()->findChannelByName(channel);
-	entry.begin = QDateTime::fromString(begin, Qt::ISODate).toUTC();
-	entry.duration = QTime::fromString(duration, Qt::ISODate);
-	entry.repeat = (repeat & ((1 << 7) - 1));
-	DvbSharedRecording recording = dvbTab->scheduleProgram(entry);
+	DvbRecording recording;
+	recording.name = name;
+	recording.channel = dvbTab->getManager()->getChannelModel()->findChannelByName(channel);
+	recording.begin = QDateTime::fromString(begin, Qt::ISODate).toUTC();
+	recording.duration = QTime::fromString(duration, Qt::ISODate);
+	recording.repeat = (repeat & ((1 << 7) - 1));
+	DvbSharedRecording newRecording =
+		dvbTab->getManager()->getRecordingModel()->addRecording(recording);
 
-	if (recording.isValid()) {
-		return recording->sqlKey;
+	if (newRecording.isValid()) {
+		return newRecording->sqlKey;
 	}
 
 	return 0;
@@ -382,11 +384,12 @@ quint32 DBusTelevisionObject::ScheduleProgram(const QString &name, const QString
 
 void DBusTelevisionObject::RemoveProgram(quint32 key)
 {
+	DvbRecordingModel *recordingModel = dvbTab->getManager()->getRecordingModel();
 	SqlKey sqlKey;
 	sqlKey.sqlKey = key;
-	DvbSharedRecording recording = dvbTab->listProgramSchedule().value(sqlKey);
+	DvbSharedRecording recording = recordingModel->getRecordings().value(sqlKey);
 
 	if (recording.isValid()) {
-		dvbTab->removeRecording(recording);
+		recordingModel->removeRecording(recording);
 	}
 }

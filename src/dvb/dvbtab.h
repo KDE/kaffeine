@@ -50,10 +50,6 @@ public:
 		return manager;
 	}
 
-	QMap<SqlKey, DvbSharedRecording> listProgramSchedule();
-	DvbSharedRecording scheduleProgram(DvbRecording &recording);
-	void removeRecording(const DvbSharedRecording &recording);
-
 	void enableDvbDump();
 
 public slots:

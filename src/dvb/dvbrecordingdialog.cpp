@@ -147,7 +147,7 @@ DvbRecordingTableModel::DvbRecordingTableModel(DvbManager *manager_, QObject *pa
 	connect(recordingModel, SIGNAL(recordingRemoved(DvbSharedRecording)),
 		this, SLOT(recordingRemoved(DvbSharedRecording)));
 
-	foreach (const DvbSharedRecording &recording, recordingModel->listProgramSchedule()) {
+	foreach (const DvbSharedRecording &recording, recordingModel->getRecordings()) {
 		recordings.append(recording);
 	}
 

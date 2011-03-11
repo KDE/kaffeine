@@ -52,6 +52,7 @@ public:
 	void processSection(const char *, int) { }
 };
 
+// FIXME make DvbDevice shared ...
 class DvbDevice : public QObject, public DvbFrontendDevice
 {
 	Q_OBJECT

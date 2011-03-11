@@ -1,7 +1,7 @@
 /*
  * dvbrecording.cpp
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -121,12 +121,12 @@ bool DvbRecordingModel::hasActiveRecordings() const
 	return !recordingFiles.isEmpty();
 }
 
-DvbSharedRecording DvbRecordingModel::findRecordingByKey(const SqlKey &key) const
+DvbSharedRecording DvbRecordingModel::findRecordingByKey(const SqlKey &sqlKey) const
 {
-	return recordings.value(key);
+	return recordings.value(sqlKey);
 }
 
-QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::listProgramSchedule() const
+QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::getRecordings() const
 {
 	return recordings;
 }

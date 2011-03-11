@@ -264,21 +264,6 @@ void DvbTab::toggleInstantRecord()
 	instantRecordAction->trigger();
 }
 
-QMap<SqlKey, DvbSharedRecording> DvbTab::listProgramSchedule()
-{
-	return manager->getRecordingModel()->listProgramSchedule();
-}
-
-DvbSharedRecording DvbTab::scheduleProgram(DvbRecording &recording)
-{
-	return manager->getRecordingModel()->addRecording(recording);
-}
-
-void DvbTab::removeRecording(const DvbSharedRecording &recording)
-{
-	manager->getRecordingModel()->removeRecording(recording);
-}
-
 void DvbTab::enableDvbDump()
 {
 	manager->enableDvbDump();

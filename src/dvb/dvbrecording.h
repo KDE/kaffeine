@@ -1,7 +1,7 @@
 /*
  * dvbrecording.h
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -64,8 +64,8 @@ public:
 
 	bool hasRecordings() const;
 	bool hasActiveRecordings() const;
-	DvbSharedRecording findRecordingByKey(const SqlKey &key) const;
-	QMap<SqlKey, DvbSharedRecording> listProgramSchedule() const;
+	DvbSharedRecording findRecordingByKey(const SqlKey &sqlKey) const;
+	QMap<SqlKey, DvbSharedRecording> getRecordings() const;
 	DvbSharedRecording addRecording(DvbRecording &recording);
 	void updateRecording(const DvbSharedRecording &recording, DvbRecording &modifiedRecording);
 	void removeRecording(const DvbSharedRecording &recording);
