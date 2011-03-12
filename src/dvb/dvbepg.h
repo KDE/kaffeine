@@ -34,7 +34,7 @@ public:
 	explicit DvbEpgEntry(const DvbSharedChannel &channel_) : channel(channel_) { }
 	~DvbEpgEntry() { }
 
-	// recording is ignored in comparisons
+	// 'recording' is ignored in comparisons
 	bool operator==(const DvbEpgEntry &other) const;
 	bool operator<(const DvbEpgEntry &other) const;
 

@@ -108,6 +108,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 DvbRecordingModel::~DvbRecordingModel()
 {
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	sqlFlush();
 }
 
