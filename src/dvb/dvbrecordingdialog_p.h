@@ -1,7 +1,7 @@
 /*
  * dvbrecordingdialog_p.h
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,7 @@ public:
 			return (x.duration < y.duration);
 		}
 
+		// sql keys are compared
 		return (x < y);
 	}
 
@@ -84,8 +85,8 @@ public:
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const;
 
 private slots:
 	void recordingAdded(const DvbSharedRecording &recording);

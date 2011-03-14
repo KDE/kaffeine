@@ -1,7 +1,7 @@
 /*
  * dvbrecordingdialog.cpp
  *
- * Copyright (C) 2009-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2009-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,11 +37,8 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	manager(manager_)
 {
 	setButtons(KDialog::Close);
-	setCaption(i18nc("dialog", "Recording Schedule"));
-
+	setCaption(i18nc("@title:window", "Recording Schedule"));
 	QWidget *widget = new QWidget(this);
-	QBoxLayout *mainLayout = new QVBoxLayout(widget);
-	QBoxLayout *boxLayout = new QHBoxLayout();
 
 	model = new DvbRecordingTableModel(manager, this);
 	treeView = new QTreeView(widget);
@@ -53,30 +50,30 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	treeView->sortByColumn(2, Qt::AscendingOrder);
 	treeView->setSortingEnabled(true);
 
-	KAction *action =
-		new KAction(KIcon("list-add"), i18nc("add a new item to a list", "New"), widget);
+	QBoxLayout *boxLayout = new QHBoxLayout();
+	KAction *action = new KAction(KIcon("list-add"), i18nc("@action", "New"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(newRecording()));
 	treeView->addAction(action);
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new KAction(KIcon("configure"), i18n("Edit"), widget);
+	action = new KAction(KIcon("configure"), i18nc("@action", "Edit"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new KAction(KIcon("edit-delete"),
-		i18nc("remove an item from a list", "Remove"), widget);
+	action = new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeRecording()));
 	boxLayout->addWidget(pushButton);
-
 	boxLayout->addStretch();
+
+	QBoxLayout *mainLayout = new QVBoxLayout(widget);
 	mainLayout->addLayout(boxLayout);
 	mainLayout->addWidget(treeView);
 	setMainWidget(widget);
@@ -108,8 +105,8 @@ void DvbRecordingDialog::editRecording()
 	QModelIndex index = treeView->currentIndex();
 
 	if (index.isValid()) {
-		const DvbSharedRecording &recording = model->getRecording(index);
-		KDialog *dialog = new DvbRecordingEditor(manager, recording, this);
+		KDialog *dialog =
+			new DvbRecordingEditor(manager, model->getRecording(index), this);
 		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 		dialog->setModal(true);
 		dialog->show();
@@ -129,11 +126,6 @@ void DvbRecordingDialog::removeRecording()
 	foreach (const DvbSharedRecording &recording, recordings) {
 		recordingModel->removeRecording(recording);
 	}
-}
-
-DvbSharedRecording DvbRecordingTableModel::getRecording(const QModelIndex &index) const
-{
-	return recordings.at(index.row());
 }
 
 DvbRecordingTableModel::DvbRecordingTableModel(DvbManager *manager_, QObject *parent) :
@@ -156,6 +148,15 @@ DvbRecordingTableModel::DvbRecordingTableModel(DvbManager *manager_, QObject *pa
 
 DvbRecordingTableModel::~DvbRecordingTableModel()
 {
+}
+
+DvbSharedRecording DvbRecordingTableModel::getRecording(const QModelIndex &index) const
+{
+	if ((index.row() >= 0) && (index.row() < recordings.size())) {
+		return recordings.at(index.row());
+	}
+
+	return DvbSharedRecording();
 }
 
 int DvbRecordingTableModel::columnCount(const QModelIndex &parent) const
@@ -182,13 +183,13 @@ QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orienta
 	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
 		switch (section) {
 		case 0:
-			return i18n("Name");
+			return i18nc("@title:column recording", "Name");
 		case 1:
-			return i18n("Channel");
+			return i18nc("@title:column tv show", "Channel");
 		case 2:
-			return i18n("Begin");
+			return i18nc("@title:column tv show", "Begin");
 		case 3:
-			return i18n("Duration");
+			return i18nc("@title:column tv show", "Duration");
 		}
 	}
 
@@ -197,6 +198,10 @@ QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orienta
 
 QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 {
+	if ((index.row() < 0) || (index.row() >= recordings.size())) {
+		return QVariant();
+	}
+
 	const DvbSharedRecording &recording = recordings.at(index.row());
 
 	switch (role) {
@@ -272,8 +277,7 @@ void DvbRecordingTableModel::recordingRemoved(const DvbSharedRecording &recordin
 DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedRecording &recording_,
 	QWidget *parent) : KDialog(parent), manager(manager_), recording(recording_)
 {
-	setCaption(i18nc("subdialog of 'Recording Schedule'", "Edit Schedule Entry"));
-
+	setCaption(i18nc("@title:window recording", "Edit Schedule Entry"));
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
 
@@ -281,20 +285,20 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(nameEdit, 0, 1);
 
-	QLabel *label = new QLabel(i18n("Name:"), widget);
+	QLabel *label = new QLabel(i18nc("@label recording", "Name:"), widget);
 	label->setBuddy(nameEdit);
 	gridLayout->addWidget(label, 0, 0);
 
 	channelBox = new KComboBox(widget);
-	QAbstractItemModel *channelProxyModel =
-		new DvbChannelTableModel(manager->getChannelModel(), this);
+	DvbChannelTableModel *channelModel =
+		new DvbChannelTableModel(manager->getChannelModel(), widget);
 	QHeaderView *header = manager->getChannelView()->header();
-	channelProxyModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
-	channelBox->setModel(channelProxyModel);
+	channelModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
+	channelBox->setModel(channelModel);
 	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(channelBox, 1, 1);
 
-	label = new QLabel(i18n("Channel:"), widget);
+	label = new QLabel(i18nc("@label tv show", "Channel:"), widget);
 	label->setBuddy(channelBox);
 	gridLayout->addWidget(label, 1, 0);
 
@@ -304,7 +308,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 		this, SLOT(beginChanged(QDateTime)));
 	gridLayout->addWidget(beginEdit, 2, 1);
 
-	label = new QLabel(i18n("Begin:"), widget);
+	label = new QLabel(i18nc("@label tv show", "Begin:"), widget);
 	label->setBuddy(beginEdit);
 	gridLayout->addWidget(label, 2, 0);
 
@@ -312,7 +316,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	connect(durationEdit, SIGNAL(timeChanged(QTime)), this, SLOT(durationChanged(QTime)));
 	gridLayout->addWidget(durationEdit, 3, 1);
 
-	label = new QLabel(i18n("Duration:"), widget);
+	label = new QLabel(i18nc("@label tv show", "Duration:"), widget);
 	label->setBuddy(durationEdit);
 	gridLayout->addWidget(label, 3, 0);
 
@@ -321,19 +325,19 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	connect(endEdit, SIGNAL(dateTimeChanged(QDateTime)), this, SLOT(endChanged(QDateTime)));
 	gridLayout->addWidget(endEdit, 4, 1);
 
-	label = new QLabel(i18n("End:"), widget);
+	label = new QLabel(i18nc("@label tv show", "End:"), widget);
 	label->setBuddy(endEdit);
 	gridLayout->addWidget(label, 4, 0);
 
-	gridLayout->addWidget(new QLabel(i18n("Repeat:"), widget), 5, 0);
+	gridLayout->addWidget(new QLabel(i18nc("@label recording", "Repeat:"), widget), 5, 0);
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
 	QPushButton *pushButton =
-		new QPushButton(i18nc("button next to the 'Repeat:' label", "Never"), widget);
+		new QPushButton(i18nc("@action next to 'Repeat:'", "Never"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(repeatNever()));
 	boxLayout->addWidget(pushButton);
 
-	pushButton = new QPushButton(i18nc("button next to the 'Repeat:' label", "Daily"), widget);
+	pushButton = new QPushButton(i18nc("@action next to 'Repeat:'", "Daily"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(repeatDaily()));
 	boxLayout->addWidget(pushButton);
 	gridLayout->addLayout(boxLayout, 5, 1);
@@ -352,7 +356,8 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 
 	if (recording.isValid()) {
 		nameEdit->setText(recording->name);
-		channelBox->setCurrentIndex(channelBox->findText(recording->channel->name));
+		channelBox->setCurrentIndex(
+			channelModel->indexForChannel(recording->channel).row());
 		beginEdit->setDateTime(recording->begin.toLocalTime());
 		durationEdit->setTime(recording->duration);
 
