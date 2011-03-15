@@ -463,7 +463,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 		horizontalLayout->addWidget(pushButton);
 	} else {
 		QPushButton *pushButton =
-			new QPushButton(KIcon("edit-delete"), i18n("Remove"), this);
+			new QPushButton(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
 		connect(pushButton, SIGNAL(clicked()), this, SLOT(removeConfig()));
 		horizontalLayout->addWidget(pushButton);
 	}

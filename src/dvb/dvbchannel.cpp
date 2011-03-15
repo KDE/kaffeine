@@ -985,7 +985,7 @@ DvbChannelView::~DvbChannelView()
 
 KAction *DvbChannelView::addEditAction()
 {
-	KAction *action = new KAction(KIcon("configure"), i18n("Edit"), this);
+	KAction *action = new KAction(KIcon("configure"), i18nc("@action", "Edit"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 	return action;
@@ -993,8 +993,7 @@ KAction *DvbChannelView::addEditAction()
 
 KAction *DvbChannelView::addRemoveAction()
 {
-	KAction *action = new KAction(KIcon("edit-delete"),
-		i18nc("remove an item from a list", "Remove"), this);
+	KAction *action = new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
 	return action;

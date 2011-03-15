@@ -402,8 +402,8 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 		new KAction(KIcon("application-x-subrip"), i18n("Add Subtitle"), this);
 	collection->addAction("playlist_add_subtitle", addSubtitleAction);
 
-	KAction *removeTrackAction = new KAction(KIcon("edit-delete"),
-		i18nc("remove an item from a list", "Remove"), this);
+	KAction *removeTrackAction =
+		new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
 	collection->addAction("playlist_remove_track", removeTrackAction);
 
 	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
@@ -413,8 +413,7 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 
 	menu->addSeparator();
 
-	KAction *newAction = new KAction(KIcon("list-add"),
-		i18nc("add a new item to a list", "New"), this);
+	KAction *newAction = new KAction(KIcon("list-add"), i18nc("@action", "New"), this);
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
 	menu->addAction(collection->addAction("playlist_new", newAction));
 
@@ -423,8 +422,8 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 	connect(renameAction, SIGNAL(triggered(bool)), this, SLOT(renamePlaylist()));
 	menu->addAction(collection->addAction("playlist_rename", renameAction));
 
-	KAction *removePlaylistAction = new KAction(KIcon("edit-delete"),
-		i18nc("remove an item from a list", "Remove"), this);
+	KAction *removePlaylistAction =
+		new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
 	connect(removePlaylistAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
 	menu->addAction(collection->addAction("playlist_remove", removePlaylistAction));
 

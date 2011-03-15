@@ -187,7 +187,7 @@ QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orienta
 		case 1:
 			return i18nc("@title:column tv show", "Channel");
 		case 2:
-			return i18nc("@title:column tv show", "Begin");
+			return i18nc("@title:column tv show", "Start");
 		case 3:
 			return i18nc("@title:column tv show", "Duration");
 		}
@@ -308,7 +308,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 		this, SLOT(beginChanged(QDateTime)));
 	gridLayout->addWidget(beginEdit, 2, 1);
 
-	label = new QLabel(i18nc("@label tv show", "Begin:"), widget);
+	label = new QLabel(i18nc("@label tv show", "Start:"), widget);
 	label->setBuddy(beginEdit);
 	gridLayout->addWidget(label, 2, 0);
 
