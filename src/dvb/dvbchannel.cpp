@@ -733,7 +733,7 @@ QVariant DvbChannelTableModel::headerData(int section, Qt::Orientation orientati
 	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
 		switch (section) {
 		case 0:
-			return i18n("Name");
+			return i18n("Channel");
 		case 1:
 			return i18n("Number");
 		}

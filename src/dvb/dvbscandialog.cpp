@@ -203,7 +203,7 @@ QVariant DvbPreviewChannelTableModel::headerData(int section, Qt::Orientation or
 
 	switch (section) {
 	case 0:
-		return i18n("Name");
+		return i18nc("@title:column tv show", "Channel");
 	case 1:
 		return i18n("Provider");
 	case 2:
