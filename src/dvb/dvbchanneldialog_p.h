@@ -1,5 +1,5 @@
 /*
- * dvbchannel_p.h
+ * dvbchanneldialog_p.h
  *
  * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef DVBCHANNEL_P_H
-#define DVBCHANNEL_P_H
+#ifndef DVBCHANNELDIALOG_P_H
+#define DVBCHANNELDIALOG_P_H
 
 #include <KDialog>
 #include "dvbchannel.h"
@@ -28,13 +28,14 @@ class QCheckBox;
 class QSpinBox;
 class KComboBox;
 class KLineEdit;
+class DvbChannelTableModel;
 
 Q_DECLARE_METATYPE(QList<DvbSharedChannel>)
 
 class DvbChannelEditor : public KDialog
 {
 public:
-	DvbChannelEditor(DvbChannelTableModel *model_, const QModelIndex &modelIndex_,
+	DvbChannelEditor(DvbChannelTableModel *model_, const DvbSharedChannel &channel_,
 		QWidget *parent);
 	~DvbChannelEditor();
 
@@ -42,7 +43,6 @@ private:
 	void accept();
 
 	DvbChannelTableModel *model;
-	QPersistentModelIndex persistentIndex;
 	DvbSharedChannel channel;
 	KLineEdit *nameEdit;
 	QSpinBox *numberBox;
@@ -54,4 +54,4 @@ private:
 	QCheckBox *scrambledBox;
 };
 
-#endif /* DVBCHANNEL_P_H */
+#endif /* DVBCHANNELDIALOG_P_H */

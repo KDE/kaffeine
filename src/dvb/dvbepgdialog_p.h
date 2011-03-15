@@ -21,6 +21,7 @@
 #ifndef DVBEPGDIALOG_P_H
 #define DVBEPGDIALOG_P_H
 
+#include "dvbchanneldialog.h"
 #include "dvbepg.h"
 
 class DvbEpgChannelTableModel : public QAbstractTableModel

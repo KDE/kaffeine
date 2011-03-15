@@ -26,9 +26,13 @@
 #include "../tabbase.h"
 #include "dvbrecording.h"
 
+class QModelIndex;
 class QSplitter;
+class KAction;
 class KActionCollection;
 class KMenu;
+class DvbChannelTableModel;
+class DvbChannelView;
 class DvbTimeShiftCleaner;
 class MediaWidget;
 

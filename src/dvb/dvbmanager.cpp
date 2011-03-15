@@ -23,6 +23,7 @@
 
 #include <QDir>
 #include <QPluginLoader>
+#include <QWidget>
 #include <KConfigGroup>
 #include <KDebug>
 #include <KLocale>
@@ -38,7 +39,7 @@
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), channelView(NULL), dvbDumpEnabled(false)
 {
-	channelModel = new DvbSqlChannelModel(this);
+	channelModel = DvbChannelModel::createSqlModel(this);
 	recordingModel = new DvbRecordingModel(this, this);
 	epgModel = new DvbEpgModel(this, this);
 	liveView = new DvbLiveView(this, this);

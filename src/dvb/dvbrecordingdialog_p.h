@@ -21,6 +21,7 @@
 #ifndef DVBRECORDINGDIALOG_P_H
 #define DVBRECORDINGDIALOG_P_H
 
+#include <QAbstractTableModel>
 #include <KDialog>
 #include "dvbrecording.h"
 

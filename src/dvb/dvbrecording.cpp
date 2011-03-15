@@ -22,6 +22,7 @@
 #include "dvbrecording_p.h"
 
 #include <QDir>
+#include <QVariant>
 #include <KDebug>
 #include <KStandardDirs>
 #include "../ensurenopendingoperation.h"

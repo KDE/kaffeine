@@ -35,6 +35,7 @@
 #include <KMessageBox>
 #include "../mediawidget.h"
 #include "../osdwidget.h"
+#include "dvbchanneldialog.h"
 #include "dvbconfigdialog.h"
 #include "dvbepg.h"
 #include "dvbepgdialog.h"

@@ -31,6 +31,7 @@
 #include <KComboBox>
 #include <KLineEdit>
 #include "../datetimeedit.h"
+#include "dvbchanneldialog.h"
 #include "dvbmanager.h"
 
 DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
