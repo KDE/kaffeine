@@ -29,43 +29,28 @@
 class DvbChannel : public SharedData, public SqlKey
 {
 public:
-	DvbChannel() : number(-1), networkId(-1), transportStreamId(-1), pmtPid(-1), audioPid(-1),
-		hasVideo(false), isScrambled(false) { }
+	DvbChannel() : number(-1), networkId(-1), transportStreamId(-1), pmtPid(-1), serviceId(-1),
+		audioPid(-1), hasVideo(false), isScrambled(false) { }
 	~DvbChannel() { }
 
-	void readChannel(QDataStream &stream);
-
-	int getServiceId() const
-	{
-		if (pmtSectionData.size() < 5) {
-			return -1;
-		}
-
-		return ((static_cast<unsigned char>(pmtSectionData.at(3)) << 8) |
-			static_cast<unsigned char>(pmtSectionData.at(4)));
-	}
-
-	void setServiceId(int serviceId)
-	{
-		if (pmtSectionData.size() < 5) {
-			pmtSectionData = QByteArray(5, 0);
-		}
-
-		pmtSectionData[3] = (serviceId >> 8);
-		pmtSectionData[4] = (serviceId & 0xff);
-	}
+	// checks that all variables are ok
+	// updates 'pmtSectionData' if 'serviceId' is valid
+	// (else updates 'serviceId' if 'pmtSectionData' is valid)
+	// 'sqlKey' is ignored
+	bool validate();
 
 	QString name;
 	int number;
 
 	QString source;
 	DvbTransponder transponder;
-	int networkId; // may be -1 (not present); ATSC meaning: source id
+	int networkId; // may be -1 (not present), ATSC meaning: source id
 	int transportStreamId;
 	int pmtPid;
 
 	QByteArray pmtSectionData;
-	int audioPid; // may be -1 (not present)
+	int serviceId;
+	int audioPid; // may be -1 (not present), doesn't have to be present in the pmt section
 	bool hasVideo;
 	bool isScrambled;
 };
@@ -113,8 +98,8 @@ public:
 	DvbSharedChannel findChannelByContent(const DvbChannel &channel) const;
 
 	void cloneFrom(DvbChannelModel *other);
-	void addChannel(const DvbChannel &channel);
-	void updateChannel(const DvbSharedChannel &channel, const DvbChannel &updatedChannel);
+	void addChannel(DvbChannel &channel);
+	void updateChannel(const DvbSharedChannel &channel, DvbChannel &modifiedChannel);
 	void removeChannel(const DvbSharedChannel &channel);
 	void dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
 		const DvbSharedChannel &insertBeforeChannel);
@@ -132,17 +117,12 @@ private:
 	QString extractBaseName(const QString &name) const;
 	QString findNextFreeChannelName(const QString &name) const;
 	int findNextFreeChannelNumber(int number) const;
-	void internalAddChannel(const DvbSharedChannel &channel);
-	void internalUpdateChannel(DvbSharedChannel channel, const DvbChannel &modifiedChannel);
-	void internalRemoveChannel(const DvbSharedChannel &channel);
 
-	QMap<SqlKey, DvbSharedChannel> channels;
-	QMap<QString, DvbSharedChannel> channelNameMapping;
-	QMap<int, DvbSharedChannel> channelNumberMapping;
-	QMultiHash<DvbComparableChannel, DvbSharedChannel> channelContentMapping;
-	mutable bool hasPendingOperation;
-
-protected:
+	QMap<QString, DvbSharedChannel> channelNames;
+	QMap<int, DvbSharedChannel> channelNumbers;
+	QMultiHash<DvbComparableChannel, DvbSharedChannel> channelContents;
+	QMap<SqlKey, DvbSharedChannel> channels; // only used for the sql model
+	bool hasPendingOperation;
 	bool isSqlModel;
 };
 

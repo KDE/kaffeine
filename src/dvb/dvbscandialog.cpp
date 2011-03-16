@@ -506,7 +506,8 @@ void DvbScanDialog::addSelectedChannels()
 			const DvbChannel *channel = scanResultsView->model()->data(modelIndex,
 				DvbPreviewChannelTableModel::DvbPreviewChannelRole).
 				value<const DvbPreviewChannel *>();
-			channelModel->addChannel(*channel);
+			DvbChannel newChannel(*channel);
+			channelModel->addChannel(newChannel);
 		}
 	}
 }
@@ -544,7 +545,8 @@ void DvbScanDialog::addFilteredChannels()
 			}
 		}
 
-		channelModel->addChannel(channel);
+		DvbChannel newChannel(channel);
+		channelModel->addChannel(newChannel);
 	}
 }
 

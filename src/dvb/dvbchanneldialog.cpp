@@ -751,7 +751,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	serviceIdBox = new QSpinBox(groupBox);
 	serviceIdBox->setRange(0, (1 << 16) - 1);
-	serviceIdBox->setValue(channel->getServiceId());
+	serviceIdBox->setValue(channel->serviceId);
 	gridLayout->addWidget(serviceIdBox, 2, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
@@ -803,7 +803,7 @@ void DvbChannelEditor::accept()
 	updatedChannel.number = numberBox->value();
 	updatedChannel.networkId = networkIdBox->value();
 	updatedChannel.transportStreamId = transportStreamIdBox->value();
-	updatedChannel.setServiceId(serviceIdBox->value());
+	updatedChannel.serviceId = serviceIdBox->value();
 
 	if (audioChannelBox->currentIndex() != -1) {
 		updatedChannel.audioPid = audioPids.at(audioChannelBox->currentIndex());

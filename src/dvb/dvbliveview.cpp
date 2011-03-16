@@ -211,10 +211,10 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 
 	mediaWidget->playDvb(channel->name);
 
-	internal->pmtFilter.setProgramNumber(channel->getServiceId());
+	internal->pmtFilter.setProgramNumber(channel->serviceId);
 	startDevice();
 
-	internal->patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
+	internal->patGenerator.initPat(channel->transportStreamId, channel->serviceId,
 		channel->pmtPid);
 	videoPid = -1;
 	audioPid = channel->audioPid;

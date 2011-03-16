@@ -385,10 +385,10 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 		}
 
 		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
-		pmtFilter.setProgramNumber(channel->getServiceId());
+		pmtFilter.setProgramNumber(channel->serviceId);
 		device->addSectionFilter(channel->pmtPid, &pmtFilter);
 		pmtSectionData = channel->pmtSectionData;
-		patGenerator.initPat(channel->transportStreamId, channel->getServiceId(),
+		patGenerator.initPat(channel->transportStreamId, channel->serviceId,
 			channel->pmtPid);
 
 		if (channel->isScrambled && !pmtSectionData.isEmpty()) {

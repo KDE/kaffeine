@@ -49,8 +49,9 @@ public:
 	// int transportStreamId;
 	// int pmtPid;
 	// QByteArray pmtSectionData;
+	// int serviceId;
+	// int audioPid; // may be -1 (not present)
 	// bool hasVideo;
-	QList<int> audioPids;
 	int snr; // percent
 
 	/*
@@ -67,7 +68,6 @@ public:
 	 */
 
 	// int number;
-	// int audioPid; // may be -1 (not present)
 };
 
 class DvbScan : public QObject

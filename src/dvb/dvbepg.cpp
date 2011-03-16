@@ -504,7 +504,7 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	pseudoChannel.transponder = transponder;
 	pseudoChannel.networkId = eitSection.originalNetworkId();
 	pseudoChannel.transportStreamId = eitSection.transportStreamId();
-	pseudoChannel.setServiceId(eitSection.serviceId());
+	pseudoChannel.serviceId = eitSection.serviceId();
 	DvbSharedChannel channel = channelModel->findChannelByContent(pseudoChannel);
 
 	if (!channel.isValid()) {

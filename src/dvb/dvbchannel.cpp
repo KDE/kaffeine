@@ -27,57 +27,28 @@
 #include "../ensurenopendingoperation.h"
 #include "dvbsi.h"
 
-void DvbChannel::readChannel(QDataStream &stream)
+bool DvbChannel::validate()
 {
-	int type;
-	stream >> type;
+	if (!name.isEmpty() && (number >= 1) && !source.isEmpty() && transponder.isValid() &&
+	    (networkId >= -1) && (networkId <= 0xffff) && (transportStreamId >= 0) &&
+	    (transportStreamId <= 0xffff) && (pmtPid >= 0) && (pmtPid <= 0x1fff) &&
+	    (audioPid >= -1) && (audioPid <= 0x1fff)) {
+		if ((serviceId >= 0) && (serviceId <= 0xffff)) {
+			if (pmtSectionData.size() < 5) {
+				pmtSectionData = QByteArray(5, 0);
+			}
 
-	stream >> name;
-	stream >> number;
-
-	stream >> source;
-
-	switch (type) {
-	case DvbTransponderBase::DvbC:
-		transponder = DvbTransponder(DvbTransponderBase::DvbC);
-		transponder.as<DvbCTransponder>()->readTransponder(stream);
-		break;
-	case DvbTransponderBase::DvbS:
-		transponder = DvbTransponder(DvbTransponderBase::DvbS);
-		transponder.as<DvbSTransponder>()->readTransponder(stream);
-		break;
-	case DvbTransponderBase::DvbS2:
-		transponder = DvbTransponder(DvbTransponderBase::DvbS2);
-		transponder.as<DvbS2Transponder>()->readTransponder(stream);
-		break;
-	case DvbTransponderBase::DvbT:
-		transponder = DvbTransponder(DvbTransponderBase::DvbT);
-		transponder.as<DvbTTransponder>()->readTransponder(stream);
-		break;
-	case DvbTransponderBase::Atsc:
-		transponder = DvbTransponder(DvbTransponderBase::Atsc);
-		transponder.as<AtscTransponder>()->readTransponder(stream);
-		break;
-	default:
-		stream.setStatus(QDataStream::ReadCorruptData);
-		return;
+			pmtSectionData[3] = (serviceId >> 8);
+			pmtSectionData[4] = (serviceId & 0xff);
+			return true;
+		} else if (pmtSectionData.size() >= 5) {
+			serviceId = ((static_cast<unsigned char>(pmtSectionData.at(3)) << 8) |
+				static_cast<unsigned char>(pmtSectionData.at(4)));
+			return true;
+		}
 	}
 
-	stream >> networkId;
-	stream >> transportStreamId;
-	int serviceId;
-	stream >> serviceId;
-	stream >> pmtPid;
-
-	stream >> pmtSectionData;
-	int videoPid;
-	stream >> videoPid;
-	stream >> audioPid;
-
-	int flags;
-	stream >> flags;
-	hasVideo = (videoPid >= 0);
-	isScrambled = (flags & 0x1) != 0;
+	return false;
 }
 
 bool DvbComparableChannel::operator==(const DvbComparableChannel &other) const
@@ -97,7 +68,7 @@ bool DvbComparableChannel::operator==(const DvbComparableChannel &other) const
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
 		return ((channel->transportStreamId == other.channel->transportStreamId) &&
-			(channel->getServiceId() == other.channel->getServiceId()));
+			(channel->serviceId == other.channel->serviceId));
 	case DvbTransponderBase::Atsc:
 		return true;
 	}
@@ -117,7 +88,7 @@ uint qHash(const DvbComparableChannel &channel)
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
 		hash ^= (qHash(channel.channel->transportStreamId) << 8);
-		hash ^= (qHash(channel.channel->getServiceId()) << 16);
+		hash ^= (qHash(channel.channel->serviceId) << 16);
 		break;
 	case DvbTransponderBase::Atsc:
 		break;
@@ -129,7 +100,6 @@ uint qHash(const DvbComparableChannel &channel)
 DvbChannelModel::DvbChannelModel(QObject *parent) : QObject(parent), hasPendingOperation(false),
 	isSqlModel(false)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 }
 
 DvbChannelModel::~DvbChannelModel()
@@ -167,7 +137,53 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 	while (!stream.atEnd()) {
 		DvbChannel channel;
-		channel.readChannel(stream);
+		int type;
+		stream >> type;
+		stream >> channel.name;
+		stream >> channel.number;
+		stream >> channel.source;
+
+		switch (type) {
+		case DvbTransponderBase::DvbC:
+			channel.transponder = DvbTransponder(DvbTransponderBase::DvbC);
+			channel.transponder.as<DvbCTransponder>()->readTransponder(stream);
+			break;
+		case DvbTransponderBase::DvbS:
+			channel.transponder = DvbTransponder(DvbTransponderBase::DvbS);
+			channel.transponder.as<DvbSTransponder>()->readTransponder(stream);
+			break;
+		case DvbTransponderBase::DvbS2:
+			channel.transponder = DvbTransponder(DvbTransponderBase::DvbS2);
+			channel.transponder.as<DvbS2Transponder>()->readTransponder(stream);
+			break;
+		case DvbTransponderBase::DvbT:
+			channel.transponder = DvbTransponder(DvbTransponderBase::DvbT);
+			channel.transponder.as<DvbTTransponder>()->readTransponder(stream);
+			break;
+		case DvbTransponderBase::Atsc:
+			channel.transponder = DvbTransponder(DvbTransponderBase::Atsc);
+			channel.transponder.as<AtscTransponder>()->readTransponder(stream);
+			break;
+		default:
+			stream.setStatus(QDataStream::ReadCorruptData);
+			break;
+		}
+
+		stream >> channel.networkId;
+		stream >> channel.transportStreamId;
+		int serviceId;
+		stream >> serviceId;
+		stream >> channel.pmtPid;
+
+		stream >> channel.pmtSectionData;
+		int videoPid;
+		stream >> videoPid;
+		stream >> channel.audioPid;
+
+		int flags;
+		stream >> flags;
+		channel.hasVideo = (videoPid >= 0);
+		channel.isScrambled = (flags & 0x1) != 0;
 
 		if (stream.status() != QDataStream::Ok) {
 			kWarning() << "invalid channels in file" << file.fileName();
@@ -186,167 +202,245 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 QMap<int, DvbSharedChannel> DvbChannelModel::getChannels() const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	return channelNumberMapping;
+	return channelNumbers;
 }
 
 DvbSharedChannel DvbChannelModel::findChannelByName(const QString &channelName) const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	return channelNameMapping.value(channelName);
+	return channelNames.value(channelName);
 }
 
 DvbSharedChannel DvbChannelModel::findChannelByNumber(int channelNumber) const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	return channelNumberMapping.value(channelNumber);
+	return channelNumbers.value(channelNumber);
 }
 
 DvbSharedChannel DvbChannelModel::findChannelByContent(const DvbChannel &channel) const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	return channelContentMapping.value(DvbComparableChannel(&channel));
+	return channelContents.value(DvbComparableChannel(&channel));
 }
 
 void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-
 	if (isSqlModel == other->isSqlModel) {
 		kError() << "cloning is only supported between sql model and auxiliary model";
 		return;
 	}
 
-	QMultiMap<SqlKey, DvbSharedChannel> channelKeys;
-
-	foreach (const DvbSharedChannel &channel, channelNameMapping) {
-		channelKeys.insert(*channel, channel);
-	}
-
 	QMultiMap<SqlKey, DvbSharedChannel> otherChannelKeys;
 
-	foreach (const DvbSharedChannel &channel, other->channelNameMapping) {
+	foreach (const DvbSharedChannel &channel, other->getChannels()) {
 		otherChannelKeys.insert(*channel, channel);
 	}
 
-	typedef QMultiMap<SqlKey, DvbSharedChannel>::ConstIterator ConstIterator;
-	typedef QMultiMap<SqlKey, DvbSharedChannel>::Iterator Iterator;
+	foreach (const DvbSharedChannel &channel, getChannels()) {
+		DvbSharedChannel otherChannel = otherChannelKeys.take(*channel);
 
-	for (ConstIterator it = channelKeys.constBegin(); it != channelKeys.constEnd(); ++it) {
-		const DvbSharedChannel &channel = *it;
-		Iterator otherIt = otherChannelKeys.find(it.key());
-
-		if (ConstIterator(otherIt) != otherChannelKeys.constEnd()) {
-			const DvbSharedChannel &otherChannel = *otherIt;
-
-			if (channel != otherChannel) {
-				internalUpdateChannel(channel, *otherChannel);
+		if (otherChannel.isValid()) {
+			if (otherChannel != channel) {
+				DvbChannel modifiedChannel(*otherChannel);
+				updateChannel(channel, modifiedChannel);
 			}
-
-			otherChannelKeys.erase(otherIt);
 		} else {
-			internalRemoveChannel(channel);
+			removeChannel(channel);
 		}
 	}
 
 	foreach (const DvbSharedChannel &channel, otherChannelKeys) {
-		internalAddChannel(channel);
+		DvbChannel newChannel(*channel);
+		addChannel(newChannel);
 	}
 }
 
-void DvbChannelModel::addChannel(const DvbChannel &channel)
+void DvbChannelModel::addChannel(DvbChannel &channel)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	QHash<DvbComparableChannel, DvbSharedChannel>::ConstIterator it =
-		channelContentMapping.constFind(DvbComparableChannel(&channel));
-	DvbPmtParser pmtParser(DvbPmtSection(channel.pmtSectionData));
-	int audioPid = -1;
+	bool forceAdd;
 
-	if (!pmtParser.audioPids.isEmpty()) {
-		audioPid = pmtParser.audioPids.at(0).first;
-	}
-
-	if (it != channelContentMapping.constEnd()) {
-		const DvbSharedChannel &existingChannel = *it;
-		DvbChannel updatedChannel = channel;
-
-		if (updatedChannel.name == extractBaseName(existingChannel->name)) {
-			updatedChannel.name = existingChannel->name;
-		} else {
-			updatedChannel.name = findNextFreeChannelName(updatedChannel.name);
-		}
-
-		updatedChannel.number = existingChannel->number;
-		updatedChannel.audioPid = audioPid;
-
-		for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
-			if (pmtParser.audioPids.at(i).first == existingChannel->audioPid) {
-				updatedChannel.audioPid = existingChannel->audioPid;
-				break;
-			}
-		}
-
-		internalUpdateChannel(existingChannel, updatedChannel);
+	if (channel.number < 1) {
+		channel.number = 1;
+		forceAdd = false;
 	} else {
-		DvbChannel *newChannel = new DvbChannel(channel);
-		newChannel->name = findNextFreeChannelName(channel.name);
-		newChannel->number = findNextFreeChannelNumber(channel.number);
-		newChannel->audioPid = audioPid;
-		internalAddChannel(DvbSharedChannel(newChannel));
+		forceAdd = true;
 	}
-}
 
-void DvbChannelModel::updateChannel(const DvbSharedChannel &channel,
-	const DvbChannel &updatedChannel)
-{
+	if (!channel.validate()) {
+		kWarning() << "invalid channel";
+		return;
+	}
+
+	if (forceAdd) {
+		DvbSharedChannel existingChannel = channelNames.value(channel.name);
+
+		if (existingChannel.isValid()) {
+			DvbChannel updatedChannel = *existingChannel;
+			updatedChannel.name = findNextFreeChannelName(updatedChannel.name);
+			updateChannel(existingChannel, updatedChannel);
+		}
+
+		existingChannel = channelNumbers.value(channel.number);
+
+		if (existingChannel.isValid()) {
+			DvbChannel updatedChannel = *existingChannel;
+			updatedChannel.number = findNextFreeChannelNumber(updatedChannel.number);
+			updateChannel(existingChannel, updatedChannel);
+		}
+	} else {
+		DvbSharedChannel existingChannel =
+			channelContents.value(DvbComparableChannel(&channel));
+
+		if (existingChannel.isValid()) {
+			if (channel.name == extractBaseName(existingChannel->name)) {
+				channel.name = existingChannel->name;
+			} else {
+				channel.name = findNextFreeChannelName(channel.name);
+			}
+
+			channel.number = existingChannel->number;
+			DvbPmtParser pmtParser(DvbPmtSection(channel.pmtSectionData));
+
+			for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+				if (pmtParser.audioPids.at(i).first == existingChannel->audioPid) {
+					channel.audioPid = existingChannel->audioPid;
+					break;
+				}
+			}
+
+			updateChannel(existingChannel, channel);
+			return;
+		}
+
+		channel.name = findNextFreeChannelName(channel.name);
+		channel.number = findNextFreeChannelNumber(channel.number);
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
-	if (channel->name != updatedChannel.name) {
-		DvbSharedChannel existingChannel = channelNameMapping.value(updatedChannel.name);
+	if (isSqlModel) {
+		channel.setSqlKey(sqlFindFreeKey(channels));
+	} else {
+		channel.setSqlKey(SqlKey());
+	}
+
+	DvbSharedChannel newChannel(new DvbChannel(channel));
+	channelNames.insert(newChannel->name, newChannel);
+	channelNumbers.insert(newChannel->number, newChannel);
+	channelContents.insert(DvbComparableChannel(newChannel), newChannel);
+
+	if (isSqlModel) {
+		channels.insert(*newChannel, newChannel);
+		sqlInsert(*newChannel);
+	}
+
+	emit channelAdded(newChannel);
+}
+
+void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel &modifiedChannel)
+{
+	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel) ||
+	    !modifiedChannel.validate()) {
+		kWarning() << "invalid channel";
+		return;
+	}
+
+	if (channel->name != modifiedChannel.name) {
+		DvbSharedChannel existingChannel = channelNames.value(modifiedChannel.name);
 
 		if (existingChannel.isValid()) {
-			DvbChannel modifiedChannel = *existingChannel;
-			modifiedChannel.name = findNextFreeChannelName(modifiedChannel.name);
-			internalUpdateChannel(existingChannel, modifiedChannel);
+			DvbChannel updatedChannel = *existingChannel;
+			updatedChannel.name = findNextFreeChannelName(updatedChannel.name);
+			updateChannel(existingChannel, updatedChannel);
 		}
 	}
 
-	if (channel->number != updatedChannel.number) {
-		DvbSharedChannel existingChannel =
-			channelNumberMapping.value(updatedChannel.number);
+	if (channel->number != modifiedChannel.number) {
+		DvbSharedChannel existingChannel = channelNumbers.value(modifiedChannel.number);
 
 		if (existingChannel.isValid()) {
-			DvbChannel modifiedChannel = *existingChannel;
-			modifiedChannel.number = findNextFreeChannelNumber(modifiedChannel.number);
-			internalUpdateChannel(existingChannel, modifiedChannel);
+			DvbChannel updatedChannel = *existingChannel;
+			updatedChannel.number = findNextFreeChannelNumber(updatedChannel.number);
+			updateChannel(existingChannel, updatedChannel);
 		}
 	}
 
-	internalUpdateChannel(channel, updatedChannel);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	modifiedChannel.setSqlKey(*channel);
+
+	if (!isSqlModel && channel->isSqlKeyValid()) {
+		if (channel->name != modifiedChannel.name) {
+			channelNames.remove(channel->name);
+		}
+
+		if (channel->number != modifiedChannel.number) {
+			channelNumbers.remove(channel->number);
+		}
+
+		if (DvbComparableChannel(channel) != DvbComparableChannel(&modifiedChannel)) {
+			channelContents.remove(DvbComparableChannel(channel), channel);
+		}
+
+		DvbSharedChannel detachedChannel(new DvbChannel(modifiedChannel));
+		channelNames.insert(detachedChannel->name, detachedChannel);
+		channelNumbers.insert(detachedChannel->number, detachedChannel);
+		channelContents.insert(DvbComparableChannel(detachedChannel),
+			detachedChannel);
+		emit channelUpdated(detachedChannel, *channel);
+	} else {
+		DvbChannel oldChannel = *channel;
+		*const_cast<DvbChannel *>(channel.constData()) = modifiedChannel;
+
+		if (channel->name != oldChannel.name) {
+			channelNames.remove(oldChannel.name);
+			channelNames.insert(channel->name, channel);
+		}
+
+		if (channel->number != oldChannel.number) {
+			channelNumbers.remove(oldChannel.number);
+			channelNumbers.insert(channel->number, channel);
+		}
+
+		if (DvbComparableChannel(channel) != DvbComparableChannel(&oldChannel)) {
+			channelContents.remove(DvbComparableChannel(&oldChannel), channel);
+			channelContents.insert(DvbComparableChannel(channel), channel);
+		}
+
+		if (isSqlModel) {
+			sqlUpdate(*channel);
+		}
+
+		emit channelUpdated(channel, oldChannel);
+	}
 }
 
 void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 {
-	internalRemoveChannel(channel);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	channelNames.remove(channel->name);
+	channelNumbers.remove(channel->number);
+	channelContents.remove(DvbComparableChannel(channel), channel);
+
+	if (isSqlModel) {
+		sqlRemove(*channel);
+	}
+
+	emit channelRemoved(channel);
 }
 
 void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
 	const DvbSharedChannel &insertBeforeChannel)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	int newNumberBegin = 1;
 
 	if (insertBeforeChannel.isValid()) {
 		QMap<int, DvbSharedChannel>::ConstIterator it =
-			channelNumberMapping.constFind(insertBeforeChannel->number);
+			channelNumbers.constFind(insertBeforeChannel->number);
 
-		if (it != channelNumberMapping.constBegin()) {
+		if (it != channelNumbers.constBegin()) {
 			newNumberBegin = ((it - 1).key() + 1);
 		}
 	} else {
-		QMap<int, DvbSharedChannel>::ConstIterator it = channelNumberMapping.constEnd();
+		QMap<int, DvbSharedChannel>::ConstIterator it = channelNumbers.constEnd();
 
-		if (it != channelNumberMapping.constBegin()) {
+		if (it != channelNumbers.constBegin()) {
 			newNumberBegin = ((it - 1).key() + 1);
 		}
 	}
@@ -356,18 +450,18 @@ void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedCha
 	for (int i = 0; i < selectedChannels.size(); ++i) {
 		const DvbSharedChannel &selectedChannel = selectedChannels.at(i);
 		int number = (newNumberBegin + i);
-		DvbSharedChannel existingChannel = channelNumberMapping.value(number);
+		DvbSharedChannel existingChannel = channelNumbers.value(number);
 
 		if (existingChannel.isValid() && (existingChannel != selectedChannel)) {
 			DvbChannel modifiedChannel = *existingChannel;
 			modifiedChannel.number = findNextFreeChannelNumber(newNumberEnd);
-			internalUpdateChannel(existingChannel, modifiedChannel);
+			updateChannel(existingChannel, modifiedChannel);
 		}
 
 		if (selectedChannel->number != number) {
 			DvbChannel modifiedChannel = *selectedChannel;
 			modifiedChannel.number = number;
-			internalUpdateChannel(selectedChannel, modifiedChannel);
+			updateChannel(selectedChannel, modifiedChannel);
 		}
 	}
 }
@@ -412,8 +506,8 @@ bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, 
 	channel->hasVideo = ((flags & 0x01) != 0);
 	channel->isScrambled = ((flags & 0x02) != 0);
 
-	if (!channel->name.isEmpty() && !channelNameMapping.contains(channel->name) &&
-	    (channel->number >= 1) && !channelNumberMapping.contains(channel->number) &&
+	if (!channel->name.isEmpty() && !channelNames.contains(channel->name) &&
+	    (channel->number >= 1) && !channelNumbers.contains(channel->number) &&
 	    !channel->source.isEmpty() && channel->transponder.isValid() &&
 	    (channel->networkId >= -1) && (channel->networkId <= 0xffff) &&
 	    (channel->transportStreamId >= 0) && (channel->transportStreamId <= 0xffff) &&
@@ -421,9 +515,9 @@ bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, 
 	    !channel->pmtSectionData.isEmpty() &&
 	    (channel->audioPid >= -1) && (channel->audioPid <= 0x1fff)) {
 		channels.insert(*sharedChannel, sharedChannel);
-		channelNameMapping.insert(sharedChannel->name, sharedChannel);
-		channelNumberMapping.insert(sharedChannel->number, sharedChannel);
-		channelContentMapping.insert(DvbComparableChannel(sharedChannel), sharedChannel);
+		channelNames.insert(sharedChannel->name, sharedChannel);
+		channelNumbers.insert(sharedChannel->number, sharedChannel);
+		channelContents.insert(DvbComparableChannel(sharedChannel), sharedChannel);
 		return true;
 	}
 
@@ -448,7 +542,7 @@ QString DvbChannelModel::extractBaseName(const QString &name) const
 
 QString DvbChannelModel::findNextFreeChannelName(const QString &name) const
 {
-	if (!channelNameMapping.contains(name)) {
+	if (!channelNames.contains(name)) {
 		return name;
 	}
 
@@ -456,7 +550,7 @@ QString DvbChannelModel::findNextFreeChannelName(const QString &name) const
 	int suffix = 0;
 	QString newName = baseName;
 
-	while (channelNameMapping.contains(newName)) {
+	while (channelNames.contains(newName)) {
 		++suffix;
 		newName = baseName + '-' + QString::number(suffix);
 	}
@@ -466,72 +560,9 @@ QString DvbChannelModel::findNextFreeChannelName(const QString &name) const
 
 int DvbChannelModel::findNextFreeChannelNumber(int number) const
 {
-	if (number < 1) {
-		number = 1;
-	}
-
-	while (channelNumberMapping.contains(number)) {
+	while (channelNumbers.contains(number)) {
 		++number;
 	}
 
 	return number;
-}
-
-void DvbChannelModel::internalAddChannel(const DvbSharedChannel &channel)
-{
-	channelNameMapping.insert(channel->name, channel);
-	channelNumberMapping.insert(channel->number, channel);
-	channelContentMapping.insert(DvbComparableChannel(channel), channel);
-
-	if (isSqlModel) {
-		const_cast<DvbChannel *>(channel.constData())->setSqlKey(sqlFindFreeKey(channels));
-		sqlInsert(*channel);
-	}
-
-	emit channelAdded(channel);
-}
-
-void DvbChannelModel::internalUpdateChannel(DvbSharedChannel channel,
-	const DvbChannel &modifiedChannel)
-{
-	if (!isSqlModel && channel->isSqlKeyValid()) {
-		channel.detach();
-	}
-
-	DvbChannel oldChannel = *channel;
-	*const_cast<DvbChannel *>(channel.constData()) = modifiedChannel;
-
-	if (channel->name != oldChannel.name) {
-		channelNameMapping.remove(oldChannel.name);
-		channelNameMapping.insert(channel->name, channel);
-	}
-
-	if (channel->number != oldChannel.number) {
-		channelNumberMapping.remove(oldChannel.number);
-		channelNumberMapping.insert(channel->number, channel);
-	}
-
-	if (DvbComparableChannel(channel) != DvbComparableChannel(&oldChannel)) {
-		channelContentMapping.remove(DvbComparableChannel(&oldChannel), channel);
-		channelContentMapping.insert(DvbComparableChannel(channel), channel);
-	}
-
-	if (isSqlModel) {
-		sqlUpdate(*channel);
-	}
-
-	emit channelUpdated(channel, oldChannel);
-}
-
-void DvbChannelModel::internalRemoveChannel(const DvbSharedChannel &channel)
-{
-	channelNameMapping.remove(channel->name);
-	channelNumberMapping.remove(channel->number);
-	channelContentMapping.remove(DvbComparableChannel(channel), channel);
-
-	if (isSqlModel) {
-		sqlRemove(*channel);
-	}
-
-	emit channelRemoved(channel);
 }

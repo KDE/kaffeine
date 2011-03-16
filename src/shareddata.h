@@ -41,11 +41,6 @@ public:
 	explicit ExplicitlySharedDataPointer(T *data_ = NULL) : data(data_) { }
 	~ExplicitlySharedDataPointer() { }
 
-	void detach()
-	{
-		data.detach();
-	}
-
 	bool isValid() const
 	{
 		return (data.constData() != NULL);
