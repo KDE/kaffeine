@@ -1,7 +1,7 @@
 /*
  * dvbchannel.h
  *
- * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,7 @@ public:
 
 	QString source;
 	DvbTransponder transponder;
-	int networkId; // may be -1 (not present), ATSC meaning: source id
+	int networkId; // may be -1 (not present), atsc meaning: source id
 	int transportStreamId;
 	int pmtPid;
 
@@ -58,22 +58,25 @@ public:
 typedef ExplicitlySharedDataPointer<const DvbChannel> DvbSharedChannel;
 Q_DECLARE_TYPEINFO(DvbSharedChannel, Q_MOVABLE_TYPE);
 
-class DvbComparableChannel
+class DvbChannelId
 {
 public:
-	explicit DvbComparableChannel(const DvbChannel *channel_) : channel(channel_) { }
-	explicit DvbComparableChannel(const DvbSharedChannel &channel_) :
-		channel(channel_.constData()) { }
-	~DvbComparableChannel() { }
+	explicit DvbChannelId(const DvbChannel *channel_) : channel(channel_) { }
+	explicit DvbChannelId(const DvbSharedChannel &channel_) : channel(channel_.constData()) { }
+	~DvbChannelId() { }
 
-	bool operator==(const DvbComparableChannel &other) const;
+	// compares channels by transmission type and
+	// ( dvb) 'source', 'networkId', 'transportStreamId', 'serviceId'
+	// (atsc) 'source', 'networkId'
 
-	bool operator!=(const DvbComparableChannel &other) const
+	bool operator==(const DvbChannelId &other) const;
+
+	bool operator!=(const DvbChannelId &other) const
 	{
 		return !(*this == other);
 	}
 
-	friend uint qHash(const DvbComparableChannel &channel);
+	friend uint qHash(const DvbChannelId &channel);
 
 private:
 	const DvbChannel *channel;
@@ -95,7 +98,7 @@ public:
 	QMap<int, DvbSharedChannel> getChannels() const;
 	DvbSharedChannel findChannelByName(const QString &channelName) const;
 	DvbSharedChannel findChannelByNumber(int channelNumber) const;
-	DvbSharedChannel findChannelByContent(const DvbChannel &channel) const;
+	DvbSharedChannel findChannelById(const DvbChannel &channel) const;
 
 	void cloneFrom(DvbChannelModel *other);
 	void addChannel(DvbChannel &channel);
@@ -120,7 +123,7 @@ private:
 
 	QMap<QString, DvbSharedChannel> channelNames;
 	QMap<int, DvbSharedChannel> channelNumbers;
-	QMultiHash<DvbComparableChannel, DvbSharedChannel> channelContents;
+	QMultiHash<DvbChannelId, DvbSharedChannel> channelIds;
 	QMap<SqlKey, DvbSharedChannel> channels; // only used for the sql model
 	bool hasPendingOperation;
 	bool isSqlModel;

@@ -357,7 +357,7 @@ void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChann
 {
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
-	if (DvbComparableChannel(channel) != DvbComparableChannel(&oldChannel)) {
+	if (DvbChannelId(channel) != DvbChannelId(&oldChannel)) {
 		Iterator it = entries.lowerBound(DvbEpgEntry(channel));
 
 		while ((ConstIterator(it) != entries.constEnd()) &&
@@ -505,11 +505,11 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	pseudoChannel.networkId = eitSection.originalNetworkId();
 	pseudoChannel.transportStreamId = eitSection.transportStreamId();
 	pseudoChannel.serviceId = eitSection.serviceId();
-	DvbSharedChannel channel = channelModel->findChannelByContent(pseudoChannel);
+	DvbSharedChannel channel = channelModel->findChannelById(pseudoChannel);
 
 	if (!channel.isValid()) {
 		pseudoChannel.networkId = -1;
-		channel = channelModel->findChannelByContent(pseudoChannel);
+		channel = channelModel->findChannelById(pseudoChannel);
 	}
 
 	if (!channel.isValid()) {
@@ -690,7 +690,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	pseudoChannel.source = source;
 	pseudoChannel.transponder = transponder;
 	pseudoChannel.networkId = eitSection.sourceId();
-	DvbSharedChannel channel = channelModel->findChannelByContent(pseudoChannel);
+	DvbSharedChannel channel = channelModel->findChannelById(pseudoChannel);
 
 	if (!channel.isValid()) {
 		return;

@@ -1,7 +1,7 @@
 /*
  * dvbchannel.cpp
  *
- * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -51,7 +51,7 @@ bool DvbChannel::validate()
 	return false;
 }
 
-bool DvbComparableChannel::operator==(const DvbComparableChannel &other) const
+bool DvbChannelId::operator==(const DvbChannelId &other) const
 {
 	if ((channel->source != other.channel->source) ||
 	    (channel->transponder.getTransmissionType() !=
@@ -76,7 +76,7 @@ bool DvbComparableChannel::operator==(const DvbComparableChannel &other) const
 	return false;
 }
 
-uint qHash(const DvbComparableChannel &channel)
+uint qHash(const DvbChannelId &channel)
 {
 	uint hash = (qHash(channel.channel->source) ^ qHash(channel.channel->networkId));
 
@@ -114,10 +114,10 @@ DvbChannelModel::~DvbChannelModel()
 DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 {
 	DvbChannelModel *channelModel = new DvbChannelModel(parent);
+	channelModel->isSqlModel = true;
 	channelModel->sqlInit("Channels",
 		QStringList() << "Name" << "Number" << "Source" << "Transponder" << "NetworkId" <<
 		"TransportStreamId" << "PmtPid" << "PmtSection" << "AudioPid" << "Flags");
-	channelModel->isSqlModel = true;
 
 	// compatibility code
 
@@ -215,9 +215,9 @@ DvbSharedChannel DvbChannelModel::findChannelByNumber(int channelNumber) const
 	return channelNumbers.value(channelNumber);
 }
 
-DvbSharedChannel DvbChannelModel::findChannelByContent(const DvbChannel &channel) const
+DvbSharedChannel DvbChannelModel::findChannelById(const DvbChannel &channel) const
 {
-	return channelContents.value(DvbComparableChannel(&channel));
+	return channelIds.value(DvbChannelId(&channel));
 }
 
 void DvbChannelModel::cloneFrom(DvbChannelModel *other)
@@ -285,8 +285,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 			updateChannel(existingChannel, updatedChannel);
 		}
 	} else {
-		DvbSharedChannel existingChannel =
-			channelContents.value(DvbComparableChannel(&channel));
+		DvbSharedChannel existingChannel = channelIds.value(DvbChannelId(&channel));
 
 		if (existingChannel.isValid()) {
 			if (channel.name == extractBaseName(existingChannel->name)) {
@@ -324,7 +323,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	DvbSharedChannel newChannel(new DvbChannel(channel));
 	channelNames.insert(newChannel->name, newChannel);
 	channelNumbers.insert(newChannel->number, newChannel);
-	channelContents.insert(DvbComparableChannel(newChannel), newChannel);
+	channelIds.insert(DvbChannelId(newChannel), newChannel);
 
 	if (isSqlModel) {
 		channels.insert(*newChannel, newChannel);
@@ -374,15 +373,14 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 			channelNumbers.remove(channel->number);
 		}
 
-		if (DvbComparableChannel(channel) != DvbComparableChannel(&modifiedChannel)) {
-			channelContents.remove(DvbComparableChannel(channel), channel);
+		if (DvbChannelId(channel) != DvbChannelId(&modifiedChannel)) {
+			channelIds.remove(DvbChannelId(channel), channel);
 		}
 
 		DvbSharedChannel detachedChannel(new DvbChannel(modifiedChannel));
 		channelNames.insert(detachedChannel->name, detachedChannel);
 		channelNumbers.insert(detachedChannel->number, detachedChannel);
-		channelContents.insert(DvbComparableChannel(detachedChannel),
-			detachedChannel);
+		channelIds.insert(DvbChannelId(detachedChannel), detachedChannel);
 		emit channelUpdated(detachedChannel, *channel);
 	} else {
 		DvbChannel oldChannel = *channel;
@@ -398,9 +396,9 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 			channelNumbers.insert(channel->number, channel);
 		}
 
-		if (DvbComparableChannel(channel) != DvbComparableChannel(&oldChannel)) {
-			channelContents.remove(DvbComparableChannel(&oldChannel), channel);
-			channelContents.insert(DvbComparableChannel(channel), channel);
+		if (DvbChannelId(channel) != DvbChannelId(&oldChannel)) {
+			channelIds.remove(DvbChannelId(&oldChannel), channel);
+			channelIds.insert(DvbChannelId(channel), channel);
 		}
 
 		if (isSqlModel) {
@@ -416,9 +414,10 @@ void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	channelNames.remove(channel->name);
 	channelNumbers.remove(channel->number);
-	channelContents.remove(DvbComparableChannel(channel), channel);
+	channelIds.remove(DvbChannelId(channel), channel);
 
 	if (isSqlModel) {
+		channels.remove(*channel);
 		sqlRemove(*channel);
 	}
 
@@ -510,7 +509,7 @@ bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, 
 	    !channelNumbers.contains(channel->number)) {
 		channelNames.insert(sharedChannel->name, sharedChannel);
 		channelNumbers.insert(sharedChannel->number, sharedChannel);
-		channelContents.insert(DvbComparableChannel(sharedChannel), sharedChannel);
+		channelIds.insert(DvbChannelId(sharedChannel), sharedChannel);
 		channels.insert(*sharedChannel, sharedChannel);
 		return true;
 	}
