@@ -506,18 +506,12 @@ bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, 
 	channel->hasVideo = ((flags & 0x01) != 0);
 	channel->isScrambled = ((flags & 0x02) != 0);
 
-	if (!channel->name.isEmpty() && !channelNames.contains(channel->name) &&
-	    (channel->number >= 1) && !channelNumbers.contains(channel->number) &&
-	    !channel->source.isEmpty() && channel->transponder.isValid() &&
-	    (channel->networkId >= -1) && (channel->networkId <= 0xffff) &&
-	    (channel->transportStreamId >= 0) && (channel->transportStreamId <= 0xffff) &&
-	    (channel->pmtPid >= 0) && (channel->pmtPid <= 0x1fff) &&
-	    !channel->pmtSectionData.isEmpty() &&
-	    (channel->audioPid >= -1) && (channel->audioPid <= 0x1fff)) {
-		channels.insert(*sharedChannel, sharedChannel);
+	if (channel->validate() && !channelNames.contains(channel->name) &&
+	    !channelNumbers.contains(channel->number)) {
 		channelNames.insert(sharedChannel->name, sharedChannel);
 		channelNumbers.insert(sharedChannel->number, sharedChannel);
 		channelContents.insert(DvbComparableChannel(sharedChannel), sharedChannel);
+		channels.insert(*sharedChannel, sharedChannel);
 		return true;
 	}
 
