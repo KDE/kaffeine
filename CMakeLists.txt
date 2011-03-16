@@ -6,10 +6,10 @@ find_package(Xine REQUIRED)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${X11_INCLUDE_DIR} ${X11_Xscreensaver_INCLUDE_PATH} ${XINE_INCLUDE_DIR})
 add_definitions(${KDE4_DEFINITIONS})
 
-if((${QT_VERSION_MAJOR} GREATER 4) OR (${QT_VERSION_MINOR} GREATER 5))
+if(DEFINED QT_VERSION_MAJOR)
   # qt 4.5.?? has problems with strict iterators
   add_definitions(-DQT_STRICT_ITERATORS)
-endif((${QT_VERSION_MAJOR} GREATER 4) OR (${QT_VERSION_MINOR} GREATER 5))
+endif(DEFINED QT_VERSION_MAJOR)
 
 check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
 
