@@ -376,6 +376,7 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 	}
 
 	if (device == NULL) {
+		channel = recording.channel;
 		device = manager->requestDevice(channel->source, channel->transponder,
 			DvbManager::Prioritized);
 
