@@ -104,7 +104,9 @@ DvbChannelModel::DvbChannelModel(QObject *parent) : QObject(parent), hasPendingO
 
 DvbChannelModel::~DvbChannelModel()
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+	}
 
 	if (isSqlModel) {
 		sqlFlush();
@@ -312,6 +314,11 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 		channel.number = findNextFreeChannelNumber(channel.number);
 	}
 
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (isSqlModel) {
@@ -359,6 +366,11 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 			updatedChannel.number = findNextFreeChannelNumber(updatedChannel.number);
 			updateChannel(existingChannel, updatedChannel);
 		}
+	}
+
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
@@ -411,6 +423,11 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 
 void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 {
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	channelNames.remove(channel->name);
 	channelNumbers.remove(channel->number);

@@ -109,7 +109,10 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 DvbRecordingModel::~DvbRecordingModel()
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+	}
+
 	sqlFlush();
 }
 
@@ -135,6 +138,11 @@ QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::getRecordings() const
 
 DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
 {
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return DvbSharedRecording();
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!recording.validate()) {
@@ -158,6 +166,11 @@ DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
 void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 	DvbRecording &modifiedRecording)
 {
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
@@ -184,6 +197,11 @@ void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 
 void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
 {
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
