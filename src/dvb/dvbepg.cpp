@@ -175,6 +175,16 @@ DvbEpgModel::~DvbEpgModel()
 	}
 }
 
+QMap<DvbEpgEntryId, DvbSharedEpgEntry> DvbEpgModel::getEntries() const
+{
+	return entries;
+}
+
+QHash<DvbSharedChannel, int> DvbEpgModel::getEpgChannels() const
+{
+	return epgChannels;
+}
+
 QList<DvbSharedEpgEntry> DvbEpgModel::getCurrentNext(const DvbSharedChannel &channel) const
 {
 	QList<DvbSharedEpgEntry> result;
@@ -196,72 +206,6 @@ QList<DvbSharedEpgEntry> DvbEpgModel::getCurrentNext(const DvbSharedChannel &cha
 	}
 
 	return result;
-}
-
-void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
-{
-	switch (channel->transponder.getTransmissionType()) {
-	case DvbTransponderBase::Invalid:
-		break;
-	case DvbTransponderBase::DvbC:
-	case DvbTransponderBase::DvbS:
-	case DvbTransponderBase::DvbS2:
-	case DvbTransponderBase::DvbT:
-		dvbEpgFilters.append(QExplicitlySharedDataPointer<DvbEpgFilter>(
-			new DvbEpgFilter(manager, device, channel)));
-		break;
-	case DvbTransponderBase::Atsc:
-		atscEpgFilters.append(QExplicitlySharedDataPointer<AtscEpgFilter>(
-			new AtscEpgFilter(manager, device, channel)));
-		break;
-	}
-}
-
-void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
-{
-	switch (channel->transponder.getTransmissionType()) {
-	case DvbTransponderBase::Invalid:
-		break;
-	case DvbTransponderBase::DvbC:
-	case DvbTransponderBase::DvbS:
-	case DvbTransponderBase::DvbS2:
-	case DvbTransponderBase::DvbT:
-		for (int i = 0; i < dvbEpgFilters.size(); ++i) {
-			const DvbEpgFilter *epgFilter = dvbEpgFilters.at(i).constData();
-
-			if ((epgFilter->device == device) &&
-			    (epgFilter->source == channel->source) &&
-			    (epgFilter->transponder.corresponds(channel->transponder))) {
-				dvbEpgFilters.removeAt(i);
-				break;
-			}
-		}
-
-		break;
-	case DvbTransponderBase::Atsc:
-		for (int i = 0; i < atscEpgFilters.size(); ++i) {
-			const AtscEpgFilter *epgFilter = atscEpgFilters.at(i).constData();
-
-			if ((epgFilter->device == device) &&
-			    (epgFilter->source == channel->source) &&
-			    (epgFilter->transponder.corresponds(channel->transponder))) {
-				atscEpgFilters.removeAt(i);
-				break;
-			}
-		}
-
-		break;
-	}
-}
-
-QMap<DvbEpgEntryId, DvbSharedEpgEntry> DvbEpgModel::getEntries() const
-{
-	return entries;
-}
-
-QHash<DvbSharedChannel, int> DvbEpgModel::getEpgChannels() const
-{
-	return epgChannels;
 }
 
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
@@ -350,6 +294,62 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 		// recordingRemoved() will be called
 		hasPendingOperation = false;
 		manager->getRecordingModel()->removeRecording(oldRecording);
+	}
+}
+
+void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
+{
+	switch (channel->transponder.getTransmissionType()) {
+	case DvbTransponderBase::Invalid:
+		break;
+	case DvbTransponderBase::DvbC:
+	case DvbTransponderBase::DvbS:
+	case DvbTransponderBase::DvbS2:
+	case DvbTransponderBase::DvbT:
+		dvbEpgFilters.append(QExplicitlySharedDataPointer<DvbEpgFilter>(
+			new DvbEpgFilter(manager, device, channel)));
+		break;
+	case DvbTransponderBase::Atsc:
+		atscEpgFilters.append(QExplicitlySharedDataPointer<AtscEpgFilter>(
+			new AtscEpgFilter(manager, device, channel)));
+		break;
+	}
+}
+
+void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
+{
+	switch (channel->transponder.getTransmissionType()) {
+	case DvbTransponderBase::Invalid:
+		break;
+	case DvbTransponderBase::DvbC:
+	case DvbTransponderBase::DvbS:
+	case DvbTransponderBase::DvbS2:
+	case DvbTransponderBase::DvbT:
+		for (int i = 0; i < dvbEpgFilters.size(); ++i) {
+			const DvbEpgFilter *epgFilter = dvbEpgFilters.at(i).constData();
+
+			if ((epgFilter->device == device) &&
+			    (epgFilter->source == channel->source) &&
+			    (epgFilter->transponder.corresponds(channel->transponder))) {
+				dvbEpgFilters.removeAt(i);
+				break;
+			}
+		}
+
+		break;
+	case DvbTransponderBase::Atsc:
+		for (int i = 0; i < atscEpgFilters.size(); ++i) {
+			const AtscEpgFilter *epgFilter = atscEpgFilters.at(i).constData();
+
+			if ((epgFilter->device == device) &&
+			    (epgFilter->source == channel->source) &&
+			    (epgFilter->transponder.corresponds(channel->transponder))) {
+				atscEpgFilters.removeAt(i);
+				break;
+			}
+		}
+
+		break;
 	}
 }
 

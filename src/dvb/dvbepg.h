@@ -74,15 +74,16 @@ public:
 	DvbEpgModel(DvbManager *manager_, QObject *parent);
 	~DvbEpgModel();
 
-	QList<DvbSharedEpgEntry> getCurrentNext(const DvbSharedChannel &channel) const;
-	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
-	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
-
 	QMap<DvbEpgEntryId, DvbSharedEpgEntry> getEntries() const;
 	QHash<DvbSharedChannel, int> getEpgChannels() const;
+	QList<DvbSharedEpgEntry> getCurrentNext(const DvbSharedChannel &channel) const;
+
 	DvbSharedEpgEntry addEntry(const DvbEpgEntry &entry);
 	void scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecondsBefore,
 		int extraSecondsAfter);
+
+	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
+	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
 signals:
 	void entryAdded(const DvbSharedEpgEntry &entry);
@@ -101,7 +102,6 @@ private slots:
 private:
 	void timerEvent(QTimerEvent *event);
 
-	void updateEntry(const DvbSharedEpgEntry &entry, const DvbEpgEntry &modifiedEntry);
 	Iterator removeEntry(Iterator it);
 
 	DvbManager *manager;
