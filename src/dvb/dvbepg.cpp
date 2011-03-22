@@ -138,7 +138,9 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 
 DvbEpgModel::~DvbEpgModel()
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+	}
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
 		kWarning() << "filter list not empty";
@@ -198,8 +200,6 @@ QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const DvbSharedChannel &c
 
 void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
 		break;
@@ -219,8 +219,6 @@ void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 
 void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
 		break;
