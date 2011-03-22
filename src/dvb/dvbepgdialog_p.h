@@ -24,6 +24,15 @@
 #include "dvbchanneldialog.h"
 #include "dvbepg.h"
 
+class DvbEpgEntryLessThan
+{
+public:
+	DvbEpgEntryLessThan() { }
+	~DvbEpgEntryLessThan() { }
+
+	bool operator()(const DvbSharedEpgEntry &x, const DvbSharedEpgEntry &y) const;
+};
+
 class DvbEpgChannelTableModel : public QAbstractTableModel
 {
 	Q_OBJECT
@@ -54,7 +63,7 @@ public:
 	DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent);
 	~DvbEpgTableModel();
 
-	const DvbEpgEntry *getEntry(int row) const;
+	DvbSharedEpgEntry getEntry(int row) const;
 	void setChannelFilter(const DvbSharedChannel &channel);
 
 	int columnCount(const QModelIndex &parent) const;
@@ -66,39 +75,20 @@ public slots:
 	void setContentFilter(const QString &pattern);
 
 private slots:
-	void entryAdded(const DvbEpgEntry *entry);
-	void entryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
-	void entryRemoved(const DvbEpgEntry *entry);
+	void entryAdded(const DvbSharedEpgEntry &entry);
+	void entryAboutToBeUpdated(const DvbSharedEpgEntry &entry);
+	void entryUpdated(const DvbSharedEpgEntry &entry);
+	void entryRemoved(const DvbSharedEpgEntry &entry);
 
 private:
 	void customEvent(QEvent *event);
 
-	class LessThan
-	{
-	public:
-		bool operator()(const DvbEpgEntry &x, const DvbEpgEntry &y) const;
-
-		bool operator()(const DvbEpgEntry &x, const DvbEpgEntry *y) const
-		{
-			return (*this)(x, *y);
-		}
-
-		bool operator()(const DvbEpgEntry *x, const DvbEpgEntry &y) const
-		{
-			return (*this)(*x, y);
-		}
-
-		bool operator()(const DvbEpgEntry *x, const DvbEpgEntry *y) const
-		{
-			return (*this)(*x, *y);
-		}
-	};
-
 	DvbEpgModel *epgModel;
-	QList<const DvbEpgEntry *> entries;
+	QList<DvbSharedEpgEntry> entries;
 	DvbSharedChannel channelFilter;
 	QStringMatcher contentFilter;
 	bool contentFilterEventPending;
+	int updatingRow;
 };
 
 #endif /* DVBEPGDIALOG_P_H */

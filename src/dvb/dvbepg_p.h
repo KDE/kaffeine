@@ -24,7 +24,7 @@
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
 
-class DvbEpgFilter : public DvbSectionFilter
+class DvbEpgFilter : public DvbSectionFilter, public QSharedData
 {
 public:
 	DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel);
@@ -51,6 +51,7 @@ public:
 	~AtscEpgMgtFilter() { }
 
 private:
+	Q_DISABLE_COPY(AtscEpgMgtFilter)
 	void processSection(const char *data, int size);
 
 	AtscEpgFilter *epgFilter;
@@ -63,6 +64,7 @@ public:
 	~AtscEpgEitFilter() { }
 
 private:
+	Q_DISABLE_COPY(AtscEpgEitFilter)
 	void processSection(const char *data, int size);
 
 	AtscEpgFilter *epgFilter;
@@ -75,12 +77,13 @@ public:
 	~AtscEpgEttFilter() { }
 
 private:
+	Q_DISABLE_COPY(AtscEpgEttFilter)
 	void processSection(const char *data, int size);
 
 	AtscEpgFilter *epgFilter;
 };
 
-class AtscEpgFilter
+class AtscEpgFilter : public QSharedData
 {
 	friend class AtscEpgMgtFilter;
 	friend class AtscEpgEitFilter;
@@ -106,7 +109,7 @@ private:
 	AtscEpgEttFilter ettFilter;
 	QList<int> eitPids;
 	QList<int> ettPids;
-	QHash<quint32, DvbEpgEntry> epgEntryMapping; // TODO use less memory
+	QMap<quint32, DvbSharedEpgEntry> epgEntries;
 };
 
 #endif /* DVBEPG_P_H */

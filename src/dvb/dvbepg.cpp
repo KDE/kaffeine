@@ -29,36 +29,43 @@
 #include "dvbmanager.h"
 #include "dvbsi.h"
 
-bool DvbEpgEntry::operator==(const DvbEpgEntry &other) const
+bool DvbEpgEntry::validate() const
 {
-	return ((channel == other.channel) && (begin == other.begin) &&
-		(duration == other.duration) && (title == other.title) &&
-		(subheading == other.subheading) && (details == other.details));
+	if (channel.isValid() && begin.isValid() && (begin.timeSpec() == Qt::UTC) &&
+	    duration.isValid()) {
+		return true;
+	}
+
+	return false;
 }
 
-bool DvbEpgEntry::operator<(const DvbEpgEntry &other) const
+bool DvbEpgEntryId::operator<(const DvbEpgEntryId &other) const
 {
-	if (channel != other.channel) {
-		return (channel < other.channel);
+	if (entry->channel != other.entry->channel) {
+		return (entry->channel < other.entry->channel);
 	}
 
-	if (begin != other.begin) {
-		return (begin < other.begin);
+	if (entry->begin != other.entry->begin) {
+		return (entry->begin < other.entry->begin);
 	}
 
-	if (duration != other.duration) {
-		return (duration < other.duration);
+	if (entry->duration != other.entry->duration) {
+		return (entry->duration < other.entry->duration);
 	}
 
-	if (title != other.title) {
-		return (title < other.title);
+	if (entry->title != other.entry->title) {
+		return (entry->title < other.entry->title);
 	}
 
-	if (subheading != other.subheading) {
-		return (subheading < other.subheading);
+	if (entry->subheading != other.entry->subheading) {
+		return (entry->subheading < other.entry->subheading);
 	}
 
-	return (details < other.details);
+	if (!entry->details.isEmpty() && !other.entry->details.isEmpty()) {
+		return (entry->details < other.entry->details);
+	}
+
+	return false;
 }
 
 DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent),
@@ -125,11 +132,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 			break;
 		}
 
-		if (entry.channel.isValid() &&
-		    (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc) &&
-		    !entries.contains(entry)) {
-			internalAddEntry(entry);
-		}
+		addEntry(entry);
 	}
 }
 
@@ -139,8 +142,6 @@ DvbEpgModel::~DvbEpgModel()
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
 		kWarning() << "filter list not empty";
-		qDeleteAll(dvbEpgFilters);
-		qDeleteAll(atscEpgFilters);
 	}
 
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
@@ -155,38 +156,37 @@ DvbEpgModel::~DvbEpgModel()
 	int version = 0x79cffd36;
 	stream << version;
 
-	for (ConstIterator it = entries.constBegin(); it != entries.constEnd(); ++it) {
-		const DvbEpgEntry &entry = it.key();
+	foreach (const DvbSharedEpgEntry &entry, entries) {
 		SqlKey recordingKey;
 
-		if (entry.recording.isValid()) {
-			recordingKey = *entry.recording;
+		if (entry->recording.isValid()) {
+			recordingKey = *entry->recording;
 		}
 
-		stream << entry.channel->name;
-		stream << entry.begin;
-		stream << entry.duration;
-		stream << entry.title;
-		stream << entry.subheading;
-		stream << entry.details;
+		stream << entry->channel->name;
+		stream << entry->begin;
+		stream << entry->duration;
+		stream << entry->title;
+		stream << entry->subheading;
+		stream << entry->details;
 		stream << recordingKey.sqlKey;
 	}
 }
 
 QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const DvbSharedChannel &channel) const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	QList<const DvbEpgEntry *> result;
+	DvbEpgEntry fakeEntry(channel);
 
-	for (ConstIterator it = entries.lowerBound(DvbEpgEntry(channel)); it != entries.constEnd();
-	     ++it) {
-		const DvbEpgEntry *entry = &it.key();
+	for (ConstIterator it = entries.lowerBound(DvbEpgEntryId(&fakeEntry));
+	     it != entries.constEnd(); ++it) {
+		const DvbSharedEpgEntry &entry = *it;
 
 		if (entry->channel != channel) {
 			break;
 		}
 
-		result.append(entry);
+		result.append(entry.constData());
 
 		if (result.size() == 2) {
 			break;
@@ -207,10 +207,12 @@ void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
-		dvbEpgFilters.append(new DvbEpgFilter(manager, device, channel));
+		dvbEpgFilters.append(QExplicitlySharedDataPointer<DvbEpgFilter>(
+			new DvbEpgFilter(manager, device, channel)));
 		break;
 	case DvbTransponderBase::Atsc:
-		atscEpgFilters.append(new AtscEpgFilter(manager, device, channel));
+		atscEpgFilters.append(QExplicitlySharedDataPointer<AtscEpgFilter>(
+			new AtscEpgFilter(manager, device, channel)));
 		break;
 	}
 }
@@ -227,13 +229,12 @@ void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
 		for (int i = 0; i < dvbEpgFilters.size(); ++i) {
-			const DvbEpgFilter *epgFilter = dvbEpgFilters.at(i);
+			const DvbEpgFilter *epgFilter = dvbEpgFilters.at(i).constData();
 
 			if ((epgFilter->device == device) &&
 			    (epgFilter->source == channel->source) &&
 			    (epgFilter->transponder.corresponds(channel->transponder))) {
 				dvbEpgFilters.removeAt(i);
-				delete epgFilter;
 				break;
 			}
 		}
@@ -241,13 +242,12 @@ void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 		break;
 	case DvbTransponderBase::Atsc:
 		for (int i = 0; i < atscEpgFilters.size(); ++i) {
-			const AtscEpgFilter *epgFilter = atscEpgFilters.at(i);
+			const AtscEpgFilter *epgFilter = atscEpgFilters.at(i).constData();
 
 			if ((epgFilter->device == device) &&
 			    (epgFilter->source == channel->source) &&
 			    (epgFilter->transponder.corresponds(channel->transponder))) {
 				atscEpgFilters.removeAt(i);
-				delete epgFilter;
 				break;
 			}
 		}
@@ -256,170 +256,50 @@ void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
 	}
 }
 
-QMap<DvbEpgEntry, DvbEpgEmptyClass> DvbEpgModel::getEntries() const
+QMap<DvbEpgEntryId, DvbSharedEpgEntry> DvbEpgModel::getEntries() const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return entries;
 }
 
 QHash<DvbSharedChannel, int> DvbEpgModel::getEpgChannels() const
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	return epgChannels;
 }
 
-void DvbEpgModel::addEntry(const DvbEpgEntry &entry)
+DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
+	if (!entry.validate()) {
+		kWarning() << "invalid entry";
+		return DvbSharedEpgEntry();
+	}
+
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return DvbSharedEpgEntry();
+	}
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc) {
-		Iterator it = entries.lowerBound(entry);
+		DvbSharedEpgEntry existingEntry = entries.value(DvbEpgEntryId(&entry));
 
-		if ((ConstIterator(it) != entries.constEnd()) && (it.key() == entry)) {
-			return;
-		}
-
-		if (entry.details.isEmpty()) {
-			++it;
-
-			if (ConstIterator(it) != entries.constEnd()) {
-				const DvbEpgEntry *existingEntry = &it.key();
-
-				if ((existingEntry->subheading == entry.subheading) &&
-				    (existingEntry->title == entry.title) &&
-				    (existingEntry->duration == entry.duration) &&
-				    (existingEntry->begin == entry.begin) &&
-				    (existingEntry->channel == entry.channel)) {
-					// needed for atsc
-					return;
-				}
+		if (existingEntry.isValid()) {
+			if (existingEntry->details.isEmpty() && !entry.details.isEmpty()) {
+				// needed for atsc
+				emit entryAboutToBeUpdated(existingEntry);
+				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
+					entry.details;
+				emit entryUpdated(existingEntry);
 			}
-		} else {
-			if (ConstIterator(it) != entries.constBegin()) {
-				--it;
-				const DvbEpgEntry *existingEntry = &it.key();
 
-				if (existingEntry->details.isEmpty() &&
-				    (existingEntry->subheading == entry.subheading) &&
-				    (existingEntry->title == entry.title) &&
-				    (existingEntry->duration == entry.duration) &&
-				    (existingEntry->begin == entry.begin) &&
-				    (existingEntry->channel == entry.channel)) {
-					// needed for atsc
-					DvbEpgEntry oldEntry = *existingEntry;
-					const_cast<DvbEpgEntry *>(existingEntry)->details =
-						entry.details;
-					internalEntryUpdated(existingEntry, oldEntry);
-					return;
-				}
-			}
+			return existingEntry;
 		}
 
-		Q_ASSERT(entry.begin.timeSpec() == Qt::UTC);
-		Q_ASSERT(!entry.recording.isValid());
-		internalAddEntry(entry);
-	}
-}
+		DvbSharedEpgEntry newEntry(new DvbEpgEntry(entry));
+		entries.insert(DvbEpgEntryId(newEntry), newEntry);
 
-void DvbEpgModel::scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
-	int extraSecondsAfter)
-{
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	Iterator it = entries.find(*entry);
-
-	if (ConstIterator(it) != entries.constEnd()) {
-		const DvbEpgEntry *existingEntry = &it.key();
-		DvbEpgEntry oldEntry = *existingEntry;
-
-		if (!oldEntry.recording.isValid()) {
-			DvbRecording recording;
-			recording.name = oldEntry.title;
-			recording.channel = oldEntry.channel;
-			recording.begin = oldEntry.begin.addSecs(-extraSecondsBefore);
-			recording.duration =
-				oldEntry.duration.addSecs(extraSecondsBefore + extraSecondsAfter);
-			const_cast<DvbEpgEntry *>(existingEntry)->recording =
-				manager->getRecordingModel()->addRecording(recording);
-		} else {
-			const_cast<DvbEpgEntry *>(existingEntry)->recording = DvbSharedRecording();
-		}
-
-		internalEntryUpdated(existingEntry, oldEntry);
-
-		if (oldEntry.recording.isValid()) {
-			hasPendingOperation = false; // recordingRemoved() will be called
-			manager->getRecordingModel()->removeRecording(oldEntry.recording);
-		}
-	}
-}
-
-void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel)
-{
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-
-	if (DvbChannelId(channel) != DvbChannelId(&oldChannel)) {
-		Iterator it = entries.lowerBound(DvbEpgEntry(channel));
-
-		while ((ConstIterator(it) != entries.constEnd()) &&
-		       (it.key().channel == channel)) {
-			it = internalRemoveEntry(it);
-		}
-	}
-}
-
-void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
-{
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	Iterator it = entries.lowerBound(DvbEpgEntry(channel));
-
-	while ((ConstIterator(it) != entries.constEnd()) && (it.key().channel == channel)) {
-		it = internalRemoveEntry(it);
-	}
-}
-
-void DvbEpgModel::recordingRemoved(const DvbSharedRecording &recording)
-{
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	const DvbEpgEntry *constEntry = recordingMapping.take(recording);
-
-	if (constEntry != NULL) {
-		Iterator it = entries.find(*constEntry);
-
-		if (ConstIterator(it) != entries.constEnd()) {
-			const DvbEpgEntry *existingEntry = &it.key();
-			DvbEpgEntry oldEntry = *existingEntry;
-			const_cast<DvbEpgEntry *>(existingEntry)->recording = DvbSharedRecording();
-			internalEntryUpdated(existingEntry, oldEntry);
-		}
-	}
-}
-
-void DvbEpgModel::timerEvent(QTimerEvent *event)
-{
-	Q_UNUSED(event)
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
-	Iterator it = entries.begin();
-
-	while (ConstIterator(it) != entries.constEnd()) {
-		const DvbEpgEntry &entry = it.key();
-
-		if (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc) {
-			++it;
-		} else {
-			it = internalRemoveEntry(it);
-		}
-	}
-}
-
-void DvbEpgModel::internalAddEntry(const DvbEpgEntry &entry)
-{
-	int oldSize = entries.size();
-	const DvbEpgEntry *newEntry = &entries.insert(entry, DvbEpgEmptyClass()).key();
-
-	if (entries.size() != oldSize) {
 		if (newEntry->recording.isValid()) {
-			recordingMapping.insert(newEntry->recording, newEntry);
+			recordings.insert(newEntry->recording, newEntry);
 		}
 
 		if (++epgChannels[newEntry->channel] == 1) {
@@ -427,31 +307,136 @@ void DvbEpgModel::internalAddEntry(const DvbEpgEntry &entry)
 		}
 
 		emit entryAdded(newEntry);
+		return newEntry;
+	}
+
+	return DvbSharedEpgEntry();
+}
+
+void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecondsBefore,
+	int extraSecondsAfter)
+{
+	if (!entry.isValid() || (entries.value(DvbEpgEntryId(entry)) != entry)) {
+		kWarning() << "invalid entry";
+		return;
+	}
+
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	emit entryAboutToBeUpdated(entry);
+	DvbSharedRecording oldRecording;
+
+	if (!entry->recording.isValid()) {
+		DvbRecording recording;
+		recording.name = entry->title;
+		recording.channel = entry->channel;
+		recording.begin = entry->begin.addSecs(-extraSecondsBefore);
+		recording.duration =
+			entry->duration.addSecs(extraSecondsBefore + extraSecondsAfter);
+		const_cast<DvbEpgEntry *>(entry.constData())->recording =
+			manager->getRecordingModel()->addRecording(recording);
+		recordings.insert(entry->recording, entry);
+	} else {
+		oldRecording = entry->recording;
+		recordings.remove(entry->recording);
+		const_cast<DvbEpgEntry *>(entry.constData())->recording = DvbSharedRecording();
+	}
+
+	emit entryUpdated(entry);
+
+	if (oldRecording.isValid()) {
+		// recordingRemoved() will be called
+		hasPendingOperation = false;
+		manager->getRecordingModel()->removeRecording(oldRecording);
 	}
 }
 
-void DvbEpgModel::internalEntryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry)
+void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel)
 {
-	if (entry->recording != oldEntry.recording) {
-		if (oldEntry.recording.isValid()) {
-			recordingMapping.remove(oldEntry.recording);
-		}
-
-		if (entry->recording.isValid()) {
-			recordingMapping.insert(entry->recording, entry);
-		}
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
 	}
 
-	Q_ASSERT(entry->channel == oldEntry.channel);
-	emit entryUpdated(entry, oldEntry);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+
+	if (DvbChannelId(channel) != DvbChannelId(&oldChannel)) {
+		DvbEpgEntry fakeEntry(channel);
+		Iterator it = entries.lowerBound(DvbEpgEntryId(&fakeEntry));
+
+		while ((ConstIterator(it) != entries.constEnd()) && ((*it)->channel == channel)) {
+			it = removeEntry(it);
+		}
+	}
 }
 
-DvbEpgModel::Iterator DvbEpgModel::internalRemoveEntry(Iterator it)
+void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 {
-	const DvbEpgEntry *entry = &it.key();
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	DvbEpgEntry fakeEntry(channel);
+	Iterator it = entries.lowerBound(DvbEpgEntryId(&fakeEntry));
+
+	while ((ConstIterator(it) != entries.constEnd()) && ((*it)->channel == channel)) {
+		it = removeEntry(it);
+	}
+}
+
+void DvbEpgModel::recordingRemoved(const DvbSharedRecording &recording)
+{
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	DvbSharedEpgEntry entry = recordings.take(recording);
+
+	if (entry.isValid()) {
+		emit entryAboutToBeUpdated(entry);
+		const_cast<DvbEpgEntry *>(entry.constData())->recording = DvbSharedRecording();
+		emit entryUpdated(entry);
+	}
+}
+
+void DvbEpgModel::timerEvent(QTimerEvent *event)
+{
+	Q_UNUSED(event)
+
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
+
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
+	Iterator it = entries.begin();
+
+	while (ConstIterator(it) != entries.constEnd()) {
+		const DvbSharedEpgEntry &entry = *it;
+
+		if (entry->begin.addSecs(QTime().secsTo(entry->duration)) > currentDateTimeUtc) {
+			++it;
+		} else {
+			it = removeEntry(it);
+		}
+	}
+}
+
+DvbEpgModel::Iterator DvbEpgModel::removeEntry(Iterator it)
+{
+	const DvbSharedEpgEntry &entry = *it;
 
 	if (entry->recording.isValid()) {
-		recordingMapping.remove(entry->recording);
+		recordings.remove(entry->recording);
 	}
 
 	if (--epgChannels[entry->channel] == 0) {
@@ -709,17 +694,16 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		epgEntry.title = entry.title();
 
 		quint32 id = ((quint32(pseudoChannel.networkId) << 16) | quint32(entry.eventId()));
-		QHash<quint32, DvbEpgEntry>::ConstIterator it = epgEntryMapping.constFind(id);
+		DvbSharedEpgEntry entry = epgEntries.value(id);
 
-		if (it != epgEntryMapping.constEnd()) {
-			if ((epgEntry.channel == it->channel) && (epgEntry.begin == it->begin) &&
-			    (epgEntry.duration == it->duration) && (epgEntry.title == it->title)) {
-				continue;
-			}
+		if (entry.isValid() && (entry->channel == epgEntry.channel) &&
+		    (entry->begin == epgEntry.begin) && (entry->duration == epgEntry.duration) &&
+		    (entry->title == epgEntry.title)) {
+			continue;
 		}
 
-		epgEntryMapping.insert(id, epgEntry);
-		epgModel->addEntry(epgEntry);
+		entry = epgModel->addEntry(epgEntry);
+		epgEntries.insert(id, entry);
 	}
 }
 
@@ -738,14 +722,16 @@ void AtscEpgFilter::processEttSection(const char *data, int size)
 	}
 
 	quint32 id = ((quint32(ettSection.sourceId()) << 16) | quint32(ettSection.eventId()));
-	QHash<quint32, DvbEpgEntry>::Iterator it = epgEntryMapping.find(id);
+	DvbSharedEpgEntry entry = epgEntries.value(id);
 
-	if (it != epgEntryMapping.end()) {
-		QString text = ettSection.text();
+	if (entry.isValid()) {
+		QString details = ettSection.text();
 
-		if (it->details != text) {
-			it->details = text;
-			epgModel->addEntry(*it);
+		if (entry->details != details) {
+			DvbEpgEntry modifiedEntry = *entry;
+			modifiedEntry.details = details;
+			entry = epgModel->addEntry(modifiedEntry);
+			epgEntries.insert(id, entry);
 		}
 	}
 }

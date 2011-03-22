@@ -27,16 +27,15 @@ class AtscEpgFilter;
 class DvbDevice;
 class DvbEpgFilter;
 
-class DvbEpgEntry
+class DvbEpgEntry : public SharedData
 {
 public:
 	DvbEpgEntry() { }
 	explicit DvbEpgEntry(const DvbSharedChannel &channel_) : channel(channel_) { }
 	~DvbEpgEntry() { }
 
-	// 'recording' is ignored in comparisons
-	bool operator==(const DvbEpgEntry &other) const;
-	bool operator<(const DvbEpgEntry &other) const;
+	// checks that all variables are ok
+	bool validate() const;
 
 	DvbSharedChannel channel;
 	QDateTime begin; // UTC
@@ -47,15 +46,30 @@ public:
 	DvbSharedRecording recording;
 };
 
-class DvbEpgEmptyClass
+typedef ExplicitlySharedDataPointer<const DvbEpgEntry> DvbSharedEpgEntry;
+Q_DECLARE_TYPEINFO(DvbSharedEpgEntry, Q_MOVABLE_TYPE);
+
+class DvbEpgEntryId
 {
+public:
+	explicit DvbEpgEntryId(const DvbEpgEntry *entry_) : entry(entry_) { }
+	explicit DvbEpgEntryId(const DvbSharedEpgEntry &entry_) : entry(entry_.constData()) { }
+	~DvbEpgEntryId() { }
+
+	// compares entries, 'recording' is ignored
+	// if one 'details' is empty, 'details' is ignored
+
+	bool operator<(const DvbEpgEntryId &other) const;
+
+private:
+	const DvbEpgEntry *entry;
 };
 
 class DvbEpgModel : public QObject
 {
 	Q_OBJECT
-	typedef QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator ConstIterator;
-	typedef QMap<DvbEpgEntry, DvbEpgEmptyClass>::Iterator Iterator;
+	typedef QMap<DvbEpgEntryId, DvbSharedEpgEntry>::Iterator Iterator;
+	typedef QMap<DvbEpgEntryId, DvbSharedEpgEntry>::ConstIterator ConstIterator;
 public:
 	DvbEpgModel(DvbManager *manager_, QObject *parent);
 	~DvbEpgModel();
@@ -64,17 +78,18 @@ public:
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 
-	QMap<DvbEpgEntry, DvbEpgEmptyClass> getEntries() const;
+	QMap<DvbEpgEntryId, DvbSharedEpgEntry> getEntries() const;
 	QHash<DvbSharedChannel, int> getEpgChannels() const;
-	void addEntry(const DvbEpgEntry &entry);
-	void scheduleProgram(const DvbEpgEntry *entry, int extraSecondsBefore,
+	DvbSharedEpgEntry addEntry(const DvbEpgEntry &entry);
+	void scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecondsBefore,
 		int extraSecondsAfter);
 
 signals:
-	void entryAdded(const DvbEpgEntry *entry);
-	// oldEntry is a temporary copy (entry remains the same)
-	void entryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
-	void entryRemoved(const DvbEpgEntry *entry);
+	void entryAdded(const DvbSharedEpgEntry &entry);
+	// updating doesn't change the entry pointer (modifies existing content)
+	void entryAboutToBeUpdated(const DvbSharedEpgEntry &entry);
+	void entryUpdated(const DvbSharedEpgEntry &entry);
+	void entryRemoved(const DvbSharedEpgEntry &entry);
 	void epgChannelAdded(const DvbSharedChannel &channel);
 	void epgChannelRemoved(const DvbSharedChannel &channel);
 
@@ -86,18 +101,17 @@ private slots:
 private:
 	void timerEvent(QTimerEvent *event);
 
-	void internalAddEntry(const DvbEpgEntry &entry);
-	void internalEntryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry);
-	Iterator internalRemoveEntry(Iterator it);
+	void updateEntry(const DvbSharedEpgEntry &entry, const DvbEpgEntry &modifiedEntry);
+	Iterator removeEntry(Iterator it);
 
 	DvbManager *manager;
 	QDateTime currentDateTimeUtc;
-	QMap<DvbEpgEntry, DvbEpgEmptyClass> entries;
-	QMap<DvbSharedRecording, const DvbEpgEntry *> recordingMapping;
+	QMap<DvbEpgEntryId, DvbSharedEpgEntry> entries;
+	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordings;
 	QHash<DvbSharedChannel, int> epgChannels;
-	QList<DvbEpgFilter *> dvbEpgFilters;
-	QList<AtscEpgFilter *> atscEpgFilters;
-	mutable bool hasPendingOperation;
+	QList<QExplicitlySharedDataPointer<DvbEpgFilter> > dvbEpgFilters;
+	QList<QExplicitlySharedDataPointer<AtscEpgFilter> > atscEpgFilters;
+	bool hasPendingOperation;
 };
 
 #endif /* DVBEPG_H */

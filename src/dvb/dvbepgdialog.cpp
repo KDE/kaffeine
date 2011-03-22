@@ -145,7 +145,7 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		return;
 	}
 
-	const DvbEpgEntry *entry = epgTableModel->getEntry(index.row());
+	DvbSharedEpgEntry entry = epgTableModel->getEntry(index.row());
 	QString text = i18nc("@info tv show title",
 		"<font color=#008000 size=\"+1\">%1</font><br>", entry->title);
 
@@ -173,6 +173,35 @@ void DvbEpgDialog::scheduleProgram()
 		manager->getEpgModel()->scheduleProgram(epgTableModel->getEntry(index.row()),
 			manager->getBeginMargin(), manager->getEndMargin());
 	}
+}
+
+bool DvbEpgEntryLessThan::operator()(const DvbSharedEpgEntry &x, const DvbSharedEpgEntry &y) const
+{
+	if (x->channel != y->channel) {
+		return (x->channel->name.localeAwareCompare(y->channel->name) < 0);
+	}
+
+	if (x->begin != y->begin) {
+		return (x->begin < y->begin);
+	}
+
+	if (x->duration != y->duration) {
+		return (x->duration < y->duration);
+	}
+
+	if (x->title != y->title) {
+		return (x->title < y->title);
+	}
+
+	if (x->subheading != y->subheading) {
+		return (x->subheading < y->subheading);
+	}
+
+	if (x->details < y->details) {
+		return (x->details < y->details);
+	}
+
+	return (x < y);
 }
 
 DvbEpgChannelTableModel::DvbEpgChannelTableModel(DvbManager *manager, QObject *parent) :
@@ -281,25 +310,32 @@ void DvbEpgChannelTableModel::epgChannelRemoved(const DvbSharedChannel &channel)
 }
 
 DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
-	QAbstractTableModel(parent), epgModel(epgModel_), contentFilterEventPending(false)
+	QAbstractTableModel(parent), epgModel(epgModel_), contentFilterEventPending(false),
+	updatingRow(0)
 {
 	contentFilter.setCaseSensitivity(Qt::CaseInsensitive);
 
-	connect(epgModel, SIGNAL(entryAdded(const DvbEpgEntry*)),
-		this, SLOT(entryAdded(const DvbEpgEntry*)));
-	connect(epgModel, SIGNAL(entryUpdated(const DvbEpgEntry*,DvbEpgEntry)),
-		this, SLOT(entryUpdated(const DvbEpgEntry*,DvbEpgEntry)));
-	connect(epgModel, SIGNAL(entryRemoved(const DvbEpgEntry*)),
-		this, SLOT(entryRemoved(const DvbEpgEntry*)));
+	connect(epgModel, SIGNAL(entryAdded(DvbSharedEpgEntry)),
+		this, SLOT(entryAdded(DvbSharedEpgEntry)));
+	connect(epgModel, SIGNAL(entryAboutToBeUpdated(DvbSharedEpgEntry)),
+		this, SLOT(entryAboutToBeUpdated(DvbSharedEpgEntry)));
+	connect(epgModel, SIGNAL(entryUpdated(DvbSharedEpgEntry)),
+		this, SLOT(entryUpdated(DvbSharedEpgEntry)));
+	connect(epgModel, SIGNAL(entryRemoved(DvbSharedEpgEntry)),
+		this, SLOT(entryRemoved(DvbSharedEpgEntry)));
 }
 
 DvbEpgTableModel::~DvbEpgTableModel()
 {
 }
 
-const DvbEpgEntry *DvbEpgTableModel::getEntry(int row) const
+DvbSharedEpgEntry DvbEpgTableModel::getEntry(int row) const
 {
-	return entries.at(row);
+	if ((row >= 0) && (row < entries.size())) {
+		return entries.at(row);
+	}
+
+	return DvbSharedEpgEntry();
 }
 
 void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)
@@ -317,16 +353,14 @@ void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)
 		return;
 	}
 
-	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
-	DvbEpgEntry pseudoEntry;
-	pseudoEntry.channel = channelFilter;
-	QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator begin =
-		allEntries.lowerBound(pseudoEntry);
+	typedef QMap<DvbEpgEntryId, DvbSharedEpgEntry>::ConstIterator ConstIterator;
+	const QMap<DvbEpgEntryId, DvbSharedEpgEntry> allEntries = epgModel->getEntries();
+	DvbEpgEntry fakeEntry(channelFilter);
+	ConstIterator begin = allEntries.lowerBound(DvbEpgEntryId(&fakeEntry));
 	int count = 0;
 
-	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = begin;
-	     it != allEntries.constEnd(); ++it) {
-		if (it.key().channel != pseudoEntry.channel) {
+	for (ConstIterator it = begin; it != allEntries.constEnd(); ++it) {
+		if ((*it)->channel != fakeEntry.channel) {
 			break;
 		}
 
@@ -336,9 +370,8 @@ void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)
 	if (count > 0) {
 		beginInsertRows(QModelIndex(), 0, count - 1);
 
-		for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = begin; count > 0;
-		     ++it, --count) {
-			entries.append(&it.key());
+		for (ConstIterator it = begin; count > 0; ++it, --count) {
+			entries.append(*it);
 		}
 
 		// qSort isn't needed here
@@ -366,28 +399,31 @@ int DvbEpgTableModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 {
-	const DvbEpgEntry *entry = entries.at(index.row());
+	if ((index.row() >= 0) && (index.row() < entries.size())) {
+		const DvbSharedEpgEntry &entry = entries.at(index.row());
 
-	switch (role) {
-	case Qt::DecorationRole:
-		if ((index.column() == 2) && entry->recording.isValid()) {
-			return KIcon("media-record");
+		switch (role) {
+		case Qt::DecorationRole:
+			if ((index.column() == 2) && entry->recording.isValid()) {
+				return KIcon("media-record");
+			}
+
+			break;
+		case Qt::DisplayRole:
+			switch (index.column()) {
+			case 0:
+				return KGlobal::locale()->formatDateTime(
+					entry->begin.toLocalTime());
+			case 1:
+				return KGlobal::locale()->formatTime(entry->duration, false, true);
+			case 2:
+				return entry->title;
+			case 3:
+				return entry->channel->name;
+			}
+
+			break;
 		}
-
-		break;
-	case Qt::DisplayRole:
-		switch (index.column()) {
-		case 0:
-			return KGlobal::locale()->formatDateTime(entry->begin.toLocalTime());
-		case 1:
-			return KGlobal::locale()->formatTime(entry->duration, false, true);
-		case 2:
-			return entry->title;
-		case 3:
-			return entry->channel->name;
-		}
-
-		break;
 	}
 
 	return QVariant();
@@ -422,7 +458,7 @@ void DvbEpgTableModel::setContentFilter(const QString &pattern)
 	}
 }
 
-void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
+void DvbEpgTableModel::entryAdded(const DvbSharedEpgEntry &entry)
 {
 	if ((channelFilter.isValid() && (channelFilter == entry->channel)) ||
 	    (!contentFilter.pattern().isEmpty() &&
@@ -430,30 +466,33 @@ void DvbEpgTableModel::entryAdded(const DvbEpgEntry *entry)
 	      (contentFilter.indexIn(entry->subheading) >= 0) ||
 	      (contentFilter.indexIn(entry->details) >= 0)))) {
 		int row = (qLowerBound(entries.constBegin(), entries.constEnd(), entry,
-			LessThan()) - entries.constBegin());
+			DvbEpgEntryLessThan()) - entries.constBegin());
 		beginInsertRows(QModelIndex(), row, row);
 		entries.insert(row, entry);
 		endInsertRows();
 	}
 }
 
-void DvbEpgTableModel::entryUpdated(const DvbEpgEntry *entry, const DvbEpgEntry &oldEntry)
+void DvbEpgTableModel::entryAboutToBeUpdated(const DvbSharedEpgEntry &entry)
 {
-	Q_UNUSED(entry)
-	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), oldEntry, LessThan()) -
-		entries.constBegin());
+	updatingRow = (qBinaryFind(entries.constBegin(), entries.constEnd(), entry,
+		DvbEpgEntryLessThan()) - entries.constBegin());
+}
 
-	if (row < entries.size()) {
-		emit dataChanged(index(row, 0), index(row, 3));
+void DvbEpgTableModel::entryUpdated(const DvbSharedEpgEntry &entry)
+{
+	if ((updatingRow >= 0) && (updatingRow < entries.size()) &&
+	    (entries.at(updatingRow) == entry)) {
+		emit dataChanged(index(updatingRow, 0), index(updatingRow, 3));
 	}
 }
 
-void DvbEpgTableModel::entryRemoved(const DvbEpgEntry *entry)
+void DvbEpgTableModel::entryRemoved(const DvbSharedEpgEntry &entry)
 {
-	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), entry, LessThan()) -
-		entries.constBegin());
+	int row = (qBinaryFind(entries.constBegin(), entries.constEnd(), entry,
+		DvbEpgEntryLessThan()) - entries.constBegin());
 
-	if (row < entries.size()) {
+	if ((row < entries.size()) && (entries.at(row) == entry)) {
 		beginRemoveRows(QModelIndex(), row, row);
 		entries.removeAt(row);
 		endRemoveRows();
@@ -475,12 +514,12 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 		endRemoveRows();
 	}
 
-	const QMap<DvbEpgEntry, DvbEpgEmptyClass> allEntries = epgModel->getEntries();
-	QList<const DvbEpgEntry *> filteredEntries;
+	typedef QMap<DvbEpgEntryId, DvbSharedEpgEntry>::ConstIterator ConstIterator;
+	const QMap<DvbEpgEntryId, DvbSharedEpgEntry> allEntries = epgModel->getEntries();
+	QList<DvbSharedEpgEntry> filteredEntries;
 
-	for (QMap<DvbEpgEntry, DvbEpgEmptyClass>::ConstIterator it = allEntries.constBegin();
-	     it != allEntries.constEnd(); ++it) {
-		const DvbEpgEntry *entry = &it.key();
+	for (ConstIterator it = allEntries.constBegin(); it != allEntries.constEnd(); ++it) {
+		const DvbSharedEpgEntry &entry = *it;
 
 		if (((contentFilter.indexIn(entry->title) >= 0) ||
 		     (contentFilter.indexIn(entry->subheading) >= 0) ||
@@ -490,34 +529,9 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 	}
 
 	if (!filteredEntries.isEmpty()) {
-		qSort(filteredEntries.begin(), filteredEntries.end(), LessThan());
+		qSort(filteredEntries.begin(), filteredEntries.end(), DvbEpgEntryLessThan());
 		beginInsertRows(QModelIndex(), 0, filteredEntries.size() - 1);
 		entries = filteredEntries;
 		endInsertRows();
 	}
-}
-
-bool DvbEpgTableModel::LessThan::operator()(const DvbEpgEntry &x, const DvbEpgEntry &y) const
-{
-	if (x.channel != y.channel) {
-		return (x.channel->name.localeAwareCompare(y.channel->name) < 0);
-	}
-
-	if (x.begin != y.begin) {
-		return (x.begin < y.begin);
-	}
-
-	if (x.duration != y.duration) {
-		return (x.duration < y.duration);
-	}
-
-	if (x.title != y.title) {
-		return (x.title < y.title);
-	}
-
-	if (x.subheading != y.subheading) {
-		return (x.subheading < y.subheading);
-	}
-
-	return (x.details < y.details);
 }
