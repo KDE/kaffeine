@@ -74,7 +74,7 @@ public:
 	DvbEpgModel(DvbManager *manager_, QObject *parent);
 	~DvbEpgModel();
 
-	QList<const DvbEpgEntry *> getCurrentNext(const DvbSharedChannel &channel) const;
+	QList<DvbSharedEpgEntry> getCurrentNext(const DvbSharedChannel &channel) const;
 	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
 	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
 

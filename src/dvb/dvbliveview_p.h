@@ -41,7 +41,7 @@ public:
 	~DvbOsd() { }
 
 	void init(OsdLevel level_, const QString &channelName_,
-		const QList<const DvbEpgEntry *> &epgEntries);
+		const QList<DvbSharedEpgEntry> &epgEntries);
 
 	OsdLevel level;
 

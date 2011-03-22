@@ -175,9 +175,9 @@ DvbEpgModel::~DvbEpgModel()
 	}
 }
 
-QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const DvbSharedChannel &channel) const
+QList<DvbSharedEpgEntry> DvbEpgModel::getCurrentNext(const DvbSharedChannel &channel) const
 {
-	QList<const DvbEpgEntry *> result;
+	QList<DvbSharedEpgEntry> result;
 	DvbEpgEntry fakeEntry(channel);
 
 	for (ConstIterator it = entries.lowerBound(DvbEpgEntryId(&fakeEntry));
@@ -188,7 +188,7 @@ QList<const DvbEpgEntry *> DvbEpgModel::getCurrentNext(const DvbSharedChannel &c
 			break;
 		}
 
-		result.append(entry.constData());
+		result.append(entry);
 
 		if (result.size() == 2) {
 			break;

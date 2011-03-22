@@ -31,7 +31,7 @@
 #include "dvbmanager.h"
 
 void DvbOsd::init(OsdLevel level_, const QString &channelName_,
-	const QList<const DvbEpgEntry *> &epgEntries)
+	const QList<DvbSharedEpgEntry> &epgEntries)
 {
 	level = level_;
 	channelName = channelName_;
@@ -441,7 +441,7 @@ void DvbLiveView::liveStopped()
 	internal->pmtGenerator = DvbSectionGenerator();
 	internal->buffer.clear();
 	internal->timeShiftFile.close();
-	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<const DvbEpgEntry *>());
+	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
 	osdWidget->hideObject();
 }
 
