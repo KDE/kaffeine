@@ -82,8 +82,8 @@ public:
 	void scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecondsBefore,
 		int extraSecondsAfter);
 
-	void startEventFilter(DvbDevice *device, const DvbChannel *channel);
-	void stopEventFilter(DvbDevice *device, const DvbChannel *channel);
+	void startEventFilter(DvbDevice *device, const DvbSharedChannel &channel);
+	void stopEventFilter(DvbDevice *device, const DvbSharedChannel &channel);
 
 signals:
 	void entryAdded(const DvbSharedEpgEntry &entry);

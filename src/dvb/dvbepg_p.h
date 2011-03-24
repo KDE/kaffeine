@@ -27,7 +27,7 @@
 class DvbEpgFilter : public DvbSectionFilter, public QSharedData
 {
 public:
-	DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel);
+	DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbSharedChannel &channel);
 	~DvbEpgFilter();
 
 	DvbDevice *device;
@@ -89,7 +89,7 @@ class AtscEpgFilter : public QSharedData
 	friend class AtscEpgEitFilter;
 	friend class AtscEpgEttFilter;
 public:
-	AtscEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel);
+	AtscEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbSharedChannel &channel);
 	~AtscEpgFilter();
 
 	DvbDevice *device;

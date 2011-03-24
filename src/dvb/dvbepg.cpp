@@ -71,7 +71,6 @@ bool DvbEpgEntryId::operator<(const DvbEpgEntryId &other) const
 DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent),
 	manager(manager_), hasPendingOperation(false)
 {
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	currentDateTimeUtc = QDateTime::currentDateTime().toUTC();
 	startTimer(54000);
 
@@ -297,7 +296,7 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 	}
 }
 
-void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
+void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbSharedChannel &channel)
 {
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -316,7 +315,7 @@ void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbChannel *channel)
 	}
 }
 
-void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbChannel *channel)
+void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbSharedChannel &channel)
 {
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -446,8 +445,8 @@ DvbEpgModel::Iterator DvbEpgModel::removeEntry(Iterator it)
 	return entries.erase(it);
 }
 
-DvbEpgFilter::DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel) :
-	device(device_)
+DvbEpgFilter::DvbEpgFilter(DvbManager *manager, DvbDevice *device_,
+	const DvbSharedChannel &channel) : device(device_)
 {
 	source = channel->source;
 	transponder = channel->transponder;
@@ -482,17 +481,17 @@ void DvbEpgFilter::processSection(const char *data, int size)
 		return;
 	}
 
-	DvbChannel pseudoChannel;
-	pseudoChannel.source = source;
-	pseudoChannel.transponder = transponder;
-	pseudoChannel.networkId = eitSection.originalNetworkId();
-	pseudoChannel.transportStreamId = eitSection.transportStreamId();
-	pseudoChannel.serviceId = eitSection.serviceId();
-	DvbSharedChannel channel = channelModel->findChannelById(pseudoChannel);
+	DvbChannel fakeChannel;
+	fakeChannel.source = source;
+	fakeChannel.transponder = transponder;
+	fakeChannel.networkId = eitSection.originalNetworkId();
+	fakeChannel.transportStreamId = eitSection.transportStreamId();
+	fakeChannel.serviceId = eitSection.serviceId();
+	DvbSharedChannel channel = channelModel->findChannelById(fakeChannel);
 
 	if (!channel.isValid()) {
-		pseudoChannel.networkId = -1;
-		channel = channelModel->findChannelById(pseudoChannel);
+		fakeChannel.networkId = -1;
+		channel = channelModel->findChannelById(fakeChannel);
 	}
 
 	if (!channel.isValid()) {
@@ -552,8 +551,9 @@ void AtscEpgEttFilter::processSection(const char *data, int size)
 	epgFilter->processEttSection(data, size);
 }
 
-AtscEpgFilter::AtscEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbChannel *channel) :
-	device(device_), mgtFilter(this), eitFilter(this), ettFilter(this)
+AtscEpgFilter::AtscEpgFilter(DvbManager *manager, DvbDevice *device_,
+	const DvbSharedChannel &channel) : device(device_), mgtFilter(this), eitFilter(this),
+	ettFilter(this)
 {
 	source = channel->source;
 	transponder = channel->transponder;
@@ -669,11 +669,11 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		return;
 	}
 
-	DvbChannel pseudoChannel;
-	pseudoChannel.source = source;
-	pseudoChannel.transponder = transponder;
-	pseudoChannel.networkId = eitSection.sourceId();
-	DvbSharedChannel channel = channelModel->findChannelById(pseudoChannel);
+	DvbChannel fakeChannel;
+	fakeChannel.source = source;
+	fakeChannel.transponder = transponder;
+	fakeChannel.networkId = eitSection.sourceId();
+	DvbSharedChannel channel = channelModel->findChannelById(fakeChannel);
 
 	if (!channel.isValid()) {
 		return;
@@ -691,7 +691,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		epgEntry.duration = QTime().addSecs(entry.duration());
 		epgEntry.title = entry.title();
 
-		quint32 id = ((quint32(pseudoChannel.networkId) << 16) | quint32(entry.eventId()));
+		quint32 id = ((quint32(fakeChannel.networkId) << 16) | quint32(entry.eventId()));
 		DvbSharedEpgEntry entry = epgEntries.value(id);
 
 		if (entry.isValid() && (entry->channel == epgEntry.channel) &&

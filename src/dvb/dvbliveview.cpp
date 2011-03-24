@@ -458,12 +458,12 @@ void DvbLiveView::startDevice()
 		device->startDescrambling(internal->pmtSectionData, this);
 	}
 
-	manager->getEpgModel()->startEventFilter(device, channel.constData());
+	manager->getEpgModel()->startEventFilter(device, channel);
 }
 
 void DvbLiveView::stopDevice()
 {
-	manager->getEpgModel()->stopEventFilter(device, channel.constData());
+	manager->getEpgModel()->stopEventFilter(device, channel);
 
 	if (channel->isScrambled && !internal->pmtSectionData.isEmpty()) {
 		device->stopDescrambling(internal->pmtSectionData, this);
