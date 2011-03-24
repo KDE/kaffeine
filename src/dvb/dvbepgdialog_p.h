@@ -40,7 +40,8 @@ public:
 	DvbEpgChannelTableModel(DvbManager *manager, QObject *parent);
 	~DvbEpgChannelTableModel();
 
-	const DvbSharedChannel &getChannel(int row) const;
+	DvbSharedChannel getChannel(int row) const;
+	QModelIndex indexForChannel(const DvbSharedChannel &channel) const;
 
 	int columnCount(const QModelIndex &parent) const;
 	int rowCount(const QModelIndex &parent) const;

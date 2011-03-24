@@ -322,14 +322,11 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::showEpgDialog()
 {
-	QString currentChannelName;
-	const DvbSharedChannel &currentChannel = manager->getLiveView()->getChannel();
-
-	if (currentChannel.isValid()) {
-		currentChannelName = currentChannel->name;
-	}
-
-	DvbEpgDialog::showDialog(manager, currentChannelName, this);
+	DvbEpgDialog *dialog = new DvbEpgDialog(manager, this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setCurrentChannel(manager->getLiveView()->getChannel());
+	dialog->setModal(true);
+	dialog->show();
 }
 
 void DvbTab::instantRecord(bool checked)

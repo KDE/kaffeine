@@ -32,8 +32,8 @@
 #include <KLocale>
 #include "dvbmanager.h"
 
-DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelName,
-	QWidget *parent) : KDialog(parent), manager(manager_)
+DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
+	manager(manager_)
 {
 	setButtons(KDialog::Close);
 	setCaption(i18nc("@title:window", "Program Guide"));
@@ -41,13 +41,12 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(widget);
 
-	epgTableModel = new DvbEpgTableModel(manager->getEpgModel(), this);
-
-	channelView = new QTreeView(widget);
 	epgChannelTableModel = new DvbEpgChannelTableModel(manager, this);
+	channelView = new QTreeView(widget);
+	channelView->setMaximumWidth(30 * fontMetrics().averageCharWidth());
 	channelView->setModel(epgChannelTableModel);
-	channelView->setMaximumWidth(200);
 	channelView->setRootIsDecorated(false);
+	channelView->setUniformRowHeights(true);
 	connect(channelView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(channelActivated(QModelIndex)));
 	mainLayout->addWidget(channelView);
@@ -60,13 +59,13 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 
 	QPushButton *pushButton =
-		new QPushButton(scheduleAction->icon(), scheduleAction->text(), this);
-	pushButton->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
+		new QPushButton(scheduleAction->icon(), scheduleAction->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
 	boxLayout->addWidget(pushButton);
 
 	boxLayout->addWidget(new QLabel(i18nc("@label:textbox", "Search:"), widget));
 
+	epgTableModel = new DvbEpgTableModel(manager->getEpgModel(), this);
 	KLineEdit *lineEdit = new KLineEdit(widget);
 	lineEdit->setClearButtonShown(true);
 	connect(lineEdit, SIGNAL(textChanged(QString)),
@@ -78,9 +77,10 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 	epgView->addAction(scheduleAction);
 	epgView->header()->setResizeMode(QHeaderView::ResizeToContents);
 	epgView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	epgView->setMinimumWidth(450);
+	epgView->setMinimumWidth(75 * fontMetrics().averageCharWidth());
 	epgView->setModel(epgTableModel);
 	epgView->setRootIsDecorated(false);
+	epgView->setUniformRowHeights(true);
 	connect(epgView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(entryActivated(QModelIndex)));
 	rightLayout->addWidget(epgView);
@@ -92,20 +92,11 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, const QString &currentChannelNa
 
 	QScrollArea *scrollArea = new QScrollArea(widget);
 	scrollArea->setBackgroundRole(QPalette::Light);
-	scrollArea->setMinimumHeight(175);
+	scrollArea->setMinimumHeight(12 * fontMetrics().height());
 	scrollArea->setWidget(contentLabel);
 	scrollArea->setWidgetResizable(true);
 	rightLayout->addWidget(scrollArea);
 	mainLayout->addLayout(rightLayout);
-
-	QModelIndexList currentIndexes = epgChannelTableModel->match(
-		epgChannelTableModel->index(0, 0), Qt::DisplayRole, currentChannelName, 1,
-		Qt::MatchExactly);
-
-	if (!currentIndexes.isEmpty()) {
-		channelView->setCurrentIndex(currentIndexes.at(0));
-	}
-
 	setMainWidget(widget);
 }
 
@@ -113,13 +104,9 @@ DvbEpgDialog::~DvbEpgDialog()
 {
 }
 
-void DvbEpgDialog::showDialog(DvbManager *manager_, const QString &currentChannelName,
-	QWidget *parent)
+void DvbEpgDialog::setCurrentChannel(const DvbSharedChannel &channel)
 {
-	KDialog *dialog = new DvbEpgDialog(manager_, currentChannelName, parent);
-	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-	dialog->setModal(true);
-	dialog->show();
+	channelView->setCurrentIndex(epgChannelTableModel->indexForChannel(channel));
 }
 
 void DvbEpgDialog::channelActivated(const QModelIndex &index)
@@ -243,9 +230,27 @@ DvbEpgChannelTableModel::~DvbEpgChannelTableModel()
 {
 }
 
-const DvbSharedChannel &DvbEpgChannelTableModel::getChannel(int row) const
+DvbSharedChannel DvbEpgChannelTableModel::getChannel(int row) const
 {
-	return channels.at(row);
+	if ((row >= 0) && (row < channels.size())) {
+		return channels.at(row);
+	}
+
+	return DvbSharedChannel();
+}
+
+QModelIndex DvbEpgChannelTableModel::indexForChannel(const DvbSharedChannel &channel) const
+{
+	if (channel.isValid()) {
+		int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel,
+			lessThan) - channels.constBegin());
+
+		if ((row < channels.size()) && (channels.at(row) == channel)) {
+			return index(row, 0);
+		}
+	}
+
+	return QModelIndex();
 }
 
 int DvbEpgChannelTableModel::columnCount(const QModelIndex &parent) const

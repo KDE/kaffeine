@@ -22,6 +22,7 @@
 #define DVBEPGDIALOG_H
 
 #include <KDialog>
+#include "dvbchannel.h"
 
 class QLabel;
 class QModelIndex;
@@ -34,11 +35,10 @@ class DvbEpgDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	DvbEpgDialog(DvbManager *manager_, const QString &currentChannelName, QWidget *parent);
+	DvbEpgDialog(DvbManager *manager_, QWidget *parent);
 	~DvbEpgDialog();
 
-	static void showDialog(DvbManager *manager_, const QString &currentChannelName,
-		QWidget *parent);
+	void setCurrentChannel(const DvbSharedChannel &channel);
 
 private slots:
 	void channelActivated(const QModelIndex &index);
