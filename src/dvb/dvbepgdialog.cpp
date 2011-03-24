@@ -143,11 +143,9 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime().secsTo(entry->duration)).toLocalTime().time();
-
 	text += i18nc("@info tv show start, end", "<font color=#800000>%1 - %2</font><br><br>",
 		KGlobal::locale()->formatDateTime(begin, KLocale::LongDate),
 		KGlobal::locale()->formatTime(end));
-
 	text += entry->details;
 	contentLabel->setText(text);
 }
@@ -199,6 +197,8 @@ DvbEpgChannelTableModel::DvbEpgChannelTableModel(DvbManager *manager, QObject *p
 		this, SLOT(epgChannelAdded(DvbSharedChannel)));
 	connect(epgModel, SIGNAL(epgChannelRemoved(DvbSharedChannel)),
 		this, SLOT(epgChannelRemoved(DvbSharedChannel)));
+	// theoretically we should monitor the channel model for updated channels,
+	// but it's very unlikely that this has practical relevance
 
 	const QHash<DvbSharedChannel, int> epgChannels = epgModel->getEpgChannels();
 
@@ -273,7 +273,8 @@ int DvbEpgChannelTableModel::rowCount(const QModelIndex &parent) const
 
 QVariant DvbEpgChannelTableModel::data(const QModelIndex &index, int role) const
 {
-	if ((role == Qt::DisplayRole) && (index.column() == 0)) {
+	if ((role == Qt::DisplayRole) && (index.column() == 0) && (index.row() >= 0) &&
+	    (index.row() < channels.size())) {
 		return channels.at(index.row())->name;
 	}
 
@@ -297,7 +298,7 @@ void DvbEpgChannelTableModel::epgChannelAdded(const DvbSharedChannel &channel)
 
 	if ((row >= channels.size()) || (channels.at(row) != channel)) {
 		beginInsertRows(QModelIndex(), row, row);
-		channels.insert(row, DvbSharedChannel(channel));
+		channels.insert(row, channel);
 		endInsertRows();
 	}
 }
@@ -307,7 +308,7 @@ void DvbEpgChannelTableModel::epgChannelRemoved(const DvbSharedChannel &channel)
 	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan) -
 		channels.constBegin());
 
-	if (row < channels.size()) {
+	if ((row < channels.size()) && (channels.at(row) == channel)) {
 		beginRemoveRows(QModelIndex(), row, row);
 		channels.removeAt(row);
 		endRemoveRows();
@@ -379,7 +380,7 @@ void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)
 			entries.append(*it);
 		}
 
-		// qSort isn't needed here
+		// qSort isn't needed here (DvbEpgModel uses the same sorting order)
 		endInsertRows();
 	}
 }
@@ -534,8 +535,8 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 	}
 
 	if (!filteredEntries.isEmpty()) {
-		qSort(filteredEntries.begin(), filteredEntries.end(), DvbEpgEntryLessThan());
 		beginInsertRows(QModelIndex(), 0, filteredEntries.size() - 1);
+		qSort(filteredEntries.begin(), filteredEntries.end(), DvbEpgEntryLessThan());
 		entries = filteredEntries;
 		endInsertRows();
 	}
