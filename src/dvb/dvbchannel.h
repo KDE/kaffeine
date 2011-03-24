@@ -91,9 +91,7 @@ public:
 
 	static DvbChannelModel *createSqlModel(QObject *parent);
 
-	/*
-	 * channel names and numbers are guaranteed to be unique within this model
-	 */
+	// channel names and numbers are guaranteed to be unique within this model
 
 	QMap<int, DvbSharedChannel> getChannels() const;
 	DvbSharedChannel findChannelByName(const QString &channelName) const;

@@ -225,7 +225,7 @@ DvbSharedChannel DvbChannelModel::findChannelById(const DvbChannel &channel) con
 void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
 	if (isSqlModel == other->isSqlModel) {
-		kError() << "cloning is only supported between sql model and auxiliary model";
+		kWarning() << "cloning is only supported between sql model and auxiliary model";
 		return;
 	}
 
@@ -423,6 +423,11 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 
 void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 {
+	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel)) {
+		kWarning() << "invalid channel";
+		return;
+	}
+
 	if (hasPendingOperation) {
 		kWarning() << "illegal recursive call";
 		return;
@@ -487,7 +492,7 @@ void DvbChannelModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index)
 	DvbSharedChannel channel = channels.value(sqlKey);
 
 	if (!channel.isValid()) {
-		kError() << "invalid channel";
+		kWarning() << "invalid channel";
 		return;
 	}
 

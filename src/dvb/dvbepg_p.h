@@ -24,7 +24,7 @@
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
 
-class DvbEpgFilter : public DvbSectionFilter, public QSharedData
+class DvbEpgFilter : public QSharedData, public DvbSectionFilter
 {
 public:
 	DvbEpgFilter(DvbManager *manager, DvbDevice *device_, const DvbSharedChannel &channel);
