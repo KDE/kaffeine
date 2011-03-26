@@ -298,7 +298,9 @@ void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 		if (recordingModel->hasRecordings()) {
 			if (KMessageBox::questionYesNo(parent, i18nc("message box",
 			    "Kaffeine has scheduled recordings.\n"
-			    "Do you really want to close the application?")) != KMessageBox::Yes) {
+			    "Do you really want to close the application?"), QString(),
+			    KStandardGuiItem::yes(), KStandardGuiItem::no(),
+			    "ScheduledRecordings") != KMessageBox::Yes) {
 				*ok = false;
 			}
 
