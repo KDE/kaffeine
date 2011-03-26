@@ -185,20 +185,36 @@ static QString enumToString(AtscTransponder::Modulation modulation)
 	return QString();
 }
 
-bool DvbChannelLessThan::operator()(const DvbChannel &x, const DvbChannel &y) const
+bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
 {
 	switch (sortOrder) {
 	case ChannelNameAscending:
-		return (x.name.localeAwareCompare(y.name) < 0);
+		if (x->name != y->name) {
+			return (x->name.localeAwareCompare(y->name) < 0);
+		}
+
+		break;
 	case ChannelNameDescending:
-		return (x.name.localeAwareCompare(y.name) > 0);
+		if (x->name != y->name) {
+			return (x->name.localeAwareCompare(y->name) > 0);
+		}
+
+		break;
 	case ChannelNumberAscending:
-		return (x.number < y.number);
+		if (x->number != y->number) {
+			return (x->number < y->number);
+		}
+
+		break;
 	case ChannelNumberDescending:
-		return (x.number > y.number);
+		if (x->number != y->number) {
+			return (x->number > y->number);
+		}
+
+		break;
 	}
 
-	return false;
+	return (x < y);
 }
 
 DvbChannelTableModel::DvbChannelTableModel(DvbChannelModel *channelModel_, QObject *parent) :
@@ -354,17 +370,6 @@ Qt::DropActions DvbChannelTableModel::supportedDropActions() const
 	return Qt::MoveAction;
 }
 
-QModelIndex DvbChannelTableModel::index(int row, int column, const QModelIndex &parent) const
-{
-	if ((row >= 0) && (row < channels.size()) && (column >= 0) && (column <= 1) &&
-	    !parent.isValid()) {
-		return createIndex(row, column, const_cast<void *>(static_cast<const void *>(
-			channels.at(row).constData())));
-	}
-
-	return QModelIndex();
-}
-
 bool DvbChannelTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
 	int column, const QModelIndex &parent)
 {
@@ -409,16 +414,27 @@ void DvbChannelTableModel::sort(int column, Qt::SortOrder order)
 	}
 
 	if (lessThan.sortOrder != sortOrder) {
+		emit layoutAboutToBeChanged();
 		lessThan.sortOrder = sortOrder;
-		emit layoutChanged();
-		qSort(channels.begin(), channels.end(), lessThan);
 		QModelIndexList oldPersistentIndexes = persistentIndexList();
+		QList<DvbSharedChannel> persistentChannels;
+
+		foreach (const QModelIndex &index, oldPersistentIndexes) {
+			if ((index.row() >= 0) && (index.row() < channels.size())) {
+				persistentChannels.append(channels.at(index.row()));
+			} else {
+				persistentChannels.append(DvbSharedChannel());
+			}
+		}
+
+		qSort(channels.begin(), channels.end(), lessThan);
 		QModelIndexList newPersistentIndexes;
 
-		foreach (const QModelIndex &oldIndex, oldPersistentIndexes) {
-			if (oldIndex.isValid()) {
-				const DvbChannel &channel = *static_cast<const DvbChannel *>(
-					oldIndex.internalPointer());
+		for (int i = 0; i < oldPersistentIndexes.size(); ++i) {
+			const QModelIndex &oldIndex = oldPersistentIndexes.at(i);
+			const DvbSharedChannel &channel = persistentChannels.at(i);
+
+			if (channel.isValid()) {
 				int row = (qBinaryFind(channels.constBegin(), channels.constEnd(),
 					channel, lessThan) - channels.constBegin());
 				newPersistentIndexes.append(index(row, oldIndex.column()));
@@ -435,7 +451,18 @@ void DvbChannelTableModel::sort(int column, Qt::SortOrder order)
 void DvbChannelTableModel::setFilter(const QString &filter)
 {
 	QStringMatcher matcher(filter, Qt::CaseInsensitive);
-	emit layoutChanged();
+	emit layoutAboutToBeChanged();
+	QModelIndexList oldPersistentIndexes = persistentIndexList();
+	QList<DvbSharedChannel> persistentChannels;
+
+	foreach (const QModelIndex &index, oldPersistentIndexes) {
+		if ((index.row() >= 0) && (index.row() < channels.size())) {
+			persistentChannels.append(channels.at(index.row()));
+		} else {
+			persistentChannels.append(DvbSharedChannel());
+		}
+	}
+
 	channels.clear();
 
 	foreach (const DvbSharedChannel &channel, channelModel->getChannels()) {
@@ -445,13 +472,13 @@ void DvbChannelTableModel::setFilter(const QString &filter)
 	}
 
 	qSort(channels.begin(), channels.end(), lessThan);
-	QModelIndexList oldPersistentIndexes = persistentIndexList();
 	QModelIndexList newPersistentIndexes;
 
-	foreach (const QModelIndex &oldIndex, oldPersistentIndexes) {
-		if (oldIndex.isValid()) {
-			const DvbChannel &channel =
-				*static_cast<const DvbChannel *>(oldIndex.internalPointer());
+	for (int i = 0; i < oldPersistentIndexes.size(); ++i) {
+		const QModelIndex &oldIndex = oldPersistentIndexes.at(i);
+		const DvbSharedChannel &channel = persistentChannels.at(i);
+
+		if (channel.isValid()) {
 			int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel,
 				lessThan) - channels.constBegin());
 			newPersistentIndexes.append(index(row, oldIndex.column()));

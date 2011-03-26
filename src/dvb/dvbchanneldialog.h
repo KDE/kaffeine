@@ -41,22 +41,7 @@ public:
 		ChannelNumberDescending
 	};
 
-	bool operator()(const DvbChannel &x, const DvbChannel &y) const;
-
-	bool operator()(const DvbChannel &x, const DvbSharedChannel &y) const
-	{
-		return (*this)(x, *y);
-	}
-
-	bool operator()(const DvbSharedChannel &x, const DvbChannel &y) const
-	{
-		return (*this)(*x, y);
-	}
-
-	bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
-	{
-		return (*this)(*x, *y);
-	}
+	bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const;
 
 	SortOrder sortOrder;
 };
@@ -86,7 +71,6 @@ public:
 	QMimeData *mimeData(const QModelIndexList &indexes) const;
 	QStringList mimeTypes() const;
 	Qt::DropActions supportedDropActions() const;
-	QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
 		const QModelIndex &parent);
 	void sort(int column, Qt::SortOrder order);
