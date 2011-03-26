@@ -99,7 +99,8 @@ signals:
 
 private slots:
 	void channelAdded(const DvbSharedChannel &channel);
-	void channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel);
+	void channelAboutToBeUpdated(const DvbSharedChannel &channel);
+	void channelUpdated(const DvbSharedChannel &channel);
 	void channelRemoved(const DvbSharedChannel &channel);
 
 private:
@@ -110,6 +111,7 @@ private:
 	DvbChannelLessThan lessThan;
 	QList<DvbSharedChannel> dndSelectedChannels;
 	DvbSharedChannel dndInsertBeforeChannel;
+	int updatingRow;
 	bool dndEventPosted;
 };
 

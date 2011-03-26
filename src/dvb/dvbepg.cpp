@@ -75,8 +75,10 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	startTimer(54000);
 
 	DvbChannelModel *channelModel = manager->getChannelModel();
-	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel,DvbChannel)),
-		this, SLOT(channelUpdated(DvbSharedChannel,DvbChannel)));
+	connect(channelModel, SIGNAL(channelAboutToBeUpdated(DvbSharedChannel)),
+		this, SLOT(channelAboutToBeUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel)),
+		this, SLOT(channelUpdated(DvbSharedChannel)));
 	connect(channelModel, SIGNAL(channelRemoved(DvbSharedChannel)),
 		this, SLOT(channelRemoved(DvbSharedChannel)));
 	connect(manager->getRecordingModel(), SIGNAL(recordingRemoved(DvbSharedRecording)),
@@ -352,7 +354,12 @@ void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbSharedChannel &cha
 	}
 }
 
-void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel)
+void DvbEpgModel::channelAboutToBeUpdated(const DvbSharedChannel &channel)
+{
+	updatingChannel = *channel;
+}
+
+void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel)
 {
 	if (hasPendingOperation) {
 		kWarning() << "illegal recursive call";
@@ -361,7 +368,7 @@ void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel, const DvbChann
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
-	if (DvbChannelId(channel) != DvbChannelId(&oldChannel)) {
+	if (DvbChannelId(channel) != DvbChannelId(&updatingChannel)) {
 		DvbEpgEntry fakeEntry(channel);
 		Iterator it = entries.lowerBound(DvbEpgEntryId(&fakeEntry));
 

@@ -95,7 +95,8 @@ signals:
 	void epgChannelRemoved(const DvbSharedChannel &channel);
 
 private slots:
-	void channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel);
+	void channelAboutToBeUpdated(const DvbSharedChannel &channel);
+	void channelUpdated(const DvbSharedChannel &channel);
 	void channelRemoved(const DvbSharedChannel &channel);
 	void recordingRemoved(const DvbSharedRecording &recording);
 
@@ -111,6 +112,7 @@ private:
 	QHash<DvbSharedChannel, int> epgChannels;
 	QList<QExplicitlySharedDataPointer<DvbEpgFilter> > dvbEpgFilters;
 	QList<QExplicitlySharedDataPointer<AtscEpgFilter> > atscEpgFilters;
+	DvbChannel updatingChannel;
 	bool hasPendingOperation;
 };
 

@@ -202,12 +202,15 @@ bool DvbChannelLessThan::operator()(const DvbChannel &x, const DvbChannel &y) co
 }
 
 DvbChannelTableModel::DvbChannelTableModel(DvbChannelModel *channelModel_, QObject *parent) :
-	QAbstractTableModel(parent), channelModel(channelModel_), dndEventPosted(false)
+	QAbstractTableModel(parent), channelModel(channelModel_), updatingRow(0),
+	dndEventPosted(false)
 {
 	connect(channelModel, SIGNAL(channelAdded(DvbSharedChannel)),
 		this, SLOT(channelAdded(DvbSharedChannel)));
-	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel,DvbChannel)),
-		this, SLOT(channelUpdated(DvbSharedChannel,DvbChannel)));
+	connect(channelModel, SIGNAL(channelAboutToBeUpdated(DvbSharedChannel)),
+		this, SLOT(channelAboutToBeUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel)),
+		this, SLOT(channelUpdated(DvbSharedChannel)));
 	connect(channelModel, SIGNAL(channelRemoved(DvbSharedChannel)),
 		this, SLOT(channelRemoved(DvbSharedChannel)));
 
@@ -473,15 +476,17 @@ void DvbChannelTableModel::channelAdded(const DvbSharedChannel &channel)
 	}
 }
 
-void DvbChannelTableModel::channelUpdated(const DvbSharedChannel &channel,
-	const DvbChannel &oldChannel)
+void DvbChannelTableModel::channelAboutToBeUpdated(const DvbSharedChannel &channel)
 {
-	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), oldChannel, lessThan)
+	updatingRow = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan)
 		- channels.constBegin());
+}
 
-	if (row < channels.size()) {
-		channels.replace(row, channel);
-		emit dataChanged(index(row, 0), index(row, 1));
+void DvbChannelTableModel::channelUpdated(const DvbSharedChannel &channel)
+{
+	if (updatingRow < channels.size()) {
+		channels.replace(updatingRow, channel);
+		emit dataChanged(index(updatingRow, 0), index(updatingRow, 1));
 	}
 }
 

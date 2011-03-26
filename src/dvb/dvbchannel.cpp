@@ -224,33 +224,49 @@ DvbSharedChannel DvbChannelModel::findChannelById(const DvbChannel &channel) con
 
 void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
-	if (isSqlModel == other->isSqlModel) {
-		kWarning() << "cloning is only supported between sql model and auxiliary model";
-		return;
-	}
-
-	QMultiMap<SqlKey, DvbSharedChannel> otherChannelKeys;
-
-	foreach (const DvbSharedChannel &channel, other->getChannels()) {
-		otherChannelKeys.insert(*channel, channel);
-	}
-
-	foreach (const DvbSharedChannel &channel, getChannels()) {
-		DvbSharedChannel otherChannel = otherChannelKeys.take(*channel);
-
-		if (otherChannel.isValid()) {
-			if (otherChannel != channel) {
-				DvbChannel modifiedChannel(*otherChannel);
-				updateChannel(channel, modifiedChannel);
-			}
-		} else {
-			removeChannel(channel);
+	if (!isSqlModel && other->isSqlModel && channelNumbers.isEmpty()) {
+		if (hasPendingOperation) {
+			kWarning() << "illegal recursive call";
+			return;
 		}
-	}
 
-	foreach (const DvbSharedChannel &channel, otherChannelKeys) {
-		DvbChannel newChannel(*channel);
-		addChannel(newChannel);
+		EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+		channelNames = other->channelNames;
+		channelNumbers = other->channelNumbers;
+		channelIds = other->channelIds;
+
+		foreach (const DvbSharedChannel &channel, channelNumbers) {
+			emit channelAdded(channel);
+		}
+	} else if (isSqlModel && !other->isSqlModel) {
+		QMultiMap<SqlKey, DvbSharedChannel> otherChannelKeys;
+
+		foreach (const DvbSharedChannel &channel, other->getChannels()) {
+			otherChannelKeys.insert(*channel, channel);
+		}
+
+		for (QMap<SqlKey, DvbSharedChannel>::ConstIterator it = channels.constBegin();
+		     it != channels.constEnd();) {
+			const DvbSharedChannel &channel = *it;
+			++it;
+			DvbSharedChannel otherChannel = otherChannelKeys.take(*channel);
+
+			if (otherChannel.isValid()) {
+				if (otherChannel != channel) {
+					DvbChannel modifiedChannel(*otherChannel);
+					updateChannel(channel, modifiedChannel);
+				}
+			} else {
+				removeChannel(channel);
+			}
+		}
+
+		foreach (const DvbSharedChannel &channel, otherChannelKeys) {
+			DvbChannel newChannel(*channel);
+			addChannel(newChannel);
+		}
+	} else {
+		kWarning() << "illegal type of clone";
 	}
 }
 
@@ -375,41 +391,41 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 	modifiedChannel.setSqlKey(*channel);
+	bool channelNameChanged = (channel->name != modifiedChannel.name);
+	bool channelNumberChanged = (channel->number != modifiedChannel.number);
+	bool channelIdChanged = (DvbChannelId(channel) != DvbChannelId(&modifiedChannel));
+	emit channelAboutToBeUpdated(channel);
+
+	if (channelNameChanged) {
+		channelNames.remove(channel->name);
+	}
+
+	if (channelNumberChanged) {
+		channelNumbers.remove(channel->number);
+	}
+
+	if (channelIdChanged) {
+		channelIds.remove(DvbChannelId(channel), channel);
+	}
 
 	if (!isSqlModel && channel->isSqlKeyValid()) {
-		if (channel->name != modifiedChannel.name) {
-			channelNames.remove(channel->name);
-		}
-
-		if (channel->number != modifiedChannel.number) {
-			channelNumbers.remove(channel->number);
-		}
-
-		if (DvbChannelId(channel) != DvbChannelId(&modifiedChannel)) {
-			channelIds.remove(DvbChannelId(channel), channel);
-		}
-
 		DvbSharedChannel detachedChannel(new DvbChannel(modifiedChannel));
 		channelNames.insert(detachedChannel->name, detachedChannel);
 		channelNumbers.insert(detachedChannel->number, detachedChannel);
 		channelIds.insert(DvbChannelId(detachedChannel), detachedChannel);
-		emit channelUpdated(detachedChannel, *channel);
+		emit channelUpdated(detachedChannel);
 	} else {
-		DvbChannel oldChannel = *channel;
 		*const_cast<DvbChannel *>(channel.constData()) = modifiedChannel;
 
-		if (channel->name != oldChannel.name) {
-			channelNames.remove(oldChannel.name);
+		if (channelNameChanged) {
 			channelNames.insert(channel->name, channel);
 		}
 
-		if (channel->number != oldChannel.number) {
-			channelNumbers.remove(oldChannel.number);
+		if (channelNumberChanged) {
 			channelNumbers.insert(channel->number, channel);
 		}
 
-		if (DvbChannelId(channel) != DvbChannelId(&oldChannel)) {
-			channelIds.remove(DvbChannelId(&oldChannel), channel);
+		if (channelIdChanged) {
 			channelIds.insert(DvbChannelId(channel), channel);
 		}
 
@@ -417,7 +433,7 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 			sqlUpdate(*channel);
 		}
 
-		emit channelUpdated(channel, oldChannel);
+		emit channelUpdated(channel);
 	}
 }
 

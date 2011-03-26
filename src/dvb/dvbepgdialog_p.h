@@ -88,8 +88,8 @@ private:
 	QList<DvbSharedEpgEntry> entries;
 	DvbSharedChannel channelFilter;
 	QStringMatcher contentFilter;
-	bool contentFilterEventPending;
 	int updatingRow;
+	bool contentFilterEventPending;
 };
 
 #endif /* DVBEPGDIALOG_P_H */

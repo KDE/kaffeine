@@ -107,8 +107,10 @@ public:
 
 signals:
 	void channelAdded(const DvbSharedChannel &channel);
-	// oldChannel is a temporary copy (channel remains the same if this is the main model)
-	void channelUpdated(const DvbSharedChannel &channel, const DvbChannel &oldChannel);
+	// if this is the main model, updating doesn't change the channel pointer
+	// (modifies existing content); otherwise the channel pointer may be updated
+	void channelAboutToBeUpdated(const DvbSharedChannel &channel);
+	void channelUpdated(const DvbSharedChannel &channel);
 	void channelRemoved(const DvbSharedChannel &channel);
 
 private:

@@ -316,8 +316,8 @@ void DvbEpgChannelTableModel::epgChannelRemoved(const DvbSharedChannel &channel)
 }
 
 DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
-	QAbstractTableModel(parent), epgModel(epgModel_), contentFilterEventPending(false),
-	updatingRow(0)
+	QAbstractTableModel(parent), epgModel(epgModel_), updatingRow(0),
+	contentFilterEventPending(false)
 {
 	contentFilter.setCaseSensitivity(Qt::CaseInsensitive);
 
