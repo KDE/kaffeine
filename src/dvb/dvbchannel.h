@@ -103,7 +103,7 @@ public:
 	void updateChannel(const DvbSharedChannel &channel, DvbChannel &modifiedChannel);
 	void removeChannel(const DvbSharedChannel &channel);
 	void dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
-		const DvbSharedChannel &insertBeforeChannel);
+		int insertBeforeNumber);
 
 signals:
 	void channelAdded(const DvbSharedChannel &channel);

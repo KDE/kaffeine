@@ -463,43 +463,69 @@ void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 }
 
 void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
-	const DvbSharedChannel &insertBeforeChannel)
+	int insertBeforeNumber)
 {
-	int newNumberBegin = 1;
+	if (hasPendingOperation) {
+		kWarning() << "illegal recursive call";
+		return;
+	}
 
-	if (insertBeforeChannel.isValid()) {
-		QMap<int, DvbSharedChannel>::ConstIterator it =
-			channelNumbers.constFind(insertBeforeChannel->number);
+	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	typedef QMap<int, DvbSharedChannel>::ConstIterator ConstIterator;
+	QList<DvbSharedChannel> channelQueue;
 
-		if (it != channelNumbers.constBegin()) {
-			newNumberBegin = ((it - 1).key() + 1);
-		}
-	} else {
-		QMap<int, DvbSharedChannel>::ConstIterator it = channelNumbers.constEnd();
+	foreach (const DvbSharedChannel &channel, selectedChannels) {
+		if (channel.isValid()) {
+			ConstIterator it = channelNumbers.constFind(channel->number);
 
-		if (it != channelNumbers.constBegin()) {
-			newNumberBegin = ((it - 1).key() + 1);
+			if ((it != channelNumbers.constEnd()) && (*it == channel)) {
+				channelNumbers.remove(channel->number);
+				channelQueue.append(channel);
+			}
 		}
 	}
 
-	int newNumberEnd = (newNumberBegin + selectedChannels.size());
+	ConstIterator it = channelNumbers.constFind(insertBeforeNumber);
+	int currentNumber = 1;
 
-	for (int i = 0; i < selectedChannels.size(); ++i) {
-		const DvbSharedChannel &selectedChannel = selectedChannels.at(i);
-		int number = (newNumberBegin + i);
-		DvbSharedChannel existingChannel = channelNumbers.value(number);
+	if (it != channelNumbers.constBegin()) {
+		currentNumber = ((it - 1).key() + 1);
+	}
 
-		if (existingChannel.isValid() && (existingChannel != selectedChannel)) {
-			DvbChannel modifiedChannel = *existingChannel;
-			modifiedChannel.number = findNextFreeChannelNumber(newNumberEnd);
-			updateChannel(existingChannel, modifiedChannel);
+	while (!channelQueue.isEmpty()) {
+		DvbSharedChannel channel = channelQueue.takeFirst();
+
+		if (channel->number != currentNumber) {
+			emit channelAboutToBeUpdated(channel);
+			DvbSharedChannel existingChannel = channelNumbers.take(currentNumber);
+
+			if (existingChannel.isValid()) {
+				channelQueue.append(existingChannel);
+			}
+
+			if (!isSqlModel && channel->isSqlKeyValid()) {
+				DvbChannel *newChannel = new DvbChannel(*channel);
+				newChannel->number = currentNumber;
+				DvbSharedChannel detachedChannel(newChannel);
+				channelNames.insert(detachedChannel->name, detachedChannel);
+				channelNumbers.insert(detachedChannel->number, detachedChannel);
+				channelIds.insert(DvbChannelId(detachedChannel), detachedChannel);
+				emit channelUpdated(detachedChannel);
+			} else {
+				const_cast<DvbChannel *>(channel.constData())->number = currentNumber;
+				channelNumbers.insert(channel->number, channel);
+
+				if (isSqlModel) {
+					sqlUpdate(*channel);
+				}
+
+				emit channelUpdated(channel);
+			}
+		} else {
+			channelNumbers.insert(channel->number, channel);
 		}
 
-		if (selectedChannel->number != number) {
-			DvbChannel modifiedChannel = *selectedChannel;
-			modifiedChannel.number = number;
-			updateChannel(selectedChannel, modifiedChannel);
-		}
+		++currentNumber;
 	}
 }
 

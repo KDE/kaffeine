@@ -228,7 +228,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 
 	channelModel = new DvbChannelModel(this);
 	channelModel->cloneFrom(manager->getChannelModel());
-	DvbChannelTableModel *channelTableModel = new DvbChannelTableModel(channelModel, this);
+	DvbChannelTableModel *channelTableModel = new DvbChannelTableModel(this);
 
 	DvbChannelView *channelView = new DvbChannelView(groupBox);
 	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -239,6 +239,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	QHeaderView *header = manager->getChannelView()->header();
 	channelView->sortByColumn(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelView->setSortingEnabled(true);
+	channelTableModel->setChannelModel(channelModel);
 	connect(channelTableModel, SIGNAL(checkChannelDragAndDrop(bool*)),
 		channelView, SLOT(checkChannelDragAndDrop(bool*)));
 

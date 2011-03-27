@@ -1,7 +1,7 @@
 /*
  * dvbchanneldialog.h
  *
- * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,11 @@
 #ifndef DVBCHANNELDIALOG_H
 #define DVBCHANNELDIALOG_H
 
-#include <QSharedData> // qt 4.5 compatibility
 #include <QTreeView>
+#include "../tablemodel.h"
 #include "dvbchannel.h"
 
+class DvbChannelTableModel;
 class KAction;
 
 class DvbChannelLessThan
@@ -46,26 +47,50 @@ public:
 	SortOrder sortOrder;
 };
 
-class DvbChannelTableModel : public QAbstractTableModel
+class DvbChannelTableModelHelper
+{
+public:
+	DvbChannelTableModelHelper() { }
+	~DvbChannelTableModelHelper() { }
+
+	typedef DvbSharedChannel ItemType;
+	typedef DvbChannelLessThan LessThanType;
+
+	int columnCount() const
+	{
+		return 2;
+	}
+
+	bool filterAcceptsItem(const DvbSharedChannel &channel) const
+	{
+		// Qt::CaseSensitive == no filtering
+		return ((filter.caseSensitivity() == Qt::CaseSensitive) ||
+			(filter.indexIn(channel->name) >= 0));
+	}
+
+	QStringMatcher filter;
+
+private:
+	Q_DISABLE_COPY(DvbChannelTableModelHelper)
+};
+
+class DvbChannelTableModel : public TableModel<DvbChannelTableModelHelper>
 {
 	Q_OBJECT
 public:
-	DvbChannelTableModel(DvbChannelModel *channelModel_, QObject *parent);
+	explicit DvbChannelTableModel(QObject *parent);
 	~DvbChannelTableModel();
 
-	/*
-	 * channel names and numbers are guaranteed to be unique within this model
-	 * they are automatically adjusted if necessary
-	 */
+	void setChannelModel(DvbChannelModel *channelModel_);
 
-	DvbChannelModel *getChannelModel() const;
-	const DvbSharedChannel &getChannel(const QModelIndex &index) const;
-	QModelIndex indexForChannel(const DvbSharedChannel &channel) const;
+	DvbChannelModel *getChannelModel() const
+	{
+		return channelModel;
+	}
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const;
+	void sort(int column, Qt::SortOrder order);
 
 	Qt::ItemFlags flags(const QModelIndex &index) const;
 	QMimeData *mimeData(const QModelIndexList &indexes) const;
@@ -73,7 +98,6 @@ public:
 	Qt::DropActions supportedDropActions() const;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
 		const QModelIndex &parent);
-	void sort(int column, Qt::SortOrder order);
 
 public slots:
 	void setFilter(const QString &filter);
@@ -91,11 +115,8 @@ private:
 	void customEvent(QEvent *event);
 
 	DvbChannelModel *channelModel;
-	QList<DvbSharedChannel> channels;
-	DvbChannelLessThan lessThan;
 	QList<DvbSharedChannel> dndSelectedChannels;
-	DvbSharedChannel dndInsertBeforeChannel;
-	int updatingRow;
+	int dndInsertBeforeNumber;
 	bool dndEventPosted;
 };
 
@@ -108,7 +129,6 @@ public:
 
 	KAction *addEditAction();
 	KAction *addRemoveAction();
-
 	void setModel(DvbChannelTableModel *tableModel_);
 
 public slots:

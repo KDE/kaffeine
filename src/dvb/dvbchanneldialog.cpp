@@ -1,7 +1,7 @@
 /*
  * dvbchanneldialog.cpp
  *
- * Copyright (C) 2007-2010 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2007-2011 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +31,333 @@
 #include <QSpinBox>
 #include <KAction>
 #include <KComboBox>
+#include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include "dvbsi.h"
+
+bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
+{
+	switch (sortOrder) {
+	case ChannelNameAscending:
+		if (x->name != y->name) {
+			return (x->name.localeAwareCompare(y->name) < 0);
+		}
+
+		break;
+	case ChannelNameDescending:
+		if (x->name != y->name) {
+			return (x->name.localeAwareCompare(y->name) > 0);
+		}
+
+		break;
+	case ChannelNumberAscending:
+		if (x->number != y->number) {
+			return (x->number < y->number);
+		}
+
+		break;
+	case ChannelNumberDescending:
+		if (x->number != y->number) {
+			return (x->number > y->number);
+		}
+
+		break;
+	}
+
+	return (x < y);
+}
+
+DvbChannelTableModel::DvbChannelTableModel(QObject *parent) :
+	TableModel<DvbChannelTableModelHelper>(parent), channelModel(NULL),
+	dndInsertBeforeNumber(-1), dndEventPosted(false)
+{
+}
+
+DvbChannelTableModel::~DvbChannelTableModel()
+{
+}
+
+void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
+{
+	if (channelModel != NULL) {
+		kWarning() << "channel model already set";
+		return;
+	}
+
+	channelModel = channelModel_;
+	connect(channelModel, SIGNAL(channelAdded(DvbSharedChannel)),
+		this, SLOT(channelAdded(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelAboutToBeUpdated(DvbSharedChannel)),
+		this, SLOT(channelAboutToBeUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel)),
+		this, SLOT(channelUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelRemoved(DvbSharedChannel)),
+		this, SLOT(channelRemoved(DvbSharedChannel)));
+	reset(channelModel->getChannels());
+}
+
+QVariant DvbChannelTableModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
+		switch (section) {
+		case 0:
+			return i18nc("@title:column tv show", "Channel");
+		case 1:
+			return i18nc("@title:column tv channel", "Number");
+		}
+	}
+
+	return QVariant();
+}
+
+QVariant DvbChannelTableModel::data(const QModelIndex &index, int role) const
+{
+	const DvbSharedChannel &channel = value(index);
+
+	if (channel.isValid()) {
+		switch (role) {
+		case Qt::DecorationRole:
+			if (index.column() == 0) {
+				if (channel->hasVideo) {
+					if (!channel->isScrambled) {
+						return KIcon("video-television");
+					} else {
+						return KIcon("video-television-encrypted");
+					}
+				} else {
+					if (!channel->isScrambled) {
+						return KIcon("text-speak");
+					} else {
+						return KIcon("audio-radio-encrypted");
+					}
+				}
+			}
+
+			break;
+		case Qt::DisplayRole:
+			switch (index.column()) {
+			case 0:
+				return channel->name;
+			case 1:
+				return channel->number;
+			}
+
+			break;
+		}
+	}
+
+	return QVariant();
+}
+
+void DvbChannelTableModel::sort(int column, Qt::SortOrder order)
+{
+	DvbChannelLessThan::SortOrder sortOrder;
+
+	if (order == Qt::AscendingOrder) {
+		if (column == 0) {
+			sortOrder = DvbChannelLessThan::ChannelNameAscending;
+		} else {
+			sortOrder = DvbChannelLessThan::ChannelNumberAscending;
+		}
+	} else {
+		if (column == 0) {
+			sortOrder = DvbChannelLessThan::ChannelNameDescending;
+		} else {
+			sortOrder = DvbChannelLessThan::ChannelNumberDescending;
+		}
+	}
+
+	internalSort(sortOrder);
+}
+
+Qt::ItemFlags DvbChannelTableModel::flags(const QModelIndex &index) const
+{
+	if (index.isValid()) {
+		return (QAbstractTableModel::flags(index) | Qt::ItemIsDragEnabled);
+	} else {
+		return (QAbstractTableModel::flags(index) | Qt::ItemIsDropEnabled);
+	}
+}
+
+QMimeData *DvbChannelTableModel::mimeData(const QModelIndexList &indexes) const
+{
+	QList<DvbSharedChannel> selectedChannels;
+
+	foreach (const QModelIndex &index, indexes) {
+		if (index.column() == 0) {
+			selectedChannels.append(value(index));
+		}
+	}
+
+	QMimeData *mimeData = new QMimeData();
+	mimeData->setData("application/x-org.kde.kaffeine-selectedchannels", QByteArray());
+	// this way the list will be properly deleted once drag and drop ends
+	mimeData->setProperty("SelectedChannels", QVariant::fromValue(selectedChannels));
+	return mimeData;
+}
+
+QStringList DvbChannelTableModel::mimeTypes() const
+{
+	return QStringList("application/x-org.kde.kaffeine-selectedchannels");
+}
+
+Qt::DropActions DvbChannelTableModel::supportedDropActions() const
+{
+	return Qt::MoveAction;
+}
+
+bool DvbChannelTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
+	int column, const QModelIndex &parent)
+{
+	Q_UNUSED(column)
+	Q_UNUSED(parent)
+	dndSelectedChannels.clear();
+	dndInsertBeforeNumber = -1;
+
+	if (action == Qt::MoveAction) {
+		dndSelectedChannels =
+			data->property("SelectedChannels").value<QList<DvbSharedChannel> >();
+		const DvbSharedChannel &dndInsertBeforeChannel = value(row);
+
+		if (dndInsertBeforeChannel.isValid()) {
+			dndInsertBeforeNumber = dndInsertBeforeChannel->number;
+		}
+
+		if (!dndSelectedChannels.isEmpty() && !dndEventPosted) {
+			dndEventPosted = true;
+			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+		}
+	}
+
+	return false;
+}
+
+void DvbChannelTableModel::setFilter(const QString &filter)
+{
+	// Qt::CaseSensitive == no filtering
+	helper.filter.setCaseSensitivity(
+		filter.isEmpty() ? Qt::CaseSensitive : Qt::CaseInsensitive);
+	helper.filter.setPattern(filter);
+	reset(channelModel->getChannels());
+}
+
+void DvbChannelTableModel::channelAdded(const DvbSharedChannel &channel)
+{
+	insert(channel);
+}
+
+void DvbChannelTableModel::channelAboutToBeUpdated(const DvbSharedChannel &channel)
+{
+	aboutToUpdate(channel);
+}
+
+void DvbChannelTableModel::channelUpdated(const DvbSharedChannel &channel)
+{
+	update(channel);
+}
+
+void DvbChannelTableModel::channelRemoved(const DvbSharedChannel &channel)
+{
+	remove(channel);
+}
+
+void DvbChannelTableModel::customEvent(QEvent *event)
+{
+	Q_UNUSED(event)
+	bool ok = true;
+	emit checkChannelDragAndDrop(&ok);
+
+	if (ok && !dndSelectedChannels.isEmpty()) {
+		channelModel->dndMoveChannels(dndSelectedChannels, dndInsertBeforeNumber);
+	}
+
+	dndSelectedChannels.clear();
+	dndEventPosted = false;
+}
+
+DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent), tableModel(NULL)
+{
+}
+
+DvbChannelView::~DvbChannelView()
+{
+}
+
+KAction *DvbChannelView::addEditAction()
+{
+	KAction *action = new KAction(KIcon("configure"), i18nc("@action", "Edit"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
+	addAction(action);
+	return action;
+}
+
+KAction *DvbChannelView::addRemoveAction()
+{
+	KAction *action = new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
+	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
+	addAction(action);
+	return action;
+}
+
+void DvbChannelView::setModel(DvbChannelTableModel *tableModel_)
+{
+	tableModel = tableModel_;
+	QTreeView::setModel(tableModel);
+}
+
+void DvbChannelView::checkChannelDragAndDrop(bool *ok)
+{
+	if ((*ok) && ((header()->sortIndicatorSection() != 1) ||
+	    (header()->sortIndicatorOrder() != Qt::AscendingOrder))) {
+		if (KMessageBox::warningContinueCancel(this, i18nc("@info",
+			"The channels will be sorted by number to allow drag and drop.\n"
+			"Do you want to continue?")) == KMessageBox::Continue) {
+			sortByColumn(1, Qt::AscendingOrder);
+		} else {
+			*ok = false;
+		}
+	}
+}
+
+void DvbChannelView::editChannel()
+{
+	QModelIndex index = currentIndex();
+
+	if (index.isValid()) {
+		KDialog *dialog = new DvbChannelEditor(tableModel, tableModel->value(index), this);
+		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+		dialog->setModal(true);
+		dialog->show();
+	}
+}
+
+void DvbChannelView::removeChannel()
+{
+	QList<DvbSharedChannel> selectedChannels;
+
+	foreach (const QModelIndex &index, selectionModel()->selectedIndexes()) {
+		if (index.column() == 0) {
+			selectedChannels.append(tableModel->value(index));
+		}
+	}
+
+	DvbChannelModel *channelModel = tableModel->getChannelModel();
+
+	foreach (const DvbSharedChannel &channel, selectedChannels) {
+		channelModel->removeChannel(channel);
+	}
+}
+
+void DvbChannelView::removeAllChannels()
+{
+	DvbChannelModel *channelModel = tableModel->getChannelModel();
+
+	foreach (const DvbSharedChannel &channel, channelModel->getChannels().values()) {
+		channelModel->removeChannel(channel);
+	}
+}
 
 static QString enumToString(DvbTransponderBase::FecRate fecRate)
 {
@@ -185,456 +508,20 @@ static QString enumToString(AtscTransponder::Modulation modulation)
 	return QString();
 }
 
-bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
-{
-	switch (sortOrder) {
-	case ChannelNameAscending:
-		if (x->name != y->name) {
-			return (x->name.localeAwareCompare(y->name) < 0);
-		}
-
-		break;
-	case ChannelNameDescending:
-		if (x->name != y->name) {
-			return (x->name.localeAwareCompare(y->name) > 0);
-		}
-
-		break;
-	case ChannelNumberAscending:
-		if (x->number != y->number) {
-			return (x->number < y->number);
-		}
-
-		break;
-	case ChannelNumberDescending:
-		if (x->number != y->number) {
-			return (x->number > y->number);
-		}
-
-		break;
-	}
-
-	return (x < y);
-}
-
-DvbChannelTableModel::DvbChannelTableModel(DvbChannelModel *channelModel_, QObject *parent) :
-	QAbstractTableModel(parent), channelModel(channelModel_), updatingRow(0),
-	dndEventPosted(false)
-{
-	connect(channelModel, SIGNAL(channelAdded(DvbSharedChannel)),
-		this, SLOT(channelAdded(DvbSharedChannel)));
-	connect(channelModel, SIGNAL(channelAboutToBeUpdated(DvbSharedChannel)),
-		this, SLOT(channelAboutToBeUpdated(DvbSharedChannel)));
-	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel)),
-		this, SLOT(channelUpdated(DvbSharedChannel)));
-	connect(channelModel, SIGNAL(channelRemoved(DvbSharedChannel)),
-		this, SLOT(channelRemoved(DvbSharedChannel)));
-
-	foreach (const DvbSharedChannel &channel, channelModel->getChannels()) {
-		channels.append(channel);
-	}
-
-	qSort(channels.begin(), channels.end(), lessThan);
-}
-
-DvbChannelTableModel::~DvbChannelTableModel()
-{
-}
-
-DvbChannelModel *DvbChannelTableModel::getChannelModel() const
-{
-	return channelModel;
-}
-
-const DvbSharedChannel &DvbChannelTableModel::getChannel(const QModelIndex &index) const
-{
-	return channels.at(index.row());
-}
-
-QModelIndex DvbChannelTableModel::indexForChannel(const DvbSharedChannel &channel) const
-{
-	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan)
-		- channels.constBegin());
-
-	if (row < channels.size()) {
-		return index(row,  0);
-	}
-
-	return QModelIndex();
-}
-
-int DvbChannelTableModel::columnCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return 2;
-	}
-
-	return 0;
-}
-
-int DvbChannelTableModel::rowCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return channels.size();
-	}
-
-	return 0;
-}
-
-QVariant DvbChannelTableModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-	if ((orientation == Qt::Horizontal) && (role == Qt::DisplayRole)) {
-		switch (section) {
-		case 0:
-			return i18nc("@title:column tv show", "Channel");
-		case 1:
-			return i18n("Number");
-		}
-	}
-
-	return QVariant();
-}
-
-QVariant DvbChannelTableModel::data(const QModelIndex &index, int role) const
-{
-	const DvbSharedChannel &channel = channels.at(index.row());
-
-	switch (role) {
-	case Qt::DecorationRole:
-		if (index.column() == 0) {
-			if (channel->hasVideo) {
-				if (!channel->isScrambled) {
-					return KIcon("video-television");
-				} else {
-					return KIcon("video-television-encrypted");
-				}
-			} else {
-				if (!channel->isScrambled) {
-					return KIcon("text-speak");
-				} else {
-					return KIcon("audio-radio-encrypted");
-				}
-			}
-		}
-
-		break;
-	case Qt::DisplayRole:
-		switch (index.column()) {
-		case 0:
-			return channel->name;
-		case 1:
-			return channel->number;
-		}
-
-		break;
-	}
-
-	return QVariant();
-}
-
-Qt::ItemFlags DvbChannelTableModel::flags(const QModelIndex &index) const
-{
-	if (index.isValid()) {
-		return (QAbstractTableModel::flags(index) | Qt::ItemIsDragEnabled);
-	} else {
-		return (QAbstractTableModel::flags(index) | Qt::ItemIsDropEnabled);
-	}
-}
-
-QMimeData *DvbChannelTableModel::mimeData(const QModelIndexList &indexes) const
-{
-	QList<DvbSharedChannel> selectedChannels;
-
-	foreach (const QModelIndex &index, indexes) {
-		const DvbSharedChannel &channel = channels.at(index.row());
-
-		if (selectedChannels.isEmpty() ||
-		    (selectedChannels.at(selectedChannels.size() - 1) != channel)) {
-			selectedChannels.append(channel);
-		}
-	}
-
-	QMimeData *mimeData = new QMimeData();
-	mimeData->setData("application/x-org.kde.kaffeine-selectedchannels", QByteArray());
-	mimeData->setProperty("SelectedChannels", QVariant::fromValue(selectedChannels));
-	return mimeData;
-}
-
-QStringList DvbChannelTableModel::mimeTypes() const
-{
-	return QStringList("application/x-org.kde.kaffeine-selectedchannels");
-}
-
-Qt::DropActions DvbChannelTableModel::supportedDropActions() const
-{
-	return Qt::MoveAction;
-}
-
-bool DvbChannelTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row,
-	int column, const QModelIndex &parent)
-{
-	Q_UNUSED(column)
-	Q_UNUSED(parent)
-	dndSelectedChannels.clear();
-	dndInsertBeforeChannel = DvbSharedChannel();
-
-	if (action == Qt::MoveAction) {
-		dndSelectedChannels =
-			data->property("SelectedChannels").value<QList<DvbSharedChannel> >();
-
-		if (row >= 0) {
-			dndInsertBeforeChannel = channels.at(row);
-		}
-
-		if (!dndSelectedChannels.isEmpty() && !dndEventPosted) {
-			dndEventPosted = true;
-			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-		}
-	}
-
-	return false;
-}
-
-void DvbChannelTableModel::sort(int column, Qt::SortOrder order)
-{
-	DvbChannelLessThan::SortOrder sortOrder;
-
-	if (order == Qt::AscendingOrder) {
-		if (column == 0) {
-			sortOrder = DvbChannelLessThan::ChannelNameAscending;
-		} else {
-			sortOrder = DvbChannelLessThan::ChannelNumberAscending;
-		}
-	} else {
-		if (column == 0) {
-			sortOrder = DvbChannelLessThan::ChannelNameDescending;
-		} else {
-			sortOrder = DvbChannelLessThan::ChannelNumberDescending;
-		}
-	}
-
-	if (lessThan.sortOrder != sortOrder) {
-		emit layoutAboutToBeChanged();
-		lessThan.sortOrder = sortOrder;
-		QModelIndexList oldPersistentIndexes = persistentIndexList();
-		QList<DvbSharedChannel> persistentChannels;
-
-		foreach (const QModelIndex &index, oldPersistentIndexes) {
-			if ((index.row() >= 0) && (index.row() < channels.size())) {
-				persistentChannels.append(channels.at(index.row()));
-			} else {
-				persistentChannels.append(DvbSharedChannel());
-			}
-		}
-
-		qSort(channels.begin(), channels.end(), lessThan);
-		QModelIndexList newPersistentIndexes;
-
-		for (int i = 0; i < oldPersistentIndexes.size(); ++i) {
-			const QModelIndex &oldIndex = oldPersistentIndexes.at(i);
-			const DvbSharedChannel &channel = persistentChannels.at(i);
-
-			if (channel.isValid()) {
-				int row = (qBinaryFind(channels.constBegin(), channels.constEnd(),
-					channel, lessThan) - channels.constBegin());
-				newPersistentIndexes.append(index(row, oldIndex.column()));
-			} else {
-				newPersistentIndexes.append(QModelIndex());
-			}
-		}
-
-		changePersistentIndexList(oldPersistentIndexes, newPersistentIndexes);
-		emit layoutChanged();
-	}
-}
-
-void DvbChannelTableModel::setFilter(const QString &filter)
-{
-	QStringMatcher matcher(filter, Qt::CaseInsensitive);
-	emit layoutAboutToBeChanged();
-	QModelIndexList oldPersistentIndexes = persistentIndexList();
-	QList<DvbSharedChannel> persistentChannels;
-
-	foreach (const QModelIndex &index, oldPersistentIndexes) {
-		if ((index.row() >= 0) && (index.row() < channels.size())) {
-			persistentChannels.append(channels.at(index.row()));
-		} else {
-			persistentChannels.append(DvbSharedChannel());
-		}
-	}
-
-	channels.clear();
-
-	foreach (const DvbSharedChannel &channel, channelModel->getChannels()) {
-		if (matcher.indexIn(channel->name) >= 0) {
-			channels.append(channel);
-		}
-	}
-
-	qSort(channels.begin(), channels.end(), lessThan);
-	QModelIndexList newPersistentIndexes;
-
-	for (int i = 0; i < oldPersistentIndexes.size(); ++i) {
-		const QModelIndex &oldIndex = oldPersistentIndexes.at(i);
-		const DvbSharedChannel &channel = persistentChannels.at(i);
-
-		if (channel.isValid()) {
-			int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel,
-				lessThan) - channels.constBegin());
-			newPersistentIndexes.append(index(row, oldIndex.column()));
-		} else {
-			newPersistentIndexes.append(QModelIndex());
-		}
-	}
-
-	changePersistentIndexList(oldPersistentIndexes, newPersistentIndexes);
-	emit layoutChanged();
-}
-
-void DvbChannelTableModel::channelAdded(const DvbSharedChannel &channel)
-{
-	int row = (qLowerBound(channels.constBegin(), channels.constEnd(), channel, lessThan)
-		- channels.constBegin());
-
-	if ((row >= channels.size()) || (channels.at(row) != channel)) {
-		beginInsertRows(QModelIndex(), row, row);
-		channels.insert(row, channel);
-		endInsertRows();
-	}
-}
-
-void DvbChannelTableModel::channelAboutToBeUpdated(const DvbSharedChannel &channel)
-{
-	updatingRow = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan)
-		- channels.constBegin());
-}
-
-void DvbChannelTableModel::channelUpdated(const DvbSharedChannel &channel)
-{
-	if (updatingRow < channels.size()) {
-		channels.replace(updatingRow, channel);
-		emit dataChanged(index(updatingRow, 0), index(updatingRow, 1));
-	}
-}
-
-void DvbChannelTableModel::channelRemoved(const DvbSharedChannel &channel)
-{
-	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan)
-		- channels.constBegin());
-
-	if (row < channels.size()) {
-		beginRemoveRows(QModelIndex(), row, row);
-		channels.removeAt(row);
-		endRemoveRows();
-	}
-}
-
-void DvbChannelTableModel::customEvent(QEvent *event)
-{
-	Q_UNUSED(event)
-	dndEventPosted = false;
-	bool ok = true;
-	emit checkChannelDragAndDrop(&ok);
-
-	if (ok && !dndSelectedChannels.isEmpty()) {
-		channelModel->dndMoveChannels(dndSelectedChannels, dndInsertBeforeChannel);
-	}
-}
-
-DvbChannelView::DvbChannelView(QWidget *parent) : QTreeView(parent), tableModel(NULL)
-{
-}
-
-DvbChannelView::~DvbChannelView()
-{
-}
-
-KAction *DvbChannelView::addEditAction()
-{
-	KAction *action = new KAction(KIcon("configure"), i18nc("@action", "Edit"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
-	addAction(action);
-	return action;
-}
-
-KAction *DvbChannelView::addRemoveAction()
-{
-	KAction *action = new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
-	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
-	addAction(action);
-	return action;
-}
-
-void DvbChannelView::setModel(DvbChannelTableModel *tableModel_)
-{
-	tableModel = tableModel_;
-	QTreeView::setModel(tableModel);
-}
-
-void DvbChannelView::checkChannelDragAndDrop(bool *ok)
-{
-	if ((*ok) && ((header()->sortIndicatorSection() != 1) ||
-	    (header()->sortIndicatorOrder() != Qt::AscendingOrder))) {
-		if (KMessageBox::warningContinueCancel(this, i18nc("message box",
-			"The channels will be sorted by number to allow drag and drop.\n"
-			"Do you want to continue?")) == KMessageBox::Continue) {
-			sortByColumn(1, Qt::AscendingOrder);
-		} else {
-			*ok = false;
-		}
-	}
-}
-
-void DvbChannelView::editChannel()
-{
-	QModelIndex index = currentIndex();
-
-	if (index.isValid()) {
-		KDialog *dialog =
-			new DvbChannelEditor(tableModel, tableModel->getChannel(index), this);
-		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-		dialog->setModal(true);
-		dialog->show();
-	}
-}
-
-void DvbChannelView::removeChannel()
-{
-	QSet<DvbSharedChannel> selectedChannels;
-
-	foreach (const QModelIndex &modelIndex, selectionModel()->selectedIndexes()) {
-		selectedChannels.insert(tableModel->getChannel(modelIndex));
-	}
-
-	DvbChannelModel *channelModel = tableModel->getChannelModel();
-
-	foreach (const DvbSharedChannel &channel, selectedChannels) {
-		channelModel->removeChannel(channel);
-	}
-}
-
-void DvbChannelView::removeAllChannels()
-{
-	DvbChannelModel *channelModel = tableModel->getChannelModel();
-
-	foreach (const DvbSharedChannel &channel, channelModel->getChannels()) {
-		channelModel->removeChannel(channel);
-	}
-}
-
 DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbSharedChannel &channel_,
 	QWidget *parent) : KDialog(parent), model(model_), channel(channel_)
 {
-	setCaption(i18n("Channel Settings"));
-	QWidget *widget = new QWidget(this);
+	setCaption(i18nc("@title:window", "Edit Channel"));
 
+	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
 	QGridLayout *gridLayout = new QGridLayout();
+
 	nameEdit = new KLineEdit(widget);
 	nameEdit->setText(channel->name);
 	gridLayout->addWidget(nameEdit, 0, 1);
 
-	QLabel *label = new QLabel(i18n("Name:"), widget);
+	QLabel *label = new QLabel(i18nc("@label tv channel", "Name:"), widget);
 	label->setBuddy(nameEdit);
 	gridLayout->addWidget(label, 0, 0);
 
@@ -643,7 +530,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	numberBox->setValue(channel->number);
 	gridLayout->addWidget(numberBox, 0, 3);
 
-	label = new QLabel(i18n("Number:"), widget);
+	label = new QLabel(i18nc("@label tv channel", "Number:"), widget);
 	label->setBuddy(numberBox);
 	gridLayout->addWidget(label, 0, 2);
 	mainLayout->addLayout(gridLayout);
@@ -652,7 +539,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	QGroupBox *groupBox = new QGroupBox(widget);
 	gridLayout = new QGridLayout(groupBox);
-	gridLayout->addWidget(new QLabel(i18n("Source:")), 0, 0);
+	gridLayout->addWidget(new QLabel(i18nc("@label tv channel", "Source:")), 0, 0);
 	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
 
 	switch (channel->transponder.getTransmissionType()) {

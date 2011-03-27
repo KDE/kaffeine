@@ -291,10 +291,10 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	gridLayout->addWidget(label, 0, 0);
 
 	channelBox = new KComboBox(widget);
-	DvbChannelTableModel *channelModel =
-		new DvbChannelTableModel(manager->getChannelModel(), widget);
+	DvbChannelTableModel *channelModel = new DvbChannelTableModel(widget);
 	QHeaderView *header = manager->getChannelView()->header();
 	channelModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
+	channelModel->setChannelModel(manager->getChannelModel());
 	channelBox->setModel(channelModel);
 	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(channelBox, 1, 1);
@@ -357,8 +357,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 
 	if (recording.isValid()) {
 		nameEdit->setText(recording->name);
-		channelBox->setCurrentIndex(
-			channelModel->indexForChannel(recording->channel).row());
+		channelBox->setCurrentIndex(channelModel->find(recording->channel).row());
 		beginEdit->setDateTime(recording->begin.toLocalTime());
 		durationEdit->setTime(recording->duration);
 

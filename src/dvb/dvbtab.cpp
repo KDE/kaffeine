@@ -144,7 +144,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	channelView = new DvbChannelView(leftWidget);
 	channelView->setContextMenuPolicy(Qt::ActionsContextMenu);
-	channelProxyModel = new DvbChannelTableModel(manager->getChannelModel(), this);
+	channelProxyModel = new DvbChannelTableModel(this);
 	channelView->setModel(channelProxyModel);
 	channelView->setRootIsDecorated(false);
 
@@ -156,6 +156,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	channelView->setSortingEnabled(true);
 	channelView->addEditAction();
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playChannel(QModelIndex)));
+	channelProxyModel->setChannelModel(manager->getChannelModel());
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		channelProxyModel, SLOT(setFilter(QString)));
 	manager->setChannelView(channelView);
@@ -238,7 +239,7 @@ void DvbTab::playChannel(const QString &nameOrNumber)
 	}
 
 	if (channel.isValid()) {
-		playChannel(channel, channelProxyModel->indexForChannel(channel));
+		playChannel(channel, channelProxyModel->find(channel));
 	}
 }
 
@@ -251,7 +252,7 @@ void DvbTab::playLastChannel()
 	DvbSharedChannel channel = manager->getChannelModel()->findChannelByName(lastChannel);
 
 	if (channel.isValid()) {
-		playChannel(channel, channelProxyModel->indexForChannel(channel));
+		playChannel(channel, channelProxyModel->find(channel));
 	}
 }
 
@@ -394,14 +395,14 @@ void DvbTab::tuneOsdChannel()
 	DvbSharedChannel channel = manager->getChannelModel()->findChannelByNumber(number);
 
 	if (channel.isValid()) {
-		playChannel(channel, channelProxyModel->indexForChannel(channel));
+		playChannel(channel, channelProxyModel->find(channel));
 	}
 }
 
 void DvbTab::playChannel(const QModelIndex &index)
 {
 	if (index.isValid()) {
-		playChannel(channelProxyModel->getChannel(index), index);
+		playChannel(channelProxyModel->value(index), index);
 	}
 }
 
