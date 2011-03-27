@@ -512,7 +512,8 @@ void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedCha
 				channelIds.insert(DvbChannelId(detachedChannel), detachedChannel);
 				emit channelUpdated(detachedChannel);
 			} else {
-				const_cast<DvbChannel *>(channel.constData())->number = currentNumber;
+				const_cast<DvbChannel *>(channel.constData())->number =
+					currentNumber;
 				channelNumbers.insert(channel->number, channel);
 
 				if (isSqlModel) {

@@ -25,7 +25,6 @@
 #include "../tablemodel.h"
 #include "dvbchannel.h"
 
-class DvbChannelTableModel;
 class KAction;
 
 class DvbChannelLessThan
