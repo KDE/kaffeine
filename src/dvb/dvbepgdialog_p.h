@@ -30,6 +30,20 @@ public:
 	DvbEpgEntryLessThan() { }
 	~DvbEpgEntryLessThan() { }
 
+	enum SortOrder
+	{
+	};
+
+	SortOrder getSortOrder() const
+	{
+		return SortOrder();
+	}
+
+	void setSortOrder(SortOrder sortOrder_)
+	{
+		Q_UNUSED(sortOrder_)
+	}
+
 	bool operator()(const DvbSharedEpgEntry &x, const DvbSharedEpgEntry &y) const;
 };
 
@@ -71,18 +85,45 @@ private slots:
 	void epgChannelRemoved(const DvbSharedChannel &channel);
 };
 
-class DvbEpgTableModel : public QAbstractTableModel
+class DvbEpgTableModelHelper
+{
+public:
+	DvbEpgTableModelHelper() : filterType(ChannelFilter) { }
+	~DvbEpgTableModelHelper() { }
+
+	typedef DvbSharedEpgEntry ItemType;
+	typedef DvbEpgEntryLessThan LessThanType;
+
+	enum FilterType {
+		ChannelFilter,
+		ContentFilter
+	};
+
+	int columnCount() const
+	{
+		return 4;
+	}
+
+	bool filterAcceptsItem(const DvbSharedEpgEntry &epgEntry) const;
+
+	DvbSharedChannel channelFilter;
+	QStringMatcher contentFilter;
+	FilterType filterType;
+
+private:
+	Q_DISABLE_COPY(DvbEpgTableModelHelper)
+};
+
+class DvbEpgTableModel : public TableModel<DvbEpgTableModelHelper>
 {
 	Q_OBJECT
 public:
-	DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent);
+	explicit DvbEpgTableModel(QObject *parent);
 	~DvbEpgTableModel();
 
-	DvbSharedEpgEntry getEntry(int row) const;
+	void setEpgModel(DvbEpgModel *epgModel_);
 	void setChannelFilter(const DvbSharedChannel &channel);
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent = QModelIndex()) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
@@ -99,10 +140,6 @@ private:
 	void customEvent(QEvent *event);
 
 	DvbEpgModel *epgModel;
-	QList<DvbSharedEpgEntry> entries;
-	DvbSharedChannel channelFilter;
-	QStringMatcher contentFilter;
-	int updatingRow;
 	bool contentFilterEventPending;
 };
 
