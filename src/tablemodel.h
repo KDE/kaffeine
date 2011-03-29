@@ -167,9 +167,9 @@ protected:
 
 	void internalSort(SortOrder sortOrder)
 	{
-		if (lessThan.sortOrder != sortOrder) {
+		if (lessThan.getSortOrder() != sortOrder) {
 			beginLayoutChange();
-			lessThan.sortOrder = sortOrder;
+			lessThan.setSortOrder(sortOrder);
 			qSort(items.begin(), items.end(), lessThan);
 			endLayoutChange();
 		}

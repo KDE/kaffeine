@@ -41,8 +41,19 @@ public:
 		ChannelNumberDescending
 	};
 
+	SortOrder getSortOrder() const
+	{
+		return sortOrder;
+	}
+
+	void setSortOrder(SortOrder sortOrder_)
+	{
+		sortOrder = sortOrder_;
+	}
+
 	bool operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const;
 
+private:
 	SortOrder sortOrder;
 };
 

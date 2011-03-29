@@ -72,9 +72,9 @@ public:
 
 signals:
 	void recordingAdded(const DvbSharedRecording &recording);
-	// oldRecording is a temporary copy
-	void recordingUpdated(const DvbSharedRecording &recording,
-		const DvbRecording &oldRecording);
+	// updating doesn't change the recording pointer (modifies existing content)
+	void recordingAboutToBeUpdated(const DvbSharedRecording &recording);
+	void recordingUpdated(const DvbSharedRecording &recording);
 	void recordingRemoved(const DvbSharedRecording &recording);
 
 private:

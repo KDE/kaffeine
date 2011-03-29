@@ -211,15 +211,15 @@ DvbEpgChannelTableModel::DvbEpgChannelTableModel(DvbManager *manager, QObject *p
 
 	if (headerView->sortIndicatorOrder() == Qt::AscendingOrder) {
 		if (headerView->sortIndicatorSection() == 0) {
-			lessThan.sortOrder = DvbChannelLessThan::ChannelNameAscending;
+			lessThan.setSortOrder(DvbChannelLessThan::ChannelNameAscending);
 		} else {
-			lessThan.sortOrder = DvbChannelLessThan::ChannelNumberAscending;
+			lessThan.setSortOrder(DvbChannelLessThan::ChannelNumberAscending);
 		}
 	} else {
 		if (headerView->sortIndicatorSection() == 0) {
-			lessThan.sortOrder = DvbChannelLessThan::ChannelNameDescending;
+			lessThan.setSortOrder(DvbChannelLessThan::ChannelNameDescending);
 		} else {
-			lessThan.sortOrder = DvbChannelLessThan::ChannelNumberDescending;
+			lessThan.setSortOrder(DvbChannelLessThan::ChannelNumberDescending);
 		}
 	}
 

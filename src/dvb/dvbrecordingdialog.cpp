@@ -29,6 +29,7 @@
 #include <KAction>
 #include <KCalendarSystem>
 #include <KComboBox>
+#include <KDebug>
 #include <KLineEdit>
 #include "../datetimeedit.h"
 #include "dvbchanneldialog.h"
@@ -41,7 +42,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	setCaption(i18nc("@title:window", "Recording Schedule"));
 	QWidget *widget = new QWidget(this);
 
-	model = new DvbRecordingTableModel(manager, this);
+	model = new DvbRecordingTableModel(this);
 	treeView = new QTreeView(widget);
 	treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
 	treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -50,6 +51,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	treeView->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	treeView->sortByColumn(2, Qt::AscendingOrder);
 	treeView->setSortingEnabled(true);
+	model->setRecordingModel(manager->getRecordingModel());
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
 	KAction *action = new KAction(KIcon("list-add"), i18nc("@action", "New"), widget);
@@ -106,8 +108,7 @@ void DvbRecordingDialog::editRecording()
 	QModelIndex index = treeView->currentIndex();
 
 	if (index.isValid()) {
-		KDialog *dialog =
-			new DvbRecordingEditor(manager, model->getRecording(index), this);
+		KDialog *dialog = new DvbRecordingEditor(manager, model->value(index), this);
 		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 		dialog->setModal(true);
 		dialog->show();
@@ -119,7 +120,7 @@ void DvbRecordingDialog::removeRecording()
 	QSet<DvbSharedRecording> recordings;
 
 	foreach (const QModelIndex &modelIndex, treeView->selectionModel()->selectedIndexes()) {
-		recordings.insert(model->getRecording(modelIndex));
+		recordings.insert(model->value(modelIndex));
 	}
 
 	DvbRecordingModel *recordingModel = manager->getRecordingModel();
@@ -129,53 +130,105 @@ void DvbRecordingDialog::removeRecording()
 	}
 }
 
-DvbRecordingTableModel::DvbRecordingTableModel(DvbManager *manager_, QObject *parent) :
-	QAbstractTableModel(parent), manager(manager_)
+void DvbRecordingLessThan::setSortOrder(SortOrder sortOrder_)
 {
-	DvbRecordingModel *recordingModel = manager->getRecordingModel();
-	connect(recordingModel, SIGNAL(recordingAdded(DvbSharedRecording)),
-		this, SLOT(recordingAdded(DvbSharedRecording)));
-	connect(recordingModel, SIGNAL(recordingUpdated(DvbSharedRecording,DvbRecording)),
-		this, SLOT(recordingUpdated(DvbSharedRecording,DvbRecording)));
-	connect(recordingModel, SIGNAL(recordingRemoved(DvbSharedRecording)),
-		this, SLOT(recordingRemoved(DvbSharedRecording)));
+	for (int index = 0; index < 4; ++index) {
+		if ((sortOrder[index] >> 1) == (sortOrder_ >> 1)) {
+			for (int j = index; j > 0; --j) {
+				sortOrder[j] = sortOrder[j - 1];
+			}
 
-	foreach (const DvbSharedRecording &recording, recordingModel->getRecordings()) {
-		recordings.append(recording);
+			sortOrder[0] = sortOrder_;
+			return;
+		}
+	}
+}
+
+bool DvbRecordingLessThan::operator()(const DvbSharedRecording &x,
+	const DvbSharedRecording &y) const
+{
+	for (int index = 0; index < 4; ++index) {
+		switch (sortOrder[index]) {
+		case NameAscending:
+			if (x->name != y->name) {
+				return (x->name.localeAwareCompare(y->name) < 0);
+			}
+
+			break;
+		case NameDescending:
+			if (x->name != y->name) {
+				return (x->name.localeAwareCompare(y->name) > 0);
+			}
+
+			break;
+		case ChannelAscending:
+			if (x->channel->name != y->channel->name) {
+				return (x->channel->name.localeAwareCompare(y->channel->name) < 0);
+			}
+
+			break;
+		case ChannelDescending:
+			if (x->channel->name != y->channel->name) {
+				return (x->channel->name.localeAwareCompare(y->channel->name) > 0);
+			}
+
+			break;
+		case BeginAscending:
+			if (x->begin != y->begin) {
+				return (x->begin < y->begin);
+			}
+
+			break;
+		case BeginDescending:
+			if (x->begin != y->begin) {
+				return (x->begin > y->begin);
+			}
+
+			break;
+		case DurationAscending:
+			if (x->duration != y->duration) {
+				return (x->duration < y->duration);
+			}
+
+			break;
+		case DurationDescending:
+			if (x->duration != y->duration) {
+				return (x->duration > y->duration);
+			}
+
+			break;
+		}
 	}
 
-	qSort(recordings.begin(), recordings.end(), DvbRecordingLessThan());
+	return (x < y);
+}
+
+DvbRecordingTableModel::DvbRecordingTableModel(QObject *parent) :
+	TableModel<DvbRecordingTableModelHelper>(parent), recordingModel(NULL)
+{
 }
 
 DvbRecordingTableModel::~DvbRecordingTableModel()
 {
 }
 
-DvbSharedRecording DvbRecordingTableModel::getRecording(const QModelIndex &index) const
+void DvbRecordingTableModel::setRecordingModel(DvbRecordingModel *recordingModel_)
 {
-	if ((index.row() >= 0) && (index.row() < recordings.size())) {
-		return recordings.at(index.row());
+	if (recordingModel != NULL) {
+		kWarning() << "recording model already set";
+		return;
 	}
 
-	return DvbSharedRecording();
-}
-
-int DvbRecordingTableModel::columnCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return 4;
-	}
-
-	return 0;
-}
-
-int DvbRecordingTableModel::rowCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return recordings.size();
-	}
-
-	return 0;
+	recordingModel = recordingModel_;
+	connect(recordingModel, SIGNAL(recordingAdded(DvbSharedRecording)),
+		this, SLOT(recordingAdded(DvbSharedRecording)));
+	connect(recordingModel, SIGNAL(recordingAboutToBeUpdated(DvbSharedRecording)),
+		this, SLOT(recordingAboutToBeUpdated(DvbSharedRecording)));
+	connect(recordingModel, SIGNAL(recordingUpdated(DvbSharedRecording)),
+		this, SLOT(recordingUpdated(DvbSharedRecording)));
+	connect(recordingModel, SIGNAL(recordingRemoved(DvbSharedRecording)),
+		this, SLOT(recordingRemoved(DvbSharedRecording)));
+	reset(recordingModel->getRecordings());
 }
 
 QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orientation,
@@ -199,80 +252,109 @@ QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orienta
 
 QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 {
-	if ((index.row() < 0) || (index.row() >= recordings.size())) {
-		return QVariant();
-	}
+	const DvbSharedRecording &recording = value(index);
 
-	const DvbSharedRecording &recording = recordings.at(index.row());
+	if (recording.isValid()) {
+		switch (role) {
+		case Qt::DecorationRole:
+			if (index.column() == 0) {
+				switch (recording->status) {
+				case DvbRecording::Inactive:
+					break;
+				case DvbRecording::Recording:
+					return KIcon("media-record");
+				case DvbRecording::Error:
+					return KIcon("dialog-error");
+				}
 
-	switch (role) {
-	case Qt::DecorationRole:
-		if (index.column() == 0) {
-			switch (recording->status) {
-			case DvbRecording::Inactive:
-				break;
-			case DvbRecording::Recording:
-				return KIcon("media-record");
-			case DvbRecording::Error:
-				return KIcon("dialog-error");
+				if (recording->repeat != 0) {
+					return KIcon("view-refresh");
+				}
 			}
 
-			if (recording->repeat != 0) {
-				return KIcon("view-refresh");
+			break;
+		case Qt::DisplayRole:
+			switch (index.column()) {
+			case 0:
+				return recording->name;
+			case 1:
+				return recording->channel->name;
+			case 2:
+				return KGlobal::locale()->formatDateTime(
+					recording->begin.toLocalTime());
+			case 3:
+				return KGlobal::locale()->formatTime(recording->duration,
+					false, true);
 			}
-		}
 
-		break;
-	case Qt::DisplayRole:
-		switch (index.column()) {
-		case 0:
-			return recording->name;
-		case 1:
-			return recording->channel->name;
-		case 2:
-			return KGlobal::locale()->formatDateTime(recording->begin.toLocalTime());
-		case 3:
-			return KGlobal::locale()->formatTime(recording->duration, false, true);
+			break;
 		}
-
-		break;
 	}
 
 	return QVariant();
 }
 
-void DvbRecordingTableModel::recordingAdded(const DvbSharedRecording &recording)
+void DvbRecordingTableModel::sort(int column, Qt::SortOrder order)
 {
-	int row = (qLowerBound(recordings.constBegin(), recordings.constEnd(), recording,
-		DvbRecordingLessThan()) - recordings.constBegin());
+	DvbRecordingLessThan::SortOrder sortOrder;
 
-	beginInsertRows(QModelIndex(), row, row);
-	recordings.insert(row, recording);
-	endInsertRows();
+	if (order == Qt::AscendingOrder) {
+		switch (column) {
+		case 0:
+			sortOrder = DvbRecordingLessThan::NameAscending;
+			break;
+		case 1:
+			sortOrder = DvbRecordingLessThan::ChannelAscending;
+			break;
+		case 2:
+			sortOrder = DvbRecordingLessThan::BeginAscending;
+			break;
+		case 3:
+			sortOrder = DvbRecordingLessThan::DurationAscending;
+			break;
+		default:
+			return;
+		}
+	} else {
+		switch (column) {
+		case 0:
+			sortOrder = DvbRecordingLessThan::NameDescending;
+			break;
+		case 1:
+			sortOrder = DvbRecordingLessThan::ChannelDescending;
+			break;
+		case 2:
+			sortOrder = DvbRecordingLessThan::BeginDescending;
+			break;
+		case 3:
+			sortOrder = DvbRecordingLessThan::DurationDescending;
+			break;
+		default:
+			return;
+		}
+	}
+
+	internalSort(sortOrder);
 }
 
-void DvbRecordingTableModel::recordingUpdated(const DvbSharedRecording &recording,
-	const DvbRecording &oldRecording)
+void DvbRecordingTableModel::recordingAdded(const DvbSharedRecording &recording)
 {
-	Q_UNUSED(recording)
-	int row = (qBinaryFind(recordings.constBegin(), recordings.constEnd(), oldRecording,
-		DvbRecordingLessThan()) - recordings.constBegin());
+	insert(recording);
+}
 
-	if (row < recordings.size()) {
-		emit dataChanged(index(row, 0), index(row, 3));
-	}
+void DvbRecordingTableModel::recordingAboutToBeUpdated(const DvbSharedRecording &recording)
+{
+	aboutToUpdate(recording);
+}
+
+void DvbRecordingTableModel::recordingUpdated(const DvbSharedRecording &recording)
+{
+	update(recording);
 }
 
 void DvbRecordingTableModel::recordingRemoved(const DvbSharedRecording &recording)
 {
-	int row = (qBinaryFind(recordings.constBegin(), recordings.constEnd(), recording,
-		DvbRecordingLessThan()) - recordings.constBegin());
-
-	if (row < recordings.size()) {
-		beginRemoveRows(QModelIndex(), row, row);
-		recordings.removeAt(row);
-		endRemoveRows();
-	}
+	remove(recording);
 }
 
 DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedRecording &recording_,

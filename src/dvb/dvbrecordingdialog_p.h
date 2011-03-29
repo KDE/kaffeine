@@ -21,8 +21,8 @@
 #ifndef DVBRECORDINGDIALOG_P_H
 #define DVBRECORDINGDIALOG_P_H
 
-#include <QAbstractTableModel>
 #include <KDialog>
+#include "../tablemodel.h"
 #include "dvbrecording.h"
 
 class QCheckBox;
@@ -34,70 +34,84 @@ class DurationEdit;
 class DvbRecordingLessThan
 {
 public:
-	DvbRecordingLessThan() { }
+	DvbRecordingLessThan()
+	{
+		// specify each column exactly once
+		sortOrder[0] = BeginAscending;
+		sortOrder[1] = ChannelAscending;
+		sortOrder[2] = NameAscending;
+		sortOrder[3] = DurationAscending;
+	}
+
 	~DvbRecordingLessThan() { }
 
-	bool operator()(const DvbRecording &x, const DvbRecording &y) const
+	enum SortOrder
 	{
-		if (x.begin != y.begin) {
-			return (x.begin < y.begin);
-		}
+		NameAscending = 0,
+		NameDescending = 1,
+		ChannelAscending = 2,
+		ChannelDescending = 3,
+		BeginAscending = 4,
+		BeginDescending = 5,
+		DurationAscending = 6,
+		DurationDescending = 7
+	};
 
-		if (x.channel->name != y.channel->name) {
-			return (x.channel->name.localeAwareCompare(x.channel->name) < 0);
-		}
-
-		if (x.name != y.name) {
-			return (x.name < x.name);
-		}
-
-		if (x.duration != y.duration) {
-			return (x.duration < y.duration);
-		}
-
-		// sql keys are compared
-		return (x < y);
+	SortOrder getSortOrder() const
+	{
+		return sortOrder[0];
 	}
 
-	bool operator()(const DvbRecording &x, const DvbSharedRecording &y) const
+	void setSortOrder(SortOrder sortOrder_);
+
+	bool operator()(const DvbSharedRecording &x, const DvbSharedRecording &y) const;
+
+private:
+	SortOrder sortOrder[4];
+};
+
+class DvbRecordingTableModelHelper
+{
+public:
+	DvbRecordingTableModelHelper() { }
+	~DvbRecordingTableModelHelper() { }
+
+	typedef DvbSharedRecording ItemType;
+	typedef DvbRecordingLessThan LessThanType;
+
+	int columnCount() const
 	{
-		return (*this)(x, *y);
+		return 4;
 	}
 
-	bool operator()(const DvbSharedRecording &x, const DvbRecording &y) const
+	bool filterAcceptsItem(const DvbSharedRecording &recording) const
 	{
-		return (*this)(*x, y);
-	}
-
-	bool operator()(const DvbSharedRecording &x, const DvbSharedRecording &y) const
-	{
-		return (*this)(*x, *y);
+		Q_UNUSED(recording)
+		return true;
 	}
 };
 
-class DvbRecordingTableModel : public QAbstractTableModel
+class DvbRecordingTableModel : public TableModel<DvbRecordingTableModelHelper>
 {
 	Q_OBJECT
 public:
-	DvbRecordingTableModel(DvbManager *manager_, QObject *parent);
+	explicit DvbRecordingTableModel(QObject *parent);
 	~DvbRecordingTableModel();
 
-	DvbSharedRecording getRecording(const QModelIndex &index) const;
+	void setRecordingModel(DvbRecordingModel *recordingModel_);
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 	QVariant data(const QModelIndex &index, int role) const;
+	void sort(int column, Qt::SortOrder order);
 
 private slots:
 	void recordingAdded(const DvbSharedRecording &recording);
-	void recordingUpdated(const DvbSharedRecording &recording,
-		const DvbRecording &oldRecording);
+	void recordingAboutToBeUpdated(const DvbSharedRecording &recording);
+	void recordingUpdated(const DvbSharedRecording &recording);
 	void recordingRemoved(const DvbSharedRecording &recording);
 
 private:
-	DvbManager *manager;
-	QList<DvbSharedRecording> recordings;
+	DvbRecordingModel *recordingModel;
 };
 
 class DvbRecordingEditor : public KDialog
