@@ -203,9 +203,15 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 	if (device == NULL) {
 		channel = DvbSharedChannel();
 		mediaWidget->stop();
-		KMessageBox::sorry(manager->getParentWidget(),
-			i18nc("message box", "No available device found."));
-		// FIXME better error message if devices are blocked by recordings
+
+		if (manager->getRecordingModel()->hasActiveRecordings()) {
+			KMessageBox::sorry(manager->getParentWidget(),
+				i18nc("@info", "All devices are used for recordings."));
+		} else {
+			KMessageBox::information(manager->getParentWidget(),
+				i18nc("@info", "No device found."));
+		}
+
 		return;
 	}
 
