@@ -34,10 +34,12 @@ public:
 
 	QModelIndex find(const ItemType &item) const
 	{
-		int row = binaryFind(item);
+		if (item.isValid()) {
+			int row = binaryFind(item);
 
-		if (row < items.size()) {
-			return index(row, 0);
+			if (row < items.size()) {
+				return index(row, 0);
+			}
 		}
 
 		return QModelIndex();
