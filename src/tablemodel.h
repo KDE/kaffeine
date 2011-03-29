@@ -98,6 +98,24 @@ protected:
 		endLayoutChange();
 	}
 
+	template<class U> void resetFromKeys(const U &container)
+	{
+		beginLayoutChange();
+		items.clear();
+
+		for (typename U::ConstIterator it = container.constBegin();
+		     it != container.constEnd(); ++it) {
+			const ItemType &item = it.key();
+
+			if (helper.filterAcceptsItem(item)) {
+				items.append(item);
+			}
+		}
+
+		qSort(items.begin(), items.end(), lessThan);
+		endLayoutChange();
+	}
+
 	void insert(const ItemType &item)
 	{
 		if (item.isValid() && helper.filterAcceptsItem(item)) {

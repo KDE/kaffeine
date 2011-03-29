@@ -33,28 +33,42 @@ public:
 	bool operator()(const DvbSharedEpgEntry &x, const DvbSharedEpgEntry &y) const;
 };
 
-class DvbEpgChannelTableModel : public QAbstractTableModel
+class DvbEpgChannelTableModelHelper
+{
+public:
+	DvbEpgChannelTableModelHelper() { }
+	~DvbEpgChannelTableModelHelper() { }
+
+	typedef DvbSharedChannel ItemType;
+	typedef DvbChannelLessThan LessThanType;
+
+	int columnCount() const
+	{
+		return 1;
+	}
+
+	bool filterAcceptsItem(const DvbSharedChannel &channel) const
+	{
+		Q_UNUSED(channel)
+		return true;
+	}
+};
+
+class DvbEpgChannelTableModel : public TableModel<DvbEpgChannelTableModelHelper>
 {
 	Q_OBJECT
 public:
-	DvbEpgChannelTableModel(DvbManager *manager, QObject *parent);
+	explicit DvbEpgChannelTableModel(QObject *parent);
 	~DvbEpgChannelTableModel();
 
-	DvbSharedChannel getChannel(int row) const;
-	QModelIndex indexForChannel(const DvbSharedChannel &channel) const;
+	void setManager(DvbManager *manager);
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
 
 private slots:
 	void epgChannelAdded(const DvbSharedChannel &channel);
 	void epgChannelRemoved(const DvbSharedChannel &channel);
-
-private:
-	QList<DvbSharedChannel> channels;
-	DvbChannelLessThan lessThan;
 };
 
 class DvbEpgTableModel : public QAbstractTableModel

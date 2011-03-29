@@ -41,7 +41,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(pare
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(widget);
 
-	epgChannelTableModel = new DvbEpgChannelTableModel(manager, this);
+	epgChannelTableModel = new DvbEpgChannelTableModel(this);
+	epgChannelTableModel->setManager(manager);
 	channelView = new QTreeView(widget);
 	channelView->setMaximumWidth(30 * fontMetrics().averageCharWidth());
 	channelView->setModel(epgChannelTableModel);
@@ -106,7 +107,7 @@ DvbEpgDialog::~DvbEpgDialog()
 
 void DvbEpgDialog::setCurrentChannel(const DvbSharedChannel &channel)
 {
-	channelView->setCurrentIndex(epgChannelTableModel->indexForChannel(channel));
+	channelView->setCurrentIndex(epgChannelTableModel->find(channel));
 }
 
 void DvbEpgDialog::channelActivated(const QModelIndex &index)
@@ -116,7 +117,7 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 		return;
 	}
 
-	epgTableModel->setChannelFilter(epgChannelTableModel->getChannel(index.row()));
+	epgTableModel->setChannelFilter(epgChannelTableModel->value(index));
 
 	if (epgTableModel->rowCount() >= 1) {
 		epgView->setCurrentIndex(epgTableModel->index(0, 0));
@@ -189,8 +190,16 @@ bool DvbEpgEntryLessThan::operator()(const DvbSharedEpgEntry &x, const DvbShared
 	return (x < y);
 }
 
-DvbEpgChannelTableModel::DvbEpgChannelTableModel(DvbManager *manager, QObject *parent) :
-	QAbstractTableModel(parent)
+DvbEpgChannelTableModel::DvbEpgChannelTableModel(QObject *parent) :
+	TableModel<DvbEpgChannelTableModelHelper>(parent)
+{
+}
+
+DvbEpgChannelTableModel::~DvbEpgChannelTableModel()
+{
+}
+
+void DvbEpgChannelTableModel::setManager(DvbManager *manager)
 {
 	DvbEpgModel *epgModel = manager->getEpgModel();
 	connect(epgModel, SIGNAL(epgChannelAdded(DvbSharedChannel)),
@@ -200,82 +209,33 @@ DvbEpgChannelTableModel::DvbEpgChannelTableModel(DvbManager *manager, QObject *p
 	// theoretically we should monitor the channel model for updated channels,
 	// but it's very unlikely that this has practical relevance
 
-	const QHash<DvbSharedChannel, int> epgChannels = epgModel->getEpgChannels();
-
-	for (QHash<DvbSharedChannel, int>::ConstIterator it = epgChannels.constBegin();
-	     it != epgChannels.constEnd(); ++it) {
-		channels.append(it.key());
-	}
-
 	QHeaderView *headerView = manager->getChannelView()->header();
+	DvbChannelLessThan::SortOrder sortOrder;
 
 	if (headerView->sortIndicatorOrder() == Qt::AscendingOrder) {
 		if (headerView->sortIndicatorSection() == 0) {
-			lessThan.setSortOrder(DvbChannelLessThan::ChannelNameAscending);
+			sortOrder = DvbChannelLessThan::ChannelNameAscending;
 		} else {
-			lessThan.setSortOrder(DvbChannelLessThan::ChannelNumberAscending);
+			sortOrder = DvbChannelLessThan::ChannelNumberAscending;
 		}
 	} else {
 		if (headerView->sortIndicatorSection() == 0) {
-			lessThan.setSortOrder(DvbChannelLessThan::ChannelNameDescending);
+			sortOrder = DvbChannelLessThan::ChannelNameDescending;
 		} else {
-			lessThan.setSortOrder(DvbChannelLessThan::ChannelNumberDescending);
+			sortOrder = DvbChannelLessThan::ChannelNumberDescending;
 		}
 	}
 
-	qSort(channels.begin(), channels.end(), lessThan);
-}
-
-DvbEpgChannelTableModel::~DvbEpgChannelTableModel()
-{
-}
-
-DvbSharedChannel DvbEpgChannelTableModel::getChannel(int row) const
-{
-	if ((row >= 0) && (row < channels.size())) {
-		return channels.at(row);
-	}
-
-	return DvbSharedChannel();
-}
-
-QModelIndex DvbEpgChannelTableModel::indexForChannel(const DvbSharedChannel &channel) const
-{
-	if (channel.isValid()) {
-		int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel,
-			lessThan) - channels.constBegin());
-
-		if ((row < channels.size()) && (channels.at(row) == channel)) {
-			return index(row, 0);
-		}
-	}
-
-	return QModelIndex();
-}
-
-int DvbEpgChannelTableModel::columnCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return 1;
-	}
-
-	return 0;
-}
-
-int DvbEpgChannelTableModel::rowCount(const QModelIndex &parent) const
-{
-	if (!parent.isValid()) {
-		return channels.size();
-	}
-
-	return 0;
+	internalSort(sortOrder);
+	resetFromKeys(epgModel->getEpgChannels());
 }
 
 QVariant DvbEpgChannelTableModel::data(const QModelIndex &index, int role) const
 {
-	if ((role == Qt::DisplayRole) && (index.column() == 0) && (index.row() >= 0) &&
-	    (index.row() < channels.size())) {
-		return channels.at(index.row())->name;
+	const DvbSharedChannel &channel = value(index);
+
+	if (channel.isValid() && (role == Qt::DisplayRole) && (index.column() == 0)) {
+		return channel->name;
 	}
 
 	return QVariant();
@@ -293,26 +253,12 @@ QVariant DvbEpgChannelTableModel::headerData(int section, Qt::Orientation orient
 
 void DvbEpgChannelTableModel::epgChannelAdded(const DvbSharedChannel &channel)
 {
-	int row = (qLowerBound(channels.constBegin(), channels.constEnd(), channel, lessThan) -
-		channels.constBegin());
-
-	if ((row >= channels.size()) || (channels.at(row) != channel)) {
-		beginInsertRows(QModelIndex(), row, row);
-		channels.insert(row, channel);
-		endInsertRows();
-	}
+	insert(channel);
 }
 
 void DvbEpgChannelTableModel::epgChannelRemoved(const DvbSharedChannel &channel)
 {
-	int row = (qBinaryFind(channels.constBegin(), channels.constEnd(), channel, lessThan) -
-		channels.constBegin());
-
-	if ((row < channels.size()) && (channels.at(row) == channel)) {
-		beginRemoveRows(QModelIndex(), row, row);
-		channels.removeAt(row);
-		endRemoveRows();
-	}
+	remove(channel);
 }
 
 DvbEpgTableModel::DvbEpgTableModel(DvbEpgModel *epgModel_, QObject *parent) :
