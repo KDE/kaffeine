@@ -69,6 +69,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(pare
 
 	epgTableModel = new DvbEpgTableModel(this);
 	epgTableModel->setEpgModel(manager->getEpgModel());
+	connect(epgTableModel, SIGNAL(layoutChanged()), this, SLOT(checkEntry()));
 	KLineEdit *lineEdit = new KLineEdit(widget);
 	lineEdit->setClearButtonShown(true);
 	connect(lineEdit, SIGNAL(textChanged(QString)),
@@ -147,6 +148,14 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		KGlobal::locale()->formatTime(end));
 	text += entry->details;
 	contentLabel->setText(text);
+}
+
+void DvbEpgDialog::checkEntry()
+{
+	if (!epgView->currentIndex().isValid()) {
+		// FIXME workaround --> file bug
+		contentLabel->setText(QString());
+	}
 }
 
 void DvbEpgDialog::scheduleProgram()
@@ -366,14 +375,16 @@ void DvbEpgTableModel::setContentFilter(const QString &pattern)
 
 	if (!pattern.isEmpty()) {
 		helper.filterType = DvbEpgTableModelHelper::ContentFilter;
-	} else {
-		// channel filter is faster
-		helper.filterType = DvbEpgTableModelHelper::ChannelFilter;
-	}
 
-	if (!contentFilterEventPending) {
-		contentFilterEventPending = true;
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User), Qt::LowEventPriority);
+		if (!contentFilterEventPending) {
+			contentFilterEventPending = true;
+			QCoreApplication::postEvent(this, new QEvent(QEvent::User),
+				Qt::LowEventPriority);
+		}
+	} else {
+		// use channel filter so that content won't be unnecessarily filtered
+		helper.filterType = DvbEpgTableModelHelper::ChannelFilter;
+		reset(QMap<DvbEpgEntryId, DvbSharedEpgEntry>());
 	}
 }
 

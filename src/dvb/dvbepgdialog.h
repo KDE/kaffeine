@@ -43,6 +43,7 @@ public:
 private slots:
 	void channelActivated(const QModelIndex &index);
 	void entryActivated(const QModelIndex &index);
+	void checkEntry();
 	void scheduleProgram();
 
 private:
