@@ -70,7 +70,9 @@ bool DvbChannelId::operator==(const DvbChannelId &other) const
 		return ((channel->transportStreamId == other.channel->transportStreamId) &&
 			(channel->serviceId == other.channel->serviceId));
 	case DvbTransponderBase::Atsc:
-		return true;
+		// source id has to be unique only within a transport stream
+		// --> we need to check transponder as well
+		return channel->transponder.corresponds(other.channel->transponder);
 	}
 
 	return false;

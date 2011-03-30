@@ -67,7 +67,7 @@ public:
 
 	// compares channels by transmission type and
 	// ( dvb) 'source', 'networkId', 'transportStreamId', 'serviceId'
-	// (atsc) 'source', 'networkId'
+	// (atsc) 'source', 'transponder', 'networkId'
 
 	bool operator==(const DvbChannelId &other) const;
 
