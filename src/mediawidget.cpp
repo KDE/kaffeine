@@ -86,6 +86,7 @@ DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
 DvbFeed::~DvbFeed()
 {
 	endOfData();
+	delete notifier;
 }
 
 KUrl DvbFeed::getUrl() const
