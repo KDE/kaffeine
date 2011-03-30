@@ -78,7 +78,7 @@ DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
 		readFd = -1;
 	}
 
-	notifier = new QSocketNotifier(writeFd, QSocketNotifier::Write);
+	notifier = new QSocketNotifier(writeFd, QSocketNotifier::Write, this);
 	notifier->setEnabled(false);
 	connect(notifier, SIGNAL(activated(int)), this, SLOT(readyWrite()));
 }
@@ -86,7 +86,6 @@ DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
 DvbFeed::~DvbFeed()
 {
 	endOfData();
-	delete notifier;
 }
 
 KUrl DvbFeed::getUrl() const
