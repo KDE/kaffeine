@@ -133,6 +133,7 @@ public:
 	void activate()
 	{
 		layout()->addWidget(mediaWidget);
+		mediaWidget->setFocus();
 	}
 
 private:
