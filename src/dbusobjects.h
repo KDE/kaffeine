@@ -22,6 +22,7 @@
 #define DBUSOBJECTS_H
 
 #include <QVariantMap>
+#include <config-kaffeine.h>
 
 class DvbTab;
 class MainWindow;
@@ -129,6 +130,8 @@ private:
 	PlaylistTab *playlistTab;
 };
 
+#if HAVE_DVB == 1
+
 class DBusTelevisionObject : public QObject
 {
 	Q_OBJECT
@@ -151,6 +154,8 @@ public slots:
 private:
 	DvbTab *dvbTab;
 };
+
+#endif /* HAVE_DVB == 1 */
 
 struct MprisStatusStruct
 {

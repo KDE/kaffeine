@@ -305,6 +305,8 @@ void MprisTrackListObject::SetRandom(bool random)
 	playlistTab->setRandom(random);
 }
 
+#if HAVE_DVB == 1
+
 DBusTelevisionObject::DBusTelevisionObject(DvbTab *dvbTab_, QObject *parent) : QObject(parent),
 	dvbTab(dvbTab_)
 {
@@ -393,3 +395,5 @@ void DBusTelevisionObject::RemoveProgram(quint32 key)
 		recordingModel->removeRecording(recording);
 	}
 }
+
+#endif /* HAVE_DVB == 1 */
