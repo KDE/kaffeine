@@ -2,7 +2,11 @@
 Kaffeine Changelog
 ------------------
 
-Version (unreleased):
+Version 1.2 (2011-04-04):
+  - add search function to epg
+  - implement ATSC support for epg
+  - fix gnome screen saver inhibition
+  - other fixes and improvements ...
 
 Version 1.1 (2010-09-01):
   - adapt to new shared-mime-info (so that .m2t is assigned to kaffeine again)

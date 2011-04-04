@@ -63,7 +63,7 @@ int KaffeineApplication::newInstance()
 
 int main(int argc, char *argv[])
 {
-	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "1.2-svn",
+	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "1.2",
 		ki18n("A media player for KDE with digital TV support."),
 		KAboutData::License_GPL_V2, ki18n("(C) 2007-2010 The Kaffeine Authors"),
 		KLocalizedString(), "http://kaffeine.kde.org");
