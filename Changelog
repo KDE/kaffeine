@@ -2,6 +2,8 @@
 Kaffeine Changelog
 ------------------
 
+Version (unreleased):
+
 Version 1.2 (2011-04-04):
   - add search function to epg
   - implement ATSC support for epg
