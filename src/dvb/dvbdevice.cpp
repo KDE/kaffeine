@@ -298,16 +298,16 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		return;
 	}
 
+	DvbTransponder intermediate = transponder;
+	DvbSTransponder *dvbSTransponder = NULL;
+	DvbS2Transponder *dvbS2Transponder = NULL;
 	bool moveRotor = false;
 
-	const DvbSTransponder *dvbSTransponder = NULL;
-	const DvbS2Transponder *dvbS2Transponder = NULL;
-
 	if (transmissionType == DvbTransponderBase::DvbS) {
-		dvbSTransponder = transponder.as<DvbSTransponder>();
+		dvbSTransponder = intermediate.as<DvbSTransponder>();
 	} else {
 		// DVB-S2
-		dvbS2Transponder = transponder.as<DvbS2Transponder>();
+		dvbS2Transponder = intermediate.as<DvbS2Transponder>();
 		dvbSTransponder = dvbS2Transponder;
 	}
 
@@ -421,8 +421,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	// tune
 
-	DvbTransponder intermediate = transponder;
-	intermediate.as<DvbSTransponder>()->frequency = frequency;
+	dvbSTransponder->frequency = frequency;
 
 	if (backend->tune(intermediate)) {
 		if (!moveRotor) {
