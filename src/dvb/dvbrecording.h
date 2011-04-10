@@ -67,8 +67,8 @@ public:
 	DvbSharedRecording findRecordingByKey(const SqlKey &sqlKey) const;
 	QMap<SqlKey, DvbSharedRecording> getRecordings() const;
 	DvbSharedRecording addRecording(DvbRecording &recording);
-	void updateRecording(const DvbSharedRecording &recording, DvbRecording &modifiedRecording);
-	void removeRecording(const DvbSharedRecording &recording);
+	void updateRecording(DvbSharedRecording recording, DvbRecording &modifiedRecording);
+	void removeRecording(DvbSharedRecording recording);
 
 signals:
 	void recordingAdded(const DvbSharedRecording &recording);

@@ -100,8 +100,8 @@ public:
 
 	void cloneFrom(DvbChannelModel *other);
 	void addChannel(DvbChannel &channel);
-	void updateChannel(const DvbSharedChannel &channel, DvbChannel &modifiedChannel);
-	void removeChannel(const DvbSharedChannel &channel);
+	void updateChannel(DvbSharedChannel channel, DvbChannel &modifiedChannel);
+	void removeChannel(DvbSharedChannel channel);
 	void dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
 		int insertBeforeNumber);
 

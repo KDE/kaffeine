@@ -163,7 +163,7 @@ DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
 	return newRecording;
 }
 
-void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
+void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 	DvbRecording &modifiedRecording)
 {
 	if (hasPendingOperation) {
@@ -172,7 +172,6 @@ void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	DvbSharedRecording copy = recording; // make sure recording remains valid
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
 	    !modifiedRecording.validate()) {
@@ -196,7 +195,7 @@ void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 	emit recordingUpdated(recording);
 }
 
-void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
+void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 {
 	if (hasPendingOperation) {
 		kWarning() << "illegal recursive call";
@@ -204,7 +203,6 @@ void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
-	DvbSharedRecording copy = recording; // make sure recording remains valid
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
 		kWarning() << "invalid recording";
