@@ -172,6 +172,7 @@ void DvbRecordingModel::updateRecording(const DvbSharedRecording &recording,
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	DvbSharedRecording copy = recording; // make sure recording remains valid
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
 	    !modifiedRecording.validate()) {
@@ -203,6 +204,7 @@ void DvbRecordingModel::removeRecording(const DvbSharedRecording &recording)
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	DvbSharedRecording copy = recording; // make sure recording remains valid
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
 		kWarning() << "invalid recording";

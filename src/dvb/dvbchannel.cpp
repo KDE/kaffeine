@@ -392,6 +392,7 @@ void DvbChannelModel::updateChannel(const DvbSharedChannel &channel, DvbChannel 
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	DvbSharedChannel copy = channel; // make sure channel remains valid
 	modifiedChannel.setSqlKey(*channel);
 	bool channelNameChanged = (channel->name != modifiedChannel.name);
 	bool channelNumberChanged = (channel->number != modifiedChannel.number);
@@ -452,6 +453,7 @@ void DvbChannelModel::removeChannel(const DvbSharedChannel &channel)
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	DvbSharedChannel copy = channel; // make sure channel remains valid
 	channelNames.remove(channel->name);
 	channelNumbers.remove(channel->number);
 	channelIds.remove(DvbChannelId(channel), channel);
