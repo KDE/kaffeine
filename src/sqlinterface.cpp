@@ -22,7 +22,7 @@
 
 #include <QAbstractItemModel>
 #include <QStringList>
-#include <KDebug>
+#include "log.h"
 #include "sqlhelper.h"
 
 SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
@@ -34,7 +34,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		kError() << "pending statements at destruction";
+		log("SqlInterface::~SqlInterface: pending statements at destruction");
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -103,7 +103,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 			SqlKey sqlKey(fullKey);
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
-				kWarning() << "invalid key" << fullKey;
+				log("SqlInterface::sqlInit: invalid key") << fullKey;
 				continue;
 			}
 
@@ -117,56 +117,65 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 
 void SqlInterface::sqlInsert(SqlKey key)
 {
-	switch (pendingStatements.value(key, Nothing)) {
+	PendingStatement pendingStatement = pendingStatements.value(key, Nothing);
+
+	switch (pendingStatement) {
 	case Nothing:
 		pendingStatements.insert(key, Insert);
 		requestSubmission();
-		break;
+		return;
 	case Remove:
 		pendingStatements.insert(key, RemoveAndInsert);
 		requestSubmission();
-		break;
+		return;
 	case RemoveAndInsert:
 	case Insert:
 	case Update:
-		kError() << "invalid pending statement" << pendingStatements.value(key, Nothing);
 		break;
 	}
+
+	log("SqlInterface::sqlInsert: invalid pending statement") << pendingStatement;
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
 {
-	switch (pendingStatements.value(key, Nothing)) {
+	PendingStatement pendingStatement = pendingStatements.value(key, Nothing);
+
+	switch (pendingStatement) {
 	case Nothing:
 		pendingStatements.insert(key, Update);
 		requestSubmission();
-		break;
+		return;
 	case RemoveAndInsert:
 	case Insert:
 	case Update:
-		break;
+		return;
 	case Remove:
-		kError() << "invalid pending statement" << pendingStatements.value(key, Nothing);
 		break;
 	}
+
+	log("SqlInterface::sqlUpdate: invalid pending statement") << pendingStatement;
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
 {
-	switch (pendingStatements.value(key, Nothing)) {
+	PendingStatement pendingStatement = pendingStatements.value(key, Nothing);
+
+	switch (pendingStatement) {
 	case Nothing:
 	case RemoveAndInsert:
 	case Update:
 		pendingStatements.insert(key, Remove);
 		requestSubmission();
-		break;
+		return;
 	case Insert:
 		pendingStatements.remove(key);
-		break;
+		return;
 	case Remove:
-		kError() << "invalid pending statement" << pendingStatements.value(key, Nothing);
 		break;
 	}
+
+	log("SqlInterface::sqlRemove: invalid pending statement") << pendingStatement;
 }
 
 void SqlInterface::requestSubmission()
@@ -191,9 +200,10 @@ void SqlInterface::sqlSubmit()
 
 	for (QMap<SqlKey, PendingStatement>::ConstIterator it = pendingStatements.constBegin();
 	     it != pendingStatements.constEnd(); ++it) {
-		switch (it.value()) {
+		PendingStatement pendingStatement = it.value();
+
+		switch (pendingStatement) {
 		case Nothing:
-			kError() << "invalid pending statement" << it.value();
 			break;
 		case RemoveAndInsert:
 			deleteQuery.bindValue(0, it.key().sqlKey);
@@ -203,17 +213,19 @@ void SqlInterface::sqlSubmit()
 			bindToSqlQuery(it.key(), insertQuery, 1);
 			insertQuery.bindValue(0, it.key().sqlKey);
 			sqlHelper->exec(insertQuery);
-			break;
+			continue;
 		case Update:
 			bindToSqlQuery(it.key(), updateQuery, 0);
 			updateQuery.bindValue(sqlColumnCount, it.key().sqlKey);
 			sqlHelper->exec(updateQuery);
-			break;
+			continue;
 		case Remove:
 			deleteQuery.bindValue(0, it.key().sqlKey);
 			sqlHelper->exec(deleteQuery);
-			break;
+			continue;
 		}
+
+		log("SqlInterface::sqlSubmit: invalid pending statement") << pendingStatement;
 	}
 
 	pendingStatements.clear();

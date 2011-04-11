@@ -6,6 +6,7 @@ set(kaffeine_SRCS
     datetimeedit.cpp
     dbusobjects.cpp
     ensurenopendingoperation.cpp
+    log.cpp
     main.cpp
     mainwindow.cpp
     mediawidget.cpp
