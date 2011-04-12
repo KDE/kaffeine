@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if ((path == "src/CMakeLists.txt") || !path.startsWith("src/")) {
+		if (path.startsWith("include/") || path.startsWith("tools/")) {
 			continue;
 		}
 

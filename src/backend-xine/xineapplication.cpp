@@ -81,7 +81,7 @@ XineObject::~XineObject()
 
 	if (engine != NULL) {
 		xine_config_save(engine, QFile::encodeName(
-			KStandardDirs::locateLocal("data", "kaffeine/xine-config")));
+			KStandardDirs::locateLocal("data", "kaffeine/xine-config")).constData());
 		xine_exit(engine);
 	}
 
@@ -292,8 +292,8 @@ void XineObject::init(quint64 windowId)
 		return;
 	}
 
-	xine_config_load(engine,
-		QFile::encodeName(KStandardDirs::locateLocal("data", "kaffeine/xine-config")));
+	xine_config_load(engine, QFile::encodeName(KStandardDirs::locateLocal("data",
+		"kaffeine/xine-config")).constData());
 	xine_init(engine);
 
 	QVector<const char *> audioDrivers;

@@ -62,7 +62,7 @@ DvbLinuxCam::~DvbLinuxCam()
 void DvbLinuxCam::startCa(const QString &path)
 {
 	Q_ASSERT(caFd < 0);
-	caFd = open(QFile::encodeName(path), O_RDWR | O_NONBLOCK);
+	caFd = open(QFile::encodeName(path).constData(), O_RDWR | O_NONBLOCK);
 
 	if (caFd < 0) {
 		kWarning() << "cannot open" << path;

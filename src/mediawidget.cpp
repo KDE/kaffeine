@@ -58,19 +58,19 @@ DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
 	url = KUrl::fromLocalFile(fileName);
 	url.setScheme("fifo");
 
-	if (mkfifo(QFile::encodeName(fileName), 0600) != 0) {
+	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
 		kError() << "mkfifo failed";
 		return;
 	}
 
-	readFd = open(QFile::encodeName(fileName), O_RDONLY | O_NONBLOCK);
+	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
 		kError() << "open failed";
 		return;
 	}
 
-	writeFd = open(QFile::encodeName(fileName), O_WRONLY | O_NONBLOCK);
+	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
 		kError() << "open failed";
