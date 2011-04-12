@@ -353,7 +353,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	switch (config->configuration) {
 	case DvbConfigBase::DiseqcSwitch: {
-		char cmd[] = { 0xe0, 0x10, 0x38, 0x00 };
+		char cmd[] = { quint8(0xe0), 0x10, 0x38, 0x00 };
 		cmd[3] = 0xf0 | (config->lnbNumber << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
@@ -399,7 +399,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 			value |= 0xd000;
 		}
 
-		char cmd[] = { 0xe0, 0x31, 0x6e, (value / 256), (value % 256) };
+		char cmd[] = { quint8(0xe0), 0x31, 0x6e, (value / 256), (value % 256) };
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
@@ -407,7 +407,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	    }
 
 	case DvbConfigBase::PositionsRotor: {
-		char cmd[] = { 0xe0, 0x31, 0x6b, config->lnbNumber };
+		char cmd[] = { quint8(0xe0), 0x31, 0x6b, config->lnbNumber };
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;

@@ -387,7 +387,7 @@ void DvbLinuxCam::handleSessionLayer(const unsigned char *data, int size)
 				pendingCommands |= SendCaInfoEnquiry;
 				break;
 			default:
-				messageData[0] = 0xf0;
+				messageData[0] = quint8(0xf0);
 				break;
 			}
 
@@ -629,7 +629,7 @@ void DvbLinuxCam::sendTransportLayerMessage(TransportLayerTag tag, char *data, c
 	} else {
 		*(--data) = length;
 		*(--data) = (length >> 8);
-		*(--data) = 0x82;
+		*(--data) = quint8(0x82);
 	}
 
 	*(--data) = tag;
@@ -676,7 +676,7 @@ void DvbLinuxCam::sendApplicationLayerMessage(ApplicationLayerTag tag, char *dat
 	} else {
 		*(--data) = (length & 0xff);
 		*(--data) = ((length >> 8) & 0xff);
-		*(--data) = 0x82;
+		*(--data) = quint8(0x82);
 	}
 
 	*(--data) = tag;
