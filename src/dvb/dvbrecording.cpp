@@ -22,10 +22,11 @@
 #include "dvbrecording_p.h"
 
 #include <QDir>
+#include <QSet>
 #include <QVariant>
-#include <KDebug>
 #include <KStandardDirs>
 #include "../ensurenopendingoperation.h"
+#include "../log.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
@@ -63,7 +64,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kWarning() << "cannot open file" << file.fileName();
+		Log("manager: cannot open file") << file.fileName();
 		return;
 	}
 
@@ -95,7 +96,8 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			kWarning() << "invalid recordings in file" << file.fileName();
+			Log("manager: invalid recordings in file") <<
+				file.fileName();
 			break;
 		}
 
@@ -103,14 +105,14 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	}
 
 	if (!file.remove()) {
-		kWarning() << "cannot remove file" << file.fileName();
+		Log("manager: cannot remove file") << file.fileName();
 	}
 }
 
 DvbRecordingModel::~DvbRecordingModel()
 {
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbRecordingModel::~DvbRecordingModel: illegal recursive call");
 	}
 
 	sqlFlush();
@@ -139,14 +141,14 @@ QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::getRecordings() const
 DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
 {
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbRecordingModel::addRecording: illegal recursive call");
 		return DvbSharedRecording();
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!recording.validate()) {
-		kWarning() << "invalid recording";
+		Log("DvbRecordingModel::addRecording: invalid recording");
 		return DvbSharedRecording();
 	}
 
@@ -167,7 +169,7 @@ void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 	DvbRecording &modifiedRecording)
 {
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbRecordingModel::updateRecording: illegal recursive call");
 		return;
 	}
 
@@ -175,7 +177,7 @@ void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
 	    !modifiedRecording.validate()) {
-		kWarning() << "invalid recording";
+		Log("DvbRecordingModel::updateRecording: invalid recording");
 		return;
 	}
 
@@ -198,14 +200,14 @@ void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 {
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbRecordingModel::removeRecording: illegal recursive call");
 		return;
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
-		kWarning() << "invalid recording";
+		Log("DvbRecordingModel::removeRecording: invalid recording");
 		return;
 	}
 
@@ -241,7 +243,7 @@ void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int inde
 	DvbSharedRecording recording = recordings.value(sqlKey);
 
 	if (!recording.isValid()) {
-		kError() << "invalid recording";
+		Log("DvbRecordingModel::bindToSqlQuery: invalid recording");
 		return;
 	}
 
@@ -365,7 +367,8 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 			if (file.open(QIODevice::WriteOnly)) {
 				break;
 			} else {
-				kWarning() << "cannot open file" << file.fileName();
+				Log("DvbRecordingFile::start: cannot open file") <<
+					file.fileName();
 			}
 
 			if ((attempt == 0) && !QDir(folder).exists()) {
@@ -373,7 +376,8 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 					attempt = -1;
 					continue;
 				} else {
-					kWarning() << "cannot create folder" << folder;
+					Log("DvbRecordingFile::start: cannot create folder") <<
+						folder;
 				}
 			}
 
@@ -388,7 +392,7 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 		}
 
 		if (!file.isOpen()) {
-			kWarning() << "cannot open file" << file.fileName();
+			Log("DvbRecordingFile::start: cannot open file") << file.fileName();
 			return false;
 		}
 	}
@@ -399,7 +403,7 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 			DvbManager::Prioritized);
 
 		if (device == NULL) {
-			kWarning() << "cannot find a suitable device";
+			Log("DvbRecordingFile::start: cannot find a suitable device");
 			return false;
 		}
 

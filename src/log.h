@@ -23,62 +23,63 @@
 
 #include <QString>
 
-class log
+class LogPrivate;
+
+class Log
 {
 public:
-	log(const char *message)
+	Log(const char *message)
 	{
 		begin(message);
 	}
 
-	~log()
+	~Log()
 	{
 		end();
 	}
 
-	static QString getLog()
-	{
-		if (buffer != NULL) {
-			return *buffer;
-		}
+	static QString getLog();
 
-		return QString();
-	}
-
-	log &operator<<(qint32 value)
+	Log &operator<<(qint32 value)
 	{
 		append(qint64(value));
 		return (*this);
 	}
 
-	log &operator<<(quint32 value)
+	Log &operator<<(quint32 value)
 	{
 		append(quint64(value));
 		return (*this);
 	}
 
-	log &operator<<(qint64 value)
+	Log &operator<<(qint64 value)
 	{
 		append(value);
 		return (*this);
 	}
 
-	log &operator<<(quint64 value)
+	Log &operator<<(quint64 value)
 	{
 		append(value);
+		return (*this);
+	}
+
+	Log &operator<<(const QString &string)
+	{
+		append(string);
 		return (*this);
 	}
 
 private:
-	Q_DISABLE_COPY(log)
+	Q_DISABLE_COPY(Log)
 
 	static void begin(const char *message);
 	static void append(qint64 value);
 	static void append(quint64 value);
+	static void append(const QString &string);
 	static void end();
 
-	static QString *buffer;
-	static int position;
+	static QBasicAtomicPointer<LogPrivate> data;
 };
 
 #endif /* LOG_H */

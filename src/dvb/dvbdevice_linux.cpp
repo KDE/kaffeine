@@ -24,7 +24,6 @@
 #include <Solid/Device>
 #include <Solid/DeviceNotifier>
 #include <Solid/DvbInterface>
-#include <KDebug>
 #include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -32,6 +31,7 @@
 #include <poll.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include "../log.h"
 #include "dvbtransponder.h"
 
 // krazy:excludeall=syscalls
@@ -59,7 +59,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 	int fd = open(QFile::encodeName(frontendPath).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (fd < 0) {
-		kWarning() << "cannot open frontend" << frontendPath;
+		Log("DvbLinuxDevice::startDevice: cannot open frontend") << frontendPath;
 		return;
 	}
 
@@ -67,7 +67,8 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 	memset(&frontend_info, 0, sizeof(frontend_info));
 
 	if (ioctl(fd, FE_GET_INFO, &frontend_info) != 0) {
-		kWarning() << "ioctl FE_GET_INFO failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::startDevice: ioctl FE_GET_INFO failed for frontend") <<
+			frontendPath;
 		close(fd);
 		return;
 	}
@@ -98,8 +99,8 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 		transmissionTypes = Atsc;
 		break;
 	default:
-		kWarning() << "unknown type" << frontend_info.type << "for frontend" <<
-			frontendPath;
+		Log("DvbLinuxDevice::startDevice: unknown type") << frontend_info.type <<
+			"for frontend" << frontendPath;
 		return;
 	}
 
@@ -121,7 +122,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 		capabilities |= DvbTGuardIntervalAuto;
 	}
 
-	kDebug() << "found dvb device" << deviceId << '/' << frontendName;
+	Log("DvbLinuxDevice::startDevice: found dvb device") << deviceId << '/' << frontendName;
 	ready = true;
 }
 
@@ -202,14 +203,14 @@ bool DvbLinuxDevice::acquire()
 	frontendFd = open(QFile::encodeName(frontendPath).constData(), O_RDWR | O_NONBLOCK);
 
 	if (frontendFd < 0) {
-		kWarning() << "cannot open frontend" << frontendPath;
+		Log("DvbLinuxDevice::acquire: cannot open frontend") << frontendPath;
 		return false;
 	}
 
 	dvrFd = open(QFile::encodeName(dvrPath).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (dvrFd < 0) {
-		kWarning() << "cannot open dvr" << dvrPath;
+		Log("DvbLinuxDevice::acquire: cannot open dvr") << dvrPath;
 		close(frontendFd);
 		frontendFd = -1;
 		return false;
@@ -223,7 +224,8 @@ bool DvbLinuxDevice::setTone(SecTone tone)
 	Q_ASSERT(frontendFd >= 0);
 
 	if (ioctl(frontendFd, FE_SET_TONE, (tone == ToneOn) ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
-		kWarning() << "ioctl FE_SET_TONE failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::setTone: ioctl FE_SET_TONE failed for frontend") <<
+			frontendPath;
 		return false;
 	}
 
@@ -236,7 +238,8 @@ bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
 
 	if (ioctl(frontendFd, FE_SET_VOLTAGE,
 		  (voltage == Voltage18V) ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
-		kWarning() << "ioctl FE_SET_VOLTAGE failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::setVoltage: ioctl FE_SET_VOLTAGE failed for frontend") <<
+			frontendPath;
 		return false;
 	}
 
@@ -252,8 +255,8 @@ bool DvbLinuxDevice::sendMessage(const char *message, int length)
 	cmd.msg_len = length;
 
 	if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
-		kWarning() << "ioctl FE_DISEQC_SEND_MASTER_CMD failed for frontend" <<
-			frontendPath;
+		Log("DvbLinuxDevice::sendMessage: "
+		    "ioctl FE_DISEQC_SEND_MASTER_CMD failed for frontend") << frontendPath;
 		return false;
 	}
 
@@ -266,7 +269,8 @@ bool DvbLinuxDevice::sendBurst(SecBurst burst)
 
 	if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
 		  (burst == BurstMiniA) ? SEC_MINI_A : SEC_MINI_B) != 0) {
-		kWarning() << "ioctl FE_DISEQC_SEND_BURST failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::sendBurst: ioctl FE_DISEQC_SEND_BURST failed for frontend") <<
+			frontendPath;
 		return false;
 	}
 
@@ -463,7 +467,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		propertyList.num = (sizeof(properties) / sizeof(properties[0]));
 
 		if (ioctl(frontendFd, FE_SET_PROPERTY, &propertyList) != 0) {
-			kWarning() << "ioctl FE_SET_PROPERTY failed for frontend" << frontendPath;
+			Log("DvbLinuxDevice::tune: ioctl FE_SET_PROPERTY failed for frontend") <<
+				frontendPath;
 			return false;
 		}
 
@@ -496,12 +501,14 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		break;
 	    }
 	default:
-		kWarning() << "unknown transmission type" << transponder.getTransmissionType();
+		Log("DvbLinuxDevice::tune: unknown transmission type") <<
+			transponder.getTransmissionType();
 		return false;
 	}
 
 	if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
-		kWarning() << "ioctl FE_SET_FRONTEND failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::tune: ioctl FE_SET_FRONTEND failed for frontend") <<
+			frontendPath;
 		return false;
 	}
 
@@ -516,7 +523,8 @@ bool DvbLinuxDevice::isTuned()
 	memset(&status, 0, sizeof(status));
 
 	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
-		kWarning() << "ioctl FE_READ_STATUS failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
+			frontendPath;
 		return false;
 	}
 
@@ -529,7 +537,8 @@ int DvbLinuxDevice::getSignal()
 	quint16 signal = 0;
 
 	if (ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH, &signal) != 0) {
-		kWarning() << "ioctl FE_READ_SIGNAL_STRENGTH failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::getSignal: "
+		    "ioctl FE_READ_SIGNAL_STRENGTH failed for frontend") << frontendPath;
 		return -1;
 	}
 
@@ -547,7 +556,8 @@ int DvbLinuxDevice::getSnr()
 	quint16 snr = 0;
 
 	if (ioctl(frontendFd, FE_READ_SNR, &snr) != 0) {
-		kWarning() << "ioctl FE_READ_SNR failed for frontend" << frontendPath;
+		Log("DvbLinuxDevice::getSnr: ioctl FE_READ_SNR failed for frontend") <<
+			frontendPath;
 		return -1;
 	}
 
@@ -564,14 +574,14 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 	Q_ASSERT(frontendFd >= 0);
 
 	if (dmxFds.contains(pid)) {
-		kWarning() << "pid filter already set up for pid" << pid;
+		Log("DvbLinuxDevice::addPidFilter: pid filter already set up for pid") << pid;
 		return false;
 	}
 
 	int dmxFd = open(QFile::encodeName(demuxPath).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (dmxFd < 0) {
-		kWarning() << "cannot open demux" << demuxPath;
+		Log("DvbLinuxDevice::addPidFilter: cannot open demux") << demuxPath;
 		return false;
 	}
 
@@ -584,7 +594,8 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 	pes_filter.flags = DMX_IMMEDIATE_START;
 
 	if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
-		kWarning() << "cannot set up pid filter for demux" << demuxPath;
+		Log("DvbLinuxDevice::addPidFilter: cannot set up pid filter for demux") <<
+			demuxPath;
 		close(dmxFd);
 		return false;
 	}
@@ -598,7 +609,7 @@ void DvbLinuxDevice::removePidFilter(int pid)
 	Q_ASSERT(frontendFd >= 0);
 
 	if (!dmxFds.contains(pid)) {
-		kWarning() << "no pid filter set up for pid" << pid;
+		Log("DvbLinuxDevice::removePidFilter: no pid filter set up for pid") << pid;
 		return;
 	}
 
@@ -663,7 +674,7 @@ void DvbLinuxDevice::startDvr()
 		}
 
 		if ((dvrPipe[0] < 0) || (dvrPipe[1] < 0)) {
-			kWarning() << "cannot create pipe";
+			Log("DvbLinuxDevice::startDvr: cannot create pipe");
 			return;
 		}
 	}
@@ -696,7 +707,7 @@ void DvbLinuxDevice::startDvr()
 					continue;
 				}
 
-				kWarning() << "cannot read from dvr" << dvrPath;
+				Log("DvbLinuxDevice::startDvr: cannot read from dvr") << dvrPath;
 				return;
 			}
 		}
@@ -715,14 +726,14 @@ void DvbLinuxDevice::stopDvr()
 		Q_ASSERT((dvrPipe[0] >= 0) && (dvrPipe[1] >= 0));
 
 		if (write(dvrPipe[1], " ", 1) != 1) {
-			kWarning() << "cannot write to pipe";
+			Log("DvbLinuxDevice::stopDvr: cannot write to pipe");
 		}
 
 		wait();
 		char data;
 
 		if (read(dvrPipe[0], &data, 1) != 1) {
-			kWarning() << "cannot read from pipe";
+			Log("DvbLinuxDevice::stopDvr: cannot read from pipe");
 		}
 	}
 }
@@ -743,7 +754,7 @@ void DvbLinuxDevice::run()
 				continue;
 			}
 
-			kWarning() << "poll failed";
+			Log("DvbLinuxDevice::run: poll failed");
 			return;
 		}
 
@@ -764,7 +775,7 @@ void DvbLinuxDevice::run()
 					continue;
 				}
 
-				kWarning() << "cannot read from dvr" << dvrPath;
+				Log("DvbLinuxDevice::run: cannot read from dvr") << dvrPath;
 				dataSize = read(dvrFd, dvrBuffer.data, bufferSize);
 
 				if (dataSize < 0) {
@@ -776,7 +787,8 @@ void DvbLinuxDevice::run()
 						continue;
 					}
 
-					kWarning() << "cannot read from dvr" << dvrPath;
+					Log("DvbLinuxDevice::run: cannot read from dvr") <<
+						dvrPath;
 					return;
 				}
 			}
@@ -828,12 +840,14 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 	QString devicePath = dvbInterface->device();
 
 	if ((adapter < 0) || (adapter > 0x7fff) || (index < 0) || (index > 0x7fff)) {
-		kWarning() << "cannot determine adapter or index for device" << udi;
+		Log("DvbLinuxDeviceManager::componentAdded: "
+		    "cannot determine adapter or index for device") << udi;
 		return;
 	}
 
 	if (devicePath.isEmpty()) {
-		kWarning() << "cannot determine path for device" << udi;
+		Log("DvbLinuxDeviceManager::componentAdded: cannot determine path for device") <<
+			udi;
 		return;
 	}
 

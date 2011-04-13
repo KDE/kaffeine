@@ -31,10 +31,10 @@
 #include <QSpinBox>
 #include <KAction>
 #include <KComboBox>
-#include <KDebug>
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include "../log.h"
 #include "dvbsi.h"
 
 bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
@@ -82,7 +82,7 @@ DvbChannelTableModel::~DvbChannelTableModel()
 void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
 {
 	if (channelModel != NULL) {
-		kWarning() << "channel model already set";
+		Log("DvbChannelTableModel::setChannelModel: channel model already set");
 		return;
 	}
 

@@ -23,10 +23,12 @@
 #include <QDir>
 #include <QDomDocument>
 #include <QMimeData>
+#include <QSet>
+#include <QTextStream>
 #include <QXmlStreamWriter>
-#include <KDebug>
 #include <KGlobal>
 #include <KLocale>
+#include "../log.h"
 
 bool Playlist::load(const KUrl &url_, Format format)
 {
@@ -36,14 +38,14 @@ bool Playlist::load(const KUrl &url_, Format format)
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		kWarning() << "opening remote playlists not supported yet";
+		Log("Playlist::load: opening remote playlists not supported yet");
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kWarning() << "cannot open file" << file.fileName();
+		Log("Playlist::load: cannot open file") << file.fileName();
 		return false;
 	}
 
@@ -69,14 +71,14 @@ bool Playlist::save(Format format) const
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		kWarning() << "opening remote playlists not supported yet";
+		Log("Playlist::save: opening remote playlists not supported yet");
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kWarning() << "cannot open file" << file.fileName();
+		Log("Playlist::save: cannot open file") << file.fileName();
 		return false;
 	}
 

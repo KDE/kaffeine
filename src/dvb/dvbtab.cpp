@@ -28,11 +28,11 @@
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
-#include <KDebug>
 #include <KLineEdit>
 #include <KLocale>
 #include <KMenu>
 #include <KMessageBox>
+#include "../log.h"
 #include "../mediawidget.h"
 #include "../osdwidget.h"
 #include "dvbchanneldialog.h"
@@ -452,7 +452,7 @@ void DvbTab::activate()
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
 	if (!channel.isValid()) {
-		kWarning() << "channel is invalid";
+		Log("DvbTab::playChannel: channel is invalid");
 		return;
 	}
 

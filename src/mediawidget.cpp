@@ -36,7 +36,6 @@
 #include <KAction>
 #include <KActionCollection>
 #include <KComboBox>
-#include <KDebug>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KStandardDirs>
@@ -48,6 +47,7 @@
 #include <unistd.h>
 #include <X11/extensions/scrnsaver.h>
 #include "backend-xine/xinemediawidget.h"
+#include "log.h"
 #include "osdwidget.h"
 
 DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
@@ -59,21 +59,21 @@ DvbFeed::DvbFeed(QObject *parent) : QObject(parent), timeShiftPrepared(false),
 	url.setScheme("fifo");
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
-		kError() << "mkfifo failed";
+		Log("timeShiftActive: mkfifo failed");
 		return;
 	}
 
 	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
-		kError() << "open failed";
+		Log("timeShiftActive: open failed");
 		return;
 	}
 
 	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
-		kError() << "open failed";
+		Log("timeShiftActive: open failed");
 		close(readFd);
 		readFd = -1;
 	}
@@ -1254,7 +1254,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 		return;
 	}
 
-	kError() << "internal error" << action->data();
+	Log("MediaWidget::aspectRatioChanged: internal error");
 }
 
 void MediaWidget::autoResizeTriggered(QAction *action)
@@ -1276,7 +1276,7 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 		return;
 	}
 
-	kError() << "internal error" << action->data();
+	Log("MediaWidget::autoResizeTriggered: internal error");
 }
 
 void MediaWidget::pausedChanged(bool paused)

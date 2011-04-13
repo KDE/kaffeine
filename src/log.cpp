@@ -20,45 +20,101 @@
 
 #include "log.h"
 
+#include <QMutex>
 #include <QTextCodec>
 #include <QTime>
 #include <stdio.h>
 
-void log::begin(const char *message)
+class LogPrivate
 {
-	if (buffer == NULL) {
-		buffer = new QString();
-		buffer->reserve(8176);
+public:
+	LogPrivate() : position(0)
+	{
+		buffer.reserve(8176);
 	}
 
-	if (buffer->size() > (8176 - 1024)) {
-		buffer->remove(0, buffer->indexOf(QLatin1Char('\n'), 1023) + 1);
+	~LogPrivate()
+	{
 	}
 
-	position = buffer->size();
-	buffer->append(QTime::currentTime().toString(Qt::ISODate));
-	buffer->append(QLatin1Char(' '));
-	buffer->append(QLatin1String(message));
-}
+	void begin(const char *message)
+	{
+		mutex.lock();
 
-void log::append(qint64 value)
+		if (buffer.size() > (8176 - 1024)) {
+			buffer.remove(0, buffer.indexOf(QLatin1Char('\n'), 1023) + 1);
+		}
+
+		position = buffer.size();
+		buffer.append(QTime::currentTime().toString(Qt::ISODate));
+		buffer.append(QLatin1Char(' '));
+		buffer.append(QLatin1String(message));
+	}
+
+	void append(qint64 value)
+	{
+		buffer.append(QLatin1Char(' '));
+		buffer.append(QString::number(value));
+	}
+
+	void append(quint64 value)
+	{
+		buffer.append(QLatin1Char(' '));
+		buffer.append(QString::number(value));
+	}
+
+	void append(const QString &string)
+	{
+		buffer.append(QLatin1String(" \""));
+		buffer.append(string);
+		buffer.append(QLatin1Char('"'));
+	}
+
+	void end()
+	{
+		buffer.append(QLatin1Char('\n'));
+		fprintf(stderr, "%s", QTextCodec::codecForLocale()->fromUnicode(
+			buffer.constData() + position, buffer.size() - position).constData());
+		mutex.unlock();
+	}
+
+	QMutex mutex;
+	QString buffer;
+	int position;
+};
+
+void Log::begin(const char *message)
 {
-	buffer->append(QLatin1Char(' '));
-	buffer->append(QString::number(value));
+	if (data == NULL) {
+		LogPrivate *newData = new LogPrivate();
+
+		if (!data.testAndSetRelaxed(NULL, newData)) {
+			// another thread won the battle
+			delete newData;
+		}
+	}
+
+	data->begin(message);
 }
 
-void log::append(quint64 value)
+void Log::append(qint64 value)
 {
-	buffer->append(QLatin1Char(' '));
-	buffer->append(QString::number(value));
+	data->append(value);
 }
 
-void log::end()
+void Log::append(quint64 value)
 {
-	buffer->append(QLatin1Char('\n'));
-	fprintf(stderr, "%s", QTextCodec::codecForLocale()->fromUnicode(
-		buffer->constData() + position, buffer->size() - position).constData());
+	data->append(value);
 }
 
-QString *log::buffer = NULL;
-int log::position = 0;
+void Log::append(const QString &string)
+{
+	data->append(string);
+}
+
+void Log::end()
+{
+	data->end();
+}
+
+QBasicAtomicPointer<LogPrivate> Log::data = Q_BASIC_ATOMIC_INITIALIZER(0);

@@ -21,12 +21,13 @@
 #include "xineapplication.h"
 
 #include <QFile>
+#include <QVector>
 #include <KAboutData>
 #include <KApplication>
 #include <KCmdLineArgs>
-#include <KDebug>
 #include <KStandardDirs>
 #include <X11/Xlib.h>
+#include "../log.h"
 #include "xinecommands.h"
 
 class XineParent : public XineParentMarshaller
@@ -252,12 +253,12 @@ void XineObject::readyRead()
 			dirtyFlags |= ToggleMenu;
 			break;
 		default:
-			kError() << "unknown command" << command;
+			Log("XineObject::readyRead: unknown command") << command;
 			continue;
 		}
 
 		if (!reader->isValid()) {
-			kError() << "wrong argument size for command" << command;
+			Log("XineObject::readyRead: wrong argument size for command") << command;
 		}
 
 		if (((dirtyFlags & (Quit | NotReady | ProcessEvent)) == 0) && (dirtyFlags != 0)) {
@@ -281,7 +282,7 @@ void XineObject::updatePosition()
 void XineObject::init(quint64 windowId)
 {
 	if (engine != NULL) {
-		kError() << "xine engine is already initialised";
+		Log("XineObject::init: xine engine is already initialised");
 		return;
 	}
 
@@ -333,7 +334,8 @@ void XineObject::init(quint64 windowId)
 
 	if (!ok || (pixelAspectRatio < 0.1) || (pixelAspectRatio > 10)) {
 		if (qstrlen(pixelAspectRatioString.latin1()) != 0) {
-			kWarning() << "invalid pixel aspect ratio" << pixelAspectRatioString;
+			Log("XineObject::init: invalid pixel aspect ratio") <<
+				pixelAspectRatioString;
 		}
 
 		pixelAspectRatio = static_cast<double>(QX11Info::appDpiY()) / QX11Info::appDpiX();
@@ -346,7 +348,7 @@ void XineObject::init(quint64 windowId)
 	audioOutput = xine_open_audio_driver(engine, audioDriver, NULL);
 
 	if (audioOutput == NULL) {
-		kWarning() << "cannot create audio output" << QLatin1String(audioDriver);
+		Log("XineObject::init: cannot create audio output") << QLatin1String(audioDriver);
 		audioOutput = xine_open_audio_driver(engine, NULL, NULL);
 
 		if (audioOutput == NULL) {
@@ -368,7 +370,7 @@ void XineObject::init(quint64 windowId)
 		&videoOutputData);
 
 	if (videoOutput == NULL) {
-		kWarning() << "cannot create video output" << QLatin1String(videoDriver);
+		Log("XineObject::init: cannot create video output") << QLatin1String(videoDriver);
 		videoOutput = xine_open_video_driver(engine, NULL, XINE_VISUAL_TYPE_X11,
 			&videoOutputData);
 
@@ -403,7 +405,7 @@ void XineObject::init(quint64 windowId)
 		xine_post_in_t *input = xine_post_input(visualization, "audio in");
 
 		if (input == NULL) {
-			kWarning() << "cannot connect audio visualization plugin";
+			Log("XineObject::init: cannot connect audio visualization plugin");
 		} else {
 			xine_post_wire(xine_get_audio_source(stream), input);
 		}
@@ -412,28 +414,28 @@ void XineObject::init(quint64 windowId)
 	deinterlacer = xine_post_init(engine, "tvtime", 1, 0, &videoOutput);
 
 	if (deinterlacer == NULL) {
-		kWarning() << "cannot create deinterlace plugin";
+		Log("XineObject::init: cannot create deinterlace plugin");
 		return;
 	}
 
 	xine_post_in_t *input = xine_post_input(deinterlacer, "parameters");
 
 	if (input == NULL) {
-		kWarning() << "cannot configure deinterlace plugin";
+		Log("XineObject::init: cannot configure deinterlace plugin");
 		return;
 	}
 
 	xine_post_api_t *deinterlacerApi = static_cast<xine_post_api_t *>(input->data);
 
 	if (deinterlacerApi == NULL) {
-		kWarning() << "cannot configure deinterlace plugin";
+		Log("XineObject::init: cannot configure deinterlace plugin");
 		return;
 	}
 
 	xine_post_api_descr_t *deinterlacerParameters = deinterlacerApi->get_param_descr();
 
 	if (deinterlacerParameters == NULL) {
-		kWarning() << "cannot configure deinterlace plugin";
+		Log("XineObject::init: cannot configure deinterlace plugin");
 		return;
 	}
 
@@ -592,7 +594,7 @@ void XineObject::customEvent(QEvent *event)
 			case ProcessXineEvent:
 				break;
 			default:
-				kWarning() << "unknown flag" << lowestDirtyFlag;
+				Log("XineObject::customEvent: unknown flag") << lowestDirtyFlag;
 				break;
 			}
 		}
@@ -632,7 +634,8 @@ void XineObject::customEvent(QEvent *event)
 				xineAspectRatio = XINE_VO_ASPECT_SQUARE;
 				break;
 			default:
-				kError() << "unknown aspect ratio" << aspectRatio;
+				Log("XineObject::customEvent: unknown aspect ratio") <<
+					aspectRatio;
 				xineAspectRatio = XINE_VO_ASPECT_AUTO;
 				break;
 			}
@@ -795,7 +798,7 @@ void XineObject::customEvent(QEvent *event)
 		case ProcessEvent:
 			break;
 		default:
-			kWarning() << "unknown flag" << lowestDirtyFlag;
+			Log("XineObject::customEvent: unknown flag") << lowestDirtyFlag;
 			break;
 		}
 	}

@@ -28,12 +28,12 @@
 #include <QToolButton>
 #include <KAction>
 #include <KActionCollection>
-#include <KDebug>
 #include <KFileDialog>
 #include <kfilewidget.h>
 #include <KLocalizedString>
 #include <KMenu>
 #include <KStandardDirs>
+#include "../log.h"
 #include "playlistmodel.h"
 
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
@@ -48,7 +48,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		file.setFileName(KStandardDirs::locateLocal("appdata", "playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
-			kDebug() << "cannot open file" << file.fileName();
+			Log("playlistModel: cannot open file") << file.fileName();
 			return;
 		}
 	}
@@ -69,7 +69,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		// compatibility code
 		hasSubtitles = false;
 	} else if (version != 0x361c4a3c) {
-		kWarning() << "cannot read file" << file.fileName();
+		Log("playlistModel: cannot read file") << file.fileName();
 		return;
 	}
 
@@ -112,7 +112,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			kWarning() << "cannot read file" << file.fileName();
+			Log("playlistModel: cannot read file") << file.fileName();
 			delete playlist;
 			break;
 		}
@@ -126,7 +126,8 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QFile file(KStandardDirs::locateLocal("appdata", "playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		kWarning() << "cannot open file" << file.fileName();
+		Log("PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file") <<
+			file.fileName();
 		return;
 	}
 

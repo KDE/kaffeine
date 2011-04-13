@@ -29,9 +29,9 @@
 #include <KAction>
 #include <KCalendarSystem>
 #include <KComboBox>
-#include <KDebug>
 #include <KLineEdit>
 #include "../datetimeedit.h"
+#include "../log.h"
 #include "dvbchanneldialog.h"
 #include "dvbmanager.h"
 
@@ -215,7 +215,7 @@ DvbRecordingTableModel::~DvbRecordingTableModel()
 void DvbRecordingTableModel::setRecordingModel(DvbRecordingModel *recordingModel_)
 {
 	if (recordingModel != NULL) {
-		kWarning() << "recording model already set";
+		Log("DvbRecordingTableModel::setRecordingModel: recording model already set");
 		return;
 	}
 

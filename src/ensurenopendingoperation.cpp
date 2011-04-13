@@ -20,9 +20,9 @@
 
 #include "ensurenopendingoperation.h"
 
-#include <KDebug>
+#include "log.h"
 
 void EnsureNoPendingOperation::printFatalErrorMessage()
 {
-	kFatal() << "illegal recursive call";
+	Log("EnsureNoPendingOperation::printFatalErrorMessage: illegal recursive call");
 }

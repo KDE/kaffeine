@@ -20,9 +20,9 @@
 
 #include "xinecommands.h"
 
-#include <KDebug>
 #include <errno.h>
 #include <unistd.h>
+#include "../log.h"
 
 XinePipeReader::XinePipeReader(int fd_, QObject *parent) : fd(fd_),
 	notifier(fd, QSocketNotifier::Read)
@@ -72,7 +72,7 @@ int XinePipeReader::nextCommand()
 		memcpy(&size, buffer.constData() + bufferPosition, 4);
 
 		if (size < 5) {
-			kWarning() << "size too small";
+			Log("XinePipeReader::nextCommand: size too small");
 			size = 5;
 		}
 	}
@@ -252,7 +252,7 @@ void XinePipeWriter::write(qint8 command, const char *firstArg, unsigned int fir
 	const char *secondArg, unsigned int secondArgSize)
 {
 	if ((firstArgSize >= 0x100000) || (secondArgSize >= 0x100000)) {
-		kError() << "monstrous big write" << command;
+		Log("XinePipeWriter::write: monstrous big write") << command;
 		firstArgSize = 0;
 		secondArgSize = 0;
 	}

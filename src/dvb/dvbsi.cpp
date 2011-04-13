@@ -21,7 +21,7 @@
 #include "dvbsi.h"
 
 #include <QTextCodec>
-#include <KDebug>
+#include "../log.h"
 
 void DvbSection::initSection(const char *data, int size)
 {
@@ -34,7 +34,7 @@ void DvbSection::initSection(const char *data, int size)
 		static_cast<unsigned char>(data[2])) + 3);
 
 	if (sectionLength > size) {
-		kDebug() << "adjusting length";
+		Log("DvbSection::initSection: adjusting length");
 		sectionLength = size;
 	}
 
@@ -364,7 +364,7 @@ void DvbDescriptor::initDescriptor(const char *data, int size)
 {
 	if (size < 2) {
 		if (size != 0) {
-			kDebug() << "invalid descriptor";
+			Log("DvbDescriptor::initDescriptor: invalid descriptor");
 		}
 
 		initSectionData();
@@ -374,7 +374,7 @@ void DvbDescriptor::initDescriptor(const char *data, int size)
 	int descriptorLength = (static_cast<unsigned char>(data[1]) + 2);
 
 	if (descriptorLength > size) {
-		kDebug() << "adjusting length";
+		Log("DvbDescriptor::initDescriptor: adjusting length");
 		descriptorLength = size;
 	}
 
@@ -408,7 +408,7 @@ QString AtscPsipText::interpretTextData(const char *data, unsigned int len,
 		// 0x3e Standard Compression Scheme for UNICODE (SCSU)
 		// 0x40/0x41 Taiwan
 		// 0x48 South Korea
-		kWarning() << "Unsupported ATSC Text mode:" << mode;
+		Log("AtscPsipText::interpretTextData: Unsupported ATSC Text mode") << mode;
 	}
 	return result;
 }
@@ -435,7 +435,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 	offset += 3;
 
 	if (offset > size) {
-		kDebug() << "adjusting length";
+		Log("AtscPsipText::convertText: adjusting length");
 		return result;
 	}
 
@@ -443,7 +443,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 
 	for (int j = 0; j < num_segments; j++) {
 		if ((offset + 3) > size) {
-			kDebug() << "adjusting length";
+			Log("AtscPsipText::convertText: adjusting length");
 			return result;
 		}
 
@@ -452,7 +452,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 		int num_bytes = static_cast<unsigned char>(data[offset++]);
 
 		if ((offset + num_bytes) > size) {
-			kDebug() << "adjusting length";
+			Log("AtscPsipText::convertText: adjusting length");
 			return result;
 		}
 
@@ -469,7 +469,8 @@ QString AtscPsipText::convertText(const char *data, int size)
 			result +=
 				AtscHuffmanString::convertText(comp_string, num_bytes, comp_type);
 		} else {
-			kWarning() << "Unsupported compression / mode:" << comp_type << mode;
+			Log("AtscPsipText::convertText: Unsupported compression / mode") <<
+				comp_type << mode;
 		}
 
 		offset += num_bytes;
@@ -1182,7 +1183,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				if ((subtitleDescriptor.subtitleType() >= 0x01) &&
 				    (subtitleDescriptor.subtitleType() <= 0x03)) {
 					// FIXME how to deal with vbi and teletext subtitles?
-					kDebug() << "special subtitle found";
+					Log("DvbPmtParser::DvbPmtParser: special subtitle found");
 				}
 
 				// ISO 8859-1 equals to unicode range 0x0000 - 0x00ff
@@ -1208,7 +1209,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 			if (videoPid < 0) {
 				videoPid = entry.pid();
 			} else {
-				kDebug() << "more than one video pid";
+				Log("DvbPmtParser::DvbPmtParser: more than one video pid");
 			}
 
 			break;
@@ -1227,7 +1228,8 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				if (teletextPid < 0) {
 					teletextPid = entry.pid();
 				} else {
-					kDebug() << "more than one teletext pid";
+					Log("DvbPmtParser::DvbPmtParser: "
+					    "more than one teletext pid");
 				}
 			}
 
@@ -1235,7 +1237,8 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				subtitlePids.append(qMakePair(entry.pid(), subtitleLanguage));
 
 				if (teletextPresent) {
-					kDebug() << "subtitle and teletext on the same pid";
+					Log("DvbPmtParser::DvbPmtParser: "
+					    "subtitle and teletext on the same pid");
 				}
 			}
 
@@ -1247,11 +1250,13 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 
 		default:
 			if (!subtitleLanguage.isEmpty()) {
-				kDebug() << "subtitle with unexpected stream type found";
+				Log("DvbPmtParser::DvbPmtParser: "
+				    "subtitle with unexpected stream type found");
 			}
 
 			if (teletextPresent) {
-				kDebug() << "teletext with unexpected stream type found";
+				Log("DvbPmtParser::DvbPmtParser: "
+				    "teletext with unexpected stream type found");
 			}
 
 			break;
@@ -1263,7 +1268,7 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 {
 	if (size < 12) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("AtscEitSectionEntry::initEitSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1273,7 +1278,7 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 	titleLength = static_cast<unsigned char>(data[9]);
 
 	if (titleLength > (size - 12)) {
-		kDebug() << "adjusting length";
+		Log("AtscEitSectionEntry::initEitSectionEntry: adjusting length");
 		titleLength = (size - 12);
 	}
 
@@ -1282,7 +1287,7 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 		static_cast<unsigned char>(data[11 + titleLength])) + 12 + titleLength);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("AtscEitSectionEntry::initEitSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1294,7 +1299,7 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 6) {
-		kDebug() << "invalid descriptor";
+		Log("DvbLanguageDescriptor::DvbLanguageDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1303,7 +1308,7 @@ DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : 
 DvbSubtitleDescriptor::DvbSubtitleDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 10) {
-		kDebug() << "invalid descriptor";
+		Log("DvbSubtitleDescriptor::DvbSubtitleDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1312,7 +1317,7 @@ DvbSubtitleDescriptor::DvbSubtitleDescriptor(const DvbDescriptor &descriptor) : 
 DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 5) {
-		kDebug() << "invalid descriptor";
+		Log("DvbServiceDescriptor::DvbServiceDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1320,14 +1325,14 @@ DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : Dv
 	providerNameLength = at(3);
 
 	if (providerNameLength > (getLength() - 5)) {
-		kDebug() << "adjusting length";
+		Log("DvbServiceDescriptor::DvbServiceDescriptor: adjusting length");
 		providerNameLength = (getLength() - 5);
 	}
 
 	serviceNameLength = at(4 + providerNameLength);
 
 	if (serviceNameLength > (getLength() - (5 + providerNameLength))) {
-		kDebug() << "adjusting length";
+		Log("DvbServiceDescriptor::DvbServiceDescriptor: adjusting length");
 		serviceNameLength = (getLength() - (5 + providerNameLength));
 	}
 }
@@ -1335,7 +1340,7 @@ DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : Dv
 DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 7) {
-		kDebug() << "invalid descriptor";
+		Log("DvbShortEventDescriptor::DvbShortEventDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1343,14 +1348,14 @@ DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor
 	eventNameLength = at(5);
 
 	if (eventNameLength > (getLength() - 7)) {
-		kDebug() << "adjusting length";
+		Log("DvbShortEventDescriptor::DvbShortEventDescriptor: adjusting length");
 		eventNameLength = (getLength() - 7);
 	}
 
 	textLength = at(6 + eventNameLength);
 
 	if (textLength > (getLength() - (7 + eventNameLength))) {
-		kDebug() << "adjusting length";
+		Log("DvbShortEventDescriptor::DvbShortEventDescriptor: adjusting length");
 		textLength = (getLength() - (7 + eventNameLength));
 	}
 }
@@ -1358,7 +1363,7 @@ DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor
 DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 8) {
-		kDebug() << "invalid descriptor";
+		Log("DvbExtendedEventDescriptor::DvbExtendedEventDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1366,14 +1371,14 @@ DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &desc
 	itemsLength = at(6);
 
 	if (itemsLength > (getLength() - 8)) {
-		kDebug() << "adjusting length";
+		Log("DvbExtendedEventDescriptor::DvbExtendedEventDescriptor: adjusting length");
 		itemsLength = (getLength() - 8);
 	}
 
 	textLength = at(7 + itemsLength);
 
 	if (textLength > (getLength() - (8 + itemsLength))) {
-		kDebug() << "adjusting length";
+		Log("DvbExtendedEventDescriptor::DvbExtendedEventDescriptor: adjusting length");
 		textLength = (getLength() - (8 + itemsLength));
 	}
 }
@@ -1381,7 +1386,7 @@ DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &desc
 DvbCableDescriptor::DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 13) {
-		kDebug() << "invalid descriptor";
+		Log("DvbCableDescriptor::DvbCableDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1390,7 +1395,7 @@ DvbCableDescriptor::DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDes
 DvbSatelliteDescriptor::DvbSatelliteDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 13) {
-		kDebug() << "invalid descriptor";
+		Log("DvbSatelliteDescriptor::DvbSatelliteDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1399,7 +1404,7 @@ DvbSatelliteDescriptor::DvbSatelliteDescriptor(const DvbDescriptor &descriptor) 
 DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 13) {
-		kDebug() << "invalid descriptor";
+		Log("DvbTerrestrialDescriptor::DvbTerrestrialDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1408,7 +1413,7 @@ DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descript
 AtscChannelNameDescriptor::AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 2) {
-		kDebug() << "invalid descriptor";
+		Log("AtscChannelNameDescriptor::AtscChannelNameDescriptor: invalid descriptor");
 		initSectionData();
 		return;
 	}
@@ -1418,7 +1423,7 @@ void DvbPatSectionEntry::initPatSectionEntry(const char *data, int size)
 {
 	if (size < 4) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("DvbPatSectionEntry::initPatSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1432,7 +1437,7 @@ void DvbPmtSectionEntry::initPmtSectionEntry(const char *data, int size)
 {
 	if (size < 5) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("DvbPmtSectionEntry::initPmtSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1442,7 +1447,7 @@ void DvbPmtSectionEntry::initPmtSectionEntry(const char *data, int size)
 	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) | static_cast<unsigned char>(data[4])) + 5);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("DvbPmtSectionEntry::initPmtSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1453,7 +1458,7 @@ void DvbSdtSectionEntry::initSdtSectionEntry(const char *data, int size)
 {
 	if (size < 5) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("DvbSdtSectionEntry::initSdtSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1463,7 +1468,7 @@ void DvbSdtSectionEntry::initSdtSectionEntry(const char *data, int size)
 	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) | static_cast<unsigned char>(data[4])) + 5);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("DvbSdtSectionEntry::initSdtSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1474,7 +1479,7 @@ void DvbEitSectionEntry::initEitSectionEntry(const char *data, int size)
 {
 	if (size < 12) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("DvbEitSectionEntry::initEitSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1484,7 +1489,7 @@ void DvbEitSectionEntry::initEitSectionEntry(const char *data, int size)
 	int entryLength = ((((static_cast<unsigned char>(data[10]) & 0xf) << 8) | static_cast<unsigned char>(data[11])) + 12);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("DvbEitSectionEntry::initEitSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1495,7 +1500,7 @@ void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 {
 	if (size < 6) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("DvbNitSectionEntry::initNitSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1505,7 +1510,7 @@ void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 	int entryLength = ((((static_cast<unsigned char>(data[4]) & 0xf) << 8) | static_cast<unsigned char>(data[5])) + 6);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("DvbNitSectionEntry::initNitSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1516,7 +1521,7 @@ void AtscMgtSectionEntry::initMgtSectionEntry(const char *data, int size)
 {
 	if (size < 11) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("AtscMgtSectionEntry::initMgtSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1526,7 +1531,7 @@ void AtscMgtSectionEntry::initMgtSectionEntry(const char *data, int size)
 	int entryLength = ((((static_cast<unsigned char>(data[9]) & 0xf) << 8) | static_cast<unsigned char>(data[10])) + 11);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("AtscMgtSectionEntry::initMgtSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1537,7 +1542,7 @@ void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 {
 	if (size < 32) {
 		if (size != 0) {
-			kDebug() << "invalid entry";
+			Log("AtscVctSectionEntry::initVctSectionEntry: invalid entry");
 		}
 
 		initSectionData();
@@ -1547,7 +1552,7 @@ void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 	int entryLength = ((((static_cast<unsigned char>(data[30]) & 0x3) << 8) | static_cast<unsigned char>(data[31])) + 32);
 
 	if (entryLength > size) {
-		kDebug() << "adjusting length";
+		Log("AtscVctSectionEntry::initVctSectionEntry: adjusting length");
 		entryLength = size;
 	}
 
@@ -1575,7 +1580,7 @@ void DvbPmtSection::initPmtSection(const char *data, int size)
 	descriptorsLength = ((at(10) & 0xf) << 8) | at(11);
 
 	if (descriptorsLength > (getLength() - 16)) {
-		kDebug() << "adjusting length";
+		Log("DvbPmtSection::initPmtSection: adjusting length");
 		descriptorsLength = (getLength() - 16);
 	}
 }
@@ -1611,14 +1616,14 @@ void DvbNitSection::initNitSection(const char *data, int size)
 	descriptorsLength = ((at(8) & 0xf) << 8) | at(9);
 
 	if (descriptorsLength > (getLength() - 16)) {
-		kDebug() << "adjusting length";
+		Log("DvbNitSection::initNitSection: adjusting length");
 		descriptorsLength = (getLength() - 16);
 	}
 
 	entriesLength = ((at(10 + descriptorsLength) & 0xf) << 8) | at(11 + descriptorsLength);
 
 	if (entriesLength > (getLength() - (16 + descriptorsLength))) {
-		kDebug() << "adjusting length";
+		Log("DvbNitSection::initNitSection: adjusting length");
 		entriesLength = (getLength() - (16 + descriptorsLength));
 	}
 }

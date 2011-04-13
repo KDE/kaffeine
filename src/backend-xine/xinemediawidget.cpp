@@ -22,11 +22,11 @@
 #include "xinemediawidget_p.h"
 
 #include <QResizeEvent>
-#include <KDebug>
 #include <KMessageBox>
 #include <config-kaffeine.h>
 #include <errno.h>
 #include <unistd.h>
+#include "../log.h"
 
 static QString binInstallPath()
 {
@@ -39,7 +39,7 @@ XineProcess::XineProcess(XineMediaWidget *parent_) : QProcess(parent_), parent(p
 	memset(pipeFromChild, 0, sizeof(pipeFromChild));
 
 	if ((pipe(pipeToChild) != 0) || (pipe(pipeFromChild) != 0)) {
-		kError() << "pipe failed";
+		Log("XineProcess::XineProcess: pipe failed");
 		reader = NULL;
 		writer = new XinePipeWriterBase();
 		childProcess.writer = writer;
@@ -214,12 +214,12 @@ void XineProcess::readyRead()
 			break;
 		    }
 		default:
-			kError() << "unknown command" << command;
+			Log("XineProcess::readyRead: unknown command") << command;
 			continue;
 		}
 
 		if (!reader->isValid()) {
-			kError() << "wrong argument size for command" << command;
+			Log("XineProcess::readyRead: wrong argument size for command") << command;
 		}
 	}
 }
@@ -232,7 +232,7 @@ void XineProcess::setupChildProcess()
 				continue;
 			}
 
-			kError() << "dup2 failed";
+			Log("XineProcess::setupChildProcess: dup2 failed");
 		}
 
 		break;
@@ -244,7 +244,7 @@ void XineProcess::setupChildProcess()
 				continue;
 			}
 
-			kError() << "dup2 failed";
+			Log("XineProcess::setupChildProcess: dup2 failed");
 		}
 
 		break;
@@ -302,7 +302,7 @@ void XineMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 		xineAspectRatio = XineAspectRatioWidget;
 		break;
 	default:
-		kError() << "unknown aspect ratio" << aspectRatio;
+		Log("XineMediaWidget::setAspectRatio: unknown aspect ratio") << aspectRatio;
 		return;
 	}
 
@@ -647,7 +647,8 @@ void XineMediaWidget::updateMetadata(const QString &metadata_)
 				metadata.insert(MediaWidget::TrackNumber, content);
 				break;
 			default:
-				kError() << "unknown metadata type" << type;
+				Log("XineMediaWidget::updateMetadata: unknown metadata type") <<
+					type;
 				break;
 			}
 		}
@@ -1034,7 +1035,7 @@ void XineMediaWidget::stateChanged()
 			emit videoSizeChanged();
 			break;
 		default:
-			kWarning() << "unknown flag" << lowestDirtyFlag;
+			Log("XineMediaWidget::stateChanged: unknown flag") << lowestDirtyFlag;
 			break;
 		}
 	}

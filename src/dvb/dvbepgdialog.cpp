@@ -28,9 +28,9 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <KAction>
-#include <KDebug>
 #include <KLineEdit>
 #include <KLocale>
+#include "../log.h"
 #include "dvbmanager.h"
 
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
@@ -295,7 +295,7 @@ DvbEpgTableModel::~DvbEpgTableModel()
 void DvbEpgTableModel::setEpgModel(DvbEpgModel *epgModel_)
 {
 	if (epgModel != NULL) {
-		kWarning() << "epg model already set";
+		Log("DvbEpgTableModel::setEpgModel: epg model already set");
 		return;
 	}
 

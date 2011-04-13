@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
 		QStringList lines = content.split('\n');
 		bool ignoreLineLength = false;
-		QRegExp logRegExp("log[^0-9A-Za-z]*[(][^0-9A-Za-z]*\"");
+		QRegExp logRegExp("Log[^0-9A-Za-z]*[(][^0-9A-Za-z]*\"");
 		QString logFunctionName;
 		int bracketLevel = 0;
 
@@ -139,7 +139,6 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			int oldBracketLevel = bracketLevel;
 			bracketLevel = (bracketLevel + line.count('{') - line.count('}'));
 
 			if (bracketLevel < 0) {
@@ -147,11 +146,7 @@ int main(int argc, char *argv[])
 					"brackets do not match";
 			}
 
-			if ((bracketLevel == 0) && (oldBracketLevel > 0)) {
-				logFunctionName.clear();
-			}
-
-			if ((bracketLevel == 0) && logFunctionName.isEmpty()) {
+			if (bracketLevel == 0) {
 				QRegExp logFunctionRegExp("[0-9A-Za-z:~]*[(]");
 				int index = logFunctionRegExp.indexIn(line);
 

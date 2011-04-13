@@ -34,7 +34,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		log("SqlInterface::~SqlInterface: pending statements at destruction");
+		Log("SqlInterface::~SqlInterface: pending statements at destruction");
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -103,7 +103,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 			SqlKey sqlKey(fullKey);
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
-				log("SqlInterface::sqlInit: invalid key") << fullKey;
+				Log("SqlInterface::sqlInit: invalid key") << fullKey;
 				continue;
 			}
 
@@ -134,7 +134,7 @@ void SqlInterface::sqlInsert(SqlKey key)
 		break;
 	}
 
-	log("SqlInterface::sqlInsert: invalid pending statement") << pendingStatement;
+	Log("SqlInterface::sqlInsert: invalid pending statement") << pendingStatement;
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -154,7 +154,7 @@ void SqlInterface::sqlUpdate(SqlKey key)
 		break;
 	}
 
-	log("SqlInterface::sqlUpdate: invalid pending statement") << pendingStatement;
+	Log("SqlInterface::sqlUpdate: invalid pending statement") << pendingStatement;
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -175,7 +175,7 @@ void SqlInterface::sqlRemove(SqlKey key)
 		break;
 	}
 
-	log("SqlInterface::sqlRemove: invalid pending statement") << pendingStatement;
+	Log("SqlInterface::sqlRemove: invalid pending statement") << pendingStatement;
 }
 
 void SqlInterface::requestSubmission()
@@ -225,7 +225,7 @@ void SqlInterface::sqlSubmit()
 			continue;
 		}
 
-		log("SqlInterface::sqlSubmit: invalid pending statement") << pendingStatement;
+		Log("SqlInterface::sqlSubmit: invalid pending statement") << pendingStatement;
 	}
 
 	pendingStatements.clear();

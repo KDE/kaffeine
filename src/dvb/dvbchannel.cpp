@@ -22,9 +22,9 @@
 
 #include <QFile>
 #include <QVariant>
-#include <KDebug>
 #include <KStandardDirs>
 #include "../ensurenopendingoperation.h"
+#include "../log.h"
 #include "dvbsi.h"
 
 bool DvbChannel::validate()
@@ -107,7 +107,7 @@ DvbChannelModel::DvbChannelModel(QObject *parent) : QObject(parent), hasPendingO
 DvbChannelModel::~DvbChannelModel()
 {
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbChannelModel::~DvbChannelModel: illegal recursive call");
 	}
 
 	if (isSqlModel) {
@@ -132,7 +132,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		kWarning() << "cannot open" << file.fileName();
+		Log("DvbChannelModel::createSqlModel: cannot open") << file.fileName();
 		return channelModel;
 	}
 
@@ -190,7 +190,8 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 		channel.isScrambled = (flags & 0x1) != 0;
 
 		if (stream.status() != QDataStream::Ok) {
-			kWarning() << "invalid channels in file" << file.fileName();
+			Log("DvbChannelModel::createSqlModel: invalid channels in file") <<
+				file.fileName();
 			break;
 		}
 
@@ -198,7 +199,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 	}
 
 	if (!file.remove()) {
-		kWarning() << "cannot remove" << file.fileName();
+		Log("DvbChannelModel::createSqlModel: cannot remove") << file.fileName();
 	}
 
 	return channelModel;
@@ -228,7 +229,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
 	if (!isSqlModel && other->isSqlModel && channelNumbers.isEmpty()) {
 		if (hasPendingOperation) {
-			kWarning() << "illegal recursive call";
+			Log("DvbChannelModel::cloneFrom: illegal recursive call");
 			return;
 		}
 
@@ -268,7 +269,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 			addChannel(newChannel);
 		}
 	} else {
-		kWarning() << "illegal type of clone";
+		Log("DvbChannelModel::cloneFrom: illegal type of clone");
 	}
 }
 
@@ -284,7 +285,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	}
 
 	if (!channel.validate()) {
-		kWarning() << "invalid channel";
+		Log("DvbChannelModel::addChannel: invalid channel");
 		return;
 	}
 
@@ -333,7 +334,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	}
 
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbChannelModel::addChannel: illegal recursive call");
 		return;
 	}
 
@@ -362,7 +363,7 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 {
 	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel) ||
 	    !modifiedChannel.validate()) {
-		kWarning() << "invalid channel";
+		Log("DvbChannelModel::updateChannel: invalid channel");
 		return;
 	}
 
@@ -387,7 +388,7 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 	}
 
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbChannelModel::updateChannel: illegal recursive call");
 		return;
 	}
 
@@ -442,12 +443,12 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 void DvbChannelModel::removeChannel(DvbSharedChannel channel)
 {
 	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel)) {
-		kWarning() << "invalid channel";
+		Log("DvbChannelModel::removeChannel: invalid channel");
 		return;
 	}
 
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbChannelModel::removeChannel: illegal recursive call");
 		return;
 	}
 
@@ -468,7 +469,7 @@ void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedCha
 	int insertBeforeNumber)
 {
 	if (hasPendingOperation) {
-		kWarning() << "illegal recursive call";
+		Log("DvbChannelModel::dndMoveChannels: illegal recursive call");
 		return;
 	}
 
@@ -537,7 +538,7 @@ void DvbChannelModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index)
 	DvbSharedChannel channel = channels.value(sqlKey);
 
 	if (!channel.isValid()) {
-		kWarning() << "invalid channel";
+		Log("DvbChannelModel::bindToSqlQuery: invalid channel");
 		return;
 	}
 

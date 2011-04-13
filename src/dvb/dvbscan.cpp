@@ -21,7 +21,7 @@
 #include "dvbscan.h"
 
 #include <QBitArray>
-#include <KDebug>
+#include "../log.h"
 #include "dvbdevice.h"
 #include "dvbsi.h"
 
@@ -120,7 +120,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	int sectionCount = section.lastSectionNumber() + 1;
 
 	if (section.sectionNumber() >= sectionCount) {
-		kDebug() << "current > last";
+		Log("DvbScanFilter::checkMultipleSection: current > last");
 		sectionCount = section.sectionNumber() + 1;
 	}
 
@@ -128,7 +128,8 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 		multipleSections.resize(sectionCount);
 	} else {
 		if (multipleSections.size() != sectionCount) {
-			kDebug() << "inconsistent number of sections";
+			Log("DvbScanFilter::checkMultipleSection: "
+			    "inconsistent number of sections");
 
 			if (multipleSections.size() < sectionCount) {
 				multipleSections.resize(sectionCount);
@@ -235,7 +236,8 @@ void DvbScanFilter::processSection(const char *data, int size)
 
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
-	kWarning() << "timeout while reading section; type =" << type << "pid =" << pid;
+	Log("DvbScanFilter::timerEvent: timeout while reading section; type =") << type <<
+		"pid =" << pid;
 	scan->filterFinished(this);
 }
 

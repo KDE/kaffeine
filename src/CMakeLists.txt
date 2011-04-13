@@ -37,7 +37,8 @@ endif(HAVE_DVB)
 
 set(kaffeinexbu_SRCS
     backend-xine/xineapplication.cpp
-    backend-xine/xinecommands.cpp)
+    backend-xine/xinecommands.cpp
+    log.cpp)
 
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
