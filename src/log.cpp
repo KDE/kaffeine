@@ -88,7 +88,7 @@ void Log::begin(const char *message)
 	if (data == NULL) {
 		LogPrivate *newData = new LogPrivate();
 
-		if (!data.testAndSetRelaxed(NULL, newData)) {
+		if (!data.testAndSetOrdered(NULL, newData)) {
 			// another thread won the battle
 			delete newData;
 		}
