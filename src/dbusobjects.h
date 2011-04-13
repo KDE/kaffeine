@@ -24,6 +24,7 @@
 #include <QVariantMap>
 #include <config-kaffeine.h>
 
+class DvbTab;
 class MainWindow;
 class MediaWidget;
 class PlaylistTab;
