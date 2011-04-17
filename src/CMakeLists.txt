@@ -3,6 +3,8 @@ set(kaffeine_SRCS
     backend-xine/xinemediawidget.cpp
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
+    configuration.cpp
+    configurationdialog.cpp
     datetimeedit.cpp
     dbusobjects.cpp
     ensurenopendingoperation.cpp

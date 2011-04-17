@@ -90,11 +90,6 @@ public:
 	void updateDvbAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
 	void updateDvbSubtitles(const QStringList &subtitles, int currentSubtitle);
 
-	int getShortSkipDuration() const;
-	int getLongSkipDuration() const;
-	void setShortSkipDuration(int duration);
-	void setLongSkipDuration(int duration);
-
 	bool isPlaying() const;
 	bool isPaused() const;
 	int getPosition() const; // milliseconds
@@ -178,6 +173,8 @@ private slots:
 	void currentTitleChanged(QAction *action);
 	void currentChapterChanged(QAction *action);
 	void currentAngleChanged(QAction *action);
+	void shortSkipDurationChanged(int shortSkipDuration);
+	void longSkipDurationChanged(int longSkipDuration);
 
 private:
 	void updateTimeButton();
@@ -235,8 +232,6 @@ private:
 	QActionGroup *chapterGroup;
 	QActionGroup *angleGroup;
 	KMenu *navigationMenu;
-	int shortSkipDuration;
-	int longSkipDuration;
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 	bool showElapsedTime;

@@ -47,6 +47,7 @@
 #include <unistd.h>
 #include <X11/extensions/scrnsaver.h>
 #include "backend-xine/xinemediawidget.h"
+#include "configuration.h"
 #include "log.h"
 #include "osdwidget.h"
 
@@ -411,10 +412,12 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	menu->addMenu(navigationMenu);
 	menu->addSeparator();
 
-	shortSkipDuration =
-		KGlobal::config()->group("MediaObject").readEntry("ShortSkipDuration", 15);
-	longSkipDuration =
-		KGlobal::config()->group("MediaObject").readEntry("LongSkipDuration", 60);
+	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
+	int longSkipDuration = Configuration::instance()->getLongSkipDuration();
+	connect(Configuration::instance(), SIGNAL(shortSkipDurationChanged(int)),
+		this, SLOT(shortSkipDurationChanged(int)));
+	connect(Configuration::instance(), SIGNAL(longSkipDurationChanged(int)),
+		this, SLOT(longSkipDurationChanged(int)));
 
 	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration), this);
@@ -509,8 +512,6 @@ MediaWidget::~MediaWidget()
 	KGlobal::config()->group("MediaObject").writeEntry("Deinterlace",
 		deinterlaceAction->isChecked());
 	KGlobal::config()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
-	KGlobal::config()->group("MediaObject").writeEntry("ShortSkipDuration", shortSkipDuration);
-	KGlobal::config()->group("MediaObject").writeEntry("LongSkipDuration", longSkipDuration);
 }
 
 QString MediaWidget::extensionFilter()
@@ -759,31 +760,6 @@ void MediaWidget::updateDvbSubtitles(const QStringList &subtitles, int currentSu
 	} else {
 		subtitlesChanged(backend->getSubtitles(), backend->getCurrentSubtitle());
 	}
-}
-
-int MediaWidget::getShortSkipDuration() const
-{
-	return shortSkipDuration;
-}
-
-int MediaWidget::getLongSkipDuration() const
-{
-	return longSkipDuration;
-}
-
-void MediaWidget::setShortSkipDuration(int duration)
-{
-	shortSkipDuration = duration;
-	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward",
-		duration));
-	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
-}
-
-void MediaWidget::setLongSkipDuration(int duration)
-{
-	longSkipDuration = duration;
-	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", duration));
-	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", duration));
 }
 
 bool MediaWidget::isPlaying() const
@@ -1321,6 +1297,7 @@ void MediaWidget::timeButtonClicked()
 
 void MediaWidget::longSkipBackward()
 {
+	int longSkipDuration = Configuration::instance()->getLongSkipDuration();
 	int time = backend->getCurrentTime() - 1000 * longSkipDuration;
 
 	if (time < 0) {
@@ -1332,6 +1309,7 @@ void MediaWidget::longSkipBackward()
 
 void MediaWidget::shortSkipBackward()
 {
+	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
 	int time = backend->getCurrentTime() - 1000 * shortSkipDuration;
 
 	if (time < 0) {
@@ -1343,11 +1321,13 @@ void MediaWidget::shortSkipBackward()
 
 void MediaWidget::shortSkipForward()
 {
+	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
 	backend->seek(backend->getCurrentTime() + 1000 * shortSkipDuration);
 }
 
 void MediaWidget::longSkipForward()
 {
+	int longSkipDuration = Configuration::instance()->getLongSkipDuration();
 	backend->seek(backend->getCurrentTime() + 1000 * longSkipDuration);
 }
 
@@ -1412,6 +1392,22 @@ void MediaWidget::currentChapterChanged(QAction *action)
 void MediaWidget::currentAngleChanged(QAction *action)
 {
 	backend->setCurrentAngle(angleGroup->actions().indexOf(action) + 1);
+}
+
+void MediaWidget::shortSkipDurationChanged(int shortSkipDuration)
+{
+	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward",
+		shortSkipDuration));
+	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward",
+		shortSkipDuration));
+}
+
+void MediaWidget::longSkipDurationChanged(int longSkipDuration)
+{
+	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward",
+		longSkipDuration));
+	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward",
+		longSkipDuration));
 }
 
 void MediaWidget::updateTimeButton()
@@ -1483,6 +1479,8 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
+	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
+
 	if (backend->isSeekable()) {
 		qint64 time = (backend->getCurrentTime() -
 			(25 * shortSkipDuration * event->delta()) / 3);
