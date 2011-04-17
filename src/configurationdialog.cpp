@@ -21,13 +21,11 @@
 #include "configurationdialog.h"
 #include "configurationdialog_p.h"
 
-#include <QBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QProcess>
 #include <QPushButton>
-#include <QScrollArea>
 #include <QSpinBox>
 #include <KComboBox>
 #include <KLocalizedString>
