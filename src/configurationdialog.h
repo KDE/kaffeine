@@ -29,7 +29,7 @@ class KComboBox;
 class ConfigurationDialog : public KPageDialog
 {
 public:
-	ConfigurationDialog(QWidget *parent);
+	explicit ConfigurationDialog(QWidget *parent);
 	~ConfigurationDialog();
 
 	void accept();

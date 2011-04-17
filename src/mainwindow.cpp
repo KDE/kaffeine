@@ -22,12 +22,9 @@
 
 #include <QDBusConnection>
 #include <QHoverEvent>
-#include <QLabel>
-#include <QSpinBox>
 #include <QStackedLayout>
 #include <KActionCollection>
 #include <KCmdLineOptions>
-#include <KComboBox>
 #include <KFileDialog>
 #include <KInputDialog>
 #include <kio/deletejob.h>
