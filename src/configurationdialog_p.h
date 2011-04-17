@@ -1,5 +1,5 @@
 /*
- * configurationdialog.h
+ * configurationdialog_p.h
  *
  * Copyright (C) 2011 Christoph Pfister <christophpfister@gmail.com>
  *
@@ -18,30 +18,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#ifndef CONFIGURATIONDIALOG_H
-#define CONFIGURATIONDIALOG_H
+#ifndef CONFIGURATIONDIALOG_P_H
+#define CONFIGURATIONDIALOG_P_H
 
-#include <KPageDialog>
+#include <KDialog>
 
-class QSpinBox;
-class KComboBox;
+class QPlainTextEdit;
+class QProcess;
 
-class ConfigurationDialog : public KPageDialog
+class DmesgDialog : public KDialog
 {
 	Q_OBJECT
 public:
-	explicit ConfigurationDialog(QWidget *parent);
-	~ConfigurationDialog();
-
-	void accept();
+	explicit DmesgDialog(QWidget *parent);
+	~DmesgDialog();
 
 private slots:
-	void showDmesg();
+	void readyRead();
 
 private:
-	KComboBox *startupDisplayModeBox;
-	QSpinBox *shortSkipBox;
-	QSpinBox *longSkipBox;
+	QProcess *dmesgProcess;
+	QPlainTextEdit *dmesgTextEdit;
 };
 
-#endif /* CONFIGURATIONDIALOG_H */
+#endif /* CONFIGURATIONDIALOG_P_H */

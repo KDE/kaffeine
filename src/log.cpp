@@ -83,6 +83,15 @@ public:
 	int position;
 };
 
+QString Log::getLog()
+{
+	if (data != NULL) {
+		return data->buffer;
+	}
+
+	return QString();
+}
+
 void Log::begin(const char *message)
 {
 	if (data == NULL) {

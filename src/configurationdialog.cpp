@@ -19,13 +19,20 @@
  */
 
 #include "configurationdialog.h"
+#include "configurationdialog_p.h"
 
+#include <QBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
+#include <QPlainTextEdit>
+#include <QProcess>
+#include <QPushButton>
+#include <QScrollArea>
 #include <QSpinBox>
 #include <KComboBox>
 #include <KLocalizedString>
 #include "configuration.h"
+#include "log.h"
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 {
@@ -67,9 +74,31 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	label = new QLabel(i18nc("@label:spinbox", "Long skip duration:"), widget);
 	label->setBuddy(longSkipBox);
 	gridLayout->addWidget(label, 2, 0);
+	gridLayout->setRowStretch(3, 1);
 
 	KPageWidgetItem *page = new KPageWidgetItem(widget, i18nc("@title:group", "General"));
 	page->setIcon(KIcon("configure"));
+	addPage(page);
+
+	widget = new QWidget(this);
+	gridLayout = new QGridLayout(widget);
+
+	label = new QLabel(i18nc("@label:textbox", "Log messages:"), widget);
+	gridLayout->addWidget(label, 0, 0);
+
+	QPushButton *pushButton = new QPushButton(i18nc("@action:button", "Show dmesg"));
+	pushButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(showDmesg()));
+	gridLayout->addWidget(pushButton, 0, 1);
+
+	QPlainTextEdit *textEdit = new QPlainTextEdit(widget);
+	textEdit->setPlainText(Log::getLog());
+	textEdit->setReadOnly(true);
+	gridLayout->addWidget(textEdit, 1, 0, 1, 2);
+	gridLayout->setRowStretch(2, 1);
+
+	page = new KPageWidgetItem(widget, i18nc("@title:group", "Diagnostics"));
+	page->setIcon(KIcon("page-zoom"));
 	addPage(page);
 }
 
@@ -84,4 +113,39 @@ void ConfigurationDialog::accept()
 	configuration->setShortSkipDuration(shortSkipBox->value());
 	configuration->setLongSkipDuration(longSkipBox->value());
 	KPageDialog::accept();
+}
+
+void ConfigurationDialog::showDmesg()
+{
+	KDialog *dialog = new DmesgDialog(this);
+	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
+	dialog->setModal(true);
+	dialog->show();
+}
+
+DmesgDialog::DmesgDialog(QWidget *parent) : KDialog(parent)
+{
+	setButtons(KDialog::Close);
+	setCaption(i18nc("@title:window", "dmesg"));
+
+	dmesgProcess = new QProcess(this);
+	dmesgProcess->setProcessChannelMode(QProcess::MergedChannels);
+	connect(dmesgProcess, SIGNAL(readyRead()), this, SLOT(readyRead()));
+	dmesgProcess->start("dmesg", QIODevice::ReadOnly);
+
+	dmesgTextEdit = new QPlainTextEdit(this);
+	dmesgTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
+	dmesgTextEdit->setReadOnly(true);
+	setMainWidget(dmesgTextEdit);
+
+	resize(100 * fontMetrics().averageCharWidth(), 28 * fontMetrics().height());
+}
+
+DmesgDialog::~DmesgDialog()
+{
+}
+
+void DmesgDialog::readyRead()
+{
+	dmesgTextEdit->setPlainText(dmesgTextEdit->toPlainText() + dmesgProcess->readAll());
 }
