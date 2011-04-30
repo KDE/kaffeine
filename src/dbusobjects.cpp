@@ -153,13 +153,18 @@ void MprisPlayerObject::Repeat(bool repeat)
 MprisStatusStruct MprisPlayerObject::GetStatus()
 {
 	MprisStatusStruct statusStruct;
+	statusStruct.state = 0;
 
-	if (mediaWidget->isPaused()) {
-		statusStruct.state = 1;
-	} else if (mediaWidget->isPlaying()) {
-		statusStruct.state = 0;
-	} else {
+	switch (mediaWidget->getPlaybackStatus()) {
+	case MediaWidget::Idle:
 		statusStruct.state = 2;
+		break;
+	case MediaWidget::Playing:
+		statusStruct.state = 0;
+		break;
+	case MediaWidget::Paused:
+		statusStruct.state = 1;
+		break;
 	}
 
 	if (playlistTab->getRandom()) {
@@ -192,8 +197,13 @@ int MprisPlayerObject::GetCaps()
 			   (1 << 4) | // CAN_SEEK // FIXME check availability
 			   (1 << 6);  // CAN_HAS_TRACKLIST
 
-	if (mediaWidget->isPlaying()) {
+	switch (mediaWidget->getPlaybackStatus()) {
+	case MediaWidget::Idle:
+		break;
+	case MediaWidget::Playing:
+	case MediaWidget::Paused:
 		capabilities |= (1 << 2); // CAN_PAUSE
+		break;
 	}
 
 	return capabilities; // FIXME metadata handling not implemented yet

@@ -22,6 +22,7 @@
 #define MAINWINDOW_H
 
 #include <KMainWindow>
+#include "mediawidget.h"
 
 class QStackedLayout;
 class KActionCollection;
@@ -58,7 +59,7 @@ private slots:
 	void openDvd(const QString &device = QString());
 	void playDvdFolder();
 	void playDvb();
-	void resizeToVideo(int factor);
+	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
 	void configureKeys();
 	void configureKaffeine();
 	void navigationBarOrientationChanged(Qt::Orientation orientation);

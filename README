@@ -5,9 +5,9 @@ Installing Kaffeine
 The following development headers are needed (recommended versions):
 * Qt >= 4.6
 * KDE >= 4.4
-* xine-lib
-* libXss
+* libvlc >= 1.1.1
 * libX11
+* libXss
 
 For the translations you need:
 * gettext

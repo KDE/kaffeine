@@ -24,39 +24,8 @@
 #include <QSlider>
 #include <KDialog>
 
-class QSocketNotifier;
 class QTimeEdit;
 class MediaWidget;
-
-class DvbFeed : public QObject
-{
-	Q_OBJECT
-public:
-	explicit DvbFeed(QObject *parent);
-	~DvbFeed();
-
-	KUrl getUrl() const;
-	void writeData(const QByteArray &data);
-	void endOfData();
-
-	bool timeShiftPrepared;
-	bool timeShiftActive;
-	bool ignoreSourceChange;
-	QStringList audioChannels;
-	QStringList subtitles;
-
-private slots:
-	void readyWrite();
-
-private:
-	bool flush();
-
-	KUrl url;
-	int readFd;
-	int writeFd;
-	QSocketNotifier *notifier;
-	QList<QByteArray> buffers;
-};
 
 class JumpToPositionDialog : public KDialog
 {

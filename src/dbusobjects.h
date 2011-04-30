@@ -130,6 +130,10 @@ private:
 	PlaylistTab *playlistTab;
 };
 
+#ifndef HAVE_DVB
+#error HAVE_DVB must be defined
+#endif /* HAVE_DVB */
+
 #if HAVE_DVB == 1
 
 class DBusTelevisionObject : public QObject

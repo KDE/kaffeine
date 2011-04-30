@@ -24,8 +24,15 @@
 #include <QDir>
 #include <QPainter>
 #include <QSet>
+#include <QSocketNotifier>
 #include <KLocale>
 #include <KMessageBox>
+#include <KStandardDirs>
+#include <errno.h>
+#include <fcntl.h>
+#include <sys/stat.h> // bsd compatibility
+#include <sys/types.h> // bsd compatibility
+#include <unistd.h>
 #include "../log.h"
 #include "../mediawidget.h"
 #include "dvbdevice.h"
@@ -127,24 +134,6 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	return pixmap;
 }
 
-void DvbLiveViewInternal::processData(const char data[188])
-{
-	buffer.append(data, 188);
-
-	if (buffer.size() < (87 * 188)) {
-		return;
-	}
-
-	if (!timeShiftFile.isOpen()) {
-		mediaWidget->writeDvbData(buffer);
-	} else {
-		timeShiftFile.write(buffer); // FIXME avoid buffer reallocation
-	}
-
-	buffer.clear();
-	buffer.reserve(87 * 188);
-}
-
 DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent),
 	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1)
 {
@@ -159,11 +148,11 @@ DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
 
-	connect(mediaWidget, SIGNAL(changeDvbAudioChannel(int)),
+	connect(mediaWidget, SIGNAL(dvbSetCurrentAudioChannel(int)),
 		this, SLOT(changeAudioStream(int)));
-	connect(mediaWidget, SIGNAL(changeDvbSubtitle(int)), this, SLOT(changeSubtitle(int)));
-	connect(mediaWidget, SIGNAL(prepareDvbTimeShift()), this, SLOT(prepareTimeShift()));
-	connect(mediaWidget, SIGNAL(startDvbTimeShift()), this, SLOT(startTimeShift()));
+	connect(mediaWidget, SIGNAL(dvbSetCurrentSubtitle(int)), this, SLOT(changeSubtitle(int)));
+	connect(mediaWidget, SIGNAL(dvbPrepareTimeShift()), this, SLOT(prepareTimeShift()));
+	connect(mediaWidget, SIGNAL(dvbStartTimeShift()), this, SLOT(startTimeShift()));
 	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
 }
 
@@ -216,7 +205,8 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 		return;
 	}
 
-	mediaWidget->playDvb(channel->name);
+	internal->channelName = channel->name;
+	mediaWidget->playDvb(MediaWidget::Dvb, internal->setupPipe(), channel->name);
 
 	internal->pmtFilter.setProgramNumber(channel->serviceId);
 	startDevice();
@@ -416,7 +406,8 @@ void DvbLiveView::prepareTimeShift()
 
 void DvbLiveView::startTimeShift()
 {
-	mediaWidget->play(internal->timeShiftFile.fileName());
+	mediaWidget->playDvb(MediaWidget::DvbTimeShift, internal->timeShiftFile.fileName(),
+		internal->channelName);
 }
 
 void DvbLiveView::showOsd()
@@ -543,4 +534,114 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 		internal->pmtGenerator.initPmt(channel->pmtPid, pmtSection, pids);
 		insertPatPmt();
 	}
+}
+
+DvbLiveViewInternal::DvbLiveViewInternal() : mediaWidget(NULL), readFd(-1), writeFd(-1)
+{
+	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
+	QFile::remove(fileName);
+	url = KUrl::fromLocalFile(fileName);
+	url.setScheme("fifo");
+
+	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
+		Log("timeShiftActive: mkfifo failed");
+		return;
+	}
+
+	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
+
+	if (readFd < 0) {
+		Log("timeShiftActive: open failed");
+		return;
+	}
+
+	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
+
+	if (writeFd < 0) {
+		Log("timeShiftActive: open failed");
+		return;
+	}
+
+	notifier = new QSocketNotifier(writeFd, QSocketNotifier::Write, this);
+	notifier->setEnabled(false);
+	connect(notifier, SIGNAL(activated(int)), this, SLOT(writeToPipe()));
+}
+
+DvbLiveViewInternal::~DvbLiveViewInternal()
+{
+	if (writeFd >= 0) {
+		close(writeFd);
+	}
+
+	if (readFd >= 0) {
+		close(readFd);
+	}
+}
+
+KUrl DvbLiveViewInternal::setupPipe()
+{
+	if (!buffers.isEmpty()) {
+		buffer = buffers.at(0);
+		buffers.clear();
+	}
+
+	if (readFd >= 0) {
+		if (buffer.isEmpty()) {
+			buffer.resize(87 * 188);
+		}
+
+		while (read(readFd, buffer.data(), buffer.size()) != 0) {
+		}
+	}
+
+	buffer.clear();
+	return url;
+}
+
+void DvbLiveViewInternal::writeToPipe()
+{
+	while (!buffers.isEmpty()) {
+		const QByteArray &buffer = buffers.at(0);
+		int bytesWritten = write(writeFd, buffer.constData(), buffer.size());
+
+		if ((bytesWritten < 0) && (errno == EINTR)) {
+			continue;
+		}
+
+		if (bytesWritten == buffer.size()) {
+			buffers.removeFirst();
+			continue;
+		}
+
+		if (bytesWritten > 0) {
+			buffers.first().remove(0, bytesWritten);
+		}
+
+		break;
+	}
+
+	if (!buffers.isEmpty()) {
+		notifier->setEnabled(true);
+	}
+}
+
+void DvbLiveViewInternal::processData(const char data[188])
+{
+	buffer.append(data, 188);
+
+	if (buffer.size() < (87 * 188)) {
+		return;
+	}
+
+	if (!timeShiftFile.isOpen()) {
+		if (writeFd >= 0) {
+			buffers.append(buffer);
+			writeToPipe();
+		}
+	} else {
+		timeShiftFile.write(buffer); // FIXME avoid buffer reallocation
+	}
+
+	buffer.clear();
+	buffer.reserve(87 * 188);
 }

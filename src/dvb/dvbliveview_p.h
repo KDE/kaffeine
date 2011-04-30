@@ -22,10 +22,12 @@
 #define DVBLIVEVIEW_P_H
 
 #include <QFile>
+#include <KUrl>
 #include "../osdwidget.h"
 #include "dvbepg.h"
 #include "dvbsi.h"
 
+class QSocketNotifier;
 class MediaWidget;
 
 class DvbOsd : public OsdObject
@@ -53,13 +55,17 @@ private:
 	DvbEpgEntry secondEntry;
 };
 
-class DvbLiveViewInternal : public DvbPidFilter
+class DvbLiveViewInternal : public QObject, public DvbPidFilter
 {
+	Q_OBJECT
 public:
-	DvbLiveViewInternal() : mediaWidget(NULL) { }
-	~DvbLiveViewInternal() { }
+	DvbLiveViewInternal();
+	~DvbLiveViewInternal();
+
+	KUrl setupPipe();
 
 	MediaWidget *mediaWidget;
+	QString channelName;
 	DvbPmtFilter pmtFilter;
 	QByteArray pmtSectionData;
 	DvbSectionGenerator patGenerator;
@@ -68,8 +74,17 @@ public:
 	QFile timeShiftFile;
 	DvbOsd dvbOsd;
 
+private slots:
+	void writeToPipe();
+
 private:
 	void processData(const char data[188]);
+
+	KUrl url;
+	int readFd;
+	int writeFd;
+	QSocketNotifier *notifier;
+	QList<QByteArray> buffers;
 };
 
 #endif /* DVBLIVEVIEW_P_H */

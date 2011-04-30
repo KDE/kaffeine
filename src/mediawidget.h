@@ -33,10 +33,9 @@ class KActionCollection;
 class KComboBox;
 class KMenu;
 class KToolBar;
-class DvbFeed;
+class AbstractMediaWidget;
 class OsdWidget;
 class SeekSlider;
-class XineMediaWidget;
 
 class MediaWidget : public QWidget
 {
@@ -48,24 +47,51 @@ public:
 
 	static QString extensionFilter(); // usable for KFileDialog::setFilter()
 
-	enum AspectRatio {
+	enum AspectRatio
+	{
 		AspectRatioAuto,
 		AspectRatio4_3,
 		AspectRatio16_9,
 		AspectRatioWidget
 	};
 
-	enum DisplayMode {
+	enum DisplayMode
+	{
 		NormalMode,
 		FullScreenMode,
 		MinimalMode
 	};
 
-	enum MetadataType {
+	enum MetadataType
+	{
 		Title,
 		Artist,
 		Album,
 		TrackNumber
+	};
+
+	enum PlaybackStatus
+	{
+		Idle,
+		Playing,
+		Paused
+	};
+
+	enum ResizeFactor
+	{
+		ResizeOff,
+		OriginalSize,
+		DoubleSize
+	};
+
+	enum Source
+	{
+		Playlist,
+		AudioCd,
+		VideoCd,
+		Dvd,
+		Dvb,
+		DvbTimeShift
 	};
 
 	DisplayMode getDisplayMode() const;
@@ -75,7 +101,9 @@ public:
 	 * loads the media and starts playback
 	 */
 
+	void play(Source source_, const KUrl &url, const KUrl &subtitleUrl);
 	void play(const KUrl &url, const KUrl &subtitleUrl = KUrl());
+	void playDvb(Source source_, const KUrl &url, const QString &channelName);
 	void playAudioCd(const QString &device);
 	void playVideoCd(const QString &device);
 	void playDvd(const QString &device);
@@ -83,15 +111,12 @@ public:
 
 	OsdWidget *getOsdWidget();
 
-	void playDvb(const QString &channelName); // starts dvb mode
-	void writeDvbData(const QByteArray &data);
+	// empty list = use audio channels / subtitles provided by the backend
+	void updateDvbAudioChannels(const QStringList &dvbAudioChannels_,
+		int currentDvbAudioChannel_);
+	void updateDvbSubtitles(const QStringList &dvbSubtitles_, int currentDvbSubtitle_);
 
-	// empty list = use audio channels / subtitles provided by phonon
-	void updateDvbAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
-	void updateDvbSubtitles(const QStringList &subtitles, int currentSubtitle);
-
-	bool isPlaying() const;
-	bool isPaused() const;
+	PlaybackStatus getPlaybackStatus() const;
 	int getPosition() const; // milliseconds
 	int getVolume() const; // 0 - 100
 
@@ -117,7 +142,7 @@ public slots:
 signals:
 	void displayModeChanged();
 	void changeCaption(const QString &caption);
-	void resizeToVideo(int factor);
+	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
 
 	void playlistPrevious();
 	void playlistPlay();
@@ -127,40 +152,35 @@ signals:
 	void playlistTrackMetadataChanged(
 		const QMap<MediaWidget::MetadataType, QString> &metadata);
 
-	void previousDvbChannel();
-	void nextDvbChannel();
-	void prepareDvbTimeShift();
-	void startDvbTimeShift();
-	void changeDvbAudioChannel(int index);
-	void changeDvbSubtitle(int index);
-	void dvbStopped();
 	void osdKeyPressed(int key);
+	void dvbStopped();
+	void dvbPrepareTimeShift();
+	void dvbStartTimeShift();
+	void dvbSetCurrentAudioChannel(int index);
+	void dvbSetCurrentSubtitle(int index);
+	void dvbPreviousChannel();
+	void dvbNextChannel();
 
 private slots:
-	void sourceChanged();
 	void playbackFinished();
-	void playbackStopped();
-	void playbackChanged(bool playing);
-	void totalTimeChanged(int totalTime);
-	void currentTimeChanged(int currentTime);
-	void setMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
-	void seekableChanged(bool seekable);
-	void audioChannelsChanged(const QStringList &audioChannels, int currentAudioChannel);
-	void setCurrentAudioChannel(int currentAudioChannel);
-	void subtitlesChanged(const QStringList &subtitles, int currentSubtitle);
-	void setCurrentSubtitle(int currentSubtitle);
-	void dvdPlaybackChanged(bool playingDvd);
-	void titlesChanged(int titleCount, int currentTitle);
-	void setCurrentTitle(int currentTitle);
-	void chaptersChanged(int chapterCount, int currentChapter);
-	void setCurrentChapter(int currentChapter);
-	void anglesChanged(int angleCount, int currentAngle);
-	void setCurrentAngle(int currentAngle);
-	void videoSizeChanged();
+	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus);
+	void updateTotalTime(int totalTime);
+	void updateCurrentTime(int currentTime);
+	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
+	void updateSeekable(bool seekable);
+	void updateAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
+	void updateSubtitles(const QStringList &subtitles, int currentSubtitle);
+	void updateTitles(int titleCount, int currentTitle);
+	void updateChapters(int chapterCount, int currentChapter);
+	void updateAngles(int angleCount, int currentAngle);
+	void updateDvdPlayback(bool playingDvd);
+	void updateVideoSize();
+
 	void checkScreenSaver();
 
 	void mutedChanged();
 	void volumeChanged(int volume);
+	void seek(int position);
 	void deinterlacingChanged(bool deinterlacing);
 	void aspectRatioChanged(QAction *action);
 	void autoResizeTriggered(QAction *action);
@@ -177,8 +197,10 @@ private slots:
 	void longSkipDurationChanged(int longSkipDuration);
 
 private:
-	void updateTimeButton();
-	void stopDvbPlayback();
+	void updateCurrentTotalTimeUi();
+	void updateSeekableUi();
+	void updateAudioChannelUi();
+	void updateSubtitleUi();
 
 	void contextMenuEvent(QContextMenuEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);
@@ -189,11 +211,9 @@ private:
 	void wheelEvent(QWheelEvent *event);
 
 	KMenu *menu;
-	XineMediaWidget *backend;
+	AbstractMediaWidget *backend;
 	OsdWidget *osdWidget;
-	DvbFeed *dvbFeed;
 
-	QString currentSourceName;
 	KAction *actionPrevious;
 	KAction *actionPlayPause;
 	QString textPlay;
@@ -202,21 +222,14 @@ private:
 	KIcon iconPause;
 	KAction *actionStop;
 	KAction *actionNext;
-	DisplayMode displayMode;
 	KAction *fullScreenAction;
 	KAction *minimalModeAction;
 	KComboBox *audioChannelBox;
 	KComboBox *subtitleBox;
 	QString textSubtitlesOff;
-	QList<KUrl> externalSubtitles;
-	KUrl currentExternalSubtitle;
-	bool audioChannelsReady;
-	bool subtitlesReady;
-	int autoResizeFactor;
 	KAction *muteAction;
 	KIcon mutedIcon;
 	KIcon unmutedIcon;
-	bool isMuted;
 	QSlider *volumeSlider;
 	SeekSlider *seekSlider;
 	KAction *longSkipBackwardAction;
@@ -234,8 +247,31 @@ private:
 	KMenu *navigationMenu;
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
-	bool showElapsedTime;
+
+	PlaybackStatus backendPlaybackStatus;
+	DisplayMode displayMode;
+	ResizeFactor automaticResize;
+	Source source;
+	bool blockBackendUpdates;
+	bool muted;
 	bool screenSaverSuspended;
+
+	int backendTotalTime; // milliseconds
+	int backendCurrentTime; // milliseconds
+	bool showElapsedTime;
+	bool backendSeekable;
+
+	QStringList backendAudioChannels;
+	QStringList dvbAudioChannels;
+	int currentBackendAudioChannel; // first audio channel = 0
+	int currentDvbAudioChannel; // first audio channel = 0
+
+	QStringList backendSubtitles;
+	QStringList dvbSubtitles;
+	QList<KUrl> externalSubtitles;
+	int currentBackendSubtitle; // first subtitle = 0
+	int currentDvbSubtitle; // first subtitle = 0
+	int currentExternalSubtitle; // first subtitle = 0
 };
 
 #endif /* MEDIAWIDGET_H */
