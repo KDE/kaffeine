@@ -673,7 +673,7 @@ bool MainWindow::event(QEvent *event)
 
 	// FIXME we depend on QEvent::HoverMove (instead of QEvent::MouseMove)
 	// but the latter depends on mouse tracking being enabled on this widget
-	// and all its children (especially the phonon video widget) ...
+	// and all its children (especially the video widget) ...
 
 	if ((event->type() == QEvent::HoverMove) && autoHideControlBar) {
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();

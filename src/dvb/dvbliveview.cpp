@@ -544,21 +544,21 @@ DvbLiveViewInternal::DvbLiveViewInternal() : mediaWidget(NULL), readFd(-1), writ
 	url.setScheme("fifo");
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
-		Log("timeShiftActive: mkfifo failed");
+		Log("DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed");
 		return;
 	}
 
 	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
-		Log("timeShiftActive: open failed");
+		Log("DvbLiveViewInternal::DvbLiveViewInternal: open failed");
 		return;
 	}
 
 	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
-		Log("timeShiftActive: open failed");
+		Log("DvbLiveViewInternal::DvbLiveViewInternal: open failed");
 		return;
 	}
 

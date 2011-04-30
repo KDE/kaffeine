@@ -484,8 +484,6 @@ void VlcMediaWidget::customEvent(QEvent *event)
 				track = track->p_next;
 			}
 
-			Log("VlcMediaWidget::customEvent: number of audio channels") << audioChannels.size();
-			Log("XXX:") << libvlc_audio_get_track_count(vlcMediaPlayer);
 			int currentAudioChannel = libvlc_audio_get_track(vlcMediaPlayer);
 			emit updateAudioChannels(audioChannels, currentAudioChannel);
 			break;

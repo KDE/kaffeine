@@ -44,8 +44,12 @@
 #include "osdwidget.h"
 
 MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
-	QWidget *parent) : QWidget(parent), menu(menu_),
-	backendPlaybackStatus(Idle), displayMode(NormalMode), automaticResize(ResizeOff), source(Playlist), blockBackendUpdates(false), muted(false), screenSaverSuspended(false), backendTotalTime(0), backendCurrentTime(0), showElapsedTime(true), backendSeekable(false), currentBackendAudioChannel(-1), currentDvbAudioChannel(-1), currentBackendSubtitle(-1), currentDvbSubtitle(-1), currentExternalSubtitle(-1)
+	QWidget *parent) : QWidget(parent), menu(menu_), backendPlaybackStatus(Idle),
+	displayMode(NormalMode), automaticResize(ResizeOff), source(Playlist),
+	blockBackendUpdates(false), muted(false), screenSaverSuspended(false), backendTotalTime(0),
+	backendCurrentTime(0), showElapsedTime(true), backendSeekable(false),
+	currentBackendAudioChannel(-1), currentDvbAudioChannel(-1), currentBackendSubtitle(-1),
+	currentDvbSubtitle(-1), currentExternalSubtitle(-1)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);

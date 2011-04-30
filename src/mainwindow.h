@@ -25,13 +25,10 @@
 #include "mediawidget.h"
 
 class QStackedLayout;
-class KActionCollection;
 class KCmdLineOptions;
 class KRecentFilesAction;
 class KTabBar;
-class KUrl;
 class DvbTab;
-class MediaWidget;
 class PlayerTab;
 class PlaylistTab;
 class TabBase;
