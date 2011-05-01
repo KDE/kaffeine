@@ -21,57 +21,67 @@
 #ifndef VLCMEDIAWIDGET_H
 #define VLCMEDIAWIDGET_H
 
-#include "../mediawidget.h"
+#include "../abstractmediawidget.h"
 
-class AbstractMediaWidget : public QWidget
+class libvlc_event_t;
+class libvlc_instance_t;
+class libvlc_media_player_t;
+
+class VlcMediaWidget : public AbstractMediaWidget
 {
-	Q_OBJECT
-protected:
-	explicit AbstractMediaWidget(QWidget *parent);
+private:
+	VlcMediaWidget(MediaEventHandler *handler_, QWidget *parent);
+	bool init();
 
 public:
-	~AbstractMediaWidget();
+	~VlcMediaWidget();
 
-	static AbstractMediaWidget *createVlcMediaWidget(QWidget *parent);
+	// returns NULL if init fails
+	static VlcMediaWidget *createVlcMediaWidget(QWidget *parent, MediaEventHandler *handler);
 
-	virtual void setMuted(bool muted);
-	virtual void setVolume(int volume); // [0 - 100]
-	virtual void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
-	virtual void setDeinterlacing(bool deinterlacing);
+	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
-	// it is guaranteed that updatePlaybackStatus() will
-	// be emitted after calling play() or stop()
-	virtual void play(MediaWidget::Source source, const KUrl &url, const KUrl &subtitleUrl);
-	virtual void stop();
+	MediaWidget::PlaybackStatus getPlaybackStatus();
+	int getTotalTime(); // milliseconds
+	int getCurrentTime(); // milliseconds
+	bool isSeekable();
+	QMap<MediaWidget::MetadataType, QString> getMetadata();
+	QStringList getAudioChannels();
+	int getCurrentAudioChannel();
+	QStringList getSubtitles();
+	int getCurrentSubtitle();
+	int getTitleCount();
+	int getCurrentTitle();
+	int getChapterCount();
+	int getCurrentChapter();
+	int getAngleCount();
+	int getCurrentAngle();
+	bool hasMenu();
+	QSize getVideoSize();
+	void setMuted(bool muted);
+	void setVolume(int volume); // [0 - 200]
+	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
+	void setDeinterlacing(bool deinterlacing);
+	void play(const MediaSource &source);
+	void stop();
+	void setPaused(bool paused);
+	void seek(int time); // milliseconds
+	void setCurrentAudioChannel(int currentAudioChannel);
+	void setCurrentSubtitle(int currentSubtitle);
+	void setExternalSubtitle(const KUrl &subtitleUrl);
+	void setCurrentTitle(int currentTitle);
+	void setCurrentChapter(int currentChapter);
+	void setCurrentAngle(int currentAngle);
+	bool jumpToPreviousChapter();
+	bool jumpToNextChapter();
+	void toggleMenu();
 
-	virtual void setPaused(bool paused);
-	virtual void seek(int time);
-	virtual void setCurrentAudioChannel(int currentAudioChannel);
-	virtual void setCurrentSubtitle(int currentSubtitle);
-	virtual void setExternalSubtitle(const KUrl &subtitleUrl);
-	virtual void setCurrentTitle(int currentTitle); // first title = 0
-	virtual void setCurrentChapter(int currentChapter); // first chapter = 0
-	virtual void setCurrentAngle(int currentAngle); // first angle = 0
-	virtual bool jumpToPreviousChapter();
-	virtual bool jumpToNextChapter();
-	virtual void toggleMenu();
+private:
+	static void eventHandler(const libvlc_event_t *event, void *handler);
 
-signals:
-	void playbackFinished();
-	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus);
-	void updateTotalTime(int totalTime); // milliseconds
-	void updateCurrentTime(int currentTime); // milliseconds
-	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
-	void updateSeekable(bool seekable);
-	// first audio channel = 0
-	void updateAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
-	// first subtitle = 0
-	void updateSubtitles(const QStringList &subtitles, int currentSubtitle);
-	void updateTitles(int titleCount, int currentTitle);
-	void updateChapters(int chapterCount, int currentChapter);
-	void updateAngles(int angleCount, int currentAngle);
-	void updateDvdPlayback(bool playingDvd);
-	void updateVideoSize();
+	MediaEventHandler *handler;
+	libvlc_instance_t *vlcInstance;
+	libvlc_media_player_t *vlcMediaPlayer;
 };
 
 #endif /* VLCMEDIAWIDGET_H */

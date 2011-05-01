@@ -2,6 +2,7 @@ set(kaffeine_SRCS
     backend-vlc/vlcmediawidget.cpp
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
+    abstractmediawidget.cpp
     configuration.cpp
     configurationdialog.cpp
     datetimeedit.cpp

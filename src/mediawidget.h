@@ -37,7 +37,57 @@ class AbstractMediaWidget;
 class OsdWidget;
 class SeekSlider;
 
-class MediaWidget : public QWidget
+class MediaSource
+{
+public:
+	MediaSource() : type(Url) { }
+	~MediaSource() { }
+
+	enum Type
+	{
+		Url,
+		AudioCd,
+		VideoCd,
+		Dvd
+	};
+
+	Type type;
+	KUrl url;
+	KUrl subtitleUrl;
+};
+
+class MediaEventHandler
+{
+public:
+	enum DirtyFlag
+	{
+		PlaybackFinished = (1 << 0),
+		UpdatePlaybackStatus = (1 << 1),
+		UpdateTotalTime = (1 << 2),
+		UpdateCurrentTime = (1 << 3),
+		UpdateSeekable = (1 << 4),
+		UpdateMetadata = (1 << 5),
+		UpdateAudioChannels = (1 << 6),
+		UpdateSubtitles = (1 << 7),
+		UpdateTitles = (1 << 8),
+		UpdateChapters = (1 << 9),
+		UpdateAngles = (1 << 10),
+		UpdateDvdPlayback = (1 << 11),
+		UpdateVideoSize = (1 << 12)
+	};
+
+	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
+
+	virtual void addDirtyFlags(DirtyFlags dirtyFlags) = 0;
+
+protected:
+	MediaEventHandler() { }
+	virtual ~MediaEventHandler() { }
+};
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(MediaEventHandler::DirtyFlags)
+
+class MediaWidget : public QWidget, private MediaEventHandler
 {
 	Q_OBJECT
 public:
@@ -162,20 +212,6 @@ signals:
 	void dvbNextChannel();
 
 private slots:
-	void playbackFinished();
-	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus);
-	void updateTotalTime(int totalTime);
-	void updateCurrentTime(int currentTime);
-	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
-	void updateSeekable(bool seekable);
-	void updateAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
-	void updateSubtitles(const QStringList &subtitles, int currentSubtitle);
-	void updateTitles(int titleCount, int currentTitle);
-	void updateChapters(int chapterCount, int currentChapter);
-	void updateAngles(int angleCount, int currentAngle);
-	void updateDvdPlayback(bool playingDvd);
-	void updateVideoSize();
-
 	void checkScreenSaver();
 
 	void mutedChanged();
@@ -197,6 +233,20 @@ private slots:
 	void longSkipDurationChanged(int longSkipDuration);
 
 private:
+	void playbackFinished();
+	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus);
+	void updateTotalTime(int totalTime);
+	void updateCurrentTime(int currentTime);
+	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
+	void updateSeekable(bool seekable);
+	void updateAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
+	void updateSubtitles(const QStringList &subtitles, int currentSubtitle);
+	void updateTitles(int titleCount, int currentTitle);
+	void updateChapters(int chapterCount, int currentChapter);
+	void updateAngles(int angleCount, int currentAngle);
+	void updateDvdPlayback(bool playingDvd);
+	void updateVideoSize();
+
 	void updateCurrentTotalTimeUi();
 	void updateSeekableUi();
 	void updateAudioChannelUi();
@@ -209,6 +259,10 @@ private:
 	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void wheelEvent(QWheelEvent *event);
+	void customEvent(QEvent *event);
+
+	void addDirtyFlags(DirtyFlags dirtyFlags);
+	void resetDirtyFlags();
 
 	KMenu *menu;
 	AbstractMediaWidget *backend;
@@ -248,6 +302,7 @@ private:
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 
+	QAtomicInt backendDirtyFlags;
 	PlaybackStatus backendPlaybackStatus;
 	DisplayMode displayMode;
 	ResizeFactor automaticResize;

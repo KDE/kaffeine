@@ -19,120 +19,13 @@
  */
 
 #include "vlcmediawidget.h"
-#include "vlcmediawidget_p.h"
 
 #include <QCoreApplication>
 #include <vlc/vlc.h>
 #include "../log.h"
 
-AbstractMediaWidget::AbstractMediaWidget(QWidget *parent) : QWidget(parent)
-{
-}
-
-AbstractMediaWidget::~AbstractMediaWidget()
-{
-}
-
-AbstractMediaWidget *AbstractMediaWidget::createVlcMediaWidget(QWidget *parent)
-{
-	AbstractMediaWidget *mediaWidget = VlcMediaWidget::createVlcMediaWidget(parent);
-
-	if (mediaWidget == NULL) {
-		mediaWidget = new AbstractMediaWidget(parent);
-	}
-
-	return mediaWidget;
-}
-
-void AbstractMediaWidget::setMuted(bool muted)
-{
-	Q_UNUSED(muted)
-}
-
-void AbstractMediaWidget::setVolume(int volume)
-{
-	Q_UNUSED(volume)
-}
-
-void AbstractMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
-{
-	Q_UNUSED(aspectRatio)
-}
-
-void AbstractMediaWidget::setDeinterlacing(bool deinterlacing)
-{
-	Q_UNUSED(deinterlacing)
-}
-
-void AbstractMediaWidget::play(MediaWidget::Source source, const KUrl &url,
-	const KUrl &subtitleUrl)
-{
-	Q_UNUSED(source)
-	Q_UNUSED(url)
-	Q_UNUSED(subtitleUrl)
-}
-
-void AbstractMediaWidget::stop()
-{
-	emit updatePlaybackStatus(MediaWidget::Idle);
-}
-
-void AbstractMediaWidget::setPaused(bool paused)
-{
-	Q_UNUSED(paused)
-}
-
-void AbstractMediaWidget::seek(int time)
-{
-	Q_UNUSED(time)
-}
-
-void AbstractMediaWidget::setCurrentAudioChannel(int currentAudioChannel)
-{
-	Q_UNUSED(currentAudioChannel)
-}
-
-void AbstractMediaWidget::setCurrentSubtitle(int currentSubtitle)
-{
-	Q_UNUSED(currentSubtitle)
-}
-
-void AbstractMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
-{
-	Q_UNUSED(subtitleUrl)
-}
-
-void AbstractMediaWidget::setCurrentTitle(int currentTitle)
-{
-	Q_UNUSED(currentTitle)
-}
-
-void AbstractMediaWidget::setCurrentChapter(int currentChapter)
-{
-	Q_UNUSED(currentChapter)
-}
-
-void AbstractMediaWidget::setCurrentAngle(int currentAngle)
-{
-	Q_UNUSED(currentAngle)
-}
-
-bool AbstractMediaWidget::jumpToPreviousChapter()
-{
-	return false;
-}
-
-bool AbstractMediaWidget::jumpToNextChapter()
-{
-	return false;
-}
-
-void AbstractMediaWidget::toggleMenu()
-{
-}
-
-VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
-	vlcMediaPlayer(NULL)
+VlcMediaWidget::VlcMediaWidget(MediaEventHandler *handler_, QWidget *parent) :
+	AbstractMediaWidget(parent), handler(handler_), vlcInstance(NULL), vlcMediaPlayer(NULL)
 {
 }
 
@@ -160,7 +53,7 @@ bool VlcMediaWidget::init()
 		libvlc_MediaPlayerTimeChanged };
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
-		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, this) != 0) {
+		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, handler) != 0) {
 			Log("VlcMediaWidget::init: cannot attach event handler") << eventTypes[i];
 			return false;
 		}
@@ -183,15 +76,177 @@ VlcMediaWidget::~VlcMediaWidget()
 	}
 }
 
-VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent)
+VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent, MediaEventHandler *handler)
 {
-	QScopedPointer<VlcMediaWidget> vlcMediaWidget(new VlcMediaWidget(parent));
+	QScopedPointer<VlcMediaWidget> vlcMediaWidget(new VlcMediaWidget(handler, parent));
 
 	if (!vlcMediaWidget->init()) {
 		return NULL;
 	}
 
 	return vlcMediaWidget.take();
+}
+
+MediaWidget::PlaybackStatus VlcMediaWidget::getPlaybackStatus()
+{
+	MediaWidget::PlaybackStatus playbackStatus = MediaWidget::Playing;
+
+	switch (libvlc_media_player_get_state(vlcMediaPlayer)) {
+	case libvlc_NothingSpecial:
+	case libvlc_Stopped:
+	case libvlc_Ended:
+	case libvlc_Error:
+		playbackStatus = MediaWidget::Idle;
+		break;
+	case libvlc_Opening:
+	case libvlc_Buffering:
+	case libvlc_Playing:
+		playbackStatus = MediaWidget::Playing;
+		break;
+	case libvlc_Paused:
+		playbackStatus = MediaWidget::Paused;
+		break;
+	}
+
+	return playbackStatus;
+}
+
+int VlcMediaWidget::getTotalTime()
+{
+	int totalTime = libvlc_media_player_get_length(vlcMediaPlayer);
+
+	if (totalTime < 0) {
+		totalTime = 0;
+	}
+
+	return totalTime;
+}
+
+int VlcMediaWidget::getCurrentTime()
+{
+	int currentTime = libvlc_media_player_get_time(vlcMediaPlayer);
+
+	if (currentTime < 0) {
+		currentTime = 0;
+	}
+
+	return currentTime;
+}
+
+bool VlcMediaWidget::isSeekable()
+{
+	return libvlc_media_player_is_seekable(vlcMediaPlayer);
+}
+
+QMap<MediaWidget::MetadataType, QString> VlcMediaWidget::getMetadata()
+{
+	QMap<MediaWidget::MetadataType, QString> metadata;
+	libvlc_media_t *media = libvlc_media_player_get_media(vlcMediaPlayer);
+
+	if (media != NULL) {
+		metadata.insert(MediaWidget::Title,
+			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_Title)));
+		metadata.insert(MediaWidget::Artist,
+			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_Artist)));
+		metadata.insert(MediaWidget::Album,
+			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_Album)));
+		metadata.insert(MediaWidget::TrackNumber,
+			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_TrackNumber)));
+	}
+
+	return metadata;
+}
+
+QStringList VlcMediaWidget::getAudioChannels()
+{
+	QStringList audioChannels;
+	libvlc_track_description_t *track = libvlc_audio_get_track_description(vlcMediaPlayer);
+
+	while (track != NULL) {
+		QString audioChannel = QString::fromUtf8(track->psz_name);
+
+		if (audioChannel.isEmpty()) {
+			audioChannel = QString::number(audioChannels.size() + 1);
+		}
+
+		audioChannels.append(audioChannel);
+		track = track->p_next;
+	}
+
+	return audioChannels;
+}
+
+int VlcMediaWidget::getCurrentAudioChannel()
+{
+	return libvlc_audio_get_track(vlcMediaPlayer);
+}
+
+QStringList VlcMediaWidget::getSubtitles()
+{
+	QStringList subtitles;
+	libvlc_track_description_t *track = libvlc_video_get_spu_description(vlcMediaPlayer);
+
+	while (track != NULL) {
+		QString subtitle = QString::fromUtf8(track->psz_name);
+
+		if (subtitle.isEmpty()) {
+			subtitle = QString::number(subtitles.size() + 1);
+		}
+
+		subtitles.append(subtitle);
+		track = track->p_next;
+	}
+
+	return subtitles;
+}
+
+int VlcMediaWidget::getCurrentSubtitle()
+{
+	return libvlc_video_get_spu(vlcMediaPlayer);
+}
+
+int VlcMediaWidget::getTitleCount()
+{
+	return libvlc_media_player_get_title_count(vlcMediaPlayer);;
+}
+
+int VlcMediaWidget::getCurrentTitle()
+{
+	return libvlc_media_player_get_title(vlcMediaPlayer);;
+}
+
+int VlcMediaWidget::getChapterCount()
+{
+	return libvlc_media_player_get_chapter_count(vlcMediaPlayer);;
+}
+
+int VlcMediaWidget::getCurrentChapter()
+{
+	return libvlc_media_player_get_chapter(vlcMediaPlayer);;
+}
+
+int VlcMediaWidget::getAngleCount()
+{
+	// FIXME
+	return 0;
+}
+
+int VlcMediaWidget::getCurrentAngle()
+{
+	// FIXME
+	return -1;
+}
+
+bool VlcMediaWidget::hasMenu()
+{
+	// FIXME
+	return false;
+}
+
+QSize VlcMediaWidget::getVideoSize()
+{
+	// FIXME
+	return QSize();
 }
 
 void VlcMediaWidget::setMuted(bool muted)
@@ -245,31 +300,29 @@ void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
 	libvlc_video_set_deinterlace(vlcMediaPlayer, vlcDeinterlaceMode);
 }
 
-void VlcMediaWidget::play(MediaWidget::Source source, const KUrl &url, const KUrl &subtitleUrl)
+void VlcMediaWidget::play(const MediaSource &source)
 {
-	QByteArray encodedUrl = url.toEncoded();
+	QByteArray url = source.url.toEncoded();
 
-	switch (source) {
-	case MediaWidget::Playlist:
-	case MediaWidget::Dvb:
-	case MediaWidget::DvbTimeShift:
+	switch (source.type) {
+	case MediaSource::Url:
 		// FIXME how to treat ".iso" files?
 		break;
-	case MediaWidget::AudioCd:
-		encodedUrl.replace(0, 4, "cdda");
+	case MediaSource::AudioCd:
+		url.replace(0, 4, "cdda");
 		break;
-	case MediaWidget::VideoCd:
-		encodedUrl.replace(0, 4, "vcd");
+	case MediaSource::VideoCd:
+		url.replace(0, 4, "vcd");
 		break;
-	case MediaWidget::Dvd:
-		encodedUrl.replace(0, 4, "dvd");
+	case MediaSource::Dvd:
+		url.replace(0, 4, "dvd");
 		break;
 	}
 
-	libvlc_media_t *vlcMedia = libvlc_media_new_location(vlcInstance, encodedUrl.constData());
+	libvlc_media_t *vlcMedia = libvlc_media_new_location(vlcInstance, url.constData());
 
 	if (vlcMedia == NULL) {
-		Log("VlcMediaWidget::play: cannot create media") << url.prettyUrl();
+		Log("VlcMediaWidget::play: cannot create media") << source.url.prettyUrl();
 		stop();
 		return;
 	}
@@ -278,44 +331,37 @@ void VlcMediaWidget::play(MediaWidget::Source source, const KUrl &url, const KUr
 	libvlc_event_e eventTypes[] = { libvlc_MediaMetaChanged };
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
-		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, this) != 0) {
+		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, handler) != 0) {
 			Log("VlcMediaWidget::play: cannot attach event handler") << eventTypes[i];
 		}
 	}
 
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
 	libvlc_media_release(vlcMedia);
-	setDirtyFlags(UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime | UpdateSeekable |
-		UpdateMetadata | UpdateAudioChannels | UpdateSubtitles | UpdateTitles |
-		UpdateChapters | UpdateAngles);
 
-	if (!subtitleUrl.isEmpty()) {
+	if (source.subtitleUrl.isValid()) {
 		if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
-		    subtitleUrl.toEncoded().constData()) == 0) {
+		    source.subtitleUrl.toEncoded().constData()) == 0) {
 			Log("VlcMediaWidget::play: cannot set subtitle file") <<
-				subtitleUrl.prettyUrl();
+				source.subtitleUrl.prettyUrl();
 		}
 	}
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		Log("VlcMediaWidget::play: cannot play media") << url.prettyUrl();
-		stop();
-		return;
+		Log("VlcMediaWidget::play: cannot play media") << source.url.prettyUrl();
 	}
 }
 
 void VlcMediaWidget::stop()
 {
 	libvlc_media_player_stop(vlcMediaPlayer);
-	setDirtyFlags(UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime | UpdateSeekable |
-		UpdateMetadata | UpdateAudioChannels | UpdateSubtitles | UpdateTitles |
-		UpdateChapters | UpdateAngles);
 }
 
 void VlcMediaWidget::setPaused(bool paused)
 {
 	libvlc_media_player_set_pause(vlcMediaPlayer, paused);
-	addDirtyFlags(UpdatePlaybackStatus);
+	// we don't monitor playing / buffering / paused state changes
+	handler->addDirtyFlags(MediaEventHandler::UpdatePlaybackStatus);
 }
 
 void VlcMediaWidget::seek(int time)
@@ -391,216 +437,42 @@ void VlcMediaWidget::toggleMenu()
 	// FIXME
 }
 
-QSize VlcMediaWidget::sizeHint() const
+void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *handler)
 {
-	// FIXME
-	return QWidget::sizeHint();
-}
-
-void VlcMediaWidget::customEvent(QEvent *event)
-{
-	Q_UNUSED(event)
-
-	while (true) {
-		uint oldDirtyFlags = dirtyFlags;
-		uint lowestDirtyFlag = (oldDirtyFlags & (~(oldDirtyFlags - 1)));
-		uint newDirtyFlags = (oldDirtyFlags & (~lowestDirtyFlag));
-
-		if (oldDirtyFlags == newDirtyFlags) {
-			break;
-		}
-
-		if (!dirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
-			continue;
-		}
-
-		switch (lowestDirtyFlag) {
-		case PlaybackFinished:
-			emit playbackFinished();
-			break;
-		case UpdatePlaybackStatus: {
-			MediaWidget::PlaybackStatus playbackStatus = MediaWidget::Playing;
-
-			switch (libvlc_media_player_get_state(vlcMediaPlayer)) {
-			case libvlc_NothingSpecial:
-			case libvlc_Stopped:
-			case libvlc_Ended:
-			case libvlc_Error:
-				playbackStatus = MediaWidget::Idle;
-				break;
-			case libvlc_Opening:
-			case libvlc_Buffering:
-			case libvlc_Playing:
-				playbackStatus = MediaWidget::Playing;
-				break;
-			case libvlc_Paused:
-				playbackStatus = MediaWidget::Paused;
-				break;
-			}
-
-			emit updatePlaybackStatus(playbackStatus);
-			break;
-		    }
-		case UpdateTotalTime:
-			emit updateTotalTime(libvlc_media_player_get_length(vlcMediaPlayer));
-			break;
-		case UpdateCurrentTime:
-			emit updateCurrentTime(libvlc_media_player_get_time(vlcMediaPlayer));
-			break;
-		case UpdateSeekable:
-			emit updateSeekable(libvlc_media_player_is_seekable(vlcMediaPlayer));
-			break;
-		case UpdateMetadata: {
-			QMap<MediaWidget::MetadataType, QString> metadata;
-			libvlc_media_t *media = libvlc_media_player_get_media(vlcMediaPlayer);
-
-			if (media != NULL) {
-				metadata.insert(MediaWidget::Title, QString::fromUtf8(
-					libvlc_media_get_meta(media, libvlc_meta_Title)));
-				metadata.insert(MediaWidget::Artist, QString::fromUtf8(
-					libvlc_media_get_meta(media, libvlc_meta_Artist)));
-				metadata.insert(MediaWidget::Album, QString::fromUtf8(
-					libvlc_media_get_meta(media, libvlc_meta_Album)));
-				metadata.insert(MediaWidget::TrackNumber, QString::fromUtf8(
-					libvlc_media_get_meta(media, libvlc_meta_TrackNumber)));
-			}
-
-			emit updateMetadata(metadata);
-			break;
-		    }
-		case UpdateAudioChannels: {
-			QStringList audioChannels;
-			libvlc_track_description_t *track =
-				libvlc_audio_get_track_description(vlcMediaPlayer);
-
-			while (track != NULL) {
-				QString audioChannel = QString::fromUtf8(track->psz_name);
-
-				if (audioChannel.isEmpty()) {
-					audioChannel = QString::number(audioChannels.size() + 1);
-				}
-
-				audioChannels.append(audioChannel);
-				track = track->p_next;
-			}
-
-			int currentAudioChannel = libvlc_audio_get_track(vlcMediaPlayer);
-			emit updateAudioChannels(audioChannels, currentAudioChannel);
-			break;
-		    }
-		case UpdateSubtitles: {
-			QStringList subtitles;
-			libvlc_track_description_t *track =
-				libvlc_video_get_spu_description(vlcMediaPlayer);
-
-			while (track != NULL) {
-				QString subtitle = QString::fromUtf8(track->psz_name);
-
-				if (subtitle.isEmpty()) {
-					subtitle = QString::number(subtitles.size() + 1);
-				}
-
-				subtitles.append(subtitle);
-				track = track->p_next;
-			}
-
-			int currentSubtitle = libvlc_video_get_spu(vlcMediaPlayer);
-			emit updateSubtitles(subtitles, currentSubtitle);
-			break;
-		    }
-		case UpdateTitles: {
-			int titleCount = libvlc_media_player_get_title_count(vlcMediaPlayer);
-			int currentTitle = libvlc_media_player_get_title(vlcMediaPlayer);
-			emit updateTitles(titleCount, currentTitle);
-			break;
-		    }
-		case UpdateChapters: {
-			int chapterCount = libvlc_media_player_get_chapter_count(vlcMediaPlayer);
-			int currentChapter = libvlc_media_player_get_chapter(vlcMediaPlayer);
-			emit updateChapters(chapterCount, currentChapter);
-			break;
-		    }
-		case UpdateAngles: {
-			// FIXME
-			break;
-		    }
-		case UpdateDvdPlayback: {
-			// FIXME
-			break;
-		    }
-		case UpdateVideoSize: {
-			// FIXME
-			break;
-		    }
-		default:
-			Log("VlcMediaWidget::customEvent: unknown dirty flag") << lowestDirtyFlag;
-			break;
-		}
-	}
-}
-
-void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)
-{
-	uint changedDirtyFlags = 0;
+	MediaEventHandler::DirtyFlags dirtyFlags;
 
 	switch (event->type) {
 	case libvlc_MediaMetaChanged:
-		Log("VlcMediaWidget::eventHandler: called");
-		changedDirtyFlags = (UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
-			UpdateTitles | UpdateChapters | UpdateAngles);
+		dirtyFlags = (MediaEventHandler::UpdateMetadata |
+			MediaEventHandler::UpdateAudioChannels |
+			MediaEventHandler::UpdateSubtitles |
+			MediaEventHandler::UpdateTitles | MediaEventHandler::UpdateChapters |
+			MediaEventHandler::UpdateAngles);
 		break;
 	case libvlc_MediaPlayerEncounteredError:
-		changedDirtyFlags = UpdatePlaybackStatus;
+		dirtyFlags = MediaEventHandler::UpdatePlaybackStatus;
 		break;
 	case libvlc_MediaPlayerEndReached:
-		changedDirtyFlags = (PlaybackFinished | UpdatePlaybackStatus);
+		dirtyFlags = (MediaEventHandler::PlaybackFinished |
+			MediaEventHandler::UpdatePlaybackStatus);
 		break;
 	case libvlc_MediaPlayerLengthChanged:
-		changedDirtyFlags = UpdateTotalTime;
+		dirtyFlags = MediaEventHandler::UpdateTotalTime;
 		break;
 	case libvlc_MediaPlayerSeekableChanged:
-		changedDirtyFlags = UpdateSeekable;
+		dirtyFlags = MediaEventHandler::UpdateSeekable;
 		break;
 	case libvlc_MediaPlayerStopped:
-		changedDirtyFlags = UpdatePlaybackStatus;
+		dirtyFlags = MediaEventHandler::UpdatePlaybackStatus;
 		break;
 	case libvlc_MediaPlayerTimeChanged:
-		changedDirtyFlags = UpdateCurrentTime;
+		dirtyFlags = MediaEventHandler::UpdateCurrentTime;
 		break;
 	}
 
-	if (changedDirtyFlags != 0) {
-		reinterpret_cast<VlcMediaWidget *>(instance)->addDirtyFlags(changedDirtyFlags);
+	if (dirtyFlags != 0) {
+		reinterpret_cast<MediaEventHandler *>(handler)->addDirtyFlags(dirtyFlags);
 	} else {
 		Log("VlcMediaWidget::eventHandler: unknown event type") << event->type;
-	}
-}
-
-void VlcMediaWidget::addDirtyFlags(uint changedDirtyFlags)
-{
-	while (true) {
-		uint oldDirtyFlags = dirtyFlags;
-		uint newDirtyFlags = (oldDirtyFlags | changedDirtyFlags);
-
-		if (oldDirtyFlags == newDirtyFlags) {
-			break;
-		}
-
-		if (!dirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
-			continue;
-		}
-
-		if (oldDirtyFlags == 0) {
-			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-		}
-
-		break;
-	}
-}
-
-void VlcMediaWidget::setDirtyFlags(uint newDirtyFlags)
-{
-	if (dirtyFlags.fetchAndStoreRelaxed(newDirtyFlags) == 0) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 	}
 }
