@@ -351,13 +351,28 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 		break;
 	case MediaSource::AudioCd:
-		url.replace(0, 4, "cdda");
+		if (url.size() >= 7) {
+			url.replace(0, 4, "cdda");
+		} else {
+			url = "cdda://";
+		}
+
 		break;
 	case MediaSource::VideoCd:
-		url.replace(0, 4, "vcd");
+		if (url.size() >= 7) {
+			url.replace(0, 4, "vcd");
+		} else {
+			url = "vcd://";
+		}
+
 		break;
 	case MediaSource::Dvd:
-		url.replace(0, 4, "dvd");
+		if (url.size() >= 7) {
+			url.replace(0, 4, "dvd");
+		} else {
+			url = "dvd://";
+		}
+
 		playingDvd = true;
 		break;
 	}
