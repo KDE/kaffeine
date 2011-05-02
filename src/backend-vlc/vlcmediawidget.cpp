@@ -238,22 +238,22 @@ int VlcMediaWidget::getCurrentSubtitle()
 
 int VlcMediaWidget::getTitleCount()
 {
-	return libvlc_media_player_get_title_count(vlcMediaPlayer);;
+	return libvlc_media_player_get_title_count(vlcMediaPlayer);
 }
 
 int VlcMediaWidget::getCurrentTitle()
 {
-	return libvlc_media_player_get_title(vlcMediaPlayer);;
+	return libvlc_media_player_get_title(vlcMediaPlayer);
 }
 
 int VlcMediaWidget::getChapterCount()
 {
-	return libvlc_media_player_get_chapter_count(vlcMediaPlayer);;
+	return libvlc_media_player_get_chapter_count(vlcMediaPlayer);
 }
 
 int VlcMediaWidget::getCurrentChapter()
 {
-	return libvlc_media_player_get_chapter(vlcMediaPlayer);;
+	return libvlc_media_player_get_chapter(vlcMediaPlayer);
 }
 
 int VlcMediaWidget::getAngleCount()
