@@ -161,6 +161,11 @@ QStringList VlcMediaWidget::getAudioChannels()
 	QStringList audioChannels;
 	libvlc_track_description_t *track = libvlc_audio_get_track_description(vlcMediaPlayer);
 
+	if (track != NULL) {
+		// skip the 'deactivate' audio channel
+		track = track->p_next;
+	}
+
 	while (track != NULL) {
 		QString audioChannel = QString::fromUtf8(track->psz_name);
 
@@ -177,13 +182,19 @@ QStringList VlcMediaWidget::getAudioChannels()
 
 int VlcMediaWidget::getCurrentAudioChannel()
 {
-	return libvlc_audio_get_track(vlcMediaPlayer);
+	// skip the 'deactivate' audio channel
+	return (libvlc_audio_get_track(vlcMediaPlayer) - 1);
 }
 
 QStringList VlcMediaWidget::getSubtitles()
 {
 	QStringList subtitles;
 	libvlc_track_description_t *track = libvlc_video_get_spu_description(vlcMediaPlayer);
+
+	if (track != NULL) {
+		// skip the 'deactivate' subtitle
+		track = track->p_next;
+	}
 
 	while (track != NULL) {
 		QString subtitle = QString::fromUtf8(track->psz_name);
@@ -201,7 +212,8 @@ QStringList VlcMediaWidget::getSubtitles()
 
 int VlcMediaWidget::getCurrentSubtitle()
 {
-	return libvlc_video_get_spu(vlcMediaPlayer);
+	// skip the 'deactivate' subtitle
+	return (libvlc_video_get_spu(vlcMediaPlayer) - 1);
 }
 
 int VlcMediaWidget::getTitleCount()
@@ -370,12 +382,14 @@ void VlcMediaWidget::seek(int time)
 
 void VlcMediaWidget::setCurrentAudioChannel(int currentAudioChannel)
 {
-	libvlc_audio_set_track(vlcMediaPlayer, currentAudioChannel);
+	// skip the 'deactivate' audio channel
+	libvlc_audio_set_track(vlcMediaPlayer, currentAudioChannel + 1);
 }
 
 void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
-	libvlc_video_set_spu(vlcMediaPlayer, currentSubtitle);
+	// skip the 'deactivate' subtitle
+	libvlc_video_set_spu(vlcMediaPlayer, currentSubtitle + 1);
 }
 
 void VlcMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
