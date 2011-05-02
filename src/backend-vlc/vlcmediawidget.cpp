@@ -24,7 +24,7 @@
 #include "../log.h"
 
 VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
-	vlcMediaPlayer(NULL)
+	vlcMediaPlayer(NULL), playingDvd(false)
 {
 }
 
@@ -270,7 +270,14 @@ int VlcMediaWidget::getCurrentAngle()
 
 bool VlcMediaWidget::hasMenu()
 {
-	// FIXME
+	switch (getPlaybackStatus()) {
+	case MediaWidget::Idle:
+		break;
+	case MediaWidget::Playing:
+	case MediaWidget::Paused:
+		return playingDvd;
+	}
+
 	return false;
 }
 
@@ -334,10 +341,14 @@ void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
 void VlcMediaWidget::play(const MediaSource &source)
 {
 	QByteArray url = source.url.toEncoded();
+	playingDvd = false;
 
 	switch (source.type) {
 	case MediaSource::Url:
-		// FIXME how to treat ".iso" files?
+		if (url.endsWith(".iso")) {
+			playingDvd = true;
+		}
+
 		break;
 	case MediaSource::AudioCd:
 		url.replace(0, 4, "cdda");
@@ -347,6 +358,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 		break;
 	case MediaSource::Dvd:
 		url.replace(0, 4, "dvd");
+		playingDvd = true;
 		break;
 	}
 

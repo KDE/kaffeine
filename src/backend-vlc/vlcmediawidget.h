@@ -80,6 +80,7 @@ private:
 
 	libvlc_instance_t *vlcInstance;
 	libvlc_media_player_t *vlcMediaPlayer;
+	bool playingDvd;
 };
 
 #endif /* VLCMEDIAWIDGET_H */
