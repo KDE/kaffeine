@@ -20,12 +20,11 @@
 
 #include "vlcmediawidget.h"
 
-#include <QCoreApplication>
 #include <vlc/vlc.h>
 #include "../log.h"
 
-VlcMediaWidget::VlcMediaWidget(MediaEventHandler *handler_, QWidget *parent) :
-	AbstractMediaWidget(parent), handler(handler_), vlcInstance(NULL), vlcMediaPlayer(NULL)
+VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
+	vlcMediaPlayer(NULL)
 {
 }
 
@@ -53,7 +52,7 @@ bool VlcMediaWidget::init()
 		libvlc_MediaPlayerTimeChanged };
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
-		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, handler) != 0) {
+		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, this) != 0) {
 			Log("VlcMediaWidget::init: cannot attach event handler") << eventTypes[i];
 			return false;
 		}
@@ -76,9 +75,9 @@ VlcMediaWidget::~VlcMediaWidget()
 	}
 }
 
-VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent, MediaEventHandler *handler)
+VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent)
 {
-	QScopedPointer<VlcMediaWidget> vlcMediaWidget(new VlcMediaWidget(handler, parent));
+	QScopedPointer<VlcMediaWidget> vlcMediaWidget(new VlcMediaWidget(parent));
 
 	if (!vlcMediaWidget->init()) {
 		return NULL;
@@ -331,7 +330,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 	libvlc_event_e eventTypes[] = { libvlc_MediaMetaChanged };
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
-		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, handler) != 0) {
+		if (libvlc_event_attach(eventManager, eventTypes[i], eventHandler, this) != 0) {
 			Log("VlcMediaWidget::play: cannot attach event handler") << eventTypes[i];
 		}
 	}
@@ -361,7 +360,7 @@ void VlcMediaWidget::setPaused(bool paused)
 {
 	libvlc_media_player_set_pause(vlcMediaPlayer, paused);
 	// we don't monitor playing / buffering / paused state changes
-	handler->addDirtyFlags(MediaEventHandler::UpdatePlaybackStatus);
+	addDirtyFlags(UpdatePlaybackStatus);
 }
 
 void VlcMediaWidget::seek(int time)
@@ -437,41 +436,37 @@ void VlcMediaWidget::toggleMenu()
 	// FIXME
 }
 
-void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *handler)
+void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)
 {
-	MediaEventHandler::DirtyFlags dirtyFlags;
+	DirtyFlags dirtyFlags;
 
 	switch (event->type) {
 	case libvlc_MediaMetaChanged:
-		dirtyFlags = (MediaEventHandler::UpdateMetadata |
-			MediaEventHandler::UpdateAudioChannels |
-			MediaEventHandler::UpdateSubtitles |
-			MediaEventHandler::UpdateTitles | MediaEventHandler::UpdateChapters |
-			MediaEventHandler::UpdateAngles);
+		dirtyFlags = (UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
+			UpdateTitles | UpdateChapters | UpdateAngles);
 		break;
 	case libvlc_MediaPlayerEncounteredError:
-		dirtyFlags = MediaEventHandler::UpdatePlaybackStatus;
+		dirtyFlags = UpdatePlaybackStatus;
 		break;
 	case libvlc_MediaPlayerEndReached:
-		dirtyFlags = (MediaEventHandler::PlaybackFinished |
-			MediaEventHandler::UpdatePlaybackStatus);
+		dirtyFlags = (PlaybackFinished | UpdatePlaybackStatus);
 		break;
 	case libvlc_MediaPlayerLengthChanged:
-		dirtyFlags = MediaEventHandler::UpdateTotalTime;
+		dirtyFlags = UpdateTotalTime;
 		break;
 	case libvlc_MediaPlayerSeekableChanged:
-		dirtyFlags = MediaEventHandler::UpdateSeekable;
+		dirtyFlags = UpdateSeekable;
 		break;
 	case libvlc_MediaPlayerStopped:
-		dirtyFlags = MediaEventHandler::UpdatePlaybackStatus;
+		dirtyFlags = UpdatePlaybackStatus;
 		break;
 	case libvlc_MediaPlayerTimeChanged:
-		dirtyFlags = MediaEventHandler::UpdateCurrentTime;
+		dirtyFlags = UpdateCurrentTime;
 		break;
 	}
 
 	if (dirtyFlags != 0) {
-		reinterpret_cast<MediaEventHandler *>(handler)->addDirtyFlags(dirtyFlags);
+		reinterpret_cast<VlcMediaWidget *>(instance)->addDirtyFlags(dirtyFlags);
 	} else {
 		Log("VlcMediaWidget::eventHandler: unknown event type") << event->type;
 	}

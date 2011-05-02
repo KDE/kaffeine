@@ -26,8 +26,11 @@
 class AbstractMediaWidget : public QWidget
 {
 public:
-	explicit AbstractMediaWidget(QWidget *parent) : QWidget(parent) { }
+	explicit AbstractMediaWidget(QWidget *parent) : QWidget(parent), mediaWidget(NULL) { }
 	virtual ~AbstractMediaWidget() { }
+
+	void setMediaWidget(MediaWidget *mediaWidget_);
+	void invalidateState(); // re-emit signals
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
@@ -65,7 +68,37 @@ public:
 	virtual bool jumpToPreviousChapter() = 0;
 	virtual bool jumpToNextChapter() = 0;
 	virtual void toggleMenu() = 0;
+
+	enum DirtyFlag
+	{
+		PlaybackFinished = (1 << 0),
+		UpdatePlaybackStatus = (1 << 1),
+		UpdateTotalTime = (1 << 2),
+		UpdateCurrentTime = (1 << 3),
+		UpdateSeekable = (1 << 4),
+		UpdateMetadata = (1 << 5),
+		UpdateAudioChannels = (1 << 6),
+		UpdateSubtitles = (1 << 7),
+		UpdateTitles = (1 << 8),
+		UpdateChapters = (1 << 9),
+		UpdateAngles = (1 << 10),
+		UpdateDvdPlayback = (1 << 11),
+		UpdateVideoSize = (1 << 12)
+	};
+
+	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
+
+protected:
+	void addDirtyFlags(DirtyFlags additionalDirtyFlags);
+
+private:
+	void customEvent(QEvent *event);
+
+	QAtomicInt dirtyFlags;
+	MediaWidget *mediaWidget;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractMediaWidget::DirtyFlags)
 
 class DummyMediaWidget : public AbstractMediaWidget
 {

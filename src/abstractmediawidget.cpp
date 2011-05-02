@@ -20,6 +20,110 @@
 
 #include "abstractmediawidget.h"
 
+#include <QCoreApplication>
+
+void AbstractMediaWidget::setMediaWidget(MediaWidget *mediaWidget_)
+{
+	mediaWidget = mediaWidget_;
+}
+
+void AbstractMediaWidget::invalidateState()
+{
+	DirtyFlags newDirtyFlags = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
+		UpdateSeekable | UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
+		UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdPlayback |
+		UpdateVideoSize);
+
+	if (dirtyFlags.fetchAndStoreRelaxed(newDirtyFlags) == 0) {
+		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+	}
+}
+
+void AbstractMediaWidget::addDirtyFlags(DirtyFlags additionalDirtyFlags)
+{
+	while (true) {
+		uint oldDirtyFlags = dirtyFlags;
+		uint newDirtyFlags = (oldDirtyFlags | additionalDirtyFlags);
+
+		if (oldDirtyFlags == newDirtyFlags) {
+			break;
+		}
+
+		if (!dirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
+			continue;
+		}
+
+		if (oldDirtyFlags == 0) {
+			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+		}
+
+		break;
+	}
+}
+
+void AbstractMediaWidget::customEvent(QEvent *event)
+{
+	Q_UNUSED(event)
+
+	while (true) {
+		uint oldDirtyFlags = dirtyFlags;
+		uint lowestDirtyFlag = (oldDirtyFlags & (~(oldDirtyFlags - 1)));
+		uint newDirtyFlags = (oldDirtyFlags & (~lowestDirtyFlag));
+
+		if (oldDirtyFlags == newDirtyFlags) {
+			break;
+		}
+
+		if (!dirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
+			continue;
+		}
+
+		switch (static_cast<DirtyFlag>(lowestDirtyFlag)) {
+		case PlaybackFinished:
+			mediaWidget->playbackFinished();
+			break;
+		case UpdatePlaybackStatus:
+			mediaWidget->updatePlaybackStatus(getPlaybackStatus());
+			break;
+		case UpdateTotalTime:
+			mediaWidget->updateTotalTime(getTotalTime());
+			break;
+		case UpdateCurrentTime:
+			mediaWidget->updateCurrentTime(getCurrentTime());
+			break;
+		case UpdateSeekable:
+			mediaWidget->updateSeekable(isSeekable());
+			break;
+		case UpdateMetadata:
+			mediaWidget->updateMetadata(getMetadata());
+			break;
+		case UpdateAudioChannels:
+			mediaWidget->updateAudioChannels(getAudioChannels(),
+				getCurrentAudioChannel());
+			break;
+		case UpdateSubtitles:
+			mediaWidget->updateSubtitles(getSubtitles(), getCurrentSubtitle());
+			break;
+		case UpdateTitles:
+			mediaWidget->updateTitles(getTitleCount(), getCurrentTitle());
+			break;
+		case UpdateChapters:
+			mediaWidget->updateChapters(getChapterCount(), getCurrentChapter());
+			break;
+		case UpdateAngles:
+			mediaWidget->updateAngles(getAngleCount(), getCurrentAngle());
+			break;
+		case UpdateDvdPlayback:
+			mediaWidget->updateDvdPlayback(hasMenu());
+			break;
+		case UpdateVideoSize:
+			// FIXME
+			mediaWidget->updateVideoSize();
+			break;
+		}
+	}
+}
+
 MediaWidget::PlaybackStatus DummyMediaWidget::getPlaybackStatus()
 {
 	return MediaWidget::Idle;

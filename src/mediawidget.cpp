@@ -23,7 +23,6 @@
 
 #include <QBoxLayout>
 #include <QContextMenuEvent>
-#include <QCoreApplication>
 #include <QDBusInterface>
 #include <QLabel>
 #include <QPushButton>
@@ -63,12 +62,13 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	setAcceptDrops(true);
 	setFocusPolicy(Qt::StrongFocus);
 
-	backend = VlcMediaWidget::createVlcMediaWidget(this, this);
+	backend = VlcMediaWidget::createVlcMediaWidget(this);
 
 	if (backend == NULL) {
 		backend = new DummyMediaWidget(this);
 	}
 
+	backend->setMediaWidget(this);
 	layout->addWidget(backend);
 	osdWidget = new OsdWidget(this);
 
@@ -335,7 +335,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	timer->start(50000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
 
-	resetDirtyFlags();
+	backend->invalidateState();
 }
 
 MediaWidget::~MediaWidget()
@@ -463,7 +463,7 @@ void MediaWidget::play(Source source_, const KUrl &url, const KUrl &subtitleUrl)
 	}
 
 	backend->play(mediaSource);
-	resetDirtyFlags();
+	backend->invalidateState();
 }
 
 void MediaWidget::play(const KUrl &url, const KUrl &subtitleUrl)
@@ -675,7 +675,7 @@ void MediaWidget::stop()
 	}
 
 	backend->stop();
-	resetDirtyFlags();
+	backend->invalidateState();
 }
 
 void MediaWidget::increaseVolume()
@@ -1420,103 +1420,6 @@ void MediaWidget::updateVideoSize()
 {
 	if (automaticResize != ResizeOff) {
 		emit resizeToVideo(automaticResize);
-	}
-}
-
-void MediaWidget::addDirtyFlags(DirtyFlags dirtyFlags)
-{
-	while (true) {
-		uint oldDirtyFlags = backendDirtyFlags;
-		uint newDirtyFlags = (oldDirtyFlags | dirtyFlags);
-
-		if (oldDirtyFlags == newDirtyFlags) {
-			break;
-		}
-
-		if (!backendDirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
-			continue;
-		}
-
-		if (oldDirtyFlags == 0) {
-			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-		}
-
-		break;
-	}
-}
-
-void MediaWidget::resetDirtyFlags()
-{
-	DirtyFlags dirtyFlags = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
-		UpdateSeekable | UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
-		UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdPlayback |
-		UpdateVideoSize);
-
-	if (backendDirtyFlags.fetchAndStoreRelaxed(dirtyFlags) == 0) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-	}
-}
-
-void MediaWidget::customEvent(QEvent *event)
-{
-	Q_UNUSED(event)
-
-	while (true) {
-		uint oldDirtyFlags = backendDirtyFlags;
-		uint lowestDirtyFlag = (oldDirtyFlags & (~(oldDirtyFlags - 1)));
-		uint newDirtyFlags = (oldDirtyFlags & (~lowestDirtyFlag));
-
-		if (oldDirtyFlags == newDirtyFlags) {
-			break;
-		}
-
-		if (!backendDirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
-			continue;
-		}
-
-		switch (static_cast<DirtyFlag>(lowestDirtyFlag)) {
-		case PlaybackFinished:
-			playbackFinished();
-			break;
-		case UpdatePlaybackStatus:
-			updatePlaybackStatus(backend->getPlaybackStatus());
-			break;
-		case UpdateTotalTime:
-			updateTotalTime(backend->getTotalTime());
-			break;
-		case UpdateCurrentTime:
-			updateCurrentTime(backend->getCurrentTime());
-			break;
-		case UpdateSeekable:
-			updateSeekable(backend->isSeekable());
-			break;
-		case UpdateMetadata:
-			updateMetadata(backend->getMetadata());
-			break;
-		case UpdateAudioChannels:
-			updateAudioChannels(backend->getAudioChannels(),
-				backend->getCurrentAudioChannel());
-			break;
-		case UpdateSubtitles:
-			updateSubtitles(backend->getSubtitles(), backend->getCurrentSubtitle());
-			break;
-		case UpdateTitles:
-			updateTitles(backend->getTitleCount(), backend->getCurrentTitle());
-			break;
-		case UpdateChapters:
-			updateChapters(backend->getChapterCount(), backend->getCurrentChapter());
-			break;
-		case UpdateAngles:
-			updateAngles(backend->getAngleCount(), backend->getCurrentAngle());
-			break;
-		case UpdateDvdPlayback:
-			updateDvdPlayback(backend->hasMenu());
-			break;
-		case UpdateVideoSize:
-			// FIXME
-			updateVideoSize();
-			break;
-		}
 	}
 }
 

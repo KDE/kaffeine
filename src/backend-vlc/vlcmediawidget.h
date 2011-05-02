@@ -30,14 +30,13 @@ class libvlc_media_player_t;
 class VlcMediaWidget : public AbstractMediaWidget
 {
 private:
-	VlcMediaWidget(MediaEventHandler *handler_, QWidget *parent);
+	explicit VlcMediaWidget(QWidget *parent);
 	bool init();
 
 public:
 	~VlcMediaWidget();
 
-	// returns NULL if init fails
-	static VlcMediaWidget *createVlcMediaWidget(QWidget *parent, MediaEventHandler *handler);
+	static VlcMediaWidget *createVlcMediaWidget(QWidget *parent); // returns NULL if init fails
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
@@ -77,9 +76,8 @@ public:
 	void toggleMenu();
 
 private:
-	static void eventHandler(const libvlc_event_t *event, void *handler);
+	static void eventHandler(const libvlc_event_t *event, void *instance);
 
-	MediaEventHandler *handler;
 	libvlc_instance_t *vlcInstance;
 	libvlc_media_player_t *vlcMediaPlayer;
 };
