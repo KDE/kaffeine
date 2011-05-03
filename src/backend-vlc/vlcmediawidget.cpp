@@ -111,6 +111,10 @@ MediaWidget::PlaybackStatus VlcMediaWidget::getPlaybackStatus()
 		break;
 	}
 
+	if (playbackStatus == MediaWidget::Idle) {
+		playingDvd = false;
+	}
+
 	return playbackStatus;
 }
 
@@ -274,15 +278,7 @@ int VlcMediaWidget::getCurrentAngle()
 
 bool VlcMediaWidget::hasMenu()
 {
-	switch (getPlaybackStatus()) {
-	case MediaWidget::Idle:
-		break;
-	case MediaWidget::Playing:
-	case MediaWidget::Paused:
-		return playingDvd;
-	}
-
-	return false;
+	return playingDvd;
 }
 
 QSize VlcMediaWidget::getVideoSize()
