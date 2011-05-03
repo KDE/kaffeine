@@ -93,8 +93,6 @@ MediaWidget::PlaybackStatus VlcMediaWidget::getPlaybackStatus()
 	switch (libvlc_media_player_get_state(vlcMediaPlayer)) {
 	case libvlc_NothingSpecial:
 	case libvlc_Stopped:
-	case libvlc_Ended:
-	case libvlc_Error:
 		playbackStatus = MediaWidget::Idle;
 		break;
 	case libvlc_Opening:
@@ -104,6 +102,12 @@ MediaWidget::PlaybackStatus VlcMediaWidget::getPlaybackStatus()
 		break;
 	case libvlc_Paused:
 		playbackStatus = MediaWidget::Paused;
+		break;
+	case libvlc_Ended:
+	case libvlc_Error:
+		playbackStatus = MediaWidget::Idle;
+		// don't keep last picture shown
+		libvlc_media_player_stop(vlcMediaPlayer);
 		break;
 	}
 
@@ -380,8 +384,8 @@ void VlcMediaWidget::play(const MediaSource &source)
 	libvlc_media_t *vlcMedia = libvlc_media_new_location(vlcInstance, url.constData());
 
 	if (vlcMedia == NULL) {
+		libvlc_media_player_stop(vlcMediaPlayer);
 		Log("VlcMediaWidget::play: cannot create media") << source.url.prettyUrl();
-		stop();
 		return;
 	}
 
@@ -507,10 +511,10 @@ void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)
 			UpdateTitles | UpdateChapters | UpdateAngles);
 		break;
 	case libvlc_MediaPlayerEncounteredError:
-		dirtyFlags = UpdatePlaybackStatus;
+		dirtyFlags = InvalidateState;
 		break;
 	case libvlc_MediaPlayerEndReached:
-		dirtyFlags = (PlaybackFinished | UpdatePlaybackStatus);
+		dirtyFlags = (PlaybackFinished | InvalidateState);
 		break;
 	case libvlc_MediaPlayerLengthChanged:
 		dirtyFlags = UpdateTotalTime;
@@ -519,7 +523,7 @@ void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)
 		dirtyFlags = UpdateSeekable;
 		break;
 	case libvlc_MediaPlayerStopped:
-		dirtyFlags = UpdatePlaybackStatus;
+		dirtyFlags = InvalidateState;
 		break;
 	case libvlc_MediaPlayerTimeChanged:
 		dirtyFlags = UpdateCurrentTime;

@@ -29,12 +29,7 @@ void AbstractMediaWidget::setMediaWidget(MediaWidget *mediaWidget_)
 
 void AbstractMediaWidget::invalidateState()
 {
-	DirtyFlags newDirtyFlags = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
-		UpdateSeekable | UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
-		UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdPlayback |
-		UpdateVideoSize);
-
-	if (dirtyFlags.fetchAndStoreRelaxed(newDirtyFlags) == 0) {
+	if (dirtyFlags.fetchAndStoreRelaxed(InvalidateState) == 0) {
 		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 	}
 }
@@ -119,6 +114,9 @@ void AbstractMediaWidget::customEvent(QEvent *event)
 		case UpdateVideoSize:
 			// FIXME
 			mediaWidget->updateVideoSize();
+			break;
+		case InvalidateState:
+			// this is a combination of flags
 			break;
 		}
 	}

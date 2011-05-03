@@ -83,7 +83,11 @@ public:
 		UpdateChapters = (1 << 9),
 		UpdateAngles = (1 << 10),
 		UpdateDvdPlayback = (1 << 11),
-		UpdateVideoSize = (1 << 12)
+		UpdateVideoSize = (1 << 12),
+		InvalidateState = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
+			UpdateSeekable | UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
+			UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdPlayback |
+			UpdateVideoSize)
 	};
 
 	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
