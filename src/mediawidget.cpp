@@ -1157,6 +1157,19 @@ void MediaWidget::updatePlaybackStatus(PlaybackStatus playbackStatus)
 		externalSubtitles.clear();
 		currentDvbSubtitle = -1;
 		currentExternalSubtitle = -1;
+
+		switch (source) {
+		case Playlist:
+		case AudioCd:
+		case VideoCd:
+		case Dvd:
+			break;
+		case Dvb:
+		case DvbTimeShift:
+			emit dvbStopped();
+			break;
+		}
+
 		break;
 	case Playing:
 		actionPlayPause->setIcon(iconPause);
@@ -1171,7 +1184,8 @@ void MediaWidget::updatePlaybackStatus(PlaybackStatus playbackStatus)
 		case DvbTimeShift:
 			break;
 		case Dvb:
-			emit dvbStartTimeShift();
+			// FIXME
+			// emit dvbStartTimeShift();
 			break;
 		}
 
@@ -1302,7 +1316,8 @@ void MediaWidget::updateSubtitles(const QStringList &subtitles, int currentSubti
 		}
 
 		if (currentBackendSubtitle != selectedSubtitle) {
-			backend->setCurrentSubtitle(selectedSubtitle);
+			// FIXME
+			// backend->setCurrentSubtitle(selectedSubtitle);
 		}
 	}
 
