@@ -541,7 +541,6 @@ DvbLiveViewInternal::DvbLiveViewInternal() : mediaWidget(NULL), readFd(-1), writ
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);
 	url = KUrl::fromLocalFile(fileName);
-	url.setScheme("fifo");
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
 		Log("DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed");
@@ -590,7 +589,7 @@ KUrl DvbLiveViewInternal::setupPipe()
 			buffer.resize(87 * 188);
 		}
 
-		while (read(readFd, buffer.data(), buffer.size()) != 0) {
+		while (read(readFd, buffer.data(), buffer.size()) > 0) {
 		}
 	}
 
