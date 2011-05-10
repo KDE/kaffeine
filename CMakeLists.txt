@@ -4,7 +4,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 find_package(KDE4 REQUIRED)
 find_package(X11 REQUIRED)
-find_package(VLC 1.1.8 REQUIRED)
+find_package(VLC 1.1.4 REQUIRED)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${VLC_INCLUDE_DIRS}
                     ${X11_Xscreensaver_INCLUDE_PATH})
