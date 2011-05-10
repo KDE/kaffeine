@@ -20,6 +20,7 @@
 
 #include "vlcmediawidget.h"
 
+#include <QMouseEvent>
 #include <vlc/vlc.h>
 #include "../log.h"
 
@@ -495,6 +496,16 @@ bool VlcMediaWidget::jumpToNextChapter()
 void VlcMediaWidget::toggleMenu()
 {
 	// FIXME
+}
+
+void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
+{
+	if (event->button() == Qt::LeftButton) {
+		// FIXME needs vlc >= 1.2
+		// libvlc_media_player_navigate(vlcMediaPlayer, libvlc_navigate_activate);
+	}
+
+	AbstractMediaWidget::mousePressEvent(event);
 }
 
 void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)

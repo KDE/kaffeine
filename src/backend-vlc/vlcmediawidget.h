@@ -76,6 +76,8 @@ public:
 	void toggleMenu();
 
 private:
+	void mousePressEvent(QMouseEvent *event);
+
 	static void eventHandler(const libvlc_event_t *event, void *instance);
 
 	libvlc_instance_t *vlcInstance;
