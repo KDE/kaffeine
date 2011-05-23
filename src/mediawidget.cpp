@@ -38,7 +38,7 @@
 #include <KMenu>
 #include <KToolBar>
 #include <X11/extensions/scrnsaver.h>
-#include "backend-vlc/vlcmediawidget.h"
+#include "backend-mplayer/mplayermediawidget.h"
 #include "configuration.h"
 #include "log.h"
 #include "osdwidget.h"
@@ -62,7 +62,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	setAcceptDrops(true);
 	setFocusPolicy(Qt::StrongFocus);
 
-	backend = VlcMediaWidget::createVlcMediaWidget(this);
+	backend = MPlayerMediaWidget::createMPlayerMediaWidget(this);
 
 	if (backend == NULL) {
 		backend = new DummyMediaWidget(this);

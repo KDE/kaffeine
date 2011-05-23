@@ -1,5 +1,6 @@
 set(kaffeine_SRCS
-    backend-vlc/vlcmediawidget.cpp
+    backend-mplayer/mplayermediawidget.cpp
+    backend-mplayer/mplayervideowidget.cpp
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
     abstractmediawidget.cpp
@@ -41,7 +42,7 @@ configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 kde4_add_executable(kaffeine ${kaffeinedvb_SRCS} ${kaffeine_SRCS})
 target_link_libraries(kaffeine ${QT_QTSQL_LIBRARY} ${KDE4_KFILE_LIBS} ${KDE4_KIO_LIBS}
-    ${KDE4_SOLID_LIBS} ${X11_Xscreensaver_LIB} ${VLC_LIBRARY})
+                      ${KDE4_SOLID_LIBS} ${X11_Xscreensaver_LIB})
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(PROGRAMS kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
