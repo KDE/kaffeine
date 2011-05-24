@@ -544,7 +544,7 @@ void MediaWidget::updateExternalSubtitles(const QList<KUrl> &subtitles, int curr
 {
 	externalSubtitles = subtitles;
 	currentExternalSubtitle = currentSubtitle;
-	updateSubtitleUi();
+	subtitlesChanged();
 }
 
 OsdWidget *MediaWidget::getOsdWidget()
@@ -557,14 +557,14 @@ void MediaWidget::updateDvbAudioChannels(const QStringList &dvbAudioChannels_,
 {
 	dvbAudioChannels = dvbAudioChannels_;
 	currentDvbAudioChannel = currentDvbAudioChannel_;
-	updateAudioChannelUi();
+	audioChannelsChanged();
 }
 
 void MediaWidget::updateDvbSubtitles(const QStringList &dvbSubtitles_, int currentDvbSubtitle_)
 {
 	dvbSubtitles = dvbSubtitles_;
 	currentDvbSubtitle = currentDvbSubtitle_;
-	updateSubtitleUi();
+	subtitlesChanged();
 }
 
 MediaWidget::PlaybackStatus MediaWidget::getPlaybackStatus() const
@@ -961,7 +961,7 @@ void MediaWidget::longSkipDurationChanged(int longSkipDuration)
 		longSkipDuration));
 }
 
-void MediaWidget::updateAudioChannelUi()
+void MediaWidget::audioChannelsChanged()
 {
 	blockBackendUpdates = true;
 	audioChannelBox->clear();
@@ -978,8 +978,21 @@ void MediaWidget::updateAudioChannelUi()
 	blockBackendUpdates = false;
 }
 
-void MediaWidget::updateSubtitleUi()
+void MediaWidget::subtitlesChanged()
 {
+	if (!dvbSubtitles.isEmpty()) {
+		// subtitles are overriden --> automatically choose appropriate subtitle
+		int selectedSubtitle = -1;
+
+		if (currentDvbSubtitle >= 0) {
+			selectedSubtitle = (backend->getSubtitles().size() - 1);
+		}
+
+		if (backend->getCurrentSubtitle() != selectedSubtitle) {
+			backend->setCurrentSubtitle(selectedSubtitle);
+		}
+	}
+
 	blockBackendUpdates = true;
 	subtitleBox->clear();
 	subtitleBox->addItem(textSubtitlesOff);
@@ -1043,7 +1056,7 @@ void MediaWidget::currentTotalTimeChanged()
 	blockBackendUpdates = false;
 }
 
-void MediaWidget::updateSeekableUi()
+void MediaWidget::seekableChanged()
 {
 	bool seekable = backend->isSeekable();
 
@@ -1138,7 +1151,7 @@ void MediaWidget::playbackFinished()
 	}
 }
 
-void MediaWidget::updatePlaybackStatus()
+void MediaWidget::playbackStatusChanged()
 {
 	bool playing = true;
 
@@ -1214,7 +1227,7 @@ void MediaWidget::updatePlaybackStatus()
 	timeButton->setEnabled(playing);
 }
 
-void MediaWidget::updateMetadata()
+void MediaWidget::metadataChanged()
 {
 	QMap<MediaWidget::MetadataType, QString> metadata = backend->getMetadata();
 
@@ -1251,40 +1264,12 @@ void MediaWidget::updateMetadata()
 	}
 }
 
-void MediaWidget::updateSeekable()
-{
-	updateSeekableUi();
-}
-
-void MediaWidget::updateAudioChannels()
-{
-	updateAudioChannelUi();
-}
-
-void MediaWidget::updateSubtitles()
-{
-	if (!dvbSubtitles.isEmpty()) {
-		// subtitles are overriden --> automatically choose appropriate subtitle
-		int selectedSubtitle = -1;
-
-		if (currentDvbSubtitle >= 0) {
-			selectedSubtitle = (backend->getSubtitles().size() - 1);
-		}
-
-		if (backend->getCurrentSubtitle() != selectedSubtitle) {
-			backend->setCurrentSubtitle(selectedSubtitle);
-		}
-	}
-
-	updateSubtitleUi();
-}
-
-void MediaWidget::updateDvdMenu()
+void MediaWidget::dvdMenuChanged()
 {
 	menuAction->setEnabled(backend->hasDvdMenu());
 }
 
-void MediaWidget::updateTitles()
+void MediaWidget::titlesChanged()
 {
 	int titleCount = backend->getTitleCount();
 	int currentTitle = backend->getCurrentTitle();
@@ -1321,7 +1306,7 @@ void MediaWidget::updateTitles()
 	}
 }
 
-void MediaWidget::updateChapters()
+void MediaWidget::chaptersChanged()
 {
 	int chapterCount = backend->getChapterCount();
 	int currentChapter = backend->getCurrentChapter();
@@ -1358,7 +1343,7 @@ void MediaWidget::updateChapters()
 	}
 }
 
-void MediaWidget::updateAngles()
+void MediaWidget::anglesChanged()
 {
 	int angleCount = backend->getAngleCount();
 	int currentAngle = backend->getCurrentAngle();
@@ -1395,7 +1380,7 @@ void MediaWidget::updateAngles()
 	}
 }
 
-void MediaWidget::updateVideoSize()
+void MediaWidget::videoSizeChanged()
 {
 	if (automaticResize != ResizeOff) {
 		emit resizeToVideo(automaticResize);

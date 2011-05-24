@@ -74,7 +74,7 @@ void AbstractMediaWidget::addPendingUpdate(PendingUpdate pendingUpdate)
 void AbstractMediaWidget::updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_)
 {
 	playbackStatus = playbackStatus_;
-	addPendingUpdate(UpdatePlaybackStatus);
+	addPendingUpdate(PlaybackStatus);
 }
 
 void AbstractMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
@@ -90,91 +90,91 @@ void AbstractMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime
 		totalTime = 0;
 	}
 
-	addPendingUpdate(UpdateCurrentTotalTime);
+	addPendingUpdate(CurrentTotalTime);
 }
 
 void AbstractMediaWidget::updateSeekable(bool seekable_)
 {
 	seekable = seekable_;
-	addPendingUpdate(UpdateSeekable);
+	addPendingUpdate(Seekable);
 }
 
 void AbstractMediaWidget::updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_)
 {
 	metadata = metadata_;
-	addPendingUpdate(UpdateMetadata);
+	addPendingUpdate(Metadata);
 }
 
 void AbstractMediaWidget::updateAudioChannels(const QStringList &audioChannels_)
 {
 	audioChannels = audioChannels_;
-	addPendingUpdate(UpdateAudioChannels);
+	addPendingUpdate(AudioChannels);
 }
 
 void AbstractMediaWidget::updateCurrentAudioChannel(int currentAudioChannel_)
 {
 	currentAudioChannel = currentAudioChannel_;
-	addPendingUpdate(UpdateAudioChannels);
+	addPendingUpdate(AudioChannels);
 }
 
 void AbstractMediaWidget::updateSubtitles(const QStringList &subtitles_)
 {
 	subtitles = subtitles_;
-	addPendingUpdate(UpdateSubtitles);
+	addPendingUpdate(Subtitles);
 }
 
 void AbstractMediaWidget::updateCurrentSubtitle(int currentSubtitle_)
 {
 	currentSubtitle = currentSubtitle_;
-	addPendingUpdate(UpdateSubtitles);
+	addPendingUpdate(Subtitles);
 }
 
 void AbstractMediaWidget::updateTitleCount(int titleCount_)
 {
 	titleCount = titleCount_;
-	addPendingUpdate(UpdateTitles);
+	addPendingUpdate(Titles);
 }
 
 void AbstractMediaWidget::updateCurrentTitle(int currentTitle_)
 {
 	currentTitle = currentTitle_;
-	addPendingUpdate(UpdateTitles);
+	addPendingUpdate(Titles);
 }
 
 void AbstractMediaWidget::updateChapterCount(int chapterCount_)
 {
 	chapterCount = chapterCount_;
-	addPendingUpdate(UpdateChapters);
+	addPendingUpdate(Chapters);
 }
 
 void AbstractMediaWidget::updateCurrentChapter(int currentChapter_)
 {
 	currentChapter = currentChapter_;
-	addPendingUpdate(UpdateChapters);
+	addPendingUpdate(Chapters);
 }
 
 void AbstractMediaWidget::updateAngleCount(int angleCount_)
 {
 	angleCount = angleCount_;
-	addPendingUpdate(UpdateAngles);
+	addPendingUpdate(Angles);
 }
 
 void AbstractMediaWidget::updateCurrentAngle(int currentAngle_)
 {
 	currentAngle = currentAngle_;
-	addPendingUpdate(UpdateAngles);
+	addPendingUpdate(Angles);
 }
 
 void AbstractMediaWidget::updateDvdMenu(bool dvdMenu_)
 {
 	dvdMenu = dvdMenu_;
-	addPendingUpdate(UpdateDvdMenu);
+	addPendingUpdate(DvdMenu);
 }
 
 void AbstractMediaWidget::updateVideoSize(const QSize &videoSize_)
 {
 	videoSize = videoSize_;
-	addPendingUpdate(UpdateVideoSize);
+	addPendingUpdate(VideoSize);
 }
 
 void AbstractMediaWidget::customEvent(QEvent *event)
@@ -189,38 +189,38 @@ void AbstractMediaWidget::customEvent(QEvent *event)
 		case PlaybackFinished:
 			mediaWidget->playbackFinished();
 			break;
-		case UpdatePlaybackStatus:
-			mediaWidget->updatePlaybackStatus();
+		case PlaybackStatus:
+			mediaWidget->playbackStatusChanged();
 			break;
-		case UpdateCurrentTotalTime:
+		case CurrentTotalTime:
 			mediaWidget->currentTotalTimeChanged();
 			break;
-		case UpdateSeekable:
-			mediaWidget->updateSeekable();
+		case Seekable:
+			mediaWidget->seekableChanged();
 			break;
-		case UpdateMetadata:
-			mediaWidget->updateMetadata();
+		case Metadata:
+			mediaWidget->metadataChanged();
 			break;
-		case UpdateAudioChannels:
-			mediaWidget->updateAudioChannels();
+		case AudioChannels:
+			mediaWidget->audioChannelsChanged();
 			break;
-		case UpdateSubtitles:
-			mediaWidget->updateSubtitles();
+		case Subtitles:
+			mediaWidget->subtitlesChanged();
 			break;
-		case UpdateTitles:
-			mediaWidget->updateTitles();
+		case Titles:
+			mediaWidget->titlesChanged();
 			break;
-		case UpdateChapters:
-			mediaWidget->updateChapters();
+		case Chapters:
+			mediaWidget->chaptersChanged();
 			break;
-		case UpdateAngles:
-			mediaWidget->updateAngles();
+		case Angles:
+			mediaWidget->anglesChanged();
 			break;
-		case UpdateDvdMenu:
-			mediaWidget->updateDvdMenu();
+		case DvdMenu:
+			mediaWidget->dvdMenuChanged();
 			break;
-		case UpdateVideoSize:
-			mediaWidget->updateVideoSize();
+		case VideoSize:
+			mediaWidget->videoSizeChanged();
 			break;
 		case ResetState:
 			// this is a combination of flags

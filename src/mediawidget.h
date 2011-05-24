@@ -160,17 +160,17 @@ public slots:
 
 public:
 	void playbackFinished();
-	void updatePlaybackStatus();
+	void playbackStatusChanged();
 	void currentTotalTimeChanged();
-	void updateMetadata();
-	void updateSeekable();
-	void updateAudioChannels();
-	void updateSubtitles();
-	void updateTitles();
-	void updateChapters();
-	void updateAngles();
-	void updateDvdMenu();
-	void updateVideoSize();
+	void metadataChanged();
+	void seekableChanged();
+	void audioChannelsChanged();
+	void subtitlesChanged();
+	void titlesChanged();
+	void chaptersChanged();
+	void anglesChanged();
+	void dvdMenuChanged();
+	void videoSizeChanged();
 
 signals:
 	void displayModeChanged();
@@ -216,10 +216,6 @@ private slots:
 	void longSkipDurationChanged(int longSkipDuration);
 
 private:
-	void updateSeekableUi();
-	void updateAudioChannelUi();
-	void updateSubtitleUi();
-
 	void contextMenuEvent(QContextMenuEvent *event);
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void dragEnterEvent(QDragEnterEvent *event);

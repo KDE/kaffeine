@@ -92,20 +92,20 @@ private:
 	enum PendingUpdate
 	{
 		PlaybackFinished = (1 << 0),
-		UpdatePlaybackStatus = (1 << 1),
-		UpdateCurrentTotalTime = (1 << 2),
-		UpdateSeekable = (1 << 3),
-		UpdateMetadata = (1 << 4),
-		UpdateAudioChannels = (1 << 5),
-		UpdateSubtitles = (1 << 6),
-		UpdateTitles = (1 << 7),
-		UpdateChapters = (1 << 8),
-		UpdateAngles = (1 << 9),
-		UpdateDvdMenu = (1 << 10),
-		UpdateVideoSize = (1 << 11),
-		ResetState = (UpdatePlaybackStatus | UpdateCurrentTotalTime | UpdateSeekable |
-			UpdateMetadata | UpdateAudioChannels | UpdateSubtitles | UpdateTitles |
-			UpdateChapters | UpdateAngles | UpdateDvdMenu | UpdateVideoSize)
+		PlaybackStatus = (1 << 1),
+		CurrentTotalTime = (1 << 2),
+		Seekable = (1 << 3),
+		Metadata = (1 << 4),
+		AudioChannels = (1 << 5),
+		Subtitles = (1 << 6),
+		Titles = (1 << 7),
+		Chapters = (1 << 8),
+		Angles = (1 << 9),
+		DvdMenu = (1 << 10),
+		VideoSize = (1 << 11),
+		ResetState = (PlaybackStatus | CurrentTotalTime | Seekable | Metadata |
+			AudioChannels | Subtitles | Titles | Chapters | Angles | DvdMenu |
+			VideoSize)
 	};
 
 	Q_DECLARE_FLAGS(PendingUpdates, PendingUpdate)
