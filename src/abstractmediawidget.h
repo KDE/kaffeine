@@ -26,31 +26,31 @@
 class AbstractMediaWidget : public QWidget
 {
 public:
-	explicit AbstractMediaWidget(QWidget *parent) : QWidget(parent), mediaWidget(NULL) { }
-	virtual ~AbstractMediaWidget() { }
+	explicit AbstractMediaWidget(QWidget *parent);
+	virtual ~AbstractMediaWidget();
 
 	void setMediaWidget(MediaWidget *mediaWidget_);
-	void invalidateState(); // re-emit signals
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
-	virtual MediaWidget::PlaybackStatus getPlaybackStatus() = 0;
-	virtual int getTotalTime() = 0; // milliseconds
-	virtual int getCurrentTime() = 0; // milliseconds
-	virtual bool isSeekable() = 0;
-	virtual QMap<MediaWidget::MetadataType, QString> getMetadata() = 0;
-	virtual QStringList getAudioChannels() = 0;
-	virtual int getCurrentAudioChannel() = 0;
-	virtual QStringList getSubtitles() = 0;
-	virtual int getCurrentSubtitle() = 0;
-	virtual int getTitleCount() = 0;
-	virtual int getCurrentTitle() = 0;
-	virtual int getChapterCount() = 0;
-	virtual int getCurrentChapter() = 0;
-	virtual int getAngleCount() = 0;
-	virtual int getCurrentAngle() = 0;
-	virtual bool hasMenu() = 0;
-	virtual QSize getVideoSize() = 0;
+	MediaWidget::PlaybackStatus getPlaybackStatus() const { return playbackStatus; }
+	int getTotalTime() const { return totalTime; } // milliseconds
+	int getCurrentTime() const { return currentTime; } // milliseconds
+	bool isSeekable() const { return seekable; }
+	QMap<MediaWidget::MetadataType, QString> getMetadata() const { return metadata; }
+	QStringList getAudioChannels() const { return audioChannels; }
+	int getCurrentAudioChannel() const { return currentAudioChannel; }
+	QStringList getSubtitles() const { return subtitles; }
+	int getCurrentSubtitle() const { return currentSubtitle; }
+	int getTitleCount() const { return titleCount; }
+	int getCurrentTitle() const { return currentTitle; }
+	int getChapterCount() const { return chapterCount; }
+	int getCurrentChapter() const { return currentChapter; }
+	int getAngleCount() const { return angleCount; }
+	int getCurrentAngle() const { return currentAngle; }
+	bool hasDvdMenu() const { return dvdMenu; }
+	QSize getVideoSize() const { return videoSize; }
+
 	virtual void setMuted(bool muted) = 0;
 	virtual void setVolume(int volume) = 0; // [0 - 200]
 	virtual void setAspectRatio(MediaWidget::AspectRatio aspectRatio) = 0;
@@ -69,7 +69,28 @@ public:
 	virtual bool jumpToNextChapter() = 0;
 	virtual void toggleMenu() = 0;
 
-	enum DirtyFlag
+protected:
+	void resetState();
+	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_);
+	void updateTotalTime(int totalTime_);
+	void updateCurrentTime(int currentTime_);
+	void updateSeekable(bool seekable_);
+	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_);
+	void updateAudioChannels(const QStringList &audioChannels_);
+	void updateCurrentAudioChannel(int currentAudioChannel_);
+	void updateSubtitles(const QStringList &subtitles_);
+	void updateCurrentSubtitle(int currentSubtitle_);
+	void updateTitleCount(int titleCount_);
+	void updateCurrentTitle(int currentTitle_);
+	void updateChapterCount(int chapterCount_);
+	void updateCurrentChapter(int currentChapter_);
+	void updateAngleCount(int angleCount_);
+	void updateCurrentAngle(int currentAngle_);
+	void updateDvdMenu(bool dvdMenu_);
+	void updateVideoSize(const QSize &videoSize_);
+
+private:
+	enum PendingUpdate
 	{
 		PlaybackFinished = (1 << 0),
 		UpdatePlaybackStatus = (1 << 1),
@@ -82,27 +103,39 @@ public:
 		UpdateTitles = (1 << 8),
 		UpdateChapters = (1 << 9),
 		UpdateAngles = (1 << 10),
-		UpdateDvdPlayback = (1 << 11),
+		UpdateDvdMenu = (1 << 11),
 		UpdateVideoSize = (1 << 12),
-		InvalidateState = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
+		ResetState = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
 			UpdateSeekable | UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
-			UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdPlayback |
+			UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdMenu |
 			UpdateVideoSize)
 	};
 
-	Q_DECLARE_FLAGS(DirtyFlags, DirtyFlag)
+	Q_DECLARE_FLAGS(PendingUpdates, PendingUpdate)
 
-protected:
-	void addDirtyFlags(DirtyFlags additionalDirtyFlags);
-
-private:
+	void addPendingUpdate(PendingUpdate pendingUpdate);
 	void customEvent(QEvent *event);
 
-	QAtomicInt dirtyFlags;
 	MediaWidget *mediaWidget;
+	PendingUpdates pendingUpdates;
+	MediaWidget::PlaybackStatus playbackStatus;
+	int totalTime;
+	int currentTime;
+	bool seekable;
+	QMap<MediaWidget::MetadataType, QString> metadata;
+	QStringList audioChannels;
+	int currentAudioChannel;
+	QStringList subtitles;
+	int currentSubtitle;
+	int titleCount;
+	int currentTitle;
+	int chapterCount;
+	int currentChapter;
+	int angleCount;
+	int currentAngle;
+	bool dvdMenu;
+	QSize videoSize;
 };
-
-Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractMediaWidget::DirtyFlags)
 
 class DummyMediaWidget : public AbstractMediaWidget
 {
@@ -112,23 +145,6 @@ public:
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
-	MediaWidget::PlaybackStatus getPlaybackStatus();
-	int getTotalTime(); // milliseconds
-	int getCurrentTime(); // milliseconds
-	bool isSeekable();
-	QMap<MediaWidget::MetadataType, QString> getMetadata();
-	QStringList getAudioChannels();
-	int getCurrentAudioChannel();
-	QStringList getSubtitles();
-	int getCurrentSubtitle();
-	int getTitleCount();
-	int getCurrentTitle();
-	int getChapterCount();
-	int getCurrentChapter();
-	int getAngleCount();
-	int getCurrentAngle();
-	bool hasMenu();
-	QSize getVideoSize();
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);

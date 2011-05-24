@@ -26,10 +26,9 @@
 #include "../log.h"
 #include "mplayervideowidget.h"
 
-MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), volume(0),
-	muted(false), aspectRatio(MediaWidget::AspectRatioAuto), playbackStatus(MediaWidget::Idle),
-	playingDvd(false), totalTime(0), currentTime(0), videoWidth(0), videoHeight(0),
-	videoAspectRatio(1)
+MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
+	muted(false), volume(0), aspectRatio(MediaWidget::AspectRatioAuto), videoWidth(0),
+	videoHeight(0), videoAspectRatio(1)
 {
 	videoWidget = new MPlayerVideoWidget(this);
 	standardError.open(stderr, QIODevice::WriteOnly);
@@ -49,107 +48,6 @@ MPlayerMediaWidget::~MPlayerMediaWidget()
 MPlayerMediaWidget *MPlayerMediaWidget::createMPlayerMediaWidget(QWidget *parent)
 {
 	return new MPlayerMediaWidget(parent);
-}
-
-MediaWidget::PlaybackStatus MPlayerMediaWidget::getPlaybackStatus()
-{
-	return playbackStatus;
-}
-
-int MPlayerMediaWidget::getTotalTime()
-{
-	return totalTime;
-}
-
-int MPlayerMediaWidget::getCurrentTime()
-{
-	return currentTime;
-}
-
-bool MPlayerMediaWidget::isSeekable()
-{
-	return false;
-	// FIXME
-}
-
-QMap<MediaWidget::MetadataType, QString> MPlayerMediaWidget::getMetadata()
-{
-	QMap<MediaWidget::MetadataType, QString> metadata;
-	return metadata;
-	// FIXME
-}
-
-QStringList MPlayerMediaWidget::getAudioChannels()
-{
-	QStringList audioChannels;
-	return audioChannels;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getCurrentAudioChannel()
-{
-	return 0;
-	// FIXME
-}
-
-QStringList MPlayerMediaWidget::getSubtitles()
-{
-	QStringList subtitles;
-	return subtitles;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getCurrentSubtitle()
-{
-	return 0;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getTitleCount()
-{
-	return 0;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getCurrentTitle()
-{
-	return -1;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getChapterCount()
-{
-	return 0;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getCurrentChapter()
-{
-	return -1;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getAngleCount()
-{
-	return 0;
-	// FIXME
-}
-
-int MPlayerMediaWidget::getCurrentAngle()
-{
-	return -1;
-	// FIXME
-}
-
-bool MPlayerMediaWidget::hasMenu()
-{
-	return playingDvd;
-}
-
-QSize MPlayerMediaWidget::getVideoSize()
-{
-	return QSize();
-	// FIXME
 }
 
 void MPlayerMediaWidget::setMuted(bool muted_)
@@ -178,19 +76,17 @@ void MPlayerMediaWidget::setDeinterlacing(bool deinterlacing)
 
 void MPlayerMediaWidget::play(const MediaSource &source)
 {
-	QByteArray url = source.url.toEncoded();
-	playbackStatus = MediaWidget::Playing;
-	playingDvd = false;
-	totalTime = 0;
-	currentTime = 0;
+	resetState();
 	videoWidth = 0;
 	videoHeight = 0;
 	videoAspectRatio = 1;
+	updateVideoWidgetGeometry();
+	QByteArray url = source.url.toEncoded();
 
 	switch (source.type) {
 	case MediaSource::Url:
 		if (url.endsWith(".iso")) {
-			playingDvd = true;
+			updateDvdMenu(true);
 		}
 
 		break;
@@ -217,41 +113,41 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 			url = "dvdnav:///";
 		}
 
-		playingDvd = true;
+		updateDvdMenu(true);
 		break;
 	}
 
+	updatePlaybackStatus(MediaWidget::Playing);
 	process.write("loadfile " + url + '\n');
+	process.write("pausing_keep_force get_property path\n");
 	sendCommand(SetVolume);
 }
 
 void MPlayerMediaWidget::stop()
 {
-	playbackStatus = MediaWidget::Idle;
-	playingDvd = false;
-	totalTime = 0;
-	currentTime = 0;
+	resetState();
 	videoWidth = 0;
 	videoHeight = 0;
 	videoAspectRatio = 1;
+	updateVideoWidgetGeometry();
 	sendCommand(Stop);
 }
 
 void MPlayerMediaWidget::setPaused(bool paused)
 {
-	switch (playbackStatus) {
+	switch (getPlaybackStatus()) {
 	case MediaWidget::Idle:
 		break;
 	case MediaWidget::Playing:
 		if (paused) {
-			playbackStatus = MediaWidget::Paused;
+			updatePlaybackStatus(MediaWidget::Paused);
 			sendCommand(TogglePause);
 		}
 
 		break;
 	case MediaWidget::Paused:
 		if (!paused) {
-			playbackStatus = MediaWidget::Playing;
+			updatePlaybackStatus(MediaWidget::Playing);
 			sendCommand(TogglePause);
 		}
 
@@ -342,14 +238,10 @@ void MPlayerMediaWidget::readStandardOutput()
 		}
 
 		if (line == "ANS_path=(null)") {
-			playbackStatus = MediaWidget::Idle;
-			playingDvd = false;
-			totalTime = 0;
-			currentTime = 0;
+			resetState();
 			videoWidth = 0;
 			videoHeight = 0;
 			videoAspectRatio = 1;
-			invalidateState();
 			updateVideoWidgetGeometry();
 		}
 
@@ -461,7 +353,7 @@ void MPlayerMediaWidget::updateVideoWidgetGeometry()
 
 	QRect geometry(QPoint(0, 0), size());
 
-	if (playbackStatus == MediaWidget::Idle) {
+	if (getPlaybackStatus() == MediaWidget::Idle) {
 		geometry.setSize(QSize(0, 0));
 	} else if (effectiveAspectRatio > 0) {
 		int newWidth = (geometry.height() * effectiveAspectRatio + 0.5);

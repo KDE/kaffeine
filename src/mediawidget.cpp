@@ -44,11 +44,11 @@
 #include "osdwidget.h"
 
 MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
-	QWidget *parent) : QWidget(parent), menu(menu_), backendPlaybackStatus(Idle),
-	displayMode(NormalMode), automaticResize(ResizeOff), source(Playlist),
-	blockBackendUpdates(false), muted(false), screenSaverSuspended(false), backendTotalTime(0),
-	backendCurrentTime(0), showElapsedTime(true), backendSeekable(false),
-	currentBackendAudioChannel(-1), currentDvbAudioChannel(-1), currentBackendSubtitle(-1),
+	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
+	automaticResize(ResizeOff), source(Playlist),
+	blockBackendUpdates(false), muted(false), screenSaverSuspended(false),
+	showElapsedTime(true),
+	currentDvbAudioChannel(-1),
 	currentDvbSubtitle(-1), currentExternalSubtitle(-1)
 {
 	QBoxLayout *layout = new QVBoxLayout(this);
@@ -334,8 +334,6 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	QTimer *timer = new QTimer(this);
 	timer->start(50000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
-
-	backend->invalidateState();
 }
 
 MediaWidget::~MediaWidget()
@@ -463,7 +461,6 @@ void MediaWidget::play(Source source_, const KUrl &url, const KUrl &subtitleUrl)
 	}
 
 	backend->play(mediaSource);
-	backend->invalidateState();
 }
 
 void MediaWidget::play(const KUrl &url, const KUrl &subtitleUrl)
@@ -572,7 +569,7 @@ void MediaWidget::updateDvbSubtitles(const QStringList &dvbSubtitles_, int curre
 
 MediaWidget::PlaybackStatus MediaWidget::getPlaybackStatus() const
 {
-	return backendPlaybackStatus;
+	return backend->getPlaybackStatus();
 }
 
 int MediaWidget::getVolume() const
@@ -582,7 +579,7 @@ int MediaWidget::getVolume() const
 
 int MediaWidget::getPosition() const
 {
-	return backendCurrentTime;
+	return backend->getCurrentTime();
 }
 
 void MediaWidget::play()
@@ -665,7 +662,7 @@ void MediaWidget::next()
 
 void MediaWidget::stop()
 {
-	switch (backendPlaybackStatus) {
+	switch (backend->getPlaybackStatus()) {
 	case Idle:
 		break;
 	case Playing:
@@ -675,7 +672,6 @@ void MediaWidget::stop()
 	}
 
 	backend->stop();
-	backend->invalidateState();
 }
 
 void MediaWidget::increaseVolume()
@@ -694,7 +690,7 @@ void MediaWidget::checkScreenSaver()
 {
 	bool suspendScreenSaver = false;
 
-	switch (backendPlaybackStatus) {
+	switch (backend->getPlaybackStatus()) {
 	case Idle:
 	case Paused:
 		break;
@@ -822,7 +818,7 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 
 void MediaWidget::pausedChanged(bool paused)
 {
-	switch (backendPlaybackStatus) {
+	switch (backend->getPlaybackStatus()) {
 	case Idle:
 		emit playlistPlay();
 		break;
@@ -842,7 +838,7 @@ void MediaWidget::timeButtonClicked()
 void MediaWidget::longSkipBackward()
 {
 	int longSkipDuration = Configuration::instance()->getLongSkipDuration();
-	int currentTime = (backendCurrentTime - 1000 * longSkipDuration);
+	int currentTime = (backend->getCurrentTime() - 1000 * longSkipDuration);
 
 	if (currentTime < 0) {
 		currentTime = 0;
@@ -854,7 +850,7 @@ void MediaWidget::longSkipBackward()
 void MediaWidget::shortSkipBackward()
 {
 	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
-	int currentTime = (backendCurrentTime - 1000 * shortSkipDuration);
+	int currentTime = (backend->getCurrentTime() - 1000 * shortSkipDuration);
 
 	if (currentTime < 0) {
 		currentTime = 0;
@@ -866,13 +862,13 @@ void MediaWidget::shortSkipBackward()
 void MediaWidget::shortSkipForward()
 {
 	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
-	backend->seek(backendCurrentTime + 1000 * shortSkipDuration);
+	backend->seek(backend->getCurrentTime() + 1000 * shortSkipDuration);
 }
 
 void MediaWidget::longSkipForward()
 {
 	int longSkipDuration = Configuration::instance()->getLongSkipDuration();
-	backend->seek(backendCurrentTime + 1000 * longSkipDuration);
+	backend->seek(backend->getCurrentTime() + 1000 * longSkipDuration);
 }
 
 void MediaWidget::jumpToPosition()
@@ -907,11 +903,11 @@ void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 	if (dvbSubtitles.isEmpty()) {
 		int oldExternalSubtitle = currentExternalSubtitle;
 
-		if (currentSubtitle < backendSubtitles.size()) {
+		if (currentSubtitle < backend->getSubtitles().size()) {
 			currentExternalSubtitle = -1;
 			backend->setCurrentSubtitle(currentSubtitle);
 		} else {
-			currentExternalSubtitle = (currentSubtitle - backendSubtitles.size());
+			currentExternalSubtitle = (currentSubtitle - backend->getSubtitles().size());
 		}
 
 		if (currentExternalSubtitle != oldExternalSubtitle) {
@@ -971,8 +967,8 @@ void MediaWidget::updateAudioChannelUi()
 	audioChannelBox->clear();
 
 	if (dvbAudioChannels.isEmpty()) {
-		audioChannelBox->addItems(backendAudioChannels);
-		audioChannelBox->setCurrentIndex(currentBackendAudioChannel);
+		audioChannelBox->addItems(backend->getAudioChannels());
+		audioChannelBox->setCurrentIndex(backend->getCurrentAudioChannel());
 	} else {
 		audioChannelBox->addItems(dvbAudioChannels);
 		audioChannelBox->setCurrentIndex(currentDvbAudioChannel);
@@ -989,7 +985,7 @@ void MediaWidget::updateSubtitleUi()
 	subtitleBox->addItem(textSubtitlesOff);
 
 	if (dvbSubtitles.isEmpty()) {
-		subtitleBox->addItems(backendSubtitles);
+		subtitleBox->addItems(backend->getSubtitles());
 
 		foreach (const KUrl &subtitleUrl, externalSubtitles) {
 			subtitleBox->addItem(subtitleUrl.fileName());
@@ -998,9 +994,9 @@ void MediaWidget::updateSubtitleUi()
 		int currentIndex;
 
 		if (currentExternalSubtitle < 0) {
-			currentIndex = (currentBackendSubtitle + 1);
+			currentIndex = (backend->getCurrentSubtitle() + 1);
 		} else {
-			currentIndex = (currentExternalSubtitle + backendSubtitles.size() + 1);
+			currentIndex = (currentExternalSubtitle + backend->getSubtitles().size() + 1);
 		}
 
 		subtitleBox->setCurrentIndex(currentIndex);
@@ -1015,8 +1011,8 @@ void MediaWidget::updateSubtitleUi()
 
 void MediaWidget::updateCurrentTotalTimeUi()
 {
-	int currentTime = backendCurrentTime;
-	int totalTime = backendTotalTime;
+	int currentTime = backend->getCurrentTime();
+	int totalTime = backend->getTotalTime();
 
 	switch (source) {
 	case Playlist:
@@ -1047,7 +1043,7 @@ void MediaWidget::updateCurrentTotalTimeUi()
 
 void MediaWidget::updateSeekableUi()
 {
-	bool seekable = backendSeekable;
+	bool seekable = backend->isSeekable();
 
 	switch (source) {
 	case Playlist:
@@ -1114,7 +1110,7 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
 	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
-	int currentTime = (backendCurrentTime - ((25 * shortSkipDuration * event->delta()) / 3));
+	int currentTime = (backend->getCurrentTime() - ((25 * shortSkipDuration * event->delta()) / 3));
 
 	if (currentTime < 0) {
 		currentTime = 0;
@@ -1140,12 +1136,11 @@ void MediaWidget::playbackFinished()
 	}
 }
 
-void MediaWidget::updatePlaybackStatus(PlaybackStatus playbackStatus)
+void MediaWidget::updatePlaybackStatus()
 {
-	backendPlaybackStatus = playbackStatus;
 	bool playing = true;
 
-	switch (playbackStatus) {
+	switch (backend->getPlaybackStatus()) {
 	case Idle:
 		emit changeCaption(QString());
 		actionPlayPause->setIcon(iconPlay);
@@ -1217,17 +1212,11 @@ void MediaWidget::updatePlaybackStatus(PlaybackStatus playbackStatus)
 	timeButton->setEnabled(playing);
 }
 
-void MediaWidget::updateTotalTime(int totalTime)
+void MediaWidget::updateTotalTime()
 {
-	if (totalTime < 0) {
-		totalTime = 0;
-	}
-
-	backendTotalTime = totalTime;
-
 	switch (source) {
 	case Playlist:
-		emit playlistTrackLengthChanged(backendTotalTime);
+		emit playlistTrackLengthChanged(backend->getTotalTime());
 		break;
 	case AudioCd:
 	case VideoCd:
@@ -1240,22 +1229,15 @@ void MediaWidget::updateTotalTime(int totalTime)
 	updateCurrentTotalTimeUi();
 }
 
-void MediaWidget::updateCurrentTime(int currentTime)
+void MediaWidget::updateCurrentTime()
 {
-	if (currentTime < 0) {
-		currentTime = 0;
-	}
-
-	if (currentTime > backendTotalTime) {
-		currentTime = backendTotalTime;
-	}
-
-	backendCurrentTime = currentTime;
 	updateCurrentTotalTimeUi();
 }
 
-void MediaWidget::updateMetadata(const QMap<MetadataType, QString> &metadata)
+void MediaWidget::updateMetadata()
 {
+	QMap<MediaWidget::MetadataType, QString> metadata = backend->getMetadata();
+
 	switch (source) {
 	case Playlist:
 		emit playlistTrackMetadataChanged(metadata);
@@ -1289,48 +1271,44 @@ void MediaWidget::updateMetadata(const QMap<MetadataType, QString> &metadata)
 	}
 }
 
-void MediaWidget::updateSeekable(bool seekable)
+void MediaWidget::updateSeekable()
 {
-	backendSeekable = seekable;
 	updateSeekableUi();
 }
 
-void MediaWidget::updateAudioChannels(const QStringList &audioChannels, int currentAudioChannel)
+void MediaWidget::updateAudioChannels()
 {
-	backendAudioChannels = audioChannels;
-	currentBackendAudioChannel = currentAudioChannel;
 	updateAudioChannelUi();
 }
 
-void MediaWidget::updateSubtitles(const QStringList &subtitles, int currentSubtitle)
+void MediaWidget::updateSubtitles()
 {
-	backendSubtitles = subtitles;
-	currentBackendSubtitle = currentSubtitle;
-
 	if (!dvbSubtitles.isEmpty()) {
 		// subtitles are overriden --> automatically choose appropriate subtitle
 		int selectedSubtitle = -1;
 
 		if (currentDvbSubtitle >= 0) {
-			selectedSubtitle = (backendSubtitles.size() - 1);
+			selectedSubtitle = (backend->getSubtitles().size() - 1);
 		}
 
-		if (currentBackendSubtitle != selectedSubtitle) {
-			// FIXME
-			// backend->setCurrentSubtitle(selectedSubtitle);
+		if (backend->getCurrentSubtitle() != selectedSubtitle) {
+			backend->setCurrentSubtitle(selectedSubtitle);
 		}
 	}
 
 	updateSubtitleUi();
 }
 
-void MediaWidget::updateDvdPlayback(bool playingDvd)
+void MediaWidget::updateDvdMenu()
 {
-	menuAction->setEnabled(playingDvd);
+	menuAction->setEnabled(backend->hasDvdMenu());
 }
 
-void MediaWidget::updateTitles(int titleCount, int currentTitle)
+void MediaWidget::updateTitles()
 {
+	int titleCount = backend->getTitleCount();
+	int currentTitle = backend->getCurrentTitle();
+
 	if (titleCount > 1) {
 		QList<QAction *> actions = titleGroup->actions();
 
@@ -1363,8 +1341,11 @@ void MediaWidget::updateTitles(int titleCount, int currentTitle)
 	}
 }
 
-void MediaWidget::updateChapters(int chapterCount, int currentChapter)
+void MediaWidget::updateChapters()
 {
+	int chapterCount = backend->getChapterCount();
+	int currentChapter = backend->getCurrentChapter();
+
 	if (chapterCount > 1) {
 		QList<QAction *> actions = chapterGroup->actions();
 
@@ -1397,8 +1378,11 @@ void MediaWidget::updateChapters(int chapterCount, int currentChapter)
 	}
 }
 
-void MediaWidget::updateAngles(int angleCount, int currentAngle)
+void MediaWidget::updateAngles()
 {
+	int angleCount = backend->getAngleCount();
+	int currentAngle = backend->getCurrentAngle();
+
 	if (angleCount > 1) {
 		QList<QAction *> actions = angleGroup->actions();
 

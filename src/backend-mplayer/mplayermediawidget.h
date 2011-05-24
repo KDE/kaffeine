@@ -38,25 +38,6 @@ public:
 
 	static MPlayerMediaWidget *createMPlayerMediaWidget(QWidget *parent); // returns NULL if init fails
 
-	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
-
-	MediaWidget::PlaybackStatus getPlaybackStatus();
-	int getTotalTime(); // milliseconds
-	int getCurrentTime(); // milliseconds
-	bool isSeekable();
-	QMap<MediaWidget::MetadataType, QString> getMetadata();
-	QStringList getAudioChannels();
-	int getCurrentAudioChannel();
-	QStringList getSubtitles();
-	int getCurrentSubtitle();
-	int getTitleCount();
-	int getCurrentTitle();
-	int getChapterCount();
-	int getCurrentChapter();
-	int getAngleCount();
-	int getCurrentAngle();
-	bool hasMenu();
-	QSize getVideoSize();
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
@@ -99,13 +80,9 @@ private:
 	QWidget *videoWidget;
 	QProcess process;
 	QFile standardError;
-	int volume;
 	bool muted;
+	int volume;
 	MediaWidget::AspectRatio aspectRatio;
-	MediaWidget::PlaybackStatus playbackStatus;
-	bool playingDvd;
-	int totalTime;
-	int currentTime;
 	int videoWidth;
 	int videoHeight;
 	float videoAspectRatio;

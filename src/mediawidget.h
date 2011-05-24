@@ -204,17 +204,17 @@ private slots:
 
 private:
 	void playbackFinished();
-	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus);
-	void updateTotalTime(int totalTime);
-	void updateCurrentTime(int currentTime);
-	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);
-	void updateSeekable(bool seekable);
-	void updateAudioChannels(const QStringList &audioChannels, int currentAudioChannel);
-	void updateSubtitles(const QStringList &subtitles, int currentSubtitle);
-	void updateTitles(int titleCount, int currentTitle);
-	void updateChapters(int chapterCount, int currentChapter);
-	void updateAngles(int angleCount, int currentAngle);
-	void updateDvdPlayback(bool playingDvd);
+	void updatePlaybackStatus();
+	void updateTotalTime();
+	void updateCurrentTime();
+	void updateMetadata();
+	void updateSeekable();
+	void updateAudioChannels();
+	void updateSubtitles();
+	void updateTitles();
+	void updateChapters();
+	void updateAngles();
+	void updateDvdMenu();
 	void updateVideoSize();
 
 	void updateCurrentTotalTimeUi();
@@ -268,7 +268,6 @@ private:
 	KAction *jumpToPositionAction;
 	QPushButton *timeButton;
 
-	PlaybackStatus backendPlaybackStatus;
 	DisplayMode displayMode;
 	ResizeFactor automaticResize;
 	Source source;
@@ -276,20 +275,13 @@ private:
 	bool muted;
 	bool screenSaverSuspended;
 
-	int backendTotalTime; // milliseconds
-	int backendCurrentTime; // milliseconds
 	bool showElapsedTime;
-	bool backendSeekable;
 
-	QStringList backendAudioChannels;
 	QStringList dvbAudioChannels;
-	int currentBackendAudioChannel; // first audio channel = 0
 	int currentDvbAudioChannel; // first audio channel = 0
 
-	QStringList backendSubtitles;
 	QStringList dvbSubtitles;
 	QList<KUrl> externalSubtitles;
-	int currentBackendSubtitle; // first subtitle = 0
 	int currentDvbSubtitle; // first subtitle = 0
 	int currentExternalSubtitle; // first subtitle = 0
 };

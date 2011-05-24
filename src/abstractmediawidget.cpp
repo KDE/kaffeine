@@ -22,189 +22,220 @@
 
 #include <QCoreApplication>
 
+AbstractMediaWidget::AbstractMediaWidget(QWidget *parent) : QWidget(parent), mediaWidget(NULL)
+{
+	resetState();
+}
+
+AbstractMediaWidget::~AbstractMediaWidget()
+{
+}
+
 void AbstractMediaWidget::setMediaWidget(MediaWidget *mediaWidget_)
 {
 	mediaWidget = mediaWidget_;
 }
 
-void AbstractMediaWidget::invalidateState()
+void AbstractMediaWidget::resetState()
 {
-	if (dirtyFlags.fetchAndStoreRelaxed(InvalidateState) == 0) {
+	if (pendingUpdates == 0) {
 		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 	}
+
+	pendingUpdates = ResetState;
+	playbackStatus = MediaWidget::Idle;
+	totalTime = 0;
+	currentTime = 0;
+	seekable = false;
+	metadata.clear();
+	audioChannels.clear();
+	currentAudioChannel = -1;
+	subtitles.clear();
+	currentSubtitle = -1;
+	titleCount = 0;
+	currentTitle = -1;
+	chapterCount = 0;
+	currentChapter = -1;
+	angleCount = 0;
+	currentAngle = -1;
+	dvdMenu = false;
+	videoSize = QSize();
 }
 
-void AbstractMediaWidget::addDirtyFlags(DirtyFlags additionalDirtyFlags)
+void AbstractMediaWidget::addPendingUpdate(PendingUpdate pendingUpdate)
 {
-	while (true) {
-		uint oldDirtyFlags = dirtyFlags;
-		uint newDirtyFlags = (oldDirtyFlags | additionalDirtyFlags);
-
-		if (oldDirtyFlags == newDirtyFlags) {
-			break;
-		}
-
-		if (!dirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
-			continue;
-		}
-
-		if (oldDirtyFlags == 0) {
-			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-		}
-
-		break;
+	if (pendingUpdates == 0) {
+		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 	}
+
+	pendingUpdates |= pendingUpdate;
+}
+
+void AbstractMediaWidget::updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_)
+{
+	playbackStatus = playbackStatus_;
+	addPendingUpdate(UpdatePlaybackStatus);
+}
+
+void AbstractMediaWidget::updateTotalTime(int totalTime_)
+{
+	totalTime = totalTime_;
+
+	if (totalTime < 0) {
+		totalTime = 0;
+	}
+
+	addPendingUpdate(UpdateTotalTime);
+}
+
+void AbstractMediaWidget::updateCurrentTime(int currentTime_)
+{
+	currentTime = currentTime_;
+
+	if (currentTime < 0) {
+		currentTime = 0;
+	}
+
+	addPendingUpdate(UpdateCurrentTime);
+}
+
+void AbstractMediaWidget::updateSeekable(bool seekable_)
+{
+	seekable = seekable_;
+	addPendingUpdate(UpdateSeekable);
+}
+
+void AbstractMediaWidget::updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_)
+{
+	metadata = metadata_;
+	addPendingUpdate(UpdateMetadata);
+}
+
+void AbstractMediaWidget::updateAudioChannels(const QStringList &audioChannels_)
+{
+	audioChannels = audioChannels_;
+	addPendingUpdate(UpdateAudioChannels);
+}
+
+void AbstractMediaWidget::updateCurrentAudioChannel(int currentAudioChannel_)
+{
+	currentAudioChannel = currentAudioChannel_;
+	addPendingUpdate(UpdateAudioChannels);
+}
+
+void AbstractMediaWidget::updateSubtitles(const QStringList &subtitles_)
+{
+	subtitles = subtitles_;
+	addPendingUpdate(UpdateSubtitles);
+}
+
+void AbstractMediaWidget::updateCurrentSubtitle(int currentSubtitle_)
+{
+	currentSubtitle = currentSubtitle_;
+	addPendingUpdate(UpdateSubtitles);
+}
+
+void AbstractMediaWidget::updateTitleCount(int titleCount_)
+{
+	titleCount = titleCount_;
+	addPendingUpdate(UpdateTitles);
+}
+
+void AbstractMediaWidget::updateCurrentTitle(int currentTitle_)
+{
+	currentTitle = currentTitle_;
+	addPendingUpdate(UpdateTitles);
+}
+
+void AbstractMediaWidget::updateChapterCount(int chapterCount_)
+{
+	chapterCount = chapterCount_;
+	addPendingUpdate(UpdateChapters);
+}
+
+void AbstractMediaWidget::updateCurrentChapter(int currentChapter_)
+{
+	currentChapter = currentChapter_;
+	addPendingUpdate(UpdateChapters);
+}
+
+void AbstractMediaWidget::updateAngleCount(int angleCount_)
+{
+	angleCount = angleCount_;
+	addPendingUpdate(UpdateAngles);
+}
+
+void AbstractMediaWidget::updateCurrentAngle(int currentAngle_)
+{
+	currentAngle = currentAngle_;
+	addPendingUpdate(UpdateAngles);
+}
+
+void AbstractMediaWidget::updateDvdMenu(bool dvdMenu_)
+{
+	dvdMenu = dvdMenu_;
+	addPendingUpdate(UpdateDvdMenu);
+}
+
+void AbstractMediaWidget::updateVideoSize(const QSize &videoSize_)
+{
+	videoSize = videoSize_;
+	addPendingUpdate(UpdateVideoSize);
 }
 
 void AbstractMediaWidget::customEvent(QEvent *event)
 {
 	Q_UNUSED(event)
 
-	while (true) {
-		uint oldDirtyFlags = dirtyFlags;
-		uint lowestDirtyFlag = (oldDirtyFlags & (~(oldDirtyFlags - 1)));
-		uint newDirtyFlags = (oldDirtyFlags & (~lowestDirtyFlag));
+	while (pendingUpdates != 0) {
+		uint lowestPendingUpdate = (pendingUpdates & (~(pendingUpdates - 1)));
+		pendingUpdates &= ~lowestPendingUpdate;
 
-		if (oldDirtyFlags == newDirtyFlags) {
-			break;
-		}
-
-		if (!dirtyFlags.testAndSetRelaxed(oldDirtyFlags, newDirtyFlags)) {
-			continue;
-		}
-
-		switch (static_cast<DirtyFlag>(lowestDirtyFlag)) {
+		switch (static_cast<PendingUpdates>(lowestPendingUpdate)) {
 		case PlaybackFinished:
 			mediaWidget->playbackFinished();
 			break;
 		case UpdatePlaybackStatus:
-			mediaWidget->updatePlaybackStatus(getPlaybackStatus());
+			mediaWidget->updatePlaybackStatus();
 			break;
 		case UpdateTotalTime:
-			mediaWidget->updateTotalTime(getTotalTime());
+			mediaWidget->updateTotalTime();
 			break;
 		case UpdateCurrentTime:
-			mediaWidget->updateCurrentTime(getCurrentTime());
+			mediaWidget->updateCurrentTime();
 			break;
 		case UpdateSeekable:
-			mediaWidget->updateSeekable(isSeekable());
+			mediaWidget->updateSeekable();
 			break;
 		case UpdateMetadata:
-			mediaWidget->updateMetadata(getMetadata());
+			mediaWidget->updateMetadata();
 			break;
 		case UpdateAudioChannels:
-			mediaWidget->updateAudioChannels(getAudioChannels(),
-				getCurrentAudioChannel());
+			mediaWidget->updateAudioChannels();
 			break;
 		case UpdateSubtitles:
-			mediaWidget->updateSubtitles(getSubtitles(), getCurrentSubtitle());
+			mediaWidget->updateSubtitles();
 			break;
 		case UpdateTitles:
-			mediaWidget->updateTitles(getTitleCount(), getCurrentTitle());
+			mediaWidget->updateTitles();
 			break;
 		case UpdateChapters:
-			mediaWidget->updateChapters(getChapterCount(), getCurrentChapter());
+			mediaWidget->updateChapters();
 			break;
 		case UpdateAngles:
-			mediaWidget->updateAngles(getAngleCount(), getCurrentAngle());
+			mediaWidget->updateAngles();
 			break;
-		case UpdateDvdPlayback:
-			mediaWidget->updateDvdPlayback(hasMenu());
+		case UpdateDvdMenu:
+			mediaWidget->updateDvdMenu();
 			break;
 		case UpdateVideoSize:
-			// FIXME
 			mediaWidget->updateVideoSize();
 			break;
-		case InvalidateState:
+		case ResetState:
 			// this is a combination of flags
 			break;
 		}
 	}
-}
-
-MediaWidget::PlaybackStatus DummyMediaWidget::getPlaybackStatus()
-{
-	return MediaWidget::Idle;
-}
-
-int DummyMediaWidget::getCurrentTime()
-{
-	return 0;
-}
-
-int DummyMediaWidget::getTotalTime()
-{
-	return 0;
-}
-
-bool DummyMediaWidget::isSeekable()
-{
-	return false;
-}
-
-QMap<MediaWidget::MetadataType, QString> DummyMediaWidget::getMetadata()
-{
-	return QMap<MediaWidget::MetadataType, QString>();
-}
-
-QStringList DummyMediaWidget::getAudioChannels()
-{
-	return QStringList();
-}
-
-int DummyMediaWidget::getCurrentAudioChannel()
-{
-	return -1;
-}
-
-QStringList DummyMediaWidget::getSubtitles()
-{
-	return QStringList();
-}
-
-int DummyMediaWidget::getCurrentSubtitle()
-{
-	return -1;
-}
-
-int DummyMediaWidget::getTitleCount()
-{
-	return 0;
-}
-
-int DummyMediaWidget::getCurrentTitle()
-{
-	return -1;
-}
-
-int DummyMediaWidget::getChapterCount()
-{
-	return 0;
-}
-
-int DummyMediaWidget::getCurrentChapter()
-{
-	return -1;
-}
-
-int DummyMediaWidget::getAngleCount()
-{
-	return 0;
-}
-
-int DummyMediaWidget::getCurrentAngle()
-{
-	return -1;
-}
-
-bool DummyMediaWidget::hasMenu()
-{
-	return false;
-}
-
-QSize DummyMediaWidget::getVideoSize()
-{
-	return QSize();
 }
 
 void DummyMediaWidget::setMuted(bool muted)
@@ -230,10 +261,12 @@ void DummyMediaWidget::setDeinterlacing(bool deinterlacing)
 void DummyMediaWidget::play(const MediaSource &source)
 {
 	Q_UNUSED(source)
+	resetState();
 }
 
 void DummyMediaWidget::stop()
 {
+	resetState();
 }
 
 void DummyMediaWidget::setPaused(bool paused)
