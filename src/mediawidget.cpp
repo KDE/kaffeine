@@ -301,7 +301,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	toolBar->addAction(collection->addAction("controls_position_slider", action));
 
 	menuAction = new KAction(KIcon("media-optical-video"),
-		i18nc("dvd navigation", "Toggle Menu"), this);
+		i18nc("dvd navigation", "DVD Menu"), this);
 	connect(menuAction, SIGNAL(triggered()), this, SLOT(toggleMenu()));
 	menu->addAction(collection->addAction("controls_toggle_menu", menuAction));
 
@@ -832,7 +832,7 @@ void MediaWidget::pausedChanged(bool paused)
 void MediaWidget::timeButtonClicked()
 {
 	showElapsedTime = !showElapsedTime;
-	updateCurrentTotalTimeUi();
+	currentTotalTimeChanged();
 }
 
 void MediaWidget::longSkipBackward()
@@ -927,7 +927,7 @@ void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 
 void MediaWidget::toggleMenu()
 {
-	backend->toggleMenu();
+	backend->showDvdMenu();
 }
 
 void MediaWidget::currentTitleChanged(QAction *action)
@@ -1009,13 +1009,15 @@ void MediaWidget::updateSubtitleUi()
 	blockBackendUpdates = false;
 }
 
-void MediaWidget::updateCurrentTotalTimeUi()
+void MediaWidget::currentTotalTimeChanged()
 {
 	int currentTime = backend->getCurrentTime();
 	int totalTime = backend->getTotalTime();
 
 	switch (source) {
 	case Playlist:
+		emit playlistTrackLengthChanged(totalTime);
+		break;
 	case AudioCd:
 	case VideoCd:
 	case Dvd:
@@ -1210,28 +1212,6 @@ void MediaWidget::updatePlaybackStatus()
 	actionStop->setEnabled(playing);
 	actionNext->setEnabled(playing);
 	timeButton->setEnabled(playing);
-}
-
-void MediaWidget::updateTotalTime()
-{
-	switch (source) {
-	case Playlist:
-		emit playlistTrackLengthChanged(backend->getTotalTime());
-		break;
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-	case Dvb:
-	case DvbTimeShift:
-		break;
-	}
-
-	updateCurrentTotalTimeUi();
-}
-
-void MediaWidget::updateCurrentTime()
-{
-	updateCurrentTotalTimeUi();
 }
 
 void MediaWidget::updateMetadata()

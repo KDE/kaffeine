@@ -34,8 +34,8 @@ public:
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
 	MediaWidget::PlaybackStatus getPlaybackStatus() const { return playbackStatus; }
-	int getTotalTime() const { return totalTime; } // milliseconds
 	int getCurrentTime() const { return currentTime; } // milliseconds
+	int getTotalTime() const { return totalTime; } // milliseconds
 	bool isSeekable() const { return seekable; }
 	QMap<MediaWidget::MetadataType, QString> getMetadata() const { return metadata; }
 	QStringList getAudioChannels() const { return audioChannels; }
@@ -67,13 +67,12 @@ public:
 	virtual void setCurrentAngle(int currentAngle) = 0;
 	virtual bool jumpToPreviousChapter() = 0;
 	virtual bool jumpToNextChapter() = 0;
-	virtual void toggleMenu() = 0;
+	virtual void showDvdMenu() = 0;
 
 protected:
 	void resetState();
 	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_);
-	void updateTotalTime(int totalTime_);
-	void updateCurrentTime(int currentTime_);
+	void updateCurrentTotalTime(int currentTime_, int totalTime_);
 	void updateSeekable(bool seekable_);
 	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_);
 	void updateAudioChannels(const QStringList &audioChannels_);
@@ -94,21 +93,19 @@ private:
 	{
 		PlaybackFinished = (1 << 0),
 		UpdatePlaybackStatus = (1 << 1),
-		UpdateTotalTime = (1 << 2),
-		UpdateCurrentTime = (1 << 3),
-		UpdateSeekable = (1 << 4),
-		UpdateMetadata = (1 << 5),
-		UpdateAudioChannels = (1 << 6),
-		UpdateSubtitles = (1 << 7),
-		UpdateTitles = (1 << 8),
-		UpdateChapters = (1 << 9),
-		UpdateAngles = (1 << 10),
-		UpdateDvdMenu = (1 << 11),
-		UpdateVideoSize = (1 << 12),
-		ResetState = (UpdatePlaybackStatus | UpdateTotalTime | UpdateCurrentTime |
-			UpdateSeekable | UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
-			UpdateTitles | UpdateChapters | UpdateAngles | UpdateDvdMenu |
-			UpdateVideoSize)
+		UpdateCurrentTotalTime = (1 << 2),
+		UpdateSeekable = (1 << 3),
+		UpdateMetadata = (1 << 4),
+		UpdateAudioChannels = (1 << 5),
+		UpdateSubtitles = (1 << 6),
+		UpdateTitles = (1 << 7),
+		UpdateChapters = (1 << 8),
+		UpdateAngles = (1 << 9),
+		UpdateDvdMenu = (1 << 10),
+		UpdateVideoSize = (1 << 11),
+		ResetState = (UpdatePlaybackStatus | UpdateCurrentTotalTime | UpdateSeekable |
+			UpdateMetadata | UpdateAudioChannels | UpdateSubtitles | UpdateTitles |
+			UpdateChapters | UpdateAngles | UpdateDvdMenu | UpdateVideoSize)
 	};
 
 	Q_DECLARE_FLAGS(PendingUpdates, PendingUpdate)
@@ -119,8 +116,8 @@ private:
 	MediaWidget *mediaWidget;
 	PendingUpdates pendingUpdates;
 	MediaWidget::PlaybackStatus playbackStatus;
-	int totalTime;
 	int currentTime;
+	int totalTime;
 	bool seekable;
 	QMap<MediaWidget::MetadataType, QString> metadata;
 	QStringList audioChannels;
@@ -161,7 +158,7 @@ public:
 	void setCurrentAngle(int currentAngle);
 	bool jumpToPreviousChapter();
 	bool jumpToNextChapter();
-	void toggleMenu();
+	void showDvdMenu();
 };
 
 #endif /* ABSTRACTMEDIAWIDGET_H */

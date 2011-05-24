@@ -209,9 +209,9 @@ bool MPlayerMediaWidget::jumpToNextChapter()
 	return false;
 }
 
-void MPlayerMediaWidget::toggleMenu()
+void MPlayerMediaWidget::showDvdMenu()
 {
-	sendCommand(ActivateMenu);
+	sendCommand(ShowDvdMenu);
 }
 
 void MPlayerMediaWidget::error(QProcess::ProcessError error)
@@ -307,9 +307,6 @@ void MPlayerMediaWidget::resizeEvent(QResizeEvent *event)
 void MPlayerMediaWidget::sendCommand(Command command)
 {
 	switch (command) {
-	case ActivateMenu:
-		process.write("dvdnav menu\n");
-		break;
 	case SetVolume: {
 		int realVolume = volume;
 
@@ -321,6 +318,9 @@ void MPlayerMediaWidget::sendCommand(Command command)
 			QByteArray::number(realVolume) + '\n');
 		break;
 	    }
+	case ShowDvdMenu:
+		process.write("dvdnav menu\n");
+		break;
 	case Stop:
 		process.write("stop\n");
 		break;

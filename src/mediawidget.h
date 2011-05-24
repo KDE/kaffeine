@@ -58,7 +58,6 @@ public:
 
 class MediaWidget : public QWidget
 {
-	friend class AbstractMediaWidget;
 	Q_OBJECT
 public:
 	MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
@@ -159,6 +158,20 @@ public slots:
 	void longSkipBackward();
 	void longSkipForward();
 
+public:
+	void playbackFinished();
+	void updatePlaybackStatus();
+	void currentTotalTimeChanged();
+	void updateMetadata();
+	void updateSeekable();
+	void updateAudioChannels();
+	void updateSubtitles();
+	void updateTitles();
+	void updateChapters();
+	void updateAngles();
+	void updateDvdMenu();
+	void updateVideoSize();
+
 signals:
 	void displayModeChanged();
 	void changeCaption(const QString &caption);
@@ -203,21 +216,6 @@ private slots:
 	void longSkipDurationChanged(int longSkipDuration);
 
 private:
-	void playbackFinished();
-	void updatePlaybackStatus();
-	void updateTotalTime();
-	void updateCurrentTime();
-	void updateMetadata();
-	void updateSeekable();
-	void updateAudioChannels();
-	void updateSubtitles();
-	void updateTitles();
-	void updateChapters();
-	void updateAngles();
-	void updateDvdMenu();
-	void updateVideoSize();
-
-	void updateCurrentTotalTimeUi();
 	void updateSeekableUi();
 	void updateAudioChannelUi();
 	void updateSubtitleUi();

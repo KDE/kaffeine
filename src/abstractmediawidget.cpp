@@ -44,8 +44,8 @@ void AbstractMediaWidget::resetState()
 
 	pendingUpdates = ResetState;
 	playbackStatus = MediaWidget::Idle;
-	totalTime = 0;
 	currentTime = 0;
+	totalTime = 0;
 	seekable = false;
 	metadata.clear();
 	audioChannels.clear();
@@ -77,26 +77,20 @@ void AbstractMediaWidget::updatePlaybackStatus(MediaWidget::PlaybackStatus playb
 	addPendingUpdate(UpdatePlaybackStatus);
 }
 
-void AbstractMediaWidget::updateTotalTime(int totalTime_)
-{
-	totalTime = totalTime_;
-
-	if (totalTime < 0) {
-		totalTime = 0;
-	}
-
-	addPendingUpdate(UpdateTotalTime);
-}
-
-void AbstractMediaWidget::updateCurrentTime(int currentTime_)
+void AbstractMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
 {
 	currentTime = currentTime_;
+	totalTime = totalTime_;
 
 	if (currentTime < 0) {
 		currentTime = 0;
 	}
 
-	addPendingUpdate(UpdateCurrentTime);
+	if (totalTime < 0) {
+		totalTime = 0;
+	}
+
+	addPendingUpdate(UpdateCurrentTotalTime);
 }
 
 void AbstractMediaWidget::updateSeekable(bool seekable_)
@@ -198,11 +192,8 @@ void AbstractMediaWidget::customEvent(QEvent *event)
 		case UpdatePlaybackStatus:
 			mediaWidget->updatePlaybackStatus();
 			break;
-		case UpdateTotalTime:
-			mediaWidget->updateTotalTime();
-			break;
-		case UpdateCurrentTime:
-			mediaWidget->updateCurrentTime();
+		case UpdateCurrentTotalTime:
+			mediaWidget->currentTotalTimeChanged();
 			break;
 		case UpdateSeekable:
 			mediaWidget->updateSeekable();
@@ -319,6 +310,6 @@ bool DummyMediaWidget::jumpToNextChapter()
 	return false;
 }
 
-void DummyMediaWidget::toggleMenu()
+void DummyMediaWidget::showDvdMenu()
 {
 }

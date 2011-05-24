@@ -54,7 +54,7 @@ public:
 	void setCurrentAngle(int currentAngle);
 	bool jumpToPreviousChapter();
 	bool jumpToNextChapter();
-	void toggleMenu();
+	void showDvdMenu();
 
 private slots:
 	void error(QProcess::ProcessError error);
@@ -64,8 +64,8 @@ private slots:
 private:
 	enum Command
 	{
-		ActivateMenu,
 		SetVolume,
+		ShowDvdMenu,
 		Stop,
 		TogglePause,
 		Quit
