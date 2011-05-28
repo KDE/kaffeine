@@ -34,8 +34,8 @@ MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(pa
 		this, SLOT(error(QProcess::ProcessError)));
 	connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOutput()));
 	connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(readStandardError()));
-	process.start(QString("mplayer -idle -quiet -slave -softvol -vf yadif -volume 0 -wid %1").
-		arg(videoWidget->winId()));
+	process.start(QString("mplayer -idle -osdlevel 0 -quiet -slave -softvol -vf yadif "
+		"-volume 0 -wid %1").arg(videoWidget->winId()));
 }
 
 MPlayerMediaWidget::~MPlayerMediaWidget()
@@ -81,6 +81,7 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 	switch (source.getType()) {
 	case MediaSource::Url:
 		if (url.endsWith(".iso")) {
+			// FIXME use dvd://, dvdnav:// ?
 			updateDvdMenu(true);
 		}
 
@@ -93,7 +94,8 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 		break;
 	case MediaSource::AudioCd:
 		if (url.size() >= 7) {
-			url.replace(0, 4, "cdda");
+			// e.g. cdda:////dev/sr0
+			url.replace(0, 5, "cdda:/");
 		} else {
 			url = "cdda://";
 		}
@@ -101,7 +103,8 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 		break;
 	case MediaSource::VideoCd:
 		if (url.size() >= 7) {
-			url.replace(0, 4, "vcd");
+			// e.g. vcd:////dev/sr0
+			url.replace(0, 5, "vcd:/");
 		} else {
 			url = "vcd://";
 		}
@@ -109,18 +112,26 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 		break;
 	case MediaSource::Dvd:
 		if (url.size() >= 7) {
+			// e.g. dvdnav:////dev/sr0
 			url.replace(0, 5, "dvdnav:/");
 		} else {
-			url = "dvdnav:///";
+			url = "dvdnav://";
 		}
 
 		updateDvdMenu(true);
 		break;
 	case MediaSource::Dvb:
+		if (source.getUrl().isLocalFile()) {
+			// mplayer can't deal with urls like "file:///tmp/te%20st.m2t"
+			url = QFile::encodeName(source.getUrl().toLocalFile());
+			url.replace(' ', "\\ ");
+		}
+
 		break;
 	}
 
 	updatePlaybackStatus(MediaWidget::Playing);
+	updateSeekable(true);
 	process.write("loadfile " + url + '\n');
 	process.write("pausing_keep_force get_property path\n");
 	sendCommand(SetDeinterlacing);
@@ -157,8 +168,8 @@ void MPlayerMediaWidget::setPaused(bool paused)
 
 void MPlayerMediaWidget::seek(int time)
 {
-	// FIXME
-	Q_UNUSED(time)
+	process.write("pausing_keep_force set_property time_pos " +
+		QByteArray::number(time / 1000) + '\n');
 }
 
 void MPlayerMediaWidget::setCurrentAudioChannel(int currentAudioChannel)
