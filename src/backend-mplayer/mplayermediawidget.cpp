@@ -34,7 +34,7 @@ MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(pa
 		this, SLOT(error(QProcess::ProcessError)));
 	connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOutput()));
 	connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(readStandardError()));
-	process.start(QString("mplayer -idle -quiet -slave -softvol -volume 0 -wid %1").
+	process.start(QString("mplayer -idle -quiet -slave -softvol -vf yadif -volume 0 -wid %1").
 		arg(videoWidget->winId()));
 }
 
@@ -44,7 +44,7 @@ MPlayerMediaWidget::~MPlayerMediaWidget()
 	process.waitForFinished(10000);
 }
 
-MPlayerMediaWidget *MPlayerMediaWidget::createMPlayerMediaWidget(QWidget *parent)
+AbstractMediaWidget *MPlayerMediaWidget::createMPlayerMediaWidget(QWidget *parent)
 {
 	return new MPlayerMediaWidget(parent);
 }
@@ -67,10 +67,10 @@ void MPlayerMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio_)
 	updateVideoWidgetGeometry();
 }
 
-void MPlayerMediaWidget::setDeinterlacing(bool deinterlacing)
+void MPlayerMediaWidget::setDeinterlacing(bool deinterlacing_)
 {
-	// FIXME
-	Q_UNUSED(deinterlacing)
+	deinterlacing = deinterlacing_;
+	sendCommand(SetDeinterlacing);
 }
 
 void MPlayerMediaWidget::play(const MediaSource &source)
@@ -121,6 +121,7 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 	updatePlaybackStatus(MediaWidget::Playing);
 	process.write("loadfile " + url + '\n');
 	process.write("pausing_keep_force get_property path\n");
+	sendCommand(SetDeinterlacing);
 	sendCommand(SetVolume);
 }
 
@@ -310,7 +311,25 @@ void MPlayerMediaWidget::resizeEvent(QResizeEvent *event)
 void MPlayerMediaWidget::sendCommand(Command command)
 {
 	switch (command) {
+	case SetDeinterlacing:
+		if (getPlaybackStatus() == MediaWidget::Idle) {
+			// only works if media is loaded
+			break;
+		}
+
+		if (deinterlacing) {
+			process.write("pausing_keep_force set_property deinterlace 1\n");
+		} else {
+			process.write("pausing_keep_force set_property deinterlace 0\n");
+		}
+
+		break;
 	case SetVolume: {
+		if (getPlaybackStatus() == MediaWidget::Idle) {
+			// only works if media is loaded
+			break;
+		}
+
 		int realVolume = volume;
 
 		if (muted) {

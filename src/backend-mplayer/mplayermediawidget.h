@@ -28,7 +28,6 @@
 class MPlayerMediaWidget : public AbstractMediaWidget
 {
 	Q_OBJECT
-	friend class MPlayerVideoWidget;
 private:
 	explicit MPlayerMediaWidget(QWidget *parent);
 
@@ -36,7 +35,7 @@ public:
 	~MPlayerMediaWidget();
 
 	// returns NULL if init fails
-	static MPlayerMediaWidget *createMPlayerMediaWidget(QWidget *parent);
+	static AbstractMediaWidget *createMPlayerMediaWidget(QWidget *parent);
 
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
@@ -56,6 +55,9 @@ public:
 	bool jumpToNextChapter();
 	void showDvdMenu();
 
+	void mouseMoved(int x, int y);
+	void mouseClicked();
+
 private slots:
 	void error(QProcess::ProcessError error);
 	void readStandardOutput();
@@ -64,6 +66,7 @@ private slots:
 private:
 	enum Command
 	{
+		SetDeinterlacing,
 		SetVolume,
 		ShowDvdMenu,
 		Stop,
@@ -71,18 +74,17 @@ private:
 		Quit
 	};
 
-	void mouseMoved(int x, int y);
-	void mouseClicked();
 	void resizeEvent(QResizeEvent *event);
 	void sendCommand(Command command);
 	void updateVideoWidgetGeometry();
 
 	QWidget *videoWidget;
-	QProcess process;
 	QFile standardError;
+	QProcess process;
 	bool muted;
 	int volume;
 	MediaWidget::AspectRatio aspectRatio;
+	bool deinterlacing;
 	int videoWidth;
 	int videoHeight;
 	float videoAspectRatio;
