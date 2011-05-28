@@ -28,8 +28,6 @@
 class DvbDevice;
 class DvbLiveViewInternal;
 class DvbManager;
-class MediaWidget;
-class OsdWidget;
 
 class DvbLiveView : public QObject
 {

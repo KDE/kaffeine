@@ -89,7 +89,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	QFile file(KStandardDirs::locateLocal("appdata", "epgdata.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		Log("manager: cannot open") << file.fileName();
+		Log("DvbEpgModel::DvbEpgModel: cannot open") << file.fileName();
 		return;
 	}
 
@@ -103,7 +103,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	if (version == 0x1ce0eca7) {
 		hasRecordingKey = false;
 	} else if (version != 0x79cffd36) {
-		Log("manager: wrong version") << file.fileName();
+		Log("DvbEpgModel::DvbEpgModel: wrong version") << file.fileName();
 		return;
 	}
 
@@ -129,7 +129,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			Log("manager: corrupt data") << file.fileName();
+			Log("DvbEpgModel::DvbEpgModel: corrupt data") << file.fileName();
 			break;
 		}
 

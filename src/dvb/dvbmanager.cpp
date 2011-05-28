@@ -23,7 +23,6 @@
 
 #include <QDir>
 #include <QPluginLoader>
-#include <QWidget>
 #include <KConfigGroup>
 #include <KLocale>
 #include <KStandardDirs>

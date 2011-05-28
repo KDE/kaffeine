@@ -20,10 +20,8 @@
 
 #include "mplayermediawidget.h"
 
-#include <QMouseEvent>
 #include <KLocalizedString>
 #include <KMessageBox>
-#include "../log.h"
 #include "mplayervideowidget.h"
 
 MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),

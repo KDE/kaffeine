@@ -33,7 +33,6 @@
 #include <KMenu>
 #include <KMessageBox>
 #include "../log.h"
-#include "../mediawidget.h"
 #include "../osdwidget.h"
 #include "dvbchanneldialog.h"
 #include "dvbconfigdialog.h"

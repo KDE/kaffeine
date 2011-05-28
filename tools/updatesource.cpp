@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
 					"brackets do not match";
 			}
 
-			if (bracketLevel == 0) {
+			if ((bracketLevel == 0) && !line.startsWith('\t')) {
 				QRegExp logFunctionRegExp("[0-9A-Za-z:~]*[(]");
 				int index = logFunctionRegExp.indexIn(line);
 

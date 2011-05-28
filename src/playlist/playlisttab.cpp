@@ -48,7 +48,8 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		file.setFileName(KStandardDirs::locateLocal("appdata", "playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
-			Log("playlistModel: cannot open file") << file.fileName();
+			Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot open file") <<
+				file.fileName();
 			return;
 		}
 	}
@@ -69,7 +70,8 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		// compatibility code
 		hasSubtitles = false;
 	} else if (version != 0x361c4a3c) {
-		Log("playlistModel: cannot read file") << file.fileName();
+		Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file") <<
+			file.fileName();
 		return;
 	}
 
@@ -112,7 +114,8 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			Log("playlistModel: cannot read file") << file.fileName();
+			Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file") <<
+				file.fileName();
 			delete playlist;
 			break;
 		}

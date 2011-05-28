@@ -34,7 +34,6 @@
 #include <sys/types.h> // bsd compatibility
 #include <unistd.h>
 #include "../log.h"
-#include "../mediawidget.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
@@ -437,14 +436,14 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-			Log("DvbLiveView::prepareTimeShift: cannot open file") <<
+			Log("DvbLiveView::playbackStatusChanged: cannot open file") <<
 				internal->timeShiftFile.fileName();
 			internal->timeShiftFile.setFileName(QDir::homePath() + "/TimeShift-" +
 				QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-				Log("DvbLiveView::prepareTimeShift: cannot open file") <<
+				Log("DvbLiveView::playbackStatusChanged: cannot open file") <<
 					internal->timeShiftFile.fileName();
 				mediaWidget->stop();
 				break;
@@ -568,7 +567,8 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	}
 }
 
-DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL), readFd(-1), writeFd(-1)
+DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
+	readFd(-1), writeFd(-1)
 {
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);

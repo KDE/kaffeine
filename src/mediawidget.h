@@ -35,9 +35,9 @@ class KComboBox;
 class KMenu;
 class KToolBar;
 class AbstractMediaWidget;
+class MediaSource;
 class OsdWidget;
 class SeekSlider;
-class MediaSource;
 
 class MediaWidget : public QWidget
 {

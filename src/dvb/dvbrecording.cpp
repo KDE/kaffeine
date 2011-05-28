@@ -64,7 +64,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		Log("manager: cannot open file") << file.fileName();
+		Log("DvbRecordingModel::DvbRecordingModel: cannot open file") << file.fileName();
 		return;
 	}
 
@@ -96,7 +96,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			Log("manager: invalid recordings in file") <<
+			Log("DvbRecordingModel::DvbRecordingModel: invalid recordings in file") <<
 				file.fileName();
 			break;
 		}
@@ -105,7 +105,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	}
 
 	if (!file.remove()) {
-		Log("manager: cannot remove file") << file.fileName();
+		Log("DvbRecordingModel::DvbRecordingModel: cannot remove file") << file.fileName();
 	}
 }
 

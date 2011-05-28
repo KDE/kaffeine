@@ -22,14 +22,12 @@
 #define DVBLIVEVIEW_P_H
 
 #include <QFile>
-#include <KUrl>
 #include "../mediawidget.h"
 #include "../osdwidget.h"
 #include "dvbepg.h"
 #include "dvbsi.h"
 
 class QSocketNotifier;
-class MediaWidget;
 
 class DvbOsd : public OsdObject
 {

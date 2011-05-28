@@ -21,10 +21,9 @@
 #ifndef MPLAYERMEDIAWIDGET_H
 #define MPLAYERMEDIAWIDGET_H
 
-#include "../abstractmediawidget.h"
-
 #include <QFile>
 #include <QProcess>
+#include "../abstractmediawidget.h"
 
 class MPlayerMediaWidget : public AbstractMediaWidget
 {
