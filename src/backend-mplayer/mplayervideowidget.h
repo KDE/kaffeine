@@ -33,8 +33,7 @@ public:
 
 private:
 	void mouseMoveEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
-	void paintEvent(QPaintEvent *event);
+	void mousePressEvent(QMouseEvent *event);
 
 	MPlayerMediaWidget *mediaWidget;
 };

@@ -41,14 +41,12 @@ void MPlayerVideoWidget::mouseMoveEvent(QMouseEvent *event)
 	QWidget::mouseMoveEvent(event);
 }
 
-void MPlayerVideoWidget::mouseReleaseEvent(QMouseEvent *event)
+void MPlayerVideoWidget::mousePressEvent(QMouseEvent *event)
 {
-	mediaWidget->mouseMoved(event->x(), event->y());
-	mediaWidget->mouseClicked();
-	QWidget::mouseReleaseEvent(event);
-}
+	if (event->button() == Qt::LeftButton) {
+		mediaWidget->mouseMoved(event->x(), event->y());
+		mediaWidget->mouseClicked();
+	}
 
-void MPlayerVideoWidget::paintEvent(QPaintEvent *event)
-{
-	Q_UNUSED(event)
+	QWidget::mousePressEvent(event);
 }
