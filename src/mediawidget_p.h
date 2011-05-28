@@ -50,4 +50,54 @@ private:
 	void mousePressEvent(QMouseEvent *event);
 };
 
+class MediaSourceUrl : public MediaSource
+{
+public:
+	MediaSourceUrl(const KUrl &url_, const KUrl &subtitleUrl_) : url(url_),
+		subtitleUrl(subtitleUrl_) { }
+	~MediaSourceUrl() { }
+
+	Type getType() const { return Url; }
+	KUrl getUrl() const { return url; }
+
+	KUrl url;
+	KUrl subtitleUrl;
+};
+
+class MediaSourceAudioCd : public MediaSource
+{
+public:
+	explicit MediaSourceAudioCd(const KUrl &url_) : url(url_) { }
+	~MediaSourceAudioCd() { }
+
+	Type getType() const { return AudioCd; }
+	KUrl getUrl() const { return url; }
+
+	KUrl url;
+};
+
+class MediaSourceVideoCd : public MediaSource
+{
+public:
+	explicit MediaSourceVideoCd(const KUrl &url_) : url(url_) { }
+	~MediaSourceVideoCd() { }
+
+	Type getType() const { return VideoCd; }
+	KUrl getUrl() const { return url; }
+
+	KUrl url;
+};
+
+class MediaSourceDvd : public MediaSource
+{
+public:
+	explicit MediaSourceDvd(const KUrl &url_) : url(url_) { }
+	~MediaSourceDvd() { }
+
+	Type getType() const { return Dvd; }
+	KUrl getUrl() const { return url; }
+
+	KUrl url;
+};
+
 #endif /* MEDIAWIDGET_P_H */

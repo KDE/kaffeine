@@ -119,8 +119,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(configureAction, SIGNAL(triggered()), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction("settings_dvb", configureAction));
 
-	connect(mediaWidget, SIGNAL(dvbPreviousChannel()), this, SLOT(previousChannel()));
-	connect(mediaWidget, SIGNAL(dvbNextChannel()), this, SLOT(nextChannel()));
+	connect(manager->getLiveView(), SIGNAL(previous()), this, SLOT(previousChannel()));
+	connect(manager->getLiveView(), SIGNAL(next()), this, SLOT(nextChannel()));
 
 	connect(manager->getRecordingModel(), SIGNAL(recordingRemoved(DvbSharedRecording)),
 		this, SLOT(recordingRemoved(DvbSharedRecording)));

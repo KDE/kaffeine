@@ -62,15 +62,6 @@ void AbstractMediaWidget::resetState()
 	videoSize = QSize();
 }
 
-void AbstractMediaWidget::addPendingUpdate(PendingUpdate pendingUpdate)
-{
-	if (pendingUpdates == 0) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-	}
-
-	pendingUpdates |= pendingUpdate;
-}
-
 void AbstractMediaWidget::updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_)
 {
 	playbackStatus = playbackStatus_;
@@ -175,6 +166,15 @@ void AbstractMediaWidget::updateVideoSize(const QSize &videoSize_)
 {
 	videoSize = videoSize_;
 	addPendingUpdate(VideoSize);
+}
+
+void AbstractMediaWidget::addPendingUpdate(PendingUpdate pendingUpdate)
+{
+	if (pendingUpdates == 0) {
+		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+	}
+
+	pendingUpdates |= pendingUpdate;
 }
 
 void AbstractMediaWidget::customEvent(QEvent *event)

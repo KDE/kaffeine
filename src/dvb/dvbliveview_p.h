@@ -23,6 +23,7 @@
 
 #include <QFile>
 #include <KUrl>
+#include "../mediawidget.h"
 #include "../osdwidget.h"
 #include "dvbepg.h"
 #include "dvbsi.h"
@@ -55,14 +56,14 @@ private:
 	DvbEpgEntry secondEntry;
 };
 
-class DvbLiveViewInternal : public QObject, public DvbPidFilter
+class DvbLiveViewInternal : public QObject, public DvbPidFilter, public MediaSource
 {
 	Q_OBJECT
 public:
-	DvbLiveViewInternal();
+	explicit DvbLiveViewInternal(QObject *parent);
 	~DvbLiveViewInternal();
 
-	KUrl setupPipe();
+	void resetPipe();
 
 	MediaWidget *mediaWidget;
 	QString channelName;
@@ -73,6 +74,50 @@ public:
 	QByteArray buffer;
 	QFile timeShiftFile;
 	DvbOsd dvbOsd;
+
+	bool overrideAudioChannels() const { return !audioChannels.isEmpty(); }
+	bool overrideSubtitles() const { return !subtitles.isEmpty(); }
+	QStringList getAudioChannels() const { return audioChannels; }
+	QStringList getSubtitles() const { return subtitles; }
+	int getCurrentAudioChannel() const { return currentAudioChannel; }
+	int getCurrentSubtitle() const { return currentSubtitle; }
+
+	void setCurrentAudioChannel(int currentAudioChannel_)
+	{
+		currentAudioChannel = currentAudioChannel_;
+		emit currentAudioChannelChanged(currentAudioChannel);
+	}
+
+	void setCurrentSubtitle(int currentSubtitle_)
+	{
+		currentSubtitle = currentSubtitle_;
+		emit currentSubtitleChanged(currentSubtitle);
+	}
+
+	bool overrideCaption() const { return true; }
+
+	QString getDefaultCaption() const { return channelName; }
+
+	Type getType() const { return Dvb; }
+
+	KUrl getUrl() const { return url; }
+
+	bool hideCurrentTotalTime() const { return !timeshift; }
+
+	bool timeshift;
+	QStringList audioChannels;
+	QStringList subtitles;
+	int currentAudioChannel;
+	int currentSubtitle;
+
+signals:
+	void currentAudioChannelChanged(int currentAudioChannel);
+	void currentSubtitleChanged(int currentSubtitle);
+	void replay();
+	void playbackFinished();
+	void playbackStatusChanged(MediaWidget::PlaybackStatus playbackStatus);
+	void previous();
+	void next();
 
 private slots:
 	void writeToPipe();

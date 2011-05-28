@@ -36,7 +36,8 @@ private:
 public:
 	~MPlayerMediaWidget();
 
-	static MPlayerMediaWidget *createMPlayerMediaWidget(QWidget *parent); // returns NULL if init fails
+	// returns NULL if init fails
+	static MPlayerMediaWidget *createMPlayerMediaWidget(QWidget *parent);
 
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]

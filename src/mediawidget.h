@@ -28,6 +28,7 @@
 class QActionGroup;
 class QPushButton;
 class QSlider;
+class QStringListModel;
 class KAction;
 class KActionCollection;
 class KComboBox;
@@ -36,25 +37,7 @@ class KToolBar;
 class AbstractMediaWidget;
 class OsdWidget;
 class SeekSlider;
-
-class MediaSource
-{
-public:
-	MediaSource() : type(Url) { }
-	~MediaSource() { }
-
-	enum Type
-	{
-		Url,
-		AudioCd,
-		VideoCd,
-		Dvd
-	};
-
-	Type type;
-	KUrl url;
-	KUrl subtitleUrl;
-};
+class MediaSource;
 
 class MediaWidget : public QWidget
 {
@@ -103,16 +86,6 @@ public:
 		DoubleSize
 	};
 
-	enum Source
-	{
-		Playlist,
-		AudioCd,
-		VideoCd,
-		Dvd,
-		Dvb,
-		DvbTimeShift
-	};
-
 	DisplayMode getDisplayMode() const;
 	void setDisplayMode(DisplayMode displayMode_);
 
@@ -120,20 +93,13 @@ public:
 	 * loads the media and starts playback
 	 */
 
-	void play(Source source_, const KUrl &url, const KUrl &subtitleUrl);
+	void play(MediaSource *source_);
 	void play(const KUrl &url, const KUrl &subtitleUrl = KUrl());
-	void playDvb(Source source_, const KUrl &url, const QString &channelName);
 	void playAudioCd(const QString &device);
 	void playVideoCd(const QString &device);
 	void playDvd(const QString &device);
-	void updateExternalSubtitles(const QList<KUrl> &subtitles, int currentSubtitle);
 
 	OsdWidget *getOsdWidget();
-
-	// empty list = use audio channels / subtitles provided by the backend
-	void updateDvbAudioChannels(const QStringList &dvbAudioChannels_,
-		int currentDvbAudioChannel_);
-	void updateDvbSubtitles(const QStringList &dvbSubtitles_, int currentDvbSubtitle_);
 
 	PlaybackStatus getPlaybackStatus() const;
 	int getPosition() const; // milliseconds
@@ -144,6 +110,7 @@ public:
 	void setPosition(int position); // milliseconds
 	void setVolume(int volume); // 0 - 100
 	void toggleMuted();
+	void mediaSourceDestroyed(MediaSource *mediaSource);
 
 public slots:
 	void previous();
@@ -177,22 +144,8 @@ signals:
 	void changeCaption(const QString &caption);
 	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
 
-	void playlistPrevious();
-	void playlistPlay();
-	void playlistNext();
 	void playlistUrlsDropped(const QList<KUrl> &urls);
-	void playlistTrackLengthChanged(int length);
-	void playlistTrackMetadataChanged(
-		const QMap<MediaWidget::MetadataType, QString> &metadata);
-
 	void osdKeyPressed(int key);
-	void dvbStopped();
-	void dvbPrepareTimeShift();
-	void dvbStartTimeShift();
-	void dvbSetCurrentAudioChannel(int index);
-	void dvbSetCurrentSubtitle(int index);
-	void dvbPreviousChannel();
-	void dvbNextChannel();
 
 private slots:
 	void checkScreenSaver();
@@ -240,6 +193,8 @@ private:
 	KAction *minimalModeAction;
 	KComboBox *audioChannelBox;
 	KComboBox *subtitleBox;
+	QStringListModel *audioChannelModel;
+	QStringListModel *subtitleModel;
 	QString textSubtitlesOff;
 	KAction *muteAction;
 	KIcon mutedIcon;
@@ -264,20 +219,69 @@ private:
 
 	DisplayMode displayMode;
 	ResizeFactor automaticResize;
-	Source source;
+	QScopedPointer<MediaSource> dummySource;
+	MediaSource *source;
 	bool blockBackendUpdates;
 	bool muted;
 	bool screenSaverSuspended;
-
 	bool showElapsedTime;
+};
 
-	QStringList dvbAudioChannels;
-	int currentDvbAudioChannel; // first audio channel = 0
+class MediaSource
+{
+public:
+	MediaSource() { }
 
-	QStringList dvbSubtitles;
-	QList<KUrl> externalSubtitles;
-	int currentDvbSubtitle; // first subtitle = 0
-	int currentExternalSubtitle; // first subtitle = 0
+	virtual ~MediaSource()
+	{
+		setMediaWidget(NULL);
+	}
+
+	enum Type
+	{
+		Url,
+		AudioCd,
+		VideoCd,
+		Dvd,
+		Dvb
+	};
+
+	virtual Type getType() const { return Url; }
+	virtual KUrl getUrl() const { return KUrl(); }
+	virtual bool hideCurrentTotalTime() const { return false; }
+	virtual bool overrideAudioChannels() const { return false; }
+	virtual bool overrideSubtitles() const { return false; }
+	virtual QStringList getAudioChannels() const { return QStringList(); }
+	virtual QStringList getSubtitles() const { return QStringList(); }
+	virtual int getCurrentAudioChannel() const { return -1; }
+	virtual int getCurrentSubtitle() const { return -1; }
+	virtual bool overrideCaption() const { return false; }
+	virtual QString getDefaultCaption() const { return QString(); }
+	virtual void setCurrentAudioChannel(int ) { }
+	virtual void setCurrentSubtitle(int ) { }
+	virtual void trackLengthChanged(int ) { }
+	virtual void metadataChanged(const QMap<MediaWidget::MetadataType, QString> &) { }
+	virtual void playbackFinished() { }
+	virtual void playbackStatusChanged(MediaWidget::PlaybackStatus ) { }
+	virtual void replay() { }
+	virtual void previous() { }
+	virtual void next() { }
+
+	void setMediaWidget(MediaWidget *mediaWidget)
+	{
+		MediaWidget *oldMediaWidget = weakMediaWidget.data();
+
+		if (mediaWidget != oldMediaWidget) {
+			if (oldMediaWidget != NULL) {
+				oldMediaWidget->mediaSourceDestroyed(this);
+			}
+
+			weakMediaWidget = mediaWidget;
+		}
+	}
+
+private:
+	QWeakPointer<MediaWidget> weakMediaWidget;
 };
 
 #endif /* MEDIAWIDGET_H */

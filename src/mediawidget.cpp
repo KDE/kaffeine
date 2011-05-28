@@ -26,6 +26,7 @@
 #include <QDBusInterface>
 #include <QLabel>
 #include <QPushButton>
+#include <QStringListModel>
 #include <QTimeEdit>
 #include <QTimer>
 #include <QX11Info>
@@ -45,12 +46,12 @@
 
 MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
-	automaticResize(ResizeOff), source(Playlist),
-	blockBackendUpdates(false), muted(false), screenSaverSuspended(false),
-	showElapsedTime(true),
-	currentDvbAudioChannel(-1),
-	currentDvbSubtitle(-1), currentExternalSubtitle(-1)
+	automaticResize(ResizeOff), blockBackendUpdates(false), muted(false),
+	screenSaverSuspended(false), showElapsedTime(true)
 {
+	dummySource.reset(new MediaSource());
+	source = dummySource.data();
+
 	QBoxLayout *layout = new QVBoxLayout(this);
 	layout->setMargin(0);
 
@@ -118,11 +119,17 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 		this, SLOT(currentAudioChannelChanged(int)));
 	toolBar->addWidget(audioChannelBox);
 
+	audioChannelModel = new QStringListModel(toolBar);
+	audioChannelBox->setModel(audioChannelModel);
+
 	subtitleBox = new KComboBox(toolBar);
 	textSubtitlesOff = i18nc("subtitle selection entry", "off");
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(currentSubtitleChanged(int)));
 	toolBar->addWidget(subtitleBox);
+
+	subtitleModel = new QStringListModel(toolBar);
+	subtitleBox->setModel(subtitleModel);
 
 	KMenu *audioMenu = new KMenu(i18nc("'Playback' menu", "Audio"), this);
 
@@ -418,54 +425,32 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 	}
 }
 
-void MediaWidget::play(Source source_, const KUrl &url, const KUrl &subtitleUrl)
+void MediaWidget::play(MediaSource *source_)
 {
-	source = source_;
-	MediaSource mediaSource;
-	mediaSource.url = url;
-	mediaSource.subtitleUrl = subtitleUrl;
+	if (source != source_) {
+		source->playbackStatusChanged(Idle);
+		source = source_;
 
-	switch (source) {
-	case Playlist:
-		mediaSource.type = MediaSource::Url;
-		emit changeCaption(url.fileName());
-		break;
-	case AudioCd:
-		mediaSource.type = MediaSource::AudioCd;
-		emit changeCaption(QString());
-		break;
-	case VideoCd:
-		mediaSource.type = MediaSource::VideoCd;
-		emit changeCaption(QString());
-		break;
-	case Dvd:
-		mediaSource.type = MediaSource::Dvd;
-		emit changeCaption(QString());
-		break;
-	case Dvb:
-	case DvbTimeShift:
-		mediaSource.type = MediaSource::Url;
-		break;
+		if (source == NULL) {
+			source = dummySource.data();
+		}
 	}
 
-	dvbAudioChannels.clear();
-	currentDvbAudioChannel = -1;
-	dvbSubtitles.clear();
-	externalSubtitles.clear();
-	currentDvbSubtitle = -1;
-	currentExternalSubtitle = -1;
+	source->setMediaWidget(this);
+	backend->play(*source);
+}
 
-	if (subtitleUrl.isValid()) {
-		externalSubtitles.append(subtitleUrl);
-		currentExternalSubtitle = 0;
+void MediaWidget::mediaSourceDestroyed(MediaSource *mediaSource)
+{
+	if (source == mediaSource) {
+		source = dummySource.data();
 	}
-
-	backend->play(mediaSource);
 }
 
 void MediaWidget::play(const KUrl &url, const KUrl &subtitleUrl)
 {
-	play(Playlist, url, subtitleUrl);
+	// FIXME mem-leak
+	play(new MediaSourceUrl(url, subtitleUrl));
 }
 
 void MediaWidget::playAudioCd(const QString &device)
@@ -487,7 +472,8 @@ void MediaWidget::playAudioCd(const QString &device)
 		}
 	}
 
-	play(AudioCd, devicePath, KUrl());
+	// FIXME mem-leak
+	play(new MediaSourceAudioCd(devicePath));
 }
 
 void MediaWidget::playVideoCd(const QString &device)
@@ -509,7 +495,8 @@ void MediaWidget::playVideoCd(const QString &device)
 		}
 	}
 
-	play(VideoCd, devicePath, KUrl());
+	// FIXME mem-leak
+	play(new MediaSourceVideoCd(devicePath));
 }
 
 void MediaWidget::playDvd(const QString &device)
@@ -531,40 +518,13 @@ void MediaWidget::playDvd(const QString &device)
 		}
 	}
 
-	play(Dvd, devicePath, KUrl());
-}
-
-void MediaWidget::playDvb(Source source_, const KUrl &url, const QString &channelName)
-{
-	emit changeCaption(channelName);
-	play(source_, url, KUrl());
-}
-
-void MediaWidget::updateExternalSubtitles(const QList<KUrl> &subtitles, int currentSubtitle)
-{
-	externalSubtitles = subtitles;
-	currentExternalSubtitle = currentSubtitle;
-	subtitlesChanged();
+	// FIXME mem-leak
+	play(new MediaSourceDvd(devicePath));
 }
 
 OsdWidget *MediaWidget::getOsdWidget()
 {
 	return osdWidget;
-}
-
-void MediaWidget::updateDvbAudioChannels(const QStringList &dvbAudioChannels_,
-	int currentDvbAudioChannel_)
-{
-	dvbAudioChannels = dvbAudioChannels_;
-	currentDvbAudioChannel = currentDvbAudioChannel_;
-	audioChannelsChanged();
-}
-
-void MediaWidget::updateDvbSubtitles(const QStringList &dvbSubtitles_, int currentDvbSubtitle_)
-{
-	dvbSubtitles = dvbSubtitles_;
-	currentDvbSubtitle = currentDvbSubtitle_;
-	subtitlesChanged();
 }
 
 MediaWidget::PlaybackStatus MediaWidget::getPlaybackStatus() const
@@ -584,17 +544,7 @@ int MediaWidget::getPosition() const
 
 void MediaWidget::play()
 {
-	switch (source) {
-	case Playlist:
-		emit playlistPlay();
-		break;
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-	case Dvb:
-	case DvbTimeShift:
-		break;
-	}
+	source->replay();
 }
 
 void MediaWidget::togglePause()
@@ -620,44 +570,12 @@ void MediaWidget::toggleMuted()
 
 void MediaWidget::previous()
 {
-	switch (source) {
-	case Playlist:
-		if (!backend->jumpToPreviousChapter()) {
-			emit playlistPrevious();
-		}
-
-		break;
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-		backend->jumpToPreviousChapter();
-		break;
-	case Dvb:
-	case DvbTimeShift:
-		emit dvbPreviousChannel();
-		break;
-	}
+	source->previous();
 }
 
 void MediaWidget::next()
 {
-	switch (source) {
-	case Playlist:
-		if (!backend->jumpToNextChapter()) {
-			emit playlistNext();
-		}
-
-		break;
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-		backend->jumpToNextChapter();
-		break;
-	case Dvb:
-	case DvbTimeShift:
-		emit dvbNextChannel();
-		break;
-	}
+	source->next();
 }
 
 void MediaWidget::stop()
@@ -820,7 +738,7 @@ void MediaWidget::pausedChanged(bool paused)
 {
 	switch (backend->getPlaybackStatus()) {
 	case Idle:
-		emit playlistPlay();
+		source->replay();
 		break;
 	case Playing:
 	case Paused:
@@ -881,47 +799,44 @@ void MediaWidget::jumpToPosition()
 
 void MediaWidget::currentAudioChannelChanged(int currentAudioChannel)
 {
-	if (blockBackendUpdates) {
-		return;
-	}
+	if (!blockBackendUpdates) {
+		if (source->overrideAudioChannels()) {
+			source->setCurrentAudioChannel(currentAudioChannel);
+			return;
+		}
 
-	if (dvbAudioChannels.isEmpty()) {
-		backend->setCurrentAudioChannel(currentAudioChannel);
-	} else {
-		emit dvbSetCurrentAudioChannel(currentAudioChannel);
+		source->setCurrentAudioChannel(currentAudioChannel -
+			backend->getAudioChannels().size());
+
+		if (currentAudioChannel >= backend->getAudioChannels().size()) {
+			currentAudioChannel = -1;
+		}
+
+		if (backend->getCurrentAudioChannel() != currentAudioChannel) {
+			backend->setCurrentAudioChannel(currentAudioChannel);
+		}
 	}
 }
 
 void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 {
-	if (blockBackendUpdates) {
-		return;
-	}
+	if (!blockBackendUpdates) {
+		--currentSubtitle;
 
-	--currentSubtitle;
+		if (source->overrideSubtitles()) {
+			source->setCurrentSubtitle(currentSubtitle);
+			return;
+		}
 
-	if (dvbSubtitles.isEmpty()) {
-		int oldExternalSubtitle = currentExternalSubtitle;
+		source->setCurrentSubtitle(currentSubtitle - backend->getSubtitles().size());
 
-		if (currentSubtitle < backend->getSubtitles().size()) {
-			currentExternalSubtitle = -1;
+		if (currentSubtitle >= backend->getSubtitles().size()) {
+			currentSubtitle = -1;
+		}
+
+		if (backend->getCurrentSubtitle() != currentSubtitle) {
 			backend->setCurrentSubtitle(currentSubtitle);
-		} else {
-			currentExternalSubtitle = (currentSubtitle - backend->getSubtitles().size());
 		}
-
-		if (currentExternalSubtitle != oldExternalSubtitle) {
-			KUrl externalSubtitle;
-
-			if ((currentExternalSubtitle >= 0) &&
-			    (currentExternalSubtitle < externalSubtitles.size())) {
-				externalSubtitle = externalSubtitles.at(currentExternalSubtitle);
-			}
-
-			backend->setExternalSubtitle(externalSubtitle);
-		}
-	} else {
-		emit dvbSetCurrentSubtitle(currentSubtitle);
 	}
 }
 
@@ -963,62 +878,66 @@ void MediaWidget::longSkipDurationChanged(int longSkipDuration)
 
 void MediaWidget::audioChannelsChanged()
 {
-	blockBackendUpdates = true;
-	audioChannelBox->clear();
+	QStringList items;
+	int currentIndex;
 
-	if (dvbAudioChannels.isEmpty()) {
-		audioChannelBox->addItems(backend->getAudioChannels());
-		audioChannelBox->setCurrentIndex(backend->getCurrentAudioChannel());
+	if (source->overrideAudioChannels()) {
+		items = source->getAudioChannels();
+		currentIndex = source->getCurrentAudioChannel();
 	} else {
-		audioChannelBox->addItems(dvbAudioChannels);
-		audioChannelBox->setCurrentIndex(currentDvbAudioChannel);
+		items = backend->getAudioChannels();
+		currentIndex = backend->getCurrentAudioChannel();
 	}
 
-	audioChannelBox->setEnabled(audioChannelBox->count() > 1);
+	blockBackendUpdates = true;
+
+	if (audioChannelModel->stringList() != items) {
+		audioChannelModel->setStringList(items);
+	}
+
+	audioChannelBox->setCurrentIndex(currentIndex);
+	audioChannelBox->setEnabled(items.size() > 1);
 	blockBackendUpdates = false;
 }
 
 void MediaWidget::subtitlesChanged()
 {
-	if (!dvbSubtitles.isEmpty()) {
-		// subtitles are overriden --> automatically choose appropriate subtitle
+	QStringList items(textSubtitlesOff);
+	int currentIndex;
+
+	if (source->overrideSubtitles()) {
+		items += source->getSubtitles();
+		currentIndex = (source->getCurrentSubtitle() + 1);
+
+		// automatically choose appropriate subtitle
 		int selectedSubtitle = -1;
 
-		if (currentDvbSubtitle >= 0) {
+		if (currentIndex > 0) {
 			selectedSubtitle = (backend->getSubtitles().size() - 1);
 		}
 
 		if (backend->getCurrentSubtitle() != selectedSubtitle) {
 			backend->setCurrentSubtitle(selectedSubtitle);
 		}
+	} else {
+		items += backend->getSubtitles();
+		items += source->getSubtitles();
+		currentIndex = (backend->getCurrentSubtitle() + 1);
+		int currentSourceIndex = source->getCurrentSubtitle();
+
+		if (currentSourceIndex >= 0) {
+			currentIndex = (currentSourceIndex + backend->getSubtitles().size() + 1);
+		}
 	}
 
 	blockBackendUpdates = true;
-	subtitleBox->clear();
-	subtitleBox->addItem(textSubtitlesOff);
 
-	if (dvbSubtitles.isEmpty()) {
-		subtitleBox->addItems(backend->getSubtitles());
-
-		foreach (const KUrl &subtitleUrl, externalSubtitles) {
-			subtitleBox->addItem(subtitleUrl.fileName());
-		}
-
-		int currentIndex;
-
-		if (currentExternalSubtitle < 0) {
-			currentIndex = (backend->getCurrentSubtitle() + 1);
-		} else {
-			currentIndex = (currentExternalSubtitle + backend->getSubtitles().size() + 1);
-		}
-
-		subtitleBox->setCurrentIndex(currentIndex);
-	} else {
-		subtitleBox->addItems(dvbSubtitles);
-		subtitleBox->setCurrentIndex(currentDvbSubtitle + 1);
+	if (subtitleModel->stringList() != items) {
+		subtitleModel->setStringList(items);
 	}
 
-	subtitleBox->setEnabled(subtitleBox->count() > 1);
+	subtitleBox->setCurrentIndex(currentIndex);
+	subtitleBox->setEnabled(items.size() > 1);
 	blockBackendUpdates = false;
 }
 
@@ -1026,20 +945,11 @@ void MediaWidget::currentTotalTimeChanged()
 {
 	int currentTime = backend->getCurrentTime();
 	int totalTime = backend->getTotalTime();
+	source->trackLengthChanged(totalTime);
 
-	switch (source) {
-	case Playlist:
-		emit playlistTrackLengthChanged(totalTime);
-		break;
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-	case DvbTimeShift:
-		break;
-	case Dvb:
+	if (source->hideCurrentTotalTime()) {
 		currentTime = 0;
 		totalTime = 0;
-		break;
 	}
 
 	blockBackendUpdates = true;
@@ -1058,20 +968,7 @@ void MediaWidget::currentTotalTimeChanged()
 
 void MediaWidget::seekableChanged()
 {
-	bool seekable = backend->isSeekable();
-
-	switch (source) {
-	case Playlist:
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-	case DvbTimeShift:
-		break;
-	case Dvb:
-		seekable = false;
-		break;
-	}
-
+	bool seekable = (backend->isSeekable() && !source->hideCurrentTotalTime());
 	seekSlider->setEnabled(seekable);
 	navigationMenu->setEnabled(seekable);
 	jumpToPositionAction->setEnabled(seekable);
@@ -1125,7 +1022,8 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
 	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
-	int currentTime = (backend->getCurrentTime() - ((25 * shortSkipDuration * event->delta()) / 3));
+	int currentTime =
+		(backend->getCurrentTime() - ((25 * shortSkipDuration * event->delta()) / 3));
 
 	if (currentTime < 0) {
 		currentTime = 0;
@@ -1136,87 +1034,29 @@ void MediaWidget::wheelEvent(QWheelEvent *event)
 
 void MediaWidget::playbackFinished()
 {
-	switch (source) {
-	case Playlist:
-		emit playlistNext();
-		break;
-	case AudioCd:
-	case VideoCd:
-	case Dvd:
-		break;
-	case Dvb:
-	case DvbTimeShift:
-		emit dvbStartTimeShift();
-		break;
-	}
+	source->playbackFinished();
 }
 
 void MediaWidget::playbackStatusChanged()
 {
+	source->playbackStatusChanged(backend->getPlaybackStatus());
 	bool playing = true;
 
 	switch (backend->getPlaybackStatus()) {
 	case Idle:
-		emit changeCaption(QString());
 		actionPlayPause->setIcon(iconPlay);
 		actionPlayPause->setText(textPlay);
 		playing = false;
-		dvbAudioChannels.clear();
-		currentDvbAudioChannel = -1;
-		dvbSubtitles.clear();
-		externalSubtitles.clear();
-		currentDvbSubtitle = -1;
-		currentExternalSubtitle = -1;
-
-		switch (source) {
-		case Playlist:
-		case AudioCd:
-		case VideoCd:
-		case Dvd:
-			break;
-		case Dvb:
-		case DvbTimeShift:
-			emit dvbStopped();
-			break;
-		}
-
 		break;
 	case Playing:
 		actionPlayPause->setIcon(iconPause);
 		actionPlayPause->setText(textPause);
 		osdWidget->showText(i18nc("osd", "Playing"), 1500);
-
-		switch (source) {
-		case Playlist:
-		case AudioCd:
-		case VideoCd:
-		case Dvd:
-		case DvbTimeShift:
-			break;
-		case Dvb:
-			// FIXME
-			// emit dvbStartTimeShift();
-			break;
-		}
-
 		break;
 	case Paused:
 		actionPlayPause->setIcon(iconPlay);
 		actionPlayPause->setText(textPlay);
 		osdWidget->showText(i18nc("osd", "Paused"), 1500);
-
-		switch (source) {
-		case Playlist:
-		case AudioCd:
-		case VideoCd:
-		case Dvd:
-		case DvbTimeShift:
-			break;
-		case Dvb:
-			emit dvbPrepareTimeShift();
-			break;
-		}
-
 		break;
 	}
 
@@ -1230,38 +1070,35 @@ void MediaWidget::playbackStatusChanged()
 void MediaWidget::metadataChanged()
 {
 	QMap<MediaWidget::MetadataType, QString> metadata = backend->getMetadata();
+	source->metadataChanged(metadata);
 
-	switch (source) {
-	case Playlist:
-		emit playlistTrackMetadataChanged(metadata);
-		// fall through
-	case AudioCd:
-	case VideoCd:
-	case Dvd: {
-		QString caption = metadata.value(Title);
-		QString artist = metadata.value(Artist);
-
-		if (!caption.isEmpty() && !artist.isEmpty()) {
-			caption += ' ';
-		}
-
-		if (!artist.isEmpty()) {
-			caption += '(';
-			caption += artist;
-			caption += ')';
-		}
-
-		if (!caption.isEmpty()) {
-			osdWidget->showText(caption, 2500);
-			emit changeCaption(caption);
-		}
-
-		break;
-	    }
-	case Dvb:
-	case DvbTimeShift:
-		break;
+	if (source->overrideCaption()) {
+		emit changeCaption(source->getDefaultCaption());
+		return;
 	}
+
+	QString caption = metadata.value(Title);
+	QString artist = metadata.value(Artist);
+
+	if (!caption.isEmpty() && !artist.isEmpty()) {
+		caption += ' ';
+	}
+
+	if (!artist.isEmpty()) {
+		caption += '(';
+		caption += artist;
+		caption += ')';
+	}
+
+	if (caption.isEmpty()) {
+		caption = source->getDefaultCaption();
+	}
+
+	if (!caption.isEmpty()) {
+		osdWidget->showText(caption, 2500);
+	}
+
+	emit changeCaption(caption);
 }
 
 void MediaWidget::dvdMenuChanged()

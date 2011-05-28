@@ -36,7 +36,8 @@ MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(pa
 		this, SLOT(error(QProcess::ProcessError)));
 	connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOutput()));
 	connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(readStandardError()));
-	process.start(QString("mplayer -idle -quiet -slave -softvol -volume 0 -wid %1").arg(videoWidget->winId()));
+	process.start(QString("mplayer -idle -quiet -slave -softvol -volume 0 -wid %1").
+		arg(videoWidget->winId()));
 }
 
 MPlayerMediaWidget::~MPlayerMediaWidget()
@@ -81,9 +82,9 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 	videoHeight = 0;
 	videoAspectRatio = 1;
 	updateVideoWidgetGeometry();
-	QByteArray url = source.url.toEncoded();
+	QByteArray url = source.getUrl().toEncoded();
 
-	switch (source.type) {
+	switch (source.getType()) {
 	case MediaSource::Url:
 		if (url.endsWith(".iso")) {
 			updateDvdMenu(true);
@@ -114,6 +115,8 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 		}
 
 		updateDvdMenu(true);
+		break;
+	case MediaSource::Dvb:
 		break;
 	}
 
@@ -217,7 +220,8 @@ void MPlayerMediaWidget::showDvdMenu()
 void MPlayerMediaWidget::error(QProcess::ProcessError error)
 {
 	Q_UNUSED(error)
-	KMessageBox::queuedMessageBox(this, KMessageBox::Error, i18n("Cannot start mplayer process."));
+	KMessageBox::queuedMessageBox(this, KMessageBox::Error,
+		i18n("Cannot start mplayer process."));
 }
 
 void MPlayerMediaWidget::readStandardOutput()
@@ -290,7 +294,8 @@ void MPlayerMediaWidget::readStandardError()
 
 void MPlayerMediaWidget::mouseMoved(int x, int y)
 {
-	process.write("set_mouse_pos " + QByteArray::number(x) + ' ' + QByteArray::number(y) + '\n');
+	process.write("set_mouse_pos " + QByteArray::number(x) + ' ' + QByteArray::number(y) +
+		'\n');
 }
 
 void MPlayerMediaWidget::mouseClicked()

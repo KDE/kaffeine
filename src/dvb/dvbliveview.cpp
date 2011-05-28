@@ -140,7 +140,7 @@ DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent
 	mediaWidget = manager->getMediaWidget();
 	osdWidget = mediaWidget->getOsdWidget();
 
-	internal = new DvbLiveViewInternal();
+	internal = new DvbLiveViewInternal(this);
 	internal->mediaWidget = mediaWidget;
 
 	connect(&internal->pmtFilter, SIGNAL(pmtSectionChanged(QByteArray)),
@@ -148,17 +148,30 @@ DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
 
-	connect(mediaWidget, SIGNAL(dvbSetCurrentAudioChannel(int)),
-		this, SLOT(changeAudioStream(int)));
-	connect(mediaWidget, SIGNAL(dvbSetCurrentSubtitle(int)), this, SLOT(changeSubtitle(int)));
-	connect(mediaWidget, SIGNAL(dvbPrepareTimeShift()), this, SLOT(prepareTimeShift()));
-	connect(mediaWidget, SIGNAL(dvbStartTimeShift()), this, SLOT(startTimeShift()));
-	connect(mediaWidget, SIGNAL(dvbStopped()), this, SLOT(liveStopped()));
+	connect(internal, SIGNAL(currentAudioChannelChanged(int)),
+		this, SLOT(currentAudioChannelChanged(int)));
+	connect(internal, SIGNAL(currentSubtitleChanged(int)),
+		this, SLOT(currentSubtitleChanged(int)));
+	connect(internal, SIGNAL(replay()), this, SLOT(replay()));
+	connect(internal, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
+	connect(internal, SIGNAL(playbackStatusChanged(MediaWidget::PlaybackStatus)),
+		this, SLOT(playbackStatusChanged(MediaWidget::PlaybackStatus)));
+	connect(internal, SIGNAL(previous()), this, SIGNAL(previous()));
+	connect(internal, SIGNAL(next()), this, SIGNAL(next()));
 }
 
 DvbLiveView::~DvbLiveView()
 {
-	delete internal;
+}
+
+void DvbLiveView::replay()
+{
+	// FIXME
+}
+
+void DvbLiveView::playbackFinished()
+{
+	mediaWidget->play(internal);
 }
 
 const DvbSharedChannel &DvbLiveView::getChannel() const
@@ -181,7 +194,7 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 			DvbManager::Shared);
 	}
 
-	liveStopped();
+	playbackStatusChanged(MediaWidget::Idle);
 	channel = channel_;
 	device = newDevice;
 
@@ -206,7 +219,8 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 	}
 
 	internal->channelName = channel->name;
-	mediaWidget->playDvb(MediaWidget::Dvb, internal->setupPipe(), channel->name);
+	internal->resetPipe();
+	mediaWidget->play(internal);
 
 	internal->pmtFilter.setProgramNumber(channel->serviceId);
 	startDevice();
@@ -293,39 +307,41 @@ void DvbLiveView::pmtSectionChanged(const QByteArray &pmtSectionData)
 		return;
 	}
 
-	QStringList audioChannels;
+	internal->audioChannels.clear();
 	audioPids.clear();
 
 	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
 
 		if (!it.second.isEmpty()) {
-			audioChannels.append(it.second);
+			internal->audioChannels.append(it.second);
 		} else {
-			audioChannels.append(QString::number(it.first));
+			internal->audioChannels.append(QString::number(it.first));
 		}
 
 		audioPids.append(it.first);
 	}
 
-	mediaWidget->updateDvbAudioChannels(audioChannels, audioPids.indexOf(audioPid));
+	internal->currentAudioChannel = audioPids.indexOf(audioPid);
+	mediaWidget->audioChannelsChanged();
 
-	QStringList subtitles;
+	internal->subtitles.clear();
 	subtitlePids.clear();
 
 	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
 
 		if (!it.second.isEmpty()) {
-			subtitles.append(it.second);
+			internal->subtitles.append(it.second);
 		} else {
-			subtitles.append(QString::number(it.first));
+			internal->subtitles.append(QString::number(it.first));
 		}
 
 		subtitlePids.append(it.first);
 	}
 
-	mediaWidget->updateDvbSubtitles(subtitles, subtitlePids.indexOf(subtitlePid));
+	internal->currentSubtitle = subtitlePids.indexOf(subtitlePid);
+	mediaWidget->subtitlesChanged();
 }
 
 void DvbLiveView::insertPatPmt()
@@ -359,55 +375,93 @@ void DvbLiveView::deviceStateChanged()
 	}
 }
 
-void DvbLiveView::changeAudioStream(int index)
+void DvbLiveView::currentAudioChannelChanged(int currentAudioChannel)
 {
-	audioPid = audioPids.at(index);
-	updatePids();
-}
+	audioPid = -1;
 
-void DvbLiveView::changeSubtitle(int index)
-{
-	if (index < 0) {
-		subtitlePid = -1;
-	} else {
-		subtitlePid = subtitlePids.at(index);
+	if ((currentAudioChannel >= 0) && (currentAudioChannel < audioPids.size())) {
+		audioPid = audioPids.at(currentAudioChannel);
 	}
 
 	updatePids();
 }
 
-void DvbLiveView::prepareTimeShift()
+void DvbLiveView::currentSubtitleChanged(int currentSubtitle)
 {
-	internal->timeShiftFile.setFileName(manager->getTimeShiftFolder() + "/TimeShift-" +
-		QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
+	subtitlePid = -1;
 
-	if (internal->timeShiftFile.exists() ||
-	    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-		Log("DvbLiveView::prepareTimeShift: cannot open file") <<
-			internal->timeShiftFile.fileName();
-		internal->timeShiftFile.setFileName(QDir::homePath() + "/TimeShift-" +
+	if ((currentSubtitle >= 0) && (currentSubtitle < subtitlePids.size())) {
+		subtitlePid = subtitlePids.at(currentSubtitle);
+	}
+
+	updatePids();
+}
+
+void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStatus)
+{
+	switch (playbackStatus) {
+	case MediaWidget::Idle:
+		if (device != NULL) {
+			stopDevice();
+			manager->releaseDevice(device, DvbManager::Shared);
+			device = NULL;
+		}
+
+		channel = DvbSharedChannel();
+		pids.clear();
+		patPmtTimer.stop();
+		osdTimer.stop();
+
+		internal->pmtSectionData.clear();
+		internal->patGenerator = DvbSectionGenerator();
+		internal->pmtGenerator = DvbSectionGenerator();
+		internal->buffer.clear();
+		internal->timeShiftFile.close();
+		internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
+		osdWidget->hideObject();
+		break;
+	case MediaWidget::Playing:
+		if (internal->timeShiftFile.isOpen()) {
+			// FIXME
+			mediaWidget->play(internal);
+		}
+
+		break;
+	case MediaWidget::Paused:
+		if (internal->timeShiftFile.isOpen()) {
+			break;
+		}
+
+		internal->timeShiftFile.setFileName(manager->getTimeShiftFolder() + "/TimeShift-" +
 			QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
 			Log("DvbLiveView::prepareTimeShift: cannot open file") <<
 				internal->timeShiftFile.fileName();
-			mediaWidget->stop();
-			return;
+			internal->timeShiftFile.setFileName(QDir::homePath() + "/TimeShift-" +
+				QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
+
+			if (internal->timeShiftFile.exists() ||
+			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
+				Log("DvbLiveView::prepareTimeShift: cannot open file") <<
+					internal->timeShiftFile.fileName();
+				mediaWidget->stop();
+				break;
+			}
 		}
+
+		updatePids();
+
+		// don't allow changes after starting time shift
+		internal->audioChannels.clear();
+		internal->currentAudioChannel = -1;
+		mediaWidget->audioChannelsChanged();
+		internal->subtitles.clear();
+		internal->currentSubtitle = -1;
+		mediaWidget->subtitlesChanged();
+		break;
 	}
-
-	updatePids();
-
-	// don't allow changes after starting time shift
-	mediaWidget->updateDvbAudioChannels(QStringList(), 0);
-	mediaWidget->updateDvbSubtitles(QStringList(), 0);
-}
-
-void DvbLiveView::startTimeShift()
-{
-	mediaWidget->playDvb(MediaWidget::DvbTimeShift, internal->timeShiftFile.fileName(),
-		internal->channelName);
 }
 
 void DvbLiveView::showOsd()
@@ -421,28 +475,6 @@ void DvbLiveView::osdTimeout()
 {
 	internal->dvbOsd.level = DvbOsd::Off;
 	osdTimer.stop();
-}
-
-void DvbLiveView::liveStopped()
-{
-	if (device != NULL) {
-		stopDevice();
-		manager->releaseDevice(device, DvbManager::Shared);
-		device = NULL;
-	}
-
-	channel = DvbSharedChannel();
-	pids.clear();
-	patPmtTimer.stop();
-	osdTimer.stop();
-
-	internal->pmtSectionData.clear();
-	internal->patGenerator = DvbSectionGenerator();
-	internal->pmtGenerator = DvbSectionGenerator();
-	internal->buffer.clear();
-	internal->timeShiftFile.close();
-	internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
-	osdWidget->hideObject();
 }
 
 void DvbLiveView::startDevice()
@@ -536,7 +568,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	}
 }
 
-DvbLiveViewInternal::DvbLiveViewInternal() : mediaWidget(NULL), readFd(-1), writeFd(-1)
+DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL), readFd(-1), writeFd(-1)
 {
 	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -577,7 +609,7 @@ DvbLiveViewInternal::~DvbLiveViewInternal()
 	}
 }
 
-KUrl DvbLiveViewInternal::setupPipe()
+void DvbLiveViewInternal::resetPipe()
 {
 	if (!buffers.isEmpty()) {
 		buffer = buffers.at(0);
@@ -594,7 +626,6 @@ KUrl DvbLiveViewInternal::setupPipe()
 	}
 
 	buffer.clear();
-	return url;
 }
 
 void DvbLiveViewInternal::writeToPipe()

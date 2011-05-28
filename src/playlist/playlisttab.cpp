@@ -686,8 +686,7 @@ void PlaylistTab::addSubtitle()
 
 		if ((playlist == playlistBrowserModel->getCurrentPlaylist()) &&
 		    (playlist->currentTrack == row)) {
-			mediaWidget->updateExternalSubtitles(track.subtitles,
-				track.currentSubtitle);
+			// FIXME !
 		}
 	}
 }
@@ -793,8 +792,7 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 		}
 
 		mediaWidget->play(playlistTrack.url, subtitleUrl);
-		mediaWidget->updateExternalSubtitles(playlistTrack.subtitles,
-			playlistTrack.currentSubtitle);
+		// FIXME !
 		playlistBrowserModel->setCurrentPlaylist(playlist);
 	} else {
 		mediaWidget->stop();

@@ -22,6 +22,7 @@
 #define DVBLIVEVIEW_H
 
 #include <QTimer>
+#include "../mediawidget.h"
 #include "dvbchannel.h"
 
 class DvbDevice;
@@ -45,17 +46,22 @@ public:
 public slots:
 	void toggleOsd();
 
+signals:
+	void previous();
+	void next();
+
 private slots:
 	void pmtSectionChanged(const QByteArray &pmtSectionData);
 	void insertPatPmt();
 	void deviceStateChanged();
-	void changeAudioStream(int index);
-	void changeSubtitle(int index);
-	void prepareTimeShift();
-	void startTimeShift();
 	void showOsd();
 	void osdTimeout();
-	void liveStopped();
+
+	void currentAudioChannelChanged(int currentAudioChannel);
+	void currentSubtitleChanged(int currentSubtitle);
+	void replay();
+	void playbackFinished();
+	void playbackStatusChanged(MediaWidget::PlaybackStatus playbackStatus);
 
 private:
 	void startDevice();
