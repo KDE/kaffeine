@@ -76,16 +76,18 @@ void MPlayerMediaWidget::setDeinterlacing(bool deinterlacing_)
 void MPlayerMediaWidget::play(const MediaSource &source)
 {
 	resetState();
-	videoWidth = 0;
-	videoHeight = 0;
-	videoAspectRatio = 1;
-	updateVideoWidgetGeometry();
 	QByteArray url = source.getUrl().toEncoded();
 
 	switch (source.getType()) {
 	case MediaSource::Url:
 		if (url.endsWith(".iso")) {
 			updateDvdMenu(true);
+		}
+
+		if (source.getUrl().isLocalFile()) {
+			// mplayer can't deal with urls like "file:///tmp/te%20st.m2t"
+			url = QFile::encodeName(source.getUrl().toLocalFile());
+			url.replace(' ', "\\ ");
 		}
 
 		break;
@@ -128,10 +130,6 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 void MPlayerMediaWidget::stop()
 {
 	resetState();
-	videoWidth = 0;
-	videoHeight = 0;
-	videoAspectRatio = 1;
-	updateVideoWidgetGeometry();
 	sendCommand(Stop);
 }
 
@@ -242,10 +240,6 @@ void MPlayerMediaWidget::readStandardOutput()
 
 		if (line == "ANS_path=(null)") {
 			resetState();
-			videoWidth = 0;
-			videoHeight = 0;
-			videoAspectRatio = 1;
-			updateVideoWidgetGeometry();
 		}
 
 		if (line.startsWith("ANS_width=")) {
@@ -300,6 +294,15 @@ void MPlayerMediaWidget::mouseMoved(int x, int y)
 void MPlayerMediaWidget::mouseClicked()
 {
 	process.write("dvdnav mouse\n");
+}
+
+void MPlayerMediaWidget::resetState()
+{
+	resetBaseState();
+	videoWidth = 0;
+	videoHeight = 0;
+	videoAspectRatio = 1;
+	updateVideoWidgetGeometry();
 }
 
 void MPlayerMediaWidget::resizeEvent(QResizeEvent *event)

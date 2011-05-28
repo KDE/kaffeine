@@ -70,7 +70,7 @@ public:
 	virtual void showDvdMenu() = 0;
 
 protected:
-	void resetState();
+	void resetBaseState();
 	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_);
 	void updateCurrentTotalTime(int currentTime_, int totalTime_);
 	void updateSeekable(bool seekable_);

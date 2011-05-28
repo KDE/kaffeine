@@ -74,6 +74,7 @@ private:
 		Quit
 	};
 
+	void resetState();
 	void resizeEvent(QResizeEvent *event);
 	void sendCommand(Command command);
 	void updateVideoWidgetGeometry();

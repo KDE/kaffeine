@@ -24,7 +24,7 @@
 
 AbstractMediaWidget::AbstractMediaWidget(QWidget *parent) : QWidget(parent), mediaWidget(NULL)
 {
-	resetState();
+	resetBaseState();
 }
 
 AbstractMediaWidget::~AbstractMediaWidget()
@@ -36,7 +36,7 @@ void AbstractMediaWidget::setMediaWidget(MediaWidget *mediaWidget_)
 	mediaWidget = mediaWidget_;
 }
 
-void AbstractMediaWidget::resetState()
+void AbstractMediaWidget::resetBaseState()
 {
 	if (pendingUpdates == 0) {
 		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
@@ -252,12 +252,12 @@ void DummyMediaWidget::setDeinterlacing(bool deinterlacing)
 void DummyMediaWidget::play(const MediaSource &source)
 {
 	Q_UNUSED(source)
-	resetState();
+	resetBaseState();
 }
 
 void DummyMediaWidget::stop()
 {
-	resetState();
+	resetBaseState();
 }
 
 void DummyMediaWidget::setPaused(bool paused)
