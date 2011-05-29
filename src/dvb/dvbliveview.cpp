@@ -147,8 +147,8 @@ DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent
 	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
 	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
 
-	connect(internal, SIGNAL(currentAudioChannelChanged(int)),
-		this, SLOT(currentAudioChannelChanged(int)));
+	connect(internal, SIGNAL(currentAudioStreamChanged(int)),
+		this, SLOT(currentAudioStreamChanged(int)));
 	connect(internal, SIGNAL(currentSubtitleChanged(int)),
 		this, SLOT(currentSubtitleChanged(int)));
 	connect(internal, SIGNAL(replay()), this, SLOT(replay()));
@@ -306,23 +306,23 @@ void DvbLiveView::pmtSectionChanged(const QByteArray &pmtSectionData)
 		return;
 	}
 
-	internal->audioChannels.clear();
+	internal->audioStreams.clear();
 	audioPids.clear();
 
 	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
 
 		if (!it.second.isEmpty()) {
-			internal->audioChannels.append(it.second);
+			internal->audioStreams.append(it.second);
 		} else {
-			internal->audioChannels.append(QString::number(it.first));
+			internal->audioStreams.append(QString::number(it.first));
 		}
 
 		audioPids.append(it.first);
 	}
 
-	internal->currentAudioChannel = audioPids.indexOf(audioPid);
-	mediaWidget->audioChannelsChanged();
+	internal->currentAudioStream = audioPids.indexOf(audioPid);
+	mediaWidget->audioStreamsChanged();
 
 	internal->subtitles.clear();
 	subtitlePids.clear();
@@ -374,12 +374,12 @@ void DvbLiveView::deviceStateChanged()
 	}
 }
 
-void DvbLiveView::currentAudioChannelChanged(int currentAudioChannel)
+void DvbLiveView::currentAudioStreamChanged(int currentAudioStream)
 {
 	audioPid = -1;
 
-	if ((currentAudioChannel >= 0) && (currentAudioChannel < audioPids.size())) {
-		audioPid = audioPids.at(currentAudioChannel);
+	if ((currentAudioStream >= 0) && (currentAudioStream < audioPids.size())) {
+		audioPid = audioPids.at(currentAudioStream);
 	}
 
 	updatePids();
@@ -453,9 +453,9 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		updatePids();
 
 		// don't allow changes after starting time shift
-		internal->audioChannels.clear();
-		internal->currentAudioChannel = -1;
-		mediaWidget->audioChannelsChanged();
+		internal->audioStreams.clear();
+		internal->currentAudioStream = -1;
+		mediaWidget->audioStreamsChanged();
 		internal->subtitles.clear();
 		internal->currentSubtitle = -1;
 		mediaWidget->subtitlesChanged();

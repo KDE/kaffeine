@@ -45,8 +45,8 @@ public:
 	int getCurrentTime(); // milliseconds
 	bool isSeekable();
 	QMap<MediaWidget::MetadataType, QString> getMetadata();
-	QStringList getAudioChannels();
-	int getCurrentAudioChannel();
+	QStringList getAudioStreams();
+	int getCurrentAudioStream();
 	QStringList getSubtitles();
 	int getCurrentSubtitle();
 	int getTitleCount();
@@ -65,7 +65,7 @@ public:
 	void stop();
 	void setPaused(bool paused);
 	void seek(int time); // milliseconds
-	void setCurrentAudioChannel(int currentAudioChannel);
+	void setCurrentAudioStream(int currentAudioStream);
 	void setCurrentSubtitle(int currentSubtitle);
 	void setExternalSubtitle(const KUrl &subtitleUrl);
 	void setCurrentTitle(int currentTitle);

@@ -172,10 +172,10 @@ void MPlayerMediaWidget::seek(int time)
 		QByteArray::number(time / 1000) + '\n');
 }
 
-void MPlayerMediaWidget::setCurrentAudioChannel(int currentAudioChannel)
+void MPlayerMediaWidget::setCurrentAudioStream(int currentAudioStream)
 {
 	// FIXME
-	Q_UNUSED(currentAudioChannel)
+	Q_UNUSED(currentAudioStream)
 }
 
 void MPlayerMediaWidget::setCurrentSubtitle(int currentSubtitle)

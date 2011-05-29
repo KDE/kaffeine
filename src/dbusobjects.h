@@ -86,7 +86,7 @@ public slots:
 	void PlayAudioCd();
 	void PlayVideoCd();
 	void PlayDvd();
-	void ChangeAudioChannel(int index);
+	void ChangeAudioStream(int index);
 	void ChangeSubtitle(int index);
 	void TimeButtonClicked();
 	void AspectRatioAuto();

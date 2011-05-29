@@ -165,9 +165,9 @@ QMap<MediaWidget::MetadataType, QString> VlcMediaWidget::getMetadata()
 	return metadata;
 }
 
-QStringList VlcMediaWidget::getAudioChannels()
+QStringList VlcMediaWidget::getAudioStreams()
 {
-	QStringList audioChannels;
+	QStringList audioStreams;
 	libvlc_track_description_t *track = libvlc_audio_get_track_description(vlcMediaPlayer);
 
 	if (track != NULL) {
@@ -176,30 +176,30 @@ QStringList VlcMediaWidget::getAudioChannels()
 	}
 
 	while (track != NULL) {
-		QString audioChannel = QString::fromUtf8(track->psz_name);
-		int cutBegin = (audioChannel.indexOf('[') + 1);
+		QString audioStream = QString::fromUtf8(track->psz_name);
+		int cutBegin = (audioStream.indexOf('[') + 1);
 
 		if (cutBegin > 0) {
-			int cutEnd = audioChannel.lastIndexOf(']');
+			int cutEnd = audioStream.lastIndexOf(']');
 
 			if (cutEnd >= 0) {
 				// remove unnecessary text
-				audioChannel = audioChannel.mid(cutBegin, cutEnd - cutBegin);
+				audioStream = audioStream.mid(cutBegin, cutEnd - cutBegin);
 			}
 		}
 
-		if (audioChannel.isEmpty()) {
-			audioChannel = QString::number(audioChannels.size() + 1);
+		if (audioStream.isEmpty()) {
+			audioStream = QString::number(audioStreams.size() + 1);
 		}
 
-		audioChannels.append(audioChannel);
+		audioStreams.append(audioStream);
 		track = track->p_next;
 	}
 
-	return audioChannels;
+	return audioStreams;
 }
 
-int VlcMediaWidget::getCurrentAudioChannel()
+int VlcMediaWidget::getCurrentAudioStream()
 {
 	// skip the 'deactivate' audio channel
 	return (libvlc_audio_get_track(vlcMediaPlayer) - 1);
@@ -428,10 +428,10 @@ void VlcMediaWidget::seek(int time)
 	libvlc_media_player_set_time(vlcMediaPlayer, time);
 }
 
-void VlcMediaWidget::setCurrentAudioChannel(int currentAudioChannel)
+void VlcMediaWidget::setCurrentAudioStream(int currentAudioStream)
 {
 	// skip the 'deactivate' audio channel
-	libvlc_audio_set_track(vlcMediaPlayer, currentAudioChannel + 1);
+	libvlc_audio_set_track(vlcMediaPlayer, currentAudioStream + 1);
 }
 
 void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
@@ -514,7 +514,7 @@ void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)
 
 	switch (event->type) {
 	case libvlc_MediaMetaChanged:
-		dirtyFlags = (UpdateMetadata | UpdateAudioChannels | UpdateSubtitles |
+		dirtyFlags = (UpdateMetadata | UpdateAudioStreams | UpdateSubtitles |
 			UpdateTitles | UpdateChapters | UpdateAngles);
 		break;
 	case libvlc_MediaPlayerEncounteredError:

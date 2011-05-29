@@ -48,8 +48,8 @@ void AbstractMediaWidget::resetBaseState()
 	totalTime = 0;
 	seekable = false;
 	metadata.clear();
-	audioChannels.clear();
-	currentAudioChannel = -1;
+	audioStreams.clear();
+	currentAudioStream = -1;
 	subtitles.clear();
 	currentSubtitle = -1;
 	titleCount = 0;
@@ -96,16 +96,16 @@ void AbstractMediaWidget::updateMetadata(const QMap<MediaWidget::MetadataType, Q
 	addPendingUpdate(Metadata);
 }
 
-void AbstractMediaWidget::updateAudioChannels(const QStringList &audioChannels_)
+void AbstractMediaWidget::updateAudioStreams(const QStringList &audioStreams_)
 {
-	audioChannels = audioChannels_;
-	addPendingUpdate(AudioChannels);
+	audioStreams = audioStreams_;
+	addPendingUpdate(AudioStreams);
 }
 
-void AbstractMediaWidget::updateCurrentAudioChannel(int currentAudioChannel_)
+void AbstractMediaWidget::updateCurrentAudioStream(int currentAudioStream_)
 {
-	currentAudioChannel = currentAudioChannel_;
-	addPendingUpdate(AudioChannels);
+	currentAudioStream = currentAudioStream_;
+	addPendingUpdate(AudioStreams);
 }
 
 void AbstractMediaWidget::updateSubtitles(const QStringList &subtitles_)
@@ -201,8 +201,8 @@ void AbstractMediaWidget::customEvent(QEvent *event)
 		case Metadata:
 			mediaWidget->metadataChanged();
 			break;
-		case AudioChannels:
-			mediaWidget->audioChannelsChanged();
+		case AudioStreams:
+			mediaWidget->audioStreamsChanged();
 			break;
 		case Subtitles:
 			mediaWidget->subtitlesChanged();
@@ -270,9 +270,9 @@ void DummyMediaWidget::seek(int time)
 	Q_UNUSED(time)
 }
 
-void DummyMediaWidget::setCurrentAudioChannel(int currentAudioChannel)
+void DummyMediaWidget::setCurrentAudioStream(int currentAudioStream)
 {
-	Q_UNUSED(currentAudioChannel)
+	Q_UNUSED(currentAudioStream)
 }
 
 void DummyMediaWidget::setCurrentSubtitle(int currentSubtitle)

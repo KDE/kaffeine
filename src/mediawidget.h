@@ -131,7 +131,7 @@ public:
 	void currentTotalTimeChanged();
 	void metadataChanged();
 	void seekableChanged();
-	void audioChannelsChanged();
+	void audioStreamsChanged();
 	void subtitlesChanged();
 	void titlesChanged();
 	void chaptersChanged();
@@ -159,7 +159,7 @@ private slots:
 	void pausedChanged(bool paused);
 	void timeButtonClicked();
 	void jumpToPosition();
-	void currentAudioChannelChanged(int currentAudioChannel);
+	void currentAudioStreamChanged(int currentAudioStream);
 	void currentSubtitleChanged(int currentSubtitle);
 	void toggleMenu();
 	void currentTitleChanged(QAction *action);
@@ -191,9 +191,9 @@ private:
 	KAction *actionNext;
 	KAction *fullScreenAction;
 	KAction *minimalModeAction;
-	KComboBox *audioChannelBox;
+	KComboBox *audioStreamBox;
 	KComboBox *subtitleBox;
-	QStringListModel *audioChannelModel;
+	QStringListModel *audioStreamModel;
 	QStringListModel *subtitleModel;
 	QString textSubtitlesOff;
 	KAction *muteAction;
@@ -249,15 +249,15 @@ public:
 	virtual Type getType() const { return Url; }
 	virtual KUrl getUrl() const { return KUrl(); }
 	virtual bool hideCurrentTotalTime() const { return false; }
-	virtual bool overrideAudioChannels() const { return false; }
+	virtual bool overrideAudioStreams() const { return false; }
 	virtual bool overrideSubtitles() const { return false; }
-	virtual QStringList getAudioChannels() const { return QStringList(); }
+	virtual QStringList getAudioStreams() const { return QStringList(); }
 	virtual QStringList getSubtitles() const { return QStringList(); }
-	virtual int getCurrentAudioChannel() const { return -1; }
+	virtual int getCurrentAudioStream() const { return -1; }
 	virtual int getCurrentSubtitle() const { return -1; }
 	virtual bool overrideCaption() const { return false; }
 	virtual QString getDefaultCaption() const { return QString(); }
-	virtual void setCurrentAudioChannel(int ) { }
+	virtual void setCurrentAudioStream(int ) { }
 	virtual void setCurrentSubtitle(int ) { }
 	virtual void trackLengthChanged(int ) { }
 	virtual void metadataChanged(const QMap<MediaWidget::MetadataType, QString> &) { }

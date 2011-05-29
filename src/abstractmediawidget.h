@@ -38,8 +38,8 @@ public:
 	int getTotalTime() const { return totalTime; } // milliseconds
 	bool isSeekable() const { return seekable; }
 	QMap<MediaWidget::MetadataType, QString> getMetadata() const { return metadata; }
-	QStringList getAudioChannels() const { return audioChannels; }
-	int getCurrentAudioChannel() const { return currentAudioChannel; }
+	QStringList getAudioStreams() const { return audioStreams; }
+	int getCurrentAudioStream() const { return currentAudioStream; }
 	QStringList getSubtitles() const { return subtitles; }
 	int getCurrentSubtitle() const { return currentSubtitle; }
 	int getTitleCount() const { return titleCount; }
@@ -59,7 +59,7 @@ public:
 	virtual void stop() = 0;
 	virtual void setPaused(bool paused) = 0;
 	virtual void seek(int time) = 0; // milliseconds
-	virtual void setCurrentAudioChannel(int currentAudioChannel) = 0;
+	virtual void setCurrentAudioStream(int currentAudioStream) = 0;
 	virtual void setCurrentSubtitle(int currentSubtitle) = 0;
 	virtual void setExternalSubtitle(const KUrl &subtitleUrl) = 0;
 	virtual void setCurrentTitle(int currentTitle) = 0;
@@ -75,8 +75,8 @@ protected:
 	void updateCurrentTotalTime(int currentTime_, int totalTime_);
 	void updateSeekable(bool seekable_);
 	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_);
-	void updateAudioChannels(const QStringList &audioChannels_);
-	void updateCurrentAudioChannel(int currentAudioChannel_);
+	void updateAudioStreams(const QStringList &audioStreams_);
+	void updateCurrentAudioStream(int currentAudioStream_);
 	void updateSubtitles(const QStringList &subtitles_);
 	void updateCurrentSubtitle(int currentSubtitle_);
 	void updateTitleCount(int titleCount_);
@@ -96,7 +96,7 @@ private:
 		CurrentTotalTime = (1 << 2),
 		Seekable = (1 << 3),
 		Metadata = (1 << 4),
-		AudioChannels = (1 << 5),
+		AudioStreams = (1 << 5),
 		Subtitles = (1 << 6),
 		Titles = (1 << 7),
 		Chapters = (1 << 8),
@@ -104,7 +104,7 @@ private:
 		DvdMenu = (1 << 10),
 		VideoSize = (1 << 11),
 		ResetState = (PlaybackStatus | CurrentTotalTime | Seekable | Metadata |
-			AudioChannels | Subtitles | Titles | Chapters | Angles | DvdMenu |
+			AudioStreams | Subtitles | Titles | Chapters | Angles | DvdMenu |
 			VideoSize)
 	};
 
@@ -120,8 +120,8 @@ private:
 	int totalTime;
 	bool seekable;
 	QMap<MediaWidget::MetadataType, QString> metadata;
-	QStringList audioChannels;
-	int currentAudioChannel;
+	QStringList audioStreams;
+	int currentAudioStream;
 	QStringList subtitles;
 	int currentSubtitle;
 	int titleCount;
@@ -150,7 +150,7 @@ public:
 	void stop();
 	void setPaused(bool paused);
 	void seek(int time); // milliseconds
-	void setCurrentAudioChannel(int currentAudioChannel);
+	void setCurrentAudioStream(int currentAudioStream);
 	void setCurrentSubtitle(int currentSubtitle);
 	void setExternalSubtitle(const KUrl &subtitleUrl);
 	void setCurrentTitle(int currentTitle);

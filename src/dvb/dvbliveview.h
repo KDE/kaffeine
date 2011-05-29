@@ -55,7 +55,7 @@ private slots:
 	void showOsd();
 	void osdTimeout();
 
-	void currentAudioChannelChanged(int currentAudioChannel);
+	void currentAudioStreamChanged(int currentAudioStream);
 	void currentSubtitleChanged(int currentSubtitle);
 	void replay();
 	void playbackFinished();

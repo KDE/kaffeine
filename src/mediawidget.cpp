@@ -114,13 +114,13 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	connect(minimalModeAction, SIGNAL(triggered()), this, SLOT(toggleMinimalMode()));
 	menu->addAction(collection->addAction("view_minimal_mode", minimalModeAction));
 
-	audioChannelBox = new KComboBox(toolBar);
-	connect(audioChannelBox, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(currentAudioChannelChanged(int)));
-	toolBar->addWidget(audioChannelBox);
+	audioStreamBox = new KComboBox(toolBar);
+	connect(audioStreamBox, SIGNAL(currentIndexChanged(int)),
+		this, SLOT(currentAudioStreamChanged(int)));
+	toolBar->addWidget(audioStreamBox);
 
-	audioChannelModel = new QStringListModel(toolBar);
-	audioChannelBox->setModel(audioChannelModel);
+	audioStreamModel = new QStringListModel(toolBar);
+	audioStreamBox->setModel(audioStreamModel);
 
 	subtitleBox = new KComboBox(toolBar);
 	textSubtitlesOff = i18nc("subtitle selection entry", "off");
@@ -797,23 +797,23 @@ void MediaWidget::jumpToPosition()
 	dialog->show();
 }
 
-void MediaWidget::currentAudioChannelChanged(int currentAudioChannel)
+void MediaWidget::currentAudioStreamChanged(int currentAudioStream)
 {
 	if (!blockBackendUpdates) {
-		if (source->overrideAudioChannels()) {
-			source->setCurrentAudioChannel(currentAudioChannel);
+		if (source->overrideAudioStreams()) {
+			source->setCurrentAudioStream(currentAudioStream);
 			return;
 		}
 
-		source->setCurrentAudioChannel(currentAudioChannel -
-			backend->getAudioChannels().size());
+		source->setCurrentAudioStream(currentAudioStream -
+			backend->getAudioStreams().size());
 
-		if (currentAudioChannel >= backend->getAudioChannels().size()) {
-			currentAudioChannel = -1;
+		if (currentAudioStream >= backend->getAudioStreams().size()) {
+			currentAudioStream = -1;
 		}
 
-		if (backend->getCurrentAudioChannel() != currentAudioChannel) {
-			backend->setCurrentAudioChannel(currentAudioChannel);
+		if (backend->getCurrentAudioStream() != currentAudioStream) {
+			backend->setCurrentAudioStream(currentAudioStream);
 		}
 	}
 }
@@ -876,27 +876,27 @@ void MediaWidget::longSkipDurationChanged(int longSkipDuration)
 		longSkipDuration));
 }
 
-void MediaWidget::audioChannelsChanged()
+void MediaWidget::audioStreamsChanged()
 {
 	QStringList items;
 	int currentIndex;
 
-	if (source->overrideAudioChannels()) {
-		items = source->getAudioChannels();
-		currentIndex = source->getCurrentAudioChannel();
+	if (source->overrideAudioStreams()) {
+		items = source->getAudioStreams();
+		currentIndex = source->getCurrentAudioStream();
 	} else {
-		items = backend->getAudioChannels();
-		currentIndex = backend->getCurrentAudioChannel();
+		items = backend->getAudioStreams();
+		currentIndex = backend->getCurrentAudioStream();
 	}
 
 	blockBackendUpdates = true;
 
-	if (audioChannelModel->stringList() != items) {
-		audioChannelModel->setStringList(items);
+	if (audioStreamModel->stringList() != items) {
+		audioStreamModel->setStringList(items);
 	}
 
-	audioChannelBox->setCurrentIndex(currentIndex);
-	audioChannelBox->setEnabled(items.size() > 1);
+	audioStreamBox->setCurrentIndex(currentIndex);
+	audioStreamBox->setEnabled(items.size() > 1);
 	blockBackendUpdates = false;
 }
 

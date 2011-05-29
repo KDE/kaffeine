@@ -45,7 +45,7 @@ public:
 	void stop();
 	void setPaused(bool paused);
 	void seek(int time); // milliseconds
-	void setCurrentAudioChannel(int currentAudioChannel);
+	void setCurrentAudioStream(int currentAudioStream);
 	void setCurrentSubtitle(int currentSubtitle);
 	void setExternalSubtitle(const KUrl &subtitleUrl);
 	void setCurrentTitle(int currentTitle);

@@ -49,7 +49,7 @@ private:
 	QSpinBox *networkIdBox;
 	QSpinBox *transportStreamIdBox;
 	QSpinBox *serviceIdBox;
-	KComboBox *audioChannelBox;
+	KComboBox *audioStreamBox;
 	QList<int> audioPids;
 	QCheckBox *scrambledBox;
 };

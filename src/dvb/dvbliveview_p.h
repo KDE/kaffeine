@@ -73,17 +73,17 @@ public:
 	QFile timeShiftFile;
 	DvbOsd dvbOsd;
 
-	bool overrideAudioChannels() const { return !audioChannels.isEmpty(); }
+	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
 	bool overrideSubtitles() const { return !subtitles.isEmpty(); }
-	QStringList getAudioChannels() const { return audioChannels; }
+	QStringList getAudioStreams() const { return audioStreams; }
 	QStringList getSubtitles() const { return subtitles; }
-	int getCurrentAudioChannel() const { return currentAudioChannel; }
+	int getCurrentAudioStream() const { return currentAudioStream; }
 	int getCurrentSubtitle() const { return currentSubtitle; }
 
-	void setCurrentAudioChannel(int currentAudioChannel_)
+	void setCurrentAudioStream(int currentAudioStream_)
 	{
-		currentAudioChannel = currentAudioChannel_;
-		emit currentAudioChannelChanged(currentAudioChannel);
+		currentAudioStream = currentAudioStream_;
+		emit currentAudioStreamChanged(currentAudioStream);
 	}
 
 	void setCurrentSubtitle(int currentSubtitle_)
@@ -103,13 +103,13 @@ public:
 	bool hideCurrentTotalTime() const { return !timeshift; }
 
 	bool timeshift;
-	QStringList audioChannels;
+	QStringList audioStreams;
 	QStringList subtitles;
-	int currentAudioChannel;
+	int currentAudioStream;
 	int currentSubtitle;
 
 signals:
-	void currentAudioChannelChanged(int currentAudioChannel);
+	void currentAudioStreamChanged(int currentAudioStream);
 	void currentSubtitleChanged(int currentSubtitle);
 	void replay();
 	void playbackFinished();

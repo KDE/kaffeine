@@ -675,7 +675,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
 
-	audioChannelBox = new KComboBox(groupBox);
+	audioStreamBox = new KComboBox(groupBox);
 
 	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
@@ -685,17 +685,17 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 			text = text + " (" + it.second + ')';
 		}
 
-		audioChannelBox->addItem(text);
+		audioStreamBox->addItem(text);
 		audioPids.append(it.first);
 	}
 
-	audioChannelBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
+	audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
 
 	if (audioPids.size() <= 1) {
-		audioChannelBox->setEnabled(false);
+		audioStreamBox->setEnabled(false);
 	}
 
-	gridLayout->addWidget(audioChannelBox, 3, 1);
+	gridLayout->addWidget(audioStreamBox, 3, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), 4, 0);
 
@@ -724,8 +724,8 @@ void DvbChannelEditor::accept()
 	updatedChannel.transportStreamId = transportStreamIdBox->value();
 	updatedChannel.serviceId = serviceIdBox->value();
 
-	if (audioChannelBox->currentIndex() != -1) {
-		updatedChannel.audioPid = audioPids.at(audioChannelBox->currentIndex());
+	if (audioStreamBox->currentIndex() != -1) {
+		updatedChannel.audioPid = audioPids.at(audioStreamBox->currentIndex());
 	}
 
 	updatedChannel.isScrambled = scrambledBox->isChecked();
