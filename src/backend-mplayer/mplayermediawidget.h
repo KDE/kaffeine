@@ -77,6 +77,7 @@ private:
 	void resetState();
 	void resizeEvent(QResizeEvent *event);
 	void sendCommand(Command command);
+	void timerEvent(QTimerEvent *event);
 	void updateVideoWidgetGeometry();
 
 	QWidget *videoWidget;
@@ -86,6 +87,7 @@ private:
 	int volume;
 	MediaWidget::AspectRatio aspectRatio;
 	bool deinterlacing;
+	int timerId;
 	QList<int> audioIds;
 	int videoWidth;
 	int videoHeight;

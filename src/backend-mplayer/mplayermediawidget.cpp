@@ -25,8 +25,8 @@
 #include "mplayervideowidget.h"
 
 MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
-	muted(false), volume(0), aspectRatio(MediaWidget::AspectRatioAuto), videoWidth(0),
-	videoHeight(0), videoAspectRatio(1)
+	muted(false), volume(0), aspectRatio(MediaWidget::AspectRatioAuto), deinterlacing(false),
+	timerId(0), videoWidth(0), videoHeight(0), videoAspectRatio(1)
 {
 	videoWidget = new MPlayerVideoWidget(this);
 	standardError.open(stderr, QIODevice::WriteOnly);
@@ -136,6 +136,7 @@ void MPlayerMediaWidget::play(const MediaSource &source)
 	process.write("pausing_keep_force get_property path\n");
 	sendCommand(SetDeinterlacing);
 	sendCommand(SetVolume);
+	timerId = startTimer(500);
 }
 
 void MPlayerMediaWidget::stop()
@@ -169,7 +170,7 @@ void MPlayerMediaWidget::setPaused(bool paused)
 void MPlayerMediaWidget::seek(int time)
 {
 	process.write("pausing_keep_force set_property time_pos " +
-		QByteArray::number(time / 1000) + '\n');
+		QByteArray::number(float(time) / 1000) + '\n');
 }
 
 void MPlayerMediaWidget::setCurrentAudioStream(int currentAudioStream)
@@ -196,31 +197,53 @@ void MPlayerMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
 
 void MPlayerMediaWidget::setCurrentTitle(int currentTitle)
 {
-	// FIXME
-	Q_UNUSED(currentTitle)
+	process.write("pausing_keep_force set_property switch_title " +
+		QByteArray::number(currentTitle) + "\n"
+		"pausing_keep_force get_property switch_title\n"
+		"pausing_keep_force get_property chapter\n");
 }
 
 void MPlayerMediaWidget::setCurrentChapter(int currentChapter)
 {
-	// FIXME
-	Q_UNUSED(currentChapter)
+	process.write("pausing_keep_force set_property chapter " +
+		QByteArray::number(currentChapter) + "\n"
+		"pausing_keep_force get_property switch_title\n"
+		"pausing_keep_force get_property chapter\n");
 }
 
 void MPlayerMediaWidget::setCurrentAngle(int currentAngle)
 {
-	// FIXME
-	Q_UNUSED(currentAngle)
+	process.write("pausing_keep_force set_property switch_angle " +
+		QByteArray::number(currentAngle) + '\n');
 }
 
 bool MPlayerMediaWidget::jumpToPreviousChapter()
 {
-	// FIXME
+	if ((getCurrentChapter() - 1) >= 0) {
+		setCurrentChapter(getCurrentChapter() - 1);
+		return true;
+	}
+
+	if ((getCurrentTitle() - 1) >= 0) {
+		setCurrentTitle(getCurrentTitle() - 1);
+		return true;
+	}
+
 	return false;
 }
 
 bool MPlayerMediaWidget::jumpToNextChapter()
 {
-	// FIXME
+	if ((getCurrentChapter() + 1) < getChapterCount()) {
+		setCurrentChapter(getCurrentChapter() + 1);
+		return true;
+	}
+
+	if ((getCurrentTitle() + 1) < getTitleCount()) {
+		setCurrentTitle(getCurrentTitle() + 1);
+		return true;
+	}
+
 	return false;
 }
 
@@ -362,7 +385,28 @@ void MPlayerMediaWidget::readStandardOutput()
 		}
 
 		if (line == "ANS_path=(null)") {
+			switch (getPlaybackStatus()) {
+			case MediaWidget::Idle:
+				break;
+			case MediaWidget::Playing:
+			case MediaWidget::Paused:
+				playbackFinished();
+				break;
+			}
+
 			resetState();
+			continue;
+		}
+
+		if (line.startsWith("ANS_length=")) {
+			int totalTime = (line.mid(11).toFloat() * 1000 + 0.5);
+			updateCurrentTotalTime(getCurrentTime(), totalTime);
+			continue;
+		}
+
+		if (line.startsWith("ANS_time_pos=")) {
+			int currentTime = (line.mid(13).toFloat() * 1000 + 0.5);
+			updateCurrentTotalTime(currentTime, getTotalTime());
 			continue;
 		}
 
@@ -456,6 +500,12 @@ void MPlayerMediaWidget::mouseClicked()
 void MPlayerMediaWidget::resetState()
 {
 	resetBaseState();
+
+	if (timerId != 0) {
+		killTimer(timerId);
+		timerId = 0;
+	}
+
 	audioIds.clear();
 	videoWidth = 0;
 	videoHeight = 0;
@@ -514,6 +564,13 @@ void MPlayerMediaWidget::sendCommand(Command command)
 		process.write("quit\n");
 		break;
 	}
+}
+
+void MPlayerMediaWidget::timerEvent(QTimerEvent *event)
+{
+	Q_UNUSED(event)
+	process.write("pausing_keep_force get_property length\n"
+		"pausing_keep_force get_property time_pos\n");
 }
 
 void MPlayerMediaWidget::updateVideoWidgetGeometry()

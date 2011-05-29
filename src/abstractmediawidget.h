@@ -71,6 +71,7 @@ public:
 
 protected:
 	void resetBaseState();
+	void playbackFinished();
 	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_);
 	void updateCurrentTotalTime(int currentTime_, int totalTime_);
 	void updateSeekable(bool seekable_);

@@ -42,7 +42,7 @@ void AbstractMediaWidget::resetBaseState()
 		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 	}
 
-	pendingUpdates = ResetState;
+	pendingUpdates |= ResetState;
 	playbackStatus = MediaWidget::Idle;
 	currentTime = 0;
 	totalTime = 0;
@@ -60,6 +60,11 @@ void AbstractMediaWidget::resetBaseState()
 	currentAngle = -1;
 	dvdMenu = false;
 	videoSize = QSize();
+}
+
+void AbstractMediaWidget::playbackFinished()
+{
+	addPendingUpdate(PlaybackFinished);
 }
 
 void AbstractMediaWidget::updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_)
