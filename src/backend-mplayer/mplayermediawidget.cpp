@@ -180,8 +180,9 @@ void MPlayerMediaWidget::setCurrentAudioStream(int currentAudioStream)
 
 void MPlayerMediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
-	// FIXME
-	Q_UNUSED(currentSubtitle)
+	process.write("pausing_keep_force set_property sub " +
+		QByteArray::number(currentSubtitle) + "\n"
+		"pausing_keep_force get_property sub\n");
 }
 
 void MPlayerMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
@@ -242,15 +243,63 @@ void MPlayerMediaWidget::readStandardOutput()
 		process.write("pausing_keep_force get_property path\n");
 	}
 
+	bool videoPropertiesChanged = false;
+	QStringList subtitles = getSubtitles();
+	bool subtitlesChanged = false;
+
 	foreach (const QByteArray &line, data.split('\n')) {
 		if (line.startsWith("VO: ")) {
-			process.write("pausing_keep_force get_property width\n"
-				"pausing_keep_force get_property height\n"
-				"pausing_keep_force get_property aspect\n");
+			videoPropertiesChanged = true;
+			continue;
+		}
+
+		if (line.startsWith("subtitle ")) {
+			int begin = line.indexOf("( sid ): ");
+
+			if (begin < 0) {
+				continue;
+			}
+
+			begin += 9;
+			int end = line.indexOf(' ', begin);
+
+			if (end < 0) {
+				end = line.size();
+			}
+
+			int subtitleIndex = line.mid(begin, end - begin).toInt();
+
+			while (subtitles.size() < subtitleIndex) {
+				subtitles.append(QString::number(subtitles.size() + 1));
+			}
+
+			subtitles.erase(subtitles.begin() + subtitleIndex, subtitles.end());
+			QString subtitle;
+			begin = line.indexOf("language: ");
+
+			if (begin >= 0) {
+				begin += 10;
+				end = line.indexOf(' ', begin);
+
+				if (end < 0) {
+					end = line.size();
+				}
+
+				subtitle = line.mid(begin, end - begin);
+			}
+
+			if (subtitle.isEmpty()) {
+				subtitle = QString::number(subtitles.size() + 1);
+			}
+
+			subtitles.append(subtitle);
+			subtitlesChanged = true;
+			continue;
 		}
 
 		if (line == "ANS_path=(null)") {
 			resetState();
+			continue;
 		}
 
 		if (line.startsWith("ANS_width=")) {
@@ -259,6 +308,8 @@ void MPlayerMediaWidget::readStandardOutput()
 			if (videoWidth < 0) {
 				videoWidth = 0;
 			}
+
+			continue;
 		}
 
 		if (line.startsWith("ANS_height=")) {
@@ -267,6 +318,8 @@ void MPlayerMediaWidget::readStandardOutput()
 			if (videoHeight < 0) {
 				videoHeight = 0;
 			}
+
+			continue;
 		}
 
 		if (line.startsWith("ANS_aspect=")) {
@@ -285,7 +338,25 @@ void MPlayerMediaWidget::readStandardOutput()
 			}
 
 			updateVideoWidgetGeometry();
+			continue;
 		}
+
+		if (line.startsWith("ANS_sub=")) {
+			int currentSubtitle = line.mid(8).toInt();
+			updateCurrentSubtitle(currentSubtitle);
+			continue;
+		}
+	}
+
+	if (videoPropertiesChanged) {
+		process.write("pausing_keep_force get_property width\n"
+			"pausing_keep_force get_property height\n"
+			"pausing_keep_force get_property aspect\n");
+	}
+
+	if (subtitlesChanged) {
+		updateSubtitles(subtitles);
+		process.write("pausing_keep_force get_property sub\n");
 	}
 }
 
