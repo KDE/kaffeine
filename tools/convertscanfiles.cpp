@@ -66,6 +66,8 @@ public:
 static QString parseLine(DvbTransponderBase::TransmissionType type, const QString &line, const QString &fileName)
 {
 	switch (type) {
+	case DvbTransponderBase::Invalid:
+		break;
 	case DvbTransponderBase::DvbC: {
 		DvbCTransponder transponder;
 
@@ -83,7 +85,6 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 
 		return transponder.toString();
 	    }
-
 	case DvbTransponderBase::DvbS: {
 		if (line.startsWith(QLatin1String("S "))) {
 			DvbSTransponder transponder;
@@ -115,7 +116,8 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 			return transponder.toString();
 		}
 	    }
-
+	case DvbTransponderBase::DvbS2:
+		break;
 	case DvbTransponderBase::DvbT: {
 		DvbTTransponder transponder;
 
@@ -155,7 +157,6 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 
 		return transponder.toString();
 	    }
-
 	case DvbTransponderBase::Atsc: {
 		AtscTransponder transponder;
 
@@ -179,6 +180,8 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 	QDir dir;
 
 	switch (type) {
+	case DvbTransponderBase::Invalid:
+		break;
 	case DvbTransponderBase::DvbC:
 		dir.setPath(path + "/dvb-c");
 		break;
