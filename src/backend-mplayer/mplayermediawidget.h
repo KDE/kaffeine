@@ -86,6 +86,7 @@ private:
 	int volume;
 	MediaWidget::AspectRatio aspectRatio;
 	bool deinterlacing;
+	QList<int> audioIds;
 	int videoWidth;
 	int videoHeight;
 	float videoAspectRatio;

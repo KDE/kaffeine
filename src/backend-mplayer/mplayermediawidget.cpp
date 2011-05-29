@@ -174,8 +174,11 @@ void MPlayerMediaWidget::seek(int time)
 
 void MPlayerMediaWidget::setCurrentAudioStream(int currentAudioStream)
 {
-	// FIXME
-	Q_UNUSED(currentAudioStream)
+	if ((currentAudioStream >= 0) && (currentAudioStream < audioIds.size())) {
+		process.write("pausing_keep_force set_property switch_audio " +
+			QByteArray::number(audioIds.at(currentAudioStream)) + "\n"
+			"pausing_keep_force get_property switch_audio\n");
+	}
 }
 
 void MPlayerMediaWidget::setCurrentSubtitle(int currentSubtitle)
@@ -244,12 +247,73 @@ void MPlayerMediaWidget::readStandardOutput()
 	}
 
 	bool videoPropertiesChanged = false;
+	QStringList audioStreams = getAudioStreams();
+	bool audioStreamsChanged = false;
 	QStringList subtitles = getSubtitles();
 	bool subtitlesChanged = false;
 
 	foreach (const QByteArray &line, data.split('\n')) {
 		if (line.startsWith("VO: ")) {
 			videoPropertiesChanged = true;
+			continue;
+		}
+
+		if (line.startsWith("audio stream: ")) {
+			int begin = 14;
+			int end = line.indexOf(' ', begin);
+
+			if (end < 0) {
+				end = line.size();
+			}
+
+			int audioStreamIndex = line.mid(begin, end - begin).toInt();
+
+			while (audioStreams.size() < audioStreamIndex) {
+				audioStreams.append(QString::number(audioStreams.size() + 1));
+			}
+
+			while (audioIds.size() < audioStreamIndex) {
+				audioIds.append(-1);
+			}
+
+			audioStreams.erase(audioStreams.begin() + audioStreamIndex,
+				audioStreams.end());
+			audioIds.erase(audioIds.begin() + audioStreamIndex, audioIds.end());
+			QString audioStream;
+			begin = line.indexOf("language: ");
+
+			if (begin >= 0) {
+				begin += 10;
+				end = line.indexOf(' ', begin);
+
+				if (end < 0) {
+					end = line.size();
+				}
+
+				audioStream = line.mid(begin, end - begin);
+			}
+
+			if (audioStream.isEmpty()) {
+				audioStream = QString::number(audioStreams.size() + 1);
+			}
+
+			int audioId = -1;
+			begin = line.indexOf("aid: ");
+
+			if (begin >= 0) {
+				begin += 5;
+				end = line.indexOf('.', begin);
+
+				if (end < 0) {
+					end = line.size();
+				}
+
+				audioId = line.mid(begin, end - begin).toInt();
+			}
+
+			audioStreams.append(audioStream);
+			audioIds.append(audioId);
+			audioStreamsChanged = true;
 			continue;
 		}
 
@@ -341,6 +405,12 @@ void MPlayerMediaWidget::readStandardOutput()
 			continue;
 		}
 
+		if (line.startsWith("ANS_switch_audio=")) {
+			int audioId = line.mid(17).toInt();
+			updateCurrentAudioStream(audioIds.indexOf(audioId));
+			continue;
+		}
+
 		if (line.startsWith("ANS_sub=")) {
 			int currentSubtitle = line.mid(8).toInt();
 			updateCurrentSubtitle(currentSubtitle);
@@ -352,6 +422,11 @@ void MPlayerMediaWidget::readStandardOutput()
 		process.write("pausing_keep_force get_property width\n"
 			"pausing_keep_force get_property height\n"
 			"pausing_keep_force get_property aspect\n");
+	}
+
+	if (audioStreamsChanged) {
+		updateAudioStreams(audioStreams);
+		process.write("pausing_keep_force get_property switch_audio\n");
 	}
 
 	if (subtitlesChanged) {
@@ -381,6 +456,7 @@ void MPlayerMediaWidget::mouseClicked()
 void MPlayerMediaWidget::resetState()
 {
 	resetBaseState();
+	audioIds.clear();
 	videoWidth = 0;
 	videoHeight = 0;
 	videoAspectRatio = 1;
