@@ -396,8 +396,8 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	job = KIO::get(KUrl("http://kaffeine.kde.org/scanfile.dvb.qz"), KIO::NoReload,
 		       KIO::HideProgressInfo); // FIXME NoReload or Reload?
 	job->setAutoDelete(false);
-	connect(job, SIGNAL(percent(KJob*,unsigned long)),
-		this, SLOT(progressChanged(KJob*,unsigned long)));
+	connect(job, SIGNAL(percent(KJob*,ulong)),
+		this, SLOT(progressChanged(KJob*,ulong)));
 	connect(job, SIGNAL(data(KIO::Job*,QByteArray)),
 		this, SLOT(dataArrived(KIO::Job*,QByteArray)));
 	connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished()));
