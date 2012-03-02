@@ -447,15 +447,17 @@ void DvbManager::deviceAdded(DvbBackendDevice *backendDevice)
 void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 {
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
-		if (deviceConfigs.at(i).device->getBackendDevice() == backendDevice) {
-			if (deviceConfigs[i].useCount != 0) {
-				deviceConfigs[i].useCount = 0;
-				deviceConfigs[i].prioritizedUseCount = 0;
-				deviceConfigs[i].device->release();
+		DvbDeviceConfig &it = deviceConfigs[i];
+
+		if (it.device && it.device->getBackendDevice() == backendDevice) {
+			if (it.useCount != 0) {
+				it.useCount = 0;
+				it.prioritizedUseCount = 0;
+				it.device->release();
 			}
 
-			delete deviceConfigs[i].device;
-			deviceConfigs[i].device = NULL;
+			delete it.device;
+			it.device = NULL;
 			break;
 		}
 	}
