@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if (path.startsWith("include/") || path.startsWith("tools/")) {
+		if (path.startsWith(QLatin1String("include/")) || path.startsWith(QLati1nString("tools/"))) {
 			continue;
 		}
 

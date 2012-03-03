@@ -177,16 +177,16 @@ void MPlayerMediaWidget::setCurrentAudioStream(int currentAudioStream)
 {
 	if ((currentAudioStream >= 0) && (currentAudioStream < audioIds.size())) {
 		process.write("pausing_keep_force set_property switch_audio " +
-			QByteArray::number(audioIds.at(currentAudioStream)) + "\n"
-			"pausing_keep_force get_property switch_audio\n");
+			QByteArray::number(audioIds.at(currentAudioStream)) +
+			"\npausing_keep_force get_property switch_audio\n");
 	}
 }
 
 void MPlayerMediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
 	process.write("pausing_keep_force set_property sub " +
-		QByteArray::number(currentSubtitle) + "\n"
-		"pausing_keep_force get_property sub\n");
+		QByteArray::number(currentSubtitle) +
+		"\npausing_keep_force get_property sub\n");
 }
 
 void MPlayerMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
@@ -198,16 +198,16 @@ void MPlayerMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
 void MPlayerMediaWidget::setCurrentTitle(int currentTitle)
 {
 	process.write("pausing_keep_force set_property switch_title " +
-		QByteArray::number(currentTitle) + "\n"
-		"pausing_keep_force get_property switch_title\n"
+		QByteArray::number(currentTitle) +
+		"\npausing_keep_force get_property switch_title\n"
 		"pausing_keep_force get_property chapter\n");
 }
 
 void MPlayerMediaWidget::setCurrentChapter(int currentChapter)
 {
 	process.write("pausing_keep_force set_property chapter " +
-		QByteArray::number(currentChapter) + "\n"
-		"pausing_keep_force get_property switch_title\n"
+		QByteArray::number(currentChapter) +
+		"\npausing_keep_force get_property switch_title\n"
 		"pausing_keep_force get_property chapter\n");
 }
 

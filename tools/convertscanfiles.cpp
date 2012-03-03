@@ -129,7 +129,7 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 			qWarning() << "Warning: bandwidth == AUTO in file" << fileName;
 		}
 
-		if ((transponder.modulation == DvbTTransponder::ModulationAuto) && !fileName.startsWith("auto-")) {
+		if ((transponder.modulation == DvbTTransponder::ModulationAuto) && !fileName.startsWith(QLatin1String("auto-"))) {
 			qWarning() << "Warning: modulation == AUTO in file" << fileName;
 		}
 
@@ -143,11 +143,11 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 			qWarning() << "Warning: fec rate low != NONE in file" << fileName;
 		}
 
-		if ((transponder.transmissionMode == DvbTTransponder::TransmissionModeAuto) && !fileName.startsWith("auto-")) {
+		if ((transponder.transmissionMode == DvbTTransponder::TransmissionModeAuto) && !fileName.startsWith(QLatin1String("auto-"))) {
 			qWarning() << "Warning: transmission mode == AUTO in file" << fileName;
 		}
 
-		if ((transponder.guardInterval == DvbTTransponder::GuardIntervalAuto) && !fileName.startsWith("auto-")) {
+		if ((transponder.guardInterval == DvbTTransponder::GuardIntervalAuto) && !fileName.startsWith(QLatin1String("auto-"))) {
 			qWarning() << "Warning: guard interval == AUTO in file" << fileName;
 		}
 

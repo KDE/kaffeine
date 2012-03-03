@@ -346,7 +346,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	switch (source.type) {
 	case MediaSource::Url:
-		if (url.endsWith(".iso")) {
+		if (url.endsWith(QLatin1String(".iso"))) {
 			playingDvd = true;
 		}
 
