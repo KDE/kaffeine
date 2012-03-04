@@ -73,7 +73,7 @@ public:
 	void setCurrentAngle(int currentAngle);
 	bool jumpToPreviousChapter();
 	bool jumpToNextChapter();
-	void toggleMenu();
+	void showDvdMenu();
 
 private:
 	void mousePressEvent(QMouseEvent *event);

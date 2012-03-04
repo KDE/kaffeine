@@ -341,12 +341,12 @@ void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
 
 void VlcMediaWidget::play(const MediaSource &source)
 {
-	QByteArray url = source.url.toEncoded();
+	QByteArray url = source.getUrl().toEncoded();
 	playingDvd = false;
 
-	switch (source.type) {
+	switch (source.getType()) {
 	case MediaSource::Url:
-		if (url.endsWith(QLatin1String(".iso"))) {
+		if (url.endsWith(".iso")) {
 			playingDvd = true;
 		}
 
@@ -376,13 +376,15 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 		playingDvd = true;
 		break;
+	case MediaSource::Dvb:
+		break;
 	}
 
 	libvlc_media_t *vlcMedia = libvlc_media_new_location(vlcInstance, url.constData());
 
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		Log("VlcMediaWidget::play: cannot create media") << source.url.prettyUrl();
+		Log("VlcMediaWidget::play: cannot create media") << source.getUrl().prettyUrl();
 		return;
 	}
 
@@ -398,16 +400,18 @@ void VlcMediaWidget::play(const MediaSource &source)
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
 	libvlc_media_release(vlcMedia);
 
-	if (source.subtitleUrl.isValid()) {
-		if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
-		    source.subtitleUrl.toEncoded().constData()) == 0) {
-			Log("VlcMediaWidget::play: cannot set subtitle file") <<
-				source.subtitleUrl.prettyUrl();
-		}
-	}
+//	FIXME!
+
+// 	if (source.subtitleUrl.isValid()) {
+// 		if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
+// 		    source.subtitleUrl.toEncoded().constData()) == 0) {
+// 			Log("VlcMediaWidget::play: cannot set subtitle file") <<
+// 				source.subtitleUrl.prettyUrl();
+// 		}
+// 	}
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		Log("VlcMediaWidget::play: cannot play media") << source.url.prettyUrl();
+		Log("VlcMediaWidget::play: cannot play media") << source.getUrl().prettyUrl();
 	}
 }
 
@@ -420,7 +424,7 @@ void VlcMediaWidget::setPaused(bool paused)
 {
 	libvlc_media_player_set_pause(vlcMediaPlayer, paused);
 	// we don't monitor playing / buffering / paused state changes
-	addDirtyFlags(UpdatePlaybackStatus);
+	updatePlaybackStatus(getPlaybackStatus());
 }
 
 void VlcMediaWidget::seek(int time)
@@ -493,7 +497,7 @@ bool VlcMediaWidget::jumpToNextChapter()
 	return false;
 }
 
-void VlcMediaWidget::toggleMenu()
+void VlcMediaWidget::showDvdMenu()
 {
 	// FIXME
 }
@@ -510,36 +514,33 @@ void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 
 void VlcMediaWidget::eventHandler(const libvlc_event_t *event, void *instance)
 {
-	DirtyFlags dirtyFlags;
+	// FIXME recheck
+	VlcMediaWidget *mediaWidget = reinterpret_cast<VlcMediaWidget *>(instance);
 
 	switch (event->type) {
 	case libvlc_MediaMetaChanged:
-		dirtyFlags = (UpdateMetadata | UpdateAudioStreams | UpdateSubtitles |
-			UpdateTitles | UpdateChapters | UpdateAngles);
-		break;
+		mediaWidget->resetBaseState();
+		return;
 	case libvlc_MediaPlayerEncounteredError:
-		dirtyFlags = InvalidateState;
-		break;
+		mediaWidget->updatePlaybackStatus(mediaWidget->getPlaybackStatus());
+		return;
 	case libvlc_MediaPlayerEndReached:
-		dirtyFlags = (PlaybackFinished | InvalidateState);
-		break;
+		mediaWidget->playbackFinished();
+		mediaWidget->updatePlaybackStatus(mediaWidget->getPlaybackStatus());
+		return;
 	case libvlc_MediaPlayerLengthChanged:
-		dirtyFlags = UpdateTotalTime;
-		break;
+		mediaWidget->updateCurrentTotalTime(mediaWidget->getCurrentTime(), mediaWidget->getTotalTime());
+		return;
 	case libvlc_MediaPlayerSeekableChanged:
-		dirtyFlags = UpdateSeekable;
-		break;
+		mediaWidget->updateSeekable(mediaWidget->isSeekable());
+		return;
 	case libvlc_MediaPlayerStopped:
-		dirtyFlags = InvalidateState;
-		break;
+		mediaWidget->updatePlaybackStatus(mediaWidget->getPlaybackStatus());
+		return;
 	case libvlc_MediaPlayerTimeChanged:
-		dirtyFlags = UpdateCurrentTime;
-		break;
+		mediaWidget->updateCurrentTotalTime(mediaWidget->getCurrentTime(), mediaWidget->getTotalTime());
+		return;
 	}
 
-	if (dirtyFlags != 0) {
-		reinterpret_cast<VlcMediaWidget *>(instance)->addDirtyFlags(dirtyFlags);
-	} else {
-		Log("VlcMediaWidget::eventHandler: unknown event type") << event->type;
-	}
+	Log("VlcMediaWidget::eventHandler: unknown event type") << event->type;
 }
