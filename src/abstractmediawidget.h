@@ -1,7 +1,7 @@
 /*
  * abstractmediawidget.h
  *
- * Copyright (C) 2010-2011 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2010-2012 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ public:
 	explicit AbstractMediaWidget(QWidget *parent);
 	virtual ~AbstractMediaWidget();
 
-	void setMediaWidget(MediaWidget *mediaWidget_);
+	void setMediaWidget(MediaWidget *mediaWidget_) { mediaWidget = mediaWidget_; }
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
@@ -69,27 +69,6 @@ public:
 	virtual bool jumpToNextChapter() = 0;
 	virtual void showDvdMenu() = 0;
 
-protected:
-	void resetBaseState();
-	void playbackFinished();
-	void updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_);
-	void updateCurrentTotalTime(int currentTime_, int totalTime_);
-	void updateSeekable(bool seekable_);
-	void updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_);
-	void updateAudioStreams(const QStringList &audioStreams_);
-	void updateCurrentAudioStream(int currentAudioStream_);
-	void updateSubtitles(const QStringList &subtitles_);
-	void updateCurrentSubtitle(int currentSubtitle_);
-	void updateTitleCount(int titleCount_);
-	void updateCurrentTitle(int currentTitle_);
-	void updateChapterCount(int chapterCount_);
-	void updateCurrentChapter(int currentChapter_);
-	void updateAngleCount(int angleCount_);
-	void updateCurrentAngle(int currentAngle_);
-	void updateDvdMenu(bool dvdMenu_);
-	void updateVideoSize(const QSize &videoSize_);
-
-private:
 	enum PendingUpdate
 	{
 		PlaybackFinished = (1 << 0),
@@ -103,19 +82,26 @@ private:
 		Chapters = (1 << 8),
 		Angles = (1 << 9),
 		DvdMenu = (1 << 10),
-		VideoSize = (1 << 11),
-		ResetState = (PlaybackStatus | CurrentTotalTime | Seekable | Metadata |
-			AudioStreams | Subtitles | Titles | Chapters | Angles | DvdMenu |
-			VideoSize)
+		VideoSize = (1 << 11)
 	};
 
 	Q_DECLARE_FLAGS(PendingUpdates, PendingUpdate)
 
-	void addPendingUpdate(PendingUpdate pendingUpdate);
-	void customEvent(QEvent *event);
+protected:
+	void addPendingUpdates(PendingUpdates pendingUpdatesToBeAdded); // thread-safe
 
-	MediaWidget *mediaWidget;
-	PendingUpdates pendingUpdates;
+	virtual void updatePlaybackStatus() = 0;
+	virtual void updateCurrentTotalTime() = 0;
+	virtual void updateSeekable() = 0;
+	virtual void updateMetadata() = 0;
+	virtual void updateAudioStreams() = 0;
+	virtual void updateSubtitles() = 0;
+	virtual void updateTitles() = 0;
+	virtual void updateChapters() = 0;
+	virtual void updateAngles() = 0;
+	virtual void updateDvdMenu() = 0;
+	virtual void updateVideoSize() = 0;
+
 	MediaWidget::PlaybackStatus playbackStatus;
 	int currentTime;
 	int totalTime;
@@ -133,15 +119,21 @@ private:
 	int currentAngle;
 	bool dvdMenu;
 	QSize videoSize;
+
+private:
+	void customEvent(QEvent *event);
+
+	MediaWidget *mediaWidget;
+	QAtomicInt pendingUpdates;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractMediaWidget::PendingUpdates)
 
 class DummyMediaWidget : public AbstractMediaWidget
 {
 public:
-	explicit DummyMediaWidget(QWidget *parent) : AbstractMediaWidget(parent) { }
-	~DummyMediaWidget() { }
-
-	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
+	explicit DummyMediaWidget(QWidget *parent);
+	~DummyMediaWidget();
 
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
@@ -160,6 +152,18 @@ public:
 	bool jumpToPreviousChapter();
 	bool jumpToNextChapter();
 	void showDvdMenu();
+
+	void updatePlaybackStatus();
+	void updateCurrentTotalTime();
+	void updateSeekable();
+	void updateMetadata();
+	void updateAudioStreams();
+	void updateSubtitles();
+	void updateTitles();
+	void updateChapters();
+	void updateAngles();
+	void updateDvdMenu();
+	void updateVideoSize();
 };
 
 #endif /* ABSTRACTMEDIAWIDGET_H */

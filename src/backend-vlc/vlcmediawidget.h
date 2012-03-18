@@ -1,7 +1,7 @@
 /*
  * vlcmediawidget.h
  *
- * Copyright (C) 2010-2011 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2010-2012 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,23 +40,6 @@ public:
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
-	MediaWidget::PlaybackStatus getPlaybackStatus();
-	int getTotalTime(); // milliseconds
-	int getCurrentTime(); // milliseconds
-	bool isSeekable();
-	QMap<MediaWidget::MetadataType, QString> getMetadata();
-	QStringList getAudioStreams();
-	int getCurrentAudioStream();
-	QStringList getSubtitles();
-	int getCurrentSubtitle();
-	int getTitleCount();
-	int getCurrentTitle();
-	int getChapterCount();
-	int getCurrentChapter();
-	int getAngleCount();
-	int getCurrentAngle();
-	bool hasMenu();
-	QSize getVideoSize();
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
@@ -75,10 +58,23 @@ public:
 	bool jumpToNextChapter();
 	void showDvdMenu();
 
+	void updatePlaybackStatus();
+	void updateCurrentTotalTime();
+	void updateSeekable();
+	void updateMetadata();
+	void updateAudioStreams();
+	void updateSubtitles();
+	void updateTitles();
+	void updateChapters();
+	void updateAngles();
+	void updateDvdMenu();
+	void updateVideoSize();
+
 private:
 	void mousePressEvent(QMouseEvent *event);
+	void vlcEvent(const libvlc_event_t *event);
 
-	static void eventHandler(const libvlc_event_t *event, void *instance);
+	static void vlcEventHandler(const libvlc_event_t *event, void *instance);
 
 	libvlc_instance_t *vlcInstance;
 	libvlc_media_player_t *vlcMediaPlayer;

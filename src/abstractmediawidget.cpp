@@ -1,7 +1,7 @@
 /*
  * abstractmediawidget.cpp
  *
- * Copyright (C) 2010-2011 Christoph Pfister <christophpfister@gmail.com>
+ * Copyright (C) 2010-2012 Christoph Pfister <christophpfister@gmail.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,33 +24,11 @@
 
 AbstractMediaWidget::AbstractMediaWidget(QWidget *parent) : QWidget(parent), mediaWidget(NULL)
 {
-	resetBaseState();
-}
-
-AbstractMediaWidget::~AbstractMediaWidget()
-{
-}
-
-void AbstractMediaWidget::setMediaWidget(MediaWidget *mediaWidget_)
-{
-	mediaWidget = mediaWidget_;
-}
-
-void AbstractMediaWidget::resetBaseState()
-{
-	if (pendingUpdates == 0) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-	}
-
-	pendingUpdates |= ResetState;
 	playbackStatus = MediaWidget::Idle;
 	currentTime = 0;
 	totalTime = 0;
 	seekable = false;
-	metadata.clear();
-	audioStreams.clear();
 	currentAudioStream = -1;
-	subtitles.clear();
 	currentSubtitle = -1;
 	titleCount = 0;
 	currentTitle = -1;
@@ -59,179 +37,105 @@ void AbstractMediaWidget::resetBaseState()
 	angleCount = 0;
 	currentAngle = -1;
 	dvdMenu = false;
-	videoSize = QSize();
 }
 
-void AbstractMediaWidget::playbackFinished()
+AbstractMediaWidget::~AbstractMediaWidget()
 {
-	addPendingUpdate(PlaybackFinished);
 }
 
-void AbstractMediaWidget::updatePlaybackStatus(MediaWidget::PlaybackStatus playbackStatus_)
+void AbstractMediaWidget::addPendingUpdates(PendingUpdates pendingUpdatesToBeAdded)
 {
-	playbackStatus = playbackStatus_;
-	addPendingUpdate(PlaybackStatus);
-}
+	while (true) {
+		int oldValue = pendingUpdates;
+		int newValue = (oldValue | pendingUpdatesToBeAdded);
 
-void AbstractMediaWidget::updateCurrentTotalTime(int currentTime_, int totalTime_)
-{
-	currentTime = currentTime_;
-	totalTime = totalTime_;
+		if (!pendingUpdates.testAndSetRelaxed(oldValue, newValue)) {
+			continue;
+		}
 
-	if (currentTime < 0) {
-		currentTime = 0;
+		if (oldValue == 0) {
+			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
+		}
+
+		break;
 	}
-
-	if (totalTime < 0) {
-		totalTime = 0;
-	}
-
-	addPendingUpdate(CurrentTotalTime);
-}
-
-void AbstractMediaWidget::updateSeekable(bool seekable_)
-{
-	seekable = seekable_;
-	addPendingUpdate(Seekable);
-}
-
-void AbstractMediaWidget::updateMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata_)
-{
-	metadata = metadata_;
-	addPendingUpdate(Metadata);
-}
-
-void AbstractMediaWidget::updateAudioStreams(const QStringList &audioStreams_)
-{
-	audioStreams = audioStreams_;
-	addPendingUpdate(AudioStreams);
-}
-
-void AbstractMediaWidget::updateCurrentAudioStream(int currentAudioStream_)
-{
-	currentAudioStream = currentAudioStream_;
-	addPendingUpdate(AudioStreams);
-}
-
-void AbstractMediaWidget::updateSubtitles(const QStringList &subtitles_)
-{
-	subtitles = subtitles_;
-	addPendingUpdate(Subtitles);
-}
-
-void AbstractMediaWidget::updateCurrentSubtitle(int currentSubtitle_)
-{
-	currentSubtitle = currentSubtitle_;
-	addPendingUpdate(Subtitles);
-}
-
-void AbstractMediaWidget::updateTitleCount(int titleCount_)
-{
-	titleCount = titleCount_;
-	addPendingUpdate(Titles);
-}
-
-void AbstractMediaWidget::updateCurrentTitle(int currentTitle_)
-{
-	currentTitle = currentTitle_;
-	addPendingUpdate(Titles);
-}
-
-void AbstractMediaWidget::updateChapterCount(int chapterCount_)
-{
-	chapterCount = chapterCount_;
-	addPendingUpdate(Chapters);
-}
-
-void AbstractMediaWidget::updateCurrentChapter(int currentChapter_)
-{
-	currentChapter = currentChapter_;
-	addPendingUpdate(Chapters);
-}
-
-void AbstractMediaWidget::updateAngleCount(int angleCount_)
-{
-	angleCount = angleCount_;
-	addPendingUpdate(Angles);
-}
-
-void AbstractMediaWidget::updateCurrentAngle(int currentAngle_)
-{
-	currentAngle = currentAngle_;
-	addPendingUpdate(Angles);
-}
-
-void AbstractMediaWidget::updateDvdMenu(bool dvdMenu_)
-{
-	dvdMenu = dvdMenu_;
-	addPendingUpdate(DvdMenu);
-}
-
-void AbstractMediaWidget::updateVideoSize(const QSize &videoSize_)
-{
-	videoSize = videoSize_;
-	addPendingUpdate(VideoSize);
-}
-
-void AbstractMediaWidget::addPendingUpdate(PendingUpdate pendingUpdate)
-{
-	if (pendingUpdates == 0) {
-		QCoreApplication::postEvent(this, new QEvent(QEvent::User));
-	}
-
-	pendingUpdates |= pendingUpdate;
 }
 
 void AbstractMediaWidget::customEvent(QEvent *event)
 {
 	Q_UNUSED(event)
 
-	while (pendingUpdates != 0) {
-		uint lowestPendingUpdate = (pendingUpdates & (~(pendingUpdates - 1)));
-		pendingUpdates &= ~lowestPendingUpdate;
+	while (true) {
+		int oldValue = pendingUpdates;
+		int lowestPendingUpdate = (oldValue & (~(oldValue - 1)));
+		int newValue = (oldValue & (~lowestPendingUpdate));
 
-		switch (static_cast<PendingUpdates>(lowestPendingUpdate)) {
+		if (!pendingUpdates.testAndSetRelaxed(oldValue, newValue)) {
+			continue;
+		}
+
+		switch (static_cast<PendingUpdate>(lowestPendingUpdate)) {
 		case PlaybackFinished:
 			mediaWidget->playbackFinished();
 			break;
 		case PlaybackStatus:
+			updatePlaybackStatus();
 			mediaWidget->playbackStatusChanged();
 			break;
 		case CurrentTotalTime:
+			updateCurrentTotalTime();
 			mediaWidget->currentTotalTimeChanged();
 			break;
 		case Seekable:
+			updateSeekable();
 			mediaWidget->seekableChanged();
 			break;
 		case Metadata:
+			updateMetadata();
 			mediaWidget->metadataChanged();
 			break;
 		case AudioStreams:
+			updateAudioStreams();
 			mediaWidget->audioStreamsChanged();
 			break;
 		case Subtitles:
+			updateSubtitles();
 			mediaWidget->subtitlesChanged();
 			break;
 		case Titles:
+			updateTitles();
 			mediaWidget->titlesChanged();
 			break;
 		case Chapters:
+			updateChapters();
 			mediaWidget->chaptersChanged();
 			break;
 		case Angles:
+			updateAngles();
 			mediaWidget->anglesChanged();
 			break;
 		case DvdMenu:
+			updateDvdMenu();
 			mediaWidget->dvdMenuChanged();
 			break;
 		case VideoSize:
+			updateVideoSize();
 			mediaWidget->videoSizeChanged();
 			break;
-		case ResetState:
-			// this is a combination of flags
+		}
+
+		if (newValue == 0) {
 			break;
 		}
 	}
+}
+
+DummyMediaWidget::DummyMediaWidget(QWidget *parent) : AbstractMediaWidget(parent)
+{
+}
+
+DummyMediaWidget::~DummyMediaWidget()
+{
 }
 
 void DummyMediaWidget::setMuted(bool muted)
@@ -257,12 +161,10 @@ void DummyMediaWidget::setDeinterlacing(bool deinterlacing)
 void DummyMediaWidget::play(const MediaSource &source)
 {
 	Q_UNUSED(source)
-	resetBaseState();
 }
 
 void DummyMediaWidget::stop()
 {
-	resetBaseState();
 }
 
 void DummyMediaWidget::setPaused(bool paused)
@@ -316,5 +218,49 @@ bool DummyMediaWidget::jumpToNextChapter()
 }
 
 void DummyMediaWidget::showDvdMenu()
+{
+}
+
+void DummyMediaWidget::updatePlaybackStatus()
+{
+}
+
+void DummyMediaWidget::updateCurrentTotalTime()
+{
+}
+
+void DummyMediaWidget::updateSeekable()
+{
+}
+
+void DummyMediaWidget::updateMetadata()
+{
+}
+
+void DummyMediaWidget::updateAudioStreams()
+{
+}
+
+void DummyMediaWidget::updateSubtitles()
+{
+}
+
+void DummyMediaWidget::updateTitles()
+{
+}
+
+void DummyMediaWidget::updateChapters()
+{
+}
+
+void DummyMediaWidget::updateAngles()
+{
+}
+
+void DummyMediaWidget::updateDvdMenu()
+{
+}
+
+void DummyMediaWidget::updateVideoSize()
 {
 }
