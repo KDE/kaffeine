@@ -505,7 +505,7 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 		return;
 	}
 
-	Log("VlcMediaWidget::eventHandler: unknown event type") << event->type;
+	Log("VlcMediaWidget::vlcEvent: unknown event type") << event->type;
 }
 
 void VlcMediaWidget::vlcEventHandler(const libvlc_event_t *event, void *instance)

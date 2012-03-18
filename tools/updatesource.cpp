@@ -21,6 +21,7 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
+#include <QLatin1String>
 
 int main(int argc, char *argv[])
 {
@@ -99,7 +100,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		if (path.startsWith(QLatin1String("include/")) || path.startsWith(QLati1nString("tools/"))) {
+		if (path.startsWith(QLatin1String("include/")) || path.startsWith(QLatin1String("tools/"))) {
 			continue;
 		}
 
