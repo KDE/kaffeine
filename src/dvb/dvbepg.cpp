@@ -690,15 +690,15 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	// 1980-01-06T000000 minus 15 secs (= UTC - GPS in 2011)
 	QDateTime baseDateTime = QDateTime(QDate(1980, 1, 5), QTime(23, 59, 45), Qt::UTC);
 
-	for (AtscEitSectionEntry entry = eitSection.entries(); (entryCount > 0) && entry.isValid();
-	     --entryCount, entry.advance()) {
+	for (AtscEitSectionEntry eitEntry = eitSection.entries();
+	     (entryCount > 0) && eitEntry.isValid(); --entryCount, eitEntry.advance()) {
 		DvbEpgEntry epgEntry;
 		epgEntry.channel = channel;
-		epgEntry.begin = baseDateTime.addSecs(entry.startTime());
-		epgEntry.duration = QTime().addSecs(entry.duration());
-		epgEntry.title = entry.title();
+		epgEntry.begin = baseDateTime.addSecs(eitEntry.startTime());
+		epgEntry.duration = QTime().addSecs(eitEntry.duration());
+		epgEntry.title = eitEntry.title();
 
-		quint32 id = ((quint32(fakeChannel.networkId) << 16) | quint32(entry.eventId()));
+		quint32 id = ((quint32(fakeChannel.networkId) << 16) | quint32(eitEntry.eventId()));
 		DvbSharedEpgEntry entry = epgEntries.value(id);
 
 		if (entry.isValid() && (entry->channel == epgEntry.channel) &&
