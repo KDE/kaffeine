@@ -86,6 +86,7 @@ public:
 QString Log::getLog()
 {
 	if (data != NULL) {
+		QMutexLocker locker(&data->mutex);
 		return data->buffer;
 	}
 

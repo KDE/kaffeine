@@ -4,6 +4,18 @@ About this file
 
 This file covers various topics relevant to Kaffeine development.
 
+---------
+dtvdaemon
+---------
+
+dtvdaemon is intended as a small, standalone daemon to communicate with the digital TV devices
+(supported by linuxtv.org or other projects). It provides a convenience layer (channels, epg, etc)
+and should only depend on QtCore and QtNetwork. Currently the focus lies on a local daemon, which
+runs only on demand, but it should be easy to make it accessible through TCP/IP.
+
+One advantage is the possibility to run multiple instances of Kaffeine at the same time. While
+implementing it, enhancements (e.g. support for new delivery systems) are also tried to achieve.
+
 ------------------------
 DVB-T channel allocation
 ------------------------
