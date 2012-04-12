@@ -21,8 +21,6 @@
 #ifndef DTVDAEMON_H
 #define DTVDAEMON_H
 
-#include <QMap>
-#include <QObject>
 #include <QLocalServer>
 
 class QFile;

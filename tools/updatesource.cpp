@@ -21,7 +21,6 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
-#include <QLatin1String>
 
 int main(int argc, char *argv[])
 {

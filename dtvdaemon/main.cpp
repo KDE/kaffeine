@@ -20,7 +20,6 @@
 
 #include <QCoreApplication>
 #include <QDir>
-#include <QFile>
 #include <unistd.h>
 #include "dtvdaemon.h"
 #include "log.h"

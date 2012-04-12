@@ -22,7 +22,6 @@
 
 #include <QCoreApplication>
 #include <QDir>
-#include <QLocalSocket>
 #include "connection.h"
 #include "log.h"
 
