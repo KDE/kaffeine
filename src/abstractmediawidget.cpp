@@ -43,6 +43,13 @@ AbstractMediaWidget::~AbstractMediaWidget()
 {
 }
 
+void AbstractMediaWidget::connectToMediaWidget(MediaWidget *mediaWidget_)
+{
+	mediaWidget = mediaWidget_;
+	addPendingUpdates(PlaybackStatus | CurrentTotalTime | Seekable | Metadata | AudioStreams |
+		Subtitles | Titles | Chapters | Angles | DvdMenu | VideoSize);
+}
+
 void AbstractMediaWidget::addPendingUpdates(PendingUpdates pendingUpdatesToBeAdded)
 {
 	while (true) {

@@ -29,7 +29,7 @@ public:
 	explicit AbstractMediaWidget(QWidget *parent);
 	virtual ~AbstractMediaWidget();
 
-	void setMediaWidget(MediaWidget *mediaWidget_) { mediaWidget = mediaWidget_; }
+	void connectToMediaWidget(MediaWidget *mediaWidget_);
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 

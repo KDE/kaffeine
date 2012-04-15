@@ -69,7 +69,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 		backend = new DummyMediaWidget(this);
 	}
 
-	backend->setMediaWidget(this);
+	backend->connectToMediaWidget(this);
 	layout->addWidget(backend);
 	osdWidget = new OsdWidget(this);
 
