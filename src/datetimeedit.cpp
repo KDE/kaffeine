@@ -28,40 +28,40 @@ static QString localQtDateFormat()
 	QString dateFormat = KGlobal::locale()->dateFormatShort();
 
 	for (int i = 0; (i + 1) < dateFormat.size(); ++i) {
-		if (dateFormat.at(i) != '%') {
+		if (dateFormat.at(i) != QLatin1Char('%')) {
 			continue;
 		}
 
 		switch (dateFormat.at(i + 1).unicode()) {
 		case 'Y':
-			dateFormat.replace(i, 2, "yyyy");
+			dateFormat.replace(i, 2, QLatin1String("yyyy"));
 			break;
 		case 'y':
-			dateFormat.replace(i, 2, "yy");
+			dateFormat.replace(i, 2, QLatin1String("yy"));
 			break;
 		case 'n':
-			dateFormat.replace(i, 2, 'M');
+			dateFormat.replace(i, 2, QLatin1Char('M'));
 			break;
 		case 'm':
-			dateFormat.replace(i, 2, "MM");
+			dateFormat.replace(i, 2, QLatin1String("MM"));
 			break;
 		case 'e':
-			dateFormat.replace(i, 2, 'd');
+			dateFormat.replace(i, 2, QLatin1Char('d'));
 			break;
 		case 'd':
-			dateFormat.replace(i, 2, "dd");
+			dateFormat.replace(i, 2, QLatin1String("dd"));
 			break;
 		case 'b':
-			dateFormat.replace(i, 2, "MMM");
+			dateFormat.replace(i, 2, QLatin1String("MMM"));
 			break;
 		case 'B':
-			dateFormat.replace(i, 2, "MMMM");
+			dateFormat.replace(i, 2, QLatin1String("MMMM"));
 			break;
 		case 'a':
-			dateFormat.replace(i, 2, "ddd");
+			dateFormat.replace(i, 2, QLatin1String("ddd"));
 			break;
 		case 'A':
-			dateFormat.replace(i, 2, "dddd");
+			dateFormat.replace(i, 2, QLatin1String("dddd"));
 			break;
 		}
 	}
@@ -74,7 +74,7 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 	QString timeFormat = KGlobal::locale()->timeFormat();
 
 	for (int i = 0; (i + 1) < timeFormat.size(); ++i) {
-		if (timeFormat.at(i) != '%') {
+		if (timeFormat.at(i) != QLatin1Char('%')) {
 			continue;
 		}
 
@@ -83,18 +83,18 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 		switch (timeFormat.at(i + 1).unicode()) {
 		case 'H':
 		case 'I':
-			timeFormat.replace(i, 2, "hh");
+			timeFormat.replace(i, 2, QLatin1String("hh"));
 			break;
 		case 'k':
 		case 'l':
-			timeFormat.replace(i, 2, 'h');
+			timeFormat.replace(i, 2, QLatin1Char('h'));
 			break;
 		case 'M':
-			timeFormat.replace(i, 2, "mm");
+			timeFormat.replace(i, 2, QLatin1String("mm"));
 			break;
 		case 'S':
 			if (showSeconds) {
-				timeFormat.replace(i, 2, "ss");
+				timeFormat.replace(i, 2, QLatin1String("ss"));
 			} else {
 				strip = true;
 			}
@@ -102,7 +102,7 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 			break;
 		case 'p':
 			if (!duration) {
-				timeFormat.replace(i, 2, "AP");
+				timeFormat.replace(i, 2, QLatin1String("AP"));
 			} else {
 				strip = true;
 			}
@@ -119,7 +119,7 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 			}
 
 			if ((beginRemove > 0) && timeFormat.at(beginRemove - 1).isPunct() &&
-			    (timeFormat.at(beginRemove - 1) != '%')) {
+			    (timeFormat.at(beginRemove - 1) != QLatin1Char('%'))) {
 				--beginRemove;
 
 				while ((beginRemove > 0) &&
@@ -136,7 +136,7 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 
 				if ((endRemove < timeFormat.size()) &&
 				    timeFormat.at(endRemove).isPunct() &&
-				    (timeFormat.at(endRemove) != '%')) {
+				    (timeFormat.at(endRemove) != QLatin1Char('%'))) {
 					++endRemove;
 
 					while ((endRemove < timeFormat.size()) &&
@@ -156,7 +156,7 @@ static QString localQtTimeFormat(bool showSeconds, bool duration)
 
 DateTimeEdit::DateTimeEdit(QWidget *parent) : QDateTimeEdit(parent)
 {
-	setDisplayFormat(localQtDateFormat() + ' ' + localQtTimeFormat(false, false));
+	setDisplayFormat(localQtDateFormat() + QLatin1Char(' ') + localQtTimeFormat(false, false));
 }
 
 DateTimeEdit::~DateTimeEdit()

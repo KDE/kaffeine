@@ -92,7 +92,7 @@ MprisRootObject::~MprisRootObject()
 QString MprisRootObject::Identity()
 {
 	const KAboutData *aboutData = KGlobal::mainComponent().aboutData();
-	return aboutData->programName() + ' ' + aboutData->version();
+	return aboutData->programName() + QLatin1Char(' ' )+ aboutData->version();
 }
 
 void MprisRootObject::Quit()
@@ -365,7 +365,7 @@ QList<TelevisionScheduleEntryStruct> DBusTelevisionObject::ListProgramSchedule()
 		entry.key = recording->sqlKey;
 		entry.name = recording->name;
 		entry.channel = recording->channel->name;
-		entry.begin = (recording->begin.toString(Qt::ISODate) + 'Z');
+		entry.begin = (recording->begin.toString(Qt::ISODate) + QLatin1Char('Z'));
 		entry.duration = recording->duration.toString(Qt::ISODate);
 		entry.repeat = recording->repeat;
 		entry.isRunning = (recording->status != DvbRecording::Inactive);

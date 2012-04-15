@@ -100,7 +100,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 		break;
 	default:
 		Log("DvbLinuxDevice::startDevice: unknown type") << frontend_info.type <<
-			"for frontend" << frontendPath;
+			QLatin1String("for frontend") << frontendPath;
 		return;
 	}
 
@@ -907,33 +907,33 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 
 	if (addDevice && !device->demuxPath.isEmpty() && !device->dvrPath.isEmpty() &&
 	    !device->frontendPath.isEmpty()) {
-		QString path = QString("/sys/class/dvb/dvb%1.frontend%2/").arg(adapter).arg(index);
+		QString path = QString(QLatin1String("/sys/class/dvb/dvb%1.frontend%2/")).arg(adapter).arg(index);
 		QString deviceId;
 
-		if (QFile::exists(path + "device/vendor")) {
+		if (QFile::exists(path + QLatin1String("device/vendor"))) {
 			// PCI device
-			int vendor = readSysAttr(path + "device/vendor");
-			int pciDevice = readSysAttr(path + "device/device");
-			int subsystem_vendor = readSysAttr(path + "device/subsystem_vendor");
-			int subsystem_device = readSysAttr(path + "device/subsystem_device");
+			int vendor = readSysAttr(path + QLatin1String("device/vendor"));
+			int pciDevice = readSysAttr(path + QLatin1String("device/device"));
+			int subsystem_vendor = readSysAttr(path + QLatin1String("device/subsystem_vendor"));
+			int subsystem_device = readSysAttr(path + QLatin1String("device/subsystem_device"));
 
 			if ((vendor >= 0) && (pciDevice >= 0) && (subsystem_vendor >= 0) &&
 			    (subsystem_device >= 0)) {
-				deviceId = 'P';
-				deviceId += QString("%1").arg(vendor, 4, 16, QChar('0'));
-				deviceId += QString("%1").arg(pciDevice, 4, 16, QChar('0'));
-				deviceId += QString("%1").arg(subsystem_vendor, 4, 16, QChar('0'));
-				deviceId += QString("%1").arg(subsystem_device, 4, 16, QChar('0'));
+				deviceId = QLatin1Char('P');
+				deviceId += QString(QLatin1String("%1")).arg(vendor, 4, 16, QLatin1Char('0'));
+				deviceId += QString(QLatin1String("%1")).arg(pciDevice, 4, 16, QLatin1Char('0'));
+				deviceId += QString(QLatin1String("%1")).arg(subsystem_vendor, 4, 16, QLatin1Char('0'));
+				deviceId += QString(QLatin1String("%1")).arg(subsystem_device, 4, 16, QLatin1Char('0'));
 			}
-		} else if (QFile::exists(path + "device/idVendor")) {
+		} else if (QFile::exists(path + QLatin1String("device/idVendor"))) {
 			// USB device
-			int vendor = readSysAttr(path + "device/idVendor");
-			int product = readSysAttr(path + "device/idProduct");
+			int vendor = readSysAttr(path + QLatin1String("device/idVendor"));
+			int product = readSysAttr(path + QLatin1String("device/idProduct"));
 
 			if ((vendor >= 0) && (product >= 0)) {
-				deviceId = 'U';
-				deviceId += QString("%1").arg(vendor, 4, 16, QChar('0'));
-				deviceId += QString("%1").arg(product, 4, 16, QChar('0'));
+				deviceId = QLatin1Char('U');
+				deviceId += QString(QLatin1String("%1")).arg(vendor, 4, 16, QLatin1Char('0'));
+				deviceId += QString(QLatin1String("%1")).arg(product, 4, 16, QLatin1Char('0'));
 			}
 		}
 

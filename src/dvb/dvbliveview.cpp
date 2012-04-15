@@ -64,15 +64,15 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 	if (firstEntry.channel.isValid()) {
 		entryString = KGlobal::locale()->formatTime(firstEntry.begin.toLocalTime().time())
-			+ ' ' + firstEntry.title;
+			+ QLatin1Char(' ') + firstEntry.title;
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
 		totalTime = QTime().secsTo(firstEntry.duration);
 	}
 
 	if ((level == ShortOsd) && secondEntry.channel.isValid()) {
-		entryString = entryString + '\n' +
+		entryString = entryString + QLatin1Char('\n') +
 			KGlobal::locale()->formatTime(secondEntry.begin.toLocalTime().time()) +
-			' ' + secondEntry.title;
+			QLatin1Char(' ') + secondEntry.title;
 	}
 
 	int lineHeight = QFontMetrics(osdFont).height();
@@ -245,7 +245,7 @@ void DvbLiveView::toggleOsd()
 	switch (internal->dvbOsd.level) {
 	case DvbOsd::Off:
 		internal->dvbOsd.init(DvbOsd::ShortOsd,
-			QString("%1 - %2").arg(channel->number).arg(channel->name),
+			QString(QLatin1String("%1 - %2")).arg(channel->number).arg(channel->name),
 			manager->getEpgModel()->getCurrentNext(channel));
 		osdWidget->showObject(&internal->dvbOsd, 2500);
 		osdTimer.start(2500);
@@ -432,15 +432,15 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 			break;
 		}
 
-		internal->timeShiftFile.setFileName(manager->getTimeShiftFolder() + "/TimeShift-" +
-			QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
+		internal->timeShiftFile.setFileName(manager->getTimeShiftFolder() + QLatin1String("/TimeShift-") +
+			QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) + QLatin1String(".m2t"));
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
 			Log("DvbLiveView::playbackStatusChanged: cannot open file") <<
 				internal->timeShiftFile.fileName();
-			internal->timeShiftFile.setFileName(QDir::homePath() + "/TimeShift-" +
-				QDateTime::currentDateTime().toString("yyyyMMddThhmmss") + ".m2t");
+			internal->timeShiftFile.setFileName(QDir::homePath() + QLatin1String("/TimeShift-") +
+				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) + QLatin1String(".m2t"));
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
@@ -571,7 +571,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
 	readFd(-1), writeFd(-1)
 {
-	QString fileName = KStandardDirs::locateLocal("appdata", "dvbpipe.m2t");
+	QString fileName = KStandardDirs::locateLocal("appdata", QLatin1String("dvbpipe.m2t"));
 	QFile::remove(fileName);
 	url = KUrl::fromLocalFile(fileName);
 

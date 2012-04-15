@@ -90,7 +90,7 @@ public:
 	{
 		QString line = readLine();
 
-		if (!line.startsWith(entry + '=')) {
+		if (!line.startsWith(entry + QLatin1Char('='))) {
 			valid = false;
 			return QString();
 		}

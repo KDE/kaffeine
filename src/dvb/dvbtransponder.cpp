@@ -224,7 +224,7 @@ public:
 				break;
 			}
 
-			if (token == entry) {
+			if (token == QLatin1String(entry)) {
 				return value;
 			}
 		}
@@ -310,7 +310,7 @@ void DvbCTransponder::readTransponder(QDataStream &stream)
 bool DvbCTransponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
-	reader.checkChar('C');
+	reader.checkChar(QLatin1Char('C'));
 	reader.readInt(frequency);
 	reader.readInt(symbolRate);
 	fecRate = reader.readEnum<FecRate>();
@@ -321,7 +321,7 @@ bool DvbCTransponder::fromString(const QString &string)
 QString DvbCTransponder::toString() const
 {
 	DvbChannelStringWriter writer;
-	writer.writeChar('C');
+	writer.writeChar(QLatin1Char('C'));
 	writer.writeInt(frequency);
 	writer.writeInt(symbolRate);
 	writer.writeEnum(fecRate);
@@ -348,7 +348,7 @@ void DvbSTransponder::readTransponder(QDataStream &stream)
 bool DvbSTransponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
-	reader.checkChar('S');
+	reader.checkChar(QLatin1Char('S'));
 	reader.readInt(frequency);
 	polarization = reader.readEnum<Polarization>();
 	reader.readInt(symbolRate);
@@ -359,7 +359,7 @@ bool DvbSTransponder::fromString(const QString &string)
 QString DvbSTransponder::toString() const
 {
 	DvbChannelStringWriter writer;
-	writer.writeChar('S');
+	writer.writeChar(QLatin1Char('S'));
 	writer.writeInt(frequency);
 	writer.writeEnum(polarization);
 	writer.writeInt(symbolRate);
@@ -389,7 +389,7 @@ void DvbS2Transponder::readTransponder(QDataStream &stream)
 bool DvbS2Transponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
-	reader.checkString("S2");
+	reader.checkString(QLatin1String("S2"));
 	reader.readInt(frequency);
 	polarization = reader.readEnum<Polarization>();
 	reader.readInt(symbolRate);
@@ -402,7 +402,7 @@ bool DvbS2Transponder::fromString(const QString &string)
 QString DvbS2Transponder::toString() const
 {
 	DvbChannelStringWriter writer;
-	writer.writeString("S2");
+	writer.writeString(QLatin1String("S2"));
 	writer.writeInt(frequency);
 	writer.writeEnum(polarization);
 	writer.writeInt(symbolRate);
@@ -436,7 +436,7 @@ void DvbTTransponder::readTransponder(QDataStream &stream)
 bool DvbTTransponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
-	reader.checkChar('T');
+	reader.checkChar(QLatin1Char('T'));
 	reader.readInt(frequency);
 	bandwidth = reader.readEnum<Bandwidth>();
 	fecRateHigh = reader.readEnum<FecRate>();
@@ -451,7 +451,7 @@ bool DvbTTransponder::fromString(const QString &string)
 QString DvbTTransponder::toString() const
 {
 	DvbChannelStringWriter writer;
-	writer.writeChar('T');
+	writer.writeChar(QLatin1Char('T'));
 	writer.writeInt(frequency);
 	writer.writeEnum(bandwidth);
 	writer.writeEnum(fecRateHigh);
@@ -480,7 +480,7 @@ void AtscTransponder::readTransponder(QDataStream &stream)
 bool AtscTransponder::fromString(const QString &string)
 {
 	DvbChannelStringReader reader(string);
-	reader.checkChar('A');
+	reader.checkChar(QLatin1Char('A'));
 	reader.readInt(frequency);
 	modulation = reader.readEnum<Modulation>();
 	return reader.isValid();
@@ -489,7 +489,7 @@ bool AtscTransponder::fromString(const QString &string)
 QString AtscTransponder::toString() const
 {
 	DvbChannelStringWriter writer;
-	writer.writeChar('A');
+	writer.writeChar(QLatin1Char('A'));
 	writer.writeInt(frequency);
 	writer.writeEnum(modulation);
 	return writer.getString();
@@ -557,7 +557,7 @@ DvbTransponder DvbTransponder::fromString(const QString &string)
 			break;
 		    }
 		case 'S':
-			if (string.at(1) != '2') {
+			if (string.at(1) != QLatin1Char('2')) {
 				DvbTransponder transponder(DvbTransponderBase::DvbS);
 
 				if (transponder.as<DvbSTransponder>()->fromString(string)) {

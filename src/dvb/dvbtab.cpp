@@ -74,7 +74,7 @@ void DvbTimeShiftCleaner::run()
 {
 	// delete files asynchronously because it may block for several seconds
 	foreach (const QString &file, files) {
-		QFile::remove(path + '/' + file);
+		QFile::remove(path + QLatin1Char('/') + file);
 	}
 }
 
@@ -83,40 +83,40 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 {
 	manager = new DvbManager(mediaWidget, this);
 
-	KAction *channelsAction = new KAction(KIcon("video-television"), i18n("Channels"), this);
+	KAction *channelsAction = new KAction(KIcon(QLatin1String("video-television")), i18n("Channels"), this);
 	channelsAction->setShortcut(Qt::Key_C);
 	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
-	menu->addAction(collection->addAction("dvb_channels", channelsAction));
+	menu->addAction(collection->addAction(QLatin1String("dvb_channels"), channelsAction));
 
-	KAction *epgAction = new KAction(KIcon("view-list-details"), i18n("Program Guide"), this);
+	KAction *epgAction = new KAction(KIcon(QLatin1String("view-list-details")), i18n("Program Guide"), this);
 	epgAction->setShortcut(Qt::Key_G);
 	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(showEpgDialog()));
-	menu->addAction(collection->addAction("dvb_epg", epgAction));
+	menu->addAction(collection->addAction(QLatin1String("dvb_epg"), epgAction));
 
-	KAction *osdAction = new KAction(KIcon("dialog-information"), i18n("OSD"), this);
+	KAction *osdAction = new KAction(KIcon(QLatin1String("dialog-information")), i18n("OSD"), this);
 	osdAction->setShortcut(Qt::Key_O);
 	connect(osdAction, SIGNAL(triggered(bool)), manager->getLiveView(), SLOT(toggleOsd()));
-	menu->addAction(collection->addAction("dvb_osd", osdAction));
+	menu->addAction(collection->addAction(QLatin1String("dvb_osd"), osdAction));
 
-	KAction *recordingsAction = new KAction(KIcon("view-pim-calendar"),
+	KAction *recordingsAction = new KAction(KIcon(QLatin1String("view-pim-calendar")),
 		i18nc("dialog", "Recording Schedule"), this);
 	recordingsAction->setShortcut(Qt::Key_R);
 	connect(recordingsAction, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
-	menu->addAction(collection->addAction("dvb_recordings", recordingsAction));
+	menu->addAction(collection->addAction(QLatin1String("dvb_recordings"), recordingsAction));
 
 	menu->addSeparator();
 
-	instantRecordAction = new KAction(KIcon("document-save"), i18n("Instant Record"), this);
+	instantRecordAction = new KAction(KIcon(QLatin1String("document-save")), i18n("Instant Record"), this);
 	instantRecordAction->setCheckable(true);
 	connect(instantRecordAction, SIGNAL(triggered(bool)), this, SLOT(instantRecord(bool)));
-	menu->addAction(collection->addAction("dvb_instant_record", instantRecordAction));
+	menu->addAction(collection->addAction(QLatin1String("dvb_instant_record"), instantRecordAction));
 
 	menu->addSeparator();
 
-	KAction *configureAction = new KAction(KIcon("configure"),
+	KAction *configureAction = new KAction(KIcon(QLatin1String("configure")),
 		i18nc("@action:inmenu", "Configure Television..."), this);
 	connect(configureAction, SIGNAL(triggered()), this, SLOT(configureDvb()));
-	menu->addAction(collection->addAction("settings_dvb", configureAction));
+	menu->addAction(collection->addAction(QLatin1String("settings_dvb"), configureAction));
 
 	connect(manager->getLiveView(), SIGNAL(previous()), this, SLOT(previousChannel()));
 	connect(manager->getLiveView(), SIGNAL(next()), this, SLOT(nextChannel()));
@@ -300,7 +300,7 @@ void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 			    "Kaffeine has scheduled recordings.\n"
 			    "Do you really want to close the application?"), QString(),
 			    KStandardGuiItem::yes(), KStandardGuiItem::no(),
-			    "ScheduledRecordings") != KMessageBox::Yes) {
+			    QLatin1String("ScheduledRecordings")) != KMessageBox::Yes) {
 				*ok = false;
 			}
 
@@ -351,7 +351,7 @@ void DvbTab::instantRecord(bool checked)
 
 		if (recording.name.isEmpty()) {
 			recording.name =
-				(channel->name + QTime::currentTime().toString("-hhmmss"));
+				(channel->name + QTime::currentTime().toString(QLatin1String("-hhmmss")));
 		}
 
 		recording.channel = channel;
@@ -431,7 +431,7 @@ void DvbTab::cleanTimeShiftFiles()
 
 	QDir dir(manager->getTimeShiftFolder());
 	QStringList entries =
-		dir.entryList(QStringList("TimeShift-*.m2t"), QDir::Files, QDir::Name);
+		dir.entryList(QStringList(QLatin1String("TimeShift-*.m2t")), QDir::Files, QDir::Name);
 
 	if (entries.count() < 2) {
 		return;

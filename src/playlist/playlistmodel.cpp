@@ -148,7 +148,7 @@ QString Playlist::toFileOrUrl(const KUrl &trackUrl) const
 
 	if (!localFile.isEmpty()) {
 		QString playlistPath = url.path();
-		int index = playlistPath.lastIndexOf('/');
+		int index = playlistPath.lastIndexOf(QLatin1Char('/'));
 		playlistPath.truncate(index + 1);
 
 		if (localFile.startsWith(playlistPath)) {
@@ -192,32 +192,32 @@ bool Playlist::loadKaffeinePlaylist(QIODevice *device)
 
 	QDomElement root = document.documentElement();
 
-	if (root.nodeName() != "playlist") {
+	if (root.nodeName() != QLatin1String("playlist")) {
 		return false;
 	}
 
 	for (QDomNode node = root.firstChild(); !node.isNull(); node = node.nextSibling()) {
-		if (!node.isElement() || (node.nodeName() != "entry")) {
+		if (!node.isElement() || (node.nodeName() != QLatin1String("entry"))) {
 			continue;
 		}
 
 		PlaylistTrack track;
-		track.url = fromFileOrUrl(node.attributes().namedItem("url").nodeValue());
-		track.title = node.attributes().namedItem("title").nodeValue();
-		track.artist = node.attributes().namedItem("artist").nodeValue();
-		track.album = node.attributes().namedItem("album").nodeValue();
+		track.url = fromFileOrUrl(node.attributes().namedItem(QLatin1String("url")).nodeValue());
+		track.title = node.attributes().namedItem(QLatin1String("title")).nodeValue();
+		track.artist = node.attributes().namedItem(QLatin1String("artist")).nodeValue();
+		track.album = node.attributes().namedItem(QLatin1String("album")).nodeValue();
 
 		bool ok;
-		int trackNumber = node.attributes().namedItem("track").nodeValue().toInt(&ok);
+		int trackNumber = node.attributes().namedItem(QLatin1String("track")).nodeValue().toInt(&ok);
 
 		if (ok && (trackNumber >= 0)) {
 			track.trackNumber = trackNumber;
 		}
 
-		QString length = node.attributes().namedItem("length").nodeValue();
+		QString length = node.attributes().namedItem(QLatin1String("length")).nodeValue();
 
 		if (length.size() == 7) {
-			length.prepend('0');
+			length.prepend(QLatin1Char('0'));
 		}
 
 		track.length = QTime::fromString(length, Qt::ISODate);
@@ -241,9 +241,9 @@ bool Playlist::loadM3UPlaylist(QIODevice *device)
 	while (!stream.atEnd()) {
 		QString line = stream.readLine();
 
-		if (line.startsWith('#')) {
+		if (line.startsWith(QLatin1Char('#'))) {
 			if (line.startsWith(QLatin1String("#EXTINF:"))) {
-				int index = line.indexOf(',', 8);
+				int index = line.indexOf(QLatin1Char(','), 8);
 				bool ok;
 				int length = line.mid(8, index - 8).toInt(&ok);
 
@@ -276,8 +276,8 @@ void Playlist::saveM3UPlaylist(QIODevice *device) const
 			length = QTime().secsTo(track.length);
 		}
 
-		stream << "#EXTINF:" << length << ',' << track.title << '\n';
-		stream << toFileOrUrl(track.url) << '\n';
+		stream << "#EXTINF:" << length << QLatin1Char(',') << track.title << QLatin1Char('\n');
+		stream << toFileOrUrl(track.url) << QLatin1Char('\n');
 	}
 }
 
@@ -286,7 +286,7 @@ bool Playlist::loadPLSPlaylist(QIODevice *device)
 	QTextStream stream(device);
 	stream.setCodec("UTF-8");
 
-	if (stream.readLine().compare("[playlist]", Qt::CaseInsensitive) != 0) {
+	if (stream.readLine().compare(QLatin1String("[playlist]"), Qt::CaseInsensitive) != 0) {
 		return false;
 	}
 
@@ -307,7 +307,7 @@ bool Playlist::loadPLSPlaylist(QIODevice *device)
 			continue;
 		}
 
-		int index = line.indexOf('=', start);
+		int index = line.indexOf(QLatin1Char('='), start);
 		QString content = line.mid(index + 1);
 		bool ok;
 		int number = line.mid(start, index - start).toInt(&ok);
@@ -385,7 +385,7 @@ bool Playlist::loadXSPFPlaylist(QIODevice *device)
 
 	QDomElement root = document.documentElement();
 
-	if (root.nodeName() != "playlist") {
+	if (root.nodeName() != QLatin1String("playlist")) {
 		return false;
 	}
 
@@ -396,9 +396,9 @@ bool Playlist::loadXSPFPlaylist(QIODevice *device)
 
 		QString nodeName = node.nodeName();
 
-		if (nodeName == "title") {
+		if (nodeName == QLatin1String("title")) {
 			title = node.toElement().text();
-		} else if (nodeName == "trackList") {
+		} else if (nodeName == QLatin1String("trackList")) {
 			for (QDomNode childNode = node.firstChild(); !childNode.isNull();
 			     childNode = childNode.nextSibling()) {
 				if (!childNode.isElement()) {
@@ -413,18 +413,18 @@ bool Playlist::loadXSPFPlaylist(QIODevice *device)
 						continue;
 					}
 
-					if (trackNode.nodeName() == "location") {
+					if (trackNode.nodeName() == QLatin1String("location")) {
 						if (!track.url.isValid()) {
 							track.url = fromRelativeUrl(
 								trackNode.toElement().text());
 						}
-					} else if (trackNode.nodeName() == "title") {
+					} else if (trackNode.nodeName() == QLatin1String("title")) {
 						track.title = trackNode.toElement().text();
-					} else if (trackNode.nodeName() == "creator") {
+					} else if (trackNode.nodeName() == QLatin1String("creator")) {
 						track.artist = trackNode.toElement().text();
-					} else if (trackNode.nodeName() == "album") {
+					} else if (trackNode.nodeName() == QLatin1String("album")) {
 						track.album = trackNode.toElement().text();
-					} else if (trackNode.nodeName() == "trackNum") {
+					} else if (trackNode.nodeName() == QLatin1String("trackNum")) {
 						bool ok;
 						int trackNumber =
 							trackNode.toElement().text().toInt(&ok);
@@ -432,7 +432,7 @@ bool Playlist::loadXSPFPlaylist(QIODevice *device)
 						if (ok && (trackNumber >= 0)) {
 							track.trackNumber = trackNumber;
 						}
-					} else if (trackNode.nodeName() == "duration") {
+					} else if (trackNode.nodeName() == QLatin1String("duration")) {
 						bool ok;
 						int length =
 							trackNode.toElement().text().toInt(&ok);
@@ -457,34 +457,34 @@ void Playlist::saveXSPFPlaylist(QIODevice *device) const
 	stream.setAutoFormatting(true);
 	stream.setAutoFormattingIndent(2);
 	stream.writeStartDocument();
-	stream.writeStartElement("playlist");
-	stream.writeAttribute("version", "1");
-	stream.writeAttribute("xmlns", "http://xspf.org/ns/0/");
-	stream.writeTextElement("title", title);
-	stream.writeStartElement("trackList");
+	stream.writeStartElement(QLatin1String("playlist"));
+	stream.writeAttribute(QLatin1String("version"), QLatin1String("1"));
+	stream.writeAttribute(QLatin1String("xmlns"), QLatin1String("http://xspf.org/ns/0/"));
+	stream.writeTextElement(QLatin1String("title"), title);
+	stream.writeStartElement(QLatin1String("trackList"));
 
 	foreach (const PlaylistTrack &track, tracks) {
-		stream.writeStartElement("track");
-		stream.writeTextElement("location", toRelativeUrl(track.url));
+		stream.writeStartElement(QLatin1String("track"));
+		stream.writeTextElement(QLatin1String("location"), toRelativeUrl(track.url));
 
 		if (!track.title.isEmpty()) {
-			stream.writeTextElement("title", track.title);
+			stream.writeTextElement(QLatin1String("title"), track.title);
 		}
 
 		if (!track.artist.isEmpty()) {
-			stream.writeTextElement("creator", track.artist);
+			stream.writeTextElement(QLatin1String("creator"), track.artist);
 		}
 
 		if (!track.album.isEmpty()) {
-			stream.writeTextElement("album", track.album);
+			stream.writeTextElement(QLatin1String("album"), track.album);
 		}
 
 		if (track.trackNumber >= 0) {
-			stream.writeTextElement("trackNum", QString::number(track.trackNumber));
+			stream.writeTextElement(QLatin1String("trackNum"), QString::number(track.trackNumber));
 		}
 
 		if (track.length.isValid()) {
-			stream.writeTextElement("duration",
+			stream.writeTextElement(QLatin1String("duration"),
 				QString::number(QTime().msecsTo(track.length)));
 		}
 
@@ -683,8 +683,8 @@ void PlaylistModel::insertUrls(Playlist *playlist, int row, const QList<KUrl> &u
 		if (!localFile.isEmpty() && QFileInfo(localFile).isDir()) {
 			QDir dir(localFile);
 			QString extensionFilter = MediaWidget::extensionFilter();
-			extensionFilter.truncate(extensionFilter.indexOf('|'));
-			QStringList entries = dir.entryList(extensionFilter.split(' '),
+			extensionFilter.truncate(extensionFilter.indexOf(QLatin1Char('|')));
+			QStringList entries = dir.entryList(extensionFilter.split(QLatin1Char(' ')),
 				QDir::Files, QDir::Name | QDir::LocaleAware);
 
 			for (int i = 0; i < entries.size(); ++i) {
@@ -744,7 +744,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DecorationRole) {
 		if ((index.row() == visiblePlaylist->currentTrack) && (index.column() == 0)) {
-			return KIcon("arrow-right");
+			return KIcon(QLatin1String("arrow-right"));
 		}
 	} else if (role == Qt::DisplayRole) {
 		switch (index.column()) {
@@ -916,7 +916,7 @@ Qt::ItemFlags PlaylistModel::flags(const QModelIndex &index) const
 
 QStringList PlaylistModel::mimeTypes() const
 {
-	return (QStringList() << "text/uri-list" << "x-org.kde.kaffeine-playlist");
+	return (QStringList() << QLatin1String("text/uri-list") << QLatin1String("x-org.kde.kaffeine-playlist"));
 }
 
 Qt::DropActions PlaylistModel::supportedDropActions() const
@@ -941,7 +941,7 @@ QMimeData *PlaylistModel::mimeData(const QModelIndexList &indexes) const
 	}
 
 	QMimeData *mimeData = new QMimeData();
-	mimeData->setData("x-org.kde.kaffeine-playlist", QByteArray());
+	mimeData->setData(QLatin1String("x-org.kde.kaffeine-playlist"), QByteArray());
 	mimeData->setProperty("tracks", QVariant::fromValue(tracks));
 	return mimeData;
 }

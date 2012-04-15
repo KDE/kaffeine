@@ -220,8 +220,8 @@ public:
 
 DvbDataDumper::DvbDataDumper()
 {
-	setFileName(QDir::homePath() + '/' + "KaffeineDvbDump-" + QString::number(qrand(), 16) +
-		".bin");
+	setFileName(QDir::homePath() + QLatin1String("/KaffeineDvbDump-") + QString::number(qrand(), 16) +
+		QLatin1String(".bin"));
 
 	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("DvbDataDumper::DvbDataDumper: cannot open") << fileName();
@@ -365,15 +365,15 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	case DvbConfigBase::UsalsRotor: {
 		QString source = config->scanSource;
-		source.remove(0, source.lastIndexOf('-') + 1);
+		source.remove(0, source.lastIndexOf(QLatin1Char('-')) + 1);
 
 		bool ok = false;
 		double orbitalPosition = 0;
 
-		if (source.endsWith('E')) {
+		if (source.endsWith(QLatin1Char('E'))) {
 			source.chop(1);
 			orbitalPosition = source.toDouble(&ok);
-		} else if (source.endsWith('W')) {
+		} else if (source.endsWith(QLatin1Char('W'))) {
 			source.chop(1);
 			orbitalPosition = (-source.toDouble(&ok));
 		}

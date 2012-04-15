@@ -52,22 +52,22 @@ void SqlInterface::sqlFlush()
 
 void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNames)
 {
-	QString existsStatement = "SELECT name FROM sqlite_master WHERE name='" + tableName +
-		"' AND type = 'table'";
-	createStatement = "CREATE TABLE " + tableName + " (Id INTEGER PRIMARY KEY, ";
-	QString selectStatement = "SELECT Id, ";
-	insertStatement = "INSERT INTO " + tableName + " (Id, ";
-	updateStatement = "UPDATE " + tableName + " SET ";
-	deleteStatement = "DELETE FROM " + tableName + " WHERE Id = ?";
+	QString existsStatement = QLatin1String("SELECT name FROM sqlite_master WHERE name='") + tableName +
+		QLatin1String("' AND type = 'table'");
+	createStatement = QLatin1String("CREATE TABLE ") + tableName + QLatin1String(" (Id INTEGER PRIMARY KEY, ");
+	QString selectStatement = QLatin1String("SELECT Id, ");
+	insertStatement = QLatin1String("INSERT INTO ") + tableName + QLatin1String(" (Id, ");
+	updateStatement = QLatin1String("UPDATE ") + tableName + QLatin1String(" SET ");
+	deleteStatement = QLatin1String("DELETE FROM ") + tableName + QLatin1String(" WHERE Id = ?");
 
 	sqlColumnCount = columnNames.size();
 
 	for (int i = 0; i < sqlColumnCount; ++i) {
 		if (i > 0) {
-			createStatement.append(", ");
-			selectStatement.append(", ");
-			insertStatement.append(", ");
-			updateStatement.append(" = ?, ");
+			createStatement.append(QLatin1String(", "));
+			selectStatement.append(QLatin1String(", "));
+			insertStatement.append(QLatin1String(", "));
+			updateStatement.append(QLatin1String(" = ?, "));
 		}
 
 		const QString &columnName = columnNames.at(i);
@@ -77,17 +77,17 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 		updateStatement.append(columnName);
 	}
 
-	createStatement.append(')');
-	selectStatement.append(" FROM ");
+	createStatement.append(QLatin1Char(')'));
+	selectStatement.append(QLatin1String(" FROM "));
 	selectStatement.append(tableName);
-	insertStatement.append(") VALUES (?");
-	updateStatement.append(" = ? WHERE Id = ?");
+	insertStatement.append(QLatin1String(") VALUES (?"));
+	updateStatement.append(QLatin1String(" = ? WHERE Id = ?"));
 
 	for (int i = 0; i < sqlColumnCount; ++i) {
-		insertStatement.append(", ?");
+		insertStatement.append(QLatin1String(", ?"));
 	}
 
-	insertStatement.append(')');
+	insertStatement.append(QLatin1Char(')'));
 
 	if (!sqlHelper->exec(existsStatement).next()) {
 		createTable = true;

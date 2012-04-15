@@ -237,7 +237,7 @@ void DvbScanFilter::processSection(const char *data, int size)
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
 	Log("DvbScanFilter::timerEvent: timeout while reading section; type =") << type <<
-		"pid =" << pid;
+		QLatin1String("pid =") << pid;
 	scan->filterFinished(this);
 }
 
@@ -258,8 +258,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 	device(device_), source(source_), isLive(false), isAuto(true), transponderIndex(0),
 	state(ScanTune), patIndex(0), activeFilters(0)
 {
-	if ((autoScanSource == "AUTO-Normal") || (autoScanSource == "AUTO-Offsets")) {
-		bool offsets = (autoScanSource == "AUTO-Offsets");
+	if ((autoScanSource == QLatin1String("AUTO-Normal")) || (autoScanSource == QLatin1String("AUTO-Offsets"))) {
+		bool offsets = (autoScanSource == QLatin1String("AUTO-Offsets"));
 
 		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::DvbT);
@@ -305,7 +305,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponders.append(currentTransponder);
 			}
 		}
-	} else if (autoScanSource == "AUTO-Australia") {
+	} else if (autoScanSource == QLatin1String("AUTO-Australia")) {
 		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
 			for (int i = 0; i < 2; ++i) {
 				int offset = 0;
@@ -355,7 +355,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponders.append(currentTransponder);
 			}
 		}
-	} else if (autoScanSource == "AUTO-Italy") {
+	} else if (autoScanSource == QLatin1String("AUTO-Italy")) {
 		static const int italyVhf[] = { 177500000, 186000000, 194500000, 203500000,
 						212500000, 219500000, 226500000 };
 
@@ -394,7 +394,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbTTransponder->hierarchy = DvbTTransponder::HierarchyNone;
 			transponders.append(currentTransponder);
 		}
-	} else if (autoScanSource == "AUTO-Taiwan") {
+	} else if (autoScanSource == QLatin1String("AUTO-Taiwan")) {
 		for (int frequency = 527000000; frequency <= 599000000; frequency += 6000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::DvbT);
 			DvbTTransponder *dvbTTransponder =
@@ -532,7 +532,7 @@ void DvbScan::updateState()
 				}
 
 				if (channel.name.isEmpty()) {
-					channel.name = QString("#0 %1:%2").
+					channel.name = QString(QLatin1String("#0 %1:%2")).
 						       arg(channel.transportStreamId).
 						       arg(channel.serviceId);
 				}
@@ -672,7 +672,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 
 	for (AtscVctSectionEntry entry = section.entries(); (i > 0) && (entry.isValid());
 	     --i, entry.advance()) {
-		QString majorminor = QString("%1-%2 ").
+		QString majorminor = QString(QLatin1String("%1-%2 ")).
 			arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
 
 		DvbSdtEntry sdtEntry(entry.programNumber(), entry.sourceId(), entry.isScrambled());

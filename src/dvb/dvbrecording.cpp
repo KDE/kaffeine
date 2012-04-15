@@ -47,8 +47,8 @@ bool DvbRecording::validate()
 DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QObject(parent),
 	manager(manager_), hasPendingOperation(false)
 {
-	sqlInit("RecordingSchedule",
-		QStringList() << "Name" << "Channel" << "Begin" << "Duration" << "Repeat");
+	sqlInit(QLatin1String("RecordingSchedule"),
+		QStringList() << QLatin1String("Name") << QLatin1String("Channel") << QLatin1String("Begin") << QLatin1String("Duration") << QLatin1String("Repeat"));
 
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
@@ -57,7 +57,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 	// compatibility code
 
-	QFile file(KStandardDirs::locateLocal("appdata", "recordings.dvb"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("recordings.dvb")));
 
 	if (!file.exists()) {
 		return;
@@ -249,7 +249,7 @@ void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int inde
 
 	query.bindValue(index++, recording->name);
 	query.bindValue(index++, recording->channel->name);
-	query.bindValue(index++, recording->begin.toString(Qt::ISODate) + 'Z');
+	query.bindValue(index++, recording->begin.toString(Qt::ISODate) + QLatin1Char('Z'));
 	query.bindValue(index++, recording->duration.toString(Qt::ISODate));
 	query.bindValue(index++, recording->repeat);
 }
@@ -351,13 +351,13 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 {
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
-		QString path = folder + '/' + QString(recording.name).replace('/', '_');
+		QString path = folder + QLatin1Char('/') + QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
-				file.setFileName(path + ".m2t");
+				file.setFileName(path + QLatin1String(".m2t"));
 			} else {
-				file.setFileName(path + '-' + QString::number(attempt) + ".m2t");
+				file.setFileName(path + QLatin1Char('-') + QString::number(attempt) + QLatin1String(".m2t"));
 			}
 
 			if (file.exists()) {
@@ -383,7 +383,7 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 
 			if (folder != QDir::homePath()) {
 				folder = QDir::homePath();
-				path = folder + '/' + QString(recording.name).replace('/', '_');
+				path = folder + QLatin1Char('/') + QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
 				attempt = -1;
 				continue;
 			}

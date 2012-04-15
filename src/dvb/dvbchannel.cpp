@@ -119,13 +119,13 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 {
 	DvbChannelModel *channelModel = new DvbChannelModel(parent);
 	channelModel->isSqlModel = true;
-	channelModel->sqlInit("Channels",
-		QStringList() << "Name" << "Number" << "Source" << "Transponder" << "NetworkId" <<
-		"TransportStreamId" << "PmtPid" << "PmtSection" << "AudioPid" << "Flags");
+	channelModel->sqlInit(QLatin1String("Channels"),
+		QStringList() << QLatin1String("Name") << QLatin1String("Number") << QLatin1String("Source") << QLatin1String("Transponder") << QLatin1String("NetworkId") <<
+		QLatin1String("TransportStreamId") << QLatin1String("PmtPid") << QLatin1String("PmtSection") << QLatin1String("AudioPid") << QLatin1String("Flags"));
 
 	// compatibility code
 
-	QFile file(KStandardDirs::locateLocal("appdata", "channels.dtv"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("channels.dtv")));
 
 	if (!file.exists()) {
 		return channelModel;
@@ -589,7 +589,7 @@ bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, 
 QString DvbChannelModel::extractBaseName(const QString &name) const
 {
 	QString baseName = name;
-	int position = baseName.lastIndexOf('-');
+	int position = baseName.lastIndexOf(QLatin1Char('-'));
 
 	if (position > 0) {
 		QString suffix = baseName.mid(position + 1);
@@ -614,7 +614,7 @@ QString DvbChannelModel::findNextFreeChannelName(const QString &name) const
 
 	while (channelNames.contains(newName)) {
 		++suffix;
-		newName = baseName + '-' + QString::number(suffix);
+		newName = baseName + QLatin1Char('-') + QString::number(suffix);
 	}
 
 	return newName;

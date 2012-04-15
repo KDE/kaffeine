@@ -82,28 +82,28 @@ StartTab::StartTab(MainWindow *mainWindow)
 	gridLayout->setSpacing(15);
 
 	QAbstractButton *button =
-		addShortcut(i18n("&1 Play File"), KIcon("video-x-generic"), this);
+		addShortcut(i18n("&1 Play File"), KIcon(QLatin1String("video-x-generic")), this);
 	button->setShortcut(Qt::Key_1);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
 
-	button = addShortcut(i18n("&2 Play Audio CD"), KIcon("media-optical-audio"), this);
+	button = addShortcut(i18n("&2 Play Audio CD"), KIcon(QLatin1String("media-optical-audio")), this);
 	button->setShortcut(Qt::Key_2);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("&3 Play Video CD"), KIcon("media-optical"), this);
+	button = addShortcut(i18n("&3 Play Video CD"), KIcon(QLatin1String("media-optical")), this);
 	button->setShortcut(Qt::Key_3);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
-	button = addShortcut(i18n("&4 Play DVD"), KIcon("media-optical"), this);
+	button = addShortcut(i18n("&4 Play DVD"), KIcon(QLatin1String("media-optical")), this);
 	button->setShortcut(Qt::Key_4);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
 #if HAVE_DVB == 1
-	button = addShortcut(i18n("&5 Digital TV"), KIcon("video-television"), this);
+	button = addShortcut(i18n("&5 Digital TV"), KIcon(QLatin1String("video-television")), this);
 	button->setShortcut(Qt::Key_5);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(playDvb()));
 	gridLayout->addWidget(button, 1, 1);
@@ -156,41 +156,41 @@ MainWindow::MainWindow()
 	menuBar->addMenu(menu);
 
 	KAction *action = KStandardAction::open(this, SLOT(open()), collection);
-	menu->addAction(collection->addAction("file_open", action));
+	menu->addAction(collection->addAction(QLatin1String("file_open"), action));
 
-	action = new KAction(KIcon("text-html"),
+	action = new KAction(KIcon(QLatin1String("text-html")),
 		i18nc("@action:inmenu", "Open URL..."), collection);
 	action->setShortcut(Qt::CTRL | Qt::Key_U);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
-	menu->addAction(collection->addAction("file_open_url", action));
+	menu->addAction(collection->addAction(QLatin1String("file_open_url"), action));
 
 	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(KUrl)), collection);
 	actionOpenRecent->loadEntries(KGlobal::config()->group("Recent Files"));
-	menu->addAction(collection->addAction("file_open_recent", actionOpenRecent));
+	menu->addAction(collection->addAction(QLatin1String("file_open_recent"), actionOpenRecent));
 
 	menu->addSeparator();
 
-	action = new KAction(KIcon("media-optical-audio"), i18n("Play Audio CD"), collection);
+	action = new KAction(KIcon(QLatin1String("media-optical-audio")), i18n("Play Audio CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openAudioCd()));
-	menu->addAction(collection->addAction("file_play_audiocd", action));
+	menu->addAction(collection->addAction(QLatin1String("file_play_audiocd"), action));
 
-	action = new KAction(KIcon("media-optical"), i18n("Play Video CD"), collection);
+	action = new KAction(KIcon(QLatin1String("media-optical")), i18n("Play Video CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openVideoCd()));
-	menu->addAction(collection->addAction("file_play_videocd", action));
+	menu->addAction(collection->addAction(QLatin1String("file_play_videocd"), action));
 
-	action = new KAction(KIcon("media-optical"), i18n("Play DVD"), collection);
+	action = new KAction(KIcon(QLatin1String("media-optical")), i18n("Play DVD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openDvd()));
-	menu->addAction(collection->addAction("file_play_dvd", action));
+	menu->addAction(collection->addAction(QLatin1String("file_play_dvd"), action));
 
-	action = new KAction(KIcon("media-optical"), i18nc("@action:inmenu", "Play DVD Folder"),
+	action = new KAction(KIcon(QLatin1String("media-optical")), i18nc("@action:inmenu", "Play DVD Folder"),
 		collection);
 	connect(action, SIGNAL(triggered()), this, SLOT(playDvdFolder()));
-	menu->addAction(collection->addAction("file_play_dvd_folder", action));
+	menu->addAction(collection->addAction(QLatin1String("file_play_dvd_folder"), action));
 
 	menu->addSeparator();
 
 	action = KStandardAction::quit(this, SLOT(close()), collection);
-	menu->addAction(collection->addAction("file_quit", action));
+	menu->addAction(collection->addAction(QLatin1String("file_quit"), action));
 
 	KMenu *playerMenu = new KMenu(i18n("&Playback"), this);
 	menuBar->addMenu(playerMenu);
@@ -207,26 +207,26 @@ MainWindow::MainWindow()
 	menuBar->addMenu(menu);
 
 	action = KStandardAction::keyBindings(this, SLOT(configureKeys()), collection);
-	menu->addAction(collection->addAction("settings_keys", action));
+	menu->addAction(collection->addAction(QLatin1String("settings_keys"), action));
 
 	action = KStandardAction::preferences(this, SLOT(configureKaffeine()), collection);
-	menu->addAction(collection->addAction("settings_kaffeine", action));
+	menu->addAction(collection->addAction(QLatin1String("settings_kaffeine"), action));
 
 	menuBar->addSeparator();
 	menuBar->addMenu(helpMenu());
 
 	// navigation bar - keep in sync with TabIndex enum!
 
-	navigationBar = new KToolBar("navigation_bar", this, Qt::LeftToolBarArea);
+	navigationBar = new KToolBar(QLatin1String("navigation_bar"), this, Qt::LeftToolBarArea);
 	connect(navigationBar, SIGNAL(orientationChanged(Qt::Orientation)),
 		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
 	tabBar = new KTabBar(navigationBar);
-	tabBar->addTab(KIcon("start-here-kde"), i18n("Start"));
-	tabBar->addTab(KIcon("kaffeine"), i18n("Playback"));
-	tabBar->addTab(KIcon("view-media-playlist"), i18n("Playlist"));
+	tabBar->addTab(KIcon(QLatin1String("start-here-kde")), i18n("Start"));
+	tabBar->addTab(KIcon(QLatin1String("kaffeine")), i18n("Playback"));
+	tabBar->addTab(KIcon(QLatin1String("view-media-playlist")), i18n("Playlist"));
 #if HAVE_DVB == 1
-	tabBar->addTab(KIcon("video-television"), i18n("Television"));
+	tabBar->addTab(KIcon(QLatin1String("video-television")), i18n("Television"));
 #endif /* HAVE_DVB == 1 */
 	tabBar->setShape(KTabBar::RoundedWest);
 	tabBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -235,7 +235,7 @@ MainWindow::MainWindow()
 
 	// control bar
 
-	controlBar = new KToolBar("control_bar", this, Qt::BottomToolBarArea);
+	controlBar = new KToolBar(QLatin1String("control_bar"), this, Qt::BottomToolBarArea);
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
 	autoHideControlBar = false;
@@ -299,27 +299,27 @@ MainWindow::MainWindow()
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
 	KStatusNotifierItem *trayIcon = new KStatusNotifierItem(this);
-	trayIcon->setIconByName("kaffeine");
+	trayIcon->setIconByName(QLatin1String("kaffeine"));
 	trayIcon->setStatus(KStatusNotifierItem::Active);
-	trayIcon->setToolTipIconByName("kaffeine");
+	trayIcon->setToolTipIconByName(QLatin1String("kaffeine"));
 	trayIcon->setToolTipTitle(i18n("Kaffeine"));
 
 	// initialize random number generator
 	qsrand(QTime().msecsTo(QTime::currentTime()));
 
 	// initialize dbus objects
-	QDBusConnection::sessionBus().registerObject("/", new MprisRootObject(this),
+	QDBusConnection::sessionBus().registerObject(QLatin1String("/"), new MprisRootObject(this),
 		QDBusConnection::ExportAllContents);
-	QDBusConnection::sessionBus().registerObject("/Player",
+	QDBusConnection::sessionBus().registerObject(QLatin1String("/Player"),
 		new MprisPlayerObject(this, mediaWidget, playlistTab, this),
 		QDBusConnection::ExportAllContents);
-	QDBusConnection::sessionBus().registerObject("/TrackList",
+	QDBusConnection::sessionBus().registerObject(QLatin1String("/TrackList"),
 		new MprisTrackListObject(playlistTab, this), QDBusConnection::ExportAllContents);
 #if HAVE_DVB == 1
-	QDBusConnection::sessionBus().registerObject("/Television",
+	QDBusConnection::sessionBus().registerObject(QLatin1String("/Television"),
 		new DBusTelevisionObject(dvbTab, this), QDBusConnection::ExportAllContents);
 #endif /* HAVE_DVB == 1 */
-	QDBusConnection::sessionBus().registerService("org.mpris.kaffeine");
+	QDBusConnection::sessionBus().registerService(QLatin1String("org.mpris.kaffeine"));
 
 	show();
 

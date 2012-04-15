@@ -35,14 +35,14 @@ bool VlcMediaWidget::init()
 	vlcInstance = libvlc_new(sizeof(arguments) / sizeof(arguments[0]), arguments);
 
 	if (vlcInstance == NULL) {
-		Log("VlcMediaWidget::init: cannot create vlc instance") << libvlc_errmsg();
+		Log("VlcMediaWidget::init: cannot create vlc instance") << QLatin1String(libvlc_errmsg());
 		return false;
 	}
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);
 
 	if (vlcMediaPlayer == NULL) {
-		Log("VlcMediaWidget::init: cannot create vlc media player") << libvlc_errmsg();
+		Log("VlcMediaWidget::init: cannot create vlc media player") << QLatin1String(libvlc_errmsg());
 		return false;
 	}
 
@@ -383,10 +383,10 @@ void VlcMediaWidget::updateAudioStreams()
 
 	while (track != NULL) {
 		QString audioStream = QString::fromUtf8(track->psz_name);
-		int cutBegin = (audioStream.indexOf('[') + 1);
+		int cutBegin = (audioStream.indexOf(QLatin1Char('[')) + 1);
 
 		if (cutBegin > 0) {
-			int cutEnd = audioStream.lastIndexOf(']');
+			int cutEnd = audioStream.lastIndexOf(QLatin1Char(']'));
 
 			if (cutEnd >= 0) {
 				// remove unnecessary text
@@ -418,10 +418,10 @@ void VlcMediaWidget::updateSubtitles()
 
 	while (track != NULL) {
 		QString subtitle = QString::fromUtf8(track->psz_name);
-		int cutBegin = (subtitle.indexOf('[') + 1);
+		int cutBegin = (subtitle.indexOf(QLatin1Char('[')) + 1);
 
 		if (cutBegin > 0) {
-			int cutEnd = subtitle.lastIndexOf(']');
+			int cutEnd = subtitle.lastIndexOf(QLatin1Char(']'));
 
 			if (cutEnd >= 0) {
 				// remove unnecessary text

@@ -313,7 +313,7 @@ bool DvbManager::updateScanData(const QByteArray &data)
 		return false;
 	}
 
-	QFile file(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("scanfile.dvb")));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("DvbManager::updateScanData: cannot open") << file.fileName();
@@ -466,7 +466,7 @@ void DvbManager::deviceRemoved(DvbBackendDevice *backendDevice)
 void DvbManager::loadDeviceManager()
 {
 	QDir dir(QString::fromUtf8(KAFFEINE_LIB_INSTALL_DIR "/"));
-	QStringList entries = dir.entryList(QStringList("*kaffeinedvb*"), QDir::NoFilter,
+	QStringList entries = dir.entryList(QStringList(QLatin1String("*kaffeinedvb*")), QDir::NoFilter,
 		QDir::Name | QDir::Reversed);
 
 	foreach (const QString &entry, entries) {
@@ -507,7 +507,7 @@ void DvbManager::loadDeviceManager()
 
 void DvbManager::readDeviceConfigs()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", "config.dvb"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("config.dvb")));
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		Log("DvbManager::readDeviceConfigs: cannot open") << file.fileName();
@@ -517,13 +517,13 @@ void DvbManager::readDeviceConfigs()
 	DvbDeviceConfigReader reader(&file);
 
 	while (!reader.atEnd()) {
-		if (reader.readLine() != "[device]") {
+		if (reader.readLine() != QLatin1String("[device]")) {
 			continue;
 		}
 
-		QString deviceId = reader.readString("deviceId");
-		QString frontendName = reader.readString("frontendName");
-		int configCount = reader.readInt("configCount");
+		QString deviceId = reader.readString(QLatin1String("deviceId"));
+		QString frontendName = reader.readString(QLatin1String("frontendName"));
+		int configCount = reader.readInt(QLatin1String("configCount"));
 
 		if (!reader.isValid()) {
 			break;
@@ -533,30 +533,30 @@ void DvbManager::readDeviceConfigs()
 
 		for (int i = 0; i < configCount; ++i) {
 			while (!reader.atEnd()) {
-				if (reader.readLine() == "[config]") {
+				if (reader.readLine() == QLatin1String("[config]")) {
 					break;
 				}
 			}
 
 			DvbConfigBase::TransmissionType type =
-				reader.readEnum("type", DvbConfigBase::TransmissionTypeMax);
+				reader.readEnum(QLatin1String("type"), DvbConfigBase::TransmissionTypeMax);
 
 			if (!reader.isValid()) {
 				break;
 			}
 
 			DvbConfigBase *config = new DvbConfigBase(type);
-			config->name = reader.readString("name");
-			config->scanSource = reader.readString("scanSource");
-			config->timeout = reader.readInt("timeout");
+			config->name = reader.readString(QLatin1String("name"));
+			config->scanSource = reader.readString(QLatin1String("scanSource"));
+			config->timeout = reader.readInt(QLatin1String("timeout"));
 
 			if (type == DvbConfigBase::DvbS) {
-				config->configuration = reader.readEnum("configuration",
+				config->configuration = reader.readEnum(QLatin1String("configuration"),
 					DvbConfigBase::ConfigurationMax);
-				config->lnbNumber = reader.readInt("lnbNumber");
-				config->lowBandFrequency = reader.readInt("lowBandFrequency");
-				config->switchFrequency = reader.readInt("switchFrequency");
-				config->highBandFrequency = reader.readInt("highBandFrequency");
+				config->lnbNumber = reader.readInt(QLatin1String("lnbNumber"));
+				config->lowBandFrequency = reader.readInt(QLatin1String("lowBandFrequency"));
+				config->switchFrequency = reader.readInt(QLatin1String("switchFrequency"));
+				config->highBandFrequency = reader.readInt(QLatin1String("highBandFrequency"));
 			}
 
 			if (!reader.isValid()) {
@@ -577,7 +577,7 @@ void DvbManager::readDeviceConfigs()
 
 void DvbManager::writeDeviceConfigs()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", "config.dvb"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("config.dvb")));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("DvbManager::writeDeviceConfigs: cannot open") << file.fileName();
@@ -587,25 +587,25 @@ void DvbManager::writeDeviceConfigs()
 	DvbDeviceConfigWriter writer(&file);
 
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
-		writer.write("[device]");
-		writer.write("deviceId", deviceConfig.deviceId);
-		writer.write("frontendName", deviceConfig.frontendName);
-		writer.write("configCount", deviceConfig.configs.size());
+		writer.write(QLatin1String("[device]"));
+		writer.write(QLatin1String("deviceId"), deviceConfig.deviceId);
+		writer.write(QLatin1String("frontendName"), deviceConfig.frontendName);
+		writer.write(QLatin1String("configCount"), deviceConfig.configs.size());
 
 		for (int i = 0; i < deviceConfig.configs.size(); ++i) {
 			const DvbConfig &config = deviceConfig.configs.at(i);
-			writer.write("[config]");
-			writer.write("type", config->getTransmissionType());
-			writer.write("name", config->name);
-			writer.write("scanSource", config->scanSource);
-			writer.write("timeout", config->timeout);
+			writer.write(QLatin1String("[config]"));
+			writer.write(QLatin1String("type"), config->getTransmissionType());
+			writer.write(QLatin1String("name"), config->name);
+			writer.write(QLatin1String("scanSource"), config->scanSource);
+			writer.write(QLatin1String("timeout"), config->timeout);
 
 			if (config->getTransmissionType() == DvbConfigBase::DvbS) {
-				writer.write("configuration", config->configuration);
-				writer.write("lnbNumber", config->lnbNumber);
-				writer.write("lowBandFrequency", config->lowBandFrequency);
-				writer.write("switchFrequency", config->switchFrequency);
-				writer.write("highBandFrequency", config->highBandFrequency);
+				writer.write(QLatin1String("configuration"), config->configuration);
+				writer.write(QLatin1String("lnbNumber"), config->lnbNumber);
+				writer.write(QLatin1String("lowBandFrequency"), config->lowBandFrequency);
+				writer.write(QLatin1String("switchFrequency"), config->switchFrequency);
+				writer.write(QLatin1String("highBandFrequency"), config->highBandFrequency);
 			}
 		}
 	}
@@ -665,7 +665,7 @@ void DvbManager::readScanData()
 		Log("DvbManager::readScanData: cannot open") << globalFile.fileName();
 	}
 
-	QFile localFile(KStandardDirs::locateLocal("appdata", "scanfile.dvb"));
+	QFile localFile(KStandardDirs::locateLocal("appdata", QLatin1String("scanfile.dvb")));
 	QByteArray localData;
 	QDate localDate;
 
@@ -689,7 +689,7 @@ void DvbManager::readScanData()
 
 		if (!globalFile.copy(localFile.fileName())) {
 			Log("DvbManager::readScanData: cannot copy") << globalFile.fileName() <<
-				"to" << localFile.fileName();
+				QLatin1String("to") << localFile.fileName();
 		}
 
 		if (localFile.open(QIODevice::ReadOnly)) {
@@ -728,9 +728,9 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 	while (strncmp(data.getLine(), tag, tagLen) == 0) {
 		const char *line = data.readLine();
 
-		QString name = QString(line + tagLen);
+		QString name = QString(QLatin1String(line) + tagLen);
 
-		if ((name.size() < 2) || (name.at(name.size() - 1) != ']')) {
+		if ((name.size() < 2) || (name.at(name.size() - 1) != QLatin1Char(']'))) {
 			return false;
 		}
 

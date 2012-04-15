@@ -56,7 +56,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(pare
 	QBoxLayout *rightLayout = new QVBoxLayout();
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
-	KAction *scheduleAction = new KAction(KIcon("media-record"),
+	KAction *scheduleAction = new KAction(KIcon(QLatin1String("media-record")),
 		i18nc("@action:inmenu tv show", "Record Show"), this);
 	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 
@@ -326,7 +326,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 		switch (role) {
 		case Qt::DecorationRole:
 			if ((index.column() == 2) && entry->recording.isValid()) {
-				return KIcon("media-record");
+				return KIcon(QLatin1String("media-record"));
 			}
 
 			break;

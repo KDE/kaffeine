@@ -73,46 +73,46 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	layout->addWidget(backend);
 	osdWidget = new OsdWidget(this);
 
-	actionPrevious = new KAction(KIcon("media-skip-backward"), i18n("Previous"), this);
+	actionPrevious = new KAction(KIcon(QLatin1String("media-skip-backward")), i18n("Previous"), this);
 	actionPrevious->setShortcut(KShortcut(Qt::Key_PageUp, Qt::Key_MediaPrevious));
 	connect(actionPrevious, SIGNAL(triggered()), this, SLOT(previous()));
-	toolBar->addAction(collection->addAction("controls_previous", actionPrevious));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_previous"), actionPrevious));
 	menu->addAction(actionPrevious);
 
 	actionPlayPause = new KAction(this);
 	actionPlayPause->setShortcut(KShortcut(Qt::Key_Space, Qt::Key_MediaPlay));
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
-	iconPlay = KIcon("media-playback-start");
-	iconPause = KIcon("media-playback-pause");
+	iconPlay = KIcon(QLatin1String("media-playback-start"));
+	iconPause = KIcon(QLatin1String("media-playback-pause"));
 	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(pausedChanged(bool)));
-	toolBar->addAction(collection->addAction("controls_play_pause", actionPlayPause));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_play_pause"), actionPlayPause));
 	menu->addAction(actionPlayPause);
 
-	actionStop = new KAction(KIcon("media-playback-stop"), i18n("Stop"), this);
+	actionStop = new KAction(KIcon(QLatin1String("media-playback-stop")), i18n("Stop"), this);
 	actionStop->setShortcut(KShortcut(Qt::Key_Backspace, Qt::Key_MediaStop));
 	connect(actionStop, SIGNAL(triggered()), this, SLOT(stop()));
-	toolBar->addAction(collection->addAction("controls_stop", actionStop));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_stop"), actionStop));
 	menu->addAction(actionStop);
 
-	actionNext = new KAction(KIcon("media-skip-forward"), i18n("Next"), this);
+	actionNext = new KAction(KIcon(QLatin1String("media-skip-forward")), i18n("Next"), this);
 	actionNext->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
 	connect(actionNext, SIGNAL(triggered()), this, SLOT(next()));
-	toolBar->addAction(collection->addAction("controls_next", actionNext));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_next"), actionNext));
 	menu->addAction(actionNext);
 	menu->addSeparator();
 
-	fullScreenAction = new KAction(KIcon("view-fullscreen"),
+	fullScreenAction = new KAction(KIcon(QLatin1String("view-fullscreen")),
 		i18nc("'Playback' menu", "Full Screen Mode"), this);
 	fullScreenAction->setShortcut(Qt::Key_F);
 	connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
-	menu->addAction(collection->addAction("view_fullscreen", fullScreenAction));
+	menu->addAction(collection->addAction(QLatin1String("view_fullscreen"), fullScreenAction));
 
-	minimalModeAction = new KAction(KIcon("view-fullscreen"),
+	minimalModeAction = new KAction(KIcon(QLatin1String("view-fullscreen")),
 		i18nc("'Playback' menu", "Minimal Mode"), this);
 	minimalModeAction->setShortcut(Qt::Key_Period);
 	connect(minimalModeAction, SIGNAL(triggered()), this, SLOT(toggleMinimalMode()));
-	menu->addAction(collection->addAction("view_minimal_mode", minimalModeAction));
+	menu->addAction(collection->addAction(QLatin1String("view_minimal_mode"), minimalModeAction));
 
 	audioStreamBox = new KComboBox(toolBar);
 	connect(audioStreamBox, SIGNAL(currentIndexChanged(int)),
@@ -133,25 +133,25 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 
 	KMenu *audioMenu = new KMenu(i18nc("'Playback' menu", "Audio"), this);
 
-	KAction *action = new KAction(KIcon("audio-volume-high"),
+	KAction *action = new KAction(KIcon(QLatin1String("audio-volume-high")),
 		i18nc("'Audio' menu", "Increase Volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered()), this, SLOT(increaseVolume()));
-	audioMenu->addAction(collection->addAction("controls_increase_volume", action));
+	audioMenu->addAction(collection->addAction(QLatin1String("controls_increase_volume"), action));
 
-	action = new KAction(KIcon("audio-volume-low"),
+	action = new KAction(KIcon(QLatin1String("audio-volume-low")),
 		i18nc("'Audio' menu", "Decrease Volume"), this);
 	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered()), this, SLOT(decreaseVolume()));
-	audioMenu->addAction(collection->addAction("controls_decrease_volume", action));
+	audioMenu->addAction(collection->addAction(QLatin1String("controls_decrease_volume"), action));
 
 	muteAction = new KAction(i18nc("'Audio' menu", "Mute Volume"), this);
-	mutedIcon = KIcon("audio-volume-muted");
-	unmutedIcon = KIcon("audio-volume-medium");
+	mutedIcon = KIcon(QLatin1String("audio-volume-muted"));
+	unmutedIcon = KIcon(QLatin1String("audio-volume-medium"));
 	muteAction->setIcon(unmutedIcon);
 	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
 	connect(muteAction, SIGNAL(triggered()), this, SLOT(mutedChanged()));
-	toolBar->addAction(collection->addAction("controls_mute_volume", muteAction));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_mute_volume"), muteAction));
 	audioMenu->addAction(muteAction);
 	menu->addMenu(audioMenu);
 
@@ -159,7 +159,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	menu->addMenu(videoMenu);
 	menu->addSeparator();
 
-	deinterlaceAction = new KAction(KIcon("format-justify-center"),
+	deinterlaceAction = new KAction(KIcon(QLatin1String("format-justify-center")),
 		i18nc("'Video' menu", "Deinterlace"), this);
 	deinterlaceAction->setCheckable(true);
 	deinterlaceAction->setChecked(
@@ -167,7 +167,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	deinterlaceAction->setShortcut(Qt::Key_I);
 	connect(deinterlaceAction, SIGNAL(toggled(bool)), this, SLOT(deinterlacingChanged(bool)));
 	backend->setDeinterlacing(deinterlaceAction->isChecked());
-	videoMenu->addAction(collection->addAction("controls_deinterlace", deinterlaceAction));
+	videoMenu->addAction(collection->addAction(QLatin1String("controls_deinterlace"), deinterlaceAction));
 
 	KMenu *aspectMenu = new KMenu(i18nc("'Video' menu", "Aspect Ratio"), this);
 	QActionGroup *aspectGroup = new QActionGroup(this);
@@ -178,22 +178,22 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	action->setCheckable(true);
 	action->setChecked(true);
 	action->setData(AspectRatioAuto);
-	aspectMenu->addAction(collection->addAction("controls_aspect_auto", action));
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_auto"), action));
 
 	action = new KAction(i18nc("'Aspect Ratio' menu", "Fit to Window"), aspectGroup);
 	action->setCheckable(true);
 	action->setData(AspectRatioWidget);
-	aspectMenu->addAction(collection->addAction("controls_aspect_widget", action));
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_widget"), action));
 
 	action = new KAction(i18nc("'Aspect Ratio' menu", "4:3"), aspectGroup);
 	action->setCheckable(true);
 	action->setData(AspectRatio4_3);
-	aspectMenu->addAction(collection->addAction("controls_aspect_4_3", action));
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_4_3"), action));
 
 	action = new KAction(i18nc("'Aspect Ratio' menu", "16:9"), aspectGroup);
 	action->setCheckable(true);
 	action->setData(AspectRatio16_9);
-	aspectMenu->addAction(collection->addAction("controls_aspect_16_9", action));
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_16_9"), action));
 	videoMenu->addMenu(aspectMenu);
 
 	KMenu *autoResizeMenu = new KMenu(i18n("Automatic Resize"), this);
@@ -206,17 +206,17 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	action = new KAction(i18nc("automatic resize", "Off"), autoResizeGroup);
 	action->setCheckable(true);
 	action->setData(0);
-	autoResizeMenu->addAction(collection->addAction("controls_autoresize_off", action));
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_off"), action));
 
 	action = new KAction(i18nc("automatic resize", "Original Size"), autoResizeGroup);
 	action->setCheckable(true);
 	action->setData(1);
-	autoResizeMenu->addAction(collection->addAction("controls_autoresize_original", action));
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_original"), action));
 
 	action = new KAction(i18nc("automatic resize", "Double Size"), autoResizeGroup);
 	action->setCheckable(true);
 	action->setData(2);
-	autoResizeMenu->addAction(collection->addAction("controls_autoresize_double", action));
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
 
 	int autoResizeFactor =
 		KGlobal::config()->group("MediaObject").readEntry("AutoResizeFactor", 0);
@@ -249,13 +249,13 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
 	backend->setVolume(volumeSlider->value());
 	action->setDefaultWidget(volumeSlider);
-	toolBar->addAction(collection->addAction("controls_volume_slider", action));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_volume_slider"), action));
 
-	jumpToPositionAction = new KAction(KIcon("go-jump"),
+	jumpToPositionAction = new KAction(KIcon(QLatin1String("go-jump")),
 		i18nc("@action:inmenu", "Jump to Position..."), this);
 	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
 	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
-	menu->addAction(collection->addAction("controls_jump_to_position", jumpToPositionAction));
+	menu->addAction(collection->addAction(QLatin1String("controls_jump_to_position"), jumpToPositionAction));
 
 	navigationMenu = new KMenu(i18nc("playback menu", "Skip"), this);
 	menu->addMenu(navigationMenu);
@@ -268,35 +268,35 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	connect(Configuration::instance(), SIGNAL(longSkipDurationChanged(int)),
 		this, SLOT(longSkipDurationChanged(int)));
 
-	longSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
+	longSkipBackwardAction = new KAction(KIcon(QLatin1String("media-skip-backward")),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration), this);
 	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
 	connect(longSkipBackwardAction, SIGNAL(triggered()), this, SLOT(longSkipBackward()));
 	navigationMenu->addAction(
-		collection->addAction("controls_long_skip_backward", longSkipBackwardAction));
+		collection->addAction(QLatin1String("controls_long_skip_backward"), longSkipBackwardAction));
 
-	shortSkipBackwardAction = new KAction(KIcon("media-skip-backward"),
+	shortSkipBackwardAction = new KAction(KIcon(QLatin1String("media-skip-backward")),
 		i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration), this);
 	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
 	connect(shortSkipBackwardAction, SIGNAL(triggered()), this, SLOT(shortSkipBackward()));
 	navigationMenu->addAction(
-		collection->addAction("controls_skip_backward", shortSkipBackwardAction));
+		collection->addAction(QLatin1String("controls_skip_backward"), shortSkipBackwardAction));
 
-	shortSkipForwardAction = new KAction(KIcon("media-skip-forward"),
+	shortSkipForwardAction = new KAction(KIcon(QLatin1String("media-skip-forward")),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration), this);
 	shortSkipForwardAction->setShortcut(Qt::Key_Right);
 	connect(shortSkipForwardAction, SIGNAL(triggered()), this, SLOT(shortSkipForward()));
 	navigationMenu->addAction(
-		collection->addAction("controls_skip_forward", shortSkipForwardAction));
+		collection->addAction(QLatin1String("controls_skip_forward"), shortSkipForwardAction));
 
-	longSkipForwardAction = new KAction(KIcon("media-skip-forward"),
+	longSkipForwardAction = new KAction(KIcon(QLatin1String("media-skip-forward")),
 		i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration), this);
 	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
 	connect(longSkipForwardAction, SIGNAL(triggered()), this, SLOT(longSkipForward()));
 	navigationMenu->addAction(
-		collection->addAction("controls_long_skip_forward", longSkipForwardAction));
+		collection->addAction(QLatin1String("controls_long_skip_forward"), longSkipForwardAction));
 
-	toolBar->addAction(KIcon("player-time"), i18n("Seek Slider"))->setEnabled(false);
+	toolBar->addAction(KIcon(QLatin1String("player-time")), i18n("Seek Slider"))->setEnabled(false);
 
 	action = new KAction(i18n("Seek Slider"), this);
 	seekSlider = new SeekSlider(toolBar);
@@ -305,12 +305,12 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	seekSlider->setToolTip(action->text());
 	connect(seekSlider, SIGNAL(valueChanged(int)), this, SLOT(seek(int)));
 	action->setDefaultWidget(seekSlider);
-	toolBar->addAction(collection->addAction("controls_position_slider", action));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_position_slider"), action));
 
-	menuAction = new KAction(KIcon("media-optical-video"),
+	menuAction = new KAction(KIcon(QLatin1String("media-optical-video")),
 		i18nc("dvd navigation", "DVD Menu"), this);
 	connect(menuAction, SIGNAL(triggered()), this, SLOT(toggleMenu()));
-	menu->addAction(collection->addAction("controls_toggle_menu", menuAction));
+	menu->addAction(collection->addAction(QLatin1String("controls_toggle_menu"), menuAction));
 
 	titleMenu = new KMenu(i18nc("dvd navigation", "Title"), this);
 	titleGroup = new QActionGroup(this);
@@ -336,7 +336,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	timeButton->setToolTip(action->text());
 	connect(timeButton, SIGNAL(clicked(bool)), this, SLOT(timeButtonClicked()));
 	action->setDefaultWidget(timeButton);
-	toolBar->addAction(collection->addAction("controls_time_button", action));
+	toolBar->addAction(collection->addAction(QLatin1String("controls_time_button"), action));
 
 	QTimer *timer = new QTimer(this);
 	timer->start(50000);
@@ -368,7 +368,7 @@ MediaWidget::~MediaWidget()
 
 QString MediaWidget::extensionFilter()
 {
-	return QString(
+	return QLatin1String(
 		// generated from kaffeine.desktop's mime types
 		"*.669 *.aac *.ac3 *.aif *.aifc *.aiff *.anim1 *.anim2 *.anim3 *.anim4 *.anim5 "
 		"*.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf *.asx *.au *.avi *.bdm *.bdmv "
@@ -381,7 +381,7 @@ QString MediaWidget::extensionFilter()
 		"*.wmx *.wv *.wvp *.wvx *.xm *.xspf "
 		// manual entries
 		"*.kaffeine *.iso|") + i18nc("file filter", "Supported Media Files") +
-		"\n*|" + i18nc("file filter", "All Files");
+		QLatin1String("\n*|") + i18nc("file filter", "All Files");
 }
 
 MediaWidget::DisplayMode MediaWidget::getDisplayMode() const
@@ -396,11 +396,11 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 		case NormalMode:
 			break;
 		case FullScreenMode:
-			fullScreenAction->setIcon(KIcon("view-fullscreen"));
+			fullScreenAction->setIcon(KIcon(QLatin1String("view-fullscreen")));
 			fullScreenAction->setText(i18nc("'Playback' menu", "Full Screen Mode"));
 			break;
 		case MinimalMode:
-			minimalModeAction->setIcon(KIcon("view-restore"));
+			minimalModeAction->setIcon(KIcon(QLatin1String("view-restore")));
 			minimalModeAction->setText(i18nc("'Playback' menu", "Minimal Mode"));
 			break;
 		}
@@ -411,12 +411,12 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 		case NormalMode:
 			break;
 		case FullScreenMode:
-			fullScreenAction->setIcon(KIcon("view-restore"));
+			fullScreenAction->setIcon(KIcon(QLatin1String("view-restore")));
 			fullScreenAction->setText(i18nc("'Playback' menu",
 				"Exit Full Screen Mode"));
 			break;
 		case MinimalMode:
-			minimalModeAction->setIcon(KIcon("view-fullscreen"));
+			minimalModeAction->setIcon(KIcon(QLatin1String("view-fullscreen")));
 			minimalModeAction->setText(i18nc("'Playback' menu", "Exit Minimal Mode"));
 			break;
 		}
@@ -461,7 +461,7 @@ void MediaWidget::playAudioCd(const QString &device)
 		devicePath = KUrl::fromLocalFile(device);
 	} else {
 		QList<Solid::Device> devices =
-			Solid::Device::listFromQuery("OpticalDisc.availableContent & 'Audio'");
+			Solid::Device::listFromQuery(QLatin1String("OpticalDisc.availableContent & 'Audio'"));
 
 		if (!devices.isEmpty()) {
 			Solid::Block *block = devices.first().as<Solid::Block>();
@@ -484,7 +484,7 @@ void MediaWidget::playVideoCd(const QString &device)
 		devicePath = KUrl::fromLocalFile(device);
 	} else {
 		QList<Solid::Device> devices = Solid::Device::listFromQuery(
-			"OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'");
+			QLatin1String("OpticalDisc.availableContent & 'VideoCd|SuperVideoCd'"));
 
 		if (!devices.isEmpty()) {
 			Solid::Block *block = devices.first().as<Solid::Block>();
@@ -507,7 +507,7 @@ void MediaWidget::playDvd(const QString &device)
 		devicePath = KUrl::fromLocalFile(device);
 	} else {
 		QList<Solid::Device> devices =
-			Solid::Device::listFromQuery("OpticalDisc.availableContent & 'VideoDvd'");
+			Solid::Device::listFromQuery(QLatin1String("OpticalDisc.availableContent & 'VideoDvd'"));
 
 		if (!devices.isEmpty()) {
 			Solid::Block *block = devices.first().as<Solid::Block>();
@@ -619,13 +619,13 @@ void MediaWidget::checkScreenSaver()
 
 	if (suspendScreenSaver) {
 		// KDE - Inhibit doesn't inhibit "lock screen after inactivity"
-		QDBusInterface("org.freedesktop.ScreenSaver", "/ScreenSaver",
-			"org.freedesktop.ScreenSaver").call(QDBus::NoBlock,
-			"SimulateUserActivity");
+		QDBusInterface(QLatin1String("org.freedesktop.ScreenSaver"), QLatin1String("/ScreenSaver"),
+			QLatin1String("org.freedesktop.ScreenSaver")).call(QDBus::NoBlock,
+			QLatin1String("SimulateUserActivity"));
 
 		// GNOME - Inhibit doesn't inhibit power management functions
-		QDBusInterface("org.gnome.ScreenSaver", "/", "org.gnome.ScreenSaver").
-			call(QDBus::NoBlock, "SimulateUserActivity");
+		QDBusInterface(QLatin1String("org.gnome.ScreenSaver"), QLatin1String("/"), QLatin1String("org.gnome.ScreenSaver")).
+			call(QDBus::NoBlock, QLatin1String("SimulateUserActivity"));
 	}
 
 	if (screenSaverSuspended != suspendScreenSaver) {
@@ -957,10 +957,10 @@ void MediaWidget::currentTotalTimeChanged()
 	seekSlider->setValue(currentTime);
 
 	if (showElapsedTime) {
-		timeButton->setText(' ' + QTime(0, 0).addMSecs(currentTime).toString());
+		timeButton->setText(QLatin1Char(' ') + QTime(0, 0).addMSecs(currentTime).toString());
 	} else {
 		int remainingTime = (totalTime - currentTime);
-		timeButton->setText('-' + QTime(0, 0).addMSecs(remainingTime).toString());
+		timeButton->setText(QLatin1Char('-') + QTime(0, 0).addMSecs(remainingTime).toString());
 	}
 
 	blockBackendUpdates = false;
@@ -1081,13 +1081,13 @@ void MediaWidget::metadataChanged()
 	QString artist = metadata.value(Artist);
 
 	if (!caption.isEmpty() && !artist.isEmpty()) {
-		caption += ' ';
+		caption += QLatin1Char(' ');
 	}
 
 	if (!artist.isEmpty()) {
-		caption += '(';
+		caption += QLatin1Char('(');
 		caption += artist;
-		caption += ')';
+		caption += QLatin1Char(')');
 	}
 
 	if (caption.isEmpty()) {
@@ -1235,7 +1235,7 @@ JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : KDialog(
 	layout->addWidget(new QLabel(i18n("Enter a position:")));
 
 	timeEdit = new QTimeEdit(this);
-	timeEdit->setDisplayFormat("hh:mm:ss");
+	timeEdit->setDisplayFormat(QLatin1String("hh:mm:ss"));
 	timeEdit->setTime(QTime().addMSecs(mediaWidget->getPosition()));
 	layout->addWidget(timeEdit);
 

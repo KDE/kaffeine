@@ -122,15 +122,15 @@ QVariant DvbChannelTableModel::data(const QModelIndex &index, int role) const
 			if (index.column() == 0) {
 				if (channel->hasVideo) {
 					if (!channel->isScrambled) {
-						return KIcon("video-television");
+						return KIcon(QLatin1String("video-television"));
 					} else {
-						return KIcon("video-television-encrypted");
+						return KIcon(QLatin1String("video-television-encrypted"));
 					}
 				} else {
 					if (!channel->isScrambled) {
-						return KIcon("text-speak");
+						return KIcon(QLatin1String("text-speak"));
 					} else {
-						return KIcon("audio-radio-encrypted");
+						return KIcon(QLatin1String("audio-radio-encrypted"));
 					}
 				}
 			}
@@ -192,7 +192,7 @@ QMimeData *DvbChannelTableModel::mimeData(const QModelIndexList &indexes) const
 	}
 
 	QMimeData *mimeData = new QMimeData();
-	mimeData->setData("application/x-org.kde.kaffeine-selectedchannels", QByteArray());
+	mimeData->setData(QLatin1String("application/x-org.kde.kaffeine-selectedchannels"), QByteArray());
 	// this way the list will be properly deleted once drag and drop ends
 	mimeData->setProperty("SelectedChannels", QVariant::fromValue(selectedChannels));
 	return mimeData;
@@ -200,7 +200,7 @@ QMimeData *DvbChannelTableModel::mimeData(const QModelIndexList &indexes) const
 
 QStringList DvbChannelTableModel::mimeTypes() const
 {
-	return QStringList("application/x-org.kde.kaffeine-selectedchannels");
+	return QStringList(QLatin1String("application/x-org.kde.kaffeine-selectedchannels"));
 }
 
 Qt::DropActions DvbChannelTableModel::supportedDropActions() const
@@ -287,7 +287,7 @@ DvbChannelView::~DvbChannelView()
 
 KAction *DvbChannelView::addEditAction()
 {
-	KAction *action = new KAction(KIcon("configure"), i18nc("@action", "Edit"), this);
+	KAction *action = new KAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 	return action;
@@ -295,7 +295,7 @@ KAction *DvbChannelView::addEditAction()
 
 KAction *DvbChannelView::addRemoveAction()
 {
-	KAction *action = new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
+	KAction *action = new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
 	return action;
@@ -359,41 +359,45 @@ void DvbChannelView::removeAllChannels()
 	}
 }
 
-static QString enumToString(DvbTransponderBase::FecRate fecRate)
+static QLatin1String enumToString(DvbTransponderBase::FecRate fecRate)
 {
+	const char *text = "";
+
 	switch (fecRate) {
-	case DvbTransponderBase::FecNone: return "NONE";
-	case DvbTransponderBase::Fec1_2: return "1/2";
-	case DvbTransponderBase::Fec1_3: return "1/3";
-	case DvbTransponderBase::Fec1_4: return "1/4";
-	case DvbTransponderBase::Fec2_3: return "2/3";
-	case DvbTransponderBase::Fec2_5: return "2/5";
-	case DvbTransponderBase::Fec3_4: return "3/4";
-	case DvbTransponderBase::Fec3_5: return "3/5";
-	case DvbTransponderBase::Fec4_5: return "4/5";
-	case DvbTransponderBase::Fec5_6: return "5/6";
-	case DvbTransponderBase::Fec6_7: return "6/7";
-	case DvbTransponderBase::Fec7_8: return "7/8";
-	case DvbTransponderBase::Fec8_9: return "8/9";
-	case DvbTransponderBase::Fec9_10: return "9/10";
-	case DvbTransponderBase::FecAuto: return "AUTO";
+	case DvbTransponderBase::FecNone: text = "NONE"; break;
+	case DvbTransponderBase::Fec1_2: text = "1/2"; break;
+	case DvbTransponderBase::Fec1_3: text = "1/3"; break;
+	case DvbTransponderBase::Fec1_4: text = "1/4"; break;
+	case DvbTransponderBase::Fec2_3: text = "2/3"; break;
+	case DvbTransponderBase::Fec2_5: text = "2/5"; break;
+	case DvbTransponderBase::Fec3_4: text = "3/4"; break;
+	case DvbTransponderBase::Fec3_5: text = "3/5"; break;
+	case DvbTransponderBase::Fec4_5: text = "4/5"; break;
+	case DvbTransponderBase::Fec5_6: text = "5/6"; break;
+	case DvbTransponderBase::Fec6_7: text = "6/7"; break;
+	case DvbTransponderBase::Fec7_8: text = "7/8"; break;
+	case DvbTransponderBase::Fec8_9: text = "8/9"; break;
+	case DvbTransponderBase::Fec9_10: text = "9/10"; break;
+	case DvbTransponderBase::FecAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbCTransponder::Modulation modulation)
+static QLatin1String enumToString(DvbCTransponder::Modulation modulation)
 {
+	const char *text = "";
+
 	switch (modulation) {
-	case DvbCTransponder::Qam16: return "16-QAM";
-	case DvbCTransponder::Qam32: return "32-QAM";
-	case DvbCTransponder::Qam64: return "64-QAM";
-	case DvbCTransponder::Qam128: return "128-QAM";
-	case DvbCTransponder::Qam256: return "256-QAM";
-	case DvbCTransponder::ModulationAuto: return "AUTO";
+	case DvbCTransponder::Qam16: text = "16-QAM"; break;
+	case DvbCTransponder::Qam32: text = "32-QAM"; break;
+	case DvbCTransponder::Qam64: text = "64-QAM"; break;
+	case DvbCTransponder::Qam128: text = "128-QAM"; break;
+	case DvbCTransponder::Qam256: text = "256-QAM"; break;
+	case DvbCTransponder::ModulationAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
 static QString enumToString(DvbSTransponder::Polarization polarization)
@@ -408,104 +412,120 @@ static QString enumToString(DvbSTransponder::Polarization polarization)
 	return QString();
 }
 
-static QString enumToString(DvbS2Transponder::Modulation modulation)
+static QLatin1String enumToString(DvbS2Transponder::Modulation modulation)
 {
+	const char *text = "";
+
 	switch (modulation) {
-	case DvbS2Transponder::Qpsk: return "QPSK";
-	case DvbS2Transponder::Psk8: return "8-PSK";
-	case DvbS2Transponder::Apsk16: return "16-APSK";
-	case DvbS2Transponder::Apsk32: return "32-APSK";
-	case DvbS2Transponder::ModulationAuto: return "AUTO";
+	case DvbS2Transponder::Qpsk: text = "QPSK"; break;
+	case DvbS2Transponder::Psk8: text = "8-PSK"; break;
+	case DvbS2Transponder::Apsk16: text = "16-APSK"; break;
+	case DvbS2Transponder::Apsk32: text = "32-APSK"; break;
+	case DvbS2Transponder::ModulationAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbS2Transponder::RollOff rollOff)
+static QLatin1String enumToString(DvbS2Transponder::RollOff rollOff)
 {
+	const char *text = "";
+
 	switch (rollOff) {
-	case DvbS2Transponder::RollOff20: return "0.20";
-	case DvbS2Transponder::RollOff25: return "0.25";
-	case DvbS2Transponder::RollOff35: return "0.35";
-	case DvbS2Transponder::RollOffAuto: return "AUTO";
+	case DvbS2Transponder::RollOff20: text = "0.20"; break;
+	case DvbS2Transponder::RollOff25: text = "0.25"; break;
+	case DvbS2Transponder::RollOff35: text = "0.35"; break;
+	case DvbS2Transponder::RollOffAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbTTransponder::Bandwidth bandwidth)
+static QLatin1String enumToString(DvbTTransponder::Bandwidth bandwidth)
 {
+	const char *text = "";
+
 	switch (bandwidth) {
-	case DvbTTransponder::Bandwidth6MHz: return "6MHz";
-	case DvbTTransponder::Bandwidth7MHz: return "7MHz";
-	case DvbTTransponder::Bandwidth8MHz: return "8MHz";
-	case DvbTTransponder::BandwidthAuto: return "AUTO";
+	case DvbTTransponder::Bandwidth6MHz: text = "6MHz"; break;
+	case DvbTTransponder::Bandwidth7MHz: text = "7MHz"; break;
+	case DvbTTransponder::Bandwidth8MHz: text = "8MHz"; break;
+	case DvbTTransponder::BandwidthAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbTTransponder::Modulation modulation)
+static QLatin1String enumToString(DvbTTransponder::Modulation modulation)
 {
+	const char *text = "";
+
 	switch (modulation) {
-	case DvbTTransponder::Qpsk: return "QPSK";
-	case DvbTTransponder::Qam16: return "16-QAM";
-	case DvbTTransponder::Qam64: return "64-QAM";
-	case DvbTTransponder::ModulationAuto: return "AUTO";
+	case DvbTTransponder::Qpsk: text = "QPSK"; break;
+	case DvbTTransponder::Qam16: text = "16-QAM"; break;
+	case DvbTTransponder::Qam64: text = "64-QAM"; break;
+	case DvbTTransponder::ModulationAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbTTransponder::TransmissionMode transmissionMode)
+static QLatin1String enumToString(DvbTTransponder::TransmissionMode transmissionMode)
 {
+	const char *text = "";
+
 	switch (transmissionMode) {
-	case DvbTTransponder::TransmissionMode2k: return "2k";
-	case DvbTTransponder::TransmissionMode4k: return "4k";
-	case DvbTTransponder::TransmissionMode8k: return "8k";
-	case DvbTTransponder::TransmissionModeAuto: return "AUTO";
+	case DvbTTransponder::TransmissionMode2k: text = "2k"; break;
+	case DvbTTransponder::TransmissionMode4k: text = "4k"; break;
+	case DvbTTransponder::TransmissionMode8k: text = "8k"; break;
+	case DvbTTransponder::TransmissionModeAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbTTransponder::GuardInterval guardInterval)
+static QLatin1String enumToString(DvbTTransponder::GuardInterval guardInterval)
 {
+	const char *text = "";
+
 	switch (guardInterval) {
-	case DvbTTransponder::GuardInterval1_4: return "1/4";
-	case DvbTTransponder::GuardInterval1_8: return "1/8";
-	case DvbTTransponder::GuardInterval1_16: return "1/16";
-	case DvbTTransponder::GuardInterval1_32: return "1/32";
-	case DvbTTransponder::GuardIntervalAuto: return "AUTO";
+	case DvbTTransponder::GuardInterval1_4: text = "1/4"; break;
+	case DvbTTransponder::GuardInterval1_8: text = "1/8"; break;
+	case DvbTTransponder::GuardInterval1_16: text = "1/16"; break;
+	case DvbTTransponder::GuardInterval1_32: text = "1/32"; break;
+	case DvbTTransponder::GuardIntervalAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(DvbTTransponder::Hierarchy hierarchy)
+static QLatin1String enumToString(DvbTTransponder::Hierarchy hierarchy)
 {
+	const char *text = "";
+
 	switch (hierarchy) {
-	case DvbTTransponder::HierarchyNone: return "NONE";
-	case DvbTTransponder::Hierarchy1: return "1";
-	case DvbTTransponder::Hierarchy2: return "2";
-	case DvbTTransponder::Hierarchy4: return "4";
-	case DvbTTransponder::HierarchyAuto: return "AUTO";
+	case DvbTTransponder::HierarchyNone: text = "NONE"; break;
+	case DvbTTransponder::Hierarchy1: text = "1"; break;
+	case DvbTTransponder::Hierarchy2: text = "2"; break;
+	case DvbTTransponder::Hierarchy4: text = "4"; break;
+	case DvbTTransponder::HierarchyAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
-static QString enumToString(AtscTransponder::Modulation modulation)
+static QLatin1String enumToString(AtscTransponder::Modulation modulation)
 {
+	const char *text = "";
+
 	switch (modulation) {
-	case AtscTransponder::Qam64: return "64-QAM";
-	case AtscTransponder::Qam256: return "256-QAM";
-	case AtscTransponder::Vsb8: return "8-VSB";
-	case AtscTransponder::Vsb16: return "16-VSB";
-	case AtscTransponder::ModulationAuto: return "AUTO";
+	case AtscTransponder::Qam64: text = "64-QAM"; break;
+	case AtscTransponder::Qam256: text = "256-QAM"; break;
+	case AtscTransponder::Vsb8: text = "8-VSB"; break;
+	case AtscTransponder::Vsb16: text = "16-VSB"; break;
+	case AtscTransponder::ModulationAuto: text = "AUTO"; break;
 	}
 
-	return QString();
+	return QLatin1String(text);
 }
 
 DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbSharedChannel &channel_,
@@ -637,7 +657,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
-		gridLayout->addWidget(new QLabel(QString("%1 (%2)").arg(it.first).arg(it.second)),
+		gridLayout->addWidget(new QLabel(QString(QLatin1String("%1 (%2)")).arg(it.first).arg(it.second)),
 			row++, 1);
 	}
 
@@ -683,7 +703,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 		QString text = QString::number(it.first);
 
 		if (!it.second.isEmpty()) {
-			text = text + " (" + it.second + ')';
+			text = text + QLatin1String(" (") + it.second + QLatin1Char(')');
 		}
 
 		audioStreamBox->addItem(text);

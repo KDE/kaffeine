@@ -29,8 +29,8 @@
 
 SqlHelper::SqlHelper()
 {
-	database = QSqlDatabase::addDatabase("QSQLITE", "kaffeine");
-	database.setDatabaseName(KStandardDirs::locateLocal("appdata", "sqlite.db"));
+	database = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), QLatin1String("kaffeine"));
+	database.setDatabaseName(KStandardDirs::locateLocal("appdata", QLatin1String("sqlite.db")));
 
 	timer.setInterval(5000);
 	connect(&timer, SIGNAL(timeout()), this, SLOT(collectSubmissions()));
@@ -44,7 +44,7 @@ bool SqlHelper::createInstance()
 {
 	Q_ASSERT(instance == NULL);
 
-	if (!QSqlDatabase::isDriverAvailable("QSQLITE")) {
+	if (!QSqlDatabase::isDriverAvailable(QLatin1String("QSQLITE"))) {
 		KMessageBox::queuedMessageBox(NULL, KMessageBox::Error,
 			i18nc("message box", "Please install the Qt SQLite plugin."));
 		return false;
@@ -55,8 +55,8 @@ bool SqlHelper::createInstance()
 	if (!instance->database.open()) {
 		QString details = instance->database.lastError().databaseText();
 
-		if (!details.isEmpty() && !details.endsWith('\n')) {
-			details.append('\n');
+		if (!details.isEmpty() && !details.endsWith(QLatin1Char('\n'))) {
+			details.append(QLatin1Char('\n'));
 		}
 
 		details.append(instance->database.lastError().driverText());
@@ -120,13 +120,13 @@ void SqlHelper::requestSubmission(SqlInterface *object)
 
 void SqlHelper::collectSubmissions()
 {
-	exec("BEGIN");
+	exec(QLatin1String("BEGIN"));
 
 	for (int i = 0; i < objects.size(); ++i) {
 		objects.at(i)->sqlSubmit();
 	}
 
-	exec("COMMIT");
+	exec(QLatin1String("COMMIT"));
 	timer.stop();
 	objects.clear();
 }

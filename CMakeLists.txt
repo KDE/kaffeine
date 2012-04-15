@@ -19,8 +19,8 @@ if(STRICT_BUILD)
                   -isystem /usr/include/qt4/QtCore
                   -isystem /usr/include/qt4/QtGui
                   -isystem /usr/include/qt4/QtNetwork
-                  -DQT_NO_CAST_FROM_BYTEARRAY -DQT_NO_CAST_TO_ASCII -DQT_NO_URL_CAST_FROM_STRING
-                  -DQT_STRICT_ITERATORS)
+                  -DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY -DQT_NO_CAST_TO_ASCII
+                  -DQT_NO_URL_CAST_FROM_STRING -DQT_STRICT_ITERATORS)
 endif(STRICT_BUILD)
 
 check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)

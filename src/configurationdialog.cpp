@@ -75,7 +75,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(3, 1);
 
 	KPageWidgetItem *page = new KPageWidgetItem(widget, i18nc("@title:group", "General"));
-	page->setIcon(KIcon("configure"));
+	page->setIcon(KIcon(QLatin1String("configure")));
 	addPage(page);
 
 	widget = new QWidget(this);
@@ -96,7 +96,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(2, 1);
 
 	page = new KPageWidgetItem(widget, i18nc("@title:group", "Diagnostics"));
-	page->setIcon(KIcon("page-zoom"));
+	page->setIcon(KIcon(QLatin1String("page-zoom")));
 	addPage(page);
 }
 
@@ -129,7 +129,7 @@ DmesgDialog::DmesgDialog(QWidget *parent) : KDialog(parent)
 	dmesgProcess = new QProcess(this);
 	dmesgProcess->setProcessChannelMode(QProcess::MergedChannels);
 	connect(dmesgProcess, SIGNAL(readyRead()), this, SLOT(readyRead()));
-	dmesgProcess->start("dmesg", QIODevice::ReadOnly);
+	dmesgProcess->start(QLatin1String("dmesg"), QIODevice::ReadOnly);
 
 	dmesgTextEdit = new QPlainTextEdit(this);
 	dmesgTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
@@ -145,5 +145,5 @@ DmesgDialog::~DmesgDialog()
 
 void DmesgDialog::readyRead()
 {
-	dmesgTextEdit->setPlainText(dmesgTextEdit->toPlainText() + dmesgProcess->readAll());
+	dmesgTextEdit->setPlainText(dmesgTextEdit->toPlainText() + QString::fromLocal8Bit(dmesgProcess->readAll().constData()));
 }

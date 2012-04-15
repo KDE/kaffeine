@@ -42,10 +42,10 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 {
 	playlists.append(temporaryPlaylist);
 
-	QFile file(KStandardDirs::locateLocal("appdata", "playlistsK4"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("playlistsK4")));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		file.setFileName(KStandardDirs::locateLocal("appdata", "playlists"));
+		file.setFileName(KStandardDirs::locateLocal("appdata", QLatin1String("playlists")));
 
 		if (!file.open(QIODevice::ReadOnly)) {
 			Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot open file") <<
@@ -126,7 +126,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 PlaylistBrowserModel::~PlaylistBrowserModel()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", "playlistsK4"));
+	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("playlistsK4")));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file") <<
@@ -182,7 +182,7 @@ QVariant PlaylistBrowserModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DecorationRole) {
 		if (index.row() == currentPlaylist) {
-			return KIcon("arrow-right");
+			return KIcon(QLatin1String("arrow-right"));
 		}
 	} else if (role == Qt::DisplayRole) {
 		return playlists.at(index.row())->title;
@@ -393,51 +393,51 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 		SIGNAL(playlistTrackMetadataChanged(QMap<MediaWidget::MetadataType,QString>)),
 		this, SLOT(updateTrackMetadata(QMap<MediaWidget::MetadataType,QString>)));
 
-	repeatAction = new KAction(KIcon("media-playlist-repeat"),
+	repeatAction = new KAction(KIcon(QLatin1String("media-playlist-repeat")),
 		i18nc("playlist menu", "Repeat"), this);
 	repeatAction->setCheckable(true);
-	menu->addAction(collection->addAction("playlist_repeat", repeatAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_repeat"), repeatAction));
 
-	randomAction = new KAction(KIcon("media-playlist-shuffle"),
+	randomAction = new KAction(KIcon(QLatin1String("media-playlist-shuffle")),
 		i18nc("playlist menu", "Random"), this);
 	randomAction->setCheckable(true);
-	menu->addAction(collection->addAction("playlist_random", randomAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_random"), randomAction));
 
 	KAction *addSubtitleAction =
-		new KAction(KIcon("application-x-subrip"), i18n("Add Subtitle"), this);
-	collection->addAction("playlist_add_subtitle", addSubtitleAction);
+		new KAction(KIcon(QLatin1String("application-x-subrip")), i18n("Add Subtitle"), this);
+	collection->addAction(QLatin1String("playlist_add_subtitle"), addSubtitleAction);
 
 	KAction *removeTrackAction =
-		new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
-	collection->addAction("playlist_remove_track", removeTrackAction);
+		new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
+	collection->addAction(QLatin1String("playlist_remove_track"), removeTrackAction);
 
-	KAction *clearAction = new KAction(KIcon("edit-clear-list"),
+	KAction *clearAction = new KAction(KIcon(QLatin1String("edit-clear-list")),
 		i18nc("remove all items from a list", "Clear"), this);
 	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearVisiblePlaylist()));
-	menu->addAction(collection->addAction("playlist_clear", clearAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_clear"), clearAction));
 
 	menu->addSeparator();
 
-	KAction *newAction = new KAction(KIcon("list-add"), i18nc("@action", "New"), this);
+	KAction *newAction = new KAction(KIcon(QLatin1String("list-add")), i18nc("@action", "New"), this);
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
-	menu->addAction(collection->addAction("playlist_new", newAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_new"), newAction));
 
-	KAction *renameAction = new KAction(KIcon("edit-rename"),
+	KAction *renameAction = new KAction(KIcon(QLatin1String("edit-rename")),
 		i18nc("rename an entry in a list", "Rename"), this);
 	connect(renameAction, SIGNAL(triggered(bool)), this, SLOT(renamePlaylist()));
-	menu->addAction(collection->addAction("playlist_rename", renameAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_rename"), renameAction));
 
 	KAction *removePlaylistAction =
-		new KAction(KIcon("edit-delete"), i18nc("@action", "Remove"), this);
+		new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
 	connect(removePlaylistAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
-	menu->addAction(collection->addAction("playlist_remove", removePlaylistAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_remove"), removePlaylistAction));
 
 	KAction *savePlaylistAction = KStandardAction::save(this, SLOT(savePlaylist()), this);
-	menu->addAction(collection->addAction("playlist_save", savePlaylistAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_save"), savePlaylistAction));
 
 	KAction *savePlaylistAsAction =
 		KStandardAction::saveAs(this, SLOT(savePlaylistAs()), this);
-	menu->addAction(collection->addAction("playlist_save_as", savePlaylistAsAction));
+	menu->addAction(collection->addAction(QLatin1String("playlist_save_as"), savePlaylistAsAction));
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
 	widgetLayout->setMargin(0);
@@ -771,21 +771,21 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 		} else if (playlistTrack.subtitles.isEmpty()) {
 			// check whether there's a possible subtitle file candidate
 			QString localFile = playlistTrack.url.toLocalFile();
-			localFile.truncate(localFile.lastIndexOf('.'));
+			localFile.truncate(localFile.lastIndexOf(QLatin1Char('.')));
 
 			if (!localFile.isEmpty()) {
-				if (QFile::exists(localFile + ".asc")) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + ".asc");
-				} else if (QFile::exists(localFile + ".smi")) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + ".smi");
-				} else if (QFile::exists(localFile + ".srt")) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + ".srt");
-				} else if (QFile::exists(localFile + ".ssa")) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + ".ssa");
-				} else if (QFile::exists(localFile + ".sub")) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + ".sub");
-				} else if (QFile::exists(localFile + ".txt")) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + ".txt");
+				if (QFile::exists(localFile + QLatin1String(".asc"))) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".asc"));
+				} else if (QFile::exists(localFile + QLatin1String(".smi"))) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".smi"));
+				} else if (QFile::exists(localFile + QLatin1String(".srt"))) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".srt"));
+				} else if (QFile::exists(localFile + QLatin1String(".ssa"))) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".ssa"));
+				} else if (QFile::exists(localFile + QLatin1String(".sub"))) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".sub"));
+				} else if (QFile::exists(localFile + QLatin1String(".txt"))) {
+					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".txt"));
 				}
 			}
 
@@ -835,7 +835,7 @@ void PlaylistTab::updateTrackMetadata(const QMap<MediaWidget::MetadataType, QStr
 
 QString PlaylistTab::subtitleExtensionFilter()
 {
-	return QString("*.asc *.smi *.srt *.ssa *.sub *.txt|") +
+	return QString(QLatin1String("*.asc *.smi *.srt *.ssa *.sub *.txt|")) +
 		i18nc("file filter", "Subtitle Files");
 }
 
