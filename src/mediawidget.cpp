@@ -722,11 +722,11 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 			return;
 		case 1:
 			automaticResize = OriginalSize;
-			emit(automaticResize);
+			emit resizeToVideo(automaticResize);
 			return;
 		case 2:
 			automaticResize = DoubleSize;
-			emit(automaticResize);
+			emit resizeToVideo(automaticResize);
 			return;
 		}
 	}

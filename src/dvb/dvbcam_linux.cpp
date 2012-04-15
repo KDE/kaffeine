@@ -177,7 +177,7 @@ void DvbLinuxCam::readyRead()
 	int size = 0;
 
 	while (true) {
-		int bytesRead = read(caFd, buffer.data() + size, buffer.size() - size);
+		int bytesRead = int(read(caFd, buffer.data() + size, buffer.size() - size));
 
 		if ((bytesRead < 0) && (errno == EINTR)) {
 			continue;
@@ -371,9 +371,9 @@ void DvbLinuxCam::handleSessionLayer(const unsigned char *data, int size)
 
 			messageData[0] = 0x00;
 			messageData[1] = (resource >> 24);
-			messageData[2] = (resource >> 16);
-			messageData[3] = (resource >> 8);
-			messageData[4] = resource;
+			messageData[2] = (resource >> 16) & 0xff;
+			messageData[3] = (resource >> 8) & 0xff;
+			messageData[4] = resource & 0xff;
 			messageData[5] = 0x00;
 			messageData[6] = 0x00;
 
@@ -526,7 +526,8 @@ void DvbLinuxCam::customEvent(QEvent *event)
 	for (QMap<int, DvbLinuxCamService>::iterator it = services.begin();
 	     it != services.end();) {
 		if (it->pendingAction == DvbLinuxCamService::Remove) {
-			sendCaPmt(DvbPmtSection(it->pmtSectionData), Update, StopDescrambling);
+			DvbPmtSection pmtSection(it->pmtSectionData);
+			sendCaPmt(pmtSection, Update, StopDescrambling);
 			it = services.erase(it);
 		} else {
 			++activeCaPmts;
@@ -541,15 +542,19 @@ void DvbLinuxCam::customEvent(QEvent *event)
 			continue;
 		case DvbLinuxCamService::Add:
 			if (activeCaPmts == 1) {
-				sendCaPmt(DvbPmtSection(it->pmtSectionData), Only, Descramble);
+				DvbPmtSection pmtSection(it->pmtSectionData);
+				sendCaPmt(pmtSection, Only, Descramble);
 			} else {
-				sendCaPmt(DvbPmtSection(it->pmtSectionData), Add, Descramble);
+				DvbPmtSection pmtSection(it->pmtSectionData);
+				sendCaPmt(pmtSection, Add, Descramble);
 			}
 
 			break;
-		case DvbLinuxCamService::Update:
-			sendCaPmt(DvbPmtSection(it->pmtSectionData), Update, Descramble);
+		case DvbLinuxCamService::Update: {
+			DvbPmtSection pmtSection(it->pmtSectionData);
+			sendCaPmt(pmtSection, Update, Descramble);
 			break;
+		    }
 		case DvbLinuxCamService::Remove:
 			Log("DvbLinuxCam::customEvent: impossible");
 			break;
@@ -567,7 +572,7 @@ void DvbLinuxCam::sendCaPmt(const DvbPmtSection &pmtSection, CaPmtListManagement
 	messageData[0] = listManagement;
 	messageData[1] = ((pmtSection.programNumber() >> 8) & 0xff);
 	messageData[2] = (pmtSection.programNumber() & 0xff);
-	messageData[3] = ((pmtSection.versionNumber() << 1) |
+	messageData[3] = (((pmtSection.versionNumber() << 1) & 0xff) |
 		(pmtSection.currentNextIndicator() ? 0x01 : 0x00));
 
 	int index = 6;
@@ -595,7 +600,7 @@ void DvbLinuxCam::sendCaPmt(const DvbPmtSection &pmtSection, CaPmtListManagement
 
 	for (DvbPmtSectionEntry entry = pmtSection.entries(); entry.isValid(); entry.advance()) {
 		resize(index + 5);
-		messageData[index++] = entry.streamType();
+		messageData[index++] = (entry.streamType() & 0xff);
 		messageData[index++] = ((entry.pid() >> 8) & 0xff);
 		messageData[index++] = (entry.pid() & 0xff);
 		lengthIndex = index;
@@ -628,21 +633,21 @@ void DvbLinuxCam::sendCaPmt(const DvbPmtSection &pmtSection, CaPmtListManagement
 
 void DvbLinuxCam::sendTransportLayerMessage(TransportLayerTag tag, char *data, char *end)
 {
-	int length = end - data;
+	uint length = uint(end - data);
 	Q_ASSERT(length < 0x10000);
 
 	if (length < 0x80) {
-		*(--data) = length;
+		*(--data) = (length & 0xff);
 	} else {
-		*(--data) = length;
-		*(--data) = (length >> 8);
+		*(--data) = (length & 0xff);
+		*(--data) = ((length >> 8) & 0xff);
 		*(--data) = quint8(0x82);
 	}
 
 	*(--data) = tag;
 	*(--data) = ConnectionId;
-	*(--data) = slot;
-	length = end - data;
+	*(--data) = (slot & 0xff);
+	length = uint(end - data);
 
 	if (write(caFd, data, length) != length) {
 		Log("DvbLinuxCam::sendTransportLayerMessage: cannot send message of length") <<
@@ -676,19 +681,19 @@ void DvbLinuxCam::sendSessionLayerMessage(SessionLayerTag tag, char *data, char 
 
 void DvbLinuxCam::sendApplicationLayerMessage(ApplicationLayerTag tag, char *data, char *end)
 {
-	int length = end - data;
+	uint length = uint(end - data);
 	Q_ASSERT(length < 0x10000);
 
 	if (length < 0x80) {
-		*(--data) = length;
+		*(--data) = (length & 0xff);
 	} else {
 		*(--data) = (length & 0xff);
 		*(--data) = ((length >> 8) & 0xff);
 		*(--data) = quint8(0x82);
 	}
 
-	*(--data) = tag;
-	*(--data) = (tag >> 8);
+	*(--data) = (tag & 0xff);
+	*(--data) = ((tag >> 8) & 0xff);
 	*(--data) = (tag >> 16);
 
 	switch (tag) {

@@ -208,8 +208,8 @@ public:
 
 	template<class T> T readEnum()
 	{
-		QString string;
-		stream >> string;
+		QString token;
+		stream >> token;
 
 		for (int i = 0;; ++i) {
 			T value = static_cast<T>(i);
@@ -224,7 +224,7 @@ public:
 				break;
 			}
 
-			if (string == entry) {
+			if (token == entry) {
 				return value;
 			}
 		}
@@ -235,20 +235,20 @@ public:
 
 	void checkChar(const QChar &value)
 	{
-		QString string;
-		stream >> string;
+		QString token;
+		stream >> token;
 
-		if (string != value) {
+		if (token != value) {
 			stream.setStatus(QTextStream::ReadCorruptData);
 		}
 	}
 
 	void checkString(const QString &value)
 	{
-		QString string;
-		stream >> string;
+		QString token;
+		stream >> token;
 
-		if (string != value) {
+		if (token != value) {
 			stream.setStatus(QTextStream::ReadCorruptData);
 		}
 	}

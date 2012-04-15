@@ -266,7 +266,8 @@ void DvbLiveView::toggleOsd()
 void DvbLiveView::pmtSectionChanged(const QByteArray &pmtSectionData)
 {
 	internal->pmtSectionData = pmtSectionData;
-	DvbPmtParser pmtParser(DvbPmtSection(internal->pmtSectionData));
+	DvbPmtSection pmtSection(internal->pmtSectionData);
+	DvbPmtParser pmtParser(pmtSection);
 	videoPid = pmtParser.videoPid;
 
 	for (int i = 0;; ++i) {
@@ -631,14 +632,14 @@ void DvbLiveViewInternal::resetPipe()
 void DvbLiveViewInternal::writeToPipe()
 {
 	while (!buffers.isEmpty()) {
-		const QByteArray &buffer = buffers.at(0);
-		int bytesWritten = write(writeFd, buffer.constData(), buffer.size());
+		const QByteArray &currentBuffer = buffers.at(0);
+		int bytesWritten = int(write(writeFd, currentBuffer.constData(), currentBuffer.size()));
 
 		if ((bytesWritten < 0) && (errno == EINTR)) {
 			continue;
 		}
 
-		if (bytesWritten == buffer.size()) {
+		if (bytesWritten == currentBuffer.size()) {
 			buffers.removeFirst();
 			continue;
 		}

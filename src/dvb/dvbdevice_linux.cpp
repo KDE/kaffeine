@@ -252,7 +252,7 @@ bool DvbLinuxDevice::sendMessage(const char *message, int length)
 	dvb_diseqc_master_cmd cmd;
 	memset(&cmd, 0, sizeof(cmd));
 	memcpy(&cmd.msg, message, length);
-	cmd.msg_len = length;
+	cmd.msg_len = char(length);
 
 	if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
 		Log("DvbLinuxDevice::sendMessage: "
@@ -587,7 +587,7 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 
 	dmx_pes_filter_params pes_filter;
 	memset(&pes_filter, 0, sizeof(pes_filter));
-	pes_filter.pid = pid;
+	pes_filter.pid = ushort(pid);
 	pes_filter.input = DMX_IN_FRONTEND;
 	pes_filter.output = DMX_OUT_TS_TAP;
 	pes_filter.pes_type = DMX_PES_OTHER;
@@ -685,7 +685,7 @@ void DvbLinuxDevice::startDvr()
 
 	while (true) {
 		int bufferSize = dvrBuffer.bufferSize;
-		int dataSize = read(dvrFd, dvrBuffer.data, bufferSize);
+		int dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 		if (dataSize < 0) {
 			if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
@@ -696,7 +696,7 @@ void DvbLinuxDevice::startDvr()
 				continue;
 			}
 
-			dataSize = read(dvrFd, dvrBuffer.data, bufferSize);
+			dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 			if (dataSize < 0) {
 				if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
@@ -764,7 +764,7 @@ void DvbLinuxDevice::run()
 
 		while (true) {
 			int bufferSize = dvrBuffer.bufferSize;
-			int dataSize = read(dvrFd, dvrBuffer.data, bufferSize);
+			int dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 			if (dataSize < 0) {
 				if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
@@ -776,7 +776,7 @@ void DvbLinuxDevice::run()
 				}
 
 				Log("DvbLinuxDevice::run: cannot read from dvr") << dvrPath;
-				dataSize = read(dvrFd, dvrBuffer.data, bufferSize);
+				dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 				if (dataSize < 0) {
 					if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
@@ -913,15 +913,15 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		if (QFile::exists(path + "device/vendor")) {
 			// PCI device
 			int vendor = readSysAttr(path + "device/vendor");
-			int device = readSysAttr(path + "device/device");
+			int pciDevice = readSysAttr(path + "device/device");
 			int subsystem_vendor = readSysAttr(path + "device/subsystem_vendor");
 			int subsystem_device = readSysAttr(path + "device/subsystem_device");
 
-			if ((vendor >= 0) && (device >= 0) && (subsystem_vendor >= 0) &&
+			if ((vendor >= 0) && (pciDevice >= 0) && (subsystem_vendor >= 0) &&
 			    (subsystem_device >= 0)) {
 				deviceId = 'P';
 				deviceId += QString("%1").arg(vendor, 4, 16, QChar('0'));
-				deviceId += QString("%1").arg(device, 4, 16, QChar('0'));
+				deviceId += QString("%1").arg(pciDevice, 4, 16, QChar('0'));
 				deviceId += QString("%1").arg(subsystem_vendor, 4, 16, QChar('0'));
 				deviceId += QString("%1").arg(subsystem_device, 4, 16, QChar('0'));
 			}

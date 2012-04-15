@@ -112,7 +112,7 @@ void Connection::handlePacket()
 	while (packetLength > 0) {
 		char buffer[4096];
 		int size = qMin(packetLength, int(sizeof(buffer)));
-		int bytesRead = socket->read(buffer, size);
+		int bytesRead = int(socket->read(buffer, size));
 
 		if (bytesRead <= 0) {
 			Log("Connection::handlePacket: cannot empty buffer");

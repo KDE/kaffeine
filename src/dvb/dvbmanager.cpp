@@ -592,7 +592,8 @@ void DvbManager::writeDeviceConfigs()
 		writer.write("frontendName", deviceConfig.frontendName);
 		writer.write("configCount", deviceConfig.configs.size());
 
-		foreach (const DvbConfig &config, deviceConfig.configs) {
+		for (int i = 0; i < deviceConfig.configs.size(); ++i) {
+			const DvbConfig &config = deviceConfig.configs.at(i);
 			writer.write("[config]");
 			writer.write("type", config->getTransmissionType());
 			writer.write("name", config->name);
@@ -615,7 +616,8 @@ void DvbManager::updateSourceMapping()
 	sourceMapping.clear();
 
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {
-		foreach (const DvbConfig &config, deviceConfig.configs) {
+		for (int i = 0; i < deviceConfig.configs.size(); ++i) {
+			const DvbConfig &config = deviceConfig.configs.at(i);
 			TransmissionType type;
 
 			switch (config->getTransmissionType()) {
@@ -720,7 +722,7 @@ void DvbManager::readScanData()
 
 bool DvbManager::readScanSources(DvbScanData &data, const char *tag, TransmissionType type)
 {
-	int tagLen = strlen(tag);
+	int tagLen = int(strlen(tag));
 	bool parseError = false;
 
 	while (strncmp(data.getLine(), tag, tagLen) == 0) {

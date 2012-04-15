@@ -666,13 +666,13 @@ void PlaylistModel::insertUrls(Playlist *playlist, int row, const QList<KUrl> &u
 		}
 
 		if (format != Playlist::Invalid) {
-			Playlist *playlist = new Playlist();
+			Playlist *nestdPlaylist = new Playlist();
 
-			if (playlist->load(url, format)) {
-				emit appendPlaylist(playlist, playImmediately);
+			if (nestdPlaylist->load(url, format)) {
+				emit appendPlaylist(nestdPlaylist, playImmediately);
 				playImmediately = false;
 			} else {
-				delete playlist;
+				delete nestdPlaylist;
 			}
 
 			continue;
@@ -687,7 +687,8 @@ void PlaylistModel::insertUrls(Playlist *playlist, int row, const QList<KUrl> &u
 			QStringList entries = dir.entryList(extensionFilter.split(' '),
 				QDir::Files, QDir::Name | QDir::LocaleAware);
 
-			foreach (const QString &entry, entries) {
+			for (int i = 0; i < entries.size(); ++i) {
+				const QString &entry = entries.at(i);
 				processedUrls.append(KUrl::fromLocalFile(dir.filePath(entry)));
 			}
 		} else {

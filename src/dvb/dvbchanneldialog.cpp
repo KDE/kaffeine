@@ -622,7 +622,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), 11, 0);
 	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), 11, 1);
 
-	DvbPmtParser pmtParser(DvbPmtSection(channel->pmtSectionData));
+	DvbPmtSection pmtSection(channel->pmtSectionData);
+	DvbPmtParser pmtParser(pmtSection);
 	int row = 12;
 
 	if (pmtParser.videoPid >= 0) {

@@ -100,7 +100,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 
 		for (QSqlQuery query = sqlHelper->exec(selectStatement); query.next();) {
 			qint64 fullKey = query.value(0).toLongLong();
-			SqlKey sqlKey(fullKey);
+			SqlKey sqlKey(static_cast<int>(fullKey));
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
 				Log("SqlInterface::sqlInit: invalid key") << fullKey;

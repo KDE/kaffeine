@@ -38,7 +38,7 @@ bool DvbChannel::validate()
 				pmtSectionData = QByteArray(5, 0);
 			}
 
-			pmtSectionData[3] = (serviceId >> 8);
+			pmtSectionData[3] = ((serviceId >> 8) & 0xff);
 			pmtSectionData[4] = (serviceId & 0xff);
 			return true;
 		} else if (pmtSectionData.size() >= 5) {
@@ -316,7 +316,8 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 			}
 
 			channel.number = existingChannel->number;
-			DvbPmtParser pmtParser(DvbPmtSection(channel.pmtSectionData));
+			DvbPmtSection pmtSection(channel.pmtSectionData);
+			DvbPmtParser pmtParser(pmtSection);
 
 			for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
 				if (pmtParser.audioPids.at(i).first == existingChannel->audioPid) {

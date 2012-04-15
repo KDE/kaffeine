@@ -1,3 +1,7 @@
+if(STRICT_BUILD)
+  add_definitions(-DQT_NO_CAST_FROM_ASCII)
+endif(STRICT_BUILD)
+
 set(dtvdaemon_SRCS
     connection.cpp
     dtvdaemon.cpp

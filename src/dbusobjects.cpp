@@ -27,7 +27,7 @@
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 
-QDBusArgument &operator<<(QDBusArgument &argument, const MprisStatusStruct &statusStruct)
+static QDBusArgument &operator<<(QDBusArgument &argument, const MprisStatusStruct &statusStruct)
 {
 	argument.beginStructure();
 	argument << statusStruct.state << statusStruct.random << statusStruct.repeatTrack <<
@@ -36,7 +36,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const MprisStatusStruct &stat
 	return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, MprisStatusStruct &statusStruct)
+static const QDBusArgument &operator>>(const QDBusArgument &argument, MprisStatusStruct &statusStruct)
 {
 	argument.beginStructure();
 	argument >> statusStruct.state >> statusStruct.random >> statusStruct.repeatTrack >>
@@ -45,7 +45,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, MprisStatusStruct
 	return argument;
 }
 
-QDBusArgument &operator<<(QDBusArgument &argument, const MprisVersionStruct &versionStruct)
+static QDBusArgument &operator<<(QDBusArgument &argument, const MprisVersionStruct &versionStruct)
 {
 	argument.beginStructure();
 	argument << versionStruct.major << versionStruct.minor;
@@ -53,7 +53,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const MprisVersionStruct &ver
 	return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument, MprisVersionStruct &versionStruct)
+static const QDBusArgument &operator>>(const QDBusArgument &argument, MprisVersionStruct &versionStruct)
 {
 	argument.beginStructure();
 	argument >> versionStruct.major >> versionStruct.minor;
@@ -61,7 +61,7 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, MprisVersionStruc
 	return argument;
 }
 
-QDBusArgument &operator<<(QDBusArgument &argument, const TelevisionScheduleEntryStruct &entry)
+static QDBusArgument &operator<<(QDBusArgument &argument, const TelevisionScheduleEntryStruct &entry)
 {
 	argument.beginStructure();
 	argument << entry.key << entry.name << entry.channel << entry.begin << entry.duration <<
@@ -70,7 +70,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const TelevisionScheduleEntry
 	return argument;
 }
 
-const QDBusArgument &operator>>(const QDBusArgument &argument,
+static const QDBusArgument &operator>>(const QDBusArgument &argument,
 	TelevisionScheduleEntryStruct &entry)
 {
 	argument.beginStructure();

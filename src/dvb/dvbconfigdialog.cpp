@@ -410,7 +410,7 @@ DvbScanFileDownloadDialog::~DvbScanFileDownloadDialog()
 
 void DvbScanFileDownloadDialog::progressChanged(KJob *, unsigned long percent)
 {
-	progressBar->setValue(percent);
+	progressBar->setValue(int(percent));
 }
 
 void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)

@@ -156,7 +156,8 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 
 			QStringList subtitleStrings;
 
-			foreach (const KUrl &url, track.subtitles) {
+			for (int j = 0; j < track.subtitles.size(); ++j) {
+				const KUrl &url = track.subtitles.at(j);
 				subtitleStrings.append(url.url());
 			}
 

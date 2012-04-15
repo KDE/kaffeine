@@ -59,7 +59,7 @@ bool VlcMediaWidget::init()
 		}
 	}
 
-	libvlc_media_player_set_xwindow(vlcMediaPlayer, winId());
+	libvlc_media_player_set_xwindow(vlcMediaPlayer, quint32(winId()));
 	setAttribute(Qt::WA_NativeWindow);
 	setAttribute(Qt::WA_PaintOnScreen);
 	return true;
@@ -333,8 +333,8 @@ void VlcMediaWidget::updatePlaybackStatus()
 
 void VlcMediaWidget::updateCurrentTotalTime()
 {
-	currentTime = libvlc_media_player_get_time(vlcMediaPlayer);
-	totalTime = libvlc_media_player_get_length(vlcMediaPlayer);
+	currentTime = int(libvlc_media_player_get_time(vlcMediaPlayer));
+	totalTime = int(libvlc_media_player_get_length(vlcMediaPlayer));
 
 	if (currentTime < 0) {
 		currentTime = 0;

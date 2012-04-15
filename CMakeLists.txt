@@ -12,7 +12,13 @@ add_definitions(${KDE4_DEFINITIONS})
 
 if(STRICT_BUILD)
   # -DQT_NO_CAST_FROM_ASCII
-  add_definitions(-ansi -Wnon-virtual-dtor -Wold-style-cast -Woverloaded-virtual -pedantic -Wundef
+  add_definitions(-Werror -Weverything -Wno-padded -Wno-sign-conversion -Wno-unreachable-code -Wno-weak-vtables
+                  -ferror-limit=5
+                  -isystem /home/lxuser/Entwicklung/kaffeine/include
+                  -isystem /usr/include/KDE
+                  -isystem /usr/include/qt4/QtCore
+                  -isystem /usr/include/qt4/QtGui
+                  -isystem /usr/include/qt4/QtNetwork
                   -DQT_NO_CAST_FROM_BYTEARRAY -DQT_NO_CAST_TO_ASCII -DQT_NO_URL_CAST_FROM_STRING
                   -DQT_STRICT_ITERATORS)
 endif(STRICT_BUILD)

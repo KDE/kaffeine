@@ -343,7 +343,7 @@ QString DvbSiText::convertText(const char *data, int size)
 			}
 		}
 
-		QString result = codecTable[encoding]->toUnicode(dest, destIt - dest);
+		QString result = codecTable[encoding]->toUnicode(dest, int(destIt - dest));
 		delete[] dest;
 
 		return result;
@@ -1044,12 +1044,12 @@ void DvbSectionGenerator::initPat(int transportStreamId, int programNumber, int 
 
 	char *data = startSection(16);
 	data[0] = 0x00;
-	data[3] = transportStreamId >> 8;
-	data[4] = transportStreamId;
-	data[8] = programNumber >> 8;
-	data[9] = programNumber;
-	data[10] = 0xe0 | (pmtPid >> 8);
-	data[11] = pmtPid;
+	data[3] = char(transportStreamId >> 8);
+	data[4] = char(transportStreamId);
+	data[8] = char(programNumber >> 8);
+	data[9] = char(programNumber);
+	data[10] = 0xe0 | char(pmtPid >> 8);
+	data[11] = char(pmtPid);
 	endSection(16, 0x00);
 }
 
@@ -1061,7 +1061,7 @@ void DvbSectionGenerator::initPmt(int pmtPid, const DvbPmtSection &section, cons
 
 	DvbPmtSectionEntry entry = section.entries();
 	memcpy(data, section.getData(), entry.getData() - section.getData());
-	int size = entry.getData() - section.getData();
+	int size = int(entry.getData() - section.getData());
 
 	while (entry.isValid()) {
 		if (pids.contains(entry.pid())) {
@@ -1080,7 +1080,7 @@ QByteArray DvbSectionGenerator::generatePackets()
 	char *data = packets.data();
 
 	for (int i = 3; i < packets.size(); i += 188) {
-		data[i] = (data[i] & 0xf0) | continuityCounter;
+		data[i] = (data[i] & 0xf0) | char(continuityCounter);
 		continuityCounter = (continuityCounter + 1) & 0x0f;
 	}
 
@@ -1103,13 +1103,13 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 	char *data = packets.data();
 
 	data[0] = 0x47;
-	data[1] = 0x40 | (pid >> 8);
-	data[2] = pid;
+	data[1] = 0x40 | char(pid >> 8);
+	data[2] = char(pid);
 	data[3] = 0x10;
 	data[4] = 0x00;
-	data[6] = 0xb0 | ((sectionLength - 3) >> 8);
-	data[7] = sectionLength - 3;
-	data[10] = 0xc1 | (versionNumber << 1);
+	data[6] = 0xb0 | char((sectionLength - 3) >> 8);
+	data[7] = char(sectionLength - 3);
+	data[10] = 0xc1 | char(versionNumber << 1);
 	data[11] = 0x00;
 	data[12] = 0x00;
 
@@ -1121,17 +1121,17 @@ void DvbSectionGenerator::endSection(int sectionLength, int pid)
 		crc32 = (crc32 << 8) ^ DvbStandardSection::crc32Table[(crc32 >> 24) ^ byte];
 	}
 
-	data[size - 4] = crc32 >> 24;
-	data[size - 3] = crc32 >> 16;
-	data[size - 2] = crc32 >> 8;
-	data[size - 1] = crc32;
+	data[size - 4] = char(crc32 >> 24);
+	data[size - 3] = char(crc32 >> 16);
+	data[size - 2] = char(crc32 >> 8);
+	data[size - 1] = char(crc32);
 
 	for (int i = 188; i < size; i += 188) {
 		// split the section into multiple packets if necessary
 		memmove(data + i + 4, data + i, size - i);
 		data[i] = 0x47;
-		data[i + 1] = pid >> 8;
-		data[i + 2] = pid;
+		data[i + 1] = char(pid >> 8);
+		data[i + 2] = char(pid);
 		data[i + 3] = 0x10; // continuity counter is filled out in generatePackets()
 		size += 4;
 	}

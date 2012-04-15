@@ -115,7 +115,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 	// be careful that playloadLength is > 0 at this point
 
 	if (sectionStart) {
-		unsigned char pointer = payload[0];
+		int pointer = quint8(payload[0]);
 
 		if (pointer >= payloadLength) {
 			Log("DvbSectionFilterInternal::processData: invalid pointer");
@@ -167,7 +167,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 		}
 
 		if (sectionEnd <= end) {
-			int size = (sectionEnd - it);
+			int size = int(sectionEnd - it);
 			int crc = DvbStandardSection::verifyCrc32(it, size);
 			bool crcOk;
 
@@ -206,7 +206,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 		break;
 	}
 
-	buffer.remove(0, it - buffer.constBegin());
+	buffer.remove(0, int(it - buffer.constBegin()));
 }
 
 class DvbDataDumper : public QFile, public DvbPidFilter
@@ -322,21 +322,21 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	if (config->switchFrequency != 0) {
 		// dual LO (low / high)
 		if (frequency < config->switchFrequency) {
-			frequency = fabs(frequency - config->lowBandFrequency);
+			frequency = qAbs(frequency - config->lowBandFrequency);
 		} else {
-			frequency = fabs(frequency - config->highBandFrequency);
+			frequency = qAbs(frequency - config->highBandFrequency);
 			highBand = true;
 		}
 	} else if (config->highBandFrequency != 0) {
 		// single LO (horizontal / vertical)
 		if (horPolar) {
-			frequency = fabs(frequency - config->lowBandFrequency);
+			frequency = qAbs(frequency - config->lowBandFrequency);
 		} else {
-			frequency = fabs(frequency - config->highBandFrequency);
+			frequency = qAbs(frequency - config->highBandFrequency);
 		}
 	} else {
 		// single LO
-		frequency = fabs(frequency - config->lowBandFrequency);
+		frequency = qAbs(frequency - config->lowBandFrequency);
 	}
 
 	// tone off
@@ -353,8 +353,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	switch (config->configuration) {
 	case DvbConfigBase::DiseqcSwitch: {
-		char cmd[] = { quint8(0xe0), 0x10, 0x38, 0x00 };
-		cmd[3] = 0xf0 | (config->lnbNumber << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
+		char cmd[] = { char(0xe0), 0x10, 0x38, 0x00 };
+		cmd[3] = 0xf0 | char(config->lnbNumber << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 
@@ -392,15 +392,15 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 		if (angle >= 0) {
 			// east
-			value = ((16 * angle * 180 / M_PI) + 0.5);
+			value = int((16 * angle * 180 / M_PI) + 0.5);
 			value |= 0xe000;
 		} else {
 			// west
-			value = ((16 * (-angle) * 180 / M_PI) + 0.5);
+			value = int((16 * (-angle) * 180 / M_PI) + 0.5);
 			value |= 0xd000;
 		}
 
-		char cmd[] = { quint8(0xe0), 0x31, 0x6e, (value / 256), (value % 256) };
+		char cmd[] = { char(0xe0), 0x31, 0x6e, char(value / 256), char(value % 256) };
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
@@ -408,7 +408,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	    }
 
 	case DvbConfigBase::PositionsRotor: {
-		char cmd[] = { quint8(0xe0), 0x31, 0x6b, config->lnbNumber };
+		char cmd[] = { char(0xe0), 0x31, 0x6b, char(config->lnbNumber) };
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
