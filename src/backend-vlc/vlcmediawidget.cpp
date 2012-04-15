@@ -309,7 +309,12 @@ void VlcMediaWidget::updatePlaybackStatus()
 	switch (libvlc_media_player_get_state(vlcMediaPlayer)) {
 	case libvlc_NothingSpecial:
 	case libvlc_Stopped:
-		playbackStatus = MediaWidget::Idle;
+		// FIXME vlc state is not updated synchronously in libvlc_media_player_play
+
+		if (libvlc_media_player_get_media(vlcMediaPlayer) == NULL) {
+			playbackStatus = MediaWidget::Idle;
+		}
+
 		break;
 	case libvlc_Opening:
 	case libvlc_Buffering:
