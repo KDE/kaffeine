@@ -140,6 +140,7 @@ void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
 
 void VlcMediaWidget::play(const MediaSource &source)
 {
+	addPendingUpdates(PlaybackStatus);
 	QByteArray url = source.getUrl().toEncoded();
 	playingDvd = false;
 
@@ -479,33 +480,37 @@ void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 
 void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 {
-	// FIXME recheck
+	PendingUpdates pendingUpdatesToBeAdded = 0;
 
 	switch (event->type) {
 	case libvlc_MediaMetaChanged:
-		addPendingUpdates(Metadata);
-		return;
+		pendingUpdatesToBeAdded = Metadata;
+		break;
 	case libvlc_MediaPlayerEncounteredError:
-		addPendingUpdates(PlaybackStatus);
-		return;
+		pendingUpdatesToBeAdded = PlaybackStatus;
+		break;
 	case libvlc_MediaPlayerEndReached:
-		addPendingUpdates(PlaybackFinished | PlaybackStatus);
-		return;
+		pendingUpdatesToBeAdded = (PlaybackFinished | PlaybackStatus);
+		break;
 	case libvlc_MediaPlayerLengthChanged:
-		addPendingUpdates(CurrentTotalTime);
-		return;
+		pendingUpdatesToBeAdded = CurrentTotalTime;
+		break;
 	case libvlc_MediaPlayerSeekableChanged:
-		addPendingUpdates(Seekable);
-		return;
+		pendingUpdatesToBeAdded = Seekable;
+		break;
 	case libvlc_MediaPlayerStopped:
-		addPendingUpdates(PlaybackStatus);
-		return;
+		pendingUpdatesToBeAdded = PlaybackStatus;
+		break;
 	case libvlc_MediaPlayerTimeChanged:
-		addPendingUpdates(CurrentTotalTime);
-		return;
+		pendingUpdatesToBeAdded = CurrentTotalTime;
+		break;
 	}
 
-	Log("VlcMediaWidget::vlcEvent: unknown event type") << event->type;
+	if (pendingUpdatesToBeAdded != 0) {
+		addPendingUpdates(pendingUpdatesToBeAdded);
+	} else {
+		Log("VlcMediaWidget::vlcEvent: unknown event type") << event->type;
+	}
 }
 
 void VlcMediaWidget::vlcEventHandler(const libvlc_event_t *event, void *instance)
