@@ -11,7 +11,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KD
 add_definitions(${KDE4_DEFINITIONS})
 
 if(STRICT_BUILD)
-  # -DQT_NO_CAST_FROM_ASCII
   add_definitions(-Werror -Weverything -Wno-padded -Wno-sign-conversion -Wno-unreachable-code -Wno-weak-vtables
                   -ferror-limit=5
                   -isystem /home/lxuser/Entwicklung/kaffeine/include
