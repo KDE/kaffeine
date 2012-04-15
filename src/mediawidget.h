@@ -61,6 +61,7 @@ public:
 	{
 		NormalMode,
 		FullScreenMode,
+		FullScreenReturnToMinimalMode,
 		MinimalMode
 	};
 

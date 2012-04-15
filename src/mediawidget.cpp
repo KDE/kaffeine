@@ -392,28 +392,28 @@ MediaWidget::DisplayMode MediaWidget::getDisplayMode() const
 void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 {
 	if (displayMode != displayMode_) {
-		switch (displayMode) {
-		case NormalMode:
-			break;
-		case FullScreenMode:
-			fullScreenAction->setIcon(KIcon(QLatin1String("view-fullscreen")));
-			fullScreenAction->setText(i18nc("'Playback' menu", "Full Screen Mode"));
-			break;
-		case MinimalMode:
-			minimalModeAction->setIcon(KIcon(QLatin1String("view-restore")));
-			minimalModeAction->setText(i18nc("'Playback' menu", "Minimal Mode"));
-			break;
-		}
-
 		displayMode = displayMode_;
 
 		switch (displayMode) {
 		case NormalMode:
+		case MinimalMode:
+			fullScreenAction->setIcon(KIcon(QLatin1String("view-fullscreen")));
+			fullScreenAction->setText(i18nc("'Playback' menu", "Full Screen Mode"));
 			break;
 		case FullScreenMode:
+		case FullScreenReturnToMinimalMode:
 			fullScreenAction->setIcon(KIcon(QLatin1String("view-restore")));
 			fullScreenAction->setText(i18nc("'Playback' menu",
 				"Exit Full Screen Mode"));
+			break;
+		}
+
+		switch (displayMode) {
+		case NormalMode:
+		case FullScreenMode:
+		case FullScreenReturnToMinimalMode:
+			minimalModeAction->setIcon(KIcon(QLatin1String("view-restore")));
+			minimalModeAction->setText(i18nc("'Playback' menu", "Minimal Mode"));
 			break;
 		case MinimalMode:
 			minimalModeAction->setIcon(KIcon(QLatin1String("view-fullscreen")));
@@ -657,19 +657,33 @@ void MediaWidget::volumeChanged(int volume)
 
 void MediaWidget::toggleFullScreen()
 {
-	if (displayMode == FullScreenMode) {
-		setDisplayMode(NormalMode);
-	} else {
+	switch (displayMode) {
+	case NormalMode:
 		setDisplayMode(FullScreenMode);
+		break;
+	case FullScreenMode:
+		setDisplayMode(NormalMode);
+		break;
+	case FullScreenReturnToMinimalMode:
+		setDisplayMode(MinimalMode);
+		break;
+	case MinimalMode:
+		setDisplayMode(FullScreenReturnToMinimalMode);
+		break;
 	}
 }
 
 void MediaWidget::toggleMinimalMode()
 {
-	if (displayMode == MinimalMode) {
-		setDisplayMode(NormalMode);
-	} else {
+	switch (displayMode) {
+	case NormalMode:
+	case FullScreenMode:
+	case FullScreenReturnToMinimalMode:
 		setDisplayMode(MinimalMode);
+		break;
+	case MinimalMode:
+		setDisplayMode(NormalMode);
+		break;
 	}
 }
 

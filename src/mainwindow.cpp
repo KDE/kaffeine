@@ -368,6 +368,7 @@ MainWindow::~MainWindow()
 	case MediaWidget::NormalMode: value = 0; break;
 	case MediaWidget::MinimalMode: value = 1; break;
 	case MediaWidget::FullScreenMode: value = 2; break;
+	case MediaWidget::FullScreenReturnToMinimalMode: value = 2; break;
 	}
 
 	KGlobal::config()->group("MainWindow").writeEntry("DisplayMode", value);
@@ -492,14 +493,20 @@ void MainWindow::parseArgs()
 
 void MainWindow::displayModeChanged()
 {
-	if (mediaWidget->getDisplayMode() == MediaWidget::FullScreenMode) {
+	switch (mediaWidget->getDisplayMode()) {
+	case MediaWidget::FullScreenMode:
+	case MediaWidget::FullScreenReturnToMinimalMode:
 		setWindowState(windowState() | Qt::WindowFullScreen);
-	} else {
+		break;
+	case MediaWidget::MinimalMode:
+	case MediaWidget::NormalMode:
 		setWindowState(windowState() & (~Qt::WindowFullScreen));
+		break;
 	}
 
 	switch (mediaWidget->getDisplayMode()) {
 	case MediaWidget::FullScreenMode:
+	case MediaWidget::FullScreenReturnToMinimalMode:
 	case MediaWidget::MinimalMode:
 		menuBar()->hide();
 		navigationBar->hide();
