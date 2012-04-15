@@ -90,7 +90,7 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	KAction *epgAction = new KAction(KIcon(QLatin1String("view-list-details")), i18n("Program Guide"), this);
 	epgAction->setShortcut(Qt::Key_G);
-	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(showEpgDialog()));
+	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(toggleEpgDialog()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_epg"), epgAction));
 
 	KAction *osdAction = new KAction(KIcon(QLatin1String("dialog-information")), i18n("OSD"), this);
@@ -322,13 +322,18 @@ void DvbTab::showRecordingDialog()
 	DvbRecordingDialog::showDialog(manager, this);
 }
 
-void DvbTab::showEpgDialog()
+void DvbTab::toggleEpgDialog()
 {
-	DvbEpgDialog *dialog = new DvbEpgDialog(manager, this);
-	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
-	dialog->setCurrentChannel(manager->getLiveView()->getChannel());
-	dialog->setModal(true);
-	dialog->show();
+	if (epgDialog.isNull()) {
+		epgDialog = new DvbEpgDialog(manager, this);
+		epgDialog->setAttribute(Qt::WA_DeleteOnClose, true);
+		epgDialog->setCurrentChannel(manager->getLiveView()->getChannel());
+		epgDialog->setModal(false);
+		epgDialog->show();
+	} else {
+		epgDialog->deleteLater();
+		epgDialog = NULL;
+	}
 }
 
 void DvbTab::instantRecord(bool checked)
@@ -462,4 +467,8 @@ void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &ind
 	channelView->setCurrentIndex(index);
 	currentChannel = channel->name;
 	manager->getLiveView()->playChannel(channel);
+	
+	if (!epgDialog.isNull()) {
+		epgDialog->setCurrentChannel(manager->getLiveView()->getChannel());
+	}
 }
