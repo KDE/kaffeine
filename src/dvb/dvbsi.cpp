@@ -30,8 +30,7 @@ void DvbSection::initSection(const char *data, int size)
 		return;
 	}
 
-	int sectionLength = ((((static_cast<unsigned char>(data[1]) & 0xf) << 8) |
-		static_cast<unsigned char>(data[2])) + 3);
+	int sectionLength = ((((quint8(data[1]) & 0xf) << 8) | quint8(data[2])) + 3);
 
 	if (sectionLength > size) {
 		Log("DvbSection::initSection: adjusting length");
@@ -46,8 +45,7 @@ int DvbStandardSection::verifyCrc32(const char *data, int size)
 	unsigned int crc32 = 0xffffffff;
 
 	for (int i = 0; i < size; ++i) {
-		crc32 = ((crc32 << 8) ^
-			crc32Table[(crc32 >> 24) ^ static_cast<unsigned char>(data[i])]);
+		crc32 = ((crc32 << 8) ^ crc32Table[(crc32 >> 24) ^ quint8(data[i])]);
 	}
 
 	return crc32;
@@ -175,7 +173,7 @@ public:
 		unsigned short diacriticalMark = 0;
 
 		for (; size > 0; ++input, --size) {
-			unsigned short value = table[static_cast<unsigned char>(*input)];
+			unsigned short value = table[quint8(*input)];
 
 			if (value == 0xffff) {
 				continue;
@@ -246,7 +244,7 @@ QString DvbSiText::convertText(const char *data, int size)
 	// determine encoding
 	TextEncoding encoding = (override6937 ? Iso8859_1 : Iso6937);
 
-	if (static_cast<unsigned char>(data[0]) < 0x20) {
+	if (quint8(data[0]) < 0x20) {
 		switch (data[0]) {
 		case 0x01: encoding = Iso8859_5; break;
 		case 0x02: encoding = Iso8859_6; break;
@@ -371,7 +369,7 @@ void DvbDescriptor::initDescriptor(const char *data, int size)
 		return;
 	}
 
-	int descriptorLength = (static_cast<unsigned char>(data[1]) + 2);
+	int descriptorLength = (quint8(data[1]) + 2);
 
 	if (descriptorLength > size) {
 		Log("DvbDescriptor::initDescriptor: adjusting length");
@@ -421,7 +419,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 		return QString();
 	}
 
-	unsigned int num_strings = static_cast<unsigned char>(data[0]);
+	unsigned int num_strings = quint8(data[0]);
 
 	if (num_strings == 0) {
 		return result;
@@ -439,7 +437,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 		return result;
 	}
 
-	int num_segments = static_cast<unsigned char>(data[offset++]);
+	int num_segments = quint8(data[offset++]);
 
 	for (int j = 0; j < num_segments; j++) {
 		if ((offset + 3) > size) {
@@ -447,9 +445,9 @@ QString AtscPsipText::convertText(const char *data, int size)
 			return result;
 		}
 
-		int comp_type = static_cast<unsigned char>(data[offset++]);
-		int mode = static_cast<unsigned char>(data[offset++]);
-		int num_bytes = static_cast<unsigned char>(data[offset++]);
+		int comp_type = quint8(data[offset++]);
+		int mode = quint8(data[offset++]);
+		int num_bytes = quint8(data[offset++]);
 
 		if ((offset + num_bytes) > size) {
 			Log("AtscPsipText::convertText: adjusting length");
@@ -1275,7 +1273,7 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 		return;
 	}
 
-	titleLength = static_cast<unsigned char>(data[9]);
+	titleLength = quint8(data[9]);
 
 	if (titleLength > (size - 12)) {
 		Log("AtscEitSectionEntry::initEitSectionEntry: adjusting length");
@@ -1283,8 +1281,8 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 	}
 
 	// too ugly to be automatically generated
-	int entryLength = ((((static_cast<unsigned char>(data[10 + titleLength]) & 0xf) << 8) |
-		static_cast<unsigned char>(data[11 + titleLength])) + 12 + titleLength);
+	int entryLength = ((((quint8(data[10 + titleLength]) & 0xf) << 8) |
+		quint8(data[11 + titleLength])) + 12 + titleLength);
 
 	if (entryLength > size) {
 		Log("AtscEitSectionEntry::initEitSectionEntry: adjusting length");
@@ -1444,7 +1442,7 @@ void DvbPmtSectionEntry::initPmtSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) | static_cast<unsigned char>(data[4])) + 5);
+	int entryLength = ((((quint8(data[3]) & 0xf) << 8) | quint8(data[4])) + 5);
 
 	if (entryLength > size) {
 		Log("DvbPmtSectionEntry::initPmtSectionEntry: adjusting length");
@@ -1465,7 +1463,7 @@ void DvbSdtSectionEntry::initSdtSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[3]) & 0xf) << 8) | static_cast<unsigned char>(data[4])) + 5);
+	int entryLength = ((((quint8(data[3]) & 0xf) << 8) | quint8(data[4])) + 5);
 
 	if (entryLength > size) {
 		Log("DvbSdtSectionEntry::initSdtSectionEntry: adjusting length");
@@ -1486,7 +1484,7 @@ void DvbEitSectionEntry::initEitSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[10]) & 0xf) << 8) | static_cast<unsigned char>(data[11])) + 12);
+	int entryLength = ((((quint8(data[10]) & 0xf) << 8) | quint8(data[11])) + 12);
 
 	if (entryLength > size) {
 		Log("DvbEitSectionEntry::initEitSectionEntry: adjusting length");
@@ -1507,7 +1505,7 @@ void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[4]) & 0xf) << 8) | static_cast<unsigned char>(data[5])) + 6);
+	int entryLength = ((((quint8(data[4]) & 0xf) << 8) | quint8(data[5])) + 6);
 
 	if (entryLength > size) {
 		Log("DvbNitSectionEntry::initNitSectionEntry: adjusting length");
@@ -1528,7 +1526,7 @@ void AtscMgtSectionEntry::initMgtSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[9]) & 0xf) << 8) | static_cast<unsigned char>(data[10])) + 11);
+	int entryLength = ((((quint8(data[9]) & 0xf) << 8) | quint8(data[10])) + 11);
 
 	if (entryLength > size) {
 		Log("AtscMgtSectionEntry::initMgtSectionEntry: adjusting length");
@@ -1549,7 +1547,7 @@ void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 		return;
 	}
 
-	int entryLength = ((((static_cast<unsigned char>(data[30]) & 0x3) << 8) | static_cast<unsigned char>(data[31])) + 32);
+	int entryLength = ((((quint8(data[30]) & 0x3) << 8) | quint8(data[31])) + 32);
 
 	if (entryLength > size) {
 		Log("AtscVctSectionEntry::initVctSectionEntry: adjusting length");

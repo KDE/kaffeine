@@ -120,8 +120,10 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 	DvbChannelModel *channelModel = new DvbChannelModel(parent);
 	channelModel->isSqlModel = true;
 	channelModel->sqlInit(QLatin1String("Channels"),
-		QStringList() << QLatin1String("Name") << QLatin1String("Number") << QLatin1String("Source") << QLatin1String("Transponder") << QLatin1String("NetworkId") <<
-		QLatin1String("TransportStreamId") << QLatin1String("PmtPid") << QLatin1String("PmtSection") << QLatin1String("AudioPid") << QLatin1String("Flags"));
+		QStringList() << QLatin1String("Name") << QLatin1String("Number") << QLatin1String("Source") <<
+		QLatin1String("Transponder") << QLatin1String("NetworkId") << QLatin1String("TransportStreamId") <<
+		QLatin1String("PmtPid") << QLatin1String("PmtSection") << QLatin1String("AudioPid") <<
+		QLatin1String("Flags"));
 
 	// compatibility code
 

@@ -433,14 +433,16 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		}
 
 		internal->timeShiftFile.setFileName(manager->getTimeShiftFolder() + QLatin1String("/TimeShift-") +
-			QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) + QLatin1String(".m2t"));
+			QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) +
+			QLatin1String(".m2t"));
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
 			Log("DvbLiveView::playbackStatusChanged: cannot open file") <<
 				internal->timeShiftFile.fileName();
 			internal->timeShiftFile.setFileName(QDir::homePath() + QLatin1String("/TimeShift-") +
-				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) + QLatin1String(".m2t"));
+				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) +
+				QLatin1String(".m2t"));
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {

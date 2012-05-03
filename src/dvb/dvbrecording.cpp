@@ -48,7 +48,8 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	manager(manager_), hasPendingOperation(false)
 {
 	sqlInit(QLatin1String("RecordingSchedule"),
-		QStringList() << QLatin1String("Name") << QLatin1String("Channel") << QLatin1String("Begin") << QLatin1String("Duration") << QLatin1String("Repeat"));
+		QStringList() << QLatin1String("Name") << QLatin1String("Channel") << QLatin1String("Begin") <<
+		QLatin1String("Duration") << QLatin1String("Repeat"));
 
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
@@ -351,13 +352,15 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 {
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
-		QString path = folder + QLatin1Char('/') + QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
+		QString path = folder + QLatin1Char('/') +
+			QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
 				file.setFileName(path + QLatin1String(".m2t"));
 			} else {
-				file.setFileName(path + QLatin1Char('-') + QString::number(attempt) + QLatin1String(".m2t"));
+				file.setFileName(path + QLatin1Char('-') + QString::number(attempt) +
+					QLatin1String(".m2t"));
 			}
 
 			if (file.exists()) {
@@ -383,7 +386,8 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 
 			if (folder != QDir::homePath()) {
 				folder = QDir::homePath();
-				path = folder + QLatin1Char('/') + QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
+				path = folder + QLatin1Char('/') +
+					QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
 				attempt = -1;
 				continue;
 			}

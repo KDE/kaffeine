@@ -624,7 +624,8 @@ void MediaWidget::checkScreenSaver()
 			QLatin1String("SimulateUserActivity"));
 
 		// GNOME - Inhibit doesn't inhibit power management functions
-		QDBusInterface(QLatin1String("org.gnome.ScreenSaver"), QLatin1String("/"), QLatin1String("org.gnome.ScreenSaver")).
+		QDBusInterface(QLatin1String("org.gnome.ScreenSaver"), QLatin1String("/"),
+			       QLatin1String("org.gnome.ScreenSaver")).
 			call(QDBus::NoBlock, QLatin1String("SimulateUserActivity"));
 	}
 

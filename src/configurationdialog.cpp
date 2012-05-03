@@ -145,5 +145,6 @@ DmesgDialog::~DmesgDialog()
 
 void DmesgDialog::readyRead()
 {
-	dmesgTextEdit->setPlainText(dmesgTextEdit->toPlainText() + QString::fromLocal8Bit(dmesgProcess->readAll().constData()));
+	dmesgTextEdit->setPlainText(dmesgTextEdit->toPlainText() +
+		QString::fromLocal8Bit(dmesgProcess->readAll().constData()));
 }
