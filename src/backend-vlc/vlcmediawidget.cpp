@@ -140,7 +140,7 @@ void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
 
 void VlcMediaWidget::play(const MediaSource &source)
 {
-	addPendingUpdates(PlaybackStatus);
+	addPendingUpdates(PlaybackStatus | DvdMenu);
 	QByteArray url = source.getUrl().toEncoded();
 	playingDvd = false;
 
@@ -299,7 +299,9 @@ bool VlcMediaWidget::jumpToNextChapter()
 
 void VlcMediaWidget::showDvdMenu()
 {
-	// FIXME
+	if (playingDvd) {
+		libvlc_media_player_set_title(vlcMediaPlayer, 0);
+	}
 }
 
 void VlcMediaWidget::updatePlaybackStatus()
@@ -333,6 +335,7 @@ void VlcMediaWidget::updatePlaybackStatus()
 	}
 
 	if (playbackStatus == MediaWidget::Idle) {
+		addPendingUpdates(DvdMenu);
 		playingDvd = false;
 	}
 }
