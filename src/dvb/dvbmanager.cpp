@@ -728,7 +728,7 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 	while (strncmp(data.getLine(), tag, tagLen) == 0) {
 		const char *line = data.readLine();
 
-		QString name = QString(QLatin1String(line) + tagLen);
+		QString name = QString(QLatin1String(line)).remove(0, tagLen);
 
 		if ((name.size() < 2) || (name.at(name.size() - 1) != QLatin1Char(']'))) {
 			return false;
