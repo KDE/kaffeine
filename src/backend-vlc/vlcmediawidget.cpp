@@ -240,8 +240,25 @@ void VlcMediaWidget::setCurrentAudioStream(int currentAudioStream)
 
 void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
-	// skip the 'deactivate' subtitle
-	libvlc_video_set_spu(vlcMediaPlayer, currentSubtitle + 1);
+	int requestedSubtitle = currentSubtitle;
+	int availableSpuCount = libvlc_video_get_spu_count(vlcMediaPlayer);
+
+	if (requestedSubtitle >= availableSpuCount) {
+		Log("VlcMediaWidget::setCurrentSubtitle: subtitle is out of range") <<
+			requestedSubtitle << availableSpuCount;
+
+		// Disable subtitles.
+		requestedSubtitle = -1;
+	} else if (requestedSubtitle < 0) {
+		// Set all negative subtitle requests to -1 as this makes libvlc
+		// disable the subtitles.
+		requestedSubtitle = -1;
+	} else {
+		// We got a valid subtitle request - skip the 'deactivate' subtitle.
+		requestedSubtitle += 1;
+	}
+
+	libvlc_video_set_spu(vlcMediaPlayer, requestedSubtitle);
 }
 
 void VlcMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
