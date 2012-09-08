@@ -56,7 +56,7 @@ bool DvbLinuxDevice::isReady() const
 void DvbLinuxDevice::startDevice(const QString &deviceId_)
 {
 	Q_ASSERT(!ready);
-	int fd = open(QFile::encodeName(frontendPath).constData(), O_RDONLY | O_NONBLOCK);
+	int fd = open(QFile::encodeName(frontendPath).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 
 	if (fd < 0) {
 		Log("DvbLinuxDevice::startDevice: cannot open frontend") << frontendPath;
@@ -200,14 +200,14 @@ void DvbLinuxDevice::setDeviceEnabled(bool enabled_)
 bool DvbLinuxDevice::acquire()
 {
 	Q_ASSERT(enabled && (frontendFd < 0) && (dvrFd < 0));
-	frontendFd = open(QFile::encodeName(frontendPath).constData(), O_RDWR | O_NONBLOCK);
+	frontendFd = open(QFile::encodeName(frontendPath).constData(), O_RDWR | O_NONBLOCK | O_CLOEXEC);
 
 	if (frontendFd < 0) {
-		Log("DvbLinuxDevice::acquire: cannot open frontend") << frontendPath;
+		Log("DvbLinuxDevice::acquire: cannot open frontend") << frontendPath << frontendFd;
 		return false;
 	}
 
-	dvrFd = open(QFile::encodeName(dvrPath).constData(), O_RDONLY | O_NONBLOCK);
+	dvrFd = open(QFile::encodeName(dvrPath).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 
 	if (dvrFd < 0) {
 		Log("DvbLinuxDevice::acquire: cannot open dvr") << dvrPath;
@@ -578,7 +578,7 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 		return false;
 	}
 
-	int dmxFd = open(QFile::encodeName(demuxPath).constData(), O_RDONLY | O_NONBLOCK);
+	int dmxFd = open(QFile::encodeName(demuxPath).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 
 	if (dmxFd < 0) {
 		Log("DvbLinuxDevice::addPidFilter: cannot open demux") << demuxPath;
