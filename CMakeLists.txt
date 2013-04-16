@@ -11,9 +11,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KD
 add_definitions(${KDE4_DEFINITIONS})
 
 if(STRICT_BUILD)
-  add_definitions(-Werror -Weverything -Wno-padded -Wno-sign-conversion -Wno-unreachable-code -Wno-weak-vtables
-                  -ferror-limit=5
-                  -isystem /home/lxuser/Entwicklung/kaffeine/include
+  add_definitions(-Werror -Weverything -Wno-packed -Wno-padded -Wno-sign-conversion -Wno-unreachable-code
+                  -Wno-weak-vtables -ferror-limit=5
                   -isystem /usr/include/KDE
                   -isystem /usr/include/qt4/QtCore
                   -isystem /usr/include/qt4/QtGui

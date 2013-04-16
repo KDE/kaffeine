@@ -62,6 +62,7 @@ typedef enum fe_caps {
 	FE_CAN_8VSB			= 0x200000,
 	FE_CAN_16VSB			= 0x400000,
 	FE_HAS_EXTENDED_CAPS		= 0x800000,   /* We need more bitspace for newer APIs, indicate this. */
+	FE_CAN_MULTISTREAM		= 0x4000000,  /* frontend supports multistream filtering */
 	FE_CAN_TURBO_FEC		= 0x8000000,  /* frontend supports "turbo fec modulation" */
 	FE_CAN_2G_MODULATION		= 0x10000000, /* frontend supports "2nd generation modulation" (DVB-S2) */
 	FE_NEEDS_BENDING		= 0x20000000, /* not supported anymore, don't use (frontend requires frequency bending) */
@@ -72,7 +73,7 @@ typedef enum fe_caps {
 
 struct dvb_frontend_info {
 	char       name[128];
-	fe_type_t  type;
+	fe_type_t  type;			/* DEPRECATED. Use DTV_ENUM_DELSYS instead */
 	__u32      frequency_min;
 	__u32      frequency_max;
 	__u32      frequency_stepsize;
@@ -121,16 +122,27 @@ typedef enum fe_sec_mini_cmd {
 } fe_sec_mini_cmd_t;
 
 
+/**
+ * enum fe_status - enumerates the possible frontend status
+ * @FE_HAS_SIGNAL:	found something above the noise level
+ * @FE_HAS_CARRIER:	found a DVB signal
+ * @FE_HAS_VITERBI:	FEC is stable
+ * @FE_HAS_SYNC:	found sync bytes
+ * @FE_HAS_LOCK:	everything's working
+ * @FE_TIMEDOUT:	no lock within the last ~2 seconds
+ * @FE_REINIT:		frontend was reinitialized, application is recommended
+ *			to reset DiSEqC, tone and parameters
+ */
+
 typedef enum fe_status {
-	FE_HAS_SIGNAL	= 0x01,   /* found something above the noise level */
-	FE_HAS_CARRIER	= 0x02,   /* found a DVB signal  */
-	FE_HAS_VITERBI	= 0x04,   /* FEC is stable  */
-	FE_HAS_SYNC	= 0x08,   /* found sync bytes  */
-	FE_HAS_LOCK	= 0x10,   /* everything's working... */
-	FE_TIMEDOUT	= 0x20,   /* no lock within the last ~2 seconds */
-	FE_REINIT	= 0x40    /* frontend was reinitialized,  */
-} fe_status_t;			  /* application is recommended to reset */
-				  /* DiSEqC, tone and parameters */
+	FE_HAS_SIGNAL		= 0x01,
+	FE_HAS_CARRIER		= 0x02,
+	FE_HAS_VITERBI		= 0x04,
+	FE_HAS_SYNC		= 0x08,
+	FE_HAS_LOCK		= 0x10,
+	FE_TIMEDOUT		= 0x20,
+	FE_REINIT		= 0x40
+} fe_status_t;
 
 typedef enum fe_spectral_inversion {
 	INVERSION_OFF,
@@ -151,7 +163,8 @@ typedef enum fe_code_rate {
 	FEC_8_9,
 	FEC_AUTO,
 	FEC_3_5,
-	FEC_9_10
+	FEC_9_10,
+	FEC_2_5
 } fe_code_rate_t;
 
 
@@ -168,30 +181,44 @@ typedef enum fe_modulation {
 	PSK_8,
 	APSK_16,
 	APSK_32,
-	DQPSK
+	DQPSK,
+	QAM_4_NR
 } fe_modulation_t;
 
 typedef enum fe_transmit_mode {
 	TRANSMISSION_MODE_2K,
 	TRANSMISSION_MODE_8K,
 	TRANSMISSION_MODE_AUTO,
-	TRANSMISSION_MODE_4K
+	TRANSMISSION_MODE_4K,
+	TRANSMISSION_MODE_1K,
+	TRANSMISSION_MODE_16K,
+	TRANSMISSION_MODE_32K,
+	TRANSMISSION_MODE_C1,
+	TRANSMISSION_MODE_C3780
 } fe_transmit_mode_t;
 
 typedef enum fe_bandwidth {
 	BANDWIDTH_8_MHZ,
 	BANDWIDTH_7_MHZ,
 	BANDWIDTH_6_MHZ,
-	BANDWIDTH_AUTO
+	BANDWIDTH_AUTO,
+	BANDWIDTH_5_MHZ,
+	BANDWIDTH_10_MHZ,
+	BANDWIDTH_1_712_MHZ
 } fe_bandwidth_t;
-
 
 typedef enum fe_guard_interval {
 	GUARD_INTERVAL_1_32,
 	GUARD_INTERVAL_1_16,
 	GUARD_INTERVAL_1_8,
 	GUARD_INTERVAL_1_4,
-	GUARD_INTERVAL_AUTO
+	GUARD_INTERVAL_AUTO,
+	GUARD_INTERVAL_1_128,
+	GUARD_INTERVAL_19_128,
+	GUARD_INTERVAL_19_256,
+	GUARD_INTERVAL_PN420,
+	GUARD_INTERVAL_PN595,
+	GUARD_INTERVAL_PN945
 } fe_guard_interval_t;
 
 
@@ -203,6 +230,12 @@ typedef enum fe_hierarchy {
 	HIERARCHY_AUTO
 } fe_hierarchy_t;
 
+enum fe_interleaving {
+	INTERLEAVING_NONE,
+	INTERLEAVING_AUTO,
+	INTERLEAVING_240,
+	INTERLEAVING_720
+};
 
 struct dvb_qpsk_parameters {
 	__u32		symbol_rate;  /* symbol rate in Symbols per second */
@@ -241,7 +274,6 @@ struct dvb_frontend_parameters {
 		struct dvb_vsb_parameters vsb;
 	} u;
 };
-
 
 struct dvb_frontend_event {
 	fe_status_t status;
@@ -303,9 +335,43 @@ struct dvb_frontend_event {
 
 #define DTV_ISDBT_LAYER_ENABLED	41
 
-#define DTV_ISDBS_TS_ID		42
+#define DTV_STREAM_ID		42
+#define DTV_ISDBS_TS_ID_LEGACY	DTV_STREAM_ID
+#define DTV_DVBT2_PLP_ID_LEGACY	43
 
-#define DTV_MAX_COMMAND				DTV_ISDBS_TS_ID
+#define DTV_ENUM_DELSYS		44
+
+/* ATSC-MH */
+#define DTV_ATSCMH_FIC_VER		45
+#define DTV_ATSCMH_PARADE_ID		46
+#define DTV_ATSCMH_NOG			47
+#define DTV_ATSCMH_TNOG			48
+#define DTV_ATSCMH_SGN			49
+#define DTV_ATSCMH_PRC			50
+#define DTV_ATSCMH_RS_FRAME_MODE	51
+#define DTV_ATSCMH_RS_FRAME_ENSEMBLE	52
+#define DTV_ATSCMH_RS_CODE_MODE_PRI	53
+#define DTV_ATSCMH_RS_CODE_MODE_SEC	54
+#define DTV_ATSCMH_SCCC_BLOCK_MODE	55
+#define DTV_ATSCMH_SCCC_CODE_MODE_A	56
+#define DTV_ATSCMH_SCCC_CODE_MODE_B	57
+#define DTV_ATSCMH_SCCC_CODE_MODE_C	58
+#define DTV_ATSCMH_SCCC_CODE_MODE_D	59
+
+#define DTV_INTERLEAVING			60
+#define DTV_LNA					61
+
+/* Quality parameters */
+#define DTV_STAT_SIGNAL_STRENGTH	62
+#define DTV_STAT_CNR			63
+#define DTV_STAT_PRE_ERROR_BIT_COUNT	64
+#define DTV_STAT_PRE_TOTAL_BIT_COUNT	65
+#define DTV_STAT_POST_ERROR_BIT_COUNT	66
+#define DTV_STAT_POST_TOTAL_BIT_COUNT	67
+#define DTV_STAT_ERROR_BLOCK_COUNT	68
+#define DTV_STAT_TOTAL_BLOCK_COUNT	69
+
+#define DTV_MAX_COMMAND		DTV_STAT_TOTAL_BLOCK_COUNT
 
 typedef enum fe_pilot {
 	PILOT_ON,
@@ -322,7 +388,7 @@ typedef enum fe_rolloff {
 
 typedef enum fe_delivery_system {
 	SYS_UNDEFINED,
-	SYS_DVBC_ANNEX_AC,
+	SYS_DVBC_ANNEX_A,
 	SYS_DVBC_ANNEX_B,
 	SYS_DVBT,
 	SYS_DSS,
@@ -334,10 +400,52 @@ typedef enum fe_delivery_system {
 	SYS_ISDBC,
 	SYS_ATSC,
 	SYS_ATSCMH,
-	SYS_DMBTH,
+	SYS_DTMB,
 	SYS_CMMB,
-	SYS_DAB
+	SYS_DAB,
+	SYS_DVBT2,
+	SYS_TURBO,
+	SYS_DVBC_ANNEX_C
 } fe_delivery_system_t;
+
+/* backward compatibility */
+#define SYS_DVBC_ANNEX_AC	SYS_DVBC_ANNEX_A
+#define SYS_DMBTH SYS_DTMB /* DMB-TH is legacy name, use DTMB instead */
+
+/* ATSC-MH */
+
+enum atscmh_sccc_block_mode {
+	ATSCMH_SCCC_BLK_SEP      = 0,
+	ATSCMH_SCCC_BLK_COMB     = 1,
+	ATSCMH_SCCC_BLK_RES      = 2
+};
+
+enum atscmh_sccc_code_mode {
+	ATSCMH_SCCC_CODE_HLF     = 0,
+	ATSCMH_SCCC_CODE_QTR     = 1,
+	ATSCMH_SCCC_CODE_RES     = 2
+};
+
+enum atscmh_rs_frame_ensemble {
+	ATSCMH_RSFRAME_ENS_PRI   = 0,
+	ATSCMH_RSFRAME_ENS_SEC   = 1
+};
+
+enum atscmh_rs_frame_mode {
+	ATSCMH_RSFRAME_PRI_ONLY  = 0,
+	ATSCMH_RSFRAME_PRI_SEC   = 1,
+	ATSCMH_RSFRAME_RES       = 2
+};
+
+enum atscmh_rs_code_mode {
+	ATSCMH_RSCODE_211_187    = 0,
+	ATSCMH_RSCODE_223_187    = 1,
+	ATSCMH_RSCODE_235_187    = 2,
+	ATSCMH_RSCODE_RES        = 3
+};
+
+#define NO_STREAM_ID_FILTER	(~0U)
+#define LNA_AUTO                (~0U)
 
 struct dtv_cmds_h {
 	char	*name;		/* A display name for debugging purposes */
@@ -350,11 +458,78 @@ struct dtv_cmds_h {
 	__u32	reserved:30;	/* Align */
 };
 
+/**
+ * Scale types for the quality parameters.
+ * @FE_SCALE_NOT_AVAILABLE: That QoS measure is not available. That
+ *			    could indicate a temporary or a permanent
+ *			    condition.
+ * @FE_SCALE_DECIBEL: The scale is measured in 0.0001 dB steps, typically
+ *		  used on signal measures.
+ * @FE_SCALE_RELATIVE: The scale is a relative percentual measure,
+ *			ranging from 0 (0%) to 0xffff (100%).
+ * @FE_SCALE_COUNTER: The scale counts the occurrence of an event, like
+ *			bit error, block error, lapsed time.
+ */
+enum fecap_scale_params {
+	FE_SCALE_NOT_AVAILABLE = 0,
+	FE_SCALE_DECIBEL,
+	FE_SCALE_RELATIVE,
+	FE_SCALE_COUNTER
+};
+
+/**
+ * struct dtv_stats - Used for reading a DTV status property
+ *
+ * @value:	value of the measure. Should range from 0 to 0xffff;
+ * @scale:	Filled with enum fecap_scale_params - the scale
+ *		in usage for that parameter
+ *
+ * For most delivery systems, this will return a single value for each
+ * parameter.
+ * It should be noticed, however, that new OFDM delivery systems like
+ * ISDB can use different modulation types for each group of carriers.
+ * On such standards, up to 8 groups of statistics can be provided, one
+ * for each carrier group (called "layer" on ISDB).
+ * In order to be consistent with other delivery systems, the first
+ * value refers to the entire set of carriers ("global").
+ * dtv_status:scale should use the value FE_SCALE_NOT_AVAILABLE when
+ * the value for the entire group of carriers or from one specific layer
+ * is not provided by the hardware.
+ * st.len should be filled with the latest filled status + 1.
+ *
+ * In other words, for ISDB, those values should be filled like:
+ *	u.st.stat.svalue[0] = global statistics;
+ *	u.st.stat.scale[0] = FE_SCALE_DECIBELS;
+ *	u.st.stat.value[1] = layer A statistics;
+ *	u.st.stat.scale[1] = FE_SCALE_NOT_AVAILABLE (if not available);
+ *	u.st.stat.svalue[2] = layer B statistics;
+ *	u.st.stat.scale[2] = FE_SCALE_DECIBELS;
+ *	u.st.stat.svalue[3] = layer C statistics;
+ *	u.st.stat.scale[3] = FE_SCALE_DECIBELS;
+ *	u.st.len = 4;
+ */
+struct dtv_stats {
+	__u8 scale;	/* enum fecap_scale_params type */
+	union {
+		__u64 uvalue;	/* for counters and relative scales */
+		__s64 svalue;	/* for 0.0001 dB measures */
+	};
+} __attribute__ ((packed));
+
+
+#define MAX_DTV_STATS   4
+
+struct dtv_fe_stats {
+	__u8 len;
+	struct dtv_stats stat[MAX_DTV_STATS];
+} __attribute__ ((packed));
+
 struct dtv_property {
 	__u32 cmd;
 	__u32 reserved[3];
 	union {
 		__u32 data;
+		struct dtv_fe_stats st;
 		struct {
 			__u8 data[32];
 			__u32 len;
