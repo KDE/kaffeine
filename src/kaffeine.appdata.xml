@@ -1,16 +1,23 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <component type="desktop">
   <id>kaffeine.desktop</id>
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <name>Kaffeine</name>
+  <name xml:lang="pt">Kaffeine</name>
+  <name xml:lang="uk">Kaffeine</name>
+  <name xml:lang="x-test">xxKaffeinexx</name>
   <summary>Multimedia Player</summary>
+  <summary xml:lang="uk">Програвач мультимедійних файлів</summary>
+  <summary xml:lang="x-test">xxMultimedia Playerxx</summary>
   <description>
     <p>
       Kaffeine is a media player. What makes it different from the others is its excellent support of digital TV (DVB).
       Kaffeine has user-friendly interface, so that even first time users can start immediately playing their movies:
       from DVD (including DVD menus, titles, chapters, etc.), VCD, or a file.
     </p>
+    <p xml:lang="uk">Kaffeine — мультимедійний програвач. Від інших програвачів його відрізняє чудова підтримка цифрового телебачення (DVB). У Kaffeine передбачено зручний для користувачів інтерфейс: насолодитися фільмами у ньому зможуть навіть початківці. Можна переглянути будь-що: від DVD (з використанням меню DVD, субтитрів, частин тощо) до VCD або окремого файла.</p>
+    <p xml:lang="x-test">xxKaffeine is a media player. What makes it different from the others is its excellent support of digital TV (DVB). Kaffeine has user-friendly interface, so that even first time users can start immediately playing their movies: from DVD (including DVD menus, titles, chapters, etc.), VCD, or a file.xx</p>
   </description>
   <url type="homepage">http://kaffeine.kde.org</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kaffeine</url>
