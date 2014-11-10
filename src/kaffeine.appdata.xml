@@ -4,18 +4,28 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <name>Kaffeine</name>
+  <name xml:lang="de">Kaffeine</name>
   <name xml:lang="el">Kaffeine</name>
   <name xml:lang="nl">Kaffeine</name>
   <name xml:lang="pl">Kaffeine</name>
   <name xml:lang="pt">Kaffeine</name>
   <name xml:lang="sk">Kaffeine</name>
+  <name xml:lang="sr">Кафеин</name>
+  <name xml:lang="sr-Latn">Kaffeine</name>
+  <name xml:lang="sr-ijekavian">Кафеин</name>
+  <name xml:lang="sr-ijekavianlatin">Kaffeine</name>
   <name xml:lang="uk">Kaffeine</name>
   <name xml:lang="x-test">xxKaffeinexx</name>
   <summary>Multimedia Player</summary>
+  <summary xml:lang="de">Multimediawiedergabe</summary>
   <summary xml:lang="el">Αναπαραγωγός μουσικής</summary>
   <summary xml:lang="nl">Multimediaspeler</summary>
   <summary xml:lang="pl">Odtwarzacz multimedialny</summary>
   <summary xml:lang="sk">Multimediálny prehrávač</summary>
+  <summary xml:lang="sr">Мултимедијски плејер</summary>
+  <summary xml:lang="sr-Latn">Multimedijski plejer</summary>
+  <summary xml:lang="sr-ijekavian">Мултимедијски плејер</summary>
+  <summary xml:lang="sr-ijekavianlatin">Multimedijski plejer</summary>
   <summary xml:lang="uk">Програвач мультимедійних файлів</summary>
   <summary xml:lang="x-test">xxMultimedia Playerxx</summary>
   <description>
@@ -28,6 +38,10 @@
     <p xml:lang="nl">Kaffeine is een mediaspeler. Wat het anders maakt ten opzichte van de anderen is zijn uitmuntende ondersteuning van digitale TV (DVB). Kaffeine heeft een gebruikersvriendelijk interface, zodat zelfs gebruikers de eerste keer onmiddellijk kunnen beginnen met het afspelen van hun films: van dvd's (inclusief dvd-menu's, titels, hoofdstukken, etc.), vcd of een bestand.</p>
     <p xml:lang="pl">Kaffeine jest odtwarzaczem multimedialny. Od reszty odróżnia go doskonała obsługa telewizji cyfrowej (DVB). Kaffeine posiada interfejs przyjazny użytkownikowi, tak że nawet początkujący użytkownicy mogą od razu zacząć odtwarzać swoje film: z DVD (uwzględniając w tym DVD z menu, tytułami, rozdziałami, itp.), VCD lub pliku.</p>
     <p xml:lang="sk">Kaffeine prehrávač médií. Čo ho odlišuje od iných prehrávačov médií, je výborná podpora digitálnej TV (DVB). Kaffeine má priateľské rozhranie, takže aj úplne noví používatelia môžu hneď začať prehrávať svoje filmy: z DVD (vrátane DVD ponuky, titulov, kapitol atď.), VCD alebo súbor.</p>
+    <p xml:lang="sr">Кафеин је медија плејер. Од осталих плејера издваја се изврсном подршком за дигиталну телевизију (ДВБ). Поседује предусретљиво сучеље, тако да и нови корисници могу одмах да пусте своје филмове: са ДВД‑а (укључујући ДВД меније, наслове, поглавља, итд), ВЦД‑а, или из фајла.</p>
+    <p xml:lang="sr-Latn">Kaffeine je medija plejer. Od ostalih plejera izdvaja se izvrsnom podrškom za digitalnu televiziju (DVB). Poseduje predusretljivo sučelje, tako da i novi korisnici mogu odmah da puste svoje filmove: sa DVD‑a (uključujući DVD menije, naslove, poglavlja, itd), VCD‑a, ili iz fajla.</p>
+    <p xml:lang="sr-ijekavian">Кафеин је медија плејер. Од осталих плејера издваја се изврсном подршком за дигиталну телевизију (ДВБ). Поседује предусретљиво сучеље, тако да и нови корисници могу одмах да пусте своје филмове: са ДВД‑а (укључујући ДВД меније, наслове, поглавља, итд), ВЦД‑а, или из фајла.</p>
+    <p xml:lang="sr-ijekavianlatin">Kaffeine je medija plejer. Od ostalih plejera izdvaja se izvrsnom podrškom za digitalnu televiziju (DVB). Poseduje predusretljivo sučelje, tako da i novi korisnici mogu odmah da puste svoje filmove: sa DVD‑a (uključujući DVD menije, naslove, poglavlja, itd), VCD‑a, ili iz fajla.</p>
     <p xml:lang="uk">Kaffeine — мультимедійний програвач. Від інших програвачів його відрізняє чудова підтримка цифрового телебачення (DVB). У Kaffeine передбачено зручний для користувачів інтерфейс: насолодитися фільмами у ньому зможуть навіть початківці. Можна переглянути будь-що: від DVD (з використанням меню DVD, субтитрів, частин тощо) до VCD або окремого файла.</p>
     <p xml:lang="x-test">xxKaffeine is a media player. What makes it different from the others is its excellent support of digital TV (DVB). Kaffeine has user-friendly interface, so that even first time users can start immediately playing their movies: from DVD (including DVD menus, titles, chapters, etc.), VCD, or a file.xx</p>
   </description>
