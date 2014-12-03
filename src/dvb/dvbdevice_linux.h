@@ -90,6 +90,7 @@ private:
 	DvbLinuxCam cam;
 };
 
+class DvbDeviceMonitor;
 class DvbLinuxDeviceManager : public QObject
 {
 	Q_OBJECT
@@ -97,6 +98,8 @@ public:
 	explicit DvbLinuxDeviceManager(QObject *parent);
 	~DvbLinuxDeviceManager();
 
+	void componentAdded(QString node, int adapter, int index);
+	void componentRemoved(QString node, int adapter, int index);
 public slots:
 	void doColdPlug();
 
@@ -114,6 +117,7 @@ private:
 
 	QMap<int, DvbLinuxDevice *> devices;
 	QMap<QString, DvbLinuxDevice *> udis;
+	class DvbDeviceMonitor *monitor;
 };
 
 #endif /* DVBDEVICE_LINUX_H */
