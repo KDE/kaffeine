@@ -773,10 +773,10 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		switch (atscTransponder->modulation) {
 		case VSB_8:
 		case VSB_16:
-			delsys = SYS_DVBC_ANNEX_B;
+			delsys = SYS_ATSC;
 			break;
 		default:
-			delsys = SYS_ATSC;
+			delsys = SYS_DVBC_ANNEX_B;
 		}
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, atscTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(atscTransponder->modulation));
