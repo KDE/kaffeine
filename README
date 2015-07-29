@@ -8,6 +8,8 @@ The following development headers are needed (recommended versions):
 * libX11
 * libXss
 
+If build fails for missing VLC directories, install libvlc-dev.
+
 For the translations you need:
 * gettext
 
