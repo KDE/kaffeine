@@ -37,6 +37,8 @@ bool DvbRecording::validate()
 		// the seconds and milliseconds aren't visible --> set them to zero
 		begin = begin.addMSecs(-(QTime().msecsTo(begin.time()) % 60000));
 		end = begin.addSecs(QTime().secsTo(duration));
+		beginEPG = beginEPG.addMSecs(-(QTime().msecsTo(beginEPG.time()) % 60000));
+		endEPG = beginEPG.addSecs(QTime().secsTo(durationEPG));
 		repeat &= ((1 << 7) - 1);
 		return true;
 	}
@@ -49,7 +51,8 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 {
 	sqlInit(QLatin1String("RecordingSchedule"),
 		QStringList() << QLatin1String("Name") << QLatin1String("Channel") << QLatin1String("Begin") <<
-		QLatin1String("Duration") << QLatin1String("Repeat"));
+		QLatin1String("Duration") << QLatin1String("Repeat") << QLatin1String("Subheading") << QLatin1String("Details")
+		<< QLatin1String("beginEPG") << QLatin1String("endEPG") << QLatin1String("durationEPG"));
 
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
@@ -86,15 +89,20 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 		QString channelName;
 		stream >> channelName;
 		recording.channel = channelModel->findChannelByName(channelName);
-		stream >> recording.begin;
-		recording.begin = recording.begin.toUTC();
+		stream >> recording.beginEPG;
+		recording.begin = recording.beginEPG.toUTC();
+		recording.beginEPG = recording.beginEPG.toLocalTime();
 		stream >> recording.duration;
+		recording.durationEPG = recording.duration;
 		QDateTime end;
 		stream >> end;
 
 		if (version != 0) {
 			stream >> recording.repeat;
 		}
+
+		stream >> recording.subheading;
+		stream >> recording.details;
 
 		if (stream.status() != QDataStream::Ok) {
 			Log("DvbRecordingModel::DvbRecordingModel: invalid recordings in file") <<
@@ -253,6 +261,11 @@ void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int inde
 	query.bindValue(index++, recording->begin.toString(Qt::ISODate) + QLatin1Char('Z'));
 	query.bindValue(index++, recording->duration.toString(Qt::ISODate));
 	query.bindValue(index++, recording->repeat);
+	query.bindValue(index++, recording->subheading);
+	query.bindValue(index++, recording->details);
+	query.bindValue(index++, recording->beginEPG.toString(Qt::ISODate));
+	query.bindValue(index++, recording->endEPG.toString(Qt::ISODate));
+	query.bindValue(index++, recording->durationEPG.toString(Qt::ISODate));
 }
 
 bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index)
@@ -266,6 +279,13 @@ bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query
 		QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toUTC();
 	recording->duration = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
 	recording->repeat = query.value(index++).toInt();
+	recording->subheading = query.value(index++).toString();
+	recording->details = query.value(index++).toString();
+	recording->beginEPG =
+		QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toLocalTime();
+	recording->endEPG =
+		QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toLocalTime();
+	recording->durationEPG = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
 
 	if (recording->validate()) {
 		recording->setSqlKey(sqlKey);
@@ -352,8 +372,24 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 {
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
+		QDate currentDate = QDate::currentDate();
+		QTime currentTime = QTime::currentTime();
+
+		QString filename = manager->getNamingFormat();
+		filename = filename.replace("%year", currentDate.toString("yyyy"));
+		filename = filename.replace("%month", currentDate.toString("MM"));
+		filename = filename.replace("%day", currentDate.toString("dd"));
+		filename = filename.replace("%hour", currentTime.toString("hh"));
+		filename = filename.replace("%min", currentTime.toString("mm"));
+		filename = filename.replace("%sec", currentTime.toString("ss"));
+		filename = filename.replace("%channel", recording.channel->name);
+		filename = filename.replace("%title", QString(recording.name));
+		if (filename == "") {
+			filename = QString(recording.name);
+		}
+
 		QString path = folder + QLatin1Char('/') +
-			QString(recording.name).replace(QLatin1Char('/'), QLatin1Char('_'));
+			filename.replace(QLatin1Char('/'), QLatin1Char('_'));
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
@@ -393,6 +429,23 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 			}
 
 			break;
+		}
+
+		if (manager->createInfoFile()) {
+			QString infoFile = path + ".txt";
+			QFile file(infoFile);
+			if (file.open(QIODevice::ReadWrite))
+			{
+			    QTextStream stream(&file);
+			    stream << "EPG info" << endl;
+			    stream << "Title: " + QString(recording.name) << endl;
+			    stream << "Description: " + QString(recording.subheading) << endl;
+			    //stream << "Details: " + QString(recording.details) << endl; // Details is almost always empty
+			    stream << "Channel: " + QString(recording.channel->name) << endl;
+			    stream << "Date: " + recording.beginEPG.toLocalTime().toString("yyyy-MM-dd") << endl;
+			    stream << "Start time: " + recording.beginEPG.toLocalTime().toString("hh:mm:ss") << endl;
+			    stream << "Duration: " + recording.durationEPG.toString("HH:mm:ss") << endl;
+			}
 		}
 
 		if (!file.isOpen()) {

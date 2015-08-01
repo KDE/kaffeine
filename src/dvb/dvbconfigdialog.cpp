@@ -43,6 +43,7 @@
 DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
 	manager(manager_)
 {
+
 	setCaption(i18nc("@title:window", "Configure Television"));
 
 	tabWidget = new KTabWidget(this);
@@ -93,6 +94,15 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	gridLayout->addWidget(endMarginBox, 3, 1);
 	boxLayout->addLayout(gridLayout);
 
+	gridLayout->addWidget(new QLabel(i18n("Naming style for recordings:")), 4, 0);
+
+	namingFormat = new KLineEdit(widget);
+	namingFormat->setText(manager->getNamingFormat());
+	namingFormat->setToolTip(i18n("The following substitutions work: \"%year\" for year (YYYY) and the following: %month, %day, %hour, %min, %sec, %channel and %title"));
+
+	gridLayout->addWidget(namingFormat, 4, 1);
+	boxLayout->addLayout(gridLayout);
+
 	gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Use ISO 8859-1 charset instead of ISO 6937:")),
 		1, 0);
@@ -100,7 +110,15 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	override6937CharsetBox = new QCheckBox(widget);
 	override6937CharsetBox->setChecked(manager->override6937Charset());
 	gridLayout->addWidget(override6937CharsetBox, 1, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Create info files to accompany EPG recordings.")),
+		2, 0);
+	createInfoFileBox = new QCheckBox(widget);
+	createInfoFileBox->setChecked(manager->createInfoFile());
+	gridLayout->addWidget(createInfoFileBox, 2, 1);
+
 	boxLayout->addLayout(gridLayout);
+
 
 	QFrame *frame = new QFrame(widget);
 	frame->setFrameShape(QFrame::HLine);
@@ -348,9 +366,11 @@ void DvbConfigDialog::accept()
 {
 	manager->setRecordingFolder(recordingFolderEdit->text());
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
+	manager->setNamingFormat(namingFormat->text());
 	manager->setBeginMargin(beginMarginBox->value() * 60);
 	manager->setEndMargin(endMarginBox->value() * 60);
 	manager->setOverride6937Charset(override6937CharsetBox->isChecked());
+	manager->setCreateInfoFile(createInfoFileBox->isChecked());
 
 	bool latitudeOk;
 	bool longitudeOk;

@@ -77,7 +77,9 @@ private:
 	KLineEdit *timeShiftFolderEdit;
 	QSpinBox *beginMarginBox;
 	QSpinBox *endMarginBox;
+	KLineEdit *namingFormat;
 	QCheckBox *override6937CharsetBox;
+	QCheckBox *createInfoFileBox;
 	KLineEdit *latitudeEdit;
 	KLineEdit *longitudeEdit;
 	QPixmap validPixmap;

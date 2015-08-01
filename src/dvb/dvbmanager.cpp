@@ -347,9 +347,19 @@ int DvbManager::getEndMargin() const
 	return KGlobal::config()->group("DVB").readEntry("EndMargin", 600);
 }
 
+QString DvbManager::getNamingFormat() const
+{
+	return KGlobal::config()->group("DVB").readEntry("NamingFormat", "year");
+}
+
 bool DvbManager::override6937Charset() const
 {
 	return KGlobal::config()->group("DVB").readEntry("Override6937", false);
+}
+
+bool DvbManager::createInfoFile() const
+{
+	return KGlobal::config()->group("DVB").readEntry("CreateInfoFile", false);
 }
 
 void DvbManager::setRecordingFolder(const QString &path)
@@ -372,10 +382,20 @@ void DvbManager::setEndMargin(int endMargin)
 	KGlobal::config()->group("DVB").writeEntry("EndMargin", endMargin);
 }
 
+void DvbManager::setNamingFormat(QString namingFormat)
+{
+	KGlobal::config()->group("DVB").writeEntry("NamingFormat", namingFormat);
+}
+
 void DvbManager::setOverride6937Charset(bool override)
 {
 	KGlobal::config()->group("DVB").writeEntry("Override6937", override);
 	DvbSiText::setOverride6937(override);
+}
+
+void DvbManager::setCreateInfoFile(bool createInfoFile)
+{
+	KGlobal::config()->group("DVB").writeEntry("CreateInfoFile", createInfoFile);
 }
 
 double DvbManager::getLatitude()

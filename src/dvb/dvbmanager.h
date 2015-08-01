@@ -122,14 +122,18 @@ public:
 
 	QString getRecordingFolder() const;
 	QString getTimeShiftFolder() const;
+	QString getNamingFormat() const;
 	int getBeginMargin() const; // seconds
 	int getEndMargin() const; // seconds
 	bool override6937Charset() const;
+	bool createInfoFile() const;
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
+	void setNamingFormat(const QString namingFormat);
 	void setBeginMargin(int beginMargin); // seconds
 	void setEndMargin(int endMargin); // seconds
 	void setOverride6937Charset(bool override);
+	void setCreateInfoFile(bool createInfoFile);
 
 	static double getLatitude();
 	static double getLongitude();

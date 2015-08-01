@@ -22,6 +22,7 @@
 #define DVBRECORDING_H
 
 #include <QDateTime>
+#include <QTextStream>
 #include "dvbchannel.h"
 
 class DvbManager;
@@ -44,10 +45,15 @@ public:
 	};
 
 	QString name;
+	QString subheading;
+	QString details;
 	DvbSharedChannel channel;
 	QDateTime begin; // UTC
 	QDateTime end; // UTC, read-only
 	QTime duration;
+	QDateTime beginEPG; // What EPG claims to be the beginning of the program, local time
+	QDateTime endEPG;
+	QTime durationEPG;
 	int repeat; // (1 << 0) (monday) | (1 << 1) (tuesday) | ... | (1 << 6) (sunday)
 	Status status; // read-only
 };
