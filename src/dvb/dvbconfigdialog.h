@@ -59,8 +59,10 @@ private slots:
 	void changeRecordingFolder();
 	void changeTimeShiftFolder();
 	void updateScanFile();
+	void openScanFile();
 	void latitudeChanged(const QString &text);
 	void longitudeChanged(const QString &text);
+	void namingFormatChanged(QString text);
 	void moveLeft(DvbConfigPage *configPage);
 	void moveRight(DvbConfigPage *configPage);
 	void remove(DvbConfigPage *configPage);
@@ -86,6 +88,7 @@ private:
 	QPixmap invalidPixmap;
 	QLabel *latitudeValidLabel;
 	QLabel *longitudeValidLabel;
+	QLabel *namingFormatValidLabel;
 	QList<DvbConfigPage *> configPages;
 };
 

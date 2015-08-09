@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QDesktopServices>
 #include <QLabel>
 #include <QProgressBar>
 #include <QPushButton>
@@ -35,6 +36,7 @@
 #include <KIO/Job>
 #include <KLineEdit>
 #include <KLocale>
+#include <KStandardDirs>
 #include <KTabWidget>
 #include "dvbconfig.h"
 #include "dvbdevice.h"
@@ -99,9 +101,17 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	namingFormat = new KLineEdit(widget);
 	namingFormat->setText(manager->getNamingFormat());
 	namingFormat->setToolTip(i18n("The following substitutions work: \"%year\" for year (YYYY) and the following: %month, %day, %hour, %min, %sec, %channel and %title"));
+	connect(namingFormat, SIGNAL(textChanged(QString)), this, SLOT(namingFormatChanged(QString)));
 
 	gridLayout->addWidget(namingFormat, 4, 1);
 	boxLayout->addLayout(gridLayout);
+
+	validPixmap = KIcon(QLatin1String("dialog-ok-apply")).pixmap(KIconLoader::SizeSmallMedium);
+	invalidPixmap = KIcon(QLatin1String("dialog-cancel")).pixmap(KIconLoader::SizeSmallMedium);
+
+	namingFormatValidLabel = new QLabel(widget);
+	namingFormatValidLabel->setPixmap(validPixmap);
+	gridLayout->addWidget(namingFormatValidLabel, 4,2);
 
 	gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Use ISO 8859-1 charset instead of ISO 6937:")),
@@ -130,6 +140,11 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	QPushButton *pushButton = new QPushButton(i18n("Update scan data over Internet"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));
 	boxLayout->addWidget(pushButton);
+
+	QPushButton *openScanFileButton = new QPushButton(i18n("Edit scanfile"), widget);
+	connect(openScanFileButton, SIGNAL(clicked()), this, SLOT(openScanFile()));
+	boxLayout->addWidget(openScanFileButton);
+	openScanFileButton->setToolTip(i18n("You can add channels manually to this file before scanning for them."));
 
 	frame = new QFrame(widget);
 	frame->setFrameShape(QFrame::HLine);
@@ -228,6 +243,12 @@ void DvbConfigDialog::updateScanFile()
 	dialog->show();
 }
 
+void DvbConfigDialog::openScanFile()
+{
+	QString file(KStandardDirs::locateLocal("appdata", QLatin1String("scanfile.dvb")));
+	QDesktopServices::openUrl(QUrl(file));
+}
+
 void DvbConfigDialog::latitudeChanged(const QString &text)
 {
 	bool ok;
@@ -249,6 +270,24 @@ void DvbConfigDialog::longitudeChanged(const QString &text)
 		longitudeValidLabel->setPixmap(validPixmap);
 	} else {
 		longitudeValidLabel->setPixmap(invalidPixmap);
+	}
+}
+
+void DvbConfigDialog::namingFormatChanged(QString text)
+{
+	QString temp = text.replace("%year", " ");
+	temp = temp.replace("%month", " ");
+	temp = temp.replace("%day", " ");
+	temp = temp.replace("%hour", " ");
+	temp = temp.replace("%min", " ");
+	temp = temp.replace("%sec"," ");
+	temp = temp.replace("%channel", " ");
+	temp = temp.replace("%title", " ");
+
+	if (!temp.contains("%")) {
+		namingFormatValidLabel->setPixmap(validPixmap);
+	} else {
+		namingFormatValidLabel->setPixmap(invalidPixmap);
 	}
 }
 
