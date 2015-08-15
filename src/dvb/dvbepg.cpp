@@ -278,8 +278,15 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 		recording.name = entry->title;
 		recording.channel = entry->channel;
 		recording.begin = entry->begin.addSecs(-extraSecondsBefore);
+		recording.beginEPG = entry->begin;
 		recording.duration =
 			entry->duration.addSecs(extraSecondsBefore + extraSecondsAfter);
+		recording.durationEPG =
+			entry->duration;
+		recording.subheading =
+			entry->subheading;
+		recording.details =
+			entry->details;
 		const_cast<DvbEpgEntry *>(entry.constData())->recording =
 			manager->getRecordingModel()->addRecording(recording);
 		recordings.insert(entry->recording, entry);
