@@ -32,6 +32,7 @@ class QProgressBar;
 class QSpinBox;
 class QTreeWidget;
 class KComboBox;
+class QComboBox;
 class KJob;
 class KLineEdit;
 class KTabWidget;
@@ -90,6 +91,8 @@ private:
 	QLabel *longitudeValidLabel;
 	QLabel *namingFormatValidLabel;
 	QList<DvbConfigPage *> configPages;
+	KLineEdit *regexLineEdit;
+	KLineEdit *actionAfterRecordingLineEdit;
 };
 
 class DvbScanFileDownloadDialog : public KDialog

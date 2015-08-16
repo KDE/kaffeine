@@ -41,6 +41,7 @@
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
+#include "dvbrecording.h"
 
 DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
 	manager(manager_)
@@ -113,6 +114,22 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	namingFormatValidLabel->setPixmap(validPixmap);
 	gridLayout->addWidget(namingFormatValidLabel, 4,2);
 
+	gridLayout->addWidget(new QLabel(i18n("Regex for automatic recording:")), 5, 0);
+
+	regexLineEdit = new KLineEdit(widget);
+	regexLineEdit->setText(manager->getRecordingRegex());
+	regexLineEdit->setToolTip(i18n("Automatically schedules recordings for matching titles."));
+	gridLayout->addWidget(regexLineEdit, 5, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	6, 0);
+
+	actionAfterRecordingLineEdit = new KLineEdit(widget);
+	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());
+	actionAfterRecordingLineEdit->setToolTip(i18n("Leave empty for no command."));
+	gridLayout->addWidget(actionAfterRecordingLineEdit, 6, 1);
+
+	boxLayout->addLayout(gridLayout);
+
 	gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Use ISO 8859-1 charset instead of ISO 6937:")),
 		1, 0);
@@ -128,7 +145,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	gridLayout->addWidget(createInfoFileBox, 2, 1);
 
 	boxLayout->addLayout(gridLayout);
-
 
 	QFrame *frame = new QFrame(widget);
 	frame->setFrameShape(QFrame::HLine);
@@ -406,6 +422,8 @@ void DvbConfigDialog::accept()
 	manager->setRecordingFolder(recordingFolderEdit->text());
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
 	manager->setNamingFormat(namingFormat->text());
+	manager->setRecordingRegex(regexLineEdit->text());
+	manager->setActionAfterRecording(actionAfterRecordingLineEdit->text());
 	manager->setBeginMargin(beginMarginBox->value() * 60);
 	manager->setEndMargin(endMarginBox->value() * 60);
 	manager->setOverride6937Charset(override6937CharsetBox->isChecked());

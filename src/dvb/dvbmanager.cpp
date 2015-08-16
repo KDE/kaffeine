@@ -349,7 +349,17 @@ int DvbManager::getEndMargin() const
 
 QString DvbManager::getNamingFormat() const
 {
-	return KGlobal::config()->group("DVB").readEntry("NamingFormat", "year");
+	return KGlobal::config()->group("DVB").readEntry("NamingFormat", "%title");
+}
+
+QString DvbManager::getRecordingRegex() const
+{
+	return KGlobal::config()->group("DVB").readEntry("RecordingRegex", "");
+}
+
+QString DvbManager::getActionAfterRecording() const
+{
+	return KGlobal::config()->group("DVB").readEntry("ActionAfterRecording", "");
 }
 
 bool DvbManager::override6937Charset() const
@@ -385,6 +395,16 @@ void DvbManager::setEndMargin(int endMargin)
 void DvbManager::setNamingFormat(QString namingFormat)
 {
 	KGlobal::config()->group("DVB").writeEntry("NamingFormat", namingFormat);
+}
+
+void DvbManager::setRecordingRegex(QString regex)
+{
+	KGlobal::config()->group("DVB").writeEntry("RecordingRegex", regex);
+}
+
+void DvbManager::setActionAfterRecording(QString actionAfterRecording)
+{
+	KGlobal::config()->group("DVB").writeEntry("ActionAfterRecording", actionAfterRecording);
 }
 
 void DvbManager::setOverride6937Charset(bool override)

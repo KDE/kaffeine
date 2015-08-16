@@ -176,6 +176,11 @@ DvbEpgModel::~DvbEpgModel()
 	}
 }
 
+QMap<DvbSharedRecording, DvbSharedEpgEntry> DvbEpgModel::getRecordings() const
+{
+	return recordings;
+}
+
 QMap<DvbEpgEntryId, DvbSharedEpgEntry> DvbEpgModel::getEntries() const
 {
 	return entries;
@@ -257,7 +262,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 }
 
 void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecondsBefore,
-	int extraSecondsAfter)
+	int extraSecondsAfter, bool checkForRecursion)
 {
 	if (!entry.isValid() || (entries.value(DvbEpgEntryId(entry)) != entry)) {
 		Log("DvbEpgModel::scheduleProgram: invalid entry");
@@ -288,7 +293,7 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 		recording.details =
 			entry->details;
 		const_cast<DvbEpgEntry *>(entry.constData())->recording =
-			manager->getRecordingModel()->addRecording(recording);
+			manager->getRecordingModel()->addRecording(recording, checkForRecursion);
 		recordings.insert(entry->recording, entry);
 	} else {
 		oldRecording = entry->recording;

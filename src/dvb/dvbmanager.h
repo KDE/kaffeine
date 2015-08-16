@@ -123,6 +123,8 @@ public:
 	QString getRecordingFolder() const;
 	QString getTimeShiftFolder() const;
 	QString getNamingFormat() const;
+	QString getRecordingRegex() const;
+	QString getActionAfterRecording() const;
 	int getBeginMargin() const; // seconds
 	int getEndMargin() const; // seconds
 	bool override6937Charset() const;
@@ -130,6 +132,8 @@ public:
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
 	void setNamingFormat(const QString namingFormat);
+	void setRecordingRegex(const QString regex);
+	void setActionAfterRecording(const QString actionAfterRecording);
 	void setBeginMargin(int beginMargin); // seconds
 	void setEndMargin(int endMargin); // seconds
 	void setOverride6937Charset(bool override);

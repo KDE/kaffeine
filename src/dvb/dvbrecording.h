@@ -27,6 +27,7 @@
 
 class DvbManager;
 class DvbRecordingFile;
+class DvbEpgEntry;
 
 class DvbRecording : public SharedData, public SqlKey
 {
@@ -45,6 +46,7 @@ public:
 	};
 
 	QString name;
+	QString filename;
 	QString subheading;
 	QString details;
 	DvbSharedChannel channel;
@@ -69,10 +71,12 @@ public:
 	~DvbRecordingModel();
 
 	bool hasRecordings() const;
+	void setEmptyAction(QString emptyAction);
+	QString getEmptyAction();
 	bool hasActiveRecordings() const;
 	DvbSharedRecording findRecordingByKey(const SqlKey &sqlKey) const;
 	QMap<SqlKey, DvbSharedRecording> getRecordings() const;
-	DvbSharedRecording addRecording(DvbRecording &recording);
+	DvbSharedRecording addRecording(DvbRecording &recording, bool checkForRecursion=false);
 	void updateRecording(DvbSharedRecording recording, DvbRecording &modifiedRecording);
 	void removeRecording(DvbSharedRecording recording);
 
@@ -89,6 +93,9 @@ private:
 	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
 	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
 	bool updateStatus(DvbRecording &recording);
+	void executeActionAfterRecording();
+	void findNewRecordings();
+	bool existsSimilarRecording(DvbEpgEntry recording);
 
 	DvbManager *manager;
 	QMap<SqlKey, DvbSharedRecording> recordings;

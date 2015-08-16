@@ -38,7 +38,7 @@ public:
 	~DvbRecordingFile();
 
 	// start() returns true if the recording is already running
-	bool start(const DvbRecording &recording);
+	bool start(DvbRecording &recording);
 	void stop();
 
 private slots:

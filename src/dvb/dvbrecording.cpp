@@ -22,6 +22,8 @@
 #include "dvbrecording_p.h"
 
 #include <QDir>
+#include <QMap>
+#include <QProcess>
 #include <QSet>
 #include <QVariant>
 #include <KStandardDirs>
@@ -29,6 +31,7 @@
 #include "../log.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
+#include "dvbepg.h"
 
 bool DvbRecording::validate()
 {
@@ -147,14 +150,16 @@ QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::getRecordings() const
 	return recordings;
 }
 
-DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording)
+DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording, bool checkForRecursion)
 {
-	if (hasPendingOperation) {
-		Log("DvbRecordingModel::addRecording: illegal recursive call");
-		return DvbSharedRecording();
-	}
+	if (checkForRecursion) {
+		if (hasPendingOperation) {
+			Log("DvbRecordingModel::addRecording: illegal recursive call");
+			return DvbSharedRecording();
+		}
 
-	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+		EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+	}
 
 	if (!recording.validate()) {
 		Log("DvbRecordingModel::addRecording: invalid recording");
@@ -224,6 +229,68 @@ void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 	recordingFiles.remove(*recording);
 	sqlRemove(*recording);
 	emit recordingRemoved(recording);
+	executeActionAfterRecording();
+	findNewRecordings();
+}
+
+void DvbRecordingModel::executeActionAfterRecording()
+{
+	QProcess l_process;
+	QString stopCommand = manager->getActionAfterRecording();
+	//stopCommand.replace("%filename", recording.filename);
+	if (!stopCommand.isEmpty() && l_process.execute(stopCommand)<0)
+	{
+		Log("DvbRecordingModel::shutdownWhenEmpty:could not execute cmd");
+	}
+	Log("DvbRecordingModel::executeActionAfterRecording executed.");
+
+
+}
+
+bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
+{
+	bool found = false;
+
+	DvbEpgEntry entry = recording;
+	DvbEpgModel *epgModel = manager->getEpgModel();
+	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordingMap = epgModel->getRecordings();
+	foreach(DvbSharedRecording key, recordingMap.keys())
+	{
+		DvbEpgEntry loopEntry = *(recordingMap.value(key));
+		if (entry.begin == loopEntry.begin
+				&& entry.channel == loopEntry.channel
+				&& entry.duration == loopEntry.duration) {
+			found = true;
+			break;
+		}
+	}
+	return found;
+}
+
+void DvbRecordingModel::findNewRecordings()
+{
+	DvbEpgModel *epgModel = manager->getEpgModel();
+	QMap<DvbEpgEntryId, DvbSharedEpgEntry> epgMap = epgModel->getEntries();
+	foreach(DvbEpgEntryId key, epgMap.keys())
+	{
+		DvbEpgEntry entry = *(epgMap.value(key));
+		QString title = entry.title;
+		QRegExp recordingRegex = QRegExp(manager->getRecordingRegex());
+		if (!recordingRegex.isEmpty())
+			{
+			if (recordingRegex.indexIn(title) != -1)
+			{
+				if (!DvbRecordingModel::existsSimilarRecording(*epgMap.value(key)))
+				{
+				epgModel->scheduleProgram(epgMap.value(key), manager->getBeginMargin(),
+						manager->getEndMargin(), false);
+				Log("DvbRecordingModel::findNewRecordings: scheduled") << title;
+				}
+			}
+		}
+	}
+
+	Log("DvbRecordingModel::findNewRecordings executed.");
 }
 
 void DvbRecordingModel::timerEvent(QTimerEvent *event)
@@ -368,7 +435,7 @@ DvbRecordingFile::~DvbRecordingFile()
 	stop();
 }
 
-bool DvbRecordingFile::start(const DvbRecording &recording)
+bool DvbRecordingFile::start(DvbRecording &recording)
 {
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
@@ -384,19 +451,23 @@ bool DvbRecordingFile::start(const DvbRecording &recording)
 		filename = filename.replace("%sec", currentTime.toString("ss"));
 		filename = filename.replace("%channel", recording.channel->name);
 		filename = filename.replace("%title", QString(recording.name));
+		filename = filename.replace(QLatin1Char('/'), QLatin1Char('_'));
 		if (filename == "") {
 			filename = QString(recording.name);
 		}
 
-		QString path = folder + QLatin1Char('/') +
-			filename.replace(QLatin1Char('/'), QLatin1Char('_'));
+		QString path = folder + QLatin1Char('/') + filename;
+
 
 		for (int attempt = 0; attempt < 100; ++attempt) {
 			if (attempt == 0) {
 				file.setFileName(path + QLatin1String(".m2t"));
+				recording.filename = filename + QLatin1String(".m2t");
 			} else {
 				file.setFileName(path + QLatin1Char('-') + QString::number(attempt) +
 					QLatin1String(".m2t"));
+				recording.filename = filename + QLatin1Char('-') + QString::number(attempt) +
+					QLatin1String(".m2t");
 			}
 
 			if (file.exists()) {
