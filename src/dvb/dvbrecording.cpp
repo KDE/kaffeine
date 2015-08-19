@@ -145,6 +145,16 @@ DvbSharedRecording DvbRecordingModel::findRecordingByKey(const SqlKey &sqlKey) c
 	return recordings.value(sqlKey);
 }
 
+DvbRecording DvbRecordingModel::getCurrentRecording()
+{
+	return currentRecording;
+}
+
+void DvbRecordingModel::setCurrentRecording(DvbRecording _currentRecording)
+{
+	currentRecording = _currentRecording;
+}
+
 QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::getRecordings() const
 {
 	return recordings;
@@ -229,17 +239,19 @@ void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 	recordingFiles.remove(*recording);
 	sqlRemove(*recording);
 	emit recordingRemoved(recording);
-	executeActionAfterRecording();
+	executeActionAfterRecording(*recording);
 	findNewRecordings();
 }
 
-void DvbRecordingModel::executeActionAfterRecording()
+void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 {
-	QProcess l_process;
 	QString stopCommand = manager->getActionAfterRecording();
-	//stopCommand.replace("%filename", recording.filename);
-	if (!stopCommand.isEmpty() && l_process.execute(stopCommand)<0)
+
+	stopCommand.replace("%filename", recording.filename);
+	if (!stopCommand.isEmpty())
 	{
+		QProcess* child = new QProcess();
+		child->start(stopCommand);
 		Log("DvbRecordingModel::shutdownWhenEmpty:could not execute cmd");
 	}
 	Log("DvbRecordingModel::executeActionAfterRecording executed.");
@@ -547,6 +559,8 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 		}
 	}
 
+	manager->getRecordingModel()->setCurrentRecording(recording);
+
 	return true;
 }
 
@@ -576,6 +590,9 @@ void DvbRecordingFile::stop()
 	buffers.clear();
 	file.close();
 	channel = DvbSharedChannel();
+
+	manager->getRecordingModel()->executeActionAfterRecording(manager->getRecordingModel()->getCurrentRecording());
+	manager->getRecordingModel()->findNewRecordings();
 }
 
 void DvbRecordingFile::deviceStateChanged()
@@ -607,6 +624,8 @@ void DvbRecordingFile::deviceStateChanged()
 				device->startDescrambling(pmtSectionData, this);
 			}
 		} else {
+			// TODO
+
 			stop();
 		}
 	}

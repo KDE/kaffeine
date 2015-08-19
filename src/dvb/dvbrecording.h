@@ -79,6 +79,10 @@ public:
 	DvbSharedRecording addRecording(DvbRecording &recording, bool checkForRecursion=false);
 	void updateRecording(DvbSharedRecording recording, DvbRecording &modifiedRecording);
 	void removeRecording(DvbSharedRecording recording);
+	void findNewRecordings();
+	void executeActionAfterRecording(DvbRecording recording);
+	DvbRecording getCurrentRecording();
+	void setCurrentRecording(DvbRecording _currentRecording);
 
 signals:
 	void recordingAdded(const DvbSharedRecording &recording);
@@ -93,14 +97,13 @@ private:
 	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
 	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
 	bool updateStatus(DvbRecording &recording);
-	void executeActionAfterRecording();
-	void findNewRecordings();
 	bool existsSimilarRecording(DvbEpgEntry recording);
 
 	DvbManager *manager;
 	QMap<SqlKey, DvbSharedRecording> recordings;
 	QMap<SqlKey, QExplicitlySharedDataPointer<DvbRecordingFile> > recordingFiles;
 	bool hasPendingOperation;
+	DvbRecording currentRecording;
 };
 
 #endif /* DVBRECORDING_H */

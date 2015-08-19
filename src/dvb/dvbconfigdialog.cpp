@@ -448,6 +448,7 @@ void DvbConfigDialog::accept()
 	}
 
 	manager->updateDeviceConfigs(configUpdates);
+	manager->getRecordingModel()->findNewRecordings();
 
 	KDialog::accept();
 }
