@@ -215,9 +215,32 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 		stream.setCodec("UTF-8");
 		QList<QString> transponders;
 
+		QString newChannel = "";
+		QString frq = "";
+		QString modulation = "";
+		QString symbolRate = "";
+		QString fec = "";
+		QString polar = "";
+		QString inversion = "";
+		QString rollOff = "";
+		QString streamid = "";
+		QString plscode = "";
+		QString plsmode = "";
+		QString bandwith = "";
+		QString fec_hi = "";
+		QString fec_lo = "";
+		QString t_mode = "";
+		QString g_interval = "";
+		QString hierarchy = "";
+
+
 		while (!stream.atEnd()) {
 			QString line = stream.readLine();
 
+			if (line.contains("[") && line.contains("]")) {
+				newChannel = "";
+				continue;
+			}
 			int pos = line.indexOf('#');
 
 			if (pos != -1) {
@@ -229,12 +252,355 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 			}
 
 			if (line.isEmpty()) {
+				//continue;
+			}
+			if (line.contains("DELIVERY_SYSTEM")) {
+				continue;
+			}
+			if (line.contains("ELIVERY_SYSTEM")) {
+				continue;
+			}
+			switch (type) {
+			case DvbTransponderBase::DvbC: {
+				if (!frq.isEmpty() && !fec.isEmpty() && !symbolRate.isEmpty() && !modulation.isEmpty()) {
+					line = "C " + frq + " " + symbolRate + " " + fec + " " + modulation.replace("/", "");
+					qWarning() << line;
+					frq = "";
+					modulation = "";
+					symbolRate = "";
+					fec = "";		
+				}
+				if (line.contains("DELIVERY_SYSTEM = DVBC/ANNEX_A")) {
+					continue;
+				}
+				if (line.contains("FREQUENCY = ")) {
+					frq = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INNER_FEC")) {
+					fec = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("SYMBOL_RATE")) {
+					symbolRate = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("MODULATION")) {
+					modulation = line.split(" = ")[1];
+					//continue;
+				}
+				if (line.contains("INVERSION")) {
+					continue;
+				}
+			}
+
+			case DvbTransponderBase::DvbS: {
+				if (line.isEmpty() && !frq.isEmpty()) {
+					line = "S " + frq + " " + polar[0] + " " + symbolRate + " " + fec;
+					if (!rollOff.isEmpty()) {
+						line = line + " " + rollOff;
+					}
+					if (!modulation.isEmpty()) {
+						line = line + " " + modulation.replace("/", "");
+					}
+					qWarning() << line;
+					frq = "";
+					polar = "";
+					symbolRate = "";
+					fec = "";	
+					modulation = "";	
+					rollOff = "";
+					streamid = "";
+					plscode = "";
+					plsmode = "";
+				}
+				if (line.contains("DELIVERY_SYSTEM = DVBC/ANNEX_A")) {
+					continue;
+				}
+				if (line.contains("FREQUENCY = ")) {
+					frq = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("POLARIZATION")) {
+					polar = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("SYMBOL_RATE")) {
+					symbolRate = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INNER_FEC")) {
+					fec = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INVERSION")) {
+					inversion = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ROLLOFF")) {
+					rollOff = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("MODULATION")) {
+					modulation = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("STREAM_ID")) {
+					streamid = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("PLS_CODE")) {
+					plscode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("PLS_MODE")) {
+					plsmode = line.split(" = ")[1];
+					continue;
+				}
+				//continue;
+
+			// S 12518000 V 22000000 AUTO
+			}
+			case DvbTransponderBase::DvbS2: {
+				//continue;
+			}
+
+			// # T freq      bw   fec_hi fec_lo mod   transmission-mode guard-interval hierarchy
+			//   T 530000000 8MHz 2/3    NONE   QAM64 8k                1/8            NONE
+			case DvbTransponderBase::DvbT: {
+				if (line.isEmpty() && !frq.isEmpty()) {
+					line = "T " + frq;
+					if (!bandwith.isEmpty()) {
+						int number = bandwith.toInt();
+						number = number / 1000000;
+						line = line + " " + QString::number(number) + "MHz";
+					}
+					if (!fec_hi.isEmpty()) {
+						line = line + " " + fec_hi;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!fec_lo.isEmpty()) {
+						line = line + " " + fec_lo;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!modulation.isEmpty()) {
+						line = line + " " + modulation.replace("/", "").replace("QAMAUTO", "AUTO");
+					} else {
+						line = line + " AUTO";
+					}
+					if (!t_mode.isEmpty()) {
+						line = line + " " + t_mode.replace("K", "k");
+					} else {
+						line = line + " AUTO";
+					}
+					if (!g_interval.isEmpty()) {
+						line = line + " " + g_interval;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!hierarchy.isEmpty()) {
+						line = line + " " + hierarchy;
+					} else {
+						line = line + " AUTO";
+					}
+					qWarning() << line;
+					frq = "";
+					polar = "";
+					symbolRate = "";
+					fec = "";	
+					modulation = "";	
+					rollOff = "";
+					streamid = "";
+					plscode = "";
+					plsmode = "";
+					bandwith = "";
+					fec_hi = "";
+					fec_lo = "";
+					t_mode = "";
+					g_interval = "";
+					hierarchy = "";
+				}
+				if (line.contains("DELIVERY_SYSTEM = DVBC/ANNEX_A")) {
+					continue;
+				}
+				if (line.contains("FREQUENCY = ")) {
+					frq = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("POLARIZATION")) {
+					polar = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("SYMBOL_RATE")) {
+					symbolRate = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INNER_FEC")) {
+					fec = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INVERSION")) {
+					inversion = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ROLLOFF")) {
+					rollOff = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("MODULATION")) {
+					modulation = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("STREAM_ID")) {
+					streamid = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("PLS_CODE")) {
+					plscode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("PLS_MODE")) {
+					plsmode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("BANDWIDTH_HZ")) {
+					bandwith = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("TRANSMISSION_MODE")) {
+					t_mode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("CODE_RATE_HP")) {
+					fec_hi = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("CODE_RATE_LP")) {
+					fec_lo = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("HIERARCHY")) {
+					hierarchy = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("GUARD_INTERVAL")) {
+					g_interval = line.split(" = ")[1];
+					continue;
+				}
+			}
+
+			case DvbTransponderBase::Atsc: {
+
+				if (line.isEmpty() && !frq.isEmpty()) {
+					line = "A " + frq;
+					if (!modulation.isEmpty()) {
+						QString temp1 = modulation.split("/")[0];
+						QString temp2 = modulation.split("/")[1];
+						if (!(temp1 == "QAM")) {
+						line = line + " " + temp2 + temp1; } else 
+						{
+						line = line + " " + temp1 + temp2;
+						}
+					} else {
+						line = line + " AUTO";
+					}
+					qWarning() << line;
+					frq = "";
+					polar = "";
+					symbolRate = "";
+					fec = "";	
+					modulation = "";	
+					rollOff = "";
+					streamid = "";
+					plscode = "";
+					plsmode = "";
+					bandwith = "";
+					fec_hi = "";
+					fec_lo = "";
+					t_mode = "";
+					g_interval = "";
+					hierarchy = "";
+					inversion = "";
+				}
+				if (line.contains("DELIVERY_SYSTEM = DVBC/ANNEX_A")) {
+					continue;
+				}
+				if (line.contains("FREQUENCY = ")) {
+					frq = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("POLARIZATION")) {
+					polar = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("SYMBOL_RATE")) {
+					symbolRate = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INNER_FEC")) {
+					fec = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INVERSION")) {
+					inversion = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ROLLOFF")) {
+					rollOff = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("MODULATION")) {
+					modulation = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("STREAM_ID")) {
+					streamid = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("PLS_CODE")) {
+					plscode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("PLS_MODE")) {
+					plsmode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("BANDWIDTH_HZ")) {
+					bandwith = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("TRANSMISSION_MODE")) {
+					t_mode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("CODE_RATE_HP")) {
+					fec_hi = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("CODE_RATE_LP")) {
+					fec_lo = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("HIERARCHY")) {
+					hierarchy = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("GUARD_INTERVAL")) {
+					g_interval = line.split(" = ")[1];
+					continue;
+				}
+			}
+			}
+
+			if (line.isEmpty()) {
 				continue;
 			}
 
 			QString string = parseLine(type, line, fileName);
 
-			if (string.isEmpty()) {
+			if (string.isEmpty() && !(fileName == "ca-AB-Calgary")) {
 				qCritical() << "Error: can't parse line" << line << "in file" << fileName;
 				return;
 			}
@@ -260,7 +626,7 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 		}
 
 		if (transponders.isEmpty()) {
-			qWarning() << "Warning: no transponder found in file" << fileName;
+			//qWarning() << "Warning: no transponder found in file" << fileName;
 			continue;
 		}
 

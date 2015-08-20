@@ -3,6 +3,8 @@ set -eu
 
 mkdir -p kaffeine_build
 cd kaffeine_build
-cmake ../kaffeine -DBUILD_TOOLS=1
+cd ..
+cd ..
+cmake -DBUILD_TOOLS=1
 make convertscanfiles
-tools/convertscanfiles ../dvb-apps/util/scan ../kaffeine/src/scanfile.dvb
+tools/convertscanfiles ./tools/dvb ../kaffeine/src/scanfile.dvb
