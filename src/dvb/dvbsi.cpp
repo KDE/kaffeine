@@ -398,7 +398,7 @@ QString AtscPsipText::interpretTextData(const char *data, unsigned int len,
 	} else if (mode == 0x3f) {
 		// UTF-16
 		for (unsigned int i = 0; i < len; i += 2) {
-			QChar val = ((data[i] << 8)| data[i+1]);
+			QChar val = ((unsigned char)data[i] * 256) + (unsigned char)data[i+1];
 			result += val;
 		}
 	} else {
