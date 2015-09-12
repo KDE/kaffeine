@@ -791,6 +791,8 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 
 			if (!transponder.isValid()) {
 				parseError = true;
+				Log("DvbManager::readScanSources: cannot parse complete scan data");
+				Log("source: ") << QString::fromAscii(line);
 			} else {
 				transponders.append(transponder);
 

@@ -160,6 +160,11 @@ QMap<SqlKey, DvbSharedRecording> DvbRecordingModel::getRecordings() const
 	return recordings;
 }
 
+QList<DvbSharedRecording> DvbRecordingModel::getUnwantedRecordings() const
+{
+	return unwantedRecordings;
+}
+
 DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording, bool checkForRecursion)
 {
 	if (checkForRecursion) {
@@ -243,6 +248,11 @@ void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 	findNewRecordings();
 }
 
+void DvbRecordingModel::addToUnwantedRecordings(DvbSharedRecording recording)
+{
+	unwantedRecordings.append(recording);
+}
+
 void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 {
 	QString stopCommand = manager->getActionAfterRecording();
@@ -269,6 +279,28 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 	foreach(DvbSharedRecording key, recordingMap.keys())
 	{
 		DvbEpgEntry loopEntry = *(recordingMap.value(key));
+		int loopLength = 60 * 60 * loopEntry.duration.hour() + 60 * loopEntry.duration.minute() + loopEntry.duration.second();
+		int length = 60 * 60 * entry.duration.hour() + 60 * entry.duration.minute() + entry.duration.second();
+		QDateTime end = entry.begin.addSecs(length);
+		QDateTime loopEnd = loopEntry.begin.addSecs(loopLength);
+
+		if (QString::compare(entry.channel->name, loopEntry.channel->name) == 0) {
+			// Is included in an existing recording
+			if (entry.begin <= loopEntry.begin && end >= loopEnd) {
+				found = true;
+				break;
+			// Includes an existing recording
+			} else if (entry.begin >= loopEntry.begin && end <= loopEnd) {
+				removeRecording(key);
+				continue;
+			}
+		}
+	}
+
+	QList<DvbSharedRecording> unwantedRecordingsList = manager->getRecordingModel()->getUnwantedRecordings();
+	foreach(DvbSharedRecording unwanted, unwantedRecordingsList)
+	{
+		DvbRecording loopEntry = *unwanted;
 		if (entry.begin == loopEntry.begin
 				&& entry.channel == loopEntry.channel
 				&& entry.duration == loopEntry.duration) {
@@ -276,6 +308,7 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 			break;
 		}
 	}
+
 	return found;
 }
 

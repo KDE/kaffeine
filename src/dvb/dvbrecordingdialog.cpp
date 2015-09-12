@@ -126,6 +126,7 @@ void DvbRecordingDialog::removeRecording()
 	DvbRecordingModel *recordingModel = manager->getRecordingModel();
 
 	foreach (const DvbSharedRecording &recording, recordings) {
+		recordingModel->addToUnwantedRecordings(recording);
 		recordingModel->removeRecording(recording);
 	}
 }

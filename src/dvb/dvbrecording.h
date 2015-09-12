@@ -76,9 +76,11 @@ public:
 	bool hasActiveRecordings() const;
 	DvbSharedRecording findRecordingByKey(const SqlKey &sqlKey) const;
 	QMap<SqlKey, DvbSharedRecording> getRecordings() const;
+	QList<DvbSharedRecording> getUnwantedRecordings() const;
 	DvbSharedRecording addRecording(DvbRecording &recording, bool checkForRecursion=false);
 	void updateRecording(DvbSharedRecording recording, DvbRecording &modifiedRecording);
 	void removeRecording(DvbSharedRecording recording);
+	void addToUnwantedRecordings(DvbSharedRecording recording);
 	void findNewRecordings();
 	void executeActionAfterRecording(DvbRecording recording);
 	DvbRecording getCurrentRecording();
@@ -101,6 +103,7 @@ private:
 
 	DvbManager *manager;
 	QMap<SqlKey, DvbSharedRecording> recordings;
+	QList<DvbSharedRecording> unwantedRecordings;
 	QMap<SqlKey, QExplicitlySharedDataPointer<DvbRecordingFile> > recordingFiles;
 	bool hasPendingOperation;
 	DvbRecording currentRecording;
