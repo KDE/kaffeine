@@ -251,6 +251,7 @@ void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 void DvbRecordingModel::addToUnwantedRecordings(DvbSharedRecording recording)
 {
 	unwantedRecordings.append(recording);
+	Log("DvbRecordingModel::addToUnwantedRecordings executed") << recording->name;
 }
 
 void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
@@ -291,19 +292,22 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 				break;
 			// Includes an existing recording
 			} else if (entry.begin >= loopEntry.begin && end <= loopEnd) {
-				removeRecording(key);
-				continue;
+				found = true;
+				break;
 			}
 		}
 	}
 
 	QList<DvbSharedRecording> unwantedRecordingsList = manager->getRecordingModel()->getUnwantedRecordings();
+
 	foreach(DvbSharedRecording unwanted, unwantedRecordingsList)
 	{
 		DvbRecording loopEntry = *unwanted;
-		if (entry.begin == loopEntry.begin
-				&& entry.channel == loopEntry.channel
-				&& entry.duration == loopEntry.duration) {
+		if (QString::compare(entry.begin.toString(), ((loopEntry.begin.addSecs(manager->getBeginMargin()))).toString()) == 0
+				&& QString::compare(entry.channel->name, loopEntry.channel->name) == 0
+				&& QString::compare((entry.duration).toString(),
+						loopEntry.duration.addSecs(- manager->getBeginMargin() - manager->getEndMargin()).toString()) == 0) {
+			Log("DvbRecordingModel::existsSimilarRecording Found from unwanteds ") << loopEntry.name;
 			found = true;
 			break;
 		}
