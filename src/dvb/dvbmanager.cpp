@@ -357,6 +357,16 @@ QString DvbManager::getRecordingRegex() const
 	return KGlobal::config()->group("DVB").readEntry("RecordingRegex", "");
 }
 
+QStringList DvbManager::getRecordingRegexList() const
+{
+	return KGlobal::config()->group("DVB").readEntry("RecordingRegexList", QStringList());
+}
+
+QList<int> DvbManager::getRecordingRegexPriorityList() const
+{
+	return KGlobal::config()->group("DVB").readEntry("RecordingRegexPriorityList", QList<int>());
+}
+
 QString DvbManager::getActionAfterRecording() const
 {
 	return KGlobal::config()->group("DVB").readEntry("ActionAfterRecording", "");
@@ -400,6 +410,56 @@ void DvbManager::setNamingFormat(QString namingFormat)
 void DvbManager::setRecordingRegex(QString regex)
 {
 	KGlobal::config()->group("DVB").writeEntry("RecordingRegex", regex);
+}
+
+void DvbManager::setRecordingRegexList(const QStringList regexList)
+{
+	KGlobal::config()->group("DVB").writeEntry("RecordingRegexList", regexList);
+}
+
+void DvbManager::setRecordingRegexPriorityList(const QList<int> regexList)
+{
+	KGlobal::config()->group("DVB").writeEntry("RecordingRegexPriorityList", regexList);
+}
+
+bool DvbManager::addRecordingRegex(QString regex)
+{
+	QStringList regexList = getRecordingRegexList();
+	regexList.append(regex);
+	setRecordingRegexList(regexList);
+	return true;
+}
+
+bool DvbManager::addRecordingRegexPriority(int regexPriority)
+{
+	QList<int> regexPriorityList = getRecordingRegexPriorityList();
+	regexPriorityList.append(regexPriority);
+	setRecordingRegexPriorityList(regexPriorityList);
+	return true;
+}
+
+bool DvbManager::removeRecordingRegex(QString regex)
+{
+	QStringList regexList = getRecordingRegexList();
+	if (regexList.contains(regex)) {
+		regexList.removeOne(regex);
+		setRecordingRegexList(regexList);
+		return true;
+	}
+	setRecordingRegexList(regexList);
+	return false;
+}
+
+bool DvbManager::removeRecordingRegexPriority(int priority)
+{
+	QList<int> regexPriorityList = getRecordingRegexPriorityList();
+	if (regexPriorityList.contains(priority)) {
+		regexPriorityList.removeOne(priority);
+		setRecordingRegexPriorityList(regexPriorityList);
+		return true;
+	}
+	setRecordingRegexPriorityList(regexPriorityList);
+	return false;
 }
 
 void DvbManager::setActionAfterRecording(QString actionAfterRecording)
@@ -586,6 +646,7 @@ void DvbManager::readDeviceConfigs()
 			}
 
 			DvbConfigBase *config = new DvbConfigBase(type);
+			config->numberOfTuners = 1;
 			config->name = reader.readString(QLatin1String("name"));
 			config->scanSource = reader.readString(QLatin1String("scanSource"));
 			config->timeout = reader.readInt(QLatin1String("timeout"));

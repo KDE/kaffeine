@@ -588,6 +588,15 @@ bool DvbChannelModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, 
 	return false;
 }
 
+bool DvbChannelModel::areInTheSameBunch(DvbSharedChannel channel1, DvbSharedChannel channel2)
+{
+	if (channel1->transportStreamId == channel2->transportStreamId) {
+		return true;
+	}
+
+	return false;
+}
+
 QString DvbChannelModel::extractBaseName(const QString &name) const
 {
 	QString baseName = name;

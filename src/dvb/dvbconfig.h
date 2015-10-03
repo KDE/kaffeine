@@ -47,6 +47,7 @@ public:
 	QString name;
 	QString scanSource;
 	int timeout; // tuning timeout (ms)
+	int numberOfTuners;
 
 	// only used for DVB-S
 

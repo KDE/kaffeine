@@ -31,6 +31,7 @@
 #include <QSpinBox>
 #include <QToolButton>
 #include <QTreeWidget>
+#include <KAction>
 #include <KComboBox>
 #include <KFileDialog>
 #include <KIO/Job>
@@ -42,6 +43,7 @@
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbrecording.h"
+#include "../log.h"
 
 DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
 	manager(manager_)
@@ -200,9 +202,55 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 
 	boxLayout->addStretch();
 
-	// FIXME more general options
-
 	tabWidget->addTab(widget, KIcon(QLatin1String("configure")), i18n("General Options"));
+
+	//
+
+	QWidget *widgetAutomaticRecording = new QWidget(tabWidget);
+	QBoxLayout *boxLayoutAutomaticRecording = new QVBoxLayout(widgetAutomaticRecording);
+
+
+	QGridLayout *buttonGrid = new QGridLayout();
+	QPushButton *pushButtonAdd = new QPushButton(i18n("Add new Regex"), widget);
+	connect(pushButtonAdd, SIGNAL(clicked()), this, SLOT(newRegex()));
+	buttonGrid->addWidget(pushButtonAdd, 0, 0);
+	pushButtonAdd->setToolTip(i18n("Add another Regex"));
+
+	QPushButton *pushButtonRemove = new QPushButton(i18n("Remove Regex"), widget);
+	connect(pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeRegex()));
+	buttonGrid->addWidget(pushButtonRemove, 0, 1);
+	pushButtonRemove->setToolTip(i18n("Remove Regexes"));
+
+
+	regexGrid = new QGridLayout();
+	int j = 0;
+	foreach (const QString regex, manager->getRecordingRegexList()) {
+		RegexInputLine *inputLine = new RegexInputLine();
+		inputLine->lineEdit = new KLineEdit(widget);
+		inputLine->lineEdit->setText(regex);
+		regexGrid->addWidget(inputLine->lineEdit, j, 0);
+		inputLine->checkBox = new QCheckBox(widget);
+		inputLine->checkBox->setChecked(false);
+		regexGrid->addWidget(inputLine->checkBox, j, 2);
+		inputLine->spinBox = new QSpinBox();
+		inputLine->spinBox->setValue(manager->getRecordingRegexPriorityList().value(j));
+		regexGrid->addWidget(inputLine->spinBox, j, 1);
+
+		inputLine->index = j;
+
+		regexInputList.append(inputLine);
+
+		j = j + 1;
+	}
+
+
+
+	boxLayoutAutomaticRecording->addLayout(buttonGrid);
+	boxLayoutAutomaticRecording->addLayout(regexGrid);
+
+	tabWidget->insertTab(1, widgetAutomaticRecording, KIcon(QLatin1String("configure")),
+			i18n("Automatic Recording"));
+	//
 
 	int i = 1;
 
@@ -257,6 +305,126 @@ void DvbConfigDialog::updateScanFile()
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();
+}
+
+void DvbConfigDialog::newRegex()
+{
+	RegexInputLine *inputLine = new RegexInputLine();
+
+	inputLine->lineEdit = new KLineEdit(tabWidget);
+	inputLine->lineEdit->setText("");
+	regexGrid->addWidget(inputLine->lineEdit, regexInputList.size(), 0);
+
+	inputLine->checkBox = new QCheckBox(tabWidget);
+	inputLine->checkBox->setChecked(false);
+	regexGrid->addWidget(inputLine->checkBox, regexInputList.size(), 2);
+
+	inputLine->spinBox = new QSpinBox(tabWidget);
+	inputLine->spinBox->setRange(0, 99);
+	inputLine->spinBox->setValue(5);
+	regexGrid->addWidget(inputLine->spinBox, regexInputList.size(), 1);
+
+	regexInputList.append(inputLine);
+}
+
+
+
+/**
+ * Helper function. Deletes all child widgets of the given layout @a item.
+ */
+void deleteChildWidgets(QLayoutItem *item) {
+    if (item->layout()) {
+        // Process all child items recursively.
+        for (int i = 0; i < item->layout()->count(); i++) {
+            deleteChildWidgets(item->layout()->itemAt(i));
+        }
+    }
+    delete item->widget();
+}
+
+
+/**
+ * Helper function. Removes all layout items within the given @a layout
+ * which either span the given @a row or @a column. If @a deleteWidgets
+ * is true, all concerned child widgets become not only removed from the
+ * layout, but also deleted.
+ */
+void DvbConfigDialog::removeWidgets(QGridLayout *layout, int row, int column, bool deleteWidgets) {
+    // We avoid usage of QGridLayout::itemAtPosition() here to improve performance.
+    for (int i = layout->count() - 1; i >= 0; i--) {
+        int r, c, rs, cs;
+        layout->getItemPosition(i, &r, &c, &rs, &cs);
+        if ((r <= row && r + rs - 1 >= row) || (c <= column && c + cs - 1 >= column)) {
+            // This layout item is subject to deletion.
+            QLayoutItem *item = layout->takeAt(i);
+            if (deleteWidgets) {
+                deleteChildWidgets(item);
+            }
+            delete item;
+        }
+    }
+}
+
+void DvbConfigDialog::removeRegex()
+{
+	//regexGrid = new QGridLayout(tabWidget);
+	//regexBoxMap = QMap<QCheckBox *, KLineEdit *>();
+	QList<RegexInputLine *> copyList = QList<RegexInputLine *>();
+	foreach(RegexInputLine *inputLine, regexInputList)
+	{
+		copyList.append(inputLine);
+	}
+	foreach(RegexInputLine *inputLine, copyList)
+	{
+		Log("DvbConfigDialog::removeRegex: list:");
+		if (inputLine->checkBox->isChecked()){
+			Log("DvbConfigDialog::removeRegex: checked:");
+			if (regexInputList.removeOne(inputLine)) {
+				Log("DvbConfigDialog::removeRegex: removed:");
+			}
+		}
+	}
+
+	QWidget *widgetAutomaticRecording = new QWidget(tabWidget);
+	QBoxLayout *boxLayoutAutomaticRecording = new QVBoxLayout(widgetAutomaticRecording);
+
+	QGridLayout *buttonGrid = new QGridLayout();
+	regexGrid = new QGridLayout();
+
+	QPushButton *pushButtonAdd = new QPushButton(i18n("Add new Regex"), tabWidget);
+	connect(pushButtonAdd, SIGNAL(clicked()), this, SLOT(newRegex()));
+	buttonGrid->addWidget(pushButtonAdd, 0, 0);
+	pushButtonAdd->setToolTip(i18n("Add another Regex"));
+
+	QPushButton *pushButtonRemove = new QPushButton(i18n("Remove Regex"), tabWidget);
+	connect(pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeRegex()));
+	buttonGrid->addWidget(pushButtonRemove, 0, 1);
+	pushButtonRemove->setToolTip(i18n("Remove Regexes"));
+
+	int j = 0;
+	foreach (RegexInputLine *oldLine, regexInputList) {
+		RegexInputLine *inputLine = new RegexInputLine();
+		inputLine->lineEdit = new KLineEdit();
+		inputLine->lineEdit->setText(oldLine->lineEdit->text());
+		regexGrid->addWidget(inputLine->lineEdit, j, 0);
+		inputLine->checkBox = new QCheckBox();
+		inputLine->checkBox->setChecked(false);
+		regexGrid->addWidget(inputLine->checkBox, j, 2);
+		inputLine->spinBox = new QSpinBox();
+		inputLine->spinBox->setValue(oldLine->spinBox->value());
+		regexGrid->addWidget(inputLine->spinBox, j, 1);
+
+		inputLine->index = j;
+
+		j = j + 1;
+	}
+
+	boxLayoutAutomaticRecording->addLayout(buttonGrid);
+	boxLayoutAutomaticRecording->addLayout(regexGrid);
+	tabWidget->removeTab(1);
+	tabWidget->addTab(widgetAutomaticRecording, KIcon(QLatin1String("configure")), i18n("Automatic Recording"));
+	tabWidget->moveTab(tabWidget->count()-1, 1);
+	tabWidget->setCurrentIndex(1);
 }
 
 void DvbConfigDialog::openScanFile()
@@ -428,6 +596,19 @@ void DvbConfigDialog::accept()
 	manager->setEndMargin(endMarginBox->value() * 60);
 	manager->setOverride6937Charset(override6937CharsetBox->isChecked());
 	manager->setCreateInfoFile(createInfoFileBox->isChecked());
+	manager->setRecordingRegexList(QStringList());
+	manager->setRecordingRegexPriorityList(QList<int>());
+	// PITÄÄ HAKEA NÄYTÖLTÄ TIEDOT, EI VANHASTA LISTASTA
+
+	foreach (RegexInputLine *regexInputLine, regexInputList)
+	{
+		manager->addRecordingRegex(regexInputLine->lineEdit->text());
+		Log("DvbConfigDialog::accept: saved regex:") <<
+				regexInputLine->lineEdit->text();
+		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
+		Log("DvbConfigDialog::accept: saved priority:") <<
+				regexInputLine->spinBox->value();
+	}
 
 	bool latitudeOk;
 	bool longitudeOk;
@@ -449,6 +630,8 @@ void DvbConfigDialog::accept()
 
 	manager->updateDeviceConfigs(configUpdates);
 	manager->getRecordingModel()->findNewRecordings();
+	manager->getRecordingModel()->removeDuplicates();
+	manager->getRecordingModel()->disableConflicts();
 
 	KDialog::accept();
 }

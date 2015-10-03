@@ -22,6 +22,8 @@
 #define DVBCONFIGDIALOG_H
 
 #include <KDialog>
+#include <QGridLayout>
+#include <QLayoutItem>
 
 class QBoxLayout;
 class QButtonGroup;
@@ -49,6 +51,38 @@ class DvbManager;
 class DvbSConfigObject;
 class DvbSLnbConfigObject;
 
+class RegexInputLine : public QObject
+{
+	Q_OBJECT
+
+public:
+	int index;
+	KLineEdit *lineEdit;
+	QSpinBox *spinBox;
+	QCheckBox *checkBox;
+
+	/*
+public:
+	int getIndex() const
+	{
+		return index;
+	}
+	KLineEdit getLineEdit() const
+	{
+		return lineEdit;
+	}
+	QSpinBox getSpinBox() const
+	{
+		return spinBox;
+	}
+	QCheckBox getCheckBox() const
+	{
+		return checkBox;
+	}
+*/
+
+};
+
 class DvbConfigDialog : public KDialog
 {
 	Q_OBJECT
@@ -56,11 +90,16 @@ public:
 	DvbConfigDialog(DvbManager *manager_, QWidget *parent);
 	~DvbConfigDialog();
 
+signals:
+	void removeRegex(DvbConfigPage *page);
+
 private slots:
 	void changeRecordingFolder();
 	void changeTimeShiftFolder();
 	void updateScanFile();
 	void openScanFile();
+	void newRegex();
+	void removeRegex();
 	void latitudeChanged(const QString &text);
 	void longitudeChanged(const QString &text);
 	void namingFormatChanged(QString text);
@@ -71,6 +110,8 @@ private slots:
 private:
 	static double toLatitude(const QString &text, bool *ok);
 	static double toLongitude(const QString &text, bool *ok);
+	void removeWidgets(QGridLayout *layout, int row, int column, bool deleteWidgets);
+	//void deleteChildWidgets(QLayoutItem *item);
 
 	void accept();
 
@@ -93,6 +134,11 @@ private:
 	QList<DvbConfigPage *> configPages;
 	KLineEdit *regexLineEdit;
 	KLineEdit *actionAfterRecordingLineEdit;
+	QList<KLineEdit *> regexList;
+	QList<QSpinBox *> regexPriorityList;
+	QMap<QCheckBox*, KLineEdit*> regexBoxMap;
+	QGridLayout *regexGrid;
+	QList<RegexInputLine *> regexInputList;
 };
 
 class DvbScanFileDownloadDialog : public KDialog

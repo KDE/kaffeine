@@ -55,7 +55,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	sqlInit(QLatin1String("RecordingSchedule"),
 		QStringList() << QLatin1String("Name") << QLatin1String("Channel") << QLatin1String("Begin") <<
 		QLatin1String("Duration") << QLatin1String("Repeat") << QLatin1String("Subheading") << QLatin1String("Details")
-		<< QLatin1String("beginEPG") << QLatin1String("endEPG") << QLatin1String("durationEPG"));
+		<< QLatin1String("beginEPG") << QLatin1String("endEPG") << QLatin1String("durationEPG") << QLatin1String("Disabled"));
 
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
@@ -89,6 +89,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 	while (!stream.atEnd()) {
 		DvbRecording recording;
+		recording.disabled = false;
 		QString channelName;
 		stream >> channelName;
 		recording.channel = channelModel->findChannelByName(channelName);
@@ -246,6 +247,21 @@ void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 	emit recordingRemoved(recording);
 	executeActionAfterRecording(*recording);
 	findNewRecordings();
+	removeDuplicates();
+	disableConflicts();
+}
+
+
+void DvbRecordingModel::disableLessImportant(DvbSharedRecording recording1, DvbSharedRecording recording2)
+{
+	if (recording1->priority < recording2->priority) {
+		DvbRecording rec1 = *(recording1.constData());
+		rec1.disabled = true;
+	}
+	if (recording2->priority < recording1->priority) {
+		DvbRecording rec2 = *(recording1.constData());
+		rec2.disabled = true;
+	}
 }
 
 void DvbRecordingModel::addToUnwantedRecordings(DvbSharedRecording recording)
@@ -268,6 +284,42 @@ void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 	Log("DvbRecordingModel::executeActionAfterRecording executed.");
 
 
+}
+
+void DvbRecordingModel::removeDuplicates()
+{
+	QList<DvbSharedRecording> recordingList = QList<DvbSharedRecording>();
+	DvbEpgModel *epgModel = manager->getEpgModel();
+	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordingMap = epgModel->getRecordings();
+	foreach(DvbSharedRecording key, recordings.values())
+	{
+		recordingList.append(key);
+	}
+	int i = 0;
+	foreach(DvbSharedRecording rec1, recordingList)
+	{
+		int j = 0;
+		DvbRecording loopEntry1 = *rec1;
+		foreach(DvbSharedRecording rec2, recordingList)
+		{
+			DvbRecording loopEntry2 = *rec2;
+			if (i < j) {
+				if (loopEntry1.begin == loopEntry2.begin
+					&& loopEntry1.duration == loopEntry2.duration
+					&& loopEntry1.channel->name == loopEntry2.channel->name
+					&& loopEntry1.name == loopEntry2.name) {
+					recordings.remove(recordings.key(rec1));
+					recordingMap.remove(rec1);
+					Log("DvbRecordingModel::removeDuplicates removed.") << loopEntry1.name;
+				}
+			}
+			j = j + 1;
+		}
+		i = i + 1;
+	}
+	epgModel->setRecordings(recordingMap);
+
+	Log("DvbRecordingModel::removeDuplicates executed.");
 }
 
 bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
@@ -316,6 +368,149 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 	return found;
 }
 
+void DvbRecordingModel::disableConflicts()
+{
+	int maxSize = 1; // manager->getDeviceConfigs().size();
+	// foreach(DvbDeviceConfig config, manager->getDeviceConfigs())
+	// {
+	//	maxSize = maxSize + config.numberOfTuners;
+	// }
+
+	QList<DvbSharedRecording> recordingList = QList<DvbSharedRecording>();
+	foreach(DvbSharedRecording key, recordings.values())
+	{
+		DvbRecording rec = *(key.constData());
+		if (!(rec.disabled)) {
+			recordingList.append(key);
+		}
+	}
+
+	foreach(DvbSharedRecording rec1, recordingList)
+	{
+		QList<DvbSharedRecording> conflictList = QList<DvbSharedRecording>();
+		conflictList.append(rec1);
+
+		DvbRecording rec1_ = *(rec1.constData());
+
+		foreach(DvbSharedRecording rec2, recordingList)
+		{
+			DvbRecording rec2_ = *(rec2.constData());
+			if (isInConflictWithAll(rec2, conflictList)) {
+				conflictList.append(rec2);
+			}
+
+		}
+		if (conflictList.size() > maxSize) {
+			disableLeastImportants(conflictList);
+		}
+	}
+
+	DvbEpgModel *epgModel = manager->getEpgModel();
+
+	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordingMap = epgModel->getRecordings();
+	foreach(DvbSharedRecording key1, recordingMap.keys())
+	{
+		DvbEpgEntry loopEntry1 = *(recordingMap.value(key1));
+		DvbRecording rec1 = *(key1.constData());
+
+		foreach(DvbSharedRecording key2, recordingMap.keys())
+		{
+			DvbEpgEntry loopEntry2 = *(recordingMap.value(key2));
+			DvbRecording rec2 = *(key1.constData());
+			if (!rec1.disabled && !rec2.disabled) {
+				disableLessImportant(key1, key2);
+			}
+		}
+	}
+
+}
+
+
+bool DvbRecordingModel::areInConflict(DvbSharedRecording recording1, DvbSharedRecording recording2)
+{
+	DvbRecording rec1 = *(recording1.constData());
+	DvbRecording rec2 = *(recording2.constData());
+	int length1 = 60 * 60 * rec1.duration.hour() + 60 * rec1.duration.minute() + rec1.duration.second();
+	QDateTime end1 = rec1.begin.addSecs(length1);
+	int length2 = 60 * 60 * rec2.duration.hour() + 60 * rec2.duration.minute() + rec2.duration.second();
+	QDateTime end2 = rec2.begin.addSecs(length2);
+	if (!rec1.disabled && !rec2.disabled) {
+		if (rec1.channel->transportStreamId != rec2.channel->transportStreamId) {
+			if (rec1.begin < rec2.begin && rec2.begin < end2) {
+				return true;
+			}
+			if (rec2.begin < rec1.begin && rec1.begin < end1) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+bool DvbRecordingModel::isInConflictWithAll(DvbSharedRecording rec, QList<DvbSharedRecording> recList)
+{
+	foreach(DvbSharedRecording listRec, recList)
+	{
+		if (!areInConflict(rec, listRec)) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+int DvbRecordingModel::getNumberOfLeastImportants(QList<DvbSharedRecording> recList)
+{
+	DvbSharedRecording leastImportantShared = getLeastImportant(recList);
+	DvbRecording leastImportant = *(leastImportantShared.constData());
+	int leastImportance = leastImportant.priority;
+	int count = 0;
+	foreach(DvbSharedRecording listRecShared, recList)
+	{
+		DvbRecording listRec = *(listRecShared.constData());
+		if (listRec.priority == leastImportance) {
+			count = count + 1;
+		}
+	}
+
+	return count;
+}
+
+DvbSharedRecording DvbRecordingModel::getLeastImportant(QList<DvbSharedRecording> recList)
+{
+	DvbSharedRecording leastImportantShared = recList.value(0);
+	DvbRecording leastImportant = *(leastImportantShared.constData());
+	foreach(DvbSharedRecording listRecShared, recList)
+	{
+		DvbRecording listRec = *(listRecShared.constData());
+		if (listRec.priority < leastImportant.priority) {
+			leastImportant = listRec;
+			leastImportantShared = listRecShared;
+		}
+	}
+
+	return leastImportantShared;
+}
+
+void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList)
+{
+	int numberOfLeastImportants = getNumberOfLeastImportants(recList);
+	if (numberOfLeastImportants < recList.size()) {
+		DvbSharedRecording leastImportantShared = getLeastImportant(recList);
+		DvbRecording leastImportant = *(leastImportantShared.constData());
+		int leastImportance = leastImportant.priority;
+
+		foreach(DvbSharedRecording listRecShared, recList)
+		{
+			DvbRecording listRec = *(listRecShared.constData());
+			if (listRec.priority == leastImportance) {
+				listRec.disabled = true;
+				Log("DvbRecordingModel::disableLeastImportants disabled:") << listRec.name << listRec.begin.toString();
+			}
+		}
+	}
+
+}
+
 void DvbRecordingModel::findNewRecordings()
 {
 	DvbEpgModel *epgModel = manager->getEpgModel();
@@ -324,18 +519,24 @@ void DvbRecordingModel::findNewRecordings()
 	{
 		DvbEpgEntry entry = *(epgMap.value(key));
 		QString title = entry.title;
-		QRegExp recordingRegex = QRegExp(manager->getRecordingRegex());
-		if (!recordingRegex.isEmpty())
-			{
-			if (recordingRegex.indexIn(title) != -1)
-			{
-				if (!DvbRecordingModel::existsSimilarRecording(*epgMap.value(key)))
+		QStringList regexList = manager->getRecordingRegexList();
+		int i = 0;
+		foreach(QString regex, regexList) {
+			QRegExp recordingRegex = QRegExp(regex);
+			if (!recordingRegex.isEmpty())
 				{
-				epgModel->scheduleProgram(epgMap.value(key), manager->getBeginMargin(),
-						manager->getEndMargin(), false);
-				Log("DvbRecordingModel::findNewRecordings: scheduled") << title;
+				if (recordingRegex.indexIn(title) != -1)
+				{
+					if (!DvbRecordingModel::existsSimilarRecording(*epgMap.value(key)))
+					{
+					int priority = manager->getRecordingRegexPriorityList().value(i);
+					epgModel->scheduleProgram(epgMap.value(key), manager->getBeginMargin(),
+							manager->getEndMargin(), false, priority);
+					Log("DvbRecordingModel::findNewRecordings: scheduled") << title;
+					}
 				}
 			}
+			i = i + 1;
 		}
 	}
 
@@ -382,6 +583,7 @@ void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int inde
 	query.bindValue(index++, recording->beginEPG.toString(Qt::ISODate));
 	query.bindValue(index++, recording->endEPG.toString(Qt::ISODate));
 	query.bindValue(index++, recording->durationEPG.toString(Qt::ISODate));
+	query.bindValue(index++, recording->disabled);
 }
 
 bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index)
@@ -402,6 +604,7 @@ bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query
 	recording->endEPG =
 		QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toLocalTime();
 	recording->durationEPG = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
+	recording->disabled = query.value(index++).toBool();
 
 	if (recording->validate()) {
 		recording->setSqlKey(sqlKey);
@@ -486,6 +689,10 @@ DvbRecordingFile::~DvbRecordingFile()
 
 bool DvbRecordingFile::start(DvbRecording &recording)
 {
+	if (recording.disabled) {
+		return false;
+	}
+
 	if (!file.isOpen()) {
 		QString folder = manager->getRecordingFolder();
 		QDate currentDate = QDate::currentDate();
@@ -630,6 +837,8 @@ void DvbRecordingFile::stop()
 
 	manager->getRecordingModel()->executeActionAfterRecording(manager->getRecordingModel()->getCurrentRecording());
 	manager->getRecordingModel()->findNewRecordings();
+	manager->getRecordingModel()->removeDuplicates();
+	manager->getRecordingModel()->disableConflicts();
 }
 
 void DvbRecordingFile::deviceStateChanged()

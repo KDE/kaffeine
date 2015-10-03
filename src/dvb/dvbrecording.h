@@ -57,6 +57,8 @@ public:
 	QDateTime endEPG;
 	QTime durationEPG;
 	int repeat; // (1 << 0) (monday) | (1 << 1) (tuesday) | ... | (1 << 6) (sunday)
+	int priority;
+	bool disabled;
 	Status status; // read-only
 };
 
@@ -82,9 +84,17 @@ public:
 	void removeRecording(DvbSharedRecording recording);
 	void addToUnwantedRecordings(DvbSharedRecording recording);
 	void findNewRecordings();
+	void removeDuplicates();
 	void executeActionAfterRecording(DvbRecording recording);
 	DvbRecording getCurrentRecording();
 	void setCurrentRecording(DvbRecording _currentRecording);
+	void disableLessImportant(DvbSharedRecording recording1, DvbSharedRecording recording2);
+	bool areInConflict(DvbSharedRecording recording1, DvbSharedRecording recording2);
+	bool isInConflictWithAll(DvbSharedRecording rec, QList<DvbSharedRecording> recList);
+	int getNumberOfLeastImportants(QList<DvbSharedRecording> recList);
+	DvbSharedRecording getLeastImportant(QList<DvbSharedRecording> recList);
+	void disableLeastImportants(QList<DvbSharedRecording> recList);
+	void disableConflicts();
 
 signals:
 	void recordingAdded(const DvbSharedRecording &recording);

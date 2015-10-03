@@ -102,6 +102,7 @@ public:
 	void addChannel(DvbChannel &channel);
 	void updateChannel(DvbSharedChannel channel, DvbChannel &modifiedChannel);
 	void removeChannel(DvbSharedChannel channel);
+	bool areInTheSameBunch(DvbSharedChannel channel1, DvbSharedChannel channel2);
 	void dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
 		int insertBeforeNumber);
 

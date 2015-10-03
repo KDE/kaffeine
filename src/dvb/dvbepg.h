@@ -76,12 +76,13 @@ public:
 
 	QMap<DvbEpgEntryId, DvbSharedEpgEntry> getEntries() const;
 	QMap<DvbSharedRecording, DvbSharedEpgEntry> getRecordings() const;
+	void setRecordings(const QMap<DvbSharedRecording, DvbSharedEpgEntry> map);
 	QHash<DvbSharedChannel, int> getEpgChannels() const;
 	QList<DvbSharedEpgEntry> getCurrentNext(const DvbSharedChannel &channel) const;
 
 	DvbSharedEpgEntry addEntry(const DvbEpgEntry &entry);
 	void scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecondsBefore,
-		int extraSecondsAfter, bool checkForRecursion=false);
+		int extraSecondsAfter, bool checkForRecursion=false, int priority=10);
 
 	void startEventFilter(DvbDevice *device, const DvbSharedChannel &channel);
 	void stopEventFilter(DvbDevice *device, const DvbSharedChannel &channel);

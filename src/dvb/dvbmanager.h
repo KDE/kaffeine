@@ -124,6 +124,9 @@ public:
 	QString getTimeShiftFolder() const;
 	QString getNamingFormat() const;
 	QString getRecordingRegex() const;
+	QStringList getRecordingRegexList() const;
+	QList<int> getRecordingRegexPriorityList() const;
+	//QMap<QString, int> getRecordingRegexPriorityMap() const;
 	QString getActionAfterRecording() const;
 	int getBeginMargin() const; // seconds
 	int getEndMargin() const; // seconds
@@ -133,6 +136,13 @@ public:
 	void setTimeShiftFolder(const QString &path);
 	void setNamingFormat(const QString namingFormat);
 	void setRecordingRegex(const QString regex);
+	void setRecordingRegexList(const QStringList regexList);
+	void setRecordingRegexPriorityList(const QList<int> regexList);
+	//void setRecordingRegexPriorityMap(const QMap<QString, int>);
+	bool removeRecordingRegex(QString regex);
+	bool addRecordingRegex(QString regex);
+	bool removeRecordingRegexPriority(int priority);
+	bool addRecordingRegexPriority(int index);
 	void setActionAfterRecording(const QString actionAfterRecording);
 	void setBeginMargin(int beginMargin); // seconds
 	void setEndMargin(int endMargin); // seconds
@@ -193,6 +203,7 @@ public:
 	QList<DvbConfig> configs;
 	int useCount; // -1 means exclusive use
 	int prioritizedUseCount;
+	int numberOfTuners;
 	QString source;
 	DvbTransponder transponder;
 };

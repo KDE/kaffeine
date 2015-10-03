@@ -259,6 +259,9 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 		switch (role) {
 		case Qt::DecorationRole:
 			if (index.column() == 0) {
+				if (recording->disabled) {
+					return KIcon(QLatin1String("dialog-error"));
+				}
 				switch (recording->status) {
 				case DvbRecording::Inactive:
 					break;
@@ -517,6 +520,8 @@ void DvbRecordingEditor::checkValidity()
 void DvbRecordingEditor::accept()
 {
 	DvbRecording newRecording;
+	newRecording.disabled = false;
+	newRecording.priority = 100;
 	newRecording.name = nameEdit->text();
 	newRecording.channel =
 		manager->getChannelModel()->findChannelByName(channelBox->currentText());
