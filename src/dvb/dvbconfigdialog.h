@@ -61,26 +61,6 @@ public:
 	QSpinBox *spinBox;
 	QCheckBox *checkBox;
 
-	/*
-public:
-	int getIndex() const
-	{
-		return index;
-	}
-	KLineEdit getLineEdit() const
-	{
-		return lineEdit;
-	}
-	QSpinBox getSpinBox() const
-	{
-		return spinBox;
-	}
-	QCheckBox getCheckBox() const
-	{
-		return checkBox;
-	}
-*/
-
 };
 
 class DvbConfigDialog : public KDialog
@@ -132,11 +112,7 @@ private:
 	QLabel *longitudeValidLabel;
 	QLabel *namingFormatValidLabel;
 	QList<DvbConfigPage *> configPages;
-	KLineEdit *regexLineEdit;
 	KLineEdit *actionAfterRecordingLineEdit;
-	QList<KLineEdit *> regexList;
-	QList<QSpinBox *> regexPriorityList;
-	QMap<QCheckBox*, KLineEdit*> regexBoxMap;
 	QGridLayout *regexGrid;
 	QList<RegexInputLine *> regexInputList;
 };

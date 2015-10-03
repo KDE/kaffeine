@@ -116,19 +116,13 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	namingFormatValidLabel->setPixmap(validPixmap);
 	gridLayout->addWidget(namingFormatValidLabel, 4,2);
 
-	gridLayout->addWidget(new QLabel(i18n("Regex for automatic recording:")), 5, 0);
 
-	regexLineEdit = new KLineEdit(widget);
-	regexLineEdit->setText(manager->getRecordingRegex());
-	regexLineEdit->setToolTip(i18n("Automatically schedules recordings for matching titles."));
-	gridLayout->addWidget(regexLineEdit, 5, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	6, 0);
+	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	5, 0);
 
 	actionAfterRecordingLineEdit = new KLineEdit(widget);
 	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());
 	actionAfterRecordingLineEdit->setToolTip(i18n("Leave empty for no command."));
-	gridLayout->addWidget(actionAfterRecordingLineEdit, 6, 1);
+	gridLayout->addWidget(actionAfterRecordingLineEdit, 5, 1);
 
 	boxLayout->addLayout(gridLayout);
 
@@ -203,8 +197,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	boxLayout->addStretch();
 
 	tabWidget->addTab(widget, KIcon(QLatin1String("configure")), i18n("General Options"));
-
-	//
 
 	QWidget *widgetAutomaticRecording = new QWidget(tabWidget);
 	QBoxLayout *boxLayoutAutomaticRecording = new QVBoxLayout(widgetAutomaticRecording);
@@ -590,7 +582,6 @@ void DvbConfigDialog::accept()
 	manager->setRecordingFolder(recordingFolderEdit->text());
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
 	manager->setNamingFormat(namingFormat->text());
-	manager->setRecordingRegex(regexLineEdit->text());
 	manager->setActionAfterRecording(actionAfterRecordingLineEdit->text());
 	manager->setBeginMargin(beginMarginBox->value() * 60);
 	manager->setEndMargin(endMarginBox->value() * 60);
@@ -598,7 +589,6 @@ void DvbConfigDialog::accept()
 	manager->setCreateInfoFile(createInfoFileBox->isChecked());
 	manager->setRecordingRegexList(QStringList());
 	manager->setRecordingRegexPriorityList(QList<int>());
-	// PITÄÄ HAKEA NÄYTÖLTÄ TIEDOT, EI VANHASTA LISTASTA
 
 	foreach (RegexInputLine *regexInputLine, regexInputList)
 	{
