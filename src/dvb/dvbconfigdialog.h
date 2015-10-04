@@ -91,6 +91,7 @@ private:
 	static double toLatitude(const QString &text, bool *ok);
 	static double toLongitude(const QString &text, bool *ok);
 	void removeWidgets(QGridLayout *layout, int row, int column, bool deleteWidgets);
+	void initRegexButtons(QGridLayout *buttonGrid);
 	//void deleteChildWidgets(QLayoutItem *item);
 
 	void accept();

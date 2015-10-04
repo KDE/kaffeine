@@ -203,16 +203,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 
 
 	QGridLayout *buttonGrid = new QGridLayout();
-	QPushButton *pushButtonAdd = new QPushButton(i18n("Add new Regex"), widget);
-	connect(pushButtonAdd, SIGNAL(clicked()), this, SLOT(newRegex()));
-	buttonGrid->addWidget(pushButtonAdd, 0, 0);
-	pushButtonAdd->setToolTip(i18n("Add another Regex"));
-
-	QPushButton *pushButtonRemove = new QPushButton(i18n("Remove Regex"), widget);
-	connect(pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeRegex()));
-	buttonGrid->addWidget(pushButtonRemove, 0, 1);
-	pushButtonRemove->setToolTip(i18n("Remove Regexes"));
-
+	initRegexButtons(buttonGrid);
 
 	regexGrid = new QGridLayout();
 	int j = 0;
@@ -357,6 +348,25 @@ void DvbConfigDialog::removeWidgets(QGridLayout *layout, int row, int column, bo
     }
 }
 
+void DvbConfigDialog::initRegexButtons(QGridLayout *buttonGrid)
+{
+	KAction *action = new KAction(KIcon(QLatin1String("list-add")), i18nc("@action", "Add new Regex"), tabWidget);
+	connect(action, SIGNAL(triggered()), this, SLOT(newRegex()));
+	tabWidget->addAction(action);
+	QPushButton *pushButtonAdd = new QPushButton(action->icon(), action->text(), tabWidget);
+	connect(pushButtonAdd, SIGNAL(clicked()), this, SLOT(newRegex()));
+	buttonGrid->addWidget(pushButtonAdd, 0, 0);
+	pushButtonAdd->setToolTip(i18n("Add another regural expression."));
+
+	action = new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove Regex"), tabWidget);
+	connect(action, SIGNAL(triggered()), this, SLOT(removeRegex()));
+	tabWidget->addAction(action);
+	QPushButton *pushButtonRemove = new QPushButton(action->icon(), action->text(), tabWidget);
+	connect(pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeRegex()));
+	buttonGrid->addWidget(pushButtonRemove, 0, 1);
+	pushButtonRemove->setToolTip(i18n("Remove checked regular expressions."));
+}
+
 void DvbConfigDialog::removeRegex()
 {
 	//regexGrid = new QGridLayout(tabWidget);
@@ -383,15 +393,7 @@ void DvbConfigDialog::removeRegex()
 	QGridLayout *buttonGrid = new QGridLayout();
 	regexGrid = new QGridLayout();
 
-	QPushButton *pushButtonAdd = new QPushButton(i18n("Add new Regex"), tabWidget);
-	connect(pushButtonAdd, SIGNAL(clicked()), this, SLOT(newRegex()));
-	buttonGrid->addWidget(pushButtonAdd, 0, 0);
-	pushButtonAdd->setToolTip(i18n("Add another Regex"));
-
-	QPushButton *pushButtonRemove = new QPushButton(i18n("Remove Regex"), tabWidget);
-	connect(pushButtonRemove, SIGNAL(clicked()), this, SLOT(removeRegex()));
-	buttonGrid->addWidget(pushButtonRemove, 0, 1);
-	pushButtonRemove->setToolTip(i18n("Remove Regexes"));
+	initRegexButtons(buttonGrid);
 
 	int j = 0;
 	foreach (RegexInputLine *oldLine, regexInputList) {
