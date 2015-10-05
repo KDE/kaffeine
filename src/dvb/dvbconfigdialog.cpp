@@ -356,7 +356,7 @@ void DvbConfigDialog::initRegexButtons(QGridLayout *buttonGrid)
 	QPushButton *pushButtonAdd = new QPushButton(action->icon(), action->text(), tabWidget);
 	connect(pushButtonAdd, SIGNAL(clicked()), this, SLOT(newRegex()));
 	buttonGrid->addWidget(pushButtonAdd, 0, 0);
-	pushButtonAdd->setToolTip(i18n("Add another regural expression."));
+	pushButtonAdd->setToolTip(i18n("Add another regular expression."));
 
 	action = new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove Regex"), tabWidget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRegex()));
