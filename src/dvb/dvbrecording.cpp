@@ -25,13 +25,18 @@
 #include <QMap>
 #include <QProcess>
 #include <QSet>
+#include <QCoreApplication>
+#include <QEventLoop>
 #include <QVariant>
+#include <KIdleTime>
 #include <KStandardDirs>
 #include "../ensurenopendingoperation.h"
 #include "../log.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbepg.h"
+#include "dvbtab.h"
+#include "dvbliveview.h"
 
 bool DvbRecording::validate()
 {
@@ -252,15 +257,17 @@ void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 }
 
 
-void DvbRecordingModel::disableLessImportant(DvbSharedRecording recording1, DvbSharedRecording recording2)
+void DvbRecordingModel::disableLessImportant(DvbSharedRecording &recording1, DvbSharedRecording &recording2)
 {
 	if (recording1->priority < recording2->priority) {
 		DvbRecording rec1 = *(recording1.constData());
 		rec1.disabled = true;
+		Log("DvbRecordingModel::disableLessImportant disabled") << recording1->name;
 	}
 	if (recording2->priority < recording1->priority) {
 		DvbRecording rec2 = *(recording1.constData());
 		rec2.disabled = true;
+		Log("DvbRecordingModel::disableLessImportant disabled") << recording2->name;
 	}
 }
 
@@ -377,11 +384,10 @@ void DvbRecordingModel::disableConflicts()
 	// }
 
 	QList<DvbSharedRecording> recordingList = QList<DvbSharedRecording>();
-	foreach(DvbSharedRecording key, recordings.values())
+	foreach(DvbSharedRecording rec, recordings.values())
 	{
-		DvbRecording rec = *(key.constData());
-		if (!(rec.disabled)) {
-			recordingList.append(key);
+		if (!(rec->disabled)) {
+			recordingList.append(rec);
 		}
 	}
 
@@ -390,13 +396,13 @@ void DvbRecordingModel::disableConflicts()
 		QList<DvbSharedRecording> conflictList = QList<DvbSharedRecording>();
 		conflictList.append(rec1);
 
-		DvbRecording rec1_ = *(rec1.constData());
-
 		foreach(DvbSharedRecording rec2, recordingList)
 		{
-			DvbRecording rec2_ = *(rec2.constData());
 			if (isInConflictWithAll(rec2, conflictList)) {
 				conflictList.append(rec2);
+				Log("DvbRecordingModel::disableConflicts:") << rec1->name << rec1->begin.toString() <<
+						" and " << rec2->name << rec2->begin.toString();
+
 			}
 
 		}
@@ -405,41 +411,21 @@ void DvbRecordingModel::disableConflicts()
 		}
 	}
 
-	DvbEpgModel *epgModel = manager->getEpgModel();
-
-	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordingMap = epgModel->getRecordings();
-	foreach(DvbSharedRecording key1, recordingMap.keys())
-	{
-		DvbEpgEntry loopEntry1 = *(recordingMap.value(key1));
-		DvbRecording rec1 = *(key1.constData());
-
-		foreach(DvbSharedRecording key2, recordingMap.keys())
-		{
-			DvbEpgEntry loopEntry2 = *(recordingMap.value(key2));
-			DvbRecording rec2 = *(key1.constData());
-			if (!rec1.disabled && !rec2.disabled) {
-				disableLessImportant(key1, key2);
-			}
-		}
-	}
-
 }
 
 
 bool DvbRecordingModel::areInConflict(DvbSharedRecording recording1, DvbSharedRecording recording2)
 {
-	DvbRecording rec1 = *(recording1.constData());
-	DvbRecording rec2 = *(recording2.constData());
-	int length1 = 60 * 60 * rec1.duration.hour() + 60 * rec1.duration.minute() + rec1.duration.second();
-	QDateTime end1 = rec1.begin.addSecs(length1);
-	int length2 = 60 * 60 * rec2.duration.hour() + 60 * rec2.duration.minute() + rec2.duration.second();
-	QDateTime end2 = rec2.begin.addSecs(length2);
-	if (!rec1.disabled && !rec2.disabled) {
-		if (rec1.channel->transportStreamId != rec2.channel->transportStreamId) {
-			if (rec1.begin < rec2.begin && rec2.begin < end2) {
+	int length1 = 60 * 60 * recording1->duration.hour() + 60 * recording1->duration.minute() + recording1->duration.second();
+	QDateTime end1 = recording1->begin.addSecs(length1);
+	int length2 = 60 * 60 * recording2->duration.hour() + 60 * recording2->duration.minute() + recording2->duration.second();
+	QDateTime end2 = recording2->begin.addSecs(length2);
+	if (!recording1->disabled && !recording1->disabled) {
+		if (recording1->channel->transportStreamId != recording2->channel->transportStreamId) {
+			if (recording2->begin > recording1->begin && recording2->begin < end1) {
 				return true;
 			}
-			if (rec2.begin < rec1.begin && rec1.begin < end1) {
+			if (recording1->begin > recording2->begin && recording1->begin < end2) {
 				return true;
 			}
 		}
@@ -448,6 +434,7 @@ bool DvbRecordingModel::areInConflict(DvbSharedRecording recording1, DvbSharedRe
 }
 bool DvbRecordingModel::isInConflictWithAll(DvbSharedRecording rec, QList<DvbSharedRecording> recList)
 {
+
 	foreach(DvbSharedRecording listRec, recList)
 	{
 		if (!areInConflict(rec, listRec)) {
@@ -461,13 +448,11 @@ bool DvbRecordingModel::isInConflictWithAll(DvbSharedRecording rec, QList<DvbSha
 int DvbRecordingModel::getNumberOfLeastImportants(QList<DvbSharedRecording> recList)
 {
 	DvbSharedRecording leastImportantShared = getLeastImportant(recList);
-	DvbRecording leastImportant = *(leastImportantShared.constData());
-	int leastImportance = leastImportant.priority;
+	int leastImportance = leastImportantShared->priority;
 	int count = 0;
 	foreach(DvbSharedRecording listRecShared, recList)
 	{
-		DvbRecording listRec = *(listRecShared.constData());
-		if (listRec.priority == leastImportance) {
+		if (listRecShared->priority == leastImportance) {
 			count = count + 1;
 		}
 	}
@@ -477,18 +462,17 @@ int DvbRecordingModel::getNumberOfLeastImportants(QList<DvbSharedRecording> recL
 
 DvbSharedRecording DvbRecordingModel::getLeastImportant(QList<DvbSharedRecording> recList)
 {
-	DvbSharedRecording leastImportantShared = recList.value(0);
-	DvbRecording leastImportant = *(leastImportantShared.constData());
-	foreach(DvbSharedRecording listRecShared, recList)
+	DvbSharedRecording leastImportant = recList.value(0);
+	foreach(DvbSharedRecording listRec, recList)
 	{
-		DvbRecording listRec = *(listRecShared.constData());
-		if (listRec.priority < leastImportant.priority) {
+		Log("DvbRecordingModel::getLeastImportant: name and priority") << listRec->name << listRec->priority;
+		if (listRec->priority < leastImportant->priority) {
 			leastImportant = listRec;
-			leastImportantShared = listRecShared;
 		}
 	}
 
-	return leastImportantShared;
+	Log("DvbRecordingModel::getLeastImportant:") << leastImportant->name;
+	return leastImportant;
 }
 
 void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList)
@@ -496,14 +480,14 @@ void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList
 	int numberOfLeastImportants = getNumberOfLeastImportants(recList);
 	if (numberOfLeastImportants < recList.size()) {
 		DvbSharedRecording leastImportantShared = getLeastImportant(recList);
-		DvbRecording leastImportant = *(leastImportantShared.constData());
-		int leastImportance = leastImportant.priority;
+		int leastImportance = leastImportantShared->priority;
 
 		foreach(DvbSharedRecording listRecShared, recList)
 		{
 			DvbRecording listRec = *(listRecShared.constData());
-			if (listRec.priority == leastImportance) {
+			if (listRecShared->priority == leastImportance) {
 				listRec.disabled = true;
+				updateRecording(listRecShared, listRec);
 				Log("DvbRecordingModel::disableLeastImportants disabled:") << listRec.name << listRec.begin.toString();
 			}
 		}
@@ -583,6 +567,7 @@ void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int inde
 	query.bindValue(index++, recording->beginEPG.toString(Qt::ISODate));
 	query.bindValue(index++, recording->endEPG.toString(Qt::ISODate));
 	query.bindValue(index++, recording->durationEPG.toString(Qt::ISODate));
+	query.bindValue(index++, recording->priority);
 	query.bindValue(index++, recording->disabled);
 }
 
@@ -604,6 +589,7 @@ bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query
 	recording->endEPG =
 		QDateTime::fromString(query.value(index++).toString(), Qt::ISODate).toLocalTime();
 	recording->durationEPG = QTime::fromString(query.value(index++).toString(), Qt::ISODate);
+	recording->priority = query.value(index++).toInt();
 	recording->disabled = query.value(index++).toBool();
 
 	if (recording->validate()) {
@@ -613,6 +599,88 @@ bool DvbRecordingModel::insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query
 	}
 
 	return false;
+}
+
+/*
+ * Returns -1 if no upcoming recordings.
+ */
+int DvbRecordingModel::getSecondsUntilNextRecording() const
+{
+	signed long timeUntil = -1;
+	foreach (const DvbSharedRecording &recording, recordings) {
+		DvbRecording rec = *recording;
+		int length = 60 * 60 * rec.duration.hour() + 60 * rec.duration.minute() + rec.duration.second();
+		QDateTime end = rec.begin.addSecs(length);
+		if (rec.disabled || end < QDateTime::currentDateTime().toUTC()) {
+			continue;
+		}
+		if (end > QDateTime::currentDateTime().toUTC() && rec.begin <= QDateTime::currentDateTime().toUTC()) {
+			timeUntil = 0;
+			Log("DvbRecordingModel::getSecondsUntilNextRecording: rec ongoing") << rec.name;
+			break;
+		}
+		if (rec.begin > QDateTime::currentDateTime().toUTC()) {
+			if (timeUntil == -1 || timeUntil > rec.begin.toTime_t() - QDateTime::currentDateTime().toUTC().toTime_t()) {
+				timeUntil = rec.begin.toTime_t() - QDateTime::currentDateTime().toUTC().toTime_t();
+			}
+		}
+
+	}
+
+	Log("DvbRecordingModel::getSecondsUntilNextRecording: returned TRUE") << QString::number(timeUntil);
+	return timeUntil;
+}
+
+bool DvbRecordingModel::isScanWhenIdle() const
+{
+	return manager->isScanWhenIdle();
+}
+
+bool DvbRecordingModel::shouldWeScanChannels() const
+{
+	int numberOfChannels = manager->getChannelModel()->getChannels().size();
+	int idleTime = 1000 * 3600 + 1; // TODO
+	//KIdleTime* instance = KIdleTime::instance();
+	if (idleTime > 1000 * 3600) {
+		if (DvbRecordingModel::getSecondsUntilNextRecording() > numberOfChannels * 10) {
+			if (DvbRecordingModel::isScanWhenIdle()) {
+				return true;
+				Log("DvbRecordingModel::shouldWeScanChannels: returned TRUE");
+			}
+		}
+	}
+
+	return false;
+}
+
+void delay(int seconds)
+{
+    QTime dieTime= QTime::currentTime().addSecs(seconds);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+	Log("DvbRecordingModel::delay: Delayed for ") << QString::number(seconds) << " seconds";
+}
+
+void DvbRecordingModel::scanChannels()
+{
+Log("DvbRecordingModel::scanChannels executed");
+if (shouldWeScanChannels()) {
+	DvbChannelModel *channelModel = manager->getChannelModel();
+	QMap<int, DvbSharedChannel> channelMap = channelModel->getChannels();
+	foreach (int channelInt, channelMap.keys()) {
+		DvbSharedChannel channel;
+
+		if (channelInt > 0) {
+			channel = channelModel->findChannelByNumber(channelInt);
+		}
+		if (channel.isValid()) {
+			// TODO update tab
+			Log("DvbRecordingModel::scanChannels executed") << channel->name;
+			manager->getLiveView()->playChannel(channel);
+			delay(5);
+		}
+	}
+}
 }
 
 bool DvbRecordingModel::updateStatus(DvbRecording &recording)
@@ -972,3 +1040,4 @@ void DvbRecordingFile::processData(const char data[188])
 
 	file.write(data, 188);
 }
+

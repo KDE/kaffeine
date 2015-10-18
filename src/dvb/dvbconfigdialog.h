@@ -105,6 +105,7 @@ private:
 	KLineEdit *namingFormat;
 	QCheckBox *override6937CharsetBox;
 	QCheckBox *createInfoFileBox;
+	QCheckBox *scanWhenIdleBox;
 	KLineEdit *latitudeEdit;
 	KLineEdit *longitudeEdit;
 	QPixmap validPixmap;

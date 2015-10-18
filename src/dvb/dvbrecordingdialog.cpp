@@ -245,6 +245,8 @@ QVariant DvbRecordingTableModel::headerData(int section, Qt::Orientation orienta
 			return i18nc("@title:column tv show", "Start");
 		case 3:
 			return i18nc("@title:column tv show", "Duration");
+		case 4:
+			return i18nc("@title:column tv show", "Disabled");
 		}
 	}
 
@@ -289,8 +291,14 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 			case 3:
 				return KGlobal::locale()->formatTime(recording->duration,
 					false, true);
-			}
+			case 4: {
+				if (recording->disabled) {
+					return QString("Disabled");
+				}
+				return QString("Enabled");
+				}
 
+			}
 			break;
 		}
 	}

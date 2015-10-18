@@ -377,6 +377,11 @@ bool DvbManager::override6937Charset() const
 	return KGlobal::config()->group("DVB").readEntry("Override6937", false);
 }
 
+bool DvbManager::isScanWhenIdle() const
+{
+	return KGlobal::config()->group("DVB").readEntry("ScanWhenIdle", false);
+}
+
 bool DvbManager::createInfoFile() const
 {
 	return KGlobal::config()->group("DVB").readEntry("CreateInfoFile", false);
@@ -471,6 +476,11 @@ void DvbManager::setOverride6937Charset(bool override)
 {
 	KGlobal::config()->group("DVB").writeEntry("Override6937", override);
 	DvbSiText::setOverride6937(override);
+}
+
+void DvbManager::setScanWhenIdle(bool scanWhenIdle)
+{
+	KGlobal::config()->group("DVB").writeEntry("ScanWhenIdle", scanWhenIdle);
 }
 
 void DvbManager::setCreateInfoFile(bool createInfoFile)

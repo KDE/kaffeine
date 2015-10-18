@@ -81,7 +81,7 @@ public:
 
 	int columnCount() const
 	{
-		return 4;
+		return 5;
 	}
 
 	bool filterAcceptsItem(const DvbSharedRecording &recording) const

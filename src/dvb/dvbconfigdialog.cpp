@@ -140,6 +140,12 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 	createInfoFileBox->setChecked(manager->createInfoFile());
 	gridLayout->addWidget(createInfoFileBox, 2, 1);
 
+	gridLayout->addWidget(new QLabel(i18n("Scan channels when idle to fetch fresh EPG data.")),
+		3, 0);
+	scanWhenIdleBox = new QCheckBox(widget);
+	scanWhenIdleBox->setChecked(manager->isScanWhenIdle());
+	gridLayout->addWidget(scanWhenIdleBox, 3, 1);
+
 	boxLayout->addLayout(gridLayout);
 
 	QFrame *frame = new QFrame(widget);
@@ -589,6 +595,7 @@ void DvbConfigDialog::accept()
 	manager->setEndMargin(endMarginBox->value() * 60);
 	manager->setOverride6937Charset(override6937CharsetBox->isChecked());
 	manager->setCreateInfoFile(createInfoFileBox->isChecked());
+	manager->setScanWhenIdle(scanWhenIdleBox->isChecked());
 	manager->setRecordingRegexList(QStringList());
 	manager->setRecordingRegexPriorityList(QList<int>());
 
@@ -624,6 +631,7 @@ void DvbConfigDialog::accept()
 	manager->getRecordingModel()->findNewRecordings();
 	manager->getRecordingModel()->removeDuplicates();
 	manager->getRecordingModel()->disableConflicts();
+	//manager->getRecordingModel()->scanChannels();
 
 	KDialog::accept();
 }

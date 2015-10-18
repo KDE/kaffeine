@@ -31,6 +31,7 @@ class DvbEpgEntry;
 
 class DvbRecording : public SharedData, public SqlKey
 {
+
 public:
 	DvbRecording() : repeat(0), status(Inactive) { }
 	~DvbRecording() { }
@@ -38,6 +39,7 @@ public:
 	// checks that all variables are ok and updates 'end'
 	// 'sqlKey' and 'status' are ignored
 	bool validate();
+
 
 	enum Status {
 		Inactive,
@@ -88,13 +90,17 @@ public:
 	void executeActionAfterRecording(DvbRecording recording);
 	DvbRecording getCurrentRecording();
 	void setCurrentRecording(DvbRecording _currentRecording);
-	void disableLessImportant(DvbSharedRecording recording1, DvbSharedRecording recording2);
+	void disableLessImportant(DvbSharedRecording &recording1, DvbSharedRecording &recording2);
 	bool areInConflict(DvbSharedRecording recording1, DvbSharedRecording recording2);
 	bool isInConflictWithAll(DvbSharedRecording rec, QList<DvbSharedRecording> recList);
 	int getNumberOfLeastImportants(QList<DvbSharedRecording> recList);
 	DvbSharedRecording getLeastImportant(QList<DvbSharedRecording> recList);
 	void disableLeastImportants(QList<DvbSharedRecording> recList);
 	void disableConflicts();
+	int getSecondsUntilNextRecording() const;
+	bool isScanWhenIdle() const;
+	bool shouldWeScanChannels() const;
+	void scanChannels();
 
 signals:
 	void recordingAdded(const DvbSharedRecording &recording);
@@ -118,5 +124,7 @@ private:
 	bool hasPendingOperation;
 	DvbRecording currentRecording;
 };
+
+void delay(int seconds);
 
 #endif /* DVBRECORDING_H */
