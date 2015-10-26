@@ -60,7 +60,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 	sqlInit(QLatin1String("RecordingSchedule"),
 		QStringList() << QLatin1String("Name") << QLatin1String("Channel") << QLatin1String("Begin") <<
 		QLatin1String("Duration") << QLatin1String("Repeat") << QLatin1String("Subheading") << QLatin1String("Details")
-		<< QLatin1String("beginEPG") << QLatin1String("endEPG") << QLatin1String("durationEPG") << QLatin1String("Disabled"));
+		<< QLatin1String("beginEPG") << QLatin1String("endEPG") << QLatin1String("durationEPG") << QLatin1String("Priority") << QLatin1String("Disabled"));
 
 	// we regularly recheck the status of the recordings
 	// this way we can keep retrying if the device was busy / tuning failed
