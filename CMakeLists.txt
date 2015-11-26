@@ -21,6 +21,7 @@ if(STRICT_BUILD)
                   -DQT_NO_URL_CAST_FROM_STRING -DQT_STRICT_ITERATORS)
 endif(STRICT_BUILD)
 
+include(CheckIncludeFiles)
 check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
 
 if(NOT HAVE_DVB)
