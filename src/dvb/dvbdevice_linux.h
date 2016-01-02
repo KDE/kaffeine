@@ -73,6 +73,7 @@ private:
 	void stopDvr();
 	void run();
 
+	bool HasDelSys;
 	bool ready;
 	QString deviceId;
 	QString frontendName;

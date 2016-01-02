@@ -71,6 +71,41 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 		return;
 	}
 
+	struct dtv_properties props;
+	struct dtv_property dvb_prop;
+
+	dvb_prop.cmd = DTV_ENUM_DELSYS;
+	props.num = 1;
+	props.props = &dvb_prop;
+
+	transmissionTypes = 0;
+
+	if (!ioctl(fd, FE_GET_PROPERTY, &props)) {
+		HasDelSys = true;
+
+		for (unsigned i = 0; i < dvb_prop.u.buffer.len; i++) {
+			switch (dvb_prop.u.buffer.data[i]) {
+			case SYS_DVBS:
+				transmissionTypes |= DvbS;
+				break;
+			case SYS_DVBS2:
+				transmissionTypes |= DvbS2;
+				break;
+			case SYS_DVBT:
+				transmissionTypes |= DvbT;
+				break;
+			case SYS_DVBC_ANNEX_A:
+				transmissionTypes |= DvbC;
+				break;
+			case SYS_ATSC:
+				transmissionTypes |= Atsc;
+				break;
+			}
+		}
+	} else {
+		HasDelSys = false;
+	}
+
 	dvb_frontend_info frontend_info;
 	memset(&frontend_info, 0, sizeof(frontend_info));
 
@@ -85,31 +120,33 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 	deviceId = deviceId_;
 	frontendName = QString::fromUtf8(frontend_info.name);
 
-	switch (frontend_info.type) {
-	case FE_QAM:
-		transmissionTypes = DvbC;
-		break;
-	case FE_QPSK:
-		transmissionTypes = DvbS;
+	if (!transmissionTypes) {
+		switch (frontend_info.type) {
+		case FE_QAM:
+			transmissionTypes = DvbC;
+			break;
+		case FE_QPSK:
+			transmissionTypes = DvbS;
 
-		if (((frontend_info.caps & FE_CAN_2G_MODULATION) != 0) ||
-		    (strcmp(frontend_info.name, "Conexant CX24116/CX24118") == 0) ||
-		    (strcmp(frontend_info.name, "Genpix 8psk-to-USB2 DVB-S") == 0) ||
-		    (strcmp(frontend_info.name, "STB0899 Multistandard") == 0)) {
-			transmissionTypes |= DvbS2;
+			if (((frontend_info.caps & FE_CAN_2G_MODULATION) != 0) ||
+			    (strcmp(frontend_info.name, "Conexant CX24116/CX24118") == 0) ||
+			    (strcmp(frontend_info.name, "Genpix 8psk-to-USB2 DVB-S") == 0) ||
+			    (strcmp(frontend_info.name, "STB0899 Multistandard") == 0)) {
+				transmissionTypes |= DvbS2;
+			}
+
+			break;
+		case FE_OFDM:
+			transmissionTypes = DvbT;
+			break;
+		case FE_ATSC:
+			transmissionTypes = Atsc;
+			break;
+		default:
+			Log("DvbLinuxDevice::startDevice: unknown type") << frontend_info.type <<
+				QLatin1String("for frontend") << frontendPath;
+			return;
 		}
-
-		break;
-	case FE_OFDM:
-		transmissionTypes = DvbT;
-		break;
-	case FE_ATSC:
-		transmissionTypes = Atsc;
-		break;
-	default:
-		Log("DvbLinuxDevice::startDevice: unknown type") << frontend_info.type <<
-			QLatin1String("for frontend") << frontendPath;
-		return;
 	}
 
 	capabilities = 0;
@@ -427,6 +464,45 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 	Q_ASSERT(frontendFd >= 0);
 	stopDvr();
 	dvb_frontend_parameters params;
+
+	if (HasDelSys) {
+		struct dtv_properties props;
+		struct dtv_property dvb_prop[1];
+		unsigned delsys;
+
+		switch (transponder.getTransmissionType()) {
+		case DvbTransponderBase::DvbS:
+			delsys = SYS_DVBS;
+			break;
+		case DvbTransponderBase::DvbS2:
+			delsys = SYS_DVBS2;
+			break;
+		case DvbTransponderBase::DvbC:
+			delsys = SYS_DVBC_ANNEX_A;
+			break;
+		case DvbTransponderBase::DvbT:
+			delsys = SYS_DVBT;
+			break;
+		case DvbTransponderBase::Atsc:
+			delsys = SYS_ATSC;
+			break;
+		default:
+			Log("DvbLinuxDevice::tune: unknown transmission type") <<
+				transponder.getTransmissionType();
+			return false;
+		}
+
+		dvb_prop[0].cmd = DTV_DELIVERY_SYSTEM;
+		dvb_prop[0].u.data = delsys;
+		props.num = 1;
+		props.props = dvb_prop;
+		if (ioctl(frontendFd, FE_SET_PROPERTY, &props) < 0) {
+			Log("DvbLinuxDevice::tune: couldn't switch delivery system to") <<
+				transponder.getTransmissionType();
+			return false;
+		}
+	}
+
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::DvbC: {
