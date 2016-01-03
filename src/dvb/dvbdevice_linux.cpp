@@ -56,6 +56,35 @@ DvbLinuxDevice::~DvbLinuxDevice()
 	stopDevice();
 }
 
+static const char loglevel[9][10] = {
+	{"EMERG"},
+	{"ALERT"},
+	{"CRITICAL"},
+	{"ERROR"},
+	{"WARNING"},
+	{"NOTICE"},
+	{"INFO"},
+	{"DEBUG"},
+	{"OTHER"},
+};
+
+#define loglevels ((int)(sizeof(loglevel)/sizeof(*loglevel)))
+
+static void dvbv5_log(int level, const char *fmt, ...)
+{
+	va_list ap;
+	char log[1024];
+
+	if (level >= loglevels)
+		level = loglevels - 1;
+
+	va_start(ap, fmt);
+	vsnprintf(log, sizeof(log), fmt, ap);
+	va_end(ap);
+
+	Log("DvbLinuxDevice::libdvbv5") << loglevel[level] << log;
+}
+
 bool DvbLinuxDevice::isReady() const
 {
 	return ready;
@@ -64,7 +93,7 @@ bool DvbLinuxDevice::isReady() const
 void DvbLinuxDevice::startDevice(const QString &deviceId_)
 {
 	Q_ASSERT(!ready);
-	struct dvb_v5_fe_parms *parms = dvb_fe_open(adapter, index, 0, 0);
+	struct dvb_v5_fe_parms *parms = dvb_fe_open2(adapter, index, 0, 0, dvbv5_log);
 
 	if (!parms) {
 		Log("DvbLinuxDevice::startDevice: cannot open frontend") << frontendPath;
@@ -193,7 +222,7 @@ void DvbLinuxDevice::setDeviceEnabled(bool enabled_)
 bool DvbLinuxDevice::acquire()
 {
 	Q_ASSERT(enabled && (!dvbv5_parms) && (dvrFd < 0));
-	dvbv5_parms = dvb_fe_open(adapter, index, 1, 0);
+	dvbv5_parms = dvb_fe_open2(adapter, index, 1, 0, dvbv5_log);
 
 	if (!dvbv5_parms) {
 		Log("DvbLinuxDevice::acquire: cannot open frontend") << frontendPath;
