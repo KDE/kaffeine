@@ -25,6 +25,11 @@
 #include "dvbbackenddevice.h"
 #include "dvbcam_linux.h"
 
+#include <libdvbv5/dvb-file.h>
+#include <libdvbv5/dvb-demux.h>
+#include <libdvbv5/dvb-v5-std.h>
+#include <libdvbv5/dvb-scan.h>
+
 class DvbLinuxDevice : public QThread, public DvbBackendDevice
 {
 public:
@@ -43,6 +48,9 @@ public:
 	QString demuxUdi;
 	QString dvrPath;
 	QString dvrUdi;
+	int adapter;
+	int index;
+	struct dvb_v5_fe_parms *dvbv5_parms;
 	QString frontendPath;
 	QString frontendUdi;
 
@@ -73,7 +81,6 @@ private:
 	void stopDvr();
 	void run();
 
-	bool HasDelSys;
 	bool ready;
 	QString deviceId;
 	QString frontendName;
@@ -81,7 +88,6 @@ private:
 	Capabilities capabilities;
 	DvbFrontendDevice *frontend;
 	bool enabled;
-	int frontendFd;
 	QMap<int, int> dmxFds;
 
 	int dvrFd;

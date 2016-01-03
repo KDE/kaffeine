@@ -45,7 +45,7 @@
 // krazy:excludeall=syscalls
 
 DvbLinuxDevice::DvbLinuxDevice(QObject *parent) : QThread(parent), ready(false), frontend(NULL),
-	enabled(false), frontendFd(-1), dvrFd(-1), dvrBuffer(NULL, 0)
+	enabled(false), dvrFd(-1), dvrBuffer(NULL, 0)
 {
 	dvrPipe[0] = -1;
 	dvrPipe[1] = -1;
@@ -64,110 +64,58 @@ bool DvbLinuxDevice::isReady() const
 void DvbLinuxDevice::startDevice(const QString &deviceId_)
 {
 	Q_ASSERT(!ready);
-	int fd = open(QFile::encodeName(frontendPath).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
+	struct dvb_v5_fe_parms *parms = dvb_fe_open(adapter, index, 0, 0);
 
-	if (fd < 0) {
+	if (!parms) {
 		Log("DvbLinuxDevice::startDevice: cannot open frontend") << frontendPath;
 		return;
 	}
 
-	struct dtv_properties props;
-	struct dtv_property dvb_prop;
-
-	dvb_prop.cmd = DTV_ENUM_DELSYS;
-	props.num = 1;
-	props.props = &dvb_prop;
-
-	transmissionTypes = 0;
-
-	if (!ioctl(fd, FE_GET_PROPERTY, &props)) {
-		HasDelSys = true;
-
-		for (unsigned i = 0; i < dvb_prop.u.buffer.len; i++) {
-			switch (dvb_prop.u.buffer.data[i]) {
-			case SYS_DVBS:
-				transmissionTypes |= DvbS;
-				break;
-			case SYS_DVBS2:
-				transmissionTypes |= DvbS2;
-				break;
-			case SYS_DVBT:
-				transmissionTypes |= DvbT;
-				break;
-			case SYS_DVBC_ANNEX_A:
-				transmissionTypes |= DvbC;
-				break;
-			case SYS_ATSC:
-				transmissionTypes |= Atsc;
-				break;
-			}
+	for (int i = 0; i < parms->num_systems; i++) {
+		switch (parms->systems[i]) {
+		case SYS_DVBS:
+			transmissionTypes |= DvbS;
+			break;
+		case SYS_DVBS2:
+			transmissionTypes |= DvbS2;
+			break;
+		case SYS_DVBT:
+			transmissionTypes |= DvbT;
+			break;
+		case SYS_DVBC_ANNEX_A:
+			transmissionTypes |= DvbC;
+			break;
+		case SYS_ATSC:
+			transmissionTypes |= Atsc;
+			break;
+		default: /* not supported yet */
+			break;
 		}
-	} else {
-		HasDelSys = false;
 	}
 
-	dvb_frontend_info frontend_info;
-	memset(&frontend_info, 0, sizeof(frontend_info));
-
-	if (ioctl(fd, FE_GET_INFO, &frontend_info) != 0) {
-		Log("DvbLinuxDevice::startDevice: ioctl FE_GET_INFO failed for frontend") <<
-			frontendPath;
-		close(fd);
-		return;
-	}
-
-	close(fd);
 	deviceId = deviceId_;
-	frontendName = QString::fromUtf8(frontend_info.name);
-
-	if (!transmissionTypes) {
-		switch (frontend_info.type) {
-		case FE_QAM:
-			transmissionTypes = DvbC;
-			break;
-		case FE_QPSK:
-			transmissionTypes = DvbS;
-
-			if (((frontend_info.caps & FE_CAN_2G_MODULATION) != 0) ||
-			    (strcmp(frontend_info.name, "Conexant CX24116/CX24118") == 0) ||
-			    (strcmp(frontend_info.name, "Genpix 8psk-to-USB2 DVB-S") == 0) ||
-			    (strcmp(frontend_info.name, "STB0899 Multistandard") == 0)) {
-				transmissionTypes |= DvbS2;
-			}
-
-			break;
-		case FE_OFDM:
-			transmissionTypes = DvbT;
-			break;
-		case FE_ATSC:
-			transmissionTypes = Atsc;
-			break;
-		default:
-			Log("DvbLinuxDevice::startDevice: unknown type") << frontend_info.type <<
-				QLatin1String("for frontend") << frontendPath;
-			return;
-		}
-	}
+	frontendName = QString::fromUtf8(parms->info.name);
 
 	capabilities = 0;
 
-	if ((frontend_info.caps & FE_CAN_QAM_AUTO) != 0) {
+	if ((parms->info.caps & FE_CAN_QAM_AUTO) != 0) {
 		capabilities |= DvbTModulationAuto;
 	}
 
-	if ((frontend_info.caps & FE_CAN_FEC_AUTO) != 0) {
+	if ((parms->info.caps & FE_CAN_FEC_AUTO) != 0) {
 		capabilities |= DvbTFecAuto;
 	}
 
-	if ((frontend_info.caps & FE_CAN_TRANSMISSION_MODE_AUTO) != 0) {
+	if ((parms->info.caps & FE_CAN_TRANSMISSION_MODE_AUTO) != 0) {
 		capabilities |= DvbTTransmissionModeAuto;
 	}
 
-	if ((frontend_info.caps & FE_CAN_GUARD_INTERVAL_AUTO) != 0) {
+	if ((parms->info.caps & FE_CAN_GUARD_INTERVAL_AUTO) != 0) {
 		capabilities |= DvbTGuardIntervalAuto;
 	}
+	dvb_fe_close(parms);
 
-	Log("DvbLinuxDevice::startDevice: found dvb device") << deviceId << '/' << frontendName;
+	Log("DvbLinuxDevice::startDevice: found dvb device") << deviceId << "/" << frontendName;
 	ready = true;
 }
 
@@ -244,11 +192,11 @@ void DvbLinuxDevice::setDeviceEnabled(bool enabled_)
 
 bool DvbLinuxDevice::acquire()
 {
-	Q_ASSERT(enabled && (frontendFd < 0) && (dvrFd < 0));
-	frontendFd = open(QFile::encodeName(frontendPath).constData(), O_RDWR | O_NONBLOCK | O_CLOEXEC);
+	Q_ASSERT(enabled && (!dvbv5_parms) && (dvrFd < 0));
+	dvbv5_parms = dvb_fe_open(adapter, index, 1, 0);
 
-	if (frontendFd < 0) {
-		Log("DvbLinuxDevice::acquire: cannot open frontend") << frontendPath << frontendFd;
+	if (!dvbv5_parms) {
+		Log("DvbLinuxDevice::acquire: cannot open frontend") << frontendPath;
 		return false;
 	}
 
@@ -256,8 +204,8 @@ bool DvbLinuxDevice::acquire()
 
 	if (dvrFd < 0) {
 		Log("DvbLinuxDevice::acquire: cannot open dvr") << dvrPath;
-		close(frontendFd);
-		frontendFd = -1;
+		dvb_fe_close(dvbv5_parms);
+		dvbv5_parms = NULL;
 		return false;
 	}
 
@@ -266,9 +214,10 @@ bool DvbLinuxDevice::acquire()
 
 bool DvbLinuxDevice::setTone(SecTone tone)
 {
-	Q_ASSERT(frontendFd >= 0);
+	Q_ASSERT(dvbv5_parms);
 
-	if (ioctl(frontendFd, FE_SET_TONE, (tone == ToneOn) ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
+	if (dvb_fe_sec_tone(dvbv5_parms,
+		  (tone == ToneOn) ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
 		Log("DvbLinuxDevice::setTone: ioctl FE_SET_TONE failed for frontend") <<
 			frontendPath;
 		return false;
@@ -279,10 +228,9 @@ bool DvbLinuxDevice::setTone(SecTone tone)
 
 bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
 {
-	Q_ASSERT(frontendFd >= 0);
+	Q_ASSERT(dvbv5_parms);
 
-	if (ioctl(frontendFd, FE_SET_VOLTAGE,
-		  (voltage == Voltage18V) ? SEC_VOLTAGE_18 : SEC_VOLTAGE_13) != 0) {
+	if (dvb_fe_lnb_high_voltage(dvbv5_parms, voltage == Voltage18V) != 0) {
 		Log("DvbLinuxDevice::setVoltage: ioctl FE_SET_VOLTAGE failed for frontend") <<
 			frontendPath;
 		return false;
@@ -293,13 +241,9 @@ bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
 
 bool DvbLinuxDevice::sendMessage(const char *message, int length)
 {
-	Q_ASSERT((frontendFd >= 0) && (length >= 0) && (length <= 6));
-	dvb_diseqc_master_cmd cmd;
-	memset(&cmd, 0, sizeof(cmd));
-	memcpy(&cmd.msg, message, length);
-	cmd.msg_len = char(length);
+	Q_ASSERT(dvbv5_parms && (length >= 0) && (length <= 6));
 
-	if (ioctl(frontendFd, FE_DISEQC_SEND_MASTER_CMD, &cmd) != 0) {
+	if (dvb_fe_diseqc_cmd(dvbv5_parms, length, (const unsigned char *)message) != 0) {
 		Log("DvbLinuxDevice::sendMessage: "
 		    "ioctl FE_DISEQC_SEND_MASTER_CMD failed for frontend") << frontendPath;
 		return false;
@@ -310,10 +254,9 @@ bool DvbLinuxDevice::sendMessage(const char *message, int length)
 
 bool DvbLinuxDevice::sendBurst(SecBurst burst)
 {
-	Q_ASSERT(frontendFd >= 0);
+	Q_ASSERT(dvbv5_parms);
 
-	if (ioctl(frontendFd, FE_DISEQC_SEND_BURST,
-		  (burst == BurstMiniA) ? SEC_MINI_A : SEC_MINI_B) != 0) {
+	if (dvb_fe_diseqc_burst(dvbv5_parms, burst == BurstMiniB) != 0) {
 		Log("DvbLinuxDevice::sendBurst: ioctl FE_DISEQC_SEND_BURST failed for frontend") <<
 			frontendPath;
 		return false;
@@ -409,13 +352,13 @@ static fe_code_rate convertDvbFecRate(DvbTransponderBase::FecRate fecRate)
 	return FEC_AUTO;
 }
 
-static fe_bandwidth convertDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
+static uint32_t convertDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
 {
 	switch (bandwidth) {
-	case DvbTTransponder::Bandwidth6MHz: return BANDWIDTH_6_MHZ;
-	case DvbTTransponder::Bandwidth7MHz: return BANDWIDTH_7_MHZ;
-	case DvbTTransponder::Bandwidth8MHz: return BANDWIDTH_8_MHZ;
-	case DvbTTransponder::BandwidthAuto: return BANDWIDTH_AUTO;
+	case DvbTTransponder::Bandwidth6MHz: return 6000000;
+	case DvbTTransponder::Bandwidth7MHz: return 7000000;
+	case DvbTTransponder::Bandwidth8MHz: return 8000000;
+	case DvbTTransponder::BandwidthAuto: return 0;
 	}
 
 	return BANDWIDTH_AUTO;
@@ -461,127 +404,68 @@ static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 
 bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 {
-	Q_ASSERT(frontendFd >= 0);
+	Q_ASSERT(dvbv5_parms);
 	stopDvr();
-	dvb_frontend_parameters params;
-
-	if (HasDelSys) {
-		struct dtv_properties props;
-		struct dtv_property dvb_prop[1];
-		unsigned delsys;
-
-		switch (transponder.getTransmissionType()) {
-		case DvbTransponderBase::DvbS:
-			delsys = SYS_DVBS;
-			break;
-		case DvbTransponderBase::DvbS2:
-			delsys = SYS_DVBS2;
-			break;
-		case DvbTransponderBase::DvbC:
-			delsys = SYS_DVBC_ANNEX_A;
-			break;
-		case DvbTransponderBase::DvbT:
-			delsys = SYS_DVBT;
-			break;
-		case DvbTransponderBase::Atsc:
-			delsys = SYS_ATSC;
-			break;
-		default:
-			Log("DvbLinuxDevice::tune: unknown transmission type") <<
-				transponder.getTransmissionType();
-			return false;
-		}
-
-		dvb_prop[0].cmd = DTV_DELIVERY_SYSTEM;
-		dvb_prop[0].u.data = delsys;
-		props.num = 1;
-		props.props = dvb_prop;
-		if (ioctl(frontendFd, FE_SET_PROPERTY, &props) < 0) {
-			Log("DvbLinuxDevice::tune: couldn't switch delivery system to") <<
-				transponder.getTransmissionType();
-			return false;
-		}
-	}
-
+	unsigned delsys;
 
 	switch (transponder.getTransmissionType()) {
-	case DvbTransponderBase::DvbC: {
-		const DvbCTransponder *dvbCTransponder = transponder.as<DvbCTransponder>();
-		memset(&params, 0, sizeof(params));
-		params.frequency = dvbCTransponder->frequency;
-		params.inversion = INVERSION_AUTO;
-		params.u.qam.symbol_rate = dvbCTransponder->symbolRate;
-		params.u.qam.fec_inner = convertDvbFecRate(dvbCTransponder->fecRate);
-		params.u.qam.modulation = convertDvbModulation(dvbCTransponder->modulation);
-		break;
-	    }
 	case DvbTransponderBase::DvbS: {
 		const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
-		memset(&params, 0, sizeof(params));
-		params.frequency = dvbSTransponder->frequency;
-		params.inversion = INVERSION_AUTO;
-		params.u.qpsk.symbol_rate = dvbSTransponder->symbolRate;
-		params.u.qpsk.fec_inner = convertDvbFecRate(dvbSTransponder->fecRate);
+
+		delsys = SYS_DVBS;
+		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbSTransponder->frequency);
+		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
+		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbSTransponder->symbolRate);
+		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, convertDvbFecRate(dvbSTransponder->fecRate));
 		break;
 	    }
 	case DvbTransponderBase::DvbS2: {
 		const DvbS2Transponder *dvbS2Transponder = transponder.as<DvbS2Transponder>();
-		dtv_property properties[9];
-		memset(properties, 0, sizeof(properties));
-		properties[0].cmd = DTV_DELIVERY_SYSTEM;
-		properties[0].u.data = SYS_DVBS2;
-		properties[1].cmd = DTV_FREQUENCY;
-		properties[1].u.data = dvbS2Transponder->frequency;
-		properties[2].cmd = DTV_SYMBOL_RATE;
-		properties[2].u.data = dvbS2Transponder->symbolRate;
-		properties[3].cmd = DTV_MODULATION;
-		properties[3].u.data = convertDvbModulation(dvbS2Transponder->modulation);
-		properties[4].cmd = DTV_ROLLOFF;
-		properties[4].u.data = convertDvbRollOff(dvbS2Transponder->rollOff);
-		properties[5].cmd = DTV_INVERSION;
-		properties[5].u.data = INVERSION_AUTO;
-		properties[6].cmd = DTV_PILOT;
-		properties[6].u.data = PILOT_AUTO;
-		properties[7].cmd = DTV_INNER_FEC;
-		properties[7].u.data = convertDvbFecRate(dvbS2Transponder->fecRate);
-		properties[8].cmd = DTV_TUNE;
-		dtv_properties propertyList;
-		memset(&propertyList, 0, sizeof(propertyList));
-		propertyList.props = properties;
-		propertyList.num = (sizeof(properties) / sizeof(properties[0]));
 
-		if (ioctl(frontendFd, FE_SET_PROPERTY, &propertyList) != 0) {
-			Log("DvbLinuxDevice::tune: ioctl FE_SET_PROPERTY failed for frontend") <<
-				frontendPath;
-			return false;
-		}
+		delsys = SYS_DVBS2;
+		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbS2Transponder->frequency);
+		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
+		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbS2Transponder->symbolRate);
+		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, convertDvbFecRate(dvbS2Transponder->fecRate));
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(dvbS2Transponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_PILOT, PILOT_AUTO);
+		dvb_fe_store_parm(dvbv5_parms, DTV_ROLLOFF, convertDvbRollOff(dvbS2Transponder->rollOff));
+		break;
+	    }
+	case DvbTransponderBase::DvbC: {
+		const DvbCTransponder *dvbCTransponder = transponder.as<DvbCTransponder>();
 
-		startDvr();
-		return true;
+		delsys = SYS_DVBC_ANNEX_A;
+		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbCTransponder->frequency);
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(dvbCTransponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
+		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbCTransponder->symbolRate);
+		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, convertDvbFecRate(dvbCTransponder->fecRate));
+
+		break;
 	    }
 	case DvbTransponderBase::DvbT: {
 		const DvbTTransponder *dvbTTransponder = transponder.as<DvbTTransponder>();
-		memset(&params, 0, sizeof(params));
-		params.frequency = dvbTTransponder->frequency;
-		params.inversion = INVERSION_AUTO;
-		params.u.ofdm.bandwidth = convertDvbBandwidth(dvbTTransponder->bandwidth);
-		params.u.ofdm.code_rate_HP = convertDvbFecRate(dvbTTransponder->fecRateHigh);
-		params.u.ofdm.code_rate_LP = convertDvbFecRate(dvbTTransponder->fecRateLow);
-		params.u.ofdm.constellation = convertDvbModulation(dvbTTransponder->modulation);
-		params.u.ofdm.transmission_mode =
-			convertDvbTransmissionMode(dvbTTransponder->transmissionMode);
-		params.u.ofdm.guard_interval =
-			convertDvbGuardInterval(dvbTTransponder->guardInterval);
-		params.u.ofdm.hierarchy_information =
-			convertDvbHierarchy(dvbTTransponder->hierarchy);
+
+		delsys = SYS_DVBT;
+		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbTTransponder->frequency);
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(dvbTTransponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, convertDvbBandwidth(dvbTTransponder->bandwidth));
+		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
+		dvb_fe_store_parm(dvbv5_parms, DTV_CODE_RATE_HP, convertDvbFecRate(dvbTTransponder->fecRateHigh));
+		dvb_fe_store_parm(dvbv5_parms, DTV_CODE_RATE_LP, convertDvbFecRate(dvbTTransponder->fecRateLow));
+		dvb_fe_store_parm(dvbv5_parms, DTV_GUARD_INTERVAL, convertDvbGuardInterval(dvbTTransponder->guardInterval));
+		dvb_fe_store_parm(dvbv5_parms, DTV_TRANSMISSION_MODE, convertDvbTransmissionMode(dvbTTransponder->transmissionMode));
+		dvb_fe_store_parm(dvbv5_parms, DTV_HIERARCHY, convertDvbHierarchy(dvbTTransponder->hierarchy));
 		break;
 	    }
 	case DvbTransponderBase::Atsc: {
 		const AtscTransponder *atscTransponder = transponder.as<AtscTransponder>();
-		memset(&params, 0, sizeof(params));
-		params.frequency = atscTransponder->frequency;
-		params.inversion = INVERSION_AUTO;
-		params.u.vsb.modulation = convertDvbModulation(atscTransponder->modulation);
+
+		delsys = SYS_ATSC;
+		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, atscTransponder->frequency);
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(atscTransponder->modulation));
+/*		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO); */
 		break;
 	    }
 	default:
@@ -590,8 +474,11 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		return false;
 	}
 
-	if (ioctl(frontendFd, FE_SET_FRONTEND, &params) != 0) {
-		Log("DvbLinuxDevice::tune: ioctl FE_SET_FRONTEND failed for frontend") <<
+	dvb_fe_store_parm(dvbv5_parms, DTV_DELIVERY_SYSTEM, delsys);
+
+
+	if (dvb_fe_set_parms(dvbv5_parms) != 0) {
+		Log("DvbLinuxDevice::tune: ioctl FE_SET_PROPERTY failed for frontend") <<
 			frontendPath;
 		return false;
 	}
@@ -602,11 +489,17 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 bool DvbLinuxDevice::isTuned()
 {
-	Q_ASSERT(frontendFd >= 0);
-	fe_status_t status;
+	Q_ASSERT(dvbv5_parms);
+	uint32_t status;
 	memset(&status, 0, sizeof(status));
 
-	if (ioctl(frontendFd, FE_READ_STATUS, &status) != 0) {
+	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
+		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
+			frontendPath;
+		return false;
+	}
+
+	if (dvb_fe_retrieve_stats(dvbv5_parms, DTV_STATUS, &status) != 0) {
 		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
 			frontendPath;
 		return false;
@@ -617,10 +510,16 @@ bool DvbLinuxDevice::isTuned()
 
 int DvbLinuxDevice::getSignal()
 {
-	Q_ASSERT(frontendFd >= 0);
-	quint16 signal = 0;
+	Q_ASSERT(dvbv5_parms);
+	uint32_t signal = 0;
 
-	if (ioctl(frontendFd, FE_READ_SIGNAL_STRENGTH, &signal) != 0) {
+	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
+		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
+			frontendPath;
+		return false;
+	}
+
+	if (dvb_fe_retrieve_stats(dvbv5_parms, DTV_STAT_SIGNAL_STRENGTH, &signal) != 0) {
 		Log("DvbLinuxDevice::getSignal: "
 		    "ioctl FE_READ_SIGNAL_STRENGTH failed for frontend") << frontendPath;
 		return -1;
@@ -636,10 +535,16 @@ int DvbLinuxDevice::getSignal()
 
 int DvbLinuxDevice::getSnr()
 {
-	Q_ASSERT(frontendFd >= 0);
-	quint16 snr = 0;
+	Q_ASSERT(dvbv5_parms);
+	uint32_t snr = 0;
 
-	if (ioctl(frontendFd, FE_READ_SNR, &snr) != 0) {
+	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
+		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
+			frontendPath;
+		return false;
+	}
+
+	if (dvb_fe_retrieve_stats(dvbv5_parms, DTV_STAT_CNR, &snr) != 0) {
 		Log("DvbLinuxDevice::getSnr: ioctl FE_READ_SNR failed for frontend") <<
 			frontendPath;
 		return -1;
@@ -741,9 +646,9 @@ void DvbLinuxDevice::release()
 
 	dmxFds.clear();
 
-	if (frontendFd >= 0) {
-		close(frontendFd);
-		frontendFd = -1;
+	if (dvbv5_parms) {
+		dvb_fe_close(dvbv5_parms);
+		dvbv5_parms = NULL;
 	}
 }
 
@@ -1187,7 +1092,9 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 	    !device->frontendPath.isEmpty()) {
 		QString path = QString(QLatin1String("/sys/class/dvb/dvb%1.frontend%2/")).arg(adapter).arg(index);
 		QString deviceId;
-
+		device->adapter = adapter;
+		device->index = index;
+		device->dvbv5_parms = NULL;
 		if (QFile::exists(path + QLatin1String("device/vendor"))) {
 			// PCI device
 			int vendor = readSysAttr(path + QLatin1String("device/vendor"));
