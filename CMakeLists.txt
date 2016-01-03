@@ -6,7 +6,7 @@ find_package(KDE4 REQUIRED)
 find_package(X11 REQUIRED)
 find_package(VLC 1.2 REQUIRED)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${VLC_INCLUDE_DIRS}
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${KDE4_INCLUDES} ${VLC_INCLUDE_DIRS} ${LIBV4L2_INCLUDE_DIR}
                     ${X11_Xscreensaver_INCLUDE_PATH})
 add_definitions(${KDE4_DEFINITIONS})
 
@@ -28,6 +28,14 @@ if(NOT HAVE_DVB)
   MESSAGE(STATUS "Disabled features:\nDVB  Digital television support for Linux\n")
   set(HAVE_DVB 0)
 endif(NOT HAVE_DVB)
+
+if(HAVE_DVB)
+  macro_optional_find_package(LibV4L2)
+  if(LIBV4L2_FOUND)
+    MESSAGE(STATUS "Enabled feature: DVB Support will use libdvbv5")
+    set(HAVE_LIBDVBV5 1)
+  endif(LIBV4L2_FOUND)
+endif(HAVE_DVB)
 
 add_subdirectory(deviceactions)
 add_subdirectory(dtvdaemon)
