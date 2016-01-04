@@ -619,8 +619,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 bool DvbLinuxDevice::isTuned()
 {
 	Q_ASSERT(dvbv5_parms);
-	uint32_t status;
-	memset(&status, 0, sizeof(status));
+	uint32_t status = 0;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
 		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
@@ -640,7 +639,8 @@ bool DvbLinuxDevice::isTuned()
 int DvbLinuxDevice::getSignal()
 {
 	Q_ASSERT(dvbv5_parms);
-	uint32_t signal = 0;
+	struct dtv_stats *stat;
+	int signal;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
 		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
@@ -648,24 +648,36 @@ int DvbLinuxDevice::getSignal()
 		return false;
 	}
 
-	if (dvb_fe_retrieve_stats(dvbv5_parms, DTV_STAT_SIGNAL_STRENGTH, &signal) != 0) {
-		Log("DvbLinuxDevice::getSignal: "
-		    "ioctl FE_READ_SIGNAL_STRENGTH failed for frontend") << frontendPath;
+	stat = dvb_fe_retrieve_stats_layer(dvbv5_parms, DTV_STAT_SIGNAL_STRENGTH, 0);
+	if (!stat)
+		return -1;
+
+	switch (stat->scale) {
+	case FE_SCALE_RELATIVE:
+		signal = (100 * stat->uvalue) / 65535;
+		break;
+	case FE_SCALE_DECIBEL:
+		// Convert to dBuV @ 75 ohms, to be positive and typically smaller than 100
+		signal = (108800 + stat->svalue) / 1000;
+		break;
+	default:
 		return -1;
 	}
 
-	if (signal == 0) {
-		// assume that reading signal strength isn't supported
-		return -1;
-	}
+	// Assert that signal will be within the expected range
+	if (signal > 100)
+		signal = 100;
+	else if (signal < 0)
+		signal = 0;
 
-	return ((signal * 100 + 0x8001) >> 16);
+	return signal;
 }
 
 int DvbLinuxDevice::getSnr()
 {
 	Q_ASSERT(dvbv5_parms);
-	uint32_t snr = 0;
+	struct dtv_stats *stat;
+	int cnr;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
 		Log("DvbLinuxDevice::isTuned: ioctl FE_READ_STATUS failed for frontend") <<
@@ -673,18 +685,27 @@ int DvbLinuxDevice::getSnr()
 		return false;
 	}
 
-	if (dvb_fe_retrieve_stats(dvbv5_parms, DTV_STAT_CNR, &snr) != 0) {
-		Log("DvbLinuxDevice::getSnr: ioctl FE_READ_SNR failed for frontend") <<
-			frontendPath;
+	stat = dvb_fe_retrieve_stats_layer(dvbv5_parms, DTV_STAT_CNR, 0);
+	if (!stat)
+		return -1;
+
+	switch (stat->scale) {
+	case FE_SCALE_RELATIVE:
+		cnr = (100 * stat->uvalue) / 65535;
+		break;
+	case FE_SCALE_DECIBEL:
+		cnr = (stat->svalue / 1000);
+		break;
+	default:
 		return -1;
 	}
+	// Assert that CNR will be within the expected range
+	if (cnr > 100)
+		cnr = 100;
+	else if (cnr < 0)
+		cnr = 0;
 
-	if (snr == 0) {
-		// assume that reading snr isn't supported
-		return -1;
-	}
-
-	return ((snr * 100 + 0x8001) >> 16);
+	return cnr;
 }
 
 bool DvbLinuxDevice::addPidFilter(int pid)
