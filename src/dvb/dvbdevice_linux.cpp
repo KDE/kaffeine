@@ -298,7 +298,7 @@ bool DvbLinuxDevice::sendBurst(SecBurst burst)
 	return true;
 }
 
-static fe_modulation_t convertDvbModulation(DvbCTransponder::Modulation modulation)
+static fe_modulation_t toDvbModulation(DvbCTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case DvbCTransponder::Qam16: return QAM_16;
@@ -312,7 +312,7 @@ static fe_modulation_t convertDvbModulation(DvbCTransponder::Modulation modulati
 	return QAM_AUTO;
 }
 
-static fe_modulation_t convertDvbModulation(DvbS2Transponder::Modulation modulation)
+static fe_modulation_t toDvbModulation(DvbS2Transponder::Modulation modulation)
 {
 	switch (modulation) {
 	case DvbS2Transponder::Qpsk: return QPSK;
@@ -325,7 +325,7 @@ static fe_modulation_t convertDvbModulation(DvbS2Transponder::Modulation modulat
 	return QAM_AUTO;
 }
 
-static fe_rolloff convertDvbRollOff(DvbS2Transponder::RollOff rollOff)
+static fe_rolloff toDvbRollOff(DvbS2Transponder::RollOff rollOff)
 {
 	switch (rollOff) {
 	case DvbS2Transponder::RollOff20: return ROLLOFF_20;
@@ -337,7 +337,7 @@ static fe_rolloff convertDvbRollOff(DvbS2Transponder::RollOff rollOff)
 	return ROLLOFF_AUTO;
 }
 
-static fe_modulation_t convertDvbModulation(DvbTTransponder::Modulation modulation)
+static fe_modulation_t toDvbModulation(DvbTTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case DvbTTransponder::Qpsk: return QPSK;
@@ -349,7 +349,7 @@ static fe_modulation_t convertDvbModulation(DvbTTransponder::Modulation modulati
 	return QAM_AUTO;
 }
 
-static fe_modulation_t convertDvbModulation(IsdbTTransponder::Modulation modulation)
+static fe_modulation_t toDvbModulation(IsdbTTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case IsdbTTransponder::Qpsk: return QPSK;
@@ -362,7 +362,7 @@ static fe_modulation_t convertDvbModulation(IsdbTTransponder::Modulation modulat
 	return QAM_AUTO;
 }
 
-static fe_modulation_t convertDvbModulation(AtscTransponder::Modulation modulation)
+static fe_modulation_t toDvbModulation(AtscTransponder::Modulation modulation)
 {
 	switch (modulation) {
 	case AtscTransponder::Qam64: return QAM_64;
@@ -375,7 +375,7 @@ static fe_modulation_t convertDvbModulation(AtscTransponder::Modulation modulati
 	return QAM_AUTO;
 }
 
-static fe_code_rate convertDvbFecRate(DvbTransponderBase::FecRate fecRate)
+static fe_code_rate toDvbFecRate(DvbTransponderBase::FecRate fecRate)
 {
 	switch (fecRate) {
 	case DvbTransponderBase::FecNone: return FEC_NONE;
@@ -398,7 +398,7 @@ static fe_code_rate convertDvbFecRate(DvbTransponderBase::FecRate fecRate)
 	return FEC_AUTO;
 }
 
-static uint32_t convertDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
+static uint32_t toDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
 {
 	switch (bandwidth) {
 	case DvbTTransponder::Bandwidth6MHz: return 6000000;
@@ -410,7 +410,7 @@ static uint32_t convertDvbBandwidth(DvbTTransponder::Bandwidth bandwidth)
 	return BANDWIDTH_AUTO;
 }
 
-static uint32_t convertDvbBandwidth(IsdbTTransponder::Bandwidth bandwidth)
+static uint32_t toDvbBandwidth(IsdbTTransponder::Bandwidth bandwidth)
 {
 	switch (bandwidth) {
 	case IsdbTTransponder::Bandwidth6MHz: return 6000000;
@@ -421,7 +421,7 @@ static uint32_t convertDvbBandwidth(IsdbTTransponder::Bandwidth bandwidth)
 	return BANDWIDTH_AUTO;
 }
 
-static fe_transmit_mode convertDvbTransmissionMode(DvbTTransponder::TransmissionMode mode)
+static fe_transmit_mode toDvbTransmissionMode(DvbTTransponder::TransmissionMode mode)
 {
 	switch (mode) {
 	case DvbTTransponder::TransmissionMode2k: return TRANSMISSION_MODE_2K;
@@ -433,7 +433,7 @@ static fe_transmit_mode convertDvbTransmissionMode(DvbTTransponder::Transmission
 	return TRANSMISSION_MODE_AUTO;
 }
 
-static fe_transmit_mode convertDvbTransmissionMode(IsdbTTransponder::TransmissionMode mode)
+static fe_transmit_mode toDvbTransmissionMode(IsdbTTransponder::TransmissionMode mode)
 {
 	switch (mode) {
 	case IsdbTTransponder::TransmissionMode2k: return TRANSMISSION_MODE_2K;
@@ -445,7 +445,7 @@ static fe_transmit_mode convertDvbTransmissionMode(IsdbTTransponder::Transmissio
 	return TRANSMISSION_MODE_AUTO;
 }
 
-static fe_guard_interval convertDvbGuardInterval(DvbTTransponder::GuardInterval guardInterval)
+static fe_guard_interval toDvbGuardInterval(DvbTTransponder::GuardInterval guardInterval)
 {
 	switch (guardInterval) {
 	case DvbTTransponder::GuardInterval1_4: return GUARD_INTERVAL_1_4;
@@ -458,7 +458,7 @@ static fe_guard_interval convertDvbGuardInterval(DvbTTransponder::GuardInterval 
 	return GUARD_INTERVAL_AUTO;
 }
 
-static fe_guard_interval convertDvbGuardInterval(IsdbTTransponder::GuardInterval guardInterval)
+static fe_guard_interval toDvbGuardInterval(IsdbTTransponder::GuardInterval guardInterval)
 {
 	switch (guardInterval) {
 	case IsdbTTransponder::GuardInterval1_4: return GUARD_INTERVAL_1_4;
@@ -470,7 +470,7 @@ static fe_guard_interval convertDvbGuardInterval(IsdbTTransponder::GuardInterval
 
 	return GUARD_INTERVAL_AUTO;
 }
-static fe_hierarchy convertDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
+static fe_hierarchy toDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 {
 	switch (hierarchy) {
 	case DvbTTransponder::HierarchyNone: return HIERARCHY_NONE;
@@ -497,7 +497,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbSTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbSTransponder->symbolRate);
-		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, convertDvbFecRate(dvbSTransponder->fecRate));
+		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, toDvbFecRate(dvbSTransponder->fecRate));
 		break;
 	    }
 	case DvbTransponderBase::DvbS2: {
@@ -507,10 +507,10 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbS2Transponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbS2Transponder->symbolRate);
-		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, convertDvbFecRate(dvbS2Transponder->fecRate));
-		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(dvbS2Transponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, toDvbFecRate(dvbS2Transponder->fecRate));
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(dvbS2Transponder->modulation));
 		dvb_fe_store_parm(dvbv5_parms, DTV_PILOT, PILOT_AUTO);
-		dvb_fe_store_parm(dvbv5_parms, DTV_ROLLOFF, convertDvbRollOff(dvbS2Transponder->rollOff));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ROLLOFF, toDvbRollOff(dvbS2Transponder->rollOff));
 		break;
 	    }
 	case DvbTransponderBase::DvbC: {
@@ -518,10 +518,10 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 		delsys = SYS_DVBC_ANNEX_A;
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbCTransponder->frequency);
-		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(dvbCTransponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(dvbCTransponder->modulation));
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbCTransponder->symbolRate);
-		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, convertDvbFecRate(dvbCTransponder->fecRate));
+		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, toDvbFecRate(dvbCTransponder->fecRate));
 
 		break;
 	    }
@@ -530,14 +530,14 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 		delsys = SYS_DVBT;
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbTTransponder->frequency);
-		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(dvbTTransponder->modulation));
-		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, convertDvbBandwidth(dvbTTransponder->bandwidth));
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(dvbTTransponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, toDvbBandwidth(dvbTTransponder->bandwidth));
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
-		dvb_fe_store_parm(dvbv5_parms, DTV_CODE_RATE_HP, convertDvbFecRate(dvbTTransponder->fecRateHigh));
-		dvb_fe_store_parm(dvbv5_parms, DTV_CODE_RATE_LP, convertDvbFecRate(dvbTTransponder->fecRateLow));
-		dvb_fe_store_parm(dvbv5_parms, DTV_GUARD_INTERVAL, convertDvbGuardInterval(dvbTTransponder->guardInterval));
-		dvb_fe_store_parm(dvbv5_parms, DTV_TRANSMISSION_MODE, convertDvbTransmissionMode(dvbTTransponder->transmissionMode));
-		dvb_fe_store_parm(dvbv5_parms, DTV_HIERARCHY, convertDvbHierarchy(dvbTTransponder->hierarchy));
+		dvb_fe_store_parm(dvbv5_parms, DTV_CODE_RATE_HP, toDvbFecRate(dvbTTransponder->fecRateHigh));
+		dvb_fe_store_parm(dvbv5_parms, DTV_CODE_RATE_LP, toDvbFecRate(dvbTTransponder->fecRateLow));
+		dvb_fe_store_parm(dvbv5_parms, DTV_GUARD_INTERVAL, toDvbGuardInterval(dvbTTransponder->guardInterval));
+		dvb_fe_store_parm(dvbv5_parms, DTV_TRANSMISSION_MODE, toDvbTransmissionMode(dvbTTransponder->transmissionMode));
+		dvb_fe_store_parm(dvbv5_parms, DTV_HIERARCHY, toDvbHierarchy(dvbTTransponder->hierarchy));
 		break;
 	    }
 	case DvbTransponderBase::Atsc: {
@@ -552,7 +552,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 			delsys = SYS_ATSC;
 		}
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, atscTransponder->frequency);
-		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, convertDvbModulation(atscTransponder->modulation));
+		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(atscTransponder->modulation));
 /*		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO); */
 		break;
 	    }
@@ -563,10 +563,10 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 		delsys = SYS_ISDBT;
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, isdbTTransponder->frequency);
-		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, convertDvbBandwidth(isdbTTransponder->bandwidth));
+		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, toDvbBandwidth(isdbTTransponder->bandwidth));
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
-		dvb_fe_store_parm(dvbv5_parms, DTV_GUARD_INTERVAL, convertDvbGuardInterval(isdbTTransponder->guardInterval));
-		dvb_fe_store_parm(dvbv5_parms, DTV_TRANSMISSION_MODE, convertDvbTransmissionMode(isdbTTransponder->transmissionMode));
+		dvb_fe_store_parm(dvbv5_parms, DTV_GUARD_INTERVAL, toDvbGuardInterval(isdbTTransponder->guardInterval));
+		dvb_fe_store_parm(dvbv5_parms, DTV_TRANSMISSION_MODE, toDvbTransmissionMode(isdbTTransponder->transmissionMode));
 
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_PARTIAL_RECEPTION, isdbTTransponder->partialReception);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SOUND_BROADCASTING, isdbTTransponder->soundBroadcasting);
@@ -580,18 +580,18 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		}
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYER_ENABLED, layers);
 
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_FEC, convertDvbFecRate(isdbTTransponder->fecRate[0]));
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_MODULATION, convertDvbModulation(isdbTTransponder->modulation[0]));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_FEC, toDvbFecRate(isdbTTransponder->fecRate[0]));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_MODULATION, toDvbModulation(isdbTTransponder->modulation[0]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_SEGMENT_COUNT, isdbTTransponder->segmentCount[0]);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_TIME_INTERLEAVING, isdbTTransponder->interleaving[0]);
 
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_FEC, convertDvbFecRate(isdbTTransponder->fecRate[1]));
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_MODULATION, convertDvbModulation(isdbTTransponder->modulation[1]));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_FEC, toDvbFecRate(isdbTTransponder->fecRate[1]));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_MODULATION, toDvbModulation(isdbTTransponder->modulation[1]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_SEGMENT_COUNT, isdbTTransponder->segmentCount[1]);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_TIME_INTERLEAVING, isdbTTransponder->interleaving[1]);
 
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_FEC, convertDvbFecRate(isdbTTransponder->fecRate[2]));
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_MODULATION, convertDvbModulation(isdbTTransponder->modulation[2]));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_FEC, toDvbFecRate(isdbTTransponder->fecRate[2]));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_MODULATION, toDvbModulation(isdbTTransponder->modulation[2]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_SEGMENT_COUNT, isdbTTransponder->segmentCount[2]);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_TIME_INTERLEAVING, isdbTTransponder->interleaving[2]);
 
