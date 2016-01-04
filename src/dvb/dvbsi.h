@@ -604,6 +604,39 @@ private:
 	Q_DISABLE_COPY(DvbTerrestrialDescriptor)
 };
 
+class IsdbTerrestrialDescriptor : public DvbDescriptor
+{
+public:
+	explicit IsdbTerrestrialDescriptor(const DvbDescriptor &descriptor);
+	~IsdbTerrestrialDescriptor() { }
+
+	int areaCode() const
+	{
+		return ((at(2) << 8) | at(3)) >> 4;
+	}
+	int guardInterval() const
+	{
+		return (at(3) >> 2) & 0x03;
+	}
+	int transmissionMode() const
+	{
+		return (at(3) >> 2) & 0x03;
+	}
+	int numFreqs() const
+	{
+		return (getLength() - 4) / 2;
+	}
+
+	int frequency(int idx) const
+	{
+		int pos = (idx * 2) + 4;
+		return (at(pos) << 8) | at(pos + 1);
+	}
+
+private:
+	Q_DISABLE_COPY(IsdbTerrestrialDescriptor)
+};
+
 class AtscChannelNameDescriptor : public DvbDescriptor
 {
 public:

@@ -1408,6 +1408,15 @@ DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descript
 	}
 }
 
+IsdbTerrestrialDescriptor::IsdbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 4) {
+		Log("DvbTerrestrialDescriptor::DvbTerrestrialDescriptor: invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
 AtscChannelNameDescriptor::AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 2) {

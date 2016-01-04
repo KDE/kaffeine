@@ -25,6 +25,8 @@
 #include "dvbdevice.h"
 #include "dvbsi.h"
 
+#include <stdint.h>
+
 class DvbPatEntry
 {
 public:
@@ -1064,7 +1066,40 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 	case DvbTransponderBase::Atsc:
 		break;
 	case DvbTransponderBase::IsdbT:
-		/* FIXME: should teach how to handle ISDB-T terrestrial descriptor */
+		if (descriptor.descriptorTag() != 0xfa) {
+			break;
+		}
+
+		IsdbTerrestrialDescriptor IsdbTDescriptor(descriptor);
+
+		if (!IsdbTDescriptor.isValid()) {
+			break;
+		}
+
+#if 0
+		/* What to do with descriptors for the current transponder? */
+		IsdbTDescriptor->guardInterval = extractIsdbTGuardInterval(IsdbTDescriptor);
+		IsdbTDescriptor->transmissionMode = extractIsdbTTransmissionMode(IsdbTDescriptor);
+#endif
+		for (int i = 0; i < IsdbTDescriptor.numFreqs(); i++) {
+			newTransponder = DvbTransponder(DvbTransponderBase::IsdbT);
+			IsdbTTransponder *isdbTTransponder = newTransponder.as<IsdbTTransponder>();
+
+			isdbTTransponder->frequency =
+				(uint32_t)((((uint64_t)IsdbTDescriptor.frequency(i)) * 1000000ul) / 7);
+			bool duplicate = false;
+
+			foreach (const DvbTransponder &existingTransponder, transponders) {
+				if (existingTransponder.corresponds(newTransponder)) {
+					duplicate = true;
+					break;
+				}
+			}
+			if (!duplicate)
+				transponders.append(newTransponder);
+		}
+		newTransponder = DvbTransponder(DvbTransponderBase::Invalid);
+
 		break;
 	}
 
