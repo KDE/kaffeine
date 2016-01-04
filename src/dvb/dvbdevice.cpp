@@ -443,11 +443,12 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 void DvbDevice::autoTune(const DvbTransponder &transponder)
 {
-	autoTransponder = transponder;
-	DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
+	DvbTransponderBase::TransmissionType transmissionType = transponder.getTransmissionType();
 
-	switch(transponder.getTransmissionType()) {
-	case DvbTransponderBase::DvbT:
+	autoTransponder = transponder;
+
+	if (transmissionType == DvbTransponderBase::DvbT) {
+		DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
 		capabilities = backend->getCapabilities();
 
 		// we have to iterate over unsupported AUTO values
@@ -467,12 +468,14 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 		if ((capabilities & DvbTTransmissionModeAuto) == 0) {
 			autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
 		}
-		break;
-	case DvbTransponderBase::IsdbT:
+		isAuto = true;
+		tune(autoTransponder);
+	} else if (transmissionType == DvbTransponderBase::IsdbT) {
 		// ISDB-T Currently, all ISDB-T tuners should support auto mode
-		break;
-	default:
-		Log("DvbDevice::autoTune: can't do auto-tune for ") << transponder.getTransmissionType();
+		isAuto = true;
+		tune(autoTransponder);
+	}else {
+		Log("DvbDevice::autoTune: can't do auto-tune for ") << transmissionType;
 		return;
 	}
 
@@ -697,6 +700,8 @@ void DvbDevice::enableDvbDump()
 
 void DvbDevice::frontendEvent()
 {
+	DvbTransponderBase::TransmissionType transmissionType = autoTransponder.getTransmissionType();
+
 	if (backend->isTuned()) {
 		Log("DvbDevice::frontendEvent: tuning succeeded");
 		frontendTimer.stop();
@@ -717,103 +722,109 @@ void DvbDevice::frontendEvent()
 			return;
 		}
 
-		DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
-		int signal = backend->getSignal();
-
-		if ((signal != -1) && (signal < 15)) {
-			// signal too weak
-			Log("DvbDevice::frontendEvent: tuning failed");
-			setDeviceState(DeviceIdle);
-			return;
-		}
-
 		bool carry = true;
 
-		if (carry && ((capabilities & DvbTFecAuto) == 0)) {
-			switch (autoTTransponder->fecRateHigh) {
-			case DvbTTransponder::Fec2_3:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec3_4;
-				carry = false;
-				break;
-			case DvbTTransponder::Fec3_4:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec1_2;
-				carry = false;
-				break;
-			case DvbTTransponder::Fec1_2:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec5_6;
-				carry = false;
-				break;
-			case DvbTTransponder::Fec5_6:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec7_8;
-				carry = false;
-				break;
-			default:
-				autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
-				break;
-			}
-		}
+		/*
+		 * As ISDB-T always support auto-scan, we only need to simulate
+		 * it for DVB-T
+		 */
+		if (transmissionType == DvbTransponderBase::DvbT) {
+			DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
+			int signal = backend->getSignal();
 
-		if (carry && ((capabilities & DvbTGuardIntervalAuto) == 0)) {
-			switch (autoTTransponder->guardInterval) {
-			case DvbTTransponder::GuardInterval1_8:
-				autoTTransponder->guardInterval =
-					DvbTTransponder::GuardInterval1_32;
-				carry = false;
-				break;
-			case DvbTTransponder::GuardInterval1_32:
-				autoTTransponder->guardInterval =
-					DvbTTransponder::GuardInterval1_4;
-				carry = false;
-				break;
-			case DvbTTransponder::GuardInterval1_4:
-				autoTTransponder->guardInterval =
-					DvbTTransponder::GuardInterval1_16;
-				carry = false;
-				break;
-			case DvbTTransponder::GuardInterval1_16:
-			case DvbTTransponder::GuardIntervalAuto:
-				autoTTransponder->guardInterval =
-					DvbTTransponder::GuardInterval1_8;
-				break;
+			if ((signal != -1) && (signal < 15)) {
+				// signal too weak
+				Log("DvbDevice::frontendEvent: tuning failed");
+				setDeviceState(DeviceIdle);
+				return;
 			}
-		}
 
-		if (carry && ((capabilities & DvbTModulationAuto) == 0)) {
-			switch (autoTTransponder->modulation) {
-			case DvbTTransponder::Qam64:
-				autoTTransponder->modulation = DvbTTransponder::Qam16;
-				carry = false;
-				break;
-			case DvbTTransponder::Qam16:
-				autoTTransponder->modulation = DvbTTransponder::Qpsk;
-				carry = false;
-				break;
-			case DvbTTransponder::Qpsk:
-			case DvbTTransponder::ModulationAuto:
-				autoTTransponder->modulation = DvbTTransponder::Qam64;
-				break;
+			if (carry && ((capabilities & DvbTFecAuto) == 0)) {
+				switch (autoTTransponder->fecRateHigh) {
+				case DvbTTransponder::Fec2_3:
+					autoTTransponder->fecRateHigh = DvbTTransponder::Fec3_4;
+					carry = false;
+					break;
+				case DvbTTransponder::Fec3_4:
+					autoTTransponder->fecRateHigh = DvbTTransponder::Fec1_2;
+					carry = false;
+					break;
+				case DvbTTransponder::Fec1_2:
+					autoTTransponder->fecRateHigh = DvbTTransponder::Fec5_6;
+					carry = false;
+					break;
+				case DvbTTransponder::Fec5_6:
+					autoTTransponder->fecRateHigh = DvbTTransponder::Fec7_8;
+					carry = false;
+					break;
+				default:
+					autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
+					break;
+				}
 			}
-		}
 
-		if (carry && ((capabilities & DvbTTransmissionModeAuto) == 0)) {
-			switch (autoTTransponder->transmissionMode) {
-			case DvbTTransponder::TransmissionMode8k:
-				autoTTransponder->transmissionMode =
-					DvbTTransponder::TransmissionMode2k;
-				carry = false;
-				break;
-			case DvbTTransponder::TransmissionMode2k:
-/* outcommented so that clearly no compatibility problem arises
-				autoTTransponder->transmissionMode =
-					DvbTTransponder::TransmissionMode4k;
-				carry = false;
-				break;
-*/
-			case DvbTTransponder::TransmissionMode4k:
-			case DvbTTransponder::TransmissionModeAuto:
-				autoTTransponder->transmissionMode =
-					DvbTTransponder::TransmissionMode8k;
-				break;
+			if (carry && ((capabilities & DvbTGuardIntervalAuto) == 0)) {
+				switch (autoTTransponder->guardInterval) {
+				case DvbTTransponder::GuardInterval1_8:
+					autoTTransponder->guardInterval =
+						DvbTTransponder::GuardInterval1_32;
+					carry = false;
+					break;
+				case DvbTTransponder::GuardInterval1_32:
+					autoTTransponder->guardInterval =
+						DvbTTransponder::GuardInterval1_4;
+					carry = false;
+					break;
+				case DvbTTransponder::GuardInterval1_4:
+					autoTTransponder->guardInterval =
+						DvbTTransponder::GuardInterval1_16;
+					carry = false;
+					break;
+				case DvbTTransponder::GuardInterval1_16:
+				case DvbTTransponder::GuardIntervalAuto:
+					autoTTransponder->guardInterval =
+						DvbTTransponder::GuardInterval1_8;
+					break;
+				}
+			}
+
+			if (carry && ((capabilities & DvbTModulationAuto) == 0)) {
+				switch (autoTTransponder->modulation) {
+				case DvbTTransponder::Qam64:
+					autoTTransponder->modulation = DvbTTransponder::Qam16;
+					carry = false;
+					break;
+				case DvbTTransponder::Qam16:
+					autoTTransponder->modulation = DvbTTransponder::Qpsk;
+					carry = false;
+					break;
+				case DvbTTransponder::Qpsk:
+				case DvbTTransponder::ModulationAuto:
+					autoTTransponder->modulation = DvbTTransponder::Qam64;
+					break;
+				}
+			}
+
+			if (carry && ((capabilities & DvbTTransmissionModeAuto) == 0)) {
+				switch (autoTTransponder->transmissionMode) {
+				case DvbTTransponder::TransmissionMode8k:
+					autoTTransponder->transmissionMode =
+						DvbTTransponder::TransmissionMode2k;
+					carry = false;
+					break;
+				case DvbTTransponder::TransmissionMode2k:
+	/* outcommented so that clearly no compatibility problem arises
+					autoTTransponder->transmissionMode =
+						DvbTTransponder::TransmissionMode4k;
+					carry = false;
+					break;
+	*/
+				case DvbTTransponder::TransmissionMode4k:
+				case DvbTTransponder::TransmissionModeAuto:
+					autoTTransponder->transmissionMode =
+						DvbTTransponder::TransmissionMode8k;
+					break;
+				}
 			}
 		}
 
