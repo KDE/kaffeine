@@ -637,6 +637,11 @@ bool DvbDevice::isTuned() const
 	return backend->isTuned();
 }
 
+bool DvbDevice::getProps(DvbTransponder &transponder) const
+{
+	return backend->getProps(transponder);
+}
+
 int DvbDevice::getSignal() const
 {
 	return backend->getSignal();

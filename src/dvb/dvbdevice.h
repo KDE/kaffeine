@@ -93,6 +93,7 @@ public:
 	void startDescrambling(const QByteArray &pmtSectionData, QObject *user);
 	void stopDescrambling(const QByteArray &pmtSectionData, QObject *user);
 	bool isTuned() const;
+	bool getProps(DvbTransponder &transponder) const;
 	int getSignal() const; // 0 - 100 [%] or -1 = not supported
 	int getSnr() const; // 0 - 100 [%] or -1 = not supported
 	DvbTransponder getAutoTransponder() const;

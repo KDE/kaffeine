@@ -67,6 +67,7 @@ protected:
 	bool sendMessage(const char *message, int length);
 	bool sendBurst(SecBurst burst);
 	bool tune(const DvbTransponder &transponder); // discards obsolete data
+	bool getProps(DvbTransponder &transponder);
 	bool isTuned();
 	int getSignal(); // 0 - 100 [%] or -1 = not supported
 	int getSnr(); // 0 - 100 [%] or -1 = not supported
