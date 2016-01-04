@@ -470,6 +470,44 @@ static fe_guard_interval toDvbGuardInterval(IsdbTTransponder::GuardInterval guar
 
 	return GUARD_INTERVAL_AUTO;
 }
+
+static uint32_t toDvbPartialReception(IsdbTTransponder::PartialReception partialReception)
+{
+	switch (partialReception) {
+	case IsdbTTransponder::PR_disabled: return 0;
+	case IsdbTTransponder::PR_enabled: return 1;
+	case IsdbTTransponder::PR_AUTO: return (uint32_t)-1;
+	}
+
+	return (uint32_t)-1;
+}
+
+static uint32_t toDvbSoundBroadcasting(IsdbTTransponder::SoundBroadcasting partialReception)
+{
+	switch (partialReception) {
+	case IsdbTTransponder::SB_disabled: return 0;
+	case IsdbTTransponder::SB_enabled: return 1;
+	case IsdbTTransponder::SB_AUTO: return (uint32_t)-1;
+	}
+
+	return (uint32_t)-1;
+}
+
+static uint32_t toDvbInterleaving(IsdbTTransponder::Interleaving interleaving)
+{
+	switch (interleaving) {
+	case IsdbTTransponder::I_0: return 0;
+	case IsdbTTransponder::I_1: return 1;
+	case IsdbTTransponder::I_2: return 2;
+	case IsdbTTransponder::I_4: return 4;
+	case IsdbTTransponder::I_8: return 8;
+	case IsdbTTransponder::I_16: return 16;
+	case IsdbTTransponder::I_AUTO: return (uint32_t)-1;
+	}
+
+	return (uint32_t)-1;
+}
+
 static fe_hierarchy toDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 {
 	switch (hierarchy) {
@@ -568,8 +606,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		dvb_fe_store_parm(dvbv5_parms, DTV_GUARD_INTERVAL, toDvbGuardInterval(isdbTTransponder->guardInterval));
 		dvb_fe_store_parm(dvbv5_parms, DTV_TRANSMISSION_MODE, toDvbTransmissionMode(isdbTTransponder->transmissionMode));
 
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_PARTIAL_RECEPTION, isdbTTransponder->partialReception);
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SOUND_BROADCASTING, isdbTTransponder->soundBroadcasting);
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_PARTIAL_RECEPTION, toDvbPartialReception(isdbTTransponder->partialReception));
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SOUND_BROADCASTING, toDvbSoundBroadcasting(isdbTTransponder->soundBroadcasting));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SB_SUBCHANNEL_ID, isdbTTransponder->subChannelId);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SB_SEGMENT_IDX, isdbTTransponder->sbSegmentIdx);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SB_SEGMENT_COUNT, isdbTTransponder->sbSegmentCount);
@@ -583,17 +621,17 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_FEC, toDvbFecRate(isdbTTransponder->fecRate[0]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_MODULATION, toDvbModulation(isdbTTransponder->modulation[0]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_SEGMENT_COUNT, isdbTTransponder->segmentCount[0]);
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_TIME_INTERLEAVING, isdbTTransponder->interleaving[0]);
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_TIME_INTERLEAVING, toDvbInterleaving(isdbTTransponder->interleaving[0]));
 
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_FEC, toDvbFecRate(isdbTTransponder->fecRate[1]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_MODULATION, toDvbModulation(isdbTTransponder->modulation[1]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_SEGMENT_COUNT, isdbTTransponder->segmentCount[1]);
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERB_TIME_INTERLEAVING, isdbTTransponder->interleaving[1]);
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_TIME_INTERLEAVING, toDvbInterleaving(isdbTTransponder->interleaving[1]));
 
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_FEC, toDvbFecRate(isdbTTransponder->fecRate[2]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_MODULATION, toDvbModulation(isdbTTransponder->modulation[2]));
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_SEGMENT_COUNT, isdbTTransponder->segmentCount[2]);
-		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERC_TIME_INTERLEAVING, isdbTTransponder->interleaving[2]);
+		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_LAYERA_TIME_INTERLEAVING, toDvbInterleaving(isdbTTransponder->interleaving[2]));
 
 		break;
 	    }
