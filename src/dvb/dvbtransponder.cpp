@@ -20,6 +20,7 @@
 
 #include "dvbtransponder.h"
 
+#include <stdint.h>
 #include <QDataStream>
 #include <QTextStream>
 
@@ -154,6 +155,92 @@ static const char *enumToLinuxtv(DvbTTransponder::Hierarchy hierarchy)
 	case DvbTTransponder::Hierarchy2: return "2";
 	case DvbTTransponder::Hierarchy4: return "4";
 	case DvbTTransponder::HierarchyAuto: return "AUTO";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::Bandwidth bandwidth)
+{
+	switch (bandwidth) {
+	case IsdbTTransponder::Bandwidth6MHz: return "6MHz";
+	case IsdbTTransponder::Bandwidth7MHz: return "7MHz";
+	case IsdbTTransponder::Bandwidth8MHz: return "8MHz";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::Modulation modulation)
+{
+	switch (modulation) {
+	case IsdbTTransponder::Qpsk: return "QPSK";
+	case IsdbTTransponder::Dqpsk: return "DQPSK";
+	case IsdbTTransponder::Qam16: return "QAM16";
+	case IsdbTTransponder::Qam64: return "QAM64";
+	case IsdbTTransponder::ModulationAuto: return "AUTO";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::TransmissionMode transmissionMode)
+{
+	switch (transmissionMode) {
+	case IsdbTTransponder::TransmissionMode2k: return "2k";
+	case IsdbTTransponder::TransmissionMode4k: return "4k";
+	case IsdbTTransponder::TransmissionMode8k: return "8k";
+	case IsdbTTransponder::TransmissionModeAuto: return "AUTO";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::GuardInterval guardInterval)
+{
+	switch (guardInterval) {
+	case IsdbTTransponder::GuardInterval1_4: return "1/4";
+	case IsdbTTransponder::GuardInterval1_8: return "1/8";
+	case IsdbTTransponder::GuardInterval1_16: return "1/16";
+	case IsdbTTransponder::GuardInterval1_32: return "1/32";
+	case IsdbTTransponder::GuardIntervalAuto: return "AUTO";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::Interleaving interleaving)
+{
+	switch (interleaving) {
+	case IsdbTTransponder::I_0: return "0";
+	case IsdbTTransponder::I_1: return "1";
+	case IsdbTTransponder::I_2: return "2";
+	case IsdbTTransponder::I_4: return "4";
+	case IsdbTTransponder::I_8: return "8";
+	case IsdbTTransponder::I_16: return "16";
+	case IsdbTTransponder::I_AUTO: return "AUTO";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::PartialReception partialReception)
+{
+	switch (partialReception) {
+	case IsdbTTransponder::PR_disabled: return "0";
+	case IsdbTTransponder::PR_enabled: return "1";
+	case IsdbTTransponder::PR_AUTO: return "AUTO";
+	}
+
+	return NULL;
+}
+
+static const char *enumToLinuxtv(IsdbTTransponder::SoundBroadcasting soundBroadcasting)
+{
+	switch (soundBroadcasting) {
+	case IsdbTTransponder::SB_disabled: return "0";
+	case IsdbTTransponder::SB_enabled: return "1";
+	case IsdbTTransponder::SB_AUTO: return "AUTO";
 	}
 
 	return NULL;
@@ -503,6 +590,100 @@ bool AtscTransponder::corresponds(const DvbTransponder &transponder) const
 		(qAbs(atscTransponder->frequency - frequency) <= 2000000));
 }
 
+void IsdbTTransponder::readTransponder(QDataStream &stream)
+{
+	int layers;
+	stream >> frequency;
+	bandwidth = readEnum<Bandwidth>(stream);
+	transmissionMode = readEnum<TransmissionMode>(stream);
+	guardInterval = readEnum<GuardInterval>(stream);
+	partialReception = readEnum<PartialReception>(stream);
+	soundBroadcasting = readEnum<SoundBroadcasting>(stream);
+	stream >> subChannelId;
+	stream >> sbSegmentCount;
+	stream >> subChannelId;
+
+	stream >> layers;
+	for (int i = 0; i < 3; i ++) {
+		if ((1 << i) && layers)
+			layerEnabled[i] = true;
+		else
+			layerEnabled[i] = false;
+
+		modulation[i] = readEnum<Modulation>(stream);
+		fecRate[i] = readEnum<FecRate>(stream);
+		stream >> segmentCount[i];
+		interleaving[i] = readEnum<Interleaving>(stream);
+	}
+}
+
+bool IsdbTTransponder::fromString(const QString &string)
+{
+	int layers;
+	DvbChannelStringReader reader(string);
+	reader.checkChar(QLatin1Char('I'));
+	reader.readInt(frequency);
+	bandwidth = reader.readEnum<Bandwidth>();
+	transmissionMode = reader.readEnum<TransmissionMode>();
+	guardInterval = reader.readEnum<GuardInterval>();
+	partialReception = reader.readEnum<PartialReception>();
+	soundBroadcasting = reader.readEnum<SoundBroadcasting>();
+	reader.readInt(subChannelId);
+	reader.readInt(sbSegmentCount);
+	reader.readInt(subChannelId);
+
+	reader.readInt(layers);
+	for (int i = 0; i < 3; i ++) {
+		if ((1 << i) && layers)
+			layerEnabled[i] = true;
+		else
+			layerEnabled[i] = false;
+
+		modulation[i] = reader.readEnum<Modulation>();
+		fecRate[i] = reader.readEnum<FecRate>();
+		reader.readInt(segmentCount[i]);
+		interleaving[i] = reader.readEnum<Interleaving>();
+	}
+
+	return reader.isValid();
+}
+
+QString IsdbTTransponder::toString() const
+{
+	int layers = 0;
+	DvbChannelStringWriter writer;
+	writer.writeChar(QLatin1Char('I'));
+	writer.writeInt(frequency);
+	writer.writeEnum(bandwidth);
+	writer.writeEnum(transmissionMode);
+	writer.writeEnum(guardInterval);
+	writer.writeEnum(partialReception);
+	writer.writeEnum(soundBroadcasting);
+
+	for (int i = 0; i < 3; i ++) {
+		if (layerEnabled[i])
+			layers |= 1 << i;
+	}
+	writer.writeInt(layers);
+
+	for (int i = 0; i < 3; i ++) {
+		writer.writeEnum(modulation[i]);
+		writer.writeEnum(fecRate[i]);
+		writer.writeInt(segmentCount[i]);
+		writer.writeEnum(interleaving[i]);
+	}
+
+	return writer.getString();
+}
+
+bool IsdbTTransponder::corresponds(const DvbTransponder &transponder) const
+{
+	const IsdbTTransponder *dvbTTransponder = transponder.as<IsdbTTransponder>();
+
+	return ((dvbTTransponder != NULL) &&
+		(qAbs(dvbTTransponder->frequency - frequency) <= 2000000));
+}
+
 bool DvbTransponder::corresponds(const DvbTransponder &transponder) const
 {
 	switch (data.transmissionType) {
@@ -518,6 +699,8 @@ bool DvbTransponder::corresponds(const DvbTransponder &transponder) const
 		return as<DvbTTransponder>()->corresponds(transponder);
 	case DvbTransponderBase::Atsc:
 		return as<AtscTransponder>()->corresponds(transponder);
+	case DvbTransponderBase::IsdbT:
+		return as<IsdbTTransponder>()->corresponds(transponder);
 	}
 
 	return false;
@@ -538,6 +721,8 @@ QString DvbTransponder::toString() const
 		return as<DvbTTransponder>()->toString();
 	case DvbTransponderBase::Atsc:
 		return as<AtscTransponder>()->toString();
+	case DvbTransponderBase::IsdbT:
+		return as<IsdbTTransponder>()->toString();
 	}
 
 	return QString();
@@ -585,6 +770,15 @@ DvbTransponder DvbTransponder::fromString(const QString &string)
 			DvbTransponder transponder(DvbTransponderBase::Atsc);
 
 			if (transponder.as<AtscTransponder>()->fromString(string)) {
+				return transponder;
+			}
+
+			break;
+		    }
+		case 'I': {
+			DvbTransponder transponder(DvbTransponderBase::IsdbT);
+
+			if (transponder.as<IsdbTTransponder>()->fromString(string)) {
 				return transponder;
 			}
 

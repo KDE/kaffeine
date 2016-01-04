@@ -55,7 +55,8 @@ public:
 		DvbS,
 		DvbS2, // includes DvbS
 		DvbT,
-		Atsc
+		Atsc,
+		IsdbT
 	};
 
 	DvbManager(MediaWidget *mediaWidget_, QWidget *parent_);

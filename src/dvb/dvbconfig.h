@@ -33,7 +33,8 @@ public:
 		DvbS = 1,
 		DvbT = 2,
 		Atsc = 3,
-		TransmissionTypeMax = Atsc
+		IsdbT = 4,
+		TransmissionTypeMax = IsdbT
 	};
 
 	DvbConfigBase(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }

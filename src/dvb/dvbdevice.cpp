@@ -443,34 +443,40 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 void DvbDevice::autoTune(const DvbTransponder &transponder)
 {
-	if (transponder.getTransmissionType() != DvbTransponderBase::DvbT) {
-		Log("DvbDevice::autoTune: can't handle != DVB-T");
+	autoTransponder = transponder;
+	DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
+
+	switch(transponder.getTransmissionType()) {
+	case DvbTransponderBase::DvbT:
+		capabilities = backend->getCapabilities();
+
+		// we have to iterate over unsupported AUTO values
+
+		if ((capabilities & DvbTFecAuto) == 0) {
+			autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
+		}
+
+		if ((capabilities & DvbTGuardIntervalAuto) == 0) {
+			autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_8;
+		}
+
+		if ((capabilities & DvbTModulationAuto) == 0) {
+			autoTTransponder->modulation = DvbTTransponder::Qam64;
+		}
+
+		if ((capabilities & DvbTTransmissionModeAuto) == 0) {
+			autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
+		}
+		break;
+	case DvbTransponderBase::IsdbT:
+		// ISDB-T Currently, all ISDB-T tuners should support auto mode
+		break;
+	default:
+		Log("DvbDevice::autoTune: can't do auto-tune for ") << transponder.getTransmissionType();
 		return;
 	}
 
 	isAuto = true;
-	autoTransponder = transponder;
-	DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
-	capabilities = backend->getCapabilities();
-
-	// we have to iterate over unsupported AUTO values
-
-	if ((capabilities & DvbTFecAuto) == 0) {
-		autoTTransponder->fecRateHigh = DvbTTransponder::Fec2_3;
-	}
-
-	if ((capabilities & DvbTGuardIntervalAuto) == 0) {
-		autoTTransponder->guardInterval = DvbTTransponder::GuardInterval1_8;
-	}
-
-	if ((capabilities & DvbTModulationAuto) == 0) {
-		autoTTransponder->modulation = DvbTTransponder::Qam64;
-	}
-
-	if ((capabilities & DvbTTransmissionModeAuto) == 0) {
-		autoTTransponder->transmissionMode = DvbTTransponder::TransmissionMode8k;
-	}
-
 	tune(autoTransponder);
 }
 

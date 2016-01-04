@@ -31,12 +31,13 @@ class DvbTransponderBase
 {
 public:
 	enum TransmissionType {
-		Invalid = 5,
+		Invalid = 6,
 		DvbC = 0,
 		DvbS = 1,
 		DvbS2 = 4,
 		DvbT = 2,
-		Atsc = 3
+		Atsc = 3,
+		IsdbT = 5,
 	};
 
 	enum FecRate {
@@ -207,6 +208,84 @@ public:
 	int frequency; // Hz
 };
 
+class IsdbTTransponder : public DvbTransponderBase
+{
+public:
+	enum Bandwidth {
+		Bandwidth6MHz = 0,
+		Bandwidth7MHz = 1,
+		Bandwidth8MHz = 2,
+	};
+
+	enum Modulation {
+		Qpsk = 0,
+		Dqpsk = 1,
+		Qam16 = 2,
+		Qam64 = 3,
+		ModulationAuto = -1
+	};
+
+	enum TransmissionMode {
+		TransmissionMode2k = 0,
+		TransmissionMode4k = 1,
+		TransmissionMode8k = 2,
+		TransmissionModeAuto = -1,
+	};
+
+	enum GuardInterval {
+		GuardInterval1_4 = 0,
+		GuardInterval1_8 = 1,
+		GuardInterval1_16 = 2,
+		GuardInterval1_32 = 3,
+		GuardIntervalAuto = -1
+	};
+
+	enum Interleaving {
+		I_0 = 0,
+		I_1 = 1,
+		I_2 = 2,
+		I_4 = 4,
+		I_8 = 8,
+		I_16 = 16,	/* Only on SB */
+		I_AUTO = -1
+	};
+
+	enum PartialReception {
+		PR_disabled = 0,
+		PR_enabled = 1,
+		PR_AUTO = -1
+	};
+
+	enum SoundBroadcasting {
+		SB_disabled = 0,
+		SB_enabled = 1,
+		SB_AUTO = -1
+	};
+
+	void readTransponder(QDataStream &stream);
+	bool fromString(const QString &string);
+	QString toString() const;
+	bool corresponds(const DvbTransponder &transponder) const;
+
+	Bandwidth bandwidth : 8;
+	TransmissionMode transmissionMode : 8;
+	GuardInterval guardInterval : 8;
+	PartialReception partialReception : 2;
+	SoundBroadcasting soundBroadcasting : 2;
+	int subChannelId;
+	int sbSegmentCount;
+	int sbSegmentIdx;
+
+	/* Per-Layer parameters */
+	bool layerEnabled[3];
+	FecRate fecRate[3];
+	Modulation modulation[3];
+	int segmentCount[3];
+	Interleaving interleaving[3];
+
+	int frequency; // Hz
+};
+
 class DvbTransponder
 {
 public:
@@ -289,6 +368,10 @@ private:
 		return DvbTransponderBase::Atsc;
 	}
 
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const IsdbTTransponder *) const
+	{
+		return DvbTransponderBase::IsdbT;
+	}
 	union {
 		DvbTransponderBase::TransmissionType transmissionType : 8;
 		DvbCTransponder dvbCTransponder;
@@ -296,6 +379,7 @@ private:
 		DvbS2Transponder dvbS2Transponder;
 		DvbTTransponder dvbTTransponder;
 		AtscTransponder atscTransponder;
+		IsdbTTransponder isdbTTransponder;
 	} data;
 };
 

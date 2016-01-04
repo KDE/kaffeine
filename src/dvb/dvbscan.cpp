@@ -409,6 +409,26 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbTTransponder->hierarchy = DvbTTransponder::HierarchyNone;
 			transponders.append(currentTransponder);
 		}
+	} else if (autoScanSource == QLatin1String("AUTO-UHF-6MHz")) {
+		for (int frequency = 473142857; frequency <= 803142857; frequency += 6000000) {
+			DvbTransponder currentTransponder(DvbTransponderBase::IsdbT);
+			IsdbTTransponder *isdbTTransponder =
+				currentTransponder.as<IsdbTTransponder>();
+			isdbTTransponder->frequency = frequency;
+			isdbTTransponder->bandwidth = IsdbTTransponder::Bandwidth6MHz;
+			isdbTTransponder->transmissionMode = IsdbTTransponder::TransmissionModeAuto;
+			isdbTTransponder->guardInterval = IsdbTTransponder::GuardIntervalAuto;
+			isdbTTransponder->partialReception = IsdbTTransponder::PR_AUTO;
+			isdbTTransponder->soundBroadcasting = IsdbTTransponder::SB_disabled;
+			for (int i = 0; i < 3; i++) {
+				isdbTTransponder->layerEnabled[i] = true;
+				isdbTTransponder->modulation[i] = IsdbTTransponder::ModulationAuto;
+				isdbTTransponder->fecRate[i] = IsdbTTransponder::FecAuto;
+				isdbTTransponder->interleaving[i] = IsdbTTransponder::I_AUTO;
+				isdbTTransponder->segmentCount[i] = 15;
+			}
+			transponders.append(currentTransponder);
+		}
 	}
 }
 
@@ -1042,6 +1062,9 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		break;
 	    }
 	case DvbTransponderBase::Atsc:
+		break;
+	case DvbTransponderBase::IsdbT:
+		/* FIXME: should teach how to handle ISDB-T terrestrial descriptor */
 		break;
 	}
 

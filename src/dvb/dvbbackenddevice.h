@@ -33,7 +33,8 @@ public:
 		DvbS = (1 << 1),
 		DvbS2 = (1 << 4),
 		DvbT = (1 << 2),
-		Atsc = (1 << 3)
+		Atsc = (1 << 3),
+		IsdbT = (1 << 5),
 	};
 
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)

@@ -748,6 +748,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	QList<DvbConfig> dvbSConfigs;
 	DvbConfig dvbTConfig;
 	DvbConfig atscConfig;
+	DvbConfig isdbTConfig;
 
 	foreach (const DvbConfig &config, deviceConfig->configs) {
 		switch (config->getTransmissionType()) {
@@ -762,6 +763,9 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 			break;
 		case DvbConfigBase::Atsc:
 			atscConfig = config;
+			break;
+		case DvbConfigBase::IsdbT:
+			isdbTConfig = config;
 			break;
 		}
 	}
@@ -815,6 +819,19 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 
 		new DvbConfigObject(this, boxLayout, manager, atscConfig.data());
 		configs.append(atscConfig);
+	}
+
+	if ((transmissionTypes & DvbDevice::IsdbT) != 0) {
+		addHSeparator(i18n("ISDB-T"));
+
+		if (isdbTConfig.constData() == NULL) {
+			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::IsdbT);
+			config->timeout = 1500;
+			isdbTConfig = DvbConfig(config);
+		}
+
+		new DvbConfigObject(this, boxLayout, manager, isdbTConfig.data());
+		configs.append(isdbTConfig);
 	}
 
 	boxLayout->addStretch();
@@ -913,6 +930,12 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 	case DvbConfigBase::Atsc:
 		defaultName = i18n("Atsc");
 		sources = manager->getScanSources(DvbManager::Atsc);
+		sourceIndex = sources.indexOf(config->scanSource);
+		break;
+	case DvbConfigBase::IsdbT:
+		defaultName = i18n("ISDB-T");
+		sources.append(QLatin1String("AUTO-UHF-6MHz"));
+		sources += manager->getScanSources(DvbManager::IsdbT);
 		sourceIndex = sources.indexOf(config->scanSource);
 		break;
 	}

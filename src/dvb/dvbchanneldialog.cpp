@@ -483,6 +483,20 @@ static QLatin1String enumToString(DvbTTransponder::TransmissionMode transmission
 	return QLatin1String(text);
 }
 
+static QLatin1String enumToString(IsdbTTransponder::TransmissionMode transmissionMode)
+{
+	const char *text = "";
+
+	switch (transmissionMode) {
+	case IsdbTTransponder::TransmissionMode2k: text = "2k"; break;
+	case IsdbTTransponder::TransmissionMode4k: text = "4k"; break;
+	case IsdbTTransponder::TransmissionMode8k: text = "8k"; break;
+	case IsdbTTransponder::TransmissionModeAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
 static QLatin1String enumToString(DvbTTransponder::GuardInterval guardInterval)
 {
 	const char *text = "";
@@ -523,6 +537,75 @@ static QLatin1String enumToString(AtscTransponder::Modulation modulation)
 	case AtscTransponder::Vsb8: text = "8-VSB"; break;
 	case AtscTransponder::Vsb16: text = "16-VSB"; break;
 	case AtscTransponder::ModulationAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(IsdbTTransponder::Bandwidth bandwidth)
+{
+	const char *text = "";
+
+	switch (bandwidth) {
+	case IsdbTTransponder::Bandwidth6MHz: text = "6MHz"; break;
+	case IsdbTTransponder::Bandwidth7MHz: text = "7MHz"; break;
+	case IsdbTTransponder::Bandwidth8MHz: text = "8MHz"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(IsdbTTransponder::Modulation modulation)
+{
+	const char *text = "";
+
+	switch (modulation) {
+	case IsdbTTransponder::Dqpsk: text = "DQPSK"; break;
+	case IsdbTTransponder::Qpsk: text = "QPSK"; break;
+	case IsdbTTransponder::Qam16: text = "16-QAM"; break;
+	case IsdbTTransponder::Qam64: text = "64-QAM"; break;
+	case IsdbTTransponder::ModulationAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(IsdbTTransponder::GuardInterval guardInterval)
+{
+	const char *text = "";
+
+	switch (guardInterval) {
+	case IsdbTTransponder::GuardInterval1_4: text = "1/4"; break;
+	case IsdbTTransponder::GuardInterval1_8: text = "1/8"; break;
+	case IsdbTTransponder::GuardInterval1_16: text = "1/16"; break;
+	case IsdbTTransponder::GuardInterval1_32: text = "1/32"; break;
+	case IsdbTTransponder::GuardIntervalAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(IsdbTTransponder::PartialReception partialReception)
+{
+	const char *text = "";
+
+	switch (partialReception) {
+	case IsdbTTransponder::PR_disabled: text = "No"; break;
+	case IsdbTTransponder::PR_enabled: text = "Yes"; break;
+	case IsdbTTransponder::PR_AUTO: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(IsdbTTransponder::SoundBroadcasting soundBroadcasting)
+{
+	const char *text = "";
+
+	switch (soundBroadcasting) {
+	case IsdbTTransponder::SB_disabled: text = "No"; break;
+	case IsdbTTransponder::SB_enabled: text = "Yes"; break;
+	case IsdbTTransponder::SB_AUTO: text = "AUTO"; break;
 	}
 
 	return QLatin1String(text);
@@ -624,6 +707,68 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), 7, 1);
 		gridLayout->addWidget(new QLabel(i18n("Hierarchy:")), 8, 0);
 		gridLayout->addWidget(new QLabel(enumToString(tp->hierarchy)), 8, 1);
+		break;
+	    }
+	case DvbTransponderBase::IsdbT: {
+		const IsdbTTransponder *tp = channel->transponder.as<IsdbTTransponder>();
+		int idx;
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
+		gridLayout->addWidget(
+			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(new QLabel(i18n("Bandwidth:")), 2, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->bandwidth)), 2, 1);
+		gridLayout->addWidget(new QLabel(i18n("Transmission mode:")), 3, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->transmissionMode)), 3, 1);
+		gridLayout->addWidget(new QLabel(i18n("Guard interval:")), 4, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), 4, 1);
+
+		gridLayout->addWidget(new QLabel(i18n("Partial reception:")), 5, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->partialReception)), 5, 1);
+		gridLayout->addWidget(new QLabel(i18n("Sound broadcasting:")), 6, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->soundBroadcasting)), 6, 1);
+
+		if (tp->soundBroadcasting == 1) {
+			gridLayout->addWidget(new QLabel(i18n("SB channel ID:")), 7, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->subChannelId)), 7, 1);
+			gridLayout->addWidget(new QLabel(i18n("SB index:")), 8, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->subChannelId)), 8, 1);
+			gridLayout->addWidget(new QLabel(i18n("SB count:")), 9, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->sbSegmentCount)), 9, 1);
+			idx = 10;
+		} else
+			idx = 7;
+
+		if (tp->layerEnabled[0]) {
+			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), idx, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[0])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), idx, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[0])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), idx, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[0])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), idx, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[0])), idx++, 1);
+		}
+		if (tp->layerEnabled[1]) {
+			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), idx, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[1])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), idx, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[1])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), idx, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[1])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), idx, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[1])), idx++, 1);
+		}
+		if (tp->layerEnabled[2]) {
+			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), idx, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[2])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), idx, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[2])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), idx, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[2])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), idx, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[2])), idx++, 1);
+		}
+
 		break;
 	    }
 	case DvbTransponderBase::Atsc: {

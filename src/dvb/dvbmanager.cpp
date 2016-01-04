@@ -271,7 +271,7 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 		return QString();
 	}
 
-	if ((scanSource.first == DvbT) && (scanSource.second.startsWith(QLatin1String("AUTO")))) {
+	if (((scanSource.first == DvbT) || (scanSource.first == IsdbT)) && (scanSource.second.startsWith(QLatin1String("AUTO")))) {
 		return scanSource.second;
 	}
 
@@ -744,6 +744,9 @@ void DvbManager::updateSourceMapping()
 			case DvbConfigBase::Atsc:
 				type = Atsc;
 				break;
+			case DvbConfigBase::IsdbT:
+				type = IsdbT;
+				break;
 			default:
 				Q_ASSERT(false);
 				continue;
@@ -826,6 +829,7 @@ void DvbManager::readScanData()
 	    !readScanSources(data, "[dvb-s/", DvbS) ||
 	    !readScanSources(data, "[dvb-t/", DvbT) ||
 	    !readScanSources(data, "[atsc/", Atsc) ||
+	    !readScanSources(data, "[isdb-t/", IsdbT) ||
 	    !data.checkEnd()) {
 		Log("DvbManager::readScanData: cannot parse") << localFile.fileName();
 	}

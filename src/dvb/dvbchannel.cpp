@@ -67,6 +67,7 @@ bool DvbChannelId::operator==(const DvbChannelId &other) const
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
+	case DvbTransponderBase::IsdbT:
 		return ((channel->transportStreamId == other.channel->transportStreamId) &&
 			(channel->serviceId == other.channel->serviceId));
 	case DvbTransponderBase::Atsc:
@@ -89,6 +90,7 @@ uint qHash(const DvbChannelId &channel)
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
+	case DvbTransponderBase::IsdbT:
 		hash ^= (qHash(channel.channel->transportStreamId) << 8);
 		hash ^= (qHash(channel.channel->serviceId) << 16);
 		break;
