@@ -710,6 +710,7 @@ void DvbDevice::frontendEvent()
 	if (backend->isTuned()) {
 		Log("DvbDevice::frontendEvent: tuning succeeded");
 		frontendTimer.stop();
+		backend->getProps(autoTransponder);
 		setDeviceState(DeviceTuned);
 		return;
 	}

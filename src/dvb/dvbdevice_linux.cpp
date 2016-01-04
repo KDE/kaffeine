@@ -987,7 +987,7 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 		break;
 	    }
 	default:
-		Log("DvbLinuxDevice::tune: unknown transmission type") <<
+		Log("DvbLinuxDevice::getProps: unknown transmission type") <<
 			transponder.getTransmissionType();
 		return false;
 	}
