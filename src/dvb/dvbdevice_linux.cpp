@@ -825,7 +825,7 @@ void DvbLinuxDevice::startDvr()
 					continue;
 				}
 
-				Log("DvbLinuxDevice::startDvr: cannot read from dvr") << dvrPath;
+				Log("DvbLinuxDevice::startDvr: cannot read from dvr") << dvrPath << errno;
 				return;
 			}
 		}
@@ -893,7 +893,7 @@ void DvbLinuxDevice::run()
 					continue;
 				}
 
-				Log("DvbLinuxDevice::run: cannot read from dvr") << dvrPath;
+				Log("DvbLinuxDevice::run: cannot read from dvr") << dvrPath << errno;
 				dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 				if (dataSize < 0) {
@@ -906,7 +906,7 @@ void DvbLinuxDevice::run()
 					}
 
 					Log("DvbLinuxDevice::run: cannot read from dvr") <<
-						dvrPath;
+						dvrPath << errno;
 					return;
 				}
 			}
