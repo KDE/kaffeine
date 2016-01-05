@@ -222,14 +222,14 @@ public:
 		Dqpsk = 1,
 		Qam16 = 2,
 		Qam64 = 3,
-		ModulationAuto = -1
+		ModulationAuto = 4
 	};
 
 	enum TransmissionMode {
 		TransmissionMode2k = 0,
 		TransmissionMode4k = 1,
 		TransmissionMode8k = 2,
-		TransmissionModeAuto = -1,
+		TransmissionModeAuto = 3,
 	};
 
 	enum GuardInterval {
@@ -237,7 +237,7 @@ public:
 		GuardInterval1_8 = 1,
 		GuardInterval1_16 = 2,
 		GuardInterval1_32 = 3,
-		GuardIntervalAuto = -1
+		GuardIntervalAuto = 4
 	};
 
 	enum Interleaving {
@@ -247,19 +247,19 @@ public:
 		I_4 = 4,
 		I_8 = 8,
 		I_16 = 16,	/* Only on SB */
-		I_AUTO = -1
+		I_AUTO = 3
 	};
 
 	enum PartialReception {
 		PR_disabled = 0,
 		PR_enabled = 1,
-		PR_AUTO = -1
+		PR_AUTO = 2
 	};
 
 	enum SoundBroadcasting {
 		SB_disabled = 0,
 		SB_enabled = 1,
-		SB_AUTO = -1
+		SB_AUTO = 2
 	};
 
 	void readTransponder(QDataStream &stream);
