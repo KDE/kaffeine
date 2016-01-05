@@ -172,6 +172,10 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 			channel.transponder = DvbTransponder(DvbTransponderBase::Atsc);
 			channel.transponder.as<AtscTransponder>()->readTransponder(stream);
 			break;
+		case DvbTransponderBase::IsdbT:
+			channel.transponder = DvbTransponder(DvbTransponderBase::IsdbT);
+			channel.transponder.as<IsdbTTransponder>()->readTransponder(stream);
+			break;
 		default:
 			stream.setStatus(QDataStream::ReadCorruptData);
 			break;
