@@ -291,8 +291,6 @@ QString DvbSiText::convertText(const char *data, int size)
 			size -= 2;
 			break;
 		    }
-		default:
-			return QString();
 		}
 
 		data++;
