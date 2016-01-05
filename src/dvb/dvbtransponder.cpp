@@ -659,6 +659,9 @@ QString IsdbTTransponder::toString() const
 	writer.writeEnum(guardInterval);
 	writer.writeEnum(partialReception);
 	writer.writeEnum(soundBroadcasting);
+	writer.writeInt(subChannelId);
+	writer.writeInt(sbSegmentCount);
+	writer.writeInt(subChannelId);
 
 	for (int i = 0; i < 3; i ++) {
 		if (layerEnabled[i])
