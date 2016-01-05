@@ -784,11 +784,67 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	gridLayout->addWidget(new QLabel(), 10, 0, 1, 2);
 
+	gridLayout->addItem(new QSpacerItem(0, 0), row, 0, 1, 2);
+	gridLayout->setRowStretch(row, 1);
+	boxLayout->addWidget(groupBox);
+
+	groupBox = new QGroupBox(widget);
+	gridLayout = new QGridLayout(groupBox);
+	gridLayout->addWidget(new QLabel(i18n("Network ID:")), 0, 0);
+
+	row = 1;
+
+	networkIdBox = new QSpinBox(groupBox);
+	networkIdBox->setRange(-1, (1 << 16) - 1);
+	networkIdBox->setValue(channel->networkId);
+	gridLayout->addWidget(networkIdBox, 0, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Transport stream ID:")), row, 0);
+
+	transportStreamIdBox = new QSpinBox(groupBox);
+	transportStreamIdBox->setRange(0, (1 << 16) - 1);
+	transportStreamIdBox->setValue(channel->transportStreamId);
+	gridLayout->addWidget(transportStreamIdBox, row++, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Service ID:")), row, 0);
+
+	serviceIdBox = new QSpinBox(groupBox);
+	serviceIdBox->setRange(0, (1 << 16) - 1);
+	serviceIdBox->setValue(channel->serviceId);
+	gridLayout->addWidget(serviceIdBox, row++, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), row, 0);
+	audioStreamBox = new KComboBox(groupBox);
+	audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
+	if (audioPids.size() <= 1) {
+		audioStreamBox->setEnabled(false);
+	}
+	gridLayout->addWidget(audioStreamBox, row++, 1);
+
+	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), row, 0);
+	scrambledBox = new QCheckBox(groupBox);
+	scrambledBox->setChecked(channel->isScrambled);
+	gridLayout->addWidget(scrambledBox, row++, 1);
+
+	row++;
+
 	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), row, 0);
 	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), row++, 1);
 
 	DvbPmtSection pmtSection(channel->pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
+
+	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
+		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
+		QString text = QString::number(it.first);
+
+		if (!it.second.isEmpty()) {
+			text = text + QLatin1String(" (") + it.second + QLatin1Char(')');
+		}
+
+		audioStreamBox->addItem(text);
+		audioPids.append(it.first);
+	}
 
 	if (pmtParser.videoPid >= 0) {
 		gridLayout->addWidget(new QLabel(i18n("Video PID:")), row, 0);
@@ -810,63 +866,6 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 		gridLayout->addWidget(
 			new QLabel(QString::number(pmtParser.teletextPid)), row++, 1);
 	}
-
-	gridLayout->addItem(new QSpacerItem(0, 0), row, 0, 1, 2);
-	gridLayout->setRowStretch(row, 1);
-	boxLayout->addWidget(groupBox);
-
-	groupBox = new QGroupBox(widget);
-	gridLayout = new QGridLayout(groupBox);
-	gridLayout->addWidget(new QLabel(i18n("Network ID:")), 0, 0);
-
-	networkIdBox = new QSpinBox(groupBox);
-	networkIdBox->setRange(-1, (1 << 16) - 1);
-	networkIdBox->setValue(channel->networkId);
-	gridLayout->addWidget(networkIdBox, 0, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Transport stream ID:")), 1, 0);
-
-	transportStreamIdBox = new QSpinBox(groupBox);
-	transportStreamIdBox->setRange(0, (1 << 16) - 1);
-	transportStreamIdBox->setValue(channel->transportStreamId);
-	gridLayout->addWidget(transportStreamIdBox, 1, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Service ID:")), 2, 0);
-
-	serviceIdBox = new QSpinBox(groupBox);
-	serviceIdBox->setRange(0, (1 << 16) - 1);
-	serviceIdBox->setValue(channel->serviceId);
-	gridLayout->addWidget(serviceIdBox, 2, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), 3, 0);
-
-	audioStreamBox = new KComboBox(groupBox);
-
-	for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
-		const QPair<int, QString> &it = pmtParser.audioPids.at(i);
-		QString text = QString::number(it.first);
-
-		if (!it.second.isEmpty()) {
-			text = text + QLatin1String(" (") + it.second + QLatin1Char(')');
-		}
-
-		audioStreamBox->addItem(text);
-		audioPids.append(it.first);
-	}
-
-	audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
-
-	if (audioPids.size() <= 1) {
-		audioStreamBox->setEnabled(false);
-	}
-
-	gridLayout->addWidget(audioStreamBox, 3, 1);
-
-	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), 4, 0);
-
-	scrambledBox = new QCheckBox(groupBox);
-	scrambledBox->setChecked(channel->isScrambled);
-	gridLayout->addWidget(scrambledBox, 4, 1);
 
 	gridLayout->addItem(new QSpacerItem(0, 0), 5, 0, 1, 2);
 	gridLayout->setRowStretch(5, 1);
