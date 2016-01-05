@@ -645,6 +645,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	gridLayout->addWidget(new QLabel(i18nc("@label tv channel", "Source:")), 0, 0);
 	gridLayout->addWidget(new QLabel(channel->source), 0, 1);
 
+	int row = 11;
+
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
 		break;
@@ -711,62 +713,60 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	    }
 	case DvbTransponderBase::IsdbT: {
 		const IsdbTTransponder *tp = channel->transponder.as<IsdbTTransponder>();
-		int idx;
-		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
+		row= 1;
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), row, 0);
 		gridLayout->addWidget(
-			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
-		gridLayout->addWidget(new QLabel(i18n("Bandwidth:")), 2, 0);
-		gridLayout->addWidget(new QLabel(enumToString(tp->bandwidth)), 2, 1);
-		gridLayout->addWidget(new QLabel(i18n("Transmission mode:")), 3, 0);
-		gridLayout->addWidget(new QLabel(enumToString(tp->transmissionMode)), 3, 1);
-		gridLayout->addWidget(new QLabel(i18n("Guard interval:")), 4, 0);
-		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), 4, 1);
+			new QLabel(QString::number(tp->frequency / 1000000.0)), row++, 1);
+		gridLayout->addWidget(new QLabel(i18n("Bandwidth:")), row, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->bandwidth)), row++, 1);
+		gridLayout->addWidget(new QLabel(i18n("Transmission mode:")), row, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->transmissionMode)), row++, 1);
+		gridLayout->addWidget(new QLabel(i18n("Guard interval:")), row, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), row++, 1);
 
-		gridLayout->addWidget(new QLabel(i18n("Partial reception:")), 5, 0);
-		gridLayout->addWidget(new QLabel(enumToString(tp->partialReception)), 5, 1);
-		gridLayout->addWidget(new QLabel(i18n("Sound broadcasting:")), 6, 0);
-		gridLayout->addWidget(new QLabel(enumToString(tp->soundBroadcasting)), 6, 1);
+		gridLayout->addWidget(new QLabel(i18n("Partial reception:")), row, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->partialReception)), row++, 1);
+		gridLayout->addWidget(new QLabel(i18n("Sound broadcasting:")), row, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->soundBroadcasting)), row++, 1);
 
 		if (tp->soundBroadcasting == 1) {
-			gridLayout->addWidget(new QLabel(i18n("SB channel ID:")), 7, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->subChannelId)), 7, 1);
-			gridLayout->addWidget(new QLabel(i18n("SB index:")), 8, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->subChannelId)), 8, 1);
-			gridLayout->addWidget(new QLabel(i18n("SB count:")), 9, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->sbSegmentCount)), 9, 1);
-			idx = 10;
-		} else
-			idx = 7;
+			gridLayout->addWidget(new QLabel(i18n("SB channel ID:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->subChannelId)), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("SB index:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->subChannelId)), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("SB count:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->sbSegmentCount)), row++, 1);
+		}
 
 		if (tp->layerEnabled[0]) {
-			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), idx, 0);
-			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[0])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), idx, 0);
-			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[0])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), idx, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[0])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), idx, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[0])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), row, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[0])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), row, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[0])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[0])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[0])), row++, 1);
 		}
 		if (tp->layerEnabled[1]) {
-			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), idx, 0);
-			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[1])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), idx, 0);
-			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[1])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), idx, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[1])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), idx, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[1])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer B Modulation:")), row, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[1])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer B FEC rate:")), row, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[1])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer B segments:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[1])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer B interleaving:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[1])), row++, 1);
 		}
 		if (tp->layerEnabled[2]) {
-			gridLayout->addWidget(new QLabel(i18n("Layer A Modulation:")), idx, 0);
-			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[2])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A FEC rate:")), idx, 0);
-			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[2])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A segments:")), idx, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[2])), idx++, 1);
-			gridLayout->addWidget(new QLabel(i18n("Layer A interleaving:")), idx, 0);
-			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[2])), idx++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer C Modulation:")), row, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->modulation[2])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer C FEC rate:")), row, 0);
+			gridLayout->addWidget(new QLabel(enumToString(tp->fecRate[2])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer C segments:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->segmentCount[2])), row++, 1);
+			gridLayout->addWidget(new QLabel(i18n("Layer C interleaving:")), row, 0);
+			gridLayout->addWidget(new QLabel(QString::number(tp->interleaving[2])), row++, 1);
 		}
 
 		break;
@@ -784,12 +784,11 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	gridLayout->addWidget(new QLabel(), 10, 0, 1, 2);
 
-	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), 11, 0);
-	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), 11, 1);
+	gridLayout->addWidget(new QLabel(i18n("PMT PID:")), row, 0);
+	gridLayout->addWidget(new QLabel(QString::number(channel->pmtPid)), row++, 1);
 
 	DvbPmtSection pmtSection(channel->pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
-	int row = 12;
 
 	if (pmtParser.videoPid >= 0) {
 		gridLayout->addWidget(new QLabel(i18n("Video PID:")), row, 0);
