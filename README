@@ -6,6 +6,7 @@ The following tools are needed to build Kaffeine:
 * GNU c++
 * GNU make
 * cmake >= 3.4
+* cmake ECM (extra-cmake-modules)
 
 The following development headers are needed (recommended versions):
 * Qt >= 4.6
@@ -23,8 +24,11 @@ For the translations you need:
 
 So, on Debian, for example, those packages should be installed:
 
-   apt-get install kdelibs5-dev libvlc-dev libxss-dev libqt4-sql-sqlite \
-		   libdvbv5-dev gettext cmake make g++
+   apt-get install kdelibs5-dev libvlc-dev libxss-dev libqt5-sql-sqlite \
+		   libkf5coreaddons-dev libkf5i18n-dev \
+		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
+		   qt5-default libdvbv5-dev \
+		   gettext cmake extra-cmake-modules make g++
 
 Create an empty build directory and do the following steps:
 # cmake <path/to/kaffeine/source/directory> <options>
