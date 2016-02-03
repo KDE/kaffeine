@@ -2,16 +2,29 @@
 Installing Kaffeine
 -------------------
 
+The following tools are needed to build Kaffeine:
+* GNU c++
+* GNU make
+* cmake >= 3.4
+
 The following development headers are needed (recommended versions):
 * Qt >= 4.6
 * KDE >= 4.4
 * libX11
 * libXss
+* libqt-sql-sqlite
+* libvlc
+* libdvbv5
 
 If build fails for missing VLC directories, install libvlc-dev.
 
 For the translations you need:
 * gettext
+
+So, on Debian, for example, those packages should be installed:
+
+   apt-get install kdelibs5-dev libvlc-dev libxss-dev libqt4-sql-sqlite \
+		   libdvbv5-dev gettext cmake make g++
 
 Create an empty build directory and do the following steps:
 # cmake <path/to/kaffeine/source/directory> <options>
