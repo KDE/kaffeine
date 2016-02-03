@@ -1,5 +1,7 @@
 project(kaffeine)
 
+cmake_minimum_required(VERSION 3.4)
+
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 find_package(KDE4 REQUIRED)
@@ -21,8 +23,7 @@ if(STRICT_BUILD)
                   -DQT_NO_URL_CAST_FROM_STRING -DQT_STRICT_ITERATORS)
 endif(STRICT_BUILD)
 
-include(CheckIncludeFiles)
-check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
+check_include_file(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
 
 if(NOT HAVE_DVB)
   MESSAGE(STATUS "Disabled features:\nDVB  Digital television support for Linux\n")
