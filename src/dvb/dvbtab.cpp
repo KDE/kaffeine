@@ -33,6 +33,7 @@
 #include <QMenu>
 #include <KMessageBox>
 #include <KConfigGroup>
+#include <KSharedConfig>
 #include "../log.h"
 #include "../osdwidget.h"
 #include "dvbchanneldialog.h"
@@ -149,7 +150,7 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	channelView->setRootIsDecorated(false);
 
 	if (!channelView->header()->restoreState(QByteArray::fromBase64(
-	    KGlobal::config()->group("DVB").readEntry("ChannelViewState", QByteArray())))) {
+	    KSharedConfig::openConfig()->group("DVB").readEntry("ChannelViewState", QByteArray())))) {
 		channelView->sortByColumn(0, Qt::AscendingOrder);
 	}
 
@@ -198,10 +199,10 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(mediaWidget, SIGNAL(osdKeyPressed(int)), this, SLOT(osdKeyPressed(int)));
 	connect(&osdChannelTimer, SIGNAL(timeout()), this, SLOT(tuneOsdChannel()));
 
-	lastChannel = KGlobal::config()->group("DVB").readEntry("LastChannel");
+	lastChannel = KSharedConfig::openConfig()->group("DVB").readEntry("LastChannel");
 
 	splitter->restoreState(QByteArray::fromBase64(
-		KGlobal::config()->group("DVB").readEntry("TabSplitterState", QByteArray())));
+		KSharedConfig::openConfig()->group("DVB").readEntry("TabSplitterState", QByteArray())));
 
 	timeShiftCleaner = new DvbTimeShiftCleaner(this);
 
@@ -212,16 +213,16 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 DvbTab::~DvbTab()
 {
-	KGlobal::config()->group("DVB").writeEntry("TabSplitterState",
+	KSharedConfig::openConfig()->group("DVB").writeEntry("TabSplitterState",
 		splitter->saveState().toBase64());
-	KGlobal::config()->group("DVB").writeEntry("ChannelViewState",
+	KSharedConfig::openConfig()->group("DVB").writeEntry("ChannelViewState",
 		channelView->header()->saveState().toBase64());
 
 	if (!currentChannel.isEmpty()) {
 		lastChannel = currentChannel;
 	}
 
-	KGlobal::config()->group("DVB").writeEntry("LastChannel", lastChannel);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("LastChannel", lastChannel);
 }
 
 void DvbTab::playChannel(const QString &nameOrNumber)

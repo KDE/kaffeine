@@ -32,7 +32,8 @@
 #include <kfilewidget.h>
 #include <KLocalizedString>
 #include <QMenu>
-#include <KStandardDirs>
+#include <QStandardPaths>
+
 #include "../log.h"
 #include "playlistmodel.h"
 
@@ -42,10 +43,10 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 {
 	playlists.append(temporaryPlaylist);
 
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("playlistsK4")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		file.setFileName(KStandardDirs::locateLocal("appdata", QLatin1String("playlists")));
+		file.setFileName(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
 			Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot open file") <<
@@ -126,7 +127,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 PlaylistBrowserModel::~PlaylistBrowserModel()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("playlistsK4")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file") <<

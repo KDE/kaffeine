@@ -22,7 +22,8 @@
 #include "dvbepg_p.h"
 
 #include <QFile>
-#include <KStandardDirs>
+#include <QStandardPaths>
+
 #include "../ensurenopendingoperation.h"
 #include "../log.h"
 #include "dvbdevice.h"
@@ -86,7 +87,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 
 	// TODO use SQL to store epg data
 
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("epgdata.dvb")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		Log("DvbEpgModel::DvbEpgModel: cannot open") << file.fileName();
@@ -147,7 +148,7 @@ DvbEpgModel::~DvbEpgModel()
 		Log("DvbEpgModel::~DvbEpgModel: filter list not empty");
 	}
 
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("epgdata.dvb")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("DvbEpgModel::~DvbEpgModel: cannot open") << file.fileName();

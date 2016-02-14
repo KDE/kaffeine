@@ -39,6 +39,7 @@
 #include <QCommandLineOption>
 #include <KConfigGroup>
 #include <QFileDialog>
+#include <KSharedConfig>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 #include "configuration.h"
@@ -169,7 +170,7 @@ MainWindow::MainWindow()
 	menu->addAction(collection->addAction(QLatin1String("file_open_url"), action));
 
 	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(KUrl)), collection);
-	actionOpenRecent->loadEntries(KGlobal::config()->group("Recent Files"));
+	actionOpenRecent->loadEntries(KSharedConfig::openConfig()->group("Recent Files"));
 	menu->addAction(collection->addAction(QLatin1String("file_open_recent"), actionOpenRecent));
 
 	menu->addSeparator();
@@ -339,7 +340,7 @@ MainWindow::MainWindow()
 		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
 		break;
 	case Configuration::StartupRememberLastSetting: {
-		int value = KGlobal::config()->group("MainWindow").readEntry("DisplayMode", 0);
+		int value = KSharedConfig::openConfig()->group("MainWindow").readEntry("DisplayMode", 0);
 
 		switch (value) {
 		case 0:
@@ -360,7 +361,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-	actionOpenRecent->saveEntries(KGlobal::config()->group("Recent Files"));
+	actionOpenRecent->saveEntries(KSharedConfig::openConfig()->group("Recent Files"));
 
 	if (!temporaryUrls.isEmpty()) {
 		KIO::del(temporaryUrls);
@@ -375,7 +376,7 @@ MainWindow::~MainWindow()
 	case MediaWidget::FullScreenReturnToMinimalMode: value = 2; break;
 	}
 
-	KGlobal::config()->group("MainWindow").writeEntry("DisplayMode", value);
+	KSharedConfig::openConfig()->group("MainWindow").writeEntry("DisplayMode", value);
 }
 
 QCommandLineParser parser::cmdLineOptions()

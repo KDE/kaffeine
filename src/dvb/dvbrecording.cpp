@@ -29,7 +29,8 @@
 #include <QEventLoop>
 #include <QVariant>
 #include <KIdleTime>
-#include <KStandardDirs>
+#include <QStandardPaths>
+
 #include "../ensurenopendingoperation.h"
 #include "../log.h"
 #include "dvbdevice.h"
@@ -69,7 +70,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 	// compatibility code
 
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("recordings.dvb")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/recordings.dvb"));
 
 	if (!file.exists()) {
 		return;

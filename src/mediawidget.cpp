@@ -40,6 +40,7 @@
 #include <KToolBar>
 #include <X11/extensions/scrnsaver.h>
 #include <KConfigGroup>
+#include <KSharedConfig>
 #include "backend-vlc/vlcmediawidget.h"
 #include "configuration.h"
 #include "log.h"
@@ -164,7 +165,7 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 		i18nc("'Video' menu", "Deinterlace"), this);
 	deinterlaceAction->setCheckable(true);
 	deinterlaceAction->setChecked(
-		KGlobal::config()->group("MediaObject").readEntry("Deinterlace", true));
+		KSharedConfig::openConfig()->group("MediaObject").readEntry("Deinterlace", true));
 	deinterlaceAction->setShortcut(Qt::Key_I);
 	connect(deinterlaceAction, SIGNAL(toggled(bool)), this, SLOT(deinterlacingChanged(bool)));
 	backend->setDeinterlacing(deinterlaceAction->isChecked());
@@ -220,7 +221,7 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
 
 	int autoResizeFactor =
-		KGlobal::config()->group("MediaObject").readEntry("AutoResizeFactor", 0);
+		KSharedConfig::openConfig()->group("MediaObject").readEntry("AutoResizeFactor", 0);
 
 	switch (autoResizeFactor) {
 	case 1:
@@ -246,7 +247,7 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	volumeSlider->setRange(0, 100);
 	volumeSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 	volumeSlider->setToolTip(action->text());
-	volumeSlider->setValue(KGlobal::config()->group("MediaObject").readEntry("Volume", 100));
+	volumeSlider->setValue(KSharedConfig::openConfig()->group("MediaObject").readEntry("Volume", 100));
 	connect(volumeSlider, SIGNAL(valueChanged(int)), this, SLOT(volumeChanged(int)));
 	backend->setVolume(volumeSlider->value());
 	action->setDefaultWidget(volumeSlider);
@@ -346,8 +347,8 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 
 MediaWidget::~MediaWidget()
 {
-	KGlobal::config()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
-	KGlobal::config()->group("MediaObject").writeEntry("Deinterlace",
+	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
+	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Deinterlace",
 		deinterlaceAction->isChecked());
 
 	int autoResizeFactor = 0;
@@ -364,7 +365,7 @@ MediaWidget::~MediaWidget()
 		break;
 	}
 
-	KGlobal::config()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
+	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
 }
 
 QString MediaWidget::extensionFilter()

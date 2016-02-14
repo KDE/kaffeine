@@ -27,12 +27,13 @@
 #include <QSocketNotifier>
 #include <KLocale>
 #include <KMessageBox>
-#include <KStandardDirs>
+
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h> // bsd compatibility
 #include <sys/types.h> // bsd compatibility
 #include <unistd.h>
+#include <QStandardPaths>
 #include "../log.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
@@ -573,7 +574,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
 	readFd(-1), writeFd(-1)
 {
-	QString fileName = KStandardDirs::locateLocal("appdata", QLatin1String("dvbpipe.m2t"));
+	QString fileName = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
 	url = KUrl::fromLocalFile(fileName);
 

@@ -25,8 +25,10 @@
 #include <QPluginLoader>
 #include <KConfigGroup>
 #include <KLocale>
-#include <KStandardDirs>
+
 #include <config-kaffeine.h>
+#include <QStandardPaths>
+#include <KSharedConfig>
 #include "../log.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
@@ -313,7 +315,7 @@ bool DvbManager::updateScanData(const QByteArray &data)
 		return false;
 	}
 
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("scanfile.dvb")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("DvbManager::updateScanData: cannot open") << file.fileName();
@@ -329,22 +331,22 @@ bool DvbManager::updateScanData(const QByteArray &data)
 
 QString DvbManager::getRecordingFolder() const
 {
-	return KGlobal::config()->group("DVB").readEntry("RecordingFolder", QDir::homePath());
+	return KSharedConfig::openConfig()->group("DVB").readEntry("RecordingFolder", QDir::homePath());
 }
 
 QString DvbManager::getTimeShiftFolder() const
 {
-	return KGlobal::config()->group("DVB").readEntry("TimeShiftFolder", QDir::homePath());
+	return KSharedConfig::openConfig()->group("DVB").readEntry("TimeShiftFolder", QDir::homePath());
 }
 
 int DvbManager::getBeginMargin() const
 {
-	return KGlobal::config()->group("DVB").readEntry("BeginMargin", 300);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("BeginMargin", 300);
 }
 
 int DvbManager::getEndMargin() const
 {
-	return KGlobal::config()->group("DVB").readEntry("EndMargin", 600);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("EndMargin", 600);
 }
 
 QString DvbManager::getNamingFormat() const
@@ -374,7 +376,7 @@ QString DvbManager::getActionAfterRecording() const
 
 bool DvbManager::override6937Charset() const
 {
-	return KGlobal::config()->group("DVB").readEntry("Override6937", false);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("Override6937", false);
 }
 
 bool DvbManager::isScanWhenIdle() const
@@ -389,22 +391,22 @@ bool DvbManager::createInfoFile() const
 
 void DvbManager::setRecordingFolder(const QString &path)
 {
-	KGlobal::config()->group("DVB").writeEntry("RecordingFolder", path);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("RecordingFolder", path);
 }
 
 void DvbManager::setTimeShiftFolder(const QString &path)
 {
-	KGlobal::config()->group("DVB").writeEntry("TimeShiftFolder", path);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("TimeShiftFolder", path);
 }
 
 void DvbManager::setBeginMargin(int beginMargin)
 {
-	KGlobal::config()->group("DVB").writeEntry("BeginMargin", beginMargin);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("BeginMargin", beginMargin);
 }
 
 void DvbManager::setEndMargin(int endMargin)
 {
-	KGlobal::config()->group("DVB").writeEntry("EndMargin", endMargin);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("EndMargin", endMargin);
 }
 
 void DvbManager::setNamingFormat(QString namingFormat)
@@ -474,7 +476,7 @@ void DvbManager::setActionAfterRecording(QString actionAfterRecording)
 
 void DvbManager::setOverride6937Charset(bool override)
 {
-	KGlobal::config()->group("DVB").writeEntry("Override6937", override);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("Override6937", override);
 	DvbSiText::setOverride6937(override);
 }
 
@@ -490,22 +492,22 @@ void DvbManager::setCreateInfoFile(bool createInfoFile)
 
 double DvbManager::getLatitude()
 {
-	return KGlobal::config()->group("DVB").readEntry("Latitude", 0.0);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("Latitude", 0.0);
 }
 
 double DvbManager::getLongitude()
 {
-	return KGlobal::config()->group("DVB").readEntry("Longitude", 0.0);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("Longitude", 0.0);
 }
 
 void DvbManager::setLatitude(double value)
 {
-	KGlobal::config()->group("DVB").writeEntry("Latitude", value);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("Latitude", value);
 }
 
 void DvbManager::setLongitude(double value)
 {
-	KGlobal::config()->group("DVB").writeEntry("Longitude", value);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("Longitude", value);
 }
 
 void DvbManager::enableDvbDump()
@@ -617,7 +619,7 @@ void DvbManager::loadDeviceManager()
 
 void DvbManager::readDeviceConfigs()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("config.dvb")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		Log("DvbManager::readDeviceConfigs: cannot open") << file.fileName();
@@ -688,7 +690,7 @@ void DvbManager::readDeviceConfigs()
 
 void DvbManager::writeDeviceConfigs()
 {
-	QFile file(KStandardDirs::locateLocal("appdata", QLatin1String("config.dvb")));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		Log("DvbManager::writeDeviceConfigs: cannot open") << file.fileName();
@@ -779,7 +781,7 @@ void DvbManager::readScanData()
 		Log("DvbManager::readScanData: cannot open") << globalFile.fileName();
 	}
 
-	QFile localFile(KStandardDirs::locateLocal("appdata", QLatin1String("scanfile.dvb")));
+	QFile localFile(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
 	QByteArray localData;
 	QDate localDate;
 
