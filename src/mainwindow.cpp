@@ -29,7 +29,7 @@
 #include <KInputDialog>
 #include <kio/deletejob.h>
 #include <KMenu>
-#include <KMenuBar>
+#include <QMenuBar>
 #include <KRecentFilesAction>
 #include <KShortcutsDialog>
 #include <KStatusNotifierItem>
@@ -153,7 +153,7 @@ MainWindow::MainWindow()
 {
 	// menu structure
 
-	KMenuBar *menuBar = KMainWindow::menuBar();
+	QMenuBar *menuBar = KMainWindow::menuBar();
 	collection = new KActionCollection(this);
 
 	KMenu *menu = new KMenu(i18n("&File"), this);
