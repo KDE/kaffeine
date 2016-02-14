@@ -21,7 +21,9 @@
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
-#include <KMimeType>
+#include <QMimeDatabase>
+#include <QMimeType>
+
 
 int main(int argc, char *argv[])
 {
@@ -83,15 +85,16 @@ int main(int argc, char *argv[])
 
 		for (int i = 0; i < mimeTypes.size(); ++i) {
 			if (i != skipMimeType) {
-				KMimeType::Ptr mimetype = KMimeType::mimeType(mimeTypes.at(i),
+				QMimeDatabase db;
+				QMimeType mimetype = db.mimeTypeForName(mimeTypes.at(i),
 					KMimeType::DontResolveAlias);
 
-				if (mimetype.isNull()) {
+				if (!mimetype.isValid()) {
 					qCritical() << "unknown mime type" << mimeTypes.at(i);
 					return 1;
 				}
 
-				extensions.append(mimetype->patterns());
+				extensions.append(mimetype.globPatterns());
 			}
 		}
 
