@@ -40,8 +40,9 @@ public:
 		GetVersionReply = 0x58e70000
 	};
 
-private slots:
 	void checkIdle(bool *idle);
+
+private slots:
 	void readyRead();
 
 private:
