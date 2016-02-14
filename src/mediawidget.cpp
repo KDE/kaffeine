@@ -75,13 +75,13 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	osdWidget = new OsdWidget(this);
 
 	actionPrevious = new QAction(QIcon::fromTheme(QLatin1String("media-skip-backward")), i18n("Previous"), this);
-	actionPrevious->setShortcut(KShortcut(Qt::Key_PageUp, Qt::Key_MediaPrevious));
+	actionPrevious->setShortcut(QKeySequence(Qt::Key_PageUp, Qt::Key_MediaPrevious));
 	connect(actionPrevious, SIGNAL(triggered()), this, SLOT(previous()));
 	toolBar->addAction(collection->addAction(QLatin1String("controls_previous"), actionPrevious));
 	menu->addAction(actionPrevious);
 
 	actionPlayPause = new QAction(this);
-	actionPlayPause->setShortcut(KShortcut(Qt::Key_Space, Qt::Key_MediaPlay));
+	actionPlayPause->setShortcut(QKeySequence(Qt::Key_Space, Qt::Key_MediaPlay));
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
 	iconPlay = QIcon::fromTheme(QLatin1String("media-playback-start"));
@@ -91,13 +91,13 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	menu->addAction(actionPlayPause);
 
 	actionStop = new QAction(QIcon::fromTheme(QLatin1String("media-playback-stop")), i18n("Stop"), this);
-	actionStop->setShortcut(KShortcut(Qt::Key_Backspace, Qt::Key_MediaStop));
+	actionStop->setShortcut(QKeySequence(Qt::Key_Backspace, Qt::Key_MediaStop));
 	connect(actionStop, SIGNAL(triggered()), this, SLOT(stop()));
 	toolBar->addAction(collection->addAction(QLatin1String("controls_stop"), actionStop));
 	menu->addAction(actionStop);
 
 	actionNext = new QAction(QIcon::fromTheme(QLatin1String("media-skip-forward")), i18n("Next"), this);
-	actionNext->setShortcut(KShortcut(Qt::Key_PageDown, Qt::Key_MediaNext));
+	actionNext->setShortcut(QKeySequence(Qt::Key_PageDown, Qt::Key_MediaNext));
 	connect(actionNext, SIGNAL(triggered()), this, SLOT(next()));
 	toolBar->addAction(collection->addAction(QLatin1String("controls_next"), actionNext));
 	menu->addAction(actionNext);
@@ -136,13 +136,13 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 
 	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("audio-volume-high")),
 		i18nc("'Audio' menu", "Increase Volume"), this);
-	action->setShortcut(KShortcut(Qt::Key_Plus, Qt::Key_VolumeUp));
+	action->setShortcut(QKeySequence(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered()), this, SLOT(increaseVolume()));
 	audioMenu->addAction(collection->addAction(QLatin1String("controls_increase_volume"), action));
 
 	action = new QAction(QIcon::fromTheme(QLatin1String("audio-volume-low")),
 		i18nc("'Audio' menu", "Decrease Volume"), this);
-	action->setShortcut(KShortcut(Qt::Key_Minus, Qt::Key_VolumeDown));
+	action->setShortcut(QKeySequence(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered()), this, SLOT(decreaseVolume()));
 	audioMenu->addAction(collection->addAction(QLatin1String("controls_decrease_volume"), action));
 
@@ -150,7 +150,7 @@ MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	mutedIcon = QIcon::fromTheme(QLatin1String("audio-volume-muted"));
 	unmutedIcon = QIcon::fromTheme(QLatin1String("audio-volume-medium"));
 	muteAction->setIcon(unmutedIcon);
-	muteAction->setShortcut(KShortcut(Qt::Key_M, Qt::Key_VolumeMute));
+	muteAction->setShortcut(QKeySequence(Qt::Key_M, Qt::Key_VolumeMute));
 	connect(muteAction, SIGNAL(triggered()), this, SLOT(mutedChanged()));
 	toolBar->addAction(collection->addAction(QLatin1String("controls_mute_volume"), muteAction));
 	audioMenu->addAction(muteAction);
