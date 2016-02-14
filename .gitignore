@@ -1,0 +1,11 @@
+CMakeCache.txt
+CMakeFiles/
+CMakeTmp/
+Makefile
+config-kaffeine.h
+dtvdaemon/dtvdaemon
+src/kaffeine
+*.cmake
+*.shell
+*_automoc.cpp*
+moc*.cpp
