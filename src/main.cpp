@@ -19,7 +19,7 @@
  */
 
 #include <QPointer>
-#include <KAboutData>
+#include <K4AboutData>
 
 #include <KUniqueApplication>
 #include <QCommandLineParser>
@@ -64,7 +64,7 @@ int KaffeineApplication::newInstance()
 
 int main(int argc, char *argv[])
 {
-	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "1.3-git",
+	K4AboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "1.3-git",
 		ki18n("A media player for KDE with digital TV support."),
 		KAboutLicense::GPL_V2, ki18n("(C) 2007-2011 The Kaffeine Authors"),
 		KLocalizedString(), "http://kaffeine.kde.org");
@@ -72,9 +72,9 @@ int main(int argc, char *argv[])
 	aboutData.addAuthor(ki18n("Christoph Pfister"), ki18n("Maintainer"),
 		"christophpfister@gmail.com");
 
-    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
+    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the K4AboutData initialization
     QCommandLineParser parser;
-    KAboutData::setApplicationData(aboutData);
+    K4AboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
     //PORTING SCRIPT: adapt aboutdata variable if necessary

@@ -380,8 +380,8 @@ MainWindow::~MainWindow()
 }
 
 QCommandLineParser parser::cmdLineOptions()
-    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
-    KAboutData::setApplicationData(aboutData);
+    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the K4AboutData initialization
+    K4AboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
     //PORTING SCRIPT: adapt aboutdata variable if necessary
