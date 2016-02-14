@@ -42,6 +42,7 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QFileDialog>
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
@@ -271,7 +272,7 @@ DvbConfigDialog::~DvbConfigDialog()
 
 void DvbConfigDialog::changeRecordingFolder()
 {
-	QString path = KFileDialog::getExistingDirectory(recordingFolderEdit->text(), this);
+	QString path = QFileDialog::getExistingDirectory(this, QString(), recordingFolderEdit->text());
 
 	if (path.isEmpty()) {
 		return;
@@ -282,7 +283,7 @@ void DvbConfigDialog::changeRecordingFolder()
 
 void DvbConfigDialog::changeTimeShiftFolder()
 {
-	QString path = KFileDialog::getExistingDirectory(timeShiftFolderEdit->text(), this);
+	QString path = QFileDialog::getExistingDirectory(this, QString(), timeShiftFolderEdit->text());
 
 	if (path.isEmpty()) {
 		return;

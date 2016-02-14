@@ -38,6 +38,7 @@
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <KConfigGroup>
+#include <QFileDialog>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 #include "configuration.h"
@@ -593,7 +594,7 @@ void MainWindow::openDvd(const QString &device)
 
 void MainWindow::playDvdFolder()
 {
-	QString folder = KFileDialog::getExistingDirectory(KUrl(), this);
+	QString folder = QFileDialog::getExistingDirectory(this, QString());
 
 	if (!folder.isEmpty()) {
 		openDvd(folder);
