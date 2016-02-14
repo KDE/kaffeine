@@ -89,10 +89,14 @@ void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
 	}
 
 	channelModel = channelModel_;
-	connect(channelModel, &DvbChannelModel::channelAdded, this, &DvbChannelTableModel::channelAdded);
-	connect(channelModel, &DvbChannelModel::channelAboutToBeUpdated, this, &DvbChannelTableModel::channelAboutToBeUpdated);
-	connect(channelModel, &DvbChannelModel::channelUpdated, this, &DvbChannelTableModel::channelUpdated);
-	connect(channelModel, &DvbChannelModel::channelRemoved, this, &DvbChannelTableModel::channelRemoved);
+	connect(channelModel, SIGNAL(channelAdded(DvbSharedChannel)),
+		this, SLOT(channelAdded(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelAboutToBeUpdated(DvbSharedChannel)),
+		this, SLOT(channelAboutToBeUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel)),
+		this, SLOT(channelUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelRemoved(DvbSharedChannel)),
+		this, SLOT(channelRemoved(DvbSharedChannel)));
 	reset(channelModel->getChannels());
 }
 
@@ -286,7 +290,7 @@ DvbChannelView::~DvbChannelView()
 QAction *DvbChannelView::addEditAction()
 {
 	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("configure")), i18nc("@action", "Edit"), this);
-	connect(action, &QAction::triggered, this, &DvbChannelView::editChannel);
+	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 	return action;
 }
@@ -294,7 +298,7 @@ QAction *DvbChannelView::addEditAction()
 QAction *DvbChannelView::addRemoveAction()
 {
 	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
-	connect(action, &QAction::triggered, this, &DvbChannelView::removeChannel);
+	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
 	return action;
 }

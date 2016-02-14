@@ -45,8 +45,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
-	connect(buttonBox, &QDialogButtonBox::accepted, this, &DvbEpgDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::rejected, this, &DvbEpgDialog::reject);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
 	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18nc("@title:window", "Program Guide"));
@@ -70,21 +70,22 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 
 	QAction *scheduleAction = new QAction(QIcon::fromTheme(QLatin1String("media-record")),
 		i18nc("@action:inmenu tv show", "Record Show"), this);
-	connect(scheduleAction, &QAction::triggered, this, &DvbEpgDialog::scheduleProgram);
+	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 
 	QPushButton *pushButton =
 		new QPushButton(scheduleAction->icon(), scheduleAction->text(), widget);
-	connect(pushButton, &QPushButton::clicked, this, &DvbEpgDialog::scheduleProgram);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(scheduleProgram()));
 	boxLayout->addWidget(pushButton);
 
 	boxLayout->addWidget(new QLabel(i18nc("@label:textbox", "Search:"), widget));
 
 	epgTableModel = new DvbEpgTableModel(this);
 	epgTableModel->setEpgModel(manager->getEpgModel());
-	connect(epgTableModel, &DvbEpgTableModel::layoutChanged, this, &DvbEpgDialog::checkEntry);
+	connect(epgTableModel, SIGNAL(layoutChanged()), this, SLOT(checkEntry()));
 	QLineEdit *lineEdit = new QLineEdit(widget);
 	lineEdit->setClearButtonEnabled(true);
-	connect(lineEdit, &QLineEdit::textChanged, epgTableModel, &DvbEpgTableModel::setContentFilter);
+	connect(lineEdit, SIGNAL(textChanged(QString)),
+		epgTableModel, SLOT(setContentFilter(QString)));
 	boxLayout->addWidget(lineEdit);
 	rightLayout->addLayout(boxLayout);
 
@@ -220,8 +221,10 @@ DvbEpgChannelTableModel::~DvbEpgChannelTableModel()
 void DvbEpgChannelTableModel::setManager(DvbManager *manager)
 {
 	DvbEpgModel *epgModel = manager->getEpgModel();
-	connect(epgModel, &DvbEpgModel::epgChannelAdded, this, &DvbEpgDialog::epgChannelAdded);
-	connect(epgModel, &DvbEpgModel::epgChannelRemoved, this, &DvbEpgDialog::epgChannelRemoved);
+	connect(epgModel, SIGNAL(epgChannelAdded(DvbSharedChannel)),
+		this, SLOT(epgChannelAdded(DvbSharedChannel)));
+	connect(epgModel, SIGNAL(epgChannelRemoved(DvbSharedChannel)),
+		this, SLOT(epgChannelRemoved(DvbSharedChannel)));
 	// theoretically we should monitor the channel model for updated channels,
 	// but it's very unlikely that this has practical relevance
 
@@ -309,10 +312,14 @@ void DvbEpgTableModel::setEpgModel(DvbEpgModel *epgModel_)
 	}
 
 	epgModel = epgModel_;
-	connect(epgModel, &DvbEpgModel::entryAdded, this, &DvbEpgDialog::entryAdded);
-	connect(epgModel, &DvbEpgModel::entryAboutToBeUpdated, this, &DvbEpgDialog::entryAboutToBeUpdated);
-	connect(epgModel, &DvbEpgModel::entryUpdated, this, &DvbEpgDialog::entryUpdated);
-	connect(epgModel, &DvbEpgModel::entryRemoved, this, &DvbEpgDialog::entryRemoved);
+	connect(epgModel, SIGNAL(entryAdded(DvbSharedEpgEntry)),
+		this, SLOT(entryAdded(DvbSharedEpgEntry)));
+	connect(epgModel, SIGNAL(entryAboutToBeUpdated(DvbSharedEpgEntry)),
+		this, SLOT(entryAboutToBeUpdated(DvbSharedEpgEntry)));
+	connect(epgModel, SIGNAL(entryUpdated(DvbSharedEpgEntry)),
+		this, SLOT(entryUpdated(DvbSharedEpgEntry)));
+	connect(epgModel, SIGNAL(entryRemoved(DvbSharedEpgEntry)),
+		this, SLOT(entryRemoved(DvbSharedEpgEntry)));
 }
 
 void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)

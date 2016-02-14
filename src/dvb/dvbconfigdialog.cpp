@@ -74,7 +74,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	QToolButton *toolButton = new QToolButton(widget);
 	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder")));
 	toolButton->setToolTip(i18n("Select Folder"));
-	connect(toolButton, &QToolButton::clicked, this, &DvbConfigDialog::changeRecordingFolder);
+	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeRecordingFolder()));
 	gridLayout->addWidget(toolButton, 0, 2);
 
 	gridLayout->addWidget(new QLabel(i18n("Time shift folder:")), 1, 0);
@@ -86,7 +86,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	toolButton = new QToolButton(widget);
 	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder")));
 	toolButton->setToolTip(i18n("Select Folder"));
-	connect(toolButton, &QToolButton::clicked, this, &DvbConfigDialog::changeTimeShiftFolder);
+	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeTimeShiftFolder()));
 	gridLayout->addWidget(toolButton, 1, 2);
 	boxLayout->addLayout(gridLayout);
 
@@ -163,7 +163,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 		QLocale().toString(manager->getScanDataDate(), QLocale::ShortFormat))));
 
 	QPushButton *pushButton = new QPushButton(i18n("Update scan data over Internet"), widget);
-	connect(pushButton, &QPushButton::clicked, this, &DvbConfigDialog::updateScanFile);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));
 	boxLayout->addWidget(pushButton);
 
 	QPushButton *openScanFileButton = new QPushButton(i18n("Edit scanfile"), widget);
@@ -183,7 +183,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	latitudeEdit = new QLineEdit(widget);
 	latitudeEdit->setText(QString::number(manager->getLatitude(), 'g', 10));
-	connect(latitudeEdit, &QLineEdit::textChanged, this, &DvbConfigDialog::latitudeChanged);
+	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
 	gridLayout->addWidget(latitudeEdit, 0, 2);
 
 	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(QStyle::PM_SmallIconSize);
@@ -198,7 +198,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	longitudeEdit = new QLineEdit(widget);
 	longitudeEdit->setText(QString::number(manager->getLongitude(), 'g', 10));
-	connect(longitudeEdit, &QLineEdit::textChanged, this, &DvbConfigDialog::longitudeChanged);
+	connect(longitudeEdit, SIGNAL(textChanged(QString)),
+		this, SLOT(longitudeChanged(QString)));
 	gridLayout->addWidget(longitudeEdit, 1, 2);
 
 	longitudeValidLabel = new QLabel(widget);
@@ -249,9 +250,12 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	foreach (const DvbDeviceConfig &deviceConfig, manager->getDeviceConfigs()) {
 		DvbConfigPage *configPage = new DvbConfigPage(tabWidget, manager, &deviceConfig);
-		connect(configPage, &DvbConfigPage::moveLeft, this, &DvbConfigDialog::moveLeft);
-		connect(configPage, &DvbConfigPage::moveRight, this, &DvbConfigDialog::moveRight);
-		connect(configPage, &DvbConfigPage::remove, this, &DvbConfigDialog::remove);
+		connect(configPage, SIGNAL(moveLeft(DvbConfigPage*)),
+			this, SLOT(moveLeft(DvbConfigPage*)));
+		connect(configPage, SIGNAL(moveRight(DvbConfigPage*)),
+			this, SLOT(moveRight(DvbConfigPage*)));
+		connect(configPage, SIGNAL(remove(DvbConfigPage*)),
+			this, SLOT(remove(DvbConfigPage*)));
 		tabWidget->addTab(configPage, QIcon::fromTheme(QLatin1String("video-television")), i18n("Device %1", i));
 		configPages.append(configPage);
 		++i;
@@ -645,8 +649,8 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
-	connect(buttonBox, &QDialogButtonBox::accepted, this, &DvbScanFileDownloadDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::rejected, this, &DvbScanFileDownloadDialog::reject);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
 	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18n("Update Scan Data"));
@@ -669,9 +673,11 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	job = KIO::get(QUrl("http://kaffeine.kde.org/scanfile.dvb.qz"), KIO::NoReload,
 		       KIO::HideProgressInfo); // FIXME NoReload or Reload?
 	job->setAutoDelete(false);
-	connect(job, &KIO::TransferJob::percent, this, &DvbScanFileDownloadDialog::progressChanged);
-	connect(job, &KIO::TransferJob::data, this, &DvbScanFileDownloadDialog::dataArrived);
-	connect(job, &KIO::TransferJob::result, this, &DvbScanFileDownloadDialog::jobFinished);
+	connect(job, SIGNAL(percent(KJob*,ulong)),
+		this, SLOT(progressChanged(KJob*,ulong)));
+	connect(job, SIGNAL(data(KIO::Job*,QByteArray)),
+		this, SLOT(dataArrived(KIO::Job*,QByteArray)));
+	connect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished()));
 }
 
 DvbScanFileDownloadDialog::~DvbScanFileDownloadDialog()
@@ -697,8 +703,8 @@ void DvbScanFileDownloadDialog::jobFinished()
 {
 	progressBar->setValue(100);
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-	connect(buttonBox, &QDialogButtonBox::accepted, this, &DvbScanFileDownloadDialog::accept);
-	connect(buttonBox, &QDialogButtonBox::rejected, this, &DvbScanFileDownloadDialog::reject);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
 	mainLayout->addWidget(buttonBox);
 
@@ -729,22 +735,22 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 
 	QBoxLayout *horizontalLayout = new QHBoxLayout();
 	moveLeftButton = new QPushButton(QIcon::fromTheme(QLatin1String("arrow-left")), i18n("Move Left"), this);
-	connect(moveLeftButton, &QPushButton::clicked, this, &DvbConfigPage::moveLeft);
+	connect(moveLeftButton, SIGNAL(clicked()), this, SLOT(moveLeft()));
 	horizontalLayout->addWidget(moveLeftButton);
 
 	if (deviceConfig->device != NULL) {
 		QPushButton *pushButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-undo")), i18n("Reset"), this);
-		connect(pushButton, &QPushButton::clicked, this, &DvbConfigPage::resetConfig);
+		connect(pushButton, SIGNAL(clicked()), this, SIGNAL(resetConfig()));
 		horizontalLayout->addWidget(pushButton);
 	} else {
 		QPushButton *pushButton =
 			new QPushButton(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
-		connect(pushButton, &QPushButton::clicked, this, &DvbConfigPage::removeConfig);
+		connect(pushButton, SIGNAL(clicked()), this, SLOT(removeConfig()));
 		horizontalLayout->addWidget(pushButton);
 	}
 
 	moveRightButton = new QPushButton(QIcon::fromTheme(QLatin1String("arrow-right")), i18n("Move Right"), this);
-	connect(moveRightButton, &QPushButton::clicked, this, &DvbConfigPage::moveRight);
+	connect(moveRightButton, SIGNAL(clicked()), this, SLOT(moveRight()));
 	horizontalLayout->addWidget(moveRightButton);
 	boxLayout->addLayout(horizontalLayout);
 
@@ -963,7 +969,7 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 	timeoutBox->setRange(100, 5000);
 	timeoutBox->setSingleStep(100);
 	timeoutBox->setValue(config->timeout);
-	connect(timeoutBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &DvbConfigObject::timeoutChanged);
+	connect(timeoutBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
 	gridLayout->addWidget(timeoutBox, 0, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Source:")), 1, 0);
@@ -972,20 +978,20 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 	sourceBox->addItem(i18n("No Source"));
 	sourceBox->addItems(sources);
 	sourceBox->setCurrentIndex(sourceIndex + 1);
-	connect(sourceBox, static_cast<void (KComboBox::*)(int)>(&KComboBox::currentIndexChanged), this, &DvbConfigObject::sourceChanged);
+	connect(sourceBox, SIGNAL(currentIndexChanged(int)), this, SLOT(sourceChanged(int)));
 	gridLayout->addWidget(sourceBox, 1, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Name:")), 2, 0);
 
 	nameEdit = new QLineEdit(parent);
 	nameEdit->setText(config->name);
-	connect(nameEdit, &QLineEdit::editingFinished, this, &DvbConfigObject::nameChanged);
+	connect(nameEdit, SIGNAL(editingFinished()), this, SLOT(nameChanged()));
 	gridLayout->addWidget(nameEdit, 2, 1);
 
 	timeoutChanged(timeoutBox->value());
 	sourceChanged(sourceBox->currentIndex());
 	nameChanged();
-	connect(parent, &QWidget::resetConfig, this, &DvbConfigObject::resetConfig);
+	connect(parent, SIGNAL(resetConfig()), this, SLOT(resetConfig()));
 }
 
 DvbConfigObject::~DvbConfigObject()
@@ -1081,7 +1087,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	configBox->addItem(i18n("USALS Rotor"));
 	configBox->addItem(i18n("Positions Rotor"));
 	configBox->setCurrentIndex(lnbConfig->configuration);
-	connect(configBox, static_cast<void (KComboBox::*)(int)>(&KComboBox::currentIndexChanged), this, &DvbSConfigObject::configChanged);
+	connect(configBox, SIGNAL(currentIndexChanged(int)), this, SLOT(configChanged(int)));
 	layout->addWidget(configBox, 1, 1);
 
 	// Diseqc switch
@@ -1098,14 +1104,14 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 		QPushButton *pushButton = new QPushButton(i18n("LNB %1 Settings", lnbNumber + 1),
 							  parent);
-		connect(this, &DvbSConfigObject::setDiseqcVisible, pushButton, &QPushButton::setVisible);
+		connect(this, SIGNAL(setDiseqcVisible(bool)), pushButton, SLOT(setVisible(bool)));
 		layout->addWidget(pushButton, lnbNumber + 2, 0);
 
 		KComboBox *comboBox = new KComboBox(parent);
 		comboBox->addItem(i18n("No Source"));
 		comboBox->addItems(sources);
 		comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
-		connect(this, &DvbSConfigObject::setDiseqcVisible, comboBox, &KComboBox::setVisible);
+		connect(this, SIGNAL(setDiseqcVisible(bool)), comboBox, SLOT(setVisible(bool)));
 		layout->addWidget(comboBox, lnbNumber + 2, 1);
 
 		diseqcConfigs.append(DvbConfig(config));
@@ -1116,14 +1122,14 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	// USALS rotor / Positions rotor
 
 	QPushButton *pushButton = new QPushButton(i18n("LNB Settings"), parent);
-	connect(this, &DvbSConfigObject::setRotorVisible, pushButton, &QPushButton::setVisible);
+	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
 	layout->addWidget(pushButton, 6, 0);
 
 	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, NULL, pushButton, lnbConfig));
 
 	sourceBox = new KComboBox(parent);
 	sourceBox->addItems(sources);
-	connect(this, &DvbSConfigObject::setRotorVisible, sourceBox, &KComboBox::setVisible);
+	connect(this, SIGNAL(setRotorVisible(bool)), sourceBox, SLOT(setVisible(bool)));
 	layout->addWidget(sourceBox, 6, 1);
 
 	satelliteView = new QTreeWidget(parent);
@@ -1131,20 +1137,20 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	// Usals rotor
 
 	pushButton = new QPushButton(i18n("Add Satellite"), parent);
-	connect(this, &DvbSConfigObject::setUsalsVisible, pushButton, &QPushButton::setVisible);
-	connect(pushButton, &QPushButton::clicked, this, &DvbSConfigObject::addSatellite);
+	connect(this, SIGNAL(setUsalsVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
 	layout->addWidget(pushButton, 7, 0, 1, 2);
 
 	// Positions rotor
 
 	rotorSpinBox = new QSpinBox(parent);
 	rotorSpinBox->setRange(0, 255);
-	connect(this, &DvbSConfigObject::setPositionsVisible, rotorSpinBox, &QSpinBox::setVisible);
+	connect(this, SIGNAL(setPositionsVisible(bool)), rotorSpinBox, SLOT(setVisible(bool)));
 	layout->addWidget(rotorSpinBox, 8, 0);
 
 	pushButton = new QPushButton(i18n("Add Satellite"), parent);
-	connect(pushButton, &QPushButton::clicked, this, &DvbSConfigObject::addSatellite);
-	connect(this, &DvbSConfigObject::setPositionsVisible, pushButton, &QPushButton::setVisible);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
+	connect(this, SIGNAL(setPositionsVisible(bool)), pushButton, SLOT(setVisible(bool)));
 	layout->addWidget(pushButton, 8, 1);
 
 	// USALS rotor / Positions rotor
@@ -1155,7 +1161,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	satelliteView->setRootIsDecorated(false);
 	satelliteView->sortByColumn(0, Qt::AscendingOrder);
 	satelliteView->setSortingEnabled(true);
-	connect(this, &DvbSConfigObject::setRotorVisible, satelliteView, &QTreeWidget::setVisible);
+	connect(this, SIGNAL(setRotorVisible(bool)), satelliteView, SLOT(setVisible(bool)));
 	layout->addWidget(satelliteView, 9, 0, 1, 2);
 
 	if ((lnbConfig->configuration == DvbConfigBase::UsalsRotor) ||
@@ -1168,12 +1174,12 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	}
 
 	pushButton = new QPushButton(i18n("Remove Satellite"), parent);
-	connect(this, &DvbSConfigObject::setRotorVisible, pushButton, &QPushButton::setVisible);
-	connect(pushButton, &QPushButton::clicked, this, &DvbSConfigObject::removeSatellite);
+	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeSatellite()));
 	layout->addWidget(pushButton, 10, 0, 1, 2);
 
 	configChanged(configBox->currentIndex());
-	connect(parent, &QWidget::resetConfig, this, &DvbSConfigObject::resetConfig);
+	connect(parent, SIGNAL(resetConfig()), this, SLOT(resetConfig()));
 }
 
 DvbSConfigObject::~DvbSConfigObject()
@@ -1313,10 +1319,11 @@ DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *so
 	sourceBox(sourceBox_), configureButton(configureButton_), config(config_)
 {
 	connect(timeoutSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
-	connect(configureButton, &QPushButton::clicked, this, &DvbSLnbConfigObject::configure);
+	connect(configureButton, SIGNAL(clicked()), this, SLOT(configure()));
 
 	if (sourceBox != NULL) {
-		connect(sourceBox, static_cast<void (KComboBox::*)(int)>(&KComboBox::currentIndexChanged), this, &DvbSLnbConfigObject::sourceChanged);
+		connect(sourceBox, SIGNAL(currentIndexChanged(int)),
+			this, SLOT(sourceChanged(int)));
 		sourceChanged(sourceBox->currentIndex());
 	}
 
@@ -1369,7 +1376,7 @@ void DvbSLnbConfigObject::configure()
 
 	lnbSelectionGroup = new QButtonGroup(mainWidget);
 	mainLayout->addWidget(lnbSelectionGroup);
-	connect(lnbSelectionGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &DvbSLnbConfigObject::selectType);
+	connect(lnbSelectionGroup, SIGNAL(buttonClicked(int)), this, SLOT(selectType(int)));
 
 	QRadioButton *radioButton = new QRadioButton(i18n("Universal LNB"), mainWidget);
 	mainLayout->addWidget(radioButton);
@@ -1448,7 +1455,7 @@ void DvbSLnbConfigObject::configure()
 	lnbSelectionGroup->button(lnbType)->setChecked(true);
 	selectType(lnbType);
 
-	connect(dialog, &QDialog::accepted, this, &DvbSLnbConfigObject::dialogAccepted);
+	connect(dialog, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 
 	dialog->setModal(true);
 	dialog->show();

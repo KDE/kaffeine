@@ -76,9 +76,12 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	startTimer(54000);
 
 	DvbChannelModel *channelModel = manager->getChannelModel();
-	connect(channelModel, &DvbChannelModel::channelAboutToBeUpdated, this, &DvbEpgModel::channelAboutToBeUpdated);
-	connect(channelModel, &DvbChannelModel::channelUpdated, this, &DvbEpgModel::channelUpdated);
-	connect(channelModel, &DvbChannelModel::channelRemoved, this, &DvbEpgModel::channelRemoved);
+	connect(channelModel, SIGNAL(channelAboutToBeUpdated(DvbSharedChannel)),
+		this, SLOT(channelAboutToBeUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelUpdated(DvbSharedChannel)),
+		this, SLOT(channelUpdated(DvbSharedChannel)));
+	connect(channelModel, SIGNAL(channelRemoved(DvbSharedChannel)),
+		this, SLOT(channelRemoved(DvbSharedChannel)));
 	connect(manager->getRecordingModel(), SIGNAL(recordingRemoved(DvbSharedRecording)),
 		this, SLOT(recordingRemoved(DvbSharedRecording)));
 

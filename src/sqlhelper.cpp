@@ -34,7 +34,7 @@ SqlHelper::SqlHelper()
 	database.setDatabaseName(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/sqlite.db"));
 
 	timer.setInterval(5000);
-	connect(&timer, &QTimer::timeout, this, &SqlHelper::collectSubmissions);
+	connect(&timer, SIGNAL(timeout()), this, SLOT(collectSubmissions()));
 }
 
 SqlHelper::~SqlHelper()

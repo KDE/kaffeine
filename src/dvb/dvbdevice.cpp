@@ -244,7 +244,7 @@ DvbDevice::DvbDevice(DvbBackendDevice *backend_, QObject *parent) : QObject(pare
 	backend->setFrontendDevice(this);
 	backend->setDeviceEnabled(true); // FIXME
 
-	connect(&frontendTimer, &QTimer::timeout, this, &DvbDevice::frontendEvent);
+	connect(&frontendTimer, SIGNAL(timeout()), this, SLOT(frontendEvent()));
 }
 
 DvbDevice::~DvbDevice()

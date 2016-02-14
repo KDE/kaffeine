@@ -598,17 +598,22 @@ void DvbManager::loadDeviceManager()
 
 		Log("DvbManager::loadDeviceManager: using dvb device manager") << path;
 		deviceManager->setParent(this);
-		connect(deviceManager, &QObject::requestBuiltinDeviceManager, this, &DvbManager::requestBuiltinDeviceManager);
-		connect(deviceManager, &QObject::deviceAdded, this, &DvbManager::deviceAdded);
-		connect(deviceManager, &QObject::deviceRemoved, this, &DvbManager::deviceRemoved);
+		connect(deviceManager, SIGNAL(requestBuiltinDeviceManager(QObject*&)),
+			this, SLOT(requestBuiltinDeviceManager(QObject*&)));
+		connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
+			this, SLOT(deviceAdded(DvbBackendDevice*)));
+		connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
+			this, SLOT(deviceRemoved(DvbBackendDevice*)));
 		QMetaObject::invokeMethod(deviceManager, "doColdPlug");
 		return;
 	}
 
 	Log("DvbManager::loadDeviceManager: using built-in dvb device manager");
 	DvbLinuxDeviceManager *deviceManager = new DvbLinuxDeviceManager(this);
-	connect(deviceManager, &DvbLinuxDeviceManager::deviceAdded, this, &DvbManager::deviceAdded);
-	connect(deviceManager, &DvbLinuxDeviceManager::deviceRemoved, this, &DvbManager::deviceRemoved);
+	connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
+		this, SLOT(deviceAdded(DvbBackendDevice*)));
+	connect(deviceManager, SIGNAL(deviceRemoved(DvbBackendDevice*)),
+		this, SLOT(deviceRemoved(DvbBackendDevice*)));
 	deviceManager->doColdPlug();
 }
 

@@ -166,7 +166,7 @@ MainWindow::MainWindow()
 	action = new QAction(QIcon::fromTheme(QLatin1String("text-html")),
 		i18nc("@action:inmenu", "Open URL..."), collection);
 	action->setShortcut(Qt::CTRL | Qt::Key_U);
-	connect(action, &QAction::triggered, this, &MainWindow::openUrl);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
 	menu->addAction(collection->addAction(QLatin1String("file_open_url"), action));
 
 	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(QUrl)), collection);
@@ -189,7 +189,7 @@ MainWindow::MainWindow()
 
 	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical")), i18nc("@action:inmenu", "Play DVD Folder"),
 		collection);
-	connect(action, &QAction::triggered, this, &MainWindow::playDvdFolder);
+	connect(action, SIGNAL(triggered()), this, SLOT(playDvdFolder()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_dvd_folder"), action));
 
 	menu->addSeparator();
@@ -223,7 +223,8 @@ MainWindow::MainWindow()
 	// navigation bar - keep in sync with TabIndex enum!
 
 	navigationBar = new KToolBar(QLatin1String("navigation_bar"), this, Qt::LeftToolBarArea);
-	connect(navigationBar, &KToolBar::orientationChanged, this, &MainWindow::navigationBarOrientationChanged);
+	connect(navigationBar, SIGNAL(orientationChanged(Qt::Orientation)),
+		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
 	tabBar = new KTabBar(navigationBar);
 	tabBar->addTab(QIcon::fromTheme(QLatin1String("start-here-kde")), i18n("Start"));
@@ -234,7 +235,7 @@ MainWindow::MainWindow()
 #endif /* HAVE_DVB == 1 */
 	tabBar->setShape(KTabBar::RoundedWest);
 	tabBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
-	connect(tabBar, &KTabBar::currentChanged, this, &MainWindow::activateTab);
+	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
 	navigationBar->addWidget(tabBar);
 
 	// control bar
@@ -246,7 +247,7 @@ MainWindow::MainWindow()
 	cursorHideTimer = new QTimer(this);
 	cursorHideTimer->setInterval(1500);
 	cursorHideTimer->setSingleShot(true);
-	connect(cursorHideTimer, &QTimer::timeout, this, &MainWindow::hideCursor);
+	connect(cursorHideTimer, SIGNAL(timeout()), this, SLOT(hideCursor()));
 
 	// main area
 
@@ -255,9 +256,10 @@ MainWindow::MainWindow()
 	setCentralWidget(widget);
 
 	mediaWidget = new MediaWidget(playerMenu, controlBar, collection, widget);
-	connect(mediaWidget, &MediaWidget::displayModeChanged, this, &MainWindow::displayModeChanged);
-	connect(mediaWidget, &MediaWidget::changeCaption, this, &MainWindow::setWindowTitle);
-	connect(mediaWidget, &MediaWidget::resizeToVideo, this, &MainWindow::resizeToVideo);
+	connect(mediaWidget, SIGNAL(displayModeChanged()), this, SLOT(displayModeChanged()));
+	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setWindowTitle(QString)));
+	connect(mediaWidget, SIGNAL(resizeToVideo(MediaWidget::ResizeFactor)),
+		this, SLOT(resizeToVideo(MediaWidget::ResizeFactor)));
 
 	// tabs - keep in sync with TabIndex enum!
 
@@ -276,7 +278,8 @@ MainWindow::MainWindow()
 
 #if HAVE_DVB == 1
 	dvbTab = new DvbTab(dvbMenu, collection, mediaWidget);
-	connect(this, &MainWindow::mayCloseApplication, dvbTab, &DvbTab::mayCloseApplication);
+	connect(this, SIGNAL(mayCloseApplication(bool*,QWidget*)),
+		dvbTab, SLOT(mayCloseApplication(bool*,QWidget*)));
 	tabs.append(dvbTab);
 	stackedLayout->addWidget(dvbTab);
 #endif /* HAVE_DVB == 1 */

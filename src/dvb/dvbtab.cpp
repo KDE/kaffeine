@@ -87,12 +87,12 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	QAction *channelsAction = new QAction(QIcon::fromTheme(QLatin1String("video-television")), i18n("Channels"), this);
 	channelsAction->setShortcut(Qt::Key_C);
-	connect(channelsAction, &QAction::triggered, this, &DvbTab::showChannelDialog);
+	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_channels"), channelsAction));
 
 	QAction *epgAction = new QAction(QIcon::fromTheme(QLatin1String("view-list-details")), i18n("Program Guide"), this);
 	epgAction->setShortcut(Qt::Key_G);
-	connect(epgAction, &QAction::triggered, this, &DvbTab::toggleEpgDialog);
+	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(toggleEpgDialog()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_epg"), epgAction));
 
 	QAction *osdAction = new QAction(QIcon::fromTheme(QLatin1String("dialog-information")), i18n("OSD"), this);
@@ -103,21 +103,21 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	QAction *recordingsAction = new QAction(QIcon::fromTheme(QLatin1String("view-pim-calendar")),
 		i18nc("dialog", "Recording Schedule"), this);
 	recordingsAction->setShortcut(Qt::Key_R);
-	connect(recordingsAction, &QAction::triggered, this, &DvbTab::showRecordingDialog);
+	connect(recordingsAction, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_recordings"), recordingsAction));
 
 	menu->addSeparator();
 
 	instantRecordAction = new QAction(QIcon::fromTheme(QLatin1String("document-save")), i18n("Instant Record"), this);
 	instantRecordAction->setCheckable(true);
-	connect(instantRecordAction, &KAction::triggered, this, &DvbTab::instantRecord);
+	connect(instantRecordAction, SIGNAL(triggered(bool)), this, SLOT(instantRecord(bool)));
 	menu->addAction(collection->addAction(QLatin1String("dvb_instant_record"), instantRecordAction));
 
 	menu->addSeparator();
 
 	QAction *configureAction = new QAction(QIcon::fromTheme(QLatin1String("configure")),
 		i18nc("@action:inmenu", "Configure Television..."), this);
-	connect(configureAction, &QAction::triggered, this, &DvbTab::configureDvb);
+	connect(configureAction, SIGNAL(triggered()), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction(QLatin1String("settings_dvb"), configureAction));
 
 	connect(manager->getLiveView(), SIGNAL(previous()), this, SLOT(previousChannel()));
@@ -156,9 +156,10 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	channelView->setSortingEnabled(true);
 	channelView->addEditAction();
-	connect(channelView, &DvbChannelView::activated, this, &DvbTab::playChannel);
+	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playChannel(QModelIndex)));
 	channelProxyModel->setChannelModel(manager->getChannelModel());
-	connect(lineEdit, &QLineEdit::textChanged, channelProxyModel, &DvbChannelTableModel::setFilter);
+	connect(lineEdit, SIGNAL(textChanged(QString)),
+		channelProxyModel, SLOT(setFilter(QString)));
 	manager->setChannelView(channelView);
 	leftLayout->addWidget(channelView);
 
@@ -195,8 +196,8 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	mediaLayout->setMargin(0);
 	splitter->setStretchFactor(1, 1);
 
-	connect(mediaWidget, &MediaWidget::osdKeyPressed, this, &DvbTab::osdKeyPressed);
-	connect(&osdChannelTimer, &QTimer::timeout, this, &DvbTab::tuneOsdChannel);
+	connect(mediaWidget, SIGNAL(osdKeyPressed(int)), this, SLOT(osdKeyPressed(int)));
+	connect(&osdChannelTimer, SIGNAL(timeout()), this, SLOT(tuneOsdChannel()));
 
 	lastChannel = KSharedConfig::openConfig()->group("DVB").readEntry("LastChannel");
 
@@ -207,7 +208,7 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	QTimer *timer = new QTimer(this);
 	timer->start(30000);
-	connect(timer, &QTimer::timeout, this, &DvbTab::cleanTimeShiftFiles);
+	connect(timer, SIGNAL(timeout()), this, SLOT(cleanTimeShiftFiles()));
 }
 
 DvbTab::~DvbTab()

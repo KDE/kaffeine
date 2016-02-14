@@ -37,7 +37,7 @@ DtvDaemon::DtvDaemon(QFile *lockfile_) : lockfile(lockfile_)
 		Log("DtvDaemon::DtvDaemon: cannot listen on") << path << server.errorString();
 	}
 
-	connect(&server, &QLocalServer::newConnection, this, &DtvDaemon::newConnection);
+	connect(&server, SIGNAL(newConnection()), this, SLOT(newConnection()));
 }
 
 DtvDaemon::~DtvDaemon()
@@ -55,7 +55,7 @@ void DtvDaemon::newConnection()
 		}
 
 		Connection *connection = new Connection(socket);
-		connect(this, &DtvDaemon::checkIdle, connection, &Connection::checkIdle);
+		connect(this, SIGNAL(checkIdle(bool*)), connection, SLOT(checkIdle(bool*)));
 	}
 }
 

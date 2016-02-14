@@ -26,7 +26,7 @@
 OsdWidget::OsdWidget(QWidget *parent) : QWidget(parent), osdObject(NULL)
 {
 	timer = new QTimer(this);
-	connect(timer, &QTimer::timeout, this, &OsdWidget::hideOsd);
+	connect(timer, SIGNAL(timeout()), this, SLOT(hideOsd()));
 
 	hide();
 }

@@ -242,21 +242,22 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	channelView->sortByColumn(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelView->setSortingEnabled(true);
 	channelTableModel->setChannelModel(channelModel);
-	connect(channelTableModel, &DvbChannelTableModel::checkChannelDragAndDrop, channelView, &DvbChannelView::checkChannelDragAndDrop);
+	connect(channelTableModel, SIGNAL(checkChannelDragAndDrop(bool*)),
+		channelView, SLOT(checkChannelDragAndDrop(bool*)));
 
 	QAction *action = channelView->addEditAction();
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), groupBox);
-	connect(pushButton, &QPushButton::clicked, channelView, &DvbChannelView::editChannel);
+	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(editChannel()));
 	boxLayout->addWidget(pushButton);
 
 	action = channelView->addRemoveAction();
 	pushButton = new QPushButton(action->icon(), action->text(), groupBox);
-	connect(pushButton, &QPushButton::clicked, channelView, &DvbChannelView::removeChannel);
+	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(removeChannel()));
 	boxLayout->addWidget(pushButton);
 
 	pushButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-clear-list")),
 		i18nc("remove all items from a list", "Clear"), groupBox);
-	connect(pushButton, &QPushButton::clicked, channelView, &DvbChannelView::removeAllChannels);
+	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(removeAllChannels()));
 	boxLayout->addWidget(pushButton);
 	groupLayout->addLayout(boxLayout);
 
@@ -275,7 +276,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 
 	scanButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-find")), i18n("Start Scan"), groupBox);
 	scanButton->setCheckable(true);
-	connect(scanButton, &QPushButton::clicked, this, &DvbScanDialog::scanButtonClicked);
+	connect(scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
 	groupLayout->addWidget(scanButton);
 
 	QLabel *label = new QLabel(i18n("Scan data last updated on %1",
@@ -325,15 +326,15 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 
 	providerBox = new KComboBox(groupBox);
 	providerBox->setEnabled(false);
-	connect(providerCheckBox, &QCheckBox::clicked, providerBox, &KComboBox::setEnabled);
+	connect(providerCheckBox, SIGNAL(clicked(bool)), providerBox, SLOT(setEnabled(bool)));
 	groupLayout->addWidget(providerBox);
 
 	pushButton = new QPushButton(i18n("Add Filtered"), groupBox);
-	connect(pushButton, &QPushButton::clicked, this, &DvbScanDialog::addFilteredChannels);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addFilteredChannels()));
 	groupLayout->addWidget(pushButton);
 
 	pushButton = new QPushButton(i18n("Add Selected"), groupBox);
-	connect(pushButton, &QPushButton::clicked, this, &DvbScanDialog::addSelectedChannels);
+	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSelectedChannels()));
 	groupLayout->addWidget(pushButton);
 	boxLayout->addWidget(groupBox);
 	mainLayout->addLayout(boxLayout);
@@ -370,8 +371,8 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 		isLive = false;
 	}
 
-	connect(this, &DvbScanDialog::accepted, this, &DvbScanDialog::dialogAccepted);
-	connect(&statusTimer, &QTimer::timeout, this, &DvbScanDialog::updateStatus);
+	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
+	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
@@ -439,10 +440,12 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 	providerBox->clear();
 	previewModel->removeChannels();
 
-	connect(internal, &DvbScan::foundChannels, this, &DvbScanDialog::foundChannels);
-	connect(internal, &DvbScan::scanProgress, progressBar, &QProgressBar::setValue);
+	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
+		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
+	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(int)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
-	connect(internal, &DvbScan::scanFinished, this, &DvbScanDialog::scanFinished, Qt::QueuedConnection);
+	connect(internal, SIGNAL(scanFinished()),
+		this, SLOT(scanFinished()), Qt::QueuedConnection);
 
 	internal->start();
 }
