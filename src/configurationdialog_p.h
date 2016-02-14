@@ -21,12 +21,12 @@
 #ifndef CONFIGURATIONDIALOG_P_H
 #define CONFIGURATIONDIALOG_P_H
 
-#include <KDialog>
+#include <QDialog>
 
 class QPlainTextEdit;
 class QProcess;
 
-class DmesgDialog : public KDialog
+class DmesgDialog : public QDialog
 {
 	Q_OBJECT
 public:

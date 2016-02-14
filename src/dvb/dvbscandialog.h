@@ -23,7 +23,7 @@
 
 #include <QLabel>
 #include <QTimer>
-#include <KDialog>
+#include <QDialog>
 
 class QCheckBox;
 class QProgressBar;
@@ -38,7 +38,7 @@ class DvbPreviewChannel;
 class DvbPreviewChannelTableModel;
 class DvbScan;
 
-class DvbScanDialog : public KDialog
+class DvbScanDialog : public QDialog
 {
 	Q_OBJECT
 public:

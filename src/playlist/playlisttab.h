@@ -80,8 +80,8 @@ public:
 	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
-	void appendToCurrentPlaylist(const QList<KUrl> &urls, bool playImmediately);
-	void appendToVisiblePlaylist(const QList<KUrl> &urls, bool playImmediately);
+	void appendToCurrentPlaylist(const QList<QUrl> &urls, bool playImmediately);
+	void appendToVisiblePlaylist(const QList<QUrl> &urls, bool playImmediately);
 	void removeTrack(int row);
 	void setRandom(bool random);
 	void setRepeat(bool repeat);
@@ -105,7 +105,7 @@ private slots:
 	void playNextTrack();
 	void playTrack(Playlist *playlist, int track);
 	void playTrack(const QModelIndex &index);
-	void appendUrls(const QList<KUrl> &urls);
+	void appendUrls(const QList<QUrl> &urls);
 	void appendPlaylist(Playlist *playlist, bool playImmediately);
 	void updateTrackLength(int length);
 	void updateTrackMetadata(const QMap<MediaWidget::MetadataType, QString> &metadata);

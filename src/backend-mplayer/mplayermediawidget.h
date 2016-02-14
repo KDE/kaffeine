@@ -47,7 +47,7 @@ public:
 	void seek(int time); // milliseconds
 	void setCurrentAudioStream(int currentAudioStream);
 	void setCurrentSubtitle(int currentSubtitle);
-	void setExternalSubtitle(const KUrl &subtitleUrl);
+	void setExternalSubtitle(const QUrl &subtitleUrl);
 	void setCurrentTitle(int currentTitle);
 	void setCurrentChapter(int currentChapter);
 	void setCurrentAngle(int currentAngle);

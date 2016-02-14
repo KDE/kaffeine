@@ -21,7 +21,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <KMainWindow>
+#include <QMainWindow>
 #include "mediawidget.h"
 
 class QStackedLayout;
@@ -33,7 +33,7 @@ class PlayerTab;
 class PlaylistTab;
 class TabBase;
 
-class MainWindow : public KMainWindow
+class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 public:
@@ -50,7 +50,7 @@ private slots:
 	void displayModeChanged();
 	void open();
 	void openUrl();
-	void openUrl(const KUrl &url);
+	void openUrl(const QUrl &url);
 	void openAudioCd(const QString &device = QString());
 	void openVideoCd(const QString &device = QString());
 	void openDvd(const QString &device = QString());
@@ -83,7 +83,7 @@ private:
 	KToolBar *controlBar;
 	bool autoHideControlBar;
 	QTimer *cursorHideTimer;
-	QList<KUrl> temporaryUrls;
+	QList<QUrl> temporaryUrls;
 
 	MediaWidget *mediaWidget;
 	QStackedLayout *stackedLayout;

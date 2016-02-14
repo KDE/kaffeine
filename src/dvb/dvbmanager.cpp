@@ -24,7 +24,6 @@
 #include <QDir>
 #include <QPluginLoader>
 #include <KConfigGroup>
-#include <KLocale>
 
 #include <config-kaffeine.h>
 #include <QStandardPaths>

@@ -61,7 +61,7 @@ public:
 	virtual void seek(int time) = 0; // milliseconds
 	virtual void setCurrentAudioStream(int currentAudioStream) = 0;
 	virtual void setCurrentSubtitle(int currentSubtitle) = 0;
-	virtual void setExternalSubtitle(const KUrl &subtitleUrl) = 0;
+	virtual void setExternalSubtitle(const QUrl &subtitleUrl) = 0;
 	virtual void setCurrentTitle(int currentTitle) = 0;
 	virtual void setCurrentChapter(int currentChapter) = 0;
 	virtual void setCurrentAngle(int currentAngle) = 0;
@@ -145,7 +145,7 @@ public:
 	void seek(int time); // milliseconds
 	void setCurrentAudioStream(int currentAudioStream);
 	void setCurrentSubtitle(int currentSubtitle);
-	void setExternalSubtitle(const KUrl &subtitleUrl);
+	void setExternalSubtitle(const QUrl &subtitleUrl);
 	void setCurrentTitle(int currentTitle);
 	void setCurrentChapter(int currentChapter);
 	void setCurrentAngle(int currentAngle);

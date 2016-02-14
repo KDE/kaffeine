@@ -21,7 +21,7 @@
 #ifndef DVBRECORDINGDIALOG_P_H
 #define DVBRECORDINGDIALOG_P_H
 
-#include <KDialog>
+#include <QDialog>
 #include "../tablemodel.h"
 #include "dvbrecording.h"
 
@@ -114,7 +114,7 @@ private:
 	DvbRecordingModel *recordingModel;
 };
 
-class DvbRecordingEditor : public KDialog
+class DvbRecordingEditor : public QDialog
 {
 	Q_OBJECT
 public:

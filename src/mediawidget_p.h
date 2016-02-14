@@ -22,12 +22,12 @@
 #define MEDIAWIDGET_P_H
 
 #include <QSlider>
-#include <KDialog>
+#include <QDialog>
 #include "mediawidget.h"
 
 class QTimeEdit;
 
-class JumpToPositionDialog : public KDialog
+class JumpToPositionDialog : public QDialog
 {
 public:
 	explicit JumpToPositionDialog(MediaWidget *mediaWidget_);
@@ -53,51 +53,51 @@ private:
 class MediaSourceUrl : public MediaSource
 {
 public:
-	MediaSourceUrl(const KUrl &url_, const KUrl &subtitleUrl_) : url(url_),
+	MediaSourceUrl(const QUrl &url_, const KUrl &subtitleUrl_) : url(url_),
 		subtitleUrl(subtitleUrl_) { }
 	~MediaSourceUrl() { }
 
 	Type getType() const { return Url; }
-	KUrl getUrl() const { return url; }
+	QUrl getUrl() const { return url; }
 
-	KUrl url;
-	KUrl subtitleUrl;
+	QUrl url;
+	QUrl subtitleUrl;
 };
 
 class MediaSourceAudioCd : public MediaSource
 {
 public:
-	explicit MediaSourceAudioCd(const KUrl &url_) : url(url_) { }
+	explicit MediaSourceAudioCd(const QUrl &url_) : url(url_) { }
 	~MediaSourceAudioCd() { }
 
 	Type getType() const { return AudioCd; }
-	KUrl getUrl() const { return url; }
+	QUrl getUrl() const { return url; }
 
-	KUrl url;
+	QUrl url;
 };
 
 class MediaSourceVideoCd : public MediaSource
 {
 public:
-	explicit MediaSourceVideoCd(const KUrl &url_) : url(url_) { }
+	explicit MediaSourceVideoCd(const QUrl &url_) : url(url_) { }
 	~MediaSourceVideoCd() { }
 
 	Type getType() const { return VideoCd; }
-	KUrl getUrl() const { return url; }
+	QUrl getUrl() const { return url; }
 
-	KUrl url;
+	QUrl url;
 };
 
 class MediaSourceDvd : public MediaSource
 {
 public:
-	explicit MediaSourceDvd(const KUrl &url_) : url(url_) { }
+	explicit MediaSourceDvd(const QUrl &url_) : url(url_) { }
 	~MediaSourceDvd() { }
 
 	Type getType() const { return Dvd; }
-	KUrl getUrl() const { return url; }
+	QUrl getUrl() const { return url; }
 
-	KUrl url;
+	QUrl url;
 };
 
 #endif /* MEDIAWIDGET_P_H */

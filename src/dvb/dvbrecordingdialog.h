@@ -21,13 +21,13 @@
 #ifndef DVBRECORDINGDIALOG_H
 #define DVBRECORDINGDIALOG_H
 
-#include <KDialog>
+#include <QDialog>
 
 class QTreeView;
 class DvbManager;
 class DvbRecordingTableModel;
 
-class DvbRecordingDialog : public KDialog
+class DvbRecordingDialog : public QDialog
 {
 	Q_OBJECT
 public:

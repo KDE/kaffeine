@@ -31,13 +31,13 @@ public:
 	PlaylistTrack() : trackNumber(-1), currentSubtitle(-1) { }
 	~PlaylistTrack() { }
 
-	KUrl url;
+	QUrl url;
 	QString title;
 	QString artist;
 	QString album;
 	int trackNumber;
 	QTime length;
-	QList<KUrl> subtitles;
+	QList<QUrl> subtitles;
 	int currentSubtitle;
 };
 
@@ -60,20 +60,20 @@ public:
 		XSPF
 	};
 
-	bool load(const KUrl &url_, Format format);
+	bool load(const QUrl &url_, Format format);
 	bool save(Format format) const;
 
-	KUrl url;
+	QUrl url;
 	QString title;
 	QList<PlaylistTrack> tracks;
 	int currentTrack;
 
 private:
 	void appendTrack(PlaylistTrack &track);
-	KUrl fromFileOrUrl(const QString &fileOrUrl) const;
-	KUrl fromRelativeUrl(const QString &trackUrlString) const;
-	QString toFileOrUrl(const KUrl &trackUrl) const;
-	QString toRelativeUrl(const KUrl &trackUrl) const;
+	QUrl fromFileOrUrl(const QString &fileOrUrl) const;
+	QUrl fromRelativeUrl(const QString &trackUrlString) const;
+	QString toFileOrUrl(const QUrl &trackUrl) const;
+	QString toRelativeUrl(const QUrl &trackUrl) const;
 
 	bool loadKaffeinePlaylist(QIODevice *device);
 	bool loadM3UPlaylist(QIODevice *device);
@@ -94,7 +94,7 @@ public:
 	void setVisiblePlaylist(Playlist *visiblePlaylist_);
 	Playlist *getVisiblePlaylist() const;
 
-	void appendUrls(Playlist *playlist, const QList<KUrl> &urls, bool playImmediately);
+	void appendUrls(Playlist *playlist, const QList<QUrl> &urls, bool playImmediately);
 	void removeRows(Playlist *playlist, int row, int count);
 	void setCurrentTrack(Playlist *playlist, int track);
 	void updateTrackLength(Playlist *playlist, int length);
@@ -109,7 +109,7 @@ signals:
 	void playTrack(Playlist *playlist, int track);
 
 private:
-	void insertUrls(Playlist *playlist, int row, const QList<KUrl> &urls,
+	void insertUrls(Playlist *playlist, int row, const QList<QUrl> &urls,
 		bool playImmediately);
 
 	int columnCount(const QModelIndex &parent) const;

@@ -22,8 +22,8 @@
 #define MEDIAWIDGET_H
 
 #include <QWidget>
-#include <KIcon>
-#include <KUrl>
+#include <QIcon>
+#include <QUrl>
 
 class QActionGroup;
 class QPushButton;
@@ -95,7 +95,7 @@ public:
 	 */
 
 	void play(MediaSource *source_);
-	void play(const KUrl &url, const KUrl &subtitleUrl = KUrl());
+	void play(const QUrl &url, const KUrl &subtitleUrl = KUrl());
 	void playAudioCd(const QString &device);
 	void playVideoCd(const QString &device);
 	void playDvd(const QString &device);
@@ -147,7 +147,7 @@ signals:
 
 	void playlistPrevious();
 	void playlistNext();
-	void playlistUrlsDropped(const QList<KUrl> &urls);
+	void playlistUrlsDropped(const QList<QUrl> &urls);
 	void playlistTrackLengthChanged(int length);
 	void playlistTrackMetadataChanged(const QMap<MediaWidget::MetadataType, QString> &metadata);
 	void osdKeyPressed(int key);
@@ -190,8 +190,8 @@ private:
 	KAction *actionPlayPause;
 	QString textPlay;
 	QString textPause;
-	KIcon iconPlay;
-	KIcon iconPause;
+	QIcon iconPlay;
+	QIcon iconPause;
 	KAction *actionStop;
 	KAction *actionNext;
 	KAction *fullScreenAction;
@@ -202,8 +202,8 @@ private:
 	QStringListModel *subtitleModel;
 	QString textSubtitlesOff;
 	KAction *muteAction;
-	KIcon mutedIcon;
-	KIcon unmutedIcon;
+	QIcon mutedIcon;
+	QIcon unmutedIcon;
 	QSlider *volumeSlider;
 	SeekSlider *seekSlider;
 	KAction *longSkipBackwardAction;
@@ -252,7 +252,7 @@ public:
 	};
 
 	virtual Type getType() const { return Url; }
-	virtual KUrl getUrl() const { return KUrl(); }
+	virtual QUrl getUrl() const { return KUrl(); }
 	virtual bool hideCurrentTotalTime() const { return false; }
 	virtual bool overrideAudioStreams() const { return false; }
 	virtual bool overrideSubtitles() const { return false; }

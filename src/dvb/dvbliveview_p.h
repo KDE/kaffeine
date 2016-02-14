@@ -98,7 +98,7 @@ public:
 
 	Type getType() const { return Dvb; }
 
-	KUrl getUrl() const { return url; }
+	QUrl getUrl() const { return url; }
 
 	bool hideCurrentTotalTime() const { return !timeshift; }
 
@@ -123,7 +123,7 @@ private slots:
 private:
 	void processData(const char data[188]);
 
-	KUrl url;
+	QUrl url;
 	int readFd;
 	int writeFd;
 	QSocketNotifier *notifier;

@@ -621,7 +621,7 @@ void PlaylistTab::createFileWidget()
 	fileWidget->setMode(KFile::Files | KFile::ExistingOnly);
 	fileWidgetSplitter->setStretchFactor(1, 1);
 
-	// KFileWidget creates a KUrlComboBox without layout (!), which steals the focus:
+	// KFileWidget creates a QUrlComboBox without layout (!), which steals the focus:
 	//     kDebug() << QApplication::focusWidget();
 	//     kDebug() << QApplication::focusWidget()->layout();
 	// Let's reclaim the focus (and give it back to the main window).
