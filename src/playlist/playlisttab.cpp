@@ -31,7 +31,7 @@
 #include <KFileDialog>
 #include <kfilewidget.h>
 #include <KLocalizedString>
-#include <KMenu>
+#include <QMenu>
 #include <KStandardDirs>
 #include "../log.h"
 #include "playlistmodel.h"
@@ -365,7 +365,7 @@ void PlaylistView::keyPressEvent(QKeyEvent *event)
 	QTreeView::keyPressEvent(event);
 }
 
-PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
+PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
 	mediaWidget(mediaWidget_)
 {
 	Playlist *temporaryPlaylist = new Playlist();

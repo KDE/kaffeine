@@ -36,7 +36,7 @@
 #include <KActionCollection>
 #include <KComboBox>
 #include <KLocalizedString>
-#include <KMenu>
+#include <QMenu>
 #include <KToolBar>
 #include <X11/extensions/scrnsaver.h>
 #include <KConfigGroup>
@@ -45,7 +45,7 @@
 #include "log.h"
 #include "osdwidget.h"
 
-MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
+MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
 	automaticResize(ResizeOff), blockBackendUpdates(false), muted(false),
 	screenSaverSuspended(false), showElapsedTime(true)
@@ -132,7 +132,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	subtitleModel = new QStringListModel(toolBar);
 	subtitleBox->setModel(subtitleModel);
 
-	KMenu *audioMenu = new KMenu(i18nc("'Playback' menu", "Audio"), this);
+	QMenu *audioMenu = new QMenu(i18nc("'Playback' menu", "Audio"), this);
 
 	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("audio-volume-high")),
 		i18nc("'Audio' menu", "Increase Volume"), this);
@@ -156,7 +156,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	audioMenu->addAction(muteAction);
 	menu->addMenu(audioMenu);
 
-	KMenu *videoMenu = new KMenu(i18nc("'Playback' menu", "Video"), this);
+	QMenu *videoMenu = new QMenu(i18nc("'Playback' menu", "Video"), this);
 	menu->addMenu(videoMenu);
 	menu->addSeparator();
 
@@ -170,7 +170,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	backend->setDeinterlacing(deinterlaceAction->isChecked());
 	videoMenu->addAction(collection->addAction(QLatin1String("controls_deinterlace"), deinterlaceAction));
 
-	KMenu *aspectMenu = new KMenu(i18nc("'Video' menu", "Aspect Ratio"), this);
+	QMenu *aspectMenu = new QMenu(i18nc("'Video' menu", "Aspect Ratio"), this);
 	QActionGroup *aspectGroup = new QActionGroup(this);
 	connect(aspectGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(aspectRatioChanged(QAction*)));
@@ -197,7 +197,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_16_9"), action));
 	videoMenu->addMenu(aspectMenu);
 
-	KMenu *autoResizeMenu = new KMenu(i18n("Automatic Resize"), this);
+	QMenu *autoResizeMenu = new QMenu(i18n("Automatic Resize"), this);
 	QActionGroup *autoResizeGroup = new QActionGroup(this);
 	// we need an event even if you select the currently selected item
 	autoResizeGroup->setExclusive(false);
@@ -258,7 +258,7 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
 	menu->addAction(collection->addAction(QLatin1String("controls_jump_to_position"), jumpToPositionAction));
 
-	navigationMenu = new KMenu(i18nc("playback menu", "Skip"), this);
+	navigationMenu = new QMenu(i18nc("playback menu", "Skip"), this);
 	menu->addMenu(navigationMenu);
 	menu->addSeparator();
 
@@ -313,19 +313,19 @@ MediaWidget::MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *col
 	connect(menuAction, SIGNAL(triggered()), this, SLOT(toggleMenu()));
 	menu->addAction(collection->addAction(QLatin1String("controls_toggle_menu"), menuAction));
 
-	titleMenu = new KMenu(i18nc("dvd navigation", "Title"), this);
+	titleMenu = new QMenu(i18nc("dvd navigation", "Title"), this);
 	titleGroup = new QActionGroup(this);
 	connect(titleGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(currentTitleChanged(QAction*)));
 	menu->addMenu(titleMenu);
 
-	chapterMenu = new KMenu(i18nc("dvd navigation", "Chapter"), this);
+	chapterMenu = new QMenu(i18nc("dvd navigation", "Chapter"), this);
 	chapterGroup = new QActionGroup(this);
 	connect(chapterGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(currentChapterChanged(QAction*)));
 	menu->addMenu(chapterMenu);
 
-	angleMenu = new KMenu(i18nc("dvd navigation", "Angle"), this);
+	angleMenu = new QMenu(i18nc("dvd navigation", "Angle"), this);
 	angleGroup = new QActionGroup(this);
 	connect(angleGroup, SIGNAL(triggered(QAction*)), this,
 		SLOT(currentAngleChanged(QAction*)));

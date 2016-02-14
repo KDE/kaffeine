@@ -30,7 +30,7 @@
 #include <KActionCollection>
 #include <QLineEdit>
 #include <KLocale>
-#include <KMenu>
+#include <QMenu>
 #include <KMessageBox>
 #include <KConfigGroup>
 #include "../log.h"
@@ -79,7 +79,7 @@ void DvbTimeShiftCleaner::run()
 	}
 }
 
-DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
+DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_) :
 	mediaWidget(mediaWidget_)
 {
 	manager = new DvbManager(mediaWidget, this);

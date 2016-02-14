@@ -28,7 +28,7 @@
 #include <KFileDialog>
 #include <KInputDialog>
 #include <kio/deletejob.h>
-#include <KMenu>
+#include <QMenu>
 #include <QMenuBar>
 #include <KRecentFilesAction>
 #include <KShortcutsDialog>
@@ -156,7 +156,7 @@ MainWindow::MainWindow()
 	QMenuBar *menuBar = KMainWindow::menuBar();
 	collection = new KActionCollection(this);
 
-	KMenu *menu = new KMenu(i18n("&File"), this);
+	QMenu *menu = new QMenu(i18n("&File"), this);
 	menuBar->addMenu(menu);
 
 	QAction *action = KStandardAction::open(this, SLOT(open()), collection);
@@ -196,18 +196,18 @@ MainWindow::MainWindow()
 	action = KStandardAction::quit(this, SLOT(close()), collection);
 	menu->addAction(collection->addAction(QLatin1String("file_quit"), action));
 
-	KMenu *playerMenu = new KMenu(i18n("&Playback"), this);
+	QMenu *playerMenu = new QMenu(i18n("&Playback"), this);
 	menuBar->addMenu(playerMenu);
 
-	KMenu *playlistMenu = new KMenu(i18nc("menu bar", "Play&list"), this);
+	QMenu *playlistMenu = new QMenu(i18nc("menu bar", "Play&list"), this);
 	menuBar->addMenu(playlistMenu);
 
 #if HAVE_DVB == 1
-	KMenu *dvbMenu = new KMenu(i18n("&Television"), this);
+	QMenu *dvbMenu = new QMenu(i18n("&Television"), this);
 	menuBar->addMenu(dvbMenu);
 #endif /* HAVE_DVB == 1 */
 
-	menu = new KMenu(i18n("&Settings"), this);
+	menu = new QMenu(i18n("&Settings"), this);
 	menuBar->addMenu(menu);
 
 	action = KStandardAction::keyBindings(this, SLOT(configureKeys()), collection);
