@@ -21,6 +21,7 @@
 #include "dvbchanneldialog.h"
 #include "dvbchanneldialog_p.h"
 
+#include <klocalizedstring.h>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QCoreApplication>
@@ -32,7 +33,7 @@
 #include <QAction>
 #include <KComboBox>
 #include <QLineEdit>
-#include <KLocalizedString>
+//#include <KLocalizedString>
 #include <KMessageBox>
 #include <KConfigGroup>
 #include "../log.h"
@@ -869,7 +870,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	boxLayout->addWidget(groupBox);
 	mainLayout->addLayout(boxLayout);
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(widget);
 }

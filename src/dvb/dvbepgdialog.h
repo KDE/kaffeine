@@ -21,7 +21,7 @@
 #ifndef DVBEPGDIALOG_H
 #define DVBEPGDIALOG_H
 
-#include <KDialog>
+#include <QDialog>
 #include "dvbchannel.h"
 
 class QLabel;
@@ -31,7 +31,7 @@ class DvbEpgChannelTableModel;
 class DvbEpgTableModel;
 class DvbManager;
 
-class DvbEpgDialog : public KDialog
+class DvbEpgDialog : public QDialog
 {
 	Q_OBJECT
 public:

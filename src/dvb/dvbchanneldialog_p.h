@@ -27,12 +27,12 @@
 class QCheckBox;
 class QSpinBox;
 class KComboBox;
-class KLineEdit;
+class QLineEdit;
 class DvbChannelTableModel;
 
 Q_DECLARE_METATYPE(QList<DvbSharedChannel>)
 
-class DvbChannelEditor : public KDialog
+class DvbChannelEditor : public QDialog
 {
 public:
 	DvbChannelEditor(DvbChannelTableModel *model_, const DvbSharedChannel &channel_,
@@ -44,7 +44,7 @@ private:
 
 	DvbChannelTableModel *model;
 	DvbSharedChannel channel;
-	KLineEdit *nameEdit;
+	QLineEdit *nameEdit;
 	QSpinBox *numberBox;
 	QSpinBox *networkIdBox;
 	QSpinBox *transportStreamIdBox;

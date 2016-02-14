@@ -29,8 +29,8 @@
 
 class QModelIndex;
 class QSplitter;
-class KAction;
-class KActionCollection;
+class QAction;
+class QActionCollection;
 class KMenu;
 class DvbChannelTableModel;
 class DvbChannelView;
@@ -42,7 +42,7 @@ class DvbTab : public TabBase
 {
 	Q_OBJECT
 public:
-	DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
+	DvbTab(KMenu *menu, QActionCollection *collection, MediaWidget *mediaWidget_);
 	~DvbTab();
 
 	void playChannel(const QString &nameOrNumber);
@@ -81,7 +81,7 @@ private:
 
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
-	KAction *instantRecordAction;
+	QAction *instantRecordAction;
 	DvbSharedRecording instantRecording;
 	QSplitter *splitter;
 	DvbChannelTableModel *channelProxyModel;
