@@ -441,7 +441,7 @@ DvbScan::~DvbScan()
 
 void DvbScan::start()
 {
-	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+	connect(device, &DvbDevice::stateChanged, this, &DvbScan::deviceStateChanged);
 	updateState();
 }
 

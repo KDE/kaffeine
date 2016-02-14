@@ -1467,8 +1467,8 @@ DvbLinuxDeviceManager::DvbLinuxDeviceManager(QObject *parent) : QObject(parent)
         int ret;
         struct sockaddr_un saun;
 	QObject *notifier = Solid::DeviceNotifier::instance();
-	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
-	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(componentRemoved(QString)));
+	connect(notifier, &QObject::deviceAdded, this, &DvbLinuxDeviceManager::componentAdded);
+	connect(notifier, &QObject::deviceRemoved, this, &DvbLinuxDeviceManager::componentRemoved);
 
         memset(&saun, 0x0, sizeof(struct sockaddr_un));
         fd = socket(AF_UNIX, SOCK_STREAM, 0);

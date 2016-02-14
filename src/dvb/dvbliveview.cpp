@@ -145,19 +145,16 @@ DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent
 
 	connect(&internal->pmtFilter, SIGNAL(pmtSectionChanged(QByteArray)),
 		this, SLOT(pmtSectionChanged(QByteArray)));
-	connect(&patPmtTimer, SIGNAL(timeout()), this, SLOT(insertPatPmt()));
-	connect(&osdTimer, SIGNAL(timeout()), this, SLOT(osdTimeout()));
+	connect(&patPmtTimer, &QTimer::timeout, this, &DvbLiveView::insertPatPmt);
+	connect(&osdTimer, &QTimer::timeout, this, &DvbLiveView::osdTimeout);
 
-	connect(internal, SIGNAL(currentAudioStreamChanged(int)),
-		this, SLOT(currentAudioStreamChanged(int)));
-	connect(internal, SIGNAL(currentSubtitleChanged(int)),
-		this, SLOT(currentSubtitleChanged(int)));
-	connect(internal, SIGNAL(replay()), this, SLOT(replay()));
-	connect(internal, SIGNAL(playbackFinished()), this, SLOT(playbackFinished()));
-	connect(internal, SIGNAL(playbackStatusChanged(MediaWidget::PlaybackStatus)),
-		this, SLOT(playbackStatusChanged(MediaWidget::PlaybackStatus)));
-	connect(internal, SIGNAL(previous()), this, SIGNAL(previous()));
-	connect(internal, SIGNAL(next()), this, SIGNAL(next()));
+	connect(internal, &DvbLiveViewInternal::currentAudioStreamChanged, this, &DvbLiveView::currentAudioStreamChanged);
+	connect(internal, &DvbLiveViewInternal::currentSubtitleChanged, this, &DvbLiveView::currentSubtitleChanged);
+	connect(internal, &DvbLiveViewInternal::replay, this, &DvbLiveView::replay);
+	connect(internal, &DvbLiveViewInternal::playbackFinished, this, &DvbLiveView::playbackFinished);
+	connect(internal, &DvbLiveViewInternal::playbackStatusChanged, this, &DvbLiveView::playbackStatusChanged);
+	connect(internal, &DvbLiveViewInternal::previous, this, &DvbLiveView::previous);
+	connect(internal, &DvbLiveViewInternal::next, this, &DvbLiveView::next);
 }
 
 DvbLiveView::~DvbLiveView()
@@ -487,7 +484,7 @@ void DvbLiveView::startDevice()
 	}
 
 	device->addSectionFilter(channel->pmtPid, &internal->pmtFilter);
-	connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+	connect(device, &DvbDevice::stateChanged, this, &DvbLiveView::deviceStateChanged);
 
 	if (channel->isScrambled && !internal->pmtSectionData.isEmpty()) {
 		device->startDescrambling(internal->pmtSectionData, this);
@@ -509,7 +506,7 @@ void DvbLiveView::stopDevice()
 	}
 
 	device->removeSectionFilter(channel->pmtPid, &internal->pmtFilter);
-	disconnect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
+	disconnect(device, &DvbDevice::stateChanged, this, &DvbLiveView::deviceStateChanged);
 }
 
 void DvbLiveView::updatePids(bool forcePatPmtUpdate)
@@ -599,7 +596,7 @@ DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), med
 
 	notifier = new QSocketNotifier(writeFd, QSocketNotifier::Write, this);
 	notifier->setEnabled(false);
-	connect(notifier, SIGNAL(activated(int)), this, SLOT(writeToPipe()));
+	connect(notifier, &QSocketNotifier::activated, this, &DvbLiveView::writeToPipe);
 }
 
 DvbLiveViewInternal::~DvbLiveViewInternal()

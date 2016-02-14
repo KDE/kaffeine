@@ -373,25 +373,18 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 	temporaryPlaylist->title = i18nc("playlist browser", "Temporary Playlist");
 
 	playlistModel = new PlaylistModel(temporaryPlaylist, this);
-	connect(playlistModel, SIGNAL(playTrack(Playlist*,int)),
-		this, SLOT(playTrack(Playlist*,int)));
-	connect(playlistModel, SIGNAL(appendPlaylist(Playlist*,bool)),
-		this, SLOT(appendPlaylist(Playlist*,bool)));
+	connect(playlistModel, &PlaylistModel::playTrack, this, &PlaylistTab::playTrack);
+	connect(playlistModel, &PlaylistModel::appendPlaylist, this, &PlaylistTab::appendPlaylist);
 
 	playlistBrowserModel = new PlaylistBrowserModel(playlistModel, temporaryPlaylist, this);
 	playlistModel->setVisiblePlaylist(playlistBrowserModel->getPlaylist(0));
-	connect(playlistBrowserModel, SIGNAL(playTrack(Playlist*,int)),
-		this, SLOT(playTrack(Playlist*,int)));
+	connect(playlistBrowserModel, &PlaylistBrowserModel::playTrack, this, &PlaylistTab::playTrack);
 
-	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(playPreviousTrack()));
-	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
-	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<QUrl>)),
-		this, SLOT(appendUrls(QList<QUrl>)));
-	connect(mediaWidget, SIGNAL(playlistTrackLengthChanged(int)),
-		this, SLOT(updateTrackLength(int)));
-	connect(mediaWidget,
-		SIGNAL(playlistTrackMetadataChanged(QMap<MediaWidget::MetadataType,QString>)),
-		this, SLOT(updateTrackMetadata(QMap<MediaWidget::MetadataType,QString>)));
+	connect(mediaWidget, &MediaWidget::playlistPrevious, this, &PlaylistTab::playPreviousTrack);
+	connect(mediaWidget, &MediaWidget::playlistNext, this, &PlaylistTab::playNextTrack);
+	connect(mediaWidget, &MediaWidget::playlistUrlsDropped, this, &PlaylistTab::appendUrls);
+	connect(mediaWidget, &MediaWidget::playlistTrackLengthChanged, this, &PlaylistTab::updateTrackLength);
+	connect(mediaWidget, &MediaWidget::playlistTrackMetadataChanged, this, &PlaylistTab::updateTrackMetadata);
 
 	repeatAction = new QAction(QIcon::fromTheme(QLatin1String("media-playlist-repeat")),
 		i18nc("playlist menu", "Repeat"), this);
@@ -413,23 +406,23 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 
 	QAction *clearAction = new QAction(QIcon::fromTheme(QLatin1String("edit-clear-list")),
 		i18nc("remove all items from a list", "Clear"), this);
-	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearVisiblePlaylist()));
+	connect(clearAction, &QAction::triggered, playlistModel, &PlaylistModel::clearVisiblePlaylist);
 	menu->addAction(collection->addAction(QLatin1String("playlist_clear"), clearAction));
 
 	menu->addSeparator();
 
 	QAction *newAction = new QAction(QIcon::fromTheme(QLatin1String("list-add")), i18nc("@action", "New"), this);
-	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
+	connect(newAction, &QAction::triggered, this, &PlaylistTab::newPlaylist);
 	menu->addAction(collection->addAction(QLatin1String("playlist_new"), newAction));
 
 	QAction *renameAction = new QAction(QIcon::fromTheme(QLatin1String("edit-rename")),
 		i18nc("rename an entry in a list", "Rename"), this);
-	connect(renameAction, SIGNAL(triggered(bool)), this, SLOT(renamePlaylist()));
+	connect(renameAction, &QAction::triggered, this, &PlaylistTab::renamePlaylist);
 	menu->addAction(collection->addAction(QLatin1String("playlist_rename"), renameAction));
 
 	QAction *removePlaylistAction =
 		new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
-	connect(removePlaylistAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
+	connect(removePlaylistAction, &QAction::triggered, this, &PlaylistTab::removePlaylist);
 	menu->addAction(collection->addAction(QLatin1String("playlist_remove"), removePlaylistAction));
 
 	QAction *savePlaylistAction = KStandardAction::save(this, SLOT(savePlaylist()), this);
@@ -489,8 +482,7 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 	playlistBrowserView->addAction(savePlaylistAsAction);
 	playlistBrowserView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	playlistBrowserView->setModel(playlistBrowserModel);
-	connect(playlistBrowserView, SIGNAL(activated(QModelIndex)),
-		this, SLOT(playlistActivated(QModelIndex)));
+	connect(playlistBrowserView, &PlaylistBrowserView::activated, this, &PlaylistTab::playlistActivated);
 	sideLayout->addWidget(playlistBrowserView);
 
 	// KFileWidget creates a local event loop which can cause bad side
@@ -538,12 +530,10 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 	playlistView->sortByColumn(-1, Qt::AscendingOrder);
 	playlistView->setSortingEnabled(true);
 	playlistView->addAction(addSubtitleAction);
-	connect(addSubtitleAction, SIGNAL(triggered(bool)), this, SLOT(addSubtitle()));
+	connect(addSubtitleAction, &QAction::triggered, this, &PlaylistTab::addSubtitle);
 	playlistView->addAction(removeTrackAction);
-	connect(removeTrackAction, SIGNAL(triggered(bool)),
-		playlistView, SLOT(removeSelectedRows()));
-	connect(playlistView, SIGNAL(activated(QModelIndex)),
-		this, SLOT(playTrack(QModelIndex)));
+	connect(removeTrackAction, &QAction::triggered, playlistView, &PlaylistView::removeSelectedRows);
+	connect(playlistView, &PlaylistView::activated, this, &PlaylistTab::playTrack);
 	sideLayout->addWidget(playlistView);
 
 	QWidget *mediaContainer = new QWidget(verticalSplitter);

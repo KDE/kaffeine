@@ -30,10 +30,9 @@ MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(pa
 {
 	videoWidget = new MPlayerVideoWidget(this);
 	standardError.open(stderr, QIODevice::WriteOnly);
-	connect(&process, SIGNAL(error(QProcess::ProcessError)),
-		this, SLOT(error(QProcess::ProcessError)));
-	connect(&process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStandardOutput()));
-	connect(&process, SIGNAL(readyReadStandardError()), this, SLOT(readStandardError()));
+	connect(&process, static_cast<void (QProcess::*)(QProcess::ProcessError)>(&QProcess::error), this, &MPlayerMediaWidget::error);
+	connect(&process, &QProcess::readyReadStandardOutput, this, &MPlayerMediaWidget::readStandardOutput);
+	connect(&process, &QProcess::readyReadStandardError, this, &MPlayerMediaWidget::readStandardError);
 	process.start(QString("mplayer -idle -osdlevel 0 -quiet -slave -softvol -vf yadif "
 		"-volume 0 -wid %1").arg(videoWidget->winId()));
 }

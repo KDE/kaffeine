@@ -89,7 +89,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 
 	QPushButton *pushButton = new QPushButton(i18nc("@action:button", "Show dmesg"));
 	pushButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-	connect(pushButton, SIGNAL(clicked()), this, SLOT(showDmesg()));
+	connect(pushButton, &QPushButton::clicked, this, &ConfigurationDialog::showDmesg);
 	gridLayout->addWidget(pushButton, 0, 1);
 
 	QPlainTextEdit *textEdit = new QPlainTextEdit(widget);
@@ -131,15 +131,15 @@ DmesgDialog::DmesgDialog(QWidget *parent) : QDialog(parent)
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	connect(buttonBox, &QDialogButtonBox::accepted, this, &ConfigurationDialog::accept);
+	connect(buttonBox, &QDialogButtonBox::rejected, this, &ConfigurationDialog::reject);
 	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
 	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18nc("@title:window", "dmesg"));
 
 	dmesgProcess = new QProcess(this);
 	dmesgProcess->setProcessChannelMode(QProcess::MergedChannels);
-	connect(dmesgProcess, SIGNAL(readyRead()), this, SLOT(readyRead()));
+	connect(dmesgProcess, &QProcess::readyRead, this, &ConfigurationDialog::readyRead);
 	dmesgProcess->start(QLatin1String("dmesg"), QIODevice::ReadOnly);
 
 	dmesgTextEdit = new QPlainTextEdit(this);

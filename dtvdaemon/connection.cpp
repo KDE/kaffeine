@@ -33,8 +33,8 @@ Connection::Connection(QLocalSocket *socket_) : QObject(socket_), socket(socket_
 	}
 
 	Log("Connection::Connection: opened connection") << quintptr(this);
-	connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
-	connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+	connect(socket, &QLocalSocket::disconnected, socket, &QLocalSocket::deleteLater);
+	connect(socket, &QLocalSocket::readyRead, this, &Connection::readyRead);
 }
 
 Connection::~Connection()
