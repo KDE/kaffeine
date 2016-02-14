@@ -36,7 +36,7 @@
 #include <QFileDialog>
 #include <KIO/Job>
 #include <QLineEdit>
-#include <KLocale>
+#include <klocalizedstring.h>
 #include <KStandardDirs>
 #include <QTabWidget>
 #include <KConfigGroup>
@@ -182,7 +182,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	latitudeEdit = new QLineEdit(widget);
 	latitudeEdit->setText(QString::number(manager->getLatitude(), 'g', 10));
-	connect(latitudeEdit, &KLineEdit::textChanged, this, &DvbConfigDialog::latitudeChanged);
+	connect(latitudeEdit, &QLineEdit::textChanged, this, &DvbConfigDialog::latitudeChanged);
 	gridLayout->addWidget(latitudeEdit, 0, 2);
 
 	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(KIconLoader::SizeSmallMedium);
@@ -197,7 +197,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	longitudeEdit = new QLineEdit(widget);
 	longitudeEdit->setText(QString::number(manager->getLongitude(), 'g', 10));
-	connect(longitudeEdit, &KLineEdit::textChanged, this, &DvbConfigDialog::longitudeChanged);
+	connect(longitudeEdit, &QLineEdit::textChanged, this, &DvbConfigDialog::longitudeChanged);
 	gridLayout->addWidget(longitudeEdit, 1, 2);
 
 	longitudeValidLabel = new QLabel(widget);
@@ -978,7 +978,7 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 
 	nameEdit = new QLineEdit(parent);
 	nameEdit->setText(config->name);
-	connect(nameEdit, &KLineEdit::editingFinished, this, &DvbConfigObject::nameChanged);
+	connect(nameEdit, &QLineEdit::editingFinished, this, &DvbConfigObject::nameChanged);
 	gridLayout->addWidget(nameEdit, 2, 1);
 
 	timeoutChanged(timeoutBox->value());

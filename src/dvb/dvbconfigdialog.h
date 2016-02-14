@@ -36,8 +36,8 @@ class QTreeWidget;
 class KComboBox;
 class QComboBox;
 class KJob;
-class KLineEdit;
-class KTabWidget;
+class QLineEdit;
+class QTabWidget;
 namespace KIO
 {
 class Job;
@@ -63,7 +63,7 @@ public:
 
 };
 
-class DvbConfigDialog : public KDialog
+class DvbConfigDialog : public QDialog
 {
 	Q_OBJECT
 public:
@@ -97,17 +97,17 @@ private:
 	void accept();
 
 	DvbManager *manager;
-	KTabWidget *tabWidget;
-	KLineEdit *recordingFolderEdit;
-	KLineEdit *timeShiftFolderEdit;
+	QTabWidget *tabWidget;
+	QLineEdit *recordingFolderEdit;
+	QLineEdit *timeShiftFolderEdit;
 	QSpinBox *beginMarginBox;
 	QSpinBox *endMarginBox;
 	KLineEdit *namingFormat;
 	QCheckBox *override6937CharsetBox;
 	QCheckBox *createInfoFileBox;
 	QCheckBox *scanWhenIdleBox;
-	KLineEdit *latitudeEdit;
-	KLineEdit *longitudeEdit;
+	QLineEdit *latitudeEdit;
+	QLineEdit *longitudeEdit;
 	QPixmap validPixmap;
 	QPixmap invalidPixmap;
 	QLabel *latitudeValidLabel;
@@ -119,7 +119,7 @@ private:
 	QList<RegexInputLine *> regexInputList;
 };
 
-class DvbScanFileDownloadDialog : public KDialog
+class DvbScanFileDownloadDialog : public QDialog
 {
 	Q_OBJECT
 public:
@@ -193,7 +193,7 @@ private:
 	QString defaultName;
 	QSpinBox *timeoutBox;
 	KComboBox *sourceBox;
-	KLineEdit *nameEdit;
+	QLineEdit *nameEdit;
 };
 
 class DvbSConfigObject : public QObject
