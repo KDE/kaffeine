@@ -186,8 +186,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	connect(latitudeEdit, &QLineEdit::textChanged, this, &DvbConfigDialog::latitudeChanged);
 	gridLayout->addWidget(latitudeEdit, 0, 2);
 
-	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(KIconLoader::SizeSmallMedium);
-	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(KIconLoader::SizeSmallMedium);
+	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(QStyle::PM_SmallIconSize);
+	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(QStyle::PM_SmallIconSize);
 
 	latitudeValidLabel = new QLabel(widget);
 	latitudeValidLabel->setPixmap(validPixmap);
