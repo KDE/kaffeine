@@ -34,6 +34,7 @@
 #include <KLocale>
 #include <KMessageBox>
 #include <KConfigGroup>
+#include <QLocale>
 #include "dvbchanneldialog.h"
 #include "dvbdevice.h"
 #include "dvbliveview.h"
@@ -278,7 +279,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	groupLayout->addWidget(scanButton);
 
 	QLabel *label = new QLabel(i18n("Scan data last updated on %1",
-		KGlobal::locale()->formatDate(manager->getScanDataDate(), KLocale::ShortDate)));
+		QLocale().toString(manager->getScanDataDate(), QLocale::ShortFormat)));
 	label->setWordWrap(true);
 	groupLayout->addWidget(label);
 

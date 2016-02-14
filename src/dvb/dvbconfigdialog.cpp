@@ -43,6 +43,7 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QFileDialog>
+#include <QLocale>
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
@@ -159,7 +160,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	boxLayout->addWidget(frame);
 
 	boxLayout->addWidget(new QLabel(i18n("Scan data last updated on %1",
-		KGlobal::locale()->formatDate(manager->getScanDataDate(), KLocale::ShortDate))));
+		QLocale().toString(manager->getScanDataDate(), QLocale::ShortFormat))));
 
 	QPushButton *pushButton = new QPushButton(i18n("Update scan data over Internet"), widget);
 	connect(pushButton, &QPushButton::clicked, this, &DvbConfigDialog::updateScanFile);

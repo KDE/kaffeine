@@ -33,6 +33,7 @@
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QLocale>
 #include "../log.h"
 #include "dvbmanager.h"
 
@@ -154,7 +155,7 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime().secsTo(entry->duration)).toLocalTime().time();
 	text += i18nc("@info tv show start, end", "<font color=#800000>%1 - %2</font><br><br>",
-		KGlobal::locale()->formatDateTime(begin, KLocale::LongDate),
+		QLocale().toString(begin, QLocale::LongFormat),
 		KGlobal::locale()->formatTime(end));
 	text += entry->details;
 	contentLabel->setText(text);
