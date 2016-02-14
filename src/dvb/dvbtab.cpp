@@ -28,7 +28,7 @@
 #include <QToolButton>
 #include <QAction>
 #include <KActionCollection>
-#include <KLineEdit>
+#include <QLineEdit>
 #include <KLocale>
 #include <KMenu>
 #include <KMessageBox>
@@ -137,8 +137,8 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	boxLayout = new QHBoxLayout();
 	boxLayout->addWidget(new QLabel(i18n("Search:")));
 
-	KLineEdit *lineEdit = new KLineEdit(leftWidget);
-	lineEdit->setClearButtonShown(true);
+	QLineEdit *lineEdit = new QLineEdit(leftWidget);
+	lineEdit->setClearButtonEnabled(true);
 	boxLayout->addWidget(lineEdit);
 	leftLayout->addLayout(boxLayout);
 

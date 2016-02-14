@@ -29,7 +29,7 @@
 #include <QAction>
 #include <KCalendarSystem>
 #include <KComboBox>
-#include <KLineEdit>
+#include <QLineEdit>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
@@ -388,7 +388,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	QGridLayout *gridLayout = new QGridLayout(widget);
 	mainLayout->addWidget(gridLayout);
 
-	nameEdit = new KLineEdit(widget);
+	nameEdit = new QLineEdit(widget);
 	mainLayout->addWidget(nameEdit);
 	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(nameEdit, 0, 1);

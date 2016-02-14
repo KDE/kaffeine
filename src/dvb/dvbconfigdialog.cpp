@@ -35,7 +35,7 @@
 #include <KComboBox>
 #include <KFileDialog>
 #include <KIO/Job>
-#include <KLineEdit>
+#include <QLineEdit>
 #include <KLocale>
 #include <KStandardDirs>
 #include <KTabWidget>
@@ -66,7 +66,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	QGridLayout *gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Recording folder:")), 0, 0);
 
-	recordingFolderEdit = new KLineEdit(widget);
+	recordingFolderEdit = new QLineEdit(widget);
 	recordingFolderEdit->setText(manager->getRecordingFolder());
 	gridLayout->addWidget(recordingFolderEdit, 0, 1);
 
@@ -78,7 +78,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	gridLayout->addWidget(new QLabel(i18n("Time shift folder:")), 1, 0);
 
-	timeShiftFolderEdit = new KLineEdit(widget);
+	timeShiftFolderEdit = new QLineEdit(widget);
 	timeShiftFolderEdit->setText(manager->getTimeShiftFolder());
 	gridLayout->addWidget(timeShiftFolderEdit, 1, 1);
 
@@ -180,7 +180,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	gridLayout->addWidget(new QLabel(i18n("Latitude:")), 0, 0);
 	gridLayout->addWidget(new QLabel(i18n("[S -90 ... 90 N]")), 0, 1);
 
-	latitudeEdit = new KLineEdit(widget);
+	latitudeEdit = new QLineEdit(widget);
 	latitudeEdit->setText(QString::number(manager->getLatitude(), 'g', 10));
 	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
 	gridLayout->addWidget(latitudeEdit, 0, 2);
@@ -195,7 +195,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	gridLayout->addWidget(new QLabel(i18n("Longitude:")), 1, 0);
 	gridLayout->addWidget(new QLabel(i18n("[W -180 ... 180 E]")), 1, 1);
 
-	longitudeEdit = new KLineEdit(widget);
+	longitudeEdit = new QLineEdit(widget);
 	longitudeEdit->setText(QString::number(manager->getLongitude(), 'g', 10));
 	connect(longitudeEdit, SIGNAL(textChanged(QString)),
 		this, SLOT(longitudeChanged(QString)));
@@ -982,7 +982,7 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 
 	gridLayout->addWidget(new QLabel(i18n("Name:")), 2, 0);
 
-	nameEdit = new KLineEdit(parent);
+	nameEdit = new QLineEdit(parent);
 	nameEdit->setText(config->name);
 	connect(nameEdit, SIGNAL(editingFinished()), this, SLOT(nameChanged()));
 	gridLayout->addWidget(nameEdit, 2, 1);

@@ -28,7 +28,7 @@
 #include <QPushButton>
 #include <QScrollArea>
 #include <QAction>
-#include <KLineEdit>
+#include <QLineEdit>
 #include <KLocale>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
@@ -81,8 +81,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	epgTableModel = new DvbEpgTableModel(this);
 	epgTableModel->setEpgModel(manager->getEpgModel());
 	connect(epgTableModel, SIGNAL(layoutChanged()), this, SLOT(checkEntry()));
-	KLineEdit *lineEdit = new KLineEdit(widget);
-	lineEdit->setClearButtonShown(true);
+	QLineEdit *lineEdit = new QLineEdit(widget);
+	lineEdit->setClearButtonEnabled(true);
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		epgTableModel, SLOT(setContentFilter(QString)));
 	boxLayout->addWidget(lineEdit);

@@ -31,7 +31,7 @@
 #include <QSpinBox>
 #include <QAction>
 #include <KComboBox>
-#include <KLineEdit>
+#include <QLineEdit>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <KConfigGroup>
@@ -621,7 +621,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
 	QGridLayout *gridLayout = new QGridLayout();
 
-	nameEdit = new KLineEdit(widget);
+	nameEdit = new QLineEdit(widget);
 	nameEdit->setText(channel->name);
 	gridLayout->addWidget(nameEdit, 0, 1);
 
