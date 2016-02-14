@@ -26,7 +26,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QPushButton>
-#include <KAction>
+#include <QAction>
 #include <KCalendarSystem>
 #include <KComboBox>
 #include <KLineEdit>
@@ -54,21 +54,21 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	model->setRecordingModel(manager->getRecordingModel());
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
-	KAction *action = new KAction(KIcon(QLatin1String("list-add")), i18nc("@action", "New"), widget);
+	QAction *action = new QAction(KIcon(QLatin1String("list-add")), i18nc("@action", "New"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(newRecording()));
 	treeView->addAction(action);
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new KAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), widget);
+	action = new QAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), widget);
+	action = new QAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);

@@ -155,10 +155,10 @@ MainWindow::MainWindow()
 	KMenu *menu = new KMenu(i18n("&File"), this);
 	menuBar->addMenu(menu);
 
-	KAction *action = KStandardAction::open(this, SLOT(open()), collection);
+	QAction *action = KStandardAction::open(this, SLOT(open()), collection);
 	menu->addAction(collection->addAction(QLatin1String("file_open"), action));
 
-	action = new KAction(KIcon(QLatin1String("text-html")),
+	action = new QAction(KIcon(QLatin1String("text-html")),
 		i18nc("@action:inmenu", "Open URL..."), collection);
 	action->setShortcut(Qt::CTRL | Qt::Key_U);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
@@ -170,19 +170,19 @@ MainWindow::MainWindow()
 
 	menu->addSeparator();
 
-	action = new KAction(KIcon(QLatin1String("media-optical-audio")), i18n("Play Audio CD"), collection);
+	action = new QAction(KIcon(QLatin1String("media-optical-audio")), i18n("Play Audio CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openAudioCd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_audiocd"), action));
 
-	action = new KAction(KIcon(QLatin1String("media-optical")), i18n("Play Video CD"), collection);
+	action = new QAction(KIcon(QLatin1String("media-optical")), i18n("Play Video CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openVideoCd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_videocd"), action));
 
-	action = new KAction(KIcon(QLatin1String("media-optical")), i18n("Play DVD"), collection);
+	action = new QAction(KIcon(QLatin1String("media-optical")), i18n("Play DVD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openDvd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_dvd"), action));
 
-	action = new KAction(KIcon(QLatin1String("media-optical")), i18nc("@action:inmenu", "Play DVD Folder"),
+	action = new QAction(KIcon(QLatin1String("media-optical")), i18nc("@action:inmenu", "Play DVD Folder"),
 		collection);
 	connect(action, SIGNAL(triggered()), this, SLOT(playDvdFolder()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_dvd_folder"), action));

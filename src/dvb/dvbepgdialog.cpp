@@ -27,7 +27,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QScrollArea>
-#include <KAction>
+#include <QAction>
 #include <KLineEdit>
 #include <KLocale>
 #include "../log.h"
@@ -56,7 +56,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(pare
 	QBoxLayout *rightLayout = new QVBoxLayout();
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
-	KAction *scheduleAction = new KAction(KIcon(QLatin1String("media-record")),
+	QAction *scheduleAction = new QAction(KIcon(QLatin1String("media-record")),
 		i18nc("@action:inmenu tv show", "Record Show"), this);
 	connect(scheduleAction, SIGNAL(triggered()), this, SLOT(scheduleProgram()));
 

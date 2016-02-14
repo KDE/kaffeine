@@ -28,7 +28,7 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
-#include <KAction>
+#include <QAction>
 #include <KComboBox>
 #include <KLed>
 #include <KLocale>
@@ -243,7 +243,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	connect(channelTableModel, SIGNAL(checkChannelDragAndDrop(bool*)),
 		channelView, SLOT(checkChannelDragAndDrop(bool*)));
 
-	KAction *action = channelView->addEditAction();
+	QAction *action = channelView->addEditAction();
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), groupBox);
 	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(editChannel()));
 	boxLayout->addWidget(pushButton);

@@ -29,7 +29,7 @@
 #include <QLabel>
 #include <QMimeData>
 #include <QSpinBox>
-#include <KAction>
+#include <QAction>
 #include <KComboBox>
 #include <KLineEdit>
 #include <KLocalizedString>
@@ -285,17 +285,17 @@ DvbChannelView::~DvbChannelView()
 {
 }
 
-KAction *DvbChannelView::addEditAction()
+QAction *DvbChannelView::addEditAction()
 {
-	KAction *action = new KAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), this);
+	QAction *action = new QAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 	return action;
 }
 
-KAction *DvbChannelView::addRemoveAction()
+QAction *DvbChannelView::addRemoveAction()
 {
-	KAction *action = new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
+	QAction *action = new QAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
 	return action;
