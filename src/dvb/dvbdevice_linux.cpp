@@ -22,9 +22,7 @@
 #include "dvbdevice_linux.h"
 
 #include <QFile>
-#include <Solid/Device>
 #include <Solid/DeviceNotifier>
-#include <Solid/DvbInterface>
 #include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -41,6 +39,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "../log.h"
+#include "dvbdevice_linux_interface.h"
 #include "dvbtransponder.h"
 
 // krazy:excludeall=syscalls
@@ -1503,7 +1502,7 @@ DvbLinuxDeviceManager::~DvbLinuxDeviceManager()
 void DvbLinuxDeviceManager::doColdPlug()
 {
 	foreach (const Solid::Device &device,
-		 Solid::Device::listFromType(Solid::DeviceInterface::DvbInterface)) {
+		 Solid::Device::listFromType(DvbInterface)) {
 		componentAdded(device.udi());
 	}
 }
@@ -1540,7 +1539,7 @@ void DvbLinuxDeviceManager::componentAdded(QString node, int adapter, int index)
 
 void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 {
-	const Solid::DvbInterface *dvbInterface = Solid::Device(udi).as<Solid::DvbInterface>();
+	const DvbInterface *dvbInterface = new DvbInterface();
 
 	if (dvbInterface == NULL) {
 		return;
@@ -1573,7 +1572,7 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 	bool addDevice = false;
 
 	switch (dvbInterface->deviceType()) {
-	case Solid::DvbInterface::DvbCa:
+	case DvbInterface::DvbCa:
 		if (device->caPath.isEmpty()) {
 			device->caPath = devicePath;
 			device->caUdi = udi;
@@ -1585,7 +1584,7 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		}
 
 		break;
-	case Solid::DvbInterface::DvbDemux:
+	case DvbInterface::DvbDemux:
 		if (device->demuxPath.isEmpty()) {
 			device->demuxPath = devicePath;
 			device->demuxUdi = udi;
@@ -1594,7 +1593,7 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		}
 
 		break;
-	case Solid::DvbInterface::DvbDvr:
+	case DvbInterface::DvbDvr:
 		if (device->dvrPath.isEmpty()) {
 			device->dvrPath = devicePath;
 			device->dvrUdi = udi;
@@ -1603,7 +1602,7 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		}
 
 		break;
-	case Solid::DvbInterface::DvbFrontend:
+	case DvbInterface::DvbFrontend:
 		if (device->frontendPath.isEmpty()) {
 			device->frontendPath = devicePath;
 			device->frontendUdi = udi;

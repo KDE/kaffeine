@@ -91,6 +91,7 @@ private:
 	bool enabled;
 	QMap<int, int> dmxFds;
 
+	int frontendFd;
 	int dvrFd;
 	int dvrPipe[2];
 	DvbDataBuffer dvrBuffer;
