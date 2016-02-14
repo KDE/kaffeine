@@ -164,15 +164,15 @@ QVariant DvbPreviewChannelTableModel::data(const QModelIndex &index, int role) c
 		if (index.column() == 0) {
 			if (channel.hasVideo) {
 				if (!channel.isScrambled) {
-					return KIcon(QLatin1String("video-television"));
+					return QIcon::fromTheme(QLatin1String("video-television"));
 				} else {
-					return KIcon(QLatin1String("video-television-encrypted"));
+					return QIcon::fromTheme(QLatin1String("video-television-encrypted"));
 				}
 			} else {
 				if (!channel.isScrambled) {
-					return KIcon(QLatin1String("text-speak"));
+					return QIcon::fromTheme(QLatin1String("text-speak"));
 				} else {
-					return KIcon(QLatin1String("audio-radio-encrypted"));
+					return QIcon::fromTheme(QLatin1String("audio-radio-encrypted"));
 				}
 			}
 		}
@@ -254,7 +254,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(removeChannel()));
 	boxLayout->addWidget(pushButton);
 
-	pushButton = new QPushButton(KIcon(QLatin1String("edit-clear-list")),
+	pushButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-clear-list")),
 		i18nc("remove all items from a list", "Clear"), groupBox);
 	connect(pushButton, SIGNAL(clicked()), channelView, SLOT(removeAllChannels()));
 	boxLayout->addWidget(pushButton);
@@ -273,7 +273,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	sourceBox = new KComboBox(groupBox);
 	groupLayout->addWidget(sourceBox);
 
-	scanButton = new QPushButton(KIcon(QLatin1String("edit-find")), i18n("Start Scan"), groupBox);
+	scanButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-find")), i18n("Start Scan"), groupBox);
 	scanButton->setCheckable(true);
 	connect(scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
 	groupLayout->addWidget(scanButton);

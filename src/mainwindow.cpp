@@ -86,28 +86,28 @@ StartTab::StartTab(MainWindow *mainWindow)
 	gridLayout->setSpacing(15);
 
 	QAbstractButton *button =
-		addShortcut(i18n("&1 Play File"), KIcon(QLatin1String("video-x-generic")), this);
+		addShortcut(i18n("&1 Play File"), QIcon::fromTheme(QLatin1String("video-x-generic")), this);
 	button->setShortcut(Qt::Key_1);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
 
-	button = addShortcut(i18n("&2 Play Audio CD"), KIcon(QLatin1String("media-optical-audio")), this);
+	button = addShortcut(i18n("&2 Play Audio CD"), QIcon::fromTheme(QLatin1String("media-optical-audio")), this);
 	button->setShortcut(Qt::Key_2);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("&3 Play Video CD"), KIcon(QLatin1String("media-optical")), this);
+	button = addShortcut(i18n("&3 Play Video CD"), QIcon::fromTheme(QLatin1String("media-optical")), this);
 	button->setShortcut(Qt::Key_3);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
-	button = addShortcut(i18n("&4 Play DVD"), KIcon(QLatin1String("media-optical")), this);
+	button = addShortcut(i18n("&4 Play DVD"), QIcon::fromTheme(QLatin1String("media-optical")), this);
 	button->setShortcut(Qt::Key_4);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
 #if HAVE_DVB == 1
-	button = addShortcut(i18n("&5 Digital TV"), KIcon(QLatin1String("video-television")), this);
+	button = addShortcut(i18n("&5 Digital TV"), QIcon::fromTheme(QLatin1String("video-television")), this);
 	button->setShortcut(Qt::Key_5);
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(playDvb()));
 	gridLayout->addWidget(button, 1, 1);
@@ -162,7 +162,7 @@ MainWindow::MainWindow()
 	QAction *action = KStandardAction::open(this, SLOT(open()), collection);
 	menu->addAction(collection->addAction(QLatin1String("file_open"), action));
 
-	action = new QAction(KIcon(QLatin1String("text-html")),
+	action = new QAction(QIcon::fromTheme(QLatin1String("text-html")),
 		i18nc("@action:inmenu", "Open URL..."), collection);
 	action->setShortcut(Qt::CTRL | Qt::Key_U);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
@@ -174,19 +174,19 @@ MainWindow::MainWindow()
 
 	menu->addSeparator();
 
-	action = new QAction(KIcon(QLatin1String("media-optical-audio")), i18n("Play Audio CD"), collection);
+	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical-audio")), i18n("Play Audio CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openAudioCd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_audiocd"), action));
 
-	action = new QAction(KIcon(QLatin1String("media-optical")), i18n("Play Video CD"), collection);
+	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical")), i18n("Play Video CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openVideoCd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_videocd"), action));
 
-	action = new QAction(KIcon(QLatin1String("media-optical")), i18n("Play DVD"), collection);
+	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical")), i18n("Play DVD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openDvd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_dvd"), action));
 
-	action = new QAction(KIcon(QLatin1String("media-optical")), i18nc("@action:inmenu", "Play DVD Folder"),
+	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical")), i18nc("@action:inmenu", "Play DVD Folder"),
 		collection);
 	connect(action, SIGNAL(triggered()), this, SLOT(playDvdFolder()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_dvd_folder"), action));
@@ -226,11 +226,11 @@ MainWindow::MainWindow()
 		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
 	tabBar = new KTabBar(navigationBar);
-	tabBar->addTab(KIcon(QLatin1String("start-here-kde")), i18n("Start"));
-	tabBar->addTab(KIcon(QLatin1String("kaffeine")), i18n("Playback"));
-	tabBar->addTab(KIcon(QLatin1String("view-media-playlist")), i18n("Playlist"));
+	tabBar->addTab(QIcon::fromTheme(QLatin1String("start-here-kde")), i18n("Start"));
+	tabBar->addTab(QIcon::fromTheme(QLatin1String("kaffeine")), i18n("Playback"));
+	tabBar->addTab(QIcon::fromTheme(QLatin1String("view-media-playlist")), i18n("Playlist"));
 #if HAVE_DVB == 1
-	tabBar->addTab(KIcon(QLatin1String("video-television")), i18n("Television"));
+	tabBar->addTab(QIcon::fromTheme(QLatin1String("video-television")), i18n("Television"));
 #endif /* HAVE_DVB == 1 */
 	tabBar->setShape(KTabBar::RoundedWest);
 	tabBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);

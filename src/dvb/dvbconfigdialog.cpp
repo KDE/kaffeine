@@ -71,7 +71,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	gridLayout->addWidget(recordingFolderEdit, 0, 1);
 
 	QToolButton *toolButton = new QToolButton(widget);
-	toolButton->setIcon(KIcon(QLatin1String("document-open-folder")));
+	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder")));
 	toolButton->setToolTip(i18n("Select Folder"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeRecordingFolder()));
 	gridLayout->addWidget(toolButton, 0, 2);
@@ -83,7 +83,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	gridLayout->addWidget(timeShiftFolderEdit, 1, 1);
 
 	toolButton = new QToolButton(widget);
-	toolButton->setIcon(KIcon(QLatin1String("document-open-folder")));
+	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder")));
 	toolButton->setToolTip(i18n("Select Folder"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeTimeShiftFolder()));
 	gridLayout->addWidget(toolButton, 1, 2);
@@ -185,8 +185,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
 	gridLayout->addWidget(latitudeEdit, 0, 2);
 
-	validPixmap = KIcon(QLatin1String("dialog-ok-apply")).pixmap(KIconLoader::SizeSmallMedium);
-	invalidPixmap = KIcon(QLatin1String("dialog-cancel")).pixmap(KIconLoader::SizeSmallMedium);
+	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(KIconLoader::SizeSmallMedium);
+	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(KIconLoader::SizeSmallMedium);
 
 	latitudeValidLabel = new QLabel(widget);
 	latitudeValidLabel->setPixmap(validPixmap);
@@ -208,7 +208,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	boxLayout->addStretch();
 
-	tabWidget->addTab(widget, KIcon(QLatin1String("configure")), i18n("General Options"));
+	tabWidget->addTab(widget, QIcon::fromTheme(QLatin1String("configure")), i18n("General Options"));
 
 	QWidget *widgetAutomaticRecording = new QWidget(tabWidget);
 	QBoxLayout *boxLayoutAutomaticRecording = new QVBoxLayout(widgetAutomaticRecording);
@@ -255,7 +255,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 			this, SLOT(moveRight(DvbConfigPage*)));
 		connect(configPage, SIGNAL(remove(DvbConfigPage*)),
 			this, SLOT(remove(DvbConfigPage*)));
-		tabWidget->addTab(configPage, KIcon(QLatin1String("video-television")), i18n("Device %1", i));
+		tabWidget->addTab(configPage, QIcon::fromTheme(QLatin1String("video-television")), i18n("Device %1", i));
 		configPages.append(configPage);
 		++i;
 	}
@@ -500,7 +500,7 @@ void DvbConfigDialog::moveLeft(DvbConfigPage *configPage)
 	}
 
 	// configPages and tabWidget indexes differ by two
-	tabWidget->insertTab(index + 1, configPages.at(index - 1), KIcon(QLatin1String("video-television")),
+	tabWidget->insertTab(index + 1, configPages.at(index - 1), QIcon::fromTheme(QLatin1String("video-television")),
 		i18n("Device %1", index));
 	tabWidget->setTabText(index + 2, i18n("Device %1", index + 1));
 	tabWidget->setCurrentIndex(index + 1);
@@ -527,7 +527,7 @@ void DvbConfigDialog::moveRight(DvbConfigPage *configPage)
 	}
 
 	// configPages and tabWidget indexes differ by two
-	tabWidget->insertTab(index + 1, configPages.at(index - 1), KIcon(QLatin1String("video-television")),
+	tabWidget->insertTab(index + 1, configPages.at(index - 1), QIcon::fromTheme(QLatin1String("video-television")),
 		i18n("Device %1", index));
 	tabWidget->setTabText(index + 2, i18n("Device %1", index + 1));
 	tabWidget->setCurrentIndex(index + 2);
@@ -733,22 +733,22 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	boxLayout->addWidget(new QLabel(i18n("Name: %1", deviceConfig->frontendName)));
 
 	QBoxLayout *horizontalLayout = new QHBoxLayout();
-	moveLeftButton = new QPushButton(KIcon(QLatin1String("arrow-left")), i18n("Move Left"), this);
+	moveLeftButton = new QPushButton(QIcon::fromTheme(QLatin1String("arrow-left")), i18n("Move Left"), this);
 	connect(moveLeftButton, SIGNAL(clicked()), this, SLOT(moveLeft()));
 	horizontalLayout->addWidget(moveLeftButton);
 
 	if (deviceConfig->device != NULL) {
-		QPushButton *pushButton = new QPushButton(KIcon(QLatin1String("edit-undo")), i18n("Reset"), this);
+		QPushButton *pushButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-undo")), i18n("Reset"), this);
 		connect(pushButton, SIGNAL(clicked()), this, SIGNAL(resetConfig()));
 		horizontalLayout->addWidget(pushButton);
 	} else {
 		QPushButton *pushButton =
-			new QPushButton(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
+			new QPushButton(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
 		connect(pushButton, SIGNAL(clicked()), this, SLOT(removeConfig()));
 		horizontalLayout->addWidget(pushButton);
 	}
 
-	moveRightButton = new QPushButton(KIcon(QLatin1String("arrow-right")), i18n("Move Right"), this);
+	moveRightButton = new QPushButton(QIcon::fromTheme(QLatin1String("arrow-right")), i18n("Move Right"), this);
 	connect(moveRightButton, SIGNAL(clicked()), this, SLOT(moveRight()));
 	horizontalLayout->addWidget(moveRightButton);
 	boxLayout->addLayout(horizontalLayout);

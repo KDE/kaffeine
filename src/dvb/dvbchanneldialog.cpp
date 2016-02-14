@@ -123,15 +123,15 @@ QVariant DvbChannelTableModel::data(const QModelIndex &index, int role) const
 			if (index.column() == 0) {
 				if (channel->hasVideo) {
 					if (!channel->isScrambled) {
-						return KIcon(QLatin1String("video-television"));
+						return QIcon::fromTheme(QLatin1String("video-television"));
 					} else {
-						return KIcon(QLatin1String("video-television-encrypted"));
+						return QIcon::fromTheme(QLatin1String("video-television-encrypted"));
 					}
 				} else {
 					if (!channel->isScrambled) {
-						return KIcon(QLatin1String("text-speak"));
+						return QIcon::fromTheme(QLatin1String("text-speak"));
 					} else {
-						return KIcon(QLatin1String("audio-radio-encrypted"));
+						return QIcon::fromTheme(QLatin1String("audio-radio-encrypted"));
 					}
 				}
 			}
@@ -288,7 +288,7 @@ DvbChannelView::~DvbChannelView()
 
 QAction *DvbChannelView::addEditAction()
 {
-	QAction *action = new QAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), this);
+	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("configure")), i18nc("@action", "Edit"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(editChannel()));
 	addAction(action);
 	return action;
@@ -296,7 +296,7 @@ QAction *DvbChannelView::addEditAction()
 
 QAction *DvbChannelView::addRemoveAction()
 {
-	QAction *action = new QAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
+	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeChannel()));
 	addAction(action);
 	return action;

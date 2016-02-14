@@ -84,22 +84,22 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 {
 	manager = new DvbManager(mediaWidget, this);
 
-	QAction *channelsAction = new QAction(KIcon(QLatin1String("video-television")), i18n("Channels"), this);
+	QAction *channelsAction = new QAction(QIcon::fromTheme(QLatin1String("video-television")), i18n("Channels"), this);
 	channelsAction->setShortcut(Qt::Key_C);
 	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_channels"), channelsAction));
 
-	QAction *epgAction = new QAction(KIcon(QLatin1String("view-list-details")), i18n("Program Guide"), this);
+	QAction *epgAction = new QAction(QIcon::fromTheme(QLatin1String("view-list-details")), i18n("Program Guide"), this);
 	epgAction->setShortcut(Qt::Key_G);
 	connect(epgAction, SIGNAL(triggered(bool)), this, SLOT(toggleEpgDialog()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_epg"), epgAction));
 
-	QAction *osdAction = new QAction(KIcon(QLatin1String("dialog-information")), i18n("OSD"), this);
+	QAction *osdAction = new QAction(QIcon::fromTheme(QLatin1String("dialog-information")), i18n("OSD"), this);
 	osdAction->setShortcut(Qt::Key_O);
 	connect(osdAction, SIGNAL(triggered(bool)), manager->getLiveView(), SLOT(toggleOsd()));
 	menu->addAction(collection->addAction(QLatin1String("dvb_osd"), osdAction));
 
-	QAction *recordingsAction = new QAction(KIcon(QLatin1String("view-pim-calendar")),
+	QAction *recordingsAction = new QAction(QIcon::fromTheme(QLatin1String("view-pim-calendar")),
 		i18nc("dialog", "Recording Schedule"), this);
 	recordingsAction->setShortcut(Qt::Key_R);
 	connect(recordingsAction, SIGNAL(triggered(bool)), this, SLOT(showRecordingDialog()));
@@ -107,14 +107,14 @@ DvbTab::DvbTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	menu->addSeparator();
 
-	instantRecordAction = new QAction(KIcon(QLatin1String("document-save")), i18n("Instant Record"), this);
+	instantRecordAction = new QAction(QIcon::fromTheme(QLatin1String("document-save")), i18n("Instant Record"), this);
 	instantRecordAction->setCheckable(true);
 	connect(instantRecordAction, SIGNAL(triggered(bool)), this, SLOT(instantRecord(bool)));
 	menu->addAction(collection->addAction(QLatin1String("dvb_instant_record"), instantRecordAction));
 
 	menu->addSeparator();
 
-	QAction *configureAction = new QAction(KIcon(QLatin1String("configure")),
+	QAction *configureAction = new QAction(QIcon::fromTheme(QLatin1String("configure")),
 		i18nc("@action:inmenu", "Configure Television..."), this);
 	connect(configureAction, SIGNAL(triggered()), this, SLOT(configureDvb()));
 	menu->addAction(collection->addAction(QLatin1String("settings_dvb"), configureAction));

@@ -744,7 +744,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DecorationRole) {
 		if ((index.row() == visiblePlaylist->currentTrack) && (index.column() == 0)) {
-			return KIcon(QLatin1String("arrow-right"));
+			return QIcon::fromTheme(QLatin1String("arrow-right"));
 		}
 	} else if (role == Qt::DisplayRole) {
 		switch (index.column()) {

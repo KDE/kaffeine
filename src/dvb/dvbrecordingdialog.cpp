@@ -65,21 +65,21 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	model->setRecordingModel(manager->getRecordingModel());
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
-	QAction *action = new QAction(KIcon(QLatin1String("list-add")), i18nc("@action", "New"), widget);
+	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("list-add")), i18nc("@action", "New"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(newRecording()));
 	treeView->addAction(action);
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new QAction(KIcon(QLatin1String("configure")), i18nc("@action", "Edit"), widget);
+	action = new QAction(QIcon::fromTheme(QLatin1String("configure")), i18nc("@action", "Edit"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new QAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove"), widget);
+	action = new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
@@ -279,13 +279,13 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 				case DvbRecording::Inactive:
 					break;
 				case DvbRecording::Recording:
-					return KIcon(QLatin1String("media-record"));
+					return QIcon::fromTheme(QLatin1String("media-record"));
 				case DvbRecording::Error:
-					return KIcon(QLatin1String("dialog-error"));
+					return QIcon::fromTheme(QLatin1String("dialog-error"));
 				}
 
 				if (recording->repeat != 0) {
-					return KIcon(QLatin1String("view-refresh"));
+					return QIcon::fromTheme(QLatin1String("view-refresh"));
 				}
 			}
 

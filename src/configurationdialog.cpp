@@ -78,7 +78,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(3, 1);
 
 	KPageWidgetItem *page = new KPageWidgetItem(widget, i18nc("@title:group", "General"));
-	page->setIcon(KIcon(QLatin1String("configure")));
+	page->setIcon(QIcon::fromTheme(QLatin1String("configure")));
 	addPage(page);
 
 	widget = new QWidget(this);
@@ -99,7 +99,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(2, 1);
 
 	page = new KPageWidgetItem(widget, i18nc("@title:group", "Diagnostics"));
-	page->setIcon(KIcon(QLatin1String("page-zoom")));
+	page->setIcon(QIcon::fromTheme(QLatin1String("page-zoom")));
 	addPage(page);
 }
 
