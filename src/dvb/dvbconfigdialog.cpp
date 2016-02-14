@@ -38,7 +38,7 @@
 #include <QLineEdit>
 #include <KLocale>
 #include <KStandardDirs>
-#include <KTabWidget>
+#include <QTabWidget>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
@@ -54,7 +54,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 {
 	setCaption(i18nc("@title:window", "Configure Television"));
 
-	tabWidget = new KTabWidget(this);
+	tabWidget = new QTabWidget(this);
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(tabWidget);
