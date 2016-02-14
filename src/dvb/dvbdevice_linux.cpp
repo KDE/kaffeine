@@ -771,8 +771,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		const AtscTransponder *atscTransponder = transponder.as<AtscTransponder>();
 
 		switch (atscTransponder->modulation) {
-		case VSB_8:
-		case VSB_16:
+		case AtscTransponder::Vsb8:
+		case AtscTransponder::Vsb16:
 			delsys = SYS_ATSC;
 			break;
 		default:
