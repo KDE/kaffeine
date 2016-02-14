@@ -646,20 +646,18 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 {
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel);
 	QWidget *mainWidget = new QWidget(this);
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18n("Update Scan Data"));
 
 	QWidget *widget = new QWidget(this);
 	mainLayout->addWidget(widget);
 
 	QBoxLayout *layout = new QVBoxLayout(widget);
-	mainLayout->addWidget(layout);
+	mainLayout->addWidget(widget);
 
 	label = new QLabel(i18n("Downloading scan data"), widget);
 	mainLayout->addWidget(label);
@@ -669,6 +667,8 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	mainLayout->addWidget(progressBar);
 	progressBar->setRange(0, 100);
 	layout->addWidget(progressBar);
+
+	mainLayout->addWidget(buttonBox);
 
 	job = KIO::get(QUrl("http://kaffeine.kde.org/scanfile.dvb.qz"), KIO::NoReload,
 		       KIO::HideProgressInfo); // FIXME NoReload or Reload?
@@ -701,11 +701,13 @@ void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)
 
 void DvbScanFileDownloadDialog::jobFinished()
 {
+	QVBoxLayout *mainLayout = new QVBoxLayout();
+	setLayout(mainLayout);
+
 	progressBar->setValue(100);
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
 	mainLayout->addWidget(buttonBox);
 
 	if (job->error() != 0) {
@@ -1366,6 +1368,8 @@ void DvbSLnbConfigObject::sourceChanged(int index)
 
 void DvbSLnbConfigObject::configure()
 {
+	QVBoxLayout *mainLayout = new QVBoxLayout();
+
 	QDialog *dialog = new QDialog(configureButton);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->setWindowTitle(i18n("LNB Settings"));
@@ -1375,7 +1379,7 @@ void DvbSLnbConfigObject::configure()
 	mainLayout->addWidget(mainWidget);
 
 	lnbSelectionGroup = new QButtonGroup(mainWidget);
-	mainLayout->addWidget(lnbSelectionGroup);
+//	mainLayout->addWidget(lnbSelectionGroup);
 	connect(lnbSelectionGroup, SIGNAL(buttonClicked(int)), this, SLOT(selectType(int)));
 
 	QRadioButton *radioButton = new QRadioButton(i18n("Universal LNB"), mainWidget);

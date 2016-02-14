@@ -21,6 +21,7 @@
 #ifndef DVBCONFIGDIALOG_H
 #define DVBCONFIGDIALOG_H
 
+#include <QBoxLayout>
 #include <QDialog>
 #include <QGridLayout>
 #include <QLayoutItem>
@@ -137,6 +138,7 @@ private:
 	QLabel *label;
 	KIO::TransferJob *job;
 	QByteArray scanData;
+	QVBoxLayout *mainLayout;
 };
 
 class DvbConfigPage : public QWidget
