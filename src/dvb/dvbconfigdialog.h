@@ -21,7 +21,7 @@
 #ifndef DVBCONFIGDIALOG_H
 #define DVBCONFIGDIALOG_H
 
-#include <KDialog>
+#include <QDialog>
 #include <QGridLayout>
 #include <QLayoutItem>
 

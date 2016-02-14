@@ -21,7 +21,7 @@
 #ifndef DVBCHANNELDIALOG_P_H
 #define DVBCHANNELDIALOG_P_H
 
-#include <KDialog>
+#include <QDialog>
 #include "dvbchannel.h"
 
 class QCheckBox;

@@ -33,7 +33,7 @@
 #include <QTreeWidget>
 #include <KAction>
 #include <KComboBox>
-#include <KFileDialog>
+#include <QFileDialog>
 #include <KIO/Job>
 #include <QLineEdit>
 #include <KLocale>
