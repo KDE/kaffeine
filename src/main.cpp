@@ -20,8 +20,9 @@
 
 #include <QPointer>
 #include <KAboutData>
-#include <KCmdLineArgs>
+
 #include <KUniqueApplication>
+#include <QCommandLineParser>
 #include "mainwindow.h"
 #include "sqlhelper.h"
 
@@ -65,13 +66,21 @@ int main(int argc, char *argv[])
 {
 	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "1.3-git",
 		ki18n("A media player for KDE with digital TV support."),
-		KAboutData::License_GPL_V2, ki18n("(C) 2007-2011 The Kaffeine Authors"),
+		KAboutLicense::GPL_V2, ki18n("(C) 2007-2011 The Kaffeine Authors"),
 		KLocalizedString(), "http://kaffeine.kde.org");
 
 	aboutData.addAuthor(ki18n("Christoph Pfister"), ki18n("Maintainer"),
 		"christophpfister@gmail.com");
 
-	KCmdLineArgs::init(argc, argv, &aboutData);
+    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    //PORTING SCRIPT: adapt aboutdata variable if necessary
+    aboutData.setupCommandLine(&parser);
+    parser.process(app); // PORTING SCRIPT: move this to after any parser.addOption
+    aboutData.processCommandLine(&parser);
 	KCmdLineArgs::addCmdLineOptions(MainWindow::cmdLineOptions());
 	KCmdLineArgs::addTempFileOption();
 
