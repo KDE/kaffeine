@@ -85,9 +85,12 @@ public:
 
 QString Log::getLog()
 {
-	if (data != NULL) {
-		QMutexLocker locker(&data->mutex);
-		return data->buffer;
+	LogPrivate *d = NULL;
+
+	data.fetchAndStoreRelease(d);
+	if (d != NULL) {
+		QMutexLocker locker(&d->mutex);
+		return d->buffer;
 	}
 
 	return QString();
@@ -95,36 +98,58 @@ QString Log::getLog()
 
 void Log::begin(const char *message)
 {
-	if (data == NULL) {
+	LogPrivate *d = NULL;
+
+	data.fetchAndStoreRelease(d);
+	if (d != NULL) {
+		d->begin(message);
+	} else {
 		LogPrivate *newData = new LogPrivate();
 
 		if (!data.testAndSetOrdered(NULL, newData)) {
 			// another thread won the battle
 			delete newData;
+		} else {
+			newData->begin(message);
 		}
 	}
 
-	data->begin(message);
 }
 
 void Log::append(qint64 value)
 {
-	data->append(value);
+	LogPrivate *d = NULL;
+
+	data.fetchAndStoreRelease(d);
+	if (d != NULL)
+		d->append(value);
 }
 
 void Log::append(quint64 value)
 {
-	data->append(value);
+	LogPrivate *d = NULL;
+
+	data.fetchAndStoreRelease(d);
+	if (d != NULL)
+		d->append(value);
 }
 
 void Log::append(const QString &string)
 {
-	data->append(string);
+	LogPrivate *d = NULL;
+
+	data.fetchAndStoreRelease(d);
+	if (d != NULL)
+		d->append(string);
 }
 
 void Log::end()
 {
-	data->end();
+	LogPrivate *d = NULL;
+
+	data.fetchAndStoreRelease(d);
+	if (d != NULL)
+		d->end();
 }
 
-QBasicAtomicPointer<LogPrivate> Log::data = Q_BASIC_ATOMIC_INITIALIZER(0);
+QAtomicPointer<LogPrivate> Log::data;

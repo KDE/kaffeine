@@ -22,6 +22,7 @@
 #define LOG_H
 
 #include <QString>
+#include <QAtomicPointer>
 
 class LogPrivate;
 
@@ -79,7 +80,7 @@ private:
 	static void append(const QString &string);
 	static void end();
 
-	static QBasicAtomicPointer<LogPrivate> data;
+	static QAtomicPointer<LogPrivate> data;
 };
 
 #endif /* LOG_H */
