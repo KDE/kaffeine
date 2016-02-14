@@ -32,6 +32,7 @@
 #include <KLocale>
 #include <KMenu>
 #include <KMessageBox>
+#include <KConfigGroup>
 #include "../log.h"
 #include "../osdwidget.h"
 #include "dvbchanneldialog.h"
@@ -311,7 +312,7 @@ void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 
 void DvbTab::showChannelDialog()
 {
-	KDialog *dialog = new DvbScanDialog(manager, this);
+	QDialog *dialog = new DvbScanDialog(manager, this);
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();
@@ -384,7 +385,7 @@ void DvbTab::recordingRemoved(const DvbSharedRecording &recording)
 
 void DvbTab::configureDvb()
 {
-	KDialog *dialog = new DvbConfigDialog(manager, this);
+	QDialog *dialog = new DvbConfigDialog(manager, this);
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();

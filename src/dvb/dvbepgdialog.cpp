@@ -30,14 +30,25 @@
 #include <QAction>
 #include <KLineEdit>
 #include <KLocale>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 #include "../log.h"
 #include "dvbmanager.h"
 
-DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
+DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
 {
-	setButtons(KDialog::Close);
-	setCaption(i18nc("@title:window", "Program Guide"));
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	QWidget *mainWidget = new QWidget(this);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(mainWidget);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+	mainLayout->addWidget(buttonBox);
+	setWindowTitle(i18nc("@title:window", "Program Guide"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(widget);
@@ -101,7 +112,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : KDialog(pare
 	scrollArea->setWidgetResizable(true);
 	rightLayout->addWidget(scrollArea);
 	mainLayout->addLayout(rightLayout);
-	setMainWidget(widget);
+	mainLayout->addWidget(widget);
 }
 
 DvbEpgDialog::~DvbEpgDialog()

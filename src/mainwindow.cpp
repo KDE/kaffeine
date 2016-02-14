@@ -37,6 +37,7 @@
 #include <KToolBar>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
+#include <KConfigGroup>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 #include "configuration.h"
@@ -254,7 +255,7 @@ MainWindow::MainWindow()
 
 	mediaWidget = new MediaWidget(playerMenu, controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(displayModeChanged()), this, SLOT(displayModeChanged()));
-	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setCaption(QString)));
+	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setWindowTitle(QString)));
 	connect(mediaWidget, SIGNAL(resizeToVideo(MediaWidget::ResizeFactor)),
 		this, SLOT(resizeToVideo(MediaWidget::ResizeFactor)));
 
@@ -638,7 +639,7 @@ void MainWindow::configureKeys()
 
 void MainWindow::configureKaffeine()
 {
-	KDialog *dialog = new ConfigurationDialog(this);
+	QDialog *dialog = new ConfigurationDialog(this);
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();

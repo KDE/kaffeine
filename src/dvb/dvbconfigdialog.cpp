@@ -39,22 +39,27 @@
 #include <KLocale>
 #include <KStandardDirs>
 #include <KTabWidget>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbrecording.h"
 #include "../log.h"
 
-DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
+DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
 {
-
 	setCaption(i18nc("@title:window", "Configure Television"));
 
 	tabWidget = new KTabWidget(this);
-	setMainWidget(tabWidget);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(tabWidget);
 
 	QWidget *widget = new QWidget(tabWidget);
+	mainLayout->addWidget(widget);
 	QBoxLayout *boxLayout = new QVBoxLayout(widget);
 
 	QGridLayout *gridLayout = new QGridLayout();
@@ -288,7 +293,7 @@ void DvbConfigDialog::changeTimeShiftFolder()
 
 void DvbConfigDialog::updateScanFile()
 {
-	KDialog *dialog = new DvbScanFileDownloadDialog(manager, this);
+	QDialog *dialog = new DvbScanFileDownloadDialog(manager, this);
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();
@@ -631,24 +636,35 @@ void DvbConfigDialog::accept()
 	manager->getRecordingModel()->disableConflicts();
 	//manager->getRecordingModel()->scanChannels();
 
-	KDialog::accept();
+	QDialog::accept();
 }
 
 DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidget *parent) :
-	KDialog(parent), manager(manager_)
+	QDialog(parent), manager(manager_)
 {
-	setButtons(KDialog::Cancel);
-	setCaption(i18n("Update Scan Data"));
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel);
+	QWidget *mainWidget = new QWidget(this);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(mainWidget);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+	mainLayout->addWidget(buttonBox);
+	setWindowTitle(i18n("Update Scan Data"));
 
 	QWidget *widget = new QWidget(this);
-	setMainWidget(widget);
+	mainLayout->addWidget(widget);
 
 	QBoxLayout *layout = new QVBoxLayout(widget);
+	mainLayout->addWidget(layout);
 
 	label = new QLabel(i18n("Downloading scan data"), widget);
+	mainLayout->addWidget(label);
 	layout->addWidget(label);
 
 	progressBar = new QProgressBar(widget);
+	mainLayout->addWidget(progressBar);
 	progressBar->setRange(0, 100);
 	layout->addWidget(progressBar);
 
@@ -684,7 +700,11 @@ void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)
 void DvbScanFileDownloadDialog::jobFinished()
 {
 	progressBar->setValue(100);
-	setButtons(KDialog::Close);
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+	mainLayout->addWidget(buttonBox);
 
 	if (job->error() != 0) {
 		if (job->error() == KJob::KilledJobError) {
@@ -1344,57 +1364,69 @@ void DvbSLnbConfigObject::sourceChanged(int index)
 
 void DvbSLnbConfigObject::configure()
 {
-	KDialog *dialog = new KDialog(configureButton);
+	QDialog *dialog = new QDialog(configureButton);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
-	dialog->setCaption(i18n("LNB Settings"));
+	dialog->setWindowTitle(i18n("LNB Settings"));
 
 	QWidget *mainWidget = new QWidget(dialog);
 	QGridLayout *gridLayout = new QGridLayout(mainWidget);
-	dialog->setMainWidget(mainWidget);
+	mainLayout->addWidget(mainWidget);
 
 	lnbSelectionGroup = new QButtonGroup(mainWidget);
+	mainLayout->addWidget(lnbSelectionGroup);
 	connect(lnbSelectionGroup, SIGNAL(buttonClicked(int)), this, SLOT(selectType(int)));
 
 	QRadioButton *radioButton = new QRadioButton(i18n("Universal LNB"), mainWidget);
+	mainLayout->addWidget(radioButton);
 	lnbSelectionGroup->addButton(radioButton, 1);
 	gridLayout->addWidget(radioButton, 0, 0, 1, 2);
 
 	radioButton = new QRadioButton(i18n("C-band LNB"), mainWidget);
+	mainLayout->addWidget(radioButton);
 	lnbSelectionGroup->addButton(radioButton, 2);
 	gridLayout->addWidget(radioButton, 1, 0, 1, 2);
 
 	radioButton = new QRadioButton(i18n("C-band Multipoint LNB"), mainWidget);
+	mainLayout->addWidget(radioButton);
 	lnbSelectionGroup->addButton(radioButton, 3);
 	gridLayout->addWidget(radioButton, 2, 0, 1, 2);
 
 	radioButton = new QRadioButton(i18n("Custom LNB"), mainWidget);
+	mainLayout->addWidget(radioButton);
 	lnbSelectionGroup->addButton(radioButton, 4);
 	gridLayout->addWidget(radioButton, 3, 0, 1, 2);
 
 	QFrame *frame = new QFrame(mainWidget);
+	mainLayout->addWidget(frame);
 	frame->setFrameShape(QFrame::HLine);
 	gridLayout->addWidget(frame, 4, 0, 1, 2);
 
 	lowBandLabel = new QLabel(mainWidget);
+	mainLayout->addWidget(lowBandLabel);
 	gridLayout->addWidget(lowBandLabel, 5, 0);
 
 	switchLabel = new QLabel(i18n("Switch frequency (MHz)"), mainWidget);
+	mainLayout->addWidget(switchLabel);
 	gridLayout->addWidget(switchLabel, 6, 0);
 
 	highBandLabel = new QLabel(mainWidget);
+	mainLayout->addWidget(highBandLabel);
 	gridLayout->addWidget(highBandLabel, 7, 0);
 
 	lowBandSpinBox = new QSpinBox(mainWidget);
+	mainLayout->addWidget(lowBandSpinBox);
 	lowBandSpinBox->setRange(0, 13000);
 	lowBandSpinBox->setValue(config->lowBandFrequency / 1000);
 	gridLayout->addWidget(lowBandSpinBox, 5, 1);
 
 	switchSpinBox = new QSpinBox(mainWidget);
+	mainLayout->addWidget(switchSpinBox);
 	switchSpinBox->setRange(0, 13000);
 	switchSpinBox->setValue(config->switchFrequency / 1000);
 	gridLayout->addWidget(switchSpinBox, 6, 1);
 
 	highBandSpinBox = new QSpinBox(mainWidget);
+	mainLayout->addWidget(highBandSpinBox);
 	highBandSpinBox->setRange(0, 13000);
 	highBandSpinBox->setValue(config->highBandFrequency / 1000);
 	gridLayout->addWidget(highBandSpinBox, 7, 1);

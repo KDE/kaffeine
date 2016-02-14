@@ -34,6 +34,7 @@
 #include <KLineEdit>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include <KConfigGroup>
 #include "../log.h"
 #include "dvbsi.h"
 
@@ -326,7 +327,7 @@ void DvbChannelView::editChannel()
 	QModelIndex index = currentIndex();
 
 	if (index.isValid()) {
-		KDialog *dialog = new DvbChannelEditor(tableModel, tableModel->value(index), this);
+		QDialog *dialog = new DvbChannelEditor(tableModel, tableModel->value(index), this);
 		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 		dialog->setModal(true);
 		dialog->show();
@@ -612,9 +613,9 @@ static QLatin1String enumToString(IsdbTTransponder::SoundBroadcasting soundBroad
 }
 
 DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbSharedChannel &channel_,
-	QWidget *parent) : KDialog(parent), model(model_), channel(channel_)
+	QWidget *parent) : QDialog(parent), model(model_), channel(channel_)
 {
-	setCaption(i18nc("@title:window", "Edit Channel"));
+	setWindowTitle(i18nc("@title:window", "Edit Channel"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
@@ -872,7 +873,9 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	boxLayout->addWidget(groupBox);
 	mainLayout->addLayout(boxLayout);
 
-	setMainWidget(widget);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(widget);
 }
 
 DvbChannelEditor::~DvbChannelEditor()
@@ -894,5 +897,5 @@ void DvbChannelEditor::accept()
 
 	updatedChannel.isScrambled = scrambledBox->isChecked();
 	model->getChannelModel()->updateChannel(channel, updatedChannel);
-	KDialog::accept();
+	QDialog::accept();
 }

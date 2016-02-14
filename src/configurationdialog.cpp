@@ -29,12 +29,15 @@
 #include <QSpinBox>
 #include <KComboBox>
 #include <KLocalizedString>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
+#include <QVBoxLayout>
 #include "configuration.h"
 #include "log.h"
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 {
-	setCaption(i18nc("@title:window", "Configure Kaffeine"));
+	setWindowTitle(i18nc("@title:window", "Configure Kaffeine"));
 
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
@@ -115,16 +118,24 @@ void ConfigurationDialog::accept()
 
 void ConfigurationDialog::showDmesg()
 {
-	KDialog *dialog = new DmesgDialog(this);
+	QDialog *dialog = new DmesgDialog(this);
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();
 }
 
-DmesgDialog::DmesgDialog(QWidget *parent) : KDialog(parent)
+DmesgDialog::DmesgDialog(QWidget *parent) : QDialog(parent)
 {
-	setButtons(KDialog::Close);
-	setCaption(i18nc("@title:window", "dmesg"));
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	QWidget *mainWidget = new QWidget(this);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(mainWidget);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
+	mainLayout->addWidget(buttonBox);
+	setWindowTitle(i18nc("@title:window", "dmesg"));
 
 	dmesgProcess = new QProcess(this);
 	dmesgProcess->setProcessChannelMode(QProcess::MergedChannels);
@@ -134,7 +145,7 @@ DmesgDialog::DmesgDialog(QWidget *parent) : KDialog(parent)
 	dmesgTextEdit = new QPlainTextEdit(this);
 	dmesgTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
 	dmesgTextEdit->setReadOnly(true);
-	setMainWidget(dmesgTextEdit);
+	mainLayout->addWidget(dmesgTextEdit);
 
 	resize(100 * fontMetrics().averageCharWidth(), 28 * fontMetrics().height());
 }

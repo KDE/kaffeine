@@ -33,6 +33,7 @@
 #include <KLed>
 #include <KLocale>
 #include <KMessageBox>
+#include <KConfigGroup>
 #include "dvbchanneldialog.h"
 #include "dvbdevice.h"
 #include "dvbliveview.h"
@@ -214,10 +215,10 @@ QVariant DvbPreviewChannelTableModel::headerData(int section, Qt::Orientation or
 	return QVariant();
 }
 
-DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(parent),
+DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_), internal(NULL)
 {
-	setCaption(i18n("Channels"));
+	setWindowTitle(i18n("Channels"));
 
 	QWidget *mainWidget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
@@ -372,7 +373,9 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : KDialog(pa
 	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
-	setMainWidget(mainWidget);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(mainWidget);
 }
 
 DvbScanDialog::~DvbScanDialog()

@@ -39,6 +39,7 @@
 #include <KMenu>
 #include <KToolBar>
 #include <X11/extensions/scrnsaver.h>
+#include <KConfigGroup>
 #include "backend-vlc/vlcmediawidget.h"
 #include "configuration.h"
 #include "log.h"
@@ -810,7 +811,7 @@ void MediaWidget::longSkipForward()
 
 void MediaWidget::jumpToPosition()
 {
-	KDialog *dialog = new JumpToPositionDialog(this);
+	QDialog *dialog = new JumpToPositionDialog(this);
 	dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 	dialog->setModal(true);
 	dialog->show();
@@ -1249,10 +1250,10 @@ void MediaWidget::videoSizeChanged()
 	}
 }
 
-JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : KDialog(mediaWidget_),
+JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : QDialog(mediaWidget_),
 	mediaWidget(mediaWidget_)
 {
-	setCaption(i18nc("@title:window", "Jump to Position"));
+	setWindowTitle(i18nc("@title:window", "Jump to Position"));
 
 	QWidget *widget = new QWidget(this);
 	QBoxLayout *layout = new QVBoxLayout(widget);
@@ -1266,7 +1267,9 @@ JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : KDialog(
 
 	timeEdit->setFocus();
 
-	setMainWidget(widget);
+	QVBoxLayout *mainLayout = new QVBoxLayout;
+	setLayout(mainLayout);
+	mainLayout->addWidget(widget);
 }
 
 JumpToPositionDialog::~JumpToPositionDialog()
@@ -1276,7 +1279,7 @@ JumpToPositionDialog::~JumpToPositionDialog()
 void JumpToPositionDialog::accept()
 {
 	mediaWidget->setPosition(QTime().msecsTo(timeEdit->time()));
-	KDialog::accept();
+	QDialog::accept();
 }
 
 void SeekSlider::mousePressEvent(QMouseEvent *event)
