@@ -576,7 +576,7 @@ DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), med
 {
 	QString fileName = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
-	url = KUrl::fromLocalFile(fileName);
+	url = QUrl::fromLocalFile(fileName);
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
 		Log("DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed");

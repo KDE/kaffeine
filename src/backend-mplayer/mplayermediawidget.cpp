@@ -189,7 +189,7 @@ void MPlayerMediaWidget::setCurrentSubtitle(int currentSubtitle)
 		"\npausing_keep_force get_property sub\n");
 }
 
-void MPlayerMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
+void MPlayerMediaWidget::setExternalSubtitle(const QUrl &subtitleUrl)
 {
 	// FIXME
 	Q_UNUSED(subtitleUrl)

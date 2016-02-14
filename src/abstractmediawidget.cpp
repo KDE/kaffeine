@@ -194,7 +194,7 @@ void DummyMediaWidget::setCurrentSubtitle(int currentSubtitle)
 	Q_UNUSED(currentSubtitle)
 }
 
-void DummyMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
+void DummyMediaWidget::setExternalSubtitle(const QUrl &subtitleUrl)
 {
 	Q_UNUSED(subtitleUrl)
 }

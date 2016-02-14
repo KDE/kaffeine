@@ -669,7 +669,7 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	progressBar->setRange(0, 100);
 	layout->addWidget(progressBar);
 
-	job = KIO::get(KUrl("http://kaffeine.kde.org/scanfile.dvb.qz"), KIO::NoReload,
+	job = KIO::get(QUrl("http://kaffeine.kde.org/scanfile.dvb.qz"), KIO::NoReload,
 		       KIO::HideProgressInfo); // FIXME NoReload or Reload?
 	job->setAutoDelete(false);
 	connect(job, SIGNAL(percent(KJob*,ulong)),

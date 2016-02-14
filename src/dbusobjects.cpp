@@ -296,7 +296,7 @@ int MprisTrackListObject::GetLength()
 
 int MprisTrackListObject::AddTrack(const QString &url, bool playImmediately)
 {
-	playlistTab->appendToCurrentPlaylist(QList<KUrl>() << url, playImmediately);
+	playlistTab->appendToCurrentPlaylist(QList<QUrl>() << url, playImmediately);
 	return 0;
 }
 

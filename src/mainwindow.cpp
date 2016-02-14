@@ -169,7 +169,7 @@ MainWindow::MainWindow()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
 	menu->addAction(collection->addAction(QLatin1String("file_open_url"), action));
 
-	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(KUrl)), collection);
+	actionOpenRecent = KStandardAction::openRecent(this, SLOT(openUrl(QUrl)), collection);
 	actionOpenRecent->loadEntries(KSharedConfig::openConfig()->group("Recent Files"));
 	menu->addAction(collection->addAction(QLatin1String("file_open_recent"), actionOpenRecent));
 
@@ -476,10 +476,10 @@ void MainWindow::parseArgs()
 #endif /* HAVE_DVB == 1 */
 
 	if (parser.positionalArguments().count() > 0) {
-		QList<KUrl> urls;
+		QList<QUrl> urls;
 
 		for (int i = 0; i < parser.positionalArguments().count(); ++i) {
-			KUrl url = args->url(i);
+			QUrl url = args->url(i);
 
 			if (url.isValid()) {
 				urls.append(url);
@@ -543,7 +543,7 @@ void MainWindow::displayModeChanged()
 
 void MainWindow::open()
 {
-	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), MediaWidget::extensionFilter(), this);
+	QList<QUrl> urls = KFileDialog::getOpenUrls(QUrl(), MediaWidget::extensionFilter(), this);
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
@@ -558,21 +558,21 @@ void MainWindow::openUrl()
 	openUrl(KInputDialog::getText(i18nc("@title:window", "Open URL"), i18n("Enter a URL:")));
 }
 
-void MainWindow::openUrl(const KUrl &url)
+void MainWindow::openUrl(const QUrl &url)
 {
 	if (!url.isValid()) {
 		return;
 	}
 
 	// we need to copy "url" because addUrl() may invalidate it
-	KUrl copy(url);
+	QUrl copy(url);
 	actionOpenRecent->addUrl(copy); // moves the url to the top of the list
 
 	if (currentTabIndex != PlaylistTabId) {
 		activateTab(PlayerTabId);
 	}
 
-	playlistTab->appendToVisiblePlaylist(QList<KUrl>() << copy, true);
+	playlistTab->appendToVisiblePlaylist(QList<QUrl>() << copy, true);
 }
 
 void MainWindow::openAudioCd(const QString &device)

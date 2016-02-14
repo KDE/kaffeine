@@ -158,7 +158,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 			QStringList subtitleStrings;
 
 			for (int j = 0; j < track.subtitles.size(); ++j) {
-				const KUrl &url = track.subtitles.at(j);
+				const QUrl &url = track.subtitles.at(j);
 				subtitleStrings.append(url.url());
 			}
 
@@ -385,8 +385,8 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 
 	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(playPreviousTrack()));
 	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
-	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<KUrl>)),
-		this, SLOT(appendUrls(QList<KUrl>)));
+	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<QUrl>)),
+		this, SLOT(appendUrls(QList<QUrl>)));
 	connect(mediaWidget, SIGNAL(playlistTrackLengthChanged(int)),
 		this, SLOT(updateTrackLength(int)));
 	connect(mediaWidget,
@@ -558,13 +558,13 @@ PlaylistTab::~PlaylistTab()
 {
 }
 
-void PlaylistTab::appendToCurrentPlaylist(const QList<KUrl> &urls, bool playImmediately)
+void PlaylistTab::appendToCurrentPlaylist(const QList<QUrl> &urls, bool playImmediately)
 {
 	playlistModel->appendUrls(playlistBrowserModel->getCurrentPlaylist(), urls,
 		playImmediately);
 }
 
-void PlaylistTab::appendToVisiblePlaylist(const QList<KUrl> &urls, bool playImmediately)
+void PlaylistTab::appendToVisiblePlaylist(const QList<QUrl> &urls, bool playImmediately)
 {
 	playlistModel->appendUrls(playlistModel->getVisiblePlaylist(), urls, playImmediately);
 }
@@ -616,7 +616,7 @@ bool PlaylistTab::getRepeat() const
 
 void PlaylistTab::createFileWidget()
 {
-	KFileWidget *fileWidget = new KFileWidget(KUrl(), fileWidgetSplitter);
+	KFileWidget *fileWidget = new KFileWidget(QUrl(), fileWidgetSplitter);
 	fileWidget->setFilter(MediaWidget::extensionFilter());
 	fileWidget->setMode(KFile::Files | KFile::ExistingOnly);
 	fileWidgetSplitter->setStretchFactor(1, 1);
@@ -678,7 +678,7 @@ void PlaylistTab::addSubtitle()
 
 	int row = selectedRows.at(0).row();
 	Playlist *playlist = playlistModel->getVisiblePlaylist();
-	QList<KUrl> urls = KFileDialog::getOpenUrls(KUrl(), subtitleExtensionFilter(), this);
+	QList<QUrl> urls = KFileDialog::getOpenUrls(QUrl(), subtitleExtensionFilter(), this);
 
 	if ((row < playlist->tracks.size()) && !urls.isEmpty()) {
 		PlaylistTrack &track = playlist->tracks[row];
@@ -763,7 +763,7 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 
 	if (track != -1) {
 		PlaylistTrack &playlistTrack = playlist->tracks[track];
-		KUrl subtitleUrl;
+		QUrl subtitleUrl;
 
 		if ((playlistTrack.currentSubtitle >= 0) &&
 		    (playlistTrack.currentSubtitle < playlistTrack.subtitles.size())) {
@@ -775,17 +775,17 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 
 			if (!localFile.isEmpty()) {
 				if (QFile::exists(localFile + QLatin1String(".asc"))) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".asc"));
+					subtitleUrl = QUrl::fromLocalFile(localFile + QLatin1String(".asc"));
 				} else if (QFile::exists(localFile + QLatin1String(".smi"))) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".smi"));
+					subtitleUrl = QUrl::fromLocalFile(localFile + QLatin1String(".smi"));
 				} else if (QFile::exists(localFile + QLatin1String(".srt"))) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".srt"));
+					subtitleUrl = QUrl::fromLocalFile(localFile + QLatin1String(".srt"));
 				} else if (QFile::exists(localFile + QLatin1String(".ssa"))) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".ssa"));
+					subtitleUrl = QUrl::fromLocalFile(localFile + QLatin1String(".ssa"));
 				} else if (QFile::exists(localFile + QLatin1String(".sub"))) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".sub"));
+					subtitleUrl = QUrl::fromLocalFile(localFile + QLatin1String(".sub"));
 				} else if (QFile::exists(localFile + QLatin1String(".txt"))) {
-					subtitleUrl = KUrl::fromLocalFile(localFile + QLatin1String(".txt"));
+					subtitleUrl = QUrl::fromLocalFile(localFile + QLatin1String(".txt"));
 				}
 			}
 
@@ -807,7 +807,7 @@ void PlaylistTab::playTrack(Playlist *playlist, int track)
 	}
 }
 
-void PlaylistTab::appendUrls(const QList<KUrl> &urls)
+void PlaylistTab::appendUrls(const QList<QUrl> &urls)
 {
 	playlistModel->appendUrls(playlistModel->getVisiblePlaylist(), urls, true);
 }
@@ -848,11 +848,11 @@ void PlaylistTab::savePlaylist(bool askName)
 	}
 
 	Playlist *playlist = playlistBrowserModel->getPlaylist(index.row());
-	KUrl url = playlist->url;
+	QUrl url = playlist->url;
 
 	if (askName || !url.isValid() ||
 	    url.fileName().endsWith(QLatin1String(".kaffeine"), Qt::CaseInsensitive)) {
-		url = KFileDialog::getSaveUrl(KUrl(), i18nc("file filter",
+		url = KFileDialog::getSaveUrl(QUrl(), i18nc("file filter",
 			"*.xspf|XSPF Playlist\n*.m3u|M3U Playlist\n*.pls|PLS Playlist"), this);
 
 		if (!url.isValid()) {

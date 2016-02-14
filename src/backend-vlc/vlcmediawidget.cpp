@@ -206,7 +206,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 // 		if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
 // 		    source.subtitleUrl.toEncoded().constData()) == 0) {
 // 			Log("VlcMediaWidget::play: cannot set subtitle file") <<
-// 				source.subtitleUrl.prettyUrl();
+// 				source.subtitleUrl.toDisplayString();
 // 		}
 // 	}
 
@@ -261,12 +261,12 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 	libvlc_video_set_spu(vlcMediaPlayer, requestedSubtitle);
 }
 
-void VlcMediaWidget::setExternalSubtitle(const KUrl &subtitleUrl)
+void VlcMediaWidget::setExternalSubtitle(const QUrl &subtitleUrl)
 {
 	if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
 	    subtitleUrl.toEncoded().constData()) == 0) {
 		Log("VlcMediaWidget::setExternalSubtitle: cannot set subtitle file") <<
-			subtitleUrl.prettyUrl();
+			subtitleUrl.toDisplayString();
 	}
 }
 
