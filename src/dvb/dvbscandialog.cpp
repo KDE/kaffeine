@@ -118,8 +118,9 @@ public:
 
 	void removeChannels()
 	{
+		beginResetModel();
 		channels.clear();
-//		reset();
+		endResetModel();
 	}
 
 private:
