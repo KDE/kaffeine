@@ -1501,10 +1501,10 @@ DvbLinuxDeviceManager::~DvbLinuxDeviceManager()
 
 void DvbLinuxDeviceManager::doColdPlug()
 {
-	foreach (const Solid::Device &device,
-		 Solid::Device::listFromType(DvbInterface)) {
-		componentAdded(device.udi());
-	}
+//	foreach (const Solid::Device &device,
+//		 Solid::Device::listFromType(DvbInterface)) {
+//		componentAdded(device.udi());
+//	}
 }
 
 void DvbLinuxDeviceManager::componentAdded(QString node, int adapter, int index) {
