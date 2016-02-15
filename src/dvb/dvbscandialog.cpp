@@ -31,7 +31,7 @@
 #include <QAction>
 #include <KComboBox>
 #include <KLed>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KConfigGroup>
 #include <QLocale>

@@ -21,7 +21,7 @@
 #include "dvbchanneldialog.h"
 #include "dvbchanneldialog_p.h"
 
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QCoreApplication>

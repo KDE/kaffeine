@@ -36,7 +36,7 @@
 #include <QFileDialog>
 #include <KIO/Job>
 #include <QLineEdit>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 #include <KStandardDirs>
 #include <QTabWidget>
 #include <KConfigGroup>

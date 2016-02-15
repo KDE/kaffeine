@@ -29,7 +29,7 @@
 #include <QScrollArea>
 #include <QAction>
 #include <QLineEdit>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>

@@ -27,7 +27,7 @@
 #include <QLocale>
 #include <QSocketNotifier>
 #include <KMessageBox>
-#include <klocalizedstring.h>
+#include <KLocalizedString>
 
 #include <errno.h>
 #include <fcntl.h>
