@@ -164,18 +164,30 @@ QString Playlist::toFileOrUrl(const QUrl &trackUrl) const
 QString Playlist::toRelativeUrl(const QUrl &trackUrl) const
 {
 	if ((trackUrl.scheme() == url.scheme()) && (trackUrl.authority() == url.authority())) {
-		QByteArray playlistPath = url.encodedPath();
+		QByteArray playlistPath = url.toEncoded();
 		int index = playlistPath.lastIndexOf('/');
 		playlistPath.truncate(index + 1);
-		QByteArray trackPath = trackUrl.encodedPath();
+		QByteArray trackPath = trackUrl.toEncoded();
 
 		if (trackPath.startsWith(playlistPath)) {
 			trackPath.remove(0, index + 1);
-			QUrl relativeUrl;
-			relativeUrl.setEncodedPath(trackPath);
-			relativeUrl.setEncodedQuery(trackUrl.encodedQuery());
-			relativeUrl.setEncodedFragment(trackUrl.encodedFragment());
-			return relativeUrl.url();
+			QUrl absolute (playlistPath);
+			QStringList sBase = trackUrl.toString().split("/");
+			QStringList sAbsolute = absolute.toString().split("/");
+			QStringList res = QStringList(sAbsolute);
+
+			if (trackUrl.isParentOf(absolute)) {
+				foreach(QString s, sBase) {
+					res.removeFirst();
+				}
+			} else {
+				//Chop of the domain part
+				res.removeFirst();
+				res.removeFirst();
+				res.removeFirst();
+			}
+
+			return res.join("/");
 		}
 	}
 
