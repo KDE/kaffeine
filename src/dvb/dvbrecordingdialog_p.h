@@ -27,7 +27,7 @@
 
 class QCheckBox;
 class KComboBox;
-class KLineEdit;
+class QLineEdit;
 class DateTimeEdit;
 class DurationEdit;
 
@@ -135,7 +135,7 @@ private:
 
 	DvbManager *manager;
 	DvbSharedRecording recording;
-	KLineEdit *nameEdit;
+	QLineEdit *nameEdit;
 	KComboBox *channelBox;
 	DateTimeEdit *beginEdit;
 	DurationEdit *durationEdit;

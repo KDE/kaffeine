@@ -27,11 +27,13 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QAction>
-#include <KComboBox>
+#include <klocalizedstring.h>
 #include <QLineEdit>
+#include <KComboBox>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QLocale>
 #include "../datetimeedit.h"
 #include "../log.h"
 #include "dvbchanneldialog.h"
@@ -42,7 +44,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 {
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
 	QWidget *mainWidget = new QWidget(this);
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	QBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -54,7 +56,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 
 	model = new DvbRecordingTableModel(this);
 	treeView = new QTreeView(widget);
-	treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+	treeView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	treeView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	treeView->setModel(model);
 	treeView->setRootIsDecorated(false);
@@ -86,7 +88,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	boxLayout->addWidget(pushButton);
 	boxLayout->addStretch();
 
-	QBoxLayout *mainLayout = new QVBoxLayout(widget);
+	mainLayout = new QVBoxLayout(widget);
 	mainLayout->addLayout(boxLayout);
 	mainLayout->addWidget(treeView);
 	mainLayout->addWidget(widget);
@@ -296,18 +298,15 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 			case 1:
 				return recording->channel->name;
 			case 2:
-				return KGlobal::locale()->formatDateTime(
-					recording->begin.toLocalTime());
+				return QLocale().toString((recording->begin.toLocalTime()), QLocale::ShortFormat);
 			case 3:
-				return KGlobal::locale()->formatTime(recording->duration,
-					false, true);
+				return QLocale().toString(recording->duration);
 			case 4: {
 				if (recording->disabled) {
 					return QString("Disabled");
 				}
 				return QString("Enabled");
 				}
-
 			}
 			break;
 		}
@@ -385,7 +384,8 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	setWindowTitle(i18nc("@title:window recording", "Edit Schedule Entry"));
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
-	mainLayout->addWidget(gridLayout);
+	QBoxLayout *mainLayout = new QVBoxLayout;
+//	mainLayout->addWidget(gridLayout);
 
 	nameEdit = new QLineEdit(widget);
 	mainLayout->addWidget(nameEdit);
@@ -400,7 +400,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	channelBox = new KComboBox(widget);
 	mainLayout->addWidget(channelBox);
 	DvbChannelTableModel *channelModel = new DvbChannelTableModel(widget);
-	mainLayout->addWidget(channelModel);
+//	mainLayout->addWidget(channelModel);
 	QHeaderView *header = manager->getChannelView()->header();
 	channelModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelModel->setChannelModel(manager->getChannelModel());
