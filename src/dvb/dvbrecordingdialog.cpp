@@ -544,7 +544,7 @@ void DvbRecordingEditor::repeatDaily()
 
 void DvbRecordingEditor::checkValidity()
 {
-	okButton->setEnabled(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
+//	okButton->setEnabled(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
 }
 
 void DvbRecordingEditor::accept()
