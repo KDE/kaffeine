@@ -27,9 +27,9 @@
 #include <QThread>
 #include <QToolButton>
 #include <QAction>
+#include <KLocalizedString>
 #include <KActionCollection>
 #include <QLineEdit>
-#include <KLocale>
 #include <QMenu>
 #include <KMessageBox>
 #include <KConfigGroup>

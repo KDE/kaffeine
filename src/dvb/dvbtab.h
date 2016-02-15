@@ -30,8 +30,8 @@
 class QModelIndex;
 class QSplitter;
 class QAction;
-class QActionCollection;
-class KMenu;
+class KActionCollection;
+class QMenu;
 class DvbChannelTableModel;
 class DvbChannelView;
 class DvbEpgDialog;
@@ -42,7 +42,7 @@ class DvbTab : public TabBase
 {
 	Q_OBJECT
 public:
-	DvbTab(KMenu *menu, QActionCollection *collection, MediaWidget *mediaWidget_);
+	DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~DvbTab();
 
 	void playChannel(const QString &nameOrNumber);

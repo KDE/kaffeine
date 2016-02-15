@@ -40,6 +40,7 @@ if( Qt5Core_DIR )
 	CoreAddons      # KAboutData
 	I18n            # KLocalizedString
 	WidgetsAddons   # KMessageBox
+	XmlGui		# KActonCollection
 	KIO
 	Solid
     )
