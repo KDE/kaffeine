@@ -26,8 +26,8 @@
 #include <QSet>
 #include <QTextStream>
 #include <QXmlStreamWriter>
-#include <KGlobal>
-#include <KLocale>
+#include <QLocale>
+#include <KLocalizedString>
 #include "../log.h"
 
 bool Playlist::load(const QUrl &url_, Format format)
@@ -123,7 +123,7 @@ QUrl Playlist::fromFileOrUrl(const QString &fileOrUrl) const
 	if (trackUrl.isRelative()) {
 		trackUrl = url.resolved(QUrl::fromLocalFile(fileOrUrl));
 
-		if (trackUrl.encodedPath() == url.encodedPath()) {
+		if (trackUrl.toEncoded() == url.toEncoded()) {
 			return QUrl();
 		}
 	}
@@ -779,7 +779,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 			QTime length = visiblePlaylist->at(index.row()).length;
 
 			if (length.isValid()) {
-				return KGlobal::locale()->formatTime(length, true, true);
+				return QLocale().toString(length);
 			} else {
 				return QVariant();
 			}

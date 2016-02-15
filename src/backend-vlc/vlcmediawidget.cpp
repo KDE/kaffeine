@@ -184,7 +184,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		Log("VlcMediaWidget::play: cannot create media") << source.getUrl().prettyUrl();
+		Log("VlcMediaWidget::play: cannot create media") << source.getUrl().toDisplayString();
 		return;
 	}
 
@@ -211,7 +211,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 // 	}
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		Log("VlcMediaWidget::play: cannot play media") << source.getUrl().prettyUrl();
+		Log("VlcMediaWidget::play: cannot play media") << source.getUrl().toDisplayString();
 	}
 }
 
