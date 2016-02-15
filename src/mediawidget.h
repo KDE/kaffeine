@@ -281,8 +281,8 @@ public:
 			if (oldMediaWidget != NULL) {
 				oldMediaWidget->mediaSourceDestroyed(this);
 			}
-
-			weakMediaWidget = mediaWidget;
+// FIXME:
+//			weakMediaWidget = mediaWidget;
 		}
 	}
 private:
