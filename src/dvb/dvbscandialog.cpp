@@ -31,7 +31,7 @@
 #include <QAction>
 #include <KComboBox>
 #include <KLed>
-#include <KLocale>
+#include <klocalizedstring.h>
 #include <KMessageBox>
 #include <KConfigGroup>
 #include <QLocale>
@@ -119,7 +119,7 @@ public:
 	void removeChannels()
 	{
 		channels.clear();
-		reset();
+//		reset();
 	}
 
 private:
@@ -374,7 +374,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
 }
