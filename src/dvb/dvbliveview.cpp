@@ -24,8 +24,10 @@
 #include <QDir>
 #include <QPainter>
 #include <QSet>
+#include <QLocale>
 #include <QSocketNotifier>
 #include <KMessageBox>
+#include <klocalizedstring.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -57,13 +59,13 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	QFont osdFont = font;
 	osdFont.setPointSize(20);
 
-	QString timeString = KGlobal::locale()->formatTime(QTime::currentTime());
+	QString timeString = QLocale().toString(QTime::currentTime());
 	QString entryString;
 	int elapsedTime = 0;
 	int totalTime = 0;
 
 	if (firstEntry.channel.isValid()) {
-		entryString = KGlobal::locale()->formatTime(firstEntry.begin.toLocalTime().time())
+		entryString = QLocale().toString(firstEntry.begin.toLocalTime().time())
 			+ QLatin1Char(' ') + firstEntry.title;
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
 		totalTime = QTime().secsTo(firstEntry.duration);
@@ -71,7 +73,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 	if ((level == ShortOsd) && secondEntry.channel.isValid()) {
 		entryString = entryString + QLatin1Char('\n') +
-			KGlobal::locale()->formatTime(secondEntry.begin.toLocalTime().time()) +
+			QLocale().toString(secondEntry.begin.toLocalTime().time()) +
 			QLatin1Char(' ') + secondEntry.title;
 	}
 

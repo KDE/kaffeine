@@ -23,6 +23,7 @@
 
 #include <QWidget>
 #include <QIcon>
+#include <QWeakPointer>
 #include <QUrl>
 
 class QActionGroup;
@@ -95,7 +96,7 @@ public:
 	 */
 
 	void play(MediaSource *source_);
-	void play(const QUrl &url, const KUrl &subtitleUrl = KUrl());
+	void play(const QUrl &url, const QUrl &subtitleUrl = QUrl());
 	void playAudioCd(const QString &device);
 	void playVideoCd(const QString &device);
 	void playDvd(const QString &device);
@@ -252,7 +253,7 @@ public:
 	};
 
 	virtual Type getType() const { return Url; }
-	virtual QUrl getUrl() const { return KUrl(); }
+	virtual QUrl getUrl() const { return QUrl(); }
 	virtual bool hideCurrentTotalTime() const { return false; }
 	virtual bool overrideAudioStreams() const { return false; }
 	virtual bool overrideSubtitles() const { return false; }
@@ -272,7 +273,7 @@ public:
 	virtual void previous() { }
 	virtual void next() { }
 
-	void setMediaWidget(MediaWidget *mediaWidget)
+	void setMediaWidget(const MediaWidget *mediaWidget)
 	{
 		MediaWidget *oldMediaWidget = weakMediaWidget.data();
 
@@ -284,7 +285,6 @@ public:
 			weakMediaWidget = mediaWidget;
 		}
 	}
-
 private:
 	QWeakPointer<MediaWidget> weakMediaWidget;
 };
