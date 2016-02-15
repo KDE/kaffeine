@@ -27,7 +27,6 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QAction>
-#include <KCalendarSystem>
 #include <KComboBox>
 #include <QLineEdit>
 #include <KConfigGroup>
@@ -462,11 +461,10 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	gridLayout->addLayout(boxLayout, 5, 1);
 
 	QGridLayout *dayLayout = new QGridLayout();
-	const KCalendarSystem *calendar = KGlobal::locale()->calendar();
 
 	for (int i = 0; i < 7; ++i) {
 		dayCheckBoxes[i] = new QCheckBox(
-			calendar->weekDayName(i + 1, KCalendarSystem::ShortDayName), widget);
+			QLocale::system().dayName(i + 1, QLocale::ShortFormat), widget);
 		dayLayout->addWidget(dayCheckBoxes[i], (i >> 2), (i & 0x03));
 	}
 

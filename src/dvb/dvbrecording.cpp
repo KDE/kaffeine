@@ -27,6 +27,7 @@
 #include <QSet>
 #include <QCoreApplication>
 #include <QEventLoop>
+#include <QDataStream>
 #include <QVariant>
 #include <KIdleTime>
 #include <QStandardPaths>

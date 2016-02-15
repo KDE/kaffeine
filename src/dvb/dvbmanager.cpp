@@ -863,7 +863,7 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 
 			line = data.readLine();
 			DvbTransponder transponder =
-				DvbTransponder::fromString(QString::fromAscii(line));
+				DvbTransponder::fromString(QString::fromLatin1(line));
 
 			if (!transponder.isValid()) {
 				parseError = true;
@@ -985,5 +985,5 @@ QDate DvbScanData::readDate()
 		return QDate();
 	}
 
-	return QDate::fromString(QString::fromAscii(readLine()), Qt::ISODate);
+	return QDate::fromString(QString::fromLatin1(readLine()), Qt::ISODate);
 }
