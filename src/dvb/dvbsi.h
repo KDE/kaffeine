@@ -22,6 +22,10 @@
 #define DVBSI_H
 
 #include <QPair>
+#include <QObject>
+#include <QByteArray>
+#include <QString>
+#include <QTextCodec>
 #include "dvbbackenddevice.h"
 
 class DvbPmtSection;
