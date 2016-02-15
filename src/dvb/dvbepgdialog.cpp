@@ -42,7 +42,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 {
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
 	QWidget *mainWidget = new QWidget(this);
-	QVBoxLayout *mainLayout = new QVBoxLayout;
+	QBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -52,7 +52,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	setWindowTitle(i18nc("@title:window", "Program Guide"));
 
 	QWidget *widget = new QWidget(this);
-	QBoxLayout *mainLayout = new QHBoxLayout(widget);
+	mainLayout = new QHBoxLayout(widget);
 
 	epgChannelTableModel = new DvbEpgChannelTableModel(this);
 	epgChannelTableModel->setManager(manager);
@@ -91,7 +91,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 
 	epgView = new QTreeView(widget);
 	epgView->addAction(scheduleAction);
-	epgView->header()->setResizeMode(QHeaderView::ResizeToContents);
+	epgView->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
 	epgView->setContextMenuPolicy(Qt::ActionsContextMenu);
 	epgView->setMinimumWidth(75 * fontMetrics().averageCharWidth());
 	epgView->setModel(epgTableModel);
@@ -157,7 +157,7 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	QTime end = entry->begin.addSecs(QTime().secsTo(entry->duration)).toLocalTime().time();
 	text += i18nc("@info tv show start, end", "<font color=#800000>%1 - %2</font><br><br>",
 		QLocale().toString(begin, QLocale::LongFormat),
-		KGlobal::locale()->formatTime(end));
+		QLocale().toString(end));
 	text += entry->details;
 	contentLabel->setText(text);
 }
@@ -345,10 +345,9 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 		case Qt::DisplayRole:
 			switch (index.column()) {
 			case 0:
-				return KGlobal::locale()->formatDateTime(
-					entry->begin.toLocalTime());
+				return QLocale().toString((entry->begin.toLocalTime()), QLocale::ShortFormat);
 			case 1:
-				return KGlobal::locale()->formatTime(entry->duration, false, true);
+				return QLocale().toString(entry->duration);
 			case 2:
 				return entry->title;
 			case 3:

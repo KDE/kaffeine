@@ -25,7 +25,6 @@
 #include <QPainter>
 #include <QSet>
 #include <QSocketNotifier>
-#include <KLocale>
 #include <KMessageBox>
 
 #include <errno.h>
