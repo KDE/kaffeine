@@ -511,7 +511,8 @@ void Playlist::saveXSPFPlaylist(QIODevice *device) const
 PlaylistModel::PlaylistModel(Playlist *visiblePlaylist_, QObject *parent) :
 	QAbstractTableModel(parent), visiblePlaylist(visiblePlaylist_)
 {
-	setSupportedDragActions(Qt::MoveAction);
+// FIXME:
+//	setSupportedDragActions(Qt::MoveAction);
 }
 
 PlaylistModel::~PlaylistModel()
@@ -521,8 +522,9 @@ PlaylistModel::~PlaylistModel()
 void PlaylistModel::setVisiblePlaylist(Playlist *visiblePlaylist_)
 {
 	if (visiblePlaylist != visiblePlaylist_) {
+		QAbstractItemModel::beginResetModel();
 		visiblePlaylist = visiblePlaylist_;
-		reset();
+		QAbstractItemModel::endResetModel();
 	}
 }
 
@@ -647,6 +649,8 @@ void PlaylistModel::updateTrackMetadata(Playlist *playlist,
 
 void PlaylistModel::clearVisiblePlaylist()
 {
+	QAbstractItemModel::beginResetModel();
+
 	visiblePlaylist->tracks.clear();
 
 	if (visiblePlaylist->currentTrack >= 0) {
@@ -654,7 +658,7 @@ void PlaylistModel::clearVisiblePlaylist()
 		emit playTrack(visiblePlaylist, -1);
 	}
 
-	reset();
+	QAbstractItemModel::endResetModel();
 }
 
 void PlaylistModel::insertUrls(Playlist *playlist, int row, const QList<QUrl> &urls,
