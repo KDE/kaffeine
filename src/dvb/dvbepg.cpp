@@ -23,6 +23,8 @@
 
 #include <QFile>
 #include <QStandardPaths>
+#include <QDataStream>
+
 
 #include "../ensurenopendingoperation.h"
 #include "../log.h"
