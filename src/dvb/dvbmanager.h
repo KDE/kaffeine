@@ -21,6 +21,7 @@
 #ifndef DVBMANAGER_H
 #define DVBMANAGER_H
 
+#include <QObject>
 #include <QDate>
 #include <QMap>
 #include <QPair>
