@@ -19,13 +19,12 @@
  */
 
 #include "datetimeedit.h"
+#include <QLocale>
 
-#include <KGlobal>
-#include <KLocale>
 
 static QString localQtDateFormat()
 {
-	QString dateFormat = KGlobal::locale()->dateFormatShort();
+	QString dateFormat = QLocale().dateFormat(QLocale::ShortFormat);
 
 	for (int i = 0; (i + 1) < dateFormat.size(); ++i) {
 		if (dateFormat.at(i) != QLatin1Char('%')) {
@@ -71,7 +70,7 @@ static QString localQtDateFormat()
 
 static QString localQtTimeFormat(bool showSeconds, bool duration)
 {
-	QString timeFormat = KGlobal::locale()->timeFormat();
+	QString timeFormat = QLocale().timeFormat(QLocale::ShortFormat);
 
 	for (int i = 0; (i + 1) < timeFormat.size(); ++i) {
 		if (timeFormat.at(i) != QLatin1Char('%')) {

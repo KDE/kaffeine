@@ -22,7 +22,6 @@
 
 #include <KConfig>
 #include <KConfigGroup>
-#include <KGlobal>
 #include <KSharedConfig>
 #include "log.h"
 
