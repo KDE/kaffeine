@@ -77,7 +77,7 @@ class PlaylistTab : public TabBase
 {
 	Q_OBJECT
 public:
-	PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
+	PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWidget_);
 	~PlaylistTab();
 
 	void appendToCurrentPlaylist(const QList<QUrl> &urls, bool playImmediately);
@@ -122,8 +122,8 @@ private:
 	PlaylistBrowserView *playlistBrowserView;
 	PlaylistModel *playlistModel;
 	PlaylistView *playlistView;
-	KAction *randomAction;
-	KAction *repeatAction;
+	QAction *randomAction;
+	QAction *repeatAction;
 };
 
 #endif /* PLAYLISTTAB_H */

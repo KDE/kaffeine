@@ -28,8 +28,8 @@
 #include <QToolButton>
 #include <QAction>
 #include <KActionCollection>
-#include <KFileDialog>
-#include <kfilewidget.h>
+#include <KFileWidget>
+#include <QFileDialog>
 #include <KLocalizedString>
 #include <QMenu>
 #include <QStandardPaths>
@@ -678,7 +678,7 @@ void PlaylistTab::addSubtitle()
 
 	int row = selectedRows.at(0).row();
 	Playlist *playlist = playlistModel->getVisiblePlaylist();
-	QList<QUrl> urls = KFileDialog::getOpenUrls(QUrl(), subtitleExtensionFilter(), this);
+	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, "", QUrl(), subtitleExtensionFilter());
 
 	if ((row < playlist->tracks.size()) && !urls.isEmpty()) {
 		PlaylistTrack &track = playlist->tracks[row];
@@ -852,8 +852,8 @@ void PlaylistTab::savePlaylist(bool askName)
 
 	if (askName || !url.isValid() ||
 	    url.fileName().endsWith(QLatin1String(".kaffeine"), Qt::CaseInsensitive)) {
-		url = KFileDialog::getSaveUrl(QUrl(), i18nc("file filter",
-			"*.xspf|XSPF Playlist\n*.m3u|M3U Playlist\n*.pls|PLS Playlist"), this);
+		url = QFileDialog::getSaveFileUrl(this, "", QUrl(), i18nc("file filter",
+			"*.xspf|XSPF Playlist\n*.m3u|M3U Playlist\n*.pls|PLS Playlist"));
 
 		if (!url.isValid()) {
 			return;

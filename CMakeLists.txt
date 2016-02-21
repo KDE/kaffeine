@@ -41,7 +41,7 @@ if( Qt5Core_DIR )
 	I18n            # KLocalizedString
 	WidgetsAddons   # KMessageBox
 	XmlGui		# KActonCollection
-	KIO
+	KIO		# KFileWidget
 	Solid
     )
 
