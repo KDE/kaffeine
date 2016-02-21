@@ -21,8 +21,8 @@
 #include "dbusobjects.h"
 
 #include <QDBusMetaType>
-#include <K4AboutData>
-#include <KApplication>
+#include <KAboutData>
+#include <QApplication>
 #include "dvb/dvbmanager.h"
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
@@ -91,13 +91,13 @@ MprisRootObject::~MprisRootObject()
 
 QString MprisRootObject::Identity()
 {
-	const K4AboutData *aboutData = KGlobal::mainComponent().aboutData();
-	return aboutData->programName() + QLatin1Char(' ' )+ aboutData->version();
+	KAboutData aboutData = KAboutData::applicationData();
+	return aboutData.internalProgramName() + QLatin1Char(' ' )+ aboutData.internalVersion();
 }
 
 void MprisRootObject::Quit()
 {
-	kapp->quit();
+	QApplication::quit();
 }
 
 MprisVersionStruct MprisRootObject::MprisVersion()
