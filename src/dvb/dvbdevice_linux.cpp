@@ -35,7 +35,9 @@
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <dirent.h>
+#ifdef __linux__
 #include <sys/inotify.h>
+#endif
 #include <vector>
 #include <stdlib.h>
 #include <unistd.h>
@@ -853,9 +855,10 @@ public:
                 std::vector<struct dvbdev*>::iterator iter;
 
                 runstate = 1;
-
+#ifdef __linux__
                 ifd = inotify_init();
                 inotify_add_watch(ifd, "/dev/dvb", IN_CREATE|IN_DELETE);
+#endif
                 fcntl(ifd, F_SETFL, O_NONBLOCK);
                 pfd.fd = ifd;
                 pfd.events = POLLIN;
