@@ -21,24 +21,25 @@
 #include <QPointer>
 #include <KAboutData>
 
-#include <KUniqueApplication>
+#include <QApplication>
+#include <KLocalizedString>
 #include <QCommandLineParser>
 #include "mainwindow.h"
 #include "sqlhelper.h"
 
-class KaffeineApplication : public KUniqueApplication
+class KaffeineApplication : public QApplication
 {
 public:
-	KaffeineApplication();
+	KaffeineApplication(int &argc, char **argv);
 	~KaffeineApplication();
 
 private:
-	int newInstance();
+//	int newInstance();
 
 	QPointer<MainWindow> mainWindow;
 };
 
-KaffeineApplication::KaffeineApplication()
+KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(argc, argv)
 {
 	if (!SqlHelper::createInstance()) {
 		return;
@@ -53,37 +54,54 @@ KaffeineApplication::~KaffeineApplication()
 	delete mainWindow; // QPointer; needed if kaffeine is closed via QCoreApplication::quit()
 }
 
-int KaffeineApplication::newInstance()
-{
-	if (mainWindow != NULL) {
-		mainWindow->parseArgs();
-	}
-
-	return KUniqueApplication::newInstance();
-}
+//int KaffeineApplication::newInstance()
+//{
+//	if (mainWindow != NULL) {
+//		mainWindow->parseArgs();
+//	}
+//
+//	return QApplication::newInstance();
+//}
 
 int main(int argc, char *argv[])
 {
-	KAboutData aboutData("kaffeine", 0, ki18n("Kaffeine"), "1.3-git",
-		ki18n("A media player for KDE with digital TV support."),
-		KAboutLicense::GPL_V2, ki18n("(C) 2007-2011 The Kaffeine Authors"),
-		KLocalizedString(), "http://kaffeine.kde.org");
+    KaffeineApplication app(argc, argv);
 
-	aboutData.addAuthor(ki18n("Christoph Pfister"), ki18n("Maintainer"),
-		"christophpfister@gmail.com");
+    KAboutData aboutData(
+		// Program name
+		QStringLiteral("kaffeine"),
+		i18n("Kaffeine"),
+		// Version
+		QStringLiteral("1.3-git"),
+		// Short description
+		i18n("A media player for KDE with digital TV support."),
+		// License
+		KAboutLicense::GPL_V2,
+		// Copyright statement
+		i18n("(C) 2007-2016 The Kaffeine Authors"),
+		// Optional additional text
+		i18n(""),
+		// Home page
+		QStringLiteral("http://kaffeine.kde.org")
+    );
 
-    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the KAboutData initialization
-    QCommandLineParser parser;
+    aboutData.addAuthor(i18n("Christoph Pfister"), i18n("Maintainer"),
+		QStringLiteral("christophpfister@gmail.com"));
+
     KAboutData::setApplicationData(aboutData);
+
+    QCommandLineParser parser;
     parser.addVersionOption();
     parser.addHelpOption();
-    //PORTING SCRIPT: adapt aboutdata variable if necessary
-    aboutData.setupCommandLine(&parser);
-    parser.process(app); // PORTING SCRIPT: move this to after any parser.addOption
-    aboutData.processCommandLine(&parser);
-	KCmdLineArgs::addCmdLineOptions(MainWindow::cmdLineOptions());
-	KCmdLineArgs::addTempFileOption();
 
-	KaffeineApplication app;
-	return app.exec();
+    aboutData.setupCommandLine(&parser);
+
+    parser.process(app);
+
+    aboutData.processCommandLine(&parser);
+
+//    KCmdLineArgs::addCmdLineOptions(MainWindow::cmdLineOptions());
+//    KCmdLineArgs::addTempFileOption();
+
+    return app.exec();
 }
