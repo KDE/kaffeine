@@ -27,7 +27,7 @@
 class QStackedLayout;
 class KCmdLineOptions;
 class KRecentFilesAction;
-class KTabBar;
+class QTabBar;
 class DvbTab;
 class PlayerTab;
 class PlaylistTab;
@@ -79,8 +79,8 @@ private:
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
 	KToolBar *navigationBar;
-	KTabBar *tabBar;
-	KToolBar *controlBar;
+	QTabBar *tabBar;
+	QToolBar *controlBar;
 	bool autoHideControlBar;
 	QTimer *cursorHideTimer;
 	QList<QUrl> temporaryUrls;

@@ -25,21 +25,23 @@
 #include <QStackedLayout>
 #include <KActionCollection>
 
-#include <KFileDialog>
-#include <KInputDialog>
+#include <QFileDialog>
+#include <QInputDialog>
 #include <kio/deletejob.h>
 #include <QMenu>
 #include <QMenuBar>
 #include <KRecentFilesAction>
 #include <KShortcutsDialog>
-#include <KStatusNotifierItem>
-#include <KTabBar>
+#include <QSystemTrayIcon>
+#include <QTabBar>
 #include <KToolBar>
 #include <QCommandLineParser>
 #include <QCommandLineOption>
 #include <KConfigGroup>
 #include <QFileDialog>
 #include <KSharedConfig>
+#include <KLocalizedString>
+#include <QMainWindow>
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"
 #include "configuration.h"
@@ -73,7 +75,7 @@ public:
 private:
 	void activate() { }
 
-	QAbstractButton *addShortcut(const QString &name, const KIcon &icon, QWidget *parent);
+	QAbstractButton *addShortcut(const QString &name, const QIcon &icon, QWidget *parent);
 };
 
 StartTab::StartTab(MainWindow *mainWindow)
@@ -115,7 +117,7 @@ StartTab::StartTab(MainWindow *mainWindow)
 #endif /* HAVE_DVB == 1 */
 }
 
-QAbstractButton *StartTab::addShortcut(const QString &name, const KIcon &icon, QWidget *parent)
+QAbstractButton *StartTab::addShortcut(const QString &name, const QIcon &icon, QWidget *parent)
 {
 	// QPushButton has visual problems with big icons
 	QToolButton *button = new QToolButton(parent);
@@ -154,7 +156,7 @@ MainWindow::MainWindow()
 {
 	// menu structure
 
-	QMenuBar *menuBar = KMainWindow::menuBar();
+	QMenuBar *menuBar = QMainWindow::menuBar();
 	collection = new KActionCollection(this);
 
 	QMenu *menu = new QMenu(i18n("&File"), this);
@@ -226,14 +228,14 @@ MainWindow::MainWindow()
 	connect(navigationBar, SIGNAL(orientationChanged(Qt::Orientation)),
 		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
-	tabBar = new KTabBar(navigationBar);
+	tabBar = new QTabBar(navigationBar);
 	tabBar->addTab(QIcon::fromTheme(QLatin1String("start-here-kde")), i18n("Start"));
 	tabBar->addTab(QIcon::fromTheme(QLatin1String("kaffeine")), i18n("Playback"));
 	tabBar->addTab(QIcon::fromTheme(QLatin1String("view-media-playlist")), i18n("Playlist"));
 #if HAVE_DVB == 1
 	tabBar->addTab(QIcon::fromTheme(QLatin1String("video-television")), i18n("Television"));
 #endif /* HAVE_DVB == 1 */
-	tabBar->setShape(KTabBar::RoundedWest);
+	tabBar->setShape(QTabBar::RoundedWest);
 	tabBar->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 	connect(tabBar, SIGNAL(currentChanged(int)), this, SLOT(activateTab(int)));
 	navigationBar->addWidget(tabBar);
@@ -292,7 +294,7 @@ MainWindow::MainWindow()
 	// restore custom key bindings
 	collection->readSettings();
 
-	// let KMainWindow save / restore its settings
+	// let QMainWindow save / restore its settings
 	setAutoSaveSettings();
 
 	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
@@ -303,7 +305,7 @@ MainWindow::MainWindow()
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
-	KStatusNotifierItem *trayIcon = new KStatusNotifierItem(this);
+	QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setIconByName(QLatin1String("kaffeine"));
 	trayIcon->setStatus(KStatusNotifierItem::Active);
 	trayIcon->setToolTipIconByName(QLatin1String("kaffeine"));
@@ -543,7 +545,7 @@ void MainWindow::displayModeChanged()
 
 void MainWindow::open()
 {
-	QList<QUrl> urls = KFileDialog::getOpenUrls(QUrl(), MediaWidget::extensionFilter(), this);
+	QList<QUrl> urls = QFileDialog::getOpenUrls(QUrl(), MediaWidget::extensionFilter(), this);
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
@@ -555,7 +557,7 @@ void MainWindow::open()
 
 void MainWindow::openUrl()
 {
-	openUrl(KInputDialog::getText(i18nc("@title:window", "Open URL"), i18n("Enter a URL:")));
+	openUrl(QInputDialog::getText(i18nc("@title:window", "Open URL"), i18n("Enter a URL:")));
 }
 
 void MainWindow::openUrl(const QUrl &url)
@@ -650,9 +652,9 @@ void MainWindow::configureKaffeine()
 void MainWindow::navigationBarOrientationChanged(Qt::Orientation orientation)
 {
 	if (orientation == Qt::Horizontal) {
-		tabBar->setShape(KTabBar::RoundedNorth);
+		tabBar->setShape(QTabBar::RoundedNorth);
 	} else {
-		tabBar->setShape(KTabBar::RoundedWest);
+		tabBar->setShape(QTabBar::RoundedWest);
 	}
 }
 
@@ -680,13 +682,13 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	if (!ok) {
 		event->ignore();
 	} else {
-		KMainWindow::closeEvent(event);
+		QMainWindow::closeEvent(event);
 	}
 }
 
 bool MainWindow::event(QEvent *event)
 {
-	bool retVal = KMainWindow::event(event); // this has to be done before calling setVisible()
+	bool retVal = QMainWindow::event(event); // this has to be done before calling setVisible()
 
 	// FIXME we depend on QEvent::HoverMove (instead of QEvent::MouseMove)
 	// but the latter depends on mouse tracking being enabled on this widget
@@ -728,7 +730,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 		mediaWidget->setDisplayMode(MediaWidget::NormalMode);
 	}
 
-	KMainWindow::keyPressEvent(event);
+	QMainWindow::keyPressEvent(event);
 }
 
 void MainWindow::leaveEvent(QEvent *event)
@@ -737,5 +739,5 @@ void MainWindow::leaveEvent(QEvent *event)
 		controlBar->setVisible(false);
 	}
 
-	KMainWindow::leaveEvent(event);
+	QMainWindow::leaveEvent(event);
 }

@@ -25,6 +25,8 @@
 #include <QIcon>
 #include <QWeakPointer>
 #include <QUrl>
+#include <QToolBar>
+#include <QMenu>
 
 class QActionGroup;
 class QPushButton;
@@ -44,7 +46,7 @@ class MediaWidget : public QWidget
 {
 	Q_OBJECT
 public:
-	MediaWidget(KMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
+	MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
 		QWidget *parent);
 	~MediaWidget();
 
