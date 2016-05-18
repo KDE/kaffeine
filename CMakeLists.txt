@@ -33,6 +33,7 @@ if( Qt5Core_DIR )
 	Widgets # QApplication
 	Network
 	Sql
+	X11Extras
     )
 
     # Find KDE modules

@@ -27,6 +27,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QStringListModel>
+#include <QMimeData>
 #include <QTimeEdit>
 #include <QTimer>
 #include <QX11Info>
@@ -46,7 +47,7 @@
 #include "log.h"
 #include "osdwidget.h"
 
-MediaWidget::MediaWidget(QMenu *menu_, KToolBar *toolBar, KActionCollection *collection,
+MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
 	automaticResize(ResizeOff), blockBackendUpdates(false), muted(false),
 	screenSaverSuspended(false), showElapsedTime(true)

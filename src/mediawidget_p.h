@@ -53,7 +53,7 @@ private:
 class MediaSourceUrl : public MediaSource
 {
 public:
-	MediaSourceUrl(const QUrl &url_, const KUrl &subtitleUrl_) : url(url_),
+	MediaSourceUrl(const QUrl &url_, const QUrl &subtitleUrl_) : url(url_),
 		subtitleUrl(subtitleUrl_) { }
 	~MediaSourceUrl() { }
 

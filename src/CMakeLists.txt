@@ -41,7 +41,7 @@ configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 if( Qt5Core_DIR )
     add_executable(kaffeine ${kaffeinedvb_SRCS} ${kaffeine_SRCS})
-    target_link_libraries(kaffeine Qt5::Sql KF5::KIOWidgets KF5::XmlGui KF5::I18n KF5::Solid
+    target_link_libraries(kaffeine Qt5::Sql Qt5::X11Extras KF5::KIOWidgets KF5::XmlGui KF5::I18n KF5::Solid
 			  KF5::KIOCore KF5::KIOFileWidgets KF5::Notifications
 			  ${X11_Xscreensaver_LIB} ${VLC_LIBRARY} ${LIBDVBV5_LIBRARY} ${KDE4Attic_LIBRARIES})
 else()
