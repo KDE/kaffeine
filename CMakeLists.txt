@@ -43,6 +43,7 @@ if( Qt5Core_DIR )
 	XmlGui		# KActonCollection
 	KIO		# KFileWidget
 	Solid
+	Notifications
     )
 
     include(KDEInstallDirs)

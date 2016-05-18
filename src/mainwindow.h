@@ -21,7 +21,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <KMainWindow>
+#include <QCommandLineParser>
 #include "mediawidget.h"
 
 class QStackedLayout;
@@ -40,7 +41,7 @@ public:
 	MainWindow();
 	~MainWindow();
 
-	static KCmdLineOptions cmdLineOptions();
+	void cmdLineOptions(QCommandLineParser *parser);
 	void parseArgs();
 
 signals:
@@ -75,6 +76,8 @@ private:
 	bool event(QEvent *event);
 	void keyPressEvent(QKeyEvent *event);
 	void leaveEvent(QEvent *event);
+
+	QCommandLineParser *parser;
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;

@@ -32,6 +32,7 @@ class KaffeineApplication : public QApplication
 public:
 	KaffeineApplication(int &argc, char **argv);
 	~KaffeineApplication();
+	QCommandLineParser parser;
 
 private:
 //	int newInstance();
@@ -46,6 +47,8 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 	}
 
 	mainWindow = new MainWindow();
+
+	mainWindow->cmdLineOptions(&parser);
 }
 
 KaffeineApplication::~KaffeineApplication()
@@ -90,17 +93,15 @@ int main(int argc, char *argv[])
 
     KAboutData::setApplicationData(aboutData);
 
-    QCommandLineParser parser;
-    parser.addVersionOption();
-    parser.addHelpOption();
+    app.parser.addVersionOption();
+    app.parser.addHelpOption();
 
-    aboutData.setupCommandLine(&parser);
+    aboutData.setupCommandLine(&app.parser);
 
-    parser.process(app);
+    app.parser.process(app);
 
-    aboutData.processCommandLine(&parser);
+    aboutData.processCommandLine(&app.parser);
 
-//    KCmdLineArgs::addCmdLineOptions(MainWindow::cmdLineOptions());
 //    KCmdLineArgs::addTempFileOption();
 
     return app.exec();

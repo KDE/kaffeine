@@ -35,7 +35,7 @@
 #include <QSystemTrayIcon>
 #include <QTabBar>
 #include <KToolBar>
-#include <QCommandLineParser>
+#include <kstatusnotifieritem.h>
 #include <QCommandLineOption>
 #include <KConfigGroup>
 #include <QFileDialog>
@@ -220,7 +220,8 @@ MainWindow::MainWindow()
 	menu->addAction(collection->addAction(QLatin1String("settings_kaffeine"), action));
 
 	menuBar->addSeparator();
-	menuBar->addMenu(helpMenu());
+	QMenu *helpMenu = new QMenu(i18n("&Help"), this);
+	menuBar->addMenu(helpMenu);
 
 	// navigation bar - keep in sync with TabIndex enum!
 
@@ -295,7 +296,7 @@ MainWindow::MainWindow()
 	collection->readSettings();
 
 	// let QMainWindow save / restore its settings
-	setAutoSaveSettings();
+//	setAutoSaveSettings();
 
 	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
 	menuBar->show();
@@ -305,7 +306,7 @@ MainWindow::MainWindow()
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
-	QSystemTrayIcon *trayIcon = new QSystemTrayIcon(this);
+	KStatusNotifierItem *trayIcon = new KStatusNotifierItem(this);
 	trayIcon->setIconByName(QLatin1String("kaffeine"));
 	trayIcon->setStatus(KStatusNotifierItem::Active);
 	trayIcon->setToolTipIconByName(QLatin1String("kaffeine"));
@@ -381,38 +382,31 @@ MainWindow::~MainWindow()
 	KSharedConfig::openConfig()->group("MainWindow").writeEntry("DisplayMode", value);
 }
 
-QCommandLineParser parser::cmdLineOptions()
-    QApplication app(argc, argv); // PORTING SCRIPT: move this to before the K4AboutData initialization
-    K4AboutData::setApplicationData(aboutData);
-    parser.addVersionOption();
-    parser.addHelpOption();
-    //PORTING SCRIPT: adapt aboutdata variable if necessary
-    aboutData.setupCommandLine(&parser);
-    parser.process(app); // PORTING SCRIPT: move this to after any parser.addOption
-    aboutData.processCommandLine(&parser);
+void MainWindow::cmdLineOptions(QCommandLineParser *parser)
 {
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("dvd"), i18n("Play DVD")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("tv"), i18nc("command line option", "(deprecated option)"), QLatin1String("channel")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("channel"), i18nc("command line option", "Play TV channel"), QLatin1String("name / number")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("lastchannel"), i18nc("command line option", "Play last tuned TV channel")));
-	parser.addOption(QCommandLineOption(QStringList() << QLatin1String("dumpdvb"), i18nc("command line option", "Dump dvb data (debug option)")));
-	parser.addPositionalArgument(QLatin1String("[file]"), i18n("Files or URLs to play"));
-	return options;
+	this->parser = parser;
+
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dvd"), i18n("Play DVD")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tv"), i18nc("command line option", "(deprecated option)"), QLatin1String("channel")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("channel"), i18nc("command line option", "Play TV channel"), QLatin1String("name / number")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("lastchannel"), i18nc("command line option", "Play last tuned TV channel")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dumpdvb"), i18nc("command line option", "Dump dvb data (debug option)")));
+	parser->addPositionalArgument(QLatin1String("[file]"), i18n("Files or URLs to play"));
 }
 
 void MainWindow::parseArgs()
 {
 
-	if (parser.isSet("fullscreen")) {
+	if (parser->isSet("fullscreen")) {
 		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
 	}
 
-	if (parser.isSet("audiocd")) {
-		if (parser.positionalArguments().count() > 0) {
-			openAudioCd(args->arg(0));
+	if (parser->isSet("audiocd")) {
+		if (parser->positionalArguments().count() > 0) {
+			openAudioCd(parser->positionalArguments().first());
 		} else {
 			openAudioCd();
 		}
@@ -421,9 +415,9 @@ void MainWindow::parseArgs()
 		return;
 	}
 
-	if (parser.isSet("videocd")) {
-		if (parser.positionalArguments().count() > 0) {
-			openVideoCd(args->arg(0));
+	if (parser->isSet("videocd")) {
+		if (parser->positionalArguments().count() > 0) {
+			openVideoCd(parser->positionalArguments().first());
 		} else {
 			openVideoCd();
 		}
@@ -432,9 +426,9 @@ void MainWindow::parseArgs()
 		return;
 	}
 
-	if (parser.isSet("dvd")) {
-		if (parser.positionalArguments().count() > 0) {
-			openDvd(args->arg(0));
+	if (parser->isSet("dvd")) {
+		if (parser->positionalArguments().count() > 0) {
+			openDvd(parser->positionalArguments().first());
 		} else {
 			openDvd();
 		}
@@ -444,11 +438,11 @@ void MainWindow::parseArgs()
 	}
 
 #if HAVE_DVB == 1
-	if (parser.isSet("dumpdvb")) {
+	if (parser->isSet("dumpdvb")) {
 		dvbTab->enableDvbDump();
 	}
 
-	QString channel = parser.value("channel");
+	QString channel = parser->value("channel");
 
 	if (!channel.isEmpty()) {
 		activateTab(DvbTabId);
@@ -458,7 +452,7 @@ void MainWindow::parseArgs()
 		return;
 	}
 
-	channel = parser.value("tv");
+	channel = parser->value("tv");
 
 	if (!channel.isEmpty()) {
 		activateTab(DvbTabId);
@@ -468,7 +462,7 @@ void MainWindow::parseArgs()
 		return;
 	}
 
-	if (parser.isSet("lastchannel")) {
+	if (parser->isSet("lastchannel")) {
 		activateTab(DvbTabId);
 		dvbTab->playLastChannel();
 
@@ -477,20 +471,20 @@ void MainWindow::parseArgs()
 	}
 #endif /* HAVE_DVB == 1 */
 
-	if (parser.positionalArguments().count() > 0) {
+	if (parser->positionalArguments().count() > 0) {
 		QList<QUrl> urls;
 
-		for (int i = 0; i < parser.positionalArguments().count(); ++i) {
-			QUrl url = args->url(i);
+		for (int i = 0; i < parser->positionalArguments().count(); ++i) {
+			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i));
 
 			if (url.isValid()) {
 				urls.append(url);
 			}
 		}
 
-		if (args->isTempFileSet()) {
-			temporaryUrls.append(urls);
-		}
+//		if (parser->isTempFileSet()) {
+//			temporaryUrls.append(urls);
+//		}
 
 		if (urls.size() >= 2) {
 			activateTab(PlaylistTabId);
@@ -545,7 +539,7 @@ void MainWindow::displayModeChanged()
 
 void MainWindow::open()
 {
-	QList<QUrl> urls = QFileDialog::getOpenUrls(QUrl(), MediaWidget::extensionFilter(), this);
+	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, "", QUrl(), MediaWidget::extensionFilter());
 
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
@@ -557,7 +551,7 @@ void MainWindow::open()
 
 void MainWindow::openUrl()
 {
-	openUrl(QInputDialog::getText(i18nc("@title:window", "Open URL"), i18n("Enter a URL:")));
+	openUrl(QInputDialog::getText(this, i18nc("@title:window", "Open URL"), i18n("Enter a URL:")));
 }
 
 void MainWindow::openUrl(const QUrl &url)

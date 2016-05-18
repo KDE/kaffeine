@@ -27,7 +27,7 @@ So, on Debian, for example, those packages should be installed:
    apt-get install kdelibs5-dev libvlc-dev libxss-dev libqt5-sql-sqlite \
 		   libkf5coreaddons-dev libkf5i18n-dev \
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
-		   qt5-default libdvbv5-dev \
+		   qt5-default libdvbv5-dev libkf5notifications-dev \
 		   gettext cmake extra-cmake-modules make g++
 
 Create an empty build directory and do the following steps:
