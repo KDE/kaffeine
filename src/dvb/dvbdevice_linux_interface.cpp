@@ -20,7 +20,7 @@
 
 #include "dvbdevice_linux_interface.h"
 
-#include <solid/ifaces/dvbinterface.h>
+//#include <solid/ifaces/dvbinterface.h>
 
 DvbInterface::DvbInterface(QObject *backendObject)
     : DeviceInterface(*new DvbInterfacePrivate(), backendObject)
