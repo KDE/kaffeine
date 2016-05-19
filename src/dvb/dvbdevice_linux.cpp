@@ -22,7 +22,9 @@
 #include "dvbdevice_linux.h"
 
 #include <QFile>
+#include <Solid/Device>
 #include <Solid/DeviceNotifier>
+#include <QRegularExpressionMatch>
 #include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -39,7 +41,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "../log.h"
-#include "dvbdevice_linux_interface.h"
 #include "dvbtransponder.h"
 
 // krazy:excludeall=syscalls
@@ -1501,10 +1502,9 @@ DvbLinuxDeviceManager::~DvbLinuxDeviceManager()
 
 void DvbLinuxDeviceManager::doColdPlug()
 {
-//	foreach (const Solid::Device &device,
-//		 Solid::Device::listFromType(DvbInterface)) {
-//		componentAdded(device.udi());
-//	}
+	foreach (const Solid::Device &device, Solid::Device::allDevices()) {
+		componentAdded(device.udi());
+	}
 }
 
 void DvbLinuxDeviceManager::componentAdded(QString node, int adapter, int index) {
@@ -1539,15 +1539,22 @@ void DvbLinuxDeviceManager::componentAdded(QString node, int adapter, int index)
 
 void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 {
-	const DvbInterface *dvbInterface = new DvbInterface();
+	QRegularExpressionMatch match;
+	bool ok;
 
-	if (dvbInterface == NULL) {
+	QRegularExpression rejex = QRegularExpression("/dvb/dvb(\\d+).(\\w+)(\\d+)");
+	if (!udi.contains(rejex, &match))
 		return;
-	}
 
-	int adapter = dvbInterface->deviceAdapter();
-	int index = dvbInterface->deviceIndex();
-	QString devicePath = dvbInterface->device();
+	int adapter = match.captured(1).toShort(&ok, 10);
+	if (!ok)
+		return;
+	QString type = match.captured(2);
+	int index = match.captured(3).toShort(&ok, 10);
+	if (!ok)
+		return;
+
+	QString devicePath = QString(QLatin1String("/dev/dvb/adapter%1/%2%3")).arg(adapter).arg(type).arg(index);
 
 	if ((adapter < 0) || (adapter > 0x7fff) || (index < 0) || (index > 0x7fff)) {
 		Log("DvbLinuxDeviceManager::componentAdded: "
@@ -1571,48 +1578,36 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 
 	bool addDevice = false;
 
-	switch (dvbInterface->deviceType()) {
-	case DvbInterface::DvbCa:
+	if (!type.compare("ca")) {
 		if (device->caPath.isEmpty()) {
 			device->caPath = devicePath;
 			device->caUdi = udi;
 			udis.insert(udi, device);
 
-			if (device->isReady()) {
+			if (device->isReady())
 				device->startCa();
-			}
 		}
-
-		break;
-	case DvbInterface::DvbDemux:
+	} else if (!type.compare("demux")) {
 		if (device->demuxPath.isEmpty()) {
 			device->demuxPath = devicePath;
 			device->demuxUdi = udi;
 			udis.insert(udi, device);
 			addDevice = true;
 		}
-
-		break;
-	case DvbInterface::DvbDvr:
+	} else if (!type.compare("dvr")) {
 		if (device->dvrPath.isEmpty()) {
 			device->dvrPath = devicePath;
 			device->dvrUdi = udi;
 			udis.insert(udi, device);
 			addDevice = true;
 		}
-
-		break;
-	case DvbInterface::DvbFrontend:
+	} else if (!type.compare("frontend")) {
 		if (device->frontendPath.isEmpty()) {
 			device->frontendPath = devicePath;
 			device->frontendUdi = udi;
 			udis.insert(udi, device);
 			addDevice = true;
 		}
-
-		break;
-	default:
-		break;
 	}
 
 	if (addDevice && !device->demuxPath.isEmpty() && !device->dvrPath.isEmpty() &&
@@ -1683,11 +1678,11 @@ void DvbLinuxDeviceManager::componentRemoved(QString node, int adapter, int inde
 
 void DvbLinuxDeviceManager::componentRemoved(const QString &udi)
 {
-	DvbLinuxDevice *device = udis.take(udi);
-
-	if (device == NULL) {
+	QRegularExpression rejex = QRegularExpression("/dvb/dvb(\\d+).(\\w+)(\\d+)");
+	if (!udi.contains(rejex))
 		return;
-	}
+
+	DvbLinuxDevice *device = udis.take(udi);
 
 	bool removeDevice = false;
 

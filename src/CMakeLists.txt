@@ -18,7 +18,6 @@ set(kaffeine_SRCS
 
 if(HAVE_DVB)
   set(kaffeinedvb_SRCS
-      dvb/dvbdevice_linux_interface.cpp
       dvb/dvbcam_linux.cpp
       dvb/dvbchannel.cpp
       dvb/dvbchanneldialog.cpp
