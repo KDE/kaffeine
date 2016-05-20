@@ -1379,6 +1379,7 @@ void DvbSLnbConfigObject::configure()
 	mainLayout->addWidget(mainWidget);
 
 	lnbSelectionGroup = new QButtonGroup(mainWidget);
+//	FIXME: Double-check if the buttons got added
 //	mainLayout->addWidget(lnbSelectionGroup);
 	connect(lnbSelectionGroup, SIGNAL(buttonClicked(int)), this, SLOT(selectType(int)));
 
