@@ -34,7 +34,7 @@
 #include <KShortcutsDialog>
 #include <QSystemTrayIcon>
 #include <QTabBar>
-#include <KToolBar>
+#include <QToolBar>
 #include <kstatusnotifieritem.h>
 #include <QCommandLineOption>
 #include <KConfigGroup>
@@ -225,7 +225,8 @@ MainWindow::MainWindow()
 
 	// navigation bar - keep in sync with TabIndex enum!
 
-	navigationBar = new KToolBar(QLatin1String("navigation_bar"), this, Qt::LeftToolBarArea);
+	navigationBar = new QToolBar(QLatin1String("navigation_bar"), this);
+	navigationBar->setAllowedAreas(Qt::LeftToolBarArea);
 	connect(navigationBar, SIGNAL(orientationChanged(Qt::Orientation)),
 		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
@@ -243,7 +244,9 @@ MainWindow::MainWindow()
 
 	// control bar
 
-	controlBar = new KToolBar(QLatin1String("control_bar"), this, Qt::BottomToolBarArea);
+	controlBar = new QToolBar(QLatin1String("control_bar"), this);
+	controlBar->setAllowedAreas(Qt::BottomToolBarArea);
+
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
 	autoHideControlBar = false;

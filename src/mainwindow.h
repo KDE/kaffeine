@@ -81,7 +81,7 @@ private:
 
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
-	KToolBar *navigationBar;
+	QToolBar *navigationBar;
 	QTabBar *tabBar;
 	QToolBar *controlBar;
 	bool autoHideControlBar;
