@@ -743,7 +743,7 @@ void MediaWidget::deinterlacingChanged(bool deinterlacing)
 	}
 }
 
-void MediaWidget::aspectRatioChanged(QWidgetAction *action)
+void MediaWidget::aspectRatioChanged(QAction *action)
 {
 	bool ok;
 	unsigned int aspectRatio_ = action->data().toInt(&ok);
@@ -756,7 +756,7 @@ void MediaWidget::aspectRatioChanged(QWidgetAction *action)
 	Log("MediaWidget::aspectRatioChanged: internal error");
 }
 
-void MediaWidget::autoResizeTriggered(QWidgetAction *action)
+void MediaWidget::autoResizeTriggered(QAction *action)
 {
 	foreach (QAction *autoResizeAction, action->actionGroup()->actions()) {
 		autoResizeAction->setChecked(autoResizeAction == action);
@@ -895,17 +895,17 @@ void MediaWidget::toggleMenu()
 	backend->showDvdMenu();
 }
 
-void MediaWidget::currentTitleChanged(QWidgetAction *action)
+void MediaWidget::currentTitleChanged(QAction *action)
 {
 	backend->setCurrentTitle(titleGroup->actions().indexOf(action) + 1);
 }
 
-void MediaWidget::currentChapterChanged(QWidgetAction *action)
+void MediaWidget::currentChapterChanged(QAction *action)
 {
 	backend->setCurrentChapter(chapterGroup->actions().indexOf(action) + 1);
 }
 
-void MediaWidget::currentAngleChanged(QWidgetAction *action)
+void MediaWidget::currentAngleChanged(QAction *action)
 {
 	backend->setCurrentAngle(angleGroup->actions().indexOf(action) + 1);
 }

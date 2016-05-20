@@ -162,17 +162,17 @@ private slots:
 	void volumeChanged(int volume);
 	void seek(int position);
 	void deinterlacingChanged(bool deinterlacing);
-	void aspectRatioChanged(QWidgetAction *action);
-	void autoResizeTriggered(QWidgetAction *action);
+	void aspectRatioChanged(QAction *action);
+	void autoResizeTriggered(QAction *action);
 	void pausedChanged(bool paused);
 	void timeButtonClicked();
 	void jumpToPosition();
 	void currentAudioStreamChanged(int currentAudioStream);
 	void currentSubtitleChanged(int currentSubtitle);
 	void toggleMenu();
-	void currentTitleChanged(QWidgetAction *action);
-	void currentChapterChanged(QWidgetAction *action);
-	void currentAngleChanged(QWidgetAction *action);
+	void currentTitleChanged(QAction *action);
+	void currentChapterChanged(QAction *action);
+	void currentAngleChanged(QAction *action);
 	void shortSkipDurationChanged(int shortSkipDuration);
 	void longSkipDurationChanged(int longSkipDuration);
 
