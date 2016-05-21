@@ -104,7 +104,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	endMarginBox->setRange(0, 99);
 	endMarginBox->setValue(manager->getEndMargin() / 60);
 	gridLayout->addWidget(endMarginBox, 3, 1);
-	boxLayout->addLayout(gridLayout);
 
 	gridLayout->addWidget(new QLabel(i18n("Naming style for recordings:")), 4, 0);
 
@@ -114,7 +113,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	connect(namingFormat, SIGNAL(textChanged(QString)), this, SLOT(namingFormatChanged(QString)));
 
 	gridLayout->addWidget(namingFormat, 4, 1);
-	boxLayout->addLayout(gridLayout);
 
 	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(22);
 	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(22);
@@ -153,8 +151,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	scanWhenIdleBox->setChecked(manager->isScanWhenIdle());
 	gridLayout->addWidget(scanWhenIdleBox, 3, 1);
 
-	boxLayout->addLayout(gridLayout);
-
 	QFrame *frame = new QFrame(widget);
 	frame->setFrameShape(QFrame::HLine);
 	boxLayout->addWidget(frame);
@@ -176,6 +172,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	boxLayout->addWidget(frame);
 
 	boxLayout->addWidget(new QLabel(i18n("Your position (only needed for USALS rotor)")));
+
+	boxLayout->addLayout(gridLayout);
 
 	gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Latitude:")), 0, 0);
