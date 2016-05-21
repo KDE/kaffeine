@@ -73,6 +73,8 @@ private:
 		DvbTabId = 3
 	};
 
+	void readSettings();
+	void writeSettings();
 	void closeEvent(QCloseEvent *event);
 	bool event(QEvent *event);
 	void keyPressEvent(QKeyEvent *event);

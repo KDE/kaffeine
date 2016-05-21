@@ -25,9 +25,12 @@
 #include <QStackedLayout>
 #include <KActionCollection>
 
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <kio/deletejob.h>
+#include <QSettings>
 #include <QMenu>
 #include <QMenuBar>
 #include <KRecentFilesAction>
@@ -153,6 +156,8 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 
 MainWindow::MainWindow()
 {
+	readSettings();
+
 	// menu structure
 
 	QMenuBar *menuBar = QMainWindow::menuBar();
@@ -297,9 +302,6 @@ MainWindow::MainWindow()
 	// restore custom key bindings
 	collection->readSettings();
 
-	// let QMainWindow save / restore its settings
-//	setAutoSaveSettings();
-
 	// Tray Icon and its menu
 	QMenu *trayMenu = new QMenu(this);
 	trayIcon = new QSystemTrayIcon(this);
@@ -384,6 +386,26 @@ MainWindow::~MainWindow()
 	}
 
 	KSharedConfig::openConfig()->group("MainWindow").writeEntry("DisplayMode", value);
+}
+
+void MainWindow::readSettings()
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
+    if (geometry.isEmpty()) {
+        const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
+        resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
+        move((availableGeometry.width() - width()) / 2,
+             (availableGeometry.height() - height()) / 2);
+    } else {
+        restoreGeometry(geometry);
+    }
+}
+
+void MainWindow::writeSettings()
+{
+    QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
+    settings.setValue("geometry", saveGeometry());
 }
 
 void MainWindow::cmdLineOptions(QCommandLineParser *parser)
@@ -681,6 +703,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	if (!ok) {
 		event->ignore();
 	} else {
+		writeSettings();
 		QMainWindow::closeEvent(event);
 	}
 }
