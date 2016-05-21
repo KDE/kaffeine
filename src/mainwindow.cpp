@@ -35,7 +35,6 @@
 #include <QSystemTrayIcon>
 #include <QTabBar>
 #include <QToolBar>
-#include <kstatusnotifieritem.h>
 #include <QCommandLineOption>
 #include <KConfigGroup>
 #include <QFileDialog>
@@ -301,19 +300,21 @@ MainWindow::MainWindow()
 	// let QMainWindow save / restore its settings
 //	setAutoSaveSettings();
 
+	// Tray Icon and its menu
+	QMenu *trayMenu = new QMenu(this);
+	trayIcon = new QSystemTrayIcon(this);
+	trayIcon->setContextMenu(trayMenu);
+	trayIcon->setIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
+	trayIcon->setToolTip(i18n("Kaffeine"));
+
 	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
 	menuBar->show();
 	navigationBar->show();
 	controlBar->show();
+	trayIcon->show();
 
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
-
-	KStatusNotifierItem *trayIcon = new KStatusNotifierItem(this);
-	trayIcon->setIconByName(QLatin1String("kaffeine"));
-	trayIcon->setStatus(KStatusNotifierItem::Active);
-	trayIcon->setToolTipIconByName(QLatin1String("kaffeine"));
-	trayIcon->setToolTipTitle(i18n("Kaffeine"));
 
 	// initialize random number generator
 	qsrand(QTime().msecsTo(QTime::currentTime()));
@@ -544,6 +545,7 @@ void MainWindow::open()
 {
 	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, "", QUrl(), MediaWidget::extensionFilter());
 
+//	trayIcon->showMessage("Open", "Opening file(s)");
 	if (urls.size() >= 2) {
 		activateTab(PlaylistTabId);
 		playlistTab->appendToVisiblePlaylist(urls, true);

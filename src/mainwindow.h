@@ -25,6 +25,7 @@
 #include <QCommandLineParser>
 #include "mediawidget.h"
 
+class QSystemTrayIcon;
 class QStackedLayout;
 class KCmdLineOptions;
 class KRecentFilesAction;
@@ -79,6 +80,7 @@ private:
 
 	QCommandLineParser *parser;
 
+	QSystemTrayIcon *trayIcon;
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
 	QToolBar *navigationBar;
