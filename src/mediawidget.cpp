@@ -570,11 +570,15 @@ void MediaWidget::toggleMuted()
 
 void MediaWidget::previous()
 {
+	if (source->getType() == MediaSource::Url)
+		emit playlistPrevious();
 	source->previous();
 }
 
 void MediaWidget::next()
 {
+	if (source->getType() == MediaSource::Url)
+		emit playlistNext();
 	source->next();
 }
 
@@ -962,6 +966,9 @@ void MediaWidget::currentTotalTimeChanged()
 	int totalTime = backend->getTotalTime();
 	source->trackLengthChanged(totalTime);
 
+	if (source->getType() == MediaSource::Url)
+		emit playlistTrackLengthChanged(totalTime);
+
 	if (source->hideCurrentTotalTime()) {
 		currentTime = 0;
 		totalTime = 0;
@@ -1086,6 +1093,9 @@ void MediaWidget::metadataChanged()
 {
 	QMap<MediaWidget::MetadataType, QString> metadata = backend->getMetadata();
 	source->metadataChanged(metadata);
+
+	if (source->getType() == MediaSource::Url)
+		emit playlistTrackMetadataChanged(metadata);
 
 	if (source->overrideCaption()) {
 		emit changeCaption(source->getDefaultCaption());

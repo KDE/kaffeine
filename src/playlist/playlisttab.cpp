@@ -383,7 +383,6 @@ PlaylistTab::PlaylistTab(KMenu *menu, KActionCollection *collection, MediaWidget
 		this, SLOT(playTrack(Playlist*,int)));
 
 	connect(mediaWidget, SIGNAL(playlistPrevious()), this, SLOT(playPreviousTrack()));
-	connect(mediaWidget, SIGNAL(playlistPlay()), this, SLOT(playCurrentTrack()));
 	connect(mediaWidget, SIGNAL(playlistNext()), this, SLOT(playNextTrack()));
 	connect(mediaWidget, SIGNAL(playlistUrlsDropped(QList<KUrl>)),
 		this, SLOT(appendUrls(QList<KUrl>)));

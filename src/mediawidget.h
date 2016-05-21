@@ -145,7 +145,11 @@ signals:
 	void changeCaption(const QString &caption);
 	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
 
+	void playlistPrevious();
+	void playlistNext();
 	void playlistUrlsDropped(const QList<KUrl> &urls);
+	void playlistTrackLengthChanged(int length);
+	void playlistTrackMetadataChanged(const QMap<MediaWidget::MetadataType, QString> &metadata);
 	void osdKeyPressed(int key);
 
 private slots:
