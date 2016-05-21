@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
 		// Copyright statement
 		i18n("(C) 2007-2016 The Kaffeine Authors"),
 		// Optional additional text
-		i18n(""),
+		"",
 		// Home page
 		QStringLiteral("http://kaffeine.kde.org")
     );
