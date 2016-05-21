@@ -21,6 +21,8 @@
 #include <QPointer>
 #include <KAboutData>
 
+#include <QDir>
+#include <QStandardPaths>
 #include <QApplication>
 #include <KLocalizedString>
 #include <QCommandLineParser>
@@ -42,6 +44,12 @@ private:
 
 KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(argc, argv)
 {
+	QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+
+	QDir dir(path);
+	if (!dir.exists())
+	        dir.mkpath(path);
+
 	if (!SqlHelper::createInstance()) {
 		return;
 	}
