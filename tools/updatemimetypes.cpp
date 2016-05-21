@@ -86,8 +86,7 @@ int main(int argc, char *argv[])
 		for (int i = 0; i < mimeTypes.size(); ++i) {
 			if (i != skipMimeType) {
 				QMimeDatabase db;
-				QMimeType mimetype = db.mimeTypeForName(mimeTypes.at(i),
-					KMimeType::DontResolveAlias);
+				QMimeType mimetype = db.mimeTypeForName(mimeTypes.at(i));
 
 				if (!mimetype.isValid()) {
 					qCritical() << "unknown mime type" << mimeTypes.at(i);

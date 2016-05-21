@@ -274,7 +274,7 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 		case Qt::DecorationRole:
 			if (index.column() == 0) {
 				if (recording->disabled) {
-					return KIcon(QLatin1String("dialog-error"));
+					return QIcon::fromTheme(QLatin1String("dialog-error"));
 				}
 				switch (recording->status) {
 				case DvbRecording::Inactive:

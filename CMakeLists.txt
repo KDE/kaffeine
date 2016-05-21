@@ -45,6 +45,7 @@ if( Qt5Core_DIR )
 	KIO		# KFileWidget
 	Solid
 	Notifications
+	IdleTime
     )
 
     include(KDEInstallDirs)

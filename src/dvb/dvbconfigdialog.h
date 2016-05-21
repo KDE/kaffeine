@@ -58,7 +58,7 @@ class RegexInputLine : public QObject
 
 public:
 	int index;
-	KLineEdit *lineEdit;
+	QLineEdit *lineEdit;
 	QSpinBox *spinBox;
 	QCheckBox *checkBox;
 
@@ -103,7 +103,7 @@ private:
 	QLineEdit *timeShiftFolderEdit;
 	QSpinBox *beginMarginBox;
 	QSpinBox *endMarginBox;
-	KLineEdit *namingFormat;
+	QLineEdit *namingFormat;
 	QCheckBox *override6937CharsetBox;
 	QCheckBox *createInfoFileBox;
 	QCheckBox *scanWhenIdleBox;
@@ -115,7 +115,7 @@ private:
 	QLabel *longitudeValidLabel;
 	QLabel *namingFormatValidLabel;
 	QList<DvbConfigPage *> configPages;
-	KLineEdit *actionAfterRecordingLineEdit;
+	QLineEdit *actionAfterRecordingLineEdit;
 	QGridLayout *regexGrid;
 	QList<RegexInputLine *> regexInputList;
 };

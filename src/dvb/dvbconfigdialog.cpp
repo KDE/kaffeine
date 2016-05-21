@@ -31,13 +31,13 @@
 #include <QSpinBox>
 #include <QToolButton>
 #include <QTreeWidget>
-#include <KAction>
+#include <QWidgetAction>
 #include <KComboBox>
 #include <QFileDialog>
 #include <KIO/Job>
 #include <QLineEdit>
 #include <KLocalizedString>
-#include <KStandardDirs>
+#include <QStandardPaths>
 #include <QTabWidget>
 #include <KConfigGroup>
 #include <QDialogButtonBox>
@@ -53,7 +53,7 @@
 DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
 {
-	setCaption(i18nc("@title:window", "Configure Television"));
+	setWindowTitle(i18nc("@title:window", "Configure Television"));
 
 	tabWidget = new QTabWidget(this);
 	QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -108,7 +108,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	gridLayout->addWidget(new QLabel(i18n("Naming style for recordings:")), 4, 0);
 
-	namingFormat = new KLineEdit(widget);
+	namingFormat = new QLineEdit(widget);
 	namingFormat->setText(manager->getNamingFormat());
 	namingFormat->setToolTip(i18n("The following substitutions work: \"%year\" for year (YYYY) and the following: %month, %day, %hour, %min, %sec, %channel and %title"));
 	connect(namingFormat, SIGNAL(textChanged(QString)), this, SLOT(namingFormatChanged(QString)));
@@ -116,8 +116,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	gridLayout->addWidget(namingFormat, 4, 1);
 	boxLayout->addLayout(gridLayout);
 
-	validPixmap = KIcon(QLatin1String("dialog-ok-apply")).pixmap(KIconLoader::SizeSmallMedium);
-	invalidPixmap = KIcon(QLatin1String("dialog-cancel")).pixmap(KIconLoader::SizeSmallMedium);
+	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(22);
+	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(22);
 
 	namingFormatValidLabel = new QLabel(widget);
 	namingFormatValidLabel->setPixmap(validPixmap);
@@ -126,7 +126,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	5, 0);
 
-	actionAfterRecordingLineEdit = new KLineEdit(widget);
+	actionAfterRecordingLineEdit = new QLineEdit(widget);
 	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());
 	actionAfterRecordingLineEdit->setToolTip(i18n("Leave empty for no command."));
 	gridLayout->addWidget(actionAfterRecordingLineEdit, 5, 1);
@@ -222,7 +222,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	int j = 0;
 	foreach (const QString regex, manager->getRecordingRegexList()) {
 		RegexInputLine *inputLine = new RegexInputLine();
-		inputLine->lineEdit = new KLineEdit(widget);
+		inputLine->lineEdit = new QLineEdit(widget);
 		inputLine->lineEdit->setText(regex);
 		regexGrid->addWidget(inputLine->lineEdit, j, 0);
 		inputLine->checkBox = new QCheckBox(widget);
@@ -242,7 +242,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	boxLayoutAutomaticRecording->addLayout(buttonGrid);
 	boxLayoutAutomaticRecording->addLayout(regexGrid);
 
-	tabWidget->insertTab(1, widgetAutomaticRecording, KIcon(QLatin1String("configure")),
+	tabWidget->insertTab(1, widgetAutomaticRecording, QIcon::fromTheme(QLatin1String("configure")),
 			i18n("Automatic Recording"));
 	//
 
@@ -305,7 +305,7 @@ void DvbConfigDialog::newRegex()
 {
 	RegexInputLine *inputLine = new RegexInputLine();
 
-	inputLine->lineEdit = new KLineEdit(tabWidget);
+	inputLine->lineEdit = new QLineEdit(tabWidget);
 	inputLine->lineEdit->setText("");
 	regexGrid->addWidget(inputLine->lineEdit, regexInputList.size(), 0);
 
@@ -361,7 +361,10 @@ void DvbConfigDialog::removeWidgets(QGridLayout *layout, int row, int column, bo
 
 void DvbConfigDialog::initRegexButtons(QGridLayout *buttonGrid)
 {
-	KAction *action = new KAction(KIcon(QLatin1String("list-add")), i18nc("@action", "Add new Regex"), tabWidget);
+	QWidgetAction *action = new QWidgetAction(tabWidget);
+	action->setIcon(QIcon::fromTheme(QLatin1String("list-add")));
+	action->setText(i18nc("@action", "Add new Regex"));
+
 	connect(action, SIGNAL(triggered()), this, SLOT(newRegex()));
 	tabWidget->addAction(action);
 	QPushButton *pushButtonAdd = new QPushButton(action->icon(), action->text(), tabWidget);
@@ -369,7 +372,9 @@ void DvbConfigDialog::initRegexButtons(QGridLayout *buttonGrid)
 	buttonGrid->addWidget(pushButtonAdd, 0, 0);
 	pushButtonAdd->setToolTip(i18n("Add another regular expression."));
 
-	action = new KAction(KIcon(QLatin1String("edit-delete")), i18nc("@action", "Remove Regex"), tabWidget);
+	action = new QWidgetAction(tabWidget);
+	action->setIcon(QIcon::fromTheme(QLatin1String("edit-delete")));
+	action->setText(i18nc("@action", "Remove Regex"));
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRegex()));
 	tabWidget->addAction(action);
 	QPushButton *pushButtonRemove = new QPushButton(action->icon(), action->text(), tabWidget);
@@ -381,7 +386,7 @@ void DvbConfigDialog::initRegexButtons(QGridLayout *buttonGrid)
 void DvbConfigDialog::removeRegex()
 {
 	//regexGrid = new QGridLayout(tabWidget);
-	//regexBoxMap = QMap<QCheckBox *, KLineEdit *>();
+	//regexBoxMap = QMap<QCheckBox *, QLineEdit *>();
 	QList<RegexInputLine *> copyList = QList<RegexInputLine *>();
 	foreach(RegexInputLine *inputLine, regexInputList)
 	{
@@ -409,7 +414,7 @@ void DvbConfigDialog::removeRegex()
 	int j = 0;
 	foreach (RegexInputLine *oldLine, regexInputList) {
 		RegexInputLine *inputLine = new RegexInputLine();
-		inputLine->lineEdit = new KLineEdit();
+		inputLine->lineEdit = new QLineEdit();
 		inputLine->lineEdit->setText(oldLine->lineEdit->text());
 		regexGrid->addWidget(inputLine->lineEdit, j, 0);
 		inputLine->checkBox = new QCheckBox();
@@ -427,14 +432,14 @@ void DvbConfigDialog::removeRegex()
 	boxLayoutAutomaticRecording->addLayout(buttonGrid);
 	boxLayoutAutomaticRecording->addLayout(regexGrid);
 	tabWidget->removeTab(1);
-	tabWidget->addTab(widgetAutomaticRecording, KIcon(QLatin1String("configure")), i18n("Automatic Recording"));
-	tabWidget->moveTab(tabWidget->count()-1, 1);
+	tabWidget->addTab(widgetAutomaticRecording, QIcon::fromTheme(QLatin1String("configure")), i18n("Automatic Recording"));
+	tabWidget->move(tabWidget->count()-1, 1);
 	tabWidget->setCurrentIndex(1);
 }
 
 void DvbConfigDialog::openScanFile()
 {
-	QString file(KStandardDirs::locateLocal("appdata", QLatin1String("scanfile.dvb")));
+	QString file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
 	QDesktopServices::openUrl(QUrl(file));
 }
 

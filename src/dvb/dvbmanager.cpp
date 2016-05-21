@@ -350,27 +350,27 @@ int DvbManager::getEndMargin() const
 
 QString DvbManager::getNamingFormat() const
 {
-	return KGlobal::config()->group("DVB").readEntry("NamingFormat", "%title");
+	return KSharedConfig::openConfig()->group("DVB").readEntry("NamingFormat", "%title");
 }
 
 QString DvbManager::getRecordingRegex() const
 {
-	return KGlobal::config()->group("DVB").readEntry("RecordingRegex", "");
+	return KSharedConfig::openConfig()->group("DVB").readEntry("RecordingRegex", "");
 }
 
 QStringList DvbManager::getRecordingRegexList() const
 {
-	return KGlobal::config()->group("DVB").readEntry("RecordingRegexList", QStringList());
+	return KSharedConfig::openConfig()->group("DVB").readEntry("RecordingRegexList", QStringList());
 }
 
 QList<int> DvbManager::getRecordingRegexPriorityList() const
 {
-	return KGlobal::config()->group("DVB").readEntry("RecordingRegexPriorityList", QList<int>());
+	return KSharedConfig::openConfig()->group("DVB").readEntry("RecordingRegexPriorityList", QList<int>());
 }
 
 QString DvbManager::getActionAfterRecording() const
 {
-	return KGlobal::config()->group("DVB").readEntry("ActionAfterRecording", "");
+	return KSharedConfig::openConfig()->group("DVB").readEntry("ActionAfterRecording", "");
 }
 
 bool DvbManager::override6937Charset() const
@@ -380,12 +380,12 @@ bool DvbManager::override6937Charset() const
 
 bool DvbManager::isScanWhenIdle() const
 {
-	return KGlobal::config()->group("DVB").readEntry("ScanWhenIdle", false);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("ScanWhenIdle", false);
 }
 
 bool DvbManager::createInfoFile() const
 {
-	return KGlobal::config()->group("DVB").readEntry("CreateInfoFile", false);
+	return KSharedConfig::openConfig()->group("DVB").readEntry("CreateInfoFile", false);
 }
 
 void DvbManager::setRecordingFolder(const QString &path)
@@ -410,22 +410,22 @@ void DvbManager::setEndMargin(int endMargin)
 
 void DvbManager::setNamingFormat(QString namingFormat)
 {
-	KGlobal::config()->group("DVB").writeEntry("NamingFormat", namingFormat);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("NamingFormat", namingFormat);
 }
 
 void DvbManager::setRecordingRegex(QString regex)
 {
-	KGlobal::config()->group("DVB").writeEntry("RecordingRegex", regex);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("RecordingRegex", regex);
 }
 
 void DvbManager::setRecordingRegexList(const QStringList regexList)
 {
-	KGlobal::config()->group("DVB").writeEntry("RecordingRegexList", regexList);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("RecordingRegexList", regexList);
 }
 
 void DvbManager::setRecordingRegexPriorityList(const QList<int> regexList)
 {
-	KGlobal::config()->group("DVB").writeEntry("RecordingRegexPriorityList", regexList);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("RecordingRegexPriorityList", regexList);
 }
 
 bool DvbManager::addRecordingRegex(QString regex)
@@ -470,7 +470,7 @@ bool DvbManager::removeRecordingRegexPriority(int priority)
 
 void DvbManager::setActionAfterRecording(QString actionAfterRecording)
 {
-	KGlobal::config()->group("DVB").writeEntry("ActionAfterRecording", actionAfterRecording);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("ActionAfterRecording", actionAfterRecording);
 }
 
 void DvbManager::setOverride6937Charset(bool override)
@@ -481,12 +481,12 @@ void DvbManager::setOverride6937Charset(bool override)
 
 void DvbManager::setScanWhenIdle(bool scanWhenIdle)
 {
-	KGlobal::config()->group("DVB").writeEntry("ScanWhenIdle", scanWhenIdle);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("ScanWhenIdle", scanWhenIdle);
 }
 
 void DvbManager::setCreateInfoFile(bool createInfoFile)
 {
-	KGlobal::config()->group("DVB").writeEntry("CreateInfoFile", createInfoFile);
+	KSharedConfig::openConfig()->group("DVB").writeEntry("CreateInfoFile", createInfoFile);
 }
 
 double DvbManager::getLatitude()
@@ -868,7 +868,7 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 			if (!transponder.isValid()) {
 				parseError = true;
 				Log("DvbManager::readScanSources: cannot parse complete scan data");
-				Log("source: ") << QString::fromAscii(line);
+				Log("source: ") << line;
 			} else {
 				transponders.append(transponder);
 
