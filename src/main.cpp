@@ -101,6 +101,8 @@ int main(int argc, char *argv[])
 
     KAboutData::setApplicationData(aboutData);
 
+    app.setWindowIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
+
     app.parser.addVersionOption();
     app.parser.addHelpOption();
 
