@@ -267,6 +267,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 DvbConfigDialog::~DvbConfigDialog()
 {
+	accept();
 }
 
 void DvbConfigDialog::changeRecordingFolder()
@@ -1382,6 +1383,7 @@ void DvbSLnbConfigObject::configure()
 	mainLayout->addWidget(mainWidget);
 
 	lnbSelectionGroup = new QButtonGroup(mainWidget);
+	lnbSelectionGroup->setExclusive(true);
 	connect(lnbSelectionGroup, SIGNAL(buttonClicked(int)), this, SLOT(selectType(int)));
 
 	QRadioButton *radioButton = new QRadioButton(i18n("Universal LNB"), mainWidget);
@@ -1461,7 +1463,7 @@ void DvbSLnbConfigObject::configure()
 	lnbSelectionGroup->button(lnbType)->setChecked(true);
 	selectType(lnbType);
 
-	connect(dialog, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
+	connect(dialog, SIGNAL(finished(int)), this, SLOT(dialogAccepted()));
 
 	dialog->setModal(true);
 	dialog->show();
