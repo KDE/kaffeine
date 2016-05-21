@@ -130,11 +130,8 @@ DmesgDialog::DmesgDialog(QWidget *parent) : QDialog(parent)
 	QWidget *mainWidget = new QWidget(this);
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
-	mainLayout->addWidget(mainWidget);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18nc("@title:window", "dmesg"));
 
 	dmesgProcess = new QProcess(this);
@@ -145,7 +142,10 @@ DmesgDialog::DmesgDialog(QWidget *parent) : QDialog(parent)
 	dmesgTextEdit = new QPlainTextEdit(this);
 	dmesgTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
 	dmesgTextEdit->setReadOnly(true);
+
 	mainLayout->addWidget(dmesgTextEdit);
+	mainLayout->addWidget(mainWidget);
+	mainLayout->addWidget(buttonBox);
 
 	resize(100 * fontMetrics().averageCharWidth(), 28 * fontMetrics().height());
 }

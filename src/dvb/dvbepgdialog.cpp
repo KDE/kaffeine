@@ -44,12 +44,11 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	QWidget *mainWidget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
-	mainLayout->addWidget(mainWidget);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18nc("@title:window", "Program Guide"));
+	mainLayout->addWidget(mainWidget);
+	mainLayout->addWidget(buttonBox);
 
 	QWidget *widget = new QWidget(this);
 	mainLayout = new QHBoxLayout(widget);

@@ -49,8 +49,6 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	mainLayout->addWidget(mainWidget);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	//PORTING SCRIPT: WARNING mainLayout->addWidget(buttonBox) must be last item in layout. Please move it.
-	mainLayout->addWidget(buttonBox);
 	setWindowTitle(i18nc("@title:window", "Recording Schedule"));
 	QWidget *widget = new QWidget(this);
 
@@ -87,6 +85,8 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeRecording()));
 	boxLayout->addWidget(pushButton);
 	boxLayout->addStretch();
+
+	mainLayout->addWidget(buttonBox);
 
 	mainLayout = new QVBoxLayout(widget);
 	mainLayout->addLayout(boxLayout);
