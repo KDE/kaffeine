@@ -372,7 +372,6 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 		isLive = false;
 	}
 
-	connect(this, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
 	connect(&statusTimer, SIGNAL(timeout()), this, SLOT(updateStatus()));
 
 	mainLayout = new QVBoxLayout;
@@ -382,6 +381,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 
 DvbScanDialog::~DvbScanDialog()
 {
+	dialogAccepted();
 	delete internal;
 }
 
