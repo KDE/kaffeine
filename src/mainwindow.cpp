@@ -229,8 +229,8 @@ MainWindow::MainWindow()
 
 	// navigation bar - keep in sync with TabIndex enum!
 
-	navigationBar = new QToolBar(QLatin1String("navigation_bar"), this);
-	navigationBar->setAllowedAreas(Qt::LeftToolBarArea);
+	navigationBar = new QToolBar(QLatin1String("navigation_bar"));
+	this->addToolBar(Qt::LeftToolBarArea, navigationBar);
 	connect(navigationBar, SIGNAL(orientationChanged(Qt::Orientation)),
 		this, SLOT(navigationBarOrientationChanged(Qt::Orientation)));
 
@@ -248,8 +248,8 @@ MainWindow::MainWindow()
 
 	// control bar
 
-	controlBar = new QToolBar(QLatin1String("control_bar"), this);
-	controlBar->setAllowedAreas(Qt::BottomToolBarArea);
+	controlBar = new QToolBar(QLatin1String("control_bar"));
+	this->addToolBar(Qt::BottomToolBarArea, controlBar);
 
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
