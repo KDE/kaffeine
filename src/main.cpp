@@ -18,6 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QDebug>
+#include <QString>
+#include <QDateTime>
+#include <iostream>
 #include <QPointer>
 #include <KAboutData>
 
@@ -28,6 +32,37 @@
 #include <QCommandLineParser>
 #include "mainwindow.h"
 #include "sqlhelper.h"
+
+void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+	static const char* typeStr[] = {
+		"[Debug   ]",
+		"[Warning ]",
+		"[Critical]",
+		"[Fatal   ]",
+		"[System  ]"};
+	QString contextString, file = context.file;
+	QByteArray localMsg = msg.toLocal8Bit();
+
+	file.remove(QRegExp(".*/kaffeine/"));
+
+	if (context.line)
+		contextString = QStringLiteral("%1#%2: ")
+						.arg(file)
+						.arg(context.line);
+
+	QString timeStr(QDateTime::currentDateTime().toString("dd-MM-yy HH:mm:ss.zzz "));
+
+	std::cerr << timeStr.toLocal8Bit().constData();
+	if (type <= 4)
+		std::cerr << typeStr[type] << " ";
+	if (!contextString.isEmpty())
+		std::cerr << contextString.toLocal8Bit().constData();
+	std::cerr << localMsg.constData() << std::endl;
+
+	if (type == QtFatalMsg)
+		abort();
+}
 
 class KaffeineApplication : public QApplication
 {
@@ -48,7 +83,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 
 	QDir dir(path);
 	if (!dir.exists())
-	        dir.mkpath(path);
+		dir.mkpath(path);
 
 	if (!SqlHelper::createInstance()) {
 		return;
@@ -76,6 +111,9 @@ KaffeineApplication::~KaffeineApplication()
 
 int main(int argc, char *argv[])
 {
+    qInstallMessageHandler(verboseMessageHandler);
+//    qSetMessagePattern("%{file}(%{line}): %{message}");
+
     KaffeineApplication app(argc, argv);
 
     KAboutData aboutData(
