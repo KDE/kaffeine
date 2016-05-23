@@ -30,6 +30,7 @@ class KComboBox;
 class QLineEdit;
 class DateTimeEdit;
 class DurationEdit;
+class QDialogButtonBox;
 
 class DvbRecordingLessThan
 {
@@ -141,6 +142,7 @@ private:
 	DurationEdit *durationEdit;
 	DateTimeEdit *endEdit;
 	QCheckBox *dayCheckBoxes[7];
+	QDialogButtonBox *buttonBox;
 };
 
 #endif /* DVBRECORDINGDIALOG_P_H */

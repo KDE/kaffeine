@@ -390,7 +390,6 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 
 	nameEdit = new QLineEdit(widget);
 	mainLayout->addWidget(nameEdit);
-	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(nameEdit, 0, 1);
 
 	QLabel *label = new QLabel(i18nc("@label recording", "Name:"), widget);
@@ -405,7 +404,6 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	channelModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelModel->setChannelModel(manager->getChannelModel());
 	channelBox->setModel(channelModel);
-	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 	gridLayout->addWidget(channelBox, 1, 1);
 
 	label = new QLabel(i18nc("@label tv show", "Channel:"), widget);
@@ -499,12 +497,15 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 		durationEdit->setTime(QTime(2, 0));
 	}
 
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 	mainLayout->addWidget(buttonBox);
 
 	checkValidity();
+
+	connect(nameEdit, SIGNAL(textChanged(QString)), this, SLOT(checkValidity()));
+	connect(channelBox, SIGNAL(currentIndexChanged(int)), this, SLOT(checkValidity()));
 
 	if (nameEdit->text().isEmpty()) {
 		nameEdit->setFocus();
@@ -549,7 +550,9 @@ void DvbRecordingEditor::repeatDaily()
 
 void DvbRecordingEditor::checkValidity()
 {
-//	okButton->setEnabled(!nameEdit->text().isEmpty() && (channelBox->currentIndex() != -1));
+	buttonBox->button(QDialogButtonBox::Ok)->setEnabled(
+				!nameEdit->text().isEmpty() &&
+				(channelBox->currentIndex() != -1));
 }
 
 void DvbRecordingEditor::accept()
