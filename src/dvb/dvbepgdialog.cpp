@@ -60,7 +60,6 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	channelView->setMaximumWidth(30 * fontMetrics().averageCharWidth());
 	channelView->setModel(epgChannelTableModel);
 	channelView->setRootIsDecorated(false);
-	channelView->setUniformRowHeights(true);
 	connect(channelView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
 		this, SLOT(channelActivated(QModelIndex)));
 	mainLayout->addWidget(channelView);
