@@ -565,7 +565,7 @@ void MainWindow::displayModeChanged()
 
 void MainWindow::open()
 {
-	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, "", QUrl(), MediaWidget::extensionFilter());
+	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, i18nc("@title:window", "Open files"), QUrl(), MediaWidget::extensionFilter());
 
 //	trayIcon->showMessage("Open", "Opening file(s)");
 	if (urls.size() >= 2) {

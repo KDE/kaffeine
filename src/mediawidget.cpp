@@ -400,6 +400,7 @@ MediaWidget::~MediaWidget()
 QString MediaWidget::extensionFilter()
 {
 	return QLatin1String(
+		"Supported Media Files ("
 		// generated from kaffeine.desktop's mime types
 		"*.669 *.aac *.ac3 *.aif *.aifc *.aiff *.anim1 *.anim2 *.anim3 *.anim4 *.anim5 "
 		"*.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf *.asx *.au *.avi *.bdm *.bdmv "
@@ -411,8 +412,8 @@ QString MediaWidget::extensionFilter()
 		"*.spx *.stm *.ts *.tta *.ult *.uni *.vlc *.vob *.voc *.wav *.wax *.wma *.wmv "
 		"*.wmx *.wv *.wvp *.wvx *.xm *.xspf "
 		// manual entries
-		"*.kaffeine *.iso|") + i18nc("file filter", "Supported Media Files") +
-		QLatin1String("\n*|") + i18nc("file filter", "All Files");
+		"*.kaffeine *.iso);;"
+		"All Files (*)");
 }
 
 MediaWidget::DisplayMode MediaWidget::getDisplayMode() const
