@@ -42,14 +42,17 @@
 DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
 {
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	setWindowTitle(i18nc("@title:window", "Recording Schedule"));
+
 	QWidget *mainWidget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
+
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	setWindowTitle(i18nc("@title:window", "Recording Schedule"));
+
 	QWidget *widget = new QWidget(this);
 
 	model = new DvbRecordingTableModel(this);
@@ -87,11 +90,9 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	boxLayout->addStretch();
 
 	mainLayout->addWidget(buttonBox);
-
-	mainLayout = new QVBoxLayout(widget);
 	mainLayout->addLayout(boxLayout);
 	mainLayout->addWidget(treeView);
-	mainLayout->addWidget(widget);
+
 	resize(100 * fontMetrics().averageCharWidth(), 20 * fontMetrics().height());
 }
 
