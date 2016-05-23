@@ -40,18 +40,19 @@
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
 {
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	setWindowTitle(i18nc("@title:window", "Program Guide"));
+
 	QWidget *mainWidget = new QWidget(this);
 	QBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
+
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	setWindowTitle(i18nc("@title:window", "Program Guide"));
 	mainLayout->addWidget(mainWidget);
 	mainLayout->addWidget(buttonBox);
 
 	QWidget *widget = new QWidget(this);
-	mainLayout = new QHBoxLayout(widget);
 
 	epgChannelTableModel = new DvbEpgChannelTableModel(this);
 	epgChannelTableModel->setManager(manager);
