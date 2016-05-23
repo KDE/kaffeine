@@ -109,6 +109,32 @@ KaffeineApplication::~KaffeineApplication()
 //	return QApplication::newInstance();
 //}
 
+// The icon Kaffeine needs are either at breeze or oxygen themes
+static void iconThemeFunc()
+
+{
+	if ((QIcon::themeName() != QLatin1String("breeze")
+	    && QIcon::themeName() != QLatin1String("oxgen"))
+	    || QIcon::themeName().isEmpty()) {
+		foreach(const QString &path, QIcon::themeSearchPaths()) {
+			QDir d(path);
+			if (d.exists(QLatin1String("breeze"))) {
+				QIcon::setThemeName(QLatin1String("breeze"));
+				return;
+			}
+		}
+		foreach(const QString &path, QIcon::themeSearchPaths()) {
+			QDir d(path);
+			if (d.exists(QLatin1String("oxygen"))) {
+				QIcon::setThemeName(QLatin1String("oxygen"));
+				return;
+			}
+		}
+	}
+}
+
+Q_COREAPP_STARTUP_FUNCTION(iconThemeFunc)
+
 int main(int argc, char *argv[])
 {
     qInstallMessageHandler(verboseMessageHandler);
