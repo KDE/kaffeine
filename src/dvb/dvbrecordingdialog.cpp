@@ -521,17 +521,17 @@ void DvbRecordingEditor::beginChanged(const QDateTime &begin)
 	// attention: setDateTimeRange and setDateTime influence each other!
 	QTime duration = durationEdit->time();
 	endEdit->setDateTimeRange(begin, begin.addSecs((23 * 60 + 59) * 60));
-	endEdit->setDateTime(begin.addSecs(QTime().secsTo(duration)));
+	endEdit->setDateTime(begin.addSecs(QTime(0, 0, 0).secsTo(duration)));
 }
 
 void DvbRecordingEditor::durationChanged(const QTime &duration)
 {
-	endEdit->setDateTime(beginEdit->dateTime().addSecs(QTime().secsTo(duration)));
+	endEdit->setDateTime(beginEdit->dateTime().addSecs(QTime(0, 0, 0).secsTo(duration)));
 }
 
 void DvbRecordingEditor::endChanged(const QDateTime &end)
 {
-	durationEdit->setTime(QTime().addSecs(beginEdit->dateTime().secsTo(end)));
+	durationEdit->setTime(QTime(0, 0, 0).addSecs(beginEdit->dateTime().secsTo(end)));
 }
 
 void DvbRecordingEditor::repeatNever()

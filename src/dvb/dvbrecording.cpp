@@ -46,7 +46,7 @@ bool DvbRecording::validate()
 	    (begin.timeSpec() == Qt::UTC) && duration.isValid()) {
 		// the seconds and milliseconds aren't visible --> set them to zero
 		begin = begin.addMSecs(-(QTime().msecsTo(begin.time()) % 60000));
-		end = begin.addSecs(QTime().secsTo(duration));
+		end = begin.addSecs(QTime(0, 0, 0).secsTo(duration));
 		beginEPG = beginEPG.addMSecs(-(QTime().msecsTo(beginEPG.time()) % 60000));
 		endEPG = beginEPG.addSecs(QTime().secsTo(durationEPG));
 		repeat &= ((1 << 7) - 1);
