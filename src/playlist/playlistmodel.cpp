@@ -235,7 +235,7 @@ bool Playlist::loadKaffeinePlaylist(QIODevice *device)
 		track.length = QTime::fromString(length, Qt::ISODate);
 
 		if (QTime(0, 0, 0).msecsTo(track.length) == 0) {
-			track.length = QTime();
+			track.length = QTime(0, 0, 0);
 		}
 
 		appendTrack(track);
@@ -260,7 +260,7 @@ bool Playlist::loadM3UPlaylist(QIODevice *device)
 				int length = line.mid(8, index - 8).toInt(&ok);
 
 				if (ok && (length >= 0)) {
-					track.length = QTime().addSecs(length);
+					track.length = QTime(0, 0, 0).addSecs(length);
 				}
 
 				track.title = line.mid(index + 1);
@@ -348,7 +348,7 @@ bool Playlist::loadPLSPlaylist(QIODevice *device)
 			int length = content.toInt(&ok);
 
 			if (ok && (length >= 0)) {
-				track.length = QTime().addSecs(content.toInt());
+				track.length = QTime(0, 0, 0).addSecs(content.toInt());
 			}
 
 			break;
@@ -450,7 +450,7 @@ bool Playlist::loadXSPFPlaylist(QIODevice *device)
 							trackNode.toElement().text().toInt(&ok);
 
 						if (ok && (length >= 0)) {
-							track.length = QTime().addMSecs(length);
+							track.length = QTime(0, 0, 0).addMSecs(length);
 						}
 					}
 				}
@@ -583,7 +583,7 @@ void PlaylistModel::updateTrackLength(Playlist *playlist, int length)
 {
 	if (playlist->currentTrack >= 0) {
 		if (QTime(0, 0, 0).msecsTo(playlist->tracks.at(playlist->currentTrack).length) < length) {
-			playlist->tracks[playlist->currentTrack].length = QTime().addMSecs(length);
+			playlist->tracks[playlist->currentTrack].length = QTime(0, 0, 0).addMSecs(length);
 
 			if (playlist == visiblePlaylist) {
 				QModelIndex modelIndex = index(playlist->currentTrack, 4);
@@ -783,7 +783,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 			QTime length = visiblePlaylist->at(index.row()).length;
 
 			if (length.isValid()) {
-				return QLocale().toString(length);
+				return length.toString("HH:mm:ss.zzz");
 			} else {
 				return QVariant();
 			}
