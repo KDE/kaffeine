@@ -45,10 +45,10 @@ bool DvbRecording::validate()
 	if (!name.isEmpty() && channel.isValid() && begin.isValid() &&
 	    (begin.timeSpec() == Qt::UTC) && duration.isValid()) {
 		// the seconds and milliseconds aren't visible --> set them to zero
-		begin = begin.addMSecs(-(QTime().msecsTo(begin.time()) % 60000));
+		begin = begin.addMSecs(-(QTime(0, 0, 0).msecsTo(begin.time()) % 60000));
 		end = begin.addSecs(QTime(0, 0, 0).secsTo(duration));
-		beginEPG = beginEPG.addMSecs(-(QTime().msecsTo(beginEPG.time()) % 60000));
-		endEPG = beginEPG.addSecs(QTime().secsTo(durationEPG));
+		beginEPG = beginEPG.addMSecs(-(QTime(0, 0, 0).msecsTo(beginEPG.time()) % 60000));
+		endEPG = beginEPG.addSecs(QTime(0, 0, 0).secsTo(durationEPG));
 		repeat &= ((1 << 7) - 1);
 		return true;
 	}

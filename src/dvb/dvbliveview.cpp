@@ -68,7 +68,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 		entryString = QLocale().toString(firstEntry.begin.toLocalTime().time())
 			+ QLatin1Char(' ') + firstEntry.title;
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
-		totalTime = QTime().secsTo(firstEntry.duration);
+		totalTime = QTime(0, 0, 0).secsTo(firstEntry.duration);
 	}
 
 	if ((level == ShortOsd) && secondEntry.channel.isValid()) {

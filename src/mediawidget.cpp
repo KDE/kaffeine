@@ -1309,7 +1309,7 @@ JumpToPositionDialog::~JumpToPositionDialog()
 
 void JumpToPositionDialog::accept()
 {
-	mediaWidget->setPosition(QTime().msecsTo(timeEdit->time()));
+	mediaWidget->setPosition(QTime(0, 0, 0).msecsTo(timeEdit->time()));
 	QDialog::accept();
 }
 

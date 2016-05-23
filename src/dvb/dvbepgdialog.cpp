@@ -153,7 +153,7 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	}
 
 	QDateTime begin = entry->begin.toLocalTime();
-	QTime end = entry->begin.addSecs(QTime().secsTo(entry->duration)).toLocalTime().time();
+	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 	text += i18nc("@info tv show start, end", "<font color=#800000>%1 - %2</font><br><br>",
 		QLocale().toString(begin, QLocale::LongFormat),
 		QLocale().toString(end));

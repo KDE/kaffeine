@@ -236,7 +236,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
-	if (entry.begin.addSecs(QTime().secsTo(entry.duration)) > currentDateTimeUtc) {
+	if (entry.begin.addSecs(QTime(0, 0, 0).secsTo(entry.duration)) > currentDateTimeUtc) {
 		DvbSharedEpgEntry existingEntry = entries.value(DvbEpgEntryId(&entry));
 
 		if (existingEntry.isValid()) {
@@ -450,7 +450,7 @@ void DvbEpgModel::timerEvent(QTimerEvent *event)
 	while (ConstIterator(it) != entries.constEnd()) {
 		const DvbSharedEpgEntry &entry = *it;
 
-		if (entry->begin.addSecs(QTime().secsTo(entry->duration)) > currentDateTimeUtc) {
+		if (entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)) > currentDateTimeUtc) {
 			++it;
 		} else {
 			it = removeEntry(it);

@@ -234,7 +234,7 @@ bool Playlist::loadKaffeinePlaylist(QIODevice *device)
 
 		track.length = QTime::fromString(length, Qt::ISODate);
 
-		if (QTime().msecsTo(track.length) == 0) {
+		if (QTime(0, 0, 0).msecsTo(track.length) == 0) {
 			track.length = QTime();
 		}
 
@@ -285,7 +285,7 @@ void Playlist::saveM3UPlaylist(QIODevice *device) const
 		int length = -1;
 
 		if (track.length.isValid()) {
-			length = QTime().secsTo(track.length);
+			length = QTime(0, 0, 0).secsTo(track.length);
 		}
 
 		stream << "#EXTINF:" << length << QLatin1Char(',') << track.title << QLatin1Char('\n');
@@ -375,7 +375,7 @@ void Playlist::savePLSPlaylist(QIODevice *device) const
 		int length = -1;
 
 		if (track.length.isValid()) {
-			length = QTime().secsTo(track.length);
+			length = QTime(0, 0, 0).secsTo(track.length);
 		}
 
 		stream << "File" << index << '=' << toFileOrUrl(track.url) << '\n';
@@ -497,7 +497,7 @@ void Playlist::saveXSPFPlaylist(QIODevice *device) const
 
 		if (track.length.isValid()) {
 			stream.writeTextElement(QLatin1String("duration"),
-				QString::number(QTime().msecsTo(track.length)));
+				QString::number(QTime(0, 0, 0).msecsTo(track.length)));
 		}
 
 		stream.writeEndElement();
@@ -582,7 +582,7 @@ void PlaylistModel::setCurrentTrack(Playlist *playlist, int track)
 void PlaylistModel::updateTrackLength(Playlist *playlist, int length)
 {
 	if (playlist->currentTrack >= 0) {
-		if (QTime().msecsTo(playlist->tracks.at(playlist->currentTrack).length) < length) {
+		if (QTime(0, 0, 0).msecsTo(playlist->tracks.at(playlist->currentTrack).length) < length) {
 			playlist->tracks[playlist->currentTrack].length = QTime().addMSecs(length);
 
 			if (playlist == visiblePlaylist) {

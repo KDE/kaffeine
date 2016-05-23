@@ -321,7 +321,7 @@ MainWindow::MainWindow(KAboutData *aboutData)
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
 	// initialize random number generator
-	qsrand(QTime().msecsTo(QTime::currentTime()));
+	qsrand(QTime(0, 0, 0).msecsTo(QTime::currentTime()));
 
 	// initialize dbus objects
 	QDBusConnection::sessionBus().registerObject(QLatin1String("/"), new MprisRootObject(this),
