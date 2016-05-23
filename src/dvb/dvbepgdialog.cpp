@@ -345,9 +345,9 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 		case Qt::DisplayRole:
 			switch (index.column()) {
 			case 0:
-				return QLocale().toString((entry->begin.toLocalTime()), QLocale::ShortFormat);
+				return QLocale().toString((entry->begin.toLocalTime()), QLocale::NarrowFormat);
 			case 1:
-				return QLocale().toString(entry->duration);
+				return entry->duration.toString("hh:mm");
 			case 2:
 				return entry->title;
 			case 3:
