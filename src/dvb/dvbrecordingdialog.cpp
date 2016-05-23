@@ -49,7 +49,7 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
 
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
@@ -89,9 +89,9 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	boxLayout->addWidget(pushButton);
 	boxLayout->addStretch();
 
-	mainLayout->addWidget(buttonBox);
 	mainLayout->addLayout(boxLayout);
 	mainLayout->addWidget(treeView);
+	mainLayout->addWidget(buttonBox);
 
 	resize(100 * fontMetrics().averageCharWidth(), 20 * fontMetrics().height());
 }
@@ -386,7 +386,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
 	QBoxLayout *mainLayout = new QVBoxLayout;
-//	mainLayout->addWidget(gridLayout);
+	setLayout(mainLayout);
 
 	nameEdit = new QLineEdit(widget);
 	mainLayout->addWidget(nameEdit);
@@ -401,7 +401,6 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	channelBox = new KComboBox(widget);
 	mainLayout->addWidget(channelBox);
 	DvbChannelTableModel *channelModel = new DvbChannelTableModel(widget);
-//	mainLayout->addWidget(channelModel);
 	QHeaderView *header = manager->getChannelView()->header();
 	channelModel->sort(header->sortIndicatorSection(), header->sortIndicatorOrder());
 	channelModel->setChannelModel(manager->getChannelModel());
@@ -499,6 +498,11 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 		beginEdit->setDateTime(QDateTime::currentDateTime());
 		durationEdit->setTime(QTime(2, 0));
 	}
+
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	mainLayout->addWidget(buttonBox);
 
 	checkValidity();
 
