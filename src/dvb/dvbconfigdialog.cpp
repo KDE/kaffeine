@@ -1377,6 +1377,7 @@ void DvbSLnbConfigObject::configure()
 	QDialog *dialog = new QDialog(configureButton);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->setWindowTitle(i18n("LNB Settings"));
+	dialog->setLayout(mainLayout);
 
 	QWidget *mainWidget = new QWidget(dialog);
 	QGridLayout *gridLayout = new QGridLayout(mainWidget);
@@ -1464,8 +1465,6 @@ void DvbSLnbConfigObject::configure()
 	selectType(lnbType);
 
 	connect(dialog, SIGNAL(finished(int)), this, SLOT(dialogAccepted()));
-
-	dialog->resize(36 * dialog->fontMetrics().averageCharWidth(), 13 * dialog->fontMetrics().height());
 
 	dialog->setModal(true);
 	dialog->show();
