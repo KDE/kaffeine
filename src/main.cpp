@@ -67,7 +67,7 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 class KaffeineApplication : public QApplication
 {
 public:
-	KaffeineApplication(int &argc, char **argv);
+	KaffeineApplication(int &argc, char **argv, KAboutData *aboutData);
 	~KaffeineApplication();
 	QCommandLineParser parser;
 
@@ -77,7 +77,7 @@ private:
 	QPointer<MainWindow> mainWindow;
 };
 
-KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(argc, argv)
+KaffeineApplication::KaffeineApplication(int &argc, char **argv, KAboutData *aboutData) : QApplication(argc, argv)
 {
 	QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 
@@ -89,7 +89,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		return;
 	}
 
-	mainWindow = new MainWindow();
+	mainWindow = new MainWindow(aboutData);
 
 	mainWindow->cmdLineOptions(&parser);
 }
@@ -140,8 +140,6 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(verboseMessageHandler);
 //    qSetMessagePattern("%{file}(%{line}): %{message}");
 
-    KaffeineApplication app(argc, argv);
-
     KAboutData aboutData(
 		// Program name
 		QStringLiteral("kaffeine"),
@@ -159,6 +157,8 @@ int main(int argc, char *argv[])
 		// Home page
 		QStringLiteral("http://kaffeine.kde.org")
     );
+
+    KaffeineApplication app(argc, argv, &aboutData);
 
     aboutData.addAuthor(i18n("Christoph Pfister"), i18n("Maintainer"),
 		QStringLiteral("christophpfister@gmail.com"));

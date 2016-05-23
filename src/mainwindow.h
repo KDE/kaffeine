@@ -25,6 +25,7 @@
 #include <QCommandLineParser>
 #include "mediawidget.h"
 
+class KAboutData;
 class QSystemTrayIcon;
 class QStackedLayout;
 class KCmdLineOptions;
@@ -39,7 +40,7 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 public:
-	MainWindow();
+	MainWindow(KAboutData *aboutData);
 	~MainWindow();
 
 	void cmdLineOptions(QCommandLineParser *parser);

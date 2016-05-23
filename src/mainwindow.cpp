@@ -26,6 +26,8 @@
 #include <KActionCollection>
 
 #include <QApplication>
+#include <KHelpMenu>
+#include <KAboutData>
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QInputDialog>
@@ -154,7 +156,7 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 	layout->setMargin(0);
 }
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(KAboutData *aboutData)
 {
 	readSettings();
 
@@ -224,8 +226,8 @@ MainWindow::MainWindow()
 	menu->addAction(collection->addAction(QLatin1String("settings_kaffeine"), action));
 
 	menuBar->addSeparator();
-	QMenu *helpMenu = new QMenu(i18n("&Help"), this);
-	menuBar->addMenu(helpMenu);
+	KHelpMenu *helpMenu = new KHelpMenu(this, *aboutData);
+	menuBar->addMenu(helpMenu->menu());
 
 	// navigation bar - keep in sync with TabIndex enum!
 
