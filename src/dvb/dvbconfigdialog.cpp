@@ -232,8 +232,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : KDialo
 		j = j + 1;
 	}
 
-
-
 	boxLayoutAutomaticRecording->addLayout(buttonGrid);
 	boxLayoutAutomaticRecording->addLayout(regexGrid);
 
@@ -495,11 +493,11 @@ void DvbConfigDialog::moveLeft(DvbConfigPage *configPage)
 		configPages.at(index - 1)->setMoveRightEnabled(true);
 	}
 
-	// configPages and tabWidget indexes differ by one
-	tabWidget->insertTab(index, configPages.at(index - 1), KIcon(QLatin1String("video-television")),
+	// configPages and tabWidget indexes differ by two
+	tabWidget->insertTab(index + 1, configPages.at(index - 1), KIcon(QLatin1String("video-television")),
 		i18n("Device %1", index));
-	tabWidget->setTabText(index + 1, i18n("Device %1", index + 1));
-	tabWidget->setCurrentIndex(index);
+	tabWidget->setTabText(index + 2, i18n("Device %1", index + 1));
+	tabWidget->setCurrentIndex(index + 1);
 }
 
 void DvbConfigDialog::moveRight(DvbConfigPage *configPage)
@@ -522,11 +520,11 @@ void DvbConfigDialog::moveRight(DvbConfigPage *configPage)
 		configPages.at(index - 1)->setMoveRightEnabled(true);
 	}
 
-	// configPages and tabWidget indexes differ by one
-	tabWidget->insertTab(index, configPages.at(index - 1), KIcon(QLatin1String("video-television")),
+	// configPages and tabWidget indexes differ by two
+	tabWidget->insertTab(index + 1, configPages.at(index - 1), KIcon(QLatin1String("video-television")),
 		i18n("Device %1", index));
-	tabWidget->setTabText(index + 1, i18n("Device %1", index + 1));
-	tabWidget->setCurrentIndex(index + 1);
+	tabWidget->setTabText(index + 2, i18n("Device %1", index + 1));
+	tabWidget->setCurrentIndex(index + 2);
 }
 
 void DvbConfigDialog::remove(DvbConfigPage *configPage)
@@ -548,8 +546,8 @@ void DvbConfigDialog::remove(DvbConfigPage *configPage)
 	}
 
 	for (; index < configPages.size(); ++index) {
-		// configPages and tabWidget indexes differ by one
-		tabWidget->setTabText(index + 1, i18n("Device %1", index + 1));
+		// configPages and tabWidget indexes differ by two
+		tabWidget->setTabText(index + 2, i18n("Device %1", index + 1));
 	}
 }
 
