@@ -244,7 +244,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	boxLayoutAutomaticRecording->addLayout(buttonGrid);
 	boxLayoutAutomaticRecording->addLayout(regexGrid);
 
-	tabWidget->insertTab(1, widgetAutomaticRecording, QIcon::fromTheme(QLatin1String("configure")),
+	tabWidget->addTab(widgetAutomaticRecording, QIcon::fromTheme(QLatin1String("configure")),
 			i18n("Automatic Recording"));
 	//
 
