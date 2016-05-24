@@ -225,6 +225,10 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	QWidget *mainWidget = new QWidget(this);
 	QBoxLayout *mainLayout = new QHBoxLayout(mainWidget);
 
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
 	QGroupBox *groupBox = new QGroupBox(i18n("Channels"), mainWidget);
 	QBoxLayout *groupLayout = new QVBoxLayout(groupBox);
 	QBoxLayout *boxLayout = new QHBoxLayout();
@@ -377,11 +381,11 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
+	mainLayout->addWidget(buttonBox);
 }
 
 DvbScanDialog::~DvbScanDialog()
 {
-	dialogAccepted();
 	delete internal;
 }
 
@@ -454,6 +458,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 void DvbScanDialog::dialogAccepted()
 {
 	manager->getChannelModel()->cloneFrom(channelModel);
+	QDialog::accept();
 }
 
 static bool localeAwareLessThan2(const QString &x, const QString &y)
