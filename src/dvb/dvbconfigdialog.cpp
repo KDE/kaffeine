@@ -263,6 +263,9 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 		++i;
 	}
 
+	// Use a size that would allow show multiple devices
+	resize(100 * fontMetrics().averageCharWidth(), 28 * fontMetrics().height());
+
 	if (!configPages.isEmpty()) {
 		configPages.at(0)->setMoveLeftEnabled(false);
 		configPages.at(configPages.size() - 1)->setMoveRightEnabled(false);
