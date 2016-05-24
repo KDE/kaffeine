@@ -1,0 +1,11 @@
+- Fix DVB menus navigation.
+
+  On qt4, the mouse movements were sent to libvlc, but, on qt5, only the
+  mouse press. That causes the VLC to auto-ride the mouse. Without the
+  mouse, it is hard to find the right place to click during DVB menus
+  navigation. Btw, qtPlayer, at vlc source tree also has the same
+  problem.
+
+- DVB device removal sometimes causes crash.
+
+  Need to fix DVB device hotplug.
