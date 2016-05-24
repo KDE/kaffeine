@@ -60,6 +60,10 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	setLayout(mainLayout);
 	mainLayout->addWidget(tabWidget);
 
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
 	QWidget *widget = new QWidget(tabWidget);
 	mainLayout->addWidget(widget);
 	QBoxLayout *boxLayout = new QVBoxLayout(widget);
@@ -263,11 +267,12 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 		configPages.at(0)->setMoveLeftEnabled(false);
 		configPages.at(configPages.size() - 1)->setMoveRightEnabled(false);
 	}
+
+	mainLayout->addWidget(buttonBox);
 }
 
 DvbConfigDialog::~DvbConfigDialog()
 {
-	accept();
 }
 
 void DvbConfigDialog::changeRecordingFolder()
@@ -327,10 +332,10 @@ void DvbConfigDialog::newRegex()
  */
 void deleteChildWidgets(QLayoutItem *item) {
     if (item->layout()) {
-        // Process all child items recursively.
-        for (int i = 0; i < item->layout()->count(); i++) {
-            deleteChildWidgets(item->layout()->itemAt(i));
-        }
+	// Process all child items recursively.
+	for (int i = 0; i < item->layout()->count(); i++) {
+	    deleteChildWidgets(item->layout()->itemAt(i));
+	}
     }
     delete item->widget();
 }
@@ -345,16 +350,16 @@ void deleteChildWidgets(QLayoutItem *item) {
 void DvbConfigDialog::removeWidgets(QGridLayout *layout, int row, int column, bool deleteWidgets) {
     // We avoid usage of QGridLayout::itemAtPosition() here to improve performance.
     for (int i = layout->count() - 1; i >= 0; i--) {
-        int r, c, rs, cs;
-        layout->getItemPosition(i, &r, &c, &rs, &cs);
-        if ((r <= row && r + rs - 1 >= row) || (c <= column && c + cs - 1 >= column)) {
-            // This layout item is subject to deletion.
-            QLayoutItem *item = layout->takeAt(i);
-            if (deleteWidgets) {
-                deleteChildWidgets(item);
-            }
-            delete item;
-        }
+	int r, c, rs, cs;
+	layout->getItemPosition(i, &r, &c, &rs, &cs);
+	if ((r <= row && r + rs - 1 >= row) || (c <= column && c + cs - 1 >= column)) {
+	    // This layout item is subject to deletion.
+	    QLayoutItem *item = layout->takeAt(i);
+	    if (deleteWidgets) {
+		deleteChildWidgets(item);
+	    }
+	    delete item;
+	}
     }
 }
 
@@ -648,29 +653,29 @@ void DvbConfigDialog::accept()
 DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidget *parent) :
 	QDialog(parent), manager(manager_)
 {
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel);
+	setWindowTitle(i18n("Update Scan Data"));
+
 	QWidget *mainWidget = new QWidget(this);
 	mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
+
+	buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	setWindowTitle(i18n("Update Scan Data"));
 
 	QWidget *widget = new QWidget(this);
 	mainLayout->addWidget(widget);
 
-	QBoxLayout *layout = new QVBoxLayout(widget);
 	mainLayout->addWidget(widget);
 
 	label = new QLabel(i18n("Downloading scan data"), widget);
 	mainLayout->addWidget(label);
-	layout->addWidget(label);
 
 	progressBar = new QProgressBar(widget);
 	mainLayout->addWidget(progressBar);
 	progressBar->setRange(0, 100);
-	layout->addWidget(progressBar);
 
 	mainLayout->addWidget(buttonBox);
 
@@ -705,14 +710,7 @@ void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)
 
 void DvbScanFileDownloadDialog::jobFinished()
 {
-	QVBoxLayout *mainLayout = new QVBoxLayout();
-	setLayout(mainLayout);
-
 	progressBar->setValue(100);
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
-	mainLayout->addWidget(buttonBox);
 
 	if (job->error() != 0) {
 		if (job->error() == KJob::KilledJobError) {
@@ -725,6 +723,7 @@ void DvbScanFileDownloadDialog::jobFinished()
 	}
 
 	if (manager->updateScanData(scanData)) {
+		buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 		label->setText(i18n("Scan data successfully updated. Changes take\n"
 				    "effect after you have closed the configuration dialog."));
 	} else {
@@ -1379,6 +1378,10 @@ void DvbSLnbConfigObject::configure()
 	dialog->setWindowTitle(i18n("LNB Settings"));
 	dialog->setLayout(mainLayout);
 
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
 	QWidget *mainWidget = new QWidget(dialog);
 	QGridLayout *gridLayout = new QGridLayout(mainWidget);
 	mainLayout->addWidget(mainWidget);
@@ -1464,7 +1467,7 @@ void DvbSLnbConfigObject::configure()
 	lnbSelectionGroup->button(lnbType)->setChecked(true);
 	selectType(lnbType);
 
-	connect(dialog, SIGNAL(finished(int)), this, SLOT(dialogAccepted()));
+	mainLayout->addWidget(buttonBox);
 
 	dialog->setModal(true);
 	dialog->show();

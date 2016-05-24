@@ -39,6 +39,8 @@ class QComboBox;
 class KJob;
 class QLineEdit;
 class QTabWidget;
+class QDialogButtonBox;
+
 namespace KIO
 {
 class Job;
@@ -139,6 +141,7 @@ private:
 	KIO::TransferJob *job;
 	QByteArray scanData;
 	QVBoxLayout *mainLayout;
+	QDialogButtonBox *buttonBox;
 };
 
 class DvbConfigPage : public QWidget

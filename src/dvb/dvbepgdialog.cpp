@@ -46,7 +46,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	QBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 
-	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Close);
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 	mainLayout->addWidget(mainWidget);
