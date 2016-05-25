@@ -18,10 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "mplayervideowidget.h"
-
 #include <QMouseEvent>
+
 #include "mplayermediawidget.h"
+#include "mplayervideowidget.h"
 
 MPlayerVideoWidget::MPlayerVideoWidget(MPlayerMediaWidget *mediaWidget_) : QWidget(mediaWidget_),
 	mediaWidget(mediaWidget_)

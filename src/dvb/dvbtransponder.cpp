@@ -18,11 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbtransponder.h"
-
-#include <stdint.h>
 #include <QDataStream>
 #include <QTextStream>
+#include <stdint.h>
+
+#include "dvbtransponder.h"
 
 static const char *enumToLinuxtv(DvbTransponderBase::FecRate fecRate)
 {

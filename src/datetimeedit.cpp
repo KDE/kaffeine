@@ -18,9 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "datetimeedit.h"
 #include <QLocale>
 
+#include "datetimeedit.h"
 
 static QString localQtDateFormat()
 {

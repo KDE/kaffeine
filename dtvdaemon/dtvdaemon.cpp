@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dtvdaemon.h"
-
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
+
 #include "connection.h"
+#include "dtvdaemon.h"
 
 DtvDaemon::DtvDaemon(QFile *lockfile_) : lockfile(lockfile_)
 {

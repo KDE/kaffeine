@@ -18,27 +18,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbrecording.h"
-#include "dvbrecording_p.h"
-
+#include <KIdleTime>
+#include <QCoreApplication>
+#include <QDataStream>
 #include <QDebug>
 #include <QDir>
+#include <QEventLoop>
 #include <QMap>
 #include <QProcess>
 #include <QSet>
-#include <QCoreApplication>
-#include <QEventLoop>
-#include <QDataStream>
-#include <QVariant>
-#include <KIdleTime>
 #include <QStandardPaths>
+#include <QVariant>
 
 #include "../ensurenopendingoperation.h"
 #include "dvbdevice.h"
-#include "dvbmanager.h"
 #include "dvbepg.h"
-#include "dvbtab.h"
 #include "dvbliveview.h"
+#include "dvbmanager.h"
+#include "dvbrecording.h"
+#include "dvbrecording_p.h"
+#include "dvbtab.h"
 
 bool DvbRecording::validate()
 {

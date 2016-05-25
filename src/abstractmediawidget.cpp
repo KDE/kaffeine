@@ -18,9 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "abstractmediawidget.h"
-
 #include <QCoreApplication>
+
+#include "abstractmediawidget.h"
 
 AbstractMediaWidget::AbstractMediaWidget(QWidget *parent) : QWidget(parent), mediaWidget(NULL)
 {

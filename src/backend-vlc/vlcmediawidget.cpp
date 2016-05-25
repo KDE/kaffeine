@@ -18,11 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "vlcmediawidget.h"
-
 #include <QDebug>
 #include <QMouseEvent>
 #include <vlc/vlc.h>
+
+#include "vlcmediawidget.h"
 
 VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
 	vlcMediaPlayer(NULL), playingDvd(false)

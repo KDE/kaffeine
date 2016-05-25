@@ -18,9 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "ensurenopendingoperation.h"
-
 #include <QDebug>
+
+#include "ensurenopendingoperation.h"
 
 void EnsureNoPendingOperation::printFatalErrorMessage()
 {

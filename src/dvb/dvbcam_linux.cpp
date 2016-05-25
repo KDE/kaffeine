@@ -18,17 +18,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbcam_linux.h"
-
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/dvb/ca.h>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
-#include <errno.h>
-#include <fcntl.h>
-#include <linux/dvb/ca.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+
+#include "dvbcam_linux.h"
 #include "dvbsi.h"
 
 // krazy:excludeall=syscalls

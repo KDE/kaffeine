@@ -18,11 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dbusobjects.h"
-
-#include <QDBusMetaType>
 #include <KAboutData>
 #include <QApplication>
+#include <QDBusMetaType>
+
+#include "dbusobjects.h"
 #include "dvb/dvbmanager.h"
 #include "dvb/dvbtab.h"
 #include "playlist/playlisttab.h"

@@ -18,17 +18,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "playlistmodel.h"
-
+#include <KLocalizedString>
 #include <QDebug>
 #include <QDir>
 #include <QDomDocument>
+#include <QLocale>
 #include <QMimeData>
 #include <QSet>
 #include <QTextStream>
 #include <QXmlStreamWriter>
-#include <QLocale>
-#include <KLocalizedString>
+
+#include "playlistmodel.h"
 
 bool Playlist::load(const QUrl &url_, Format format)
 {

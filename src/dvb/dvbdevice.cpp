@@ -18,15 +18,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbdevice.h"
-#include "dvbdevice_p.h"
-
 #include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
-#include <cmath>
 #include <unistd.h>
+
+#include <cmath>
+
 #include "dvbconfig.h"
+#include "dvbdevice.h"
+#include "dvbdevice_p.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
 

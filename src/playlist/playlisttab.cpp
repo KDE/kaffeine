@@ -18,24 +18,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "playlisttab.h"
-
-#include <QBoxLayout>
-#include <QDebug>
-#include <QKeyEvent>
-#include <QListView>
-#include <QSplitter>
-#include <QTimer>
-#include <QToolButton>
-#include <QAction>
 #include <KActionCollection>
 #include <KFileWidget>
-#include <QFileDialog>
 #include <KLocalizedString>
+#include <QAction>
+#include <QBoxLayout>
+#include <QDebug>
+#include <QFileDialog>
+#include <QKeyEvent>
+#include <QListView>
 #include <QMenu>
+#include <QSplitter>
 #include <QStandardPaths>
+#include <QTimer>
+#include <QToolButton>
 
 #include "playlistmodel.h"
+#include "playlisttab.h"
 
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 	Playlist *temporaryPlaylist, QObject *parent) : QAbstractListModel(parent),

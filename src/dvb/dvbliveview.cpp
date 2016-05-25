@@ -18,25 +18,24 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbliveview.h"
-#include "dvbliveview_p.h"
-
-#include <QDebug>
-#include <QDir>
-#include <QPainter>
-#include <QSet>
-#include <QLocale>
-#include <QSocketNotifier>
-#include <KMessageBox>
-#include <KLocalizedString>
-
 #include <errno.h>
 #include <fcntl.h>
-#include <sys/stat.h> // bsd compatibility
-#include <sys/types.h> // bsd compatibility
-#include <unistd.h>
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <QDebug>
+#include <QDir>
+#include <QLocale>
+#include <QPainter>
+#include <QSet>
+#include <QSocketNotifier>
 #include <QStandardPaths>
+#include <sys/stat.h>  // bsd compatibility
+#include <sys/types.h>  // bsd compatibility
+#include <unistd.h>
+
 #include "dvbdevice.h"
+#include "dvbliveview.h"
+#include "dvbliveview_p.h"
 #include "dvbmanager.h"
 
 void DvbOsd::init(OsdLevel level_, const QString &channelName_,

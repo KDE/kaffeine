@@ -18,14 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbscan.h"
-
 #include <QBitArray>
 #include <QDebug>
-#include "dvbdevice.h"
-#include "dvbsi.h"
-
 #include <stdint.h>
+
+#include "dvbdevice.h"
+#include "dvbscan.h"
+#include "dvbsi.h"
 
 class DvbPatEntry
 {

@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "configuration.h"
-
 #include <KConfig>
 #include <KConfigGroup>
 #include <KSharedConfig>
 #include <QDebug>
+
+#include "configuration.h"
 
 Configuration::Configuration()
 {

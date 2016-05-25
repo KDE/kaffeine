@@ -18,33 +18,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "mediawidget.h"
-#include "mediawidget_p.h"
-
+#include <KActionCollection>
+#include <KComboBox>
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <KSharedConfig>
+#include <KToolBar>
 #include <QBoxLayout>
 #include <QContextMenuEvent>
-#include <QDebug>
 #include <QDBusInterface>
+#include <QDebug>
 #include <QLabel>
+#include <QMenu>
+#include <QMimeData>
 #include <QPushButton>
 #include <QStringListModel>
-#include <QMimeData>
 #include <QTimeEdit>
 #include <QTimer>
+#include <QWidgetAction>
 #include <QX11Info>
 #include <Solid/Block>
 #include <Solid/Device>
-#include <QWidgetAction>
-#include <KActionCollection>
-#include <KComboBox>
-#include <KLocalizedString>
-#include <QMenu>
-#include <KToolBar>
 #include <X11/extensions/scrnsaver.h>
-#include <KConfigGroup>
-#include <KSharedConfig>
+
 #include "backend-vlc/vlcmediawidget.h"
 #include "configuration.h"
+#include "mediawidget.h"
+#include "mediawidget_p.h"
 #include "osdwidget.h"
 
 MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,

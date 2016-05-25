@@ -18,23 +18,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbtab.h"
-
+#include <KActionCollection>
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <KSharedConfig>
+#include <QAction>
 #include <QBoxLayout>
 #include <QDebug>
 #include <QDir>
 #include <QHeaderView>
+#include <QLineEdit>
+#include <QMenu>
 #include <QSplitter>
 #include <QThread>
 #include <QToolButton>
-#include <QAction>
-#include <KLocalizedString>
-#include <KActionCollection>
-#include <QLineEdit>
-#include <QMenu>
-#include <KMessageBox>
-#include <KConfigGroup>
-#include <KSharedConfig>
+
 #include "../osdwidget.h"
 #include "dvbchanneldialog.h"
 #include "dvbconfigdialog.h"
@@ -44,6 +43,7 @@
 #include "dvbmanager.h"
 #include "dvbrecordingdialog.h"
 #include "dvbscandialog.h"
+#include "dvbtab.h"
 
 class DvbTimeShiftCleaner : public QThread
 {

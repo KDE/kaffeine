@@ -18,22 +18,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbmanager.h"
-#include "dvbmanager_p.h"
-
+#include <config-kaffeine.h>
+#include <KConfigGroup>
+#include <KSharedConfig>
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
-#include <KConfigGroup>
-
-#include <config-kaffeine.h>
 #include <QStandardPaths>
-#include <KSharedConfig>
+
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbdevice_linux.h"
 #include "dvbepg.h"
 #include "dvbliveview.h"
+#include "dvbmanager.h"
+#include "dvbmanager_p.h"
 #include "dvbsi.h"
 
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),

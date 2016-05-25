@@ -18,10 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbchanneldialog.h"
-#include "dvbchanneldialog_p.h"
-
+#include <KComboBox>
+#include <KConfigGroup>
 #include <KLocalizedString>
+#include <KMessageBox>
+#include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QCoreApplication>
@@ -29,13 +30,12 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QMimeData>
 #include <QSpinBox>
-#include <QAction>
-#include <KComboBox>
-#include <QLineEdit>
-#include <KMessageBox>
-#include <KConfigGroup>
+
+#include "dvbchanneldialog.h"
+#include "dvbchanneldialog_p.h"
 #include "dvbsi.h"
 
 bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const

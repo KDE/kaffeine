@@ -18,17 +18,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbepg.h"
-#include "dvbepg_p.h"
-
+#include <QDataStream>
 #include <QDebug>
 #include <QFile>
 #include <QStandardPaths>
-#include <QDataStream>
-
 
 #include "../ensurenopendingoperation.h"
 #include "dvbdevice.h"
+#include "dvbepg.h"
+#include "dvbepg_p.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
 

@@ -18,10 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "osdwidget.h"
-
 #include <QPainter>
 #include <QTimer>
+
+#include "osdwidget.h"
 
 OsdWidget::OsdWidget(QWidget *parent) : QWidget(parent), osdObject(NULL)
 {

@@ -18,14 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "sqlhelper.h"
-
-#include <QDebug>
-#include <QSqlError>
 #include <KLocalizedString>
 #include <KMessageBox>
+#include <QDebug>
+#include <QSqlError>
 #include <QStandardPaths>
 
+#include "sqlhelper.h"
 #include "sqlinterface.h"
 
 SqlHelper::SqlHelper()

@@ -18,26 +18,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbrecordingdialog.h"
-#include "dvbrecordingdialog_p.h"
-
+#include <KComboBox>
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QDebug>
+#include <QDialogButtonBox>
 #include <QHeaderView>
 #include <QLabel>
-#include <QPushButton>
-#include <QAction>
-#include <KLocalizedString>
 #include <QLineEdit>
-#include <KComboBox>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
-#include <QVBoxLayout>
 #include <QLocale>
+#include <QPushButton>
+#include <QVBoxLayout>
+
 #include "../datetimeedit.h"
 #include "dvbchanneldialog.h"
 #include "dvbmanager.h"
+#include "dvbrecordingdialog.h"
+#include "dvbrecordingdialog_p.h"
 
 DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)

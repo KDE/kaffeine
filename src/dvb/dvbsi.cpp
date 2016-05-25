@@ -18,10 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbsi.h"
-
 #include <QDebug>
 #include <QTextCodec>
+
+#include "dvbsi.h"
 
 void DvbSection::initSection(const char *data, int size)
 {

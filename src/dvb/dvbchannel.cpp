@@ -18,15 +18,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbchannel.h"
-
+#include <QDataStream>
 #include <QDebug>
 #include <QFile>
-#include <QVariant>
 #include <QStandardPaths>
-#include <QDataStream>
+#include <QVariant>
 
 #include "../ensurenopendingoperation.h"
+#include "dvbchannel.h"
 #include "dvbsi.h"
 
 bool DvbChannel::validate()

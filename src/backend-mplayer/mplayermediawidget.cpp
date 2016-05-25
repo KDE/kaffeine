@@ -18,10 +18,10 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "mplayermediawidget.h"
-
 #include <KLocalizedString>
 #include <KMessageBox>
+
+#include "mplayermediawidget.h"
 #include "mplayervideowidget.h"
 
 MPlayerMediaWidget::MPlayerMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),

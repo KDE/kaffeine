@@ -18,28 +18,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbscandialog.h"
-
+#include <KComboBox>
+#include <KConfigGroup>
+#include <KLed>
+#include <KLocalizedString>
+#include <KMessageBox>
+#include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QHeaderView>
+#include <QLocale>
 #include <QPainter>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QSortFilterProxyModel>
-#include <QAction>
-#include <KComboBox>
-#include <KLed>
-#include <KLocalizedString>
-#include <KMessageBox>
-#include <KConfigGroup>
-#include <QLocale>
+
 #include "dvbchanneldialog.h"
 #include "dvbdevice.h"
 #include "dvbliveview.h"
 #include "dvbmanager.h"
 #include "dvbscan.h"
+#include "dvbscandialog.h"
 
 DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
 {

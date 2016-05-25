@@ -18,23 +18,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbepgdialog.h"
-#include "dvbepgdialog_p.h"
-
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <QAction>
 #include <QBoxLayout>
 #include <QCoreApplication>
 #include <QDebug>
+#include <QDialogButtonBox>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
+#include <QLocale>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QAction>
-#include <QLineEdit>
-#include <KLocalizedString>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
 #include <QVBoxLayout>
-#include <QLocale>
+
+#include "dvbepgdialog.h"
+#include "dvbepgdialog_p.h"
 #include "dvbmanager.h"
 
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),

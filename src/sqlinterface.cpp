@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "sqlinterface.h"
-
-#include <QDebug>
 #include <QAbstractItemModel>
+#include <QDebug>
 #include <QStringList>
+
 #include "sqlhelper.h"
+#include "sqlinterface.h"
 
 SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 	sqlColumnCount(0)

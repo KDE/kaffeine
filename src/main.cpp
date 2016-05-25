@@ -18,21 +18,22 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <QDebug>
-#include <QString>
-#include <QDateTime>
-#include <iostream>
-#include <QPointer>
 #include <KAboutData>
-
-#include <QDir>
-#include <QStandardPaths>
-#include <QApplication>
 #include <KLocalizedString>
+#include <QApplication>
 #include <QCommandLineParser>
+#include <QDateTime>
+#include <QDebug>
+#include <QDir>
+#include <QPointer>
+#include <QStandardPaths>
+#include <QString>
+
+#include <iostream>
+
+#include "configurationdialog.h"
 #include "mainwindow.h"
 #include "sqlhelper.h"
-#include "configurationdialog.h"
 
 void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {

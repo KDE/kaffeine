@@ -19,20 +19,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbdevice_linux.h"
-
-#include <QDebug>
-#include <QFile>
-#include <Solid/Device>
-#include <Solid/DeviceNotifier>
-#include <QRegularExpressionMatch>
 #include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <frontend.h>
 #include <poll.h>
+#include <QDebug>
+#include <QFile>
+#include <QRegularExpressionMatch>
+#include <Solid/Device>
+#include <Solid/DeviceNotifier>
 #include <sys/ioctl.h>
 #include <unistd.h>
+
+#include "dvbdevice_linux.h"
 #include "dvbtransponder.h"
 
 // krazy:excludeall=syscalls

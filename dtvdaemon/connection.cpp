@@ -18,11 +18,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "connection.h"
-
 #include <QDebug>
 #include <QLocalSocket>
 #include <QtEndian>
+
+#include "connection.h"
 
 Connection::Connection(QLocalSocket *socket_) : QObject(socket_), socket(socket_),
 	packetCommand(0), packetLength(0)

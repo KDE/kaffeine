@@ -24,7 +24,6 @@
 #include <QMimeDatabase>
 #include <QMimeType>
 
-
 int main(int argc, char *argv[])
 {
 	// QCoreApplication is needed for proper file name handling

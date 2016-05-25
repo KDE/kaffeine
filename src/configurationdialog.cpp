@@ -18,21 +18,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "configurationdialog.h"
-#include "configurationdialog_p.h"
-
+#include <KComboBox>
+#include <KConfigGroup>
+#include <KLocalizedString>
+#include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QProcess>
 #include <QPushButton>
 #include <QSpinBox>
-#include <KComboBox>
-#include <KLocalizedString>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
 #include <QVBoxLayout>
+
 #include "configuration.h"
+#include "configurationdialog.h"
+#include "configurationdialog_p.h"
 
 QString Log::log;
 

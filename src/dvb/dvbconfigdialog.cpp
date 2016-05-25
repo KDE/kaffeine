@@ -18,34 +18,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "dvbconfigdialog.h"
-
+#include <KComboBox>
+#include <KConfigGroup>
+#include <KIO/Job>
+#include <KLocalizedString>
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QDialogButtonBox>
+#include <QFileDialog>
 #include <QLabel>
+#include <QLineEdit>
+#include <QLocale>
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QToolButton>
-#include <QTreeWidget>
-#include <QWidgetAction>
-#include <KComboBox>
-#include <QFileDialog>
-#include <KIO/Job>
-#include <QLineEdit>
-#include <KLocalizedString>
 #include <QStandardPaths>
 #include <QTabWidget>
-#include <KConfigGroup>
-#include <QDialogButtonBox>
+#include <QToolButton>
+#include <QTreeWidget>
 #include <QVBoxLayout>
-#include <QFileDialog>
-#include <QLocale>
+#include <QWidgetAction>
+
 #include "dvbconfig.h"
+#include "dvbconfigdialog.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbrecording.h"

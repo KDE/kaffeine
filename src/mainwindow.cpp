@@ -18,39 +18,37 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "mainwindow.h"
-
-#include <QDBusConnection>
-#include <QHoverEvent>
-#include <QStackedLayout>
-#include <KActionCollection>
-
-#include <QApplication>
-#include <KHelpMenu>
 #include <KAboutData>
+#include <KActionCollection>
+#include <KConfigGroup>
+#include <KHelpMenu>
+#include <kio/deletejob.h>
+#include <KLocalizedString>
+#include <KRecentFilesAction>
+#include <KSharedConfig>
+#include <KShortcutsDialog>
+#include <QApplication>
+#include <QCommandLineOption>
+#include <QDBusConnection>
 #include <QDesktopWidget>
 #include <QFileDialog>
+#include <QHoverEvent>
 #include <QInputDialog>
-#include <kio/deletejob.h>
-#include <QSettings>
+#include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
-#include <KRecentFilesAction>
-#include <KShortcutsDialog>
+#include <QSettings>
+#include <QStackedLayout>
 #include <QSystemTrayIcon>
 #include <QTabBar>
 #include <QToolBar>
-#include <QCommandLineOption>
-#include <KConfigGroup>
-#include <QFileDialog>
-#include <KSharedConfig>
-#include <KLocalizedString>
-#include <QMainWindow>
-#include "dvb/dvbtab.h"
-#include "playlist/playlisttab.h"
+
 #include "configuration.h"
 #include "configurationdialog.h"
 #include "dbusobjects.h"
+#include "dvb/dvbtab.h"
+#include "mainwindow.h"
+#include "playlist/playlisttab.h"
 
 class StackedLayout : public QStackedLayout
 {
