@@ -20,9 +20,9 @@
 
 #include "ensurenopendingoperation.h"
 
-#include "log.h"
+#include <QDebug>
 
 void EnsureNoPendingOperation::printFatalErrorMessage()
 {
-	Log("EnsureNoPendingOperation::printFatalErrorMessage: illegal recursive call");
+	qInfo() << "EnsureNoPendingOperation::printFatalErrorMessage: illegal recursive call";
 }

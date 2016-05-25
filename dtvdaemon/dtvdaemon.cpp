@@ -21,20 +21,20 @@
 #include "dtvdaemon.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include "connection.h"
-#include "log.h"
 
 DtvDaemon::DtvDaemon(QFile *lockfile_) : lockfile(lockfile_)
 {
-	Log("DtvDaemon::DtvDaemon: started");
+	qInfo() << "DtvDaemon::DtvDaemon: started";
 	startTimer(54000);
 
 	QString path = QDir::homePath() + QLatin1String("/.local/share/dtvdaemon/socket");
 	QLocalServer::removeServer(path);
 
 	if (!server.listen(path)) {
-		Log("DtvDaemon::DtvDaemon: cannot listen on") << path << server.errorString();
+		qInfo() << "DtvDaemon::DtvDaemon: cannot listen on" << path << server.errorString();
 	}
 
 	connect(&server, SIGNAL(newConnection()), this, SLOT(newConnection()));
@@ -42,7 +42,7 @@ DtvDaemon::DtvDaemon(QFile *lockfile_) : lockfile(lockfile_)
 
 DtvDaemon::~DtvDaemon()
 {
-	Log("DtvDaemon::~DtvDaemon: stopped");
+	qInfo() << "DtvDaemon::~DtvDaemon: stopped";
 }
 
 void DtvDaemon::newConnection()

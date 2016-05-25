@@ -23,6 +23,7 @@
 
 #include <QBoxLayout>
 #include <QContextMenuEvent>
+#include <QDebug>
 #include <QDBusInterface>
 #include <QLabel>
 #include <QPushButton>
@@ -44,7 +45,6 @@
 #include <KSharedConfig>
 #include "backend-vlc/vlcmediawidget.h"
 #include "configuration.h"
-#include "log.h"
 #include "osdwidget.h"
 
 MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
@@ -754,7 +754,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 		return;
 	}
 
-	Log("MediaWidget::aspectRatioChanged: internal error");
+	qInfo() << "MediaWidget::aspectRatioChanged: internal error";
 }
 
 void MediaWidget::autoResizeTriggered(QAction *action)
@@ -782,7 +782,7 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 		}
 	}
 
-	Log("MediaWidget::autoResizeTriggered: internal error");
+	qInfo() << "MediaWidget::autoResizeTriggered: internal error";
 }
 
 void MediaWidget::pausedChanged(bool paused)

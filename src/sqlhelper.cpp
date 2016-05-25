@@ -20,12 +20,12 @@
 
 #include "sqlhelper.h"
 
+#include <QDebug>
 #include <QSqlError>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <QStandardPaths>
 
-#include "log.h"
 #include "sqlinterface.h"
 
 SqlHelper::SqlHelper()
@@ -81,7 +81,7 @@ QSqlQuery SqlHelper::prepare(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.prepare(statement)) {
-		Log("SqlHelper::prepare: error while preparing statement") <<
+		qInfo() << "SqlHelper::prepare: error while preparing statement" <<
 			query.lastError().text();
 	}
 
@@ -94,7 +94,7 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.exec(statement)) {
-		Log("SqlHelper::exec: error while executing statement") <<
+		qInfo() << "SqlHelper::exec: error while executing statement" <<
 			query.lastError().text();
 	}
 
@@ -104,7 +104,7 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 void SqlHelper::exec(QSqlQuery &query)
 {
 	if (!query.exec()) {
-		Log("SqlHelper::exec: error while executing statement") <<
+		qInfo() << "SqlHelper::exec: error while executing statement" <<
 			query.lastError().text();
 	}
 }

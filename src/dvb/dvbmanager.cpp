@@ -21,6 +21,7 @@
 #include "dvbmanager.h"
 #include "dvbmanager_p.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
 #include <KConfigGroup>
@@ -28,7 +29,6 @@
 #include <config-kaffeine.h>
 #include <QStandardPaths>
 #include <KSharedConfig>
-#include "../log.h"
 #include "dvbconfig.h"
 #include "dvbdevice.h"
 #include "dvbdevice_linux.h"
@@ -268,7 +268,7 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
 
 	if (scanSource.second.isEmpty()) {
-		Log("DvbManager::getAutoScanSource: invalid source");
+		qInfo() << "DvbManager::getAutoScanSource: invalid source";
 		return QString();
 	}
 
@@ -288,7 +288,7 @@ QList<DvbTransponder> DvbManager::getTransponders(DvbDevice *device, const QStri
 	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
 
 	if (scanSource.second.isEmpty()) {
-		Log("DvbManager::getTransponders: invalid source");
+		qInfo() << "DvbManager::getTransponders: invalid source";
 		return QList<DvbTransponder>();
 	}
 
@@ -305,19 +305,19 @@ bool DvbManager::updateScanData(const QByteArray &data)
 	QByteArray uncompressed = qUncompress(data);
 
 	if (uncompressed.isEmpty()) {
-		Log("DvbManager::updateScanData: qUncompress failed");
+		qInfo() << "DvbManager::updateScanData: qUncompress failed";
 		return false;
 	}
 
 	if (!DvbScanData(uncompressed).readDate().isValid()) {
-		Log("DvbManager::updateScanData: invalid format");
+		qInfo() << "DvbManager::updateScanData: invalid format";
 		return false;
 	}
 
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		Log("DvbManager::updateScanData: cannot open") << file.fileName();
+		qInfo() << "DvbManager::updateScanData: cannot open" << file.fileName();
 		return false;
 	}
 
@@ -590,12 +590,12 @@ void DvbManager::loadDeviceManager()
 		QObject *deviceManager = QPluginLoader(path).instance();
 
 		if (deviceManager == NULL) {
-			Log("DvbManager::loadDeviceManager: cannot load dvb device manager") <<
+			qInfo() << "DvbManager::loadDeviceManager: cannot load dvb device manager" <<
 				path;
 			break;
 		}
 
-		Log("DvbManager::loadDeviceManager: using dvb device manager") << path;
+		qInfo() << "DvbManager::loadDeviceManager: using dvb device manager" << path;
 		deviceManager->setParent(this);
 		connect(deviceManager, SIGNAL(requestBuiltinDeviceManager(QObject*&)),
 			this, SLOT(requestBuiltinDeviceManager(QObject*&)));
@@ -607,7 +607,7 @@ void DvbManager::loadDeviceManager()
 		return;
 	}
 
-	Log("DvbManager::loadDeviceManager: using built-in dvb device manager");
+	qInfo() << "DvbManager::loadDeviceManager: using built-in dvb device manager";
 	DvbLinuxDeviceManager *deviceManager = new DvbLinuxDeviceManager(this);
 	connect(deviceManager, SIGNAL(deviceAdded(DvbBackendDevice*)),
 		this, SLOT(deviceAdded(DvbBackendDevice*)));
@@ -621,7 +621,7 @@ void DvbManager::readDeviceConfigs()
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		Log("DvbManager::readDeviceConfigs: cannot open") << file.fileName();
+		qInfo() << "DvbManager::readDeviceConfigs: cannot open" << file.fileName();
 		return;
 	}
 
@@ -683,7 +683,7 @@ void DvbManager::readDeviceConfigs()
 	}
 
 	if (!reader.isValid()) {
-		Log("DvbManager::readDeviceConfigs: cannot read") << file.fileName();
+		qInfo() << "DvbManager::readDeviceConfigs: cannot read" << file.fileName();
 	}
 }
 
@@ -692,7 +692,7 @@ void DvbManager::writeDeviceConfigs()
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		Log("DvbManager::writeDeviceConfigs: cannot open") << file.fileName();
+		qInfo() << "DvbManager::writeDeviceConfigs: cannot open" << file.fileName();
 		return;
 	}
 
@@ -772,12 +772,12 @@ void DvbManager::readScanData()
 		globalDate = DvbScanData(globalFile.read(1024)).readDate();
 
 		if (globalDate.isNull()) {
-			Log("DvbManager::readScanData: cannot parse") << globalFile.fileName();
+			qInfo() << "DvbManager::readScanData: cannot parse" << globalFile.fileName();
 		}
 
 		globalFile.close();
 	} else {
-		Log("DvbManager::readScanData: cannot open") << globalFile.fileName();
+		qInfo() << "DvbManager::readScanData: cannot open" << globalFile.fileName();
 	}
 
 	QFile localFile(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
@@ -789,7 +789,7 @@ void DvbManager::readScanData()
 		localDate = DvbScanData(localData).readDate();
 
 		if (localDate.isNull()) {
-			Log("DvbManager::readScanData: cannot parse") << localFile.fileName();
+			qInfo() << "DvbManager::readScanData: cannot parse" << localFile.fileName();
 		}
 
 		localFile.close();
@@ -799,11 +799,11 @@ void DvbManager::readScanData()
 		localData.clear();
 
 		if (localFile.exists() && !localFile.remove()) {
-			Log("DvbManager::readScanData: cannot remove") << localFile.fileName();
+			qInfo() << "DvbManager::readScanData: cannot remove" << localFile.fileName();
 		}
 
 		if (!globalFile.copy(localFile.fileName())) {
-			Log("DvbManager::readScanData: cannot copy") << globalFile.fileName() <<
+			qInfo() << "DvbManager::readScanData: cannot copy" << globalFile.fileName() <<
 				QLatin1String("to") << localFile.fileName();
 		}
 
@@ -811,7 +811,7 @@ void DvbManager::readScanData()
 			localData = localFile.readAll();
 			localFile.close();
 		} else {
-			Log("DvbManager::readScanData: cannot open") << localFile.fileName();
+			qInfo() << "DvbManager::readScanData: cannot open" << localFile.fileName();
 			scanDataDate = QDate(1900, 1, 1);
 			return;
 		}
@@ -821,7 +821,7 @@ void DvbManager::readScanData()
 	scanDataDate = data.readDate();
 
 	if (!scanDataDate.isValid()) {
-		Log("DvbManager::readScanData: cannot parse") << localFile.fileName();
+		qInfo() << "DvbManager::readScanData: cannot parse" << localFile.fileName();
 		scanDataDate = QDate(1900, 1, 1);
 		return;
 	}
@@ -832,7 +832,7 @@ void DvbManager::readScanData()
 	    !readScanSources(data, "[atsc/", Atsc) ||
 	    !readScanSources(data, "[isdb-t/", IsdbT) ||
 	    !data.checkEnd()) {
-		Log("DvbManager::readScanData: cannot parse") << localFile.fileName();
+		qInfo() << "DvbManager::readScanData: cannot parse" << localFile.fileName();
 	}
 }
 
@@ -867,8 +867,8 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 
 			if (!transponder.isValid()) {
 				parseError = true;
-				Log("DvbManager::readScanSources: cannot parse complete scan data");
-				Log("source: ") << line;
+				qInfo() << "DvbManager::readScanSources: cannot parse complete scan data";
+				qInfo() << "source: " << line;
 			} else {
 				transponders.append(transponder);
 
@@ -902,7 +902,7 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 	}
 
 	if (parseError) {
-		Log("DvbManager::readScanSources: cannot parse complete scan data");
+		qInfo() << "DvbManager::readScanSources: cannot parse complete scan data";
 	}
 
 	return true;

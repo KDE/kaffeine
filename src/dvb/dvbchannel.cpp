@@ -20,13 +20,13 @@
 
 #include "dvbchannel.h"
 
+#include <QDebug>
 #include <QFile>
 #include <QVariant>
 #include <QStandardPaths>
 #include <QDataStream>
 
 #include "../ensurenopendingoperation.h"
-#include "../log.h"
 #include "dvbsi.h"
 
 bool DvbChannel::validate()
@@ -111,7 +111,7 @@ DvbChannelModel::DvbChannelModel(QObject *parent) : QObject(parent), hasPendingO
 DvbChannelModel::~DvbChannelModel()
 {
 	if (hasPendingOperation) {
-		Log("DvbChannelModel::~DvbChannelModel: illegal recursive call");
+		qInfo() << "DvbChannelModel::~DvbChannelModel: illegal recursive call";
 	}
 
 	if (isSqlModel) {
@@ -138,7 +138,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 	}
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		Log("DvbChannelModel::createSqlModel: cannot open") << file.fileName();
+		qInfo() << "DvbChannelModel::createSqlModel: cannot open" << file.fileName();
 		return channelModel;
 	}
 
@@ -200,7 +200,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 		channel.isScrambled = (flags & 0x1) != 0;
 
 		if (stream.status() != QDataStream::Ok) {
-			Log("DvbChannelModel::createSqlModel: invalid channels in file") <<
+			qInfo() << "DvbChannelModel::createSqlModel: invalid channels in file" <<
 				file.fileName();
 			break;
 		}
@@ -209,7 +209,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 	}
 
 	if (!file.remove()) {
-		Log("DvbChannelModel::createSqlModel: cannot remove") << file.fileName();
+		qInfo() << "DvbChannelModel::createSqlModel: cannot remove" << file.fileName();
 	}
 
 	return channelModel;
@@ -239,7 +239,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
 	if (!isSqlModel && other->isSqlModel && channelNumbers.isEmpty()) {
 		if (hasPendingOperation) {
-			Log("DvbChannelModel::cloneFrom: illegal recursive call");
+			qInfo() << "DvbChannelModel::cloneFrom: illegal recursive call";
 			return;
 		}
 
@@ -279,7 +279,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 			addChannel(newChannel);
 		}
 	} else {
-		Log("DvbChannelModel::cloneFrom: illegal type of clone");
+		qInfo() << "DvbChannelModel::cloneFrom: illegal type of clone";
 	}
 }
 
@@ -295,7 +295,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	}
 
 	if (!channel.validate()) {
-		Log("DvbChannelModel::addChannel: invalid channel");
+		qInfo() << "DvbChannelModel::addChannel: invalid channel";
 		return;
 	}
 
@@ -345,7 +345,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	}
 
 	if (hasPendingOperation) {
-		Log("DvbChannelModel::addChannel: illegal recursive call");
+		qInfo() << "DvbChannelModel::addChannel: illegal recursive call";
 		return;
 	}
 
@@ -374,7 +374,7 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 {
 	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel) ||
 	    !modifiedChannel.validate()) {
-		Log("DvbChannelModel::updateChannel: invalid channel");
+		qInfo() << "DvbChannelModel::updateChannel: invalid channel";
 		return;
 	}
 
@@ -399,7 +399,7 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 	}
 
 	if (hasPendingOperation) {
-		Log("DvbChannelModel::updateChannel: illegal recursive call");
+		qInfo() << "DvbChannelModel::updateChannel: illegal recursive call";
 		return;
 	}
 
@@ -454,12 +454,12 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 void DvbChannelModel::removeChannel(DvbSharedChannel channel)
 {
 	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel)) {
-		Log("DvbChannelModel::removeChannel: invalid channel");
+		qInfo() << "DvbChannelModel::removeChannel: invalid channel";
 		return;
 	}
 
 	if (hasPendingOperation) {
-		Log("DvbChannelModel::removeChannel: illegal recursive call");
+		qInfo() << "DvbChannelModel::removeChannel: illegal recursive call";
 		return;
 	}
 
@@ -480,7 +480,7 @@ void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedCha
 	int insertBeforeNumber)
 {
 	if (hasPendingOperation) {
-		Log("DvbChannelModel::dndMoveChannels: illegal recursive call");
+		qInfo() << "DvbChannelModel::dndMoveChannels: illegal recursive call";
 		return;
 	}
 
@@ -549,7 +549,7 @@ void DvbChannelModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index)
 	DvbSharedChannel channel = channels.value(sqlKey);
 
 	if (!channel.isValid()) {
-		Log("DvbChannelModel::bindToSqlQuery: invalid channel");
+		qInfo() << "DvbChannelModel::bindToSqlQuery: invalid channel";
 		return;
 	}
 

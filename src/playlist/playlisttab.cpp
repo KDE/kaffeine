@@ -21,6 +21,7 @@
 #include "playlisttab.h"
 
 #include <QBoxLayout>
+#include <QDebug>
 #include <QKeyEvent>
 #include <QListView>
 #include <QSplitter>
@@ -34,7 +35,6 @@
 #include <QMenu>
 #include <QStandardPaths>
 
-#include "../log.h"
 #include "playlistmodel.h"
 
 PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
@@ -49,7 +49,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		file.setFileName(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
-			Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot open file") <<
+			qInfo() << "PlaylistBrowserModel::PlaylistBrowserModel: cannot open file" <<
 				file.fileName();
 			return;
 		}
@@ -71,7 +71,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		// compatibility code
 		hasSubtitles = false;
 	} else if (version != 0x361c4a3c) {
-		Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file") <<
+		qInfo() << "PlaylistBrowserModel::PlaylistBrowserModel: cannot read file" <<
 			file.fileName();
 		return;
 	}
@@ -115,7 +115,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			Log("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file") <<
+			qInfo() << "PlaylistBrowserModel::PlaylistBrowserModel: cannot read file" <<
 				file.fileName();
 			delete playlist;
 			break;
@@ -130,7 +130,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		Log("PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file") <<
+		qInfo() << "PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file" <<
 			file.fileName();
 		return;
 	}

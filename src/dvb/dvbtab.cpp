@@ -21,6 +21,7 @@
 #include "dvbtab.h"
 
 #include <QBoxLayout>
+#include <QDebug>
 #include <QDir>
 #include <QHeaderView>
 #include <QSplitter>
@@ -34,7 +35,6 @@
 #include <KMessageBox>
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include "../log.h"
 #include "../osdwidget.h"
 #include "dvbchanneldialog.h"
 #include "dvbconfigdialog.h"
@@ -458,7 +458,7 @@ void DvbTab::activate()
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
 	if (!channel.isValid()) {
-		Log("DvbTab::playChannel: channel is invalid");
+		qInfo() << "DvbTab::playChannel: channel is invalid";
 		return;
 	}
 

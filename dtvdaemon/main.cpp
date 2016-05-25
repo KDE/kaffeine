@@ -19,10 +19,10 @@
  */
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <unistd.h>
 #include "dtvdaemon.h"
-#include "log.h"
 
 int main(int argc, char *argv[])
 {
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
 	QFile file(QDir::homePath() + QLatin1String("/.local/share/dtvdaemon/lockfile"));
 
 	if (!file.open(QIODevice::WriteOnly)) {
-		Log("main: cannot open") << file.fileName();
+		qInfo() << "main: cannot open" << file.fileName();
 		return 1;
 	}
 

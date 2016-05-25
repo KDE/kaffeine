@@ -1,7 +1,6 @@
 set(dtvdaemon_SRCS
     connection.cpp
     dtvdaemon.cpp
-    log.cpp
     main.cpp)
 
 add_executable(dtvdaemon ${dtvdaemon_SRCS})

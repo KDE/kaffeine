@@ -23,6 +23,7 @@
 
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QDebug>
 #include <QHeaderView>
 #include <QLabel>
 #include <QPushButton>
@@ -35,7 +36,6 @@
 #include <QVBoxLayout>
 #include <QLocale>
 #include "../datetimeedit.h"
-#include "../log.h"
 #include "dvbchanneldialog.h"
 #include "dvbmanager.h"
 
@@ -229,7 +229,7 @@ DvbRecordingTableModel::~DvbRecordingTableModel()
 void DvbRecordingTableModel::setRecordingModel(DvbRecordingModel *recordingModel_)
 {
 	if (recordingModel != NULL) {
-		Log("DvbRecordingTableModel::setRecordingModel: recording model already set");
+		qInfo() << "DvbRecordingTableModel::setRecordingModel: recording model already set";
 		return;
 	}
 

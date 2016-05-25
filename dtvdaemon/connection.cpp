@@ -20,9 +20,9 @@
 
 #include "connection.h"
 
+#include <QDebug>
 #include <QLocalSocket>
 #include <QtEndian>
-#include "log.h"
 
 Connection::Connection(QLocalSocket *socket_) : QObject(socket_), socket(socket_),
 	packetCommand(0), packetLength(0)
@@ -32,14 +32,14 @@ Connection::Connection(QLocalSocket *socket_) : QObject(socket_), socket(socket_
 		return;
 	}
 
-	Log("Connection::Connection: opened connection") << quintptr(this);
+	qInfo() << "Connection::Connection: opened connection" << quintptr(this);
 	connect(socket, SIGNAL(disconnected()), socket, SLOT(deleteLater()));
 	connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
 Connection::~Connection()
 {
-	Log("Connection::~Connection: closed connection") << quintptr(this);
+	qInfo() << "Connection::~Connection: closed connection" << quintptr(this);
 }
 
 void Connection::checkIdle(bool *idle)
@@ -70,7 +70,7 @@ void Connection::readyRead()
 			quint32 length = qFromLittleEndian(u.info.length);
 
 			if ((command == 0) || (length > (1024 * 1024))) {
-				Log("Connection::readyRead: invalid packet");
+				qInfo() << "Connection::readyRead: invalid packet";
 				socket->abort();
 				return;
 			}
@@ -104,9 +104,9 @@ void Connection::handlePacket()
 	}
 
 	if (!ok) {
-		Log("Connection::handlePacket: invalid packet") << packetCommand;
+		qInfo() << "Connection::handlePacket: invalid packet" << packetCommand;
 	} else if (packetLength != 0) {
-		Log("Connection::handlePacket: packet has wrong size") << packetCommand;
+		qInfo() << "Connection::handlePacket: packet has wrong size" << packetCommand;
 	}
 
 	while (packetLength > 0) {
@@ -115,7 +115,7 @@ void Connection::handlePacket()
 		int bytesRead = int(socket->read(buffer, size));
 
 		if (bytesRead <= 0) {
-			Log("Connection::handlePacket: cannot empty buffer");
+			qInfo() << "Connection::handlePacket: cannot empty buffer";
 			break;
 		}
 

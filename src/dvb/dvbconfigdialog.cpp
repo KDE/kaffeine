@@ -23,6 +23,7 @@
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QLabel>
 #include <QProgressBar>
@@ -48,7 +49,6 @@
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 #include "dvbrecording.h"
-#include "../log.h"
 
 DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
@@ -401,11 +401,11 @@ void DvbConfigDialog::removeRegex()
 	}
 	foreach(RegexInputLine *inputLine, copyList)
 	{
-		Log("DvbConfigDialog::removeRegex: list:");
+		qInfo() << "DvbConfigDialog::removeRegex: list:";
 		if (inputLine->checkBox->isChecked()){
-			Log("DvbConfigDialog::removeRegex: checked:");
+			qInfo() << "DvbConfigDialog::removeRegex: checked:";
 			if (regexInputList.removeOne(inputLine)) {
-				Log("DvbConfigDialog::removeRegex: removed:");
+				qInfo() << "DvbConfigDialog::removeRegex: removed:";
 			}
 		}
 	}
@@ -619,10 +619,10 @@ void DvbConfigDialog::accept()
 	foreach (RegexInputLine *regexInputLine, regexInputList)
 	{
 		manager->addRecordingRegex(regexInputLine->lineEdit->text());
-		Log("DvbConfigDialog::accept: saved regex:") <<
+		qInfo() << "DvbConfigDialog::accept: saved regex:" <<
 				regexInputLine->lineEdit->text();
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
-		Log("DvbConfigDialog::accept: saved priority:") <<
+		qInfo() << "DvbConfigDialog::accept: saved priority:" <<
 				regexInputLine->spinBox->value();
 	}
 

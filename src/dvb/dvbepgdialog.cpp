@@ -23,6 +23,7 @@
 
 #include <QBoxLayout>
 #include <QCoreApplication>
+#include <QDebug>
 #include <QHeaderView>
 #include <QLabel>
 #include <QPushButton>
@@ -34,7 +35,6 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QLocale>
-#include "../log.h"
 #include "dvbmanager.h"
 
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
@@ -306,7 +306,7 @@ DvbEpgTableModel::~DvbEpgTableModel()
 void DvbEpgTableModel::setEpgModel(DvbEpgModel *epgModel_)
 {
 	if (epgModel != NULL) {
-		Log("DvbEpgTableModel::setEpgModel: epg model already set");
+		qInfo() << "DvbEpgTableModel::setEpgModel: epg model already set";
 		return;
 	}
 

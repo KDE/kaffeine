@@ -22,10 +22,10 @@
 #include "dvbdevice_p.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
 #include <cmath>
 #include <unistd.h>
-#include "../log.h"
 #include "dvbconfig.h"
 #include "dvbmanager.h"
 #include "dvbsi.h"
@@ -71,7 +71,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 {
 	if ((data[3] & 0x10) == 0) {
 		// no payload
-		Log("DvbSectionFilterInternal::processData: no payload");
+		qInfo() << "DvbSectionFilterInternal::processData: no payload";
 		return;
 	}
 
@@ -79,12 +79,12 @@ void DvbSectionFilterInternal::processData(const char data[188])
 
 	if (bufferValid) {
 		if (continuity == continuityCounter) {
-			Log("DvbSectionFilterInternal::processData: duplicate packets");
+			qInfo() << "DvbSectionFilterInternal::processData: duplicate packets";
 			return;
 		}
 
 		if (continuity != ((continuityCounter + 1) & 0x0f)) {
-			Log("DvbSectionFilterInternal::processData: discontinuity");
+			qInfo() << "DvbSectionFilterInternal::processData: discontinuity";
 			bufferValid = false;
 		}
 	}
@@ -104,7 +104,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 		unsigned char length = data[4];
 
 		if (length > 182) {
-			Log("DvbSectionFilterInternal::processData: no payload or corrupt");
+			qInfo() << "DvbSectionFilterInternal::processData: no payload or corrupt";
 			return;
 		}
 
@@ -118,7 +118,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 		int pointer = quint8(payload[0]);
 
 		if (pointer >= payloadLength) {
-			Log("DvbSectionFilterInternal::processData: invalid pointer");
+			qInfo() << "DvbSectionFilterInternal::processData: invalid pointer";
 			pointer = (payloadLength - 1);
 		}
 
@@ -151,7 +151,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 
 		if ((end - it) < 3) {
 			if (force) {
-				Log("DvbSectionFilterInternal::processSections: stray data");
+				qInfo() << "DvbSectionFilterInternal::processSections: stray data";
 				it = end;
 			}
 
@@ -162,7 +162,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 			static_cast<unsigned char>(it[2])) + 3);
 
 		if (force && (sectionEnd > end)) {
-			Log("DvbSectionFilterInternal::processSections: short section");
+			qInfo() << "DvbSectionFilterInternal::processSections: short section";
 			sectionEnd = end;
 		}
 
@@ -224,7 +224,7 @@ DvbDataDumper::DvbDataDumper()
 		QLatin1String(".bin"));
 
 	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		Log("DvbDataDumper::DvbDataDumper: cannot open") << fileName();
+		qInfo() << "DvbDataDumper::DvbDataDumper: cannot open" << fileName();
 	}
 }
 
@@ -379,7 +379,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		}
 
 		if (!ok) {
-			Log("DvbDevice::tune: cannot extract orbital position from") <<
+			qInfo() << "DvbDevice::tune: cannot extract orbital position from" <<
 				config->scanSource;
 		}
 
@@ -475,7 +475,7 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 		isAuto = true;
 		tune(autoTransponder);
 	}else {
-		Log("DvbDevice::autoTune: can't do auto-tune for ") << transmissionType;
+		qInfo() << "DvbDevice::autoTune: can't do auto-tune for " << transmissionType;
 		return;
 	}
 
@@ -503,8 +503,8 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (it->filters.contains(filter)) {
-		Log("DvbDevice::addPidFilter: "
-		    "using the same filter for the same pid more than once");
+		qInfo() << "DvbDevice::addPidFilter: "
+		    "using the same filter for the same pid more than once";
 		return true;
 	}
 
@@ -529,8 +529,8 @@ bool DvbDevice::addSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (it->sectionFilters.contains(filter)) {
-		Log("DvbDevice::addSectionFilter: "
-		    "using the same filter for the same pid more than once");
+		qInfo() << "DvbDevice::addSectionFilter: "
+		    "using the same filter for the same pid more than once";
 		return true;
 	}
 
@@ -551,7 +551,7 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (index < 0) {
-		Log("DvbDevice::removePidFilter: trying to remove a nonexistent filter");
+		qInfo() << "DvbDevice::removePidFilter: trying to remove a nonexistent filter";
 		return;
 	}
 
@@ -577,7 +577,7 @@ void DvbDevice::removeSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (index < 0) {
-		Log("DvbDevice::removeSectionFilter: trying to remove a nonexistent filter");
+		qInfo() << "DvbDevice::removeSectionFilter: trying to remove a nonexistent filter";
 		return;
 	}
 
@@ -596,7 +596,7 @@ void DvbDevice::startDescrambling(const QByteArray &pmtSectionData, QObject *use
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		Log("DvbDevice::startDescrambling: pmt section is not valid");
+		qInfo() << "DvbDevice::startDescrambling: pmt section is not valid";
 	}
 
 	int serviceId = pmtSection.programNumber();
@@ -615,13 +615,13 @@ void DvbDevice::stopDescrambling(const QByteArray &pmtSectionData, QObject *user
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		Log("DvbDevice::stopDescrambling: pmt section is not valid");
+		qInfo() << "DvbDevice::stopDescrambling: pmt section is not valid";
 	}
 
 	int serviceId = pmtSection.programNumber();
 
 	if (!descramblingServices.contains(serviceId, user)) {
-		Log("DvbDevice::stopDescrambling: service has not been started");
+		qInfo() << "DvbDevice::stopDescrambling: service has not been started";
 		return;
 	}
 
@@ -708,7 +708,7 @@ void DvbDevice::frontendEvent()
 	DvbTransponderBase::TransmissionType transmissionType = autoTransponder.getTransmissionType();
 
 	if (backend->isTuned()) {
-		Log("DvbDevice::frontendEvent: tuning succeeded");
+		qInfo() << "DvbDevice::frontendEvent: tuning succeeded";
 		frontendTimer.stop();
 		backend->getProps(autoTransponder);
 		setDeviceState(DeviceTuned);
@@ -723,7 +723,7 @@ void DvbDevice::frontendEvent()
 		frontendTimer.stop();
 
 		if (!isAuto) {
-			Log("DvbDevice::frontendEvent: tuning failed");
+			qInfo() << "DvbDevice::frontendEvent: tuning failed";
 			setDeviceState(DeviceIdle);
 			return;
 		}
@@ -740,7 +740,7 @@ void DvbDevice::frontendEvent()
 
 			if ((signal != -1) && (signal < 15)) {
 				// signal too weak
-				Log("DvbDevice::frontendEvent: tuning failed");
+				qInfo() << "DvbDevice::frontendEvent: tuning failed";
 				setDeviceState(DeviceIdle);
 				return;
 			}
@@ -837,7 +837,7 @@ void DvbDevice::frontendEvent()
 		if (!carry) {
 			tune(autoTransponder);
 		} else {
-			Log("DvbDevice::frontendEvent: tuning failed");
+			qInfo() << "DvbDevice::frontendEvent: tuning failed";
 			setDeviceState(DeviceIdle);
 		}
 	}
@@ -879,7 +879,7 @@ void DvbDevice::stop()
 		foreach (DvbPidFilter *filter, it->filters) {
 			if ((filter != &dummyPidFilter) && (filter != dataDumper)) {
 				int pid = it.key();
-				Log("DvbDevice::stop: removing pending filter") << pid;
+				qInfo() << "DvbDevice::stop: removing pending filter" << pid;
 				removePidFilter(pid, filter);
 			}
 		}
@@ -890,7 +890,7 @@ void DvbDevice::stop()
 		foreach (DvbSectionFilter *sectionFilter, it->sectionFilters) {
 			if (sectionFilter != &dummySectionFilter) {
 				int pid = it.key();
-				Log("DvbDevice::stop: removing pending filter") << pid;
+				qInfo() << "DvbDevice::stop: removing pending filter" << pid;
 				removeSectionFilter(pid, sectionFilter);
 			}
 		}

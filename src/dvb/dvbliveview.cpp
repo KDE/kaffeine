@@ -21,6 +21,7 @@
 #include "dvbliveview.h"
 #include "dvbliveview_p.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QPainter>
 #include <QSet>
@@ -35,7 +36,6 @@
 #include <sys/types.h> // bsd compatibility
 #include <unistd.h>
 #include <QStandardPaths>
-#include "../log.h"
 #include "dvbdevice.h"
 #include "dvbmanager.h"
 
@@ -440,7 +440,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-			Log("DvbLiveView::playbackStatusChanged: cannot open file") <<
+			qInfo() << "DvbLiveView::playbackStatusChanged: cannot open file" <<
 				internal->timeShiftFile.fileName();
 			internal->timeShiftFile.setFileName(QDir::homePath() + QLatin1String("/TimeShift-") +
 				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) +
@@ -448,7 +448,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-				Log("DvbLiveView::playbackStatusChanged: cannot open file") <<
+				qInfo() << "DvbLiveView::playbackStatusChanged: cannot open file" <<
 					internal->timeShiftFile.fileName();
 				mediaWidget->stop();
 				break;
@@ -580,21 +580,21 @@ DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), med
 	url = QUrl::fromLocalFile(fileName);
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
-		Log("DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed");
+		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed";
 		return;
 	}
 
 	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
-		Log("DvbLiveViewInternal::DvbLiveViewInternal: open failed");
+		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: open failed";
 		return;
 	}
 
 	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
-		Log("DvbLiveViewInternal::DvbLiveViewInternal: open failed");
+		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: open failed";
 		return;
 	}
 

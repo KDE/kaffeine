@@ -21,6 +21,7 @@
 #include "dvbcam_linux.h"
 
 #include <QCoreApplication>
+#include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
 #include <errno.h>
@@ -28,7 +29,6 @@
 #include <linux/dvb/ca.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include "../log.h"
 #include "dvbsi.h"
 
 // krazy:excludeall=syscalls
@@ -65,7 +65,7 @@ void DvbLinuxCam::startCa(const QString &path)
 	caFd = open(QFile::encodeName(path).constData(), O_RDWR | O_NONBLOCK);
 
 	if (caFd < 0) {
-		Log("DvbLinuxCam::startCa: cannot open") << path;
+		qInfo() << "DvbLinuxCam::startCa: cannot open" << path;
 		return;
 	}
 
@@ -83,7 +83,7 @@ void DvbLinuxCam::startDescrambling(const QByteArray &pmtSectionData)
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		Log("DvbLinuxCam::startDescrambling: pmt section is invalid");
+		qInfo() << "DvbLinuxCam::startDescrambling: pmt section is invalid";
 		return;
 	}
 
@@ -111,7 +111,7 @@ void DvbLinuxCam::stopDescrambling(int serviceId)
 	QMap<int, DvbLinuxCamService>::iterator it = services.find(serviceId);
 
 	if (it == services.end()) {
-		Log("DvbLinuxCam::stopDescrambling: cannot find service id") << serviceId;
+		qInfo() << "DvbLinuxCam::stopDescrambling: cannot find service id" << serviceId;
 		return;
 	}
 
@@ -124,7 +124,7 @@ void DvbLinuxCam::stopDescrambling(int serviceId)
 		services.erase(it);
 		return;
 	case DvbLinuxCamService::Remove:
-		Log("DvbLinuxCam::stopDescrambling: service is already being removed");
+		qInfo() << "DvbLinuxCam::stopDescrambling: service is already being removed";
 		services.erase(it);
 		return;
 	}
@@ -159,7 +159,7 @@ void DvbLinuxCam::pollModule()
 	} else {
 		if ((pendingCommands & ExpectingReply) != 0) {
 			pendingCommands &= ~ExpectingReply;
-			Log("DvbLinuxCam::pollModule: request timed out");
+			qInfo() << "DvbLinuxCam::pollModule: request timed out";
 		}
 
 		if (pendingCommands == 0) {
@@ -203,7 +203,7 @@ void DvbLinuxCam::readyRead()
 		handleTransportLayer(data + 2, size - 2);
 		handlePendingCommands();
 	} else {
-		Log("DvbLinuxCam::readyRead: unknown recipient");
+		qInfo() << "DvbLinuxCam::readyRead: unknown recipient";
 	}
 }
 
@@ -214,7 +214,7 @@ bool DvbLinuxCam::detectSlot()
 	memset(&caInfo, 0, sizeof(caInfo));
 
 	if (ioctl(caFd, CA_GET_CAP, &caInfo) != 0) {
-		Log("DvbLinuxCam::detectSlot: cannot perform ioctl CA_GET_CAP");
+		qInfo() << "DvbLinuxCam::detectSlot: cannot perform ioctl CA_GET_CAP";
 		return false;
 	}
 
@@ -224,13 +224,13 @@ bool DvbLinuxCam::detectSlot()
 		slotInfo.num = i;
 
 		if (ioctl(caFd, CA_GET_SLOT_INFO, &slotInfo) != 0) {
-			Log("DvbLinuxCam::detectSlot: "
-			    "cannot perform ioctl CA_GET_SLOT_INFO for slot") << slot;
+			qInfo() << "DvbLinuxCam::detectSlot: "
+			    "cannot perform ioctl CA_GET_SLOT_INFO for slot" << slot;
 			continue;
 		}
 
 		if ((slotInfo.type & CA_CI_LINK) == 0) {
-			Log("DvbLinuxCam::detectSlot: unknown type") << slotInfo.type;
+			qInfo() << "DvbLinuxCam::detectSlot: unknown type" << slotInfo.type;
 			continue;
 		}
 
@@ -311,8 +311,8 @@ void DvbLinuxCam::handleTransportLayer(const unsigned char *data, int size)
 		case StatusByte:
 			if ((length < 2) || (data[0] != ConnectionId)) {
 				size = 0;
-				Log("DvbLinuxCam::handleTransportLayer: "
-				    "invalid StatusByte object");
+				qInfo() << "DvbLinuxCam::handleTransportLayer: "
+				    "invalid StatusByte object";
 				break;
 			}
 
@@ -324,8 +324,8 @@ void DvbLinuxCam::handleTransportLayer(const unsigned char *data, int size)
 		case CreateTransportConnectionReply:
 			if ((length < 1) || (data[0] != ConnectionId)) {
 				size = 0;
-				Log("DvbLinuxCam::handleTransportLayer: "
-				    "invalid CreateTransportConnectionReply object");
+				qInfo() << "DvbLinuxCam::handleTransportLayer: "
+				    "invalid CreateTransportConnectionReply object";
 				break;
 			}
 
@@ -334,14 +334,14 @@ void DvbLinuxCam::handleTransportLayer(const unsigned char *data, int size)
 		case DataLast:
 			if ((length < 1) || (data[0] != ConnectionId)) {
 				size = 0;
-				Log("DvbLinuxCam::handleTransportLayer: invalid DataLast object");
+				qInfo() << "DvbLinuxCam::handleTransportLayer: invalid DataLast object";
 				break;
 			}
 
 			handleSessionLayer(data + 1, length - 1);
 			break;
 		default:
-			Log("DvbLinuxCam::handleTransportLayer: unknown tag") << tag;
+			qInfo() << "DvbLinuxCam::handleTransportLayer: unknown tag" << tag;
 			break;
 		}
 
@@ -361,8 +361,8 @@ void DvbLinuxCam::handleSessionLayer(const unsigned char *data, int size)
 		switch (tag) {
 		case OpenSessionRequest: {
 			if (length < 4) {
-				Log("DvbLinuxCam::handleSessionLayer: "
-				    "invalid OpenSessionRequest object");
+				qInfo() << "DvbLinuxCam::handleSessionLayer: "
+				    "invalid OpenSessionRequest object";
 				break;
 			}
 
@@ -400,15 +400,15 @@ void DvbLinuxCam::handleSessionLayer(const unsigned char *data, int size)
 		    }
 		case SessionNumber:
 			if (length < 2) {
-				Log("DvbLinuxCam::handleSessionLayer: "
-				    "invalid SessionNumber object");
+				qInfo() << "DvbLinuxCam::handleSessionLayer: "
+				    "invalid SessionNumber object";
 				break;
 			}
 
 			handleApplicationLayer(data + length, size - length);
 			break;
 		default:
-			Log("DvbLinuxCam::handleSessionLayer: unknown tag") << tag;
+			qInfo() << "DvbLinuxCam::handleSessionLayer: unknown tag" << tag;
 			break;
 		}
 	}
@@ -449,7 +449,7 @@ void DvbLinuxCam::handleApplicationLayer(const unsigned char *data, int size)
 			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 			break;
 		default:
-			Log("DvbLinuxCam::handleApplicationLayer: unknown tag") << tag;
+			qInfo() << "DvbLinuxCam::handleApplicationLayer: unknown tag" << tag;
 			break;
 		}
 
@@ -469,11 +469,11 @@ void DvbLinuxCam::handlePendingCommands()
 			break;
 		case ResetCa:
 			if (ioctl(caFd, CA_RESET, 0xff) != 0) {
-				Log("DvbLinuxCam::handlePendingCommands: "
-				    "cannot perform ioctl CA_RESET");
+				qInfo() << "DvbLinuxCam::handlePendingCommands: "
+				    "cannot perform ioctl CA_RESET";
 			}
 
-			Log("DvbLinuxCam::handlePendingCommands: --> reset");
+			qInfo() << "DvbLinuxCam::handlePendingCommands: --> reset";
 			slot = -1;
 			pollTimer.start(100);
 			pendingCommands = 0;
@@ -506,7 +506,7 @@ void DvbLinuxCam::handlePendingCommands()
 			sendApplicationLayerMessage(CaInfoEnquiry, messageData, messageData);
 			break;
 		default:
-			Log("DvbLinuxCam::handlePendingCommands: unknown pending command") <<
+			qInfo() << "DvbLinuxCam::handlePendingCommands: unknown pending command" <<
 				pendingCommand;
 			break;
 		}
@@ -556,7 +556,7 @@ void DvbLinuxCam::customEvent(QEvent *event)
 			break;
 		    }
 		case DvbLinuxCamService::Remove:
-			Log("DvbLinuxCam::customEvent: impossible");
+			qInfo() << "DvbLinuxCam::customEvent: impossible";
 			break;
 		}
 
@@ -650,7 +650,7 @@ void DvbLinuxCam::sendTransportLayerMessage(TransportLayerTag tag, char *data, c
 	length = uint(end - data);
 
 	if (write(caFd, data, length) != length) {
-		Log("DvbLinuxCam::sendTransportLayerMessage: cannot send message of length") <<
+		qInfo() << "DvbLinuxCam::sendTransportLayerMessage: cannot send message of length" <<
 			length;
 	}
 

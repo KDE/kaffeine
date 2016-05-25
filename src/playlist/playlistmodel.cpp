@@ -20,6 +20,7 @@
 
 #include "playlistmodel.h"
 
+#include <QDebug>
 #include <QDir>
 #include <QDomDocument>
 #include <QMimeData>
@@ -28,7 +29,6 @@
 #include <QXmlStreamWriter>
 #include <QLocale>
 #include <KLocalizedString>
-#include "../log.h"
 
 bool Playlist::load(const QUrl &url_, Format format)
 {
@@ -38,14 +38,14 @@ bool Playlist::load(const QUrl &url_, Format format)
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		Log("Playlist::load: opening remote playlists not supported yet");
+		qInfo() << "Playlist::load: opening remote playlists not supported yet";
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		Log("Playlist::load: cannot open file") << file.fileName();
+		qInfo() << "Playlist::load: cannot open file" << file.fileName();
 		return false;
 	}
 
@@ -71,14 +71,14 @@ bool Playlist::save(Format format) const
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		Log("Playlist::save: opening remote playlists not supported yet");
+		qInfo() << "Playlist::save: opening remote playlists not supported yet";
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		Log("Playlist::save: cannot open file") << file.fileName();
+		qInfo() << "Playlist::save: cannot open file" << file.fileName();
 		return false;
 	}
 

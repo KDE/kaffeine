@@ -25,6 +25,7 @@
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QCoreApplication>
+#include <QDebug>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLabel>
@@ -33,10 +34,8 @@
 #include <QAction>
 #include <KComboBox>
 #include <QLineEdit>
-//#include <KLocalizedString>
 #include <KMessageBox>
 #include <KConfigGroup>
-#include "../log.h"
 #include "dvbsi.h"
 
 bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
@@ -84,7 +83,7 @@ DvbChannelTableModel::~DvbChannelTableModel()
 void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
 {
 	if (channelModel != NULL) {
-		Log("DvbChannelTableModel::setChannelModel: channel model already set");
+		qInfo() << "DvbChannelTableModel::setChannelModel: channel model already set";
 		return;
 	}
 

@@ -33,7 +33,6 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include "configuration.h"
-#include "log.h"
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 {
@@ -92,10 +91,13 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(showDmesg()));
 	gridLayout->addWidget(pushButton, 0, 1);
 
+#if 0
+	// TODO: add later a way to show the Kaffeine logs here
 	QPlainTextEdit *textEdit = new QPlainTextEdit(widget);
 	textEdit->setPlainText(Log::getLog());
 	textEdit->setReadOnly(true);
 	gridLayout->addWidget(textEdit, 1, 0, 1, 2);
+#endif
 	gridLayout->setRowStretch(2, 1);
 
 	page = new KPageWidgetItem(widget, i18nc("@title:group", "Diagnostics"));

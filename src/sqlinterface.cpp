@@ -20,9 +20,9 @@
 
 #include "sqlinterface.h"
 
+#include <QDebug>
 #include <QAbstractItemModel>
 #include <QStringList>
-#include "log.h"
 #include "sqlhelper.h"
 
 SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
@@ -34,7 +34,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		Log("SqlInterface::~SqlInterface: pending statements at destruction");
+		qInfo() << "SqlInterface::~SqlInterface: pending statements at destruction";
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -103,7 +103,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 			SqlKey sqlKey(static_cast<int>(fullKey));
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
-				Log("SqlInterface::sqlInit: invalid key") << fullKey;
+				qInfo() << "SqlInterface::sqlInit: invalid key" << fullKey;
 				continue;
 			}
 
@@ -134,7 +134,7 @@ void SqlInterface::sqlInsert(SqlKey key)
 		break;
 	}
 
-	Log("SqlInterface::sqlInsert: invalid pending statement") << pendingStatement;
+	qInfo() << "SqlInterface::sqlInsert: invalid pending statement" << pendingStatement;
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -154,7 +154,7 @@ void SqlInterface::sqlUpdate(SqlKey key)
 		break;
 	}
 
-	Log("SqlInterface::sqlUpdate: invalid pending statement") << pendingStatement;
+	qInfo() << "SqlInterface::sqlUpdate: invalid pending statement" << pendingStatement;
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -175,7 +175,7 @@ void SqlInterface::sqlRemove(SqlKey key)
 		break;
 	}
 
-	Log("SqlInterface::sqlRemove: invalid pending statement") << pendingStatement;
+	qInfo() << "SqlInterface::sqlRemove: invalid pending statement" << pendingStatement;
 }
 
 void SqlInterface::requestSubmission()
@@ -225,7 +225,7 @@ void SqlInterface::sqlSubmit()
 			continue;
 		}
 
-		Log("SqlInterface::sqlSubmit: invalid pending statement") << pendingStatement;
+		qInfo() << "SqlInterface::sqlSubmit: invalid pending statement" << pendingStatement;
 	}
 
 	pendingStatements.clear();

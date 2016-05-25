@@ -23,7 +23,7 @@
 #include <KConfig>
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include "log.h"
+#include <QDebug>
 
 Configuration::Configuration()
 {
@@ -34,7 +34,7 @@ Configuration::Configuration()
 	if ((value >= 0) && (value <= StartupLastValue)) {
 		startupDisplayMode = static_cast<StartupDisplayMode>(value);
 	} else {
-		Log("Configuration::Configuration: unknown startup display mode") << value;
+		qInfo() << "Configuration::Configuration: unknown startup display mode" << value;
 	}
 
 	shortSkipDuration =
@@ -63,7 +63,7 @@ void Configuration::setStartupDisplayMode(int newStartupDisplayMode)
 		KSharedConfig::openConfig()->group("MainWindow").writeEntry("StartupDisplayMode",
 			static_cast<int>(startupDisplayMode));
 	} else {
-		Log("Configuration::setStartupDisplayMode: unknown startup display mode") <<
+		qInfo() << "Configuration::setStartupDisplayMode: unknown startup display mode" <<
 			newStartupDisplayMode;
 	}
 }

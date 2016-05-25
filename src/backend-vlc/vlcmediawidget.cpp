@@ -20,9 +20,9 @@
 
 #include "vlcmediawidget.h"
 
+#include <QDebug>
 #include <QMouseEvent>
 #include <vlc/vlc.h>
-#include "../log.h"
 
 VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
 	vlcMediaPlayer(NULL), playingDvd(false)
@@ -35,14 +35,14 @@ bool VlcMediaWidget::init()
 	vlcInstance = libvlc_new(sizeof(arguments) / sizeof(arguments[0]), arguments);
 
 	if (vlcInstance == NULL) {
-		Log("VlcMediaWidget::init: cannot create vlc instance") << QLatin1String(libvlc_errmsg());
+		qInfo() << "VlcMediaWidget::init: cannot create vlc instance" << QLatin1String(libvlc_errmsg());
 		return false;
 	}
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);
 
 	if (vlcMediaPlayer == NULL) {
-		Log("VlcMediaWidget::init: cannot create vlc media player") << QLatin1String(libvlc_errmsg());
+		qInfo() << "VlcMediaWidget::init: cannot create vlc media player" << QLatin1String(libvlc_errmsg());
 		return false;
 	}
 
@@ -54,7 +54,7 @@ bool VlcMediaWidget::init()
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			Log("VlcMediaWidget::init: cannot attach event handler") << eventTypes[i];
+			qInfo() << "VlcMediaWidget::init: cannot attach event handler" << eventTypes[i];
 			return false;
 		}
 	}
@@ -99,7 +99,7 @@ void VlcMediaWidget::setVolume(int volume)
 {
 	// 0 <= volume <= 200
 	if (libvlc_audio_set_volume(vlcMediaPlayer, volume) != 0) {
-		Log("VlcMediaWidget::setVolume: cannot set volume") << volume;
+		qInfo() << "VlcMediaWidget::setVolume: cannot set volume" << volume;
 	}
 }
 
@@ -187,7 +187,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		Log("VlcMediaWidget::play: cannot create media") << source.getUrl().toDisplayString();
+		qInfo() << "VlcMediaWidget::play: cannot create media" << source.getUrl().toDisplayString();
 		return;
 	}
 
@@ -196,7 +196,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			Log("VlcMediaWidget::play: cannot attach event handler") << eventTypes[i];
+			qInfo() << "VlcMediaWidget::play: cannot attach event handler" << eventTypes[i];
 		}
 	}
 
@@ -208,13 +208,13 @@ void VlcMediaWidget::play(const MediaSource &source)
 // 	if (source.subtitleUrl.isValid()) {
 // 		if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
 // 		    source.subtitleUrl.toEncoded().constData()) == 0) {
-// 			Log("VlcMediaWidget::play: cannot set subtitle file") <<
+// 			qInfo() << "VlcMediaWidget::play: cannot set subtitle file" <<
 // 				source.subtitleUrl.toDisplayString();
 // 		}
 // 	}
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		Log("VlcMediaWidget::play: cannot play media") << source.getUrl().toDisplayString();
+		qInfo() << "VlcMediaWidget::play: cannot play media" << source.getUrl().toDisplayString();
 	}
 }
 
@@ -247,7 +247,7 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 	int availableSpuCount = libvlc_video_get_spu_count(vlcMediaPlayer);
 
 	if (requestedSubtitle >= availableSpuCount) {
-		Log("VlcMediaWidget::setCurrentSubtitle: subtitle is out of range") <<
+		qInfo() << "VlcMediaWidget::setCurrentSubtitle: subtitle is out of range" <<
 			requestedSubtitle << availableSpuCount;
 
 		// Disable subtitles.
@@ -268,7 +268,7 @@ void VlcMediaWidget::setExternalSubtitle(const QUrl &subtitleUrl)
 {
 	if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
 	    subtitleUrl.toEncoded().constData()) == 0) {
-		Log("VlcMediaWidget::setExternalSubtitle: cannot set subtitle file") <<
+		qInfo() << "VlcMediaWidget::setExternalSubtitle: cannot set subtitle file" <<
 			subtitleUrl.toDisplayString();
 	}
 }
@@ -537,7 +537,7 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	if (pendingUpdatesToBeAdded != 0) {
 		addPendingUpdates(pendingUpdatesToBeAdded);
 	} else {
-		Log("VlcMediaWidget::vlcEvent: unknown event type") << event->type;
+		qInfo() << "VlcMediaWidget::vlcEvent: unknown event type" << event->type;
 	}
 }
 
