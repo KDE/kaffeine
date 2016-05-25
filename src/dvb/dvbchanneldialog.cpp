@@ -18,13 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KComboBox>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KMessageBox>
 #include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QDebug>
 #include <QGroupBox>
@@ -815,7 +815,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	gridLayout->addWidget(serviceIdBox, row++, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), row, 0);
-	audioStreamBox = new KComboBox(groupBox);
+	audioStreamBox = new QComboBox(groupBox);
 	audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
 	if (audioPids.size() <= 1) {
 		audioStreamBox->setEnabled(false);

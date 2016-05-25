@@ -26,7 +26,7 @@
 #include "dvbrecording.h"
 
 class QCheckBox;
-class KComboBox;
+class QComboBox;
 class QLineEdit;
 class DateTimeEdit;
 class DurationEdit;
@@ -137,7 +137,7 @@ private:
 	DvbManager *manager;
 	DvbSharedRecording recording;
 	QLineEdit *nameEdit;
-	KComboBox *channelBox;
+	QComboBox *channelBox;
 	DateTimeEdit *beginEdit;
 	DurationEdit *durationEdit;
 	DateTimeEdit *endEdit;

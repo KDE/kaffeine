@@ -34,7 +34,7 @@ class QLabel;
 class QProgressBar;
 class QSpinBox;
 class QTreeWidget;
-class KComboBox;
+class QComboBox;
 class QComboBox;
 class KJob;
 class QLineEdit;
@@ -197,7 +197,7 @@ private:
 	DvbConfigBase *config;
 	QString defaultName;
 	QSpinBox *timeoutBox;
-	KComboBox *sourceBox;
+	QComboBox *sourceBox;
 	QLineEdit *nameEdit;
 };
 
@@ -233,8 +233,8 @@ private:
 	QStringList sources;
 	QGridLayout *layout;
 	QSpinBox *timeoutBox;
-	KComboBox *configBox;
-	KComboBox *sourceBox;
+	QComboBox *configBox;
+	QComboBox *sourceBox;
 	QSpinBox *rotorSpinBox;
 	QTreeWidget *satelliteView;
 };
@@ -243,7 +243,7 @@ class DvbSLnbConfigObject : public QObject
 {
 	Q_OBJECT
 public:
-	DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
+	DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
 		QPushButton *configureButton_, DvbConfigBase *config_);
 	~DvbSLnbConfigObject();
 
@@ -257,7 +257,7 @@ private slots:
 	void dialogAccepted();
 
 private:
-	KComboBox *sourceBox;
+	QComboBox *sourceBox;
 	QPushButton *configureButton;
 	DvbConfigBase *config;
 

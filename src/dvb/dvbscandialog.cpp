@@ -18,7 +18,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KComboBox>
 #include <KConfigGroup>
 #include <KLed>
 #include <KLocalizedString>
@@ -26,6 +25,7 @@
 #include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QLocale>
@@ -276,7 +276,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 
 	groupLayout->addWidget(new QLabel(i18n("Source:")));
 
-	sourceBox = new KComboBox(groupBox);
+	sourceBox = new QComboBox(groupBox);
 	groupLayout->addWidget(sourceBox);
 
 	scanButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-find")), i18n("Start Scan"), groupBox);
@@ -329,7 +329,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	providerCheckBox = new QCheckBox(i18n("Provider:"), groupBox);
 	groupLayout->addWidget(providerCheckBox);
 
-	providerBox = new KComboBox(groupBox);
+	providerBox = new QComboBox(groupBox);
 	providerBox->setEnabled(false);
 	connect(providerCheckBox, SIGNAL(clicked(bool)), providerBox, SLOT(setEnabled(bool)));
 	groupLayout->addWidget(providerBox);

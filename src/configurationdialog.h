@@ -25,7 +25,7 @@
 
 class QSpinBox;
 class QString;
-class KComboBox;
+class QComboBox;
 
 class Log
 {
@@ -58,7 +58,7 @@ private slots:
 	void showDmesg();
 
 private:
-	KComboBox *startupDisplayModeBox;
+	QComboBox *startupDisplayModeBox;
 	QSpinBox *shortSkipBox;
 	QSpinBox *longSkipBox;
 };

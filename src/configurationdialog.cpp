@@ -18,9 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KComboBox>
 #include <KConfigGroup>
 #include <KLocalizedString>
+#include <QComboBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
@@ -43,7 +43,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	QWidget *widget = new QWidget(this);
 	QGridLayout *gridLayout = new QGridLayout(widget);
 
-	startupDisplayModeBox = new KComboBox(widget);
+	startupDisplayModeBox = new QComboBox(widget);
 	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",
 		"Normal Mode"));
 	startupDisplayModeBox->addItem(i18nc("@item:inlistbox 'Startup display mode:'",

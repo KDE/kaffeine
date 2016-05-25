@@ -18,13 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KComboBox>
 #include <KConfigGroup>
 #include <KIO/Job>
 #include <KLocalizedString>
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDebug>
 #include <QDesktopServices>
 #include <QDialogButtonBox>
@@ -981,7 +981,7 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 
 	gridLayout->addWidget(new QLabel(i18n("Source:")), 1, 0);
 
-	sourceBox = new KComboBox(parent);
+	sourceBox = new QComboBox(parent);
 	sourceBox->addItem(i18n("No Source"));
 	sourceBox->addItems(sources);
 	sourceBox->setCurrentIndex(sourceIndex + 1);
@@ -1089,7 +1089,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 	layout->addWidget(new QLabel(i18n("Configuration:")), 1, 0);
 
-	configBox = new KComboBox(parent);
+	configBox = new QComboBox(parent);
 	configBox->addItem(i18n("DiSEqC Switch"));
 	configBox->addItem(i18n("USALS Rotor"));
 	configBox->addItem(i18n("Positions Rotor"));
@@ -1114,7 +1114,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 		connect(this, SIGNAL(setDiseqcVisible(bool)), pushButton, SLOT(setVisible(bool)));
 		layout->addWidget(pushButton, lnbNumber + 2, 0);
 
-		KComboBox *comboBox = new KComboBox(parent);
+		QComboBox *comboBox = new QComboBox(parent);
 		comboBox->addItem(i18n("No Source"));
 		comboBox->addItems(sources);
 		comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
@@ -1134,7 +1134,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, NULL, pushButton, lnbConfig));
 
-	sourceBox = new KComboBox(parent);
+	sourceBox = new QComboBox(parent);
 	sourceBox->addItems(sources);
 	connect(this, SIGNAL(setRotorVisible(bool)), sourceBox, SLOT(setVisible(bool)));
 	layout->addWidget(sourceBox, 6, 1);
@@ -1321,7 +1321,7 @@ DvbConfigBase *DvbSConfigObject::createConfig(int lnbNumber)
 	return config;
 }
 
-DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, KComboBox *sourceBox_,
+DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
 	QPushButton *configureButton_, DvbConfigBase *config_) : QObject(timeoutSpinBox),
 	sourceBox(sourceBox_), configureButton(configureButton_), config(config_)
 {

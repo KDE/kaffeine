@@ -26,7 +26,7 @@
 
 class QCheckBox;
 class QSpinBox;
-class KComboBox;
+class QComboBox;
 class QLineEdit;
 class DvbChannelTableModel;
 
@@ -49,7 +49,7 @@ private:
 	QSpinBox *networkIdBox;
 	QSpinBox *transportStreamIdBox;
 	QSpinBox *serviceIdBox;
-	KComboBox *audioStreamBox;
+	QComboBox *audioStreamBox;
 	QList<int> audioPids;
 	QCheckBox *scrambledBox;
 };

@@ -19,12 +19,12 @@
  */
 
 #include <KActionCollection>
-#include <KComboBox>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <KSharedConfig>
 #include <KToolBar>
 #include <QBoxLayout>
+#include <QComboBox>
 #include <QContextMenuEvent>
 #include <QDBusInterface>
 #include <QDebug>
@@ -125,7 +125,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	connect(minimalModeAction, SIGNAL(triggered()), this, SLOT(toggleMinimalMode()));
 	menu->addAction(collection->addAction(QLatin1String("view_minimal_mode"), minimalModeAction));
 
-	audioStreamBox = new KComboBox(toolBar);
+	audioStreamBox = new QComboBox(toolBar);
 	connect(audioStreamBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(currentAudioStreamChanged(int)));
 	toolBar->addWidget(audioStreamBox);
@@ -133,7 +133,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	audioStreamModel = new QStringListModel(toolBar);
 	audioStreamBox->setModel(audioStreamModel);
 
-	subtitleBox = new KComboBox(toolBar);
+	subtitleBox = new QComboBox(toolBar);
 	textSubtitlesOff = i18nc("subtitle selection entry", "off");
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(currentSubtitleChanged(int)));

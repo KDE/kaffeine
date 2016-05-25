@@ -28,7 +28,7 @@
 class QCheckBox;
 class QProgressBar;
 class QTreeView;
-class KComboBox;
+class QComboBox;
 class KLed;
 class DvbChannelModel;
 class DvbDevice;
@@ -62,7 +62,7 @@ private:
 
 	DvbManager *manager;
 	DvbChannelModel *channelModel;
-	KComboBox *sourceBox;
+	QComboBox *sourceBox;
 	QPushButton *scanButton;
 	QProgressBar *progressBar;
 	DvbGradProgress *signalWidget;
@@ -73,7 +73,7 @@ private:
 	QCheckBox *tvCheckBox;
 	QCheckBox *providerCheckBox;
 	QStringList providers;
-	KComboBox *providerBox;
+	QComboBox *providerBox;
 	DvbPreviewChannelTableModel *previewModel;
 	QTreeView *scanResultsView;
 

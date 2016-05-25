@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KComboBox>
 #include <KConfigGroup>
 #include <KLocalizedString>
 #include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDebug>
 #include <QDialogButtonBox>
 #include <QHeaderView>
@@ -397,7 +397,7 @@ DvbRecordingEditor::DvbRecordingEditor(DvbManager *manager_, const DvbSharedReco
 	label->setBuddy(nameEdit);
 	gridLayout->addWidget(label, 0, 0);
 
-	channelBox = new KComboBox(widget);
+	channelBox = new QComboBox(widget);
 	mainLayout->addWidget(channelBox);
 	DvbChannelTableModel *channelModel = new DvbChannelTableModel(widget);
 	QHeaderView *header = manager->getChannelView()->header();
