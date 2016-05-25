@@ -1,10 +1,21 @@
 - Fix DVB menus navigation.
 
-  On qt4, the mouse movements were sent to libvlc, but, on qt5, only the
-  mouse press. That causes the VLC to auto-ride the mouse. Without the
-  mouse, it is hard to find the right place to click during DVB menus
-  navigation. Btw, qtPlayer, at vlc source tree also has the same
-  problem.
+  On qt4, the mouse movements were sent to libvlc, but, on qt5.5 and upper,
+  the mouse move is not sent to VLC. That happens because qt5.5 sends the
+  mouse events via Xinput2, but VLC doesn't recognize such events.
+
+  That causes the VLC to auto-ride the mouse. Without the mouse, it is
+  hard to find the right place to click during DVB menus  navigation.
+  A workaround is to disable xinput2 at qt5-qtbase (recompiling it),
+  as explained at the README.
+
+  A fix for this issue would be to use another backend for DVB play, or
+  to fix either VLC or Qt5. I tried to change the VLC backend
+  (backend-vlc/vlcmediawidget.cpp), to add things like:
+       setCursor(QCursor(Qt::OpenHandCursor));
+       setMouseTracking(true);
+       setFocusPolicy(Qt::NoFocus);
+  but the above approach didn't work.
 
 - DVB device removal sometimes causes crash.
 
