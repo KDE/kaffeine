@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
 		QStringLiteral("kaffeine"),
 		i18n("Kaffeine"),
 		// Version
-		QStringLiteral("1.3-git"),
+		QStringLiteral("2.0-git"),
 		// Short description
 		i18n("A media player for KDE with digital TV support."),
 		// License
@@ -160,8 +160,12 @@ int main(int argc, char *argv[])
 
     KaffeineApplication app(argc, argv, &aboutData);
 
-    aboutData.addAuthor(i18n("Christoph Pfister"), i18n("Maintainer"),
+    aboutData.addAuthor(i18n("Christoph Pfister"), i18n("former maintainer"),
 		QStringLiteral("christophpfister@gmail.com"));
+    aboutData.addAuthor(i18n("Lasse Lindqvist", i18n("Maintainer"),
+		QStringLiteral("lasse.k.lindqvist@gmail.com"));
+    aboutData.addAuthor(i18n("Mauro Carvalho Chehab"), i18n("KDE5 port"),
+		QStringLiteral("mchehab@infradead.org"));
 
     KAboutData::setApplicationData(aboutData);
 
