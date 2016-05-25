@@ -137,10 +137,10 @@ Q_COREAPP_STARTUP_FUNCTION(iconThemeFunc)
 
 int main(int argc, char *argv[])
 {
-    qInstallMessageHandler(verboseMessageHandler);
+	qInstallMessageHandler(verboseMessageHandler);
 //    qSetMessagePattern("%{file}(%{line}): %{message}");
 
-    KAboutData aboutData(
+	KAboutData aboutData(
 		// Program name
 		QStringLiteral("kaffeine"),
 		i18n("Kaffeine"),
@@ -156,31 +156,34 @@ int main(int argc, char *argv[])
 		"",
 		// Home page
 		QStringLiteral("http://kaffeine.kde.org")
-    );
+	);
 
-    KaffeineApplication app(argc, argv, &aboutData);
+	KaffeineApplication app(argc, argv, &aboutData);
 
-    aboutData.addAuthor(i18n("Christoph Pfister"), i18n("former maintainer"),
+	aboutData.addAuthor(i18n("Christoph Pfister"),
+		i18n("former maintainer"),
 		QStringLiteral("christophpfister@gmail.com"));
-    aboutData.addAuthor(i18n("Lasse Lindqvist", i18n("Maintainer"),
+	aboutData.addAuthor(i18n("Lasse Lindqvist"),
+		i18n("Maintainer"),
 		QStringLiteral("lasse.k.lindqvist@gmail.com"));
-    aboutData.addAuthor(i18n("Mauro Carvalho Chehab"), i18n("KDE5 port"),
+	aboutData.addAuthor(i18n("Mauro Carvalho Chehab"),
+		i18n("KDE5 port"),
 		QStringLiteral("mchehab@infradead.org"));
 
-    KAboutData::setApplicationData(aboutData);
+	KAboutData::setApplicationData(aboutData);
 
-    app.setWindowIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
+	app.setWindowIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
 
-    app.parser.addVersionOption();
-    app.parser.addHelpOption();
+	app.parser.addVersionOption();
+	app.parser.addHelpOption();
 
-    aboutData.setupCommandLine(&app.parser);
+	aboutData.setupCommandLine(&app.parser);
 
-    app.parser.process(app);
+	app.parser.process(app);
 
-    aboutData.processCommandLine(&app.parser);
+	aboutData.processCommandLine(&app.parser);
 
-//    KCmdLineArgs::addTempFileOption();
+//	KCmdLineArgs::addTempFileOption();
 
-    return app.exec();
+	return app.exec();
 }
