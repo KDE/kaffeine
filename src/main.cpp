@@ -149,6 +149,8 @@ int main(int argc, char *argv[])
 	qInstallMessageHandler(verboseMessageHandler);
 //    qSetMessagePattern("%{file}(%{line}): %{message}");
 
+	KLocalizedString::setApplicationDomain("kaffeine");
+
 	KAboutData aboutData(
 		// Program name
 		QStringLiteral("kaffeine"),
@@ -167,13 +169,13 @@ int main(int argc, char *argv[])
 		QStringLiteral("http://kaffeine.kde.org")
 	);
 
-	aboutData.addAuthor(i18n("Mauro Carvalho Chehab"),
+	aboutData.addAuthor("Mauro Carvalho Chehab",
 		i18n("this KDE5 port"),
 		QStringLiteral("mchehab@infradead.org"));
-	aboutData.addAuthor(i18n("Christoph Pfister"),
+	aboutData.addAuthor("Christoph Pfister",
 		i18n("Original author"),
 		QStringLiteral("christophpfister@gmail.com"));
-	aboutData.addAuthor(i18n("Lasse Lindqvist"),
+	aboutData.addAuthor("Lasse Lindqvist",
 		i18n("Maintainer (for KDE4)"),
 		QStringLiteral("lasse.k.lindqvist@gmail.com"));
 
