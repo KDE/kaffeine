@@ -167,18 +167,17 @@ int main(int argc, char *argv[])
 		QStringLiteral("http://kaffeine.kde.org")
 	);
 
-	KaffeineApplication app(argc, argv, &aboutData);
-
+	aboutData.addAuthor(i18n("Mauro Carvalho Chehab"),
+		i18n("this KDE5 port"),
+		QStringLiteral("mchehab@infradead.org"));
 	aboutData.addAuthor(i18n("Christoph Pfister"),
-		i18n("former maintainer"),
+		i18n("Original author"),
 		QStringLiteral("christophpfister@gmail.com"));
 	aboutData.addAuthor(i18n("Lasse Lindqvist"),
-		i18n("Maintainer"),
+		i18n("Maintainer (for KDE4)"),
 		QStringLiteral("lasse.k.lindqvist@gmail.com"));
-	aboutData.addAuthor(i18n("Mauro Carvalho Chehab"),
-		i18n("KDE5 port"),
-		QStringLiteral("mchehab@infradead.org"));
 
+	KaffeineApplication app(argc, argv, &aboutData);
 	KAboutData::setApplicationData(aboutData);
 
 	app.setWindowIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
