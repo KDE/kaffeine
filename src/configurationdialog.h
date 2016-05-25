@@ -24,7 +24,26 @@
 #include <KPageDialog>
 
 class QSpinBox;
+class QString;
 class KComboBox;
+
+class Log
+{
+public:
+	Log() {};
+	void storeLog(QString &newlog)
+	{
+		log.append(newlog);
+	}
+	QString getLog()
+	{
+		return log;
+	}
+private:
+	static QString log;
+};
+
+
 
 class ConfigurationDialog : public KPageDialog
 {

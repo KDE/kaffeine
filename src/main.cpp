@@ -32,17 +32,19 @@
 #include <QCommandLineParser>
 #include "mainwindow.h"
 #include "sqlhelper.h"
+#include "configurationdialog.h"
 
 void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-	static const char* typeStr[] = {
-		"[Debug   ]",
-		"[Warning ]",
-		"[Critical]",
-		"[Fatal   ]",
-		"[System  ]"};
+	static const QString typeStr[] = {
+		"[Debug   ] ",
+		"[Warning ] ",
+		"[Critical] ",
+		"[Fatal   ] ",
+		"[System  ] "};
 	QString contextString, file = context.file;
 	QByteArray localMsg = msg.toLocal8Bit();
+	QString log;
 
 	file.remove(QRegExp(".*/kaffeine/"));
 
@@ -53,12 +55,18 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 
 	QString timeStr(QDateTime::currentDateTime().toString("dd-MM-yy HH:mm:ss.zzz "));
 
-	std::cerr << timeStr.toLocal8Bit().constData();
+	log.append(timeStr);
 	if (type <= 4)
-		std::cerr << typeStr[type] << " ";
+		log.append(typeStr[type]);
 	if (!contextString.isEmpty())
-		std::cerr << contextString.toLocal8Bit().constData();
-	std::cerr << localMsg.constData() << std::endl;
+		log.append(contextString);
+	log.append(localMsg.constData());
+	log.append("\n");
+
+	std::cerr << log.toLocal8Bit().constData();
+
+	Log newLog;
+	newLog.storeLog(log);
 
 	if (type == QtFatalMsg)
 		abort();
