@@ -1457,7 +1457,13 @@ void DvbLinuxDeviceManager::componentRemoved(const QString &udi)
 
 	DvbLinuxDevice *device = udis.take(udi);
 
+	// The device is not mapped. Just return
+	if (!device)
+		return;
+
 	bool removeDevice = false;
+
+	qInfo() << "Digital TV device removed: " << udi;
 
 	if (udi == device->caUdi) {
 		device->caPath.clear();

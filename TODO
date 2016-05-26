@@ -1,3 +1,0 @@
-- DVB device removal sometimes causes crash.
-
-  Need to fix DVB device hotplug.
