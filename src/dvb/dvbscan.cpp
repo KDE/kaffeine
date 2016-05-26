@@ -970,7 +970,7 @@ static DvbTTransponder::Hierarchy extractDvbTHierarchy(const DvbTerrestrialDescr
 
 void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 {
-	DvbTransponder newTransponder;
+	DvbTransponder newTransponder(transponder.getTransmissionType());
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
@@ -1098,7 +1098,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			if (!duplicate)
 				transponders.append(newTransponder);
 		}
-		newTransponder = DvbTransponder(DvbTransponderBase::Invalid);
+		newTransponder = DvbTransponder(DvbTransponderBase::IsdbT);
 
 		break;
 	}
