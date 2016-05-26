@@ -296,6 +296,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		} else {
 			setDeviceState(DeviceTuning);
 			setDeviceState(DeviceIdle);
+			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 		}
 
 		return;
@@ -441,6 +442,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	} else {
 		setDeviceState(DeviceTuning);
 		setDeviceState(DeviceIdle);
+		autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 	}
 }
 
@@ -668,6 +670,7 @@ bool DvbDevice::acquire(const DvbConfigBase *config_)
 	if (backend->acquire()) {
 		config = config_;
 		setDeviceState(DeviceIdle);
+		autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 		return true;
 	}
 
@@ -681,6 +684,7 @@ void DvbDevice::reacquire(const DvbConfigBase *config_)
 	stop();
 	config = config_;
 	setDeviceState(DeviceIdle);
+	autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 }
 
 void DvbDevice::release()
@@ -728,6 +732,7 @@ void DvbDevice::frontendEvent()
 		if (!isAuto) {
 			qInfo() << "DvbDevice::frontendEvent: tuning failed";
 			setDeviceState(DeviceIdle);
+			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 			return;
 		}
 
@@ -745,6 +750,7 @@ void DvbDevice::frontendEvent()
 				// signal too weak
 				qInfo() << "DvbDevice::frontendEvent: tuning failed";
 				setDeviceState(DeviceIdle);
+				autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 				return;
 			}
 
@@ -842,6 +848,7 @@ void DvbDevice::frontendEvent()
 		} else {
 			qInfo() << "DvbDevice::frontendEvent: tuning failed";
 			setDeviceState(DeviceIdle);
+			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 		}
 	}
 }
