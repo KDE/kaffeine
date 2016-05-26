@@ -67,7 +67,6 @@ bool VlcMediaWidget::init()
 
 	libvlc_media_player_set_xwindow(vlcMediaPlayer, quint32(winId()));
 	setAttribute(Qt::WA_NativeWindow);
-	setMouseTracking(true);
 	// This is broken on qt5: the kernel/qwidget.cpp tries to repaint
 	// on a wrong place, causing this warning:
 	//	QWidget::paintEngine: Should no longer be called
@@ -223,11 +222,20 @@ void VlcMediaWidget::play(const MediaSource &source)
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
 		qInfo() << "VlcMediaWidget::play: cannot play media" << source.getUrl().toDisplayString();
 	}
+	setCursor(Qt::PointingHandCursor);
+	QApplication::setOverrideCursor(this->cursor());
+	timer->start(1000);
+	setMouseTracking(true);
 }
 
 void VlcMediaWidget::stop()
 {
 	libvlc_media_player_stop(vlcMediaPlayer);
+
+	timer->stop();
+	setCursor(Qt::ArrowCursor);
+	QApplication::setOverrideCursor(this->cursor());
+	QApplication::changeOverrideCursor(this->cursor());
 }
 
 void VlcMediaWidget::setPaused(bool paused)
@@ -515,21 +523,19 @@ void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 
 void VlcMediaWidget::hideMouse()
 {
-	QCursor cursor(Qt::BlankCursor);
-	QApplication::setOverrideCursor(cursor);
-	QApplication::changeOverrideCursor(cursor);
+	setCursor(Qt::BlankCursor);
+	QApplication::restoreOverrideCursor();
 
 	timer->stop();
 }
 
 void VlcMediaWidget::mouseMoveEvent(QMouseEvent *event)
 {
-
-	QCursor cursor(Qt::PointingHandCursor);
-	QApplication::setOverrideCursor(cursor);
-	QApplication::changeOverrideCursor(cursor);
-
-	timer->start(1500);
+	if (!timer->isActive()) {
+		setCursor(Qt::PointingHandCursor);
+		QApplication::setOverrideCursor(this->cursor());
+	}
+	timer->start(1000);
 
 	AbstractMediaWidget::mouseMoveEvent(event);
 }
@@ -556,6 +562,7 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 		break;
 	case libvlc_MediaPlayerStopped:
 		pendingUpdatesToBeAdded = PlaybackStatus;
+		setMouseTracking(false);
 		break;
 	case libvlc_MediaPlayerTimeChanged:
 		pendingUpdatesToBeAdded = CurrentTotalTime;
