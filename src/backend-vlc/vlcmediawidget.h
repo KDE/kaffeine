@@ -26,12 +26,18 @@
 class libvlc_event_t;
 class libvlc_instance_t;
 class libvlc_media_player_t;
+class QTimer;
 
 class VlcMediaWidget : public AbstractMediaWidget
 {
+	Q_OBJECT
 private:
 	explicit VlcMediaWidget(QWidget *parent);
 	bool init();
+	QTimer *timer;
+
+private slots:
+	void hideMouse();
 
 public:
 	~VlcMediaWidget();

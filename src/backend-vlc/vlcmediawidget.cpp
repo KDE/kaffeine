@@ -22,6 +22,7 @@
 #include <QCursor>
 #include <QDebug>
 #include <QMouseEvent>
+#include <QTimer>
 #include <vlc/vlc.h>
 
 #include "vlcmediawidget.h"
@@ -60,6 +61,9 @@ bool VlcMediaWidget::init()
 			return false;
 		}
 	}
+
+	timer = new QTimer();
+	connect(timer, SIGNAL(timeout()), this, SLOT(hideMouse()));
 
 	libvlc_media_player_set_xwindow(vlcMediaPlayer, quint32(winId()));
 	setAttribute(Qt::WA_NativeWindow);
@@ -509,11 +513,23 @@ void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 	AbstractMediaWidget::mousePressEvent(event);
 }
 
+void VlcMediaWidget::hideMouse()
+{
+	QCursor cursor(Qt::BlankCursor);
+	QApplication::setOverrideCursor(cursor);
+	QApplication::changeOverrideCursor(cursor);
+
+	timer->stop();
+}
+
 void VlcMediaWidget::mouseMoveEvent(QMouseEvent *event)
 {
+
 	QCursor cursor(Qt::PointingHandCursor);
 	QApplication::setOverrideCursor(cursor);
 	QApplication::changeOverrideCursor(cursor);
+
+	timer->start(1500);
 
 	AbstractMediaWidget::mouseMoveEvent(event);
 }
