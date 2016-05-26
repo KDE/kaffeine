@@ -386,6 +386,8 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 
 DvbScanDialog::~DvbScanDialog()
 {
+	if (!isLive && device)
+		manager->releaseDevice(device, DvbManager::Exclusive);
 	delete internal;
 }
 

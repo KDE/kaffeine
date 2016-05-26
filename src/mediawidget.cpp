@@ -626,6 +626,7 @@ void MediaWidget::stop()
 	}
 
 	backend->stop();
+	source->playbackStatusChanged(Idle);
 }
 
 void MediaWidget::increaseVolume()
