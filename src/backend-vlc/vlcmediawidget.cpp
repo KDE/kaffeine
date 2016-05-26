@@ -18,6 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QApplication>
+#include <QCursor>
 #include <QDebug>
 #include <QMouseEvent>
 #include <vlc/vlc.h>
@@ -61,6 +63,7 @@ bool VlcMediaWidget::init()
 
 	libvlc_media_player_set_xwindow(vlcMediaPlayer, quint32(winId()));
 	setAttribute(Qt::WA_NativeWindow);
+	setMouseTracking(true);
 	// This is broken on qt5: the kernel/qwidget.cpp tries to repaint
 	// on a wrong place, causing this warning:
 	//	QWidget::paintEngine: Should no longer be called
@@ -504,6 +507,15 @@ void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 	}
 
 	AbstractMediaWidget::mousePressEvent(event);
+}
+
+void VlcMediaWidget::mouseMoveEvent(QMouseEvent *event)
+{
+	QCursor cursor(Qt::PointingHandCursor);
+	QApplication::setOverrideCursor(cursor);
+	QApplication::changeOverrideCursor(cursor);
+
+	AbstractMediaWidget::mouseMoveEvent(event);
 }
 
 void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)

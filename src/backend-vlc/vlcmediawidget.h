@@ -72,6 +72,8 @@ public:
 
 private:
 	void mousePressEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+
 	void vlcEvent(const libvlc_event_t *event);
 
 	static void vlcEventHandler(const libvlc_event_t *event, void *instance);
