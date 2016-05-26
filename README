@@ -17,12 +17,6 @@ The following development headers are needed (recommended versions):
 * libvlc
 * libdvbv5
 
-NOTE: There's an issue between VLC backend and Qt5: if Qt5 is compiled
-	with Xinput2, the mouse will disappear when playing any video.
-	This is a known issue on VLC. One solution is to disable the
-	Xinput2 support on qt5 with:
-		./configure -no-xinput2		(at qt5-qtbase compilation)
-
 If build fails for missing VLC directories, install libvlc-dev.
 
 For the translations you need:
