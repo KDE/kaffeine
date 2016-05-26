@@ -114,6 +114,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 			transmissionTypes |= IsdbT;
 			break;
 		default: /* not supported yet */
+			qInfo() << "DvbLinuxDevice::startDevice: unsupported transmission type: " << parms->systems[i];
 			break;
 		}
 	}
@@ -816,6 +817,9 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 		break;
 	    }
+	case DvbTransponderBase::Invalid:
+		qInfo() << "DvbLinuxDevice::getProps: unknown transmission type";
+		return false;
 	default:
 		qInfo() << "DvbLinuxDevice::tune: unknown transmission type" <<
 			transponder.getTransmissionType();
@@ -978,6 +982,9 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 
 		break;
 	    }
+	case DvbTransponderBase::Invalid:
+		qInfo() << "DvbLinuxDevice::getProps: unknown transmission type";
+		return false;
 	default:
 		qInfo() << "DvbLinuxDevice::getProps: unknown transmission type" <<
 			transponder.getTransmissionType();

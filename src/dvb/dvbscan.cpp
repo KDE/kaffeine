@@ -974,6 +974,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
+		qInfo() << "DvbScan::processNitDescriptor: Invalid transponder type";
 		break;
 	case DvbTransponderBase::DvbC: {
 		if (descriptor.descriptorTag() != 0x44) {
