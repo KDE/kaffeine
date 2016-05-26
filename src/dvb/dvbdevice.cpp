@@ -284,6 +284,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 {
 	DvbTransponderBase::TransmissionType transmissionType = transponder.getTransmissionType();
 
+	autoTransponder.setTransmissionType(transmissionType);
+
 	if ((transmissionType != DvbTransponderBase::DvbS) &&
 	    (transmissionType != DvbTransponderBase::DvbS2)) {
 		if (backend->tune(transponder)) {

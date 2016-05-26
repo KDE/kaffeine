@@ -307,6 +307,11 @@ public:
 		return data.transmissionType;
 	}
 
+	void setTransmissionType(const DvbTransponderBase::TransmissionType type)
+	{
+		data.transmissionType = type;
+	}
+
 	bool isValid() const
 	{
 		return (data.transmissionType != DvbTransponderBase::Invalid);
