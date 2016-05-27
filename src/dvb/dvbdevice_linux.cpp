@@ -19,6 +19,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QDebug>
+#if QT_VERSION < 0x050500
+# define qInfo qDebug
+#endif
+
 #include <dmx.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -27,7 +32,6 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/types.h>
-#include <QDebug>
 #include <QFile>
 #include <QRegularExpressionMatch>
 #include <Solid/Device>

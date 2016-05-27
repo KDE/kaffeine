@@ -18,8 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <QDataStream>
 #include <QDebug>
+#if QT_VERSION < 0x050500
+# define qInfo qDebug
+#endif
+
+#include <QDataStream>
 #include <QFile>
 #include <QStandardPaths>
 #include <QVariant>

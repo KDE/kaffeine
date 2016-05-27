@@ -19,6 +19,10 @@
  */
 
 #include <QDebug>
+#if QT_VERSION < 0x050500
+# define qInfo qDebug
+#endif
+
 #include <QTextCodec>
 
 #include "dvbsi.h"

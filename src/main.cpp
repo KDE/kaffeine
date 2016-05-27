@@ -18,13 +18,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QDebug>
+#if QT_VERSION < 0x050500
+# define qInfo qDebug
+#endif
+
 #include <KAboutData>
 #include <KDBusService>
 #include <KLocalizedString>
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDateTime>
-#include <QDebug>
 #include <QDir>
 #include <QPointer>
 #include <QStandardPaths>

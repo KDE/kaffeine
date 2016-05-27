@@ -18,10 +18,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <QDebug>
+#if QT_VERSION < 0x050500
+# define qInfo qDebug
+#endif
+
 #include <KConfig>
 #include <KConfigGroup>
 #include <KSharedConfig>
-#include <QDebug>
 
 #include "configuration.h"
 
