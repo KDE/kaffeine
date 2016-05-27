@@ -1,43 +1,41 @@
 project(kaffeine)
 
 cmake_minimum_required(VERSION 3.4)
-set(QT_MIN_VERSION "4.6.0")
+set(QT_MIN_VERSION "5.5.0")
 
 find_package(Qt5Core)
-if( Qt5Core_DIR )
-    set(KF5_MIN_VERSION "5.1.0")
-    message(STATUS "Found Qt5! Be aware that Qt5-support is still experimental and not officially supported!")
 
-    find_package(ECM 1.0.0 REQUIRED NO_MODULE)
+set(KF5_MIN_VERSION "5.1.0")
 
-    set(CMAKE_MODULE_PATH
+find_package(ECM 1.0.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH
 	${ECM_MODULE_PATH}
 	${ECM_KDE_MODULE_DIR}
 	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules"
-    )
+)
 
-    include(KDEInstallDirs)
-    include(KDECMakeSettings)
-    include(KDECompilerSettings)
-    include(FeatureSummary)
-    include(ECMInstallIcons)
-    include(ECMOptionalAddSubdirectory)
-    include(CheckIncludeFiles)
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(FeatureSummary)
+include(ECMInstallIcons)
+include(ECMOptionalAddSubdirectory)
+include(CheckIncludeFiles)
 
-   # Instruct CMake to run moc automatically when needed.
-   set(CMAKE_AUTOMOC ON)
+# Instruct CMake to run moc automatically when needed.
+set(CMAKE_AUTOMOC ON)
 
-    # Find Qt modules
-    find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+# Find Qt modules
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 	Core    # QCommandLineParser, QStringLiteral
 	Widgets # QApplication
 	Network
 	Sql
 	X11Extras
-    )
+)
 
-    # Find KDE modules
-    find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+# Find KDE modules
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	CoreAddons      # KAboutData
 	I18n            # KLocalizedString
 	WidgetsAddons   # KMessageBox
@@ -46,26 +44,12 @@ if( Qt5Core_DIR )
 	Solid
 	Notifications
 	IdleTime
-    )
+)
 
-    include(KDEInstallDirs)
-    include(KDECompilerSettings)
-    include(KDECMakeSettings)
-    include(FeatureSummary)
-else(Qt5Core_DIR)
-    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/modules")
-    find_package(KDE4 REQUIRED)
-    if(STRICT_BUILD)
-	add_definitions(-Werror -Weverything -Wno-packed -Wno-padded -Wno-sign-conversion -Wno-unreachable-code
-			-Wno-weak-vtables -ferror-limit=5
-			-isystem /usr/include/KDE
-			-isystem /usr/include/qt4/QtCore
-			-isystem /usr/include/qt4/QtGui
-			-isystem /usr/include/qt4/QtNetwork
-			-DQT_NO_CAST_FROM_ASCII -DQT_NO_CAST_FROM_BYTEARRAY -DQT_NO_CAST_TO_ASCII
-			-DQT_NO_URL_CAST_FROM_STRING -DQT_STRICT_ITERATORS)
-    endif(STRICT_BUILD)
-endif(Qt5Core_DIR)
+include(KDEInstallDirs)
+include(KDECompilerSettings)
+include(KDECMakeSettings)
+include(FeatureSummary)
 
 find_package(X11 REQUIRED)
 find_package(VLC 1.2 REQUIRED)
