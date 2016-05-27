@@ -24,6 +24,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
+#include <QRegularExpressionMatch>
 #include <QStandardPaths>
 
 #include "dvbconfig.h"
@@ -776,7 +777,7 @@ void DvbManager::readScanData()
 
 		globalFile.close();
 	} else {
-		qInfo() << "DvbManager::readScanData: cannot open" << globalFile.fileName();
+		qInfo() << "DvbManager::readScanData: cannot open global scanfile " << globalFile.fileName();
 	}
 
 	QFile localFile(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
@@ -825,35 +826,53 @@ void DvbManager::readScanData()
 		return;
 	}
 
-	if (!readScanSources(data, "[dvb-c/", DvbC) ||
-	    !readScanSources(data, "[dvb-s/", DvbS) ||
-	    !readScanSources(data, "[dvb-t/", DvbT) ||
-	    !readScanSources(data, "[atsc/", Atsc) ||
-	    !readScanSources(data, "[isdb-t/", IsdbT) ||
-	    !data.checkEnd()) {
-		qInfo() << "DvbManager::readScanData: cannot parse" << localFile.fileName();
-	}
-}
+	// Parse scan file
 
-bool DvbManager::readScanSources(DvbScanData &data, const char *tag, TransmissionType type)
-{
-	int tagLen = int(strlen(tag));
-	bool parseError = false;
+	QRegularExpression rejex = QRegularExpression("\\[(\\S+)/(\\S+)\\]");
+	QRegularExpressionMatch match;
+	TransmissionType type;
+	QString errMsg = "DvbManager::readScanData: ";
 
-	while (strncmp(data.getLine(), tag, tagLen) == 0) {
+	errMsg.append(localFile.fileName()).append(": ");
+
+	while (!data.checkEnd()) {
 		const char *line = data.readLine();
 
-		QString name = QString(QLatin1String(line)).remove(0, tagLen);
+		// Discard empty lines
+		if (*line == 0)
+			continue;
 
-		if ((name.size() < 2) || (name.at(name.size() - 1) != QLatin1Char(']'))) {
-			return false;
+		QString qLine(line);
+
+		if (!qLine.contains(rejex, &match)) {
+			qInfo() << "unrecognized line: " << line;
+			continue;
+
 		}
 
-		name.chop(1);
+		QString typeStr = match.captured(1);
+		QString name = match.captured(2);
+
+		if (!typeStr.compare("dvb-c", Qt::CaseInsensitive))
+			type = DvbC;
+		else if (!typeStr.compare("dvb-s", Qt::CaseInsensitive))
+			type = DvbS;
+		else if (!typeStr.compare("dvb-t", Qt::CaseInsensitive))
+			type = DvbT;
+		else if (!typeStr.compare("atsc", Qt::CaseInsensitive))
+			type = Atsc;
+		else if (!typeStr.compare("isdb-t", Qt::CaseInsensitive))
+			type = IsdbT;
+		else {
+			qInfo() << errMsg << "transmission type "
+				<< typeStr << "unknown";
+			continue;
+		}
+
 		QList<DvbTransponder> transponders;
 		bool containsDvbS1 = false;
 
-		while (true) {
+		while (!data.checkEnd()) {
 			line = data.getLine();
 
 			if ((*line == '[') || (*line == 0)) {
@@ -864,15 +883,14 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 
 			// Ignore lines with empty strings
 			if (*line == 0)
-				break;
+				continue;
 
 			DvbTransponder transponder =
 				DvbTransponder::fromString(QString::fromLatin1(line));
 
 			if (!transponder.isValid()) {
-				parseError = true;
-				qInfo() << "DvbManager::readScanSources: cannot parse complete scan data";
-				qInfo() << "line: '" << int(*line) << "'";
+				qInfo() << errMsg
+					<< "error parsing line: '" << line << "'";
 			} else {
 				transponders.append(transponder);
 
@@ -905,11 +923,8 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 		}
 	}
 
-	if (parseError) {
-		qInfo() << "DvbManager::readScanSources: cannot parse complete scan data";
-	}
-
-	return true;
+	if (!data.checkEnd())
+		qInfo() << errMsg << "some data were not parsed";
 }
 
 DvbDeviceConfig::DvbDeviceConfig(const QString &deviceId_, const QString &frontendName_,
@@ -970,7 +985,7 @@ const char *DvbScanData::readLine()
 
 	char *line = pos;
 
-	while (pos != end) {
+	while (pos < end) {
 		if (*pos == ' ')
 			++pos;
 		if (*pos == '\n') {
