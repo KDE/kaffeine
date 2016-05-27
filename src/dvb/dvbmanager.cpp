@@ -861,13 +861,18 @@ bool DvbManager::readScanSources(DvbScanData &data, const char *tag, Transmissio
 			}
 
 			line = data.readLine();
+
+			// Ignore lines with empty strings
+			if (*line == 0)
+				break;
+
 			DvbTransponder transponder =
 				DvbTransponder::fromString(QString::fromLatin1(line));
 
 			if (!transponder.isValid()) {
 				parseError = true;
 				qInfo() << "DvbManager::readScanSources: cannot parse complete scan data";
-				qInfo() << "source: " << line;
+				qInfo() << "line: '" << int(*line) << "'";
 			} else {
 				transponders.append(transponder);
 
@@ -966,6 +971,8 @@ const char *DvbScanData::readLine()
 	char *line = pos;
 
 	while (pos != end) {
+		if (*pos == ' ')
+			++pos;
 		if (*pos == '\n') {
 			*pos = 0;
 			++pos;
