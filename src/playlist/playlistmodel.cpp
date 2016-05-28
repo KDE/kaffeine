@@ -511,8 +511,6 @@ void Playlist::saveXSPFPlaylist(QIODevice *device) const
 PlaylistModel::PlaylistModel(Playlist *visiblePlaylist_, QObject *parent) :
 	QAbstractTableModel(parent), visiblePlaylist(visiblePlaylist_)
 {
-// FIXME:
-//	setSupportedDragActions(Qt::MoveAction);
 }
 
 PlaylistModel::~PlaylistModel()
