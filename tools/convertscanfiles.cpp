@@ -171,6 +171,15 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 
 		return transponder.toString();
 	    }
+	case DvbTransponderBase::IsdbT: {
+		IsdbTTransponder transponder;
+
+		if (!transponder.fromString(line)) {
+			break;
+		}
+
+		return transponder.toString();
+	    }
 	}
 
 	return QString();
@@ -196,6 +205,9 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 		break;
 	case DvbTransponderBase::Atsc:
 		dir.setPath(path + "/atsc");
+		break;
+	case DvbTransponderBase::IsdbT:
+		dir.setPath(path + "/isdb-t");
 		break;
 	}
 
@@ -234,6 +246,27 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 		QString g_interval = "";
 		QString hierarchy = "";
 
+		// ISDB-T specific fields
+
+		QString isdbtLayerEnabled = "";
+		QString isdbtPartialReception = "";
+		QString isdbtSb = "";
+		QString isdbtSbSubchId = "";
+		QString isdbtSbSegIdx = "";
+		QString isdbtSbSegCount = "";
+		QString isdbtLayerAFec = "";
+		QString isdbtLayerAModulation = "";
+		QString isdbtLayerASegCount = "";
+		QString isdbtLayerAInterleaving = "";
+		QString isdbtLayerBFec = "";
+		QString isdbtLayerBModulation = "";
+		QString isdbtLayerBSegCount = "";
+		QString isdbtLayerBInterleaving = "";
+		QString isdbtLayerCFec = "";
+		QString isdbtLayerCModulation = "";
+		QString isdbtLayerCSegCount = "";
+		QString isdbtLayerCInterleaving = "";
+		int isdbtLayers = 0;
 
 		while (!stream.atEnd()) {
 			QString line = stream.readLine();
@@ -262,6 +295,9 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 				continue;
 			}
 			switch (type) {
+			case DvbTransponderBase::Invalid:
+				// Just to remove a compilation warning
+				break;
 			case DvbTransponderBase::DvbC: {
 				if (!frq.isEmpty() && !fec.isEmpty() && !symbolRate.isEmpty() && !modulation.isEmpty()) {
 					line = "C " + frq + " " + symbolRate + " " + fec + " " + modulation.replace("/", "");
@@ -593,6 +629,254 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 					continue;
 				}
 			}
+			case DvbTransponderBase::IsdbT: {
+				if (line.isEmpty() && !frq.isEmpty()) {
+					line = "I " + frq;
+					if (!bandwith.isEmpty()) {
+						int number = bandwith.toInt();
+						number = number / 1000000;
+						line = line + " " + QString::number(number) + "MHz";
+					} else {
+						line = line + " 6MHz";
+					}
+					if (!t_mode.isEmpty()) {
+						line = line + " " + t_mode.replace("K", "k");
+					} else {
+						line = line + " AUTO";
+					}
+					if (!g_interval.isEmpty()) {
+						line = line + " " + g_interval;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtPartialReception.isEmpty()) {
+						line = line + " " + isdbtPartialReception;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtSb.isEmpty()) {
+						line = line + " " + isdbtSb;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtSbSubchId.isEmpty()) {
+						line = line + " " + isdbtSbSubchId;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtSbSegCount.isEmpty()) {
+						line = line + " " + isdbtSbSegCount;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtSbSegIdx.isEmpty()) {
+						line = line + " " + isdbtSbSegIdx;
+					} else {
+						line = line + " AUTO";
+					}
+
+					line = line + " " + QString::number(isdbtLayers);
+
+					// Layer A
+					if (!isdbtLayerAModulation.isEmpty()) {
+						line = line + " " + isdbtLayerAModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerAFec.isEmpty()) {
+						line = line + " " + isdbtLayerAFec;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerASegCount.isEmpty()) {
+						line = line + " " + isdbtLayerASegCount;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerAInterleaving.isEmpty()) {
+						line = line + " " + isdbtLayerAInterleaving;
+					} else {
+						line = line + " AUTO";
+					}
+					// Layer B
+					if (!isdbtLayerBModulation.isEmpty()) {
+						line = line + " " + isdbtLayerBModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerBFec.isEmpty()) {
+						line = line + " " + isdbtLayerBFec;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerBSegCount.isEmpty()) {
+						line = line + " " + isdbtLayerBSegCount;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerBInterleaving.isEmpty()) {
+						line = line + " " + isdbtLayerBInterleaving;
+					} else {
+						line = line + " AUTO";
+					}
+					// Layer C
+					if (!isdbtLayerCModulation.isEmpty()) {
+						line = line + " " + isdbtLayerCModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerCFec.isEmpty()) {
+						line = line + " " + isdbtLayerCFec;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerCSegCount.isEmpty()) {
+						line = line + " " + isdbtLayerCSegCount;
+					} else {
+						line = line + " AUTO";
+					}
+					if (!isdbtLayerCInterleaving.isEmpty()) {
+						line = line + " " + isdbtLayerCInterleaving;
+					} else {
+						line = line + " AUTO";
+					}
+
+					qWarning() << line;
+					bandwith = "";
+					frq = "";
+					t_mode = "";
+					g_interval = "";
+					isdbtLayerEnabled = "";
+					isdbtPartialReception = "";
+					isdbtSb = "";
+					isdbtSbSubchId = "";
+					isdbtSbSegIdx = "";
+					isdbtSbSegCount = "";
+					isdbtLayerAFec = "";
+					isdbtLayerAModulation = "";
+					isdbtLayerASegCount = "";
+					isdbtLayerAInterleaving = "";
+					isdbtLayerBFec = "";
+					isdbtLayerBModulation = "";
+					isdbtLayerBSegCount = "";
+					isdbtLayerBInterleaving = "";
+					isdbtLayerCFec = "";
+					isdbtLayerCModulation = "";
+					isdbtLayerCSegCount = "";
+					isdbtLayerCInterleaving = "";
+					isdbtLayers = 0;
+				}
+				if (line.contains("DELIVERY_SYSTEM = ISDBT")) {
+					continue;
+				}
+				if (line.contains("BANDWIDTH_HZ")) {
+					bandwith = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("FREQUENCY = ")) {
+					frq = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("INVERSION")) {
+					inversion = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("GUARD_INTERVAL")) {
+					g_interval = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("TRANSMISSION_MODE")) {
+					t_mode = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ISDBT_LAYER_ENABLED")) {
+					isdbtLayerEnabled = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ISDBT_PARTIAL_RECEPTION")) {
+					isdbtPartialReception = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ISDBT_SOUND_BROADCASTING")) {
+					isdbtSb = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ISDBT_SB_SUBCHANNEL_ID")) {
+					isdbtSbSubchId = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ISDBT_SB_SEGMENT_IDX")) {
+					isdbtSbSegIdx = line.split(" = ")[1];
+					continue;
+				}
+				if (line.contains("ISDBT_SB_SEGMENT_COUNT")) {
+					isdbtSbSegCount = line.split(" = ")[1];
+					continue;
+				}
+				// Layer A
+				if (line.contains("ISDBT_LAYERA_FEC")) {
+					isdbtLayerAFec = line.split(" = ")[1];
+					isdbtLayers |= 1;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERA_MODULATION")) {
+					isdbtLayerAModulation = line.split(" = ")[1];
+					isdbtLayers |= 1;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERA_SEGMENT_COUNT")) {
+					isdbtLayerASegCount = line.split(" = ")[1];
+					isdbtLayers |= 1;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERA_TIME_INTERLEAVING")) {
+					isdbtLayerAInterleaving = line.split(" = ")[1];
+					isdbtLayers |= 1;
+					continue;
+				}
+				// Layer B
+				if (line.contains("ISDBT_LAYERB_FEC")) {
+					isdbtLayerBFec = line.split(" = ")[1];
+					isdbtLayers |= 2;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERB_MODULATION")) {
+					isdbtLayerBModulation = line.split(" = ")[1];
+					isdbtLayers |= 2;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERB_SEGMENT_COUNT")) {
+					isdbtLayerBSegCount = line.split(" = ")[1];
+					isdbtLayers |= 2;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERB_TIME_INTERLEAVING")) {
+					isdbtLayerBInterleaving = line.split(" = ")[1];
+					isdbtLayers |= 2;
+					continue;
+				}
+				// Layer C
+				if (line.contains("ISDBT_LAYERC_FEC")) {
+					isdbtLayerCFec = line.split(" = ")[1];
+					isdbtLayers |= 4;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERC_MODULATION")) {
+					isdbtLayerCModulation = line.split(" = ")[1];
+					isdbtLayers |= 4;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERC_SEGMENT_COUNT")) {
+					isdbtLayerCSegCount = line.split(" = ")[1];
+					isdbtLayers |= 4;
+					continue;
+				}
+				if (line.contains("ISDBT_LAYERC_TIME_INTERLEAVING")) {
+					isdbtLayerCInterleaving = line.split(" = ")[1];
+					isdbtLayers |= 4;
+					continue;
+				}
+			}
 			}
 
 			if (line.isEmpty()) {
@@ -606,14 +890,14 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 				return;
 			}
 
-			// reduce multiple spaces to one space and remove leading zeros
+			// reduce multiple spaces to one space
 
 			for (int i = 1; i < line.length(); ++i) {
 				if (line.at(i - 1) != ' ') {
 					continue;
 				}
 
-				if ((line.at(i) == ' ') || (line.at(i) == '0')) {
+				if (line.at(i) == ' ') {
 					line.remove(i, 1);
 					--i;
 				}
@@ -689,6 +973,7 @@ int main(int argc, char *argv[])
 	readScanDirectory(out, path, DvbTransponderBase::DvbS);
 	readScanDirectory(out, path, DvbTransponderBase::DvbT);
 	readScanDirectory(out, path, DvbTransponderBase::Atsc);
+	readScanDirectory(out, path, DvbTransponderBase::IsdbT);
 
 	out.flush();
 
