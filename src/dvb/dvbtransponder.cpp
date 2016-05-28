@@ -731,6 +731,28 @@ QString DvbTransponder::toString() const
 	return QString();
 }
 
+int DvbTransponder::frequency()
+{
+	switch (data.transmissionType) {
+	case DvbTransponderBase::Invalid:
+		return 0;
+	case DvbTransponderBase::DvbC:
+		return as<DvbCTransponder>()->frequency;
+	case DvbTransponderBase::DvbS:
+		return as<DvbSTransponder>()->frequency;
+	case DvbTransponderBase::DvbS2:
+		return as<DvbS2Transponder>()->frequency;
+	case DvbTransponderBase::DvbT:
+		return as<DvbTTransponder>()->frequency;
+	case DvbTransponderBase::Atsc:
+		return as<AtscTransponder>()->frequency;
+	case DvbTransponderBase::IsdbT:
+		return as<IsdbTTransponder>()->frequency;
+	}
+
+	return 0;
+}
+
 DvbTransponder DvbTransponder::fromString(const QString &string)
 {
 	if (string.size() >= 2) {

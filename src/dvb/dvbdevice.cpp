@@ -730,7 +730,7 @@ void DvbDevice::frontendEvent()
 		frontendTimer.stop();
 
 		if (!isAuto) {
-			qInfo() << "DvbDevice::frontendEvent: tuning failed";
+			qInfo() << "DvbDevice::frontendEvent: tuning failed for freq=" << autoTransponder.frequency();
 			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 			return;
@@ -748,7 +748,7 @@ void DvbDevice::frontendEvent()
 
 			if ((signal != -1) && (signal < 15)) {
 				// signal too weak
-				qInfo() << "DvbDevice::frontendEvent: tuning failed";
+				qInfo() << "DvbDevice::frontendEvent: tuning failed (signal too weak) for freq=" << autoTransponder.frequency();
 				setDeviceState(DeviceIdle);
 				autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 				return;
@@ -846,7 +846,7 @@ void DvbDevice::frontendEvent()
 		if (!carry) {
 			tune(autoTransponder);
 		} else {
-			qInfo() << "DvbDevice::frontendEvent: tuning failed";
+			qInfo() << "DvbDevice::frontendEvent: tuning failed for freq=" << autoTransponder.frequency();
 			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 		}

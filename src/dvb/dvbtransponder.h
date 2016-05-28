@@ -317,6 +317,8 @@ public:
 		return (data.transmissionType != DvbTransponderBase::Invalid);
 	}
 
+	int frequency();
+
 	static DvbTransponder fromString(const QString &string); // linuxtv scan file format
 	QString toString() const; // linuxtv scan file format
 
