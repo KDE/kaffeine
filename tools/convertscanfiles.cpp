@@ -335,10 +335,10 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 				if (line.isEmpty() && !frq.isEmpty()) {
 					line = "S " + frq + " " + polar[0] + " " + symbolRate + " " + fec;
 					if (!rollOff.isEmpty()) {
-						line = line + " " + rollOff;
+						line += " " + rollOff;
 					}
 					if (!modulation.isEmpty()) {
-						line = line + " " + modulation.replace("/", "");
+						line += " " + modulation.replace("/", "");
 					}
 					qWarning() << line;
 					frq = "";
@@ -410,37 +410,37 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 					if (!bandwith.isEmpty()) {
 						int number = bandwith.toInt();
 						number = number / 1000000;
-						line = line + " " + QString::number(number) + "MHz";
+						line += " " + QString::number(number) + "MHz";
 					}
 					if (!fec_hi.isEmpty()) {
-						line = line + " " + fec_hi;
+						line += " " + fec_hi;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!fec_lo.isEmpty()) {
-						line = line + " " + fec_lo;
+						line += " " + fec_lo;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!modulation.isEmpty()) {
-						line = line + " " + modulation.replace("/", "").replace("QAMAUTO", "AUTO");
+						line += " " + modulation.replace("/", "").replace("QAMAUTO", "AUTO");
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!t_mode.isEmpty()) {
-						line = line + " " + t_mode.replace("K", "k");
+						line += " " + t_mode.replace("K", "k");
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!g_interval.isEmpty()) {
-						line = line + " " + g_interval;
+						line += " " + g_interval;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!hierarchy.isEmpty()) {
-						line = line + " " + hierarchy;
+						line += " " + hierarchy;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					qWarning() << line;
 					frq = "";
@@ -536,12 +536,12 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 						QString temp1 = modulation.split("/")[0];
 						QString temp2 = modulation.split("/")[1];
 						if (!(temp1 == "QAM")) {
-						line = line + " " + temp2 + temp1; } else 
+						line += " " + temp2 + temp1; } else
 						{
-						line = line + " " + temp1 + temp2;
+						line += " " + temp1 + temp2;
 						}
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					qWarning() << line;
 					frq = "";
@@ -635,110 +635,110 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 					if (!bandwith.isEmpty()) {
 						int number = bandwith.toInt();
 						number = number / 1000000;
-						line = line + " " + QString::number(number) + "MHz";
+						line += " " + QString::number(number) + "MHz";
 					} else {
-						line = line + " 6MHz";
+						line += " 6MHz";
 					}
 					if (!t_mode.isEmpty()) {
-						line = line + " " + t_mode.replace("K", "k");
+						line += " " + t_mode.replace("K", "k");
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!g_interval.isEmpty()) {
-						line = line + " " + g_interval;
+						line += " " + g_interval;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtPartialReception.isEmpty()) {
-						line = line + " " + isdbtPartialReception;
+						line += " " + isdbtPartialReception;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtSb.isEmpty()) {
-						line = line + " " + isdbtSb;
+						line += " " + isdbtSb;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtSbSubchId.isEmpty()) {
-						line = line + " " + isdbtSbSubchId;
+						line += " " + isdbtSbSubchId;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtSbSegCount.isEmpty()) {
-						line = line + " " + isdbtSbSegCount;
+						line += " " + isdbtSbSegCount;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtSbSegIdx.isEmpty()) {
-						line = line + " " + isdbtSbSegIdx;
+						line += " " + isdbtSbSegIdx;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 
-					line = line + " " + QString::number(isdbtLayers);
+					line += " " + QString::number(isdbtLayers);
 
 					// Layer A
 					if (!isdbtLayerAModulation.isEmpty()) {
-						line = line + " " + isdbtLayerAModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+						line += " " + isdbtLayerAModulation.replace("/", "").replace("QAMAUTO", "AUTO");
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerAFec.isEmpty()) {
-						line = line + " " + isdbtLayerAFec;
+						line += " " + isdbtLayerAFec;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerASegCount.isEmpty()) {
-						line = line + " " + isdbtLayerASegCount;
+						line += " " + isdbtLayerASegCount;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerAInterleaving.isEmpty()) {
-						line = line + " " + isdbtLayerAInterleaving;
+						line += " " + isdbtLayerAInterleaving;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					// Layer B
 					if (!isdbtLayerBModulation.isEmpty()) {
-						line = line + " " + isdbtLayerBModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+						line += " " + isdbtLayerBModulation.replace("/", "").replace("QAMAUTO", "AUTO");
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerBFec.isEmpty()) {
-						line = line + " " + isdbtLayerBFec;
+						line += " " + isdbtLayerBFec;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerBSegCount.isEmpty()) {
-						line = line + " " + isdbtLayerBSegCount;
+						line += " " + isdbtLayerBSegCount;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerBInterleaving.isEmpty()) {
-						line = line + " " + isdbtLayerBInterleaving;
+						line += " " + isdbtLayerBInterleaving;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					// Layer C
 					if (!isdbtLayerCModulation.isEmpty()) {
-						line = line + " " + isdbtLayerCModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+						line += " " + isdbtLayerCModulation.replace("/", "").replace("QAMAUTO", "AUTO");
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerCFec.isEmpty()) {
-						line = line + " " + isdbtLayerCFec;
+						line += " " + isdbtLayerCFec;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerCSegCount.isEmpty()) {
-						line = line + " " + isdbtLayerCSegCount;
+						line += " " + isdbtLayerCSegCount;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 					if (!isdbtLayerCInterleaving.isEmpty()) {
-						line = line + " " + isdbtLayerCInterleaving;
+						line += " " + isdbtLayerCInterleaving;
 					} else {
-						line = line + " AUTO";
+						line += " AUTO";
 					}
 
 					qWarning() << line;
