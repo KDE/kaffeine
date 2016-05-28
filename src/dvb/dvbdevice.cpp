@@ -715,7 +715,7 @@ void DvbDevice::frontendEvent()
 	DvbTransponderBase::TransmissionType transmissionType = autoTransponder.getTransmissionType();
 
 	if (backend->isTuned()) {
-		qInfo() << "DvbDevice::frontendEvent: tuning succeeded";
+		qInfo() << "DvbDevice::frontendEvent: tuning succeeded on freq=" << autoTransponder.frequency();
 		frontendTimer.stop();
 		backend->getProps(autoTransponder);
 		setDeviceState(DeviceTuned);
