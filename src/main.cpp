@@ -19,6 +19,7 @@
  */
 
 #include <KAboutData>
+#include <KDBusService>
 #include <KLocalizedString>
 #include <QApplication>
 #include <QCommandLineParser>
@@ -81,8 +82,6 @@ public:
 	QCommandLineParser parser;
 
 private:
-//	int newInstance();
-
 	QPointer<MainWindow> mainWindow;
 };
 
@@ -108,15 +107,6 @@ KaffeineApplication::~KaffeineApplication()
 	// unlike qt, kde sets Qt::WA_DeleteOnClose and needs it to work properly
 	delete mainWindow; // QPointer; needed if kaffeine is closed via QCoreApplication::quit()
 }
-
-//int KaffeineApplication::newInstance()
-//{
-//	if (mainWindow != NULL) {
-//		mainWindow->parseArgs();
-//	}
-//
-//	return QApplication::newInstance();
-//}
 
 // The icon Kaffeine needs are either at breeze or oxygen themes
 static void iconThemeFunc()
@@ -182,6 +172,8 @@ int main(int argc, char *argv[])
 	KaffeineApplication app(argc, argv, &aboutData);
 	KAboutData::setApplicationData(aboutData);
 
+	app.setApplicationName("kaffeine");
+	app.setOrganizationDomain("kde.org");
 	app.setWindowIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
 
 	app.parser.addVersionOption();
@@ -194,6 +186,7 @@ int main(int argc, char *argv[])
 	aboutData.processCommandLine(&app.parser);
 
 //	KCmdLineArgs::addTempFileOption();
+	KDBusService service(KDBusService::Unique);
 
 	return app.exec();
 }

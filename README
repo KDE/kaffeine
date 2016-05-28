@@ -27,7 +27,7 @@ So, on Debian, for example, those packages should be installed:
    apt-get install kdelibs5-dev libvlc-dev libxss-dev libqt5-sql-sqlite \
 		   libkf5coreaddons-dev libkf5i18n-dev libqt5x11extras5-dev \
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
-		   libkf5idletime-dev \
+		   libkf5idletime-dev libkf5kdbusaddons-dev \
 		   qt5-default libdvbv5-dev libkf5notifications-dev \
 		   gettext cmake extra-cmake-modules make g++
 
@@ -36,7 +36,7 @@ should be installed with:
    dnf install  kf5-kcoreaddons-devel extra-cmake-modules \
 		qt5-qtx11extras-devel kf5-kidletime-devel \
 		kf5-knotifications-devel kf5-solid-devel kf5-kio-devel \
-		kf5-ki18n-devel vlc-devel
+		kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel
 
 Create an empty build directory and do the following steps:
 # cmake <path/to/kaffeine/source/directory> <options>
