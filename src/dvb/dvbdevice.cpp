@@ -848,7 +848,6 @@ void DvbDevice::frontendEvent()
 		} else {
 			qInfo() << "DvbDevice::frontendEvent: tuning failed for freq=" << autoTransponder.frequency();
 			setDeviceState(DeviceIdle);
-			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 		}
 	}
 }
