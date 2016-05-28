@@ -301,7 +301,7 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 			case DvbTransponderBase::DvbC: {
 				if (!frq.isEmpty() && !fec.isEmpty() && !symbolRate.isEmpty() && !modulation.isEmpty()) {
 					line = "C " + frq + " " + symbolRate + " " + fec + " " + modulation.replace("/", "");
-					qWarning() << line;
+
 					frq = "";
 					modulation = "";
 					symbolRate = "";
@@ -340,7 +340,7 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 					if (!modulation.isEmpty()) {
 						line += " " + modulation.replace("/", "");
 					}
-					qWarning() << line;
+
 					frq = "";
 					polar = "";
 					symbolRate = "";
@@ -442,7 +442,7 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 					} else {
 						line += " AUTO";
 					}
-					qWarning() << line;
+
 					frq = "";
 					polar = "";
 					symbolRate = "";
@@ -543,7 +543,7 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 					} else {
 						line += " AUTO";
 					}
-					qWarning() << line;
+
 					frq = "";
 					polar = "";
 					symbolRate = "";
@@ -741,7 +741,6 @@ static void readScanDirectory(QTextStream &out, const QString &path, DvbTranspon
 						line += " AUTO";
 					}
 
-					qWarning() << line;
 					bandwith = "";
 					frq = "";
 					t_mode = "";
