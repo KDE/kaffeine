@@ -849,7 +849,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 {
 	Q_ASSERT(dvbv5_parms);
 	stopDvr();
-	unsigned delsys;
+	fe_delivery_system_t delsys;
 
 	qInfo() << "tune to:" << transponder.toString();
 
@@ -858,6 +858,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
 
 		delsys = SYS_DVBS;
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbSTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbSTransponder->symbolRate);
@@ -869,6 +871,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		const DvbS2Transponder *dvbS2Transponder = transponder.as<DvbS2Transponder>();
 
 		delsys = SYS_DVBS2;
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbS2Transponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbS2Transponder->symbolRate);
@@ -883,6 +887,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		const DvbCTransponder *dvbCTransponder = transponder.as<DvbCTransponder>();
 
 		delsys = SYS_DVBC_ANNEX_A;
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbCTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(dvbCTransponder->modulation));
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
@@ -896,6 +902,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		const DvbTTransponder *dvbTTransponder = transponder.as<DvbTTransponder>();
 
 		delsys = SYS_DVBT;
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbTTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(dvbTTransponder->modulation));
 		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, toDvbBandwidth(dvbTTransponder->bandwidth));
@@ -912,6 +920,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		const DvbT2Transponder *dvbT2Transponder = transponder.as<DvbT2Transponder>();
 
 		delsys = SYS_DVBT2;
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbT2Transponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(dvbT2Transponder->modulation));
 		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, toDvbBandwidth(dvbT2Transponder->bandwidth));
@@ -936,6 +946,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		default:
 			delsys = SYS_DVBC_ANNEX_B;
 		}
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, atscTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_MODULATION, toDvbModulation(atscTransponder->modulation));
 /*		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO); */
@@ -948,6 +960,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		uint32_t layers = 0;
 
 		delsys = SYS_ISDBT;
+		dvb_set_sys(dvbv5_parms, delsys);
+
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, isdbTTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_BANDWIDTH_HZ, toDvbBandwidth(isdbTTransponder->bandwidth));
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
@@ -993,9 +1007,6 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 			transponder.getTransmissionType();
 		return false;
 	}
-
-	dvb_fe_store_parm(dvbv5_parms, DTV_DELIVERY_SYSTEM, delsys);
-
 
 	if (dvb_fe_set_parms(dvbv5_parms) != 0) {
 		qInfo() << "DvbLinuxDevice::tune: ioctl FE_SET_PROPERTY failed for frontend" <<
