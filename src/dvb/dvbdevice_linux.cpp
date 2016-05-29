@@ -93,6 +93,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 		return;
 	}
 
+	transmissionTypes = 0;
 	for (int i = 0; i < parms->num_systems; i++) {
 		switch (parms->systems[i]) {
 		case SYS_DVBS:
@@ -108,9 +109,11 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 			transmissionTypes |= DvbT2;
 			break;
 		case SYS_DVBC_ANNEX_A:
+		case SYS_DVBC_ANNEX_C:
 			transmissionTypes |= DvbC;
 			break;
 		case SYS_ATSC:
+		case SYS_DVBC_ANNEX_B:
 			transmissionTypes |= Atsc;
 			break;
 		case SYS_ISDBT:
