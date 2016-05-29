@@ -851,6 +851,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 	stopDvr();
 	unsigned delsys;
 
+	qInfo() << "tune to:" << transponder.toString();
+
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::DvbS: {
 		const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
