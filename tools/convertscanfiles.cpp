@@ -89,7 +89,6 @@ private:
 	QString polar = "";
 	QString inversion = "";
 	QString rollOff = "";
-	QString streamid = "";
 	QString plscode = "";
 	QString plsmode = "";
 	QString bandwith = "";
@@ -120,7 +119,7 @@ private:
 	QString isdbtLayerCSegCount = "";
 	QString isdbtLayerCInterleaving = "";
 	int isdbtLayers = 0;
-	int streamId = 0;
+	int streamid = 0;
 };
 
 int parseDvbv5::getPos()
@@ -148,7 +147,6 @@ void parseDvbv5::resetParser()
 	polar = "";
 	inversion = "";
 	rollOff = "";
-	streamid = "";
 	plscode = "";
 	plsmode = "";
 	bandwith = "";
@@ -177,6 +175,7 @@ void parseDvbv5::resetParser()
 	isdbtLayerCSegCount = "";
 	isdbtLayerCInterleaving = "";
 	isdbtLayers = 0;
+	streamid = 0;
 }
 
 bool parseDvbv5::parseInputLine(QString line)
@@ -256,7 +255,7 @@ bool parseDvbv5::parseInputLine(QString line)
 		return false;
 	}
 	if (line.contains("STREAM_ID")) {
-		streamid = line.split(" = ")[1];
+		streamid = line.split(" = ")[1].toInt();
 		return false;
 	}
 	if (line.contains("PLS_CODE")) {
@@ -508,7 +507,7 @@ QString parseDvbv5::outputLine()
 			} else {
 				line += " AUTO";
 			}
-			line += " " + streamid;
+			line += " " + QString::number(streamid);
 		}
 		return line;
 	}
