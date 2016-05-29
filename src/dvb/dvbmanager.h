@@ -56,6 +56,7 @@ public:
 		DvbS,
 		DvbS2, // includes DvbS
 		DvbT,
+		DvbT2, // includes DvbT
 		Atsc,
 		IsdbT
 	};

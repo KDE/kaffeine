@@ -184,7 +184,7 @@ class DvbConfigObject : public QObject
 	Q_OBJECT
 public:
 	DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager *manager,
-		DvbConfigBase *config_);
+		DvbConfigBase *config_, bool isGen2);
 	~DvbConfigObject();
 
 private slots:

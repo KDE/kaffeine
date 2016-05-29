@@ -871,6 +871,7 @@ void DvbManager::readScanData()
 
 		QList<DvbTransponder> transponders;
 		bool containsDvbS1 = false;
+		bool containsDvbT1 = false;
 
 		while (!data.checkEnd()) {
 			line = data.getLine();
@@ -898,13 +899,14 @@ void DvbManager::readScanData()
 				    DvbTransponderBase::DvbS) {
 					containsDvbS1 = true;
 				}
+				if (transponder.getTransmissionType() ==
+				    DvbTransponderBase::DvbT) {
+					containsDvbT1 = true;
+				}
 			}
 		}
 
-		if ((type != DvbS) && (type != DvbS2)) {
-			scanSources[type].append(name);
-			scanData.insert(qMakePair(type, name), transponders);
-		} else {
+		if (type == DvbS || type == DvbS2) {
 			scanSources[DvbS2].append(name);
 			scanData.insert(qMakePair(DvbS2, name), transponders);
 
@@ -920,6 +922,25 @@ void DvbManager::readScanData()
 				scanSources[DvbS].append(name);
 				scanData.insert(qMakePair(DvbS, name), transponders);
 			}
+		} else if (type == DvbT || type == DvbT2) {
+			scanSources[DvbT2].append(name);
+			scanData.insert(qMakePair(DvbT2, name), transponders);
+
+			if (containsDvbT1) {
+				for (int i = 0; i < transponders.size(); ++i) {
+					if (transponders.at(i).getTransmissionType() ==
+					    DvbTransponderBase::DvbT2) {
+						transponders.removeAt(i);
+						--i;
+					}
+				}
+
+				scanSources[DvbT].append(name);
+				scanData.insert(qMakePair(DvbT, name), transponders);
+			}
+		} else {
+			scanSources[type].append(name);
+			scanData.insert(qMakePair(type, name), transponders);
 		}
 	}
 

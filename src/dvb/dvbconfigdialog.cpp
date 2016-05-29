@@ -806,7 +806,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 			dvbCConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, dvbCConfig.data());
+		new DvbConfigObject(this, boxLayout, manager, dvbCConfig.data(), false);
 		configs.append(dvbCConfig);
 	}
 
@@ -823,7 +823,13 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 	}
 
 	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
-		addHSeparator(i18n("DVB-T"));
+		bool dvbT2 = ((transmissionTypes & DvbDevice::DvbT2) != 0);
+
+		if (dvbT2) {
+			addHSeparator(i18n("DVB-T2"));
+		} else {
+			addHSeparator(i18n("DVB-T"));
+		}
 
 		if (dvbTConfig.constData() == NULL) {
 			DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbT);
@@ -831,7 +837,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 			dvbTConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, dvbTConfig.data());
+		new DvbConfigObject(this, boxLayout, manager, dvbTConfig.data(), dvbT2);
 		configs.append(dvbTConfig);
 	}
 
@@ -844,7 +850,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 			atscConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, atscConfig.data());
+		new DvbConfigObject(this, boxLayout, manager, atscConfig.data(), false);
 		configs.append(atscConfig);
 	}
 
@@ -857,7 +863,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 			isdbTConfig = DvbConfig(config);
 		}
 
-		new DvbConfigObject(this, boxLayout, manager, isdbTConfig.data());
+		new DvbConfigObject(this, boxLayout, manager, isdbTConfig.data(), false);
 		configs.append(isdbTConfig);
 	}
 
@@ -925,7 +931,7 @@ void DvbConfigPage::addHSeparator(const QString &title)
 }
 
 DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager *manager,
-	DvbConfigBase *config_) : QObject(parent), config(config_)
+	DvbConfigBase *config_, bool isGen2) : QObject(parent), config(config_)
 {
 	QStringList sources;
 	int sourceIndex = -1;
@@ -940,13 +946,18 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 		// handled separately
 		break;
 	case DvbConfigBase::DvbT:
-		defaultName = i18n("Terrestrial");
 		sources.append(QLatin1String("AUTO-Normal"));
 		sources.append(QLatin1String("AUTO-Offsets"));
 		sources.append(QLatin1String("AUTO-Australia"));
 		sources.append(QLatin1String("AUTO-Italy"));
 		sources.append(QLatin1String("AUTO-Taiwan"));
-		sources += manager->getScanSources(DvbManager::DvbT);
+		if (isGen2) {
+			defaultName = i18n("Terrestrial (T2)");
+			sources += manager->getScanSources(DvbManager::DvbT2);
+		} else {
+			defaultName = i18n("Terrestrial");
+			sources += manager->getScanSources(DvbManager::DvbT);
+		}
 		sourceIndex = sources.indexOf(config->scanSource);
 		sources.replace(0, i18n("Autoscan"));
 		sources.replace(1, i18n("Autoscan with 167 kHz Offsets"));
