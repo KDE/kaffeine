@@ -962,6 +962,7 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 	case DvbConfigBase::IsdbT:
 		defaultName = i18n("ISDB-T");
 		sources.append(QLatin1String("AUTO-UHF-6MHz"));
+		sources.replace(0, i18n("Autoscan"));
 		sources += manager->getScanSources(DvbManager::IsdbT);
 		sourceIndex = sources.indexOf(config->scanSource);
 		break;
