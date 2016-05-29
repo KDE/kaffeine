@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
 		QStringLiteral("kaffeine"),
 		i18n("Kaffeine"),
 		// Version
-		QStringLiteral("2.0-git"),
+		QStringLiteral("2.0.0"),
 		// Short description
 		i18n("A media player for KDE with digital TV support."),
 		// License
