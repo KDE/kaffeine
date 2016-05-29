@@ -31,11 +31,12 @@ class DvbTransponderBase
 {
 public:
 	enum TransmissionType {
-		Invalid = 6,
+		Invalid = 7,
 		DvbC = 0,
 		DvbS = 1,
 		DvbS2 = 4,
 		DvbT = 2,
+		DvbT2 = 6,
 		Atsc = 3,
 		IsdbT = 5,
 	};
