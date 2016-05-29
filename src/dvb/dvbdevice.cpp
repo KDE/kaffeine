@@ -475,6 +475,10 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 		}
 		isAuto = true;
 		tune(autoTransponder);
+	} else if (transmissionType == DvbTransponderBase::DvbT2) {
+		// I guess all DVB-T2 devices support auto-detection
+		isAuto = true;
+		tune(autoTransponder);
 	} else if (transmissionType == DvbTransponderBase::IsdbT) {
 		// ISDB-T Currently, all ISDB-T tuners should support auto mode
 		isAuto = true;

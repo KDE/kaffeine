@@ -447,6 +447,7 @@ static QLatin1String enumToString(DvbTTransponder::Bandwidth bandwidth)
 	const char *text = "";
 
 	switch (bandwidth) {
+	case DvbTTransponder::Bandwidth5MHz: text = "5MHz"; break;
 	case DvbTTransponder::Bandwidth6MHz: text = "6MHz"; break;
 	case DvbTTransponder::Bandwidth7MHz: text = "7MHz"; break;
 	case DvbTTransponder::Bandwidth8MHz: text = "8MHz"; break;
@@ -456,6 +457,22 @@ static QLatin1String enumToString(DvbTTransponder::Bandwidth bandwidth)
 	return QLatin1String(text);
 }
 
+static QLatin1String enumToString(DvbT2Transponder::Bandwidth bandwidth)
+{
+	const char *text = "";
+
+	switch (bandwidth) {
+	case DvbT2Transponder::Bandwidth1_7MHz:	text = "1.7MHz"; break;
+	case DvbT2Transponder::Bandwidth5MHz:	text = "5MHz"; break;
+	case DvbT2Transponder::Bandwidth6MHz:	text = "6MHz"; break;
+	case DvbT2Transponder::Bandwidth7MHz:	text = "7MHz"; break;
+	case DvbT2Transponder::Bandwidth8MHz:	text = "8MHz"; break;
+	case DvbT2Transponder::Bandwidth10MHz:	text = "10MHz"; break;
+	case DvbT2Transponder::BandwidthAuto:	text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
 static QLatin1String enumToString(DvbTTransponder::Modulation modulation)
 {
 	const char *text = "";
@@ -470,6 +487,21 @@ static QLatin1String enumToString(DvbTTransponder::Modulation modulation)
 	return QLatin1String(text);
 }
 
+static QLatin1String enumToString(DvbT2Transponder::Modulation modulation)
+{
+	const char *text = "";
+
+	switch (modulation) {
+	case DvbT2Transponder::Qpsk: text = "QPSK"; break;
+	case DvbT2Transponder::Qam16: text = "16-QAM"; break;
+	case DvbT2Transponder::Qam64: text = "64-QAM"; break;
+	case DvbT2Transponder::Qam256: text = "256-QAM"; break;
+	case DvbT2Transponder::ModulationAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
 static QLatin1String enumToString(DvbTTransponder::TransmissionMode transmissionMode)
 {
 	const char *text = "";
@@ -479,6 +511,23 @@ static QLatin1String enumToString(DvbTTransponder::TransmissionMode transmission
 	case DvbTTransponder::TransmissionMode4k: text = "4k"; break;
 	case DvbTTransponder::TransmissionMode8k: text = "8k"; break;
 	case DvbTTransponder::TransmissionModeAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(DvbT2Transponder::TransmissionMode transmissionMode)
+{
+	const char *text = "";
+
+	switch (transmissionMode) {
+	case DvbT2Transponder::TransmissionMode1k: text = "1k"; break;
+	case DvbT2Transponder::TransmissionMode2k: text = "2k"; break;
+	case DvbT2Transponder::TransmissionMode4k: text = "4k"; break;
+	case DvbT2Transponder::TransmissionMode8k: text = "8k"; break;
+	case DvbT2Transponder::TransmissionMode16k: text = "16k"; break;
+	case DvbT2Transponder::TransmissionMode32k: text = "32k"; break;
+	case DvbT2Transponder::TransmissionModeAuto: text = "AUTO"; break;
 	}
 
 	return QLatin1String(text);
@@ -513,6 +562,24 @@ static QLatin1String enumToString(DvbTTransponder::GuardInterval guardInterval)
 	return QLatin1String(text);
 }
 
+static QLatin1String enumToString(DvbT2Transponder::GuardInterval guardInterval)
+{
+	const char *text = "";
+
+	switch (guardInterval) {
+	case DvbT2Transponder::GuardInterval1_4:	text = "1/4"; break;
+	case DvbT2Transponder::GuardInterval19_128:	text = "19/128"; break;
+	case DvbT2Transponder::GuardInterval1_8:	text = "1/8"; break;
+	case DvbT2Transponder::GuardInterval19_256:	text = "19/256"; break;
+	case DvbT2Transponder::GuardInterval1_16:	text = "1/16"; break;
+	case DvbT2Transponder::GuardInterval1_32:	text = "1/32"; break;
+	case DvbT2Transponder::GuardInterval1_128:	text = "1/128"; break;
+	case DvbT2Transponder::GuardIntervalAuto:	text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
 static QLatin1String enumToString(DvbTTransponder::Hierarchy hierarchy)
 {
 	const char *text = "";
@@ -523,6 +590,21 @@ static QLatin1String enumToString(DvbTTransponder::Hierarchy hierarchy)
 	case DvbTTransponder::Hierarchy2: text = "2"; break;
 	case DvbTTransponder::Hierarchy4: text = "4"; break;
 	case DvbTTransponder::HierarchyAuto: text = "AUTO"; break;
+	}
+
+	return QLatin1String(text);
+}
+
+static QLatin1String enumToString(DvbT2Transponder::Hierarchy hierarchy)
+{
+	const char *text = "";
+
+	switch (hierarchy) {
+	case DvbT2Transponder::HierarchyNone: text = "NONE"; break;
+	case DvbT2Transponder::Hierarchy1: text = "1"; break;
+	case DvbT2Transponder::Hierarchy2: text = "2"; break;
+	case DvbT2Transponder::Hierarchy4: text = "4"; break;
+	case DvbT2Transponder::HierarchyAuto: text = "AUTO"; break;
 	}
 
 	return QLatin1String(text);
@@ -710,6 +792,30 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), 7, 1);
 		gridLayout->addWidget(new QLabel(i18n("Hierarchy:")), 8, 0);
 		gridLayout->addWidget(new QLabel(enumToString(tp->hierarchy)), 8, 1);
+		break;
+	    }
+	case DvbTransponderBase::DvbT2: {
+		const DvbT2Transponder *tp = channel->transponder.as<DvbT2Transponder>();
+		gridLayout->addWidget(new QLabel(i18n("Frequency (MHz):")), 1, 0);
+		gridLayout->addWidget(
+			new QLabel(QString::number(tp->frequency / 1000000.0)), 1, 1);
+		gridLayout->addWidget(new QLabel(i18n("Bandwidth:")), 2, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->bandwidth)), 2, 1);
+		gridLayout->addWidget(new QLabel(i18n("Modulation:")), 3, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->modulation)), 3, 1);
+		gridLayout->addWidget(new QLabel(i18n("FEC rate:")), 4, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->fecRateHigh)), 4, 1);
+		gridLayout->addWidget(new QLabel(i18n("FEC rate LP:")), 5, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->fecRateLow)), 5, 1);
+		gridLayout->addWidget(new QLabel(i18n("Transmission mode:")), 6, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->transmissionMode)), 6, 1);
+		gridLayout->addWidget(new QLabel(i18n("Guard interval:")), 7, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->guardInterval)), 7, 1);
+		gridLayout->addWidget(new QLabel(i18n("Hierarchy:")), 8, 0);
+		gridLayout->addWidget(new QLabel(enumToString(tp->hierarchy)), 8, 1);
+		gridLayout->addWidget(new QLabel(i18n("PLP (stream ID):")), 9, 0);
+		gridLayout->addWidget(
+			new QLabel(QString::number(tp->streamId)), 9, 1);
 		break;
 	    }
 	case DvbTransponderBase::IsdbT: {

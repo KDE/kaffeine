@@ -29,12 +29,13 @@ class DvbDeviceBase
 {
 public:
 	enum TransmissionType {
-		DvbC = (1 << 0),
-		DvbS = (1 << 1),
-		DvbS2 = (1 << 4),
-		DvbT = (1 << 2),
-		Atsc = (1 << 3),
-		IsdbT = (1 << 5),
+		DvbC  = (1 << 0),
+		DvbS  = (1 << 1),
+		DvbS2 = (1 << 2),
+		DvbT  = (1 << 3),
+		DvbT2 = (1 << 4),
+		Atsc  = (1 << 5),
+		IsdbT = (1 << 6),
 	};
 
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)

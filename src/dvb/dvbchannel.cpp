@@ -68,6 +68,7 @@ bool DvbChannelId::operator==(const DvbChannelId &other) const
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
+	case DvbTransponderBase::DvbT2:
 	case DvbTransponderBase::IsdbT:
 		return ((channel->transportStreamId == other.channel->transportStreamId) &&
 			(channel->serviceId == other.channel->serviceId));
@@ -91,6 +92,7 @@ uint qHash(const DvbChannelId &channel)
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
+	case DvbTransponderBase::DvbT2:
 	case DvbTransponderBase::IsdbT:
 		hash ^= (qHash(channel.channel->transportStreamId) << 8);
 		hash ^= (qHash(channel.channel->serviceId) << 16);
@@ -168,6 +170,10 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 		case DvbTransponderBase::DvbT:
 			channel.transponder = DvbTransponder(DvbTransponderBase::DvbT);
 			channel.transponder.as<DvbTTransponder>()->readTransponder(stream);
+			break;
+		case DvbTransponderBase::DvbT2:
+			channel.transponder = DvbTransponder(DvbTransponderBase::DvbT2);
+			channel.transponder.as<DvbT2Transponder>()->readTransponder(stream);
 			break;
 		case DvbTransponderBase::Atsc:
 			channel.transponder = DvbTransponder(DvbTransponderBase::Atsc);

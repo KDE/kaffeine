@@ -326,6 +326,7 @@ void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbSharedChannel &ch
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
+	case DvbTransponderBase::DvbT2:
 	case DvbTransponderBase::IsdbT:
 		dvbEpgFilters.append(QExplicitlySharedDataPointer<DvbEpgFilter>(
 			new DvbEpgFilter(manager, device, channel)));
@@ -346,6 +347,7 @@ void DvbEpgModel::stopEventFilter(DvbDevice *device, const DvbSharedChannel &cha
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2:
 	case DvbTransponderBase::DvbT:
+	case DvbTransponderBase::DvbT2:
 	case DvbTransponderBase::IsdbT:
 		for (int i = 0; i < dvbEpgFilters.size(); ++i) {
 			const DvbEpgFilter *epgFilter = dvbEpgFilters.at(i).constData();

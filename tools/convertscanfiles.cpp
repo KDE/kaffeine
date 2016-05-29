@@ -120,6 +120,7 @@ private:
 	QString isdbtLayerCSegCount = "";
 	QString isdbtLayerCInterleaving = "";
 	int isdbtLayers = 0;
+	int streamId = 0;
 };
 
 int parseDvbv5::getPos()
@@ -469,6 +470,48 @@ QString parseDvbv5::outputLine()
 		}
 		return line;
 	}
+	case DvbTransponderBase::DvbT2: {
+		if (!frq.isEmpty()) {
+			line = "T2 " + frq;
+			if (!bandwith.isEmpty()) {
+				int number = bandwith.toInt();
+				number = number / 1000000;
+				line += " " + QString::number(number) + "MHz";
+			}
+			if (!fec_hi.isEmpty()) {
+				line += " " + fec_hi;
+			} else {
+				line += " AUTO";
+			}
+			if (!fec_lo.isEmpty()) {
+				line += " " + fec_lo;
+			} else {
+				line += " AUTO";
+			}
+			if (!modulation.isEmpty()) {
+				line += " " + modulation.replace("/", "").replace("QAMAUTO", "AUTO");
+			} else {
+				line += " AUTO";
+			}
+			if (!t_mode.isEmpty()) {
+				line += " " + t_mode.replace("K", "k");
+			} else {
+				line += " AUTO";
+			}
+			if (!g_interval.isEmpty()) {
+				line += " " + g_interval;
+			} else {
+				line += " AUTO";
+			}
+			if (!hierarchy.isEmpty()) {
+				line += " " + hierarchy;
+			} else {
+				line += " AUTO";
+			}
+			line += " " + streamid;
+		}
+		return line;
+	}
 	case DvbTransponderBase::Atsc: {
 
 		if (!frq.isEmpty()) {
@@ -652,6 +695,14 @@ static QString parseLine(DvbTransponderBase::TransmissionType type, const QStrin
 
 		return transponder.toString();
 	}
+	case DvbTransponderBase::DvbT2: {
+		DvbT2Transponder transponder;
+
+		if (!transponder.fromString(line)) {
+			break;
+		}
+		return transponder.toString();
+	    }
 	case DvbTransponderBase::DvbT: {
 		DvbTTransponder transponder;
 
@@ -736,7 +787,6 @@ static void readScanDirectory(QTextStream &out, const QString &path)
 		stream.setCodec("UTF-8");
 		QList<QString> transponders;
 		QString name = dir.dirName() + '/' + fileName;
-		bool hasDvbT2 = false;
 
 		parseDvbv5 parser(name);
 
@@ -751,12 +801,6 @@ static void readScanDirectory(QTextStream &out, const QString &path)
 
 			QString parsedLine = parser.outputLine();
 			parser.resetParser();
-
-			// FIXME: Add support for DVB-T2
-			if (parser.type == DvbTransponderBase::DvbT2) {
-				hasDvbT2 = true;
-				continue;
-			}
 
 			QString string = parseLine(parser.type, parsedLine, fileName);
 
@@ -785,7 +829,7 @@ static void readScanDirectory(QTextStream &out, const QString &path)
 			transponders.append(string);
 		}
 
-		if (transponders.isEmpty() && !hasDvbT2) {
+		if (transponders.isEmpty()) {
 			qWarning() << "Warning: no transponder found in file" << name;
 			continue;
 		}

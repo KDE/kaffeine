@@ -132,6 +132,7 @@ public:
 
 	Modulation modulation : 8;
 	RollOff rollOff : 8;
+	// FIXME: add stream ID
 };
 
 class DvbTTransponder : public DvbTransponderBase
@@ -141,7 +142,8 @@ public:
 		Bandwidth6MHz = 0,
 		Bandwidth7MHz = 1,
 		Bandwidth8MHz = 2,
-		BandwidthAuto = 3
+		Bandwidth5MHz = 3,	// Used only on DVB-T2, but present on Terrestrial descriptor
+		BandwidthAuto = 4
 	};
 
 	enum Modulation {
@@ -186,6 +188,72 @@ public:
 	TransmissionMode transmissionMode : 8;
 	GuardInterval guardInterval : 8;
 	Hierarchy hierarchy : 8;
+	int frequency; // Hz
+};
+
+class DvbT2Transponder : public DvbTransponderBase
+{
+public:
+	enum Bandwidth {
+		Bandwidth6MHz = 0,
+		Bandwidth7MHz = 1,
+		Bandwidth8MHz = 2,
+		Bandwidth5MHz = 3,
+		Bandwidth1_7MHz = 4,
+		Bandwidth10MHz = 5,
+		BandwidthAuto = 6
+	};
+
+	enum Modulation {
+		Qpsk = 0,
+		Qam16 = 1,
+		Qam64 = 2,
+		Qam256 = 3,
+		ModulationAuto = 4
+	};
+
+	enum TransmissionMode {
+		TransmissionMode1k = 0,
+		TransmissionMode2k = 1,
+		TransmissionMode4k = 2,
+		TransmissionMode8k = 3,
+		TransmissionMode16k = 4,
+		TransmissionMode32k = 5,
+		TransmissionModeAuto = 6
+	};
+
+	enum GuardInterval {
+		GuardInterval1_4 = 0,
+		GuardInterval19_128 = 1,
+		GuardInterval1_8 = 2,
+		GuardInterval19_256 = 3,
+		GuardInterval1_16 = 4,
+		GuardInterval1_32 = 5,
+		GuardInterval1_128 = 6,
+		GuardIntervalAuto = 7
+	};
+
+	enum Hierarchy {
+		HierarchyNone = 0,
+		Hierarchy1 = 1,
+		Hierarchy2 = 2,
+		Hierarchy4 = 3,
+		HierarchyAuto = 4
+	};
+
+	void readTransponder(QDataStream &stream);
+	bool fromString(const QString &string);
+	QString toString() const;
+	bool corresponds(const DvbTransponder &transponder) const;
+
+	Bandwidth bandwidth : 8;
+	Modulation modulation : 8;
+	FecRate fecRateHigh : 8; // high priority stream
+	FecRate fecRateLow : 8; // low priority stream
+	TransmissionMode transmissionMode : 8;
+	GuardInterval guardInterval : 8;
+	Hierarchy hierarchy : 8;
+	int streamId;	// called as PLP at the DVB-T2 standard specs
 	int frequency; // Hz
 };
 
@@ -371,6 +439,11 @@ private:
 		return DvbTransponderBase::DvbT;
 	}
 
+	DvbTransponderBase::TransmissionType transmissionTypeFor(const DvbT2Transponder *) const
+	{
+		return DvbTransponderBase::DvbT2;
+	}
+
 	DvbTransponderBase::TransmissionType transmissionTypeFor(const AtscTransponder *) const
 	{
 		return DvbTransponderBase::Atsc;
@@ -386,6 +459,7 @@ private:
 		DvbSTransponder dvbSTransponder;
 		DvbS2Transponder dvbS2Transponder;
 		DvbTTransponder dvbTTransponder;
+		DvbT2Transponder dvbT2Transponder;
 		AtscTransponder atscTransponder;
 		IsdbTTransponder isdbTTransponder;
 	} data;

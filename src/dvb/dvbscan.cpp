@@ -867,8 +867,9 @@ static DvbTTransponder::Bandwidth extractDvbTBandwidth(const DvbTerrestrialDescr
 		return DvbTTransponder::Bandwidth7MHz;
 	case 2:
 		return DvbTTransponder::Bandwidth6MHz;
+	case 3:
+		return DvbTTransponder::Bandwidth5MHz;
 	default:
-		// this includes 5 MHz
 		return DvbTTransponder::BandwidthAuto;
 	}
 }
@@ -968,6 +969,8 @@ static DvbTTransponder::Hierarchy extractDvbTHierarchy(const DvbTerrestrialDescr
 	}
 }
 
+// FIXME: Implement DvbT2Descriptor
+
 void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 {
 	DvbTransponder newTransponder(transponder.getTransmissionType());
@@ -1034,6 +1037,10 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		dvbSTransponder->fecRate = extractDvbSFecRate(satelliteDescriptor);
 		break;
 	    }
+	case DvbTransponderBase::DvbT2:
+		// FIXME: Implement T2_delivery_system_descriptor
+		// decriptor 0x7f, extension descriptor 0x04  or use libdvbv5
+
 	case DvbTransponderBase::DvbT: {
 		if (descriptor.descriptorTag() != 0x5a) {
 			break;
