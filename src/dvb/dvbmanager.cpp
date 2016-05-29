@@ -297,6 +297,11 @@ QList<DvbTransponder> DvbManager::getTransponders(DvbDevice *device, const QStri
 		scanSource.first = DvbS2;
 	}
 
+	if ((scanSource.first == DvbT) &&
+	    ((device->getTransmissionTypes() & DvbDevice::DvbT2) != 0)) {
+		scanSource.first = DvbT2;
+	}
+
 	return scanData.value(scanSource);
 }
 
