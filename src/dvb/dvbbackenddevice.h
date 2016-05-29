@@ -137,6 +137,7 @@ public:
 	virtual bool isTuned() = 0;
 	virtual int getSignal() = 0; // 0 - 100 [%] or -1 = not supported
 	virtual int getSnr() = 0; // 0 - 100 [%] or -1 = not supported
+	virtual float getFrqMHz() = 0;
 	virtual bool addPidFilter(int pid) = 0;
 	virtual void removePidFilter(int pid) = 0;
 	virtual void startDescrambling(const QByteArray &pmtSectionData) = 0;

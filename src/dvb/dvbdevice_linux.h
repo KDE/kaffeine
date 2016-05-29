@@ -69,6 +69,7 @@ protected:
 	bool tune(const DvbTransponder &transponder); // discards obsolete data
 	bool getProps(DvbTransponder &transponder);
 	bool isTuned();
+	float getFrqMHz();
 	int getSignal(); // 0 - 100 [%] or -1 = not supported
 	int getSnr(); // 0 - 100 [%] or -1 = not supported
 	bool addPidFilter(int pid);
@@ -90,6 +91,8 @@ private:
 	DvbFrontendDevice *frontend;
 	bool enabled;
 	QMap<int, int> dmxFds;
+
+	float freqMHz;
 
 	int frontendFd;
 	int dvrFd;
