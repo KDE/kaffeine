@@ -413,6 +413,14 @@ QString parseDvbv5::outputLine()
 		line = "C " + frq + " " + symbolRate + " " + fec + " " + modulation.replace("/", "");
 		return line;
 	}
+	case DvbTransponderBase::DvbS: {
+		if (rollOff.isEmpty() && (modulation.isEmpty() || !modulation.compare("QPSK"))) {
+			line = "S " + frq + " " + polar[0] + " " + symbolRate + " " + fec;
+			return line;
+		}
+		// Fall though, because it is not DvbS
+		type = DvbTransponderBase::DvbS2;
+	}
 	case DvbTransponderBase::DvbS2: {
 		if (rollOff.isEmpty())
 			rollOff = "25";
@@ -427,16 +435,6 @@ QString parseDvbv5::outputLine()
 
 		line = "S2 " + frq + " " + polar[0] + " " + symbolRate + " " + fec + " " + rollOff + " " + modulation;
 
-		return line;
-	}
-	case DvbTransponderBase::DvbS: {
-		line = "S " + frq + " " + polar[0] + " " + symbolRate + " " + fec;
-		if (!rollOff.isEmpty()) {
-			line += " " + rollOff;
-		}
-		if (!modulation.isEmpty()) {
-			line += " " + modulation.replace("/", "");
-		}
 		return line;
 	}
 	case DvbTransponderBase::DvbT: {
@@ -822,9 +820,14 @@ static void readScanDirectory(QTextStream &out, const QString &path)
 					--i;
 				}
 			}
+			if (parsedLine.at(parsedLine.length() - 1) == ' ') {
+					parsedLine.remove(parsedLine.length() - 1, 1);
+			}
 
 			if (parsedLine != string) {
-				qWarning() << "Warning: suboptimal representation" << parsedLine << "<-->" << string << "in file" << name;
+				qWarning() << "Warning: suboptimal representation:";
+				qWarning() << parsedLine << "<-->";
+				qWarning() << string << "in file" << name;
 			}
 
 			transponders.append(string);
@@ -835,7 +838,8 @@ static void readScanDirectory(QTextStream &out, const QString &path)
 			continue;
 		}
 
-		if (parser.type == DvbSTransponder::DvbS) {
+		if (parser.type == DvbTransponderBase::DvbS ||
+		    parser.type == DvbTransponderBase::DvbS2) {
 			// use upper case for orbital position
 			name[name.size() - 1] = name.at(name.size() - 1).toUpper();
 
