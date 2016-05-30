@@ -35,6 +35,8 @@
 #include <QProgressBar>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QStyle>
+#include <QStyleOptionTab>
 #include <QSpinBox>
 #include <QStandardPaths>
 #include <QTabWidget>
@@ -187,8 +189,12 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
 	gridLayout->addWidget(latitudeEdit, 0, 2);
 
-	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(QStyle::PM_SmallIconSize);
-	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(QStyle::PM_SmallIconSize);
+	QStyleOptionTab option;
+	option.initFrom(tabWidget);
+	int metric = style()->pixelMetric(QStyle::PM_SmallIconSize, &option, tabWidget);
+
+	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(metric);
+	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(metric);
 
 	latitudeValidLabel = new QLabel(widget);
 	latitudeValidLabel->setPixmap(validPixmap);
