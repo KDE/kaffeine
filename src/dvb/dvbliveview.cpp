@@ -166,38 +166,6 @@ DvbLiveView::~DvbLiveView()
 
 void DvbLiveView::replay()
 {
-	// FIXME
-}
-
-void DvbLiveView::playbackFinished()
-{
-	mediaWidget->play(internal);
-}
-
-const DvbSharedChannel &DvbLiveView::getChannel() const
-{
-	return channel;
-}
-
-DvbDevice *DvbLiveView::getDevice() const
-{
-	return device;
-}
-
-void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
-{
-	DvbDevice *newDevice = NULL;
-
-	if ((channel.constData() != NULL) && (channel->source == channel_->source) &&
-	    (channel->transponder.corresponds(channel_->transponder))) {
-		newDevice = manager->requestDevice(channel->source, channel->transponder,
-			DvbManager::Shared);
-	}
-
-	playbackStatusChanged(MediaWidget::Idle);
-	channel = channel_;
-	device = newDevice;
-
 	if (device == NULL) {
 		device = manager->requestDevice(channel->source, channel->transponder,
 			DvbManager::Shared);
@@ -235,6 +203,38 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 
 	internal->buffer.reserve(87 * 188);
 	QTimer::singleShot(2000, this, SLOT(showOsd()));
+}
+
+void DvbLiveView::playbackFinished()
+{
+	mediaWidget->play(internal);
+}
+
+const DvbSharedChannel &DvbLiveView::getChannel() const
+{
+	return channel;
+}
+
+DvbDevice *DvbLiveView::getDevice() const
+{
+	return device;
+}
+
+void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
+{
+	DvbDevice *newDevice = NULL;
+
+	if ((channel.constData() != NULL) && (channel->source == channel_->source) &&
+	    (channel->transponder.corresponds(channel_->transponder))) {
+		newDevice = manager->requestDevice(channel->source, channel->transponder,
+			DvbManager::Shared);
+	}
+
+	playbackStatusChanged(MediaWidget::Idle);
+	channel = channel_;
+	device = newDevice;
+
+	replay();
 }
 
 void DvbLiveView::toggleOsd()
@@ -408,7 +408,6 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 			device = NULL;
 		}
 
-		channel = DvbSharedChannel();
 		pids.clear();
 		patPmtTimer.stop();
 		osdTimer.stop();
@@ -418,6 +417,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		internal->pmtGenerator = DvbSectionGenerator();
 		internal->buffer.clear();
 		internal->timeShiftFile.close();
+		internal->updateUrl();
 		internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
 		osdWidget->hideObject();
 		break;

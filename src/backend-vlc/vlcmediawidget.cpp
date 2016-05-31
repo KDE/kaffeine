@@ -237,6 +237,7 @@ void VlcMediaWidget::stop()
 	setCursor(Qt::ArrowCursor);
 	QApplication::setOverrideCursor(this->cursor());
 	QApplication::changeOverrideCursor(this->cursor());
+	addPendingUpdates(PlaybackStatus);
 }
 
 void VlcMediaWidget::setPaused(bool paused)
@@ -347,15 +348,7 @@ int VlcMediaWidget::updatePlaybackStatus()
 	switch (libvlc_media_player_get_state(vlcMediaPlayer)) {
 	case libvlc_NothingSpecial:
 	case libvlc_Stopped:
-		// vlc state is not updated synchronously in
-		// libvlc_media_player_play. So, we keep reporting the
-		// previous state until we know for sure that the status
-		// changed to idle.
-
-		if (libvlc_media_player_get_media(vlcMediaPlayer) == NULL) {
-			playbackStatus = MediaWidget::Idle;
-		}
-
+		playbackStatus = MediaWidget::Idle;
 		break;
 	case libvlc_Opening:
 	case libvlc_Buffering:
