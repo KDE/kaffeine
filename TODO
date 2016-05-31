@@ -1,0 +1,6 @@
+- Make DVB live view and timeshift seeakable
+
+  - Need to implement VLC custom I/O callbacks via:
+    libvlc_media_new_callbacks()
+
+- Fix command line parameters parsing
