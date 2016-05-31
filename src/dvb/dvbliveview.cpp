@@ -456,6 +456,9 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		updatePids();
 
+		// Use either the timeshift or the standard file URL
+		internal->updateUrl();
+
 		// don't allow changes after starting time shift
 		internal->audioStreams.clear();
 		internal->currentAudioStream = -1;
@@ -574,9 +577,11 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
 	readFd(-1), writeFd(-1)
 {
-	QString fileName = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/dvbpipe.m2t");
+qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal";
+	fileName = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
-	url = QUrl::fromLocalFile(fileName);
+
+	updateUrl();
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
 		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed";

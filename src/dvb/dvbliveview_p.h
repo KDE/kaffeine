@@ -71,6 +71,7 @@ public:
 	DvbSectionGenerator pmtGenerator;
 	QByteArray buffer;
 	QFile timeShiftFile;
+	QString fileName;
 	DvbOsd dvbOsd;
 
 	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
@@ -99,6 +100,13 @@ public:
 	Type getType() const { return Dvb; }
 
 	QUrl getUrl() const { return url; }
+
+	void updateUrl() {
+		if (timeShiftFile.isOpen())
+			url = QUrl::fromLocalFile(timeShiftFile.fileName());
+		else
+			url = QUrl::fromLocalFile(fileName);
+	}
 
 	bool hideCurrentTotalTime() const { return !timeshift; }
 
