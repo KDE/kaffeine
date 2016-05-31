@@ -605,6 +605,8 @@ qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal";
 	notifier = new QSocketNotifier(writeFd, QSocketNotifier::Write, this);
 	notifier->setEnabled(false);
 	connect(notifier, SIGNAL(activated(int)), this, SLOT(writeToPipe()));
+
+	emptyBuffer = true;
 }
 
 DvbLiveViewInternal::~DvbLiveViewInternal()
@@ -634,6 +636,7 @@ void DvbLiveViewInternal::resetPipe()
 		}
 	}
 
+	emptyBuffer = true;
 	buffer.clear();
 }
 
@@ -664,6 +667,20 @@ void DvbLiveViewInternal::writeToPipe()
 	}
 }
 
+void DvbLiveViewInternal::validateCurrentTotalTime(int &currentTime, int &totalTime) const
+{
+	if (emptyBuffer)
+		return;
+
+	totalTime = startTime.msecsTo(QTime::currentTime());
+
+	// Adjust it, if needed
+	if (currentTime > totalTime)
+		currentTime = totalTime -1;
+
+}
+
+
 void DvbLiveViewInternal::processData(const char data[188])
 {
 	buffer.append(data, 188);
@@ -676,9 +693,17 @@ void DvbLiveViewInternal::processData(const char data[188])
 		if (writeFd >= 0) {
 			buffers.append(buffer);
 			writeToPipe();
+			if (emptyBuffer) {
+				startTime = QTime::currentTime();
+				emptyBuffer = false;
+			}
 		}
 	} else {
 		timeShiftFile.write(buffer); // FIXME avoid buffer reallocation
+		if (emptyBuffer) {
+			startTime = QTime::currentTime();
+			emptyBuffer = false;
+		}
 	}
 
 	buffer.clear();

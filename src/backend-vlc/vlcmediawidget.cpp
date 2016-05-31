@@ -377,6 +377,9 @@ int VlcMediaWidget::updatePlaybackStatus()
 
 void VlcMediaWidget::updateCurrentTotalTime()
 {
+	if (playbackStatus == MediaWidget::Idle)
+		return;
+
 	currentTime = int(libvlc_media_player_get_time(vlcMediaPlayer));
 	totalTime = int(libvlc_media_player_get_length(vlcMediaPlayer));
 
@@ -388,7 +391,7 @@ void VlcMediaWidget::updateCurrentTotalTime()
 		totalTime = 0;
 	}
 
-	if (currentTime > totalTime) {
+	if (totalTime && currentTime > totalTime) {
 		currentTime = totalTime;
 	}
 }

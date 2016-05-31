@@ -256,6 +256,7 @@ public:
 
 	virtual Type getType() const { return Url; }
 	virtual QUrl getUrl() const { return QUrl(); }
+	virtual void validateCurrentTotalTime(int &, int &) const { }
 	virtual bool hideCurrentTotalTime() const { return false; }
 	virtual bool overrideAudioStreams() const { return false; }
 	virtual bool overrideSubtitles() const { return false; }

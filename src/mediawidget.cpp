@@ -1005,10 +1005,9 @@ void MediaWidget::currentTotalTimeChanged()
 	if (source->getType() == MediaSource::Url)
 		emit playlistTrackLengthChanged(totalTime);
 
-	if (source->hideCurrentTotalTime()) {
-		currentTime = 0;
-		totalTime = 0;
-	}
+	// If the player backend doesn't implement currentTime and/or
+	// totalTime, the source can implement such logic
+	source->validateCurrentTotalTime(currentTime, totalTime);
 
 	blockBackendUpdates = true;
 	seekSlider->setRange(0, totalTime);
@@ -1030,6 +1029,7 @@ void MediaWidget::seekableChanged()
 	seekSlider->setEnabled(seekable);
 	navigationMenu->setEnabled(seekable);
 	jumpToPositionAction->setEnabled(seekable);
+	timeButton->setEnabled(seekable);
 }
 
 void MediaWidget::contextMenuEvent(QContextMenuEvent *event)

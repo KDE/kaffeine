@@ -73,6 +73,8 @@ public:
 	QFile timeShiftFile;
 	QString fileName;
 	DvbOsd dvbOsd;
+	bool emptyBuffer;
+	QTime startTime;
 
 	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
 	bool overrideSubtitles() const { return !subtitles.isEmpty(); }
@@ -108,6 +110,7 @@ public:
 			url = QUrl::fromLocalFile(fileName);
 	}
 
+	virtual void validateCurrentTotalTime(int &currentTime, int &totalTime) const;
 	bool hideCurrentTotalTime() const { return !timeshift; }
 
 	bool timeshift;
