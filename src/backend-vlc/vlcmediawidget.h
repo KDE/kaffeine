@@ -64,7 +64,7 @@ public:
 	bool jumpToNextChapter();
 	void showDvdMenu();
 
-	void updatePlaybackStatus();
+	int updatePlaybackStatus();
 	void updateCurrentTotalTime();
 	void updateSeekable();
 	void updateMetadata();

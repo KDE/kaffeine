@@ -91,7 +91,7 @@ public:
 protected:
 	void addPendingUpdates(PendingUpdates pendingUpdatesToBeAdded); // thread-safe
 
-	virtual void updatePlaybackStatus() = 0;
+	virtual int updatePlaybackStatus() = 0;
 	virtual void updateCurrentTotalTime() = 0;
 	virtual void updateSeekable() = 0;
 	virtual void updateMetadata() = 0;
@@ -154,7 +154,7 @@ public:
 	bool jumpToNextChapter();
 	void showDvdMenu();
 
-	void updatePlaybackStatus();
+	int updatePlaybackStatus();
 	void updateCurrentTotalTime();
 	void updateSeekable();
 	void updateMetadata();

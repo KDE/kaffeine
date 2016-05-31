@@ -222,6 +222,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
 		qInfo() << "VlcMediaWidget::play: cannot play media" << source.getUrl().toDisplayString();
 	}
+
 	setCursor(Qt::PointingHandCursor);
 	QApplication::setOverrideCursor(this->cursor());
 	timer->start(1000);
@@ -339,14 +340,17 @@ void VlcMediaWidget::showDvdMenu()
 	}
 }
 
-void VlcMediaWidget::updatePlaybackStatus()
+int VlcMediaWidget::updatePlaybackStatus()
 {
-	playbackStatus = MediaWidget::Playing;
+	MediaWidget::PlaybackStatus oldPlaybackStatus = playbackStatus;
 
 	switch (libvlc_media_player_get_state(vlcMediaPlayer)) {
 	case libvlc_NothingSpecial:
 	case libvlc_Stopped:
-		// FIXME vlc state is not updated synchronously in libvlc_media_player_play
+		// vlc state is not updated synchronously in
+		// libvlc_media_player_play. So, we keep reporting the
+		// previous state until we know for sure that the status
+		// changed to idle.
 
 		if (libvlc_media_player_get_media(vlcMediaPlayer) == NULL) {
 			playbackStatus = MediaWidget::Idle;
@@ -373,6 +377,9 @@ void VlcMediaWidget::updatePlaybackStatus()
 		addPendingUpdates(DvdMenu);
 		playingDvd = false;
 	}
+
+	// Report if the status has changed
+	return (oldPlaybackStatus != playbackStatus);
 }
 
 void VlcMediaWidget::updateCurrentTotalTime()

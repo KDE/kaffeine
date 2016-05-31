@@ -86,8 +86,8 @@ void AbstractMediaWidget::customEvent(QEvent *event)
 			mediaWidget->playbackFinished();
 			break;
 		case PlaybackStatus:
-			updatePlaybackStatus();
-			mediaWidget->playbackStatusChanged();
+			if (updatePlaybackStatus())
+				mediaWidget->playbackStatusChanged();
 			break;
 		case CurrentTotalTime:
 			updateCurrentTotalTime();
@@ -228,8 +228,9 @@ void DummyMediaWidget::showDvdMenu()
 {
 }
 
-void DummyMediaWidget::updatePlaybackStatus()
+int DummyMediaWidget::updatePlaybackStatus()
 {
+	return true;
 }
 
 void DummyMediaWidget::updateCurrentTotalTime()

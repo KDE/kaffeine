@@ -372,6 +372,9 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	QTimer *timer = new QTimer(this);
 	timer->start(50000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(checkScreenSaver()));
+
+	// Set the play/pause icons accordingly
+	playbackStatusChanged();
 }
 
 MediaWidget::~MediaWidget()
