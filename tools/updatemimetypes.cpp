@@ -112,6 +112,10 @@ int main(int argc, char *argv[])
 				extensions.insert(i, "*.anim9");
 				extensions.insert(i, "*.animj");
 			}
+			if (extensions.at(i) == "[0-9][0-9][0-9].vdr") {
+				extensions.removeAt(i);
+				extensions.insert(i, "*.vdr");
+			}
 
 			if (!regExp.exactMatch(extensions.at(i))) {
 				qCritical() << "unknown extension syntax" << extensions.at(i);
