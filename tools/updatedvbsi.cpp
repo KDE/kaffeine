@@ -429,6 +429,15 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 				headerStream << "\tQString " << element.name << "() const\n";
 				headerStream << "\t{\n";
 				headerStream << "\t\treturn DvbSiText::convertText(getData() + " << element << ", ";
+			} else if (element.listType == "DvbInt") {
+				headerStream << "\n";
+
+				headerStream << "\tint " << element.name << "Length() const\n\t{\n";
+				headerStream << "\t\treturn (getLength() - 4) / 2;\n\t}\n\n";
+				headerStream << "\tint " << element.name << "(int idx) const\n";
+				headerStream << "\t{\n";
+				headerStream << "\t\tint pos = (idx * 2) + 4;\n";
+				headerStream << "\t\treturn (at(pos) << 8) | at(pos + 1);\n";
 			} else if (element.listType == "AtscString") {
 				headerStream << "\n";
 				headerStream << "\tQString " << element.name << "() const\n";
@@ -441,14 +450,16 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 				headerStream << "\t\treturn " << element.listType << "(getData() + " << element << ", ";
 			}
 
-			if (element.lengthFunc.isEmpty()) {
-				if (element.offsetString.isEmpty()) {
-					headerStream << "getLength() - " << (minBits / 8) << ");\n";
+			if (element.listType != "DvbInt") {
+				if (element.lengthFunc.isEmpty()) {
+					if (element.offsetString.isEmpty()) {
+						headerStream << "getLength() - " << (minBits / 8) << ");\n";
+					} else {
+						headerStream << "getLength() - (" << (minBits / 8) << element.offsetString << "));\n";
+					}
 				} else {
-					headerStream << "getLength() - (" << (minBits / 8) << element.offsetString << "));\n";
+					headerStream << element.name << "Length);\n";
 				}
-			} else {
-				headerStream << element.name << "Length);\n";
 			}
 
 			headerStream << "\t}\n";
@@ -619,9 +630,12 @@ int main()
 
 	xmlFile.close();
 
+#if 0
+	// Don't rewrite the xml file
+
 	if (xmlFile.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		xmlFile.write(document.toByteArray(2));
 	}
-
+#endif
 	return 0;
 }
