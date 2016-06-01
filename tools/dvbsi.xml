@@ -73,6 +73,12 @@
       <unused bits="1"/>
       <unused bits="32"/>
     </DvbTerrestrialDescriptor>
+    <IsdbTerrestrialDescriptor>
+      <areaCode bits="12" type="int"/>
+      <guardInterval bits="2" type="int"/>
+      <transmissionMode bits="2" type="int"/>
+      <frequency listType="DvbInt" lengthFunc="" type="list"/>
+    </IsdbTerrestrialDescriptor>
     <AtscChannelNameDescriptor>
       <name listType="AtscString" lengthFunc="" type="list"/>
     </AtscChannelNameDescriptor>
