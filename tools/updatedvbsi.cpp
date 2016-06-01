@@ -204,25 +204,29 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 	QString initFunctionName = QString(entryName).replace(QRegExp("^Dvb|^Atsc"), "init");
 	bool ignoreFirstNewLine = false;
 
+	QString funcName = entryName + "::";
+
 	switch (type) {
 	case Descriptor:
+		funcName += entryName;
 		cppStream << "\n";
-		cppStream << entryName << "::" << entryName << "(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)\n";
+		cppStream << funcName << "(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)\n";
 		cppStream << "{\n";
 		cppStream << "\tif (getLength() < " << (minBits / 8) << ") {\n";
-		cppStream << "\t\tkDebug() << \"invalid descriptor\";\n";
+		cppStream << "\t\tqInfo() << \"" << funcName << ": invalid descriptor\";\n";
 		cppStream << "\t\tinitSectionData();\n";
 		cppStream << "\t\treturn;\n";
 		cppStream << "\t}\n";
 		break;
 
 	case Entry: {
+		funcName += initFunctionName;
 		cppStream << "\n";
-		cppStream << "void " << entryName << "::" << initFunctionName << "(const char *data, int size)\n";
+		cppStream << "void " << funcName << "(const char *data, int size)\n";
 		cppStream << "{\n";
 		cppStream << "\tif (size < " << (minBits / 8) << ") {\n";
 		cppStream << "\t\tif (size != 0) {\n";
-		cppStream << "\t\t\tkDebug() << \"invalid entry\";\n";
+		cppStream << "\t\t\tqInfo() << \"" << funcName <<": invalid entry\";\n";
 		cppStream << "\t\t}\n";
 		cppStream << "\n";
 		cppStream << "\t\tinitSectionData();\n";
@@ -248,7 +252,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 			while (true) {
 				int oldSize = entryLengthCalculation.size();
-				entryLengthCalculation.replace(QRegExp("at\\(([0-9]*)\\)"), "static_cast<unsigned char>(data[\\1])");
+				entryLengthCalculation.replace(QRegExp("at\\(([0-9]*)\\)"), "quint8(data[\\1])");
 
 				if (entryLengthCalculation.size() == oldSize) {
 					break;
@@ -258,7 +262,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 			cppStream << "\tint entryLength = ((" << entryLengthCalculation << ") + " << ((element.bitIndex + element.bits) / 8) << ");\n";
 			cppStream << "\n";
 			cppStream << "\tif (entryLength > size) {\n";
-			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\tqInfo() << \"" << funcName <<": adjusting length\";\n";
 			cppStream << "\t\tentryLength = size;\n";
 			cppStream << "\t}\n";
 			cppStream << "\n";
@@ -279,6 +283,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 	    }
 
 	case Section:
+		funcName += initFunctionName;
 		cppStream << "\n";
 		cppStream << "void " << entryName << "::" << initFunctionName << "(const char *data, int size)\n";
 		cppStream << "{\n";
@@ -317,11 +322,11 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 		if (element.offsetString.isEmpty()) {
 			cppStream << "\tif (" << element.name << "Length > (getLength() - " << (minBits / 8) << ")) {\n";
-			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\tqInfo() << \"" << funcName <<": adjusting length\";\n";
 			cppStream << "\t\t" << element.name << "Length = (getLength() - " << (minBits / 8) << ");\n";
 		} else {
 			cppStream << "\tif (" << element.name << "Length > (getLength() - (" << (minBits / 8) << element.offsetString << "))) {\n";
-			cppStream << "\t\tkDebug() << \"adjusting length\";\n";
+			cppStream << "\t\tqInfo() << \"" << funcName <<": adjusting length\";\n";
 			cppStream << "\t\t" << element.name << "Length = (getLength() - (" << (minBits / 8) << element.offsetString << "));\n";
 		}
 
