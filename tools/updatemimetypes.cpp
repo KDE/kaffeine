@@ -26,6 +26,8 @@
 
 int main(int argc, char *argv[])
 {
+	bool dontUpdate = false;
+
 	// QCoreApplication is needed for proper file name handling
 	QCoreApplication application(argc, argv);
 
@@ -61,7 +63,7 @@ int main(int argc, char *argv[])
 			if (mimeTypeIndex >= 0) {
 				qCritical() << "more than one MimeType entry found in file" <<
 					file.fileName();
-				return 1;
+				dontUpdate = true;
 			}
 
 			mimeTypeIndex = i;
@@ -74,6 +76,41 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	for (int i = 0; i < mimeTypes.size(); ++i) {
+		QMimeDatabase db;
+		QString curMime, newMime;
+
+		curMime = mimeTypes.at(i);
+
+		if (!curMime.compare("application/x-extension-mp4")) {
+			newMime = db.mimeTypeForFile("*.mp4").name();
+		} else if (!mimeTypes.at(i).compare("application/x-flac")) {
+			newMime = db.mimeTypeForFile("*.flac").name();
+		} else if (!mimeTypes.at(i).compare("audio/x-ms-asf")) {
+			newMime = db.mimeTypeForFile("*.wma").name();
+		} else if (!mimeTypes.at(i).compare("audio/x-ms-wax")) {
+			newMime = db.mimeTypeForFile("*.wax").name();
+		} else if (!mimeTypes.at(i).compare("audio/x-pn-aiff")) {
+			newMime = db.mimeTypeForFile("*.aif").name();
+		} else if (!mimeTypes.at(i).compare("audio/x-pn-au")) {
+			newMime = db.mimeTypeForFile("*.au").name();
+		} else if (!mimeTypes.at(i).compare("audio/x-real-audio")) {
+			newMime = db.mimeTypeForFile("*.rmvb").name();
+		} else if (!mimeTypes.at(i).compare("audio/x-pn-wav") || !mimeTypes.at(i).compare("audio/x-pn-acm") || !mimeTypes.at(i).compare("audio/x-pn-windows-acm")) {
+			newMime = db.mimeTypeForFile("*.wav").name();
+		} else if (!mimeTypes.at(i).compare("video/x-flc")) {
+			newMime = db.mimeTypeForFile("*.flc").name();
+		} else if (!mimeTypes.at(i).compare("misc/ultravox")) {
+			newMime = "skip";
+		} else if (mimeTypes.at(i).contains("x-scheme-handler/")) {
+			newMime = "skip";
+		}
+		if (!newMime.isEmpty()) {
+			mimeTypes.removeAt(i);
+			mimeTypes.insert(i, newMime);
+			qInfo() << "replacing" << curMime << "by" << newMime;
+		}
+	}
 	mimeTypes.removeDuplicates();
 	mimeTypes.sort();
 
@@ -87,9 +124,22 @@ int main(int argc, char *argv[])
 				QMimeDatabase db;
 				QMimeType mimetype = db.mimeTypeForName(mimeTypes.at(i));
 
+				if (!mimeTypes.at(i).compare("skip")) {
+					continue;
+				}
+				if (!mimeTypes.at(i).compare("application/octet-stream")) {
+					qInfo() << "Warning: application/octet-stream detected!";
+					continue;
+				}
+				if (!mimeTypes.at(i).compare("application/text")) {
+					qInfo() << "Warning: application/text detected!";
+					continue;
+				}
+
 				if (!mimetype.isValid()) {
 					qCritical() << "unknown mime type" << mimeTypes.at(i);
-					return 1;
+					dontUpdate = true;
+					continue;
 				}
 
 				extensions.append(mimetype.globPatterns());
@@ -119,7 +169,7 @@ int main(int argc, char *argv[])
 
 			if (!regExp.exactMatch(extensions.at(i))) {
 				qCritical() << "unknown extension syntax" << extensions.at(i);
-				return 1;
+				dontUpdate = true;
 			}
 		}
 
@@ -134,7 +184,13 @@ int main(int argc, char *argv[])
 		}
 	}
 
+	if (dontUpdate) {
+		qInfo() << "Error parsing mime types. Aborting.";
+		return 1;
+	}
+
 	{
+		qInfo() << "Updating" << file.fileName();
 		if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
 			qCritical() << "cannot open file" << file.fileName();
 			return 1;
@@ -172,6 +228,7 @@ int main(int argc, char *argv[])
 	}
 
 	{
+		qInfo() << "Updating" << file.fileName();
 		if (!file.open(QFile::WriteOnly | QFile::Truncate)) {
 			qCritical() << "cannot open file" << file.fileName();
 			return 1;
@@ -210,5 +267,6 @@ int main(int argc, char *argv[])
 		file.close();
 	}
 
+	qInfo() << "file extensions updated successfuly.";
 	return 0;
 }
