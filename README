@@ -2,6 +2,9 @@
 Installing Kaffeine
 -------------------
 
+Prerequisites
+=============
+
 The following tools are needed to build Kaffeine:
 * GNU c++
 * GNU make
@@ -9,8 +12,8 @@ The following tools are needed to build Kaffeine:
 * cmake ECM (extra-cmake-modules)
 
 The following development headers are needed (recommended versions):
-* Qt >= 4.6
-* KDE >= 4.4
+* Qt >= 5.5
+* KDE >= 5.1
 * libX11
 * libXss
 * libqt-sql-sqlite
@@ -19,15 +22,12 @@ The following development headers are needed (recommended versions):
 
 If build fails for missing VLC directories, install libvlc-dev.
 
-For the translations you need:
-* gettext
+So, on Debian SID and Ubuntu Xenial (16.04), those packages should
+be installed:
 
-So, on Debian, for example, those packages should be installed:
-
-   apt-get install kdelibs5-dev libvlc-dev libxss-dev libqt5-sql-sqlite \
+   apt-get install kdelibs5-dev libvlc-dev libxss-dev libkf5idletime-dev vlc \
 		   libkf5coreaddons-dev libkf5i18n-dev libqt5x11extras5-dev \
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
-		   libkf5idletime-dev libkf5kdbusaddons-dev \
 		   qt5-default libdvbv5-dev libkf5notifications-dev \
 		   gettext cmake extra-cmake-modules make g++
 
@@ -38,6 +38,15 @@ should be installed with:
 		kf5-knotifications-devel kf5-solid-devel kf5-kio-devel \
 		kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel
 
+If you also want language translations you need:
+	* gettext
+
+  And, to get the translations, you should run:
+	(cd .. && kaffeine/tools/update_l10n.sh)
+
+How to build Kaffeine
+=====================
+
 Create an empty build directory and do the following steps:
 # cmake <path/to/kaffeine/source/directory> <options>
 # make
@@ -46,8 +55,9 @@ Create an empty build directory and do the following steps:
 Useful options include:
 * -DCMAKE_BUILD_TYPE=<type> (Debug or Release)
 * -DCMAKE_INSTALL_PREFIX=<path> (installation prefix for Kaffeine, e.g. /usr)
+* -DBUILD_TOOLS=1 (also compile some tools needed by developers)
 
-For further information look for generic KDE4 / cmake instructions.
+For further information look for generic KDE5 / cmake instructions.
 
 --------
 Homepage
@@ -61,6 +71,9 @@ Authors
 
 Maintainer:
   Lasse Lindqvist <lasse.k.lindqvist@gmail.com>
+
+KDE5 port maintainer:
+  Mauro Carvalho Chehab <mchehab@osg.samsung.com>
   
 Former maintainers:
   Christoph Pfister
