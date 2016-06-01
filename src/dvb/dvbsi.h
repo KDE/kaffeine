@@ -616,17 +616,20 @@ public:
 
 	int areaCode() const
 	{
-		return ((at(2) << 8) | at(3)) >> 4;
+		return (at(2) << 4) | (at(3) >> 4);
 	}
+
 	int guardInterval() const
 	{
-		return (at(3) >> 2) & 0x03;
+		return ((at(3) & 0xf) >> 2);
 	}
+
 	int transmissionMode() const
 	{
-		return (at(3) >> 2) & 0x03;
+		return (at(3) & 0x3);
 	}
-	int numFreqs() const
+
+	int frequencyLength() const
 	{
 		return (getLength() - 4) / 2;
 	}

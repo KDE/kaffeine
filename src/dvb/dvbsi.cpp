@@ -1409,7 +1409,7 @@ DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descript
 IsdbTerrestrialDescriptor::IsdbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 4) {
-		qInfo() << "DvbTerrestrialDescriptor::DvbTerrestrialDescriptor: invalid descriptor";
+		qInfo() << "IsdbTerrestrialDescriptor::IsdbTerrestrialDescriptor: invalid descriptor";
 		initSectionData();
 		return;
 	}

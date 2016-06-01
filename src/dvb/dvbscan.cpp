@@ -1088,7 +1088,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		IsdbTDescriptor->guardInterval = extractIsdbTGuardInterval(IsdbTDescriptor);
 		IsdbTDescriptor->transmissionMode = extractIsdbTTransmissionMode(IsdbTDescriptor);
 #endif
-		for (int i = 0; i < IsdbTDescriptor.numFreqs(); i++) {
+		for (int i = 0; i < IsdbTDescriptor.frequencyLength(); i++) {
 			newTransponder = DvbTransponder(DvbTransponderBase::IsdbT);
 			IsdbTTransponder *isdbTTransponder = newTransponder.as<IsdbTTransponder>();
 
