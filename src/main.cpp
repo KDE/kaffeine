@@ -84,6 +84,7 @@ public:
 	KaffeineApplication(int &argc, char **argv, KAboutData *aboutData);
 	~KaffeineApplication();
 	QCommandLineParser parser;
+	void startWindow();
 
 private:
 	QPointer<MainWindow> mainWindow;
@@ -101,9 +102,12 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv, KAboutData *abo
 		return;
 	}
 
-	mainWindow = new MainWindow(aboutData);
+	mainWindow = new MainWindow(aboutData, &parser);
+}
 
-	mainWindow->cmdLineOptions(&parser);
+void KaffeineApplication::startWindow()
+{
+	mainWindow->run();
 }
 
 KaffeineApplication::~KaffeineApplication()
@@ -164,7 +168,7 @@ int main(int argc, char *argv[])
 	);
 
 	aboutData.addAuthor("Mauro Carvalho Chehab",
-		i18n("this KDE5 port"),
+		i18n("this KF5 port"),
 		QStringLiteral("mchehab@infradead.org"));
 	aboutData.addAuthor("Christoph Pfister",
 		i18n("Original author"),
@@ -172,6 +176,8 @@ int main(int argc, char *argv[])
 	aboutData.addAuthor("Lasse Lindqvist",
 		i18n("Maintainer (for KDE4)"),
 		QStringLiteral("lasse.k.lindqvist@gmail.com"));
+	aboutData.addAuthor("Christophe Thommeret");
+	aboutData.addAuthor(QString::fromUtf8("Jürgen Kofler"));
 
 	KaffeineApplication app(argc, argv, &aboutData);
 	KAboutData::setApplicationData(aboutData);
@@ -182,7 +188,6 @@ int main(int argc, char *argv[])
 
 	app.parser.addVersionOption();
 	app.parser.addHelpOption();
-
 	aboutData.setupCommandLine(&app.parser);
 
 	app.parser.process(app);
@@ -191,6 +196,8 @@ int main(int argc, char *argv[])
 
 //	KCmdLineArgs::addTempFileOption();
 	KDBusService service(KDBusService::Unique);
+
+	app.startWindow();
 
 	return app.exec();
 }

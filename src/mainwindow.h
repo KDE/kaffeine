@@ -40,11 +40,10 @@ class MainWindow : public QMainWindow
 {
 	Q_OBJECT
 public:
-	MainWindow(KAboutData *aboutData);
+	MainWindow(KAboutData *aboutData, QCommandLineParser *parser);
 	~MainWindow();
 
-	void cmdLineOptions(QCommandLineParser *parser);
-	void parseArgs();
+	void run();
 
 signals:
 	void mayCloseApplication(bool *ok, QWidget *parent);
@@ -81,9 +80,12 @@ private:
 	void keyPressEvent(QKeyEvent *event);
 	void leaveEvent(QEvent *event);
 
+	KAboutData *aboutData;
 	QCommandLineParser *parser;
+	void parseArgs();
 
 	QSystemTrayIcon *trayIcon;
+
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
 	QToolBar *navigationBar;

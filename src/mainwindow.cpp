@@ -154,7 +154,7 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 	layout->setMargin(0);
 }
 
-MainWindow::MainWindow(KAboutData *aboutData)
+void MainWindow::run()
 {
 	readSettings();
 
@@ -366,6 +366,8 @@ MainWindow::MainWindow(KAboutData *aboutData)
 		break;
 	    }
 	}
+
+	parseArgs();
 }
 
 MainWindow::~MainWindow()
@@ -408,24 +410,27 @@ void MainWindow::writeSettings()
     settings.setValue("geometry", saveGeometry());
 }
 
-void MainWindow::cmdLineOptions(QCommandLineParser *parser)
+MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 {
+	this->aboutData = aboutData;
 	this->parser = parser;
 
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dvd"), i18n("Play DVD")));
-	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tv"), i18nc("command line option", "(deprecated option)"), QLatin1String("channel")));
-	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("channel"), i18nc("command line option", "Play TV channel"), QLatin1String("name / number")));
-	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("lastchannel"), i18nc("command line option", "Play last tuned TV channel")));
+
+#if HAVE_DVB == 1
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dumpdvb"), i18nc("command line option", "Dump dvb data (debug option)")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("channel"), i18nc("command line option", "Play TV channel"), QLatin1String("name / number")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tv"), i18nc("command line option", "(deprecated option)"), QLatin1String("channel")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("lastchannel"), i18nc("command line option", "Play last tuned TV channel")));
+#endif
 	parser->addPositionalArgument(QLatin1String("[file]"), i18n("Files or URLs to play"));
 }
 
 void MainWindow::parseArgs()
 {
-
 	if (parser->isSet("fullscreen")) {
 		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
 	}
@@ -436,8 +441,6 @@ void MainWindow::parseArgs()
 		} else {
 			openAudioCd();
 		}
-
-
 		return;
 	}
 
@@ -447,8 +450,6 @@ void MainWindow::parseArgs()
 		} else {
 			openVideoCd();
 		}
-
-
 		return;
 	}
 
@@ -458,32 +459,29 @@ void MainWindow::parseArgs()
 		} else {
 			openDvd();
 		}
-
-
 		return;
 	}
 
 #if HAVE_DVB == 1
+	QString channel;
+
 	if (parser->isSet("dumpdvb")) {
 		dvbTab->enableDvbDump();
 	}
 
-	QString channel = parser->value("channel");
+	channel = parser->value("channel");
 
 	if (!channel.isEmpty()) {
 		activateTab(DvbTabId);
 		dvbTab->playChannel(channel);
-
 
 		return;
 	}
 
 	channel = parser->value("tv");
-
 	if (!channel.isEmpty()) {
 		activateTab(DvbTabId);
 		dvbTab->playChannel(channel);
-
 
 		return;
 	}
@@ -519,8 +517,6 @@ void MainWindow::parseArgs()
 			openUrl(urls.at(0));
 		}
 	}
-
-
 }
 
 void MainWindow::displayModeChanged()
