@@ -415,6 +415,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	this->aboutData = aboutData;
 	this->parser = parser;
 
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tempfile"), i18n("The files/URLs opened by the application will be deleted after use")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
@@ -506,9 +507,9 @@ void MainWindow::parseArgs()
 			}
 		}
 
-//		if (parser->isTempFileSet()) {
-//			temporaryUrls.append(urls);
-//		}
+		if (parser->isSet("tempfile")) {
+			temporaryUrls.append(urls);
+		}
 
 		if (urls.size() >= 2) {
 			activateTab(PlaylistTabId);

@@ -145,7 +145,6 @@ Q_COREAPP_STARTUP_FUNCTION(iconThemeFunc)
 int main(int argc, char *argv[])
 {
 	qInstallMessageHandler(verboseMessageHandler);
-//    qSetMessagePattern("%{file}(%{line}): %{message}");
 
 	KLocalizedString::setApplicationDomain("kaffeine");
 
@@ -170,8 +169,7 @@ int main(int argc, char *argv[])
 	aboutData.addAuthor("Mauro Carvalho Chehab",
 		i18n("this KF5 port"),
 		QStringLiteral("mchehab@infradead.org"));
-	aboutData.addAuthor("Christoph Pfister",
-		i18n("Original author"),
+	aboutData.addAuthor("Christoph Pfister", "",
 		QStringLiteral("christophpfister@gmail.com"));
 	aboutData.addAuthor("Lasse Lindqvist",
 		i18n("Maintainer (for KDE4)"),
@@ -194,7 +192,6 @@ int main(int argc, char *argv[])
 
 	aboutData.processCommandLine(&app.parser);
 
-//	KCmdLineArgs::addTempFileOption();
 	KDBusService service(KDBusService::Unique);
 
 	app.startWindow();
