@@ -62,10 +62,17 @@ with:
 PS.: The above was tested with Fedora 23 and Fedora 24.
      Other versions may have different requirements.
 
-OpenSUSE
+openSUSE
 --------
 
-You need to be using at least OpenSUSE version 13.2, in order to have
+If you run openSUSE Tumbleweed, you can find an up-to-date package with the
+latest state of git in the KDE:Unstable:Extra repository.
+
+    zypper ar obs://KDE:Unstable:Extra KDE_Unstable_Extra # add repository
+    zypper in -r KDE_Unstable_Extra kaffeine
+
+If you are using openSUSE Leap or openSUSE 13.2, you will need to compile from
+sources instead.  You need to be using at least OpenSUSE version 13.2, in order to have
 KF5 and Qt 5.5 at their repositories.
 
 The first step is to install the needed dependencies:
