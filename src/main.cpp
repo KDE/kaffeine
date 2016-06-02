@@ -102,6 +102,8 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv, KAboutData *abo
 		return;
 	}
 
+	KLocalizedString::setApplicationDomain("kaffeine");
+
 	mainWindow = new MainWindow(aboutData, &parser);
 }
 
@@ -145,8 +147,6 @@ Q_COREAPP_STARTUP_FUNCTION(iconThemeFunc)
 int main(int argc, char *argv[])
 {
 	qInstallMessageHandler(verboseMessageHandler);
-
-	KLocalizedString::setApplicationDomain("kaffeine");
 
 	KAboutData aboutData(
 		// Program name
