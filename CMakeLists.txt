@@ -1,12 +1,11 @@
 project(kaffeine)
 
-cmake_minimum_required(VERSION 3.4)
-set(QT_MIN_VERSION "5.5.0")
+# Minimal versions where build is known to work
+cmake_minimum_required(VERSION 2.8)
+set(QT_MIN_VERSION "5.4.0")
+set(KF5_MIN_VERSION "5.11.0")
 
 find_package(Qt5Core)
-
-set(KF5_MIN_VERSION "5.1.0")
-
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH
 	${ECM_MODULE_PATH}
