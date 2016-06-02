@@ -1,0 +1,796 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.1.2-Based Variant V1.0//EN" "dtd/kdex.dtd" [
+  <!-- Define an entity for your application if it is not part of KDE
+       CVS -->
+  <!ENTITY kaffeine "<application>Kaffeine</application>">
+  <!ENTITY kappname "&kaffeine;"><!-- replace kmyapplication here
+                                            do *not* replace kappname-->
+  <!ENTITY package "kde-module"><!-- kdebase, kdeadmin, etc.  Leave
+                                     this unchanged if your
+                                     application is not maintained in KDE CVS -->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE"> <!-- ONLY If you are writing non-English
+                                     original documentation, change
+                                     the language here -->
+]>
+
+<book lang="&language;">
+
+
+<bookinfo>
+<title>&kaffeine; 0.8 Handbook</title>
+
+<authorgroup>
+<author>
+<firstname>Jürgen</firstname>
+<othername></othername>
+<surname>Kofler</surname>
+<affiliation>
+<address><email>kaffeine@gmx.net</email></address>
+</affiliation>
+</author>
+<author>
+<firstname>Christophe</firstname>
+<othername></othername>
+<surname>Thommeret</surname>
+<affiliation>
+<address><email>hftom@free.fr</email></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+
+<copyright>
+<year>2004</year>
+<year>2006</year>
+<holder>The Kaffeine Authors</holder>
+</copyright>
+<!-- Translators: put here the copyright notice of the translation -->
+<!-- Put here the FDL notice.  Read the explanation in fdl-notice.docbook
+     and in the FDL itself on how to use it. -->
+<legalnotice>&FDLNotice;</legalnotice>
+
+<!-- Date and version information of the documentation
+Don't forget to include this last date and this last revision number, we
+need them for translation coordination !
+Please respect the format of the date (DD/MM/YYYY) and of the version
+(V.MM.LL), it could be used by automation scripts.
+Do NOT change these in the translation. -->
+
+<date>13/03/2006</date>
+<releaseinfo>0.08.00</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para>
+A Media Player for KDE. <ulink url="http://kaffeine.sourceforge.net">http://kaffeine.sourceforge.net</ulink>
+</para>
+</abstract>
+
+<!-- This is a set of Keywords for indexing by search engines.
+Please at least include KDE, the KDE package it is in, the name
+ of your application, and a few relevant keywords. -->
+
+<keywordset>
+<keyword>kaffeine</keyword>
+<keyword>xine</keyword>
+<keyword>video</keyword>
+<keyword>audio</keyword>
+<keyword>mp3</keyword>
+</keywordset>
+
+</bookinfo>
+
+<!-- The contents of the documentation begin here.  Label
+each chapter so with the id attribute. This is necessary for two reasons: it
+allows you to easily reference the chapter from other chapters of your
+document, and if there is no ID, the name of the generated HTML files will vary
+from time to time making it hard to manage for maintainers and for the CVS
+system. Any chapter labelled (OPTIONAL) may be left out at the author's
+discretion. Other chapters should not be left out in order to maintain a
+consistent documentation style across all KDE apps. -->
+
+
+<chapter id="kaffeine-app">
+<title>Kaffeine Shell</title>
+
+<sect1 id="startwindow">
+<title>The Start Window</title>
+
+<screenshot>
+<screeninfo>Start Window</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="startwindow.png" format="PNG"/>
+    </imageobject>
+
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Provides fast access to the most important media sources.
+</para>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title>The Playlist Window</title>
+
+<screenshot>
+<screeninfo>&kaffeine; Playlist Window</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwin.png" format="PNG"/>
+    </imageobject>
+
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Kaffeine supports multiple playlists. Choose the active one with the "Playlist" selector. You can easily drag some files or folders from the file browser and drop it on the playlist to enqueue or drop it on the player window to create a new playlist. To change playlist name edit it and confirm with <keycap>Return</keycap>.
+</para>
+<para>You can find all playlist related functions in the <guimenu>Playlist</guimenu>-Menu and the context-menu (right-click on playlist).
+</para>
+
+</sect1>
+
+<sect1 id="disctwindow">
+<title>The Discs Window</title>
+
+<screenshot>
+<screeninfo>&kaffeine; Discs Window</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="discwindow.png" format="PNG"/>
+    </imageobject>
+
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Here you can start Audio CD, DVD or VCD. You can even rip and encode audio tracks to be stored on your hard disk.
+</para>
+
+</sect1>
+
+<sect1 id="dvbwindow">
+<title>The DVB Window</title>
+
+<screenshot>
+<screeninfo>DVB Window</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbwin.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Kaffeine supports Digital Video Broadcasting devices supported by linuxtv drivers. This window is only visible if Kaffeine find a DVB device at startup. If you have a DVB device and Kaffeine doesn't find it, make sure the driver is loaded and your device recognized. (Further information can be found at www.linuxtv.org)
+</para>
+<remark>You can arrange your channels in categories. To create a new category, right click in the icon view to get a popup menu. Now, drag a channel name and drop it on the desired category' icon. To remove a channel from a category, drop it on the "All" icon. Right click on an icon to delete that category or change icon.</remark>
+<para>You can find all DVB related functions in the <guimenu>DVB</guimenu>-Menu.
+</para>
+
+<sect2 id="dvbconfig">
+<title>Configuration</title>
+
+<screenshot>
+<screeninfo>Configuration</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbconfig.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Select <guimenu>Menu->DVB->Configure DVB...</guimenu> to open the DVB config dialog. In order to get your device(s) working in Kaffeine, you have to choose a "source" in the list. If you have a DISEqC switch, choose a source for each satellite.
+</para>
+<para>The <guilabel>Recording</guilabel> page allow you to choose where programs are saved to disk.
+</para>
+</sect2>
+
+<sect2 id="dvbscan">
+<title>Getting channels</title>
+
+<screenshot>
+<screeninfo>Channels</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbscan.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Open the <guilabel>Channels</guilabel> dialog from the <guimenu>DVB</guimenu>-Menu. There, click the <guilabel>Start scan</guilabel> button to start scanning the network for available channels. This can take a while, so be patient ... When done, select the channels you want to add to your channels list and click <guilabel>Add selected</guilabel> or use the filters and click <guilabel>Add filtered</guilabel> (e.g. check "Free to air" and "TV" to add all fta TV).
+</para>
+<para>When added to channels list, channels are automatically assigned a number. To change this number, right click on the channel name and choose <guilabel>Edit ...</guilabel> from the popup menu. This number will allow you to zap using keypad.
+</para>
+<remark>Note that you can also change the channel number in the DVB window. Select the channel then click on the number to edit.</remark>
+</sect2>
+
+<sect2 id="live">
+<title>Viewing live</title>
+
+<screenshot>
+<screeninfo>Live TV</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvblive.jpg" format="JPEG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>To zap to a channel, you can either double-click on a channel name in the DVB window or use keypad (or remote control with kdelirc) to enter the channel number. Entered digit are displayed in the top left corner of the Player window. You can also hit pageUp/pageDown to zap to previous/next.
+</para>
+<para>You can now see your favorite program. Kaffeine also displays some informations about this channel using OSD. You can later hit "O" to see it again. (Hit "O" twice to display current program description).
+</para>
+<para>Now, what if your phone suddenly ring and you absolutely don't want to miss this crucial moment of the movie ? Don't worry. Just hit <guilabel>pause</guilabel>. Kaffeine will pause and immediately start to save the stream to your harddisk. Later, hit <guilabel>play</guilabel> and the program will continue from where you left it. To return to live, just rezap to this channel.
+</para>
+<remark>Note that live DVB only works with the xine engine (called "Kaffeine"). <guimenu>Menu->Settings->Engine->Kaffeine</guimenu>.</remark>
+</sect2>
+
+<sect2 id="epg">
+<title>Electronic Program Guide</title>
+
+<screenshot>
+<screeninfo>EPG</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbepg.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para><guimenu>Menu->DVB->EPG...</guimenu> brings up the Electronic Program Guide window, displaying current/next programs. Left click on an entry to display the detailed description of the program. Scheduled events for a given channel are displayed when you right click on one of the channel entry and select <guimenu>View all programs</guimenu> from the context menu.
+</para>
+<para>Double click on an entry to zap to that channel.
+</para>
+<remark>Note that you have first to zap to some channels in order to get EPG.</remark>
+</sect2>
+
+<sect2 id="recording">
+<title>Recording</title>
+
+<screenshot>
+<screeninfo>Recording</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbtimers.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Kaffeine offers you several way of recording.
+</para>
+<para>When you are viewing a live program, you can simply choose <guimenu>Menu->DVB->Instant record</guimenu> to immediately start recording this program. The duration is defined in the <guilabel>Recording</guilabel> page of the DVB config dialog, but you can modify it on the fly from the Timers dialog (<guimenu>Menu->DVB->Timers...</guimenu>). Just select the program and click <guilabel>Edit</guilabel> button to change the duration.
+</para>
+<para>You can also create a timer from the EPG window. Right click on a program entry and select <guimenu>Add to timers</guimenu> from the context menu. In this case, the timer is created using <guilabel>Begin margin</guilabel> and <guilabel>End margin</guilabel> defined in the <guilabel>Recording</guilabel> page of the DVB config dialog. So, start time is set to [start time given by EPG]-[begin margin] and duration is set to [duration given by EPG]+[begin margin]+[end margin].
+</para>
+<para>Finally, you can create a new timer by hand. Open the Timers dialog, click on the <guilabel>New</guilabel> button and fill in required informations.
+</para>
+<para>Note that all timers can be deleted, even if running. Open the Timers dialog, select the program and click the <guilabel>Delete</guilabel> button. Of course, deleting a running timer doesn't delete the file on the disk.
+</para>
+<remark>You can view and/or record several channels at the same time on the same multiplex. Note that the priority is always given to timers, so if you are viewing a live show and a timer is to be started on a different multiplex, live will be stopped to allow recording.</remark>
+<para></para>
+<remark>Be aware that a DVB stream is about 1.5GB/hour.</remark>
+</sect2>
+
+<sect2 id="replay">
+<title>Playing a record</title>
+
+<para>Simply open the file and Kaffeine will start playing. That's all !
+</para>
+</sect2>
+
+<sect2 id="broadcasting">
+<title>Broadcasting</title>
+
+<screenshot>
+<screeninfo>Broadcasting</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbbroadcast.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>Kaffeine can broadcast several DVB channels (being on the same multiplex) on a lan.
+</para>
+<para>Open the DVB config dialog and go to the <guilabel>Broadcasting</guilabel> page to set address and ports.
+</para>
+<para><guimenu>Menu->DVB->Broadcasting...</guimenu> opens the broadcasting editor. Select a channel in the <guilabel>Available channels</guilabel> list, and click the <guilabel>Add</guilabel> button to add it to the <guilabel>Broadcasting list</guilabel>. The <guilabel>Available channels</guilabel> list is now filled with channels on the same multiplex. You can now use multi-selection to add channels. Click <guilabel>OK</guilabel> button to start broadcasting.
+</para>
+<para>To stop broadcasting, open the dialog and click <guilabel>OK</guilabel> with an empty list.
+</para>
+<remark>Note that the priority is always given to timers, so if you are broadcasting and a timer is to be started on a different multiplex, broadcasting will be stopped to allow recording. And broadcasting has a higher priority than live.</remark>
+</sect2>
+
+</sect1>
+
+<sect1 id="dvbclientwindow">
+<title>The DVB Client Window</title>
+
+<screenshot>
+<screeninfo>DVB Client Window</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="dvbclient.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>To enable DVB client, you have to check the box in the Kaffeine configuration dialog. There you must also set address and ports. It will create a new tab labeled <guilabel>Dvb client</guilabel> showing a list of actually broadcasted channels (if any). Double click on a channel name to start playing it. DVB client also support time shifting (just hit pause).
+</para>
+</sect1>
+
+</chapter>
+
+<chapter id="player-parts">
+<title>Player Parts</title>
+
+<para>You'll find all available player parts in <guimenu>Settings</guimenu>-<guimenuitem>Player Engine</guimenuitem>.
+</para>
+
+<sect1 id="kaffeine-part">
+<title>The Kaffeine Part</title>
+
+<screenshot>
+<screeninfo>Kaffeine-Part</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="kaffeinepart.png" format="PNG"/>
+    </imageobject>
+
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>This is the default, xine based, full featured player part for Kaffeine. Plays almost everything...</para>
+
+<sect2 id="about-xine">
+<title>About xine</title>
+
+<para>
+  xine is a free multimedia player. It plays back CDs, DVDs, and VCDs.
+  It also decodes multimedia files like AVI, MOV, WMV, and MP3 from local disk drives, and displays multimedia streamed over the Internet.
+  It interprets many of the most common multimedia formats available - and some of the most uncommon formats, too.
+  Detailed info about xine features: <ulink url="http://www.xinehq.de">
+http://www.xinehq.de</ulink>
+</para>
+
+</sect2>
+
+</sect1>
+
+<sect1 id="gstreamer-part">
+<title>The GStreamer Part</title>
+
+<screenshot>
+<screeninfo>GStreamer-Part</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="gstpart.png" format="PNG"/>
+    </imageobject>
+
+    <textobject>
+     <phrase>Screenshot</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para>A simple player part based on GStreamer. GStreamer homepage: <ulink url="http://gstreamer.freedesktop.org">
+http://gstreamer.freedesktop.org</ulink>
+</para>
+
+</sect1>
+
+</chapter>
+
+<chapter id="cmdline-options">
+<title>Command Line Options</title>
+
+<para>Usage:</para>
+<cmdsynopsis>
+<command>kaffeine</command>
+<group choice="opt">
+<option>f</option>
+<option>p</option><option>w</option>
+<option>a</option><option>x</option>
+<option>d</option>
+</group>
+<arg>--fullscreen</arg>
+<arg>--play</arg>
+<arg>--audiodriver</arg>
+<arg>--videodriver</arg>
+<arg>--device</arg>
+<arg>--verbose</arg>
+<arg>--wizard</arg>
+<arg rep="repeat"><replaceable>file</replaceable></arg>
+</cmdsynopsis>
+
+<para></para>
+
+<informaltable>
+<tgroup cols="2">
+<tbody>
+
+<row><entry><para><option>-f,--fullscreen</option></para></entry>
+<entry><para>Starts &kaffeine; in fullscreen mode.
+</para></entry>
+</row>
+<row>
+<entry><para><option>-p,--play</option></para></entry>
+<entry><para>Starts with last played track.
+</para></entry>
+</row>
+<row>
+<entry><para><option>-a,--audiodriver (argument)</option></para></entry>
+<entry><para>Sets the audio driver. Arguments can be: alsa, arts, oss, ...
+</para></entry>
+</row>
+<row>
+<entry><para><option>-x,--videodriver (argument)</option></para></entry>
+<entry><para>Sets the video driver. Arguments can be: xv, xshm, dxr3 ,...
+</para></entry>
+</row>
+<row>
+<entry><para><option>-d,--device (argument)</option></para></entry>
+<entry><para>Sets the Audio-CD/VCD/DVD path to (argument).
+</para></entry>
+</row>
+<row>
+<entry><para><option>--verbose</option></para></entry>
+<entry><para>Outputs more debug messages.
+</para></entry>
+</row>
+<row><entry><para><option>-w,--wizard</option></para></entry>
+<entry><para>Runs installation wizard.
+</para></entry>
+</row>
+<row>
+<entry><para><option>file...</option></para></entry>
+<entry><para>Files to play. Can be local files, a directory, an URL or "AudioCD", "VCD", "DVD".
+</para></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+
+</chapter>
+
+<chapter id="dcop-interface">
+<title>The DCOP Interface</title>
+
+<sect1 id="dcop-overview">
+<title>Overview</title>
+<para>You can use the DCOP interface in two kinds: From inside another application with <function>KApplication::dcopClient()->send( "kaffeine", "KaffeineIface", "pause()" )</function>
+or from command line with <command>dcop kaffeine KaffeineIface openURL best_song_of_the_world.mp3</command>.
+</para>
+</sect1>
+
+<sect1 id="dcop-functions">
+<title>Functions</title>
+
+<sect2 id="kaffeineiface">
+<title>KaffeineIface Object</title>
+
+<informaltable>
+<tgroup cols="2">
+<tbody>
+
+<row>
+<entry><para><function>void openURL(QString URL)</function></para></entry>
+<entry><para>Opens and plays the given URL.</para></entry>
+</row>
+<row>
+<entry><para><function>void appendURL(QString URL)</function></para></entry>
+<entry><para>Appends the URL to current playlist.</para></entry>
+</row>
+<row>
+<entry><para><function>void playAudioCD()</function></para></entry>
+<entry><para>Starts playing Audio CD.</para></entry>
+</row>
+<row>
+<entry><para><function>void playVCD()</function></para></entry>
+<entry><para>Starts playing Video CD.</para></entry>
+</row>
+<row>
+<entry><para><function>void playDVD()</function></para></entry>
+<entry><para>Starts playing DVD.</para></entry>
+</row>
+<row><entry><para><function>void play()</function></para></entry>
+<entry><para>(Re)Starts playback.</para></entry>
+</row>
+<row><entry><para><function>bool isPlaying()</function></para></entry>
+<entry><para>Returns "true" or "false" on command line.</para></entry>
+</row>
+<row><entry><para><function>void pause()</function></para></entry>
+<entry><para>Toggles pause/playback.</para></entry>
+</row>
+<row><entry><para><function>void next()</function></para></entry>
+<entry><para>Plays next playlist entry/chapter/DVB channel.</para></entry>
+</row>
+<row><entry><para><function>void previous()</function></para></entry>
+<entry><para>Plays previous playlist entry/chapter/DVB channel.</para></entry>
+</row>
+<row><entry><para><function>void stop()</function></para></entry>
+<entry><para>Stops playback.</para></entry>
+</row>
+<row><entry><para><function>QString title()</function></para></entry>
+<entry><para>Returns the title of the current track.</para></entry>
+</row>
+<row><entry><para><function>QString getFileName()</function></para></entry>
+<entry><para>Returns filename of current track.</para></entry>
+</row>
+<row><entry><para><function>int getLength()</function></para></entry>
+<entry><para>Returns length of current track in seconds.</para></entry>
+</row>
+<row><entry><para><function>int getTimePos()</function></para></entry>
+<entry><para>Returns current stream position in seconds.</para></entry>
+</row>
+<row><entry><para><function>void quit()</function></para></entry>
+<entry><para>Quits Kaffeine.</para></entry>
+</row>
+<row><entry><para><function>void random()</function></para></entry>
+<entry><para>Toggles between random and normal play.</para></entry>
+</row>
+<row><entry><para><function>void fullscreen()</function></para></entry>
+<entry><para>Toggles between fullscreen and windowed mode.</para></entry>
+</row>
+<row><entry><para><function>void posPlus()</function></para></entry>
+<entry><para>Increases stream position.</para></entry>
+</row>
+<row><entry><para><function>void posMinus()</function></para></entry>
+<entry><para>Decreases stream position.</para></entry>
+</row>
+<row><entry><para><function>void volUp()</function></para></entry>
+<entry><para>Increases volume.</para></entry>
+</row>
+<row><entry><para><function>void volDown()</function></para></entry>
+<entry><para>Decreases volume.</para></entry>
+</row>
+<row><entry><para><function>void mute()</function></para></entry>
+<entry><para>Toggles mute on/off.</para></entry>
+</row>
+<row><entry><para><function>void setNumber(int number)</function></para></entry>
+<entry><para>Select DVB channel/playlist entry by number.</para></entry>
+</row>
+<row><entry><para><function>void dvbOSD()</function></para></entry>
+<entry><para>Toggles DVB-OSD on/off.</para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+
+</sect2>
+
+<sect2 id="kaffeinepartiface">
+<title>KaffeinePartIface Object</title>
+
+<informaltable>
+<tgroup cols="2">
+<tbody>
+
+<row>
+<entry><para><function>int getContrast()</function></para></entry>
+<entry><para>Returns current contrast.</para></entry>
+</row>
+<row>
+<entry><para><function>void setContrast(int contrast)</function></para></entry>
+<entry><para>Sets contrast (0..65535).</para></entry>
+</row>
+<row>
+<entry><para><function>int getBrightness()</function></para></entry>
+<entry><para>Returns current brightness.</para></entry>
+</row>
+<row>
+<entry><para><function>void setBrightness(int brightness)</function></para></entry>
+<entry><para>Sets brightness (0..65535).</para></entry>
+</row>
+<row>
+<entry><para><function>void dvdMenuUp()</function></para></entry>
+<entry><para>DVD Menu: Cursor up.</para></entry>
+</row>
+<row>
+<entry><para><function>void dvdMenuDown()</function></para></entry>
+<entry><para>DVD Menu: Cursor down.</para></entry>
+</row>
+<row>
+<entry><para><function>void dvdMenuLeft()</function></para></entry>
+<entry><para>DVD Menu: Cursor left.</para></entry>
+</row>
+<row>
+<entry><para><function>void dvdMenuRight()</function></para></entry>
+<entry><para>DVD Menu: Cursor right.</para></entry>
+</row>
+<row>
+<entry><para><function>void dvdMenuSelect()</function></para></entry>
+<entry><para>DVD Menu: Selects the menu item pointed by the cursor.</para></entry>
+</row>
+<row>
+<entry><para><function>void dvdMenuToggle()</function></para></entry>
+<entry><para>Toggles DVD menu on/off.</para></entry>
+</row>
+<row>
+<entry><para><function>void aspectRatioAuto()</function></para></entry>
+<entry><para>Automatic aspect ratio.</para></entry>
+</row>
+<row>
+<entry><para><function>void aspectRatio4_3()</function></para></entry>
+<entry><para>Sets aspect ratio to 4:3.</para></entry>
+</row>
+<row>
+<entry><para><function>void aspectRatioAnamorphic()</function></para></entry>
+<entry><para>Sets aspect ratio to 16:9.</para></entry>
+</row>
+<row>
+<entry><para><function>void aspectRatioSquare()</function></para></entry>
+<entry><para>Sets aspect ratio to 1:1.</para></entry>
+</row>
+<row>
+<entry><para><function>void aspectRatioDVB()</function></para></entry>
+<entry><para>Sets aspect ratio to 2.11:1.</para></entry>
+</row>
+<row>
+<entry><para><function>void zoomIn()</function></para></entry>
+<entry><para>Zooms picture in.</para></entry>
+</row>
+<row>
+<entry><para><function>void zoomOut()</function></para></entry>
+<entry><para>Zooms picture out.</para></entry>
+</row>
+<row>
+<entry><para><function>void zoomOff()</function></para></entry>
+<entry><para>Disables zoom.</para></entry>
+</row>
+
+</tbody>
+</tgroup>
+</informaltable>
+
+</sect2>
+</sect1>
+</chapter>
+
+<chapter id="keybindings">
+<title>Keybindings</title>
+
+<para>You can configure shortcuts using <guimenu>Settings</guimenu>-<guimenuitem>Configure Shortcuts</guimenuitem>.
+</para>
+
+</chapter>
+
+
+<chapter id="faq">
+<title>Questions and Answers</title>
+
+
+<para>
+<ulink url="http://kaffeine.sourceforge.net/index.php?page=faq">Kaffeine-FAQ</ulink>
+</para>
+<para>
+<ulink url="http://xinehq.de/index.php/faq">xine-FAQ</ulink>
+</para>
+
+<para>For Questions use the <ulink url="http://lists.sourceforge.net/lists/listinfo/kaffeine-user">kaffeine-user mailinglist</ulink>.
+(First check the <ulink url="http://sourceforge.net/mailarchive/forum.php?forum_id=34875">archive</ulink>
+ if the question is still answered.)
+</para>
+
+
+</chapter>
+
+<chapter id="bug">
+<title>Reporting BUGS</title>
+
+<para>
+Before you report a bug, please first make sure the bug has not been reported
+yet in the bug tracking system at <ulink url="http://www.sourceforge.net/projects/kaffeine">http://www.sourceforge.net/projects/kaffeine</ulink>.
+Also have a look into the mailinglist <ulink url="http://sourceforge.net/mailarchive/forum.php?forum_id=34875">archive</ulink>.
+</para>
+
+<para>
+Please use only the tracking system on sourceforge for reporting bugs and log in before
+submitting (if you've a sourceforge account).
+</para>
+
+<para>
+When you submit a bug, please include all of the following information:
+
+<itemizedlist>
+<listitem><para>versions of Kaffeine, xine, KDE, X11</para></listitem>
+<listitem><para>the backtrace from KDE's Crash Manager</para></listitem>
+<listitem><para>console output (you can use --verbose to get more)</para></listitem>
+</itemizedlist>
+
+</para>
+
+</chapter>
+
+<chapter id="credits">
+<title>Copyright and License</title>
+
+<para>
+Program copyright 2003-2005, The Kaffeine Authors
+</para>
+
+
+<para>
+Documentation copyright 2003-2005, Jürgen Kofler <email>kaffeine@gmx.net</email>, Christophe Thommeret <email>hftom@free.fr</email>
+</para>
+
+<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+
+&underFDL;               <!-- FDL: do not remove. Commercial development should -->
+<!-- replace this with their copyright and either remove it or re-set this.-->
+
+<!-- Determine which license your application is licensed under,
+     and delete all the remaining licenses below:
+
+     (NOTE:  All documentation are licensed under the FDL,
+     regardless of what license the application uses) -->
+
+&underGPL;        	 <!-- GPL License -->
+
+
+</chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
