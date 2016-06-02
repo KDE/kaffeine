@@ -81,16 +81,35 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 class KaffeineApplication : public QApplication
 {
 public:
-	KaffeineApplication(int &argc, char **argv, KAboutData *aboutData);
+	KaffeineApplication(int &argc, char **argv);
 	~KaffeineApplication();
-	QCommandLineParser parser;
 	void startWindow();
+
+	QCommandLineParser parser;
+	KAboutData aboutData;
 
 private:
 	QPointer<MainWindow> mainWindow;
 };
 
-KaffeineApplication::KaffeineApplication(int &argc, char **argv, KAboutData *aboutData) : QApplication(argc, argv)
+KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(argc, argv),
+	aboutData(
+		// Program name
+		QStringLiteral("kaffeine"),
+		i18n("Kaffeine"),
+		// Version
+		QStringLiteral("2.0.1"),
+		// Short description
+		i18n("A media player for KDE with digital TV support."),
+		// License
+		KAboutLicense::GPL_V2,
+		// Copyright statement
+		i18n("(C) 2007-2016 The Kaffeine Authors"),
+		// Optional additional text
+		"",
+		// Home page
+		QStringLiteral("http://kaffeine.kde.org")
+	)
 {
 	QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 
@@ -104,7 +123,20 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv, KAboutData *abo
 
 	KLocalizedString::setApplicationDomain("kaffeine");
 
-	mainWindow = new MainWindow(aboutData, &parser);
+	aboutData.addAuthor("Mauro Carvalho Chehab",
+		i18n("this KF5 port"),
+		QStringLiteral("mchehab@infradead.org"));
+	aboutData.addAuthor("Christoph Pfister", "",
+		QStringLiteral("christophpfister@gmail.com"));
+	aboutData.addAuthor("Lasse Lindqvist",
+		i18n("Maintainer (for KDE4)"),
+		QStringLiteral("lasse.k.lindqvist@gmail.com"));
+	aboutData.addAuthor("Christophe Thommeret");
+	aboutData.addAuthor(QString::fromUtf8("Jürgen Kofler"));
+
+	KAboutData::setApplicationData(aboutData);
+
+	mainWindow = new MainWindow(&aboutData, &parser);
 }
 
 void KaffeineApplication::startWindow()
@@ -148,37 +180,9 @@ int main(int argc, char *argv[])
 {
 	qInstallMessageHandler(verboseMessageHandler);
 
-	KAboutData aboutData(
-		// Program name
-		QStringLiteral("kaffeine"),
-		i18n("Kaffeine"),
-		// Version
-		QStringLiteral("2.0.1"),
-		// Short description
-		i18n("A media player for KDE with digital TV support."),
-		// License
-		KAboutLicense::GPL_V2,
-		// Copyright statement
-		i18n("(C) 2007-2016 The Kaffeine Authors"),
-		// Optional additional text
-		"",
-		// Home page
-		QStringLiteral("http://kaffeine.kde.org")
-	);
+	KaffeineApplication app(argc, argv);
 
-	aboutData.addAuthor("Mauro Carvalho Chehab",
-		i18n("this KF5 port"),
-		QStringLiteral("mchehab@infradead.org"));
-	aboutData.addAuthor("Christoph Pfister", "",
-		QStringLiteral("christophpfister@gmail.com"));
-	aboutData.addAuthor("Lasse Lindqvist",
-		i18n("Maintainer (for KDE4)"),
-		QStringLiteral("lasse.k.lindqvist@gmail.com"));
-	aboutData.addAuthor("Christophe Thommeret");
-	aboutData.addAuthor(QString::fromUtf8("Jürgen Kofler"));
-
-	KaffeineApplication app(argc, argv, &aboutData);
-	KAboutData::setApplicationData(aboutData);
+	KAboutData *aboutData = &app.aboutData;
 
 	app.setApplicationName("kaffeine");
 	app.setOrganizationDomain("kde.org");
@@ -186,11 +190,11 @@ int main(int argc, char *argv[])
 
 	app.parser.addVersionOption();
 	app.parser.addHelpOption();
-	aboutData.setupCommandLine(&app.parser);
+	aboutData->setupCommandLine(&app.parser);
 
 	app.parser.process(app);
 
-	aboutData.processCommandLine(&app.parser);
+	aboutData->processCommandLine(&app.parser);
 
 	KDBusService service(KDBusService::Unique);
 
