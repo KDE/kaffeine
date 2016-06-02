@@ -44,6 +44,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	Notifications
 	IdleTime
 	DBusAddons
+	DocTools	# To generate Kaffeine Handbook
 )
 
 include(KDEInstallDirs)
@@ -79,6 +80,7 @@ add_subdirectory(dtvdaemon)
 add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
+add_subdirectory(doc)
 ecm_optional_add_subdirectory(po)
 
 if(BUILD_TOOLS)
