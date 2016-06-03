@@ -63,6 +63,7 @@ DvbManager::~DvbManager()
 	// we need an explicit deletion order (device users ; devices ; device manager)
 
 	delete epgModel;
+	epgModel = NULL;
 	delete recordingModel;
 
 	foreach (const DvbDeviceConfig &deviceConfig, deviceConfigs) {

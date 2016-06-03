@@ -302,6 +302,10 @@ void DvbRecordingModel::removeDuplicates()
 {
 	QList<DvbSharedRecording> recordingList = QList<DvbSharedRecording>();
 	DvbEpgModel *epgModel = manager->getEpgModel();
+
+	if (!epgModel)
+		return;
+
 	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordingMap = epgModel->getRecordings();
 	foreach(DvbSharedRecording key, recordings.values())
 	{
@@ -332,6 +336,7 @@ void DvbRecordingModel::removeDuplicates()
 	epgModel->setRecordings(recordingMap);
 
 	qInfo() << "DvbRecordingModel::removeDuplicates executed.";
+
 }
 
 bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
@@ -340,6 +345,10 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 
 	DvbEpgEntry entry = recording;
 	DvbEpgModel *epgModel = manager->getEpgModel();
+
+	if (!epgModel)
+		return found;
+
 	QMap<DvbSharedRecording, DvbSharedEpgEntry> recordingMap = epgModel->getRecordings();
 	foreach(DvbSharedRecording key, recordingMap.keys())
 	{
@@ -503,6 +512,10 @@ void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList
 void DvbRecordingModel::findNewRecordings()
 {
 	DvbEpgModel *epgModel = manager->getEpgModel();
+
+	if (!epgModel)
+		return;
+
 	QMap<DvbEpgEntryId, DvbSharedEpgEntry> epgMap = epgModel->getEntries();
 	foreach(DvbEpgEntryId key, epgMap.keys())
 	{
