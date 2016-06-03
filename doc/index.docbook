@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
-  <!ENTITY kaffeine "<application>Kaffeine</application>">
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application>Kaffeine</application>"><!--FIXME add entry to kdoctools-->
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % English "INCLUDE">
 ]>
@@ -8,7 +8,7 @@
 <book id="kaffeine" lang="&language;">
 
 <bookinfo>
-<title>&kaffeine; 0.8 Handbook</title>
+<title>&kaffeine; 2.0.1 Handbook</title>
 
 <authorgroup>
 <author>
@@ -34,34 +34,20 @@
 <copyright>
 <year>2004</year>
 <year>2006</year>
-<holder>The Kaffeine Authors</holder>
+<holder>The &kaffeine; Authors</holder>
 </copyright>
-<!-- Translators: put here the copyright notice of the translation -->
-<!-- Put here the FDL notice.  Read the explanation in fdl-notice.docbook
-     and in the FDL itself on how to use it. -->
 <legalnotice>&FDLNotice;</legalnotice>
 
-<!-- Date and version information of the documentation
-Don't forget to include this last date and this last revision number, we
-need them for translation coordination !
-Please respect the format of the date (DD/MM/YYYY) and of the version
-(V.MM.LL), it could be used by automation scripts.
-Do NOT change these in the translation. -->
-
-<date>13/03/2006</date>
-<releaseinfo>0.08.00</releaseinfo>
+<date>13/03/2006</date><!--FIXME change to 2016-xx-yy-->
+<releaseinfo>0.08.00</releaseinfo><!--FIXME change to &kaffeine; 2.01-->
 
 <!-- Abstract about this handbook -->
 
 <abstract>
 <para>
-A Media Player for KDE. <ulink url="http://kaffeine.sourceforge.net">http://kaffeine.sourceforge.net</ulink>
+A Media Player by KDE. <ulink url="http://kaffeine.sourceforge.net">http://kaffeine.sourceforge.net</ulink><!--FIXME change to ??-->
 </para>
 </abstract>
-
-<!-- This is a set of Keywords for indexing by search engines.
-Please at least include KDE, the KDE package it is in, the name
- of your application, and a few relevant keywords. -->
 
 <keywordset>
 <keyword>kaffeine</keyword>
@@ -73,18 +59,8 @@ Please at least include KDE, the KDE package it is in, the name
 
 </bookinfo>
 
-<!-- The contents of the documentation begin here.  Label
-each chapter so with the id attribute. This is necessary for two reasons: it
-allows you to easily reference the chapter from other chapters of your
-document, and if there is no ID, the name of the generated HTML files will vary
-from time to time making it hard to manage for maintainers and for the CVS
-system. Any chapter labelled (OPTIONAL) may be left out at the author's
-discretion. Other chapters should not be left out in order to maintain a
-consistent documentation style across all KDE apps. -->
-
-
 <chapter id="kaffeine-app">
-<title>Kaffeine Shell</title>
+<title>&kaffeine; Shell</title>
 
 <sect1 id="startwindow">
 <title>The Start Window</title>
@@ -123,7 +99,7 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>Kaffeine supports multiple playlists. Choose the active one with the "Playlist" selector. You can easily drag some files or folders from the file browser and drop it on the playlist to enqueue or drop it on the player window to create a new playlist. To change playlist name edit it and confirm with <keycap>Return</keycap>.
+<para>&kaffeine; supports multiple playlists. Choose the active one with the "Playlist" selector. You can easily drag some files or folders from the file browser and drop it on the playlist to enqueue or drop it on the player window to create a new playlist. To change playlist name edit it and confirm with <keycap>Return</keycap>.
 </para>
 <para>You can find all playlist related functions in the <guimenu>Playlist</guimenu>-Menu and the context-menu (right-click on playlist).
 </para>
@@ -153,7 +129,7 @@ consistent documentation style across all KDE apps. -->
 
 <sect1 id="dvbwindow">
 <title>The DVB Window</title>
-
+<!--FIXME https://userbase.kde.org/Special:MyLanguage/Kaffeine-TV -->
 <screenshot>
 <screeninfo>DVB Window</screeninfo>
  <mediaobject>
@@ -166,7 +142,7 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>Kaffeine supports Digital Video Broadcasting devices supported by linuxtv drivers. This window is only visible if Kaffeine find a DVB device at startup. If you have a DVB device and Kaffeine doesn't find it, make sure the driver is loaded and your device recognized. (Further information can be found at www.linuxtv.org)
+<para>&kaffeine; supports Digital Video Broadcasting devices supported by linuxtv drivers. This window is only visible if &kaffeine; find a DVB device at startup. If you have a DVB device and &kaffeine; doesn't find it, make sure the driver is loaded and your device recognized. (Further information can be found at www.linuxtv.org)
 </para>
 <remark>You can arrange your channels in categories. To create a new category, right click in the icon view to get a popup menu. Now, drag a channel name and drop it on the desired category' icon. To remove a channel from a category, drop it on the "All" icon. Right click on an icon to delete that category or change icon.</remark>
 <para>You can find all DVB related functions in the <guimenu>DVB</guimenu>-Menu.
@@ -187,7 +163,7 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>Select <guimenu>Menu->DVB->Configure DVB...</guimenu> to open the DVB config dialog. In order to get your device(s) working in Kaffeine, you have to choose a "source" in the list. If you have a DISEqC switch, choose a source for each satellite.
+<para>Select <guimenu>Menu->DVB->Configure DVB...</guimenu> to open the DVB config dialog. In order to get your device(s) working in &kaffeine;, you have to choose a "source" in the list. If you have a DISEqC switch, choose a source for each satellite.
 </para>
 <para>The <guilabel>Recording</guilabel> page allow you to choose where programs are saved to disk.
 </para>
@@ -232,11 +208,11 @@ consistent documentation style across all KDE apps. -->
 
 <para>To zap to a channel, you can either double-click on a channel name in the DVB window or use keypad (or remote control with kdelirc) to enter the channel number. Entered digit are displayed in the top left corner of the Player window. You can also hit pageUp/pageDown to zap to previous/next.
 </para>
-<para>You can now see your favorite program. Kaffeine also displays some informations about this channel using OSD. You can later hit "O" to see it again. (Hit "O" twice to display current program description).
+<para>You can now see your favorite program. &kaffeine; also displays some informations about this channel using OSD. You can later hit "O" to see it again. (Hit "O" twice to display current program description).
 </para>
-<para>Now, what if your phone suddenly ring and you absolutely don't want to miss this crucial moment of the movie ? Don't worry. Just hit <guilabel>pause</guilabel>. Kaffeine will pause and immediately start to save the stream to your harddisk. Later, hit <guilabel>play</guilabel> and the program will continue from where you left it. To return to live, just rezap to this channel.
+<para>Now, what if your phone suddenly ring and you absolutely don't want to miss this crucial moment of the movie ? Don't worry. Just hit <guilabel>pause</guilabel>. &kaffeine; will pause and immediately start to save the stream to your harddisk. Later, hit <guilabel>play</guilabel> and the program will continue from where you left it. To return to live, just rezap to this channel.
 </para>
-<remark>Note that live DVB only works with the xine engine (called "Kaffeine"). <guimenu>Menu->Settings->Engine->Kaffeine</guimenu>.</remark>
+<remark>Note that live DVB only works with the xine engine (called "&kaffeine;"). <guimenu>Menu->Settings->Engine->&kaffeine;</guimenu>.</remark>
 </sect2>
 
 <sect2 id="epg">
@@ -276,7 +252,7 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>Kaffeine offers you several way of recording.
+<para>&kaffeine; offers you several way of recording.
 </para>
 <para>When you are viewing a live program, you can simply choose <guimenu>Menu->DVB->Instant record</guimenu> to immediately start recording this program. The duration is defined in the <guilabel>Recording</guilabel> page of the DVB config dialog, but you can modify it on the fly from the Timers dialog (<guimenu>Menu->DVB->Timers...</guimenu>). Just select the program and click <guilabel>Edit</guilabel> button to change the duration.
 </para>
@@ -294,7 +270,7 @@ consistent documentation style across all KDE apps. -->
 <sect2 id="replay">
 <title>Playing a record</title>
 
-<para>Simply open the file and Kaffeine will start playing. That's all !
+<para>Simply open the file and &kaffeine; will start playing. That's all !
 </para>
 </sect2>
 
@@ -313,7 +289,7 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>Kaffeine can broadcast several DVB channels (being on the same multiplex) on a lan.
+<para>&kaffeine; can broadcast several DVB channels (being on the same multiplex) on a lan.
 </para>
 <para>Open the DVB config dialog and go to the <guilabel>Broadcasting</guilabel> page to set address and ports.
 </para>
@@ -341,23 +317,23 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>To enable DVB client, you have to check the box in the Kaffeine configuration dialog. There you must also set address and ports. It will create a new tab labeled <guilabel>Dvb client</guilabel> showing a list of actually broadcasted channels (if any). Double click on a channel name to start playing it. DVB client also support time shifting (just hit pause).
+<para>To enable DVB client, you have to check the box in the &kaffeine; configuration dialog. There you must also set address and ports. It will create a new tab labeled <guilabel>Dvb client</guilabel> showing a list of actually broadcasted channels (if any). Double click on a channel name to start playing it. DVB client also support time shifting (just hit pause).
 </para>
 </sect1>
 
 </chapter>
 
 <chapter id="player-parts">
-<title>Player Parts</title>
+<title>Player Parts</title><!--FIXME no kparts?-->
 
 <para>You'll find all available player parts in <guimenu>Settings</guimenu>-<guimenuitem>Player Engine</guimenuitem>.
 </para>
 
 <sect1 id="kaffeine-part">
-<title>The Kaffeine Part</title>
+<title>The &kaffeine; Part</title>
 
 <screenshot>
-<screeninfo>Kaffeine-Part</screeninfo>
+<screeninfo>&kaffeine;-Part</screeninfo>
  <mediaobject>
    <imageobject>
      <imagedata fileref="kaffeinepart.png" format="PNG"/>
@@ -369,10 +345,10 @@ consistent documentation style across all KDE apps. -->
   </mediaobject>
 </screenshot>
 
-<para>This is the default, xine based, full featured player part for Kaffeine. Plays almost everything...</para>
+<para>This is the default, xine based, full featured player part for &kaffeine;. Plays almost everything...</para>
 
 <sect2 id="about-xine">
-<title>About xine</title>
+<title>About xine</title><!-- based on vlc now? what about backend-mplayer in the code, is it used?-->
 
 <para>
   xine is a free multimedia player. It plays back CDs, DVDs, and VCDs.
@@ -387,7 +363,7 @@ http://www.xinehq.de</ulink>
 </sect1>
 
 <sect1 id="gstreamer-part">
-<title>The GStreamer Part</title>
+<title>The GStreamer Part</title><!-- no gstreamer part remove this sect?-->
 
 <screenshot>
 <screeninfo>GStreamer-Part</screeninfo>
@@ -431,7 +407,7 @@ http://gstreamer.freedesktop.org</ulink>
 <arg>--wizard</arg>
 <arg rep="repeat"><replaceable>file</replaceable></arg>
 </cmdsynopsis>
-
+<!--FIXME update + add kf5options + qt5options-->
 <para></para>
 
 <informaltable>
@@ -482,12 +458,12 @@ http://gstreamer.freedesktop.org</ulink>
 
 </chapter>
 
-<chapter id="dcop-interface">
-<title>The DCOP Interface</title>
-
-<sect1 id="dcop-overview">
+<chapter id="dbus-interface">
+<title>The &DBus; Interface</title>
+<!--FIXME proofread + update-->
+<sect1 id="dbus-overview">
 <title>Overview</title>
-<para>You can use the DCOP interface in two kinds: From inside another application with <function>KApplication::dcopClient()->send( "kaffeine", "KaffeineIface", "pause()" )</function>
+<para>You can use the &DBus; interface in two kinds: From inside another application with <function>KApplication::dcopClient()->send( "kaffeine", "KaffeineIface", "pause()" )</function><!--FIXME still valid in kf5-->
 or from command line with <command>dcop kaffeine KaffeineIface openURL best_song_of_the_world.mp3</command>.
 </para>
 </sect1>
@@ -588,7 +564,7 @@ or from command line with <command>dcop kaffeine KaffeineIface openURL best_song
 </informaltable>
 
 </sect2>
-
+<!--FIXME proofread + update-->
 <sect2 id="kaffeinepartiface">
 <title>KaffeinePartIface Object</title>
 
@@ -680,31 +656,12 @@ or from command line with <command>dcop kaffeine KaffeineIface openURL best_song
 <chapter id="keybindings">
 <title>Keybindings</title>
 
-<para>You can configure shortcuts using <guimenu>Settings</guimenu>-<guimenuitem>Configure Shortcuts</guimenuitem>.
+<para>You can configure shortcuts using <guimenu>Settings</guimenu>-<guimenuitem>Configure Shortcuts</guimenuitem>.<!--FIXME add link to sect in fundamentals?-->
 </para>
 
 </chapter>
 
-
-<chapter id="faq">
-<title>Questions and Answers</title>
-
-
-<para>
-<ulink url="http://kaffeine.sourceforge.net/index.php?page=faq">Kaffeine-FAQ</ulink>
-</para>
-<para>
-<ulink url="http://xinehq.de/index.php/faq">xine-FAQ</ulink>
-</para>
-
-<para>For Questions use the <ulink url="http://lists.sourceforge.net/lists/listinfo/kaffeine-user">kaffeine-user mailinglist</ulink>.
-(First check the <ulink url="http://sourceforge.net/mailarchive/forum.php?forum_id=34875">archive</ulink>
- if the question is still answered.)
-</para>
-
-
-</chapter>
-
+<!--FIXME noting special for kaffeine here, applies to all applications, so let's remove it (dead links etc)
 <chapter id="bug">
 <title>Reporting BUGS</title>
 
@@ -723,40 +680,28 @@ submitting (if you've a sourceforge account).
 When you submit a bug, please include all of the following information:
 
 <itemizedlist>
-<listitem><para>versions of Kaffeine, xine, KDE, X11</para></listitem>
+<listitem><para>versions of &kaffeine;, xine, KDE, X11</para></listitem>
 <listitem><para>the backtrace from KDE's Crash Manager</para></listitem>
-<listitem><para>console output (you can use --verbose to get more)</para></listitem>
+<listitem><para>console output (you can use verbose to get more)</para></listitem>
 </itemizedlist>
 
 </para>
 
 </chapter>
-
+-->
 <chapter id="credits">
 <title>Copyright and License</title>
 
 <para>
-Program copyright 2003-2005, The Kaffeine Authors
+Program copyright 2007-2016, The &kaffeine; Authors
 </para>
-
 
 <para>
 Documentation copyright 2003-2005, Jürgen Kofler <email>kaffeine@gmx.net</email>, Christophe Thommeret <email>hftom@free.fr</email>
 </para>
 
-<!-- TRANS:CREDIT_FOR_TRANSLATORS -->
-
-&underFDL;               <!-- FDL: do not remove. Commercial development should -->
-<!-- replace this with their copyright and either remove it or re-set this.-->
-
-<!-- Determine which license your application is licensed under,
-     and delete all the remaining licenses below:
-
-     (NOTE:  All documentation are licensed under the FDL,
-     regardless of what license the application uses) -->
-
-&underGPL;        	 <!-- GPL License -->
-
+&underFDL;
+&underGPL;
 
 </chapter>
 
@@ -771,16 +716,4 @@ sgml-indent-step:0
 sgml-indent-data:nil
 End:
 -->
-
-
-
-
-
-
-
-
-
-
-
-
 
