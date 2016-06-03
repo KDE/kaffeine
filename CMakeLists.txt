@@ -1,9 +1,14 @@
 project(kaffeine)
 
 # Minimal versions where build is known to work
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.8.12)
 set(QT_MIN_VERSION "5.4.0")
 set(KF5_MIN_VERSION "5.11.0")
+
+# shut up cmake warnings about newer policies
+if(POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
+endif(POLICY CMP0063)
 
 find_package(Qt5Core)
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
@@ -44,8 +49,8 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	Notifications
 	IdleTime
 	DBusAddons
-	DocTools	# To generate Kaffeine Handbook
 )
+find_package(KF5DocTools ${KF5_MIN_VERSION} QUIET)
 
 include(KDEInstallDirs)
 include(KDECompilerSettings)
@@ -80,8 +85,11 @@ add_subdirectory(dtvdaemon)
 add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
-add_subdirectory(doc)
 ecm_optional_add_subdirectory(po)
+
+if(KF5DocTools_VERSION)
+  add_subdirectory(doc)
+endif(KF5DocTools_VERSION)
 
 if(BUILD_TOOLS)
   add_subdirectory(tools)

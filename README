@@ -23,6 +23,9 @@ The following development headers are needed (recommended versions):
 If you also want language translations you also need:
 * gettext
 
+If you also want the Kaffeine Handbook, you also need:
+* KF5DocTools
+
 Debian and Ubuntu
 -----------------
 
@@ -33,6 +36,10 @@ The needed packages for Debian/Ubuntu should be installed with:
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
 		   qt5-default libdvbv5-dev libkf5notifications-dev \
 		   cmake extra-cmake-modules make g++ gettext
+
+And, to build the optional Kaffeine Handbook documentation:
+
+   apt-get install kdoctools-dev
 
 PS.: The above was tested with Debian SID and Ubuntu Xenial (16.04).
      Other versions may have different requirements.
@@ -58,6 +65,9 @@ with:
 		qt5-qtx11extras-devel kf5-kidletime-devel \
 		kf5-knotifications-devel kf5-solid-devel kf5-kio-devel \
 		kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel gettext-devel
+
+And, to build the Kaffeine Handbook documentation:
+   dnf install kf5-kdoctools-devel
 
 PS.: The above was tested with Fedora 23 and Fedora 24.
      Other versions may have different requirements.
@@ -95,6 +105,9 @@ Compiling libdvbv5 (as normal user):
 
 Installing the library (as root):
 	make install
+
+And, to build the optional Kaffeine Handbook documentation:
+	zypper install kdoctools-devel
 
 PS.: The above was tested with openSUSE 13.2.
      Other versions may have different requirements.
