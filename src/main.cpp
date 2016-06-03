@@ -121,8 +121,6 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		return;
 	}
 
-	KLocalizedString::setApplicationDomain("kaffeine");
-
 	aboutData.addAuthor("Mauro Carvalho Chehab",
 		i18n("this KF5 port"),
 		QStringLiteral("mchehab@infradead.org"));
@@ -181,6 +179,8 @@ Q_COREAPP_STARTUP_FUNCTION(iconThemeFunc)
 int main(int argc, char *argv[])
 {
 	qInstallMessageHandler(verboseMessageHandler);
+
+	KLocalizedString::setApplicationDomain("kaffeine");
 
 	KaffeineApplication app(argc, argv);
 
