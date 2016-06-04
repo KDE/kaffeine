@@ -80,6 +80,11 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+	mimeTypes.removeDuplicates();
+	mimeTypes.sort();
+
+	QStringList mimeTypesExt;
+
 	for (int i = 0; i < mimeTypes.size(); ++i) {
 		QMimeDatabase db;
 		QString curMime, newMime;
@@ -105,43 +110,54 @@ int main(int argc, char *argv[])
 		} else if (!curMime.compare("video/x-flc")) {
 			newMime = db.mimeTypeForFile("*.flc").name();
 		} else if (!curMime.compare("misc/ultravox")) {
-			newMime = "skip";
+			// Mime Type is not associated with extensions
+			continue;
 		} else if (curMime.contains("x-scheme-handler/")) {
-			newMime = "skip";
+			// Mime Type is not associated with extensions
+			continue;
 		}
 		if (!newMime.isEmpty()) {
-			mimeTypes.removeAt(i);
-			mimeTypes.insert(i, newMime);
+			// Use the mime type name known by QMimeDatabase
+			mimeTypes.replace(i, newMime);
+
+			mimeTypesExt << newMime;
 			qInfo() << "replacing" << curMime << "by" << newMime;
+		} else {
+			mimeTypesExt << curMime;
 		}
 	}
+
 	mimeTypes.removeDuplicates();
 	mimeTypes.sort();
 
+	mimeTypesExt.removeDuplicates();
+	mimeTypesExt.sort();
+
 	QStringList realExtensions;
 
-	for (int skipMimeType = -1; skipMimeType < mimeTypes.size(); ++skipMimeType) {
+	for (int skipMimeType = -1; skipMimeType < mimeTypesExt.size(); ++skipMimeType) {
 		QStringList extensions;
 
-		for (int i = 0; i < mimeTypes.size(); ++i) {
+		for (int i = 0; i < mimeTypesExt.size(); ++i) {
 			if (i != skipMimeType) {
 				QMimeDatabase db;
-				QMimeType mimetype = db.mimeTypeForName(mimeTypes.at(i));
+				QString mime = mimeTypesExt.at(i);
+				QMimeType mimetype = db.mimeTypeForName(mime);
 
-				if (!mimeTypes.at(i).compare("skip")) {
+				if (!mime.compare("skip")) {
 					continue;
 				}
-				if (!mimeTypes.at(i).compare("application/octet-stream")) {
+				if (!mime.compare("application/octet-stream")) {
 					qInfo() << "Warning: application/octet-stream detected!";
 					continue;
 				}
-				if (!mimeTypes.at(i).compare("application/text")) {
+				if (!mime.compare("application/text")) {
 					qInfo() << "Warning: application/text detected!";
 					continue;
 				}
 
 				if (!mimetype.isValid()) {
-					qCritical() << "unknown mime type" << mimeTypes.at(i);
+					qCritical() << "unknown mime type" << mime;
 					dontUpdate = true;
 					continue;
 				}
@@ -187,6 +203,9 @@ int main(int argc, char *argv[])
 				mimeTypes.at(skipMimeType);
 		}
 	}
+
+	qInfo() << "Supported mime types:" << mimeTypes;
+	qInfo() << "Supported file extensions:" << realExtensions;
 
 	if (dontUpdate) {
 		qInfo() << "Error parsing mime types. Aborting.";
