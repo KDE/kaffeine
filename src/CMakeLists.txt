@@ -52,5 +52,5 @@ endif()
 
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
-install(PROGRAMS kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
-install(FILES org.kaffeine.appdata.xml DESTINATION ${SHARE_INSTALL_PREFIX}/appdata/)
+install(PROGRAMS org.kde.kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES org.kde.kaffeine.appdata.xml DESTINATION ${SHARE_INSTALL_PREFIX}/appdata/)
