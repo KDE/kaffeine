@@ -88,25 +88,25 @@ int main(int argc, char *argv[])
 
 		if (!curMime.compare("application/x-extension-mp4")) {
 			newMime = db.mimeTypeForFile("*.mp4").name();
-		} else if (!mimeTypes.at(i).compare("application/x-flac")) {
+		} else if (!curMime.compare("application/x-flac")) {
 			newMime = db.mimeTypeForFile("*.flac").name();
-		} else if (!mimeTypes.at(i).compare("audio/x-ms-asf")) {
+		} else if (!curMime.compare("audio/x-ms-asf")) {
 			newMime = db.mimeTypeForFile("*.wma").name();
-		} else if (!mimeTypes.at(i).compare("audio/x-ms-wax")) {
+		} else if (!curMime.compare("audio/x-ms-wax")) {
 			newMime = db.mimeTypeForFile("*.wax").name();
-		} else if (!mimeTypes.at(i).compare("audio/x-pn-aiff")) {
+		} else if (!curMime.compare("audio/x-pn-aiff")) {
 			newMime = db.mimeTypeForFile("*.aif").name();
-		} else if (!mimeTypes.at(i).compare("audio/x-pn-au")) {
+		} else if (!curMime.compare("audio/x-pn-au")) {
 			newMime = db.mimeTypeForFile("*.au").name();
-		} else if (!mimeTypes.at(i).compare("audio/x-real-audio")) {
+		} else if (!curMime.compare("audio/x-real-audio")) {
 			newMime = db.mimeTypeForFile("*.rmvb").name();
-		} else if (!mimeTypes.at(i).compare("audio/x-pn-wav") || !mimeTypes.at(i).compare("audio/x-pn-acm") || !mimeTypes.at(i).compare("audio/x-pn-windows-acm")) {
+		} else if (!curMime.compare("audio/x-pn-wav") || !curMime.compare("audio/x-pn-acm") || !curMime.compare("audio/x-pn-windows-acm")) {
 			newMime = db.mimeTypeForFile("*.wav").name();
-		} else if (!mimeTypes.at(i).compare("video/x-flc")) {
+		} else if (!curMime.compare("video/x-flc")) {
 			newMime = db.mimeTypeForFile("*.flc").name();
-		} else if (!mimeTypes.at(i).compare("misc/ultravox")) {
+		} else if (!curMime.compare("misc/ultravox")) {
 			newMime = "skip";
-		} else if (mimeTypes.at(i).contains("x-scheme-handler/")) {
+		} else if (curMime.contains("x-scheme-handler/")) {
 			newMime = "skip";
 		}
 		if (!newMime.isEmpty()) {
