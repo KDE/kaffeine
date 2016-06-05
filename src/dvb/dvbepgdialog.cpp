@@ -54,7 +54,6 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 	mainLayout->addWidget(mainWidget);
-	mainLayout->addWidget(buttonBox);
 
 	QWidget *widget = new QWidget(this);
 
@@ -117,6 +116,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	rightLayout->addWidget(scrollArea);
 	mainLayout->addLayout(rightLayout);
 	mainLayout->addWidget(widget);
+
+	mainLayout->addWidget(buttonBox);
 }
 
 DvbEpgDialog::~DvbEpgDialog()
