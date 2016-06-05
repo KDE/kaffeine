@@ -1,5 +1,15 @@
 project(kaffeine)
 
+set(KAFFEINE_MAJOR_VERSION 2)
+set(KAFFEINE_MINOR_VERSION 0)
+set(KAFFEINE_PATCH_VERSION 1)
+
+# comment/uuncomment below if either the version is a production or a development one
+set(KAFFEINE_EXTRA_VERSION -git)
+
+set(KAFFEINE_VERSION
+  ${KAFFEINE_MAJOR_VERSION}.${KAFFEINE_MINOR_VERSION}.${KAFFEINE_PATCH_VERSION}${KAFFEINE_EXTRA_VERSION})
+
 # Minimal versions where build is known to work
 cmake_minimum_required(VERSION 2.8.12)
 set(QT_MIN_VERSION "5.4.0")

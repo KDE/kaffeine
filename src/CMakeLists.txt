@@ -50,6 +50,8 @@ else()
                           ${KDE4_SOLID_LIBS} ${X11_Xscreensaver_LIB} ${VLC_LIBRARY} ${LIBDVBV5_LIBRARY})
 endif()
 
+configure_file(config.h.in config.h)
+
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(PROGRAMS org.kde.kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})

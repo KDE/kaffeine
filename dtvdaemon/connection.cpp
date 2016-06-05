@@ -26,6 +26,7 @@
 #include <QLocalSocket>
 #include <QtEndian>
 
+#include "../src/config.h"
 #include "connection.h"
 
 Connection::Connection(QLocalSocket *socket_) : QObject(socket_), socket(socket_),
@@ -99,7 +100,7 @@ void Connection::handlePacket()
 
 	switch (packetCommand) {
 	case GetVersion: {
-		QString version = QLatin1String("1.2.2"); // FIXME
+		QString version = QLatin1String(KAFFEINE_VERSION);
 		writeHeader(GetVersionReply, sizeForString(version));
 		writeString(version);
 		ok = true;

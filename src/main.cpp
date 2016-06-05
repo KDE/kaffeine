@@ -36,6 +36,8 @@
 
 #include <iostream>
 
+#include "config.h"
+
 #include "configurationdialog.h"
 #include "mainwindow.h"
 #include "sqlhelper.h"
@@ -98,7 +100,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		QStringLiteral("kaffeine"),
 		i18n("Kaffeine"),
 		// Version
-		QStringLiteral("2.0.1"),
+		QStringLiteral(KAFFEINE_VERSION),
 		// Short description
 		i18n("A media player for KDE with digital TV support."),
 		// License
