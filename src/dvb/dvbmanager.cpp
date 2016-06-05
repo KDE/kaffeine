@@ -500,26 +500,6 @@ void DvbManager::setCreateInfoFile(bool createInfoFile)
 	KSharedConfig::openConfig()->group("DVB").writeEntry("CreateInfoFile", createInfoFile);
 }
 
-double DvbManager::getLatitude()
-{
-	return KSharedConfig::openConfig()->group("DVB").readEntry("Latitude", 0.0);
-}
-
-double DvbManager::getLongitude()
-{
-	return KSharedConfig::openConfig()->group("DVB").readEntry("Longitude", 0.0);
-}
-
-void DvbManager::setLatitude(double value)
-{
-	KSharedConfig::openConfig()->group("DVB").writeEntry("Latitude", value);
-}
-
-void DvbManager::setLongitude(double value)
-{
-	KSharedConfig::openConfig()->group("DVB").writeEntry("Longitude", value);
-}
-
 void DvbManager::enableDvbDump()
 {
 	if (dvbDumpEnabled) {
@@ -673,10 +653,14 @@ void DvbManager::readDeviceConfigs()
 			config->timeout = reader.readInt(QLatin1String("timeout"));
 
 			if (type == DvbConfigBase::DvbS) {
+				config->latitude = 0;
+				config->longitude = 0;
 				config->configuration = reader.readEnum(QLatin1String("configuration"),
 					DvbConfigBase::ConfigurationMax);
 				config->lnbNumber = reader.readInt(QLatin1String("lnbNumber"));
 				config->currentLnb.alias = reader.readString(QLatin1String("lnb"));
+				config->latitude = reader.readDouble(QLatin1String("latitude"));
+				config->longitude = reader.readInt(QLatin1String("longitude"));
 			}
 
 			if (!reader.isValid()) {
@@ -723,6 +707,8 @@ void DvbManager::writeDeviceConfigs()
 				writer.write(QLatin1String("configuration"), config->configuration);
 				writer.write(QLatin1String("lnbNumber"), config->lnbNumber);
 				writer.write(QLatin1String("lnb"), config->currentLnb.alias);
+				writer.write(QLatin1String("latitude"), config->latitude);
+				writer.write(QLatin1String("longitude"), config->longitude);
 			}
 		}
 	}

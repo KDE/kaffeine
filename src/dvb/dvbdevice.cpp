@@ -348,8 +348,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 		double radius = 6378;
 		double semiMajorAxis = 42164;
-		double temp = (radius * cos(DvbManager::getLatitude() * M_PI / 180));
-		double temp2 = ((orbitalPosition - DvbManager::getLongitude()) * M_PI / 180);
+		double temp = (radius * cos(config->latitude * M_PI / 180));
+		double temp2 = ((orbitalPosition - config->longitude) * M_PI / 180);
 		double angle = (temp2 + atan(sin(temp2) / ((semiMajorAxis / temp) - cos(temp2))));
 		int value = 0;
 

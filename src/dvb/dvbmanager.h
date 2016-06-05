@@ -153,11 +153,6 @@ public:
 	void setScanWhenIdle(bool scanWhenIdle);
 	void writeDeviceConfigs();
 
-	static double getLatitude();
-	static double getLongitude();
-	void setLatitude(double value);
-	void setLongitude(double value);
-
 	void enableDvbDump();
 
 private slots:

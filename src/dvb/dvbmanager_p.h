@@ -86,6 +86,26 @@ public:
 		return value;
 	}
 
+
+	int readDouble(const QString &entry)
+	{
+		QString string = readString(entry);
+
+		if (string.isEmpty()) {
+			valid = false;
+			return -1;
+		}
+
+		bool ok;
+		int value = string.toDouble(&ok);
+
+		if (!ok || (value < 0)) {
+			valid = false;
+		}
+
+		return value;
+	}
+
 	QString readString(const QString &entry)
 	{
 		QString line = readLine();

@@ -84,16 +84,12 @@ private slots:
 	void openScanFile();
 	void newRegex();
 	void removeRegex();
-	void latitudeChanged(const QString &text);
-	void longitudeChanged(const QString &text);
 	void namingFormatChanged(QString text);
 	void moveLeft(DvbConfigPage *configPage);
 	void moveRight(DvbConfigPage *configPage);
 	void remove(DvbConfigPage *configPage);
 
 private:
-	static double toLatitude(const QString &text, bool *ok);
-	static double toLongitude(const QString &text, bool *ok);
 	void removeWidgets(QGridLayout *layout, int row, int column, bool deleteWidgets);
 	void initRegexButtons(QGridLayout *buttonGrid);
 	//void deleteChildWidgets(QLayoutItem *item);
@@ -110,12 +106,8 @@ private:
 	QCheckBox *override6937CharsetBox;
 	QCheckBox *createInfoFileBox;
 	QCheckBox *scanWhenIdleBox;
-	QLineEdit *latitudeEdit;
-	QLineEdit *longitudeEdit;
 	QPixmap validPixmap;
 	QPixmap invalidPixmap;
-	QLabel *latitudeValidLabel;
-	QLabel *longitudeValidLabel;
 	QLabel *namingFormatValidLabel;
 	QList<DvbConfigPage *> configPages;
 	QLineEdit *actionAfterRecordingLineEdit;
@@ -219,6 +211,8 @@ signals:
 	void setPositionsVisible(bool visible); // positions-specific parts of ui
 
 private slots:
+	void latitudeChanged(const QString &text);
+	void longitudeChanged(const QString &text);
 	void configChanged(int index);
 	void addSatellite();
 	void removeSatellite();
@@ -226,6 +220,8 @@ private slots:
 
 private:
 	DvbConfigBase *createConfig(int lnbNumber);
+	static double toLatitude(const QString &text, bool *ok);
+	static double toLongitude(const QString &text, bool *ok);
 
 	QWidget *parent;
 	DvbDevice *device;
@@ -239,6 +235,12 @@ private:
 	QComboBox *sourceBox;
 	QSpinBox *rotorSpinBox;
 	QTreeWidget *satelliteView;
+	QPixmap validPixmap;
+	QPixmap invalidPixmap;
+	QLabel *latitudeValidLabel;
+	QLabel *longitudeValidLabel;
+	QLineEdit *latitudeEdit;
+	QLineEdit *longitudeEdit;
 };
 
 class DvbSLnbConfigObject : public QObject

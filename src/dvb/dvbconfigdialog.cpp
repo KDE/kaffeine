@@ -130,8 +130,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	namingFormatValidLabel->setPixmap(validPixmap);
 	gridLayout->addWidget(namingFormatValidLabel, 4,2);
 
-
-	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes:")),	5, 0);
+	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	5, 0);
 
 	actionAfterRecordingLineEdit = new QLineEdit(widget);
 	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());
@@ -180,18 +179,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	frame->setFrameShape(QFrame::HLine);
 	boxLayout->addWidget(frame);
 
-	boxLayout->addWidget(new QLabel(i18n("Your position (only needed for USALS rotor)")));
-
 	boxLayout->addLayout(gridLayout);
-
-	gridLayout = new QGridLayout();
-	gridLayout->addWidget(new QLabel(i18n("Latitude:")), 0, 0);
-	gridLayout->addWidget(new QLabel(i18n("[S -90 ... 90 N]")), 0, 1);
-
-	latitudeEdit = new QLineEdit(widget);
-	latitudeEdit->setText(QString::number(manager->getLatitude(), 'g', 10));
-	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
-	gridLayout->addWidget(latitudeEdit, 0, 2);
 
 	QStyleOptionTab option;
 	option.initFrom(tabWidget);
@@ -199,24 +187,6 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 
 	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply"), QIcon(":dialog-ok-apply")).pixmap(metric);
 	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel"), QIcon(":dialog-cancel")).pixmap(metric);
-
-	latitudeValidLabel = new QLabel(widget);
-	latitudeValidLabel->setPixmap(validPixmap);
-	gridLayout->addWidget(latitudeValidLabel, 0, 3);
-
-	gridLayout->addWidget(new QLabel(i18n("Longitude:")), 1, 0);
-	gridLayout->addWidget(new QLabel(i18n("[W -180 ... 180 E]")), 1, 1);
-
-	longitudeEdit = new QLineEdit(widget);
-	longitudeEdit->setText(QString::number(manager->getLongitude(), 'g', 10));
-	connect(longitudeEdit, SIGNAL(textChanged(QString)),
-		this, SLOT(longitudeChanged(QString)));
-	gridLayout->addWidget(longitudeEdit, 1, 2);
-
-	longitudeValidLabel = new QLabel(widget);
-	longitudeValidLabel->setPixmap(validPixmap);
-	gridLayout->addWidget(longitudeValidLabel, 1, 3);
-	boxLayout->addLayout(gridLayout);
 
 	boxLayout->addStretch();
 
@@ -459,30 +429,6 @@ void DvbConfigDialog::openScanFile()
 	QDesktopServices::openUrl(QUrl(file));
 }
 
-void DvbConfigDialog::latitudeChanged(const QString &text)
-{
-	bool ok;
-	toLatitude(text, &ok);
-
-	if (ok) {
-		latitudeValidLabel->setPixmap(validPixmap);
-	} else {
-		latitudeValidLabel->setPixmap(invalidPixmap);
-	}
-}
-
-void DvbConfigDialog::longitudeChanged(const QString &text)
-{
-	bool ok;
-	toLongitude(text, &ok);
-
-	if (ok) {
-		longitudeValidLabel->setPixmap(validPixmap);
-	} else {
-		longitudeValidLabel->setPixmap(invalidPixmap);
-	}
-}
-
 void DvbConfigDialog::namingFormatChanged(QString text)
 {
 	QString temp = text.replace("%year", " ");
@@ -579,38 +525,6 @@ void DvbConfigDialog::remove(DvbConfigPage *configPage)
 	}
 }
 
-double DvbConfigDialog::toLatitude(const QString &text, bool *ok)
-{
-	if (text.isEmpty()) {
-		*ok = true;
-		return 0;
-	}
-
-	double value = text.toDouble(ok);
-
-	if (qAbs(value) > 90) {
-		*ok = false;
-	}
-
-	return value;
-}
-
-double DvbConfigDialog::toLongitude(const QString &text, bool *ok)
-{
-	if (text.isEmpty()) {
-		*ok = true;
-		return 0;
-	}
-
-	double value = text.toDouble(ok);
-
-	if (qAbs(value) > 180) {
-		*ok = false;
-	}
-
-	return value;
-}
-
 void DvbConfigDialog::accept()
 {
 	manager->setRecordingFolder(recordingFolderEdit->text());
@@ -631,16 +545,6 @@ void DvbConfigDialog::accept()
 		qDebug("saved regex: %s", qPrintable(regexInputLine->lineEdit->text()));
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
 		qDebug("saved priority: %i", regexInputLine->spinBox->value());
-	}
-
-	bool latitudeOk;
-	bool longitudeOk;
-	double latitude = toLatitude(latitudeEdit->text(), &latitudeOk);
-	double longitude = toLongitude(longitudeEdit->text(), &longitudeOk);
-
-	if (latitudeOk && longitudeOk) {
-		manager->setLatitude(latitude);
-		manager->setLongitude(longitude);
 	}
 
 	QList<DvbDeviceConfigUpdate> configUpdates;
@@ -1206,6 +1110,57 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeSatellite()));
 	layout->addWidget(pushButton, 10, 0, 1, 2);
 
+	// Latitude/Longitude for USALS rotor
+
+	layout = new QGridLayout();
+
+	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply")).pixmap(22);
+	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel")).pixmap(22);
+
+	QLabel *label = new QLabel(i18n("Your position:"));
+	layout->addWidget(label);
+	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+
+	label = new QLabel(i18n("Latitude:"));
+	layout->addWidget(label, 1, 0);
+	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+
+	label = new QLabel(i18n("[S -90 ... 90 N]"));
+	layout->addWidget(label, 1, 1);
+	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+
+	latitudeEdit = new QLineEdit(parent);
+	latitudeEdit->setText(QString::number(lnbConfig->latitude, 'g', 10));
+	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
+	layout->addWidget(latitudeEdit, 1, 2);
+	connect(this, SIGNAL(setUsalsVisible(bool)), latitudeEdit, SLOT(setVisible(bool)));
+
+	latitudeValidLabel = new QLabel(parent);
+	latitudeValidLabel->setPixmap(validPixmap);
+	layout->addWidget(latitudeValidLabel, 1, 3);
+	connect(this, SIGNAL(setUsalsVisible(bool)), latitudeValidLabel, SLOT(setVisible(bool)));
+
+	label = new QLabel(i18n("Longitude:"));
+	layout->addWidget(label, 2, 0);
+	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+
+	label = new QLabel(i18n("[W -180 ... 180 E]"));
+	layout->addWidget(label, 2, 1);
+	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+
+	longitudeEdit = new QLineEdit(parent);
+	longitudeEdit->setText(QString::number(lnbConfig->longitude, 'g', 10));
+	connect(this, SIGNAL(setUsalsVisible(bool)), longitudeEdit, SLOT(setVisible(bool)));
+	connect(longitudeEdit, SIGNAL(textChanged(QString)),
+		this, SLOT(longitudeChanged(QString)));
+	layout->addWidget(longitudeEdit, 2, 2);
+
+	longitudeValidLabel = new QLabel(parent);
+	longitudeValidLabel->setPixmap(validPixmap);
+	layout->addWidget(longitudeValidLabel, 2, 3);
+	boxLayout->addLayout(layout);
+	connect(this, SIGNAL(setUsalsVisible(bool)), longitudeValidLabel, SLOT(setVisible(bool)));
+
 	configChanged(configBox->currentIndex());
 	connect(parent, SIGNAL(resetConfig()), this, SLOT(resetConfig()));
 }
@@ -1213,6 +1168,64 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 DvbSConfigObject::~DvbSConfigObject()
 {
 	delete lnbConfig;
+}
+
+
+void DvbSConfigObject::latitudeChanged(const QString &text)
+{
+	bool ok;
+	toLatitude(text, &ok);
+
+	if (ok) {
+		latitudeValidLabel->setPixmap(validPixmap);
+	} else {
+		latitudeValidLabel->setPixmap(invalidPixmap);
+	}
+}
+
+void DvbSConfigObject::longitudeChanged(const QString &text)
+{
+	bool ok;
+	toLongitude(text, &ok);
+
+	if (ok) {
+		longitudeValidLabel->setPixmap(validPixmap);
+	} else {
+		longitudeValidLabel->setPixmap(invalidPixmap);
+	}
+}
+
+
+double DvbSConfigObject::toLatitude(const QString &text, bool *ok)
+{
+	if (text.isEmpty()) {
+		*ok = true;
+		return 0;
+	}
+
+	double value = text.toDouble(ok);
+
+	if (qAbs(value) > 90) {
+		*ok = false;
+	}
+
+	return value;
+}
+
+double DvbSConfigObject::toLongitude(const QString &text, bool *ok)
+{
+	if (text.isEmpty()) {
+		*ok = true;
+		return 0;
+	}
+
+	double value = text.toDouble(ok);
+
+	if (qAbs(value) > 180) {
+		*ok = false;
+	}
+
+	return value;
 }
 
 void DvbSConfigObject::appendConfigs(QList<DvbConfig> &list)
@@ -1242,6 +1255,17 @@ void DvbSConfigObject::appendConfigs(QList<DvbConfig> &list)
 			if (index == 1) {
 				// USALS rotor
 				config->configuration = DvbConfigBase::UsalsRotor;
+
+				bool latitudeOk;
+				bool longitudeOk;
+
+				double latitude = toLatitude(latitudeEdit->text(), &latitudeOk);
+				double longitude = toLongitude(longitudeEdit->text(), &longitudeOk);
+
+				if (latitudeOk && longitudeOk) {
+					config->latitude = latitude;
+					config->longitude = longitude;
+				}
 			} else {
 				// Positions rotor
 				config->configuration = DvbConfigBase::PositionsRotor;

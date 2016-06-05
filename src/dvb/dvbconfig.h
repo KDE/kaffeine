@@ -69,6 +69,8 @@ public:
 			       // or to rotor position (0 = first position etc)
 	int bpf;		// Bandpass Frequency for SCR/Unicable
 
+	int latitude, longitude; // degrees - needed for Usals rotor
+
 private:
 	TransmissionType transmissionType;
 };
