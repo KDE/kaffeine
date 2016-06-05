@@ -33,7 +33,6 @@ include(KDECMakeSettings)
 include(KDECompilerSettings)
 include(FeatureSummary)
 include(ECMInstallIcons)
-include(ECMOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 
 # Instruct CMake to run moc automatically when needed.
@@ -95,7 +94,9 @@ add_subdirectory(dtvdaemon)
 add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
-ecm_optional_add_subdirectory(po)
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
+  ki18n_install(po)
+endif()
 
 if(KF5DocTools_VERSION)
   add_subdirectory(doc)
