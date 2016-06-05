@@ -986,6 +986,12 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(widget);
+
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	mainLayout->addWidget(buttonBox);
+
 }
 
 DvbChannelEditor::~DvbChannelEditor()
