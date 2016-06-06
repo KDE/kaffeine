@@ -151,6 +151,7 @@ public:
 	void setOverride6937Charset(bool override);
 	void setCreateInfoFile(bool createInfoFile);
 	void setScanWhenIdle(bool scanWhenIdle);
+	void writeDeviceConfigs();
 
 	static double getLatitude();
 	static double getLongitude();
@@ -168,8 +169,6 @@ private:
 	void loadDeviceManager();
 
 	void readDeviceConfigs();
-	void writeDeviceConfigs();
-
 	void updateSourceMapping();
 
 	void readScanData();

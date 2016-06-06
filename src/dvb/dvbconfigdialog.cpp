@@ -658,6 +658,7 @@ void DvbConfigDialog::accept()
 	manager->getRecordingModel()->removeDuplicates();
 	manager->getRecordingModel()->disableConflicts();
 	//manager->getRecordingModel()->scanChannels();
+	manager->writeDeviceConfigs();
 
 	QDialog::accept();
 }
