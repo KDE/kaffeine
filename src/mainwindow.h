@@ -51,6 +51,7 @@ signals:
 private slots:
 	void displayModeChanged();
 	void open();
+	void close();
 	void openUrl();
 	void openUrl(const QUrl &url);
 	void openAudioCd(const QString &device = QString());

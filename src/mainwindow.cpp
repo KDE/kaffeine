@@ -158,6 +158,8 @@ void MainWindow::run()
 {
 	readSettings();
 
+	setAttribute(Qt::WA_DeleteOnClose, true);
+
 	// menu structure
 
 	QMenuBar *menuBar = QMainWindow::menuBar();
@@ -326,6 +328,9 @@ void MainWindow::run()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(playDvb()));
 	menu->addAction(action);
 #endif
+	action = new QAction(tr("&Quit"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
+	menu->addAction(action);
 
 	// Tray Icon and its menu
 	QMenu *trayMenu = new QMenu(this);
@@ -414,6 +419,11 @@ MainWindow::~MainWindow()
 	}
 
 	KSharedConfig::openConfig()->group("MainWindow").writeEntry("DisplayMode", value);
+}
+
+void MainWindow::close()
+{
+	QCoreApplication::exit(0);
 }
 
 void MainWindow::readSettings()
