@@ -588,6 +588,9 @@ void MainWindow::displayModeChanged()
 
 void MainWindow::open()
 {
+	if (isMinimized())
+		showNormal();
+
 	QList<QUrl> urls = QFileDialog::getOpenFileUrls(this, i18nc("@title:window", "Open files"), QUrl(), MediaWidget::extensionFilter());
 
 //	trayIcon->showMessage("Open", "Opening file(s)");
@@ -623,18 +626,27 @@ void MainWindow::openUrl(const QUrl &url)
 
 void MainWindow::openAudioCd(const QString &device)
 {
+	if (isMinimized())
+		showNormal();
+
 	activateTab(PlayerTabId);
 	mediaWidget->playAudioCd(device);
 }
 
 void MainWindow::openVideoCd(const QString &device)
 {
+	if (isMinimized())
+		showNormal();
+
 	activateTab(PlayerTabId);
 	mediaWidget->playVideoCd(device);
 }
 
 void MainWindow::openDvd(const QString &device)
 {
+	if (isMinimized())
+		showNormal();
+
 	activateTab(PlayerTabId);
 	mediaWidget->playDvd(device);
 }
@@ -650,6 +662,9 @@ void MainWindow::playDvdFolder()
 
 void MainWindow::playDvb()
 {
+	if (isMinimized())
+		showNormal();
+
 	activateTab(DvbTabId);
 	dvbTab->playLastChannel();
 }
