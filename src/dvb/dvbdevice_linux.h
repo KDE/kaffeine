@@ -41,6 +41,7 @@ public:
 	void startCa();
 	void stopCa();
 	void stopDevice();
+	void enableDvbDump();
 
 	QString caPath;
 	QString caUdi;
@@ -94,6 +95,7 @@ private:
 
 	float freqMHz;
 
+	int verbose;
 	int frontendFd;
 	int dvrFd;
 	int dvrPipe[2];

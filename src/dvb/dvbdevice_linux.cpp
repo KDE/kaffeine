@@ -98,7 +98,7 @@ bool DvbLinuxDevice::isReady() const
 void DvbLinuxDevice::startDevice(const QString &deviceId_)
 {
 	Q_ASSERT(!ready);
-	struct dvb_v5_fe_parms *parms = dvb_fe_open2(adapter, index, 0, 0, dvbv5_log);
+	struct dvb_v5_fe_parms *parms = dvb_fe_open2(adapter, index, verbose, 0, dvbv5_log);
 
 	if (!parms) {
 		qInfo() << "DvbLinuxDevice::startDevice: cannot open frontend" << frontendPath;
@@ -237,7 +237,7 @@ void DvbLinuxDevice::setDeviceEnabled(bool enabled_)
 bool DvbLinuxDevice::acquire()
 {
 	Q_ASSERT(enabled && (!dvbv5_parms) && (dvrFd < 0));
-	dvbv5_parms = dvb_fe_open2(adapter, index, 0, 0, dvbv5_log);
+	dvbv5_parms = dvb_fe_open2(adapter, index, verbose, 0, dvbv5_log);
 
 	if (!dvbv5_parms) {
 		qInfo() << "DvbLinuxDevice::acquire: cannot open frontend" << frontendPath;
@@ -1210,6 +1210,14 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 float DvbLinuxDevice::getFrqMHz()
 {
 	return freqMHz;
+}
+
+void DvbLinuxDevice::enableDvbDump()
+{
+	verbose = 1;
+
+	if (dvbv5_parms)
+		dvbv5_parms->verbose = 1;
 }
 
 bool DvbLinuxDevice::isTuned()

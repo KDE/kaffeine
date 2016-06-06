@@ -716,6 +716,8 @@ void DvbDevice::enableDvbDump()
 	for (; it != end; ++it) {
 		it->filters.append(dataDumper);
 	}
+
+	backend->enableDvbDump();
 }
 
 void DvbDevice::frontendEvent()

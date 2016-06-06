@@ -143,6 +143,8 @@ public:
 	virtual void startDescrambling(const QByteArray &pmtSectionData) = 0;
 	virtual void stopDescrambling(int serviceId) = 0;
 	virtual void release() = 0;
+	virtual void enableDvbDump() = 0;
+
 
 protected:
 	DvbBackendDevice() { }
