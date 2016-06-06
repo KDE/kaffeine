@@ -54,9 +54,9 @@ public:
 	QByteArray pmtSectionData;
 };
 
-DvbLinuxCam::DvbLinuxCam() : caFd(-1), socketNotifier(NULL), ready(false), eventPosted(false)
+DvbLinuxCam::DvbLinuxCam(QObject *parent) : QObject(parent), caFd(-1), socketNotifier(NULL), ready(false), eventPosted(false)
 {
-	connect(&pollTimer, SIGNAL(timeout()), this, SLOT(pollModule()));
+	connect(&pollTimer, &QTimer::timeout, this, &DvbLinuxCam::pollModule);
 }
 
 DvbLinuxCam::~DvbLinuxCam()
@@ -250,7 +250,7 @@ bool DvbLinuxCam::detectSlot()
 
 	if (socketNotifier == NULL) {
 		socketNotifier = new QSocketNotifier(caFd, QSocketNotifier::Read, this);
-		connect(socketNotifier, SIGNAL(activated(int)), this, SLOT(readyRead()));
+		connect(socketNotifier, &QSocketNotifier::activated, this, &DvbLinuxCam::readyRead);
 	}
 
 	if (pendingCommands == 0) {

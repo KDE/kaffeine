@@ -28,11 +28,11 @@ class QSocketNotifier;
 class DvbLinuxCamService;
 class DvbPmtSection;
 
-class DvbLinuxCam : QObject
+class DvbLinuxCam : public QObject
 {
 	Q_OBJECT
 public:
-	DvbLinuxCam();
+	DvbLinuxCam(QObject *parent);
 	~DvbLinuxCam();
 
 	void startCa(const QString &path);

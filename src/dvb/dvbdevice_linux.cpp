@@ -50,7 +50,7 @@
 // krazy:excludeall=syscalls
 
 DvbLinuxDevice::DvbLinuxDevice(QObject *parent) : QThread(parent), ready(false), frontend(NULL),
-	enabled(false), dvrFd(-1), dvrBuffer(NULL, 0)
+	enabled(false), dvrFd(-1), dvrBuffer(NULL, 0), cam(parent)
 {
 	dvrPipe[0] = -1;
 	dvrPipe[1] = -1;
