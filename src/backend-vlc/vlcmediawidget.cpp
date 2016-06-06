@@ -227,8 +227,8 @@ void VlcMediaWidget::play(const MediaSource &source)
 		qInfo() << "VlcMediaWidget::play: cannot play media" << source.getUrl().toDisplayString();
 	}
 
-	setCursor(Qt::PointingHandCursor);
-	QApplication::setOverrideCursor(this->cursor());
+	setCursor(Qt::BlankCursor);
+	setCursor(Qt::ArrowCursor);
 	timer->start(1000);
 	setMouseTracking(true);
 }
@@ -238,9 +238,8 @@ void VlcMediaWidget::stop()
 	libvlc_media_player_stop(vlcMediaPlayer);
 
 	timer->stop();
+	setCursor(Qt::BlankCursor);
 	setCursor(Qt::ArrowCursor);
-	QApplication::setOverrideCursor(this->cursor());
-	QApplication::changeOverrideCursor(this->cursor());
 	addPendingUpdates(PlaybackStatus);
 }
 
@@ -530,19 +529,24 @@ void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 
 void VlcMediaWidget::hideMouse()
 {
-	setCursor(Qt::BlankCursor);
-	QApplication::restoreOverrideCursor();
-
 	timer->stop();
+
+	setCursor(Qt::ArrowCursor);
+	setCursor(Qt::BlankCursor);
 }
 
 void VlcMediaWidget::mouseMoveEvent(QMouseEvent *event)
 {
+	mouseVisible = this->rect().contains(event->pos());
+
 	if (!timer->isActive()) {
-		setCursor(Qt::PointingHandCursor);
-		QApplication::setOverrideCursor(this->cursor());
+		setCursor(Qt::BlankCursor);
+		setCursor(Qt::ArrowCursor);
 	}
-	timer->start(1000);
+	if (mouseVisible)
+		timer->start(1000);
+	else
+		timer->stop();
 
 	AbstractMediaWidget::mouseMoveEvent(event);
 }

@@ -87,6 +87,7 @@ private:
 	libvlc_instance_t *vlcInstance;
 	libvlc_media_player_t *vlcMediaPlayer;
 	bool playingDvd;
+	bool mouseVisible;
 };
 
 #endif /* VLCMEDIAWIDGET_H */
