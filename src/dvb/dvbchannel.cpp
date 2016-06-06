@@ -124,6 +124,12 @@ DvbChannelModel::~DvbChannelModel()
 	}
 }
 
+void DvbChannelModel::channelFlush()
+{
+	if (isSqlModel)
+		sqlFlush();
+}
+
 DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 {
 	DvbChannelModel *channelModel = new DvbChannelModel(parent);
@@ -216,6 +222,9 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 		channelModel->addChannel(channel);
 	}
+
+	// As we'll remove the old channel file, flush the DB content
+	channelModel->channelFlush();
 
 	if (!file.remove()) {
 		qInfo() << "DvbChannelModel::createSqlModel: cannot remove" << file.fileName();

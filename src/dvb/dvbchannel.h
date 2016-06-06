@@ -106,6 +106,7 @@ public:
 	bool areInTheSameBunch(DvbSharedChannel channel1, DvbSharedChannel channel2);
 	void dndMoveChannels(const QList<DvbSharedChannel> &selectedChannels,
 		int insertBeforeNumber);
+	void channelFlush();
 
 signals:
 	void channelAdded(const DvbSharedChannel &channel);

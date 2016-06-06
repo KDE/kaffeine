@@ -460,6 +460,8 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 void DvbScanDialog::dialogAccepted()
 {
 	manager->getChannelModel()->cloneFrom(channelModel);
+	manager->getChannelModel()->channelFlush();
+
 	QDialog::accept();
 }
 
