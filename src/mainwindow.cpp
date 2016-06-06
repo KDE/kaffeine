@@ -302,12 +302,38 @@ void MainWindow::run()
 	// restore custom key bindings
 	collection->readSettings();
 
+	// Tray menu
+	menu = new QMenu(i18n("Kaffeine"), this);
+
+	action = new QAction(tr("&1 Play File"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(open()));
+	menu->addAction(action);
+
+	action = new QAction(tr("&2 Play Audio CD"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(openAudioCd()));
+	menu->addAction(action);
+
+	action = new QAction(tr("&3 Play Video CD"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(openVideoCd()));
+	menu->addAction(action);
+
+	action = new QAction(tr("&4 Play DVD"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(openDvd()));
+	menu->addAction(action);
+
+#if HAVE_DVB == 1
+	action = new QAction(tr("&5 Watch Digital TV"), this);
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(playDvb()));
+	menu->addAction(action);
+#endif
+
 	// Tray Icon and its menu
 	QMenu *trayMenu = new QMenu(this);
 	trayIcon = new QSystemTrayIcon(this);
 	trayIcon->setContextMenu(trayMenu);
 	trayIcon->setIcon(QIcon::fromTheme(QLatin1String("kaffeine")));
 	trayIcon->setToolTip(i18n("Kaffeine"));
+	trayIcon->setContextMenu(menu);
 
 	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
 	menuBar->show();
