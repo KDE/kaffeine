@@ -48,13 +48,21 @@ void DvbOsd::init(OsdLevel level_, const QString &channelName_,
 	level = level_;
 	channelName = channelName_;
 
-	if (epgEntries.size() >= 1) {
-		firstEntry = *epgEntries.at(0);
+	if (epgEntries.size() < 1) {
+		DvbEpgEntry empty;
+		firstEntry = empty;
+		secondEntry = empty;
+		return;
 	}
 
-	if (epgEntries.size() >= 2) {
-		secondEntry = *epgEntries.at(1);
+	firstEntry = *epgEntries.at(0);
+
+	if (epgEntries.size() < 2) {
+		DvbEpgEntry empty;
+		secondEntry = empty;
+		return;
 	}
+	secondEntry = *epgEntries.at(1);
 }
 
 QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
