@@ -24,25 +24,28 @@
 # define qInfo qDebug
 #endif
 
-#include <dmx.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <frontend.h>
-#include <poll.h>
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <sys/types.h>
+extern "C" {
+  #include <dirent.h>
+  #include <dmx.h>
+  #include <errno.h>
+  #include <fcntl.h>
+  #include <frontend.h>
+  #include <poll.h>
+  #include <stdlib.h>
+  #include <unistd.h>
+  #include <vector>
+  #include <sys/socket.h>
+  #include <sys/un.h>
+  #include <sys/types.h>
+  #include <sys/ioctl.h>
+  #include <sys/stat.h>
+  #include <sys/inotify.h>
+}
+
 #include <QFile>
 #include <QRegularExpressionMatch>
 #include <Solid/Device>
 #include <Solid/DeviceNotifier>
-#include <sys/ioctl.h>
-#include <sys/stat.h>
-#include <dirent.h>
-#include <sys/inotify.h>
-#include <vector>
-#include <stdlib.h>
-#include <unistd.h>
 
 #include "dvbdevice_linux.h"
 #include "dvbtransponder.h"

@@ -25,10 +25,12 @@
 #include "dvbbackenddevice.h"
 #include "dvbcam_linux.h"
 
-#include <libdvbv5/dvb-file.h>
-#include <libdvbv5/dvb-demux.h>
-#include <libdvbv5/dvb-v5-std.h>
-#include <libdvbv5/dvb-scan.h>
+extern "C" {
+  #include <libdvbv5/dvb-file.h>
+  #include <libdvbv5/dvb-demux.h>
+  #include <libdvbv5/dvb-v5-std.h>
+  #include <libdvbv5/dvb-scan.h>
+}
 
 class DvbLinuxDevice : public QThread, public DvbBackendDevice
 {
