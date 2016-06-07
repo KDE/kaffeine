@@ -589,7 +589,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
 	readFd(-1), writeFd(-1)
 {
-	fileName = QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/dvbpipe.m2t");
+	fileName = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
 
 	updateUrl();
