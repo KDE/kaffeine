@@ -307,28 +307,28 @@ void MainWindow::run()
 	// Tray menu
 	menu = new QMenu(i18n("Kaffeine"), this);
 
-	action = new QAction(tr("Play &File"), this);
+	action = new QAction(i18n("Play &File"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(open()));
 	menu->addAction(action);
 
-	action = new QAction(tr("Play &Audio CD"), this);
+	action = new QAction(i18n("Play &Audio CD"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openAudioCd()));
 	menu->addAction(action);
 
-	action = new QAction(tr("Play &Video CD"), this);
+	action = new QAction(i18n("Play &Video CD"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openVideoCd()));
 	menu->addAction(action);
 
-	action = new QAction(tr("Play &DVD"), this);
+	action = new QAction(i18n("Play &DVD"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openDvd()));
 	menu->addAction(action);
 
 #if HAVE_DVB == 1
-	action = new QAction(tr("&Watch Digital TV"), this);
+	action = new QAction(i18n("&Watch Digital TV"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(playDvb()));
 	menu->addAction(action);
 #endif
-	action = new QAction(tr("&Quit"), this);
+	action = new QAction(i18n("&Quit"), this);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(close()));
 	menu->addAction(action);
 
