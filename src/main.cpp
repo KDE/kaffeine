@@ -102,7 +102,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		// Version
 		QStringLiteral(KAFFEINE_VERSION),
 		// Short description
-		i18n("A media player for KDE with digital TV support."),
+		i18n("A media player by KDE with digital TV support."),
 		// License
 		KAboutLicense::GPL_V2,
 		// Copyright statement
