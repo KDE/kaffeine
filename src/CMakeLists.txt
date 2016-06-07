@@ -44,7 +44,7 @@ target_link_libraries(kaffeine Qt5::Sql Qt5::X11Extras KF5::KIOWidgets KF5::XmlG
 		      KF5::DBusAddons ${X11_Xscreensaver_LIB} ${VLC_LIBRARY})
 
 if(HAVE_DVB)
-    target_link_libraries(kaffeine ${LIBDVBV5_LIBRARY})
+    target_link_libraries(kaffeine ${Libdvbv5_LIBRARIES})
 endif(HAVE_DVB)
 
 configure_file(config.h.in config.h)

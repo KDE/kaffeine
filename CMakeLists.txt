@@ -71,7 +71,7 @@ find_package(VLC 1.2 REQUIRED)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${VLC_INCLUDE_DIRS} ${LIBDVBV5_INCLUDE_DIR}
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${VLC_INCLUDE_DIRS} ${Libdvbv5_INCLUDE_DIRS}
                     ${X11_Xscreensaver_INCLUDE_PATH})
 
 check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
@@ -82,12 +82,12 @@ if(NOT HAVE_DVB)
 endif(NOT HAVE_DVB)
 
 if(HAVE_DVB)
-  find_package(LibV4L2)
-  if(NOT LIBDVBV5_FOUND)
+  find_package(Libdvbv5)
+  if(NOT Libdvbv5_FOUND)
     set(HAVE_LIBDVBV5 0)
     set(HAVE_DVB 0)
     message(STATUS "Disabled features:\nDVB  Digital television support for Linux, as libdvbv5 was not found.\n")
-  endif(NOT LIBDVBV5_FOUND)
+  endif(NOT Libdvbv5_FOUND)
 endif(HAVE_DVB)
 
 add_subdirectory(deviceactions)
