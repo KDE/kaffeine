@@ -10,6 +10,8 @@ set(KAFFEINE_EXTRA_VERSION -git)
 set(KAFFEINE_VERSION
   ${KAFFEINE_MAJOR_VERSION}.${KAFFEINE_MINOR_VERSION}.${KAFFEINE_PATCH_VERSION}${KAFFEINE_EXTRA_VERSION})
 
+option(BUILD_TOOLS "Build the helper tools" OFF)
+
 # Minimal versions where build is known to work
 cmake_minimum_required(VERSION 2.8.12)
 set(QT_MIN_VERSION "5.4.0")
