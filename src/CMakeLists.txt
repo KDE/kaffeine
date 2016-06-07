@@ -1,3 +1,7 @@
+if(Libdvbv5_FOUND)
+  include_directories(${Libdvbv5_INCLUDE_DIRS})
+endif(Libdvbv5_FOUND)
+
 set(kaffeine_SRCS
     backend-vlc/vlcmediawidget.cpp
     playlist/playlistmodel.cpp
