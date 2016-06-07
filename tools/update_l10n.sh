@@ -1,7 +1,11 @@
 #!/bin/sh
 set -eu
 
-cd kaffeine
+if [ "$(grep KAFFEINE_MAJOR_VERSION CMakeLists.txt)" == "" ]; then
+  echo "Entering into the Kaffeine dir"
+  cd kaffeine
+fi
+
 rm -fr po
 mkdir po
 cd po

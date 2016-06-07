@@ -3,9 +3,12 @@ set -eu
 
 # not for production use
 
-sourcedir=$(pwd)
-cd ~/bin/kaffeine-build
+if [ "$(grep KAFFEINE_MAJOR_VERSION CMakeLists.txt)" == "" ]; then
+  echo "Entering into the Kaffeine dir"
+  cd kaffeine
+fi
+
 cmake -DBUILD_TOOLS=1 .
 make updatesource
-cd $sourcedir
-~/bin/kaffeine-build/tools/updatesource
+
+tools/updatesource

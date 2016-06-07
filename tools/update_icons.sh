@@ -1,8 +1,12 @@
 #!/bin/sh
 set -eu
 
-cd kaffeine/icons
-rm -f hi*
+if [ "$(grep KAFFEINE_MAJOR_VERSION CMakeLists.txt)" == "" ]; then
+  echo "Entering into the Kaffeine dir"
+  cd kaffeine
+fi
+
+rm -f icons/hi*
 
 if [ `find /usr/share/icons/oxygen | grep -i kaffeine | wc --lines` != 6 ] ; then
 	echo "recheck number of icons"
@@ -10,7 +14,7 @@ if [ `find /usr/share/icons/oxygen | grep -i kaffeine | wc --lines` != 6 ] ; the
 fi
 
 for SIZE in 16 22 32 48 64 128 ; do
-	wget http://websvn.kde.org/*checkout*/trunk/kdesupport/oxygen-icons/$SIZE'x'$SIZE/apps/kaffeine.png -O hi$SIZE-apps-kaffeine.png
+	wget -nv "https://quickgit.kde.org/?p=oxygen-icons5.git&a=blob&f=${SIZE}x$SIZE%2Fapps%2Fkaffeine.png&o=plain" -O icons/hi$SIZE-apps-kaffeine.png
 done
 
-wget http://websvn.kde.org/*checkout*/trunk/kdesupport/oxygen-icons/scalable/apps/kaffeine.svgz -O hisc-apps-kaffeine.svgz
+wget -nv "https://quickgit.kde.org/?p=oxygen-icons5.git&a=blob&f=scalable%2Fapps%2Fkaffeine.svgz&o=plain" -O icons/hisc-apps-kaffeine.svgz
