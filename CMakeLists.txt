@@ -5,7 +5,7 @@ set(KAFFEINE_MINOR_VERSION 0)
 set(KAFFEINE_PATCH_VERSION 2)
 
 # comment/uuncomment below if either the version is a production or a development one
-#set(KAFFEINE_EXTRA_VERSION -git)
+set(KAFFEINE_EXTRA_VERSION -git)
 
 set(KAFFEINE_VERSION
   ${KAFFEINE_MAJOR_VERSION}.${KAFFEINE_MINOR_VERSION}.${KAFFEINE_PATCH_VERSION}${KAFFEINE_EXTRA_VERSION})
@@ -100,7 +100,7 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
 endif()
 
 if(KF5DocTools_VERSION)
-#  add_subdirectory(doc)
+  add_subdirectory(doc)
 endif(KF5DocTools_VERSION)
 
 if(BUILD_TOOLS)
