@@ -47,8 +47,6 @@ if(HAVE_DVB)
     target_link_libraries(kaffeine ${Libdvbv5_LIBRARIES})
 endif(HAVE_DVB)
 
-configure_file(config.h.in config.h)
-
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(PROGRAMS org.kde.kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})

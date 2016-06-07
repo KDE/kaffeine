@@ -36,7 +36,7 @@
 
 #include <iostream>
 
-#include "config.h"
+#include <config-kaffeine.h>
 
 #include "configurationdialog.h"
 #include "mainwindow.h"

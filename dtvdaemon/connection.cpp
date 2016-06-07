@@ -26,8 +26,9 @@
 #include <QLocalSocket>
 #include <QtEndian>
 
-#include "../src/config.h"
 #include "connection.h"
+
+#include <config-kaffeine.h>
 
 Connection::Connection(QLocalSocket *socket_) : QObject(socket_), socket(socket_),
 	packetCommand(0), packetLength(0)
