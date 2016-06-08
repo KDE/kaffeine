@@ -45,6 +45,9 @@ Configuration::Configuration()
 		KSharedConfig::openConfig()->group("MediaObject").readEntry("ShortSkipDuration", 15);
 	longSkipDuration =
 		KSharedConfig::openConfig()->group("MediaObject").readEntry("LongSkipDuration", 60);
+
+	libVlcArguments =
+		KSharedConfig::openConfig()->group("libVlc").readEntry("Arguments", "--no-video-title-show");
 }
 
 Configuration::~Configuration()
@@ -84,6 +87,13 @@ void Configuration::setLongSkipDuration(int newLongSkipDuration)
 	longSkipDuration = newLongSkipDuration;
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("LongSkipDuration", longSkipDuration);
 	emit longSkipDurationChanged(longSkipDuration);
+}
+
+void Configuration::setLibVlcArguments(QString newArguments)
+{
+	libVlcArguments = newArguments;
+	KSharedConfig::openConfig()->group("libVlc").writeEntry("Arguments", libVlcArguments);
+	// FIXME: allow changing it on runtime - maybe restarting kaffeine
 }
 
 Configuration *Configuration::globalInstance = NULL;

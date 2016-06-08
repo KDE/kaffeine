@@ -60,6 +60,14 @@ public:
 		return longSkipDuration;
 	}
 
+	void setLibVlcArguments(QString newArguments);
+
+
+	QString getLibVlcArguments() const
+	{
+		return libVlcArguments;
+	}
+
 	void setLongSkipDuration(int newLongSkipDuration);
 
 signals:
@@ -72,6 +80,7 @@ private:
 	StartupDisplayMode startupDisplayMode;
 	int shortSkipDuration;
 	int longSkipDuration;
+	QString libVlcArguments;
 };
 
 #endif /* CONFIGURATION_H */

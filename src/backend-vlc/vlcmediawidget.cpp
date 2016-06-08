@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <vlc/vlc.h>
 
+#include "../configuration.h"
 #include "vlcmediawidget.h"
 
 VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
@@ -38,12 +39,41 @@ VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), v
 
 bool VlcMediaWidget::init()
 {
-	const char *arguments[] = { "--no-video-title-show" };
-	vlcInstance = libvlc_new(sizeof(arguments) / sizeof(arguments[0]), arguments);
+	QString args = Configuration::instance()->getLibVlcArguments();
+	QStringList argList;
+	int argc = 0, size;
+
+	argList = args.split(' ', QString::SkipEmptyParts);
+	size = argList.size();
+
+	const char *argv[size];
+
+	QByteArray str[size];
+	for (int i = 0; i < size; i++) {
+		str[i] = argList.at(i).toUtf8();
+		argv[argc++] = str[i];
+	}
+
+	vlcInstance = libvlc_new(argc, argv);
+	if (!vlcInstance) {
+		qInfo() << "libVLC: failed to use extra args:" << args;
+		argc = 0;
+		vlcInstance = libvlc_new(0, NULL);
+		if (vlcInstance)
+			qInfo() << "Using libVLC without arguments";
+	}
 
 	if (vlcInstance == NULL) {
 		qInfo() << "VlcMediaWidget::init: cannot create vlc instance" << QLatin1String(libvlc_errmsg());
 		return false;
+	}
+
+	if (argc) {
+		QString log = QLatin1String("Using libVLC with ");
+		for (int i = 0; i < argc; i++)
+			log += " " + QLatin1String(argv[i]);
+
+		qInfo() << log;
 	}
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);

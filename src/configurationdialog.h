@@ -26,6 +26,7 @@
 class QSpinBox;
 class QString;
 class QComboBox;
+class QLineEdit;
 
 class Log
 {
@@ -61,6 +62,7 @@ private:
 	QComboBox *startupDisplayModeBox;
 	QSpinBox *shortSkipBox;
 	QSpinBox *longSkipBox;
+	QLineEdit *libVlcArguments;
 };
 
 #endif /* CONFIGURATIONDIALOG_H */

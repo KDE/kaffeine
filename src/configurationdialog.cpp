@@ -24,6 +24,7 @@
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
+#include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QProcess>
 #include <QPushButton>
@@ -106,6 +107,26 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	page->setIcon(QIcon::fromTheme(QLatin1String("page-zoom")));
 	addPage(page);
 
+	// libVLC arguments config
+	widget = new QWidget(this);
+	gridLayout = new QGridLayout(widget);
+
+	label = new QLabel(i18nc("@label:textbox", "LibVLC arguments:"), widget);
+	gridLayout->addWidget(label, 0, 0);
+
+	libVlcArguments = new QLineEdit(widget);
+	libVlcArguments->setText(Configuration::instance()->getLibVlcArguments());
+	gridLayout->addWidget(libVlcArguments, 1, 0);
+
+	label = new QLabel(i18nc("@label:textbox", "NOTE: Kaffeine should be restarted for the new arguments to take effect"), widget);
+	gridLayout->addWidget(label, 2, 0);
+
+	gridLayout->setRowStretch(3, 1);
+
+	page = new KPageWidgetItem(widget, i18nc("@title:group", "libVLC"));
+	page->setIcon(QIcon::fromTheme(QLatin1String("video-television")));
+	addPage(page);
+
 	resize(100 * fontMetrics().averageCharWidth(), 28 * fontMetrics().height());
 }
 
@@ -119,6 +140,7 @@ void ConfigurationDialog::accept()
 	configuration->setStartupDisplayMode(startupDisplayModeBox->currentIndex());
 	configuration->setShortSkipDuration(shortSkipBox->value());
 	configuration->setLongSkipDuration(longSkipBox->value());
+	configuration->setLibVlcArguments(libVlcArguments->text());
 	KPageDialog::accept();
 }
 
