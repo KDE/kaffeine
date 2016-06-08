@@ -692,7 +692,7 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 
 	mainLayout->addWidget(buttonBox);
 
-	job = KIO::get(QUrl("https://linuxtv.org/downloads/dtv-scan-tables/kaffeine/scantable.dvb.qz"), KIO::NoReload,
+	job = KIO::get(QUrl("https://autoconfig.kde.org/kaffeine/scantable.dvb.qz"), KIO::NoReload,
 		       KIO::HideProgressInfo); // FIXME NoReload or Reload?
 	job->setAutoDelete(false);
 	connect(job, SIGNAL(percent(KJob*,ulong)),
