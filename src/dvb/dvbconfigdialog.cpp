@@ -131,7 +131,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	gridLayout->addWidget(namingFormatValidLabel, 4,2);
 
 
-	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	5, 0);
+	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes:")),	5, 0);
 
 	actionAfterRecordingLineEdit = new QLineEdit(widget);
 	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());
@@ -148,13 +148,13 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	override6937CharsetBox->setChecked(manager->override6937Charset());
 	gridLayout->addWidget(override6937CharsetBox, 1, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Create info files to accompany EPG recordings.")),
+	gridLayout->addWidget(new QLabel(i18n("Create info files to accompany EPG recordings:")),
 		2, 0);
 	createInfoFileBox = new QCheckBox(widget);
 	createInfoFileBox->setChecked(manager->createInfoFile());
 	gridLayout->addWidget(createInfoFileBox, 2, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Scan channels when idle to fetch fresh EPG data.")),
+	gridLayout->addWidget(new QLabel(i18n("Scan channels when idle to fetch fresh EPG data:")),
 		3, 0);
 	scanWhenIdleBox = new QCheckBox(widget);
 	scanWhenIdleBox->setChecked(manager->isScanWhenIdle());
@@ -167,11 +167,11 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	boxLayout->addWidget(new QLabel(i18n("Scan data last updated on %1",
 		QLocale().toString(manager->getScanDataDate(), QLocale::ShortFormat))));
 
-	QPushButton *pushButton = new QPushButton(i18n("Update scan data over Internet"), widget);
+	QPushButton *pushButton = new QPushButton(i18n("Update Scan Data over Internet"), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(updateScanFile()));
 	boxLayout->addWidget(pushButton);
 
-	QPushButton *openScanFileButton = new QPushButton(i18n("Edit scanfile"), widget);
+	QPushButton *openScanFileButton = new QPushButton(i18n("Edit Scanfile"), widget);
 	connect(openScanFileButton, SIGNAL(clicked()), this, SLOT(openScanFile()));
 	boxLayout->addWidget(openScanFileButton);
 	openScanFileButton->setToolTip(i18n("You can add channels manually to this file before scanning for them."));

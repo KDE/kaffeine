@@ -124,7 +124,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 	}
 
 	aboutData.addAuthor("Mauro Carvalho Chehab",
-		i18n("this KF5 port"),
+		i18n("KF5 port"),
 		QStringLiteral("mchehab@infradead.org"));
 	aboutData.addAuthor("Christoph Pfister", "",
 		QStringLiteral("christophpfister@gmail.com"));
@@ -133,8 +133,6 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		QStringLiteral("lasse.k.lindqvist@gmail.com"));
 	aboutData.addAuthor("Christophe Thommeret");
 	aboutData.addAuthor(QString::fromUtf8("Jürgen Kofler"));
-	aboutData.setTranslator(i18nc("NAME OF TRANSLATORS", "Your names"),
-				i18nc("EMAIL OF TRANSLATORS", "Your emails"));
 
 	KAboutData::setApplicationData(aboutData);
 
