@@ -1,7 +1,11 @@
 *_automoc.cpp*
-*.cmake
 *.gmo
 *.shell
+*DependInfo.cmake
+*CTestTestfile.cmake
+*cmake_install.cmake
+*cmake_uninstall.cmake
+*ecm_uninstall.cmake
 CMakeCache.txt
 CMakeFiles/
 CMakeTmp/
