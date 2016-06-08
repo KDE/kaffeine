@@ -112,6 +112,20 @@ And, to build the optional Kaffeine Handbook documentation:
 PS.: The above was tested with openSUSE 13.2.
      Other versions may have different requirements.
 
+Gentoo
+------
+
+Kaffeine is already packaged on Gentoo. Installing it is as
+simple as:
+	emerge kaffeine
+
+Arch Linux
+----------
+
+Kaffeine is already packaged on Arch Linux. Installing it is as
+simple as:
+	pacman -S kaffeine
+
 Installing translations
 -----------------------
 
