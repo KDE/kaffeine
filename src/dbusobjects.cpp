@@ -61,6 +61,7 @@ static const QDBusArgument &operator>>(const QDBusArgument &argument, MprisVersi
 	return argument;
 }
 
+#if HAVE_DVB == 1
 static QDBusArgument &operator<<(QDBusArgument &argument, const TelevisionScheduleEntryStruct &entry)
 {
 	argument.beginStructure();
@@ -79,6 +80,7 @@ static const QDBusArgument &operator>>(const QDBusArgument &argument,
 	argument.endStructure();
 	return argument;
 }
+#endif
 
 MprisRootObject::MprisRootObject(QObject *parent) : QObject(parent)
 {
