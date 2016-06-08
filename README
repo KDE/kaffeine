@@ -34,7 +34,7 @@ The needed packages for Debian/Ubuntu should be installed with:
    apt-get install kdelibs5-dev libvlc-dev libxss-dev vlc \
 		   libkf5coreaddons-dev libkf5i18n-dev libqt5x11extras5-dev \
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
-		   qt5-default libdvbv5-dev libkf5notifications-dev \
+		   qt5-default libdvbv5-dev \
 		   cmake extra-cmake-modules make g++ gettext
 
 And, to build the optional Kaffeine Handbook documentation:
@@ -63,7 +63,7 @@ with:
 
    dnf install  kf5-kcoreaddons-devel extra-cmake-modules libXScrnSaver-devel \
 		qt5-qtx11extras-devel \
-		kf5-knotifications-devel kf5-solid-devel kf5-kio-devel \
+		kf5-solid-devel kf5-kio-devel \
 		kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel gettext-devel
 
 And, to build the Kaffeine Handbook documentation:
@@ -87,7 +87,7 @@ KF5 and Qt 5.5 at their repositories.
 
 The first step is to install the needed dependencies:
    zypper install extra-cmake-modules vlc-devel make gcc gcc-g++ cmake \
-   libqt5-qtbase-devel libqt5-qtx11extras-devel knotifications-devel \
+   libqt5-qtbase-devel libqt5-qtx11extras-devel \
    kdbusaddons-devel solid-devel kio-devel ki18n-devel
 
 If you're running OpenSUSE version 13.2, you'll need to compile the

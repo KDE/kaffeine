@@ -57,7 +57,6 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	XmlGui		# KActonCollection
 	KIO		# KFileWidget
 	Solid
-	Notifications
 	DBusAddons
 )
 find_package(KF5DocTools ${KF5_MIN_VERSION} QUIET)
