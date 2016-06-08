@@ -31,7 +31,7 @@ Debian and Ubuntu
 
 The needed packages for Debian/Ubuntu should be installed with:
 
-   apt-get install kdelibs5-dev libvlc-dev libxss-dev libkf5idletime-dev vlc \
+   apt-get install kdelibs5-dev libvlc-dev libxss-dev vlc \
 		   libkf5coreaddons-dev libkf5i18n-dev libqt5x11extras5-dev \
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
 		   qt5-default libdvbv5-dev libkf5notifications-dev \
@@ -62,7 +62,7 @@ Once the repository with VLC is set, install the needed packages
 with:
 
    dnf install  kf5-kcoreaddons-devel extra-cmake-modules libXScrnSaver-devel \
-		qt5-qtx11extras-devel kf5-kidletime-devel \
+		qt5-qtx11extras-devel \
 		kf5-knotifications-devel kf5-solid-devel kf5-kio-devel \
 		kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel gettext-devel
 
@@ -88,7 +88,7 @@ KF5 and Qt 5.5 at their repositories.
 The first step is to install the needed dependencies:
    zypper install extra-cmake-modules vlc-devel make gcc gcc-g++ cmake \
    libqt5-qtbase-devel libqt5-qtx11extras-devel knotifications-devel \
-   kdbusaddons-devel kidletime-devel solid-devel kio-devel ki18n-devel
+   kdbusaddons-devel solid-devel kio-devel ki18n-devel
 
 If you're running OpenSUSE version 13.2, you'll need to compile the
 libdvbv5 by hand, as it is not provided there. OpenSUSE Leap

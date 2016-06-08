@@ -23,7 +23,6 @@
 # define qInfo qDebug
 #endif
 
-#include <KIdleTime>
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
@@ -658,7 +657,6 @@ bool DvbRecordingModel::shouldWeScanChannels() const
 {
 	int numberOfChannels = manager->getChannelModel()->getChannels().size();
 	int idleTime = 1000 * 3600 + 1; // TODO
-	//KIdleTime* instance = KIdleTime::instance();
 	if (idleTime > 1000 * 3600) {
 		if (DvbRecordingModel::getSecondsUntilNextRecording() > numberOfChannels * 10) {
 			if (DvbRecordingModel::isScanWhenIdle()) {
