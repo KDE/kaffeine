@@ -298,6 +298,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	longSkipBackwardAction = new QWidgetAction(this);
 	longSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward")));
+	// xgettext:no-c-format
 	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration));
 	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
 	connect(longSkipBackwardAction, SIGNAL(triggered()), this, SLOT(longSkipBackward()));
@@ -306,6 +307,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	shortSkipBackwardAction = new QWidgetAction(this);
 	shortSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward")));
+	// xgettext:no-c-format
 	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration));
 	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
 	connect(shortSkipBackwardAction, SIGNAL(triggered()), this, SLOT(shortSkipBackward()));
@@ -314,6 +316,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	shortSkipForwardAction = new QWidgetAction(this);
 	shortSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward")));
+	// xgettext:no-c-format
 	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration));
 	shortSkipForwardAction->setShortcut(Qt::Key_Right);
 	connect(shortSkipForwardAction, SIGNAL(triggered()), this, SLOT(shortSkipForward()));
@@ -322,6 +325,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	longSkipForwardAction = new QWidgetAction(this);
 	longSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward")));
+	// xgettext:no-c-format
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration));
 	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
 	connect(longSkipForwardAction, SIGNAL(triggered()), this, SLOT(longSkipForward()));
@@ -921,16 +925,20 @@ void MediaWidget::currentAngleChanged(QAction *action)
 
 void MediaWidget::shortSkipDurationChanged(int shortSkipDuration)
 {
+        // xgettext:no-c-format
 	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward",
 		shortSkipDuration));
+	// xgettext:no-c-format
 	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward",
 		shortSkipDuration));
 }
 
 void MediaWidget::longSkipDurationChanged(int longSkipDuration)
 {
+        // xgettext:no-c-format
 	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward",
 		longSkipDuration));
+	// xgettext:no-c-format
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward",
 		longSkipDuration));
 }
