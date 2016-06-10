@@ -28,15 +28,16 @@
 #include <QToolBar>
 #include <QMenu>
 
+class KActionCollection;
+class KToolBar;
 class QActionGroup;
+class QComboBox;
+class QMenu;
 class QPushButton;
 class QSlider;
 class QStringListModel;
 class QWidgetAction;
-class KActionCollection;
-class QComboBox;
-class QMenu;
-class KToolBar;
+
 class AbstractMediaWidget;
 class MediaSource;
 class OsdWidget;
@@ -129,6 +130,8 @@ public slots:
 	void longSkipBackward();
 	void longSkipForward();
 	void getAudioDevices();
+	void openSubtitle();
+	void setSubtitle(QUrl text);
 
 public:
 	void playbackFinished();

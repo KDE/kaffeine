@@ -32,6 +32,7 @@
 #include <QComboBox>
 #include <QContextMenuEvent>
 #include <QDBusInterface>
+#include <QFileDialog>
 #include <QLabel>
 #include <QMenu>
 #include <QMimeData>
@@ -137,19 +138,28 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	audioStreamModel = new QStringListModel(toolBar);
 	audioStreamBox->setModel(audioStreamModel);
 
-	subtitleBox = new QComboBox(toolBar);
+	QMenu *subtitleMenu = new QMenu(i18nc("'Subtitle' menu", "Subtitle"), this);
+	subtitleBox = new QComboBox(this);
+	QWidgetAction *action = new QWidgetAction(this);
+	action->setDefaultWidget(subtitleBox);
 	textSubtitlesOff = i18nc("subtitle selection entry", "off");
 	connect(subtitleBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(currentSubtitleChanged(int)));
-	toolBar->addWidget(subtitleBox);
-
 	subtitleModel = new QStringListModel(toolBar);
 	subtitleBox->setModel(subtitleModel);
+	subtitleMenu->addAction(action);
+	menu->addMenu(subtitleMenu);
+	action = new QWidgetAction(this);
+	action->setText(i18nc("'Subtitle' menu", "Add subtitle file"));
+	action->setIcon(QIcon::fromTheme(QLatin1String("application-x-subrip")));
+	connect(action, &QWidgetAction::triggered, this, &MediaWidget::openSubtitle);
+	subtitleMenu->addAction(action);
+
+	menu->addMenu(subtitleMenu);
 
 	QMenu *audioMenu = new QMenu(i18nc("'Playback' menu", "Audio"), this);
-
-	QWidgetAction *action = new QWidgetAction(this);
-	action->setIcon(QIcon::fromTheme(QLatin1String("audio-card")));
+	action = new QWidgetAction(this);
+	action->setIcon(QIcon::fromTheme(QLatin1String("audio-ready")));
 	action->setText(i18nc("'Audio' menu", "Audio Device"));
 
 	audioDevMenu = new QMenu(i18nc("'Playback' menu", "Audio Device"), audioMenu);
@@ -497,6 +507,31 @@ void MediaWidget::mediaSourceDestroyed(MediaSource *mediaSource)
 	if (source == mediaSource) {
 		source = dummySource.data();
 	}
+}
+
+void MediaWidget::openSubtitle()
+{
+	QUrl url = QFileDialog::getOpenFileName(this, i18nc("@title:window", "Open subtitle"),".", i18n("Subtitles (*.cdg *.idx *.srt " \
+				"*.sub *.utf *.ass " \
+				"*.ssa *.aqt " \
+				"*.jss *.psb " \
+				"*.rt *.smi *.txt " \
+				"*.smil *.stl *.usf " \
+				"*.dks *.pjs *.mpl2 *.mks " \
+				"*.vtt *.ttml *.dfxp"));
+
+	setSubtitle(url);
+	// FIXME: should also update the subtitle comboBox
+//	subtitlesChanged();
+}
+
+void MediaWidget::setSubtitle(QUrl url)
+{
+	if (!url.isValid()) {
+		return;
+	}
+
+	backend->setExternalSubtitle(url);
 }
 
 void MediaWidget::play(const QUrl &url, const QUrl &subtitleUrl)
@@ -999,7 +1034,7 @@ void MediaWidget::audioStreamsChanged()
 void MediaWidget::subtitlesChanged()
 {
 	QStringList items(textSubtitlesOff);
-	int currentIndex;
+	int currentIndex = 0;
 
 	if (source->overrideSubtitles()) {
 		items += source->getSubtitles();
@@ -1031,6 +1066,9 @@ void MediaWidget::subtitlesChanged()
 	if (subtitleModel->stringList() != items) {
 		subtitleModel->setStringList(items);
 	}
+
+	if (currentIndex < 0)
+		currentIndex = 0;
 
 	subtitleBox->setCurrentIndex(currentIndex);
 	subtitleBox->setEnabled(items.size() > 1);
