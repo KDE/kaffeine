@@ -128,6 +128,7 @@ public slots:
 	void shortSkipForward();
 	void longSkipBackward();
 	void longSkipForward();
+	void getAudioDevices();
 
 public:
 	void playbackFinished();
@@ -158,6 +159,7 @@ signals:
 private slots:
 	void checkScreenSaver();
 
+	void setAudioCard();
 	void mutedChanged();
 	void volumeChanged(int volume);
 	void seek(int position);
@@ -215,6 +217,7 @@ private:
 	QWidgetAction *longSkipForwardAction;
 	QWidgetAction *deinterlaceAction;
 	QWidgetAction *menuAction;
+	QMenu *audioDevMenu;
 	QMenu *titleMenu;
 	QMenu *chapterMenu;
 	QMenu *angleMenu;

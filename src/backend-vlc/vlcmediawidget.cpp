@@ -130,6 +130,43 @@ VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent)
 	return vlcMediaWidget.take();
 }
 
+QStringList VlcMediaWidget::getAudioDevices()
+{
+	libvlc_audio_output_device_t *vlcAudioOutput, *i;
+	QStringList audioDevices;
+
+	// Get audio device list
+	vlcAudioOutput = libvlc_audio_output_device_enum(vlcMediaPlayer);
+	if (!vlcAudioOutput)
+		return audioDevices;
+
+	for (i = vlcAudioOutput; i != NULL; i = i->p_next) {
+		QString device = QString::fromUtf8(i->psz_description);
+		audioDevices.append(device);
+	}
+	libvlc_audio_output_device_list_release(vlcAudioOutput);
+
+	return audioDevices;
+}
+
+void VlcMediaWidget::setAudioDevice(QString device)
+{
+	libvlc_audio_output_device_t *vlcAudioOutput, *i;
+	vlcAudioOutput = libvlc_audio_output_device_enum(vlcMediaPlayer);
+
+	if (!vlcAudioOutput)
+		return;
+
+	for (i = vlcAudioOutput; i != NULL; i = i->p_next) {
+		if (device.compare(QString::fromUtf8(i->psz_description)))
+			continue;
+		qInfo() << "Setting audio output to:" << i->psz_device;
+
+		libvlc_audio_output_device_set(vlcMediaPlayer, NULL, i->psz_device);
+	}
+	libvlc_audio_output_device_list_release(vlcAudioOutput);
+}
+
 void VlcMediaWidget::setMuted(bool muted)
 {
 	libvlc_audio_set_mute(vlcMediaPlayer, muted);

@@ -149,6 +149,15 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	QMenu *audioMenu = new QMenu(i18nc("'Playback' menu", "Audio"), this);
 
 	QWidgetAction *action = new QWidgetAction(this);
+	action->setIcon(QIcon::fromTheme(QLatin1String("audio-card")));
+	action->setText(i18nc("'Audio' menu", "Audio Device"));
+
+	audioDevMenu = new QMenu(i18nc("'Playback' menu", "Audio Device"), audioMenu);
+	action = new QWidgetAction(this);
+	connect(audioDevMenu, &QMenu::aboutToShow, this, &MediaWidget::getAudioDevices);
+	audioMenu->addMenu(audioDevMenu);
+
+	action = new QWidgetAction(this);
 	action->setIcon(QIcon::fromTheme(QLatin1String("audio-volume-high")));
 	action->setText(i18nc("'Audio' menu", "Increase Volume"));
 	action->setShortcut(QKeySequence(Qt::Key_Plus, Qt::Key_VolumeUp));
@@ -640,6 +649,11 @@ void MediaWidget::stop()
 	source->playbackStatusChanged(Idle);
 }
 
+void MediaWidget::setAudioCard()
+{
+	QAction *action = qobject_cast<QAction *>(sender());
+	backend->setAudioDevice(action->data().toString());
+}
 void MediaWidget::increaseVolume()
 {
 	// QSlider ensures that the value is within the range
@@ -941,6 +955,21 @@ void MediaWidget::longSkipDurationChanged(int longSkipDuration)
 	// xgettext:no-c-format
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward",
 		longSkipDuration));
+}
+
+void MediaWidget::getAudioDevices()
+{
+	foreach(QAction *action, audioDevMenu->actions()) {
+		audioDevMenu->removeAction(action);
+	}
+
+	foreach(const QString &device, backend->getAudioDevices()) {
+		QAction *action = new QWidgetAction(this);
+		action->setText(device);
+		action->setData(device);
+		connect(action, SIGNAL(triggered()), this, SLOT(setAudioCard()));
+		audioDevMenu->addAction(action);
+	}
 }
 
 void MediaWidget::audioStreamsChanged()

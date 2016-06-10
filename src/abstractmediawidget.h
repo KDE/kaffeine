@@ -52,6 +52,8 @@ public:
 	bool hasDvdMenu() const { return dvdMenu; }
 	QSize getVideoSize() const { return videoSize; }
 
+	virtual QStringList getAudioDevices() = 0;
+	virtual void setAudioDevice(QString device) = 0;
 	virtual void setMuted(bool muted) = 0;
 	virtual void setVolume(int volume) = 0; // [0 - 200]
 	virtual void setAspectRatio(MediaWidget::AspectRatio aspectRatio) = 0;
@@ -136,6 +138,8 @@ public:
 	explicit DummyMediaWidget(QWidget *parent);
 	~DummyMediaWidget();
 
+	QStringList getAudioDevices();
+	void setAudioDevice(QString device);
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
@@ -158,6 +162,7 @@ public:
 	void updateCurrentTotalTime();
 	void updateSeekable();
 	void updateMetadata();
+	void updateAudioDevices();
 	void updateAudioStreams();
 	void updateSubtitles();
 	void updateTitles();

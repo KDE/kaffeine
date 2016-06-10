@@ -46,6 +46,8 @@ public:
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
+	QStringList getAudioDevices();
+	void setAudioDevice(QString device);
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);

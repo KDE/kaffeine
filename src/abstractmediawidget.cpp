@@ -145,6 +145,17 @@ DummyMediaWidget::~DummyMediaWidget()
 {
 }
 
+QStringList DummyMediaWidget::getAudioDevices()
+{
+	QStringList list;
+	return list;
+}
+
+void DummyMediaWidget::setAudioDevice(QString device)
+{
+	Q_UNUSED(device)
+}
+
 void DummyMediaWidget::setMuted(bool muted)
 {
 	Q_UNUSED(muted)
