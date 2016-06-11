@@ -28,7 +28,7 @@ class AbstractMediaWidget : public QWidget
 {
 public:
 	explicit AbstractMediaWidget(QWidget *parent);
-	virtual ~AbstractMediaWidget();
+	virtual ~AbstractMediaWidget() {};
 
 	void connectToMediaWidget(MediaWidget *mediaWidget_);
 
@@ -135,41 +135,41 @@ Q_DECLARE_OPERATORS_FOR_FLAGS(AbstractMediaWidget::PendingUpdates)
 class DummyMediaWidget : public AbstractMediaWidget
 {
 public:
-	explicit DummyMediaWidget(QWidget *parent);
-	~DummyMediaWidget();
+	explicit DummyMediaWidget(QWidget *parent): AbstractMediaWidget(parent) {};
+	~DummyMediaWidget() {};
 
-	QStringList getAudioDevices();
-	void setAudioDevice(QString device);
-	void setMuted(bool muted);
-	void setVolume(int volume); // [0 - 200]
-	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
-	void setDeinterlacing(bool deinterlacing);
-	void play(const MediaSource &source);
-	void stop();
-	void setPaused(bool paused);
-	void seek(int time); // milliseconds
-	void setCurrentAudioStream(int currentAudioStream);
-	void setCurrentSubtitle(int currentSubtitle);
-	void setExternalSubtitle(const QUrl &subtitleUrl);
-	void setCurrentTitle(int currentTitle);
-	void setCurrentChapter(int currentChapter);
-	void setCurrentAngle(int currentAngle);
-	bool jumpToPreviousChapter();
-	bool jumpToNextChapter();
-	void showDvdMenu();
+	QStringList getAudioDevices() { QStringList empty; return empty; };
+	void setAudioDevice(QString) {};
+	void setMuted(bool) {};
+	void setVolume(int) {}; // [0 - 200]
+	void setAspectRatio(MediaWidget::AspectRatio) {};
+	void setDeinterlacing(bool) {};
+	void play(const MediaSource &) {};
+	void stop() {};
+	void setPaused(bool) {};
+	void seek(int) {}; // milliseconds
+	void setCurrentAudioStream(int) {};
+	void setCurrentSubtitle(int) {};
+	void setExternalSubtitle(const QUrl &) {};
+	void setCurrentTitle(int) {};
+	void setCurrentChapter(int) {};
+	void setCurrentAngle(int) {};
+	bool jumpToPreviousChapter() { return false; };
+	bool jumpToNextChapter() { return false; }
+	void showDvdMenu() {};
 
-	int updatePlaybackStatus();
-	void updateCurrentTotalTime();
-	void updateSeekable();
-	void updateMetadata();
-	void updateAudioDevices();
-	void updateAudioStreams();
-	void updateSubtitles();
-	void updateTitles();
-	void updateChapters();
-	void updateAngles();
-	void updateDvdMenu();
-	void updateVideoSize();
+	int updatePlaybackStatus() { return true; };
+	void updateCurrentTotalTime() {};
+	void updateSeekable() {};
+	void updateMetadata() {};
+	void updateAudioDevices() {};
+	void updateAudioStreams() {};
+	void updateSubtitles() {};
+	void updateTitles() {};
+	void updateChapters() {};
+	void updateAngles() {};
+	void updateDvdMenu() {};
+	void updateVideoSize() {};
 };
 
 #endif /* ABSTRACTMEDIAWIDGET_H */
