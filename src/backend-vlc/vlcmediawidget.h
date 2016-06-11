@@ -90,6 +90,7 @@ private:
 	libvlc_media_player_t *vlcMediaPlayer;
 	bool playingDvd;
 	bool mouseVisible;
+	QMap<int, int> subtitleId;
 };
 
 #endif /* VLCMEDIAWIDGET_H */

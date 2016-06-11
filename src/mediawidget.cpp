@@ -521,8 +521,6 @@ void MediaWidget::openSubtitle()
 				"*.vtt *.ttml *.dfxp"));
 
 	setSubtitle(url);
-	// FIXME: should also update the subtitle comboBox
-//	subtitlesChanged();
 }
 
 void MediaWidget::setSubtitle(QUrl url)
@@ -932,24 +930,17 @@ void MediaWidget::currentAudioStreamChanged(int currentAudioStream)
 
 void MediaWidget::currentSubtitleChanged(int currentSubtitle)
 {
-	if (!blockBackendUpdates) {
-		--currentSubtitle;
+	if (blockBackendUpdates)
+		return;
 
-		if (source->overrideSubtitles()) {
-			source->setCurrentSubtitle(currentSubtitle);
-			return;
-		}
-
-		source->setCurrentSubtitle(currentSubtitle - backend->getSubtitles().size());
-
-		if (currentSubtitle >= backend->getSubtitles().size()) {
-			currentSubtitle = -1;
-		}
-
-		if (backend->getCurrentSubtitle() != currentSubtitle) {
-			backend->setCurrentSubtitle(currentSubtitle);
-		}
+	if (source->overrideSubtitles()) {
+		source->setCurrentSubtitle(currentSubtitle - 1);
+		return;
 	}
+
+	source->setCurrentSubtitle(currentSubtitle - 1 - backend->getSubtitles().size());
+
+	backend->setCurrentSubtitle(currentSubtitle);
 }
 
 void MediaWidget::toggleMenu()
@@ -1053,7 +1044,7 @@ void MediaWidget::subtitlesChanged()
 	} else {
 		items += backend->getSubtitles();
 		items += source->getSubtitles();
-		currentIndex = (backend->getCurrentSubtitle() + 1);
+		currentIndex = (backend->getCurrentSubtitle());
 		int currentSourceIndex = source->getCurrentSubtitle();
 
 		if (currentSourceIndex >= 0) {

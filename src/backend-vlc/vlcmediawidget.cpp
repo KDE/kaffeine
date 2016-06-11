@@ -27,6 +27,7 @@
 #include <QCursor>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QMap>
 #include <vlc/vlc.h>
 
 #include "../configuration.h"
@@ -280,15 +281,9 @@ void VlcMediaWidget::play(const MediaSource &source)
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
 	libvlc_media_release(vlcMedia);
 
-//	FIXME!
-
-// 	if (source.subtitleUrl.isValid()) {
-// 		if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
-// 		    source.subtitleUrl.toEncoded().constData()) == 0) {
-// 			qInfo() << "VlcMediaWidget::play: cannot set subtitle file" <<
-// 				source.subtitleUrl.toDisplayString();
-// 		}
-// 	}
+//	FIXME! subtitleUrl is only available for MediaSourceUrl private class
+//	if (source.subtitleUrl.isValid())
+//		setExternalSubtitle(source.subtitleUrl);
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
 		qInfo() << "VlcMediaWidget::play: cannot play media" << source.getUrl().toDisplayString();
@@ -330,22 +325,15 @@ void VlcMediaWidget::setCurrentAudioStream(int currentAudioStream)
 
 void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
-	int requestedSubtitle = currentSubtitle;
-	int availableSpuCount = libvlc_video_get_spu_count(vlcMediaPlayer);
+	int requestedSubtitle = -1;
 
-	if (requestedSubtitle >= availableSpuCount) {
-		qInfo() << "VlcMediaWidget::setCurrentSubtitle: subtitle is out of range" <<
-			requestedSubtitle << availableSpuCount;
-
-		// Disable subtitles.
-		requestedSubtitle = -1;
-	} else if (requestedSubtitle < 0) {
-		// Set all negative subtitle requests to -1 as this makes libvlc
-		// disable the subtitles.
-		requestedSubtitle = -1;
-	} else {
-		// We got a valid subtitle request - skip the 'deactivate' subtitle.
-		requestedSubtitle += 1;
+	QMap<int, int>::const_iterator i = subtitleId.constBegin();
+	while (i != subtitleId.constEnd()) {
+		if (i.value() == currentSubtitle) {
+			requestedSubtitle = i.key();
+			break;
+		}
+		i++;
 	}
 
 	libvlc_video_set_spu(vlcMediaPlayer, requestedSubtitle);
@@ -527,7 +515,9 @@ void VlcMediaWidget::updateSubtitles()
 {
 	subtitles.clear();
 	libvlc_track_description_t *track = libvlc_video_get_spu_description(vlcMediaPlayer);
+	int i = 0;
 
+	subtitleId.clear();
 	if (track != NULL) {
 		// skip the 'deactivate' subtitle
 		track = track->p_next;
@@ -550,12 +540,17 @@ void VlcMediaWidget::updateSubtitles()
 			subtitle = QString::number(subtitles.size() + 1);
 		}
 
+		// 0 is reserved for "disabled" at mediawidget. So, we should
+		// Start counting from 1, to match the range expected for
+		// currentSubtitle
+		subtitleId[track->i_id] = ++i;
 		subtitles.append(subtitle);
 		track = track->p_next;
 	}
+	libvlc_track_description_list_release(track);
 
 	// skip the 'deactivate' subtitle
-	currentSubtitle = (libvlc_video_get_spu(vlcMediaPlayer) - 1);
+	currentSubtitle = subtitleId.value(libvlc_video_get_spu(vlcMediaPlayer), -1);
 }
 
 void VlcMediaWidget::updateTitles()
@@ -636,7 +631,7 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 		pendingUpdatesToBeAdded = CurrentTotalTime;
 		break;
 	case libvlc_MediaPlayerSeekableChanged:
-		pendingUpdatesToBeAdded = Seekable;
+		pendingUpdatesToBeAdded = Seekable | Subtitles;
 		break;
 	case libvlc_MediaPlayerStopped:
 		pendingUpdatesToBeAdded = PlaybackStatus;
