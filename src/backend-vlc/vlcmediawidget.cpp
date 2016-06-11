@@ -23,6 +23,7 @@
 # define qInfo qDebug
 #endif
 
+#include <KLocalizedString>
 #include <QApplication>
 #include <QCursor>
 #include <QMouseEvent>
@@ -525,19 +526,9 @@ void VlcMediaWidget::updateSubtitles()
 
 	while (track != NULL) {
 		QString subtitle = QString::fromUtf8(track->psz_name);
-		int cutBegin = (subtitle.indexOf(QLatin1Char('[')) + 1);
-
-		if (cutBegin > 0) {
-			int cutEnd = subtitle.lastIndexOf(QLatin1Char(']'));
-
-			if (cutEnd >= 0) {
-				// remove unnecessary text
-				subtitle = subtitle.mid(cutBegin, cutEnd - cutBegin);
-			}
-		}
 
 		if (subtitle.isEmpty()) {
-			subtitle = QString::number(subtitles.size() + 1);
+			subtitle = i18n("Subtitle ") + QString::number(track->i_id);
 		}
 
 		// 0 is reserved for "disabled" at mediawidget. So, we should
