@@ -528,7 +528,7 @@ void VlcMediaWidget::updateSubtitles()
 		QString subtitle = QString::fromUtf8(track->psz_name);
 
 		if (subtitle.isEmpty()) {
-			subtitle = i18n("Subtitle ") + QString::number(track->i_id);
+			subtitle = i18n("Subtitle %1", track->i_id);
 		}
 
 		// 0 is reserved for "disabled" at mediawidget. So, we should
