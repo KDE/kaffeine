@@ -156,8 +156,8 @@ KaffeineApplication::~KaffeineApplication()
 static void iconThemeFunc()
 
 {
-	if ((QIcon::themeName() != QLatin1String("breeze")
-	    && QIcon::themeName() != QLatin1String("oxgen"))
+	if ((QIcon::themeName().compare(QLatin1String("breeze"), Qt::CaseInsensitive)
+	    && QIcon::themeName().compare(QLatin1String("oxygen"), Qt::CaseInsensitive))
 	    || QIcon::themeName().isEmpty()) {
 		foreach(const QString &path, QIcon::themeSearchPaths()) {
 			QDir d(path);
