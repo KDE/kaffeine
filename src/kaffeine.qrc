@@ -99,10 +99,10 @@
 		<file alias="media-optical-audio">../icons/sc-devices-media-optical-audio.svg</file>
 	</qresource>
 	<qresource>
-		<file alias="media-optical-video">../icons/sc-devices-media-optical-video.svg</file>
+		<file alias="media-optical">../icons/sc-devices-media-optical.svg</file>
 	</qresource>
 	<qresource>
-		<file alias="media-optical">../icons/sc-devices-media-optical.svg</file>
+		<file alias="media-optical-video">../icons/sc-devices-media-optical-video.svg</file>
 	</qresource>
 	<qresource>
 		<file alias="video-television">../icons/sc-devices-video-television.svg</file>
@@ -138,9 +138,9 @@
 		<file alias="dialog-information">../icons/sc-status-dialog-information.svg</file>
 	</qresource>
 	<qresource>
-		<file alias="audio-radio-encrypted">../icons/32-actions-audio-radio-encrypted.png</file>
+		<file alias="audio-radio-encrypted">../icons/sc-actions-audio-radio-encrypted.svg</file>
 	</qresource>
 	<qresource>
-		<file alias="video-television-encrypted">../icons/32-actions-video-television-encrypted.png</file>
+		<file alias="video-television-encrypted">../icons/sc-actions-video-television-encrypted.svg</file>
 	</qresource>
 </RCC>

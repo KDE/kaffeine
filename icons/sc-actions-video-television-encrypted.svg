@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="64" width="64" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<defs>
+<linearGradient id="f" gradientUnits="userSpaceOnUse" x2="0" gradientTransform="matrix(1.0833 0 0 1.0909 -36.048 -47.8)" y1="536.8" y2="503.8">
+<stop stop-color="#2a2c2f" offset="0"/>
+<stop stop-color="#424649" offset="1"/>
+</linearGradient>
+<linearGradient id="e" xlink:href="#a" gradientUnits="userSpaceOnUse" x2="0" gradientTransform="matrix(0.5 0 0 .72727 198.29 146.4)" y1="547.8" y2="536.8"/>
+<linearGradient id="a">
+<stop stop-color="#c6cdd1" offset="0"/>
+<stop stop-color="#e0e5e7" offset="1"/>
+</linearGradient>
+<linearGradient id="b">
+<stop stop-color="#ee6406" offset="0"/>
+<stop stop-color="#ffce0d" offset="1"/>
+</linearGradient>
+<linearGradient id="d" gradientUnits="userSpaceOnUse" x2="0" gradientTransform="matrix(1.1818 0 0 1.2 -74.286 -103.16)" y1="535.8" y2="505.8">
+<stop stop-color="#131011" offset="0"/>
+<stop stop-color="#c4735b" offset=".10833"/>
+<stop stop-color="#d5c6ae" offset=".21667"/>
+<stop stop-color="#a2bdc9" offset=".43333"/>
+<stop stop-color="#0058e2" offset=".86667"/>
+<stop stop-color="#0030a0" offset="1"/>
+</linearGradient>
+<radialGradient id="c" gradientUnits="userSpaceOnUse" cy="520.8" cx="408.57" gradientTransform="matrix(1.1818 0 0 .81818 -74.286 95.69)" r="22">
+<stop stop-opacity="0" offset="0"/>
+<stop stop-opacity=".45263" offset="1"/>
+</radialGradient>
+<linearGradient id="h" y2="12" xlink:href="#b" gradientUnits="userSpaceOnUse" x2="24" gradientTransform="matrix(1.2857 0 0 1.2857 377.71 494.8)" y1="21" x1="33"/>
+<linearGradient id="g" xlink:href="#b" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1.24 0 0 1 -98.497 .49982)" x2="388.57" x1="428.57"/>
+<linearGradient id="i" xlink:href="#a" gradientUnits="userSpaceOnUse" x2="0" gradientTransform="matrix(0.5 0 0 .72727 210.29 146.4)" y1="547.8" y2="536.8"/>
+</defs>
+<g transform="translate(-376.57 -491.8)">
+<g stroke-width="2.8" stroke-opacity=".55026">
+<path d="m411.57 536.8v5.0908 1.4546 1.4546h6v-1.4546-1.4546-5.0908z" fill="url(#i)"/>
+<path d="m399.57 536.8v5.0908 1.4546 1.4546h6v-1.4546-1.4546-5.0908z" fill="url(#e)"/>
+<rect height="35" width="64" y="502.8" x="376.57" fill="url(#f)"/>
+<rect height="33" width="48" y="503.8" x="384.57" fill="url(#d)"/>
+<rect opacity=".85" height="33" width="48" y="503.8" x="384.57" fill="url(#c)"/>
+</g>
+<g stroke-width=".1">
+<rect opacity=".85" fill-opacity=".62105" height="4.8" width="48" y="531.8" x="384.57"/>
+<rect opacity=".85" fill-opacity=".62105" height="4.8077" width="48" y="503.99" x="384.57"/>
+<path d="m385.19 533.8c-0.3435 0-0.62001 0.223-0.62001 0.5s0.27651 0.5 0.62001 0.5h30.38v-1h-30.38z" fill="url(#g)"/>
+<path opacity=".85" d="m408.57 512.8c-4.986 0-9 4.014-9 9s4.014 9 9 9 9-4.014 9-9-4.014-9-9-9zm0 1a8 8 0 0 1 8 8 8 8 0 0 1 -8 8 8 8 0 0 1 -8 -8 8 8 0 0 1 8 -8z" fill-opacity=".45263" fill="#fff"/>
+<path opacity=".85" d="m408.57 512.8v1a8 8 0 0 1 8 8h1c0-4.986-4.014-9-9-9z" fill="url(#h)"/>
+</g>
+<g transform="translate(-.000011 -2.0001)">
+<rect opacity=".8" rx="2.9545" ry="3" height="6" width="5.9091" y="520.8" x="405.62" stroke-width=".1"/>
+<path d="m410.34 523.8-2.9545-1.8v3.6z" fill-rule="evenodd" fill="#fff"/>
+</g>
+<path d="m416.57 533.8v1h15.385c0.34094 0 0.61539-0.223 0.61539-0.5s-0.27445-0.5-0.61539-0.5h-15.385z" stroke-width=".1" fill="#999"/>
+<rect rx="1.5" height="3" width="3" y="532.8" x="414.57" stroke-width=".1" fill="#fff"/>
+<rect stroke-opacity=".55026" height="1" width="28" y="543.8" x="394.57" stroke-width="2.8" fill="#99a1a7"/>
+<rect rx="2" height="28" width="4" y="505.8" x="434.57" fill="#1e2426"/>
+<rect rx="2" height="28" width="4" y="505.8" x="378.57" fill="#1e2426"/>
+<path style="color:#4d4d4d" d="m426.88 520.64c-4.1096 0-7.4181 3.1834-7.4181 7.1377v7.1377h-3.709v14.275h22.254v-14.275h-3.709v-7.1377c0-3.9543-3.3084-7.1377-7.4181-7.1377m0 1.7844c3.0822 0 5.5636 2.7855 5.5636 6.2455v6.2455h-11.127v-6.2455c0-3.46 2.4813-6.2455 5.5635-6.2455" class="ColorScheme-Text" fill="#f00"/>
+</g>
+</svg>

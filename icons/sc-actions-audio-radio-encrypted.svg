@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" height="64" width="64" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<defs>
+<linearGradient id="c" gradientUnits="userSpaceOnUse" x2="0" y1="61" y2="3">
+<stop stop-color="#8e44ad" offset="0"/>
+<stop stop-color="#9b59b6" offset="1"/>
+</linearGradient>
+<linearGradient id="a" y2="17" gradientUnits="userSpaceOnUse" x2="40" gradientTransform="matrix(1 0 0 -1 -14 78)" y1="31" x1="54">
+<stop stop-color="#383e51" offset="0"/>
+<stop stop-color="#655c6f" stop-opacity="0" offset="1"/>
+</linearGradient>
+<linearGradient id="b" gradientUnits="userSpaceOnUse" x2="0" y1="61" y2="47">
+<stop stop-color="#d3bdd7" offset="0"/>
+<stop stop-color="#e8d9eb" offset="1"/>
+</linearGradient>
+</defs>
+<path fill="url(#c)" d="m10 3v58h30l14-14v-30-14h-14-30z"/>
+<rect fill-opacity=".29412" height="1" width="30" y="60" x="10" fill="#2e3132"/>
+<rect fill-opacity=".40984" height="1" width="44" y="3" x="10" fill="#fff"/>
+<path d="m54 47-14 14v-14z" fill-rule="evenodd" fill="url(#b)"/>
+<path opacity=".2" d="m26 61 14-14v14z" fill-rule="evenodd" fill="url(#a)"/>
+<path style="color-rendering:auto;color:#000000;shape-rendering:auto;image-rendering:auto" fill="#e8d9eb" d="m27 21v16.053c-0.635-0.649-1.517-1.053-2.5-1.053-1.939 0-3.5 1.561-3.5 3.5s1.561 3.5 3.5 3.5c1.905 0 3.437-1.509 3.49-3.4h0.01v-0.1-13.5h14v8.053c-0.635-0.649-1.517-1.053-2.5-1.053-1.939 0-3.5 1.561-3.5 3.5s1.561 3.5 3.5 3.5 3.5-1.561 3.5-3.5v-15.5h-1-14-1zm1 2h14v2h-14v-2z"/>
+<path style="color:#4d4d4d" d="m45.458 22.165c-4.4101 0-7.9605 3.8184-7.9605 8.5614v8.5614h-3.9802v17.123h23.881v-17.123h-3.9802v-8.5614c0-4.743-3.5504-8.5614-7.9605-8.5614m0 2.1404c3.3076 0 5.9703 3.3411 5.9703 7.4913v7.4913h-11.941v-7.4913c0-4.1502 2.6628-7.4913 5.9703-7.4913" class="ColorScheme-Text" fill="#f00"/>
+</svg>
