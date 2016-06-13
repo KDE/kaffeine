@@ -68,7 +68,7 @@ for i in $ICONS; do
 		if [ "$FOUND" == "" ]; then
 			# Breeze path
 			j=$(echo $j|sed "s,/,/${SIZE}/,")
-			curl -s "${ICONS_URL}$j.svg${ICONS_URL_END}" -o icons/$i.svg && FOUND=1 && FILES="$FILES $SIZE-$i.svg" || true
+			curl -s "${ICONS_URL}$j.svg${ICONS_URL_END}" -o icons/sc-$i.svg && FOUND=1 && FILES="$FILES sc-$i.svg" || true
 		fi
 	done
 
@@ -99,14 +99,23 @@ ecm_install_icons(ICONS
 
 EOF
 
+# Remve duplicated files
+FILES=$(echo "$FILES" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+
 for i in $FILES; do
 	echo -e "\t$i" >> icons/CMakeLists.txt
 done
 
 echo -e "\tDESTINATION \${ICON_INSTALL_DIR}\n)" >> icons/CMakeLists.txt
 
+# Add the two extra files
+FILES="$FILES 32-actions-audio-radio-encrypted.png 32-actions-video-television-encrypted.png"
+
 echo "<!DOCTYPE RCC><RCC version=\"1.0\">" >src/kaffeine.qrc
-for i in $(ls icons/*.*); do echo -e "\t<qresource>\n\t\t<file>../$i</file>\n\t</qresource>"; done >>src/kaffeine.qrc
+for i in $FILES; do
+	alias=$(echo $i|cut -d'-' -f 3-|cut -d'.' -f1)
+	echo -e "\t<qresource>\n\t\t<file alias=\"$alias\">../icons/$i</file>\n\t</qresource>"
+done >>src/kaffeine.qrc
 echo "</RCC>" >>src/kaffeine.qrc
 
 if [ "$ICONS_NOT_FOUND" != "" ]; then
