@@ -5,9 +5,9 @@
 
 ecm_install_icons(ICONS
 	# This icon is a merge of Breeze audio-mp4.svg with lock.svg
-	sc-actions-audio-radio-encrypted.png
+	sc-actions-audio-radio-encrypted.svg
 	# This icon is a merge of Breeze sc-devices-video-television.svg with lock.svg
-	sc-actions-video-television-encrypted.png
+	sc-actions-video-television-encrypted.svg
 
 	# Those icons are copied as-is from Breeze theme
 
