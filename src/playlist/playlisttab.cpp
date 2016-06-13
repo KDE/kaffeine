@@ -186,7 +186,7 @@ QVariant PlaylistBrowserModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DecorationRole) {
 		if (index.row() == currentPlaylist) {
-			return QIcon::fromTheme(QLatin1String("arrow-right"));
+			return QIcon::fromTheme(QLatin1String("arrow-right"), QIcon(":arrow-right"));
 		}
 	} else if (role == Qt::DisplayRole) {
 		return playlists.at(index.row())->title;
@@ -396,42 +396,42 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 		SIGNAL(playlistTrackMetadataChanged(QMap<MediaWidget::MetadataType,QString>)),
 		this, SLOT(updateTrackMetadata(QMap<MediaWidget::MetadataType,QString>)));
 
-	repeatAction = new QAction(QIcon::fromTheme(QLatin1String("media-playlist-repeat")),
+	repeatAction = new QAction(QIcon::fromTheme(QLatin1String("media-playlist-repeat"), QIcon(":media-playlist-repeat")),
 		i18nc("playlist menu", "Repeat"), this);
 	repeatAction->setCheckable(true);
 	menu->addAction(collection->addAction(QLatin1String("playlist_repeat"), repeatAction));
 
-	randomAction = new QAction(QIcon::fromTheme(QLatin1String("media-playlist-shuffle")),
+	randomAction = new QAction(QIcon::fromTheme(QLatin1String("media-playlist-shuffle"), QIcon(":media-playlist-shuffle")),
 		i18nc("playlist menu", "Random"), this);
 	randomAction->setCheckable(true);
 	menu->addAction(collection->addAction(QLatin1String("playlist_random"), randomAction));
 
 	QAction *addSubtitleAction =
-		new QAction(QIcon::fromTheme(QLatin1String("application-x-subrip")), i18n("Add Subtitle"), this);
+		new QAction(QIcon::fromTheme(QLatin1String("application-x-subrip"), QIcon(":application-x-subrip")), i18n("Add Subtitle"), this);
 	collection->addAction(QLatin1String("playlist_add_subtitle"), addSubtitleAction);
 
 	QAction *removeTrackAction =
-		new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
+		new QAction(QIcon::fromTheme(QLatin1String("edit-delete"), QIcon(":edit-delete")), i18nc("@action", "Remove"), this);
 	collection->addAction(QLatin1String("playlist_remove_track"), removeTrackAction);
 
-	QAction *clearAction = new QAction(QIcon::fromTheme(QLatin1String("edit-clear-list")),
+	QAction *clearAction = new QAction(QIcon::fromTheme(QLatin1String("edit-clear-list"), QIcon(":edit-clear-list")),
 		i18nc("remove all items from a list", "Clear"), this);
 	connect(clearAction, SIGNAL(triggered(bool)), playlistModel, SLOT(clearVisiblePlaylist()));
 	menu->addAction(collection->addAction(QLatin1String("playlist_clear"), clearAction));
 
 	menu->addSeparator();
 
-	QAction *newAction = new QAction(QIcon::fromTheme(QLatin1String("list-add")), i18nc("@action", "New"), this);
+	QAction *newAction = new QAction(QIcon::fromTheme(QLatin1String("list-add"), QIcon(":list-add")), i18nc("@action", "New"), this);
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
 	menu->addAction(collection->addAction(QLatin1String("playlist_new"), newAction));
 
-	QAction *renameAction = new QAction(QIcon::fromTheme(QLatin1String("edit-rename")),
+	QAction *renameAction = new QAction(QIcon::fromTheme(QLatin1String("edit-rename"), QIcon(":edit-rename")),
 		i18nc("rename an entry in a list", "Rename"), this);
 	connect(renameAction, SIGNAL(triggered(bool)), this, SLOT(renamePlaylist()));
 	menu->addAction(collection->addAction(QLatin1String("playlist_rename"), renameAction));
 
 	QAction *removePlaylistAction =
-		new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), this);
+		new QAction(QIcon::fromTheme(QLatin1String("edit-delete"), QIcon(":edit-delete")), i18nc("@action", "Remove"), this);
 	connect(removePlaylistAction, SIGNAL(triggered(bool)), this, SLOT(removePlaylist()));
 	menu->addAction(collection->addAction(QLatin1String("playlist_remove"), removePlaylistAction));
 

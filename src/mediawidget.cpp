@@ -82,7 +82,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	osdWidget = new OsdWidget(this);
 
 	actionPrevious = new QWidgetAction(this);
-	actionPrevious->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward")));
+	actionPrevious->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward"), QIcon(":media-skip-backward")));
 	actionPrevious->setText(i18n("Previous"));
 	actionPrevious->setShortcut(QKeySequence(Qt::Key_PageUp, Qt::Key_MediaPrevious));
 	connect(actionPrevious, SIGNAL(triggered()), this, SLOT(previous()));
@@ -93,14 +93,14 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	actionPlayPause->setShortcut(QKeySequence(Qt::Key_Space, Qt::Key_MediaPlay));
 	textPlay = i18n("Play");
 	textPause = i18n("Pause");
-	iconPlay = QIcon::fromTheme(QLatin1String("media-playback-start"));
-	iconPause = QIcon::fromTheme(QLatin1String("media-playback-pause"));
+	iconPlay = QIcon::fromTheme(QLatin1String("media-playback-start"), QIcon(":media-playback-start"));
+	iconPause = QIcon::fromTheme(QLatin1String("media-playback-pause"), QIcon(":media-playback-pause"));
 	connect(actionPlayPause, SIGNAL(triggered(bool)), this, SLOT(pausedChanged(bool)));
 	toolBar->addAction(collection->addAction(QLatin1String("controls_play_pause"), actionPlayPause));
 	menu->addAction(actionPlayPause);
 
 	actionStop = new QWidgetAction(this);
-	actionStop->setIcon(QIcon::fromTheme(QLatin1String("media-playback-stop")));
+	actionStop->setIcon(QIcon::fromTheme(QLatin1String("media-playback-stop"), QIcon(":media-playback-stop")));
 	actionStop->setText(i18n("Stop"));
 	actionStop->setShortcut(QKeySequence(Qt::Key_Backspace, Qt::Key_MediaStop));
 	connect(actionStop, SIGNAL(triggered()), this, SLOT(stop()));
@@ -108,7 +108,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	menu->addAction(actionStop);
 
 	actionNext = new QWidgetAction(this);
-	actionNext->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward")));
+	actionNext->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward"), QIcon(":media-skip-forward")));
 	actionNext->setText(i18n("Next"));
 	actionNext->setShortcut(QKeySequence(Qt::Key_PageDown, Qt::Key_MediaNext));
 	connect(actionNext, SIGNAL(triggered()), this, SLOT(next()));
@@ -117,14 +117,14 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	menu->addSeparator();
 
 	fullScreenAction = new QWidgetAction(this);
-	fullScreenAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen")));
+	fullScreenAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen"), QIcon(":view-fullscreen")));
 	fullScreenAction->setText(i18nc("'Playback' menu", "Full Screen Mode"));
 	fullScreenAction->setShortcut(Qt::Key_F);
 	connect(fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullScreen()));
 	menu->addAction(collection->addAction(QLatin1String("view_fullscreen"), fullScreenAction));
 
 	minimalModeAction = new QWidgetAction(this);
-	minimalModeAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen")));
+	minimalModeAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen"), QIcon(":view-fullscreen")));
 	minimalModeAction->setText(i18nc("'Playback' menu", "Minimal Mode"));
 	minimalModeAction->setShortcut(Qt::Key_Period);
 	connect(minimalModeAction, SIGNAL(triggered()), this, SLOT(toggleMinimalMode()));
@@ -151,7 +151,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	menu->addMenu(subtitleMenu);
 	action = new QWidgetAction(this);
 	action->setText(i18nc("'Subtitle' menu", "Add subtitle file"));
-	action->setIcon(QIcon::fromTheme(QLatin1String("application-x-subrip")));
+	action->setIcon(QIcon::fromTheme(QLatin1String("application-x-subrip"), QIcon(":application-x-subrip")));
 	connect(action, &QWidgetAction::triggered, this, &MediaWidget::openSubtitle);
 	subtitleMenu->addAction(action);
 
@@ -159,7 +159,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	QMenu *audioMenu = new QMenu(i18nc("'Playback' menu", "Audio"), this);
 	action = new QWidgetAction(this);
-	action->setIcon(QIcon::fromTheme(QLatin1String("audio-ready")));
+	action->setIcon(QIcon::fromTheme(QLatin1String("audio-card"), QIcon(":audio-card")));
 	action->setText(i18nc("'Audio' menu", "Audio Device"));
 
 	audioDevMenu = new QMenu(i18nc("'Playback' menu", "Audio Device"), audioMenu);
@@ -168,14 +168,14 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	audioMenu->addMenu(audioDevMenu);
 
 	action = new QWidgetAction(this);
-	action->setIcon(QIcon::fromTheme(QLatin1String("audio-volume-high")));
+	action->setIcon(QIcon::fromTheme(QLatin1String("audio-volume-high"), QIcon(":audio-volume-high")));
 	action->setText(i18nc("'Audio' menu", "Increase Volume"));
 	action->setShortcut(QKeySequence(Qt::Key_Plus, Qt::Key_VolumeUp));
 	connect(action, SIGNAL(triggered()), this, SLOT(increaseVolume()));
 	audioMenu->addAction(collection->addAction(QLatin1String("controls_increase_volume"), action));
 
 	action = new QWidgetAction(this);
-	action->setIcon(QIcon::fromTheme(QLatin1String("audio-volume-low")));
+	action->setIcon(QIcon::fromTheme(QLatin1String("audio-volume-low"), QIcon(":audio-volume-low")));
 	action->setText(i18nc("'Audio' menu", "Decrease Volume"));
 	action->setShortcut(QKeySequence(Qt::Key_Minus, Qt::Key_VolumeDown));
 	connect(action, SIGNAL(triggered()), this, SLOT(decreaseVolume()));
@@ -183,8 +183,8 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	muteAction = new QWidgetAction(this);
 	muteAction->setText(i18nc("'Audio' menu", "Mute Volume"));
-	mutedIcon = QIcon::fromTheme(QLatin1String("audio-volume-muted"));
-	unmutedIcon = QIcon::fromTheme(QLatin1String("audio-volume-medium"));
+	mutedIcon = QIcon::fromTheme(QLatin1String("audio-volume-muted"), QIcon(":audio-volume-muted"));
+	unmutedIcon = QIcon::fromTheme(QLatin1String("audio-volume-medium"), QIcon(":audio-volume-medium"));
 	muteAction->setIcon(unmutedIcon);
 	muteAction->setShortcut(QKeySequence(Qt::Key_M, Qt::Key_VolumeMute));
 	connect(muteAction, SIGNAL(triggered()), this, SLOT(mutedChanged()));
@@ -197,7 +197,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	menu->addSeparator();
 
 	deinterlaceAction = new QWidgetAction(this);
-	deinterlaceAction->setIcon(QIcon::fromTheme(QLatin1String("format-justify-center")));
+	deinterlaceAction->setIcon(QIcon::fromTheme(QLatin1String("format-justify-center"), QIcon(":format-justify-center")));
 	deinterlaceAction->setText(i18nc("'Video' menu", "Deinterlace"));
 	deinterlaceAction->setCheckable(true);
 	deinterlaceAction->setChecked(
@@ -298,7 +298,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	toolBar->addAction(collection->addAction(QLatin1String("controls_volume_slider"), action));
 
 	jumpToPositionAction = new QWidgetAction(this);
-	jumpToPositionAction->setIcon(QIcon::fromTheme(QLatin1String("go-jump")));
+	jumpToPositionAction->setIcon(QIcon::fromTheme(QLatin1String("go-jump"), QIcon(":go-jump")));
 	jumpToPositionAction->setText(i18nc("@action:inmenu", "Jump to Position..."));
 	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
 	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
@@ -316,7 +316,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 		this, SLOT(longSkipDurationChanged(int)));
 
 	longSkipBackwardAction = new QWidgetAction(this);
-	longSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward")));
+	longSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward"), QIcon(":media-skip-backward")));
 	// xgettext:no-c-format
 	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration));
 	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
@@ -325,7 +325,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 		collection->addAction(QLatin1String("controls_long_skip_backward"), longSkipBackwardAction));
 
 	shortSkipBackwardAction = new QWidgetAction(this);
-	shortSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward")));
+	shortSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward"), QIcon(":media-skip-backward")));
 	// xgettext:no-c-format
 	shortSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", shortSkipDuration));
 	shortSkipBackwardAction->setShortcut(Qt::Key_Left);
@@ -334,7 +334,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 		collection->addAction(QLatin1String("controls_skip_backward"), shortSkipBackwardAction));
 
 	shortSkipForwardAction = new QWidgetAction(this);
-	shortSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward")));
+	shortSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward"), QIcon(":media-skip-forward")));
 	// xgettext:no-c-format
 	shortSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", shortSkipDuration));
 	shortSkipForwardAction->setShortcut(Qt::Key_Right);
@@ -343,7 +343,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 		collection->addAction(QLatin1String("controls_skip_forward"), shortSkipForwardAction));
 
 	longSkipForwardAction = new QWidgetAction(this);
-	longSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward")));
+	longSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward"), QIcon(":media-skip-forward")));
 	// xgettext:no-c-format
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration));
 	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
@@ -351,7 +351,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	navigationMenu->addAction(
 		collection->addAction(QLatin1String("controls_long_skip_forward"), longSkipForwardAction));
 
-	toolBar->addAction(QIcon::fromTheme(QLatin1String("player-time")), i18n("Seek Slider"))->setEnabled(false);
+	toolBar->addAction(QIcon::fromTheme(QLatin1String("player-time"), QIcon(":player-time")), i18n("Seek Slider"))->setEnabled(false);
 
 	action = new QWidgetAction(this);
 	action->setText(i18n("Seek Slider"));
@@ -364,7 +364,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	toolBar->addAction(collection->addAction(QLatin1String("controls_position_slider"), action));
 
 	menuAction = new QWidgetAction(this);
-	menuAction->setIcon(QIcon::fromTheme(QLatin1String("media-optical-video")));
+	menuAction->setIcon(QIcon::fromTheme(QLatin1String("media-optical-video"), QIcon(":media-optical-video")));
 	menuAction->setText(i18nc("dvd navigation", "DVD Menu"));
 	connect(menuAction, SIGNAL(triggered()), this, SLOT(toggleMenu()));
 	menu->addAction(collection->addAction(QLatin1String("controls_toggle_menu"), menuAction));
@@ -459,12 +459,12 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 		switch (displayMode) {
 		case NormalMode:
 		case MinimalMode:
-			fullScreenAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen")));
+			fullScreenAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen"), QIcon(":view-fullscreen")));
 			fullScreenAction->setText(i18nc("'Playback' menu", "Full Screen Mode"));
 			break;
 		case FullScreenMode:
 		case FullScreenReturnToMinimalMode:
-			fullScreenAction->setIcon(QIcon::fromTheme(QLatin1String("view-restore")));
+			fullScreenAction->setIcon(QIcon::fromTheme(QLatin1String("view-restore"), QIcon(":view-restore")));
 			fullScreenAction->setText(i18nc("'Playback' menu",
 				"Exit Full Screen Mode"));
 			break;
@@ -474,11 +474,11 @@ void MediaWidget::setDisplayMode(DisplayMode displayMode_)
 		case NormalMode:
 		case FullScreenMode:
 		case FullScreenReturnToMinimalMode:
-			minimalModeAction->setIcon(QIcon::fromTheme(QLatin1String("view-restore")));
+			minimalModeAction->setIcon(QIcon::fromTheme(QLatin1String("view-restore"), QIcon(":view-restore")));
 			minimalModeAction->setText(i18nc("'Playback' menu", "Minimal Mode"));
 			break;
 		case MinimalMode:
-			minimalModeAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen")));
+			minimalModeAction->setIcon(QIcon::fromTheme(QLatin1String("view-fullscreen"), QIcon(":view-fullscreen")));
 			minimalModeAction->setText(i18nc("'Playback' menu", "Exit Minimal Mode"));
 			break;
 		}

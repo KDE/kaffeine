@@ -762,7 +762,7 @@ QVariant PlaylistModel::data(const QModelIndex &index, int role) const
 {
 	if (role == Qt::DecorationRole) {
 		if ((index.row() == visiblePlaylist->currentTrack) && (index.column() == 0)) {
-			return QIcon::fromTheme(QLatin1String("arrow-right"));
+			return QIcon::fromTheme(QLatin1String("arrow-right"), QIcon(":arrow-right"));
 		}
 	} else if (role == Qt::DisplayRole) {
 		switch (index.column()) {

@@ -71,21 +71,21 @@ DvbRecordingDialog::DvbRecordingDialog(DvbManager *manager_, QWidget *parent) : 
 	model->setRecordingModel(manager->getRecordingModel());
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
-	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("list-add")), i18nc("@action", "New"), widget);
+	QAction *action = new QAction(QIcon::fromTheme(QLatin1String("list-add"), QIcon(":list-add")), i18nc("@action", "New"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(newRecording()));
 	treeView->addAction(action);
 	QPushButton *pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(newRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new QAction(QIcon::fromTheme(QLatin1String("configure")), i18nc("@action", "Edit"), widget);
+	action = new QAction(QIcon::fromTheme(QLatin1String("configure"), QIcon(":configure")), i18nc("@action", "Edit"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(editRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(editRecording()));
 	boxLayout->addWidget(pushButton);
 
-	action = new QAction(QIcon::fromTheme(QLatin1String("edit-delete")), i18nc("@action", "Remove"), widget);
+	action = new QAction(QIcon::fromTheme(QLatin1String("edit-delete"), QIcon(":edit-delete")), i18nc("@action", "Remove"), widget);
 	connect(action, SIGNAL(triggered()), this, SLOT(removeRecording()));
 	treeView->addAction(action);
 	pushButton = new QPushButton(action->icon(), action->text(), widget);
@@ -279,19 +279,19 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 		case Qt::DecorationRole:
 			if (index.column() == 0) {
 				if (recording->disabled) {
-					return QIcon::fromTheme(QLatin1String("dialog-error"));
+					return QIcon::fromTheme(QLatin1String("dialog-error"), QIcon(":dialog-error"));
 				}
 				switch (recording->status) {
 				case DvbRecording::Inactive:
 					break;
 				case DvbRecording::Recording:
-					return QIcon::fromTheme(QLatin1String("media-record"));
+					return QIcon::fromTheme(QLatin1String("media-record"), QIcon(":media-record"));
 				case DvbRecording::Error:
-					return QIcon::fromTheme(QLatin1String("dialog-error"));
+					return QIcon::fromTheme(QLatin1String("dialog-error"), QIcon(":dialog-error"));
 				}
 
 				if (recording->repeat != 0) {
-					return QIcon::fromTheme(QLatin1String("view-refresh"));
+					return QIcon::fromTheme(QLatin1String("view-refresh"), QIcon(":view-refresh"));
 				}
 			}
 

@@ -80,7 +80,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(3, 1);
 
 	KPageWidgetItem *page = new KPageWidgetItem(widget, i18nc("@title:group", "General"));
-	page->setIcon(QIcon::fromTheme(QLatin1String("configure")));
+	page->setIcon(QIcon::fromTheme(QLatin1String("configure"), QIcon(":configure")));
 	addPage(page);
 
 	widget = new QWidget(this);
@@ -104,7 +104,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(2, 0);
 
 	page = new KPageWidgetItem(widget, i18nc("@title:group", "Diagnostics"));
-	page->setIcon(QIcon::fromTheme(QLatin1String("page-zoom")));
+	page->setIcon(QIcon::fromTheme(QLatin1String("page-zoom"), QIcon(":page-zoom")));
 	addPage(page);
 
 	// libVLC arguments config
@@ -124,7 +124,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) : KPageDialog(parent)
 	gridLayout->setRowStretch(3, 1);
 
 	page = new KPageWidgetItem(widget, i18nc("@title:group", "libVLC"));
-	page->setIcon(QIcon::fromTheme(QLatin1String("video-television")));
+	page->setIcon(QIcon::fromTheme(QLatin1String("video-television"), QIcon(":video-television")));
 	addPage(page);
 
 	resize(100 * fontMetrics().averageCharWidth(), 28 * fontMetrics().height());
