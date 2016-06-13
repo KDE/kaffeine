@@ -2,7 +2,10 @@ if(Libdvbv5_FOUND)
   include_directories(${Libdvbv5_INCLUDE_DIRS})
 endif(Libdvbv5_FOUND)
 
+qt5_add_resources(RESOURCE_ADDED kaffeine.qrc)
+
 set(kaffeine_SRCS
+    kaffeine.qrc
     backend-vlc/vlcmediawidget.cpp
     playlist/playlistmodel.cpp
     playlist/playlisttab.cpp
