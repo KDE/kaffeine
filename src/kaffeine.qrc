@@ -1,3 +1,146 @@
 <!DOCTYPE RCC><RCC version="1.0">
-
+	<qresource>
+		<file alias="arrow-left">../icons/sc-actions-arrow-left.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="arrow-right">../icons/sc-actions-arrow-right.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="configure">../icons/sc-actions-configure.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="dialog-cancel">../icons/sc-actions-dialog-cancel.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="dialog-ok-apply">../icons/sc-actions-dialog-ok-apply.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="document-open-folder">../icons/sc-actions-document-open-folder.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="document-save">../icons/sc-actions-document-save.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="edit-clear-list">../icons/sc-actions-edit-clear-list.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="edit-delete">../icons/sc-actions-edit-delete.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="edit-find">../icons/sc-actions-edit-find.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="edit-rename">../icons/sc-actions-edit-rename.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="edit-undo">../icons/sc-actions-edit-undo.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="format-justify-center">../icons/sc-actions-format-justify-center.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="go-jump">../icons/sc-actions-go-jump.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="list-add">../icons/sc-actions-list-add.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-playback-pause">../icons/sc-actions-media-playback-pause.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-playback-start">../icons/sc-actions-media-playback-start.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-playback-stop">../icons/sc-actions-media-playback-stop.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-record">../icons/sc-actions-media-record.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-skip-backward">../icons/sc-actions-media-skip-backward.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-skip-forward">../icons/sc-actions-media-skip-forward.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="page-zoom">../icons/sc-actions-page-zoom.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="player-time">../icons/sc-actions-player-time.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="text-speak">../icons/sc-actions-text-speak.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="view-fullscreen">../icons/sc-actions-view-fullscreen.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="view-list-details">../icons/sc-actions-view-list-details.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="view-media-playlist">../icons/sc-actions-view-media-playlist.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="view-pim-calendar">../icons/sc-actions-view-pim-calendar.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="view-refresh">../icons/sc-actions-view-refresh.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="view-restore">../icons/sc-actions-view-restore.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="kaffeine">../icons/sc-apps-kaffeine.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="audio-card">../icons/sc-devices-audio-card.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-optical-audio">../icons/sc-devices-media-optical-audio.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-optical-video">../icons/sc-devices-media-optical-video.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="media-optical">../icons/sc-devices-media-optical.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="video-television">../icons/sc-devices-video-television.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="application-x-subrip">../icons/sc-mimetypes-application-x-subrip.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="text-html">../icons/sc-mimetypes-text-html.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="video-x-generic">../icons/sc-mimetypes-video-x-generic.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="start-here-kde">../icons/sc-places-start-here-kde.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="audio-volume-high">../icons/sc-status-audio-volume-high.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="audio-volume-low">../icons/sc-status-audio-volume-low.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="audio-volume-medium">../icons/sc-status-audio-volume-medium.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="audio-volume-muted">../icons/sc-status-audio-volume-muted.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="dialog-error">../icons/sc-status-dialog-error.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="dialog-information">../icons/sc-status-dialog-information.svg</file>
+	</qresource>
+	<qresource>
+		<file alias="audio-radio-encrypted">../icons/32-actions-audio-radio-encrypted.png</file>
+	</qresource>
+	<qresource>
+		<file alias="video-television-encrypted">../icons/32-actions-video-television-encrypted.png</file>
+	</qresource>
 </RCC>
