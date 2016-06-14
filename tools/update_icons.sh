@@ -102,6 +102,15 @@ done
 
 echo -e "\tDESTINATION \${ICON_INSTALL_DIR}\n)" >> icons/CMakeLists.txt
 
+###
+### What's the sense of installing the icons? Now that they are statically
+### Linked at Kaffeine, via src/kaffeine.qrc, we can simply not install the
+### icons.
+###
+
+rm icons/CMakeLists.txt
+
+
 # Add the two extra files
 FILES="$FILES sc-actions-audio-radio-encrypted.svg sc-actions-video-television-encrypted.svg"
 
