@@ -34,6 +34,7 @@
 #include <QFileDialog>
 #include <QHoverEvent>
 #include <QInputDialog>
+#include <QLoggingCategory>
 #include <QMainWindow>
 #include <QMenu>
 #include <QMenuBar>
@@ -156,6 +157,11 @@ PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 
 void MainWindow::run()
 {
+	// Allow the user to enable or disable debugging
+	// We handle this before the other parameters, as it may affect some
+	// early debug messages
+        QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, parser->isSet("debug"));
+
 	readSettings();
 
 	setAttribute(Qt::WA_DeleteOnClose, true);
@@ -451,6 +457,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	this->aboutData = aboutData;
 	this->parser = parser;
 
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("d") << QLatin1String("debug"), i18n("Enable debug messages")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tempfile"), i18n("The files/URLs opened by the application will be deleted after use")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
