@@ -206,7 +206,7 @@ Authors
 
 KF5 port maintainer:
 
-* Mauro Carvalho Chehab <mchehab@osg.samsung.com>
+* Mauro Carvalho Chehab <mchehab@s-opensource.com> or <mchehab+kde@kernel.org>
 
 Maintainer:
 
