@@ -49,7 +49,7 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 		"[Warning ] ",
 		"[Critical] ",
 		"[Fatal   ] ",
-		"[System  ] "};
+		"[Info    ] "};
 	QString contextString, file = context.file;
 	QByteArray localMsg = msg.toLocal8Bit();
 	QString log;

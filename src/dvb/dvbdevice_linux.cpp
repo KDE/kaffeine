@@ -32,17 +32,20 @@ extern "C" {
   #include <frontend.h>
   #include <poll.h>
   #include <stdlib.h>
+  #include <sys/syslog.h>
   #include <unistd.h>
   #include <vector>
   #include <sys/socket.h>
   #include <sys/un.h>
   #include <sys/types.h>
+  #include <sys/inotify.h>
   #include <sys/ioctl.h>
   #include <sys/stat.h>
-  #include <sys/inotify.h>
+  #include <sys/syslog.h>
 }
 
 #include <QFile>
+#include <QMessageLogger>
 #include <QRegularExpressionMatch>
 #include <Solid/Device>
 #include <Solid/DeviceNotifier>
@@ -65,33 +68,35 @@ DvbLinuxDevice::~DvbLinuxDevice()
 	stopDevice();
 }
 
-static const char loglevel[9][10] = {
-	{"EMERG"},
-	{"ALERT"},
-	{"CRITICAL"},
-	{"ERROR"},
-	{"WARNING"},
-	{"NOTICE"},
-	{"INFO"},
-	{"DEBUG"},
-	{"OTHER"},
-};
-
-#define loglevels ((int)(sizeof(loglevel)/sizeof(*loglevel)))
-
 static void dvbv5_log(int level, const char *fmt, ...)
 {
 	va_list ap;
 	char log[1024];
 
-	if (level >= loglevels)
-		level = loglevels - 1;
-
 	va_start(ap, fmt);
 	vsnprintf(log, sizeof(log), fmt, ap);
 	va_end(ap);
 
-	qInfo() << "DvbLinuxDevice::libdvbv5" << loglevel[level] << log;
+	switch(LOG_PRI(level)) {
+	case LOG_DEBUG:
+	case LOG_INFO:
+		qDebug("%s", log);
+		break;
+	case LOG_NOTICE:
+		qInfo("%s", log);
+		break;
+	case LOG_WARNING:
+		qWarning("%s", log);
+		break;
+	case LOG_ERR:
+		qFatal("%s", log);
+		break;
+	case LOG_CRIT:
+	case LOG_ALERT:
+	case LOG_EMERG:
+		qCritical("%s", log);
+		break;
+	}
 }
 
 bool DvbLinuxDevice::isReady() const
