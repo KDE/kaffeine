@@ -47,7 +47,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	setWindowTitle(i18nc("@title:window", "Program Guide"));
 
 	QWidget *mainWidget = new QWidget(this);
-	QBoxLayout *mainLayout = new QVBoxLayout;
+	QBoxLayout *mainLayout = new QHBoxLayout;
 	setLayout(mainLayout);
 
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
@@ -117,7 +117,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	mainLayout->addLayout(rightLayout);
 	mainLayout->addWidget(widget);
 
-	mainLayout->addWidget(buttonBox);
+	rightLayout->addWidget(buttonBox);
 }
 
 DvbEpgDialog::~DvbEpgDialog()
