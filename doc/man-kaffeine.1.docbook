@@ -147,7 +147,7 @@ url="help:/kaffeine ">help:/kaffeine</ulink>
 <userinput><command>khelpcenter</command>
 <parameter>help:/kaffeine</parameter></userinput>).</member>
 <member>kf5options(1)</member>
-<!--<member>qt5options(1)</member>  only for application with a GUI FIXME use if we have an updated man page qt5options-->
+<member>qt5options(1)</member>
 <member>dvbv5-scan(1)</member>
 <member>w-scan(1)</member>
 <member>There is also further information available at the
