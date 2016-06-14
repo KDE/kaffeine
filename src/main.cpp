@@ -38,6 +38,10 @@
 
 #include <config-kaffeine.h>
 
+extern "C" {
+  #include <unistd.h>
+}
+
 #include "configurationdialog.h"
 #include "mainwindow.h"
 #include "sqlhelper.h"
@@ -50,6 +54,12 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 		"[Critical] ",
 		"[Fatal   ] ",
 		"[Info    ] "};
+	static const QString color[] {
+		"\033[32m",	// Debug
+		"\033[33m",	// Warning
+		"\033[31m",	// Critical
+		"\033[1;31m",	// Fatal
+		"\033[36m"};	// Info
 	QString contextString, file = context.file;
 	QByteArray localMsg = msg.toLocal8Bit();
 	QString log;
@@ -71,7 +81,11 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 	log.append(localMsg.constData());
 	log.append("\n");
 
+	if (isatty(STDERR_FILENO) && (type <= 4))
+		std::cerr << color[type].toLocal8Bit().constData();
 	std::cerr << log.toLocal8Bit().constData();
+	if (isatty(STDERR_FILENO) && (type <= 4))
+		std::cerr << "\x1b[37m";
 
 	Log newLog;
 	newLog.storeLog(log);
