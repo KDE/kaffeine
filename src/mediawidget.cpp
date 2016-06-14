@@ -1162,6 +1162,9 @@ void MediaWidget::wheelEvent(QWheelEvent *event)
 
 void MediaWidget::playbackFinished()
 {
+	if (source->getType() == MediaSource::Url)
+		emit playlistNext();
+
 	source->playbackFinished();
 }
 
