@@ -146,8 +146,8 @@ url="help:/kaffeine ">help:/kaffeine</ulink>
 (either enter this &URL; into &konqueror;, or run
 <userinput><command>khelpcenter</command>
 <parameter>help:/kaffeine</parameter></userinput>).</member>
-<member>kf5options(1)</member>
-<member>qt5options(1)</member>
+<member>kf5options(7)</member>
+<member>qt5options(7)</member>
 <member>dvbv5-scan(1)</member>
 <member>w-scan(1)</member>
 <member>There is also further information available at the
