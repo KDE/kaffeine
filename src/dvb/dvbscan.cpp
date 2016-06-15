@@ -451,6 +451,7 @@ void DvbScan::start()
 void DvbScan::deviceStateChanged()
 {
 	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
+		qWarning("%s", qPrintable(i18n("Device was released. Stopping scan")));
 		emit scanFinished();
 		return;
 	}
@@ -568,6 +569,7 @@ void DvbScan::updateState()
 			}
 
 			if (isLive) {
+				qInfo("%s", qPrintable(i18n("Scanning while live stream. Can't change the transponder")));
 				emit scanFinished();
 				return;
 			}
@@ -585,6 +587,7 @@ void DvbScan::updateState()
 				emit scanProgress((100 * transponderIndex) / transponders.size());
 			}
 
+			qDebug("%s", qPrintable(i18n("Transponder %1/%2", transponderIndex, transponders.size())));
 			if (transponderIndex >= transponders.size()) {
 				emit scanFinished();
 				return;
@@ -1002,6 +1005,8 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			DvbDescriptor::bcdToInt(cableDescriptor.symbolRate(), 100);
 		dvbCTransponder->modulation = extractDvbCModulation(cableDescriptor);
 		dvbCTransponder->fecRate = extractDvbCFecRate(cableDescriptor);
+
+		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbCTransponder->frequency)));
 		break;
 	    }
 	case DvbTransponderBase::DvbS:
@@ -1039,6 +1044,8 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		dvbSTransponder->symbolRate =
 			DvbDescriptor::bcdToInt(satelliteDescriptor.symbolRate(), 100);
 		dvbSTransponder->fecRate = extractDvbSFecRate(satelliteDescriptor);
+
+		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbSTransponder->frequency)));
 		break;
 	    }
 	case DvbTransponderBase::DvbT2:
@@ -1071,6 +1078,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		if (dvbTTransponder->hierarchy == DvbTTransponder::HierarchyNone) {
 			dvbTTransponder->fecRateLow = DvbTTransponder::FecNone;
 		}
+		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbTTransponder->frequency)));
 
 		break;
 	    }
@@ -1106,9 +1114,12 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 					break;
 				}
 			}
-			if (!duplicate)
+			if (!duplicate) {
 				transponders.append(newTransponder);
+				qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", isdbTTransponder->frequency)));
+			}
 		}
+		// Avoid ISDB-T to be handled on the check below
 		newTransponder = DvbTransponder(DvbTransponderBase::IsdbT);
 
 		break;
