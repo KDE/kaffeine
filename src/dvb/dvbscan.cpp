@@ -985,16 +985,16 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
 		qWarning("%s", qPrintable(i18n("Invalid transponder type")));
-		break;
+		return;
 	case DvbTransponderBase::DvbC: {
 		if (descriptor.descriptorTag() != 0x44) {
-			break;
+			return;
 		}
 
 		DvbCableDescriptor cableDescriptor(descriptor);
 
 		if (!cableDescriptor.isValid()) {
-			break;
+			return;
 		}
 
 		newTransponder = DvbTransponder(DvbTransponderBase::DvbC);
@@ -1012,13 +1012,13 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 	case DvbTransponderBase::DvbS:
 	case DvbTransponderBase::DvbS2: {
 		if (descriptor.descriptorTag() != 0x43) {
-			break;
+			return;
 		}
 
 		DvbSatelliteDescriptor satelliteDescriptor(descriptor);
 
 		if (!satelliteDescriptor.isValid()) {
-			break;
+			return;
 		}
 
 		DvbSTransponder *dvbSTransponder;
@@ -1028,7 +1028,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			dvbSTransponder = newTransponder.as<DvbSTransponder>();
 		} else {
 			if ((device->getTransmissionTypes() & DvbDevice::DvbS2) == 0) {
-				break;
+				return;
 			}
 
 			newTransponder = DvbTransponder(DvbTransponderBase::DvbS2);
@@ -1054,13 +1054,13 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 
 	case DvbTransponderBase::DvbT: {
 		if (descriptor.descriptorTag() != 0x5a) {
-			break;
+			return;
 		}
 
 		DvbTerrestrialDescriptor terrestrialDescriptor(descriptor);
 
 		if (!terrestrialDescriptor.isValid()) {
-			break;
+			return;
 		}
 
 		newTransponder = DvbTransponder(DvbTransponderBase::DvbT);
@@ -1078,21 +1078,21 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		if (dvbTTransponder->hierarchy == DvbTTransponder::HierarchyNone) {
 			dvbTTransponder->fecRateLow = DvbTTransponder::FecNone;
 		}
-		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbTTransponder->frequency)));
 
+		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbTTransponder->frequency)));
 		break;
 	    }
 	case DvbTransponderBase::Atsc:
-		break;
+		return;
 	case DvbTransponderBase::IsdbT:
 		if (descriptor.descriptorTag() != 0xfa) {
-			break;
+			return;
 		}
 
 		IsdbTerrestrialDescriptor IsdbTDescriptor(descriptor);
 
 		if (!IsdbTDescriptor.isValid()) {
-			break;
+			return;
 		}
 
 		for (int i = 0; i < IsdbTDescriptor.frequencyLength(); i++) {
@@ -1122,31 +1122,23 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 					break;
 				}
 			}
-			if (!duplicate) {
-				transponders.append(newTransponder);
-				qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", isdbTTransponder->frequency)));
-			}
-		}
-		// Avoid ISDB-T to be handled on the check below
-		newTransponder = DvbTransponder(DvbTransponderBase::IsdbT);
+			if (duplicate)
+				continue;
 
-		break;
-	}
-
-	if (newTransponder.isValid()) {
-		bool duplicate = false;
-
-		foreach (const DvbTransponder &existingTransponder, transponders) {
-			if (existingTransponder.corresponds(newTransponder)) {
-				duplicate = true;
-				break;
-			}
-		}
-
-		if (!duplicate) {
 			transponders.append(newTransponder);
+			qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", isdbTTransponder->frequency)));
 		}
+		return;
 	}
+
+
+	// New transponder was found. Add it
+	foreach (const DvbTransponder &existingTransponder, transponders) {
+		if (existingTransponder.corresponds(newTransponder))
+			return;
+	}
+
+	transponders.append(newTransponder);
 }
 
 void DvbScan::filterFinished(DvbScanFilter *filter)
