@@ -726,8 +726,7 @@ void DvbDevice::frontendEvent()
 	DvbTransponderBase::TransmissionType transmissionType = autoTransponder.getTransmissionType();
 
 	if (backend->isTuned()) {
-		// xgettext:no-c-format
-		qDebug("%s", qPrintable(i18n("tuning succeeded on %1 MHz", backend->getFrqMHz())));
+		qDebug("tuning succeeded on %.2f MHz", backend->getFrqMHz());
 		frontendTimer.stop();
 		backend->getProps(autoTransponder);
 		setDeviceState(DeviceTuned);
@@ -742,8 +741,7 @@ void DvbDevice::frontendEvent()
 		frontendTimer.stop();
 
 		if (!isAuto) {
-			// xgettext:no-c-format
-			qDebug("%s", qPrintable(i18n("tuning failed on %1 MHz", backend->getFrqMHz())));
+			qDebug("tuning failed on %.2f MHz", backend->getFrqMHz());
 			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 			return;
@@ -860,8 +858,7 @@ void DvbDevice::frontendEvent()
 		if (!carry) {
 			tune(autoTransponder);
 		} else {
-			// xgettext:no-c-format
-			qDebug("%s", qPrintable(i18n("tuning failed on %1 MHz", backend->getFrqMHz())));;
+			qDebug("tuning failed on %.2f MHz", backend->getFrqMHz());;
 			setDeviceState(DeviceIdle);
 		}
 	}
@@ -903,8 +900,7 @@ void DvbDevice::stop()
 		foreach (DvbPidFilter *filter, it->filters) {
 			if ((filter != &dummyPidFilter) && (filter != dataDumper)) {
 				int pid = it.key();
-				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("removing pending filter %1", pid)));
+				qDebug("removing pending filter %d", pid);
 				removePidFilter(pid, filter);
 			}
 		}
@@ -915,8 +911,7 @@ void DvbDevice::stop()
 		foreach (DvbSectionFilter *sectionFilter, it->sectionFilters) {
 			if (sectionFilter != &dummySectionFilter) {
 				int pid = it.key();
-				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("removing pending filter %1", pid)));
+				qDebug("removing pending filter %d", pid);
 				removeSectionFilter(pid, sectionFilter);
 			}
 		}

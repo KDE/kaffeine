@@ -877,8 +877,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 	stopDvr();
 	fe_delivery_system_t delsys;
 
-	// xgettext:no-c-format
-	qDebug("%s", qPrintable(i18n("tune to: %1", transponder.toString())));
+	qDebug("tune to: %s", qPrintable(transponder.toString()));
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::DvbS: {

@@ -166,8 +166,7 @@ void VlcMediaWidget::setAudioDevice(QString device)
 	for (i = vlcAudioOutput; i != NULL; i = i->p_next) {
 		if (device.compare(QString::fromUtf8(i->psz_description)))
 			continue;
-		// xgettext:no-c-format
-		qDebug("%s", qPrintable(i18n("Setting audio output to: %1", i->psz_device)));
+		qDebug("Setting audio output to: %s", qPrintable(i->psz_device));
 
 		libvlc_audio_output_device_set(vlcMediaPlayer, NULL, i->psz_device);
 	}

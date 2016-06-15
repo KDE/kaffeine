@@ -587,7 +587,7 @@ void DvbScan::updateState()
 				emit scanProgress((100 * transponderIndex) / transponders.size());
 			}
 
-			qDebug("%s", qPrintable(i18n("Transponder %1/%2", transponderIndex, transponders.size())));
+			qDebug("Transponder %d/%d", transponderIndex, transponders.size());
 			if (transponderIndex >= transponders.size()) {
 				emit scanFinished();
 				return;
@@ -1006,7 +1006,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		dvbCTransponder->modulation = extractDvbCModulation(cableDescriptor);
 		dvbCTransponder->fecRate = extractDvbCFecRate(cableDescriptor);
 
-		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbCTransponder->frequency)));
+		qDebug("Added transponder: %.2f MHz", dvbCTransponder->frequency / 1000000.);
 		break;
 	    }
 	case DvbTransponderBase::DvbS:
@@ -1045,7 +1045,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			DvbDescriptor::bcdToInt(satelliteDescriptor.symbolRate(), 100);
 		dvbSTransponder->fecRate = extractDvbSFecRate(satelliteDescriptor);
 
-		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbSTransponder->frequency)));
+		qDebug("Added transponder: %.2f MHz", dvbSTransponder->frequency / 1000000.);
 		break;
 	    }
 	case DvbTransponderBase::DvbT2:
@@ -1079,7 +1079,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			dvbTTransponder->fecRateLow = DvbTTransponder::FecNone;
 		}
 
-		qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", dvbTTransponder->frequency)));
+		qDebug("Added transponder: %.2f MHz", dvbTTransponder->frequency / 1000000.);
 		break;
 	    }
 	case DvbTransponderBase::Atsc:
@@ -1126,7 +1126,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 				continue;
 
 			transponders.append(newTransponder);
-			qDebug("%s", qPrintable(i18n("Added transponder: %1 MHz", isdbTTransponder->frequency)));
+			qDebug("Added transponder: %.2f MHz", isdbTTransponder->frequency / 1000000.);
 		}
 		return;
 	}

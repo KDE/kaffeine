@@ -283,8 +283,7 @@ void DvbRecordingModel::disableLessImportant(DvbSharedRecording &recording1, Dvb
 void DvbRecordingModel::addToUnwantedRecordings(DvbSharedRecording recording)
 {
 	unwantedRecordings.append(recording);
-	// xgettext:no-c-format
-	qDebug("%s", qPrintable(i18n("executed %1", recording->name)));
+	qDebug("executed %s", qPrintable(recording->name));
 }
 
 void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
@@ -298,7 +297,7 @@ void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 		child->start(stopCommand);
 		qWarning("%s", qPrintable(i18n("not execute cmd")));
 	}
-	qDebug("%s", qPrintable(i18n("executed.")));
+	qDebug("executed.");
 
 
 }
@@ -341,7 +340,7 @@ void DvbRecordingModel::removeDuplicates()
 	}
 	epgModel->setRecordings(recordingMap);
 
-	qDebug("%s", qPrintable(i18n("executed.")));
+	qDebug("executed.");
 
 }
 
@@ -386,8 +385,7 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 				&& QString::compare(entry.channel->name, loopEntry.channel->name) == 0
 				&& QString::compare((entry.duration).toString(),
 						loopEntry.duration.addSecs(- manager->getBeginMargin() - manager->getEndMargin()).toString()) == 0) {
-			// xgettext:no-c-format
-			qDebug("%s", qPrintable(i18n("Found from unwanteds  %1", loopEntry.name)));
+			qDebug("Found from unwanteds %s", qPrintable(loopEntry.name));
 			found = true;
 			break;
 		}
@@ -421,8 +419,7 @@ void DvbRecordingModel::disableConflicts()
 		{
 			if (isInConflictWithAll(rec2, conflictList)) {
 				conflictList.append(rec2);
-				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("'%1' '%2' and '%3' '%4'", rec1->name, rec1->begin.toString(), rec2->name, rec2->begin.toString())));
+				qDebug("conflict: '%s' '%s' and '%s' '%s'", qPrintable(rec1->name), qPrintable(rec1->begin.toString()), qPrintable(rec2->name), qPrintable(rec2->begin.toString()));
 
 			}
 
@@ -486,15 +483,13 @@ DvbSharedRecording DvbRecordingModel::getLeastImportant(QList<DvbSharedRecording
 	DvbSharedRecording leastImportant = recList.value(0);
 	foreach(DvbSharedRecording listRec, recList)
 	{
-		// xgettext:no-c-format
-		qDebug("%s", qPrintable(i18n("name and priority %1 %2", listRec->name , listRec->priority)));
+		qDebug("name and priority %s %s", qPrintable(listRec->name), qPrintable(listRec->priority));
 		if (listRec->priority < leastImportant->priority) {
 			leastImportant = listRec;
 		}
 	}
 
-	// xgettext:no-c-format
-	qDebug("%s", qPrintable(i18n("%1", leastImportant->name)));
+	qDebug("least important: %s", qPrintable(leastImportant->name));
 	return leastImportant;
 }
 
@@ -511,8 +506,7 @@ void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList
 			if (listRecShared->priority == leastImportance) {
 				listRec.disabled = true;
 				updateRecording(listRecShared, listRec);
-				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("disabled: %1 %2", listRec.name , listRec.begin.toString())));
+				qDebug("disabled: %s %s", qPrintable(listRec.name), qPrintable(listRec.begin.toString()));
 			}
 		}
 	}
@@ -544,8 +538,7 @@ void DvbRecordingModel::findNewRecordings()
 					int priority = manager->getRecordingRegexPriorityList().value(i);
 					epgModel->scheduleProgram(epgMap.value(key), manager->getBeginMargin(),
 							manager->getEndMargin(), false, priority);
-					// xgettext:no-c-format
-					qDebug("%s", qPrintable(i18n("scheduled %1", title)));
+					qDebug("scheduled %s", qPrintable(title));
 					}
 				}
 			}
@@ -553,7 +546,7 @@ void DvbRecordingModel::findNewRecordings()
 		}
 	}
 
-	qDebug("%s", qPrintable(i18n("executed.")));
+	qDebug("executed.");
 }
 
 void DvbRecordingModel::timerEvent(QTimerEvent *event)
@@ -645,8 +638,7 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 		}
 		if (end > QDateTime::currentDateTime().toUTC() && rec.begin <= QDateTime::currentDateTime().toUTC()) {
 			timeUntil = 0;
-			// xgettext:no-c-format
-			qDebug("%s", qPrintable(i18n("rec ongoing %1", rec.name)));
+			qDebug("rec ongoing %s", qPrintable(rec.name));
 			break;
 		}
 		if (rec.begin > QDateTime::currentDateTime().toUTC()) {
@@ -657,8 +649,7 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 
 	}
 
-	// xgettext:no-c-format
-	qDebug("%s", qPrintable(i18n("returned TRUE %1", QString::number(timeUntil))));
+	qDebug("returned TRUE %ld", timeUntil);
 	return timeUntil;
 }
 
@@ -675,7 +666,7 @@ bool DvbRecordingModel::shouldWeScanChannels() const
 		if (DvbRecordingModel::getSecondsUntilNextRecording() > numberOfChannels * 10) {
 			if (DvbRecordingModel::isScanWhenIdle()) {
 				return true;
-				qDebug("%s", qPrintable(i18n("returned TRUE")));
+				qDebug("returned TRUE");
 			}
 		}
 	}
@@ -689,13 +680,12 @@ void delay(int seconds)
 	while (QTime::currentTime() < dieTime)
 		QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 
-	// xgettext:no-c-format
 	qInfo("%s", qPrintable(i18n("Delayed for %1 seconds", QString::number(seconds))));
 }
 
 void DvbRecordingModel::scanChannels()
 {
-	qDebug("%s", qPrintable(i18n("executed")));
+	qDebug("executed");
 
 	if (shouldWeScanChannels()) {
 		DvbChannelModel *channelModel = manager->getChannelModel();
@@ -708,8 +698,7 @@ void DvbRecordingModel::scanChannels()
 			}
 			if (channel.isValid()) {
 				// TODO update tab
-				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("executed %1", channel->name)));
+				qDebug("executed %s", qPrintable(channel->name));
 				manager->getLiveView()->playChannel(channel);
 				delay(5);
 			}

@@ -410,11 +410,11 @@ void DvbConfigDialog::removeRegex()
 	}
 	foreach(RegexInputLine *inputLine, copyList)
 	{
-		qDebug("%s", qPrintable(i18n("list:")));
+		qDebug("list:");
 		if (inputLine->checkBox->isChecked()){
-			qDebug("%s", qPrintable(i18n("checked:")));
+			qDebug("checked:");
 			if (regexInputList.removeOne(inputLine)) {
-				qDebug("%s", qPrintable(i18n("removed:")));
+				qDebug("removed:");
 			}
 		}
 	}
@@ -628,11 +628,9 @@ void DvbConfigDialog::accept()
 	foreach (RegexInputLine *regexInputLine, regexInputList)
 	{
 		manager->addRecordingRegex(regexInputLine->lineEdit->text());
-		// xgettext:no-c-format
-		qDebug("%s", qPrintable(i18n("saved regex: %1", regexInputLine->lineEdit->text())));
+		qDebug("saved regex: %s", qPrintable(regexInputLine->lineEdit->text()));
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
-		// xgettext:no-c-format
-		qDebug("%s", qPrintable(i18n("saved priority: %1", regexInputLine->spinBox->value())));
+		qDebug("saved priority: %i", regexInputLine->spinBox->value());
 	}
 
 	bool latitudeOk;
