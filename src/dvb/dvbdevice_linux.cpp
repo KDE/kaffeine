@@ -90,8 +90,6 @@ static void dvbv5_log(int level, const char *fmt, ...)
 		qWarning("%s", log);
 		break;
 	case LOG_ERR:
-		qFatal("%s", log);
-		break;
 	case LOG_CRIT:
 	case LOG_ALERT:
 	case LOG_EMERG:
