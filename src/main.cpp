@@ -30,6 +30,7 @@
 #include <QCommandLineParser>
 #include <QDateTime>
 #include <QDir>
+#include <QLoggingCategory>
 #include <QPointer>
 #include <QStandardPaths>
 #include <QString>
@@ -55,43 +56,52 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 		"[Fatal   ] ",
 		"[Info    ] "};
 	static const QString color[] {
-		"\033[32m",	// Debug
-		"\033[33m",	// Warning
-		"\033[31m",	// Critical
-		"\033[1;31m",	// Fatal
-		"\033[36m"};	// Info
+		"\x1b[0;32m",	// Debug
+		"\x1b[0;33m",	// Warning
+		"\x1b[0;31m",	// Critical
+		"\x1b[1;31m",	// Fatal
+		"\x1b[0;37m"};	// Info
 	QString contextString, file = context.file;
 	QByteArray localMsg = msg.toLocal8Bit();
 	QString log;
 
 	file.remove(QRegExp(".*/kaffeine/"));
 
-	if (context.line)
-		contextString = QStringLiteral("%1#%2: ")
+	if (context.line && QLoggingCategory::defaultCategory()->isEnabled(QtDebugMsg))
+		contextString = QStringLiteral("%1#%2: %3: ")
 						.arg(file)
-						.arg(context.line);
+						.arg(context.line)
+						.arg(context.function);
 
 	QString timeStr(QDateTime::currentDateTime().toString("dd-MM-yy HH:mm:ss.zzz "));
 
 	log.append(timeStr);
 	if (type <= 4)
 		log.append(typeStr[type]);
-	if (!contextString.isEmpty())
-		log.append(contextString);
-	log.append(localMsg.constData());
-	log.append("\n");
 
 	if (isatty(STDERR_FILENO) && (type <= 4))
 		std::cerr << color[type].toLocal8Bit().constData();
 	std::cerr << log.toLocal8Bit().constData();
-	if (isatty(STDERR_FILENO) && (type <= 4))
-		std::cerr << "\x1b[37m";
 
-	Log newLog;
-	newLog.storeLog(log);
+	if (!contextString.isEmpty()) {
+		if (isatty(STDERR_FILENO))
+			std::cerr << "\x1b[0;33m";
+		std::cerr << contextString.toLocal8Bit().constData();
+	}
+
+	if (isatty(STDERR_FILENO))
+		std::cerr << "\x1b[0;37m";
+
+	std::cerr << localMsg.constData() << "\n";
 
 	if (type == QtFatalMsg)
 		abort();
+
+	log.append(localMsg.constData());
+	log.append("\n");
+
+	Log newLog;
+	newLog.storeLog(log);
 }
 
 class KaffeineApplication : public QApplication
