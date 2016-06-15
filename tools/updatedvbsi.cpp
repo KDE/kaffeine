@@ -217,7 +217,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		cppStream << funcName << "(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)\n";
 		cppStream << "{\n";
 		cppStream << "\tif (getLength() < " << (minBits / 8) << ") {\n";
-		cppStream << "\t\tqInfo() << \"" << funcName << ": invalid descriptor\";\n";
+		cppStream << "\t\tqWarning(\"%s\", qPrintable(\"" << funcName << ": \" + i18n(\"invalid descriptor\")));\n";
 		cppStream << "\t\tinitSectionData();\n";
 		cppStream << "\t\treturn;\n";
 		cppStream << "\t}\n";
@@ -230,7 +230,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 		cppStream << "{\n";
 		cppStream << "\tif (size < " << (minBits / 8) << ") {\n";
 		cppStream << "\t\tif (size != 0) {\n";
-		cppStream << "\t\t\tqInfo() << \"" << funcName <<": invalid entry\";\n";
+		cppStream << "\t\tqWarning(\"%s\", qPrintable(\"" << funcName << ": \" + i18n(\"invalid entry\")));\n";
 		cppStream << "\t\t}\n";
 		cppStream << "\n";
 		cppStream << "\t\tinitSectionData();\n";
@@ -266,7 +266,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 			cppStream << "\tint entryLength = ((" << entryLengthCalculation << ") + " << ((element.bitIndex + element.bits) / 8) << ");\n";
 			cppStream << "\n";
 			cppStream << "\tif (entryLength > size) {\n";
-			cppStream << "\t\tqInfo() << \"" << funcName <<": adjusting length\";\n";
+			cppStream << "\t\tqWarning(\"%s\", qPrintable(\"" << funcName << ": \" + i18n(\"adjusting length\")));\n";
 			cppStream << "\t\tentryLength = size;\n";
 			cppStream << "\t}\n";
 			cppStream << "\n";
@@ -326,11 +326,11 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 		if (element.offsetString.isEmpty()) {
 			cppStream << "\tif (" << element.name << "Length > (getLength() - " << (minBits / 8) << ")) {\n";
-			cppStream << "\t\tqInfo() << \"" << funcName <<": adjusting length\";\n";
+			cppStream << "\t\tqWarning(\"%s\", qPrintable(\"" << funcName << ": \" + i18n(\"adjusting length\")));\n";
 			cppStream << "\t\t" << element.name << "Length = (getLength() - " << (minBits / 8) << ");\n";
 		} else {
 			cppStream << "\tif (" << element.name << "Length > (getLength() - (" << (minBits / 8) << element.offsetString << "))) {\n";
-			cppStream << "\t\tqInfo() << \"" << funcName <<": adjusting length\";\n";
+			cppStream << "\t\tqWarning(\"%s\", qPrintable(\"" << funcName << ": \" + i18n(\"adjusting length\")));\n";
 			cppStream << "\t\t" << element.name << "Length = (getLength() - (" << (minBits / 8) << element.offsetString << "));\n";
 		}
 
