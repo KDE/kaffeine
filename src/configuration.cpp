@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -38,7 +39,8 @@ Configuration::Configuration()
 	if ((value >= 0) && (value <= StartupLastValue)) {
 		startupDisplayMode = static_cast<StartupDisplayMode>(value);
 	} else {
-		qInfo() << "Configuration::Configuration: unknown startup display mode" << value;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("Configuration::Configuration: unknown startup display mode %1", value)));
 	}
 
 	shortSkipDuration =
@@ -70,8 +72,8 @@ void Configuration::setStartupDisplayMode(int newStartupDisplayMode)
 		KSharedConfig::openConfig()->group("MainWindow").writeEntry("StartupDisplayMode",
 			static_cast<int>(startupDisplayMode));
 	} else {
-		qInfo() << "Configuration::setStartupDisplayMode: unknown startup display mode" <<
-			newStartupDisplayMode;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("Configuration::setStartupDisplayMode: unknown startup display mode %1", newStartupDisplayMode)));
 	}
 }
 

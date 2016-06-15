@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
 #endif
 
-#include <KLocalizedString>
 #include <QDir>
 #include <QDomDocument>
 #include <QLocale>
@@ -42,14 +42,15 @@ bool Playlist::load(const QUrl &url_, Format format)
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		qInfo() << "Playlist::load: opening remote playlists not supported yet";
+		qInfo("%s", qPrintable(i18n("Playlist::load: opening remote playlists not supported yet")));
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		qInfo() << "Playlist::load: cannot open file" << file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("Playlist::load: cannot open file %1", file.fileName())));
 		return false;
 	}
 
@@ -75,14 +76,15 @@ bool Playlist::save(Format format) const
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		qInfo() << "Playlist::save: opening remote playlists not supported yet";
+		qInfo("%s", qPrintable(i18n("Playlist::save: opening remote playlists not supported yet")));
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qInfo() << "Playlist::save: cannot open file" << file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("Playlist::save: cannot open file %1", file.fileName())));
 		return false;
 	}
 

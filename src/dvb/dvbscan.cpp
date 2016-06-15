@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -125,7 +126,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	int sectionCount = section.lastSectionNumber() + 1;
 
 	if (section.sectionNumber() >= sectionCount) {
-		qInfo() << "DvbScanFilter::checkMultipleSection: current > last";
+		qInfo("%s", qPrintable(i18n("DvbScanFilter::checkMultipleSection: current > last")));
 		sectionCount = section.sectionNumber() + 1;
 	}
 
@@ -133,8 +134,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 		multipleSections.resize(sectionCount);
 	} else {
 		if (multipleSections.size() != sectionCount) {
-			qInfo() << "DvbScanFilter::checkMultipleSection: "
-			    "inconsistent number of sections";
+			qInfo("%s", qPrintable(i18n("DvbScanFilter::checkMultipleSection: inconsistent number of sections")));
 
 			if (multipleSections.size() < sectionCount) {
 				multipleSections.resize(sectionCount);
@@ -241,8 +241,8 @@ void DvbScanFilter::processSection(const char *data, int size)
 
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
-	qInfo() << "DvbScanFilter::timerEvent: timeout while reading section; type =" << type <<
-		QLatin1String("pid =") << pid;
+	// xgettext:no-c-format
+	qInfo("%s", qPrintable(i18n("DvbScanFilter::timerEvent: timeout while reading section; type = %1, pid = %2", type, pid)));
 	scan->filterFinished(this);
 }
 
@@ -981,7 +981,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
-		qInfo() << "DvbScan::processNitDescriptor: Invalid transponder type";
+		qInfo("%s", qPrintable(i18n("DvbScan::processNitDescriptor: Invalid transponder type")));
 		break;
 	case DvbTransponderBase::DvbC: {
 		if (descriptor.descriptorTag() != 0x44) {

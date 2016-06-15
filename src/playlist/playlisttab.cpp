@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -25,7 +26,6 @@
 
 #include <KActionCollection>
 #include <KFileWidget>
-#include <KLocalizedString>
 #include <QAction>
 #include <QBoxLayout>
 #include <QFileDialog>
@@ -52,8 +52,8 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		file.setFileName(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
-			qInfo() << "PlaylistBrowserModel::PlaylistBrowserModel: cannot open file" <<
-				file.fileName();
+			// xgettext:no-c-format
+			qInfo("%s", qPrintable(i18n("PlaylistBrowserModel::PlaylistBrowserModel: cannot open file %1", file.fileName())));
 			return;
 		}
 	}
@@ -74,8 +74,8 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		// compatibility code
 		hasSubtitles = false;
 	} else if (version != 0x361c4a3c) {
-		qInfo() << "PlaylistBrowserModel::PlaylistBrowserModel: cannot read file" <<
-			file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file %1", file.fileName())));
 		return;
 	}
 
@@ -118,8 +118,8 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			qInfo() << "PlaylistBrowserModel::PlaylistBrowserModel: cannot read file" <<
-				file.fileName();
+			// xgettext:no-c-format
+			qInfo("%s", qPrintable(i18n("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file %1", file.fileName())));
 			delete playlist;
 			break;
 		}
@@ -133,8 +133,8 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qInfo() << "PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file" <<
-			file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file %1", file.fileName())));
 		return;
 	}
 

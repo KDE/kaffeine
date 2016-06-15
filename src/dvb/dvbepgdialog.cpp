@@ -18,13 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
 #endif
 
 #include <KConfigGroup>
-#include <KLocalizedString>
 #include <QAction>
 #include <QBoxLayout>
 #include <QCoreApplication>
@@ -311,7 +311,7 @@ DvbEpgTableModel::~DvbEpgTableModel()
 void DvbEpgTableModel::setEpgModel(DvbEpgModel *epgModel_)
 {
 	if (epgModel != NULL) {
-		qInfo() << "DvbEpgTableModel::setEpgModel: epg model already set";
+		qInfo("%s", qPrintable(i18n("DvbEpgTableModel::setEpgModel: epg model already set")));
 		return;
 	}
 

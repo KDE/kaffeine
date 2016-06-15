@@ -18,13 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
 #endif
 
 #include <KConfigGroup>
-#include <KLocalizedString>
 #include <QAction>
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -233,7 +233,7 @@ DvbRecordingTableModel::~DvbRecordingTableModel()
 void DvbRecordingTableModel::setRecordingModel(DvbRecordingModel *recordingModel_)
 {
 	if (recordingModel != NULL) {
-		qInfo() << "DvbRecordingTableModel::setRecordingModel: recording model already set";
+		qInfo("%s", qPrintable(i18n("DvbRecordingTableModel::setRecordingModel: recording model already set")));
 		return;
 	}
 

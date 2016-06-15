@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -94,7 +95,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		qInfo() << "DvbEpgModel::DvbEpgModel: cannot open" << file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::DvbEpgModel: cannot open %1", file.fileName())));
 		return;
 	}
 
@@ -108,7 +110,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	if (version == 0x1ce0eca7) {
 		hasRecordingKey = false;
 	} else if (version != 0x79cffd36) {
-		qInfo() << "DvbEpgModel::DvbEpgModel: wrong version" << file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::DvbEpgModel: wrong version %1", file.fileName())));
 		return;
 	}
 
@@ -134,7 +137,8 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			qInfo() << "DvbEpgModel::DvbEpgModel: corrupt data" << file.fileName();
+			// xgettext:no-c-format
+			qInfo("%s", qPrintable(i18n("DvbEpgModel::DvbEpgModel: corrupt data %1", file.fileName())));
 			break;
 		}
 
@@ -145,17 +149,18 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 DvbEpgModel::~DvbEpgModel()
 {
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::~DvbEpgModel: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::~DvbEpgModel: illegal recursive call")));
 	}
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
-		qInfo() << "DvbEpgModel::~DvbEpgModel: filter list not empty";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::~DvbEpgModel: filter list not empty")));
 	}
 
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qInfo() << "DvbEpgModel::~DvbEpgModel: cannot open" << file.fileName();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::~DvbEpgModel: cannot open %1", file.fileName())));
 		return;
 	}
 
@@ -227,12 +232,12 @@ QList<DvbSharedEpgEntry> DvbEpgModel::getCurrentNext(const DvbSharedChannel &cha
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
 	if (!entry.validate()) {
-		qInfo() << "DvbEpgModel::addEntry: invalid entry";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::addEntry: invalid entry")));
 		return DvbSharedEpgEntry();
 	}
 
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::addEntry: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::addEntry: illegal recursive call")));
 		return DvbSharedEpgEntry();
 	}
 
@@ -275,12 +280,12 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 	int extraSecondsAfter, bool checkForRecursion, int priority)
 {
 	if (!entry.isValid() || (entries.value(DvbEpgEntryId(entry)) != entry)) {
-		qInfo() << "DvbEpgModel::scheduleProgram: invalid entry";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::scheduleProgram: invalid entry")));
 		return;
 	}
 
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::scheduleProgram: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::scheduleProgram: illegal recursive call")));
 		return;
 	}
 
@@ -389,7 +394,7 @@ void DvbEpgModel::channelAboutToBeUpdated(const DvbSharedChannel &channel)
 void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel)
 {
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::channelUpdated: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::channelUpdated: illegal recursive call")));
 		return;
 	}
 
@@ -408,7 +413,7 @@ void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel)
 void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 {
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::channelRemoved: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::channelRemoved: illegal recursive call")));
 		return;
 	}
 
@@ -424,7 +429,7 @@ void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 void DvbEpgModel::recordingRemoved(const DvbSharedRecording &recording)
 {
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::recordingRemoved: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::recordingRemoved: illegal recursive call")));
 		return;
 	}
 
@@ -443,7 +448,7 @@ void DvbEpgModel::timerEvent(QTimerEvent *event)
 	Q_UNUSED(event)
 
 	if (hasPendingOperation) {
-		qInfo() << "DvbEpgModel::timerEvent: illegal recursive call";
+		qInfo("%s", qPrintable(i18n("DvbEpgModel::timerEvent: illegal recursive call")));
 		return;
 	}
 

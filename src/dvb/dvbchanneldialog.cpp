@@ -18,13 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
 #endif
 
 #include <KConfigGroup>
-#include <KLocalizedString>
 #include <KMessageBox>
 #include <QAction>
 #include <QBoxLayout>
@@ -87,7 +87,7 @@ DvbChannelTableModel::~DvbChannelTableModel()
 void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
 {
 	if (channelModel != NULL) {
-		qInfo() << "DvbChannelTableModel::setChannelModel: channel model already set";
+		qInfo("%s", qPrintable(i18n("DvbChannelTableModel::setChannelModel: channel model already set")));
 		return;
 	}
 

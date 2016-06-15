@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -25,7 +26,6 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <KLocalizedString>
 #include <KMessageBox>
 #include <QDir>
 #include <QLocale>
@@ -451,16 +451,16 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-			qInfo() << "DvbLiveView::playbackStatusChanged: cannot open file" <<
-				internal->timeShiftFile.fileName();
+			// xgettext:no-c-format
+			qInfo("%s", qPrintable(i18n("DvbLiveView::playbackStatusChanged: cannot open file %1", internal->timeShiftFile.fileName())));
 			internal->timeShiftFile.setFileName(QDir::homePath() + QLatin1String("/TimeShift-") +
 				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) +
 				QLatin1String(".m2t"));
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-				qInfo() << "DvbLiveView::playbackStatusChanged: cannot open file" <<
-					internal->timeShiftFile.fileName();
+				// xgettext:no-c-format
+				qInfo("%s", qPrintable(i18n("DvbLiveView::playbackStatusChanged: cannot open file %1", internal->timeShiftFile.fileName())));
 				mediaWidget->stop();
 				break;
 			}
@@ -595,21 +595,21 @@ DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), med
 	updateUrl();
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
-		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed";
+		qInfo("%s", qPrintable(i18n("DvbLiveViewInternal::DvbLiveViewInternal: mkfifo failed")));
 		return;
 	}
 
 	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
-		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: open failed";
+		qInfo("%s", qPrintable(i18n("DvbLiveViewInternal::DvbLiveViewInternal: open failed")));
 		return;
 	}
 
 	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
-		qInfo() << "DvbLiveViewInternal::DvbLiveViewInternal: open failed";
+		qInfo("%s", qPrintable(i18n("DvbLiveViewInternal::DvbLiveViewInternal: open failed")));
 		return;
 	}
 

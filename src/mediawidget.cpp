@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -25,7 +26,6 @@
 
 #include <KActionCollection>
 #include <KConfigGroup>
-#include <KLocalizedString>
 #include <KSharedConfig>
 #include <KToolBar>
 #include <QBoxLayout>
@@ -813,7 +813,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 		return;
 	}
 
-	qInfo() << "MediaWidget::aspectRatioChanged: internal error";
+	qInfo("%s", qPrintable(i18n("MediaWidget::aspectRatioChanged: internal error")));
 }
 
 void MediaWidget::autoResizeTriggered(QAction *action)
@@ -841,7 +841,7 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 		}
 	}
 
-	qInfo() << "MediaWidget::autoResizeTriggered: internal error";
+	qInfo("%s", qPrintable(i18n("MediaWidget::autoResizeTriggered: internal error")));
 }
 
 void MediaWidget::pausedChanged(bool paused)

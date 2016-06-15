@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -25,7 +26,6 @@
 
 #include <KActionCollection>
 #include <KConfigGroup>
-#include <KLocalizedString>
 #include <KMessageBox>
 #include <KSharedConfig>
 #include <QAction>
@@ -462,7 +462,7 @@ void DvbTab::activate()
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
 	if (!channel.isValid()) {
-		qInfo() << "DvbTab::playChannel: channel is invalid";
+		qInfo("%s", qPrintable(i18n("DvbTab::playChannel: channel is invalid")));
 		return;
 	}
 

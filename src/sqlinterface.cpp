@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -38,7 +39,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		qInfo() << "SqlInterface::~SqlInterface: pending statements at destruction";
+		qInfo("%s", qPrintable(i18n("SqlInterface::~SqlInterface: pending statements at destruction")));
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -107,7 +108,8 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 			SqlKey sqlKey(static_cast<int>(fullKey));
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
-				qInfo() << "SqlInterface::sqlInit: invalid key" << fullKey;
+				// xgettext:no-c-format
+				qInfo("%s", qPrintable(i18n("SqlInterface::sqlInit: invalid key %1", fullKey)));
 				continue;
 			}
 
@@ -138,7 +140,8 @@ void SqlInterface::sqlInsert(SqlKey key)
 		break;
 	}
 
-	qInfo() << "SqlInterface::sqlInsert: invalid pending statement" << pendingStatement;
+	// xgettext:no-c-format
+	qInfo("%s", qPrintable(i18n("SqlInterface::sqlInsert: invalid pending statement %1", pendingStatement)));
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -158,7 +161,8 @@ void SqlInterface::sqlUpdate(SqlKey key)
 		break;
 	}
 
-	qInfo() << "SqlInterface::sqlUpdate: invalid pending statement" << pendingStatement;
+	// xgettext:no-c-format
+	qInfo("%s", qPrintable(i18n("SqlInterface::sqlUpdate: invalid pending statement %1", pendingStatement)));
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -179,7 +183,8 @@ void SqlInterface::sqlRemove(SqlKey key)
 		break;
 	}
 
-	qInfo() << "SqlInterface::sqlRemove: invalid pending statement" << pendingStatement;
+	// xgettext:no-c-format
+	qInfo("%s", qPrintable(i18n("SqlInterface::sqlRemove: invalid pending statement %1", pendingStatement)));
 }
 
 void SqlInterface::requestSubmission()
@@ -229,7 +234,8 @@ void SqlInterface::sqlSubmit()
 			continue;
 		}
 
-		qInfo() << "SqlInterface::sqlSubmit: invalid pending statement" << pendingStatement;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("SqlInterface::sqlSubmit: invalid pending statement %1", pendingStatement)));
 	}
 
 	pendingStatements.clear();

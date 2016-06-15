@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
 #endif
 
-#include <KLocalizedString>
 #include <QApplication>
 #include <QCursor>
 #include <QMouseEvent>
@@ -58,30 +58,33 @@ bool VlcMediaWidget::init()
 
 	vlcInstance = libvlc_new(argc, argv);
 	if (!vlcInstance) {
-		qInfo() << "libVLC: failed to use extra args:" << args;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("libVLC: failed to use extra args: %1", args)));
 		argc = 0;
 		vlcInstance = libvlc_new(0, NULL);
 		if (vlcInstance)
-			qInfo() << "Using libVLC without arguments";
+			qInfo("%s", qPrintable(i18n("Using libVLC without arguments")));
 	}
 
 	if (vlcInstance == NULL) {
-		qInfo() << "VlcMediaWidget::init: cannot create vlc instance" << QLatin1String(libvlc_errmsg());
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::init: cannot create vlc instance %1", QLatin1String(libvlc_errmsg()))));
 		return false;
 	}
 
 	if (argc) {
-		QString log = QLatin1String("Using libVLC with ");
+		QString log = i18n("Using libVLC with ");
 		for (int i = 0; i < argc; i++)
 			log += " " + QLatin1String(argv[i]);
 
-		qInfo() << log;
+		qInfo("%s", qPrintable(log));
 	}
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);
 
 	if (vlcMediaPlayer == NULL) {
-		qInfo() << "VlcMediaWidget::init: cannot create vlc media player" << QLatin1String(libvlc_errmsg());
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::init: cannot create vlc media player %1", QLatin1String(libvlc_errmsg()))));
 		return false;
 	}
 
@@ -93,7 +96,8 @@ bool VlcMediaWidget::init()
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qInfo() << "VlcMediaWidget::init: cannot attach event handler" << eventTypes[i];
+			// xgettext:no-c-format
+			qInfo("%s", qPrintable(i18n("VlcMediaWidget::init: cannot attach event handler %1", eventTypes[i])));
 			return false;
 		}
 	}
@@ -162,7 +166,8 @@ void VlcMediaWidget::setAudioDevice(QString device)
 	for (i = vlcAudioOutput; i != NULL; i = i->p_next) {
 		if (device.compare(QString::fromUtf8(i->psz_description)))
 			continue;
-		qInfo() << "Setting audio output to:" << i->psz_device;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("Setting audio output to: %1", i->psz_device)));
 
 		libvlc_audio_output_device_set(vlcMediaPlayer, NULL, i->psz_device);
 	}
@@ -178,7 +183,8 @@ void VlcMediaWidget::setVolume(int volume)
 {
 	// 0 <= volume <= 200
 	if (libvlc_audio_set_volume(vlcMediaPlayer, volume) != 0) {
-		qInfo() << "VlcMediaWidget::setVolume: cannot set volume" << volume;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::setVolume: cannot set volume %1", volume)));
 	}
 }
 
@@ -266,7 +272,8 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		qInfo() << "VlcMediaWidget::play: cannot create media" << source.getUrl().toDisplayString();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::play: cannot create media %1", source.getUrl().toDisplayString())));
 		return;
 	}
 
@@ -275,7 +282,8 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qInfo() << "VlcMediaWidget::play: cannot attach event handler" << eventTypes[i];
+			// xgettext:no-c-format
+			qInfo("%s", qPrintable(i18n("VlcMediaWidget::play: cannot attach event handler %1", eventTypes[i])));
 		}
 	}
 
@@ -287,7 +295,8 @@ void VlcMediaWidget::play(const MediaSource &source)
 //		setExternalSubtitle(source.subtitleUrl);
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		qInfo() << "VlcMediaWidget::play: cannot play media" << source.getUrl().toDisplayString();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::play: cannot play media %1", source.getUrl().toDisplayString())));
 	}
 
 	setCursor(Qt::BlankCursor);
@@ -344,8 +353,8 @@ void VlcMediaWidget::setExternalSubtitle(const QUrl &subtitleUrl)
 {
 	if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
 	    subtitleUrl.toEncoded().constData()) == 0) {
-		qInfo() << "VlcMediaWidget::setExternalSubtitle: cannot set subtitle file" <<
-			subtitleUrl.toDisplayString();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::setExternalSubtitle: cannot set subtitle file %1", subtitleUrl.toDisplayString())));
 	}
 }
 
@@ -636,7 +645,8 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	if (pendingUpdatesToBeAdded != 0) {
 		addPendingUpdates(pendingUpdatesToBeAdded);
 	} else {
-		qInfo() << "VlcMediaWidget::vlcEvent: unknown event type" << event->type;
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("VlcMediaWidget::vlcEvent: unknown event type %1", event->type)));
 	}
 }
 

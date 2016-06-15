@@ -18,6 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
@@ -25,7 +26,6 @@
 
 #include <KConfigGroup>
 #include <KIO/Job>
-#include <KLocalizedString>
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QCheckBox>
@@ -410,11 +410,11 @@ void DvbConfigDialog::removeRegex()
 	}
 	foreach(RegexInputLine *inputLine, copyList)
 	{
-		qInfo() << "DvbConfigDialog::removeRegex: list:";
+		qInfo("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: list:")));
 		if (inputLine->checkBox->isChecked()){
-			qInfo() << "DvbConfigDialog::removeRegex: checked:";
+			qInfo("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: checked:")));
 			if (regexInputList.removeOne(inputLine)) {
-				qInfo() << "DvbConfigDialog::removeRegex: removed:";
+				qInfo("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: removed:")));
 			}
 		}
 	}
@@ -628,11 +628,11 @@ void DvbConfigDialog::accept()
 	foreach (RegexInputLine *regexInputLine, regexInputList)
 	{
 		manager->addRecordingRegex(regexInputLine->lineEdit->text());
-		qInfo() << "DvbConfigDialog::accept: saved regex:" <<
-				regexInputLine->lineEdit->text();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("DvbConfigDialog::accept: saved regex: %1", regexInputLine->lineEdit->text())));
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
-		qInfo() << "DvbConfigDialog::accept: saved priority:" <<
-				regexInputLine->spinBox->value();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("DvbConfigDialog::accept: saved priority: %1", regexInputLine->spinBox->value())));
 	}
 
 	bool latitudeOk;

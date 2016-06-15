@@ -18,12 +18,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include <KLocalizedString>
 #include <QDebug>
 #if QT_VERSION < 0x050500
 # define qInfo qDebug
 #endif
 
-#include <KLocalizedString>
 #include <KMessageBox>
 #include <QSqlError>
 #include <QStandardPaths>
@@ -84,8 +84,8 @@ QSqlQuery SqlHelper::prepare(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.prepare(statement)) {
-		qInfo() << "SqlHelper::prepare: error while preparing statement" <<
-			query.lastError().text();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("SqlHelper::prepare: error while preparing statement %1", query.lastError().text())));
 	}
 
 	return query;
@@ -97,8 +97,8 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.exec(statement)) {
-		qInfo() << "SqlHelper::exec: error while executing statement" <<
-			query.lastError().text();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("SqlHelper::exec: error while executing statement %1", query.lastError().text())));
 	}
 
 	return query;
@@ -107,8 +107,8 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 void SqlHelper::exec(QSqlQuery &query)
 {
 	if (!query.exec()) {
-		qInfo() << "SqlHelper::exec: error while executing statement" <<
-			query.lastError().text();
+		// xgettext:no-c-format
+		qInfo("%s", qPrintable(i18n("SqlHelper::exec: error while executing statement %1", query.lastError().text())));
 	}
 }
 
