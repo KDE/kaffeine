@@ -640,6 +640,8 @@ void DvbScan::processPat(const DvbPatSection &section)
 		if (entry.programNumber() != 0x0) {
 			// skip 0x0 which has a special meaning
 			patEntries.append(DvbPatEntry(entry.programNumber(), entry.pid()));
+
+			qDebug("New PAT entry: pid %d, program %d", entry.pid(), entry.programNumber());
 		}
 	}
 }
@@ -664,6 +666,8 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		channel.serviceId = section.programNumber();
 		channel.snr = snr;
 		channels.append(channel);
+
+		qDebug("New channel: pid %d, service ID %d", pid, section.programNumber());
 	}
 }
 
@@ -690,6 +694,7 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 			break;
 		}
 
+		qDebug("New SDT entry: name %s, provider %s", qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
 		sdtEntries.append(sdtEntry);
 	}
 }
@@ -737,6 +742,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 			}
 			sdtEntry.name = majorminor + QString(shortName, nameLength);
 		}
+		qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
 		sdtEntries.append(sdtEntry);
 	}
 }
