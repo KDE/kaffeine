@@ -462,7 +462,7 @@ void DvbTab::activate()
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
 	if (!channel.isValid()) {
-		qInfo("%s", qPrintable(i18n("DvbTab::playChannel: channel is invalid")));
+		qWarning("%s", qPrintable(i18n("DvbTab::playChannel: channel is invalid")));
 		return;
 	}
 
@@ -473,7 +473,7 @@ void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &ind
 	channelView->setCurrentIndex(index);
 	currentChannel = channel->name;
 	manager->getLiveView()->playChannel(channel);
-	
+
 	if (!epgDialog.isNull()) {
 		epgDialog->setCurrentChannel(manager->getLiveView()->getChannel());
 	}

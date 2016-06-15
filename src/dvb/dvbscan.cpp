@@ -126,7 +126,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	int sectionCount = section.lastSectionNumber() + 1;
 
 	if (section.sectionNumber() >= sectionCount) {
-		qInfo("%s", qPrintable(i18n("DvbScanFilter::checkMultipleSection: current > last")));
+		qWarning("%s", qPrintable(i18n("DvbScanFilter::checkMultipleSection: current section is bigger than the last one")));
 		sectionCount = section.sectionNumber() + 1;
 	}
 
@@ -134,7 +134,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 		multipleSections.resize(sectionCount);
 	} else {
 		if (multipleSections.size() != sectionCount) {
-			qInfo("%s", qPrintable(i18n("DvbScanFilter::checkMultipleSection: inconsistent number of sections")));
+			qWarning("%s", qPrintable(i18n("DvbScanFilter::checkMultipleSection: inconsistent number of sections")));
 
 			if (multipleSections.size() < sectionCount) {
 				multipleSections.resize(sectionCount);
@@ -242,7 +242,7 @@ void DvbScanFilter::processSection(const char *data, int size)
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
 	// xgettext:no-c-format
-	qInfo("%s", qPrintable(i18n("DvbScanFilter::timerEvent: timeout while reading section; type = %1, pid = %2", type, pid)));
+	qWarning("%s", qPrintable(i18n("DvbScanFilter::timerEvent: timeout while reading section; type = %1, pid = %2", type, pid)));
 	scan->filterFinished(this);
 }
 
@@ -981,7 +981,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
-		qInfo("%s", qPrintable(i18n("DvbScan::processNitDescriptor: Invalid transponder type")));
+		qWarning("%s", qPrintable(i18n("DvbScan::processNitDescriptor: Invalid transponder type")));
 		break;
 	case DvbTransponderBase::DvbC: {
 		if (descriptor.descriptorTag() != 0x44) {

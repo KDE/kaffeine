@@ -311,7 +311,7 @@ DvbEpgTableModel::~DvbEpgTableModel()
 void DvbEpgTableModel::setEpgModel(DvbEpgModel *epgModel_)
 {
 	if (epgModel != NULL) {
-		qInfo("%s", qPrintable(i18n("DvbEpgTableModel::setEpgModel: epg model already set")));
+		qWarning("%s", qPrintable(i18n("DvbEpgTableModel::setEpgModel: epg model already set")));
 		return;
 	}
 

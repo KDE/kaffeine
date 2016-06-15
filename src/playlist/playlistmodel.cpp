@@ -50,7 +50,7 @@ bool Playlist::load(const QUrl &url_, Format format)
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("Playlist::load: cannot open file %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("Playlist::load: cannot open file %1", file.fileName())));
 		return false;
 	}
 
@@ -84,7 +84,7 @@ bool Playlist::save(Format format) const
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("Playlist::save: cannot open file %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("Playlist::save: cannot open file %1", file.fileName())));
 		return false;
 	}
 

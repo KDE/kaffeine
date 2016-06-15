@@ -40,7 +40,7 @@ Configuration::Configuration()
 		startupDisplayMode = static_cast<StartupDisplayMode>(value);
 	} else {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("Configuration::Configuration: unknown startup display mode %1", value)));
+		qWarning("%s", qPrintable(i18n("Configuration::Configuration: unknown startup display mode %1", value)));
 	}
 
 	shortSkipDuration =
@@ -73,7 +73,7 @@ void Configuration::setStartupDisplayMode(int newStartupDisplayMode)
 			static_cast<int>(startupDisplayMode));
 	} else {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("Configuration::setStartupDisplayMode: unknown startup display mode %1", newStartupDisplayMode)));
+		qWarning("%s", qPrintable(i18n("Configuration::setStartupDisplayMode: unknown startup display mode %1", newStartupDisplayMode)));
 	}
 }
 

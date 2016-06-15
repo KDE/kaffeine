@@ -274,7 +274,7 @@ QString DvbManager::getAutoScanSource(const QString &source) const
 	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
 
 	if (scanSource.second.isEmpty()) {
-		qInfo("%s", qPrintable(i18n("DvbManager::getAutoScanSource: invalid source")));
+		qWarning("%s", qPrintable(i18n("DvbManager::getAutoScanSource: invalid source")));
 		return QString();
 	}
 
@@ -294,7 +294,7 @@ QList<DvbTransponder> DvbManager::getTransponders(DvbDevice *device, const QStri
 	QPair<TransmissionType, QString> scanSource = sourceMapping.value(source);
 
 	if (scanSource.second.isEmpty()) {
-		qInfo("%s", qPrintable(i18n("DvbManager::getTransponders: invalid source")));
+		qWarning("%s", qPrintable(i18n("DvbManager::getTransponders: invalid source")));
 		return QList<DvbTransponder>();
 	}
 
@@ -316,12 +316,12 @@ bool DvbManager::updateScanData(const QByteArray &data)
 	QByteArray uncompressed = qUncompress(data);
 
 	if (uncompressed.isEmpty()) {
-		qInfo("%s", qPrintable(i18n("DvbManager::updateScanData: qUncompress failed")));
+		qWarning("%s", qPrintable(i18n("DvbManager::updateScanData: qUncompress failed")));
 		return false;
 	}
 
 	if (!DvbScanData(uncompressed).readDate().isValid()) {
-		qInfo("%s", qPrintable(i18n("DvbManager::updateScanData: invalid format")));
+		qWarning("%s", qPrintable(i18n("DvbManager::updateScanData: invalid format")));
 		return false;
 	}
 
@@ -329,7 +329,7 @@ bool DvbManager::updateScanData(const QByteArray &data)
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbManager::updateScanData: cannot open %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbManager::updateScanData: cannot open %1", file.fileName())));
 		return false;
 	}
 
@@ -603,7 +603,7 @@ void DvbManager::loadDeviceManager()
 
 		if (deviceManager == NULL) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbManager::loadDeviceManager: cannot load dvb device manager %1", path)));
+			qWarning("%s", qPrintable(i18n("DvbManager::loadDeviceManager: cannot load dvb device manager %1", path)));
 			break;
 		}
 
@@ -635,7 +635,7 @@ void DvbManager::readDeviceConfigs()
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbManager::readDeviceConfigs: cannot open %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbManager::readDeviceConfigs: cannot open %1", file.fileName())));
 		return;
 	}
 
@@ -698,7 +698,7 @@ void DvbManager::readDeviceConfigs()
 
 	if (!reader.isValid()) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbManager::readDeviceConfigs: cannot read %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbManager::readDeviceConfigs: cannot read %1", file.fileName())));
 	}
 }
 
@@ -708,7 +708,7 @@ void DvbManager::writeDeviceConfigs()
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbManager::writeDeviceConfigs: cannot open %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbManager::writeDeviceConfigs: cannot open %1", file.fileName())));
 		return;
 	}
 
@@ -789,13 +789,13 @@ void DvbManager::readScanData()
 
 		if (globalDate.isNull()) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot parse %1", globalFile.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot parse %1", globalFile.fileName())));
 		}
 
 		globalFile.close();
 	} else {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot open global scanfile  %1", globalFile.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot open global scanfile  %1", globalFile.fileName())));
 	}
 
 	QFile localFile(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
@@ -808,7 +808,7 @@ void DvbManager::readScanData()
 
 		if (localDate.isNull()) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot parse %1", localFile.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot parse %1", localFile.fileName())));
 		}
 
 		localFile.close();
@@ -819,12 +819,12 @@ void DvbManager::readScanData()
 
 		if (localFile.exists() && !localFile.remove()) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot remove %1", localFile.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot remove %1", localFile.fileName())));
 		}
 
 		if (!globalFile.copy(localFile.fileName())) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot copy %1 %2", globalFile.fileName() , QLatin1String("to") , localFile.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot copy %1 %2", globalFile.fileName() , QLatin1String("to") , localFile.fileName())));
 		}
 
 		if (localFile.open(QIODevice::ReadOnly)) {
@@ -832,7 +832,7 @@ void DvbManager::readScanData()
 			localFile.close();
 		} else {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot open %1", localFile.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot open %1", localFile.fileName())));
 			scanDataDate = QDate(1900, 1, 1);
 			return;
 		}
@@ -843,7 +843,7 @@ void DvbManager::readScanData()
 
 	if (!scanDataDate.isValid()) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbManager::readScanData: cannot parse %1", localFile.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbManager::readScanData: cannot parse %1", localFile.fileName())));
 		scanDataDate = QDate(1900, 1, 1);
 		return;
 	}
@@ -868,7 +868,7 @@ void DvbManager::readScanData()
 
 		if (!qLine.contains(rejex, &match)) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("unrecognized line:  %1", line)));
+			qWarning("%s", qPrintable(i18n("unrecognized line:  %1", line)));
 			continue;
 
 		}
@@ -888,7 +888,7 @@ void DvbManager::readScanData()
 			type = IsdbT;
 		else {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(errMsg + i18n("transmission type %1 unknown", typeStr)));
+			qWarning("%s", qPrintable(errMsg + i18n("transmission type %1 unknown", typeStr)));
 			continue;
 		}
 
@@ -914,7 +914,7 @@ void DvbManager::readScanData()
 
 			if (!transponder.isValid()) {
 				// xgettext:no-c-format
-				qInfo("%s", qPrintable(errMsg + i18n("error parsing line : '%1'", line)));
+				qWarning("%s", qPrintable(errMsg + i18n("error parsing line : '%1'", line)));
 			} else {
 				transponders.append(transponder);
 
@@ -969,7 +969,7 @@ void DvbManager::readScanData()
 
 	if (!data.checkEnd()) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(errMsg + i18n("some data were not parsed")));
+		qWarning("%s", qPrintable(errMsg + i18n("some data were not parsed")));
 	}
 }
 

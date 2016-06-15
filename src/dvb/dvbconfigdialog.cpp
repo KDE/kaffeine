@@ -410,11 +410,11 @@ void DvbConfigDialog::removeRegex()
 	}
 	foreach(RegexInputLine *inputLine, copyList)
 	{
-		qInfo("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: list:")));
+		qDebug("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: list:")));
 		if (inputLine->checkBox->isChecked()){
-			qInfo("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: checked:")));
+			qDebug("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: checked:")));
 			if (regexInputList.removeOne(inputLine)) {
-				qInfo("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: removed:")));
+				qDebug("%s", qPrintable(i18n("DvbConfigDialog::removeRegex: removed:")));
 			}
 		}
 	}
@@ -629,10 +629,10 @@ void DvbConfigDialog::accept()
 	{
 		manager->addRecordingRegex(regexInputLine->lineEdit->text());
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbConfigDialog::accept: saved regex: %1", regexInputLine->lineEdit->text())));
+		qDebug("%s", qPrintable(i18n("DvbConfigDialog::accept: saved regex: %1", regexInputLine->lineEdit->text())));
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbConfigDialog::accept: saved priority: %1", regexInputLine->spinBox->value())));
+		qDebug("%s", qPrintable(i18n("DvbConfigDialog::accept: saved priority: %1", regexInputLine->spinBox->value())));
 	}
 
 	bool latitudeOk;

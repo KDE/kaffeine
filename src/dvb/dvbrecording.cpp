@@ -82,7 +82,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::DvbRecordingModel: cannot open file %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::DvbRecordingModel: cannot open file %1", file.fileName())));
 		return;
 	}
 
@@ -121,7 +121,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 		if (stream.status() != QDataStream::Ok) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbRecordingModel::DvbRecordingModel: invalid recordings in file %1", file.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbRecordingModel::DvbRecordingModel: invalid recordings in file %1", file.fileName())));
 			break;
 		}
 
@@ -130,14 +130,14 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 	if (!file.remove()) {
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::DvbRecordingModel: cannot remove file %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::DvbRecordingModel: cannot remove file %1", file.fileName())));
 	}
 }
 
 DvbRecordingModel::~DvbRecordingModel()
 {
 	if (hasPendingOperation) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::~DvbRecordingModel: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::~DvbRecordingModel: illegal recursive call")));
 	}
 
 	sqlFlush();
@@ -182,7 +182,7 @@ DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording, bool
 {
 	if (checkForRecursion) {
 		if (hasPendingOperation) {
-			qInfo("%s", qPrintable(i18n("DvbRecordingModel::addRecording: illegal recursive call")));
+			qWarning("%s", qPrintable(i18n("DvbRecordingModel::addRecording: illegal recursive call")));
 			return DvbSharedRecording();
 		}
 
@@ -190,7 +190,7 @@ DvbSharedRecording DvbRecordingModel::addRecording(DvbRecording &recording, bool
 	}
 
 	if (!recording.validate()) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::addRecording: invalid recording")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::addRecording: invalid recording")));
 		return DvbSharedRecording();
 	}
 
@@ -211,7 +211,7 @@ void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 	DvbRecording &modifiedRecording)
 {
 	if (hasPendingOperation) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::updateRecording: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::updateRecording: illegal recursive call")));
 		return;
 	}
 
@@ -219,7 +219,7 @@ void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording) ||
 	    !modifiedRecording.validate()) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::updateRecording: invalid recording")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::updateRecording: invalid recording")));
 		return;
 	}
 
@@ -242,14 +242,14 @@ void DvbRecordingModel::updateRecording(DvbSharedRecording recording,
 void DvbRecordingModel::removeRecording(DvbSharedRecording recording)
 {
 	if (hasPendingOperation) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::removeRecording: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::removeRecording: illegal recursive call")));
 		return;
 	}
 
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	if (!recording.isValid() || (recordings.value(*recording) != recording)) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::removeRecording: invalid recording")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::removeRecording: invalid recording")));
 		return;
 	}
 
@@ -270,13 +270,13 @@ void DvbRecordingModel::disableLessImportant(DvbSharedRecording &recording1, Dvb
 		DvbRecording rec1 = *(recording1.constData());
 		rec1.disabled = true;
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::disableLessImportant disabled %1", recording1->name)));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::disableLessImportant disabled %1", recording1->name)));
 	}
 	if (recording2->priority < recording1->priority) {
 		DvbRecording rec2 = *(recording1.constData());
 		rec2.disabled = true;
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::disableLessImportant disabled %1", recording2->name)));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::disableLessImportant disabled %1", recording2->name)));
 	}
 }
 
@@ -284,7 +284,7 @@ void DvbRecordingModel::addToUnwantedRecordings(DvbSharedRecording recording)
 {
 	unwantedRecordings.append(recording);
 	// xgettext:no-c-format
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::addToUnwantedRecordings executed %1", recording->name)));
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::addToUnwantedRecordings executed %1", recording->name)));
 }
 
 void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
@@ -296,9 +296,9 @@ void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 	{
 		QProcess* child = new QProcess();
 		child->start(stopCommand);
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::shutdownWhenEmpty:could not execute cmd")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::shutdownWhenEmpty:could not execute cmd")));
 	}
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::executeActionAfterRecording executed.")));
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::executeActionAfterRecording executed.")));
 
 
 }
@@ -332,7 +332,7 @@ void DvbRecordingModel::removeDuplicates()
 					recordings.remove(recordings.key(rec1));
 					recordingMap.remove(rec1);
 					// xgettext:no-c-format
-					qInfo("%s", qPrintable(i18n("DvbRecordingModel::removeDuplicates removed. %1", loopEntry1.name)));
+					qWarning("%s", qPrintable(i18n("DvbRecordingModel::removeDuplicates removed. %1", loopEntry1.name)));
 				}
 			}
 			j = j + 1;
@@ -341,7 +341,7 @@ void DvbRecordingModel::removeDuplicates()
 	}
 	epgModel->setRecordings(recordingMap);
 
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::removeDuplicates executed.")));
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::removeDuplicates executed.")));
 
 }
 
@@ -387,7 +387,7 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 				&& QString::compare((entry.duration).toString(),
 						loopEntry.duration.addSecs(- manager->getBeginMargin() - manager->getEndMargin()).toString()) == 0) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbRecordingModel::existsSimilarRecording Found from unwanteds  %1", loopEntry.name)));
+			qDebug("%s", qPrintable(i18n("DvbRecordingModel::existsSimilarRecording Found from unwanteds  %1", loopEntry.name)));
 			found = true;
 			break;
 		}
@@ -422,7 +422,7 @@ void DvbRecordingModel::disableConflicts()
 			if (isInConflictWithAll(rec2, conflictList)) {
 				conflictList.append(rec2);
 				// xgettext:no-c-format
-				qInfo("%s", qPrintable(i18n("DvbRecordingModel::disableConflicts: '%1' '%2' and '%3' '%4'", rec1->name, rec1->begin.toString(), rec2->name, rec2->begin.toString())));
+				qDebug("%s", qPrintable(i18n("DvbRecordingModel::disableConflicts: '%1' '%2' and '%3' '%4'", rec1->name, rec1->begin.toString(), rec2->name, rec2->begin.toString())));
 
 			}
 
@@ -487,14 +487,14 @@ DvbSharedRecording DvbRecordingModel::getLeastImportant(QList<DvbSharedRecording
 	foreach(DvbSharedRecording listRec, recList)
 	{
 		// xgettext:no-c-format
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::getLeastImportant: name and priority %1 %2", listRec->name , listRec->priority)));
+		qDebug("%s", qPrintable(i18n("DvbRecordingModel::getLeastImportant: name and priority %1 %2", listRec->name , listRec->priority)));
 		if (listRec->priority < leastImportant->priority) {
 			leastImportant = listRec;
 		}
 	}
 
 	// xgettext:no-c-format
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::getLeastImportant: %1", leastImportant->name)));
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::getLeastImportant: %1", leastImportant->name)));
 	return leastImportant;
 }
 
@@ -512,7 +512,7 @@ void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList
 				listRec.disabled = true;
 				updateRecording(listRecShared, listRec);
 				// xgettext:no-c-format
-				qInfo("%s", qPrintable(i18n("DvbRecordingModel::disableLeastImportants disabled: %1 %2", listRec.name , listRec.begin.toString())));
+				qDebug("%s", qPrintable(i18n("DvbRecordingModel::disableLeastImportants disabled: %1 %2", listRec.name , listRec.begin.toString())));
 			}
 		}
 	}
@@ -545,7 +545,7 @@ void DvbRecordingModel::findNewRecordings()
 					epgModel->scheduleProgram(epgMap.value(key), manager->getBeginMargin(),
 							manager->getEndMargin(), false, priority);
 					// xgettext:no-c-format
-					qInfo("%s", qPrintable(i18n("DvbRecordingModel::findNewRecordings: scheduled %1", title)));
+					qDebug("%s", qPrintable(i18n("DvbRecordingModel::findNewRecordings: scheduled %1", title)));
 					}
 				}
 			}
@@ -553,7 +553,7 @@ void DvbRecordingModel::findNewRecordings()
 		}
 	}
 
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::findNewRecordings executed.")));
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::findNewRecordings executed.")));
 }
 
 void DvbRecordingModel::timerEvent(QTimerEvent *event)
@@ -582,7 +582,7 @@ void DvbRecordingModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int inde
 	DvbSharedRecording recording = recordings.value(sqlKey);
 
 	if (!recording.isValid()) {
-		qInfo("%s", qPrintable(i18n("DvbRecordingModel::bindToSqlQuery: invalid recording")));
+		qWarning("%s", qPrintable(i18n("DvbRecordingModel::bindToSqlQuery: invalid recording")));
 		return;
 	}
 
@@ -646,7 +646,7 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 		if (end > QDateTime::currentDateTime().toUTC() && rec.begin <= QDateTime::currentDateTime().toUTC()) {
 			timeUntil = 0;
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbRecordingModel::getSecondsUntilNextRecording: rec ongoing %1", rec.name)));
+			qDebug("%s", qPrintable(i18n("DvbRecordingModel::getSecondsUntilNextRecording: rec ongoing %1", rec.name)));
 			break;
 		}
 		if (rec.begin > QDateTime::currentDateTime().toUTC()) {
@@ -658,7 +658,7 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 	}
 
 	// xgettext:no-c-format
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::getSecondsUntilNextRecording: returned TRUE %1", QString::number(timeUntil))));
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::getSecondsUntilNextRecording: returned TRUE %1", QString::number(timeUntil))));
 	return timeUntil;
 }
 
@@ -675,7 +675,7 @@ bool DvbRecordingModel::shouldWeScanChannels() const
 		if (DvbRecordingModel::getSecondsUntilNextRecording() > numberOfChannels * 10) {
 			if (DvbRecordingModel::isScanWhenIdle()) {
 				return true;
-				qInfo("%s", qPrintable(i18n("DvbRecordingModel::shouldWeScanChannels: returned TRUE")));
+				qDebug("%s", qPrintable(i18n("DvbRecordingModel::shouldWeScanChannels: returned TRUE")));
 			}
 		}
 	}
@@ -685,34 +685,36 @@ bool DvbRecordingModel::shouldWeScanChannels() const
 
 void delay(int seconds)
 {
-    QTime dieTime= QTime::currentTime().addSecs(seconds);
-    while (QTime::currentTime() < dieTime)
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+	QTime dieTime= QTime::currentTime().addSecs(seconds);
+	while (QTime::currentTime() < dieTime)
+		QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+
 	// xgettext:no-c-format
-	qInfo("%s", qPrintable(i18n("DvbRecordingModel::delay: Delayed for  %1 %2", QString::number(seconds) , " seconds")));
+	qInfo("%s", qPrintable(i18n("DvbRecordingModel::delay: Delayed for %1 seconds", QString::number(seconds))));
 }
 
 void DvbRecordingModel::scanChannels()
 {
-qInfo("%s", qPrintable(i18n("DvbRecordingModel::scanChannels executed")));
-if (shouldWeScanChannels()) {
-	DvbChannelModel *channelModel = manager->getChannelModel();
-	QMap<int, DvbSharedChannel> channelMap = channelModel->getChannels();
-	foreach (int channelInt, channelMap.keys()) {
-		DvbSharedChannel channel;
+	qDebug("%s", qPrintable(i18n("DvbRecordingModel::scanChannels executed")));
 
-		if (channelInt > 0) {
-			channel = channelModel->findChannelByNumber(channelInt);
-		}
-		if (channel.isValid()) {
-			// TODO update tab
-			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbRecordingModel::scanChannels executed %1", channel->name)));
-			manager->getLiveView()->playChannel(channel);
-			delay(5);
+	if (shouldWeScanChannels()) {
+		DvbChannelModel *channelModel = manager->getChannelModel();
+		QMap<int, DvbSharedChannel> channelMap = channelModel->getChannels();
+		foreach (int channelInt, channelMap.keys()) {
+			DvbSharedChannel channel;
+
+			if (channelInt > 0) {
+				channel = channelModel->findChannelByNumber(channelInt);
+			}
+			if (channel.isValid()) {
+				// TODO update tab
+				// xgettext:no-c-format
+				qDebug("%s", qPrintable(i18n("DvbRecordingModel::scanChannels executed %1", channel->name)));
+				manager->getLiveView()->playChannel(channel);
+				delay(5);
+			}
 		}
 	}
-}
 }
 
 bool DvbRecordingModel::updateStatus(DvbRecording &recording)
@@ -834,7 +836,7 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 				break;
 			} else {
 				// xgettext:no-c-format
-				qInfo("%s", qPrintable(i18n("DvbRecordingFile::start: cannot open file %1", file.fileName())));
+				qWarning("%s", qPrintable(i18n("DvbRecordingFile::start: cannot open file %1", file.fileName())));
 			}
 
 			if ((attempt == 0) && !QDir(folder).exists()) {
@@ -843,7 +845,7 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 					continue;
 				} else {
 					// xgettext:no-c-format
-					qInfo("%s", qPrintable(i18n("DvbRecordingFile::start: cannot create folder %1", folder)));
+					qWarning("%s", qPrintable(i18n("DvbRecordingFile::start: cannot create folder %1", folder)));
 				}
 			}
 
@@ -877,7 +879,7 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 
 		if (!file.isOpen()) {
 			// xgettext:no-c-format
-			qInfo("%s", qPrintable(i18n("DvbRecordingFile::start: cannot open file %1", file.fileName())));
+			qWarning("%s", qPrintable(i18n("DvbRecordingFile::start: cannot open file %1", file.fileName())));
 			return false;
 		}
 	}
@@ -888,7 +890,7 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 			DvbManager::Prioritized);
 
 		if (device == NULL) {
-			qInfo("%s", qPrintable(i18n("DvbRecordingFile::start: cannot find a suitable device")));
+			qWarning("%s", qPrintable(i18n("DvbRecordingFile::start: cannot find a suitable device")));
 			return false;
 		}
 

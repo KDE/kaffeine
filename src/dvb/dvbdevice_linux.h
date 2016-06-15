@@ -44,6 +44,8 @@ public:
 	void stopCa();
 	void stopDevice();
 	void enableDvbDump();
+	QString getDeviceId();
+	QString getFrontendName();
 
 	QString caPath;
 	QString caUdi;
@@ -58,8 +60,6 @@ public:
 	QString frontendUdi;
 
 protected:
-	QString getDeviceId();
-	QString getFrontendName();
 	TransmissionTypes getTransmissionTypes();
 	Capabilities getCapabilities();
 	void setFrontendDevice(DvbFrontendDevice *frontend_);
