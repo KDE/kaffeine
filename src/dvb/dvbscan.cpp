@@ -1095,17 +1095,25 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			break;
 		}
 
-#if 0
-		/* What to do with descriptors for the current transponder? */
-		IsdbTDescriptor->guardInterval = extractIsdbTGuardInterval(IsdbTDescriptor);
-		IsdbTDescriptor->transmissionMode = extractIsdbTTransmissionMode(IsdbTDescriptor);
-#endif
 		for (int i = 0; i < IsdbTDescriptor.frequencyLength(); i++) {
 			newTransponder = DvbTransponder(DvbTransponderBase::IsdbT);
 			IsdbTTransponder *isdbTTransponder = newTransponder.as<IsdbTTransponder>();
 
 			isdbTTransponder->frequency =
 				(uint32_t)((((uint64_t)IsdbTDescriptor.frequency(i)) * 1000000ul) / 7);
+			isdbTTransponder->bandwidth = IsdbTTransponder::Bandwidth6MHz;
+			isdbTTransponder->transmissionMode = IsdbTTransponder::TransmissionModeAuto;
+			isdbTTransponder->guardInterval = IsdbTTransponder::GuardIntervalAuto;
+			isdbTTransponder->partialReception = IsdbTTransponder::PR_AUTO;
+			isdbTTransponder->soundBroadcasting = IsdbTTransponder::SB_disabled;
+			for (int i = 0; i < 3; i++) {
+				isdbTTransponder->layerEnabled[i] = true;
+				isdbTTransponder->modulation[i] = IsdbTTransponder::ModulationAuto;
+				isdbTTransponder->fecRate[i] = IsdbTTransponder::FecAuto;
+				isdbTTransponder->interleaving[i] = IsdbTTransponder::I_AUTO;
+				isdbTTransponder->segmentCount[i] = 15;
+			}
+
 			bool duplicate = false;
 
 			foreach (const DvbTransponder &existingTransponder, transponders) {
