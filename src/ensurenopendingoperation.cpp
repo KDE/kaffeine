@@ -28,5 +28,5 @@
 
 void EnsureNoPendingOperation::printFatalErrorMessage()
 {
-	qWarning("%s", qPrintable(i18n("EnsureNoPendingOperation::printFatalErrorMessage: illegal recursive call")));
+	qWarning("%s", qPrintable(i18n("illegal recursive call")));
 }

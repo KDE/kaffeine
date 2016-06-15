@@ -53,7 +53,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 		if (!file.open(QIODevice::ReadOnly)) {
 			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("PlaylistBrowserModel::PlaylistBrowserModel: cannot open file %1", file.fileName())));
+			qWarning("%s", qPrintable(i18n("cannot open file %1", file.fileName())));
 			return;
 		}
 	}
@@ -75,7 +75,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		hasSubtitles = false;
 	} else if (version != 0x361c4a3c) {
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("cannot read file %1", file.fileName())));
 		return;
 	}
 
@@ -119,7 +119,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 		if (stream.status() != QDataStream::Ok) {
 			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("PlaylistBrowserModel::PlaylistBrowserModel: cannot read file %1", file.fileName())));
+			qWarning("%s", qPrintable(i18n("cannot read file %1", file.fileName())));
 			delete playlist;
 			break;
 		}
@@ -134,7 +134,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("PlaylistBrowserModel::~PlaylistBrowserModel: cannot open file %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("cannot open file %1", file.fileName())));
 		return;
 	}
 

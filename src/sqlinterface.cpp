@@ -39,7 +39,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		qWarning("%s", qPrintable(i18n("SqlInterface::~SqlInterface: pending statements at destruction")));
+		qWarning("%s", qPrintable(i18n("pending statements at destruction")));
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -109,7 +109,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
 				// xgettext:no-c-format
-				qWarning("%s", qPrintable(i18n("SqlInterface::sqlInit: invalid key %1", fullKey)));
+				qWarning("%s", qPrintable(i18n("invalid key %1", fullKey)));
 				continue;
 			}
 
@@ -141,7 +141,7 @@ void SqlInterface::sqlInsert(SqlKey key)
 	}
 
 	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("SqlInterface::sqlInsert: invalid pending statement %1", pendingStatement)));
+	qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -162,7 +162,7 @@ void SqlInterface::sqlUpdate(SqlKey key)
 	}
 
 	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("SqlInterface::sqlUpdate: invalid pending statement %1", pendingStatement)));
+	qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -184,7 +184,7 @@ void SqlInterface::sqlRemove(SqlKey key)
 	}
 
 	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("SqlInterface::sqlRemove: invalid pending statement %1", pendingStatement)));
+	qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
 }
 
 void SqlInterface::requestSubmission()
@@ -235,7 +235,7 @@ void SqlInterface::sqlSubmit()
 		}
 
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("SqlInterface::sqlSubmit: invalid pending statement %1", pendingStatement)));
+		qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
 	}
 
 	pendingStatements.clear();

@@ -117,7 +117,7 @@ DvbChannelModel::DvbChannelModel(QObject *parent) : QObject(parent), hasPendingO
 DvbChannelModel::~DvbChannelModel()
 {
 	if (hasPendingOperation) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::~DvbChannelModel: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("illegal recursive call")));
 	}
 
 	if (isSqlModel) {
@@ -151,7 +151,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::createSqlModel: cannot open %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("cannot open %1", file.fileName())));
 		return channelModel;
 	}
 
@@ -218,7 +218,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 		if (stream.status() != QDataStream::Ok) {
 			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("DvbChannelModel::createSqlModel: invalid channels in file %1", file.fileName())));
+			qWarning("%s", qPrintable(i18n("invalid channels in file %1", file.fileName())));
 			break;
 		}
 
@@ -230,7 +230,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 	if (!file.remove()) {
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::createSqlModel: cannot remove %1", file.fileName())));
+		qWarning("%s", qPrintable(i18n("cannot remove %1", file.fileName())));
 	}
 
 	return channelModel;
@@ -260,7 +260,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 {
 	if (!isSqlModel && other->isSqlModel && channelNumbers.isEmpty()) {
 		if (hasPendingOperation) {
-			qWarning("%s", qPrintable(i18n("DvbChannelModel::cloneFrom: illegal recursive call")));
+			qWarning("%s", qPrintable(i18n("illegal recursive call")));
 			return;
 		}
 
@@ -300,7 +300,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 			addChannel(newChannel);
 		}
 	} else {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::cloneFrom: illegal type of clone")));
+		qWarning("%s", qPrintable(i18n("illegal type of clone")));
 	}
 }
 
@@ -316,7 +316,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	}
 
 	if (!channel.validate()) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::addChannel: invalid channel")));
+		qWarning("%s", qPrintable(i18n("invalid channel")));
 		return;
 	}
 
@@ -366,7 +366,7 @@ void DvbChannelModel::addChannel(DvbChannel &channel)
 	}
 
 	if (hasPendingOperation) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::addChannel: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("illegal recursive call")));
 		return;
 	}
 
@@ -395,7 +395,7 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 {
 	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel) ||
 	    !modifiedChannel.validate()) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::updateChannel: invalid channel")));
+		qWarning("%s", qPrintable(i18n("invalid channel")));
 		return;
 	}
 
@@ -420,7 +420,7 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 	}
 
 	if (hasPendingOperation) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::updateChannel: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("illegal recursive call")));
 		return;
 	}
 
@@ -475,12 +475,12 @@ void DvbChannelModel::updateChannel(DvbSharedChannel channel, DvbChannel &modifi
 void DvbChannelModel::removeChannel(DvbSharedChannel channel)
 {
 	if (!channel.isValid() || (channelNumbers.value(channel->number) != channel)) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::removeChannel: invalid channel")));
+		qWarning("%s", qPrintable(i18n("invalid channel")));
 		return;
 	}
 
 	if (hasPendingOperation) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::removeChannel: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("illegal recursive call")));
 		return;
 	}
 
@@ -501,7 +501,7 @@ void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedCha
 	int insertBeforeNumber)
 {
 	if (hasPendingOperation) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::dndMoveChannels: illegal recursive call")));
+		qWarning("%s", qPrintable(i18n("illegal recursive call")));
 		return;
 	}
 
@@ -570,7 +570,7 @@ void DvbChannelModel::bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index)
 	DvbSharedChannel channel = channels.value(sqlKey);
 
 	if (!channel.isValid()) {
-		qWarning("%s", qPrintable(i18n("DvbChannelModel::bindToSqlQuery: invalid channel")));
+		qWarning("%s", qPrintable(i18n("invalid channel")));
 		return;
 	}
 

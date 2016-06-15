@@ -77,7 +77,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 {
 	if ((data[3] & 0x10) == 0) {
 		// no payload
-		qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processData: no payload")));
+		qWarning("%s", qPrintable(i18n("no payload")));
 		return;
 	}
 
@@ -85,12 +85,12 @@ void DvbSectionFilterInternal::processData(const char data[188])
 
 	if (bufferValid) {
 		if (continuity == continuityCounter) {
-			qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processData: duplicate packets")));
+			qWarning("%s", qPrintable(i18n("duplicate packets")));
 			return;
 		}
 
 		if (continuity != ((continuityCounter + 1) & 0x0f)) {
-			qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processData: discontinuity")));
+			qWarning("%s", qPrintable(i18n("discontinuity")));
 			bufferValid = false;
 		}
 	}
@@ -110,7 +110,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 		unsigned char length = data[4];
 
 		if (length > 182) {
-			qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processData: no payload or corrupt")));
+			qWarning("%s", qPrintable(i18n("no payload or corrupt")));
 			return;
 		}
 
@@ -124,7 +124,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 		int pointer = quint8(payload[0]);
 
 		if (pointer >= payloadLength) {
-			qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processData: invalid pointer")));
+			qWarning("%s", qPrintable(i18n("invalid pointer")));
 			pointer = (payloadLength - 1);
 		}
 
@@ -157,7 +157,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 
 		if ((end - it) < 3) {
 			if (force) {
-				qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processSections: stray data")));
+				qWarning("%s", qPrintable(i18n("stray data")));
 				it = end;
 			}
 
@@ -168,7 +168,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 			static_cast<unsigned char>(it[2])) + 3);
 
 		if (force && (sectionEnd > end)) {
-			qWarning("%s", qPrintable(i18n("DvbSectionFilterInternal::processSections: short section")));
+			qWarning("%s", qPrintable(i18n("short section")));
 			sectionEnd = end;
 		}
 
@@ -231,7 +231,7 @@ DvbDataDumper::DvbDataDumper()
 
 	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("DvbDataDumper::DvbDataDumper: cannot open %1", fileName())));
+		qWarning("%s", qPrintable(i18n("cannot open %1", fileName())));
 	}
 }
 
@@ -390,7 +390,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 		if (!ok) {
 			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("DvbDevice::tune: cannot extract orbital position from %1", config->scanSource)));
+			qWarning("%s", qPrintable(i18n("cannot extract orbital position from %1", config->scanSource)));
 		}
 
 		double radius = 6378;
@@ -491,7 +491,7 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 		tune(autoTransponder);
 	}else {
 		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("DvbDevice::autoTune: can't do auto-tune for  %1", transmissionType)));
+		qWarning("%s", qPrintable(i18n("can't do auto-tune for  %1", transmissionType)));
 		return;
 	}
 
@@ -519,7 +519,7 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (it->filters.contains(filter)) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::addPidFilter: using the same filter for the same pid more than once")));
+		qWarning("%s", qPrintable(i18n("using the same filter for the same pid more than once")));
 		return true;
 	}
 
@@ -544,7 +544,7 @@ bool DvbDevice::addSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (it->sectionFilters.contains(filter)) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::addSectionFilter: using the same filter for the same pid more than once")));
+		qWarning("%s", qPrintable(i18n("using the same filter for the same pid more than once")));
 		return true;
 	}
 
@@ -565,7 +565,7 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (index < 0) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::removePidFilter: trying to remove a nonexistent filter")));
+		qWarning("%s", qPrintable(i18n("trying to remove a nonexistent filter")));
 		return;
 	}
 
@@ -591,7 +591,7 @@ void DvbDevice::removeSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (index < 0) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::removeSectionFilter: trying to remove a nonexistent filter")));
+		qWarning("%s", qPrintable(i18n("trying to remove a nonexistent filter")));
 		return;
 	}
 
@@ -610,7 +610,7 @@ void DvbDevice::startDescrambling(const QByteArray &pmtSectionData, QObject *use
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::startDescrambling: pmt section is not valid")));
+		qWarning("%s", qPrintable(i18n("pmt section is not valid")));
 	}
 
 	int serviceId = pmtSection.programNumber();
@@ -629,13 +629,13 @@ void DvbDevice::stopDescrambling(const QByteArray &pmtSectionData, QObject *user
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::stopDescrambling: pmt section is not valid")));
+		qWarning("%s", qPrintable(i18n("pmt section is not valid")));
 	}
 
 	int serviceId = pmtSection.programNumber();
 
 	if (!descramblingServices.contains(serviceId, user)) {
-		qWarning("%s", qPrintable(i18n("DvbDevice::stopDescrambling: service has not been started")));
+		qWarning("%s", qPrintable(i18n("service has not been started")));
 		return;
 	}
 
@@ -727,7 +727,7 @@ void DvbDevice::frontendEvent()
 
 	if (backend->isTuned()) {
 		// xgettext:no-c-format
-		qDebug("%s", qPrintable(i18n("DvbDevice::frontendEvent: tuning succeeded on %1 MHz", backend->getFrqMHz())));
+		qDebug("%s", qPrintable(i18n("tuning succeeded on %1 MHz", backend->getFrqMHz())));
 		frontendTimer.stop();
 		backend->getProps(autoTransponder);
 		setDeviceState(DeviceTuned);
@@ -743,7 +743,7 @@ void DvbDevice::frontendEvent()
 
 		if (!isAuto) {
 			// xgettext:no-c-format
-			qDebug("%s", qPrintable(i18n("DvbDevice::frontendEvent: tuning failed on %1 MHz", backend->getFrqMHz())));
+			qDebug("%s", qPrintable(i18n("tuning failed on %1 MHz", backend->getFrqMHz())));
 			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 			return;
@@ -762,7 +762,7 @@ void DvbDevice::frontendEvent()
 			if ((signal != -1) && (signal < 15)) {
 				// signal too weak
 				// xgettext:no-c-format
-				qInfo("%s", qPrintable(i18n("DvbDevice::frontendEvent: tuning failed (signal too weak) on %1 MHz", backend->getFrqMHz())));
+				qInfo("%s", qPrintable(i18n("tuning failed (signal too weak) on %1 MHz", backend->getFrqMHz())));
 				setDeviceState(DeviceIdle);
 				autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 				return;
@@ -861,7 +861,7 @@ void DvbDevice::frontendEvent()
 			tune(autoTransponder);
 		} else {
 			// xgettext:no-c-format
-			qDebug("%s", qPrintable(i18n("DvbDevice::frontendEvent: tuning failed on %1 MHz", backend->getFrqMHz())));;
+			qDebug("%s", qPrintable(i18n("tuning failed on %1 MHz", backend->getFrqMHz())));;
 			setDeviceState(DeviceIdle);
 		}
 	}
@@ -904,7 +904,7 @@ void DvbDevice::stop()
 			if ((filter != &dummyPidFilter) && (filter != dataDumper)) {
 				int pid = it.key();
 				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("DvbDevice::stop: removing pending filter %1", pid)));
+				qDebug("%s", qPrintable(i18n("removing pending filter %1", pid)));
 				removePidFilter(pid, filter);
 			}
 		}
@@ -916,7 +916,7 @@ void DvbDevice::stop()
 			if (sectionFilter != &dummySectionFilter) {
 				int pid = it.key();
 				// xgettext:no-c-format
-				qDebug("%s", qPrintable(i18n("DvbDevice::stop: removing pending filter %1", pid)));
+				qDebug("%s", qPrintable(i18n("removing pending filter %1", pid)));
 				removeSectionFilter(pid, sectionFilter);
 			}
 		}

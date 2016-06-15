@@ -813,7 +813,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 		return;
 	}
 
-	qWarning("%s", qPrintable(i18n("MediaWidget::aspectRatioChanged: internal error")));
+	qWarning("%s", qPrintable(i18n("internal error")));
 }
 
 void MediaWidget::autoResizeTriggered(QAction *action)
@@ -841,7 +841,7 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 		}
 	}
 
-	qWarning("%s", qPrintable(i18n("MediaWidget::autoResizeTriggered: internal error")));
+	qWarning("%s", qPrintable(i18n("internal error")));
 }
 
 void MediaWidget::pausedChanged(bool paused)
