@@ -34,6 +34,7 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 include(FeatureSummary)
+include(ECMInstallIcons)
 include(CheckIncludeFiles)
 
 # Instruct CMake to run moc automatically when needed.
@@ -93,6 +94,7 @@ endif(HAVE_DVB)
 
 add_subdirectory(deviceactions)
 add_subdirectory(dtvdaemon)
+add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
