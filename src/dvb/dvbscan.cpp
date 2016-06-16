@@ -723,26 +723,27 @@ void DvbScan::processVct(const AtscVctSection &section)
 				continue;
 			}
 			sdtEntry.name = majorminor + nameDescriptor.name();
-		}
 
-		if (sdtEntry.name.isEmpty()) {
-			// Extended Channel name not available, fall back
-			// to the short name
-			QChar shortName[] = { entry.shortName1(),
-					      entry.shortName2(),
-					      entry.shortName3(),
-					      entry.shortName4(),
-					      entry.shortName5(),
-					      entry.shortName6(),
-					      entry.shortName7(), 0 };
-			int nameLength = 0;
-			while (shortName[nameLength] != 0) {
-				++nameLength;
+			if (sdtEntry.name.isEmpty()) {
+				// Extended Channel name not available, fall back
+				// to the short name
+				QChar shortName[] = { entry.shortName1(),
+						      entry.shortName2(),
+						      entry.shortName3(),
+						      entry.shortName4(),
+						      entry.shortName5(),
+						      entry.shortName6(),
+						      entry.shortName7(), 0 };
+				int nameLength = 0;
+				while (shortName[nameLength] != 0) {
+					++nameLength;
+				}
+				sdtEntry.name = majorminor + QString(shortName, nameLength);
 			}
-			sdtEntry.name = majorminor + QString(shortName, nameLength);
+
+			qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
+			sdtEntries.append(sdtEntry);
 		}
-		qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
-		sdtEntries.append(sdtEntry);
 	}
 }
 
