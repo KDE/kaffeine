@@ -691,11 +691,10 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 
 			sdtEntry.name = serviceDescriptor.serviceName();
 			sdtEntry.provider = serviceDescriptor.providerName();
-			break;
-		}
 
-		qDebug("New SDT entry: name %s, provider %s", qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
-		sdtEntries.append(sdtEntry);
+			qDebug("New SDT entry: name '%s', provider '%s'", qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
+			sdtEntries.append(sdtEntry);
+		}
 	}
 }
 
