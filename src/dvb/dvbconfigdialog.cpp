@@ -828,7 +828,7 @@ DvbConfigPage::DvbConfigPage(QWidget *parent, DvbManager *manager,
 			addHSeparator(i18n("DVB-S"));
 		}
 
-		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs, dvbS2);
+		dvbSObject = new DvbSConfigObject(this, boxLayout, manager, dvbSConfigs, deviceConfig->device, dvbS2);
 	}
 
 	if ((transmissionTypes & DvbDevice::DvbT) != 0) {
@@ -1083,7 +1083,7 @@ void DvbConfigObject::resetConfig()
 }
 
 DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
-	const QList<DvbConfig> &configs, bool dvbS2) : QObject(parent_), parent(parent_)
+	const QList<DvbConfig> &configs, DvbDevice *device_, bool dvbS2) : QObject(parent_), parent(parent_), device(device_)
 {
 	if (!configs.isEmpty()) {
 		lnbConfig = new DvbConfigBase(*configs.at(0));
@@ -1144,7 +1144,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 		diseqcConfigs.append(DvbConfig(config));
 		lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, comboBox, pushButton,
-			config));
+			config, device));
 	}
 
 	// USALS rotor / Positions rotor
@@ -1153,7 +1153,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
 	layout->addWidget(pushButton, 6, 0);
 
-	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, NULL, pushButton, lnbConfig));
+	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, NULL, pushButton, lnbConfig, device));
 
 	sourceBox = new QComboBox(parent);
 	sourceBox->addItems(sources);
@@ -1336,15 +1336,14 @@ DvbConfigBase *DvbSConfigObject::createConfig(int lnbNumber)
 	config->timeout = 1500;
 	config->configuration = DvbConfigBase::DiseqcSwitch;
 	config->lnbNumber = lnbNumber;
-	config->lowBandFrequency = 9750000;
-	config->switchFrequency = 11700000;
-	config->highBandFrequency = 10600000;
+	config->currentLnb = device->getLnbSatModels().at(0);
+	config->bpf = 0;
 	return config;
 }
 
 DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
-	QPushButton *configureButton_, DvbConfigBase *config_) : QObject(timeoutSpinBox),
-	sourceBox(sourceBox_), configureButton(configureButton_), config(config_)
+	QPushButton *configureButton_, DvbConfigBase *config_, DvbDevice *device_) : QObject(timeoutSpinBox),
+	sourceBox(sourceBox_), configureButton(configureButton_), config(config_), device(device_)
 {
 	connect(timeoutSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
 	connect(configureButton, SIGNAL(clicked()), this, SLOT(configure()));
@@ -1364,9 +1363,8 @@ DvbSLnbConfigObject::~DvbSLnbConfigObject()
 
 void DvbSLnbConfigObject::resetConfig()
 {
-	config->lowBandFrequency = 9750000;
-	config->switchFrequency = 11700000;
-	config->highBandFrequency = 10600000;
+	config->currentLnb = device->getLnbSatModels().at(0);
+	config->bpf = 0;
 
 	if (sourceBox != NULL) {
 		sourceBox->setCurrentIndex(0);
@@ -1396,14 +1394,14 @@ void DvbSLnbConfigObject::configure()
 {
 	QVBoxLayout *mainLayout = new QVBoxLayout();
 
-	QDialog *dialog = new QDialog(configureButton);
+	dialog = new QDialog(configureButton);
 	dialog->setAttribute(Qt::WA_DeleteOnClose);
 	dialog->setWindowTitle(i18n("LNB Settings"));
 	dialog->setLayout(mainLayout);
 
 	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-	connect(buttonBox, SIGNAL(accepted()), this, SLOT(dialogAccepted()));
-	connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+	connect(buttonBox, &QDialogButtonBox::accepted, this, &DvbSLnbConfigObject::dialogAccepted);
+	connect(buttonBox, &QDialogButtonBox::rejected, dialog, &QDialog::reject);
 
 	QWidget *mainWidget = new QWidget(dialog);
 	QGridLayout *gridLayout = new QGridLayout(mainWidget);
@@ -1413,161 +1411,115 @@ void DvbSLnbConfigObject::configure()
 	lnbSelectionGroup->setExclusive(true);
 	connect(lnbSelectionGroup, SIGNAL(buttonClicked(int)), this, SLOT(selectType(int)));
 
-	QRadioButton *radioButton = new QRadioButton(i18n("Universal LNB"), mainWidget);
-	mainLayout->addWidget(radioButton);
-	lnbSelectionGroup->addButton(radioButton, 1);
-	gridLayout->addWidget(radioButton, 0, 0, 1, 2);
+	int i, size = device->getLnbSatModels().size();
 
-	radioButton = new QRadioButton(i18n("C-band LNB"), mainWidget);
-	mainLayout->addWidget(radioButton);
-	lnbSelectionGroup->addButton(radioButton, 2);
-	gridLayout->addWidget(radioButton, 1, 0, 1, 2);
+	currentType = -1;
 
-	radioButton = new QRadioButton(i18n("C-band Multipoint LNB"), mainWidget);
-	mainLayout->addWidget(radioButton);
-	lnbSelectionGroup->addButton(radioButton, 3);
-	gridLayout->addWidget(radioButton, 2, 0, 1, 2);
+	for (i = 0; i < size; i++) {
+		struct lnbSat lnb = device->getLnbSatModels().at(i);
+		QRadioButton *radioButton = new QRadioButton(lnb.name, mainWidget);
+		mainLayout->addWidget(radioButton);
+		lnbSelectionGroup->addButton(radioButton, i + 1);
+		gridLayout->addWidget(radioButton, i % ((size + 1) / 2), i / ((size + 1) / 2));
 
-	radioButton = new QRadioButton(i18n("Custom LNB"), mainWidget);
-	mainLayout->addWidget(radioButton);
-	lnbSelectionGroup->addButton(radioButton, 4);
-	gridLayout->addWidget(radioButton, 3, 0, 1, 2);
-
-	QFrame *frame = new QFrame(mainWidget);
-	mainLayout->addWidget(frame);
-	frame->setFrameShape(QFrame::HLine);
-	gridLayout->addWidget(frame, 4, 0, 1, 2);
-
-	lowBandLabel = new QLabel(mainWidget);
-	mainLayout->addWidget(lowBandLabel);
-	gridLayout->addWidget(lowBandLabel, 5, 0);
-
-	switchLabel = new QLabel(i18n("Switch frequency (MHz)"), mainWidget);
-	mainLayout->addWidget(switchLabel);
-	gridLayout->addWidget(switchLabel, 6, 0);
-
-	highBandLabel = new QLabel(mainWidget);
-	mainLayout->addWidget(highBandLabel);
-	gridLayout->addWidget(highBandLabel, 7, 0);
-
-	lowBandSpinBox = new QSpinBox(mainWidget);
-	mainLayout->addWidget(lowBandSpinBox);
-	lowBandSpinBox->setRange(0, 13000);
-	lowBandSpinBox->setValue(config->lowBandFrequency / 1000);
-	gridLayout->addWidget(lowBandSpinBox, 5, 1);
-
-	switchSpinBox = new QSpinBox(mainWidget);
-	mainLayout->addWidget(switchSpinBox);
-	switchSpinBox->setRange(0, 13000);
-	switchSpinBox->setValue(config->switchFrequency / 1000);
-	gridLayout->addWidget(switchSpinBox, 6, 1);
-
-	highBandSpinBox = new QSpinBox(mainWidget);
-	mainLayout->addWidget(highBandSpinBox);
-	highBandSpinBox->setRange(0, 13000);
-	highBandSpinBox->setValue(config->highBandFrequency / 1000);
-	gridLayout->addWidget(highBandSpinBox, 7, 1);
-
-	gridLayout->addItem(new QSpacerItem(0, 0), 8, 0, 1, 2);
-	gridLayout->setRowStretch(8, 1);
-
-	int lnbType;
-
-	if ((config->lowBandFrequency == 9750000) && (config->switchFrequency == 11700000) &&
-	    (config->highBandFrequency == 10600000)) {
-		lnbType = 1;
-	} else if ((config->lowBandFrequency == 5150000) && (config->switchFrequency == 0) &&
-		   (config->highBandFrequency == 0)) {
-		lnbType = 2;
-	} else if ((config->lowBandFrequency == 5750000) && (config->switchFrequency == 0) &&
-		   (config->highBandFrequency == 5150000)) {
-		lnbType = 3;
-	} else {
-		lnbType = 4;
+		if (config->currentLnb.alias.isEmpty() || config->currentLnb.alias == lnb.alias) {
+			radioButton->setChecked(true);
+			config->currentLnb = lnb;
+			currentType = i + 1;
+		}
 	}
 
-	currentType = 4;
-	lnbSelectionGroup->button(lnbType)->setChecked(true);
-	selectType(lnbType);
+	// shouldn't happen, except if the config file has an invalid LNBf
+	if (currentType < 0) {
+		config->currentLnb = device->getLnbSatModels().at(0);
+		currentType = 1;
+	}
+
+	// FIXME: Those are actually the IF frequencies
+
+	lowBandLabel = new QLabel(i18n("Low frequency (KHz)"), mainWidget);
+	gridLayout->addWidget(lowBandLabel, 0, 3);
+	lowBandSpinBox = new QSpinBox(mainWidget);
+	gridLayout->addWidget(lowBandSpinBox, 0, 4);
+	lowBandSpinBox->setRange(0, 15000);
+	lowBandSpinBox->setValue(config->currentLnb.lowFreq);
+	lowBandSpinBox->setEnabled(false);
+
+	highBandLabel = new QLabel(i18n("High frequency (MHz)"), mainWidget);
+	gridLayout->addWidget(highBandLabel, 1, 3);
+	highBandSpinBox = new QSpinBox(mainWidget);
+	gridLayout->addWidget(highBandSpinBox, 1, 4);
+	highBandSpinBox->setRange(0, 15000);
+	highBandSpinBox->setValue(config->currentLnb.highFreq);
+	highBandSpinBox->setEnabled(false);
+
+	switchLabel = new QLabel(i18n("Switch frequency (MHz)"), mainWidget);
+	gridLayout->addWidget(switchLabel, 2, 3);
+	switchSpinBox = new QSpinBox(mainWidget);
+	gridLayout->addWidget(switchSpinBox, 2, 4);
+	switchSpinBox->setRange(0, 15000);
+	switchSpinBox->setValue(config->currentLnb.rangeSwitch);
+	switchSpinBox->setEnabled(false);
+
+	lowRangeLabel = new QLabel(i18n("Low range: %1 MHz to %2 MHz", config->currentLnb.freqRange[0].low, config->currentLnb.freqRange[0].high), mainWidget);
+	gridLayout->addWidget(lowRangeLabel, 3, 3, 1, 2);
+
+	highRangeLabel = new QLabel(mainWidget);
+	gridLayout->addWidget(highRangeLabel, 4, 3, 1, 2);
+
+	selectType(currentType);
 
 	mainLayout->addWidget(buttonBox);
 
 	dialog->setModal(true);
 	dialog->show();
+
 }
 
 void DvbSLnbConfigObject::selectType(int type)
 {
-	switch (type) {
-	case 1:
-		lowBandSpinBox->setValue(9750);
-		switchSpinBox->setValue(11700);
-		highBandSpinBox->setValue(10600);
-		break;
+	struct lnbSat lnb = device->getLnbSatModels().at(type - 1);
 
-	case 2:
-		lowBandSpinBox->setValue(5150);
-		switchSpinBox->setValue(0);
-		highBandSpinBox->setValue(0);
-		break;
 
-	case 3:
-		lowBandSpinBox->setValue(5750);
-		switchSpinBox->setValue(0);
-		highBandSpinBox->setValue(5150);
-		break;
+	lowBandSpinBox->setValue(lnb.lowFreq);
+	if (!lnb.lowFreq) {
+		lowBandLabel->hide();
+		lowBandSpinBox->hide();
+	} else {
+		lowBandLabel->show();
+		lowBandSpinBox->show();
 	}
 
-	if (switchSpinBox->value() != 0) {
-		if (currentType != 1) {
-			lowBandLabel->setText(i18n("Low band LOF (MHz)"));
+	highBandSpinBox->setValue(lnb.highFreq);
+	if (!lnb.highFreq) {
+		highBandLabel->hide();
+		highBandSpinBox->hide();
+	} else {
+		highBandLabel->show();
+		highBandSpinBox->show();
+	}
 
-			switchLabel->show();
-			switchSpinBox->show();
+	switchSpinBox->setValue(lnb.rangeSwitch);
+	if (!lnb.rangeSwitch) {
+		switchLabel->hide();
+		switchSpinBox->hide();
+	} else {
+		switchLabel->show();
+		switchSpinBox->show();
+	}
 
-			highBandLabel->setText(i18n("High band LOF (MHz)"));
-			highBandLabel->show();
-			highBandSpinBox->show();
-		}
-	} else if (highBandSpinBox->value() != 0) {
-		if (currentType != 3) {
-			lowBandLabel->setText(i18n("Horizontal LOF (MHz)"));
+	lowRangeLabel->setText(i18n("Low range: %1 MHz to %2 MHz", lnb.freqRange[0].low, lnb.freqRange[0].high));
 
-			switchLabel->hide();
-			switchSpinBox->hide();
-
-			highBandLabel->setText(i18n("Vertical LOF (MHz)"));
-			highBandLabel->show();
-			highBandSpinBox->show();
+	if (!lnb.freqRange[1].high) {
+		if (!lnb.highFreq) {
+			highRangeLabel->hide();
+		} else {
+			highRangeLabel->setText(i18n("Bandstacking"));
+			highRangeLabel->show();
 		}
 	} else {
-		if (currentType != 2) {
-			lowBandLabel->setText(i18n("LOF (MHz)"));
-
-			switchLabel->hide();
-			switchSpinBox->hide();
-
-			highBandLabel->hide();
-			highBandSpinBox->hide();
-		}
-	}
-
-	if ((currentType == 4) != (type == 4)) {
-		if (type == 4) {
-			lowBandLabel->setEnabled(true);
-			switchLabel->setEnabled(true);
-			highBandLabel->setEnabled(true);
-			lowBandSpinBox->setEnabled(true);
-			switchSpinBox->setEnabled(true);
-			highBandSpinBox->setEnabled(true);
-		} else {
-			lowBandLabel->setEnabled(false);
-			switchLabel->setEnabled(false);
-			highBandLabel->setEnabled(false);
-			lowBandSpinBox->setEnabled(false);
-			switchSpinBox->setEnabled(false);
-			highBandSpinBox->setEnabled(false);
-		}
+		highRangeLabel->setText(i18n("High range: %1 MHz to %2 MHz", lnb.freqRange[1].low, lnb.freqRange[1].high));
+		highRangeLabel->show();
 	}
 
 	currentType = type;
@@ -1575,7 +1527,8 @@ void DvbSLnbConfigObject::selectType(int type)
 
 void DvbSLnbConfigObject::dialogAccepted()
 {
-	config->lowBandFrequency = lowBandSpinBox->value() * 1000;
-	config->switchFrequency = switchSpinBox->value() * 1000;
-	config->highBandFrequency = highBandSpinBox->value() * 1000;
+	config->currentLnb = device->getLnbSatModels().at(currentType - 1);
+	qDebug() << "Selected LNBf:" << config->currentLnb.alias;
+
+	dialog->accept();
 }

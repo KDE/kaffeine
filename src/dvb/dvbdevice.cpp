@@ -308,10 +308,12 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		return;
 	}
 
+	bool moveRotor = false;
 	DvbTransponder intermediate = transponder;
+
+#if 0
 	DvbSTransponder *dvbSTransponder = NULL;
 	DvbS2Transponder *dvbS2Transponder = NULL;
-	bool moveRotor = false;
 
 	if (transmissionType == DvbTransponderBase::DvbS) {
 		dvbSTransponder = intermediate.as<DvbSTransponder>();
@@ -320,58 +322,23 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		dvbS2Transponder = intermediate.as<DvbS2Transponder>();
 		dvbSTransponder = dvbS2Transponder;
 	}
+#endif
+	// DVB LNBf IF and DiSeqC switch settings
 
-	// parameters
+	int satNumber = 0;	// No DiseqC Switch
 
-	bool horPolar = (dvbSTransponder->polarization == DvbSTransponder::Horizontal) ||
-			(dvbSTransponder->polarization == DvbSTransponder::CircularLeft);
+	if (config->configuration == DvbConfigBase::DiseqcSwitch)
+		satNumber = config->lnbNumber + 1;
 
-	int frequency = dvbSTransponder->frequency;
-	bool highBand = false;
+	if (!backend->satSetup(config->currentLnb.alias, satNumber, config->bpf))
+		return;
 
-	if (config->switchFrequency != 0) {
-		// dual LO (low / high)
-		if (frequency < config->switchFrequency) {
-			frequency = qAbs(frequency - config->lowBandFrequency);
-		} else {
-			frequency = qAbs(frequency - config->highBandFrequency);
-			highBand = true;
-		}
-	} else if (config->highBandFrequency != 0) {
-		// single LO (horizontal / vertical)
-		if (horPolar) {
-			frequency = qAbs(frequency - config->lowBandFrequency);
-		} else {
-			frequency = qAbs(frequency - config->highBandFrequency);
-		}
-	} else {
-		// single LO
-		frequency = qAbs(frequency - config->lowBandFrequency);
-	}
-
-	// tone off
-
-	backend->setTone(ToneOff);
-
-	// horizontal / circular left --> 18V ; vertical / circular right --> 13V
-
-	backend->setVoltage(horPolar ? Voltage18V : Voltage13V);
-
-	// diseqc / rotor
-
-	usleep(15000);
+	// rotor
 
 	switch (config->configuration) {
-	case DvbConfigBase::DiseqcSwitch: {
-		char cmd[] = { char(0xe0), 0x10, 0x38, 0x00 };
-		cmd[3] = 0xf0 | char(config->lnbNumber << 2) | (horPolar ? 2 : 0) | (highBand ? 1 : 0);
-		backend->sendMessage(cmd, sizeof(cmd));
-		usleep(15000);
-
-		backend->sendBurst(((config->lnbNumber & 0x1) == 0) ? BurstMiniA : BurstMiniB);
-		usleep(15000);
+	case DvbConfigBase::DiseqcSwitch:
+		// Everything was already prepared via satSetup().
 		break;
-	    }
 
 	case DvbConfigBase::UsalsRotor: {
 		QString source = config->scanSource;
@@ -411,6 +378,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		}
 
 		char cmd[] = { char(0xe0), 0x31, 0x6e, char(value / 256), char(value % 256) };
+		usleep(15000);
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
@@ -419,6 +387,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	case DvbConfigBase::PositionsRotor: {
 		char cmd[] = { char(0xe0), 0x31, 0x6b, char(config->lnbNumber) };
+		usleep(15000);
 		backend->sendMessage(cmd, sizeof(cmd));
 		usleep(15000);
 		moveRotor = true;
@@ -426,13 +395,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	    }
 	}
 
-	// low band --> tone off ; high band --> tone on
-
-	backend->setTone(highBand ? ToneOn : ToneOff);
-
 	// tune
-
-	dvbSTransponder->frequency = frequency;
 
 	if (backend->tune(intermediate)) {
 		if (!moveRotor) {

@@ -680,9 +680,7 @@ void DvbManager::readDeviceConfigs()
 				config->configuration = reader.readEnum(QLatin1String("configuration"),
 					DvbConfigBase::ConfigurationMax);
 				config->lnbNumber = reader.readInt(QLatin1String("lnbNumber"));
-				config->lowBandFrequency = reader.readInt(QLatin1String("lowBandFrequency"));
-				config->switchFrequency = reader.readInt(QLatin1String("switchFrequency"));
-				config->highBandFrequency = reader.readInt(QLatin1String("highBandFrequency"));
+				config->currentLnb.alias = reader.readString(QLatin1String("lnb"));
 			}
 
 			if (!reader.isValid()) {
@@ -731,9 +729,7 @@ void DvbManager::writeDeviceConfigs()
 			if (config->getTransmissionType() == DvbConfigBase::DvbS) {
 				writer.write(QLatin1String("configuration"), config->configuration);
 				writer.write(QLatin1String("lnbNumber"), config->lnbNumber);
-				writer.write(QLatin1String("lowBandFrequency"), config->lowBandFrequency);
-				writer.write(QLatin1String("switchFrequency"), config->switchFrequency);
-				writer.write(QLatin1String("highBandFrequency"), config->highBandFrequency);
+				writer.write(QLatin1String("lnb"), config->currentLnb.alias);
 			}
 		}
 	}

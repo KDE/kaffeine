@@ -412,6 +412,7 @@ static QString enumToString(DvbSTransponder::Polarization polarization)
 	case DvbSTransponder::Vertical: return i18n("Vertical");
 	case DvbSTransponder::CircularLeft: return i18n("Circular left");
 	case DvbSTransponder::CircularRight: return i18n("Circular right");
+	case DvbSTransponder::Off: return i18n("Off");
 	}
 
 	return QString();

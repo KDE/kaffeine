@@ -118,6 +118,20 @@ protected:
 	virtual ~DvbFrontendDevice() { }
 };
 
+// Those definitions are pretty much identical to what's there
+// at libdvbv5 dvb-sat.h header. However, due to the abstract
+// model, we should re-define it here.
+
+struct lnbFreqRange {
+	unsigned int low, high;
+};
+
+struct lnbSat {
+	QString name, alias;
+	unsigned int lowFreq, highFreq, rangeSwitch;
+	struct lnbFreqRange freqRange[2];
+};
+
 class DvbBackendDevice : public DvbDeviceBase
 {
 public:
@@ -132,6 +146,7 @@ public:
 	virtual bool setVoltage(SecVoltage voltage) = 0;
 	virtual bool sendMessage(const char *message, int length) = 0;
 	virtual bool sendBurst(SecBurst burst) = 0;
+	virtual bool satSetup(QString lnbModel, int satNumber, int bpf) = 0;
 	virtual bool tune(const DvbTransponder &transponder) = 0; // discards obsolete data
 	virtual bool getProps(DvbTransponder &transponder) = 0;
 	virtual bool isTuned() = 0;
@@ -144,11 +159,14 @@ public:
 	virtual void stopDescrambling(int serviceId) = 0;
 	virtual void release() = 0;
 	virtual void enableDvbDump() = 0;
+	QList<lnbSat> getLnbSatModels() const { return lnbSatModels; };
 
 
 protected:
 	DvbBackendDevice() { }
 	virtual ~DvbBackendDevice() { }
+
+	QList<lnbSat> lnbSatModels;
 };
 
 /*

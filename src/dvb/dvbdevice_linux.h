@@ -69,6 +69,7 @@ protected:
 	bool setVoltage(SecVoltage voltage);
 	bool sendMessage(const char *message, int length);
 	bool sendBurst(SecBurst burst);
+	bool satSetup(QString lnbModel, int satNumber, int bpf);
 	bool tune(const DvbTransponder &transponder); // discards obsolete data
 	bool getProps(DvbTransponder &transponder);
 	bool isTuned();

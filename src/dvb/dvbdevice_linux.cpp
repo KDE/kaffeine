@@ -167,6 +167,35 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 	if ((parms->info.caps & FE_CAN_GUARD_INTERVAL_AUTO) != 0) {
 		capabilities |= DvbTGuardIntervalAuto;
 	}
+
+	// Get the supported LNBf types if the device supports satellite
+	if (transmissionTypes & (DvbS | DvbS2)) {
+		for (int i = 0;; i++) {
+			const struct dvb_sat_lnb *lnb = dvb_sat_get_lnb(i);
+
+			if (!lnb)
+				break;
+
+			struct lnbSat lnbSat;
+
+			// FIXME: on newer libdvbv5, use dvb_sat_get_lnb_name() in
+			// order to get the name i18n translated
+			lnbSat.name = QString::fromUtf8(lnb->name);
+			lnbSat.alias = QString::fromUtf8(lnb->alias);
+			lnbSat.lowFreq = lnb->lowfreq;
+			lnbSat.highFreq = lnb->highfreq;
+			lnbSat.rangeSwitch = lnb->rangeswitch;
+			lnbSat.freqRange[0].low = lnb->freqrange[0].low;
+			lnbSat.freqRange[0].high = lnb->freqrange[0].high;
+			lnbSat.freqRange[1].low = lnb->freqrange[1].low;
+			lnbSat.freqRange[1].high = lnb->freqrange[1].high;
+
+			qDebug("supports lnb %s", lnb->alias);
+
+			lnbSatModels.append(lnbSat);
+		}
+	}
+
 	dvb_fe_close(parms);
 
 	ready = true;
@@ -593,6 +622,19 @@ static uint32_t toDvbInterleaving(IsdbTTransponder::Interleaving interleaving)
 	return (uint32_t)-1;
 }
 
+static uint32_t toDvbPolarization(DvbSTransponder::Polarization polarization)
+{
+	switch (polarization) {
+	case DvbSTransponder::Off:		return POLARIZATION_OFF;
+	case DvbSTransponder::Horizontal:	return POLARIZATION_H;
+	case DvbSTransponder::Vertical:		return POLARIZATION_V;
+	case DvbSTransponder::CircularLeft:	return POLARIZATION_L;
+	case DvbSTransponder::CircularRight:	return POLARIZATION_R;
+	}
+
+	return (uint32_t)-1;
+}
+
 static fe_hierarchy toDvbHierarchy(DvbTTransponder::Hierarchy hierarchy)
 {
 	switch (hierarchy) {
@@ -871,6 +913,24 @@ static DvbT2Transponder::Hierarchy DvbT2toHierarchy(uint32_t hierarchy)
 	}
 }
 
+bool DvbLinuxDevice::satSetup(QString lnbModel, int satNumber, int bpf)
+{
+	Q_ASSERT(dvbv5_parms);
+
+	int lnb = dvb_sat_search_lnb(lnbModel.toUtf8());
+	dvbv5_parms->lnb = dvb_sat_get_lnb(lnb);
+	if (!dvbv5_parms->lnb) {
+		qCritical("%s", qPrintable(i18n("cannot set LNBf type to %1", lnbModel)));
+		return false;
+	}
+
+
+	dvbv5_parms->sat_number = satNumber;
+	dvbv5_parms->freq_bpf = bpf;
+
+	return true;
+}
+
 bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 {
 	Q_ASSERT(dvbv5_parms);
@@ -879,6 +939,8 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 
 	qDebug("tune to: %s", qPrintable(transponder.toString()));
 
+	// FIXME: add support for LNA on/off
+
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::DvbS: {
 		const DvbSTransponder *dvbSTransponder = transponder.as<DvbSTransponder>();
@@ -886,11 +948,15 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		delsys = SYS_DVBS;
 		dvb_set_sys(dvbv5_parms, delsys);
 
+		dvb_fe_store_parm(dvbv5_parms, DTV_POLARIZATION, toDvbPolarization(dvbSTransponder->polarization));
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbSTransponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbSTransponder->symbolRate);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INNER_FEC, toDvbFecRate(dvbSTransponder->fecRate));
 		freqMHz = dvbSTransponder->frequency / 1000.;
+
+		/// FIXME
+
 		break;
 	    }
 	case DvbTransponderBase::DvbS2: {
@@ -899,6 +965,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		delsys = SYS_DVBS2;
 		dvb_set_sys(dvbv5_parms, delsys);
 
+		dvb_fe_store_parm(dvbv5_parms, DTV_POLARIZATION, toDvbPolarization(dvbS2Transponder->polarization));
 		dvb_fe_store_parm(dvbv5_parms, DTV_FREQUENCY, dvbS2Transponder->frequency);
 		dvb_fe_store_parm(dvbv5_parms, DTV_INVERSION, INVERSION_AUTO);
 		dvb_fe_store_parm(dvbv5_parms, DTV_SYMBOL_RATE, dvbS2Transponder->symbolRate);

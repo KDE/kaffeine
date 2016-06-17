@@ -80,6 +80,11 @@ public:
 		return deviceState;
 	}
 
+	QList<lnbSat> getLnbSatModels() const
+	{
+		return backend->getLnbSatModels();
+	}
+
 	TransmissionTypes getTransmissionTypes() const;
 	QString getDeviceId() const;
 	QString getFrontendName() const;

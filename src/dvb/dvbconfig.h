@@ -24,6 +24,8 @@
 #include <QSharedData>
 #include <QString>
 
+#include "dvbbackenddevice.h"
+
 class DvbConfigBase : public QSharedData
 {
 public:
@@ -50,7 +52,7 @@ public:
 	int timeout; // tuning timeout (ms)
 	int numberOfTuners;
 
-	// only used for DVB-S
+	// only used for Satellite
 
 	enum Configuration
 	{
@@ -61,11 +63,11 @@ public:
 	};
 
 	Configuration configuration;
+
+	struct lnbSat currentLnb;
 	int lnbNumber;         // corresponds to diseqc switch position (0 = first sat etc)
 			       // or to rotor position (0 = first position etc)
-	int lowBandFrequency;  // kHz (C-band multipoint: horizontal)
-	int switchFrequency;   // kHz (0 == only low band or C-band multipoint)
-	int highBandFrequency; // kHz (C-band multipoint: vertical)
+	int bpf;		// Bandpass Frequency for SCR/Unicable
 
 private:
 	TransmissionType transmissionType;

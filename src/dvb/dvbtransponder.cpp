@@ -68,6 +68,7 @@ static const char *enumToLinuxtv(DvbSTransponder::Polarization polarization)
 	case DvbSTransponder::Vertical: return "V";
 	case DvbSTransponder::CircularLeft: return "L";
 	case DvbSTransponder::CircularRight: return "R";
+	case DvbSTransponder::Off: return "-";
 	}
 
 	return NULL;

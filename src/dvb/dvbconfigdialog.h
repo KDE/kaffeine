@@ -51,6 +51,7 @@ class DvbConfigBase;
 class DvbConfigPage;
 class DvbDeviceConfig;
 class DvbManager;
+class DvbDevice;
 class DvbSConfigObject;
 class DvbSLnbConfigObject;
 
@@ -206,7 +207,7 @@ class DvbSConfigObject : public QObject
 	Q_OBJECT
 public:
 	DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
-		const QList<DvbConfig> &configs, bool dvbS2);
+		const QList<DvbConfig> &configs, DvbDevice *device, bool dvbS2);
 	~DvbSConfigObject();
 
 	void appendConfigs(QList<DvbConfig> &list);
@@ -227,6 +228,7 @@ private:
 	DvbConfigBase *createConfig(int lnbNumber);
 
 	QWidget *parent;
+	DvbDevice *device;
 	DvbConfigBase *lnbConfig;
 	QList<DvbConfig> diseqcConfigs;
 	QList<DvbSLnbConfigObject *> lnbConfigs;
@@ -244,7 +246,8 @@ class DvbSLnbConfigObject : public QObject
 	Q_OBJECT
 public:
 	DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
-		QPushButton *configureButton_, DvbConfigBase *config_);
+		QPushButton *configureButton_, DvbConfigBase *config_,
+		DvbDevice *device_);
 	~DvbSLnbConfigObject();
 
 	void resetConfig();
@@ -260,11 +263,15 @@ private:
 	QComboBox *sourceBox;
 	QPushButton *configureButton;
 	DvbConfigBase *config;
+	DvbDevice *device;
+	QDialog *dialog;
 
 	QButtonGroup *lnbSelectionGroup;
 	QLabel *lowBandLabel;
 	QLabel *switchLabel;
 	QLabel *highBandLabel;
+	QLabel *lowRangeLabel;
+	QLabel *highRangeLabel;
 	QSpinBox *lowBandSpinBox;
 	QSpinBox *switchSpinBox;
 	QSpinBox *highBandSpinBox;

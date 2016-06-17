@@ -93,7 +93,8 @@ public:
 		Horizontal = 0,
 		Vertical = 1,
 		CircularLeft = 2,
-		CircularRight = 3
+		CircularRight = 3,
+		Off = 4,
 	};
 
 	void readTransponder(QDataStream &stream);
