@@ -450,7 +450,7 @@ static fe_code_rate toDvbFecRate(DvbTransponderBase::FecRate fecRate)
 	case DvbTransponderBase::Fec1_3: return FEC_AUTO; // FIXME
 	case DvbTransponderBase::Fec1_4: return FEC_AUTO; // FIXME
 	case DvbTransponderBase::Fec2_3: return FEC_2_3;
-	case DvbTransponderBase::Fec2_5: return FEC_AUTO; // FIXME
+	case DvbTransponderBase::Fec2_5: return FEC_2_5;
 	case DvbTransponderBase::Fec3_4: return FEC_3_4;
 	case DvbTransponderBase::Fec3_5: return FEC_3_5;
 	case DvbTransponderBase::Fec4_5: return FEC_4_5;
@@ -745,7 +745,7 @@ static DvbTransponderBase::FecRate DvbtoFecRate(uint32_t fecRate)
 //	case FEC_AUTO: return DvbTransponderBase::Fec1_3; // FIXME
 //	case FEC_AUTO: return DvbTransponderBase::Fec1_4; // FIXME
 	case FEC_2_3:  return DvbTransponderBase::Fec2_3;
-//	case FEC_AUTO: return DvbTransponderBase::Fec2_5; // FIXME
+	case FEC_2_5:  return DvbTransponderBase::Fec2_5;
 	case FEC_3_4:  return DvbTransponderBase::Fec3_4;
 	case FEC_3_5:  return DvbTransponderBase::Fec3_5;
 	case FEC_4_5:  return DvbTransponderBase::Fec4_5;
