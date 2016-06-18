@@ -109,8 +109,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 	struct dvb_v5_fe_parms *parms = dvb_fe_open2(adapter, index, verbose, 0, dvbv5_log);
 
 	if (!parms) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open frontend %1", frontendPath)));
+		qWarning("Cannot open frontend %s", qPrintable(frontendPath));
 		return;
 	}
 
@@ -141,8 +140,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 			transmissionTypes |= IsdbT;
 			break;
 		default: /* not supported yet */
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("unsupported transmission type:  %1", parms->systems[i])));
+			qWarning("Unsupported transmission type: %d", parms->systems[i]);
 			break;
 		}
 	}
@@ -200,8 +198,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 
 	ready = true;
 
-	// xgettext:no-c-format
-	qInfo("%s", qPrintable(i18n("found dvb device %1: %2", deviceId , frontendName)));
+	qInfo("Found dvb device %s: %s", qPrintable(deviceId), qPrintable(frontendName));
 }
 
 void DvbLinuxDevice::startCa()
@@ -281,16 +278,14 @@ bool DvbLinuxDevice::acquire()
 	dvbv5_parms = dvb_fe_open2(adapter, index, verbose, 0, dvbv5_log);
 
 	if (!dvbv5_parms) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open frontend %1", frontendPath)));
+		qWarning("Cannot open frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
 	dvrFd = open(QFile::encodeName(dvrPath).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 
 	if (dvrFd < 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open dvr %1", dvrPath)));
+		qWarning("Cannot open dvr %s", qPrintable(dvrPath));
 		dvb_fe_close(dvbv5_parms);
 		dvbv5_parms = NULL;
 		return false;
@@ -305,8 +300,7 @@ bool DvbLinuxDevice::setTone(SecTone tone)
 
 	if (dvb_fe_sec_tone(dvbv5_parms,
 		  (tone == ToneOn) ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_SET_TONE failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_SET_TONE failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -318,8 +312,7 @@ bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
 	Q_ASSERT(dvbv5_parms);
 
 	if (dvb_fe_lnb_high_voltage(dvbv5_parms, voltage == Voltage18V) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_SET_VOLTAGE failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_SET_VOLTAGE failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -331,8 +324,7 @@ bool DvbLinuxDevice::sendMessage(const char *message, int length)
 	Q_ASSERT(dvbv5_parms && (length >= 0) && (length <= 6));
 
 	if (dvb_fe_diseqc_cmd(dvbv5_parms, length, (const unsigned char *)message) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_DISEQC_SEND_MASTER_CMD failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_DISEQC_SEND_MASTER_CMD failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -344,8 +336,7 @@ bool DvbLinuxDevice::sendBurst(SecBurst burst)
 	Q_ASSERT(dvbv5_parms);
 
 	if (dvb_fe_diseqc_burst(dvbv5_parms, burst == BurstMiniB) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_DISEQC_SEND_BURST failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_DISEQC_SEND_BURST failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -920,7 +911,7 @@ bool DvbLinuxDevice::satSetup(QString lnbModel, int satNumber, int bpf)
 	int lnb = dvb_sat_search_lnb(lnbModel.toUtf8());
 	dvbv5_parms->lnb = dvb_sat_get_lnb(lnb);
 	if (!dvbv5_parms->lnb) {
-		qCritical("%s", qPrintable(i18n("cannot set LNBf type to %1", lnbModel)));
+		qCritical("Cannot set LNBf type to %s", qPrintable(lnbModel));
 		return false;
 	}
 
@@ -1093,17 +1084,15 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		break;
 	    }
 	case DvbTransponderBase::Invalid:
-		qWarning("%s", qPrintable(i18n("unknown transmission type")));
+		qWarning("Invalid transmission type");
 		return false;
 	default:
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("unknown transmission type %1", transponder.getTransmissionType())));
+		qWarning("Unknown transmission type %d", transponder.getTransmissionType());
 		return false;
 	}
 
 	if (dvb_fe_set_parms(dvbv5_parms) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_SET_PROPERTY failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_SET_PROPERTY failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -1278,11 +1267,10 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 		break;
 	    }
 	case DvbTransponderBase::Invalid:
-		qWarning("%s", qPrintable(i18n("unknown transmission type")));
+		qWarning("Invalid transmission type");
 		return false;
 	default:
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("unknown transmission type %1", transponder.getTransmissionType())));
+		qWarning("Unknown transmission type %s", qPrintable(transponder.getTransmissionType()));
 		return false;
 	}
 	return true;
@@ -1307,14 +1295,12 @@ bool DvbLinuxDevice::isTuned()
 	uint32_t status = 0;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_READ_STATUS failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_READ_STATUS failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
 	if (dvb_fe_retrieve_stats(dvbv5_parms, DTV_STATUS, &status) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_READ_STATUS failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_READ_STATUS failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -1328,8 +1314,7 @@ int DvbLinuxDevice::getSignal()
 	int signal;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_READ_STATUS failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_READ_STATUS failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -1365,8 +1350,7 @@ int DvbLinuxDevice::getSnr()
 	int cnr;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("ioctl FE_READ_STATUS failed for frontend %1", frontendPath)));
+		qWarning("ioctl FE_READ_STATUS failed for frontend %s", qPrintable(frontendPath));
 		return false;
 	}
 
@@ -1398,16 +1382,14 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 	Q_ASSERT(frontendFd >= 0);
 
 	if (dmxFds.contains(pid)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("pid filter already set up for pid %1", pid)));
+		qWarning("PID filter already set up for pid %d", pid);
 		return false;
 	}
 
 	int dmxFd = open(QFile::encodeName(demuxPath).constData(), O_RDONLY | O_NONBLOCK | O_CLOEXEC);
 
 	if (dmxFd < 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open demux %1", demuxPath)));
+		qWarning("Cannot open demux %s", qPrintable(demuxPath));
 		return false;
 	}
 
@@ -1420,8 +1402,7 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 	pes_filter.flags = DMX_IMMEDIATE_START;
 
 	if (ioctl(dmxFd, DMX_SET_PES_FILTER, &pes_filter) != 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot set up pid filter for demux %1", demuxPath)));
+		qWarning("Cannot set up PID filter for demux %s", qPrintable(demuxPath));
 		close(dmxFd);
 		return false;
 	}
@@ -1435,8 +1416,7 @@ void DvbLinuxDevice::removePidFilter(int pid)
 	Q_ASSERT(frontendFd >= 0);
 
 	if (!dmxFds.contains(pid)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("no pid filter set up for pid %1", pid)));
+		qWarning("No PID filter set up for PID %i", pid);
 		return;
 	}
 
@@ -1501,7 +1481,7 @@ void DvbLinuxDevice::startDvr()
 		}
 
 		if ((dvrPipe[0] < 0) || (dvrPipe[1] < 0)) {
-			qWarning("%s", qPrintable(i18n("cannot create pipe")));
+			qCritical("Cannot create pipe");
 			return;
 		}
 	}
@@ -1534,8 +1514,7 @@ void DvbLinuxDevice::startDvr()
 					continue;
 				}
 
-				// xgettext:no-c-format
-				qWarning("%s", qPrintable(i18n("cannot read from dvr %1 %2", dvrPath , errno)));
+				qWarning("Cannot read from dvr %s: error: %d", qPrintable(dvrPath), errno);
 				return;
 			}
 		}
@@ -1554,14 +1533,14 @@ void DvbLinuxDevice::stopDvr()
 		Q_ASSERT((dvrPipe[0] >= 0) && (dvrPipe[1] >= 0));
 
 		if (write(dvrPipe[1], " ", 1) != 1) {
-			qWarning("%s", qPrintable(i18n("cannot write to pipe")));
+			qWarning("Cannot write to pipe");
 		}
 
 		wait();
 		char data;
 
 		if (read(dvrPipe[0], &data, 1) != 1) {
-			qWarning("%s", qPrintable(i18n("cannot read from pipe")));
+			qWarning("Cannot read from pipe");
 		}
 	}
 }
@@ -1582,7 +1561,7 @@ void DvbLinuxDevice::run()
 				continue;
 			}
 
-			qWarning("%s", qPrintable(i18n("poll failed")));
+			qWarning("Poll failed with error: %d", errno);
 			return;
 		}
 
@@ -1603,8 +1582,7 @@ void DvbLinuxDevice::run()
 					continue;
 				}
 
-				// xgettext:no-c-format
-				qWarning("%s", qPrintable(i18n("cannot read from dvr %1 %2", dvrPath , errno)));
+				qWarning("Cannot read from dvr %s: error %d", qPrintable(dvrPath), errno);
 				dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 				if (dataSize < 0) {
@@ -1616,8 +1594,7 @@ void DvbLinuxDevice::run()
 						continue;
 					}
 
-					// xgettext:no-c-format
-					qWarning("%s", qPrintable(i18n("cannot read from dvr %1 %2", dvrPath , errno)));
+					qWarning("Cannot read from dvr %s: error %d", qPrintable(dvrPath), errno);
 					return;
 				}
 			}
@@ -1802,7 +1779,7 @@ DvbLinuxDeviceManager::DvbLinuxDeviceManager(QObject *parent) : QObject(parent)
 		return;
 	}
 	close(fd);
-	qInfo("%s", qPrintable(i18n("starting DvbDeviceMonitor")));
+	qInfo("Starting DvbDeviceMonitor thread");
 
 	monitor = new DvbDeviceMonitor(this);
 	monitor->start();
@@ -1886,14 +1863,12 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 	QString devicePath = QString(QLatin1String("/dev/dvb/adapter%1/%2%3")).arg(adapter).arg(type).arg(index);
 
 	if ((adapter < 0) || (adapter > 0x7fff) || (index < 0) || (index > 0x7fff)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot determine adapter or index for device %1", udi)));
+		qWarning("Cannot determine adapter or index for device %s", qPrintable(udi));
 		return;
 	}
 
 	if (devicePath.isEmpty()) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot determine path for device %1", udi)));
+		qWarning("Cannot determine path for device %s", qPrintable(udi));
 		return;
 	}
 
@@ -2019,9 +1994,8 @@ void DvbLinuxDeviceManager::componentRemoved(const QString &udi)
 
 	bool removeDevice = false;
 
-	// xgettext:no-c-format
 	if (device->isReady())
-		qInfo("%s", qPrintable(i18n("Digital TV device removed %1: %2", device->getDeviceId(), device->getFrontendName())));
+		qInfo("Digital TV device removed %s: %s", qPrintable(device->getDeviceId()), qPrintable(device->getFrontendName()));
 
 	if (udi == device->caUdi) {
 		device->caPath.clear();

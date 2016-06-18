@@ -126,7 +126,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	int sectionCount = section.lastSectionNumber() + 1;
 
 	if (section.sectionNumber() >= sectionCount) {
-		qWarning("%s", qPrintable(i18n("current section is bigger than the last one")));
+		qWarning("Current section is bigger than the last one");
 		sectionCount = section.sectionNumber() + 1;
 	}
 
@@ -134,7 +134,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 		multipleSections.resize(sectionCount);
 	} else {
 		if (multipleSections.size() != sectionCount) {
-			qWarning("%s", qPrintable(i18n("inconsistent number of sections")));
+			qWarning("Inconsistent number of sections");
 
 			if (multipleSections.size() < sectionCount) {
 				multipleSections.resize(sectionCount);
@@ -241,8 +241,7 @@ void DvbScanFilter::processSection(const char *data, int size)
 
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
-	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("timeout while reading section; type = %1, pid = %2", type, pid)));
+	qWarning("Timeout while reading section; type = %d, PID = %d", type, pid);
 	scan->filterFinished(this);
 }
 
@@ -451,7 +450,7 @@ void DvbScan::start()
 void DvbScan::deviceStateChanged()
 {
 	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
-		qWarning("%s", qPrintable(i18n("Device was released. Stopping scan")));
+		qWarning("Device was released. Stopping scan");
 		emit scanFinished();
 		return;
 	}
@@ -569,7 +568,7 @@ void DvbScan::updateState()
 			}
 
 			if (isLive) {
-				qInfo("%s", qPrintable(i18n("Scanning while live stream. Can't change the transponder")));
+				qInfo("Scanning while live stream. Can't change the transponder");
 				emit scanFinished();
 				return;
 			}
@@ -990,7 +989,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
-		qWarning("%s", qPrintable(i18n("Invalid transponder type")));
+		qWarning("Invalid transponder type");
 		return;
 	case DvbTransponderBase::DvbC: {
 		if (descriptor.descriptorTag() != 0x44) {

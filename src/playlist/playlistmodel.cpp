@@ -42,15 +42,14 @@ bool Playlist::load(const QUrl &url_, Format format)
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		qInfo("%s", qPrintable(i18n("opening remote playlists not supported yet")));
+		qInfo("Opening remote playlists not supported yet");
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open file %1", file.fileName())));
+		qWarning("Cannot open file %s", qPrintable(file.fileName()));
 		return false;
 	}
 
@@ -76,15 +75,14 @@ bool Playlist::save(Format format) const
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		qInfo("%s", qPrintable(i18n("opening remote playlists not supported yet")));
+		qInfo("Opening remote playlists not supported yet");
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open file %1", file.fileName())));
+		qWarning("Cannot open file %s", qPrintable(file.fileName()));
 		return false;
 	}
 

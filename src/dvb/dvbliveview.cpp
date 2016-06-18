@@ -451,16 +451,14 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("cannot open file %1", internal->timeShiftFile.fileName())));
+			qWarning("Cannot open file %s", qPrintable(internal->timeShiftFile.fileName()));
 			internal->timeShiftFile.setFileName(QDir::homePath() + QLatin1String("/TimeShift-") +
 				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) +
 				QLatin1String(".m2t"));
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-				// xgettext:no-c-format
-				qWarning("%s", qPrintable(i18n("cannot open file %1", internal->timeShiftFile.fileName())));
+				qWarning("Cannot open file %s", qPrintable(internal->timeShiftFile.fileName()));
 				mediaWidget->stop();
 				break;
 			}
@@ -595,21 +593,21 @@ DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), med
 	updateUrl();
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
-		qWarning("%s", qPrintable(i18n("mkfifo failed")));
+		qWarning("Failed to open a fifo. Error: %d", errno);
 		return;
 	}
 
 	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
-		qWarning("%s", qPrintable(i18n("open failed")));
+		qWarning("Failed to open fifo for read. Error: %d", errno);
 		return;
 	}
 
 	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
-		qWarning("%s", qPrintable(i18n("open failed")));
+		qWarning("Failed to open fifo for write. Error: %d", errno);
 		return;
 	}
 

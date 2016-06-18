@@ -462,7 +462,7 @@ void DvbTab::activate()
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
 	if (!channel.isValid()) {
-		qWarning("%s", qPrintable(i18n("channel is invalid")));
+		qWarning("Channel is invalid");
 		return;
 	}
 

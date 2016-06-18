@@ -233,7 +233,7 @@ DvbRecordingTableModel::~DvbRecordingTableModel()
 void DvbRecordingTableModel::setRecordingModel(DvbRecordingModel *recordingModel_)
 {
 	if (recordingModel != NULL) {
-		qWarning("%s", qPrintable(i18n("recording model already set")));
+		qWarning("Recording model already set");
 		return;
 	}
 

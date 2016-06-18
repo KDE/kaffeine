@@ -87,7 +87,7 @@ DvbChannelTableModel::~DvbChannelTableModel()
 void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
 {
 	if (channelModel != NULL) {
-		qWarning("%s", qPrintable(i18n("channel model already set")));
+		qWarning("Channel model already set");
 		return;
 	}
 

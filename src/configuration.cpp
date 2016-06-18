@@ -39,8 +39,7 @@ Configuration::Configuration()
 	if ((value >= 0) && (value <= StartupLastValue)) {
 		startupDisplayMode = static_cast<StartupDisplayMode>(value);
 	} else {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("unknown startup display mode %1", value)));
+		qWarning("Unknown startup display mode %d", value);
 	}
 
 	shortSkipDuration =
@@ -72,8 +71,7 @@ void Configuration::setStartupDisplayMode(int newStartupDisplayMode)
 		KSharedConfig::openConfig()->group("MainWindow").writeEntry("StartupDisplayMode",
 			static_cast<int>(startupDisplayMode));
 	} else {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("unknown startup display mode %1", newStartupDisplayMode)));
+		qWarning("Unknown startup display mode %d", newStartupDisplayMode);
 	}
 }
 

@@ -70,8 +70,7 @@ void DvbLinuxCam::startCa(const QString &path)
 	caFd = open(QFile::encodeName(path).constData(), O_RDWR | O_NONBLOCK);
 
 	if (caFd < 0) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot open %1", path)));
+		qWarning("Cannot open CA device node %s", qPrintable(path));
 		return;
 	}
 
@@ -89,7 +88,7 @@ void DvbLinuxCam::startDescrambling(const QByteArray &pmtSectionData)
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("%s", qPrintable(i18n("pmt section is invalid")));
+		qWarning("PMT section is invalid while descrambling");
 		return;
 	}
 
@@ -117,8 +116,7 @@ void DvbLinuxCam::stopDescrambling(int serviceId)
 	QMap<int, DvbLinuxCamService>::iterator it = services.find(serviceId);
 
 	if (it == services.end()) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot find service id %1", serviceId)));
+		qWarning("Cannot find service id %d while stopping CAM", serviceId);
 		return;
 	}
 
@@ -131,7 +129,7 @@ void DvbLinuxCam::stopDescrambling(int serviceId)
 		services.erase(it);
 		return;
 	case DvbLinuxCamService::Remove:
-		qWarning("%s", qPrintable(i18n("service is already being removed")));
+		qWarning("CAM Service was already removed");
 		services.erase(it);
 		return;
 	}
@@ -166,7 +164,7 @@ void DvbLinuxCam::pollModule()
 	} else {
 		if ((pendingCommands & ExpectingReply) != 0) {
 			pendingCommands &= ~ExpectingReply;
-			qWarning("%s", qPrintable(i18n("request timed out")));
+			qDebug("CAM: request timed out");
 		}
 
 		if (pendingCommands == 0) {
@@ -210,7 +208,7 @@ void DvbLinuxCam::readyRead()
 		handleTransportLayer(data + 2, size - 2);
 		handlePendingCommands();
 	} else {
-		qWarning("%s", qPrintable(i18n("unknown recipient")));
+		qWarning("CAM: unknown recipient");
 	}
 }
 
@@ -221,7 +219,7 @@ bool DvbLinuxCam::detectSlot()
 	memset(&caInfo, 0, sizeof(caInfo));
 
 	if (ioctl(caFd, CA_GET_CAP, &caInfo) != 0) {
-		qWarning("%s", qPrintable(i18n("cannot perform ioctl CA_GET_CAP")));
+		qWarning("Cannot perform ioctl CA_GET_CAP");
 		return false;
 	}
 
@@ -231,14 +229,12 @@ bool DvbLinuxCam::detectSlot()
 		slotInfo.num = i;
 
 		if (ioctl(caFd, CA_GET_SLOT_INFO, &slotInfo) != 0) {
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("cannot perform ioctl CA_GET_SLOT_INFO for slot %1", slot)));
+			qWarning("Cannot perform ioctl CA_GET_SLOT_INFO for slot %d", slot);
 			continue;
 		}
 
 		if ((slotInfo.type & CA_CI_LINK) == 0) {
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("unknown type %1", slotInfo.type)));
+			qWarning("Unknown CAM CI link type %d", slotInfo.type);
 			continue;
 		}
 
@@ -319,7 +315,7 @@ void DvbLinuxCam::handleTransportLayer(const unsigned char *data, int size)
 		case StatusByte:
 			if ((length < 2) || (data[0] != ConnectionId)) {
 				size = 0;
-				qWarning("%s", qPrintable(i18n("invalid StatusByte object")));
+				qWarning("CAM: invalid StatusByte object");
 				break;
 			}
 
@@ -331,7 +327,7 @@ void DvbLinuxCam::handleTransportLayer(const unsigned char *data, int size)
 		case CreateTransportConnectionReply:
 			if ((length < 1) || (data[0] != ConnectionId)) {
 				size = 0;
-				qWarning("%s", qPrintable(i18n("invalid CreateTransportConnectionReply object")));
+				qWarning("CAM: invalid CreateTransportConnectionReply object");
 				break;
 			}
 
@@ -340,15 +336,14 @@ void DvbLinuxCam::handleTransportLayer(const unsigned char *data, int size)
 		case DataLast:
 			if ((length < 1) || (data[0] != ConnectionId)) {
 				size = 0;
-				qWarning("%s", qPrintable(i18n("invalid DataLast object")));
+				qWarning("CAM: invalid DataLast object");
 				break;
 			}
 
 			handleSessionLayer(data + 1, length - 1);
 			break;
 		default:
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("unknown tag %1", tag)));
+			qWarning("CAM: unknown tag %d", tag);
 			break;
 		}
 
@@ -368,7 +363,7 @@ void DvbLinuxCam::handleSessionLayer(const unsigned char *data, int size)
 		switch (tag) {
 		case OpenSessionRequest: {
 			if (length < 4) {
-				qWarning("%s", qPrintable(i18n("invalid OpenSessionRequest object")));
+				qWarning("CAM: invalid OpenSessionRequest object");
 				break;
 			}
 
@@ -406,15 +401,14 @@ void DvbLinuxCam::handleSessionLayer(const unsigned char *data, int size)
 		    }
 		case SessionNumber:
 			if (length < 2) {
-				qWarning("%s", qPrintable(i18n("invalid SessionNumber object")));
+				qWarning("CAM: invalid SessionNumber object");
 				break;
 			}
 
 			handleApplicationLayer(data + length, size - length);
 			break;
 		default:
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("unknown tag %1", tag)));
+			qWarning("CAM: unknown tag %d", tag);
 			break;
 		}
 	}
@@ -455,8 +449,7 @@ void DvbLinuxCam::handleApplicationLayer(const unsigned char *data, int size)
 			QCoreApplication::postEvent(this, new QEvent(QEvent::User));
 			break;
 		default:
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("unknown tag %1", tag)));
+			qWarning("CAM: unknown tag %d", tag);
 			break;
 		}
 
@@ -476,7 +469,7 @@ void DvbLinuxCam::handlePendingCommands()
 			break;
 		case ResetCa:
 			if (ioctl(caFd, CA_RESET, 0xff) != 0) {
-				qWarning("%s", qPrintable(i18n("cannot perform ioctl CA_RESET")));
+				qWarning("Cannot perform ioctl CA_RESET");
 			}
 
 			qDebug("--> CAM reset");
@@ -512,8 +505,7 @@ void DvbLinuxCam::handlePendingCommands()
 			sendApplicationLayerMessage(CaInfoEnquiry, messageData, messageData);
 			break;
 		default:
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("unknown pending command %1", pendingCommand)));
+			qWarning("CAM: unknown pending command %d", pendingCommand);
 			break;
 		}
 	}
@@ -562,7 +554,7 @@ void DvbLinuxCam::customEvent(QEvent *event)
 			break;
 		    }
 		case DvbLinuxCamService::Remove:
-			qWarning("%s", qPrintable(i18n("impossible")));
+			qWarning("CAM: impossible to remove custom event");
 			break;
 		}
 
@@ -656,8 +648,7 @@ void DvbLinuxCam::sendTransportLayerMessage(TransportLayerTag tag, char *data, c
 	length = uint(end - data);
 
 	if (write(caFd, data, length) != length) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("cannot send message of length %1", length)));
+		qWarning("CAM: cannot send message of length %d", length);
 	}
 
 	pendingCommands |= ExpectingReply;

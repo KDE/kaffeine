@@ -39,7 +39,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		qWarning("%s", qPrintable(i18n("pending statements at destruction")));
+		qWarning("Pending statements at destruction");
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -108,8 +108,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 			SqlKey sqlKey(static_cast<int>(fullKey));
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
-				// xgettext:no-c-format
-				qWarning("%s", qPrintable(i18n("invalid key %1", fullKey)));
+				qWarning("Invalid key %Ld", fullKey);
 				continue;
 			}
 
@@ -140,8 +139,7 @@ void SqlInterface::sqlInsert(SqlKey key)
 		break;
 	}
 
-	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
+	qWarning("Invalid pending statement '%s'", qPrintable(pendingStatement));
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -161,8 +159,7 @@ void SqlInterface::sqlUpdate(SqlKey key)
 		break;
 	}
 
-	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
+	qWarning("Invalid pending statement '%s'", qPrintable(pendingStatement));
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -183,8 +180,7 @@ void SqlInterface::sqlRemove(SqlKey key)
 		break;
 	}
 
-	// xgettext:no-c-format
-	qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
+	qWarning("Invalid pending statement %s", qPrintable(pendingStatement));
 }
 
 void SqlInterface::requestSubmission()
@@ -234,8 +230,7 @@ void SqlInterface::sqlSubmit()
 			continue;
 		}
 
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("invalid pending statement %1", pendingStatement)));
+		qWarning("Invalid pending statement %s", qPrintable(pendingStatement));
 	}
 
 	pendingStatements.clear();

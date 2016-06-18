@@ -84,8 +84,7 @@ QSqlQuery SqlHelper::prepare(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.prepare(statement)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("error while preparing statement %1", query.lastError().text())));
+		qWarning("Error while preparing statement '%s'", qPrintable(query.lastError().text()));
 	}
 
 	return query;
@@ -97,8 +96,7 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.exec(statement)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("error while executing statement %1", query.lastError().text())));
+		qWarning("Error while executing statement '%s'", qPrintable(query.lastError().text()));
 	}
 
 	return query;
@@ -107,8 +105,7 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 void SqlHelper::exec(QSqlQuery &query)
 {
 	if (!query.exec()) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("error while executing statement %1", query.lastError().text())));
+		qWarning("Error while executing statement '%s'", qPrintable(query.lastError().text()));
 	}
 }
 

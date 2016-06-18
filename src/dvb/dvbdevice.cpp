@@ -230,8 +230,7 @@ DvbDataDumper::DvbDataDumper()
 		QLatin1String(".bin"));
 
 	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("Can't open %1", fileName())));
+		qWarning("Can't open %s", qPrintable(fileName()));
 	}
 }
 
@@ -355,10 +354,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 			orbitalPosition = (-source.toDouble(&ok));
 		}
 
-		if (!ok) {
-			// xgettext:no-c-format
-			qWarning("%s", qPrintable(i18n("Can't extract orbital position from %1", config->scanSource)));
-		}
+		if (!ok)
+			qWarning("Can't extract orbital position from %s", qPrintable(config->scanSource));
 
 		double radius = 6378;
 		double semiMajorAxis = 42164;
@@ -452,9 +449,8 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 		// ISDB-T Currently, all ISDB-T tuners should support auto mode
 		isAuto = true;
 		tune(autoTransponder);
-	}else {
-		// xgettext:no-c-format
-		qWarning("%s", qPrintable(i18n("Can't do auto-tune for  %1", transmissionType)));
+	} else {
+		qWarning("Can't do auto-tune for %d", transmissionType);
 		return;
 	}
 
@@ -482,7 +478,7 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (it->filters.contains(filter)) {
-		qWarning("%s", qPrintable(i18n("Using the same filter for the same pid more than once")));
+		qInfo("Using the same filter for the same pid more than once");
 		return true;
 	}
 
@@ -507,7 +503,7 @@ bool DvbDevice::addSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (it->sectionFilters.contains(filter)) {
-		qWarning("%s", qPrintable(i18n("Using the same filter for the same pid more than once")));
+		qInfo("Using the same filter for the same pid more than once");
 		return true;
 	}
 
@@ -528,7 +524,7 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (index < 0) {
-		qWarning("%s", qPrintable(i18n("Trying to remove a nonexistent filter")));
+		qWarning("Trying to remove a nonexistent filter");
 		return;
 	}
 
@@ -554,7 +550,7 @@ void DvbDevice::removeSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (index < 0) {
-		qWarning("%s", qPrintable(i18n("Trying to remove a nonexistent filter")));
+		qWarning("Trying to remove a nonexistent filter");
 		return;
 	}
 
@@ -573,7 +569,7 @@ void DvbDevice::startDescrambling(const QByteArray &pmtSectionData, QObject *use
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("%s", qPrintable(i18n("PMT section is invalid")));
+		qWarning("PMT section is invalid");
 	}
 
 	int serviceId = pmtSection.programNumber();
@@ -592,13 +588,13 @@ void DvbDevice::stopDescrambling(const QByteArray &pmtSectionData, QObject *user
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("%s", qPrintable(i18n("PMT section is invalid")));
+		qWarning("PMT section is invalid");
 	}
 
 	int serviceId = pmtSection.programNumber();
 
 	if (!descramblingServices.contains(serviceId, user)) {
-		qInfo("%s", qPrintable(i18n("Service has not been started while stop descrambling")));
+		qInfo("Service has not been started while stop descrambling");
 		return;
 	}
 
@@ -722,8 +718,7 @@ void DvbDevice::frontendEvent()
 
 			if ((signal != -1) && (signal < 15)) {
 				// signal too weak
-				// xgettext:no-c-format
-				qInfo("%s", qPrintable(i18n("tuning failed (signal too weak) on %1 MHz", backend->getFrqMHz())));
+				qInfo("Tuning failed (signal too weak) on %.2f MHz", backend->getFrqMHz());
 				setDeviceState(DeviceIdle);
 				autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 				return;
