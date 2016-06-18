@@ -561,6 +561,7 @@ void DvbScan::updateState()
 						       arg(channel.transportStreamId).
 						       arg(channel.serviceId);
 				}
+				qDebug("Found channel %s", qPrintable(channel.name));
 			}
 
 			if (!channels.isEmpty()) {
@@ -666,7 +667,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		channel.snr = snr;
 		channels.append(channel);
 
-		qDebug("New channel: pid %d, service ID %d", pid, section.programNumber());
+		qDebug("New channel: PID %d, service ID %d", pid, section.programNumber());
 	}
 }
 
@@ -691,7 +692,7 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 			sdtEntry.name = serviceDescriptor.serviceName();
 			sdtEntry.provider = serviceDescriptor.providerName();
 
-			qDebug("New SDT entry: name '%s', provider '%s'", qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
+			qDebug("New SDT entry: service ID 0x%04x, name '%s', provider '%s'", entry.serviceId(), qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
 			sdtEntries.append(sdtEntry);
 		}
 	}
