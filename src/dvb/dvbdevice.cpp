@@ -310,18 +310,6 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	bool moveRotor = false;
 	DvbTransponder intermediate = transponder;
 
-#if 0
-	DvbSTransponder *dvbSTransponder = NULL;
-	DvbS2Transponder *dvbS2Transponder = NULL;
-
-	if (transmissionType == DvbTransponderBase::DvbS) {
-		dvbSTransponder = intermediate.as<DvbSTransponder>();
-	} else {
-		// DVB-S2
-		dvbS2Transponder = intermediate.as<DvbS2Transponder>();
-		dvbSTransponder = dvbS2Transponder;
-	}
-#endif
 	// DVB LNBf IF and DiSeqC switch settings
 
 	int satNumber = 0;	// No DiseqC Switch
@@ -329,7 +317,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	if (config->configuration == DvbConfigBase::DiseqcSwitch)
 		satNumber = config->lnbNumber + 1;
 
-	if (!backend->satSetup(config->currentLnb.alias, satNumber, config->bpf))
+	// FIXME: add support for SCR/Unicable
+	if (!backend->satSetup(config->currentLnb.alias, satNumber, 0))
 		return;
 
 	// rotor
