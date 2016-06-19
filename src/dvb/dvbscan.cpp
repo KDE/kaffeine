@@ -25,6 +25,7 @@
 #endif
 
 #include <QBitArray>
+#include <QVector>
 #include <stdint.h>
 
 #include "dvbdevice.h"
@@ -76,7 +77,13 @@ public:
 	void stopFilter();
 
 private:
+	struct sectCheck {
+		int id;
+		QBitArray check;
+	};
+
 	bool checkMultipleSection(const DvbStandardSection &section);
+	bool isFinished();
 	void processSection(const char *data, int size);
 	void timerEvent(QTimerEvent *);
 
@@ -84,7 +91,7 @@ private:
 
 	int pid;
 	DvbScan::FilterType type;
-	QBitArray multipleSections;
+	QVector<sectCheck> multipleSections;
 	int timerId;
 };
 
@@ -116,6 +123,7 @@ void DvbScanFilter::stopFilter()
 	if (pid != -1) {
 		killTimer(timerId);
 		scan->device->removeSectionFilter(pid, this);
+		multipleSections.clear();
 
 		pid = -1;
 	}
@@ -124,29 +132,54 @@ void DvbScanFilter::stopFilter()
 bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 {
 	int sectionCount = section.lastSectionNumber() + 1;
+	int tableNumber = -1;
+	int id = section.tableId() << 16 | section.tableIdExtension();
+
+	for (int i = 0; i < multipleSections.size(); i++) {
+		if (multipleSections.at(i).id == id) {
+			tableNumber = i;
+			break;
+		}
+	}
+	if (tableNumber < 0) {
+		tableNumber = multipleSections.size();
+		multipleSections.resize(tableNumber + 1);
+		multipleSections[tableNumber].id = id;
+		multipleSections[tableNumber].check.resize(sectionCount);
+	}
 
 	if (section.sectionNumber() >= sectionCount) {
 		qWarning("Current section is bigger than the last one");
 		sectionCount = section.sectionNumber() + 1;
 	}
 
-	if (multipleSections.isEmpty()) {
-		multipleSections.resize(sectionCount);
+	QBitArray *check = &multipleSections[tableNumber].check;
+
+	if (check->isEmpty()) {
+		check->resize(sectionCount);
 	} else {
-		if (multipleSections.size() != sectionCount) {
+		if (check->size() != sectionCount) {
 			qWarning("Inconsistent number of sections");
 
-			if (multipleSections.size() < sectionCount) {
-				multipleSections.resize(sectionCount);
-			}
+			if (check->size() < sectionCount)
+				check->resize(sectionCount);
 		}
 	}
 
-	if (multipleSections.testBit(section.sectionNumber())) {
+	if (check->testBit(section.sectionNumber())) {
 		return false;
 	}
 
-	multipleSections.setBit(section.sectionNumber());
+	check->setBit(section.sectionNumber());
+	return true;
+}
+
+bool DvbScanFilter::isFinished()
+{
+	for (int i = 0; i < multipleSections.size(); i++) {
+		if (multipleSections[i].check.count(false) != 0)
+			return false;
+	}
 	return true;
 }
 
@@ -184,7 +217,10 @@ void DvbScanFilter::processSection(const char *data, int size)
 		break;
 	    }
 	case DvbScan::SdtFilter: {
+		// FIXME: should we also handle other SDT table?
+
 		DvbSdtSection sdtSection(data, size);
+
 
 		if (!sdtSection.isValid() || (sdtSection.tableId() != 0x42)) {
 			// there are also other tables in the SDT
@@ -219,6 +255,10 @@ void DvbScanFilter::processSection(const char *data, int size)
 	case DvbScan::NitFilter: {
 		DvbNitSection nitSection(data, size);
 
+
+// That would enable scanning also the other NIT tables - might be useful for DVB-C
+//		if (!nitSection.isValid() || ((nitSection.tableId() != 0x40) && (nitSection.tableId() != 0x41)))
+
 		if (!nitSection.isValid() || (nitSection.tableId() != 0x40)) {
 			// we are only interested in the current network
 			return;
@@ -234,9 +274,8 @@ void DvbScanFilter::processSection(const char *data, int size)
 	    }
 	}
 
-	if (multipleSections.count(false) == 0) {
+	if (isFinished())
 		scan->filterFinished(this);
-	}
 }
 
 void DvbScanFilter::timerEvent(QTimerEvent *)

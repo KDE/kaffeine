@@ -118,6 +118,12 @@ private:
 class DvbStandardSection : public DvbSection
 {
 public:
+
+	int tableIdExtension() const
+	{
+		return (at(3) << 8 | at(4));
+	}
+
 	int versionNumber() const
 	{
 		return (at(5) >> 1) & ((1 << 5) - 1);
