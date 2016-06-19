@@ -915,6 +915,7 @@ bool DvbLinuxDevice::satSetup(QString lnbModel, int satNumber, int bpf)
 		return false;
 	}
 
+	qDebug("Using LNBf type %s", qPrintable(lnbModel));
 
 	dvbv5_parms->sat_number = satNumber;
 	dvbv5_parms->freq_bpf = bpf;
