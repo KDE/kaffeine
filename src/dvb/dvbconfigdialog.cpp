@@ -1538,7 +1538,7 @@ void DvbSLnbConfigObject::selectType(int type)
 		if (!lnb.highFreq) {
 			highRangeLabel->hide();
 		} else {
-			highRangeLabel->setText(i18n("Bandstacking"));
+			highRangeLabel->setText(i18n("Bandstacked"));
 			highRangeLabel->show();
 		}
 	} else {
