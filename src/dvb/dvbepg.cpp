@@ -513,6 +513,7 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	DvbEitSection eitSection(data, size);
 
 	if (!eitSection.isValid()) {
+		qDebug("EPG section is invalid");
 		return;
 	}
 
@@ -530,8 +531,12 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	}
 
 	if (!channel.isValid()) {
+		qDebug("EPG channel invalid");
 		return;
 	}
+
+	if (eitSection.entries().getLength())
+		qDebug("EPG table 0x%02x, extension 0x%04x, size %d", eitSection.tableId(), eitSection.tableIdExtension(), eitSection.entries().getLength());
 
 	for (DvbEitSectionEntry entry = eitSection.entries(); entry.isValid(); entry.advance()) {
 		DvbEpgEntry epgEntry;
