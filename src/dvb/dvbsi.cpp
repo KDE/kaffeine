@@ -242,12 +242,22 @@ const unsigned short Iso6937Codec::table[] = {
 
 QString DvbSiText::convertText(const char *data, int size)
 {
+	TextEncoding encoding = Iso6937;
+
 	if (size < 1) {
 		return QString();
 	}
 
-	// determine encoding
-	TextEncoding encoding = (override6937 ? Iso8859_1 : Iso6937);
+	if (size >2 && data[0] == 0x0e && data[size - 1] == 0x0f ) {
+		// Remove LS0 and LS1 codes found on some ISDB-T streams
+		data++;
+		size -= 2;
+
+		encoding = Iso8859_1;
+	}
+
+	if (override6937)
+		encoding = Iso8859_1;
 
 	if (quint8(data[0]) < 0x20) {
 		switch (data[0]) {
