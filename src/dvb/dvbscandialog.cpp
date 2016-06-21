@@ -280,7 +280,7 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	groupLayout->addWidget(sourceBox);
 
 	otherNitCheckBox = new QCheckBox(i18n("Search transponders for other Networks"), groupBox);
-	otherNitCheckBox->setWhatsThis("On certain networks, it is possible that some transponders are encoded on separate Network Information Tables (other NITs). This is more common on DVB-C systems. Clicking on this icon will change the scan algorithm to take those other NIT data into account. Please notice that the scan will be a lot more slow if enabled.");
+	otherNitCheckBox->setWhatsThis(i18n("On certain networks, it is possible that some transponders are encoded on separate Network Information Tables (other NITs). This is more common on DVB-C systems. Clicking on this icon will change the scan algorithm to take those other NIT data into account. Please notice that the scan will be a lot more slow if enabled."));
 	groupLayout->addWidget(otherNitCheckBox);
 
 	scanButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-find"), QIcon(":edit-find")), i18n("Start Scan"), groupBox);
