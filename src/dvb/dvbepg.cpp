@@ -254,6 +254,9 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 			return existingEntry;
 		}
 
+		// FIXME: should check if this event modifies the timestamp of
+		// an existing event.
+
 		DvbSharedEpgEntry newEntry(new DvbEpgEntry(entry));
 		entries.insert(DvbEpgEntryId(newEntry), newEntry);
 
