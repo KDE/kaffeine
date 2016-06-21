@@ -94,27 +94,32 @@ StartTab::StartTab(MainWindow *mainWindow)
 	QAbstractButton *button =
 		addShortcut(i18n("&1 Play File"), QIcon::fromTheme(QLatin1String("video-x-generic"), QIcon(":video-x-generic")), this);
 	button->setShortcut(Qt::Key_1);
+	button->setWhatsThis("Open dialog to play a file");
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(open()));
 	gridLayout->addWidget(button, 0, 0);
 
 	button = addShortcut(i18n("&2 Play Audio CD"), QIcon::fromTheme(QLatin1String("media-optical-audio"), QIcon(":media-optical-audio")), this);
 	button->setShortcut(Qt::Key_2);
+	button->setWhatsThis("Start playing an audio CD. It assumes that the CD is already there at the CD driver");
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
 	button = addShortcut(i18n("&3 Play Video CD"), QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical")), this);
 	button->setShortcut(Qt::Key_3);
+	button->setWhatsThis("Start playing a Video CD. It assumes that the CD is already there at the CD driver");
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
 	button = addShortcut(i18n("&4 Play DVD"), QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical")), this);
 	button->setShortcut(Qt::Key_4);
+	button->setWhatsThis("Start playing a DVD. It assumes that the DVD is already there at the DVD driver");
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
 #if HAVE_DVB == 1
 	button = addShortcut(i18n("&5 Digital TV"), QIcon::fromTheme(QLatin1String("video-television"), QIcon(":video-television")), this);
 	button->setShortcut(Qt::Key_5);
+	button->setWhatsThis("Open the Digital TV live view window. If the TV channels are already scanned, it will start playing the last channel");
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(playDvb()));
 	gridLayout->addWidget(button, 1, 1);
 #endif /* HAVE_DVB == 1 */
