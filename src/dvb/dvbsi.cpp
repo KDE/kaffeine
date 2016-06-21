@@ -251,6 +251,7 @@ QString DvbSiText::convertText(const char *data, int size)
 
 	if (quint8(data[0]) < 0x20) {
 		switch (data[0]) {
+		case 0x00: encoding = Iso6937; break;
 		case 0x01: encoding = Iso8859_5; break;
 		case 0x02: encoding = Iso8859_6; break;
 		case 0x03: encoding = Iso8859_7; break;
@@ -261,8 +262,10 @@ QString DvbSiText::convertText(const char *data, int size)
 		case 0x09: encoding = Iso8859_13; break;
 		case 0x0a: encoding = Iso8859_14; break;
 		case 0x0b: encoding = Iso8859_15; break;
+		case 0x11: encoding = Iso10646_ucs2; break;
+		case 0x12: encoding = Iso2022_kr; break;
 		case 0x13: encoding = Gb2312; break;
-		case 0x14: encoding = Big5; break;
+		case 0x14: encoding = Utf_16be; break;
 		case 0x15: encoding = Utf_8; break;
 		case 0x10: {
 			if (size < 3) {
@@ -321,8 +324,10 @@ QString DvbSiText::convertText(const char *data, int size)
 		case Iso8859_13: codec = QTextCodec::codecForName("ISO 8859-13"); break;
 		case Iso8859_14: codec = QTextCodec::codecForName("ISO 8859-14"); break;
 		case Iso8859_15: codec = QTextCodec::codecForName("ISO 8859-15"); break;
+		case Iso10646_ucs2: codec = QTextCodec::codecForName("UTF-16"); break;
+		case Iso2022_kr: codec = QTextCodec::codecForName("ISO 2022-KR"); break;
 		case Gb2312: codec = QTextCodec::codecForName("GB2312"); break;
-		case Big5: codec = QTextCodec::codecForName("BIG5"); break;
+		case Utf_16be: codec = QTextCodec::codecForName("UTF-16BE"); break;
 		case Utf_8: codec = QTextCodec::codecForName("UTF-8"); break;
 		}
 
