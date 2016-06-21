@@ -61,7 +61,7 @@ public:
 class DvbScanFilter : public DvbSectionFilter, QObject
 {
 public:
-	DvbScanFilter(DvbScan *scan_) : scan(scan_), pid(-1) { }
+	DvbScanFilter(DvbScan *scan_, bool useOtherNit_) : scan(scan_), pid(-1), useOtherNit(useOtherNit_) { }
 
 	~DvbScanFilter()
 	{
@@ -93,6 +93,7 @@ private:
 	DvbScan::FilterType type;
 	QVector<sectCheck> multipleSections;
 	int timerId;
+	bool useOtherNit;
 };
 
 bool DvbScanFilter::startFilter(int pid_, DvbScan::FilterType type_)
@@ -256,13 +257,13 @@ void DvbScanFilter::processSection(const char *data, int size)
 		DvbNitSection nitSection(data, size);
 
 
-// That would enable scanning also the other NIT tables - might be useful for DVB-C
-//		if (!nitSection.isValid() || ((nitSection.tableId() != 0x40) && (nitSection.tableId() != 0x41)))
-
-		if (!nitSection.isValid() || (nitSection.tableId() != 0x40)) {
-			// we are only interested in the current network
+		if (!nitSection.isValid())
 			return;
-		}
+
+		if (!((nitSection.tableId() == 0x40) || (useOtherNit && (nitSection.tableId() == 0x41))))
+			return;
+
+		qDebug("Handling NIT table ID 0x%02x, extension 0x%04x", nitSection.tableId(), nitSection.tableIdExtension());
 
 		if (!checkMultipleSection(nitSection)) {
 			// already read this part
@@ -284,23 +285,27 @@ void DvbScanFilter::timerEvent(QTimerEvent *)
 	scan->filterFinished(this);
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_) :
-	device(device_), source(source_), transponder(transponder_), isLive(true), isAuto(false),
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_, bool useOtherNit_) :
+	device(device_), source(source_), transponder(transponder_), isLive(true), isAuto(false), useOtherNit(useOtherNit_),
 	transponderIndex(-1), state(ScanPat), patIndex(0), activeFilters(0)
 {
+	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 }
 
 DvbScan::DvbScan(DvbDevice *device_, const QString &source_,
-	const QList<DvbTransponder> &transponders_) : device(device_), source(source_),
-	isLive(false), isAuto(false), transponders(transponders_), transponderIndex(0),
+	const QList<DvbTransponder> &transponders_, bool useOtherNit_) : device(device_), source(source_),
+	isLive(false), isAuto(false), useOtherNit(useOtherNit_), transponders(transponders_), transponderIndex(0),
 	state(ScanTune), patIndex(0), activeFilters(0)
 {
+	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 }
 
-DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource) :
-	device(device_), source(source_), isLive(false), isAuto(true), transponderIndex(0),
+DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource, bool useOtherNit_) :
+	device(device_), source(source_), isLive(false), isAuto(true), useOtherNit(useOtherNit_), transponderIndex(0),
 	state(ScanTune), patIndex(0), activeFilters(0)
 {
+	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
+
 	if ((autoScanSource == QLatin1String("AUTO-Normal")) || (autoScanSource == QLatin1String("AUTO-Offsets"))) {
 		bool offsets = (autoScanSource == QLatin1String("AUTO-Offsets"));
 
@@ -515,7 +520,7 @@ bool DvbScan::startFilter(int pid, FilterType type)
 
 		Q_ASSERT(false);
 	} else if (activeFilters < 10) {
-		DvbScanFilter *filter = new DvbScanFilter(this);
+		DvbScanFilter *filter = new DvbScanFilter(this, useOtherNit);
 
 		if (!filter->startFilter(pid, type)) {
 			delete filter;

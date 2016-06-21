@@ -279,6 +279,10 @@ DvbScanDialog::DvbScanDialog(DvbManager *manager_, QWidget *parent) : QDialog(pa
 	sourceBox = new QComboBox(groupBox);
 	groupLayout->addWidget(sourceBox);
 
+	otherNitCheckBox = new QCheckBox(i18n("Search transponders for other Networks"), groupBox);
+	otherNitCheckBox->setWhatsThis("On certain networks, it is possible that some transponders are encoded on separate Network Information Tables (other NITs). This is more common on DVB-C systems. Clicking on this icon will change the scan algorithm to take those other NIT data into account. Please notice that the scan will be a lot more slow if enabled.");
+	groupLayout->addWidget(otherNitCheckBox);
+
 	scanButton = new QPushButton(QIcon::fromTheme(QLatin1String("edit-find"), QIcon(":edit-find")), i18n("Start Scan"), groupBox);
 	scanButton->setCheckable(true);
 	connect(scanButton, SIGNAL(clicked(bool)), this, SLOT(scanButtonClicked(bool)));
@@ -419,7 +423,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	if (isLive) {
 		const DvbSharedChannel &channel = manager->getLiveView()->getChannel();
-		internal = new DvbScan(device, channel->source, channel->transponder);
+		internal = new DvbScan(device, channel->source, channel->transponder, otherNitCheckBox->isChecked());
 	} else {
 		QString source = sourceBox->currentText();
 		setDevice(manager->requestExclusiveDevice(source));
@@ -430,9 +434,9 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 			if (autoScanSource.isEmpty()) {
 				internal = new DvbScan(device, source,
-					manager->getTransponders(device, source));
+					manager->getTransponders(device, source), otherNitCheckBox->isChecked());
 			} else {
-				internal = new DvbScan(device, source, autoScanSource);
+				internal = new DvbScan(device, source, autoScanSource, otherNitCheckBox->isChecked());
 			}
 		} else {
 			scanButton->setChecked(false);

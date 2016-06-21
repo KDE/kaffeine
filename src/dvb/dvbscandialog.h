@@ -68,6 +68,7 @@ private:
 	DvbGradProgress *signalWidget;
 	DvbGradProgress *snrWidget;
 	KLed *tunedLed;
+	QCheckBox *otherNitCheckBox;
 	QCheckBox *ftaCheckBox;
 	QCheckBox *radioCheckBox;
 	QCheckBox *tvCheckBox;

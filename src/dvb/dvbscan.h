@@ -75,10 +75,10 @@ class DvbScan : public QObject
 	friend class DvbScanFilter;
 	Q_OBJECT
 public:
-	DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_);
+	DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponder &transponder_, bool useOtherNit);
 	DvbScan(DvbDevice *device_, const QString &source_,
-		const QList<DvbTransponder> &transponders_);
-	DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource);
+		const QList<DvbTransponder> &transponders_, bool useOtherNit);
+	DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource, bool useOtherNit);
 	~DvbScan();
 
 	void start();
@@ -127,6 +127,7 @@ private:
 	DvbTransponder transponder;
 	bool isLive;
 	bool isAuto;
+	bool useOtherNit;
 
 	// only used if isLive is false
 	QList<DvbTransponder> transponders;
