@@ -77,7 +77,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 {
 	if ((data[3] & 0x10) == 0) {
 		// no payload
-		qDebug("%s", qPrintable(i18n("MPEG-TS session doesn't have a payload")));
+		qDebug("MPEG-TS session doesn't have a payload");
 		return;
 	}
 
