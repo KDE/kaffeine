@@ -153,11 +153,15 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	createInfoFileBox->setChecked(manager->createInfoFile());
 	gridLayout->addWidget(createInfoFileBox, 2, 1);
 
+#if 0
+	// FIXME: this functionality is not working. Comment it out
+
 	gridLayout->addWidget(new QLabel(i18n("Scan channels when idle to fetch fresh EPG data:")),
 		3, 0);
 	scanWhenIdleBox = new QCheckBox(widget);
 	scanWhenIdleBox->setChecked(manager->isScanWhenIdle());
 	gridLayout->addWidget(scanWhenIdleBox, 3, 1);
+#endif
 
 	QFrame *frame = new QFrame(widget);
 	frame->setFrameShape(QFrame::HLine);
@@ -535,7 +539,9 @@ void DvbConfigDialog::accept()
 	manager->setEndMargin(endMarginBox->value() * 60);
 	manager->setOverride6937Charset(override6937CharsetBox->isChecked());
 	manager->setCreateInfoFile(createInfoFileBox->isChecked());
+#if 0
 	manager->setScanWhenIdle(scanWhenIdleBox->isChecked());
+#endif
 	manager->setRecordingRegexList(QStringList());
 	manager->setRecordingRegexPriorityList(QList<int>());
 

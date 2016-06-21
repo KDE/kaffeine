@@ -659,8 +659,8 @@ bool DvbRecordingModel::shouldWeScanChannels() const
 	if (idleTime > 1000 * 3600) {
 		if (DvbRecordingModel::getSecondsUntilNextRecording() > numberOfChannels * 10) {
 			if (DvbRecordingModel::isScanWhenIdle()) {
+				qDebug("Scan on Idle enabled");
 				return true;
-				qDebug("returned TRUE");
 			}
 		}
 	}
@@ -679,7 +679,7 @@ void delay(int seconds)
 
 void DvbRecordingModel::scanChannels()
 {
-	qDebug("executed");
+	qDebug("auto-scan channels");
 
 	if (shouldWeScanChannels()) {
 		DvbChannelModel *channelModel = manager->getChannelModel();
