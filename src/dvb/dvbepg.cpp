@@ -237,7 +237,38 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		return DvbSharedEpgEntry();
 	}
 
+
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
+
+	// Check if the event was already recorded
+	const QDateTime end = entry.begin.addSecs(QTime(0, 0, 0).secsTo(entry.duration));
+
+	for (Iterator it = entries.begin(); ConstIterator(it) != entries.constEnd(); it++) {
+		const DvbSharedEpgEntry &existingEntry = *it;
+
+		if (existingEntry->channel != entry.channel)
+			continue;
+
+		const QDateTime enEnd = existingEntry->begin.addSecs(QTime(0, 0, 0).secsTo(existingEntry->duration));
+
+		// A new event conflicts with an existing one
+		if (((entry.begin > existingEntry->begin) && (entry.begin < enEnd)) || ((end > existingEntry->begin) && end < enEnd)) {
+			it = removeEntry(it);
+			qDebug("a new event replaced a previous one");
+			break;
+		}
+		// New event data for the same event
+		if (((entry.begin == existingEntry->begin) && (end == enEnd))) {
+			if (existingEntry->details.isEmpty() && !entry.details.isEmpty()) {
+				emit entryAboutToBeUpdated(existingEntry);
+				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
+					entry.details;
+				emit entryUpdated(existingEntry);
+				qDebug("Updated an event's data");
+			}
+			return existingEntry;
+		}
+	}
 
 	if (entry.begin.addSecs(QTime(0, 0, 0).secsTo(entry.duration)) > currentDateTimeUtc) {
 		DvbSharedEpgEntry existingEntry = entries.value(DvbEpgEntryId(&entry));
@@ -249,13 +280,11 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
 					entry.details;
 				emit entryUpdated(existingEntry);
+				qDebug("Updated an event's data");
 			}
 
 			return existingEntry;
 		}
-
-		// FIXME: should check if this event modifies the timestamp of
-		// an existing event.
 
 		DvbSharedEpgEntry newEntry(new DvbEpgEntry(entry));
 		entries.insert(DvbEpgEntryId(newEntry), newEntry);
@@ -539,7 +568,7 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	}
 
 	if (eitSection.entries().getLength())
-		qDebug("EPG table 0x%02x, extension 0x%04x, size %d", eitSection.tableId(), eitSection.tableIdExtension(), eitSection.entries().getLength());
+		qDebug("EPG table 0x%02x, extension 0x%04x, session %d/%d, size %d", eitSection.tableId(), eitSection.tableIdExtension(), eitSection.sectionNumber(), eitSection.lastSectionNumber(), eitSection.entries().getLength());
 
 	for (DvbEitSectionEntry entry = eitSection.entries(); entry.isValid(); entry.advance()) {
 		DvbEpgEntry epgEntry;
