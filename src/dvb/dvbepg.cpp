@@ -597,8 +597,8 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					break;
 				}
 
-				epgEntry.title = eventDescriptor.eventName();
-				epgEntry.subheading = eventDescriptor.text();
+				epgEntry.title += eventDescriptor.eventName();
+				epgEntry.subheading += eventDescriptor.text();
 				break;
 			    }
 			case 0x4e: {
