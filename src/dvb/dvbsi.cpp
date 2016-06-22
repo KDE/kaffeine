@@ -1398,6 +1398,20 @@ void DvbEitContentEntry::initEitContentEntry(const char *data, int size)
 	initSectionData(data, 2, size);
 }
 
+void DvbParentalRatingEntry::initParentalRatingEntry(const char *data, int size)
+{
+	if (size < 4) {
+		if (size != 0) {
+		qWarning("Invalid entry at descriptor");
+		}
+
+		initSectionData();
+		return;
+	}
+
+	initSectionData(data, 4, size);
+}
+
 void DvbNitSectionEntry::initNitSectionEntry(const char *data, int size)
 {
 	if (size < 6) {
@@ -1549,6 +1563,15 @@ DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &desc
 }
 
 DvbContentDescriptor::DvbContentDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 2) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+DvbParentalRatingDescriptor::DvbParentalRatingDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
 {
 	if (getLength() < 2) {
 		qWarning("Invalid descriptor");

@@ -39,6 +39,12 @@
       <contentNibbleLevel2 bits="4" type="int"/>
       <userByte bits="8" type="int"/>
     </DvbEitContentEntry>
+    <DvbParentalRatingEntry>
+      <languageCode1 bits="8" type="int"/>
+      <languageCode2 bits="8" type="int"/>
+      <languageCode3 bits="8" type="int"/>
+      <rating bits="8" type="int"/>
+    </DvbParentalRatingEntry>
     <DvbNitSectionEntry>
       <unused bits="16"/>
       <unused bits="16"/>
@@ -126,6 +132,9 @@
     <DvbContentDescriptor>
       <contents listType="DvbEitContentEntry" lengthFunc="" type="list"/>
     </DvbContentDescriptor>
+    <DvbParentalRatingDescriptor>
+      <contents listType="DvbParentalRatingEntry" lengthFunc="" type="list"/>
+    </DvbParentalRatingDescriptor>
     <DvbCableDescriptor>
       <frequency bits="32" type="int"/>
       <unused bits="12"/>

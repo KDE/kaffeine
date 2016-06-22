@@ -542,6 +542,45 @@ private:
 	void initEitContentEntry(const char *data, int size);
 };
 
+class DvbParentalRatingEntry : public DvbSectionData
+{
+public:
+	DvbParentalRatingEntry(const char *data, int size)
+	{
+		initParentalRatingEntry(data, size);
+	}
+
+	~DvbParentalRatingEntry() { }
+
+	void advance()
+	{
+		initParentalRatingEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int languageCode1() const
+	{
+		return at(0);
+	}
+
+	int languageCode2() const
+	{
+		return at(1);
+	}
+
+	int languageCode3() const
+	{
+		return at(2);
+	}
+
+	int rating() const
+	{
+		return at(3);
+	}
+
+private:
+	void initParentalRatingEntry(const char *data, int size);
+};
+
 class DvbNitSectionEntry : public DvbSectionData
 {
 public:
@@ -816,6 +855,21 @@ public:
 
 private:
 	Q_DISABLE_COPY(DvbContentDescriptor)
+};
+
+class DvbParentalRatingDescriptor : public DvbDescriptor
+{
+public:
+	explicit DvbParentalRatingDescriptor(const DvbDescriptor &descriptor);
+	~DvbParentalRatingDescriptor() { }
+
+	DvbParentalRatingEntry contents() const
+	{
+		return DvbParentalRatingEntry(getData() + 2, getLength() - 2);
+	}
+
+private:
+	Q_DISABLE_COPY(DvbParentalRatingDescriptor)
 };
 
 class DvbCableDescriptor : public DvbDescriptor
