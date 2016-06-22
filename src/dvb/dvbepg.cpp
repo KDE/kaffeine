@@ -234,7 +234,7 @@ void DvbEpgModel::Debug(QString text, const DvbSharedEpgEntry &entry)
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 
-	qDebug("EPG event %s: type %d, from %s to %s: %s: %s: %s", qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details));
+	qDebug("EPG event %s: type %d, from %s to %s: %s: %s: %s : %s", qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details), qPrintable(entry->content));
 }
 
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
@@ -550,6 +550,176 @@ QTime DvbEpgFilter::bcdToTime(int bcd)
 		((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f));
 }
 
+static const QString contentStr[16][16] = {
+	[0] = {},
+	[1] = {
+			/* Movie/Drama */
+		{},
+		{I18N_NOOP("Detective")},
+		{I18N_NOOP("Adventure")},
+		{I18N_NOOP("Science Fiction")},
+		{I18N_NOOP("Comedy")},
+		{I18N_NOOP("Soap")},
+		{I18N_NOOP("Romance")},
+		{I18N_NOOP("Classical")},
+		{I18N_NOOP("Adult")},
+		{I18N_NOOP("User defined")},
+	},
+	[2] = {
+			/* News/Current affairs */
+		{},
+		{I18N_NOOP("Weather")},
+		{I18N_NOOP("Magazine")},
+		{I18N_NOOP("Documentary")},
+		{I18N_NOOP("Discussion")},
+		{I18N_NOOP("User Defined")},
+	},
+	[3] = {
+			/* Show/Game show */
+		{},
+		{I18N_NOOP("Quiz")},
+		{I18N_NOOP("Variety")},
+		{I18N_NOOP("Talk")},
+		{I18N_NOOP("User Defined")},
+	},
+	[4] = {
+			/* Sports */
+		{},
+		{I18N_NOOP("Events")},
+		{I18N_NOOP("Magazine")},
+		{I18N_NOOP("Football")},
+		{I18N_NOOP("Tennis")},
+		{I18N_NOOP("Team")},
+		{I18N_NOOP("Athletics")},
+		{I18N_NOOP("Motor")},
+		{I18N_NOOP("Water")},
+		{I18N_NOOP("Winter")},
+		{I18N_NOOP("Equestrian")},
+		{I18N_NOOP("Martial")},
+		{I18N_NOOP("User Defined")},
+	},
+	[5] = {
+			/* Children's/Youth */
+		{},
+		{I18N_NOOP("Preschool")},
+		{I18N_NOOP("06 to 14")},
+		{I18N_NOOP("10 to 16")},
+		{I18N_NOOP("Educational")},
+		{I18N_NOOP("Cartoons")},
+		{I18N_NOOP("User Defined")},
+	},
+	[6] = {
+			/* Music/Ballet/Dance */
+		{},
+		{I18N_NOOP("Poprock")},
+		{I18N_NOOP("Classical")},
+		{I18N_NOOP("Folk")},
+		{I18N_NOOP("Jazz")},
+		{I18N_NOOP("Opera")},
+		{I18N_NOOP("Ballet")},
+		{I18N_NOOP("User Defined")},
+	},
+	[7] = {
+			/* Arts/Culture */
+		{},
+		{I18N_NOOP("Performance")},
+		{I18N_NOOP("Fine Arts")},
+		{I18N_NOOP("Religion")},
+		{I18N_NOOP("Traditional")},
+		{I18N_NOOP("Literature")},
+		{I18N_NOOP("Cinema")},
+		{I18N_NOOP("Experimental")},
+		{I18N_NOOP("Press")},
+		{I18N_NOOP("New Media")},
+		{I18N_NOOP("Magazine")},
+		{I18N_NOOP("Fashion")},
+		{I18N_NOOP("User Defined")},
+	},
+	[8] = {
+			/* Social/Political/Economics */
+		{},
+		{I18N_NOOP("Magazine")},
+		{I18N_NOOP("Advisory")},
+		{I18N_NOOP("People")},
+		{I18N_NOOP("User Defined")},
+	},
+	[9] = {
+			/* Education/Science/Factual */
+		{},
+		{I18N_NOOP("Nature")},
+		{I18N_NOOP("Technology")},
+		{I18N_NOOP("Medicine")},
+		{I18N_NOOP("Foreign")},
+		{I18N_NOOP("Social")},
+		{I18N_NOOP("Further")},
+		{I18N_NOOP("Language")},
+		{I18N_NOOP("User Defined")},
+	},
+	[10] = {
+			/* Leisure/Hobbies */
+		{},
+		{I18N_NOOP("Travel")},
+		{I18N_NOOP("Handicraft")},
+		{I18N_NOOP("Motoring")},
+		{I18N_NOOP("Fitness")},
+		{I18N_NOOP("Cooking")},
+		{I18N_NOOP("Shopping")},
+		{I18N_NOOP("Gardening")},
+		{I18N_NOOP("User Defined")},
+	},
+	[11] = {
+			/* Special characteristics */
+		{I18N_NOOP("Original Language")},
+		{I18N_NOOP("Black and White ")},
+		{I18N_NOOP("Unpublished")},
+		{I18N_NOOP("Live")},
+		{I18N_NOOP("Planostereoscopic")},
+		{I18N_NOOP("User Defined")},
+		{I18N_NOOP("User Defined 1")},
+		{I18N_NOOP("User Defined 2")},
+		{I18N_NOOP("User Defined 3")},
+		{I18N_NOOP("User Defined 4")}
+	}
+};
+
+static const QString nibble1Str[16] = {
+	[0]  = {I18N_NOOP("Undefined")},
+	[1]  = {I18N_NOOP("Movie")},
+	[2]  = {I18N_NOOP("News")},
+	[3]  = {I18N_NOOP("Show")},
+	[4]  = {I18N_NOOP("Sports")},
+	[5]  = {I18N_NOOP("Children")},
+	[6]  = {I18N_NOOP("Music")},
+	[7]  = {I18N_NOOP("Culture")},
+	[8]  = {I18N_NOOP("Social")},
+	[9]  = {I18N_NOOP("Education")},
+	[10] = {I18N_NOOP("Leisur")},
+	[11] = {I18N_NOOP("Special")},
+	[12] = {},
+	[13] = {},
+	[14] = {},
+	[15] = {I18N_NOOP("User defined")},
+};
+
+QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
+{
+	QString content;
+
+	for (DvbEitContentEntry entry = descriptor.contents(); entry.isValid(); entry.advance()) {
+		const int nibble1 = entry.contentNibbleLevel1();
+		const int nibble2 = entry.contentNibbleLevel2();
+		QString s;
+
+		s = contentStr[nibble1][nibble2];
+		if (s == "")
+			s=nibble1Str[nibble1];
+
+		content += s;
+	}
+
+	return content;
+}
+
 void DvbEpgFilter::processSection(const char *data, int size)
 {
 	unsigned char tableId = data[0];
@@ -625,6 +795,16 @@ void DvbEpgFilter::processSection(const char *data, int size)
 				}
 
 				epgEntry.details += eventDescriptor.text();
+				break;
+			    }
+			case 0x54: {
+				DvbContentDescriptor eventDescriptor(descriptor);
+
+				if (!eventDescriptor.isValid()) {
+					break;
+				}
+
+				epgEntry.content += getContent(eventDescriptor);
 				break;
 			    }
 			}

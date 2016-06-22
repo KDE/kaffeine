@@ -24,6 +24,8 @@
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
 
+class DvbContentDescriptor;
+
 class DvbEpgFilter : public QSharedData, public DvbSectionFilter
 {
 public:
@@ -39,6 +41,7 @@ private:
 	static QTime bcdToTime(int bcd);
 
 	void processSection(const char *data, int size);
+	QString getContent(DvbContentDescriptor &descriptor);
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;

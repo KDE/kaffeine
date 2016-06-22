@@ -50,6 +50,7 @@ public:
 	QString title;
 	QString subheading;
 	QString details;
+	QString content;
 	DvbSharedRecording recording;
 
 	// Check only the user-visible elements
@@ -66,6 +67,8 @@ public:
 		if (subheading != other.subheading)
 			return false;
 		if (details != other.details)
+			return false;
+		if (content != other.content)
 			return false;
 
 		return true;

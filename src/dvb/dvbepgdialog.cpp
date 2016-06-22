@@ -163,6 +163,11 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		QLocale().toString(begin, QLocale::LongFormat),
 		QLocale().toString(end));
 	text += entry->details;
+
+	if (!entry->content.isEmpty()) {
+		text += i18nc("@info tv show content", "<font color=#000080>%1</font><br>", entry->content);
+	}
+
 	contentLabel->setText(text);
 }
 
