@@ -51,6 +51,25 @@ public:
 	QString subheading;
 	QString details;
 	DvbSharedRecording recording;
+
+	// Check only the user-visible elements
+	bool operator==(const DvbEpgEntry &other) const
+	{
+		if (channel != other.channel)
+			return false;
+		if (begin != other.begin)
+			return false;
+		if (duration != other.duration)
+			return false;
+		if (title != other.title)
+			return false;
+		if (subheading != other.subheading)
+			return false;
+		if (details != other.details)
+			return false;
+
+		return true;
+	}
 };
 
 typedef ExplicitlySharedDataPointer<const DvbEpgEntry> DvbSharedEpgEntry;

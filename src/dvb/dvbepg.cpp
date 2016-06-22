@@ -237,7 +237,6 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		return DvbSharedEpgEntry();
 	}
 
-
 	EnsureNoPendingOperation ensureNoPendingOperation(hasPendingOperation);
 
 	// Check if the event was already recorded
@@ -245,6 +244,10 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 
 	for (Iterator it = entries.begin(); ConstIterator(it) != entries.constEnd(); it++) {
 		const DvbSharedEpgEntry &existingEntry = *it;
+
+		// Don't do anything if the event already exists
+		if (*existingEntry == entry)
+			return DvbSharedEpgEntry();
 
 		if (existingEntry->channel != entry.channel)
 			continue;
