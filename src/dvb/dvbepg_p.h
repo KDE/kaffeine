@@ -25,6 +25,7 @@
 #include "dvbepg.h"
 
 class DvbContentDescriptor;
+class DvbParentalRatingDescriptor;
 
 class DvbEpgFilter : public QSharedData, public DvbSectionFilter
 {
@@ -42,6 +43,7 @@ private:
 
 	void processSection(const char *data, int size);
 	QString getContent(DvbContentDescriptor &descriptor);
+	QString getParental(DvbParentalRatingDescriptor &descriptor);
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;

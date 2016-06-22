@@ -149,23 +149,23 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		return;
 	}
 
-	QString text = i18nc("@info tv show title",
-		"<font color=#008000 size=\"+1\">%1</font><br>", entry->title);
+	QString text = "<font color=#008000 size=\"+1\">" + entry->title + "</font>";
 
 	if (!entry->subheading.isEmpty()) {
-		text += i18nc("@info tv show subheading", "<font color=#808000>%1</font><br>",
-			entry->subheading);
+		text += "<br/><font color=#808000>" + entry->subheading + "</font>";
 	}
 
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
-	text += i18nc("@info tv show start, end", "<font color=#800000>%1 - %2</font><br><br>",
-		QLocale().toString(begin, QLocale::LongFormat),
-		QLocale().toString(end));
+	text += "<br/><br/><font color=#800080>" + QLocale().toString(begin, QLocale::LongFormat) + " - " + QLocale().toString(end) + "</font>";
+
 	text += entry->details;
 
 	if (!entry->content.isEmpty()) {
-		text += i18nc("@info tv show content", "<font color=#000080>%1</font><br>", entry->content);
+		text += "<br/><br/><font color=#000080>" + entry->content + "</font>";
+	}
+	if (!entry->parental.isEmpty()) {
+		text += "<br/><br/><font color=#800000>" + entry->parental + "</font>";
 	}
 
 	contentLabel->setText(text);

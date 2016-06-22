@@ -713,11 +713,73 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 		s = contentStr[nibble1][nibble2];
 		if (s == "")
 			s=nibble1Str[nibble1];
-
-		content += s;
+		if (s != "")
+			content += s + "\n";
 	}
 
+	if (content != "") {
+		// xgettext:no-c-format
+		return (i18n("Genre: %1", content));
+	}
 	return content;
+}
+
+/* As defined at ABNT NBR 15603-2 */
+static const QString braRating[] = {
+	[0] = {I18N_NOOP("reserved")},
+	[1] = {I18N_NOOP("all audiences")},
+	[2] = {I18N_NOOP("10 years")},
+	[3] = {I18N_NOOP("12 years")},
+	[4] = {I18N_NOOP("14 years")},
+	[5] = {I18N_NOOP("16 years")},
+	[6] = {I18N_NOOP("18 years")},
+};
+
+QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
+{
+	QString parental;
+
+	for (DvbParentalRatingEntry entry = descriptor.contents(); entry.isValid(); entry.advance()) {
+		QString code;
+		code.append(QChar(entry.languageCode1()));
+		code.append(QChar(entry.languageCode2()));
+		code.append(QChar(entry.languageCode3()));
+
+		// Rating from 0x10 to 0xff are broadcaster's specific
+		if (entry.rating() == 0) {
+			// xgettext:no-c-format
+			parental += i18n("Country %1: undefined.\n", code, entry.rating() + 3);
+		} else if (entry.rating() < 0x10) {
+			if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
+				int rating = entry.rating();
+
+				if (rating > 6)
+					rating = 0;	// Reserved
+
+				QString GenStr;
+				int genre = entry.rating() >> 4;
+
+				if (genre & 0x2)
+					GenStr = "violence / ";
+				if (genre & 0x4)
+					GenStr = "sex / ";
+				if (genre & 0x1)
+					GenStr = "drugs / ";
+				if (genre) {
+					GenStr.truncate(GenStr.size() - 2);
+					GenStr = " (" + GenStr + ")";
+				}
+
+				// xgettext:no-c-format
+				parental += i18n("Country %1 - rating: %2%3\n", code, braRating[entry.rating()], GenStr);
+			} else {
+				// xgettext:no-c-format
+				parental += i18n("Country %1 - rating: %2 years.\n", code, entry.rating() + 3);
+			}
+		}
+	}
+
+	return parental;
 }
 
 void DvbEpgFilter::processSection(const char *data, int size)
@@ -805,6 +867,16 @@ void DvbEpgFilter::processSection(const char *data, int size)
 				}
 
 				epgEntry.content += getContent(eventDescriptor);
+				break;
+			    }
+			case 0x55: {
+				DvbParentalRatingDescriptor eventDescriptor(descriptor);
+
+				if (!eventDescriptor.isValid()) {
+					break;
+				}
+
+				epgEntry.parental += getParental(eventDescriptor);
 				break;
 			    }
 			}
