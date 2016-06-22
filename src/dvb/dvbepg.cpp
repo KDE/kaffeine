@@ -753,7 +753,7 @@ QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 			parental += i18n("Country %1: undefined.\n", code, entry.rating() + 3);
 		} else if (entry.rating() < 0x10) {
 			if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
-				int rating = entry.rating();
+				unsigned int rating = entry.rating();
 
 				if (rating >= ARRAY_SIZE(braRating))
 					rating = 0;	// Reserved
