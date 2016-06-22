@@ -130,6 +130,7 @@ private slots:
 
 private:
 	void timerEvent(QTimerEvent *event);
+	void Debug(QString text, const DvbSharedEpgEntry &entry);
 
 	Iterator removeEntry(Iterator it);
 

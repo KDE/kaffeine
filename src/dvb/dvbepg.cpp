@@ -26,6 +26,7 @@
 
 #include <QDataStream>
 #include <QFile>
+#include <QLoggingCategory>
 #include <QStandardPaths>
 
 #include "../ensurenopendingoperation.h"
@@ -225,6 +226,17 @@ QList<DvbSharedEpgEntry> DvbEpgModel::getCurrentNext(const DvbSharedChannel &cha
 	return result;
 }
 
+void DvbEpgModel::Debug(QString text, const DvbSharedEpgEntry &entry)
+{
+	if (!QLoggingCategory::defaultCategory()->isEnabled(QtDebugMsg))
+		return;
+
+	QDateTime begin = entry->begin.toLocalTime();
+	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
+
+	qDebug("EPG event %s: type %d, from %s to %s: %s: %s: %s", qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details));
+}
+
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
 	if (!entry.validate()) {
@@ -256,8 +268,8 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 
 		// A new event conflicts with an existing one
 		if (((entry.begin > existingEntry->begin) && (entry.begin < enEnd)) || ((end > existingEntry->begin) && end < enEnd)) {
+			Debug("removed", existingEntry);
 			it = removeEntry(it);
-			qDebug("a new event replaced a previous one");
 			break;
 		}
 		// New event data for the same event
@@ -267,7 +279,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
 					entry.details;
 				emit entryUpdated(existingEntry);
-				qDebug("Updated an event's data");
+				Debug("updated", existingEntry);
 			}
 			return existingEntry;
 		}
@@ -283,7 +295,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
 					entry.details;
 				emit entryUpdated(existingEntry);
-				qDebug("Updated an event's data");
+				Debug("updated2", existingEntry);
 			}
 
 			return existingEntry;
@@ -301,6 +313,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		}
 
 		emit entryAdded(newEntry);
+		Debug("new", newEntry);
 		return newEntry;
 	}
 
