@@ -543,6 +543,16 @@ void DvbEpgFilter::processSection(const char *data, int size)
 
 	for (DvbEitSectionEntry entry = eitSection.entries(); entry.isValid(); entry.advance()) {
 		DvbEpgEntry epgEntry;
+
+		if (tableId == 0x4e)
+			epgEntry.type = DvbEpgEntry::EitActualTsPresentFollowing;
+		else if (tableId == 0x4f)
+			epgEntry.type = DvbEpgEntry::EitOtherTsPresentFollowing;
+		else if (tableId < 0x60)
+			epgEntry.type = DvbEpgEntry::EitActualTsSchedule;
+		else
+			epgEntry.type = DvbEpgEntry::EitOtherTsSchedule;
+
 		epgEntry.channel = channel;
 		epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
 			bcdToTime(entry.startTime()), Qt::UTC);

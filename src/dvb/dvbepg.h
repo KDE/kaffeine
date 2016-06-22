@@ -30,7 +30,13 @@ class DvbEpgFilter;
 class DvbEpgEntry : public SharedData
 {
 public:
-	DvbEpgEntry() { }
+	enum EitType {
+		EitActualTsPresentFollowing = 0,
+		EitOtherTsPresentFollowing = 1,
+		EitActualTsSchedule = 2,
+		EitOtherTsSchedule = 3,
+	};
+	DvbEpgEntry(): type(EitActualTsSchedule) { }
 	explicit DvbEpgEntry(const DvbSharedChannel &channel_) : channel(channel_) { }
 	~DvbEpgEntry() { }
 
@@ -38,6 +44,7 @@ public:
 	bool validate() const;
 
 	DvbSharedChannel channel;
+	EitType type;
 	QDateTime begin; // UTC
 	QTime duration;
 	QString title;
