@@ -1,5 +1,85 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dvbsi>
+  <entries>
+    <DvbPatSectionEntry>
+      <programNumber bits="16" type="int"/>
+      <unused bits="3"/>
+      <pid bits="13" type="int"/>
+    </DvbPatSectionEntry>
+    <DvbPmtSectionEntry>
+      <streamType bits="8" type="int"/>
+      <unused bits="3"/>
+      <pid bits="13" type="int"/>
+      <unused bits="4"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </DvbPmtSectionEntry>
+    <DvbSdtSectionEntry>
+      <serviceId bits="16" type="int"/>
+      <unused bits="6"/>
+      <unused bits="1"/>
+      <unused bits="1"/>
+      <unused bits="3"/>
+      <isScrambled bits="1" type="bool"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </DvbSdtSectionEntry>
+    <DvbEitSectionEntry>
+      <unused bits="16"/>
+      <startDate bits="16" type="int"/>
+      <startTime bits="24" type="int"/>
+      <duration bits="24" type="int"/>
+      <unused bits="3"/>
+      <unused bits="1"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </DvbEitSectionEntry>
+    <DvbNitSectionEntry>
+      <unused bits="16"/>
+      <unused bits="16"/>
+      <unused bits="4"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </DvbNitSectionEntry>
+    <AtscMgtSectionEntry>
+      <tableType bits="16" type="int"/>
+      <unused bits="3"/>
+      <pid bits="13" type="int"/>
+      <unused bits="3"/>
+      <unused bits="5"/>
+      <unused bits="32"/>
+      <unused bits="4"/>
+      <entryLength bits="12" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </AtscMgtSectionEntry>
+    <AtscVctSectionEntry>
+      <shortName1 bits="16" type="int"/>
+      <shortName2 bits="16" type="int"/>
+      <shortName3 bits="16" type="int"/>
+      <shortName4 bits="16" type="int"/>
+      <shortName5 bits="16" type="int"/>
+      <shortName6 bits="16" type="int"/>
+      <shortName7 bits="16" type="int"/>
+      <unused bits="4"/>
+      <majorNumber bits="10" type="int"/>
+      <minorNumber bits="10" type="int"/>
+      <unused bits="8"/>
+      <unused bits="32"/>
+      <unused bits="16"/>
+      <programNumber bits="16" type="int"/>
+      <unused bits="2"/>
+      <isScrambled bits="1" type="bool"/>
+      <unused bits="1"/>
+      <unused bits="2"/>
+      <unused bits="1"/>
+      <unused bits="3"/>
+      <unused bits="6"/>
+      <sourceId bits="16" type="int"/>
+      <unused bits="6"/>
+      <entryLength bits="10" type="int"/>
+      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
+    </AtscVctSectionEntry>
+  </entries>
   <descriptors>
     <DvbLanguageDescriptor>
       <languageCode1 bits="8" type="int"/>
@@ -83,86 +163,6 @@
       <name listType="AtscString" lengthFunc="" type="list"/>
     </AtscChannelNameDescriptor>
   </descriptors>
-  <entries>
-    <DvbPatSectionEntry>
-      <programNumber bits="16" type="int"/>
-      <unused bits="3"/>
-      <pid bits="13" type="int"/>
-    </DvbPatSectionEntry>
-    <DvbPmtSectionEntry>
-      <streamType bits="8" type="int"/>
-      <unused bits="3"/>
-      <pid bits="13" type="int"/>
-      <unused bits="4"/>
-      <entryLength bits="12" type="int"/>
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
-    </DvbPmtSectionEntry>
-    <DvbSdtSectionEntry>
-      <serviceId bits="16" type="int"/>
-      <unused bits="6"/>
-      <unused bits="1"/>
-      <unused bits="1"/>
-      <unused bits="3"/>
-      <isScrambled bits="1" type="bool"/>
-      <entryLength bits="12" type="int"/>
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
-    </DvbSdtSectionEntry>
-    <DvbEitSectionEntry>
-      <unused bits="16"/>
-      <startDate bits="16" type="int"/>
-      <startTime bits="24" type="int"/>
-      <duration bits="24" type="int"/>
-      <unused bits="3"/>
-      <unused bits="1"/>
-      <entryLength bits="12" type="int"/>
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
-    </DvbEitSectionEntry>
-    <DvbNitSectionEntry>
-      <unused bits="16"/>
-      <unused bits="16"/>
-      <unused bits="4"/>
-      <entryLength bits="12" type="int"/>
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
-    </DvbNitSectionEntry>
-    <AtscMgtSectionEntry>
-      <tableType bits="16" type="int"/>
-      <unused bits="3"/>
-      <pid bits="13" type="int"/>
-      <unused bits="3"/>
-      <unused bits="5"/>
-      <unused bits="32"/>
-      <unused bits="4"/>
-      <entryLength bits="12" type="int"/>
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
-    </AtscMgtSectionEntry>
-    <AtscVctSectionEntry>
-      <shortName1 bits="16" type="int"/>
-      <shortName2 bits="16" type="int"/>
-      <shortName3 bits="16" type="int"/>
-      <shortName4 bits="16" type="int"/>
-      <shortName5 bits="16" type="int"/>
-      <shortName6 bits="16" type="int"/>
-      <shortName7 bits="16" type="int"/>
-      <unused bits="4"/>
-      <majorNumber bits="10" type="int"/>
-      <minorNumber bits="10" type="int"/>
-      <unused bits="8"/>
-      <unused bits="32"/>
-      <unused bits="16"/>
-      <programNumber bits="16" type="int"/>
-      <unused bits="2"/>
-      <isScrambled bits="1" type="bool"/>
-      <unused bits="1"/>
-      <unused bits="2"/>
-      <unused bits="1"/>
-      <unused bits="3"/>
-      <unused bits="6"/>
-      <sourceId bits="16" type="int"/>
-      <unused bits="6"/>
-      <entryLength bits="10" type="int"/>
-      <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
-    </AtscVctSectionEntry>
-  </entries>
   <sections>
     <DvbPatSection extension="transportStreamId">
       <entries listType="DvbPatSectionEntry" lengthFunc="" type="list"/>

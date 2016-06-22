@@ -372,6 +372,284 @@ private:
 
 // everything below this line is automatically generated
 
+class DvbPatSectionEntry : public DvbSectionData
+{
+public:
+	DvbPatSectionEntry(const char *data, int size)
+	{
+		initPatSectionEntry(data, size);
+	}
+
+	~DvbPatSectionEntry() { }
+
+	void advance()
+	{
+		initPatSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int programNumber() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	int pid() const
+	{
+		return ((at(2) & 0x1f) << 8) | at(3);
+	}
+
+private:
+	void initPatSectionEntry(const char *data, int size);
+};
+
+class DvbPmtSectionEntry : public DvbSectionData
+{
+public:
+	DvbPmtSectionEntry(const char *data, int size)
+	{
+		initPmtSectionEntry(data, size);
+	}
+
+	~DvbPmtSectionEntry() { }
+
+	void advance()
+	{
+		initPmtSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int streamType() const
+	{
+		return at(0);
+	}
+
+	int pid() const
+	{
+		return ((at(1) & 0x1f) << 8) | at(2);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 5, getLength() - 5);
+	}
+
+private:
+	void initPmtSectionEntry(const char *data, int size);
+};
+
+class DvbSdtSectionEntry : public DvbSectionData
+{
+public:
+	DvbSdtSectionEntry(const char *data, int size)
+	{
+		initSdtSectionEntry(data, size);
+	}
+
+	~DvbSdtSectionEntry() { }
+
+	void advance()
+	{
+		initSdtSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int serviceId() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	bool isScrambled() const
+	{
+		return ((at(3) & 0x10) != 0);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 5, getLength() - 5);
+	}
+
+private:
+	void initSdtSectionEntry(const char *data, int size);
+};
+
+class DvbEitSectionEntry : public DvbSectionData
+{
+public:
+	DvbEitSectionEntry(const char *data, int size)
+	{
+		initEitSectionEntry(data, size);
+	}
+
+	~DvbEitSectionEntry() { }
+
+	void advance()
+	{
+		initEitSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int startDate() const
+	{
+		return (at(2) << 8) | at(3);
+	}
+
+	int startTime() const
+	{
+		return (at(4) << 16) | (at(5) << 8) | at(6);
+	}
+
+	int duration() const
+	{
+		return (at(7) << 16) | (at(8) << 8) | at(9);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 12, getLength() - 12);
+	}
+
+private:
+	void initEitSectionEntry(const char *data, int size);
+};
+
+class DvbNitSectionEntry : public DvbSectionData
+{
+public:
+	DvbNitSectionEntry(const char *data, int size)
+	{
+		initNitSectionEntry(data, size);
+	}
+
+	~DvbNitSectionEntry() { }
+
+	void advance()
+	{
+		initNitSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 6, getLength() - 6);
+	}
+
+private:
+	void initNitSectionEntry(const char *data, int size);
+};
+
+class AtscMgtSectionEntry : public DvbSectionData
+{
+public:
+	AtscMgtSectionEntry(const char *data, int size)
+	{
+		initMgtSectionEntry(data, size);
+	}
+
+	~AtscMgtSectionEntry() { }
+
+	void advance()
+	{
+		initMgtSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int tableType() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	int pid() const
+	{
+		return ((at(2) & 0x1f) << 8) | at(3);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 11, getLength() - 11);
+	}
+
+private:
+	void initMgtSectionEntry(const char *data, int size);
+};
+
+class AtscVctSectionEntry : public DvbSectionData
+{
+public:
+	AtscVctSectionEntry(const char *data, int size)
+	{
+		initVctSectionEntry(data, size);
+	}
+
+	~AtscVctSectionEntry() { }
+
+	void advance()
+	{
+		initVctSectionEntry(getData() + getLength(), getSize() - getLength());
+	}
+
+	int shortName1() const
+	{
+		return (at(0) << 8) | at(1);
+	}
+
+	int shortName2() const
+	{
+		return (at(2) << 8) | at(3);
+	}
+
+	int shortName3() const
+	{
+		return (at(4) << 8) | at(5);
+	}
+
+	int shortName4() const
+	{
+		return (at(6) << 8) | at(7);
+	}
+
+	int shortName5() const
+	{
+		return (at(8) << 8) | at(9);
+	}
+
+	int shortName6() const
+	{
+		return (at(10) << 8) | at(11);
+	}
+
+	int shortName7() const
+	{
+		return (at(12) << 8) | at(13);
+	}
+
+	int majorNumber() const
+	{
+		return ((at(14) & 0xf) << 6) | (at(15) >> 2);
+	}
+
+	int minorNumber() const
+	{
+		return ((at(15) & 0x3) << 8) | at(16);
+	}
+
+	int programNumber() const
+	{
+		return (at(24) << 8) | at(25);
+	}
+
+	bool isScrambled() const
+	{
+		return ((at(26) & 0x20) != 0);
+	}
+
+	int sourceId() const
+	{
+		return (at(28) << 8) | at(29);
+	}
+
+	DvbDescriptor descriptors() const
+	{
+		return DvbDescriptor(getData() + 32, getLength() - 32);
+	}
+
+private:
+	void initVctSectionEntry(const char *data, int size);
+};
+
 class DvbLanguageDescriptor : public DvbDescriptor
 {
 public:
@@ -665,284 +943,6 @@ public:
 
 private:
 	Q_DISABLE_COPY(AtscChannelNameDescriptor)
-};
-
-class DvbPatSectionEntry : public DvbSectionData
-{
-public:
-	DvbPatSectionEntry(const char *data, int size)
-	{
-		initPatSectionEntry(data, size);
-	}
-
-	~DvbPatSectionEntry() { }
-
-	void advance()
-	{
-		initPatSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	int programNumber() const
-	{
-		return (at(0) << 8) | at(1);
-	}
-
-	int pid() const
-	{
-		return ((at(2) & 0x1f) << 8) | at(3);
-	}
-
-private:
-	void initPatSectionEntry(const char *data, int size);
-};
-
-class DvbPmtSectionEntry : public DvbSectionData
-{
-public:
-	DvbPmtSectionEntry(const char *data, int size)
-	{
-		initPmtSectionEntry(data, size);
-	}
-
-	~DvbPmtSectionEntry() { }
-
-	void advance()
-	{
-		initPmtSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	int streamType() const
-	{
-		return at(0);
-	}
-
-	int pid() const
-	{
-		return ((at(1) & 0x1f) << 8) | at(2);
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(getData() + 5, getLength() - 5);
-	}
-
-private:
-	void initPmtSectionEntry(const char *data, int size);
-};
-
-class DvbSdtSectionEntry : public DvbSectionData
-{
-public:
-	DvbSdtSectionEntry(const char *data, int size)
-	{
-		initSdtSectionEntry(data, size);
-	}
-
-	~DvbSdtSectionEntry() { }
-
-	void advance()
-	{
-		initSdtSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	int serviceId() const
-	{
-		return (at(0) << 8) | at(1);
-	}
-
-	bool isScrambled() const
-	{
-		return ((at(3) & 0x10) != 0);
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(getData() + 5, getLength() - 5);
-	}
-
-private:
-	void initSdtSectionEntry(const char *data, int size);
-};
-
-class DvbEitSectionEntry : public DvbSectionData
-{
-public:
-	DvbEitSectionEntry(const char *data, int size)
-	{
-		initEitSectionEntry(data, size);
-	}
-
-	~DvbEitSectionEntry() { }
-
-	void advance()
-	{
-		initEitSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	int startDate() const
-	{
-		return (at(2) << 8) | at(3);
-	}
-
-	int startTime() const
-	{
-		return (at(4) << 16) | (at(5) << 8) | at(6);
-	}
-
-	int duration() const
-	{
-		return (at(7) << 16) | (at(8) << 8) | at(9);
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(getData() + 12, getLength() - 12);
-	}
-
-private:
-	void initEitSectionEntry(const char *data, int size);
-};
-
-class DvbNitSectionEntry : public DvbSectionData
-{
-public:
-	DvbNitSectionEntry(const char *data, int size)
-	{
-		initNitSectionEntry(data, size);
-	}
-
-	~DvbNitSectionEntry() { }
-
-	void advance()
-	{
-		initNitSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(getData() + 6, getLength() - 6);
-	}
-
-private:
-	void initNitSectionEntry(const char *data, int size);
-};
-
-class AtscMgtSectionEntry : public DvbSectionData
-{
-public:
-	AtscMgtSectionEntry(const char *data, int size)
-	{
-		initMgtSectionEntry(data, size);
-	}
-
-	~AtscMgtSectionEntry() { }
-
-	void advance()
-	{
-		initMgtSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	int tableType() const
-	{
-		return (at(0) << 8) | at(1);
-	}
-
-	int pid() const
-	{
-		return ((at(2) & 0x1f) << 8) | at(3);
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(getData() + 11, getLength() - 11);
-	}
-
-private:
-	void initMgtSectionEntry(const char *data, int size);
-};
-
-class AtscVctSectionEntry : public DvbSectionData
-{
-public:
-	AtscVctSectionEntry(const char *data, int size)
-	{
-		initVctSectionEntry(data, size);
-	}
-
-	~AtscVctSectionEntry() { }
-
-	void advance()
-	{
-		initVctSectionEntry(getData() + getLength(), getSize() - getLength());
-	}
-
-	int shortName1() const
-	{
-		return (at(0) << 8) | at(1);
-	}
-
-	int shortName2() const
-	{
-		return (at(2) << 8) | at(3);
-	}
-
-	int shortName3() const
-	{
-		return (at(4) << 8) | at(5);
-	}
-
-	int shortName4() const
-	{
-		return (at(6) << 8) | at(7);
-	}
-
-	int shortName5() const
-	{
-		return (at(8) << 8) | at(9);
-	}
-
-	int shortName6() const
-	{
-		return (at(10) << 8) | at(11);
-	}
-
-	int shortName7() const
-	{
-		return (at(12) << 8) | at(13);
-	}
-
-	int majorNumber() const
-	{
-		return ((at(14) & 0xf) << 6) | (at(15) >> 2);
-	}
-
-	int minorNumber() const
-	{
-		return ((at(15) & 0x3) << 8) | at(16);
-	}
-
-	int programNumber() const
-	{
-		return (at(24) << 8) | at(25);
-	}
-
-	bool isScrambled() const
-	{
-		return ((at(26) & 0x20) != 0);
-	}
-
-	int sourceId() const
-	{
-		return (at(28) << 8) | at(29);
-	}
-
-	DvbDescriptor descriptors() const
-	{
-		return DvbDescriptor(getData() + 32, getLength() - 32);
-	}
-
-private:
-	void initVctSectionEntry(const char *data, int size);
 };
 
 class DvbPatSection : public DvbStandardSection

@@ -1307,138 +1307,6 @@ void AtscEitSectionEntry::initEitSectionEntry(const char *data, int size)
 
 // everything below this line is automatically generated
 
-DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 6) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
-DvbSubtitleDescriptor::DvbSubtitleDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 10) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
-DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 5) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-
-	providerNameLength = at(3);
-
-	if (providerNameLength > (getLength() - 5)) {
-		qWarning("Adjusting length on descriptor");
-		providerNameLength = (getLength() - 5);
-	}
-
-	serviceNameLength = at(4 + providerNameLength);
-
-	if (serviceNameLength > (getLength() - (5 + providerNameLength))) {
-		qWarning("Adjusting length on descriptor");
-		serviceNameLength = (getLength() - (5 + providerNameLength));
-	}
-}
-
-DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 7) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-
-	eventNameLength = at(5);
-
-	if (eventNameLength > (getLength() - 7)) {
-		qWarning("Adjusting length on descriptor");
-		eventNameLength = (getLength() - 7);
-	}
-
-	textLength = at(6 + eventNameLength);
-
-	if (textLength > (getLength() - (7 + eventNameLength))) {
-		qWarning("Adjusting length on descriptor");
-		textLength = (getLength() - (7 + eventNameLength));
-	}
-}
-
-DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 8) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-
-	itemsLength = at(6);
-
-	if (itemsLength > (getLength() - 8)) {
-		qWarning("Adjusting length on descriptor");
-		itemsLength = (getLength() - 8);
-	}
-
-	textLength = at(7 + itemsLength);
-
-	if (textLength > (getLength() - (8 + itemsLength))) {
-		qWarning("Adjusting length on descriptor");
-		textLength = (getLength() - (8 + itemsLength));
-	}
-}
-
-DvbCableDescriptor::DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 13) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
-DvbSatelliteDescriptor::DvbSatelliteDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 13) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
-DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 13) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
-IsdbTerrestrialDescriptor::IsdbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 4) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
-AtscChannelNameDescriptor::AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
-{
-	if (getLength() < 2) {
-		qWarning("Invalid descriptor");
-		initSectionData();
-		return;
-	}
-}
-
 void DvbPatSectionEntry::initPatSectionEntry(const char *data, int size)
 {
 	if (size < 4) {
@@ -1577,6 +1445,138 @@ void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 	}
 
 	initSectionData(data, entryLength, size);
+}
+
+DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 6) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+DvbSubtitleDescriptor::DvbSubtitleDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 10) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+DvbServiceDescriptor::DvbServiceDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 5) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+
+	providerNameLength = at(3);
+
+	if (providerNameLength > (getLength() - 5)) {
+		qWarning("Adjusting length on descriptor");
+		providerNameLength = (getLength() - 5);
+	}
+
+	serviceNameLength = at(4 + providerNameLength);
+
+	if (serviceNameLength > (getLength() - (5 + providerNameLength))) {
+		qWarning("Adjusting length on descriptor");
+		serviceNameLength = (getLength() - (5 + providerNameLength));
+	}
+}
+
+DvbShortEventDescriptor::DvbShortEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 7) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+
+	eventNameLength = at(5);
+
+	if (eventNameLength > (getLength() - 7)) {
+		qWarning("Adjusting length on descriptor");
+		eventNameLength = (getLength() - 7);
+	}
+
+	textLength = at(6 + eventNameLength);
+
+	if (textLength > (getLength() - (7 + eventNameLength))) {
+		qWarning("Adjusting length on descriptor");
+		textLength = (getLength() - (7 + eventNameLength));
+	}
+}
+
+DvbExtendedEventDescriptor::DvbExtendedEventDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 8) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+
+	itemsLength = at(6);
+
+	if (itemsLength > (getLength() - 8)) {
+		qWarning("Adjusting length on descriptor");
+		itemsLength = (getLength() - 8);
+	}
+
+	textLength = at(7 + itemsLength);
+
+	if (textLength > (getLength() - (8 + itemsLength))) {
+		qWarning("Adjusting length on descriptor");
+		textLength = (getLength() - (8 + itemsLength));
+	}
+}
+
+DvbCableDescriptor::DvbCableDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 13) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+DvbSatelliteDescriptor::DvbSatelliteDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 13) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+DvbTerrestrialDescriptor::DvbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 13) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+IsdbTerrestrialDescriptor::IsdbTerrestrialDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 4) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
+}
+
+AtscChannelNameDescriptor::AtscChannelNameDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 2) {
+		qWarning("Invalid descriptor");
+		initSectionData();
+		return;
+	}
 }
 
 void DvbPatSection::initPatSection(const char *data, int size)
