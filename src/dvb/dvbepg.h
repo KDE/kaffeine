@@ -35,6 +35,8 @@ public:
 		EitOtherTsPresentFollowing = 1,
 		EitActualTsSchedule = 2,
 		EitOtherTsSchedule = 3,
+
+		EitLast = 3
 	};
 	DvbEpgEntry(): type(EitActualTsSchedule) { }
 	explicit DvbEpgEntry(const DvbSharedChannel &channel_) : channel(channel_) { }

@@ -103,13 +103,15 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 	DvbRecordingModel *recordingModel = manager->getRecordingModel();
-	bool hasRecordingKey = true;
+	bool hasRecordingKey = true, hasParental = true;
 	int version;
 	stream >> version;
 
 	if (version == 0x1ce0eca7) {
 		hasRecordingKey = false;
-	} else if (version != 0x79cffd36) {
+	} else if (version == 0x79cffd36) {
+		hasParental = false;
+	} else if (version != 0x140c37b5) {
 		qWarning("Wrong DB version for: %s", qPrintable(file.fileName()));
 		return;
 	}
@@ -133,6 +135,19 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 			if (recordingKey.isSqlKeyValid()) {
 				entry.recording = recordingModel->findRecordingByKey(recordingKey);
 			}
+		}
+
+		if (hasParental) {
+			unsigned tmp;
+
+			stream >> tmp;
+			stream >> entry.content;
+			stream >> entry.parental;
+
+			if (tmp <= DvbEpgEntry::EitLast)
+				entry.type = DvbEpgEntry::EitType(tmp);
+			else
+				entry.type = DvbEpgEntry::EitActualTsSchedule;
 		}
 
 		if (stream.status() != QDataStream::Ok) {
@@ -163,7 +178,7 @@ DvbEpgModel::~DvbEpgModel()
 
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
-	int version = 0x79cffd36;
+	int version = 0x140c37b5;
 	stream << version;
 
 	foreach (const DvbSharedEpgEntry &entry, entries) {
@@ -180,6 +195,9 @@ DvbEpgModel::~DvbEpgModel()
 		stream << entry->subheading;
 		stream << entry->details;
 		stream << recordingKey.sqlKey;
+		stream << int(entry->type);
+		stream << entry->content;
+		stream << entry->parental;
 	}
 }
 
