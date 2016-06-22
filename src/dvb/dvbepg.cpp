@@ -719,6 +719,25 @@ static const QByteArray nibble1Str[16] = {
 	[15] = {I18N_NOOP("User defined")},
 };
 
+static const QByteArray braNibble1Str[16] = {
+	[0]  = {I18N_NOOP("News")},
+	[1]  = {I18N_NOOP("Sports")},
+	[2]  = {I18N_NOOP("Education")},
+	[3]  = {I18N_NOOP("Soap")},
+	[4]  = {I18N_NOOP("Mini-series")},
+	[5]  = {I18N_NOOP("Series")},
+	[6]  = {I18N_NOOP("Leisure")},
+	[7]  = {I18N_NOOP("Reality show")},
+	[8]  = {I18N_NOOP("Informative")},
+	[9]  = {I18N_NOOP("Humor")},
+	[10] = {I18N_NOOP("Children")},
+	[11] = {I18N_NOOP("Erotic")},
+	[12] = {I18N_NOOP("Movie")},
+	[13] = {I18N_NOOP("Lottery")},
+	[14] = {I18N_NOOP("Discussion")},
+	[15] = {I18N_NOOP("Other")},
+};
+
 QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 {
 	QString content;
@@ -728,11 +747,19 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 		const int nibble2 = entry.contentNibbleLevel2();
 		QByteArray s;
 
-		s = contentStr[nibble1][nibble2];
-		if (s == "")
-			s = nibble1Str[nibble1];
-		if (s != "")
-			content += i18n(s) + "\n";
+		// FIXME: should do it only if language code is BRA
+		if (transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
+			// FIXME: ABNT NBR 15603-2 also define nibble2 codes
+			s = braNibble1Str[nibble1];
+			if (s != "")
+				content += i18n(s) + "\n";
+		} else {
+			s = contentStr[nibble1][nibble2];
+			if (s == "")
+				s = nibble1Str[nibble1];
+			if (s != "")
+				content += i18n(s) + "\n";
+		}
 	}
 
 	if (content != "") {
