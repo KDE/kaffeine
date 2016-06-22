@@ -550,7 +550,7 @@ QTime DvbEpgFilter::bcdToTime(int bcd)
 		((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f));
 }
 
-static const QString contentStr[16][16] = {
+static const QByteArray contentStr[16][16] = {
 	[0] = {},
 	[1] = {
 			/* Movie/Drama */
@@ -682,7 +682,7 @@ static const QString contentStr[16][16] = {
 	}
 };
 
-static const QString nibble1Str[16] = {
+static const QByteArray nibble1Str[16] = {
 	[0]  = {I18N_NOOP("Undefined")},
 	[1]  = {I18N_NOOP("Movie")},
 	[2]  = {I18N_NOOP("News")},
@@ -695,9 +695,9 @@ static const QString nibble1Str[16] = {
 	[9]  = {I18N_NOOP("Education")},
 	[10] = {I18N_NOOP("Leisure")},
 	[11] = {I18N_NOOP("Special")},
-	[12] = {},
-	[13] = {},
-	[14] = {},
+	[12] = {I18N_NOOP("Reserved")},
+	[13] = {I18N_NOOP("Reserved")},
+	[14] = {I18N_NOOP("Reserved")},
 	[15] = {I18N_NOOP("User defined")},
 };
 
@@ -708,13 +708,13 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 	for (DvbEitContentEntry entry = descriptor.contents(); entry.isValid(); entry.advance()) {
 		const int nibble1 = entry.contentNibbleLevel1();
 		const int nibble2 = entry.contentNibbleLevel2();
-		QString s;
+		QByteArray s;
 
 		s = contentStr[nibble1][nibble2];
 		if (s == "")
-			s=nibble1Str[nibble1];
+			s = nibble1Str[nibble1];
 		if (s != "")
-			content += s + "\n";
+			content += i18n(s) + "\n";
 	}
 
 	if (content != "") {
@@ -725,7 +725,7 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 }
 
 /* As defined at ABNT NBR 15603-2 */
-static const QString braRating[] = {
+static const QByteArray braRating[] = {
 	[0] = {I18N_NOOP("reserved")},
 	[1] = {I18N_NOOP("all audiences")},
 	[2] = {I18N_NOOP("10 years")},
@@ -734,6 +734,8 @@ static const QString braRating[] = {
 	[5] = {I18N_NOOP("16 years")},
 	[6] = {I18N_NOOP("18 years")},
 };
+
+#define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 {
@@ -753,25 +755,26 @@ QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 			if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
 				int rating = entry.rating();
 
-				if (rating > 6)
+				if (rating >= ARRAY_SIZE(braRating))
 					rating = 0;	// Reserved
 
 				QString GenStr;
 				int genre = entry.rating() >> 4;
 
 				if (genre & 0x2)
-					GenStr = "violence / ";
+					GenStr = i18n("violence / ");
 				if (genre & 0x4)
-					GenStr = "sex / ";
+					GenStr = i18n("sex / ");
 				if (genre & 0x1)
-					GenStr = "drugs / ";
+					GenStr = i18n("drugs / ");
 				if (genre) {
 					GenStr.truncate(GenStr.size() - 2);
 					GenStr = " (" + GenStr + ")";
 				}
 
+				QString ratingStr = i18n(braRating[entry.rating()]);
 				// xgettext:no-c-format
-				parental += i18n("Country %1 - rating: %2%3\n", code, braRating[entry.rating()], GenStr);
+				parental += i18n("Country %1 - rating: %2%3\n", code, ratingStr, GenStr);
 			} else {
 				// xgettext:no-c-format
 				parental += i18n("Country %1 - rating: %2 years.\n", code, entry.rating() + 3);
