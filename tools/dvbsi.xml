@@ -34,6 +34,11 @@
       <entryLength bits="12" type="int"/>
       <descriptors listType="DvbDescriptor" lengthFunc="" type="list"/>
     </DvbEitSectionEntry>
+    <DvbEitContentEntry>
+      <contentNibbleLevel1 bits="4" type="int"/>
+      <contentNibbleLevel2 bits="4" type="int"/>
+      <userByte bits="8" type="int"/>
+    </DvbEitContentEntry>
     <DvbNitSectionEntry>
       <unused bits="16"/>
       <unused bits="16"/>
@@ -118,6 +123,9 @@
       <textLength bits="8" type="int"/>
       <text listType="DvbString" lengthFunc="textLength" type="list"/>
     </DvbExtendedEventDescriptor>
+    <DvbContentDescriptor>
+      <contents listType="DvbEitContentEntry" lengthFunc="" type="list"/>
+    </DvbContentDescriptor>
     <DvbCableDescriptor>
       <frequency bits="32" type="int"/>
       <unused bits="12"/>
