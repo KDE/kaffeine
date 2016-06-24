@@ -723,19 +723,76 @@ static const QByteArray braNibble1Str[16] = {
 	[0]  = {I18N_NOOP("News")},
 	[1]  = {I18N_NOOP("Sports")},
 	[2]  = {I18N_NOOP("Education")},
-	[3]  = {I18N_NOOP("Soap")},
+	[3]  = {I18N_NOOP("Soap opera")},
 	[4]  = {I18N_NOOP("Mini-series")},
 	[5]  = {I18N_NOOP("Series")},
-	[6]  = {I18N_NOOP("Leisure")},
+	[6]  = {I18N_NOOP("Variety")},
 	[7]  = {I18N_NOOP("Reality show")},
-	[8]  = {I18N_NOOP("Informative")},
-	[9]  = {I18N_NOOP("Humor")},
+	[8]  = {I18N_NOOP("Information")},
+	[9]  = {I18N_NOOP("Comical")},
 	[10] = {I18N_NOOP("Children")},
 	[11] = {I18N_NOOP("Erotic")},
 	[12] = {I18N_NOOP("Movie")},
-	[13] = {I18N_NOOP("Lottery")},
-	[14] = {I18N_NOOP("Discussion")},
+	[13] = {I18N_NOOP("Raffle, television sales, prizing")},
+	[14] = {I18N_NOOP("Debate/interview")},
 	[15] = {I18N_NOOP("Other")},
+};
+
+// Using the terms from the English version of NBR 15603-2:2007
+// The table omits nibble2="Other", as it is better to show nibble 1
+// definition instead.
+// when nibble2[x][0] == nibble1[x] and it has no other definition,
+// except for "Other", the field will be kept in blank, as the logic
+// will fall back to the definition at nibble 1.
+static QByteArray braNibble2Str[16][16] = {
+	[0] = {
+		{I18N_NOOP("News")},
+		{I18N_NOOP("Report")},
+		{I18N_NOOP("Documentary")},
+		{I18N_NOOP("Biography")},
+	},
+	[1] = {},
+	[2] = {
+		{I18N_NOOP("Educative")},
+	},
+	[3] = {},
+	[4] = {},
+	[5] = {},
+	[6] = {
+		{I18N_NOOP("Auditorium")},
+		{I18N_NOOP("Show")},
+		{I18N_NOOP("Musical")},
+		{I18N_NOOP("Making of")},
+		{I18N_NOOP("Feminine")},
+		{I18N_NOOP("Game show")},
+	},
+	[7] = {},
+	[8] = {
+		{I18N_NOOP("Cooking")},
+		{I18N_NOOP("Fashion")},
+		{I18N_NOOP("Country")},
+		{I18N_NOOP("Health")},
+		{I18N_NOOP("Travel")},
+	},
+	[9] = {},
+	[10] = {},
+	[11] = {},
+	[12] = {},
+	[13] = {
+		{I18N_NOOP("Raffle")},
+		{I18N_NOOP("Television sales")},
+		{I18N_NOOP("Prizing")},
+	},
+	[14] = {
+		{I18N_NOOP("Discussion")},
+		{I18N_NOOP("Interview")},
+	},
+	[15] = {
+		{I18N_NOOP("Adult cartoon")},
+		{I18N_NOOP("Interactive")},
+		{I18N_NOOP("Policy")},
+		{I18N_NOOP("Religion")},
+	},
 };
 
 QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
@@ -747,10 +804,12 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 		const int nibble2 = entry.contentNibbleLevel2();
 		QByteArray s;
 
-		// FIXME: should do it only if language code is BRA
+		// FIXME: should do it only for ISDB-Tb (Brazilian variation),
+		// as the Japanese variation uses the same codes as DVB
 		if (transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
-			// FIXME: ABNT NBR 15603-2 also define nibble2 codes
-			s = braNibble1Str[nibble1];
+			s = braNibble2Str[nibble1][nibble2];
+			if (s == "")
+				s = braNibble1Str[nibble1];
 			if (s != "")
 				content += i18n(s) + "\n";
 		} else {
