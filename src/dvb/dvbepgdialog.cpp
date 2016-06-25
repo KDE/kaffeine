@@ -159,7 +159,9 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 	text += "<br/><br/><font color=#800080>" + QLocale().toString(begin, QLocale::LongFormat) + " - " + QLocale().toString(end) + "</font>";
 
-	text += entry->details;
+	if (!entry->details.isEmpty() && entry->details !=  entry->title) {
+		text += "<br/><br/>" + entry->details;
+	}
 
 	if (!entry->content.isEmpty()) {
 		text += "<br/><br/><font color=#000080>" + entry->content + "</font>";

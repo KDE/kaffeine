@@ -129,7 +129,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 					firstEntry.subheading, &boundingRect);
 			}
 
-			if (!firstEntry.details.isEmpty()) {
+			if (!firstEntry.details.isEmpty() && firstEntry.details != firstEntry.title) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(),
 					rect.height() - boundingRect.bottom() - 1,
