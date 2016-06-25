@@ -1465,37 +1465,41 @@ void DvbSLnbConfigObject::configure()
 		currentType = 1;
 	}
 
+	QFrame *frame = new QFrame(mainWidget);
+	frame->setFrameShape(QFrame::VLine);
+	gridLayout->addWidget(frame, 0, 3, 6, 1);
+
 	// FIXME: Those are actually the IF frequencies
 
 	lowBandLabel = new QLabel(i18n("Low frequency (KHz)"), mainWidget);
-	gridLayout->addWidget(lowBandLabel, 0, 3);
+	gridLayout->addWidget(lowBandLabel, 0, 4);
 	lowBandSpinBox = new QSpinBox(mainWidget);
-	gridLayout->addWidget(lowBandSpinBox, 0, 4);
+	gridLayout->addWidget(lowBandSpinBox, 0, 5);
 	lowBandSpinBox->setRange(0, 15000);
 	lowBandSpinBox->setValue(config->currentLnb.lowFreq);
 	lowBandSpinBox->setEnabled(false);
 
 	highBandLabel = new QLabel(i18n("High frequency (MHz)"), mainWidget);
-	gridLayout->addWidget(highBandLabel, 1, 3);
+	gridLayout->addWidget(highBandLabel, 1, 4);
 	highBandSpinBox = new QSpinBox(mainWidget);
-	gridLayout->addWidget(highBandSpinBox, 1, 4);
+	gridLayout->addWidget(highBandSpinBox, 1, 5);
 	highBandSpinBox->setRange(0, 15000);
 	highBandSpinBox->setValue(config->currentLnb.highFreq);
 	highBandSpinBox->setEnabled(false);
 
 	switchLabel = new QLabel(i18n("Switch frequency (MHz)"), mainWidget);
-	gridLayout->addWidget(switchLabel, 2, 3);
+	gridLayout->addWidget(switchLabel, 2, 4);
 	switchSpinBox = new QSpinBox(mainWidget);
-	gridLayout->addWidget(switchSpinBox, 2, 4);
+	gridLayout->addWidget(switchSpinBox, 2, 5);
 	switchSpinBox->setRange(0, 15000);
 	switchSpinBox->setValue(config->currentLnb.rangeSwitch);
 	switchSpinBox->setEnabled(false);
 
 	lowRangeLabel = new QLabel(i18n("Low range: %1 MHz to %2 MHz", config->currentLnb.freqRange[0].low, config->currentLnb.freqRange[0].high), mainWidget);
-	gridLayout->addWidget(lowRangeLabel, 3, 3, 1, 2);
+	gridLayout->addWidget(lowRangeLabel, 3, 4, 1, 2);
 
 	highRangeLabel = new QLabel(mainWidget);
-	gridLayout->addWidget(highRangeLabel, 4, 3, 1, 2);
+	gridLayout->addWidget(highRangeLabel, 4, 5, 1, 2);
 
 	selectType(currentType);
 
