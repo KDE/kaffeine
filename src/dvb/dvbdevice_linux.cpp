@@ -1308,11 +1308,13 @@ bool DvbLinuxDevice::isTuned()
 	return ((status & FE_HAS_LOCK) != 0);
 }
 
-int DvbLinuxDevice::getSignal()
+float DvbLinuxDevice::getSignal(Scale &scale)
 {
 	Q_ASSERT(dvbv5_parms);
 	struct dtv_stats *stat;
-	int signal;
+	float signal;
+
+	scale = DvbBackendDevice::NotSupported;
 
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
 		qWarning("ioctl FE_READ_STATUS failed for frontend %s", qPrintable(frontendPath));
@@ -1325,21 +1327,27 @@ int DvbLinuxDevice::getSignal()
 
 	switch (stat->scale) {
 	case FE_SCALE_RELATIVE:
-		signal = (100 * stat->uvalue) / 65535;
+		signal = (100. * stat->uvalue) / 65535;
+
+		scale = DvbBackendDevice::Percentage;
+
+		// Assert that signal will be within the expected range
+		if (signal > 100.)
+			signal = 100.;
+		else if (signal < 0)
+			signal = 0;
+
 		break;
 	case FE_SCALE_DECIBEL:
 		// Convert to dBuV @ 75 ohms, to be positive and typically smaller than 100
-		signal = (108800 + stat->svalue) / 1000;
+		signal = (108800. + stat->svalue) / 1000;
+
+		scale = DvbBackendDevice::dBuV;
+
 		break;
 	default:
 		return -1;
 	}
-
-	// Assert that signal will be within the expected range
-	if (signal > 100)
-		signal = 100;
-	else if (signal < 0)
-		signal = 0;
 
 	return signal;
 }

@@ -139,6 +139,7 @@ public:
 		NotSupported = 0,
 		Percentage = 1,
 		Decibel = 2,
+		dBuV = 3,
 	};
 	virtual QString getDeviceId() = 0;
 	virtual QString getFrontendName() = 0;
@@ -155,7 +156,7 @@ public:
 	virtual bool tune(const DvbTransponder &transponder) = 0; // discards obsolete data
 	virtual bool getProps(DvbTransponder &transponder) = 0;
 	virtual bool isTuned() = 0;
-	virtual int getSignal() = 0; // 0 - 100 [%] or -1 = not supported
+	virtual float getSignal(Scale &scale) = 0;
 	virtual float getSnr(Scale &scale) = 0;
 	virtual float getFrqMHz() = 0;
 	virtual bool addPidFilter(int pid) = 0;

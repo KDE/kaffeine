@@ -604,9 +604,9 @@ bool DvbDevice::getProps(DvbTransponder &transponder) const
 	return backend->getProps(transponder);
 }
 
-int DvbDevice::getSignal() const
+float DvbDevice::getSignal(DvbBackendDevice::Scale &scale) const
 {
-	return backend->getSignal();
+	return backend->getSignal(scale);
 }
 
 float DvbDevice::getSnr(DvbBackendDevice::Scale &scale) const
@@ -702,10 +702,12 @@ void DvbDevice::frontendEvent()
 		 * it for DVB-T
 		 */
 		if (transmissionType == DvbTransponderBase::DvbT) {
-			DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
-			int signal = backend->getSignal();
+			DvbBackendDevice::Scale scale;
 
-			if ((signal != -1) && (signal < 15)) {
+			DvbTTransponder *autoTTransponder = autoTransponder.as<DvbTTransponder>();
+			float signal = backend->getSignal(scale);
+
+			if ((scale != DvbBackendDevice::NotSupported) && (signal < 15)) {
 				// signal too weak
 				qInfo("Tuning failed (signal too weak) on %.2f MHz", backend->getFrqMHz());
 				setDeviceState(DeviceIdle);

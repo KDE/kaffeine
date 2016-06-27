@@ -70,6 +70,10 @@ void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 		text = QString::number(value, 'f', 2) + " dB";
 		break;
 	    }
+	case DvbBackendDevice::dBuV: {
+		text = QString::number(value, 'f', 2) + " dB" + QString((QChar) 0x00b5) + "V";
+		break;
+	    }
 	}
 
 	if (value < min)
@@ -524,13 +528,12 @@ void DvbScanDialog::scanFinished()
 void DvbScanDialog::updateStatus()
 {
 	if (device->getDeviceState() != DvbDevice::DeviceIdle) {
-		DvbBackendDevice::Scale scale;
-		float snr = device->getSnr(scale);
-		if (snr < 0)
-			snr = 0;
+		DvbBackendDevice::Scale scaleSnr, scaleSignal;
+		float signal = device->getSignal(scaleSignal);
+		float snr = device->getSnr(scaleSnr);
 
-		signalWidget->setValue(device->getSignal(), DvbBackendDevice::Percentage);
-		snrWidget->setValue(device->getSnr(scale), scale);
+		signalWidget->setValue(signal, scaleSignal);
+		snrWidget->setValue(snr, scaleSnr);
 		tunedLed->setState(device->isTuned() ? KLed::On : KLed::Off);
 	}
 }
