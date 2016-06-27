@@ -135,6 +135,11 @@ struct lnbSat {
 class DvbBackendDevice : public DvbDeviceBase
 {
 public:
+	enum Scale {
+		NotSupported = 0,
+		Percentage = 1,
+		Decibel = 2,
+	};
 	virtual QString getDeviceId() = 0;
 	virtual QString getFrontendName() = 0;
 	virtual TransmissionTypes getTransmissionTypes() = 0;
@@ -151,7 +156,7 @@ public:
 	virtual bool getProps(DvbTransponder &transponder) = 0;
 	virtual bool isTuned() = 0;
 	virtual int getSignal() = 0; // 0 - 100 [%] or -1 = not supported
-	virtual int getSnr() = 0; // 0 - 100 [%] or -1 = not supported
+	virtual float getSnr(Scale &scale) = 0;
 	virtual float getFrqMHz() = 0;
 	virtual bool addPidFilter(int pid) = 0;
 	virtual void removePidFilter(int pid) = 0;

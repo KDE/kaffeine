@@ -75,7 +75,7 @@ protected:
 	bool isTuned();
 	float getFrqMHz();
 	int getSignal(); // 0 - 100 [%] or -1 = not supported
-	int getSnr(); // 0 - 100 [%] or -1 = not supported
+	float getSnr(DvbBackendDevice::Scale &scale);
 	bool addPidFilter(int pid);
 	void removePidFilter(int pid);
 	void startDescrambling(const QByteArray &pmtSectionData);

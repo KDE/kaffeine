@@ -100,7 +100,7 @@ public:
 	bool isTuned() const;
 	bool getProps(DvbTransponder &transponder) const;
 	int getSignal() const; // 0 - 100 [%] or -1 = not supported
-	int getSnr() const; // 0 - 100 [%] or -1 = not supported
+	float getSnr(DvbBackendDevice::Scale &scale) const;
 	DvbTransponder getAutoTransponder() const;
 
 	/*

@@ -52,7 +52,8 @@ public:
 	// int serviceId;
 	// int audioPid; // may be -1 (not present)
 	// bool hasVideo;
-	int snr; // percent
+
+	QString snr;
 
 	/*
 	 * assigned when reading SDT
@@ -139,7 +140,8 @@ private:
 	QList<DvbSdtEntry> sdtEntries;
 	QList<DvbPreviewChannel> channels;
 
-	int snr;
+	DvbBackendDevice::Scale scale;
+	float snr;
 	int transportStreamId;
 
 	QList<DvbScanFilter *> filters;

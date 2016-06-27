@@ -544,7 +544,7 @@ void DvbScan::updateState()
 				return;
 			}
 
-			snr = device->getSnr();
+			snr = device->getSnr(scale);
 
 			state = ScanNit;
 		    }
@@ -708,7 +708,20 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		channel.pmtPid = pid;
 		channel.pmtSectionData = section.toByteArray();
 		channel.serviceId = section.programNumber();
-		channel.snr = snr;
+		switch (scale) {
+		case DvbBackendDevice::NotSupported: {
+			channel.snr = "";
+			break;
+		}
+		case DvbBackendDevice::Percentage: {
+			channel.snr = QString::number(snr) + "%";
+			break;
+		}
+		case DvbBackendDevice::Decibel: {
+			channel.snr = QString::number(snr, 'f', 2) + " dB";
+			break;
+		}
+		};
 		channels.append(channel);
 
 		qDebug("New channel: PID %d, service ID %d", pid, section.programNumber());

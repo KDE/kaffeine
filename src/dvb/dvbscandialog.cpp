@@ -41,27 +41,43 @@
 #include "dvbscan.h"
 #include "dvbscandialog.h"
 
-DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0)
+DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0), max(100.), min(0.)
 {
 	setAlignment(Qt::AlignCenter);
 	setFrameShape(Box);
-	setText(i18n("0%"));
+	setText(i18n(""));
 }
 
 DvbGradProgress::~DvbGradProgress()
 {
 }
 
-void DvbGradProgress::setValue(int value_)
+void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 {
+	QString text;
 	value = value_;
 
-	if (value == -1) {
-		value = 0;
+	switch(scale) {
+	case DvbBackendDevice::NotSupported: {
+		text = "-";
+		break;
+	    }
+	case DvbBackendDevice::Percentage: {
+		text = QString::number(value) + "%";
+		break;
+	    }
+	case DvbBackendDevice::Decibel: {
+		text = QString::number(value, 'f', 2) + " dB";
+		break;
+	    }
 	}
 
-	Q_ASSERT((value >= 0) && (value <= 100));
-	setText(i18n("%1%", value));
+	if (value < min)
+		value = min;
+	if (value > max)
+		value = max;
+
+	setText(i18n("%1", text));
 	update();
 }
 
@@ -453,7 +469,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
-	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(int)));
+	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(float, DvbBackendDevice::Scale)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
 	connect(internal, SIGNAL(scanFinished()),
 		this, SLOT(scanFinished()), Qt::QueuedConnection);
@@ -508,8 +524,13 @@ void DvbScanDialog::scanFinished()
 void DvbScanDialog::updateStatus()
 {
 	if (device->getDeviceState() != DvbDevice::DeviceIdle) {
-		signalWidget->setValue(device->getSignal());
-		snrWidget->setValue(device->getSnr());
+		DvbBackendDevice::Scale scale;
+		float snr = device->getSnr(scale);
+		if (snr < 0)
+			snr = 0;
+
+		signalWidget->setValue(device->getSignal(), DvbBackendDevice::Percentage);
+		snrWidget->setValue(device->getSnr(scale), scale);
 		tunedLed->setState(device->isTuned() ? KLed::On : KLed::Off);
 	}
 }
@@ -575,8 +596,8 @@ void DvbScanDialog::setDevice(DvbDevice *newDevice)
 
 	if (device == NULL) {
 		statusTimer.stop();
-		signalWidget->setValue(0);
-		snrWidget->setValue(0);
+		signalWidget->setValue(0, DvbBackendDevice::NotSupported);
+		snrWidget->setValue(0, DvbBackendDevice::NotSupported);
 		tunedLed->setState(KLed::Off);
 	} else {
 		statusTimer.start(1000);

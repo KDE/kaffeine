@@ -609,9 +609,9 @@ int DvbDevice::getSignal() const
 	return backend->getSignal();
 }
 
-int DvbDevice::getSnr() const
+float DvbDevice::getSnr(DvbBackendDevice::Scale &scale) const
 {
-	return backend->getSnr();
+	return backend->getSnr(scale);
 }
 
 DvbTransponder DvbDevice::getAutoTransponder() const

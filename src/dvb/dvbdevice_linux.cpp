@@ -1344,12 +1344,13 @@ int DvbLinuxDevice::getSignal()
 	return signal;
 }
 
-int DvbLinuxDevice::getSnr()
+float DvbLinuxDevice::getSnr(Scale &scale)
 {
 	Q_ASSERT(dvbv5_parms);
 	struct dtv_stats *stat;
-	int cnr;
+	float cnr;
 
+	scale = DvbBackendDevice::NotSupported;
 	if (dvb_fe_get_stats(dvbv5_parms) != 0) {
 		qWarning("ioctl FE_READ_STATUS failed for frontend %s", qPrintable(frontendPath));
 		return false;
@@ -1361,19 +1362,26 @@ int DvbLinuxDevice::getSnr()
 
 	switch (stat->scale) {
 	case FE_SCALE_RELATIVE:
-		cnr = (100 * stat->uvalue) / 65535;
+		cnr = (100. * stat->uvalue) / 65535;
+
+		// Assert that CNR will be within the expected range
+		if (cnr > 100.)
+			cnr = 100.;
+		else if (cnr < 0.)
+			cnr = 0.;
+
+		scale = DvbBackendDevice::Percentage;
+
 		break;
 	case FE_SCALE_DECIBEL:
-		cnr = (stat->svalue / 1000);
+		cnr = (stat->svalue / 1000.);
+
+		scale = DvbBackendDevice::Decibel;
+
 		break;
 	default:
 		return -1;
 	}
-	// Assert that CNR will be within the expected range
-	if (cnr > 100)
-		cnr = 100;
-	else if (cnr < 0)
-		cnr = 0;
 
 	return cnr;
 }

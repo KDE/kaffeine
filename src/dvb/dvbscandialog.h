@@ -25,6 +25,8 @@
 #include <QTimer>
 #include <QDialog>
 
+#include "dvbbackenddevice.h"
+
 class QCheckBox;
 class QProgressBar;
 class QTreeView;
@@ -91,13 +93,13 @@ public:
 	explicit DvbGradProgress(QWidget *parent);
 	~DvbGradProgress();
 
-	void setValue(int value_);
+	void setValue(float value_,  DvbBackendDevice::Scale scale);
 
 protected:
 	void paintEvent(QPaintEvent *event);
 
 private:
-	int value;
+	float value, max, min;
 };
 
 #endif /* DVBSCANDIALOG_H */
