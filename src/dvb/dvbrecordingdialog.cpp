@@ -305,7 +305,7 @@ QVariant DvbRecordingTableModel::data(const QModelIndex &index, int role) const
 			case 2:
 				return QLocale().toString((recording->begin.toLocalTime()), QLocale::ShortFormat);
 			case 3:
-				return QLocale().toString(recording->duration);
+				return recording->duration.toString("HH:mm");
 			case 4: {
 				if (recording->disabled) {
 					return QString("Disabled");

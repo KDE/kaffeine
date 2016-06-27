@@ -164,7 +164,7 @@ DateTimeEdit::~DateTimeEdit()
 
 DurationEdit::DurationEdit(QWidget *parent) : QTimeEdit(parent)
 {
-	setDisplayFormat(localQtTimeFormat(false, true));
+	setDisplayFormat("HH:mm");
 }
 
 DurationEdit::~DurationEdit()

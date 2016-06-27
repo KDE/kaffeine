@@ -358,7 +358,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 			case 0:
 				return QLocale().toString((entry->begin.toLocalTime()), QLocale::NarrowFormat);
 			case 1:
-				return entry->duration.toString("hh:mm");
+				return entry->duration.toString("HH:mm");
 			case 2:
 				return entry->title;
 			case 3:
