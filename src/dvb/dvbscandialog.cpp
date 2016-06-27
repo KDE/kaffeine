@@ -60,26 +60,29 @@ void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 	switch(scale) {
 	case DvbBackendDevice::NotSupported: {
 		text = "-";
+		max = 100;
+		min = 0;
 		break;
 	    }
 	case DvbBackendDevice::Percentage: {
 		text = QString::number(value) + "%";
+		max = 100;
+		min = 0;
 		break;
 	    }
 	case DvbBackendDevice::Decibel: {
 		text = QString::number(value, 'f', 2) + " dB";
+		max = 40;
+		min = 0;
 		break;
 	    }
 	case DvbBackendDevice::dBuV: {
 		text = QString::number(value, 'f', 2) + " dB" + QString((QChar) 0x00b5) + "V";
+		max = 80;
+		min = 20;
 		break;
 	    }
 	}
-
-	if (value < min)
-		value = min;
-	if (value > max)
-		value = max;
 
 	setText(i18n("%1", text));
 	update();
@@ -87,16 +90,18 @@ void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 
 void DvbGradProgress::paintEvent(QPaintEvent *event)
 {
-	{
-		QPainter painter(this);
-		int border = frameWidth();
-		QRect rect(border, border, width() - 2 * border, height() - 2 * border);
-		QLinearGradient gradient(rect.topLeft(), rect.topRight());
-		gradient.setColorAt(0, Qt::red);
-		gradient.setColorAt(1, Qt::green);
-		rect.setWidth((rect.width() * value) / 100);
-		painter.fillRect(rect, gradient);
-	}
+	QPainter painter(this);
+	int border = frameWidth();
+	QRect rect(border, border, width() - 2 * border, height() - 2 * border);
+	QLinearGradient gradient(rect.topLeft(), rect.topRight());
+	gradient.setColorAt(0, Qt::red);
+	gradient.setColorAt(1, Qt::green);
+	if (value < min)
+		value = min;
+	if (value > max)
+		value = max;
+	rect.setWidth((rect.width() * (value - min)) / (max - min));
+	painter.fillRect(rect, gradient);
 
 	QLabel::paintEvent(event);
 }
