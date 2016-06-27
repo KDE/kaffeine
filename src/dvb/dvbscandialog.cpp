@@ -45,7 +45,7 @@ DvbGradProgress::DvbGradProgress(QWidget *parent) : QLabel(parent), value(0), ma
 {
 	setAlignment(Qt::AlignCenter);
 	setFrameShape(Box);
-	setText(i18n(""));
+	setText("");
 }
 
 DvbGradProgress::~DvbGradProgress()
