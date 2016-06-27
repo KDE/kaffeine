@@ -478,7 +478,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 
 	connect(internal, SIGNAL(foundChannels(QList<DvbPreviewChannel>)),
 		this, SLOT(foundChannels(QList<DvbPreviewChannel>)));
-	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(float, DvbBackendDevice::Scale)));
+	connect(internal, SIGNAL(scanProgress(int)), progressBar, SLOT(setValue(int)));
 	// calling scanFinished() will delete internal, so we have to queue the signal!
 	connect(internal, SIGNAL(scanFinished()),
 		this, SLOT(scanFinished()), Qt::QueuedConnection);
