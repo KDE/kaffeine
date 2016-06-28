@@ -1145,7 +1145,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		DvbEpgEntry epgEntry;
 		epgEntry.channel = channel;
 		epgEntry.begin = baseDateTime.addSecs(eitEntry.startTime());
-		epgEntry.duration = QTime().addSecs(eitEntry.duration());
+		epgEntry.duration = QTime(0, 0, 0).addSecs(eitEntry.duration());
 		epgEntry.title = eitEntry.title();
 
 		quint32 id = ((quint32(fakeChannel.networkId) << 16) | quint32(eitEntry.eventId()));
