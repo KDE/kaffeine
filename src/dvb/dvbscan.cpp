@@ -709,6 +709,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		channel.pmtSectionData = section.toByteArray();
 		channel.serviceId = section.programNumber();
 		switch (scale) {
+		case DvbBackendDevice::dBuV:
 		case DvbBackendDevice::NotSupported: {
 			channel.snr = "";
 			break;
