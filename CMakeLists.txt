@@ -102,7 +102,7 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
 endif()
 
 if(KF5DocTools_VERSION)
-#  add_subdirectory(doc)
+  add_subdirectory(doc)
 endif(KF5DocTools_VERSION)
 
 if(BUILD_TOOLS)
