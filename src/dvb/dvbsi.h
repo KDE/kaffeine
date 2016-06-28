@@ -1240,7 +1240,7 @@ public:
 
 	AtscMgtSectionEntry entries() const
 	{
-		return AtscMgtSectionEntry(getData() + 11, getLength() - 15);
+		return AtscMgtSectionEntry(getData() + 11, getLength() - 17);
 	}
 
 private:

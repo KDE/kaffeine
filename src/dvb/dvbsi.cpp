@@ -1696,7 +1696,7 @@ void DvbNitSection::initNitSection(const char *data, int size)
 
 void AtscMgtSection::initMgtSection(const char *data, int size)
 {
-	if (size < 15) {
+	if (size < 17) {
 		initSectionData();
 		return;
 	}

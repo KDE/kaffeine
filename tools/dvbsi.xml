@@ -216,6 +216,8 @@
       <unused bits="8"/>
       <entryCount bits="16" type="int"/>
       <entries listType="AtscMgtSectionEntry" lengthFunc="" type="list"/>
+      <unused bits="4"/>
+      <unused bits="12"/>
     </AtscMgtSection>
     <AtscVctSection>
       <unused bits="8"/>
