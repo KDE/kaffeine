@@ -64,7 +64,12 @@
 <keyword>audio</keyword>
 <keyword>mp3</keyword>
 <keyword>dvd</keyword>
-<keyword>dvbt</keyword>
+<keyword>dvb-t</keyword>
+<keyword>dvb-c</keyword>
+<keyword>dvb-s</keyword>
+<keyword>dvb-t2</keyword>
+<keyword>dvb-s2</keyword>
+<keyword>isdb-t</keyword>
 </keywordset>
 
 </bookinfo>
@@ -102,7 +107,7 @@ and it’s possible to switch to other functions via either the pop up menu or t
 <title>Play a File</title>
 <para>Playing a video or audio file is as simple as clicking on the <guibutton>Play File</guibutton>
 button. It will ask you to select the file to be played, and wil begin playing it. Since &kaffeine;
-uses LibVLC for the backend it supports all the same file formats as VLC.
+uses LibVLC for the backend, it supports all the same file formats as VLC.
 It also supports opening a list of files to create and manage playlists.
 </para>
 
@@ -154,7 +159,7 @@ on the player window to create a new playlist. To change a playlist name edit it
 media player, the best feature in &kaffeine; is to use it as a &GUI; frontend to watch and record digital TV.
 </para>
 
-<para>In &kaffeine; version 2.0 the digital TV support was extended to support DVB-T2 and ISDB-T.
+<para>In &kaffeine; version 2.0, the digital TV support was extended to support DVB-T2 and ISDB-T.
 Since it now uses libdvbv5, extending support for other digital TV standards is simple.
 Also, since it uses the &Linux; DVB version 5 API, it supports frontends capable of implementing multiple TVs at once.
 </para>
