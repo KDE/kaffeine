@@ -258,7 +258,7 @@ void DvbEpgModel::Debug(QString text, const DvbSharedEpgEntry &entry)
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
 	if (!entry.validate()) {
-		qWarning("Invalid entry");
+		qWarning("Invalid entry: channel is %s, begin is %s, duration is %s", entry.channel.isValid() ? "valid" : "invalid", entry.begin.isValid() ? "valid" : "invalid", entry.duration.isValid() ? "valid" : "invalid");
 		return DvbSharedEpgEntry();
 	}
 
@@ -342,7 +342,7 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 	int extraSecondsAfter, bool checkForRecursion, int priority)
 {
 	if (!entry.isValid() || (entries.value(DvbEpgEntryId(entry)) != entry)) {
-		qWarning("Invalid entry");
+		qWarning("Can't schedule program: invalid entry");
 		return;
 	}
 
