@@ -715,7 +715,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 			break;
 		}
 		case DvbBackendDevice::Percentage: {
-			channel.snr = QString::number(snr) + "%";
+			channel.snr = QString::number(snr, 'f', 0) + "%";
 			break;
 		}
 		case DvbBackendDevice::Decibel: {

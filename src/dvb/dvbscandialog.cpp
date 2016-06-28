@@ -65,7 +65,7 @@ void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 		break;
 	    }
 	case DvbBackendDevice::Percentage: {
-		text = QString::number(value) + "%";
+		text = QString::number(value, 'f', 0) + "%";
 		max = 100;
 		min = 0;
 		break;
