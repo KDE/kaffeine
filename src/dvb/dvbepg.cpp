@@ -1050,8 +1050,11 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 	QList<int> newEitPids;
 	QList<int> newEttPids;
 
-	for (AtscMgtSectionEntry entry = mgtSection.entries(); (entryCount > 0) && entry.isValid();
-	     --entryCount, entry.advance()) {
+	AtscMgtSectionEntry entry = mgtSection.entries();
+	for (int i = 0; i < entryCount; i++) {
+		if (!entry.isValid())
+			break;
+
 		int tableType = entry.tableType();
 
 		if ((tableType >= 0x0100) && (tableType <= 0x017f)) {
@@ -1071,6 +1074,8 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 				newEttPids.insert(index, pid);
 			}
 		}
+		if (i > 0)
+			entry.advance();
 	}
 
 	for (int i = 0; i < eitPids.size(); ++i) {
