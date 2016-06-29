@@ -1149,8 +1149,10 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	// 1980-01-06T000000 minus 15 secs (= UTC - GPS in 2011)
 	QDateTime baseDateTime = QDateTime(QDate(1980, 1, 5), QTime(23, 59, 45), Qt::UTC);
 
-	for (AtscEitSectionEntry eitEntry = eitSection.entries();
-	     (entryCount > 0) && eitEntry.isValid(); --entryCount, eitEntry.advance()) {
+	AtscEitSectionEntry eitEntry = eitSection.entries();
+	for (int i = 0; i < entryCount; i++) {
+		if (!eitEntry.isValid())
+			break;
 		DvbEpgEntry epgEntry;
 		epgEntry.channel = channel;
 		epgEntry.begin = baseDateTime.addSecs(eitEntry.startTime());
@@ -1169,6 +1171,8 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 
 		entry = epgModel->addEntry(epgEntry);
 		epgEntries.insert(id, entry);
+		if ( i < entryCount -1)
+			eitEntry.advance();
 	}
 }
 
