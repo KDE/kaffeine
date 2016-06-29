@@ -1162,13 +1162,6 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		quint32 id = ((quint32(fakeChannel.networkId) << 16) | quint32(eitEntry.eventId()));
 		DvbSharedEpgEntry entry = epgEntries.value(id);
 
-		if (entry.isValid() && (entry->channel == epgEntry.channel) &&
-		    (entry->begin == epgEntry.begin) && (entry->duration == epgEntry.duration) &&
-		    (entry->title == epgEntry.title)) {
-			qDebug("EIT section entry is invalid");
-			continue;
-		}
-
 		entry = epgModel->addEntry(epgEntry);
 		epgEntries.insert(id, entry);
 		if ( i < entryCount -1)
