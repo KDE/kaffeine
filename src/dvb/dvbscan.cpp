@@ -771,37 +771,36 @@ void DvbScan::processVct(const AtscVctSection &section)
 		// See A/65C table 6.25a for the list of descriptors
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
 		     descriptor.advance()) {
-			if (descriptor.descriptorTag() != 0xa0) {
-				continue;
-			}
-
-			// Extended Channel Name Descriptor
-			AtscChannelNameDescriptor nameDescriptor(descriptor);
-			if (!nameDescriptor.isValid()) {
-				continue;
-			}
-			sdtEntry.name = majorminor + nameDescriptor.name();
-
-			if (sdtEntry.name.isEmpty()) {
-				// Extended Channel name not available, fall back
-				// to the short name
-				QChar shortName[] = { entry.shortName1(),
-						      entry.shortName2(),
-						      entry.shortName3(),
-						      entry.shortName4(),
-						      entry.shortName5(),
-						      entry.shortName6(),
-						      entry.shortName7(), 0 };
-				int nameLength = 0;
-				while (shortName[nameLength] != 0) {
-					++nameLength;
+			if (descriptor.descriptorTag() == 0xa0) {
+				// Extended Channel Name Descriptor
+				AtscChannelNameDescriptor nameDescriptor(descriptor);
+				if (!nameDescriptor.isValid()) {
+					continue;
 				}
-				sdtEntry.name = majorminor + QString(shortName, nameLength);
+				sdtEntry.name = majorminor + nameDescriptor.name();
 			}
-
-			qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
-			sdtEntries.append(sdtEntry);
 		}
+
+		if (sdtEntry.name.isEmpty()) {
+			// Extended Channel name not available, fall back
+			// to the short name
+			QChar shortName[] = { entry.shortName1(),
+						entry.shortName2(),
+						entry.shortName3(),
+						entry.shortName4(),
+						entry.shortName5(),
+						entry.shortName6(),
+						entry.shortName7(), 0 };
+			int nameLength = 0;
+			while (shortName[nameLength] != 0) {
+				++nameLength;
+			}
+			sdtEntry.name = majorminor + QString(shortName, nameLength);
+		}
+
+		qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
+		sdtEntries.append(sdtEntry);
+
 		if (i < entryCount - 1)
 			entry.advance();
 	}
