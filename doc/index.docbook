@@ -106,7 +106,7 @@ and it’s possible to switch to other functions via either the pop up menu or t
 <sect1 id="playfile">
 <title>Play a File</title>
 <para>Playing a video or audio file is as simple as clicking on the <guibutton>Play File</guibutton>
-button. It will ask you to select the file to be played, and wil begin playing it. Since &kaffeine;
+button. It will ask you to select the file to be played, and will begin playing it. Since &kaffeine;
 uses LibVLC for the backend, it supports all the same file formats as VLC.
 It also supports opening a list of files to create and manage playlists.
 </para>
