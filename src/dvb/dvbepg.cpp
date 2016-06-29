@@ -1128,6 +1128,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	AtscEitSection eitSection(data, size);
 
 	if (!eitSection.isValid()) {
+		qDebug("EPG section is invalid");
 		return;
 	}
 
@@ -1138,8 +1139,11 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	DvbSharedChannel channel = channelModel->findChannelById(fakeChannel);
 
 	if (!channel.isValid()) {
+		qDebug("channel is invalid");
 		return;
 	}
+
+	qDebug("Processing EIT section with size %d", size);
 
 	int entryCount = eitSection.entryCount();
 	// 1980-01-06T000000 minus 15 secs (= UTC - GPS in 2011)
@@ -1159,6 +1163,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		if (entry.isValid() && (entry->channel == epgEntry.channel) &&
 		    (entry->begin == epgEntry.begin) && (entry->duration == epgEntry.duration) &&
 		    (entry->title == epgEntry.title)) {
+			qDebug("EIT section entry is invalid");
 			continue;
 		}
 
