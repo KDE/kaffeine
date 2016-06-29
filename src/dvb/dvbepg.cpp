@@ -1074,7 +1074,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 				newEttPids.insert(index, pid);
 			}
 		}
-		if (i > 0)
+		if (i < entryCount - 1)
 			entry.advance();
 	}
 

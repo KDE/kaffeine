@@ -758,10 +758,10 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 
 void DvbScan::processVct(const AtscVctSection &section)
 {
-	int i = section.entryCount();
+	AtscVctSectionEntry entry = section.entries();
+	int entryCount = section.entryCount();
 
-	for (AtscVctSectionEntry entry = section.entries(); (i > 0) && (entry.isValid());
-	     --i, entry.advance()) {
+	for (int i = 0; i < entryCount && (entry.isValid()); i++) {
 		QString majorminor = QString(QLatin1String("%1-%2 ")).
 			arg(entry.majorNumber(), 3, 10, QLatin1Char('0')).arg(entry.minorNumber());
 
@@ -802,6 +802,8 @@ void DvbScan::processVct(const AtscVctSection &section)
 			qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
 			sdtEntries.append(sdtEntry);
 		}
+		if (i < entryCount - 1)
+			entry.advance();
 	}
 }
 
