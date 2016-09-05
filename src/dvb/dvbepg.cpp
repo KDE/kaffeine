@@ -938,8 +938,17 @@ void DvbEpgFilter::processSection(const char *data, int size)
 			epgEntry.type = DvbEpgEntry::EitOtherTsSchedule;
 
 		epgEntry.channel = channel;
-		epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
-			bcdToTime(entry.startTime()), Qt::UTC);
+
+		/*
+		 * ISDB-T Brazil uses time in UTC-3,
+		 * as defined by ABNT NBR 15603-2:2007.
+		 */
+		if (channel->transponder.getTransmissionType() == DvbTransponderBase::IsdbT)
+			epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
+					           bcdToTime(entry.startTime()), Qt::OffsetFromUTC, -10800).toUTC();
+		else
+			epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
+					           bcdToTime(entry.startTime()), Qt::UTC);
 		epgEntry.duration = bcdToTime(entry.duration());
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
