@@ -370,6 +370,7 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 			entry->subheading;
 		recording.details =
 			entry->details;
+		recording.disabled = false;
 		const_cast<DvbEpgEntry *>(entry.constData())->recording =
 			manager->getRecordingModel()->addRecording(recording, checkForRecursion);
 		recordings.insert(entry->recording, entry);

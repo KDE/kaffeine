@@ -386,6 +386,7 @@ quint32 DBusTelevisionObject::ScheduleProgram(const QString &name, const QString
 	recording.begin = QDateTime::fromString(begin, Qt::ISODate).toUTC();
 	recording.duration = QTime::fromString(duration, Qt::ISODate);
 	recording.repeat = (repeat & ((1 << 7) - 1));
+	recording.disabled = false;
 	DvbSharedRecording newRecording =
 		dvbTab->getManager()->getRecordingModel()->addRecording(recording);
 
