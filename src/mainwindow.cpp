@@ -434,7 +434,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::close()
 {
-	QCoreApplication::exit(0);
+	bool ok = true;
+
+#if HAVE_DVB == 1
+	dvbTab->mayCloseApplication(&ok, mediaWidget);
+#endif /* HAVE_DVB == 1 */
+
+	if (ok)
+		QCoreApplication::exit(0);
 }
 
 void MainWindow::readSettings()
