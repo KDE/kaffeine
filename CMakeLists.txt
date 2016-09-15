@@ -61,11 +61,6 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 )
 find_package(KF5DocTools ${KF5_MIN_VERSION} QUIET)
 
-include(KDEInstallDirs)
-include(KDECompilerSettings)
-include(KDECMakeSettings)
-include(FeatureSummary)
-
 find_package(X11 REQUIRED)
 find_package(VLC 1.2 REQUIRED)
 
