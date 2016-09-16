@@ -30,6 +30,7 @@
 #include <QTimer>
 #include <QMap>
 #include <vlc/vlc.h>
+#include <vlc/libvlc_version.h>
 
 #include "../configuration.h"
 #include "vlcmediawidget.h"
@@ -89,7 +90,9 @@ bool VlcMediaWidget::init()
 	libvlc_event_e eventTypes[] = { libvlc_MediaPlayerEncounteredError,
 		libvlc_MediaPlayerEndReached, libvlc_MediaPlayerLengthChanged,
 		libvlc_MediaPlayerSeekableChanged, libvlc_MediaPlayerStopped,
+#if LIBVLC_VERSION_MAJOR > 2
 		libvlc_MediaPlayerESAdded, libvlc_MediaPlayerESDeleted,
+#endif
 		libvlc_MediaPlayerTimeChanged };
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
@@ -628,8 +631,10 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	PendingUpdates pendingUpdatesToBeAdded = 0;
 
 	switch (event->type) {
+#if LIBVLC_VERSION_MAJOR > 2
 	case libvlc_MediaPlayerESAdded:
 	case libvlc_MediaPlayerESDeleted:
+#endif
 	case libvlc_MediaMetaChanged:
 		pendingUpdatesToBeAdded = Metadata | Subtitles;
 		break;
