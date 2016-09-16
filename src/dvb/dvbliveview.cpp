@@ -338,17 +338,10 @@ void DvbLiveView::pmtSectionChanged(const QByteArray &pmtSectionData)
 	internal->currentAudioStream = audioPids.indexOf(audioPid);
 	mediaWidget->audioStreamsChanged();
 
-	internal->subtitles.clear();
 	subtitlePids.clear();
 
 	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
-
-		if (!it.second.isEmpty()) {
-			internal->subtitles.append(it.second);
-		} else {
-			internal->subtitles.append(QString::number(it.first));
-		}
 
 		subtitlePids.append(it.first);
 	}
@@ -473,7 +466,6 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		internal->audioStreams.clear();
 		internal->currentAudioStream = -1;
 		mediaWidget->audioStreamsChanged();
-		internal->subtitles.clear();
 		internal->currentSubtitle = -1;
 		mediaWidget->subtitlesChanged();
 		break;

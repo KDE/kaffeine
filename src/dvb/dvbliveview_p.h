@@ -77,9 +77,8 @@ public:
 	QTime startTime;
 
 	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
-	bool overrideSubtitles() const { return !subtitles.isEmpty(); }
 	QStringList getAudioStreams() const { return audioStreams; }
-	QStringList getSubtitles() const { return subtitles; }
+	QStringList getSubtitles() const { return QStringList(); }
 	int getCurrentAudioStream() const { return currentAudioStream; }
 	int getCurrentSubtitle() const { return currentSubtitle; }
 
@@ -115,7 +114,6 @@ public:
 
 	bool timeshift;
 	QStringList audioStreams;
-	QStringList subtitles;
 	int currentAudioStream;
 	int currentSubtitle;
 
