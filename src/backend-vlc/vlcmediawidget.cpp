@@ -330,6 +330,7 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 
 	QMap<int, int>::const_iterator i = subtitleId.constBegin();
 	while (i != subtitleId.constEnd()) {
+		qDebug("Subtitle #%d, key: %d", i.value(), i.key());
 		if (i.value() == currentSubtitle) {
 			requestedSubtitle = i.key();
 			break;
@@ -337,7 +338,24 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 		i++;
 	}
 
+	qDebug("Try to set subtitle #%d, id %d", currentSubtitle, requestedSubtitle);
 	libvlc_video_set_spu(vlcMediaPlayer, requestedSubtitle);
+
+	/* Print what it was actually selected */
+	libvlc_track_description_t *track = libvlc_video_get_spu_description(vlcMediaPlayer);
+	while (track != NULL) {
+		QString subtitle = QString::fromUtf8(track->psz_name);
+
+		if (subtitle.isEmpty()) {
+			subtitle = i18n("Subtitle %1", track->i_id);
+		}
+
+		if (track->i_id == requestedSubtitle)
+			qDebug("Subtitle set to id %d: %s", track->i_id, qPrintable(subtitle));
+		track = track->p_next;
+	}
+	libvlc_track_description_list_release(track);
+
 }
 
 void VlcMediaWidget::setExternalSubtitle(const QUrl &subtitleUrl)
@@ -535,6 +553,7 @@ void VlcMediaWidget::updateSubtitles()
 		// currentSubtitle
 		subtitleId[track->i_id] = ++i;
 		subtitles.append(subtitle);
+		qDebug("Got subtitle id#%d: %s", track->i_id, qPrintable(subtitle));
 		track = track->p_next;
 	}
 	libvlc_track_description_list_release(track);
