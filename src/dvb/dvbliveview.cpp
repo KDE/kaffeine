@@ -547,18 +547,12 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 		}
 	}
 
-	if (!isTimeShifting) {
-		if (subtitlePid != -1) {
-			newPids.insert(subtitlePid);
-		}
-	} else {
-		for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
-			newPids.insert(pmtParser.subtitlePids.at(i).first);
-		}
+	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
+		newPids.insert(pmtParser.subtitlePids.at(i).first);
+	}
 
-		if (pmtParser.teletextPid != -1) {
-			newPids.insert(pmtParser.teletextPid);
-		}
+	if (pmtParser.teletextPid != -1) {
+		newPids.insert(pmtParser.teletextPid);
 	}
 
 	for (int i = 0; i < pids.size(); ++i) {
