@@ -89,6 +89,7 @@ bool VlcMediaWidget::init()
 	libvlc_event_e eventTypes[] = { libvlc_MediaPlayerEncounteredError,
 		libvlc_MediaPlayerEndReached, libvlc_MediaPlayerLengthChanged,
 		libvlc_MediaPlayerSeekableChanged, libvlc_MediaPlayerStopped,
+		libvlc_MediaPlayerESAdded, libvlc_MediaPlayerESDeleted,
 		libvlc_MediaPlayerTimeChanged };
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
@@ -627,6 +628,8 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	PendingUpdates pendingUpdatesToBeAdded = 0;
 
 	switch (event->type) {
+	case libvlc_MediaPlayerESAdded:
+	case libvlc_MediaPlayerESDeleted:
 	case libvlc_MediaMetaChanged:
 		pendingUpdatesToBeAdded = Metadata | Subtitles;
 		break;
