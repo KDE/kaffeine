@@ -219,7 +219,7 @@ the Television pop up menu, option <guimenuitem>Channels</guimenuitem>:
 If more then one standard is supported, the <guilabel>Source</guilabel> combo box will allow you to select the
 one that will be used to scan. Don’t forget to connect the device’s antenna cable to match
 the standard that will be used. Then, click <guibutton>Start Scan</guibutton> to start scanning for channels.
-Once finished, the discovered channels will appear on the left. These channels can be copied
+Once finished, the discovered channels will appear on the right. These channels can be copied
 to the left side by clicking <guibutton>Add Filtered</guibutton>. It is possible to check the tuning parameters
 for the channel in the left side by clicking on the <guibutton>Edit</guibutton> button.
 Some parameters are adjustable in the window that pops up.
