@@ -511,16 +511,18 @@ void MediaWidget::mediaSourceDestroyed(MediaSource *mediaSource)
 
 void MediaWidget::openSubtitle()
 {
-	QUrl url = QFileDialog::getOpenFileName(this, i18nc("@title:window", "Open subtitle"),".", i18n("Subtitles (*.cdg *.idx *.srt " \
-				"*.sub *.utf *.ass " \
-				"*.ssa *.aqt " \
-				"*.jss *.psb " \
-				"*.rt *.smi *.txt " \
-				"*.smil *.stl *.usf " \
-				"*.dks *.pjs *.mpl2 *.mks " \
-				"*.vtt *.ttml *.dfxp"));
+	QString fname = QFileDialog::getOpenFileName(this,
+			i18nc("@title:window", "Open subtitle"),".",
+			i18n("Subtitles (*.cdg *.idx *.srt " \
+					"*.sub *.utf *.ass " \
+					"*.ssa *.aqt " \
+					"*.jss *.psb " \
+					"*.rt *.smi *.txt " \
+					"*.smil *.stl *.usf " \
+					"*.dks *.pjs *.mpl2 *.mks " \
+					"*.vtt *.ttml *.dfxp"));
 
-	setSubtitle(url);
+	setSubtitle(QUrl::fromLocalFile(fname));
 }
 
 void MediaWidget::setSubtitle(QUrl url)
