@@ -107,8 +107,8 @@ and it’s possible to switch to other functions via either the pop up menu or t
 <title>Play a File</title>
 <para>Playing a video or audio file is as simple as clicking on the <guibutton>Play File</guibutton>
 button. It will ask you to select the file to be played, and will begin playing it. Since &kaffeine;
-uses LibVLC for the backend, it supports all the same file formats as VLC.
-It also supports opening a list of files to create and manage playlists.
+uses LibVLC for the backend, it supports all the same <ulink url="http://www.videolan.org/vlc/features.html">file formats</ulink> as VLC.
+It also supports opening a list of files to create and manage <ulink url="https://wiki.videolan.org/Playlist/">playlists</ulink>.
 </para>
 
 <screenshot>
