@@ -8,5 +8,8 @@ fi
 
 cmake . -DBUILD_TOOLS=1
 
-make updatemimetypes
-tools/updatemimetypes ../kaffeine/src/kaffeine.desktop ../kaffeine/src/mediawidget.cpp
+make -C tools updatemimetypes
+
+echo
+echo "$ tools/updatemimetypes src/org.kde.kaffeine.desktop src/mediawidget.cpp"
+tools/updatemimetypes src/org.kde.kaffeine.desktop src/mediawidget.cpp
