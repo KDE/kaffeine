@@ -34,6 +34,7 @@
   <name xml:lang="sv">Kaffeine</name>
   <name xml:lang="uk">Kaffeine</name>
   <name xml:lang="x-test">xxKaffeinexx</name>
+  <name xml:lang="zh-CN">Kaffeine</name>
   <summary>Multimedia Player</summary>
   <summary xml:lang="bs">Multimedijalni plejer</summary>
   <summary xml:lang="ca">Reproductor multimèdia</summary>
@@ -64,6 +65,7 @@
   <summary xml:lang="sv">Multimediaspelare</summary>
   <summary xml:lang="uk">Програвач мультимедійних файлів</summary>
   <summary xml:lang="x-test">xxMultimedia Playerxx</summary>
+  <summary xml:lang="zh-CN">多媒体播放器</summary>
   <description>
     <p>
       Kaffeine is a media player. What makes it different from the others is its excellent support of digital TV (DVB).
