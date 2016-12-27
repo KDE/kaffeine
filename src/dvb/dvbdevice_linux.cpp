@@ -60,6 +60,7 @@ DvbLinuxDevice::DvbLinuxDevice(QObject *parent) : QThread(parent), ready(false),
 	enabled(false), dvrFd(-1), dvrBuffer(NULL, 0), cam(parent)
 {
 	verbose = 0;
+	numDemux = 0;
 	dvrPipe[0] = -1;
 	dvrPipe[1] = -1;
 }
@@ -1889,6 +1890,8 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		return;
 	}
 
+	qDebug("New device detected: %s", qPrintable(udi));
+
 	int deviceIndex = ((adapter << 16) | index);
 	DvbLinuxDevice *device = devices.value(deviceIndex);
 
@@ -1909,6 +1912,7 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 				device->startCa();
 		}
 	} else if (!type.compare("demux")) {
+		device->numDemux++;
 		if (device->demuxPath.isEmpty()) {
 			device->demuxPath = devicePath;
 			device->demuxUdi = udi;
@@ -1929,6 +1933,19 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 			udis.insert(udi, device);
 			addDevice = true;
 		}
+	}
+
+	// Special case: one demux, multiple frontends
+	if (index && device->numDemux < 2) {
+		int parentDeviceIndex = (adapter << 16);
+		DvbLinuxDevice *parentDevice = devices.value(parentDeviceIndex);
+
+		if (device->demuxPath.isEmpty() && !parentDevice->demuxPath.isEmpty())
+			device->demuxPath = parentDevice->demuxPath;
+		if (device->dvrPath.isEmpty() && !parentDevice->dvrPath.isEmpty())
+			device->dvrPath = parentDevice->dvrPath;
+		if (device->caPath.isEmpty() && !parentDevice->caPath.isEmpty())
+			device->caPath = parentDevice->caPath;
 	}
 
 	if (addDevice && !device->demuxPath.isEmpty() && !device->dvrPath.isEmpty() &&
@@ -1980,12 +1997,21 @@ void DvbLinuxDeviceManager::componentRemoved(QString node, int adapter, int inde
 		return;
 	}
 	sprintf(adapterstring, "adapter%d", adapter);
-	if (node == "frontend0") {
+
+	QRegularExpressionMatch match;
+	QRegularExpression rejex = QRegularExpression("(frontend|dvr|demux|ca)\\d+");
+	if (node.contains(rejex))
+		return;
+	QString type = match.captured(1);
+
+	if (type == "frontend") {
 		device->frontendPath.clear();
-	} else if (node == "dvr0") {
+	} else if (type == "dvr") {
 		device->dvrPath.clear();
-	} else if (node == "demux0") {
+	} else if (type == "demux") {
 		device->demuxPath.clear();
+	} else if (type == "ca") {
+		device->caPath.clear();
 	} else {
 		return;
 	}

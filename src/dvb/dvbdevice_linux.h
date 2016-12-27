@@ -55,6 +55,7 @@ public:
 	QString dvrUdi;
 	int adapter;
 	int index;
+	int numDemux;
 	struct dvb_v5_fe_parms *dvbv5_parms;
 	QString frontendPath;
 	QString frontendUdi;
