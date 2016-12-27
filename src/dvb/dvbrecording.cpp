@@ -733,8 +733,8 @@ bool DvbRecordingModel::updateStatus(DvbRecording &recording)
 			++dayOfWeek;
 		}
 
-		recording.begin = recording.begin.addDays(days);
-		recording.end = recording.end.addDays(days);
+		recording.begin = beginLocal.addDays(days).toUTC();
+		recording.end = recording.begin.addSecs(QTime().secsTo(recording.duration));
 	}
 
 	if (recording.begin <= currentDateTime) {
