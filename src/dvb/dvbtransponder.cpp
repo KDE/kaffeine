@@ -682,7 +682,8 @@ bool DvbT2Transponder::corresponds(const DvbTransponder &transponder) const
 	const DvbT2Transponder *dvbT2Transponder = transponder.as<DvbT2Transponder>();
 
 	return ((dvbT2Transponder != NULL) &&
-		(qAbs(dvbT2Transponder->frequency - frequency) <= 2000000));
+		(qAbs(dvbT2Transponder->frequency - frequency) <= 2000000) &&
+		(dvbT2Transponder->streamId == streamId));
 }
 
 void AtscTransponder::readTransponder(QDataStream &stream)
