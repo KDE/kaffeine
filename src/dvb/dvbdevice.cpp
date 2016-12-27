@@ -709,10 +709,19 @@ void DvbDevice::frontendEvent()
 
 			if ((scale != DvbBackendDevice::NotSupported) && (signal < 15)) {
 				// signal too weak
-				qInfo("Tuning failed (signal too weak) on %.2f MHz", backend->getFrqMHz());
+				qInfo("Signal too weak on %.2f MHz", backend->getFrqMHz());
+			/*
+			 * FIXME: ignoring a too weak signal is not so easy,
+			 * as it depends on the scale, and scale is broken on
+			 * several drivers. Also, signal itself is not a good
+			 * indicator of the quality. Better to just print a
+			 * warning, and not fail.
+			 */
+#if 0
 				setDeviceState(DeviceIdle);
 				autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 				return;
+#endif
 			}
 
 			if (carry && ((capabilities & DvbTFecAuto) == 0)) {
