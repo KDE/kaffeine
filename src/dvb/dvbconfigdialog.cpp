@@ -1024,6 +1024,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	configBox->addItem(i18n("DiSEqC Switch"));
 	configBox->addItem(i18n("USALS Rotor"));
 	configBox->addItem(i18n("Positions Rotor"));
+	configBox->addItem(i18n("Disable DiSEqC"));
 	configBox->setCurrentIndex(lnbConfig->configuration);
 	connect(configBox, SIGNAL(currentIndexChanged(int)), this, SLOT(configChanged(int)));
 	layout->addWidget(configBox, 1, 1);
@@ -1033,7 +1034,8 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	for (int lnbNumber = 0; lnbNumber < 4; ++lnbNumber) {
 		DvbConfigBase *config;
 
-		if ((lnbConfig->configuration == DvbConfigBase::DiseqcSwitch) &&
+		if (((lnbConfig->configuration == DvbConfigBase::DiseqcSwitch) ||
+		     (lnbConfig->configuration == DvbConfigBase::NoDiseqc)) &&
 		    (lnbNumber < configs.size())) {
 			config = new DvbConfigBase(*configs.at(lnbNumber));
 		} else {
@@ -1042,14 +1044,24 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 		QPushButton *pushButton = new QPushButton(i18n("LNB %1 Settings", lnbNumber + 1),
 							  parent);
-		connect(this, SIGNAL(setDiseqcVisible(bool)), pushButton, SLOT(setVisible(bool)));
+		if (lnbNumber > 0)
+			connect(this, &DvbSConfigObject::setDiseqcVisible,
+				pushButton, &QPushButton::setVisible);
+		else
+			connect(this, &DvbSConfigObject::setFirstLnbVisible,
+				pushButton, &QPushButton::setVisible);
 		layout->addWidget(pushButton, lnbNumber + 2, 0);
 
 		QComboBox *comboBox = new QComboBox(parent);
 		comboBox->addItem(i18n("No Source"));
 		comboBox->addItems(sources);
 		comboBox->setCurrentIndex(sources.indexOf(config->scanSource) + 1);
-		connect(this, SIGNAL(setDiseqcVisible(bool)), comboBox, SLOT(setVisible(bool)));
+		if (lnbNumber > 0)
+			connect(this, &DvbSConfigObject::setDiseqcVisible,
+				comboBox, &QComboBox::setVisible);
+		else
+			connect(this, &DvbSConfigObject::setFirstLnbVisible,
+				comboBox, &QComboBox::setVisible);
 		layout->addWidget(comboBox, lnbNumber + 2, 1);
 
 		diseqcConfigs.append(DvbConfig(config));
@@ -1060,14 +1072,17 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	// USALS rotor / Positions rotor
 
 	QPushButton *pushButton = new QPushButton(i18n("LNB Settings"), parent);
-	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
+
+	connect(this, &DvbSConfigObject::setRotorVisible, pushButton,
+		&QPushButton::setVisible);
 	layout->addWidget(pushButton, 6, 0);
 
 	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, NULL, pushButton, lnbConfig, device));
 
 	sourceBox = new QComboBox(parent);
 	sourceBox->addItems(sources);
-	connect(this, SIGNAL(setRotorVisible(bool)), sourceBox, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setRotorVisible, sourceBox,
+		&QComboBox::setVisible);
 	layout->addWidget(sourceBox, 6, 1);
 
 	satelliteView = new QTreeWidget(parent);
@@ -1075,7 +1090,8 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	// Usals rotor
 
 	pushButton = new QPushButton(i18n("Add Satellite"), parent);
-	connect(this, SIGNAL(setUsalsVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, pushButton,
+		&QPushButton::setVisible);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
 	layout->addWidget(pushButton, 7, 0, 1, 2);
 
@@ -1083,12 +1099,14 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 	rotorSpinBox = new QSpinBox(parent);
 	rotorSpinBox->setRange(0, 255);
-	connect(this, SIGNAL(setPositionsVisible(bool)), rotorSpinBox, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setPositionsVisible, rotorSpinBox,
+		&QSpinBox::setVisible);
 	layout->addWidget(rotorSpinBox, 8, 0);
 
 	pushButton = new QPushButton(i18n("Add Satellite"), parent);
+	connect(this, &DvbSConfigObject::setPositionsVisible, pushButton,
+		&QPushButton::setVisible);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
-	connect(this, SIGNAL(setPositionsVisible(bool)), pushButton, SLOT(setVisible(bool)));
 	layout->addWidget(pushButton, 8, 1);
 
 	// USALS rotor / Positions rotor
@@ -1112,7 +1130,8 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	}
 
 	pushButton = new QPushButton(i18n("Remove Satellite"), parent);
-	connect(this, SIGNAL(setRotorVisible(bool)), pushButton, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setRotorVisible, pushButton,
+		&QPushButton::setVisible);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeSatellite()));
 	layout->addWidget(pushButton, 10, 0, 1, 2);
 
@@ -1125,47 +1144,55 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 	QLabel *label = new QLabel(i18n("Your position:"));
 	layout->addWidget(label);
-	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, label,
+		&QLabel::setVisible);
 
 	label = new QLabel(i18n("Latitude:"));
 	layout->addWidget(label, 1, 0);
-	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, label,
+		&QLabel::setVisible);
 
 	label = new QLabel(i18n("[S -90 ... 90 N]"));
 	layout->addWidget(label, 1, 1);
-	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, label,
+		&QLabel::setVisible);
 
 	latitudeEdit = new QLineEdit(parent);
 	latitudeEdit->setText(QString::number(lnbConfig->latitude, 'g', 10));
 	connect(latitudeEdit, SIGNAL(textChanged(QString)), this, SLOT(latitudeChanged(QString)));
 	layout->addWidget(latitudeEdit, 1, 2);
-	connect(this, SIGNAL(setUsalsVisible(bool)), latitudeEdit, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, latitudeEdit,
+		&QLineEdit::setVisible);
 
 	latitudeValidLabel = new QLabel(parent);
 	latitudeValidLabel->setPixmap(validPixmap);
 	layout->addWidget(latitudeValidLabel, 1, 3);
-	connect(this, SIGNAL(setUsalsVisible(bool)), latitudeValidLabel, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, latitudeValidLabel,
+		&QLineEdit::setVisible);
 
 	label = new QLabel(i18n("Longitude:"));
 	layout->addWidget(label, 2, 0);
-	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, label,
+		&QLabel::setVisible);
 
 	label = new QLabel(i18n("[W -180 ... 180 E]"));
 	layout->addWidget(label, 2, 1);
-	connect(this, SIGNAL(setUsalsVisible(bool)), label, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, label,
+		&QLabel::setVisible);
 
 	longitudeEdit = new QLineEdit(parent);
 	longitudeEdit->setText(QString::number(lnbConfig->longitude, 'g', 10));
 	connect(this, SIGNAL(setUsalsVisible(bool)), longitudeEdit, SLOT(setVisible(bool)));
-	connect(longitudeEdit, SIGNAL(textChanged(QString)),
-		this, SLOT(longitudeChanged(QString)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, longitudeEdit,
+		&QLineEdit::setVisible);
 	layout->addWidget(longitudeEdit, 2, 2);
 
 	longitudeValidLabel = new QLabel(parent);
 	longitudeValidLabel->setPixmap(validPixmap);
 	layout->addWidget(longitudeValidLabel, 2, 3);
 	boxLayout->addLayout(layout);
-	connect(this, SIGNAL(setUsalsVisible(bool)), longitudeValidLabel, SLOT(setVisible(bool)));
+	connect(this, &DvbSConfigObject::setUsalsVisible, longitudeValidLabel,
+		&QLineEdit::setVisible);
 
 	configChanged(configBox->currentIndex());
 	connect(parent, SIGNAL(resetConfig()), this, SLOT(resetConfig()));
@@ -1238,8 +1265,13 @@ void DvbSConfigObject::appendConfigs(QList<DvbConfig> &list)
 {
 	int index = configBox->currentIndex();
 
-	if (index == 0) {
-		// Diseqc switch
+	if (index == 0 || index == 3) {
+		// Diseqc switch or No Diseqc
+
+		if (index == 3)
+			diseqcConfigs[0]->configuration = DvbConfigBase::NoDiseqc;
+		else
+			diseqcConfigs[0]->configuration = DvbConfigBase::DiseqcSwitch;
 
 		list += diseqcConfigs;
 	} else if ((index == 1) || (index == 2)) {
@@ -1289,6 +1321,7 @@ void DvbSConfigObject::configChanged(int index)
 		// Diseqc switch
 
 		emit setDiseqcVisible(true);
+		emit setFirstLnbVisible(true);
 		emit setRotorVisible(false);
 		emit setUsalsVisible(false);
 		emit setPositionsVisible(false);
@@ -1298,6 +1331,7 @@ void DvbSConfigObject::configChanged(int index)
 		satelliteView->hideColumn(1);
 
 		emit setDiseqcVisible(false);
+		emit setFirstLnbVisible(false);
 		emit setRotorVisible(true);
 		emit setUsalsVisible(true);
 		emit setPositionsVisible(false);
@@ -1311,9 +1345,18 @@ void DvbSConfigObject::configChanged(int index)
 		}
 
 		emit setDiseqcVisible(false);
+		emit setFirstLnbVisible(false);
 		emit setRotorVisible(true);
 		emit setUsalsVisible(false);
 		emit setPositionsVisible(true);
+	} else if (index == 3) {
+		// No Diseqc switch
+
+		emit setDiseqcVisible(false);
+		emit setFirstLnbVisible(true);
+		emit setRotorVisible(false);
+		emit setUsalsVisible(false);
+		emit setPositionsVisible(false);
 	}
 }
 

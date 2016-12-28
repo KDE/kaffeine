@@ -59,7 +59,8 @@ public:
 		DiseqcSwitch = 0,
 		UsalsRotor = 1,
 		PositionsRotor = 2,
-		ConfigurationMax = PositionsRotor
+		NoDiseqc = 3,
+		ConfigurationMax = NoDiseqc
 	};
 
 	Configuration configuration;

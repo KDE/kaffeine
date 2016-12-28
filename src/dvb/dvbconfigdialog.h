@@ -206,6 +206,7 @@ public:
 
 signals:
 	void setDiseqcVisible(bool visible);
+	void setFirstLnbVisible(bool visible);
 	void setRotorVisible(bool visible); // common parts of usals / positions ui
 	void setUsalsVisible(bool visible); // usals-specific parts of ui
 	void setPositionsVisible(bool visible); // positions-specific parts of ui

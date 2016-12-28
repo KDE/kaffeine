@@ -312,7 +312,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	// DVB LNBf IF and DiSeqC switch settings
 
-	int satNumber = 0;	// No DiseqC Switch
+	int satNumber = -1;	// No DiseqC Switch
 
 	if (config->configuration == DvbConfigBase::DiseqcSwitch)
 		satNumber = config->lnbNumber;
@@ -325,6 +325,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 
 	switch (config->configuration) {
 	case DvbConfigBase::DiseqcSwitch:
+	case DvbConfigBase::NoDiseqc:
 		// Everything was already prepared via satSetup().
 		break;
 
