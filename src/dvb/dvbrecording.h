@@ -33,7 +33,7 @@ class DvbRecording : public SharedData, public SqlKey
 {
 
 public:
-	DvbRecording() : repeat(0), status(Inactive) { }
+	DvbRecording() : repeat(0), status(Inactive) { disabled = false; }
 	~DvbRecording() { }
 
 	// checks that all variables are ok and updates 'end'
