@@ -315,7 +315,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	int satNumber = 0;	// No DiseqC Switch
 
 	if (config->configuration == DvbConfigBase::DiseqcSwitch)
-		satNumber = config->lnbNumber + 1;
+		satNumber = config->lnbNumber;
 
 	// FIXME: add support for SCR/Unicable
 	if (!backend->satSetup(config->currentLnb.alias, satNumber, 0))
