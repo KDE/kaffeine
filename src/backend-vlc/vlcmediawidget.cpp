@@ -107,6 +107,9 @@ bool VlcMediaWidget::init()
 
 	libvlc_media_player_set_xwindow(vlcMediaPlayer, quint32(winId()));
 	setAttribute(Qt::WA_NativeWindow);
+
+	libvlc_audio_set_mute(vlcMediaPlayer, false);
+
 	// This is broken on qt5: the kernel/qwidget.cpp tries to repaint
 	// on a wrong place, causing this warning:
 	//	QWidget::paintEngine: Should no longer be called
