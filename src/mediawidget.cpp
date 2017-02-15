@@ -429,7 +429,7 @@ MediaWidget::~MediaWidget()
 
 QString MediaWidget::extensionFilter()
 {
-	return QLatin1String(
+	return i18n(
 		"Supported Media Files ("
 		// generated from kaffeine.desktop's mime types
 		"*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *.anim2 *.anim3 *.anim4 "
