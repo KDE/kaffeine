@@ -23,10 +23,10 @@
 
 #include <KMainWindow>
 #include <QCommandLineParser>
+#include <QSystemTrayIcon>
 #include "mediawidget.h"
 
 class KAboutData;
-class QSystemTrayIcon;
 class QStackedLayout;
 class KCmdLineOptions;
 class KRecentFilesAction;
@@ -65,6 +65,7 @@ private slots:
 	void navigationBarOrientationChanged(Qt::Orientation orientation);
 	void activateTab(int tabIndex);
 	void hideCursor();
+	void trayShowHide(QSystemTrayIcon::ActivationReason reason);
 
 private:
 	enum TabIndex {

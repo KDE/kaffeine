@@ -40,7 +40,6 @@
 #include <QMenuBar>
 #include <QSettings>
 #include <QStackedLayout>
-#include <QSystemTrayIcon>
 #include <QTabBar>
 #include <QToolBar>
 
@@ -350,6 +349,7 @@ void MainWindow::run()
 	trayIcon->setIcon(QIcon::fromTheme(QLatin1String("kaffeine"), QIcon(":kaffeine")));
 	trayIcon->setToolTip(i18n("Kaffeine"));
 	trayIcon->setContextMenu(menu);
+	connect(trayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)), this, SLOT(trayShowHide(QSystemTrayIcon::ActivationReason)) );
 
 	// make sure that the bars are visible (fullscreen -> quit -> restore -> hidden)
 	menuBar->show();
@@ -612,6 +612,20 @@ void MainWindow::displayModeChanged()
 		stackedLayout->setCurrentIndex(currentTabIndex);
 		tabs.at(currentTabIndex)->activate();
 		break;
+	}
+}
+
+void MainWindow::trayShowHide(QSystemTrayIcon::ActivationReason reason)
+{
+	if (reason != QSystemTrayIcon::DoubleClick)
+		return;
+
+	if (isVisible())
+		hide();
+	else {
+		show();
+		raise();
+		setFocus();
 	}
 }
 
