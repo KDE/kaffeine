@@ -55,23 +55,6 @@ bool DvbEpgEntryId::operator<(const DvbEpgEntryId &other) const
 	if (entry->begin != other.entry->begin) {
 		return (entry->begin < other.entry->begin);
 	}
-
-	if (entry->duration != other.entry->duration) {
-		return (entry->duration < other.entry->duration);
-	}
-
-	if (entry->title != other.entry->title) {
-		return (entry->title < other.entry->title);
-	}
-
-	if (entry->subheading != other.entry->subheading) {
-		return (entry->subheading < other.entry->subheading);
-	}
-
-	if (!entry->details.isEmpty() && !other.entry->details.isEmpty()) {
-		return (entry->details < other.entry->details);
-	}
-
 	return false;
 }
 
@@ -272,35 +255,37 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 	// Check if the event was already recorded
 	const QDateTime end = entry.begin.addSecs(QTime(0, 0, 0).secsTo(entry.duration));
 
-	for (Iterator it = entries.begin(); ConstIterator(it) != entries.constEnd(); it++) {
+	// Optimize duplicated register logic by using find, with is O(log n)
+	Iterator it = entries.find(DvbEpgEntryId(&entry));
+	while (it != entries.end()) {
 		const DvbSharedEpgEntry &existingEntry = *it;
 
 		// Don't do anything if the event already exists
 		if (*existingEntry == entry)
 			return DvbSharedEpgEntry();
 
-		if (existingEntry->channel != entry.channel)
-			continue;
-
 		const QDateTime enEnd = existingEntry->begin.addSecs(QTime(0, 0, 0).secsTo(existingEntry->duration));
 
+		// The logic here was simplified due to performance.
+		// It won't check anymore if an event has its start time
+		// switched, as that would require a O(n) loop, with is
+		// too slow, specially on DVB-S/S2.
+
 		// A new event conflicts with an existing one
-		if (((entry.begin > existingEntry->begin) && (entry.begin < enEnd)) || ((end > existingEntry->begin) && end < enEnd)) {
+		if (end != enEnd) {
 			Debug("removed", existingEntry);
 			it = removeEntry(it);
 			break;
 		}
 		// New event data for the same event
-		if (((entry.begin == existingEntry->begin) && (end == enEnd))) {
-			if (existingEntry->details.isEmpty() && !entry.details.isEmpty()) {
-				emit entryAboutToBeUpdated(existingEntry);
-				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
-					entry.details;
-				emit entryUpdated(existingEntry);
-				Debug("updated", existingEntry);
-			}
-			return existingEntry;
+		if (existingEntry->details.isEmpty() && !entry.details.isEmpty()) {
+			emit entryAboutToBeUpdated(existingEntry);
+			const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
+				entry.details;
+			emit entryUpdated(existingEntry);
+			Debug("updated", existingEntry);
 		}
+		return existingEntry;
 	}
 
 	if (entry.begin.addSecs(QTime(0, 0, 0).secsTo(entry.duration)) > currentDateTimeUtc) {
