@@ -269,7 +269,9 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		// The logic here was simplified due to performance.
 		// It won't check anymore if an event has its start time
 		// switched, as that would require a O(n) loop, with is
-		// too slow, specially on DVB-S/S2.
+		// too slow, specially on DVB-S/S2. So, we're letting the QMap
+		// to use a key with just channel/begin time, identifying
+		// obsolete entries only if the end time doesn't match.
 
 		// A new event conflicts with an existing one
 		if (end != enEnd) {
