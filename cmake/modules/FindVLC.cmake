@@ -101,7 +101,7 @@ if(VLC_INCLUDE_DIR)
             VLC_VERSION_EXTRA
             VLC_VERSION_STRING)
     else()
-        message(FATAL_ERROR "Could not find vlc/vlc_version.h")
+        message(FATAL_ERROR "Could not find ${VLC_INCLUDE_DIR}/vlc/libvlc_version.h")
     endif()
 endif()
 
