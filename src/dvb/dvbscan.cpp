@@ -306,9 +306,13 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 {
 	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 
+	// Seek for DVB-T transponders
+
 	if ((autoScanSource == QLatin1String("AUTO-T-Normal")) ||
-	    (autoScanSource == QLatin1String("AUTO-T-Offsets"))) {
-		bool offsets = (autoScanSource == QLatin1String("AUTO-T-Offsets"));
+	    (autoScanSource == QLatin1String("AUTO-T-Offsets")) ||
+	    (autoScanSource == QLatin1String("AUTO-T2-Normal")) ||
+	    (autoScanSource == QLatin1String("AUTO-T2-Offsets"))) {
+		bool offsets = (autoScanSource == QLatin1String("AUTO-T-Offsets")) || (autoScanSource == QLatin1String("AUTO-T2-Offsets"));
 
 		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::DvbT);
@@ -354,7 +358,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponders.append(currentTransponder);
 			}
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-T-Australia")) {
+	} else if ((autoScanSource == QLatin1String("AUTO-T-Australia")) ||
+		   (autoScanSource == QLatin1String("AUTO-T2-Australia"))) {
 		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
 			for (int i = 0; i < 2; ++i) {
 				int offset = 0;
@@ -404,7 +409,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponders.append(currentTransponder);
 			}
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-T-Italy")) {
+	} else if ((autoScanSource == QLatin1String("AUTO-T-Italy")) ||
+		   (autoScanSource == QLatin1String("AUTO-T2-Italy"))) {
 		static const int italyVhf[] = { 177500000, 186000000, 194500000, 203500000,
 						212500000, 219500000, 226500000 };
 
@@ -443,7 +449,8 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbTTransponder->hierarchy = DvbTTransponder::HierarchyNone;
 			transponders.append(currentTransponder);
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-T-Taiwan")) {
+	} else if ((autoScanSource == QLatin1String("AUTO-T-Taiwan"))||
+		   (autoScanSource == QLatin1String("AUTO-T2-Taiwan"))) {
 		for (int frequency = 527000000; frequency <= 599000000; frequency += 6000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::DvbT);
 			DvbTTransponder *dvbTTransponder =
@@ -458,7 +465,11 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbTTransponder->hierarchy = DvbTTransponder::HierarchyNone;
 			transponders.append(currentTransponder);
 		}
-	} else if ((autoScanSource == QLatin1String("AUTO-T2-Normal")) ||
+	}
+
+	// Seek for DVB-T2 transponders
+
+	if ((autoScanSource == QLatin1String("AUTO-T2-Normal")) ||
 		   (autoScanSource == QLatin1String("AUTO-T2-Offsets"))) {
 		bool offsets = (autoScanSource == QLatin1String("AUTO-T2-Offsets"));
 
@@ -614,7 +625,11 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbT2Transponder->streamId = 0;
 			transponders.append(currentTransponder);
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-UHF-6MHz")) {
+	}
+
+	// Seek for ISDB-T transponders
+
+	if (autoScanSource == QLatin1String("AUTO-UHF-6MHz")) {
 		for (int frequency = 473142857; frequency <= 803142857; frequency += 6000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::IsdbT);
 			IsdbTTransponder *isdbTTransponder =
