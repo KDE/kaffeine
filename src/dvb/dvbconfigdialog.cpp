@@ -850,10 +850,12 @@ void DvbConfigPage::addHSeparator(const QString &title)
 }
 
 DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager *manager,
-	DvbConfigBase *config_, bool isGen2) : QObject(parent), config(config_)
+	DvbConfigBase *config_, bool isGen2_) : QObject(parent), config(config_)
 {
 	QStringList sources;
 	int sourceIndex = -1;
+
+	isGen2 = isGen2_;
 
 	switch (config->getTransmissionType()) {
 	case DvbConfigBase::DvbC:
@@ -865,16 +867,21 @@ DvbConfigObject::DvbConfigObject(QWidget *parent, QBoxLayout *layout, DvbManager
 		// handled separately
 		break;
 	case DvbConfigBase::DvbT:
-		sources.append(QLatin1String("AUTO-Normal"));
-		sources.append(QLatin1String("AUTO-Offsets"));
-		sources.append(QLatin1String("AUTO-Australia"));
-		sources.append(QLatin1String("AUTO-Italy"));
-		sources.append(QLatin1String("AUTO-Taiwan"));
 		if (isGen2) {
 			defaultName = i18n("Terrestrial (T2)");
+			sources.append(QLatin1String("AUTO-T2-Normal"));
+			sources.append(QLatin1String("AUTO-T2-Offsets"));
+			sources.append(QLatin1String("AUTO-T2-Australia"));
+			sources.append(QLatin1String("AUTO-T2-Italy"));
+			sources.append(QLatin1String("AUTO-T2-Taiwan"));
 			sources += manager->getScanSources(DvbManager::DvbT2);
 		} else {
 			defaultName = i18n("Terrestrial");
+			sources.append(QLatin1String("AUTO-T-Normal"));
+			sources.append(QLatin1String("AUTO-T-Offsets"));
+			sources.append(QLatin1String("AUTO-T-Australia"));
+			sources.append(QLatin1String("AUTO-T-Italy"));
+			sources.append(QLatin1String("AUTO-T-Taiwan"));
 			sources += manager->getScanSources(DvbManager::DvbT);
 		}
 		sourceIndex = sources.indexOf(config->scanSource);
@@ -950,22 +957,42 @@ void DvbConfigObject::sourceChanged(int index)
 	} else if ((index <= 5) && (config->getTransmissionType() == DvbConfigBase::DvbT)) {
 		nameEdit->setEnabled(true);
 
-		switch (index - 1) {
-		case 0:
-			config->scanSource = QLatin1String("AUTO-Normal");
-			break;
-		case 1:
-			config->scanSource = QLatin1String("AUTO-Offsets");
-			break;
-		case 2:
-			config->scanSource = QLatin1String("AUTO-Australia");
-			break;
-		case 3:
-			config->scanSource = QLatin1String("AUTO-Italy");
-			break;
-		case 4:
-			config->scanSource = QLatin1String("AUTO-Taiwan");
-			break;
+		if (isGen2) {
+			switch (index - 1) {
+			case 0:
+				config->scanSource = QLatin1String("AUTO-T2-Normal");
+				break;
+			case 1:
+				config->scanSource = QLatin1String("AUTO-T2-Offsets");
+				break;
+			case 2:
+				config->scanSource = QLatin1String("AUTO-T2-Australia");
+				break;
+			case 3:
+				config->scanSource = QLatin1String("AUTO-T2-Italy");
+				break;
+			case 4:
+				config->scanSource = QLatin1String("AUTO-T2-Taiwan");
+				break;
+			}
+		} else {
+			switch (index - 1) {
+			case 0:
+				config->scanSource = QLatin1String("AUTO-T-Normal");
+				break;
+			case 1:
+				config->scanSource = QLatin1String("AUTO-T-Offsets");
+				break;
+			case 2:
+				config->scanSource = QLatin1String("AUTO-T-Australia");
+				break;
+			case 3:
+				config->scanSource = QLatin1String("AUTO-T-Italy");
+				break;
+			case 4:
+				config->scanSource = QLatin1String("AUTO-T-Taiwan");
+				break;
+			}
 		}
 	} else {
 		nameEdit->setEnabled(true);

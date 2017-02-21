@@ -306,8 +306,9 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 {
 	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 
-	if ((autoScanSource == QLatin1String("AUTO-Normal")) || (autoScanSource == QLatin1String("AUTO-Offsets"))) {
-		bool offsets = (autoScanSource == QLatin1String("AUTO-Offsets"));
+	if ((autoScanSource == QLatin1String("AUTO-T-Normal")) ||
+	    (autoScanSource == QLatin1String("AUTO-T-Offsets"))) {
+		bool offsets = (autoScanSource == QLatin1String("AUTO-T-Offsets"));
 
 		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::DvbT);
@@ -353,7 +354,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponders.append(currentTransponder);
 			}
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-Australia")) {
+	} else if (autoScanSource == QLatin1String("AUTO-T-Australia")) {
 		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
 			for (int i = 0; i < 2; ++i) {
 				int offset = 0;
@@ -403,7 +404,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 				transponders.append(currentTransponder);
 			}
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-Italy")) {
+	} else if (autoScanSource == QLatin1String("AUTO-T-Italy")) {
 		static const int italyVhf[] = { 177500000, 186000000, 194500000, 203500000,
 						212500000, 219500000, 226500000 };
 
@@ -442,7 +443,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbTTransponder->hierarchy = DvbTTransponder::HierarchyNone;
 			transponders.append(currentTransponder);
 		}
-	} else if (autoScanSource == QLatin1String("AUTO-Taiwan")) {
+	} else if (autoScanSource == QLatin1String("AUTO-T-Taiwan")) {
 		for (int frequency = 527000000; frequency <= 599000000; frequency += 6000000) {
 			DvbTransponder currentTransponder(DvbTransponderBase::DvbT);
 			DvbTTransponder *dvbTTransponder =
@@ -455,6 +456,162 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &auto
 			dvbTTransponder->transmissionMode = DvbTTransponder::TransmissionModeAuto;
 			dvbTTransponder->guardInterval = DvbTTransponder::GuardIntervalAuto;
 			dvbTTransponder->hierarchy = DvbTTransponder::HierarchyNone;
+			transponders.append(currentTransponder);
+		}
+	} else if ((autoScanSource == QLatin1String("AUTO-T2-Normal")) ||
+		   (autoScanSource == QLatin1String("AUTO-T2-Offsets"))) {
+		bool offsets = (autoScanSource == QLatin1String("AUTO-T2-Offsets"));
+
+		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
+			DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+			DvbT2Transponder *dvbT2Transponder = currentTransponder.as<DvbT2Transponder>();
+			dvbT2Transponder->frequency = frequency;
+			dvbT2Transponder->bandwidth = DvbT2Transponder::Bandwidth7MHz;
+			dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+			dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+			dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+			dvbT2Transponder->transmissionMode = DvbT2Transponder::TransmissionModeAuto;
+			dvbT2Transponder->guardInterval = DvbT2Transponder::GuardIntervalAuto;
+			dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+			dvbT2Transponder->streamId = 0;
+			transponders.append(currentTransponder);
+		}
+
+		for (int frequency = 474000000; frequency <= 858000000; frequency += 8000000) {
+			for (int i = 0; i < 3; ++i) {
+				if ((i != 0) && (!offsets)) {
+					break;
+				}
+
+				int offset = 0;
+
+				if (i == 1) {
+					offset = -167000;
+				} else if (i == 2) {
+					offset = 167000;
+				}
+
+				DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+				DvbT2Transponder *dvbT2Transponder = currentTransponder.as<DvbT2Transponder>();
+				dvbT2Transponder->frequency = frequency + offset;
+				dvbT2Transponder->bandwidth = DvbT2Transponder::Bandwidth8MHz;
+				dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+				dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+				dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+				dvbT2Transponder->transmissionMode = DvbT2Transponder::TransmissionModeAuto;
+				dvbT2Transponder->guardInterval = DvbT2Transponder::GuardIntervalAuto;
+				dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+				dvbT2Transponder->streamId = 0;
+				transponders.append(currentTransponder);
+			}
+		}
+	} else if (autoScanSource == QLatin1String("AUTO-T2-Australia")) {
+		for (int frequency = 177500000; frequency <= 226500000; frequency += 7000000) {
+			for (int i = 0; i < 2; ++i) {
+				int offset = 0;
+
+				if (i == 1) {
+					offset = 125000;
+				}
+
+				DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+				DvbT2Transponder *dvbT2Transponder =
+					currentTransponder.as<DvbT2Transponder>();
+				dvbT2Transponder->frequency = frequency + offset;
+				dvbT2Transponder->bandwidth = DvbT2Transponder::Bandwidth7MHz;
+				dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+				dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+				dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+				dvbT2Transponder->transmissionMode =
+					DvbT2Transponder::TransmissionModeAuto;
+				dvbT2Transponder->guardInterval =
+					DvbT2Transponder::GuardIntervalAuto;
+				dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+				dvbT2Transponder->streamId = 0;
+				transponders.append(currentTransponder);
+			}
+		}
+
+		for (int frequency = 529500000; frequency <= 816500000; frequency += 7000000) {
+			for (int i = 0; i < 2; ++i) {
+				int offset = 0;
+
+				if (i == 1) {
+					offset = 125000;
+				}
+
+				DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+				DvbT2Transponder *dvbT2Transponder =
+					currentTransponder.as<DvbT2Transponder>();
+				dvbT2Transponder->frequency = frequency + offset;
+				dvbT2Transponder->bandwidth = DvbT2Transponder::Bandwidth7MHz;
+				dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+				dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+				dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+				dvbT2Transponder->transmissionMode =
+					DvbT2Transponder::TransmissionModeAuto;
+				dvbT2Transponder->guardInterval =
+					DvbT2Transponder::GuardIntervalAuto;
+				dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+				dvbT2Transponder->streamId = 0;
+				transponders.append(currentTransponder);
+			}
+		}
+	} else if (autoScanSource == QLatin1String("AUTO-T2-Italy")) {
+		static const int italyVhf[] = { 177500000, 186000000, 194500000, 203500000,
+						212500000, 219500000, 226500000 };
+
+		for (unsigned i = 0; i < (sizeof(italyVhf) / sizeof(italyVhf[0])); ++i) {
+			for (int j = 0; j < 2; ++j) {
+				DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+				DvbT2Transponder *dvbT2Transponder =
+					currentTransponder.as<DvbT2Transponder>();
+				dvbT2Transponder->frequency = italyVhf[i];
+				dvbT2Transponder->bandwidth = ((j == 0) ?
+					DvbT2Transponder::Bandwidth7MHz :
+					DvbT2Transponder::Bandwidth8MHz);
+				dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+				dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+				dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+				dvbT2Transponder->transmissionMode =
+					DvbT2Transponder::TransmissionModeAuto;
+				dvbT2Transponder->guardInterval =
+					DvbT2Transponder::GuardIntervalAuto;
+				dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+				dvbT2Transponder->streamId = 0;
+				transponders.append(currentTransponder);
+			}
+		}
+
+		for (int frequency = 474000000; frequency <= 858000000; frequency += 8000000) {
+			DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+			DvbT2Transponder *dvbT2Transponder =
+				currentTransponder.as<DvbT2Transponder>();
+			dvbT2Transponder->frequency = frequency;
+			dvbT2Transponder->bandwidth = DvbT2Transponder::Bandwidth8MHz;
+			dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+			dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+			dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+			dvbT2Transponder->transmissionMode = DvbT2Transponder::TransmissionModeAuto;
+			dvbT2Transponder->guardInterval = DvbT2Transponder::GuardIntervalAuto;
+			dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+			dvbT2Transponder->streamId = 0;
+			transponders.append(currentTransponder);
+		}
+	} else if (autoScanSource == QLatin1String("AUTO-T2-Taiwan")) {
+		for (int frequency = 527000000; frequency <= 599000000; frequency += 6000000) {
+			DvbTransponder currentTransponder(DvbTransponderBase::DvbT2);
+			DvbT2Transponder *dvbT2Transponder =
+				currentTransponder.as<DvbT2Transponder>();
+			dvbT2Transponder->frequency = frequency;
+			dvbT2Transponder->bandwidth = DvbT2Transponder::Bandwidth6MHz;
+			dvbT2Transponder->modulation = DvbT2Transponder::ModulationAuto;
+			dvbT2Transponder->fecRateHigh = DvbT2Transponder::FecAuto;
+			dvbT2Transponder->fecRateLow = DvbT2Transponder::FecNone;
+			dvbT2Transponder->transmissionMode = DvbT2Transponder::TransmissionModeAuto;
+			dvbT2Transponder->guardInterval = DvbT2Transponder::GuardIntervalAuto;
+			dvbT2Transponder->hierarchy = DvbT2Transponder::HierarchyNone;
+			dvbT2Transponder->streamId = 0;
 			transponders.append(currentTransponder);
 		}
 	} else if (autoScanSource == QLatin1String("AUTO-UHF-6MHz")) {

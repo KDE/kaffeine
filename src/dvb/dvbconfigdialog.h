@@ -192,6 +192,7 @@ private:
 	QSpinBox *timeoutBox;
 	QComboBox *sourceBox;
 	QLineEdit *nameEdit;
+	bool isGen2;
 };
 
 class DvbSConfigObject : public QObject
@@ -199,7 +200,7 @@ class DvbSConfigObject : public QObject
 	Q_OBJECT
 public:
 	DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbManager *manager,
-		const QList<DvbConfig> &configs, DvbDevice *device, bool dvbS2);
+		const QList<DvbConfig> &configs, DvbDevice *device, bool isGen2);
 	~DvbSConfigObject();
 
 	void appendConfigs(QList<DvbConfig> &list);
