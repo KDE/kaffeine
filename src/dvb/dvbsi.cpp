@@ -1221,6 +1221,9 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 		case 0x02: // MPEG2 video
 		case 0x10: // MPEG4 video
 		case 0x1b: // H264 video
+		case 0x24: // HEVC (H265) video
+		case 0x42: // CAVS video
+		case 0x80: // MPEG-2 MOTO video
 			if (videoPid < 0) {
 				videoPid = entry.pid();
 			} else {
@@ -1231,10 +1234,17 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 
 		case 0x03: // MPEG1 audio
 		case 0x04: // MPEG2 audio
+		case 0x07: // DTS and DTS-HD Audio
 		case 0x0f: // AAC audio
 		case 0x11: // AAC / LATM audio
+		case 0x1c: // ISO/IEC 14496-3 Audio, without additional transport syntax
 		case 0x81: // AC-3 audio (ATSC specific)
+		case 0x84: // SDDS
+		case 0x85: // DTS on HDMV
 		case 0x87: // enhanced AC-3 audio (ATSC specific)
+		case 0x8a: // DTS
+		case 0x91: // A52 VLS
+		case 0x94: // SDDS
 			audioPids.append(qMakePair(entry.pid(), streamLanguage));
 			break;
 
