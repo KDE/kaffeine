@@ -18,12 +18,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include "log.h"
+
 #include <KAboutData>
 #include <KActionCollection>
 #include <KConfigGroup>
 #include <KHelpMenu>
 #include <kio/deletejob.h>
-#include <KLocalizedString>
 #include <KRecentFilesAction>
 #include <KSharedConfig>
 #include <KShortcutsDialog>
@@ -49,6 +50,21 @@
 #include "dvb/dvbtab.h"
 #include "mainwindow.h"
 #include "playlist/playlisttab.h"
+
+// log categories. Should match log.h
+
+Q_LOGGING_CATEGORY(logCam, "kaffeine.cam")
+Q_LOGGING_CATEGORY(logDev, "kaffeine.dev")
+Q_LOGGING_CATEGORY(logDvb, "kaffeine.dvb")
+Q_LOGGING_CATEGORY(logDvbSi, "kaffeine.dvbsi")
+Q_LOGGING_CATEGORY(logEpg, "kaffeine.epg")
+
+Q_LOGGING_CATEGORY(logConfig, "kaffeine.config")
+Q_LOGGING_CATEGORY(logMediaWidget, "kaffeine.mediawidget")
+Q_LOGGING_CATEGORY(logPlaylist, "kaffeine.playlist")
+Q_LOGGING_CATEGORY(logSql, "kaffeine.sql")
+
+#define FILTER_RULE "kaffeine.*.debug=true"
 
 class StackedLayout : public QStackedLayout
 {
@@ -164,7 +180,15 @@ void MainWindow::run()
 	// Allow the user to enable or disable debugging
 	// We handle this before the other parameters, as it may affect some
 	// early debug messages
-        QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, parser->isSet("debug"));
+	//
+	// --debug enables all debugging categories. It is possible to enable
+	// each category individually by calling Kaffeine with:
+	//	QT_LOGGING_RULES="epg.debug=true" kaffeine
+
+	if (parser->isSet("debug")) {
+		QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
+		QLoggingCategory::setFilterRules(QStringLiteral(FILTER_RULE));
+	}
 
 	readSettings();
 

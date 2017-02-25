@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <KActionCollection>
 #include <KFileWidget>
@@ -52,7 +48,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		file.setFileName(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
-			qWarning("Cannot open file %s", qPrintable(file.fileName()));
+			qCWarning(logPlaylist, "Cannot open file %s", qPrintable(file.fileName()));
 			return;
 		}
 	}
@@ -73,7 +69,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		// compatibility code
 		hasSubtitles = false;
 	} else if (version != 0x361c4a3c) {
-		qWarning("Cannot read file %s", qPrintable(file.fileName()));
+		qCWarning(logPlaylist, "Cannot read file %s", qPrintable(file.fileName()));
 		return;
 	}
 
@@ -116,7 +112,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			qWarning("Cannot read file %s", qPrintable(file.fileName()));
+			qCWarning(logPlaylist, "Cannot read file %s", qPrintable(file.fileName()));
 			delete playlist;
 			break;
 		}
@@ -130,7 +126,7 @@ PlaylistBrowserModel::~PlaylistBrowserModel()
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qWarning("Cannot open file %s", qPrintable(file.fileName()));
+		qCWarning(logPlaylist, "Cannot open file %s", qPrintable(file.fileName()));
 		return;
 	}
 

@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -42,14 +38,14 @@ bool Playlist::load(const QUrl &url_, Format format)
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		qInfo("Opening remote playlists not supported yet");
+		qCInfo(logPlaylist, "Opening remote playlists not supported yet");
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		qWarning("Cannot open file %s", qPrintable(file.fileName()));
+		qCWarning(logPlaylist, "Cannot open file %s", qPrintable(file.fileName()));
 		return false;
 	}
 
@@ -75,14 +71,14 @@ bool Playlist::save(Format format) const
 
 	if (localFile.isEmpty()) {
 		// FIXME
-		qInfo("Opening remote playlists not supported yet");
+		qCInfo(logPlaylist, "Opening remote playlists not supported yet");
 		return false;
 	}
 
 	QFile file(localFile);
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qWarning("Cannot open file %s", qPrintable(file.fileName()));
+		qCWarning(logPlaylist, "Cannot open file %s", qPrintable(file.fileName()));
 		return false;
 	}
 

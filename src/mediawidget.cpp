@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "log.h"
 
 #include <KActionCollection>
 #include <KConfigGroup>
@@ -815,7 +811,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 		return;
 	}
 
-	qWarning("Internal error");
+	qCWarning(logMediaWidget, "Internal error");
 }
 
 void MediaWidget::autoResizeTriggered(QAction *action)
@@ -843,7 +839,7 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 		}
 	}
 
-	qWarning("Internal error");
+	qCWarning(logMediaWidget, "Internal error");
 }
 
 void MediaWidget::pausedChanged(bool paused)

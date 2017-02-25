@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <QDataStream>
 #include <QFile>
@@ -79,7 +75,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		qWarning("Cannot open %s", qPrintable(file.fileName()));
+		qCWarning(logEpg, "Cannot open %s", qPrintable(file.fileName()));
 		return;
 	}
 
@@ -95,7 +91,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	} else if (version == 0x79cffd36) {
 		hasParental = false;
 	} else if (version != 0x140c37b5) {
-		qWarning("Wrong DB version for: %s", qPrintable(file.fileName()));
+		qCWarning(logEpg, "Wrong DB version for: %s", qPrintable(file.fileName()));
 		return;
 	}
 
@@ -134,7 +130,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		}
 
 		if (stream.status() != QDataStream::Ok) {
-			qWarning("Corrupt data %s", qPrintable(file.fileName()));
+			qCWarning(logEpg, "Corrupt data %s", qPrintable(file.fileName()));
 			break;
 		}
 
@@ -145,17 +141,17 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 DvbEpgModel::~DvbEpgModel()
 {
 	if (hasPendingOperation) {
-		qWarning("Illegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 	}
 
 	if (!dvbEpgFilters.isEmpty() || !atscEpgFilters.isEmpty()) {
-		qWarning("EPG filter list not empty");
+		qCWarning(logEpg, "filter list not empty");
 	}
 
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qWarning("Cannot open %s", qPrintable(file.fileName()));
+		qCWarning(logEpg, "Cannot open %s", qPrintable(file.fileName()));
 		return;
 	}
 
@@ -235,18 +231,18 @@ void DvbEpgModel::Debug(QString text, const DvbSharedEpgEntry &entry)
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 
-	qDebug("EPG event %s: type %d, from %s to %s: %s: %s: %s : %s", qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details), qPrintable(entry->content));
+	qCDebug(logEpg, "event %s: type %d, from %s to %s: %s: %s: %s : %s", qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details), qPrintable(entry->content));
 }
 
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 {
 	if (!entry.validate()) {
-		qWarning("Invalid entry: channel is %s, begin is %s, duration is %s", entry.channel.isValid() ? "valid" : "invalid", entry.begin.isValid() ? "valid" : "invalid", entry.duration.isValid() ? "valid" : "invalid");
+		qCWarning(logEpg, "Invalid entry: channel is %s, begin is %s, duration is %s", entry.channel.isValid() ? "valid" : "invalid", entry.begin.isValid() ? "valid" : "invalid", entry.duration.isValid() ? "valid" : "invalid");
 		return DvbSharedEpgEntry();
 	}
 
 	if (hasPendingOperation) {
-		qWarning("Iillegal recursive call");
+		qCWarning(logEpg, "Iillegal recursive call");
 		return DvbSharedEpgEntry();
 	}
 
@@ -329,12 +325,12 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 	int extraSecondsAfter, bool checkForRecursion, int priority)
 {
 	if (!entry.isValid() || (entries.value(DvbEpgEntryId(entry)) != entry)) {
-		qWarning("Can't schedule program: invalid entry");
+		qCWarning(logEpg, "Can't schedule program: invalid entry");
 		return;
 	}
 
 	if (hasPendingOperation) {
-		qWarning("Illegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 		return;
 	}
 
@@ -444,7 +440,7 @@ void DvbEpgModel::channelAboutToBeUpdated(const DvbSharedChannel &channel)
 void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel)
 {
 	if (hasPendingOperation) {
-		qWarning("Illegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 		return;
 	}
 
@@ -463,7 +459,7 @@ void DvbEpgModel::channelUpdated(const DvbSharedChannel &channel)
 void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 {
 	if (hasPendingOperation) {
-		qWarning("Illegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 		return;
 	}
 
@@ -479,7 +475,7 @@ void DvbEpgModel::channelRemoved(const DvbSharedChannel &channel)
 void DvbEpgModel::recordingRemoved(const DvbSharedRecording &recording)
 {
 	if (hasPendingOperation) {
-		qWarning("Illegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 		return;
 	}
 
@@ -498,7 +494,7 @@ void DvbEpgModel::timerEvent(QTimerEvent *event)
 	Q_UNUSED(event)
 
 	if (hasPendingOperation) {
-		qWarning("Illegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 		return;
 	}
 
@@ -888,7 +884,7 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	DvbEitSection eitSection(data, size);
 
 	if (!eitSection.isValid()) {
-		qDebug("EPG section is invalid");
+		qCDebug(logEpg, "section is invalid");
 		return;
 	}
 
@@ -906,12 +902,12 @@ void DvbEpgFilter::processSection(const char *data, int size)
 	}
 
 	if (!channel.isValid()) {
-		qDebug("EPG channel invalid");
+		qCDebug(logEpg, "channel invalid");
 		return;
 	}
 
 	if (eitSection.entries().getLength())
-		qDebug("EPG table 0x%02x, extension 0x%04x, session %d/%d, size %d", eitSection.tableId(), eitSection.tableIdExtension(), eitSection.sectionNumber(), eitSection.lastSectionNumber(), eitSection.entries().getLength());
+		qCDebug(logEpg, "table 0x%02x, extension 0x%04x, session %d/%d, size %d", eitSection.tableId(), eitSection.tableIdExtension(), eitSection.sectionNumber(), eitSection.lastSectionNumber(), eitSection.entries().getLength());
 
 	for (DvbEitSectionEntry entry = eitSection.entries(); entry.isValid(); entry.advance()) {
 		DvbEpgEntry epgEntry;
@@ -1125,7 +1121,7 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	AtscEitSection eitSection(data, size);
 
 	if (!eitSection.isValid()) {
-		qDebug("EPG section is invalid");
+		qCDebug(logEpg, "section is invalid");
 		return;
 	}
 
@@ -1136,11 +1132,11 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 	DvbSharedChannel channel = channelModel->findChannelById(fakeChannel);
 
 	if (!channel.isValid()) {
-		qDebug("channel is invalid");
+		qCDebug(logEpg, "channel is invalid");
 		return;
 	}
 
-	qDebug("Processing EIT section with size %d", size);
+	qCDebug(logEpg, "Processing EIT section with size %d", size);
 
 	int entryCount = eitSection.entryCount();
 	// 1980-01-06T000000 minus 15 secs (= UTC - GPS in 2011)

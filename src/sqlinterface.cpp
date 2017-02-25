@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "log.h"
 
 #include <QAbstractItemModel>
 #include <QStringList>
@@ -39,7 +35,7 @@ SqlInterface::SqlInterface() : createTable(false), hasPendingStatements(false),
 SqlInterface::~SqlInterface()
 {
 	if (hasPendingStatements) {
-		qWarning("Pending statements at destruction");
+		qCWarning(logSql, "Pending statements at destruction");
 		/* data isn't valid anymore */
 		pendingStatements.clear();
 		createTable = false;
@@ -108,7 +104,7 @@ void SqlInterface::sqlInit(const QString &tableName, const QStringList &columnNa
 			SqlKey sqlKey(static_cast<int>(fullKey));
 
 			if (!sqlKey.isSqlKeyValid() || (sqlKey.sqlKey != fullKey)) {
-				qWarning("Invalid key %Ld", fullKey);
+				qCWarning(logSql, "Invalid key %Ld", fullKey);
 				continue;
 			}
 
@@ -139,7 +135,7 @@ void SqlInterface::sqlInsert(SqlKey key)
 		break;
 	}
 
-	qWarning("Invalid pending statement '%s'", qPrintable(pendingStatement));
+	qCWarning(logSql, "Invalid pending statement '%s'", qPrintable(pendingStatement));
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -159,7 +155,7 @@ void SqlInterface::sqlUpdate(SqlKey key)
 		break;
 	}
 
-	qWarning("Invalid pending statement '%s'", qPrintable(pendingStatement));
+	qCWarning(logSql, "Invalid pending statement '%s'", qPrintable(pendingStatement));
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -180,7 +176,7 @@ void SqlInterface::sqlRemove(SqlKey key)
 		break;
 	}
 
-	qWarning("Invalid pending statement %s", qPrintable(pendingStatement));
+	qCWarning(logSql, "Invalid pending statement %s", qPrintable(pendingStatement));
 }
 
 void SqlInterface::requestSubmission()
@@ -230,7 +226,7 @@ void SqlInterface::sqlSubmit()
 			continue;
 		}
 
-		qWarning("Invalid pending statement %s", qPrintable(pendingStatement));
+		qCWarning(logSql, "Invalid pending statement %s", qPrintable(pendingStatement));
 	}
 
 	pendingStatements.clear();

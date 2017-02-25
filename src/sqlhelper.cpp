@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "log.h"
 
 #include <KMessageBox>
 #include <QSqlError>
@@ -84,7 +80,7 @@ QSqlQuery SqlHelper::prepare(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.prepare(statement)) {
-		qWarning("Error while preparing statement '%s'", qPrintable(query.lastError().text()));
+		qCWarning(logSql, "Error while preparing statement '%s'", qPrintable(query.lastError().text()));
 	}
 
 	return query;
@@ -96,7 +92,7 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 	query.setForwardOnly(true);
 
 	if (!query.exec(statement)) {
-		qWarning("Error while executing statement '%s'", qPrintable(query.lastError().text()));
+		qCWarning(logSql, "Error while executing statement '%s'", qPrintable(query.lastError().text()));
 	}
 
 	return query;
@@ -105,7 +101,7 @@ QSqlQuery SqlHelper::exec(const QString &statement)
 void SqlHelper::exec(QSqlQuery &query)
 {
 	if (!query.exec()) {
-		qWarning("Error while executing statement '%s'", qPrintable(query.lastError().text()));
+		qCWarning(logSql, "Error while executing statement '%s'", qPrintable(query.lastError().text()));
 	}
 }
 

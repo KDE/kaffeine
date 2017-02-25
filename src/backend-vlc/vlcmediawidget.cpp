@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <QApplication>
 #include <QCursor>
@@ -59,11 +55,11 @@ bool VlcMediaWidget::init()
 
 	vlcInstance = libvlc_new(argc, argv);
 	if (!vlcInstance) {
-		qWarning("libVLC: failed to use extra args: %s", qPrintable(args));
+		qCWarning(logMediaWidget, "libVLC: failed to use extra args: %s", qPrintable(args));
 		argc = 0;
 		vlcInstance = libvlc_new(0, NULL);
 		if (vlcInstance)
-			qInfo("Using libVLC without arguments");
+			qCInfo(logMediaWidget, "Using libVLC without arguments");
 	}
 
 	if (vlcInstance == NULL) {
@@ -97,7 +93,7 @@ bool VlcMediaWidget::init()
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qCritical("Cannot attach event handler %s", qPrintable(eventTypes[i]));
+			qCCritical(logMediaWidget, "Cannot attach event handler %s", qPrintable(eventTypes[i]));
 			return false;
 		}
 	}
@@ -185,7 +181,7 @@ void VlcMediaWidget::setVolume(int volume)
 {
 	// 0 <= volume <= 200
 	if (libvlc_audio_set_volume(vlcMediaPlayer, volume) != 0) {
-		qWarning("cannot set volume %i", volume);
+		qCWarning(logMediaWidget, "cannot set volume %i", volume);
 	}
 }
 
@@ -273,7 +269,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		qWarning("Cannot create media %s", qPrintable(source.getUrl().toDisplayString()));
+		qCWarning(logMediaWidget, "Cannot create media %s", qPrintable(source.getUrl().toDisplayString()));
 		return;
 	}
 
@@ -282,7 +278,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qWarning("Cannot attach event handler %s", qPrintable(eventTypes[i]));
+			qCWarning(logMediaWidget, "Cannot attach event handler %s", qPrintable(eventTypes[i]));
 		}
 	}
 
@@ -294,7 +290,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 //		setExternalSubtitle(source.subtitleUrl);
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		qWarning("Cannot play media %s", qPrintable(source.getUrl().toDisplayString()));
+		qCWarning(logMediaWidget, "Cannot play media %s", qPrintable(source.getUrl().toDisplayString()));
 	}
 
 	setCursor(Qt::BlankCursor);
@@ -374,11 +370,11 @@ void VlcMediaWidget::setExternalSubtitle(const QUrl &url)
 					  libvlc_media_slave_type_subtitle,
 					  url.toEncoded().constData(),
 					  true) == 0)
-		qWarning("Cannot set subtitle file %s", qPrintable(fname));
+		qCWarning(logMediaWidget, "Cannot set subtitle file %s", qPrintable(fname));
 #else
 	if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
 					   qPrintable(fname)) == 0)
-		qWarning("Cannot set subtitle file %s", qPrintable(fname));
+		qCWarning(logMediaWidget, "Cannot set subtitle file %s", qPrintable(fname));
 #endif
 }
 
@@ -674,7 +670,7 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	if (pendingUpdatesToBeAdded != 0) {
 		addPendingUpdates(pendingUpdatesToBeAdded);
 	} else {
-		qWarning("Unknown libVLC event type %d", event->type);
+		qCWarning(logMediaWidget, "Unknown libVLC event type %d", event->type);
 	}
 }
 

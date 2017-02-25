@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <KActionCollection>
 #include <KConfigGroup>
@@ -462,7 +458,7 @@ void DvbTab::activate()
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
 	if (!channel.isValid()) {
-		qWarning("Channel is invalid");
+		qCWarning(logDvb, "Channel is invalid");
 		return;
 	}
 

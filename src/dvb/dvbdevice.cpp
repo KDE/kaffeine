@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <QCoreApplication>
 #include <QDir>
@@ -230,7 +226,7 @@ DvbDataDumper::DvbDataDumper()
 		QLatin1String(".bin"));
 
 	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-		qWarning("Can't open %s", qPrintable(fileName()));
+		qCWarning(logDev, "Can't open %s", qPrintable(fileName()));
 	}
 }
 
@@ -345,7 +341,7 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		}
 
 		if (!ok)
-			qWarning("Can't extract orbital position from %s", qPrintable(config->scanSource));
+			qCWarning(logDev, "Can't extract orbital position from %s", qPrintable(config->scanSource));
 
 		double radius = 6378;
 		double semiMajorAxis = 42164;
@@ -440,7 +436,7 @@ void DvbDevice::autoTune(const DvbTransponder &transponder)
 		isAuto = true;
 		tune(autoTransponder);
 	} else {
-		qWarning("Can't do auto-tune for %d", transmissionType);
+		qCWarning(logDev, "Can't do auto-tune for %d", transmissionType);
 		return;
 	}
 
@@ -468,7 +464,7 @@ bool DvbDevice::addPidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (it->filters.contains(filter)) {
-		qInfo("Using the same filter for the same pid more than once");
+		qCInfo(logDev, "Using the same filter for the same pid more than once");
 		return true;
 	}
 
@@ -493,7 +489,7 @@ bool DvbDevice::addSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (it->sectionFilters.contains(filter)) {
-		qInfo("Using the same filter for the same pid more than once");
+		qCInfo(logDev, "Using the same filter for the same pid more than once");
 		return true;
 	}
 
@@ -514,7 +510,7 @@ void DvbDevice::removePidFilter(int pid, DvbPidFilter *filter)
 	}
 
 	if (index < 0) {
-		qWarning("Trying to remove a nonexistent filter");
+		qCWarning(logDev, "Trying to remove a nonexistent filter");
 		return;
 	}
 
@@ -540,7 +536,7 @@ void DvbDevice::removeSectionFilter(int pid, DvbSectionFilter *filter)
 	}
 
 	if (index < 0) {
-		qWarning("Trying to remove a nonexistent filter");
+		qCWarning(logDev, "Trying to remove a nonexistent filter");
 		return;
 	}
 
@@ -559,7 +555,7 @@ void DvbDevice::startDescrambling(const QByteArray &pmtSectionData, QObject *use
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("PMT section is invalid");
+		qCWarning(logDev, "PMT section is invalid");
 	}
 
 	int serviceId = pmtSection.programNumber();
@@ -578,13 +574,13 @@ void DvbDevice::stopDescrambling(const QByteArray &pmtSectionData, QObject *user
 	DvbPmtSection pmtSection(pmtSectionData);
 
 	if (!pmtSection.isValid()) {
-		qWarning("PMT section is invalid");
+		qCWarning(logDev, "PMT section is invalid");
 	}
 
 	int serviceId = pmtSection.programNumber();
 
 	if (!descramblingServices.contains(serviceId, user)) {
-		qInfo("Service has not been started while stop descrambling");
+		qCInfo(logDev, "Service has not been started while stop descrambling");
 		return;
 	}
 
@@ -710,7 +706,7 @@ void DvbDevice::frontendEvent()
 
 			if ((scale != DvbBackendDevice::NotSupported) && (signal < 15)) {
 				// signal too weak
-				qInfo("Signal too weak on %.2f MHz", backend->getFrqMHz());
+				qCInfo(logDev, "Signal too weak on %.2f MHz", backend->getFrqMHz());
 			/*
 			 * FIXME: ignoring a too weak signal is not so easy,
 			 * as it depends on the scale, and scale is broken on

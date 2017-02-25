@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <errno.h>
 #include <fcntl.h>
@@ -444,14 +440,14 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		if (internal->timeShiftFile.exists() ||
 		    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-			qWarning("Cannot open file %s", qPrintable(internal->timeShiftFile.fileName()));
+			qCWarning(logDvb, "Cannot open file %s", qPrintable(internal->timeShiftFile.fileName()));
 			internal->timeShiftFile.setFileName(QDir::homePath() + QLatin1String("/TimeShift-") +
 				QDateTime::currentDateTime().toString(QLatin1String("yyyyMMddThhmmss")) +
 				QLatin1String(".m2t"));
 
 			if (internal->timeShiftFile.exists() ||
 			    !internal->timeShiftFile.open(QIODevice::WriteOnly)) {
-				qWarning("Cannot open file %s", qPrintable(internal->timeShiftFile.fileName()));
+				qCWarning(logDvb, "Cannot open file %s", qPrintable(internal->timeShiftFile.fileName()));
 				mediaWidget->stop();
 				break;
 			}
@@ -579,21 +575,21 @@ DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), med
 	updateUrl();
 
 	if (mkfifo(QFile::encodeName(fileName).constData(), 0600) != 0) {
-		qWarning("Failed to open a fifo. Error: %d", errno);
+		qCWarning(logDvb, "Failed to open a fifo. Error: %d", errno);
 		return;
 	}
 
 	readFd = open(QFile::encodeName(fileName).constData(), O_RDONLY | O_NONBLOCK);
 
 	if (readFd < 0) {
-		qWarning("Failed to open fifo for read. Error: %d", errno);
+		qCWarning(logDvb, "Failed to open fifo for read. Error: %d", errno);
 		return;
 	}
 
 	writeFd = open(QFile::encodeName(fileName).constData(), O_WRONLY | O_NONBLOCK);
 
 	if (writeFd < 0) {
-		qWarning("Failed to open fifo for write. Error: %d", errno);
+		qCWarning(logDvb, "Failed to open fifo for write. Error: %d", errno);
 		return;
 	}
 

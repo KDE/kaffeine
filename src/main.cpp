@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "log.h"
 
 #include <KAboutData>
 #include <KDBusService>
@@ -30,7 +26,6 @@
 #include <QCommandLineParser>
 #include <QDateTime>
 #include <QDir>
-#include <QLoggingCategory>
 #include <QPointer>
 #include <QStandardPaths>
 #include <QString>
@@ -41,6 +36,7 @@
 
 extern "C" {
   #include <unistd.h>
+  #include <string.h>
 }
 
 #include "configurationdialog.h"
@@ -79,8 +75,14 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 	if (type <= 4)
 		log.append(typeStr[type]);
 
-	if (isatty(STDERR_FILENO) && (type <= 4))
+	if (isatty(STDERR_FILENO) && (type <= 4)) {
+		if (context.category && strcmp(context.category, "default"))
+			log.append(QStringLiteral("\x1b[1;37m%1:\x1b[0;37m ") .arg(context.category));
 		std::cerr << color[type].toLocal8Bit().constData();
+	} else {
+		if (context.category && strcmp(context.category, "default"))
+			log.append(QStringLiteral("%1: ") .arg(context.category));
+	}
 	std::cerr << log.toLocal8Bit().constData();
 
 	if (!contextString.isEmpty()) {

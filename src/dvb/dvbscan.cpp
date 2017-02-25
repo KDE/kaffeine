@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <QBitArray>
 #include <QVector>
@@ -150,7 +146,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 	}
 
 	if (section.sectionNumber() >= sectionCount) {
-		qWarning("Current section is bigger than the last one");
+		qCWarning(logDvb, "Current section is bigger than the last one");
 		sectionCount = section.sectionNumber() + 1;
 	}
 
@@ -160,7 +156,7 @@ bool DvbScanFilter::checkMultipleSection(const DvbStandardSection &section)
 		check->resize(sectionCount);
 	} else {
 		if (check->size() != sectionCount) {
-			qWarning("Inconsistent number of sections");
+			qCWarning(logDvb, "Inconsistent number of sections");
 
 			if (check->size() < sectionCount)
 				check->resize(sectionCount);
@@ -281,7 +277,7 @@ void DvbScanFilter::processSection(const char *data, int size)
 
 void DvbScanFilter::timerEvent(QTimerEvent *)
 {
-	qWarning("Timeout while reading section; type = %d, PID = %d", type, pid);
+	qCWarning(logDvb, "Timeout while reading section; type = %d, PID = %d", type, pid);
 	scan->filterFinished(this);
 }
 
@@ -666,7 +662,7 @@ void DvbScan::start()
 void DvbScan::deviceStateChanged()
 {
 	if (device->getDeviceState() == DvbDevice::DeviceReleased) {
-		qWarning("Device was released. Stopping scan");
+		qCWarning(logDvb, "Device was released. Stopping scan");
 		emit scanFinished();
 		return;
 	}
@@ -785,7 +781,7 @@ void DvbScan::updateState()
 			}
 
 			if (isLive) {
-				qInfo("Scanning while live stream. Can't change the transponder");
+				qCInfo(logDvb, "Scanning while live stream. Can't change the transponder");
 				emit scanFinished();
 				return;
 			}
@@ -1221,7 +1217,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 
 	switch (transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
-		qWarning("Invalid transponder type");
+		qCWarning(logDvb, "Invalid transponder type");
 		return;
 	case DvbTransponderBase::DvbC: {
 		if (descriptor.descriptorTag() != 0x44) {

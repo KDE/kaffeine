@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <KConfigGroup>
 #include <QAction>
@@ -318,7 +314,7 @@ DvbEpgTableModel::~DvbEpgTableModel()
 void DvbEpgTableModel::setEpgModel(DvbEpgModel *epgModel_)
 {
 	if (epgModel != NULL) {
-		qWarning("EPG model already set");
+		qCWarning(logEpg, "EPG model already set");
 		return;
 	}
 

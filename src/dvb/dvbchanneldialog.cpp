@@ -18,11 +18,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
+#include "../log.h"
 
 #include <KConfigGroup>
 #include <KMessageBox>
@@ -87,7 +83,7 @@ DvbChannelTableModel::~DvbChannelTableModel()
 void DvbChannelTableModel::setChannelModel(DvbChannelModel *channelModel_)
 {
 	if (channelModel != NULL) {
-		qWarning("Channel model already set");
+		qCWarning(logDvb, "Channel model already set");
 		return;
 	}
 
