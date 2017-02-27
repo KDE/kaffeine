@@ -17,6 +17,7 @@ dtvdaemon/dtvdaemon
 i18n/
 install/
 moc*.cpp
+patches/
 po/
 src/kaffeine
 src/kaffeine.qrc.depends
