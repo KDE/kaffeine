@@ -16,6 +16,7 @@ doc/kaffeine.1
 dtvdaemon/dtvdaemon
 i18n/
 install/
+install_manifest.txt
 moc*.cpp
 patches/
 po/

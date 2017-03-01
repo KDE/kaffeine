@@ -93,7 +93,7 @@ add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
 if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
-  ki18n_install(po)
+  add_subdirectory(po)
 endif()
 
 if(KF5DocTools_VERSION)

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if [ "$4" == "" ]; then
+	echo "$0 <docbook file> <po file> <lang> <out file>"
+	exit 1
+fi
+
+echo "$ po2xml $1 $2"
+po2xml $1 $2 | sed "s,<!ENTITY % English \"INCLUDE\">,<!ENTITY % $3 \"INCLUDE\">," > $4
+
+DIR=$(dirname $4)
+
+if [ "$DIR" != "." ]; then
+	echo "$ cd $DIR; meinproc5 $(basename $4)"
+
+	(cd $DIR; meinproc5 $(basename $4))
+else
+	echo "$ meinproc5 $4"
+	meinproc5 $4
+fi
+mv $DIR/index.html $DIR/${DIR}_index.html
