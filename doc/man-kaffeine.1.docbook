@@ -30,6 +30,7 @@
 <refsynopsisdiv>
 <cmdsynopsis>
 <command>kaffeine</command>
+<arg choice="opt"><option>-d, --debug</option></arg>
 <arg choice="opt"><option>--tempfile</option></arg>
 <arg choice="opt"><option>-f, --fullscreen</option></arg>
 <arg choice="opt"><option>--audiocd</option></arg>
@@ -59,6 +60,59 @@ from DVD (including DVD menus, titles, chapters, etc.), VCD, or a file.</para>
 <title>Options</title>
 
 <variablelist>
+
+<varlistentry>
+<term><option>-d</option> <option>--debug</option></term>
+<listitem><para>Enable all debug messages. Please notice that Kaffeine also
+allows fine-tuning debug messages, by enabling messages per category, by using the environment
+var:</para>
+<para><emphasis role="bold">
+QT_LOGGING_RULES=kaffeine.<emphasis>category</emphasis>.debug=true
+</emphasis></para>
+<para>where <emphasis>category</emphasis> can be:</para>
+
+<variablelist>
+<varlistentry>
+<term><option>cam</option></term>
+<listitem><para>for dvb CAM logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>dev</option></term>
+<listitem><para>for dvb device and libdvbv5 logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>dvbsi</option></term>
+<listitem><para>for dvb MPEG-TS SI parsing logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>epg</option></term>
+<listitem><para>for dvb EPG logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>dvb</option></term>
+<listitem><para>for other dvb logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>config</option></term>
+<listitem><para>for configuration logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>mediawidget</option></term>
+<listitem><para>for media widget logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>playlist</option></term>
+<listitem><para>for playlist logs</para></listitem>
+</varlistentry>
+<varlistentry>
+<term><option>sql</option></term>
+<listitem><para>for SQL lite logs</para></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
 <varlistentry>
 <term><option>--tempfile</option></term>
 <listitem><para>The files/URLs opened by the application will be deleted after use</para>

@@ -132,7 +132,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		// License
 		KAboutLicense::GPL_V2,
 		// Copyright statement
-		i18n("(C) 2007-2016 The Kaffeine Authors"),
+		i18n("(C) 2007-2017 The Kaffeine Authors"),
 		// Optional additional text
 		"",
 		// Home page

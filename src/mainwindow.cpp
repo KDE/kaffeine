@@ -66,6 +66,8 @@ Q_LOGGING_CATEGORY(logSql, "kaffeine.sql")
 
 #define FILTER_RULE "kaffeine.*.debug=true"
 
+#define CATEGORIES "cam, dev, dvb, dvbsi, epg, config, mediawidget, playlist, sql"
+
 class StackedLayout : public QStackedLayout
 {
 public:
@@ -493,7 +495,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	this->aboutData = aboutData;
 	this->parser = parser;
 
-	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("d") << QLatin1String("debug"), i18n("Enable debug messages")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("d") << QLatin1String("debug"), i18n("Enable all debug messages. Please notice that Kaffeine also allows enabling debug messages per category, by using the environment var:\nQT_LOGGING_RULES=kaffeine.category.debug=true\nwhere 'category' can be:\n" CATEGORIES)));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tempfile"), i18n("The files/URLs opened by the application will be deleted after use")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
