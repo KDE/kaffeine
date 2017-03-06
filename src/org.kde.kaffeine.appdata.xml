@@ -21,6 +21,7 @@
   <name xml:lang="it">Kaffeine</name>
   <name xml:lang="ko">Kaffeine</name>
   <name xml:lang="nl">Kaffeine</name>
+  <name xml:lang="nn">Kaffeine</name>
   <name xml:lang="pl">Kaffeine</name>
   <name xml:lang="pt">Kaffeine</name>
   <name xml:lang="pt-BR">Kaffeine</name>
@@ -53,6 +54,7 @@
   <summary xml:lang="it">Lettore multimediale</summary>
   <summary xml:lang="ko">멀티미디어 재생기</summary>
   <summary xml:lang="nl">Multimediaspeler</summary>
+  <summary xml:lang="nn">Multimediespelar</summary>
   <summary xml:lang="pl">Odtwarzacz multimedialny</summary>
   <summary xml:lang="pt">Leitor Multimédia</summary>
   <summary xml:lang="pt-BR">Reprodutor Multimídia</summary>
