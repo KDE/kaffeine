@@ -2,7 +2,7 @@ project(kaffeine)
 
 set(KAFFEINE_MAJOR_VERSION 2)
 set(KAFFEINE_MINOR_VERSION 0)
-set(KAFFEINE_PATCH_VERSION 6)
+set(KAFFEINE_PATCH_VERSION 7)
 
 # comment/uuncomment below if either the version is a production or a development one
 #set(KAFFEINE_EXTRA_VERSION -git)
