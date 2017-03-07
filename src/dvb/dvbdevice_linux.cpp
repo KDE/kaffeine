@@ -32,8 +32,11 @@ extern "C" {
 #include <QFile>
 #include <QMessageLogger>
 #include <QRegularExpressionMatch>
-#include <Solid/Device>
-#include <Solid/DeviceNotifier>
+
+#ifndef HAVE_DVB_DEV
+  #include <Solid/Device>
+  #include <Solid/DeviceNotifier>
+#endif
 
 #include "dvbdevice_linux.h"
 #include "dvbtransponder.h"
@@ -1616,22 +1619,63 @@ void DvbLinuxDevice::run()
 	}
 }
 
+#ifdef HAVE_DVB_DEV
+static int change_notify(char *sysname, enum dvb_dev_change_type type,
+			    void *user_priv)
+{
+	DvbLinuxDeviceManager *self = static_cast<DvbLinuxDeviceManager*>(user_priv);
+
+	return self->devChangeMonitor(sysname, type);
+}
+
+int DvbLinuxDeviceManager::devChangeMonitor(char *sysname, enum dvb_dev_change_type type)
+{
+	QString udi = "/dvb/" + QString::fromUtf8(sysname);
+	switch(type) {
+	case DVB_DEV_ADD:
+		qCInfo(logDev, "device added: %s", sysname);
+		componentAdded(udi);
+		break;
+	case DVB_DEV_REMOVE:
+		qCInfo(logDev, "device removed: %s", sysname);
+		componentRemoved(udi);
+	case DVB_DEV_CHANGE:
+		qCInfo(logDev, "device changed: %s", sysname);
+		componentRemoved(udi);
+		componentAdded(udi);
+		break;
+	default:
+		return 0;
+	}
+
+	return 0;
+}
+#endif
+
 DvbLinuxDeviceManager::DvbLinuxDeviceManager(QObject *parent) : QObject(parent)
 {
+#ifdef HAVE_DVB_DEV
+	dvb = dvb_dev_alloc();
+	if (!dvb)
+		qFatal("Cannot create device manager");
+
+	dvb_dev_set_log(dvb, 1, dvbv5_log);
+#else
 	QObject *notifier = Solid::DeviceNotifier::instance();
 	connect(notifier, SIGNAL(deviceAdded(QString)), this, SLOT(componentAdded(QString)));
 	connect(notifier, SIGNAL(deviceRemoved(QString)), this, SLOT(componentRemoved(QString)));
-}
-
-DvbLinuxDeviceManager::~DvbLinuxDeviceManager()
-{
+#endif
 }
 
 void DvbLinuxDeviceManager::doColdPlug()
 {
+#ifdef HAVE_DVB_DEV
+	dvb_dev_find(dvb, change_notify, (void *)this);
+#else
 	foreach (const Solid::Device &device, Solid::Device::allDevices()) {
 		componentAdded(device.udi());
 	}
+#endif
 }
 
 void DvbLinuxDeviceManager::componentAdded(const QString &udi)
@@ -1759,40 +1803,6 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		if (device->isReady()) {
 			emit deviceAdded(device);
 		}
-	}
-}
-
-void DvbLinuxDeviceManager::componentRemoved(QString node, int adapter, int index) {
-	int deviceIndex = (adapter << 16) | index;
-	char adapterstring[10];
-	DvbLinuxDevice *device = devices.value(deviceIndex, NULL);
-	if (device == NULL) {
-		return;
-	}
-	sprintf(adapterstring, "adapter%d", adapter);
-
-	QRegularExpressionMatch match;
-	QRegularExpression rejex = QRegularExpression("(frontend|dvr|demux|ca)\\d+");
-	if (node.contains(rejex))
-		return;
-	QString type = match.captured(1);
-
-	if (type == "frontend") {
-		device->frontendPath.clear();
-	} else if (type == "dvr") {
-		device->dvrPath.clear();
-	} else if (type == "demux") {
-		device->demuxPath.clear();
-	} else if (type == "ca") {
-		device->caPath.clear();
-	} else {
-		return;
-	}
-
-	if (device->frontendPath.isEmpty() && device->dvrPath.isEmpty() &&
-			device->demuxPath.isEmpty() && device->isReady()) {
-		emit deviceRemoved(device);
-		device->stopDevice();
 	}
 }
 

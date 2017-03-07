@@ -84,6 +84,8 @@ if(HAVE_DVB)
     set(HAVE_LIBDVBV5 0)
     set(HAVE_DVB 0)
     message(STATUS "Disabled features:\nDVB  Digital television support for Linux, as libdvbv5 was not found.\n")
+  else()
+    set(HAVE_LIBDVBV5 1)
   endif(NOT Libdvbv5_FOUND)
 endif(HAVE_DVB)
 

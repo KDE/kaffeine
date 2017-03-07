@@ -47,6 +47,11 @@ if (PC_LIBDVBV5_FOUND)
   find_path(Libdvbv5_INCLUDE_DIRS libdvbv5/dvb-file.h
     HINTS ${PC_LIBDVBV5_INCLUDE_DIRS}
   )
+  if(EXISTS "${Libdvbv5_INCLUDE_DIRS}/libdvbv5/libdvb-version.h" )
+    set(HAVE_LIBDVBV5_VERSION 1)
+  else()
+    set(HAVE_LIBDVBV5_VERSION 0)
+  endif()
 
   find_library(Libdvbv5_LIBRARIES NAMES dvbv5
     HINTS ${PC_LIBDVBV5_LIBRARY_DIRS}

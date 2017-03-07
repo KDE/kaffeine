@@ -24,12 +24,20 @@
 #include <QThread>
 #include "dvbbackenddevice.h"
 #include "dvbcam_linux.h"
+#include "../../config-kaffeine.h"
 
 extern "C" {
   #include <libdvbv5/dvb-file.h>
   #include <libdvbv5/dvb-demux.h>
   #include <libdvbv5/dvb-v5-std.h>
   #include <libdvbv5/dvb-scan.h>
+  #include <libdvbv5/dvb-dev.h>
+  #if HAVE_LIBDVBV5_VERSION
+    #include <libdvbv5/libdvb-version.h>
+    #if (LIBDVBV5_VERSION_MAJOR * 100 + LIBDVBV5_VERSION_MINOR) > 112
+      #define HAVE_DVB_DEV
+    #endif
+  #endif
 }
 
 class DvbLinuxDevice : public QThread, public DvbBackendDevice
@@ -56,6 +64,7 @@ public:
 	int adapter;
 	int index;
 	int numDemux;
+
 	struct dvb_v5_fe_parms *dvbv5_parms;
 	QString frontendPath;
 	QString frontendUdi;
@@ -108,29 +117,31 @@ private:
 	DvbLinuxCam cam;
 };
 
-class DvbDeviceMonitor;
 class DvbLinuxDeviceManager : public QObject
 {
 	Q_OBJECT
 public:
 	explicit DvbLinuxDeviceManager(QObject *parent);
-	~DvbLinuxDeviceManager();
 
-	void componentAdded(QString node, int adapter, int index);
-	void componentRemoved(QString node, int adapter, int index);
-public slots:
-	void doColdPlug();
+	int devChangeMonitor(char *sysname, enum dvb_dev_change_type type);
 
 signals:
 	void requestBuiltinDeviceManager(QObject *&bultinDeviceManager);
 	void deviceAdded(DvbBackendDevice *device);
 	void deviceRemoved(DvbBackendDevice *device);
 
+public slots:
+	void doColdPlug();
+
 private slots:
 	void componentAdded(const QString &udi);
 	void componentRemoved(const QString &udi);
 
 private:
+#ifdef HAVE_DVB_DEV
+	struct dvb_device *dvb;
+#endif
+
 	int readSysAttr(const QString &path);
 
 	QMap<int, DvbLinuxDevice *> devices;
