@@ -50,7 +50,7 @@
 
 MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
-	automaticResize(ResizeOff), blockBackendUpdates(false), muted(false),
+	automaticResize(0), blockBackendUpdates(false), muted(false),
 	screenSaverSuspended(false), showElapsedTime(true)
 {
 	dummySource.reset(new MediaSource());
@@ -307,15 +307,15 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 	switch (autoResizeFactor) {
 	case 1:
-		automaticResize = OriginalSize;
+		automaticResize = 1;
 		autoResizeGroup->actions().at(1)->setChecked(true);
 		break;
 	case 2:
-		automaticResize = DoubleSize;
+		automaticResize = 2;
 		autoResizeGroup->actions().at(2)->setChecked(true);
 		break;
 	default:
-		automaticResize = ResizeOff;
+		automaticResize = 0;
 		autoResizeGroup->actions().at(0)->setChecked(true);
 		break;
 	}
@@ -448,22 +448,7 @@ MediaWidget::~MediaWidget()
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Deinterlace",
 		deinterlaceAction->isChecked());
-
-	int autoResizeFactor = 0;
-
-	switch (automaticResize) {
-	case ResizeOff:
-		autoResizeFactor = 0;
-		break;
-	case OriginalSize:
-		autoResizeFactor = 1;
-		break;
-	case DoubleSize:
-		autoResizeFactor = 2;
-		break;
-	}
-
-	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
+	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", automaticResize);
 }
 
 QString MediaWidget::extensionFilter()
@@ -871,15 +856,15 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 	if (ok) {
 		switch (autoResizeFactor) {
 		case 0:
-			automaticResize = ResizeOff;
+			automaticResize = 0; // special case: automatic
 			backend->resizeToVideo(automaticResize);
 			return;
 		case 1:
-			automaticResize = OriginalSize;
+			automaticResize = 1;
 			backend->resizeToVideo(automaticResize);
 			return;
 		case 2:
-			automaticResize = DoubleSize;
+			automaticResize = 2;
 			backend->resizeToVideo(automaticResize);
 			return;
 		}

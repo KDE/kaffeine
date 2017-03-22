@@ -223,22 +223,9 @@ void VlcMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 	libvlc_video_set_aspect_ratio(vlcMediaPlayer, vlcAspectRatio);
 }
 
-void VlcMediaWidget::resizeToVideo(MediaWidget::ResizeFactor resizeFactor)
+void VlcMediaWidget::resizeToVideo(float resizeFactor)
 {
-	float scale;
-
-	switch (resizeFactor) {
-	case MediaWidget::ResizeOff:
-		scale = 0;
-		break;
-	case MediaWidget::OriginalSize:
-		scale = 1.0;
-		break;
-	case MediaWidget::DoubleSize:
-		scale = 2.0;
-		break;
-	}
-	libvlc_video_set_scale(vlcMediaPlayer, scale);
+	libvlc_video_set_scale(vlcMediaPlayer, resizeFactor);
 }
 
 void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
