@@ -56,8 +56,14 @@ public:
 	enum AspectRatio
 	{
 		AspectRatioAuto,
+		AspectRatio1_1,
 		AspectRatio4_3,
+		AspectRatio5_4,
 		AspectRatio16_9,
+		AspectRatio16_10,
+		AspectRatio221_100,
+		AspectRatio235_100,
+		AspectRatio239_100,
 		AspectRatioWidget
 	};
 

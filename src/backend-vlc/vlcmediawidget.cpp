@@ -187,18 +187,35 @@ void VlcMediaWidget::setVolume(int volume)
 
 void VlcMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 {
-	// "", "1:1", "4:3", "5:4", 16:9", "16:10", "221:100", "235:100", "239:100"
 	const char *vlcAspectRatio = "";
 	int vlcScaleFactor = 1;
 
 	switch (aspectRatio) {
 	case MediaWidget::AspectRatioAuto:
 		break;
+	case MediaWidget::AspectRatio1_1:
+		vlcAspectRatio = "1:1";
+		break;
 	case MediaWidget::AspectRatio4_3:
 		vlcAspectRatio = "4:3";
 		break;
+	case MediaWidget::AspectRatio5_4:
+		vlcAspectRatio = "5:4";
+		break;
 	case MediaWidget::AspectRatio16_9:
 		vlcAspectRatio = "16:9";
+		break;
+	case MediaWidget::AspectRatio16_10:
+		vlcAspectRatio = "16:10";
+		break;
+	case MediaWidget::AspectRatio221_100:
+		vlcAspectRatio = "221:100";
+		break;
+	case MediaWidget::AspectRatio235_100:
+		vlcAspectRatio = "235:100";
+		break;
+	case MediaWidget::AspectRatio239_100:
+		vlcAspectRatio = "239:100";
 		break;
 	case MediaWidget::AspectRatioWidget:
 		// zero = adjust video to window
