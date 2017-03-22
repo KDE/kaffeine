@@ -167,6 +167,7 @@ private slots:
 	void seek(int position);
 	void deinterlacingChanged(bool deinterlacing);
 	void aspectRatioChanged(QAction *action);
+	void setVideoSize();
 	void autoResizeTriggered(QAction *action);
 	void pausedChanged(bool paused);
 	void timeButtonClicked();
@@ -231,7 +232,7 @@ private:
 	QPushButton *timeButton;
 
 	DisplayMode displayMode;
-	float automaticResize;
+	int autoResizeFactor;
 	QScopedPointer<MediaSource> dummySource;
 	MediaSource *source;
 	bool blockBackendUpdates;

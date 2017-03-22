@@ -50,7 +50,7 @@
 
 MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
-	automaticResize(0), blockBackendUpdates(false), muted(false),
+	autoResizeFactor(0), blockBackendUpdates(false), muted(false),
 	screenSaverSuspended(false), showElapsedTime(true)
 {
 	dummySource.reset(new MediaSource());
@@ -277,7 +277,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_239_100"), action));
 	videoMenu->addMenu(aspectMenu);
 
-	QMenu *autoResizeMenu = new QMenu(i18n("Automatic Resize"), this);
+	QMenu *autoResizeMenu = new QMenu(i18n("Video size"), this);
 	QActionGroup *autoResizeGroup = new QActionGroup(this);
 	// we need an event even if you select the currently selected item
 	autoResizeGroup->setExclusive(false);
@@ -285,40 +285,74 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 		this, SLOT(autoResizeTriggered(QAction*)));
 
 	action = new QWidgetAction(autoResizeGroup);
-	action->setText(i18nc("automatic resize", "Automatic"));
+	action->setText(i18nc("Video size", "Automatic"));
 	action->setCheckable(true);
 	action->setData(0);
 	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_off"), action));
 
 	action = new QWidgetAction(autoResizeGroup);
-	action->setText(i18nc("automatic resize", "Original Size"));
+	action->setText(i18nc("Video size", "25%"));
 	action->setCheckable(true);
-	action->setData(1);
+	action->setData(25);
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
+
+	action = new QWidgetAction(autoResizeGroup);
+	action->setText(i18nc("Video size", "50%"));
+	action->setCheckable(true);
+	action->setData(50);
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
+
+
+	action = new QWidgetAction(autoResizeGroup);
+	action->setText(i18nc("Video size", "75%"));
+	action->setCheckable(true);
+	action->setData(75);
+
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
+	action = new QWidgetAction(autoResizeGroup);
+	action->setText(i18nc("Video size", "Original Size"));
+	action->setCheckable(true);
+	action->setData(100);
 	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_original"), action));
 
 	action = new QWidgetAction(autoResizeGroup);
-	action->setText(i18nc("automatic resize", "Double Size"));
+	action->setText(i18nc("Video size", "150%"));
 	action->setCheckable(true);
-	action->setData(2);
+	action->setData(150);
 	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
 
-	int autoResizeFactor =
+	action = new QWidgetAction(autoResizeGroup);
+	action->setText(i18nc("Video size", "200%"));
+	action->setCheckable(true);
+	action->setData(200);
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
+
+	action = new QWidgetAction(autoResizeGroup);
+	action->setText(i18nc("Video size", "250%"));
+	action->setCheckable(true);
+	action->setData(250);
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
+
+	action = new QWidgetAction(autoResizeGroup);
+	action->setText(i18nc("Video size", "300%"));
+	action->setCheckable(true);
+	action->setData(300);
+	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_double"), action));
+
+	autoResizeFactor =
 		KSharedConfig::openConfig()->group("MediaObject").readEntry("AutoResizeFactor", 0);
 
-	switch (autoResizeFactor) {
-	case 1:
-		automaticResize = 1;
-		autoResizeGroup->actions().at(1)->setChecked(true);
-		break;
-	case 2:
-		automaticResize = 2;
-		autoResizeGroup->actions().at(2)->setChecked(true);
-		break;
-	default:
-		automaticResize = 0;
+	if (autoResizeFactor <= 300) {
+		for (int i = 0; i < autoResizeGroup->actions().size(); i++) {
+			if (autoResizeGroup->actions().at(i)->data().toInt() == autoResizeFactor) {
+				autoResizeGroup->actions().at(i)->setChecked(true);
+				break;
+			}
+		}
+	} else {
 		autoResizeGroup->actions().at(0)->setChecked(true);
-		break;
 	}
+	setVideoSize();
 
 	videoMenu->addMenu(autoResizeMenu);
 
@@ -448,7 +482,7 @@ MediaWidget::~MediaWidget()
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Deinterlace",
 		deinterlaceAction->isChecked());
-	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", automaticResize);
+	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
 }
 
 QString MediaWidget::extensionFilter()
@@ -836,12 +870,22 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 
 	if (ok && aspectRatio_ <= AspectRatioWidget) {
 		backend->setAspectRatio(static_cast<AspectRatio>(aspectRatio_));
-		backend->resizeToVideo(automaticResize);
+		setVideoSize();
 
 		return;
 	}
 
-	qCWarning(logMediaWidget, "Internal error");
+	qCWarning(logMediaWidget, "internal error");
+}
+
+void MediaWidget::setVideoSize()
+{
+	float scale = autoResizeFactor / 100.0;
+
+	if (scale > 3.4 || scale < 0)
+		scale = 0;
+
+	backend->resizeToVideo(scale);
 }
 
 void MediaWidget::autoResizeTriggered(QAction *action)
@@ -851,26 +895,12 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 	}
 
 	bool ok = false;
-	int autoResizeFactor = action->data().toInt(&ok);
+	autoResizeFactor = action->data().toInt(&ok);
 
-	if (ok) {
-		switch (autoResizeFactor) {
-		case 0:
-			automaticResize = 0; // special case: automatic
-			backend->resizeToVideo(automaticResize);
-			return;
-		case 1:
-			automaticResize = 1;
-			backend->resizeToVideo(automaticResize);
-			return;
-		case 2:
-			automaticResize = 2;
-			backend->resizeToVideo(automaticResize);
-			return;
-		}
-	}
-
-	qCWarning(logMediaWidget, "Internal error");
+	if (ok)
+		setVideoSize();
+	else
+		qCWarning(logMediaWidget, "internal error");
 }
 
 void MediaWidget::pausedChanged(bool paused)
@@ -1382,7 +1412,7 @@ void MediaWidget::anglesChanged()
 
 void MediaWidget::videoSizeChanged()
 {
-	backend->resizeToVideo(automaticResize);
+	setVideoSize();
 }
 
 JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : QDialog(mediaWidget_),
