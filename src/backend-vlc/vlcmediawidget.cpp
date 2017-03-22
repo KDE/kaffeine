@@ -188,7 +188,6 @@ void VlcMediaWidget::setVolume(int volume)
 void VlcMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 {
 	const char *vlcAspectRatio = "";
-	int vlcScaleFactor = 1;
 
 	switch (aspectRatio) {
 	case MediaWidget::AspectRatioAuto:
@@ -218,13 +217,28 @@ void VlcMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 		vlcAspectRatio = "239:100";
 		break;
 	case MediaWidget::AspectRatioWidget:
-		// zero = adjust video to window
-		vlcScaleFactor = 0;
 		break;
 	}
 
 	libvlc_video_set_aspect_ratio(vlcMediaPlayer, vlcAspectRatio);
-	libvlc_video_set_scale(vlcMediaPlayer, vlcScaleFactor);
+}
+
+void VlcMediaWidget::resizeToVideo(MediaWidget::ResizeFactor resizeFactor)
+{
+	float scale;
+
+	switch (resizeFactor) {
+	case MediaWidget::ResizeOff:
+		scale = 0;
+		break;
+	case MediaWidget::OriginalSize:
+		scale = 1.0;
+		break;
+	case MediaWidget::DoubleSize:
+		scale = 2.0;
+		break;
+	}
+	libvlc_video_set_scale(vlcMediaPlayer, scale);
 }
 
 void VlcMediaWidget::setDeinterlacing(bool deinterlacing)

@@ -59,7 +59,6 @@ private slots:
 	void openDvd(const QString &device = QString());
 	void playDvdFolder();
 	void playDvb();
-	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
 	void configureKeys();
 	void configureKaffeine();
 	void navigationBarOrientationChanged(Qt::Orientation orientation);
