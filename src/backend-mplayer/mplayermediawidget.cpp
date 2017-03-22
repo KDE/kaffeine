@@ -604,9 +604,6 @@ void MPlayerMediaWidget::updateVideoWidgetGeometry()
 	case MediaWidget::AspectRatio239_100:
 		effectiveAspectRatio = (239.0 / 100.0);
 		break;
-	case MediaWidget::AspectRatioWidget:
-		effectiveAspectRatio = -1;
-		break;
 	}
 
 	QRect geometry(QPoint(0, 0), size());

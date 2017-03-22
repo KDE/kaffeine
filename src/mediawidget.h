@@ -64,7 +64,6 @@ public:
 		AspectRatio221_100,
 		AspectRatio235_100,
 		AspectRatio239_100,
-		AspectRatioWidget
 	};
 
 	enum DisplayMode

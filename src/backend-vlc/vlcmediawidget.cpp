@@ -216,8 +216,6 @@ void VlcMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 	case MediaWidget::AspectRatio239_100:
 		vlcAspectRatio = "239:100";
 		break;
-	case MediaWidget::AspectRatioWidget:
-		break;
 	}
 
 	libvlc_video_set_aspect_ratio(vlcMediaPlayer, vlcAspectRatio);

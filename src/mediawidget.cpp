@@ -216,12 +216,6 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_auto"), action));
 
 	action = new QWidgetAction(aspectGroup);
-	action->setText(i18nc("'Aspect Ratio' menu", "Fit to Window"));
-	action->setCheckable(true);
-	action->setData(AspectRatioWidget);
-	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_widget"), action));
-
-	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "1:1"));
 	action->setCheckable(true);
 	action->setData(AspectRatio1_1);
@@ -868,7 +862,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 	bool ok;
 	unsigned int aspectRatio_ = action->data().toInt(&ok);
 
-	if (ok && aspectRatio_ <= AspectRatioWidget) {
+	if (ok && aspectRatio_ <= AspectRatio239_100) {
 		backend->setAspectRatio(static_cast<AspectRatio>(aspectRatio_));
 		setVideoSize();
 

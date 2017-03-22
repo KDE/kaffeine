@@ -92,7 +92,6 @@ public slots:
 	void AspectRatioAuto();
 	void AspectRatio4_3();
 	void AspectRatio16_9();
-	void AspectRatioWidget();
 */
 
 signals:
