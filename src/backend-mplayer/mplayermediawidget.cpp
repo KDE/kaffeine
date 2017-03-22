@@ -580,11 +580,29 @@ void MPlayerMediaWidget::updateVideoWidgetGeometry()
 	switch (aspectRatio) {
 	case MediaWidget::AspectRatioAuto:
 		break;
+	case MediaWidget::AspectRatio1_1:
+		effectiveAspectRatio = 1;
+		break;
 	case MediaWidget::AspectRatio4_3:
 		effectiveAspectRatio = (4.0 / 3.0);
 		break;
+	case MediaWidget::AspectRatio5_4:
+		effectiveAspectRatio = (5.0 / 4.0);
+		break;
 	case MediaWidget::AspectRatio16_9:
 		effectiveAspectRatio = (16.0 / 9.0);
+		break;
+	case MediaWidget::AspectRatio16_10:
+		effectiveAspectRatio = (16.0 / 10.0);
+		break;
+	case MediaWidget::AspectRatio221_100:
+		effectiveAspectRatio = (221.0 / 100.0);
+		break;
+	case MediaWidget::AspectRatio235_100:
+		effectiveAspectRatio = (235.0 / 100.0);
+		break;
+	case MediaWidget::AspectRatio239_100:
+		effectiveAspectRatio = (239.0 / 100.0);
 		break;
 	case MediaWidget::AspectRatioWidget:
 		effectiveAspectRatio = -1;

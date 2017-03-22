@@ -222,16 +222,59 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_widget"), action));
 
 	action = new QWidgetAction(aspectGroup);
+	action->setText(i18nc("'Aspect Ratio' menu", "1:1"));
+	action->setCheckable(true);
+	action->setData(AspectRatio1_1);
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_1_1"), action));
+	videoMenu->addMenu(aspectMenu);
+
+	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "4:3"));
 	action->setCheckable(true);
 	action->setData(AspectRatio4_3);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_4_3"), action));
+	videoMenu->addMenu(aspectMenu);
+
+	action = new QWidgetAction(aspectGroup);
+	action->setText(i18nc("'Aspect Ratio' menu", "5:4"));
+	action->setCheckable(true);
+	action->setData(AspectRatio5_4);
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_5_4"), action));
+	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "16:9"));
 	action->setCheckable(true);
 	action->setData(AspectRatio16_9);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_16_9"), action));
+	videoMenu->addMenu(aspectMenu);
+
+	action = new QWidgetAction(aspectGroup);
+	action->setText(i18nc("'Aspect Ratio' menu", "16:10"));
+	action->setCheckable(true);
+	action->setData(AspectRatio16_10);
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_16_10"), action));
+	videoMenu->addMenu(aspectMenu);
+
+	action = new QWidgetAction(aspectGroup);
+	action->setText(i18nc("'Aspect Ratio' menu", "2.21:1"));
+	action->setCheckable(true);
+	action->setData(AspectRatio221_100);
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_221_100"), action));
+	videoMenu->addMenu(aspectMenu);
+
+	action = new QWidgetAction(aspectGroup);
+	action->setText(i18nc("'Aspect Ratio' menu", "2.35:1"));
+	action->setCheckable(true);
+	action->setData(AspectRatio235_100);
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_235_100"), action));
+	videoMenu->addMenu(aspectMenu);
+
+	action = new QWidgetAction(aspectGroup);
+	action->setText(i18nc("'Aspect Ratio' menu", "2.39:1"));
+	action->setCheckable(true);
+	action->setData(AspectRatio239_100);
+	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_239_100"), action));
 	videoMenu->addMenu(aspectMenu);
 
 	QMenu *autoResizeMenu = new QMenu(i18n("Automatic Resize"), this);
