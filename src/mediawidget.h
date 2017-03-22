@@ -90,13 +90,6 @@ public:
 		Paused
 	};
 
-	enum ResizeFactor
-	{
-		ResizeOff,
-		OriginalSize,
-		DoubleSize
-	};
-
 	DisplayMode getDisplayMode() const;
 	void setDisplayMode(DisplayMode displayMode_);
 
@@ -156,7 +149,7 @@ public:
 signals:
 	void displayModeChanged();
 	void changeCaption(const QString &caption);
-	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
+	void resizeToVideo(float resizeFactor);
 
 	void playlistPrevious();
 	void playlistNext();
@@ -238,7 +231,7 @@ private:
 	QPushButton *timeButton;
 
 	DisplayMode displayMode;
-	ResizeFactor automaticResize;
+	float automaticResize;
 	QScopedPointer<MediaSource> dummySource;
 	MediaSource *source;
 	bool blockBackendUpdates;

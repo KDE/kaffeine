@@ -51,7 +51,7 @@ public:
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
-	void resizeToVideo(MediaWidget::ResizeFactor resizeFactor);
+	void resizeToVideo(float resizeFactor);
 	void setDeinterlacing(bool deinterlacing);
 	void play(const MediaSource &source);
 	void stop();
