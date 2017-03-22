@@ -306,8 +306,6 @@ void MainWindow::run()
 	mediaWidget = new MediaWidget(playerMenu, controlBar, collection, widget);
 	connect(mediaWidget, SIGNAL(displayModeChanged()), this, SLOT(displayModeChanged()));
 	connect(mediaWidget, SIGNAL(changeCaption(QString)), this, SLOT(setWindowTitle(QString)));
-	connect(mediaWidget, SIGNAL(resizeToVideo(MediaWidget::ResizeFactor)),
-		this, SLOT(resizeToVideo(MediaWidget::ResizeFactor)));
 
 	// tabs - keep in sync with TabIndex enum!
 
@@ -736,32 +734,6 @@ void MainWindow::playDvb()
 
 	activateTab(DvbTabId);
 	dvbTab->playLastChannel();
-}
-
-void MainWindow::resizeToVideo(MediaWidget::ResizeFactor resizeFactor)
-{
-	if (!isFullScreen() && !mediaWidget->sizeHint().isEmpty()) {
-		if (isMaximized()) {
-			setWindowState(windowState() & ~Qt::WindowMaximized);
-		}
-
-		QSize videoSize;
-
-		switch (resizeFactor) {
-		case MediaWidget::ResizeOff:
-			break;
-		case MediaWidget::OriginalSize:
-			videoSize = mediaWidget->sizeHint();
-			break;
-		case MediaWidget::DoubleSize:
-			videoSize = (2 * mediaWidget->sizeHint());
-			break;
-		}
-
-		if (!videoSize.isEmpty()) {
-			resize(size() - centralWidget()->size() + videoSize);
-		}
-	}
 }
 
 void MainWindow::configureKeys()

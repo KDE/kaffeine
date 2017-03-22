@@ -57,6 +57,7 @@ public:
 	virtual void setMuted(bool muted) = 0;
 	virtual void setVolume(int volume) = 0; // [0 - 200]
 	virtual void setAspectRatio(MediaWidget::AspectRatio aspectRatio) = 0;
+	virtual void resizeToVideo(MediaWidget::ResizeFactor resizeFactor) = 0;
 	virtual void setDeinterlacing(bool deinterlacing) = 0;
 	virtual void play(const MediaSource &source) = 0;
 	virtual void stop() = 0;
@@ -143,6 +144,7 @@ public:
 	void setMuted(bool) {};
 	void setVolume(int) {}; // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio) {};
+	void resizeToVideo(MediaWidget::ResizeFactor) {};
 	void setDeinterlacing(bool) {};
 	void play(const MediaSource &) {};
 	void stop() {};

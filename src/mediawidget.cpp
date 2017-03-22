@@ -285,7 +285,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 		this, SLOT(autoResizeTriggered(QAction*)));
 
 	action = new QWidgetAction(autoResizeGroup);
-	action->setText(i18nc("automatic resize", "Off"));
+	action->setText(i18nc("automatic resize", "Automatic"));
 	action->setCheckable(true);
 	action->setData(0);
 	autoResizeMenu->addAction(collection->addAction(QLatin1String("controls_autoresize_off"), action));
@@ -851,6 +851,8 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 
 	if (ok && aspectRatio_ <= AspectRatioWidget) {
 		backend->setAspectRatio(static_cast<AspectRatio>(aspectRatio_));
+		backend->resizeToVideo(automaticResize);
+
 		return;
 	}
 
@@ -870,14 +872,15 @@ void MediaWidget::autoResizeTriggered(QAction *action)
 		switch (autoResizeFactor) {
 		case 0:
 			automaticResize = ResizeOff;
+			backend->resizeToVideo(automaticResize);
 			return;
 		case 1:
 			automaticResize = OriginalSize;
-			emit resizeToVideo(automaticResize);
+			backend->resizeToVideo(automaticResize);
 			return;
 		case 2:
 			automaticResize = DoubleSize;
-			emit resizeToVideo(automaticResize);
+			backend->resizeToVideo(automaticResize);
 			return;
 		}
 	}
@@ -1394,9 +1397,7 @@ void MediaWidget::anglesChanged()
 
 void MediaWidget::videoSizeChanged()
 {
-	if (automaticResize != ResizeOff) {
-		emit resizeToVideo(automaticResize);
-	}
+	backend->resizeToVideo(automaticResize);
 }
 
 JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : QDialog(mediaWidget_),
