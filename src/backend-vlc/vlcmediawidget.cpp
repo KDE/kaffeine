@@ -225,6 +225,7 @@ void VlcMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
 
 void VlcMediaWidget::resizeToVideo(float resizeFactor)
 {
+	qCDebug(logMediaWidget, "video resized to %.1f", resizeFactor);
 	libvlc_video_set_scale(vlcMediaPlayer, resizeFactor);
 }
 
