@@ -25,7 +25,7 @@ endif(POLICY CMP0063)
 ## workaround for ki18n 5.34.0++ changes (see BUG 379834)
 if(POLICY CMP0002)
   cmake_policy(SET CMP0002 OLD)
-endif(CMP0002)
+endif(POLICY CMP0002)
 
 find_package(Qt5Core)
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
