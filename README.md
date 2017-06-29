@@ -36,6 +36,7 @@ The needed packages for Debian/Ubuntu should be installed with:
 
     apt-get install kdelibs5-dev libvlc-dev libxss-dev vlc \
 		   libkf5coreaddons-dev libkf5i18n-dev libqt5x11extras5-dev \
+		   libkf5windowsystem-dev \
 		   libkf5solid-dev libkf5widgetsaddons-dev kio-dev \
 		   qt5-default libdvbv5-dev \
 		   cmake extra-cmake-modules make g++ gettext
@@ -66,7 +67,7 @@ with:
 
     dnf install  kf5-kcoreaddons-devel extra-cmake-modules libXScrnSaver-devel \
 		 qt5-qtx11extras-devel \
-		 kf5-solid-devel kf5-kio-devel \
+		 kf5-kwindowsystem-devel kf5-solid-devel kf5-kio-devel \
 		 kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel gettext-devel
 
 And, to build the Kaffeine Handbook documentation:

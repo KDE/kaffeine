@@ -47,7 +47,7 @@ configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 add_executable(kaffeine ${kaffeinedvb_SRCS} ${kaffeine_SRCS})
 target_link_libraries(kaffeine Qt5::Sql Qt5::X11Extras KF5::XmlGui KF5::I18n KF5::Solid
-		      KF5::KIOCore KF5::KIOFileWidgets
+		      KF5::KIOCore KF5::KIOFileWidgets KF5::WindowSystem
 		      KF5::DBusAddons ${X11_Xscreensaver_LIB} ${VLC_LIBRARY})
 
 if(HAVE_DVB)

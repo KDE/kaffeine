@@ -44,6 +44,7 @@ public:
 	~MainWindow();
 
 	void run();
+	void parseArgs(const QString workingDirectory = "");
 
 signals:
 	void mayCloseApplication(bool *ok, QWidget *parent);
@@ -83,7 +84,6 @@ private:
 
 	KAboutData *aboutData;
 	QCommandLineParser *parser;
-	void parseArgs();
 
 	QSystemTrayIcon *trayIcon;
 

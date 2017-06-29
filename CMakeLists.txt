@@ -59,6 +59,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	CoreAddons      # KAboutData
 	I18n            # KLocalizedString
 	WidgetsAddons   # KMessageBox
+	WindowSystem	# KStartupInfo
 	XmlGui		# KActonCollection
 	KIO		# KFileWidget
 	Solid

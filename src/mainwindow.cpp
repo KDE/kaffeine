@@ -509,7 +509,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	parser->addPositionalArgument(QLatin1String("[file]"), i18n("Files or URLs to play"));
 }
 
-void MainWindow::parseArgs()
+void MainWindow::parseArgs(const QString workingDirectory)
 {
 	if (parser->isSet("fullscreen")) {
 		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
@@ -579,7 +579,7 @@ void MainWindow::parseArgs()
 		QList<QUrl> urls;
 
 		for (int i = 0; i < parser->positionalArguments().count(); ++i) {
-			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i));
+			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i), workingDirectory);
 
 			if (url.isValid()) {
 				urls.append(url);
