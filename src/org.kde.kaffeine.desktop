@@ -63,6 +63,7 @@ Name[zh_CN]=Kaffeine
 Name[zh_TW]=Kaffeine
 Exec=kaffeine %U
 GenericName=Media Player
+GenericName[ast]=Reproductor de medios
 GenericName[bg]=Медия плеър
 GenericName[bs]=Izvođač medija
 GenericName[ca]=Reproductor multimèdia
