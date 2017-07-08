@@ -613,6 +613,9 @@ DvbLiveViewInternal::~DvbLiveViewInternal()
 
 void DvbLiveViewInternal::resetPipe()
 {
+	retryCounter = 0;
+	notifier->setEnabled(false);
+
 	if (!buffers.isEmpty()) {
 		buffer = buffers.at(0);
 		buffers.clear();
@@ -633,7 +636,13 @@ void DvbLiveViewInternal::resetPipe()
 
 void DvbLiveViewInternal::writeToPipe()
 {
-	while (!buffers.isEmpty()) {
+	if (buffers.isEmpty()) {
+		// disable notifier if the buffers are empty
+		notifier->setEnabled(false);
+		return;
+	}
+
+	do {
 		const QByteArray &currentBuffer = buffers.at(0);
 		int bytesWritten = int(write(writeFd, currentBuffer.constData(), currentBuffer.size()));
 
@@ -646,7 +655,6 @@ void DvbLiveViewInternal::writeToPipe()
 				// Too much failures. Reset the pipe and return.
 				qCWarning(logDvb, "libVLC is too slow! Let's reset the pipe");
 				resetPipe();
-				retryCounter = 0;
 				return;
 			}
 
@@ -666,7 +674,7 @@ void DvbLiveViewInternal::writeToPipe()
 		// If bytesWritten is less than buffer size, or returns an
 		// error, there's no sense on wasting CPU time inside a loop
 		break;
-	}
+	} while (!buffers.isEmpty());
 
 	if (!buffers.isEmpty()) {
 		// Wait for a notification that writeFd is ready to write
