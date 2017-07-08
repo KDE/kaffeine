@@ -135,6 +135,7 @@ private:
 	QUrl url;
 	int readFd;
 	int writeFd;
+	int retryCounter;
 	QSocketNotifier *notifier;
 	QList<QByteArray> buffers;
 };

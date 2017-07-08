@@ -567,7 +567,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 }
 
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
-	readFd(-1), writeFd(-1)
+	readFd(-1), writeFd(-1), retryCounter(0)
 {
 	fileName = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -637,23 +637,39 @@ void DvbLiveViewInternal::writeToPipe()
 		const QByteArray &currentBuffer = buffers.at(0);
 		int bytesWritten = int(write(writeFd, currentBuffer.constData(), currentBuffer.size()));
 
-		if ((bytesWritten < 0) && (errno == EINTR)) {
-			continue;
-		}
+		if (bytesWritten < 0) {
+			// Some interrupt happened while writing. Retry.
+			if (errno == EINTR)
+				continue;
 
-		if (bytesWritten == currentBuffer.size()) {
-			buffers.removeFirst();
-			continue;
-		}
+			if (++retryCounter > 50) {
+				// Too much failures. Reset the pipe and return.
+				qCWarning(logDvb, "libVLC is too slow! Let's reset the pipe");
+				resetPipe();
+				retryCounter = 0;
+				return;
+			}
 
-		if (bytesWritten > 0) {
-			buffers.first().remove(0, bytesWritten);
+			// EAGAIN may happen when the pipe is full.
+			// That's a normal condition. No need to report.
+			if (errno != EAGAIN)
+				qCWarning(logDvb, "Error %d while writing to pipe", errno);
+		} else {
+			retryCounter = 0;
+			if (bytesWritten == currentBuffer.size()) {
+				buffers.removeFirst();
+				continue;
+			}
+			if (bytesWritten > 0)
+				buffers.first().remove(0, bytesWritten);
 		}
-
+		// If bytesWritten is less than buffer size, or returns an
+		// error, there's no sense on wasting CPU time inside a loop
 		break;
 	}
 
 	if (!buffers.isEmpty()) {
+		// Wait for a notification that writeFd is ready to write
 		notifier->setEnabled(true);
 	}
 }
