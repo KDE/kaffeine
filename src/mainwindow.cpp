@@ -190,6 +190,8 @@ void MainWindow::run()
 	if (parser->isSet("debug")) {
 		QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 		QLoggingCategory::setFilterRules(QStringLiteral(FILTER_RULE));
+	} else {
+		QLoggingCategory::setFilterRules(QStringLiteral("kaffeine.*.debug=false"));
 	}
 
 	readSettings();
