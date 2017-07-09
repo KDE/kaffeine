@@ -108,6 +108,10 @@ QT_LOGGING_RULES=kaffeine.<emphasis>category</emphasis>.debug=true
 <term><option>sql</option></term>
 <listitem><para>for SQL lite logs</para></listitem>
 </varlistentry>
+<varlistentry>
+<term><option>vlc</option></term>
+<listitem><para>for libVlc logs</para></listitem>
+</varlistentry>
 </variablelist>
 
 </listitem>
