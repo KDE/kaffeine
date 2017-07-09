@@ -328,6 +328,7 @@ void VlcMediaWidget::stop()
 
 void VlcMediaWidget::setPaused(bool paused)
 {
+	isPaused = paused;
 	libvlc_media_player_set_pause(vlcMediaPlayer, paused);
 	// we don't monitor playing / buffering / paused state changes
 	addPendingUpdates(PlaybackStatus);
@@ -457,8 +458,14 @@ int VlcMediaWidget::updatePlaybackStatus()
 		break;
 	case libvlc_Opening:
 	case libvlc_Buffering:
-	case libvlc_Playing:
 		playbackStatus = MediaWidget::Playing;
+		break;
+	case libvlc_Playing:
+		// The first time libVLC is set to pause, it reports status as playing
+		if (isPaused)
+			playbackStatus = MediaWidget::Paused;
+		else
+			playbackStatus = MediaWidget::Playing;
 		break;
 	case libvlc_Paused:
 		playbackStatus = MediaWidget::Paused;
