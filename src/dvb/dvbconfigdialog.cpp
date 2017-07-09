@@ -18,11 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include "../log.h"
+
 #include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
 
 #include <KConfigGroup>
 #include <KIO/Job>
@@ -384,11 +382,11 @@ void DvbConfigDialog::removeRegex()
 	}
 	foreach(RegexInputLine *inputLine, copyList)
 	{
-		qDebug("list:");
+		qCDebug(logDvb, "list:");
 		if (inputLine->checkBox->isChecked()){
-			qDebug("checked:");
+			qCDebug(logDvb, "checked:");
 			if (regexInputList.removeOne(inputLine)) {
-				qDebug("removed:");
+				qCDebug(logDvb, "removed:");
 			}
 		}
 	}
@@ -548,9 +546,9 @@ void DvbConfigDialog::accept()
 	foreach (RegexInputLine *regexInputLine, regexInputList)
 	{
 		manager->addRecordingRegex(regexInputLine->lineEdit->text());
-		qDebug("saved regex: %s", qPrintable(regexInputLine->lineEdit->text()));
+		qCDebug(logDvb, "saved regex: %s", qPrintable(regexInputLine->lineEdit->text()));
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
-		qDebug("saved priority: %i", regexInputLine->spinBox->value());
+		qCDebug(logDvb, "saved priority: %i", regexInputLine->spinBox->value());
 	}
 
 	QList<DvbDeviceConfigUpdate> configUpdates;
@@ -1632,7 +1630,7 @@ void DvbSLnbConfigObject::selectType(int type)
 void DvbSLnbConfigObject::dialogAccepted()
 {
 	config->currentLnb = device->getLnbSatModels().at(currentType - 1);
-	qDebug() << "Selected LNBf:" << config->currentLnb.alias;
+	qCDebug(logDvb) << "Selected LNBf:" << config->currentLnb.alias;
 
 	dialog->accept();
 }

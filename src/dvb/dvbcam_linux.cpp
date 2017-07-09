@@ -160,7 +160,7 @@ void DvbLinuxCam::pollModule()
 	} else {
 		if ((pendingCommands & ExpectingReply) != 0) {
 			pendingCommands &= ~ExpectingReply;
-			qDebug("CAM: request timed out");
+			qCDebug(logCam, "CAM: request timed out");
 		}
 
 		if (pendingCommands == 0) {
@@ -468,7 +468,7 @@ void DvbLinuxCam::handlePendingCommands()
 				qCWarning(logCam, "Cannot perform ioctl CA_RESET");
 			}
 
-			qDebug("--> CAM reset");
+			qCDebug(logCam, "--> CAM reset");
 			slot = -1;
 			pollTimer.start(100);
 			pendingCommands = 0;

@@ -173,7 +173,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 			lnbSat.freqRange[1].low = lnb->freqrange[1].low;
 			lnbSat.freqRange[1].high = lnb->freqrange[1].high;
 
-			qDebug("supports lnb %s", lnb->alias);
+			qCDebug(logDev, "supports lnb %s", lnb->alias);
 
 			lnbSatModels.append(lnbSat);
 		}
@@ -900,7 +900,7 @@ bool DvbLinuxDevice::satSetup(QString lnbModel, int satNumber, int bpf)
 		return false;
 	}
 
-	qDebug("Using LNBf type %s", qPrintable(lnbModel));
+	qCDebug(logDev, "Using LNBf type %s", qPrintable(lnbModel));
 
 	dvbv5_parms->sat_number = satNumber;
 	dvbv5_parms->freq_bpf = bpf;
@@ -914,7 +914,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 	stopDvr();
 	fe_delivery_system_t delsys;
 
-	qDebug("tune to: %s", qPrintable(transponder.toString()));
+	qCDebug(logDev, "tune to: %s", qPrintable(transponder.toString()));
 
 	// FIXME: add support for LNA on/off
 
@@ -1663,7 +1663,7 @@ void DvbLinuxDeviceManager::componentAdded(const QString &udi)
 		return;
 	}
 
-	qDebug("New device detected: %s", qPrintable(udi));
+	qCDebug(logDev, "New device detected: %s", qPrintable(udi));
 
 	int deviceIndex = ((adapter << 16) | index);
 	DvbLinuxDevice *device = devices.value(deviceIndex);
