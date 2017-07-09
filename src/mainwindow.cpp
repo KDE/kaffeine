@@ -63,10 +63,11 @@ Q_LOGGING_CATEGORY(logConfig, "kaffeine.config")
 Q_LOGGING_CATEGORY(logMediaWidget, "kaffeine.mediawidget")
 Q_LOGGING_CATEGORY(logPlaylist, "kaffeine.playlist")
 Q_LOGGING_CATEGORY(logSql, "kaffeine.sql")
+Q_LOGGING_CATEGORY(logVlc, "kaffeine.vlc")
 
 #define FILTER_RULE "kaffeine.*.debug=true"
 
-#define CATEGORIES "cam, dev, dvb, dvbsi, epg, config, mediawidget, playlist, sql"
+#define CATEGORIES "cam, dev, dvb, dvbsi, epg, config, mediawidget, playlist, sql, vlc"
 
 class StackedLayout : public QStackedLayout
 {
