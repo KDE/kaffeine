@@ -143,7 +143,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 }
 
 DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent),
-	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1)
+	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1), pausedTime(0)
 {
 	mediaWidget = manager->getMediaWidget();
 	osdWidget = mediaWidget->getOsdWidget();
@@ -424,15 +424,22 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		osdWidget->hideObject();
 		break;
 	case MediaWidget::Playing:
-		internal->isPaused = false;
 		if (internal->timeShiftFile.isOpen()) {
 			// FIXME
 			mediaWidget->play(internal);
 		}
 
+		if (internal->isPaused) {
+			internal->isPaused = false;
+			mediaWidget->setPosition(pausedTime);
+		}
+
 		break;
 	case MediaWidget::Paused:
 		internal->isPaused = true;
+		pausedTime = mediaWidget->getPosition() - 10;
+		if (pausedTime < 0)
+			pausedTime = 0;
 		if (internal->timeShiftFile.isOpen()) {
 			break;
 		}

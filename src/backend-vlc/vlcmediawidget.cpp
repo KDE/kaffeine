@@ -336,6 +336,9 @@ void VlcMediaWidget::setPaused(bool paused)
 
 void VlcMediaWidget::seek(int time)
 {
+	if (!seekable)
+		return;
+
 	libvlc_media_player_set_time(vlcMediaPlayer, time);
 }
 
