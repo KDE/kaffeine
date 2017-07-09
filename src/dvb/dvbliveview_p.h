@@ -74,6 +74,7 @@ public:
 	QString fileName;
 	DvbOsd dvbOsd;
 	bool emptyBuffer;
+	bool isPaused;
 	QTime startTime;
 
 	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }

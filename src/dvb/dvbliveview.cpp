@@ -403,6 +403,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 {
 	switch (playbackStatus) {
 	case MediaWidget::Idle:
+		internal->isPaused = false;
 		if (device != NULL) {
 			stopDevice();
 			manager->releaseDevice(device, DvbManager::Shared);
@@ -423,6 +424,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		osdWidget->hideObject();
 		break;
 	case MediaWidget::Playing:
+		internal->isPaused = false;
 		if (internal->timeShiftFile.isOpen()) {
 			// FIXME
 			mediaWidget->play(internal);
@@ -430,6 +432,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 
 		break;
 	case MediaWidget::Paused:
+		internal->isPaused = true;
 		if (internal->timeShiftFile.isOpen()) {
 			break;
 		}
@@ -575,7 +578,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 }
 
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
-	readFd(-1), writeFd(-1), retryCounter(0)
+	isPaused(false), readFd(-1), writeFd(-1), retryCounter(0)
 {
 	fileName = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -658,6 +661,9 @@ void DvbLiveViewInternal::writeToPipe()
 			// Some interrupt happened while writing. Retry.
 			if (errno == EINTR)
 				continue;
+
+			if (isPaused)
+				break;
 
 			if (++retryCounter > 50) {
 				// Too much failures. Reset the pipe and return.
