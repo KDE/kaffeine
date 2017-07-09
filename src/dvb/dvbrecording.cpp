@@ -961,6 +961,7 @@ void DvbRecordingFile::pmtSectionChanged(const QByteArray &pmtSectionData_)
 	pmtSectionData = pmtSectionData_;
 	DvbPmtSection pmtSection(pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
+	int pcr_pid = pmtSection.pcr_pid();
 	QSet<int> newPids;
 
 	if (pmtParser.videoPid != -1) {
@@ -977,6 +978,13 @@ void DvbRecordingFile::pmtSectionChanged(const QByteArray &pmtSectionData_)
 
 	if (pmtParser.teletextPid != -1) {
 		newPids.insert(pmtParser.teletextPid);
+	}
+
+	/* check PCR PID is set */
+	if (pcr_pid != 0x1fff) {
+		/* Check not already in list */
+		if (!newPids.contains(pcr_pid))
+			newPids.insert(pcr_pid);
 	}
 
 	for (int i = 0; i < pids.size(); ++i) {
