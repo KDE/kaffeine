@@ -186,7 +186,7 @@
     </DvbPatSection>
     <DvbPmtSection extension="programNumber">
       <unused bits="3"/>
-      <unused bits="13"/>
+      <pcrPid bits="13" type="int"/>
       <unused bits="4"/>
       <descriptorsLength bits="12" type="int"/>
       <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list"/>
