@@ -518,7 +518,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	DvbPmtSection pmtSection(internal->pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
 	QSet<int> newPids;
-	int pcr_pid = pmtSection.pcr_pid();
+	int pcrPid = pmtSection.pcrPid();
 	bool updatePatPmt = forcePatPmtUpdate;
 	bool isTimeShifting = internal->timeShiftFile.isOpen();
 
@@ -545,10 +545,10 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	}
 
 	/* check PCR PID is set */
-	if (pcr_pid != 0x1fff) {
+	if (pcrPid != 0x1fff) {
 		/* Check not already in list */
-		if (!newPids.contains(pcr_pid))
-			newPids.insert(pcr_pid);
+		if (!newPids.contains(pcrPid))
+			newPids.insert(pcrPid);
 	}
 
 	for (int i = 0; i < pids.size(); ++i) {

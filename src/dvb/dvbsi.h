@@ -1098,7 +1098,7 @@ public:
 		return (at(3) << 8) | at(4);
 	}
 
-	int pcr_pid() const
+	int pcrPid() const
 	{
 		return ((at(8) & 0x1f) << 8) | at(9);
 	}
