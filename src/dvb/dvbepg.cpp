@@ -838,7 +838,7 @@ QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 		// Rating from 0x10 to 0xff are broadcaster's specific
 		if (entry.rating() == 0) {
 			// xgettext:no-c-format
-			parental += i18n("Country %1: not rated\n", code, entry.rating() + 3);
+			parental += i18n("Country %1: not rated\n", code);
 		} else if (entry.rating() < 0x10) {
 			if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
 				unsigned int rating = entry.rating();
