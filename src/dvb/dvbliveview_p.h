@@ -74,7 +74,6 @@ public:
 	QString fileName;
 	DvbOsd dvbOsd;
 	bool emptyBuffer;
-	bool isPaused;
 	QTime startTime;
 
 	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
@@ -117,6 +116,7 @@ public:
 	QStringList audioStreams;
 	int currentAudioStream;
 	int currentSubtitle;
+	int retryCounter;
 
 signals:
 	void currentAudioStreamChanged(int currentAudioStream);
@@ -136,7 +136,6 @@ private:
 	QUrl url;
 	int readFd;
 	int writeFd;
-	int retryCounter;
 	QSocketNotifier *notifier;
 	QList<QByteArray> buffers;
 };

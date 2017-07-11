@@ -403,7 +403,6 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 {
 	switch (playbackStatus) {
 	case MediaWidget::Idle:
-		internal->isPaused = false;
 		if (device != NULL) {
 			stopDevice();
 			manager->releaseDevice(device, DvbManager::Shared);
@@ -419,6 +418,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		internal->pmtGenerator = DvbSectionGenerator();
 		internal->buffer.clear();
 		internal->timeShiftFile.close();
+		internal->retryCounter = 0;
 		internal->updateUrl();
 		internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
 		osdWidget->hideObject();
@@ -427,16 +427,11 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		if (internal->timeShiftFile.isOpen()) {
 			// FIXME
 			mediaWidget->play(internal);
-		}
-
-		if (internal->isPaused) {
-			internal->isPaused = false;
 			mediaWidget->setPosition(pausedTime);
 		}
 
 		break;
 	case MediaWidget::Paused:
-		internal->isPaused = true;
 		pausedTime = mediaWidget->getPosition() - 10;
 		if (pausedTime < 0)
 			pausedTime = 0;
@@ -585,7 +580,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 }
 
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
-	isPaused(false), readFd(-1), writeFd(-1), retryCounter(0)
+	retryCounter(0), readFd(-1), writeFd(-1)
 {
 	fileName = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -669,13 +664,9 @@ void DvbLiveViewInternal::writeToPipe()
 			if (errno == EINTR)
 				continue;
 
-			if (isPaused)
-				break;
-
 			if (++retryCounter > 50) {
-				// Too much failures. Reset the pipe and return.
-				qCWarning(logDvb, "libVLC is too slow! Let's reset the pipe");
-				resetPipe();
+				// Too much failures. Warn the user
+				qCWarning(logDvb, "Stream seems to be too havy to be displayed");
 				return;
 			}
 
@@ -735,6 +726,7 @@ void DvbLiveViewInternal::processData(const char data[188])
 			}
 		}
 	} else {
+		notifier->setEnabled(false);
 		timeShiftFile.write(buffer); // FIXME avoid buffer reallocation
 		if (emptyBuffer) {
 			startTime = QTime::currentTime();
