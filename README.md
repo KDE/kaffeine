@@ -224,12 +224,19 @@ For Radeon GPU, the vdpau driver can be forced with:
 
 	export VDPAU_DRIVER=r600
 
-The VA-GL driver can be forced with:
+The VA-GL driver can be used for Intel GPUs. It can be forced with:
 
 	export VDPAU_DRIVER=va_gl
 
 Note: you may need to install mesa-vdpau-drivers and/or libvdpau-va-gl
 packages for vdpau to work.
+
+Please notice that, depending on your hardware, for example, if your
+GPU vdpau driver can't decode the compression standard used by the
+broadcasters, it could be better to disable VDPAU backend.
+That can be done by passing an invalid driver name, like:
+
+	export VDPAU_DRIVER=none
 
 Homepage
 ========
