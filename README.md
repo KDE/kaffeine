@@ -208,6 +208,29 @@ or:
 
 and re-start Kaffeine.
 
+Setting VDPAU acceleration
+--------------------------
+
+By default, libVlc will try to use vdpau hardware acceleration in order to
+decode the video stream at GPU. However, sometimes it may not get the right
+acceleration module, trying to always use NVidia module, even when the
+hardware is AMD or Intel. That happens, for example on Fedora 25 and 26, as
+reported at:
+
+* <https://bugzilla.redhat.com/show_bug.cgi?id=1305699>
+* <https://bugs.kde.org/show_bug.cgi?id=376893>
+
+For Radeon GPU, the vdpau driver can be forced with:
+
+	export VDPAU_DRIVER=r600
+
+The VA-GL driver can be forced with:
+
+	export VDPAU_DRIVER=va_gl
+
+Note: you may need to install mesa-vdpau-drivers and/or libvdpau-va-gl
+packages for vdpaw to work.
+
 Homepage
 ========
 
