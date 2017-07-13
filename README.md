@@ -229,7 +229,7 @@ The VA-GL driver can be forced with:
 	export VDPAU_DRIVER=va_gl
 
 Note: you may need to install mesa-vdpau-drivers and/or libvdpau-va-gl
-packages for vdpaw to work.
+packages for vdpau to work.
 
 Homepage
 ========
