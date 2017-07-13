@@ -166,13 +166,19 @@ Useful options include:
 
 For further information look for generic KF5 / cmake instructions.
 
+Known video output issues
+=========================
+
+There are a few known issues related to video output that may require
+some special setup for Kaffeine to work on certain environments.
+
 Remote Access and Kaffeine
-==========================
+--------------------------
 
-Accessing Kaffeine remotely via X11/ssh/vnc can be a problem, as Qt5 will,
-by default, use hardware acceleration and DRI3.
+Accessing Kaffeine remotely via X11/ssh/vnc can be a problem, as Qt5 will
+try, by default, to use hardware acceleration and DRI3.
 
-There is a known bug, present on Fedora 23/24, and likely on other distros,
+There is a known bug, present on Fedora 23 to 25, and likely on other distros,
 at mesa-libGL/dri-drivers that cause it to wait forever when it is started
 from a X11 section. Such bug causes Kaffeine windows to not open:
 
@@ -184,10 +190,15 @@ A workaround is to start Kaffeine with:
 
 Another solution is to use a vnc server.
 
-Still, libVLC will try to use hardware acceleration on the machine with
-Kaffeine, with obviously with won't work via the X11 protocol. For such
-scenarios, you may try to change the arguments passed to libVLC via the
-"Settings" -->  "Configure Kaffeine" -->  "libVLC", changing the libVLC
+Changing the libVLC output plugin
+---------------------------------
+
+By default, libVLC will try to use hardware acceleration on the machine with
+Kaffeine, with obviously with won't work via remote access. It may also not
+detect properly the best video output plugin for some hardware settings.
+
+For such scenarios, you may try to change the arguments passed to libVLC via
+the "Settings" -->  "Configure Kaffeine" -->  "libVLC", changing the libVLC
 arguments to:
 
 	--no-video-title-show -V xcb_glx
