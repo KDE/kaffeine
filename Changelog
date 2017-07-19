@@ -1,82 +1,254 @@
-------------------
 Kaffeine Changelog
-------------------
+==================
 
 Version (release date):
 
+Version 2.0.11 (2017-07-19):
+
+-   Solve performance issues causing caffeine to use 100% CPU even when
+    video is paused or stopped;
+-   Fix DVB play on videos that use a separate PID for synchronism;
+-   Fix some bugs at DVB pause logic, making it more reliable and
+    making unpause to continue from the paused position;
+-   Disable debug messages by default;
+-   Remove a warning on some DVB streams when a program is not rated;
+-   Improve notes about video output settings at README.md.
+
+Version 2.0.10 (2017-06-29):
+
+-   Fix video resize and scale factor issues;
+-   Handle parameters when there's a running instance and a new
+    kaffeine is called with some URL.
+-   Updated scanfile.dvb.
+
+Version to 2.0.9 (2017-03-07):
+
+-   Fix build at tarball
+
+Version 2.0.8 (2017-03-06):
+
+-    Added Norwegian Nynorsk translation to .desktop files.
+
+Version 2.0.7 (2017-03-06):
+
+-   Add support for H-265 video streams;
+-   Organize debug logs per category, using QLoggingCategory.
+
+Version 2.0.6 (2017-02-21):
+
+-   Autoscan should now seek also for DVB-T2 channels, on devices that
+    support it;
+-   Implement systray show/hide
+-   EPG algorithm improved to reduce CPU usage
+-   Unmute audio when the player instance is created (e. g. Kaffeine is loaded)
+-   Some visual improvements to show <Close> instead of <Ok>/<Cancel>
+    on some windows
+-   Some changes to allow improvements at translations
+-   A new record is now enabled when created
+-   Add support for multipoint LNBf, where DiSEqC is not used
+-   Fix DiSEqC LNBf satellite select
+-   Don't ignore weak signals on DVB-T
+-   Handle special case on devices with a single demux, but multiple frontends
+-   Add support for DVB-T2 multistream
+-   better report errors when VLC is not found
+-   synchronize DVB scan file with latest upstream version
+
+Version 2.0.5 (2016-10-04):
+
+-   ISDB-T Brazil TOC entries were displayed with an offset of 3 hours;
+-   A newly-created recording entry should default to enable;
+-   CMakeLists.txt was including ECM config twice, causing build
+    failures with newer versions of cmake;
+-   Don't quit while recording without explict ack from the user;
+-   Fix handling of subtitles for DVB streams;
+-   Prevent VLC build warnings with version 3.0.0-git;
+-   Handle the new VLC 3.0 ES change events;
+-   List the proper MIME tipe for open directories;
+-   Fix a minor typo at documentation and fix update\_mimetypes.sh.
+
+Version 2.0.4 (2016-06-30):
+
+-   The changes made on the 103 patches since version 2.0.3 aren't
+    small:
+
+    148 files changed, 3930 insertions(+), 2344 deletions(-)
+
+    I almost released it as 2.1.0 ;) Yet, those changes were all meant to
+    make Kaffeine's more reliable, fixing bugs.
+-   Fix support for DVB-S/S2 and improve LNBf selection;
+-   Add an option to scan other NIT tables;
+-   Fixes at the EPG logic for DVB, ISDB and ATSC;
+-   Addition of content and parental rating for DVB and ISDB-Tb;
+-   Revamped bar gauge showing signal and S/N in dB, if available;
+-   Kaffeine Handbook is ready for shipment;
+-   Man pages is ready for shipment;
+-   The Kaffeine will now honour the icons from the KDE theme, if
+    available.
+
+Version 2.0.3 (2016-06-10):
+
+-   Lots of bug fixes;
+-   Add a menu to allow specifying arguments passed to libVLC;
+-   Fix a build brakage when DVB is selected on build;
+-   Some cleanups at the build dependencies;
+-   New translation added: Russian;
+-   Several small fixes.
+
+Version 2.0.2 (2016-06-07):
+
+-   Several cleanups and fixes on development/deployment tools;
+-   A new minor feature:
+    -   mainwindow: Improve the Tray menu handling
+-   Add support for building with Qt5.5 and KF5.11 (useful to build it
+    for OpenSuse 13.2)
+-   Lots of fixes:
+    -   dvbliveview: create the DVB pipeline at /run/user/&lt;uid&gt;
+    -   dvbliveview: clean empty EPG data when displaying OSG
+    -   vlcmediawidget: Improve the mouse unhide mechanism
+    -   dvbconfigdialog: save DVB device config when dialog is accepted
+    -   dvb: flush channel lists when the channel scan box is closed
+    -   dvbcam\_linux: fix signal connect
+    -   mainwindow: be sure to finish Kaffeine when the main window
+        closes
+    -   mainwindow: show window if minimized and a tray action is called
+    -   dvbepgdialog: move Ok/Cancel buttons to the botton of the layout
+    -   dvbchanneldialog: Add OK/Cancel buttons at the channel edit box
+    -   fix wrong desktop file id, see
+        <https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html>
+    -   install appdata + desktop files with new names
+    -   use org.kde schema for the desktop file
+    -   fix wrong name of appdata file
+    -   src/kaffeine.desktop: add several missing mime types
+    -   Fix desktop file
+    -   CMakeLists.txt: Fix some warnings and make doc build optional
+    -   rename kaffeine.appdata.xml to org.kaffeine.appdata.xml
+    -   main: call setApplicationDomain earlier
+    -   dvbrecording: don't use epgModel when app is closing
+    -   Add documentation to the build system
+    -   main: add translators to the About window
+    -   main: move aboutData to the KaffeineApplication constructor
+    -   main.cpp: set application data after creating QApplication
+    -   mainwindow: re-add support for --tempfile option
+    -   main: fix command line argument parsing
+    -   update the list of supported extensions and mime types
+    -   dvbsi: fix some errors at the ISDB-T terrestrial delsys
+        descriptor
+
+Version 2.0.1 (2016-05-31):
+
+-   Fix the usage of global scanfile.dvb;
+-   Reduce the size of the latitude/longitude validation icon;
+-   Fix some a regresion at dvbdevice_linux;
+-   Fix DVB live view play/pause logic;
+-   Add support for playing DVB after stop;
+-   Show play time while playing from DVB.
+
+Version 2.0.0 (2016-05-29):
+
+-   Ported to Qt5/KF5
+-   Added support for DVB-T2
+-   Lots of bug fixes
+
+Version 1.3.2 (2015-11-26):
+
+-   Explicitly include CheckIncludeFiles.
+-   Fixed recordings database
+-   Fixes and tweaks to automatic recoring
+-   Prettier buttons.
+-   Prioritised recordings. Conflict handling. Fixed appdata folder.
+-   Unwanted recordings fixed.
+-   Removed recordings don't come back with regex anymore.
+
 Version 1.3.1 (2015-09-06):
-  - automatic recordings
-  - fix for information files for recordings
-  - translations readded
+
+-   automatic recordings
+-   fix for information files for recordings
+-   translations readded
 
 Version 1.3 (2015-08-07):
-  - option for custom naming for recordings
-  - option for creating information files for recordings
-  - other stuff
+
+-   option for custom naming for recordings
+-   option for creating information files for recordings
+-   other stuff
 
 Version 1.2 (2011-04-04):
-  - add search function to epg
-  - implement ATSC support for epg
-  - fix gnome screen saver inhibition
-  - other fixes and improvements ...
+
+-   add search function to epg
+-   implement ATSC support for epg
+-   fix gnome screen saver inhibition
+-   other fixes and improvements ...
 
 Version 1.1 (2010-09-01):
-  - adapt to new shared-mime-info (so that .m2t is assigned to kaffeine again)
-  - workaround issue that video isn't shown without changing tabs when using QT 4.7
-  - recording schedule: fix sorting, improve column and dialog sizes,
-      show a warning about active and pending recordings when closing kaffeine
-  - program guide: remove the "Refresh" button (not necessary anymore)
-  - channel editor: allow sorting by drag and drop
+
+-   adapt to new shared-mime-info (so that .m2t is assigned to kaffeine
+    again)
+-   workaround issue that video isn't shown without changing tabs when
+    using QT 4.7
+-   recording schedule: fix sorting, improve column and dialog sizes,
+    show a warning about active and pending recordings when closing
+    kaffeine
+-   program guide: remove the "Refresh" button (not necessary anymore)
+-   channel editor: allow sorting by drag and drop
 
 Version 1.0 (2010-05-31):
-  - new dependency: libXss
-  - scheduled programs are shown in the program guide
-  - the begin and end margins for recordings are configurable
-  - CICAM is supported
-  - all audio pids are recorded during timeshift
-  - subtitle support (also autoloading)
-  - other fixes and improvements ...
+
+-   new dependency: libXss
+-   scheduled programs are shown in the program guide
+-   the begin and end margins for recordings are configurable
+-   CICAM is supported
+-   all audio pids are recorded during timeshift
+-   subtitle support (also autoloading)
+-   other fixes and improvements ...
 
 Version 1.0-pre3 (2010-01-31):
-  - new dependencies: Qt SQLite plugin, xine-lib, libX11
-    (Phonon is no longer needed)
-  - added configurable daily or weekly repetition of recording schedule entries
-  - added support for dynamic audio / subtitles streams
-  - reworked playlist support
-  - added DBUS interface and partial MPRIS support
-  - added dvd menu button and deinterlace option
-  - added system tray icon and minimal mode option
-  - other fixes and improvements ...
+
+-   new dependencies: Qt SQLite plugin, xine-lib, libX11 (Phonon is no
+    longer needed)
+-   added configurable daily or weekly repetition of recording schedule
+    entries
+-   added support for dynamic audio / subtitles streams
+-   reworked playlist support
+-   added DBUS interface and partial MPRIS support
+-   added dvd menu button and deinterlace option
+-   added system tray icon and minimal mode option
+-   other fixes and improvements ...
 
 Version 1.0-pre2 (2009-08-09):
-  - added screen saver inhibition (using DBUS; org.freedesktop.ScreenSaver)
-  - added basic playlist features: .m3u, .pls, .xspf (+ old kaffeine format),
-    drag and drop, repeat mode and shuffle
-  - added OSD: various notifications, now and next epg
-  - added DVB-S2 support using S2 API (old API still supported for non-S2 usage)
-  - improved epg: save and restore events, possibility to schedule programs
-  - other fixes and improvements ...
+
+-   added screen saver inhibition (using DBUS;
+    org.freedesktop.ScreenSaver)
+-   added basic playlist features: .m3u, .pls, .xspf (+ old kaffeine
+    format), drag and drop, repeat mode and shuffle
+-   added OSD: various notifications, now and next epg
+-   added DVB-S2 support using S2 API (old API still supported for
+    non-S2 usage)
+-   improved epg: save and restore events, possibility to schedule
+    programs
+-   other fixes and improvements ...
 
 Version 1.0-pre1 (2009-04-26):
-  - initial KDE4 release based on KDE4, QT4, Phonon and Solid
-    much of the code base was rewritten;
-    as a consequence not all features from old kaffeine are present yet
-  - supports:
-    - KDE integration
-    - DVB-C, DVB-S, DVB-T and ATSC devices
-    - multiple devices and device hot plug
-    - scanning inclusive region-based DVB-T Autoscan
-    - audio stream and subtitle selection
-    - recordings inclusive instant record
-    - time shifting
-    - EPG (incomplete)
-    - audio CDs, video CDs and DVDs
-  - stuff you might miss: (working hard on them of course ;-)
-    - localization (see below), full EPG support, CICAM, playlist handling,
-      OSD, S2API, broadcast, DBUS interface
-  - note: there will be a follow-up release in 1 - 1.5 months fixing important
-          shortcomings and also giving time for translations
-  - note: KDE 4.2, Phonon 4.3 and QT 4.4 are required to build / run Kaffeine
-  - note: Kaffeine currently depends on phonon-xine for digital TV playback
-          (due to the used phonon API)
-  - note: you have to reconfigure / rescan if you were using snapshots before
+
+-   initial KDE4 release based on KDE4, QT4, Phonon and Solid much of
+    the code base was rewritten; as a consequence not all features from
+    old kaffeine are present yet
+-   supports:
+    -   KDE integration
+    -   DVB-C, DVB-S, DVB-T and ATSC devices
+    -   multiple devices and device hot plug
+    -   scanning inclusive region-based DVB-T Autoscan
+    -   audio stream and subtitle selection
+    -   recordings inclusive instant record
+    -   time shifting
+    -   EPG (incomplete)
+    -   audio CDs, video CDs and DVDs
+-   stuff you might miss: (working hard on them of course ;-)
+    -   localization (see below), full EPG support, CICAM, playlist
+        handling, OSD, S2API, broadcast, DBUS interface
+-   note: there will be a follow-up release in 1 - 1.5 months fixing
+    important shortcomings and also giving time for translations
+-   note: KDE 4.2, Phonon 4.3 and QT 4.4 are required to build / run
+    Kaffeine
+-   note: Kaffeine currently depends on phonon-xine for digital TV
+    playback (due to the used phonon API)
+-   note: you have to reconfigure / rescan if you were using snapshots
+    before
