@@ -13,6 +13,7 @@ Makefile
 config-kaffeine.h
 doc/index.html
 doc/kaffeine.1
+doc/index.cache.bz2
 dtvdaemon/dtvdaemon
 i18n/
 install/
