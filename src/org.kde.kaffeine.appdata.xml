@@ -17,6 +17,7 @@
   <name xml:lang="fi">Kaffeine</name>
   <name xml:lang="fr">Kaffeine</name>
   <name xml:lang="gl">Kaffeine</name>
+  <name xml:lang="ia">Kaffeine</name>
   <name xml:lang="id">Kaffeine</name>
   <name xml:lang="it">Kaffeine</name>
   <name xml:lang="ko">Kaffeine</name>
@@ -52,6 +53,7 @@
   <summary xml:lang="fi">Multimediasoitin</summary>
   <summary xml:lang="fr">Lecteur multimédia</summary>
   <summary xml:lang="gl">Reprodutor de son e vídeo</summary>
+  <summary xml:lang="ia">Reproductor multimedial</summary>
   <summary xml:lang="id">Pemutar Multimedia</summary>
   <summary xml:lang="it">Lettore multimediale</summary>
   <summary xml:lang="ko">멀티미디어 재생기</summary>
