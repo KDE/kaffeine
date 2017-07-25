@@ -733,7 +733,7 @@ void IsdbTTransponder::readTransponder(QDataStream &stream)
 
 	stream >> layers;
 	for (int i = 0; i < 3; i ++) {
-		if ((1 << i) && layers)
+		if ((1 << i) & layers)
 			layerEnabled[i] = true;
 		else
 			layerEnabled[i] = false;
@@ -762,7 +762,7 @@ bool IsdbTTransponder::fromString(const QString &string)
 
 	reader.readInt(layers);
 	for (int i = 0; i < 3; i ++) {
-		if ((1 << i) && layers)
+		if ((1 << i) & layers)
 			layerEnabled[i] = true;
 		else
 			layerEnabled[i] = false;
