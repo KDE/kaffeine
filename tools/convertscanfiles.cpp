@@ -30,6 +30,17 @@
 
 #include "../src/dvb/dvbtransponder.h"
 
+// Mark fallthoughs to shut up gcc 7 warnings
+#ifndef __GNUC__
+	#define FALLTHROUGH
+#else
+#  if __GNUC__ <= 6
+	#define FALLTHROUGH
+#  else
+	#define FALLTHROUGH __attribute__ ((fallthrough));
+#  endif
+#endif
+
 class NumericalLessThan
 {
 public:
@@ -422,8 +433,10 @@ QString parseDvbv5::outputLine()
 			line = "S " + frq + " " + polar[0] + " " + symbolRate + " " + fec;
 			return line;
 		}
-		// Fall though, because it is not DvbS
 		type = DvbTransponderBase::DvbS2;
+
+		// Fall through DVB-S2 handling
+		FALLTHROUGH
 	}
 	case DvbTransponderBase::DvbS2: {
 		if (rollOff.isEmpty())
