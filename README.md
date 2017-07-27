@@ -48,6 +48,23 @@ And, to build the optional Kaffeine Handbook documentation:
 PS.: The above was tested with Debian SID and Ubuntu Xenial (16.04).
      Other versions may have different requirements.
 
+### Debian Packaging
+
+If you want to create a Debian package from Kaffeine's sources,
+you need to install the needed tools with:
+
+    apt-get install fakeroot dpkg-dev pkg-kde-tools
+
+And run the following commands:
+
+    git clone git://anonscm.debian.org/pkg-kde/kde-extras/kaffeine.git deb-build
+    cd deb-build
+    rsync -ua --exclude '.git*' --exclude deb-build .. .
+    rm CMakeCache.txt
+    cat Changelog |grep Version|head -1|perl -ne 'if (m/Version\s*(\S+)/) { print "kaffeine ($1-1) unstable; urgency=medium\n\n  * New upstream release.\n" }' >debian/changelog
+    echo " -- root <root@localhost>  $(date -R)" >>debian/changelog
+    fakeroot debian/rules binary
+
 Fedora
 ------
 
