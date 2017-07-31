@@ -119,22 +119,22 @@ libdvbv5 by hand, as it is not provided there. OpenSUSE Leap
 
 Before compiling libdvbv5, some packages are needed:
 
-	zypper install autoconf automake libjpeg-devel
+    zypper install autoconf automake libjpeg-devel
 
 Compiling libdvbv5 (as normal user):
 
-	wget https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.10.0.tar.bz2
-	tar xvf v4l-utils-1.10.0.tar.bz2
-	cd v4l-utils
-	./bootstrap.sh && ./configure && make
+    wget https://linuxtv.org/downloads/v4l-utils/v4l-utils-1.10.0.tar.bz2
+    tar xvf v4l-utils-1.10.0.tar.bz2
+    cd v4l-utils
+    ./bootstrap.sh && ./configure && make
 
 Installing the library (as root):
 
-	make install
+    make install
 
 And, to build the optional Kaffeine Handbook documentation:
 
-	zypper install kdoctools-devel
+    zypper install kdoctools-devel
 
 PS.: The above was tested with openSUSE 13.2.
      Other versions may have different requirements.
@@ -145,7 +145,7 @@ Gentoo
 Kaffeine is already packaged on Gentoo. Installing it is as
 simple as:
 
-	emerge kaffeine
+    emerge kaffeine
 
 Arch Linux
 ----------
@@ -153,7 +153,7 @@ Arch Linux
 Kaffeine is already packaged on Arch Linux. Installing it is as
 simple as:
 
-	pacman -S kaffeine
+    pacman -S kaffeine
 
 Installing translations
 -----------------------
@@ -164,34 +164,36 @@ use Kaffeine on non-English setups.
 The Kaffeine tarballs should already have the translations on it,
 but, if you're installing from the git tree, you'll need to run a
 script to get them:
-	(cd .. && kaffeine/tools/update_l10n.sh)
+
+    (cd .. && kaffeine/tools/update_l10n.sh)
 
 How to build Kaffeine
 =====================
 
 Create an empty build directory and do the following steps:
 
-	$ cmake <path/to/kaffeine> <options>
-	$ make
+    $ cmake <path/to/kaffeine> <options>
+    $ make
 
-Where <path/to/kaffeine> is usually the current dir, e. g.:
+Where `path/to/kaffeine` is usually the current dir, e. g., the
+following command is usually enough:
 
-	$ cmake . && make
+    $ cmake . && make
 
-Useful options include:
+Useful `options` include:
 
 * -DCMAKE_BUILD_TYPE=<type> (Debug or Release)
 * -DCMAKE_INSTALL_PREFIX=<path> (installation prefix for Kaffeine, e.g. /usr)
 * -DBUILD_TOOLS=1 (also compile some tools needed by developers)
 
-You may also use "ccmake" if you want to see all Kaffeine's build
+You may also use `ccmake` if you want to see all Kaffeine's build
 options, and set them using an interactive interface.
 
 For further information look for generic KF5 / cmake instructions.
 
 The install should be done as root user with:
 
-	# make install
+    # make install
 
 Known video output issues
 =========================
@@ -213,7 +215,7 @@ from a X11 section. Such bug causes Kaffeine windows to not open:
 
 A workaround is to start Kaffeine with:
 
-	LIBGL_DRI3_DISABLE=1 kaffeine
+    LIBGL_DRI3_DISABLE=1 kaffeine
 
 Another solution is to use a vnc server.
 
@@ -225,13 +227,14 @@ Kaffeine, with obviously with won't work via remote access. It may also not
 detect properly the best video output plugin for some hardware settings.
 
 For such scenarios, you may try to change the arguments passed to libVLC via
-the "Settings" -->  "Configure Kaffeine" -->  "libVLC", changing the libVLC
+the `Settings` -->  `Configure Kaffeine` -->  `libVLC`, changing the libVLC
 arguments to:
 
-	--no-video-title-show -V xcb_glx
+    --no-video-title-show -V xcb_glx
+
 or:
 
-	--no-video-title-show -V xcb_xv
+    --no-video-title-show -V xcb_xv
 
 and re-start Kaffeine.
 
@@ -249,11 +252,11 @@ reported at:
 
 For Radeon GPU, the vdpau driver can be forced with:
 
-	export VDPAU_DRIVER=r600
+    export VDPAU_DRIVER=r600
 
 The VA-GL driver can be used for Intel GPUs. It can be forced with:
 
-	export VDPAU_DRIVER=va_gl
+    export VDPAU_DRIVER=va_gl
 
 Note: you may need to install mesa-vdpau-drivers and/or libvdpau-va-gl
 packages for vdpau to work.
@@ -263,7 +266,7 @@ GPU vdpau driver can't decode the compression standard used by the
 broadcasters, it could be better to disable VDPAU backend.
 That can be done by passing an invalid driver name, like:
 
-	export VDPAU_DRIVER=none
+    export VDPAU_DRIVER=none
 
 Homepage
 ========
