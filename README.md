@@ -171,9 +171,12 @@ How to build Kaffeine
 
 Create an empty build directory and do the following steps:
 
-	# cmake <path/to/kaffeine/source/directory> <options>
-	# make
-	# make install
+	$ cmake <path/to/kaffeine> <options>
+	$ make
+
+Where <path/to/kaffeine> is usually the current dir, e. g.:
+
+	$ cmake . && make
 
 Useful options include:
 
@@ -181,7 +184,14 @@ Useful options include:
 * -DCMAKE_INSTALL_PREFIX=<path> (installation prefix for Kaffeine, e.g. /usr)
 * -DBUILD_TOOLS=1 (also compile some tools needed by developers)
 
+You may also use "ccmake" if you want to see all Kaffeine's build
+options, and set them using an interactive interface.
+
 For further information look for generic KF5 / cmake instructions.
+
+The install should be done as root user with:
+
+	# make install
 
 Known video output issues
 =========================
