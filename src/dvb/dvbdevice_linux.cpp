@@ -279,31 +279,6 @@ bool DvbLinuxDevice::acquire()
 	return true;
 }
 
-bool DvbLinuxDevice::setTone(SecTone tone)
-{
-	Q_ASSERT(dvbv5_parms);
-
-	if (dvb_fe_sec_tone(dvbv5_parms,
-		  (tone == ToneOn) ? SEC_TONE_ON : SEC_TONE_OFF) != 0) {
-		qCWarning(logDev, "ioctl FE_SET_TONE failed for frontend %s", qPrintable(frontendPath));
-		return false;
-	}
-
-	return true;
-}
-
-bool DvbLinuxDevice::setVoltage(SecVoltage voltage)
-{
-	Q_ASSERT(dvbv5_parms);
-
-	if (dvb_fe_lnb_high_voltage(dvbv5_parms, voltage == Voltage18V) != 0) {
-		qCWarning(logDev, "ioctl FE_SET_VOLTAGE failed for frontend %s", qPrintable(frontendPath));
-		return false;
-	}
-
-	return true;
-}
-
 bool DvbLinuxDevice::sendMessage(const char *message, int length)
 {
 	Q_ASSERT(dvbv5_parms && (length >= 0) && (length <= 6));

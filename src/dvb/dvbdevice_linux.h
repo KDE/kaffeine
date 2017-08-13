@@ -66,8 +66,6 @@ protected:
 	void setFrontendDevice(DvbFrontendDevice *frontend_);
 	void setDeviceEnabled(bool enabled_);
 	bool acquire();
-	bool setTone(SecTone tone);
-	bool setVoltage(SecVoltage voltage);
 	bool sendMessage(const char *message, int length);
 	bool sendBurst(SecBurst burst);
 	bool satSetup(QString lnbModel, int satNumber, int bpf);
