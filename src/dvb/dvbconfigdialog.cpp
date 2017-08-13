@@ -1049,6 +1049,12 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	higherVoltageBox = new QCheckBox(parent);
 	higherVoltageBox->setTristate(true);
 	higherVoltageBox->setCheckState((Qt::CheckState)lnbConfig->higherVoltage);
+	higherVoltageBox->setToolTip(i18n("On some DVB devices, there's an extra control that allows to increase the \n"
+		"voltage sent to LNBf, in order to compensate for cabling loss. This tri-state\n"
+		"button defaults to not use it. It may be set to:\n"
+		"- normal mode (unckecked);\n"
+		"- higher voltage mode (checked);\n"
+		"- tristate (don't send the control)."));
 	layout->addWidget(higherVoltageBox, 1, 1);
 
 	layout->addWidget(new QLabel(i18n("Configuration:")), 2, 0);
