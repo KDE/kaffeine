@@ -71,6 +71,10 @@ public:
 	int bpf;		// Bandpass Frequency for SCR/Unicable
 
 	int latitude, longitude; // degrees - needed for Usals rotor
+	int higherVoltage;	// Use a higher voltage to compensate cable loss
+				// Qt::PartiallyChecked: don't use the ioctl
+				// Qt::Unchecked: normal voltage (13V/18V)
+				// Qt::Checked: higher voltages (typically: 14V/19V)
 
 private:
 	TransmissionType transmissionType;

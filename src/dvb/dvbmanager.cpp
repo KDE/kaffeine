@@ -647,6 +647,7 @@ void DvbManager::readDeviceConfigs()
 			config->name = reader.readString(QLatin1String("name"));
 			config->scanSource = reader.readString(QLatin1String("scanSource"));
 			config->timeout = reader.readInt(QLatin1String("timeout"));
+			config->higherVoltage = reader.readInt(QLatin1String("higherVoltage"));
 
 			if (type == DvbConfigBase::DvbS) {
 				config->latitude = 0;
@@ -698,6 +699,7 @@ void DvbManager::writeDeviceConfigs()
 			writer.write(QLatin1String("name"), config->name);
 			writer.write(QLatin1String("scanSource"), config->scanSource);
 			writer.write(QLatin1String("timeout"), config->timeout);
+			writer.write(QLatin1String("higherVoltage"), config->higherVoltage);
 
 			if (config->getTransmissionType() == DvbConfigBase::DvbS) {
 				writer.write(QLatin1String("configuration"), config->configuration);

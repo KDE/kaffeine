@@ -317,6 +317,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	if (!backend->satSetup(config->currentLnb.alias, satNumber, 0))
 		return;
 
+	backend->setHighVoltage(config->higherVoltage);
+
 	// rotor
 
 	switch (config->configuration) {

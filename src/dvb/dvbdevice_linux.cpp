@@ -30,6 +30,7 @@ extern "C" {
 }
 
 #include <QFile>
+#include <QCheckBox>
 #include <QMessageLogger>
 #include <QRegularExpressionMatch>
 #include <Solid/Device>
@@ -275,6 +276,19 @@ bool DvbLinuxDevice::acquire()
 		dvbv5_parms = NULL;
 		return false;
 	}
+
+	return true;
+}
+
+bool DvbLinuxDevice::setHighVoltage(int higherVoltage)
+{
+	Q_ASSERT(dvbv5_parms);
+
+	if ((Qt::CheckState)higherVoltage == Qt::PartiallyChecked)
+		return true;
+
+	if (dvb_fe_lnb_high_voltage(dvbv5_parms, higherVoltage ? 1 : 0))
+		return false;
 
 	return true;
 }

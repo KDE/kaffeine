@@ -148,6 +148,7 @@ public:
 	virtual void setFrontendDevice(DvbFrontendDevice *frontend) = 0;
 	virtual void setDeviceEnabled(bool enabled) = 0;
 	virtual bool acquire() = 0;
+	virtual bool setHighVoltage(int higherVoltage) = 0;
 	virtual bool sendMessage(const char *message, int length) = 0;
 	virtual bool sendBurst(SecBurst burst) = 0;
 	virtual bool satSetup(QString lnbModel, int satNumber, int bpf) = 0;
