@@ -1,6 +1,22 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.13 (2017-09-14):
+
+-   Add a logic to send LNBf higher voltage commands. That may be
+    needed on a few devices, if the antenna cabling is too long,
+    as, otherwise, polarity setting may not work (BUG#374693).
+-   Fix layer selection for ISDB-T;
+-   Improve README.md instructions;
+-   get rid of incomplete work (dtvdaemon);
+-   fix install dir on some distros;
+-   Shut up a gcc 7.1 warning;
+-   scanfile.dvb updated.
+
+Version 2.0.12.1 (2017-07-22):
+
+-   Minor change at git sources.
+
 Version 2.0.12 (2017-07-19):
 
 -   Update Changelog to reflect all changes since version 1.3.1.
