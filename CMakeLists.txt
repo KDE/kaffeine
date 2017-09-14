@@ -94,7 +94,6 @@ if(HAVE_DVB)
 endif(HAVE_DVB)
 
 add_subdirectory(deviceactions)
-add_subdirectory(dtvdaemon)
 add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
