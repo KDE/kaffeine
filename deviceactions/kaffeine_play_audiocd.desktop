@@ -5,6 +5,7 @@ X-KDE-Solid-Predicate=OpticalDisc.availableContent & 'Audio'
 
 [Desktop Action PlayAudioCd]
 Name=Play Audio CD with Kaffeine
+Name[ar]=شغّل الأسطوانات الصّوتيّة ب‍«كافيين»
 Name[ast]=Reproducir CD d'audiu con Kaffeine
 Name[bg]=Възпроизвеждане на аудио CD с Kaffeine
 Name[bs]=Izvođenje Audio CD-ova programom Kaffeine
