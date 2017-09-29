@@ -94,7 +94,7 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 	}
 
 	if (isatty(STDERR_FILENO))
-		std::cerr << "\x1b[0;37m";
+		std::cerr << "\x1b[0m";
 
 	std::cerr << localMsg.constData() << "\n";
 
