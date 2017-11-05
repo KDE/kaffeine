@@ -330,7 +330,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 			break;
 		}
 		// New event data for the same event
-		if (existingEntry->details(FIRST_LANG).isEmpty() && !entry.details("first").isEmpty()) {
+		if (existingEntry->details(FIRST_LANG).isEmpty() && !entry.details(FIRST_LANG).isEmpty()) {
 			emit entryAboutToBeUpdated(existingEntry);
 
 			QHashIterator<QString, DvbEpgLangEntry> i(entry.langEntry);
@@ -352,7 +352,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		DvbSharedEpgEntry existingEntry = entries.value(DvbEpgEntryId(&entry));
 
 		if (existingEntry.isValid()) {
-			if (existingEntry->details(FIRST_LANG).isEmpty() && !entry.details("first").isEmpty()) {
+			if (existingEntry->details(FIRST_LANG).isEmpty() && !entry.details(FIRST_LANG).isEmpty()) {
 				// needed for atsc
 				emit entryAboutToBeUpdated(existingEntry);
 
