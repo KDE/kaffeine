@@ -73,7 +73,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 	if (firstEntry.channel.isValid()) {
 		entryString = QLocale().toString(firstEntry.begin.toLocalTime().time())
-			+ QLatin1Char(' ') + firstEntry.title;
+			+ QLatin1Char(' ') + firstEntry.title();
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
 		totalTime = QTime(0, 0, 0).secsTo(firstEntry.duration);
 	}
@@ -81,7 +81,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	if ((level == ShortOsd) && secondEntry.channel.isValid()) {
 		entryString = entryString + QLatin1Char('\n') +
 			QLocale().toString(secondEntry.begin.toLocalTime().time()) +
-			QLatin1Char(' ') + secondEntry.title;
+			QLatin1Char(' ') + secondEntry.title();
 	}
 
 	int lineHeight = QFontMetrics(osdFont).height();
@@ -119,17 +119,17 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 		if (level == LongOsd) {
 			QRect boundingRect = entryRect;
 
-			if (!firstEntry.subheading.isEmpty()) {
+			if (!firstEntry.subheading().isEmpty()) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(), lineHeight, Qt::AlignLeft,
-					firstEntry.subheading, &boundingRect);
+					firstEntry.subheading(), &boundingRect);
 			}
 
-			if (!firstEntry.details.isEmpty() && firstEntry.details != firstEntry.title) {
+			if (!firstEntry.details().isEmpty() && firstEntry.details() != firstEntry.title()) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(),
 					rect.height() - boundingRect.bottom() - 1,
-					Qt::AlignLeft | Qt::TextWordWrap, firstEntry.details,
+					Qt::AlignLeft | Qt::TextWordWrap, firstEntry.details(),
 					&boundingRect);
 			}
 

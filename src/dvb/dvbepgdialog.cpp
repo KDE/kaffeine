@@ -145,25 +145,25 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		return;
 	}
 
-	QString text = "<font color=#008000 size=\"+1\">" + entry->title + "</font>";
+	QString text = "<font color=#008000 size=\"+1\">" + entry->title() + "</font>";
 
-	if (!entry->subheading.isEmpty()) {
-		text += "<br/><font color=#808000>" + entry->subheading + "</font>";
+	if (!entry->subheading().isEmpty()) {
+		text += "<br/><font color=#808000>" + entry->subheading() + "</font>";
 	}
 
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 	text += "<br/><br/><font color=#800080>" + QLocale().toString(begin, QLocale::LongFormat) + " - " + QLocale().toString(end) + "</font>";
 
-	if (!entry->details.isEmpty() && entry->details !=  entry->title) {
-		text += "<br/><br/>" + entry->details;
+	if (!entry->details().isEmpty() && entry->details() !=  entry->title()) {
+		text += "<br/><br/>" + entry->details();
 	}
 
 	if (!entry->content.isEmpty()) {
 		text += "<br/><br/><font color=#000080>" + entry->content + "</font>";
 	}
-	if (!entry->parental.isEmpty()) {
-		text += "<br/><br/><font color=#800000>" + entry->parental + "</font>";
+	if (!entry->parental().isEmpty()) {
+		text += "<br/><br/><font color=#800000>" + entry->parental() + "</font>";
 	}
 
 	contentLabel->setText(text);
@@ -201,16 +201,16 @@ bool DvbEpgEntryLessThan::operator()(const DvbSharedEpgEntry &x, const DvbShared
 		return (x->duration < y->duration);
 	}
 
-	if (x->title != y->title) {
-		return (x->title < y->title);
+	if (x->title(FIRST_LANG) != y->title(FIRST_LANG)) {
+		return (x->title(FIRST_LANG) < y->title(FIRST_LANG));
 	}
 
-	if (x->subheading != y->subheading) {
-		return (x->subheading < y->subheading);
+	if (x->subheading(FIRST_LANG) != y->subheading(FIRST_LANG)) {
+		return (x->subheading(FIRST_LANG) < y->subheading(FIRST_LANG));
 	}
 
-	if (x->details < y->details) {
-		return (x->details < y->details);
+	if (x->details(FIRST_LANG) < y->details(FIRST_LANG)) {
+		return (x->details(FIRST_LANG) < y->details(FIRST_LANG));
 	}
 
 	return (x < y);
@@ -293,9 +293,9 @@ bool DvbEpgTableModelHelper::filterAcceptsItem(const DvbSharedEpgEntry &entry) c
 	case ChannelFilter:
 		return (entry->channel == channelFilter);
 	case ContentFilter:
-		return ((contentFilter.indexIn(entry->title) >= 0) ||
-			(contentFilter.indexIn(entry->subheading) >= 0) ||
-			(contentFilter.indexIn(entry->details) >= 0));
+		return ((contentFilter.indexIn(entry->title(FIRST_LANG)) >= 0) ||
+			(contentFilter.indexIn(entry->subheading(FIRST_LANG)) >= 0) ||
+			(contentFilter.indexIn(entry->details(FIRST_LANG)) >= 0));
 	}
 
 	return false;
@@ -356,7 +356,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 			case 1:
 				return entry->duration.toString("HH:mm");
 			case 2:
-				return entry->title;
+				return entry->title(FIRST_LANG);
 			case 3:
 				return entry->channel->name;
 			}

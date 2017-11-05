@@ -27,6 +27,17 @@ class AtscEpgFilter;
 class DvbDevice;
 class DvbEpgFilter;
 
+#define FIRST_LANG "first"
+
+class DvbEpgLangEntry
+{
+public:
+	QString title;
+	QString subheading;
+	QString details;
+	QString parental;
+};
+
 class DvbEpgEntry : public SharedData
 {
 public:
@@ -49,13 +60,151 @@ public:
 	EitType type;
 	QDateTime begin; // UTC
 	QTime duration;
-	QString language;
-	QString title;
-	QString subheading;
-	QString details;
 	QString content;
-	QString parental;
+
+	QHash<QString, DvbEpgLangEntry> langEntry;
+
 	DvbSharedRecording recording;
+
+	QString title(QString lang = QString()) const {
+		QString s;
+
+		if (!lang.isEmpty() && lang != FIRST_LANG)
+			return langEntry[lang].title;
+
+		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
+		bool first = true;
+
+		while (i.hasNext()) {
+			i.next();
+
+			QString code = i.key();
+			DvbEpgLangEntry entry = i.value();
+
+			if (!entry.title.isEmpty()) {
+				if (first)
+					first = false;
+				else
+					s += "/";
+
+				if (lang != FIRST_LANG) {
+					s += code;
+					s += ": ";
+				}
+				s += entry.title;
+			}
+
+			if (lang == FIRST_LANG)
+				break;
+		}
+		return s;
+	}
+
+	QString subheading(QString lang = QString()) const {
+		QString s;
+
+		if (!lang.isEmpty() && lang != FIRST_LANG)
+			return langEntry[lang].subheading;
+
+		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
+		bool first = true;
+
+		while (i.hasNext()) {
+			i.next();
+
+			QString code = i.key();
+			DvbEpgLangEntry entry = i.value();
+
+			if (!entry.subheading.isEmpty()) {
+				if (first)
+					first = false;
+				else
+					s += "/";
+
+				if (lang != FIRST_LANG) {
+					s += code;
+					s += ": ";
+				}
+				s += entry.subheading;
+			}
+
+			if (lang == FIRST_LANG)
+				break;
+		}
+		return s;
+	}
+
+	QString details(QString lang = QString()) const {
+		QString s;
+
+		if (!lang.isEmpty() && lang != FIRST_LANG)
+			return langEntry[lang].details;
+
+		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
+		bool first = true;
+
+		while (i.hasNext()) {
+			i.next();
+
+			QString code = i.key();
+			DvbEpgLangEntry entry = i.value();
+
+			if (!entry.details.isEmpty()) {
+				if (first)
+					first = false;
+				else
+					s += "\n\n";
+
+				if (lang != FIRST_LANG) {
+					s += code;
+					s += ": ";
+				}
+				s += entry.details;
+			}
+
+			if (lang == FIRST_LANG)
+				break;
+
+			s += "\n\n";
+		}
+		return s;
+	}
+
+	QString parental(QString lang = QString()) const {
+		QString s;
+
+		if (!lang.isEmpty() && lang != FIRST_LANG)
+			return langEntry[lang].parental;
+
+		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
+		bool first = true;
+
+		while (i.hasNext()) {
+			i.next();
+
+			QString code = i.key();
+			DvbEpgLangEntry entry = i.value();
+
+			if (!entry.parental.isEmpty()) {
+				if (first)
+					first = false;
+				else
+					s += " / ";
+
+				if (lang != FIRST_LANG) {
+					s += code;
+					s += ": ";
+				}
+				s += entry.parental;
+			}
+
+			if (lang == FIRST_LANG)
+				break;
+
+			s += "\n\n";
+		}
+		return s;
+	}
 
 	// Check only the user-visible elements
 	bool operator==(const DvbEpgEntry &other) const
@@ -66,18 +215,33 @@ public:
 			return false;
 		if (duration != other.duration)
 			return false;
-		if (language != other.language)
-			return false;
-		if (title != other.title)
-			return false;
-		if (subheading != other.subheading)
-			return false;
-		if (details != other.details)
-			return false;
 		if (content != other.content)
 			return false;
-		if (parental != other.parental)
-			return false;
+
+		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
+		while (i.hasNext()) {
+			i.next();
+
+			QString code = i.key();
+
+			if (!other.langEntry.contains(code))
+				return false;
+
+			DvbEpgLangEntry thisEntry = i.value();
+			DvbEpgLangEntry otherEntry = other.langEntry[code];
+
+			if (thisEntry.title != otherEntry.title)
+				return false;
+			if (thisEntry.subheading != otherEntry.subheading)
+				return false;
+			if (thisEntry.details != otherEntry.details)
+				return false;
+			if (thisEntry.parental != otherEntry.parental)
+				return false;
+
+			// If first language matches, assume entries are identical
+			return true;
+		}
 
 		return true;
 	}

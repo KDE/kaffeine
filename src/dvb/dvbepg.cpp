@@ -82,7 +82,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
 	DvbRecordingModel *recordingModel = manager->getRecordingModel();
-	bool hasRecordingKey = true, hasParental = true;
+	bool hasRecordingKey = true, hasParental = true, hasMultilang = true;
 	int version;
 	stream >> version;
 
@@ -90,7 +90,9 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		hasRecordingKey = false;
 	} else if (version == 0x79cffd36) {
 		hasParental = false;
-	} else if (version != 0x140c37b5) {
+	} else if (version == 0x140c37b5) {
+		hasMultilang = false;
+	} else if (version != 0x20171105) {
 		qCWarning(logEpg, "Wrong DB version for: %s", qPrintable(file.fileName()));
 		return;
 	}
@@ -103,9 +105,44 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 		stream >> entry.begin;
 		entry.begin = entry.begin.toUTC();
 		stream >> entry.duration;
-		stream >> entry.title;
-		stream >> entry.subheading;
-		stream >> entry.details;
+
+		if (hasMultilang) {
+			int i, count;
+
+			stream >> count;
+
+			for (i = 0; i < count; i++) {
+				QString code;
+				unsigned type;
+
+				DvbEpgLangEntry langEntry;
+				stream >> code;
+				stream >> langEntry.title;
+				stream >> langEntry.subheading;
+				stream >> langEntry.details;
+
+				stream >> type;
+				stream >> entry.content;
+				stream >> langEntry.parental;
+
+				if (type <= DvbEpgEntry::EitLast)
+					entry.type = DvbEpgEntry::EitType(type);
+				else
+					entry.type = DvbEpgEntry::EitActualTsSchedule;
+
+				entry.langEntry[code] = langEntry;
+			}
+
+
+		} else {
+			DvbEpgLangEntry langEntry;
+
+			stream >> langEntry.title;
+			stream >> langEntry.subheading;
+			stream >> langEntry.details;
+
+			entry.langEntry[FIRST_LANG] = langEntry;
+		}
 
 		if (hasRecordingKey) {
 			SqlKey recordingKey;
@@ -116,12 +153,12 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 			}
 		}
 
-		if (hasParental) {
+		if (hasParental && !hasMultilang) {
 			unsigned tmp;
 
 			stream >> tmp;
 			stream >> entry.content;
-			stream >> entry.parental;
+			stream >> entry.langEntry[FIRST_LANG].parental;
 
 			if (tmp <= DvbEpgEntry::EitLast)
 				entry.type = DvbEpgEntry::EitType(tmp);
@@ -157,7 +194,7 @@ DvbEpgModel::~DvbEpgModel()
 
 	QDataStream stream(&file);
 	stream.setVersion(QDataStream::Qt_4_4);
-	int version = 0x140c37b5;
+	int version = 0x20171105;
 	stream << version;
 
 	foreach (const DvbSharedEpgEntry &entry, entries) {
@@ -170,13 +207,28 @@ DvbEpgModel::~DvbEpgModel()
 		stream << entry->channel->name;
 		stream << entry->begin;
 		stream << entry->duration;
-		stream << entry->title;
-		stream << entry->subheading;
-		stream << entry->details;
+
+		stream << entry->langEntry.size();
+
+		QHashIterator<QString, DvbEpgLangEntry> i(entry->langEntry);
+
+		while (i.hasNext()) {
+			i.next();
+
+			stream << i.key();
+
+			DvbEpgLangEntry langEntry = i.value();
+
+			stream << langEntry.title;
+			stream << langEntry.subheading;
+			stream << langEntry.details;
+
+			stream << int(entry->type);
+			stream << entry->content;
+			stream << langEntry.parental;
+		}
+
 		stream << recordingKey.sqlKey;
-		stream << int(entry->type);
-		stream << entry->content;
-		stream << entry->parental;
 	}
 }
 
@@ -231,7 +283,9 @@ void DvbEpgModel::Debug(QString text, const DvbSharedEpgEntry &entry)
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 
-	qCDebug(logEpg, "event %s: type %d, lang %s from %s to %s: %s: %s: %s : %s", qPrintable(text), entry->type, qPrintable(entry->language), qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details), qPrintable(entry->content));
+	qCDebug(logEpg, "event %s: type %d, from %s to %s: %s: %s: %s : %s",
+		qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)),
+		qPrintable(entry->title()), qPrintable(entry->subheading()), qPrintable(entry->details()), qPrintable(entry->content));
 }
 
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
@@ -276,10 +330,18 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 			break;
 		}
 		// New event data for the same event
-		if (existingEntry->details.isEmpty() && !entry.details.isEmpty()) {
+		if (existingEntry->details(FIRST_LANG).isEmpty() && !entry.details("first").isEmpty()) {
 			emit entryAboutToBeUpdated(existingEntry);
-			const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
-				entry.details;
+
+			QHashIterator<QString, DvbEpgLangEntry> i(entry.langEntry);
+
+			while (i.hasNext()) {
+				i.next();
+
+				DvbEpgLangEntry langEntry = i.value();
+
+				const_cast<DvbEpgEntry *>(existingEntry.constData())->langEntry[i.key()].details = langEntry.details;
+			}
 			emit entryUpdated(existingEntry);
 			Debug("updated", existingEntry);
 		}
@@ -290,11 +352,19 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 		DvbSharedEpgEntry existingEntry = entries.value(DvbEpgEntryId(&entry));
 
 		if (existingEntry.isValid()) {
-			if (existingEntry->details.isEmpty() && !entry.details.isEmpty()) {
+			if (existingEntry->details(FIRST_LANG).isEmpty() && !entry.details("first").isEmpty()) {
 				// needed for atsc
 				emit entryAboutToBeUpdated(existingEntry);
-				const_cast<DvbEpgEntry *>(existingEntry.constData())->details =
-					entry.details;
+
+				QHashIterator<QString, DvbEpgLangEntry> i(entry.langEntry);
+
+				while (i.hasNext()) {
+					i.next();
+
+					DvbEpgLangEntry langEntry = i.value();
+
+					const_cast<DvbEpgEntry *>(existingEntry.constData())->langEntry[i.key()].details = langEntry.details;
+				}
 				emit entryUpdated(existingEntry);
 				Debug("updated2", existingEntry);
 			}
@@ -341,7 +411,7 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 	if (!entry->recording.isValid()) {
 		DvbRecording recording;
 		recording.priority = priority;
-		recording.name = entry->title;
+		recording.name = entry->title(FIRST_LANG);
 		recording.channel = entry->channel;
 		recording.begin = entry->begin.addSecs(-extraSecondsBefore);
 		recording.beginEPG = entry->begin;
@@ -350,9 +420,9 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 		recording.durationEPG =
 			entry->duration;
 		recording.subheading =
-			entry->subheading;
+			entry->subheading(FIRST_LANG);
 		recording.details =
-			entry->details;
+			entry->details();
 		recording.disabled = false;
 		const_cast<DvbEpgEntry *>(entry.constData())->recording =
 			manager->getRecordingModel()->addRecording(recording, checkForRecursion);
@@ -833,7 +903,7 @@ QString DvbEpgFilter::getParental(QString code, DvbParentalRatingEntry &entry)
 	// Rating from 0x10 to 0xff are broadcaster's specific
 	if (entry.rating() == 0) {
 		// xgettext:no-c-format
-		parental += i18n("Country %1: not rated\n", code);
+		parental += i18n("not rated\n");
 	} else if (entry.rating() < 0x10) {
 		if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
 			unsigned int rating = entry.rating();
@@ -857,10 +927,10 @@ QString DvbEpgFilter::getParental(QString code, DvbParentalRatingEntry &entry)
 
 			QString ratingStr = i18n(braRating[entry.rating()]);
 			// xgettext:no-c-format
-			parental += i18n("Country %1: rating: %2%3\n", code, ratingStr, GenStr);
+			parental += i18n("Parental rate: %2%3\n", ratingStr, GenStr);
 		} else {
 			// xgettext:no-c-format
-			parental += i18n("Country %1: rating: %2 years.\n", code, entry.rating() + 3);
+			parental += i18n("Parental rate: %2 years.\n", entry.rating() + 3);
 		}
 	}
 
@@ -905,6 +975,7 @@ void DvbEpgFilter::processSection(const char *data, int size)
 
 	for (DvbEitSectionEntry entry = eitSection.entries(); entry.isValid(); entry.advance()) {
 		DvbEpgEntry epgEntry;
+		DvbEpgLangEntry *langEntry;
 
 		if (tableId == 0x4e)
 			epgEntry.type = DvbEpgEntry::EitActualTsPresentFollowing;
@@ -923,10 +994,10 @@ void DvbEpgFilter::processSection(const char *data, int size)
 		 */
 		if (channel->transponder.getTransmissionType() == DvbTransponderBase::IsdbT)
 			epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
-					           bcdToTime(entry.startTime()), Qt::OffsetFromUTC, -10800).toUTC();
+						   bcdToTime(entry.startTime()), Qt::OffsetFromUTC, -10800).toUTC();
 		else
 			epgEntry.begin = QDateTime(QDate::fromJulianDay(entry.startDate() + 2400001),
-					           bcdToTime(entry.startTime()), Qt::UTC);
+						   bcdToTime(entry.startTime()), Qt::UTC);
 		epgEntry.duration = bcdToTime(entry.duration());
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
@@ -945,17 +1016,15 @@ void DvbEpgFilter::processSection(const char *data, int size)
 				code.append(QChar(eventDescriptor.languageCode3()));
 				code = code.toUpper();
 
-				if (epgEntry.language.isEmpty()) {
-					epgEntry.language = code;
-				} else {
-					if (code != epgEntry.language) {
-				                qCDebug(logEpg, "Ignoring short event descriptor for language %s", qPrintable(code));
-						continue;
-					}
+				if (!epgEntry.langEntry.contains(code)) {
+					DvbEpgLangEntry e;
+					epgEntry.langEntry.insert(code, e);
 				}
+				langEntry = &epgEntry.langEntry[code];
 
-				epgEntry.title += eventDescriptor.eventName();
-				epgEntry.subheading += eventDescriptor.text();
+				langEntry->title += eventDescriptor.eventName();
+				langEntry->subheading += eventDescriptor.text();
+
 				break;
 			    }
 			case 0x4e: {
@@ -971,16 +1040,13 @@ void DvbEpgFilter::processSection(const char *data, int size)
 				code.append(QChar(eventDescriptor.languageCode3()));
 				code = code.toUpper();
 
-				if (epgEntry.language.isEmpty()) {
-					epgEntry.language = code;
-				} else {
-					if (code != epgEntry.language) {
-				                qCDebug(logEpg, "Ignoring extended event descriptor for language %s", qPrintable(code));
-						continue;
-					}
+				if (!epgEntry.langEntry.contains(code)) {
+					DvbEpgLangEntry e;
+					epgEntry.langEntry.insert(code, e);
 				}
+				langEntry = &epgEntry.langEntry[code];
 
-				epgEntry.details += eventDescriptor.text();
+				langEntry->details += eventDescriptor.text();
 				break;
 			    }
 			case 0x54: {
@@ -1007,16 +1073,13 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					code.append(QChar(entry.languageCode3()));
 					code = code.toUpper();
 
-					if (epgEntry.language.isEmpty()) {
-						epgEntry.language = code;
-					} else {
-						if (code != epgEntry.language) {
-					                qCDebug(logEpg, "Ignoring parental rating description for language %s", qPrintable(code));
-							continue;
-						}
+					if (!epgEntry.langEntry.contains(code)) {
+						DvbEpgLangEntry e;
+						epgEntry.langEntry.insert(code, e);
 					}
+					langEntry = &epgEntry.langEntry[code];
 
-					epgEntry.parental += getParental(code, entry);
+					langEntry->parental += getParental(code, entry);
 				}
 				break;
 			    }
@@ -1191,7 +1254,16 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 		epgEntry.channel = channel;
 		epgEntry.begin = baseDateTime.addSecs(eitEntry.startTime());
 		epgEntry.duration = QTime(0, 0, 0).addSecs(eitEntry.duration());
-		epgEntry.title = eitEntry.title();
+
+
+		DvbEpgLangEntry *langEntry;
+
+		if (epgEntry.langEntry.contains(FIRST_LANG))
+			langEntry = &epgEntry.langEntry[FIRST_LANG];
+		else
+			langEntry = new(DvbEpgLangEntry);
+
+		langEntry->title = eitEntry.title();
 
 		quint32 id = ((quint32(fakeChannel.networkId) << 16) | quint32(eitEntry.eventId()));
 		DvbSharedEpgEntry entry = epgEntries.value(id);
@@ -1223,9 +1295,17 @@ void AtscEpgFilter::processEttSection(const char *data, int size)
 	if (entry.isValid()) {
 		QString details = ettSection.text();
 
-		if (entry->details != details) {
+		if (entry->details() != details) {
 			DvbEpgEntry modifiedEntry = *entry;
-			modifiedEntry.details = details;
+
+			DvbEpgLangEntry *langEntry;
+
+			if (modifiedEntry.langEntry.contains(FIRST_LANG))
+				langEntry = &modifiedEntry.langEntry[FIRST_LANG];
+			else
+				langEntry = new(DvbEpgLangEntry);
+
+			langEntry->details = details;
 			entry = epgModel->addEntry(modifiedEntry);
 			epgEntries.insert(id, entry);
 		}

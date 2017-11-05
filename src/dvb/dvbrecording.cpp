@@ -514,7 +514,7 @@ void DvbRecordingModel::findNewRecordings()
 	foreach(DvbEpgEntryId key, epgMap.keys())
 	{
 		DvbEpgEntry entry = *(epgMap.value(key));
-		QString title = entry.title;
+		QString title = entry.title(FIRST_LANG);
 		QStringList regexList = manager->getRecordingRegexList();
 		int i = 0;
 		foreach(QString regex, regexList) {
