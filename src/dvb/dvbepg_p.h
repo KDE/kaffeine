@@ -23,6 +23,7 @@
 
 #include "dvbbackenddevice.h"
 #include "dvbepg.h"
+#include "dvbsi.h"
 
 class DvbContentDescriptor;
 class DvbParentalRatingDescriptor;
@@ -43,7 +44,7 @@ private:
 
 	void processSection(const char *data, int size);
 	QString getContent(DvbContentDescriptor &descriptor);
-	QString getParental(DvbParentalRatingDescriptor &descriptor);
+	QString getParental(QString code, DvbParentalRatingEntry &entry);
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;

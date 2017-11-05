@@ -49,6 +49,7 @@ public:
 	EitType type;
 	QDateTime begin; // UTC
 	QTime duration;
+	QString language;
 	QString title;
 	QString subheading;
 	QString details;
@@ -64,6 +65,8 @@ public:
 		if (begin != other.begin)
 			return false;
 		if (duration != other.duration)
+			return false;
+		if (language != other.language)
 			return false;
 		if (title != other.title)
 			return false;

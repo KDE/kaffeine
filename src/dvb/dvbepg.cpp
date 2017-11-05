@@ -231,7 +231,7 @@ void DvbEpgModel::Debug(QString text, const DvbSharedEpgEntry &entry)
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 
-	qCDebug(logEpg, "event %s: type %d, from %s to %s: %s: %s: %s : %s", qPrintable(text), entry->type, qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details), qPrintable(entry->content));
+	qCDebug(logEpg, "event %s: type %d, lang %s from %s to %s: %s: %s: %s : %s", qPrintable(text), entry->type, qPrintable(entry->language), qPrintable(QLocale().toString(begin, QLocale::ShortFormat)), qPrintable(QLocale().toString(end)), qPrintable(entry->title), qPrintable(entry->subheading), qPrintable(entry->details), qPrintable(entry->content));
 }
 
 DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
@@ -825,48 +825,42 @@ static const QByteArray braRating[] = {
 
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
-QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
+QString DvbEpgFilter::getParental(QString code, DvbParentalRatingEntry &entry)
 {
 	QString parental;
 
-	for (DvbParentalRatingEntry entry = descriptor.contents(); entry.isValid(); entry.advance()) {
-		QString code;
-		code.append(QChar(entry.languageCode1()));
-		code.append(QChar(entry.languageCode2()));
-		code.append(QChar(entry.languageCode3()));
 
-		// Rating from 0x10 to 0xff are broadcaster's specific
-		if (entry.rating() == 0) {
-			// xgettext:no-c-format
-			parental += i18n("Country %1: not rated\n", code);
-		} else if (entry.rating() < 0x10) {
-			if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
-				unsigned int rating = entry.rating();
+	// Rating from 0x10 to 0xff are broadcaster's specific
+	if (entry.rating() == 0) {
+		// xgettext:no-c-format
+		parental += i18n("Country %1: not rated\n", code);
+	} else if (entry.rating() < 0x10) {
+		if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
+			unsigned int rating = entry.rating();
 
-				if (rating >= ARRAY_SIZE(braRating))
-					rating = 0;	// Reserved
+			if (rating >= ARRAY_SIZE(braRating))
+				rating = 0;	// Reserved
 
-				QString GenStr;
-				int genre = entry.rating() >> 4;
+			QString GenStr;
+			int genre = entry.rating() >> 4;
 
-				if (genre & 0x2)
-					GenStr = i18n("violence / ");
-				if (genre & 0x4)
-					GenStr = i18n("sex / ");
-				if (genre & 0x1)
-					GenStr = i18n("drugs / ");
-				if (genre) {
-					GenStr.truncate(GenStr.size() - 2);
-					GenStr = " (" + GenStr + ")";
-				}
-
-				QString ratingStr = i18n(braRating[entry.rating()]);
-				// xgettext:no-c-format
-				parental += i18n("Country %1: rating: %2%3\n", code, ratingStr, GenStr);
-			} else {
-				// xgettext:no-c-format
-				parental += i18n("Country %1: rating: %2 years.\n", code, entry.rating() + 3);
+			if (genre & 0x2)
+				GenStr = i18n("violence / ");
+			if (genre & 0x4)
+				GenStr = i18n("sex / ");
+			if (genre & 0x1)
+				GenStr = i18n("drugs / ");
+			if (genre) {
+				GenStr.truncate(GenStr.size() - 2);
+				GenStr = " (" + GenStr + ")";
 			}
+
+			QString ratingStr = i18n(braRating[entry.rating()]);
+			// xgettext:no-c-format
+			parental += i18n("Country %1: rating: %2%3\n", code, ratingStr, GenStr);
+		} else {
+			// xgettext:no-c-format
+			parental += i18n("Country %1: rating: %2 years.\n", code, entry.rating() + 3);
 		}
 	}
 
@@ -945,6 +939,21 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					break;
 				}
 
+				QString code;
+				code.append(QChar(eventDescriptor.languageCode1()));
+				code.append(QChar(eventDescriptor.languageCode2()));
+				code.append(QChar(eventDescriptor.languageCode3()));
+				code = code.toUpper();
+
+				if (epgEntry.language.isEmpty()) {
+					epgEntry.language = code;
+				} else {
+					if (code != epgEntry.language) {
+				                qCDebug(logEpg, "Ignoring short event descriptor for language %s", qPrintable(code));
+						continue;
+					}
+				}
+
 				epgEntry.title += eventDescriptor.eventName();
 				epgEntry.subheading += eventDescriptor.text();
 				break;
@@ -954,6 +963,21 @@ void DvbEpgFilter::processSection(const char *data, int size)
 
 				if (!eventDescriptor.isValid()) {
 					break;
+				}
+
+				QString code;
+				code.append(QChar(eventDescriptor.languageCode1()));
+				code.append(QChar(eventDescriptor.languageCode2()));
+				code.append(QChar(eventDescriptor.languageCode3()));
+				code = code.toUpper();
+
+				if (epgEntry.language.isEmpty()) {
+					epgEntry.language = code;
+				} else {
+					if (code != epgEntry.language) {
+				                qCDebug(logEpg, "Ignoring extended event descriptor for language %s", qPrintable(code));
+						continue;
+					}
 				}
 
 				epgEntry.details += eventDescriptor.text();
@@ -976,7 +1000,24 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					break;
 				}
 
-				epgEntry.parental += getParental(eventDescriptor);
+				for (DvbParentalRatingEntry entry = eventDescriptor.contents(); entry.isValid(); entry.advance()) {
+					QString code;
+					code.append(QChar(entry.languageCode1()));
+					code.append(QChar(entry.languageCode2()));
+					code.append(QChar(entry.languageCode3()));
+					code = code.toUpper();
+
+					if (epgEntry.language.isEmpty()) {
+						epgEntry.language = code;
+					} else {
+						if (code != epgEntry.language) {
+					                qCDebug(logEpg, "Ignoring parental rating description for language %s", qPrintable(code));
+							continue;
+						}
+					}
+
+					epgEntry.parental += getParental(code, entry);
+				}
 				break;
 			    }
 			}
