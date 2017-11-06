@@ -45,6 +45,7 @@ private:
 
 	DvbEpgLangEntry *getLangEntry(DvbEpgEntry &epgEntry,
 				      int code1, int code2, int code3,
+				      bool add_code = true,
 				      QString *code = NULL);
 	void processSection(const char *data, int size);
 	QString getContent(DvbContentDescriptor &descriptor);

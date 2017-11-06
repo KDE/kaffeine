@@ -940,6 +940,7 @@ QString DvbEpgFilter::getParental(QString code, DvbParentalRatingEntry &entry)
 
 DvbEpgLangEntry *DvbEpgFilter::getLangEntry(DvbEpgEntry &epgEntry,
 					    int code1, int code2, int code3,
+					    bool add_code,
 					    QString *code_)
 {
 	DvbEpgLangEntry *langEntry;
@@ -959,9 +960,11 @@ DvbEpgLangEntry *DvbEpgFilter::getLangEntry(DvbEpgEntry &epgEntry,
 	if (!epgEntry.langEntry.contains(code)) {
 		DvbEpgLangEntry e;
 		epgEntry.langEntry.insert(code, e);
-		if (!manager->languageCodes.contains(code)) {
-			manager->languageCodes[code] = true;
-			emit epgModel->languageAdded(code);
+		if (add_code) {
+			if (!manager->languageCodes.contains(code)) {
+				manager->languageCodes[code] = true;
+				emit epgModel->languageAdded(code);
+			}
 		}
 	}
 	langEntry = &epgEntry.langEntry[code];
@@ -1090,6 +1093,7 @@ void DvbEpgFilter::processSection(const char *data, int size)
 						     entry.languageCode1(),
 						     entry.languageCode2(),
 						     entry.languageCode3(),
+						     false,
 						     &code);
 					langEntry->parental += getParental(code, entry);
 				}
