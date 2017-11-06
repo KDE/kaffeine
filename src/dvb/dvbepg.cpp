@@ -928,10 +928,10 @@ QString DvbEpgFilter::getParental(QString code, DvbParentalRatingEntry &entry)
 
 			QString ratingStr = i18n(braRating[entry.rating()]);
 			// xgettext:no-c-format
-			parental += i18n("Parental rate: %2%3\n", ratingStr, GenStr);
+			parental += i18n("Parental rate: %1%2\n", ratingStr, GenStr);
 		} else {
 			// xgettext:no-c-format
-			parental += i18n("Parental rate: %2 years.\n", entry.rating() + 3);
+			parental += i18n("Parental rate: %1 years.\n", entry.rating() + 3);
 		}
 	}
 
