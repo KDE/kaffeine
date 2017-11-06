@@ -76,7 +76,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	QHashIterator<QString, bool> i(manager_->languageCodes);
 	while (i.hasNext()) {
 		i.next();
-		languageBox->addItem(i.key());
+		if (i.key() != FIRST_LANG)
+			languageBox->addItem(i.key());
 	}
 	langLayout->addWidget(languageBox);
 	connect(languageBox, SIGNAL(currentTextChanged(QString)),

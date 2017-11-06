@@ -97,7 +97,7 @@ public:
 				else
 					s += "/";
 
-				if (lang != FIRST_LANG) {
+				if (lang != FIRST_LANG && code != FIRST_LANG) {
 					s += code;
 					s += ": ";
 				}
@@ -141,7 +141,7 @@ public:
 				else
 					s += "/";
 
-				if (lang != FIRST_LANG) {
+				if (lang != FIRST_LANG && code != FIRST_LANG) {
 					s += code;
 					s += ": ";
 				}
@@ -185,7 +185,7 @@ public:
 				else
 					s += "\n\n";
 
-				if (lang != FIRST_LANG) {
+				if (lang != FIRST_LANG && code != FIRST_LANG) {
 					s += code;
 					s += ": ";
 				}
@@ -231,7 +231,7 @@ public:
 				else
 					s += " / ";
 
-				if (lang != FIRST_LANG) {
+				if (lang != FIRST_LANG && code != FIRST_LANG) {
 					s += code;
 					s += ": ";
 				}
