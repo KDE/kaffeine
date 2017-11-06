@@ -173,8 +173,18 @@ public:
 	QString parental(QString lang = QString()) const {
 		QString s;
 
-		if (!lang.isEmpty() && lang != FIRST_LANG)
-			return langEntry[lang].parental;
+		if (!lang.isEmpty()) {
+			/*
+			 * Only return the user requested parental data
+			 * ISO-639-2 code if the parental data is filled.
+			 *
+			 * If it isn't, show all parental info available
+			 */
+			if (langEntry[lang].parental.isEmpty())
+				lang = "";	/* Ignore FIRST_LANG */
+			else if (lang != FIRST_LANG)
+				return langEntry[lang].parental;
+		}
 
 		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
 		bool first = true;
