@@ -131,6 +131,9 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 					entry.type = DvbEpgEntry::EitActualTsSchedule;
 
 				entry.langEntry[code] = langEntry;
+
+				if (!langEntry.title.isEmpty() && !manager->languageCodes.contains(code))
+					manager->languageCodes[code] = true;
 			}
 
 
