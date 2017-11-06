@@ -23,6 +23,7 @@
 #include <KConfigGroup>
 #include <QAction>
 #include <QBoxLayout>
+#include <QComboBox>
 #include <QCoreApplication>
 #include <QDialogButtonBox>
 #include <QHeaderView>
@@ -65,6 +66,23 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 
 	QBoxLayout *rightLayout = new QVBoxLayout();
 	QBoxLayout *boxLayout = new QHBoxLayout();
+	QBoxLayout *langLayout = new QHBoxLayout();
+
+	QLabel *label = new QLabel(i18n("EPG language:"), mainWidget);
+	langLayout->addWidget(label);
+
+	languageBox = new QComboBox(mainWidget);
+	languageBox->addItem(i18n("Any language"));
+	QHashIterator<QString, bool> i(manager_->languageCodes);
+	while (i.hasNext()) {
+		i.next();
+		languageBox->addItem(i.key());
+	}
+	langLayout->addWidget(languageBox);
+	connect(languageBox, SIGNAL(currentTextChanged(QString)),
+		this, SLOT(languageChanged(QString)));
+
+	rightLayout->addLayout(langLayout);
 
 	QAction *scheduleAction = new QAction(QIcon::fromTheme(QLatin1String("media-record"), QIcon(":media-record")),
 		i18nc("@action:inmenu tv show", "Record Show"), this);
@@ -136,6 +154,18 @@ void DvbEpgDialog::channelActivated(const QModelIndex &index)
 	epgView->setCurrentIndex(epgTableModel->index(0, 0));
 }
 
+void DvbEpgDialog::languageChanged(const QString lang)
+{
+	// Handle the any language case
+	if (languageBox->currentIndex() <= 0)
+		currentLanguage = "";
+	else
+		currentLanguage = lang;
+	epgTableModel->setLanguage(currentLanguage);
+	epgView->setCurrentIndex(epgTableModel->index(0, 0));
+	entryActivated(epgTableModel->index(0, 0));
+}
+
 void DvbEpgDialog::entryActivated(const QModelIndex &index)
 {
 	const DvbSharedEpgEntry &entry = epgTableModel->value(index.row());
@@ -145,25 +175,25 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 		return;
 	}
 
-	QString text = "<font color=#008000 size=\"+1\">" + entry->title() + "</font>";
+	QString text = "<font color=#008000 size=\"+1\">" + entry->title(currentLanguage) + "</font>";
 
 	if (!entry->subheading().isEmpty()) {
-		text += "<br/><font color=#808000>" + entry->subheading() + "</font>";
+		text += "<br/><font color=#808000>" + entry->subheading(currentLanguage) + "</font>";
 	}
 
 	QDateTime begin = entry->begin.toLocalTime();
 	QTime end = entry->begin.addSecs(QTime(0, 0, 0).secsTo(entry->duration)).toLocalTime().time();
 	text += "<br/><br/><font color=#800080>" + QLocale().toString(begin, QLocale::LongFormat) + " - " + QLocale().toString(end) + "</font>";
 
-	if (!entry->details().isEmpty() && entry->details() !=  entry->title()) {
-		text += "<br/><br/>" + entry->details();
+	if (!entry->details(currentLanguage).isEmpty() && entry->details(currentLanguage) !=  entry->title(currentLanguage)) {
+		text += "<br/><br/>" + entry->details(currentLanguage);
 	}
 
 	if (!entry->content.isEmpty()) {
 		text += "<br/><br/><font color=#000080>" + entry->content + "</font>";
 	}
-	if (!entry->parental().isEmpty()) {
-		text += "<br/><br/><font color=#800000>" + entry->parental() + "</font>";
+	if (!entry->parental(currentLanguage).isEmpty()) {
+		text += "<br/><br/><font color=#800000>" + entry->parental(currentLanguage) + "</font>";
 	}
 
 	contentLabel->setText(text);
@@ -337,6 +367,12 @@ void DvbEpgTableModel::setChannelFilter(const DvbSharedChannel &channel)
 	reset(epgModel->getEntries());
 }
 
+void DvbEpgTableModel::setLanguage(QString lang)
+{
+	currentLanguage = lang;
+	reset(epgModel->getEntries());
+}
+
 QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 {
 	const DvbSharedEpgEntry &entry = value(index);
@@ -356,7 +392,7 @@ QVariant DvbEpgTableModel::data(const QModelIndex &index, int role) const
 			case 1:
 				return entry->duration.toString("HH:mm");
 			case 2:
-				return entry->title(FIRST_LANG);
+				return entry->title(currentLanguage);
 			case 3:
 				return entry->channel->name;
 			}

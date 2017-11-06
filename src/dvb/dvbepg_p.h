@@ -48,6 +48,7 @@ private:
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;
+	DvbManager *manager;
 };
 
 class AtscEpgMgtFilter : public DvbSectionFilter

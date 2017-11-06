@@ -600,9 +600,10 @@ DvbEpgModel::Iterator DvbEpgModel::removeEntry(Iterator it)
 	return entries.erase(it);
 }
 
-DvbEpgFilter::DvbEpgFilter(DvbManager *manager, DvbDevice *device_,
+DvbEpgFilter::DvbEpgFilter(DvbManager *manager_, DvbDevice *device_,
 	const DvbSharedChannel &channel) : device(device_)
 {
+	manager = manager_;
 	source = channel->source;
 	transponder = channel->transponder;
 	device->addSectionFilter(0x12, this);
@@ -1019,6 +1020,8 @@ void DvbEpgFilter::processSection(const char *data, int size)
 				if (!epgEntry.langEntry.contains(code)) {
 					DvbEpgLangEntry e;
 					epgEntry.langEntry.insert(code, e);
+					if (!manager->languageCodes.contains(code))
+						manager->languageCodes[code] = true;
 				}
 				langEntry = &epgEntry.langEntry[code];
 
@@ -1043,6 +1046,8 @@ void DvbEpgFilter::processSection(const char *data, int size)
 				if (!epgEntry.langEntry.contains(code)) {
 					DvbEpgLangEntry e;
 					epgEntry.langEntry.insert(code, e);
+					if (!manager->languageCodes.contains(code))
+						manager->languageCodes[code] = true;
 				}
 				langEntry = &epgEntry.langEntry[code];
 
@@ -1076,6 +1081,8 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					if (!epgEntry.langEntry.contains(code)) {
 						DvbEpgLangEntry e;
 						epgEntry.langEntry.insert(code, e);
+						if (!manager->languageCodes.contains(code))
+							manager->languageCodes[code] = true;
 					}
 					langEntry = &epgEntry.langEntry[code];
 
