@@ -959,8 +959,10 @@ DvbEpgLangEntry *DvbEpgFilter::getLangEntry(DvbEpgEntry &epgEntry,
 	if (!epgEntry.langEntry.contains(code)) {
 		DvbEpgLangEntry e;
 		epgEntry.langEntry.insert(code, e);
-		if (!manager->languageCodes.contains(code))
+		if (!manager->languageCodes.contains(code)) {
 			manager->languageCodes[code] = true;
+			emit epgModel->languageAdded(code);
+		}
 	}
 	langEntry = &epgEntry.langEntry[code];
 

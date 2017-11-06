@@ -336,6 +336,7 @@ signals:
 	void entryRemoved(const DvbSharedEpgEntry &entry);
 	void epgChannelAdded(const DvbSharedChannel &channel);
 	void epgChannelRemoved(const DvbSharedChannel &channel);
+	void languageAdded(const QString lang);
 
 private slots:
 	void channelAboutToBeUpdated(const DvbSharedChannel &channel);

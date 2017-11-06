@@ -42,6 +42,7 @@ public:
 
 private slots:
 	void languageChanged(const QString);
+	void languageAdded(const QString);
 	void channelActivated(const QModelIndex &index);
 	void entryActivated(const QModelIndex &index);
 	void checkEntry();

@@ -82,6 +82,8 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	langLayout->addWidget(languageBox);
 	connect(languageBox, SIGNAL(currentTextChanged(QString)),
 		this, SLOT(languageChanged(QString)));
+	connect(manager_->getEpgModel(), SIGNAL(languageAdded(const QString)),
+		this, SLOT(languageAdded(const QString)));
 
 	rightLayout->addLayout(langLayout);
 
@@ -165,6 +167,11 @@ void DvbEpgDialog::languageChanged(const QString lang)
 	epgTableModel->setLanguage(currentLanguage);
 	epgView->setCurrentIndex(epgTableModel->index(0, 0));
 	entryActivated(epgTableModel->index(0, 0));
+}
+
+void DvbEpgDialog::languageAdded(const QString lang)
+{
+	languageBox->addItem(lang);
 }
 
 void DvbEpgDialog::entryActivated(const QModelIndex &index)
