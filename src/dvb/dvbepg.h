@@ -69,8 +69,18 @@ public:
 	QString title(QString lang = QString()) const {
 		QString s;
 
-		if (!lang.isEmpty() && lang != FIRST_LANG)
-			return langEntry[lang].title;
+		if (!lang.isEmpty()) {
+			/*
+			 * Only return the user requested data
+			 * ISO-639-2 code if the title is filled.
+			 *
+			 * If it isn't, show first language
+			 */
+			if (langEntry[lang].title.isEmpty())
+				lang = FIRST_LANG;
+			else if (lang != FIRST_LANG)
+				return langEntry[lang].title;
+		}
 
 		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
 		bool first = true;
@@ -103,8 +113,18 @@ public:
 	QString subheading(QString lang = QString()) const {
 		QString s;
 
-		if (!lang.isEmpty() && lang != FIRST_LANG)
-			return langEntry[lang].subheading;
+		if (!lang.isEmpty()) {
+			/*
+			 * Only return the user requested data
+			 * ISO-639-2 code if the subheading is filled.
+			 *
+			 * If it isn't, show first language
+			 */
+			if (langEntry[lang].subheading.isEmpty())
+				lang = FIRST_LANG;
+			else if (lang != FIRST_LANG)
+				return langEntry[lang].subheading;
+		}
 
 		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
 		bool first = true;
@@ -137,8 +157,18 @@ public:
 	QString details(QString lang = QString()) const {
 		QString s;
 
-		if (!lang.isEmpty() && lang != FIRST_LANG)
-			return langEntry[lang].details;
+		if (!lang.isEmpty()) {
+			/*
+			 * Only return the user requested data
+			 * ISO-639-2 code if the details are filled.
+			 *
+			 * If it isn't, show first language
+			 */
+			if (langEntry[lang].details.isEmpty())
+				lang = FIRST_LANG;
+			else if (lang != FIRST_LANG)
+				return langEntry[lang].details;
+		}
 
 		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
 		bool first = true;
