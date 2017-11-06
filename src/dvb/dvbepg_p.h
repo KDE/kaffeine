@@ -27,6 +27,7 @@
 
 class DvbContentDescriptor;
 class DvbParentalRatingDescriptor;
+class DvbEpgLangEntry;
 
 class DvbEpgFilter : public QSharedData, public DvbSectionFilter
 {
@@ -42,6 +43,9 @@ private:
 	Q_DISABLE_COPY(DvbEpgFilter)
 	static QTime bcdToTime(int bcd);
 
+	DvbEpgLangEntry *getLangEntry(DvbEpgEntry &epgEntry,
+				      int code1, int code2, int code3,
+				      QString *code = NULL);
 	void processSection(const char *data, int size);
 	QString getContent(DvbContentDescriptor &descriptor);
 	QString getParental(QString code, DvbParentalRatingEntry &entry);

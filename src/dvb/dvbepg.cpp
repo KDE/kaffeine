@@ -938,6 +938,36 @@ QString DvbEpgFilter::getParental(QString code, DvbParentalRatingEntry &entry)
 	return parental;
 }
 
+DvbEpgLangEntry *DvbEpgFilter::getLangEntry(DvbEpgEntry &epgEntry,
+					    int code1, int code2, int code3,
+					    QString *code_)
+{
+	DvbEpgLangEntry *langEntry;
+	QString code;
+
+	if (!code1 || code1 == 0x20)
+		code = FIRST_LANG;
+	else {
+		code.append(QChar(code1));
+		code.append(QChar(code2));
+		code.append(QChar(code3));
+		code = code.toUpper();
+	}
+	if (code_)
+		code_ = new QString(code);
+
+	if (!epgEntry.langEntry.contains(code)) {
+		DvbEpgLangEntry e;
+		epgEntry.langEntry.insert(code, e);
+		if (!manager->languageCodes.contains(code))
+			manager->languageCodes[code] = true;
+	}
+	langEntry = &epgEntry.langEntry[code];
+
+	return langEntry;
+}
+
+
 void DvbEpgFilter::processSection(const char *data, int size)
 {
 	unsigned char tableId = data[0];
@@ -1011,19 +1041,10 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					break;
 				}
 
-				QString code;
-				code.append(QChar(eventDescriptor.languageCode1()));
-				code.append(QChar(eventDescriptor.languageCode2()));
-				code.append(QChar(eventDescriptor.languageCode3()));
-				code = code.toUpper();
-
-				if (!epgEntry.langEntry.contains(code)) {
-					DvbEpgLangEntry e;
-					epgEntry.langEntry.insert(code, e);
-					if (!manager->languageCodes.contains(code))
-						manager->languageCodes[code] = true;
-				}
-				langEntry = &epgEntry.langEntry[code];
+				langEntry = getLangEntry(epgEntry,
+					     eventDescriptor.languageCode1(),
+					     eventDescriptor.languageCode2(),
+					     eventDescriptor.languageCode3());
 
 				langEntry->title += eventDescriptor.eventName();
 				langEntry->subheading += eventDescriptor.text();
@@ -1037,20 +1058,10 @@ void DvbEpgFilter::processSection(const char *data, int size)
 					break;
 				}
 
-				QString code;
-				code.append(QChar(eventDescriptor.languageCode1()));
-				code.append(QChar(eventDescriptor.languageCode2()));
-				code.append(QChar(eventDescriptor.languageCode3()));
-				code = code.toUpper();
-
-				if (!epgEntry.langEntry.contains(code)) {
-					DvbEpgLangEntry e;
-					epgEntry.langEntry.insert(code, e);
-					if (!manager->languageCodes.contains(code))
-						manager->languageCodes[code] = true;
-				}
-				langEntry = &epgEntry.langEntry[code];
-
+				langEntry = getLangEntry(epgEntry,
+					     eventDescriptor.languageCode1(),
+					     eventDescriptor.languageCode2(),
+					     eventDescriptor.languageCode3());
 				langEntry->details += eventDescriptor.text();
 				break;
 			    }
@@ -1073,19 +1084,11 @@ void DvbEpgFilter::processSection(const char *data, int size)
 
 				for (DvbParentalRatingEntry entry = eventDescriptor.contents(); entry.isValid(); entry.advance()) {
 					QString code;
-					code.append(QChar(entry.languageCode1()));
-					code.append(QChar(entry.languageCode2()));
-					code.append(QChar(entry.languageCode3()));
-					code = code.toUpper();
-
-					if (!epgEntry.langEntry.contains(code)) {
-						DvbEpgLangEntry e;
-						epgEntry.langEntry.insert(code, e);
-						if (!manager->languageCodes.contains(code))
-							manager->languageCodes[code] = true;
-					}
-					langEntry = &epgEntry.langEntry[code];
-
+					langEntry = getLangEntry(epgEntry,
+						     entry.languageCode1(),
+						     entry.languageCode2(),
+						     entry.languageCode3(),
+						     &code);
 					langEntry->parental += getParental(code, entry);
 				}
 				break;
