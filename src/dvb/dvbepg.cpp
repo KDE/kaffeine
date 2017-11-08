@@ -414,7 +414,7 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 	if (!entry->recording.isValid()) {
 		DvbRecording recording;
 		recording.priority = priority;
-		recording.name = entry->title(FIRST_LANG);
+		recording.name = entry->title(manager->currentEpgLanguage);
 		recording.channel = entry->channel;
 		recording.begin = entry->begin.addSecs(-extraSecondsBefore);
 		recording.beginEPG = entry->begin;
@@ -423,9 +423,9 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 		recording.durationEPG =
 			entry->duration;
 		recording.subheading =
-			entry->subheading(FIRST_LANG);
+			entry->subheading(manager->currentEpgLanguage);
 		recording.details =
-			entry->details();
+			entry->details(manager->currentEpgLanguage);
 		recording.disabled = false;
 		const_cast<DvbEpgEntry *>(entry.constData())->recording =
 			manager->getRecordingModel()->addRecording(recording, checkForRecursion);
