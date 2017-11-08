@@ -74,10 +74,18 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	languageBox = new QComboBox(mainWidget);
 	languageBox->addItem(i18n("Any language"));
 	QHashIterator<QString, bool> i(manager_->languageCodes);
+	int j = 1;
 	while (i.hasNext()) {
 		i.next();
-		if (i.key() != FIRST_LANG)
-			languageBox->addItem(i.key());
+		QString lang = i.key();
+		if (lang != FIRST_LANG) {
+			languageBox->addItem(lang);
+			if (manager_->currentEpgLanguage == lang) {
+				languageBox->setCurrentIndex(j);
+				currentLanguage = lang;
+			}
+			j++;
+		}
 	}
 	langLayout->addWidget(languageBox);
 	connect(languageBox, SIGNAL(currentTextChanged(QString)),
@@ -100,6 +108,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 
 	epgTableModel = new DvbEpgTableModel(this);
 	epgTableModel->setEpgModel(manager->getEpgModel());
+	epgTableModel->setLanguage(currentLanguage);
 	connect(epgTableModel, SIGNAL(layoutChanged()), this, SLOT(checkEntry()));
 	QLineEdit *lineEdit = new QLineEdit(widget);
 	lineEdit->setClearButtonEnabled(true);
@@ -167,6 +176,7 @@ void DvbEpgDialog::languageChanged(const QString lang)
 	epgTableModel->setLanguage(currentLanguage);
 	epgView->setCurrentIndex(epgTableModel->index(0, 0));
 	entryActivated(epgTableModel->index(0, 0));
+	manager->currentEpgLanguage = currentLanguage;
 }
 
 void DvbEpgDialog::languageAdded(const QString lang)

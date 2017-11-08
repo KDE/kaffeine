@@ -122,6 +122,7 @@ public:
 	QString getAutoScanSource(const QString &source) const;
 	QList<DvbTransponder> getTransponders(DvbDevice *device, const QString &source);
 	QHash<QString, bool> languageCodes;
+	QString currentEpgLanguage;
 	bool updateScanData(const QByteArray &data);
 
 	QString getRecordingFolder() const;
