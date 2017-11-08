@@ -57,6 +57,7 @@ private:
 	QTreeView *epgView;
 	QLabel *contentLabel;
 	QComboBox *languageBox;
+	QLabel *languageLabel;
 };
 
 #endif /* DVBEPGDIALOG_H */
