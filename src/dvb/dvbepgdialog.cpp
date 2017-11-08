@@ -591,8 +591,10 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	languageLabel->setBuddy(languageBox);
 	if (iso639_2_codes.contains(currentLanguage))
 		languageLabel->setText(iso639_2_codes[currentLanguage]);
-	else
+	else if (currentLanguage == "")
 		languageLabel->setText(i18n("Any language"));
+	else
+		languageLabel->setText("");
 
 	rightLayout->addLayout(langLayout);
 
@@ -676,8 +678,10 @@ void DvbEpgDialog::languageChanged(const QString lang)
 		currentLanguage = lang;
 	if (iso639_2_codes.contains(currentLanguage))
 		languageLabel->setText(iso639_2_codes[currentLanguage]);
-	else
+	else if (currentLanguage == "")
 		languageLabel->setText(i18n("Any language"));
+	else
+		languageLabel->setText("");
 
 	epgTableModel->setLanguage(currentLanguage);
 	epgView->setCurrentIndex(epgTableModel->index(0, 0));
