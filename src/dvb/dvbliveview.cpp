@@ -38,9 +38,10 @@
 #include "dvbliveview_p.h"
 #include "dvbmanager.h"
 
-void DvbOsd::init(OsdLevel level_, const QString &channelName_,
+void DvbOsd::init(DvbManager *manager_, OsdLevel level_, const QString &channelName_,
 	const QList<DvbSharedEpgEntry> &epgEntries)
 {
+	manager = manager_;
 	level = level_;
 	channelName = channelName_;
 
@@ -68,12 +69,13 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 	QString timeString = QLocale().toString(QTime::currentTime());
 	QString entryString;
+	QString lang(manager->currentEpgLanguage);
 	int elapsedTime = 0;
 	int totalTime = 0;
 
 	if (firstEntry.channel.isValid()) {
 		entryString = QLocale().toString(firstEntry.begin.toLocalTime().time())
-			+ QLatin1Char(' ') + firstEntry.title();
+			+ QLatin1Char(' ') + firstEntry.title(lang);
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
 		totalTime = QTime(0, 0, 0).secsTo(firstEntry.duration);
 	}
@@ -81,7 +83,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	if ((level == ShortOsd) && secondEntry.channel.isValid()) {
 		entryString = entryString + QLatin1Char('\n') +
 			QLocale().toString(secondEntry.begin.toLocalTime().time()) +
-			QLatin1Char(' ') + secondEntry.title();
+			QLatin1Char(' ') + secondEntry.title(lang);
 	}
 
 	int lineHeight = QFontMetrics(osdFont).height();
@@ -125,7 +127,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 					firstEntry.subheading(), &boundingRect);
 			}
 
-			if (!firstEntry.details().isEmpty() && firstEntry.details() != firstEntry.title()) {
+			if (!firstEntry.details().isEmpty() && firstEntry.details() != firstEntry.title(lang)) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(),
 					rect.height() - boundingRect.bottom() - 1,
@@ -253,7 +255,7 @@ void DvbLiveView::toggleOsd()
 
 	switch (internal->dvbOsd.level) {
 	case DvbOsd::Off:
-		internal->dvbOsd.init(DvbOsd::ShortOsd,
+		internal->dvbOsd.init(manager, DvbOsd::ShortOsd,
 			QString(QLatin1String("%1 - %2")).arg(channel->number).arg(channel->name),
 			manager->getEpgModel()->getCurrentNext(channel));
 		osdWidget->showObject(&internal->dvbOsd, 2500);
@@ -420,7 +422,7 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		internal->timeShiftFile.close();
 		internal->retryCounter = 0;
 		internal->updateUrl();
-		internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
+		internal->dvbOsd.init(manager, DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
 		osdWidget->hideObject();
 		break;
 	case MediaWidget::Playing:
