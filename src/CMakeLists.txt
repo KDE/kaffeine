@@ -24,6 +24,7 @@ set(kaffeine_SRCS
 
 if(HAVE_DVB)
   set(kaffeinedvb_SRCS
+      iso639.cpp
       dvb/dvbcam_linux.cpp
       dvb/dvbchannel.cpp
       dvb/dvbchanneldialog.cpp
