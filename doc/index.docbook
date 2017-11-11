@@ -32,7 +32,7 @@
 <othername>Carvalho</othername>
 <surname>Chehab</surname>
 <affiliation>
-<address><email>mchehab@infradead.org</email></address>
+<address><email>mchehab+kde@kernel.org</email></address>
 </affiliation>
 </author>
 </authorgroup>
@@ -42,12 +42,13 @@
 <copyright>
 <year>2004</year>
 <year>2016</year>
+<year>2017</year>
 <holder>The &kaffeine; Authors</holder>
 </copyright>
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2016-06-26</date>
-<releaseinfo>&kaffeine; 2.0.4</releaseinfo>
+<date>2017-11-11</date>
+<releaseinfo>&kaffeine; 2.0.14</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
@@ -64,6 +65,7 @@
 <keyword>audio</keyword>
 <keyword>mp3</keyword>
 <keyword>dvd</keyword>
+<keyword>atsc</keyword>
 <keyword>dvb-t</keyword>
 <keyword>dvb-c</keyword>
 <keyword>dvb-s</keyword>
@@ -153,23 +155,154 @@ on the player window to create a new playlist. To change a playlist name edit it
 <!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
 
 <sect1 id="digital-tv">
-<title>Graphical User Interface for Digital TV</title>
+<title>Digital TV configuration</title>
 
 <para>While the basic functionality is useful enough for someone who wants a simple, yet powerful
 media player, the best feature in &kaffeine; is to use it as a &GUI; frontend to watch and record digital TV.
 </para>
 
-<para>In &kaffeine; version 2.0, the digital TV support was extended to support DVB-T2 and ISDB-T.
-Since it now uses libdvbv5, extending support for other digital TV standards is simple.
-Also, since it uses the &Linux; DVB version 5 API, it supports frontends capable of implementing multiple TVs at once.
+<para>Since &kaffeine; version 2.0, the digital TV support uses libdvbv5 and
+was extended to support new standards like DVB-T2 and ISDB-T. Extending its
+support for newer digital TV standards is now simpler.
+Also, since it uses the &Linux; DVB version 5 API, it supports frontends
+capable of implementing multiple digital TV standards.
 </para>
 
-<para>Setting the TV configuration on &kaffeine; is as simple as clicking on the <guimenu>Television</guimenu> pop up menu,
-and selecting the <guimenuitem>Configure Television</guimenuitem> option. A pop up window will open that requests the parameters to be used:
+<para>Setting the TV configuration on &kaffeine; is as simple as clicking on
+the <guimenu>Television</guimenu> pop up menu, and selecting the
+<guimenuitem>Configure Television</guimenuitem> option. A pop up window
+will open, allowing setting the parameters to be used:
 </para>
 
 <screenshot>
-<screeninfo>TV Configuration</screeninfo>
+<screeninfo>TV Configuration - General Options</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>TV Configuration - General Options</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title>General digital TV settings</title>
+
+<para>
+The <guimenu>General Options</guimenu> menu allows setting the
+device-independent settings.
+</para>
+
+<para>
+The <guilabel>Recording folder</guilabel> sets the location where all TV
+program records will be stored.
+</para>
+
+<para>
+The <guilabel>Time shift folder</guilabel> is used in conjunction with the
+pause button
+(<inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject>) of the media player screen. When the button
+is pressed, a time shift file will be stored at the location pointed by this
+menu option.
+</para>
+
+<para>
+The <guilabel>Begin margin</guilabel> and <guilabel>End margin</guilabel>
+options are used to setup a sort of <quote>security margin</quote> in order
+to avoid losing the beginning and the end of a program, as the time stamps at
+the program guide may not be precise. So, it actually starts recording a few
+minutes before the <guilabel>Start</guilabel> time defined at the
+<guimenu>Program Guide</guimenu>. The exact amount of time before is
+defined via <guilabel>Begin margin</guilabel>. It extends the
+record by the amount of time defined by <guilabel>End margin</guilabel>.
+after the end of the program.
+</para>
+
+<para>
+The <guilabel>Naming style for recordings</guilabel> is used to setup how
+&kaffeine; will name a program. Several macros can be used to dynamically
+change the name of the record:
+</para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para>
+<parameter>%title</parameter> - Title of the program, as seen at the
+<guimenu>Program Guide</guimenu> and <guimenu>Recording Schedule</guimenu>
+menus;
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>%day, %month, %year, %hour, %min, %sec</parameter> - Fields from the
+time stamp with represents the time when &kaffeine; starts recording a program;
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>%channel</parameter> - Name of the channel that streamed the program.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+The <guilabel>Action after recording finishes</guilabel> option is used to
+setup an optional command to be executed when &kaffeine; stops recording a
+program.
+</para>
+
+<para>
+Cliking at the <guilabel>Update Scan Data over Internet</guilabel> option
+makes &kaffeine; to check if a new channel scanning definition file is
+present at <ulink url="https://autoconfig.kde.org/kaffeine/">
+KDE's site</ulink>.
+</para>
+<para>
+&kaffeine; uses a file called scanfile.dvb with stores a list of known
+digital TV channels per Country and City. This file is kept in sync with
+the contents of <ulink url="https://git.linuxtv.org/dtv-scan-tables.git">the
+dtv-scan-tables tree</ulink>, maintained
+by <ulink url="https://linuxtv.org">LinuxTV</ulink> community. For more details,
+please see <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables">the
+dtv-scan-tables wiki page</ulink>.
+</para>
+<para>
+When the button is clicked, &kaffeine; will download the latest version of the
+channel definitions and store on a user-specific local data file, overriding
+any contents of a previous one.
+</para>
+<para>Please notice that, in order to use the newest definitions, it is
+required to close the TV configuration dialog and reopen.</para>
+
+<para>
+The <guilabel>Edit scanfile</guilabel> option allows
+editing the file, with can be useful to add a new set of channels, while
+the upstream file is not updated. If you need to use it, please consider
+sending an update to
+<ulink url="https://git.linuxtv.org/dtv-scan-tables.git/">dtv-scan-tables
+</ulink> for others to also benefit for the new channel definitions.
+</para>
+
+<para>
+The <guilabel>Use ISO 8859-1 charset instead of ISO 6937</guilabel>
+option allows to select the default to be used on MPEG-TS messages
+that don't explicitly set a charset. If not set, it defaults to using
+ISO-6937 encoding. If set, the default changes to ISO 8859-1.
+</para>
+
+<para>
+The <guilabel>Create info files to accompany EPG recordings</guilabel>
+option enables the creation of an ancillary files for scheduled records
+with the contents of the program guide for records made via the
+<guimenu>Program guide</guimenu>.
+</para>
+
+</sect2>
+<sect2 id="dtv-source-settings">
+<title>Configuring digital TV sources</title>
+
+<screenshot>
+<screeninfo>TV Device Configuration</screeninfo>
 <mediaobject>
 <imageobject>
 <imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
@@ -185,6 +318,10 @@ The <guimenu>Device</guimenu> menus have the per-device setup. Usually selecting
 combo box (or using one of the Autoscan sources) is enough for non-satellite configurations.
 The same happens for devices that support multiple TV standards:
 </para>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title>Digital TV channel setup</title>
 
 <screenshot>
 <screeninfo>Channel Configuration</screeninfo>
@@ -203,6 +340,7 @@ After clicking on the <guibutton>Ok</guibutton> button, the next step is to scan
 the Television pop up menu, option <guimenuitem>Channels</guimenuitem>:
 </para>
 
+
 <screenshot>
 <screeninfo>Scanning Channels</screeninfo>
 <mediaobject>
@@ -216,9 +354,28 @@ the Television pop up menu, option <guimenuitem>Channels</guimenuitem>:
 </screenshot>
 
 <para>
-If more then one standard is supported, the <guilabel>Source</guilabel> combo box will allow you to select the
-one that will be used to scan. Don’t forget to connect the device’s antenna cable to match
-the standard that will be used. Then, click <guibutton>Start Scan</guibutton> to start scanning for channels.
+If more then one standard is supported, the <guilabel>Source</guilabel>
+combo box will allow you to select the one that will be used to scan. Don't
+forget to connect the device's antenna cable to match the standard that
+will be used.
+</para>
+
+<para>
+When &kaffeine; identifies a channel, it reads a <acronym>MPEG-TS</acronym>
+table called Network Information Table (<acronym>NIT</acronym>), with contains
+information about channels using different tuning parameters transmitted by
+the same broadcaster. On certain networks, it is possible that some tuning
+parameters to be stored on several <acronym>NIT</acronym> tables
+(called <quote>other NITs</quote>). This is more common on some cable and
+satellite systems. By selecting <guilabel>Search transponders for other
+Networks</guilabel>, &kaffeine; is instructed to wait and parse all other
+<acronym>NITs</acronym>, with may make it to find more channels, at the cost
+of taking a lot more time to complete the channel scan operation.
+</para>
+
+<para>
+The channel scan operation is started by clicking at
+<guibutton>Start Scan</guibutton>.
 Once finished, the discovered channels will appear on the right. These channels can be copied
 to the left side by clicking <guibutton>Add Filtered</guibutton>. It is possible to check the tuning parameters
 for the channel in the left side by clicking on the <guibutton>Edit</guibutton> button.
@@ -240,6 +397,11 @@ Some parameters are adjustable in the window that pops up.
 <para>
 Once the channels are saved, watching TV is as simple as clicking on the <guibutton>Digital TV</guibutton> button in the main window:
 </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title>Watching TV</title>
 
 <screenshot>
 <screeninfo>Watching TV</screeninfo>
@@ -265,16 +427,15 @@ that allows you to quick record and save the program to disk.
 </para>
 
 </sect1>
+<sect1 id="program-guide">
+<title>Program Guide</title>
 
-<sect1 id="recording-programs">
-<title>Recording Programs</title>
-
-<para>Besides clicking on the record button
-<inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject>
-when the live view is opened, &kaffeine; has other ways to record a program.
-One method is to select the program to be recorded using the <guimenu>Television</guimenu> pop up menu
-and selecting the <guimenuitem>Program Guide</guimenuitem> option.
-It will present a list of programs that were identified on a previously played program:
+<para>
+Digital TV channels usually transmit a list of the current and future
+attractions. This is called Electronic Program Guide - <acronym>EPG</acronym>.
+The EPG data is captured when a channel's content is played.
+To see the <acronym>EPG</acronym>, open the <guimenu>Television</guimenu>
+pop up menu and select the <guimenuitem>Program Guide</guimenuitem> option:
 </para>
 
 <screenshot>
@@ -290,10 +451,37 @@ It will present a list of programs that were identified on a previously played p
 </screenshot>
 
 <para>
-Clicking on the
+On some Countries, the EPG may be availabe on multiple languages. By
+default, &kaffeine; shows any languages on EPG. If multiple languages
+are available for a given EPG entry, and no explicit language content is
+select, it will prefix the title, subtitle and description data with a 3
+code language code, as defined by ISO 639-2 specification.
+</para>
+
+<para>
+The <guilabel>EPG Language</guilabel> option allows to filter just one
+language. If enabled, the filter will also be applied to the On
+Screen Display - <acronym>OSD</acronym> and to any new scheduled
+recordings. It won't affect pre-existing scheduled recordings.
+</para>
+
+<para>Besides clicking on the record button
+<inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject>
+when the live view is opened, &kaffeine; also allows to record a program
+via the program guide, by clicking on the
 <inlinemediaobject><imageobject><imagedata fileref="media-record.png" format="PNG"/></imageobject></inlinemediaobject>
-<guibutton>Record Show</guibutton> button will mark the program to be recorded. The record needs to be enabled
-via the <guilabel>Recording Schedule</guilabel> option, also located in the <guimenu>Television</guimenu> menu:
+<guibutton>Record Show</guibutton> at the
+<guimenuitem>Program Guide</guimenuitem> window.
+</para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title>Recording Schedule</title>
+
+<para>
+To see the programs that are scheduled to be recorded, open the
+<guimenu>Television</guimenu> pop up menu and select the
+<guimenuitem>Recording Schedule</guimenuitem> option:
 </para>
 
 <screenshot>
@@ -309,8 +497,22 @@ via the <guilabel>Recording Schedule</guilabel> option, also located in the <gui
 </screenshot>
 
 <para>
-By clicking one the <guibutton>New</guibutton> button, it is also possible to directly define a time and duration for a program to be recorded.
+By clicking one the <guibutton>New</guibutton> button, it is possible
+to directly define a time and duration for a program to be recorded.
+In this case, it won't use the EPG definitions.
 </para>
+<para>
+By selecting an existing program and clicking at the
+<guibutton>Edit</guibutton> button, you may change the start time
+and the record duration. You may also program it to be recorded
+weekly or daily.
+</para>
+<para>
+By selecting an existing program and clicking at the
+<guibutton>Remove</guibutton> button, it will remove the program from
+the recording schedule.
+</para>
+
 </sect1>
 
 </chapter>
@@ -319,12 +521,12 @@ By clicking one the <guibutton>New</guibutton> button, it is also possible to di
 <title>Copyright and License</title>
 
 <para>
-Program copyright 2007-2016, The &kaffeine; Authors
+Program copyright 2007-2017, The &kaffeine; Authors
 </para>
 
 <para>
 Documentation copyright 2003-2005, Jürgen Kofler <email>kaffeine@gmx.net</email>,
-Christophe Thommeret <email>hftom@free.fr</email>, Mauro Carvalho Chehab <email>mchehab@infradead.org</email>
+Christophe Thommeret <email>hftom@free.fr</email>, Mauro Carvalho Chehab <email>mchehab+kde@kernel.org</email>
 </para>
 <!-- TRANS:CREDIT_FOR_TRANSLATORS -->
 &underFDL;
