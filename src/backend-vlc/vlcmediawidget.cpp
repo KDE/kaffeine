@@ -45,9 +45,9 @@ bool VlcMediaWidget::init()
 	argList = args.split(' ', QString::SkipEmptyParts);
 	size = argList.size();
 
-	const char *argv[size];
+	const char **argv = new const char *[size];
+	QVector<QByteArray> str(size);
 
-	QByteArray str[size];
 	for (int i = 0; i < size; i++) {
 		str[i] = argList.at(i).toUtf8();
 		argv[argc++] = str[i];
@@ -64,6 +64,7 @@ bool VlcMediaWidget::init()
 
 	if (vlcInstance == NULL) {
 		qFatal("Cannot create vlc instance %s", qPrintable(libvlc_errmsg()));
+		delete argv;
 		return false;
 	}
 
@@ -74,6 +75,7 @@ bool VlcMediaWidget::init()
 
 		qCDebug(logVlc, "%s", qPrintable(log));
 	}
+	delete argv;
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);
 
