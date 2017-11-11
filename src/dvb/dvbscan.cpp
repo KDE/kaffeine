@@ -259,7 +259,7 @@ void DvbScanFilter::processSection(const char *data, int size)
 		if (!((nitSection.tableId() == 0x40) || (useOtherNit && (nitSection.tableId() == 0x41))))
 			return;
 
-		qDebug("Handling NIT table ID 0x%02x, extension 0x%04x", nitSection.tableId(), nitSection.tableIdExtension());
+		qCDebug(logDvb, "Handling NIT table ID 0x%02x, extension 0x%04x", nitSection.tableId(), nitSection.tableIdExtension());
 
 		if (!checkMultipleSection(nitSection)) {
 			// already read this part
@@ -285,7 +285,7 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const DvbTransponde
 	device(device_), source(source_), transponder(transponder_), isLive(true), isAuto(false), useOtherNit(useOtherNit_),
 	transponderIndex(-1), state(ScanPat), patIndex(0), activeFilters(0)
 {
-	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
+	qCDebug(logDvb, "Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 }
 
 DvbScan::DvbScan(DvbDevice *device_, const QString &source_,
@@ -293,14 +293,14 @@ DvbScan::DvbScan(DvbDevice *device_, const QString &source_,
 	isLive(false), isAuto(false), useOtherNit(useOtherNit_), transponders(transponders_), transponderIndex(0),
 	state(ScanTune), patIndex(0), activeFilters(0)
 {
-	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
+	qCDebug(logDvb, "Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 }
 
 DvbScan::DvbScan(DvbDevice *device_, const QString &source_, const QString &autoScanSource, bool useOtherNit_) :
 	device(device_), source(source_), isLive(false), isAuto(true), useOtherNit(useOtherNit_), transponderIndex(0),
 	state(ScanTune), patIndex(0), activeFilters(0)
 {
-	qDebug("Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
+	qCDebug(logDvb, "Use other NIT is %s", useOtherNit ? "enabled" : "disabled");
 
 	// Seek for DVB-T transponders
 
@@ -773,7 +773,7 @@ void DvbScan::updateState()
 						       arg(channel.transportStreamId).
 						       arg(channel.serviceId);
 				}
-				qDebug("Found channel %s", qPrintable(channel.name));
+				qCDebug(logDvb, "Found channel %s", qPrintable(channel.name));
 			}
 
 			if (!channels.isEmpty()) {
@@ -799,7 +799,7 @@ void DvbScan::updateState()
 				emit scanProgress((100 * transponderIndex) / transponders.size());
 			}
 
-			qDebug("Transponder %d/%d", transponderIndex, transponders.size());
+			qCDebug(logDvb, "Transponder %d/%d", transponderIndex, transponders.size());
 			if (transponderIndex >= transponders.size()) {
 				emit scanFinished();
 				return;
@@ -853,7 +853,7 @@ void DvbScan::processPat(const DvbPatSection &section)
 			// skip 0x0 which has a special meaning
 			patEntries.append(DvbPatEntry(entry.programNumber(), entry.pid()));
 
-			qDebug("New PAT entry: pid %d, program %d", entry.pid(), entry.programNumber());
+			qCDebug(logDvb, "New PAT entry: pid %d, program %d", entry.pid(), entry.programNumber());
 		}
 	}
 }
@@ -893,7 +893,7 @@ void DvbScan::processPmt(const DvbPmtSection &section, int pid)
 		};
 		channels.append(channel);
 
-		qDebug("New channel: PID %d, service ID %d", pid, section.programNumber());
+		qCDebug(logDvb, "New channel: PID %d, service ID %d", pid, section.programNumber());
 	}
 }
 
@@ -918,7 +918,7 @@ void DvbScan::processSdt(const DvbSdtSection &section)
 			sdtEntry.name = serviceDescriptor.serviceName();
 			sdtEntry.provider = serviceDescriptor.providerName();
 
-			qDebug("New SDT entry: service ID 0x%04x, name '%s', provider '%s'", entry.serviceId(), qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
+			qCDebug(logDvb, "New SDT entry: service ID 0x%04x, name '%s', provider '%s'", entry.serviceId(), qPrintable(sdtEntry.name), qPrintable(sdtEntry.provider));
 			sdtEntries.append(sdtEntry);
 		}
 	}
@@ -966,7 +966,7 @@ void DvbScan::processVct(const AtscVctSection &section)
 			sdtEntry.name = majorminor + QString(shortName, nameLength);
 		}
 
-		qDebug("New SDT entry: name %s", qPrintable(sdtEntry.name));
+		qCDebug(logDvb, "New SDT entry: name %s", qPrintable(sdtEntry.name));
 		sdtEntries.append(sdtEntry);
 
 		if (i < entryCount - 1)
@@ -1239,7 +1239,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 		dvbCTransponder->modulation = extractDvbCModulation(cableDescriptor);
 		dvbCTransponder->fecRate = extractDvbCFecRate(cableDescriptor);
 
-		qDebug("Added transponder: %.2f MHz", dvbCTransponder->frequency / 1000000.);
+		qCDebug(logDvb, "Added transponder: %.2f MHz", dvbCTransponder->frequency / 1000000.);
 		break;
 	    }
 	case DvbTransponderBase::DvbS:
@@ -1278,7 +1278,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			DvbDescriptor::bcdToInt(satelliteDescriptor.symbolRate(), 100);
 		dvbSTransponder->fecRate = extractDvbSFecRate(satelliteDescriptor);
 
-		qDebug("Added transponder: %.2f MHz", dvbSTransponder->frequency / 1000000.);
+		qCDebug(logDvb, "Added transponder: %.2f MHz", dvbSTransponder->frequency / 1000000.);
 		break;
 	    }
 	case DvbTransponderBase::DvbT2:
@@ -1312,7 +1312,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 			dvbTTransponder->fecRateLow = DvbTTransponder::FecNone;
 		}
 
-		qDebug("Added transponder: %.2f MHz", dvbTTransponder->frequency / 1000000.);
+		qCDebug(logDvb, "Added transponder: %.2f MHz", dvbTTransponder->frequency / 1000000.);
 		break;
 	    }
 	case DvbTransponderBase::Atsc:
@@ -1359,7 +1359,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 				continue;
 
 			transponders.append(newTransponder);
-			qDebug("Added transponder: %.2f MHz", isdbTTransponder->frequency / 1000000.);
+			qCDebug(logDvb, "Added transponder: %.2f MHz", isdbTTransponder->frequency / 1000000.);
 		}
 		return;
 	}

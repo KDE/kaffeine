@@ -2,7 +2,7 @@ project(kaffeine)
 
 set(KAFFEINE_MAJOR_VERSION 2)
 set(KAFFEINE_MINOR_VERSION 0)
-set(KAFFEINE_PATCH_VERSION 8)
+set(KAFFEINE_PATCH_VERSION 13)
 
 # comment/uuncomment below if either the version is a production or a development one
 #set(KAFFEINE_EXTRA_VERSION -git)
@@ -21,6 +21,11 @@ set(KF5_MIN_VERSION "5.11.0")
 if(POLICY CMP0063)
   cmake_policy(SET CMP0063 NEW)
 endif(POLICY CMP0063)
+
+## workaround for ki18n 5.34.0++ changes (see BUG 379834)
+if(POLICY CMP0002)
+  cmake_policy(SET CMP0002 OLD)
+endif(POLICY CMP0002)
 
 find_package(Qt5Core)
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
@@ -54,6 +59,7 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	CoreAddons      # KAboutData
 	I18n            # KLocalizedString
 	WidgetsAddons   # KMessageBox
+	WindowSystem	# KStartupInfo
 	XmlGui		# KActonCollection
 	KIO		# KFileWidget
 	Solid
@@ -90,7 +96,6 @@ if(HAVE_DVB)
 endif(HAVE_DVB)
 
 add_subdirectory(deviceactions)
-add_subdirectory(dtvdaemon)
 add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)

@@ -733,7 +733,7 @@ void IsdbTTransponder::readTransponder(QDataStream &stream)
 
 	stream >> layers;
 	for (int i = 0; i < 3; i ++) {
-		if ((1 << i) && layers)
+		if ((1 << i) & layers)
 			layerEnabled[i] = true;
 		else
 			layerEnabled[i] = false;
@@ -742,6 +742,18 @@ void IsdbTTransponder::readTransponder(QDataStream &stream)
 		fecRate[i] = readEnum<FecRate>(stream);
 		stream >> segmentCount[i];
 		interleaving[i] = readEnum<Interleaving>(stream);
+	}
+
+	// Sanity check: if no labels are enabled, enable them all
+	if (!(layers & 7)) {
+		layers = 7;
+		for (int i = 0; i < 3; i ++) {
+			layerEnabled[i] = true;
+			modulation[i] = IsdbTTransponder::ModulationAuto;
+			fecRate[i] = IsdbTTransponder::FecAuto;
+			interleaving[i] = IsdbTTransponder::I_AUTO;
+			segmentCount[i] = 15;
+		}
 	}
 }
 
@@ -762,7 +774,7 @@ bool IsdbTTransponder::fromString(const QString &string)
 
 	reader.readInt(layers);
 	for (int i = 0; i < 3; i ++) {
-		if ((1 << i) && layers)
+		if ((1 << i) & layers)
 			layerEnabled[i] = true;
 		else
 			layerEnabled[i] = false;
@@ -771,6 +783,18 @@ bool IsdbTTransponder::fromString(const QString &string)
 		fecRate[i] = reader.readEnum<FecRate>();
 		reader.readInt(segmentCount[i]);
 		interleaving[i] = reader.readEnum<Interleaving>();
+	}
+
+	// Sanity check: if no labels are enabled, enable them all
+	if (!(layers & 7)) {
+		layers = 7;
+		for (int i = 0; i < 3; i ++) {
+			layerEnabled[i] = true;
+			modulation[i] = IsdbTTransponder::ModulationAuto;
+			fecRate[i] = IsdbTTransponder::FecAuto;
+			interleaving[i] = IsdbTTransponder::I_AUTO;
+			segmentCount[i] = 15;
+		}
 	}
 
 	return reader.isValid();

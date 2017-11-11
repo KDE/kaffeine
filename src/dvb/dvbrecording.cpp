@@ -274,7 +274,7 @@ void DvbRecordingModel::disableLessImportant(DvbSharedRecording &recording1, Dvb
 void DvbRecordingModel::addToUnwantedRecordings(DvbSharedRecording recording)
 {
 	unwantedRecordings.append(recording);
-	qDebug("executed %s", qPrintable(recording->name));
+	qCDebug(logDvb, "executed %s", qPrintable(recording->name));
 }
 
 void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
@@ -288,7 +288,7 @@ void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 		child->start(stopCommand);
 		qCWarning(logDvb, "Not executing command after recording");
 	}
-	qDebug("executed.");
+	qCDebug(logDvb, "executed.");
 
 
 }
@@ -321,7 +321,7 @@ void DvbRecordingModel::removeDuplicates()
 					&& loopEntry1.name == loopEntry2.name) {
 					recordings.remove(recordings.key(rec1));
 					recordingMap.remove(rec1);
-					qDebug("Removed. %s", qPrintable(loopEntry1.name));
+					qCDebug(logDvb, "Removed. %s", qPrintable(loopEntry1.name));
 				}
 			}
 			j = j + 1;
@@ -330,7 +330,7 @@ void DvbRecordingModel::removeDuplicates()
 	}
 	epgModel->setRecordings(recordingMap);
 
-	qDebug("executed.");
+	qCDebug(logDvb, "executed.");
 
 }
 
@@ -375,7 +375,7 @@ bool DvbRecordingModel::existsSimilarRecording(DvbEpgEntry recording)
 				&& QString::compare(entry.channel->name, loopEntry.channel->name) == 0
 				&& QString::compare((entry.duration).toString(),
 						loopEntry.duration.addSecs(- manager->getBeginMargin() - manager->getEndMargin()).toString()) == 0) {
-			qDebug("Found from unwanteds %s", qPrintable(loopEntry.name));
+			qCDebug(logDvb, "Found from unwanteds %s", qPrintable(loopEntry.name));
 			found = true;
 			break;
 		}
@@ -409,7 +409,7 @@ void DvbRecordingModel::disableConflicts()
 		{
 			if (isInConflictWithAll(rec2, conflictList)) {
 				conflictList.append(rec2);
-				qDebug("conflict: '%s' '%s' and '%s' '%s'", qPrintable(rec1->name), qPrintable(rec1->begin.toString()), qPrintable(rec2->name), qPrintable(rec2->begin.toString()));
+				qCDebug(logDvb, "conflict: '%s' '%s' and '%s' '%s'", qPrintable(rec1->name), qPrintable(rec1->begin.toString()), qPrintable(rec2->name), qPrintable(rec2->begin.toString()));
 
 			}
 
@@ -473,13 +473,13 @@ DvbSharedRecording DvbRecordingModel::getLeastImportant(QList<DvbSharedRecording
 	DvbSharedRecording leastImportant = recList.value(0);
 	foreach(DvbSharedRecording listRec, recList)
 	{
-		qDebug("name and priority %s %s", qPrintable(listRec->name), qPrintable(listRec->priority));
+		qCDebug(logDvb, "name and priority %s %s", qPrintable(listRec->name), qPrintable(listRec->priority));
 		if (listRec->priority < leastImportant->priority) {
 			leastImportant = listRec;
 		}
 	}
 
-	qDebug("least important: %s", qPrintable(leastImportant->name));
+	qCDebug(logDvb, "least important: %s", qPrintable(leastImportant->name));
 	return leastImportant;
 }
 
@@ -496,7 +496,7 @@ void DvbRecordingModel::disableLeastImportants(QList<DvbSharedRecording> recList
 			if (listRecShared->priority == leastImportance) {
 				listRec.disabled = true;
 				updateRecording(listRecShared, listRec);
-				qDebug("disabled: %s %s", qPrintable(listRec.name), qPrintable(listRec.begin.toString()));
+				qCDebug(logDvb, "disabled: %s %s", qPrintable(listRec.name), qPrintable(listRec.begin.toString()));
 			}
 		}
 	}
@@ -514,7 +514,7 @@ void DvbRecordingModel::findNewRecordings()
 	foreach(DvbEpgEntryId key, epgMap.keys())
 	{
 		DvbEpgEntry entry = *(epgMap.value(key));
-		QString title = entry.title;
+		QString title = entry.title(FIRST_LANG);
 		QStringList regexList = manager->getRecordingRegexList();
 		int i = 0;
 		foreach(QString regex, regexList) {
@@ -528,7 +528,7 @@ void DvbRecordingModel::findNewRecordings()
 					int priority = manager->getRecordingRegexPriorityList().value(i);
 					epgModel->scheduleProgram(epgMap.value(key), manager->getBeginMargin(),
 							manager->getEndMargin(), false, priority);
-					qDebug("scheduled %s", qPrintable(title));
+					qCDebug(logDvb, "scheduled %s", qPrintable(title));
 					}
 				}
 			}
@@ -536,7 +536,7 @@ void DvbRecordingModel::findNewRecordings()
 		}
 	}
 
-	qDebug("executed.");
+	qCDebug(logDvb, "executed.");
 }
 
 void DvbRecordingModel::timerEvent(QTimerEvent *event)
@@ -628,7 +628,7 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 		}
 		if (end > QDateTime::currentDateTime().toUTC() && rec.begin <= QDateTime::currentDateTime().toUTC()) {
 			timeUntil = 0;
-			qDebug("Rec ongoing %s", qPrintable(rec.name));
+			qCDebug(logDvb, "Rec ongoing %s", qPrintable(rec.name));
 			break;
 		}
 		if (rec.begin > QDateTime::currentDateTime().toUTC()) {
@@ -639,7 +639,7 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 
 	}
 
-	qDebug("returned TRUE %ld", timeUntil);
+	qCDebug(logDvb, "returned TRUE %ld", timeUntil);
 	return timeUntil;
 }
 
@@ -655,7 +655,7 @@ bool DvbRecordingModel::shouldWeScanChannels() const
 	if (idleTime > 1000 * 3600) {
 		if (DvbRecordingModel::getSecondsUntilNextRecording() > numberOfChannels * 10) {
 			if (DvbRecordingModel::isScanWhenIdle()) {
-				qDebug("Scan on Idle enabled");
+				qCDebug(logDvb, "Scan on Idle enabled");
 				return true;
 			}
 		}
@@ -675,7 +675,7 @@ void delay(int seconds)
 
 void DvbRecordingModel::scanChannels()
 {
-	qDebug("auto-scan channels");
+	qCDebug(logDvb, "auto-scan channels");
 
 	if (shouldWeScanChannels()) {
 		DvbChannelModel *channelModel = manager->getChannelModel();
@@ -688,7 +688,7 @@ void DvbRecordingModel::scanChannels()
 			}
 			if (channel.isValid()) {
 				// TODO update tab
-				qDebug("Executed %s", qPrintable(channel->name));
+				qCDebug(logDvb, "Executed %s", qPrintable(channel->name));
 				manager->getLiveView()->playChannel(channel);
 				delay(5);
 			}
@@ -961,6 +961,7 @@ void DvbRecordingFile::pmtSectionChanged(const QByteArray &pmtSectionData_)
 	pmtSectionData = pmtSectionData_;
 	DvbPmtSection pmtSection(pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
+	int pcrPid = pmtSection.pcrPid();
 	QSet<int> newPids;
 
 	if (pmtParser.videoPid != -1) {
@@ -977,6 +978,13 @@ void DvbRecordingFile::pmtSectionChanged(const QByteArray &pmtSectionData_)
 
 	if (pmtParser.teletextPid != -1) {
 		newPids.insert(pmtParser.teletextPid);
+	}
+
+	/* check PCR PID is set */
+	if (pcrPid != 0x1fff) {
+		/* Check not already in list */
+		if (!newPids.contains(pcrPid))
+			newPids.insert(pcrPid);
 	}
 
 	for (int i = 0; i < pids.size(); ++i) {

@@ -26,6 +26,7 @@
 #include "../osdwidget.h"
 #include "dvbepg.h"
 #include "dvbsi.h"
+#include "dvbmanager.h"
 
 class QSocketNotifier;
 
@@ -41,7 +42,7 @@ public:
 	DvbOsd() : level(Off) { }
 	~DvbOsd() { }
 
-	void init(OsdLevel level_, const QString &channelName_,
+	void init(DvbManager *manager_, OsdLevel level_, const QString &channelName_,
 		const QList<DvbSharedEpgEntry> &epgEntries);
 
 	OsdLevel level;
@@ -52,6 +53,7 @@ private:
 	QString channelName;
 	DvbEpgEntry firstEntry;
 	DvbEpgEntry secondEntry;
+	DvbManager *manager;
 };
 
 class DvbLiveViewInternal : public QObject, public DvbPidFilter, public MediaSource
@@ -116,6 +118,7 @@ public:
 	QStringList audioStreams;
 	int currentAudioStream;
 	int currentSubtitle;
+	int retryCounter;
 
 signals:
 	void currentAudioStreamChanged(int currentAudioStream);

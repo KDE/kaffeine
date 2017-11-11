@@ -5,6 +5,8 @@ X-KDE-Solid-Predicate=OpticalDisc.availableContent & 'VideoDvd'
 
 [Desktop Action PlayDVD]
 Name=Play DVD with Kaffeine
+Name[ar]=شغّل أسطوانات DVD ب‍«كافيين»
+Name[ast]=Reproducir DVD con Kaffeine
 Name[bg]=Възпроизвеждане на DVD с Kaffeine
 Name[bs]=Izvođenje DVD-ova programom Kaffeine
 Name[ca]=Reprodueix un DVD amb el Kaffeine
@@ -25,6 +27,7 @@ Name[ga]=Seinn DVD le Kaffeine
 Name[gl]=Reproducir o DVD con Kaffeine
 Name[hr]=Reproduciraj DVD s Kaffeineom
 Name[hu]=DVD lejátszása a Kaffeine-nel
+Name[ia]=Reproduce DVD con Kaffeine
 Name[id]=Putar DVD dengan Kaffeine
 Name[is]=Spila DVD með Kaffeine
 Name[it]=Riproduci DVD con Kaffeine

@@ -73,7 +73,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 {
 	if ((data[3] & 0x10) == 0) {
 		// no payload
-		qDebug("MPEG-TS session doesn't have a payload");
+		qCDebug(logDvb, "MPEG-TS session doesn't have a payload");
 		return;
 	}
 
@@ -81,12 +81,12 @@ void DvbSectionFilterInternal::processData(const char data[188])
 
 	if (bufferValid) {
 		if (continuity == continuityCounter) {
-			qDebug("Section duplication: received %d, expecting %d", continuity, continuityCounter + 1);
+			qCDebug(logDvb, "Section duplication: received %d, expecting %d", continuity, continuityCounter + 1);
 			return;
 		}
 
 		if (continuity != ((continuityCounter + 1) & 0x0f)) {
-			qDebug("Section discontinuity: received %d, expecting %d", continuity, continuityCounter + 1);
+			qCDebug(logDvb, "Section discontinuity: received %d, expecting %d", continuity, continuityCounter + 1);
 			bufferValid = false;
 		}
 	}
@@ -106,7 +106,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 		unsigned char length = data[4];
 
 		if (length > 182) {
-			qDebug("Received a section without  payload or corrupted");
+			qCDebug(logDvb, "Received a section without  payload or corrupted");
 			return;
 		}
 
@@ -120,7 +120,7 @@ void DvbSectionFilterInternal::processData(const char data[188])
 		int pointer = quint8(payload[0]);
 
 		if (pointer >= payloadLength) {
-			qDebug("Section with invalid payload pointer");
+			qCDebug(logDvb, "Section with invalid payload pointer");
 			pointer = (payloadLength - 1);
 		}
 
@@ -153,7 +153,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 
 		if ((end - it) < 3) {
 			if (force) {
-				qDebug("Section with stray data");
+				qCDebug(logDvb, "Section with stray data");
 				it = end;
 			}
 
@@ -164,7 +164,7 @@ void DvbSectionFilterInternal::processSections(bool force)
 			static_cast<unsigned char>(it[2])) + 3);
 
 		if (force && (sectionEnd > end)) {
-			qDebug("Short section");
+			qCDebug(logDvb, "Short section");
 			sectionEnd = end;
 		}
 
@@ -316,6 +316,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 	// FIXME: add support for SCR/Unicable
 	if (!backend->satSetup(config->currentLnb.alias, satNumber, 0))
 		return;
+
+	backend->setHighVoltage(config->higherVoltage);
 
 	// rotor
 
@@ -671,7 +673,7 @@ void DvbDevice::frontendEvent()
 	DvbTransponderBase::TransmissionType transmissionType = autoTransponder.getTransmissionType();
 
 	if (backend->isTuned()) {
-		qDebug("tuning succeeded on %.2f MHz", backend->getFrqMHz());
+		qCDebug(logDvb, "tuning succeeded on %.2f MHz", backend->getFrqMHz());
 		frontendTimer.stop();
 		backend->getProps(autoTransponder);
 		setDeviceState(DeviceTuned);
@@ -686,7 +688,7 @@ void DvbDevice::frontendEvent()
 		frontendTimer.stop();
 
 		if (!isAuto) {
-			qDebug("tuning failed on %.2f MHz", backend->getFrqMHz());
+			qCDebug(logDvb, "tuning failed on %.2f MHz", backend->getFrqMHz());
 			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
 			return;
@@ -813,7 +815,7 @@ void DvbDevice::frontendEvent()
 		if (!carry) {
 			tune(autoTransponder);
 		} else {
-			qDebug("tuning failed on %.2f MHz", backend->getFrqMHz());;
+			qCDebug(logDvb, "tuning failed on %.2f MHz", backend->getFrqMHz());;
 			setDeviceState(DeviceIdle);
 		}
 	}
@@ -855,7 +857,7 @@ void DvbDevice::stop()
 		foreach (DvbPidFilter *filter, it->filters) {
 			if ((filter != &dummyPidFilter) && (filter != dataDumper)) {
 				int pid = it.key();
-				qDebug("removing pending filter %d", pid);
+				qCDebug(logDvb, "removing pending filter %d", pid);
 				removePidFilter(pid, filter);
 			}
 		}
@@ -866,7 +868,7 @@ void DvbDevice::stop()
 		foreach (DvbSectionFilter *sectionFilter, it->sectionFilters) {
 			if (sectionFilter != &dummySectionFilter) {
 				int pid = it.key();
-				qDebug("removing pending filter %d", pid);
+				qCDebug(logDvb, "removing pending filter %d", pid);
 				removeSectionFilter(pid, sectionFilter);
 			}
 		}

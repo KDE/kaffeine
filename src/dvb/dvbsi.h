@@ -807,6 +807,21 @@ public:
 	explicit DvbShortEventDescriptor(const DvbDescriptor &descriptor);
 	~DvbShortEventDescriptor() { }
 
+	int languageCode1() const
+	{
+		return at(2);
+	}
+
+	int languageCode2() const
+	{
+		return at(3);
+	}
+
+	int languageCode3() const
+	{
+		return at(4);
+	}
+
 	QString eventName() const
 	{
 		return DvbSiText::convertText(getData() + 6, eventNameLength);
@@ -829,6 +844,21 @@ class DvbExtendedEventDescriptor : public DvbDescriptor
 public:
 	explicit DvbExtendedEventDescriptor(const DvbDescriptor &descriptor);
 	~DvbExtendedEventDescriptor() { }
+
+	int languageCode1() const
+	{
+		return at(3);
+	}
+
+	int languageCode2() const
+	{
+		return at(4);
+	}
+
+	int languageCode3() const
+	{
+		return at(5);
+	}
 
 	QString text() const
 	{
@@ -1096,6 +1126,11 @@ public:
 	int programNumber() const
 	{
 		return (at(3) << 8) | at(4);
+	}
+
+	int pcrPid() const
+	{
+		return ((at(8) & 0x1f) << 8) | at(9);
 	}
 
 	DvbDescriptor descriptors() const

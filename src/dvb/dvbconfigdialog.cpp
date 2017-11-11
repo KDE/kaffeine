@@ -18,11 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#include "../log.h"
+
 #include <KLocalizedString>
-#include <QDebug>
-#if QT_VERSION < 0x050500
-# define qInfo qDebug
-#endif
 
 #include <KConfigGroup>
 #include <KIO/Job>
@@ -384,11 +382,11 @@ void DvbConfigDialog::removeRegex()
 	}
 	foreach(RegexInputLine *inputLine, copyList)
 	{
-		qDebug("list:");
+		qCDebug(logDvb, "list:");
 		if (inputLine->checkBox->isChecked()){
-			qDebug("checked:");
+			qCDebug(logDvb, "checked:");
 			if (regexInputList.removeOne(inputLine)) {
-				qDebug("removed:");
+				qCDebug(logDvb, "removed:");
 			}
 		}
 	}
@@ -548,9 +546,9 @@ void DvbConfigDialog::accept()
 	foreach (RegexInputLine *regexInputLine, regexInputList)
 	{
 		manager->addRecordingRegex(regexInputLine->lineEdit->text());
-		qDebug("saved regex: %s", qPrintable(regexInputLine->lineEdit->text()));
+		qCDebug(logDvb, "saved regex: %s", qPrintable(regexInputLine->lineEdit->text()));
 		manager->addRecordingRegexPriority(regexInputLine->spinBox->value());
-		qDebug("saved priority: %i", regexInputLine->spinBox->value());
+		qCDebug(logDvb, "saved priority: %i", regexInputLine->spinBox->value());
 	}
 
 	QList<DvbDeviceConfigUpdate> configUpdates;
@@ -1045,7 +1043,21 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	timeoutBox->setValue(lnbConfig->timeout);
 	layout->addWidget(timeoutBox, 0, 1);
 
-	layout->addWidget(new QLabel(i18n("Configuration:")), 1, 0);
+	layout->addWidget(new QLabel(i18n("Use Higher LNBf voltage:")),
+		1, 0);
+
+	higherVoltageBox = new QCheckBox(parent);
+	higherVoltageBox->setTristate(true);
+	higherVoltageBox->setCheckState((Qt::CheckState)lnbConfig->higherVoltage);
+	higherVoltageBox->setToolTip(i18n("On some DVB devices, there's an extra control that allows to increase the \n"
+		"voltage sent to LNBf, in order to compensate for cabling loss. This tri-state\n"
+		"button defaults to not use it. It may be set to:\n"
+		"- normal mode (unckecked);\n"
+		"- higher voltage mode (checked);\n"
+		"- tristate (don't send the control)."));
+	layout->addWidget(higherVoltageBox, 1, 1);
+
+	layout->addWidget(new QLabel(i18n("Configuration:")), 2, 0);
 
 	configBox = new QComboBox(parent);
 	configBox->addItem(i18n("DiSEqC Switch"));
@@ -1054,7 +1066,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	configBox->addItem(i18n("Disable DiSEqC"));
 	configBox->setCurrentIndex(lnbConfig->configuration);
 	connect(configBox, SIGNAL(currentIndexChanged(int)), this, SLOT(configChanged(int)));
-	layout->addWidget(configBox, 1, 1);
+	layout->addWidget(configBox, 2, 1);
 
 	// Diseqc switch
 
@@ -1069,7 +1081,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 			config = createConfig(lnbNumber);
 		}
 
-		QPushButton *pushButton = new QPushButton(i18n("LNB %1 Settings", lnbNumber + 1),
+		QPushButton *pushButton = new QPushButton(i18n("LNB %1 Settings", lnbNumber + 2),
 							  parent);
 		if (lnbNumber > 0)
 			connect(this, &DvbSConfigObject::setDiseqcVisible,
@@ -1089,10 +1101,10 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 		else
 			connect(this, &DvbSConfigObject::setFirstLnbVisible,
 				comboBox, &QComboBox::setVisible);
-		layout->addWidget(comboBox, lnbNumber + 2, 1);
+		layout->addWidget(comboBox, lnbNumber + 3, 1);
 
 		diseqcConfigs.append(DvbConfig(config));
-		lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, comboBox, pushButton,
+		lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, higherVoltageBox, comboBox, pushButton,
 			config, device));
 	}
 
@@ -1102,15 +1114,15 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 
 	connect(this, &DvbSConfigObject::setRotorVisible, pushButton,
 		&QPushButton::setVisible);
-	layout->addWidget(pushButton, 6, 0);
+	layout->addWidget(pushButton, 7, 0);
 
-	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, NULL, pushButton, lnbConfig, device));
+	lnbConfigs.append(new DvbSLnbConfigObject(timeoutBox, higherVoltageBox, NULL, pushButton, lnbConfig, device));
 
 	sourceBox = new QComboBox(parent);
 	sourceBox->addItems(sources);
 	connect(this, &DvbSConfigObject::setRotorVisible, sourceBox,
 		&QComboBox::setVisible);
-	layout->addWidget(sourceBox, 6, 1);
+	layout->addWidget(sourceBox, 7, 1);
 
 	satelliteView = new QTreeWidget(parent);
 
@@ -1120,7 +1132,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	connect(this, &DvbSConfigObject::setUsalsVisible, pushButton,
 		&QPushButton::setVisible);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
-	layout->addWidget(pushButton, 7, 0, 1, 2);
+	layout->addWidget(pushButton, 8, 0, 1, 2);
 
 	// Positions rotor
 
@@ -1128,13 +1140,13 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	rotorSpinBox->setRange(0, 255);
 	connect(this, &DvbSConfigObject::setPositionsVisible, rotorSpinBox,
 		&QSpinBox::setVisible);
-	layout->addWidget(rotorSpinBox, 8, 0);
+	layout->addWidget(rotorSpinBox, 9, 0);
 
 	pushButton = new QPushButton(i18n("Add Satellite"), parent);
 	connect(this, &DvbSConfigObject::setPositionsVisible, pushButton,
 		&QPushButton::setVisible);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(addSatellite()));
-	layout->addWidget(pushButton, 8, 1);
+	layout->addWidget(pushButton, 9, 1);
 
 	// USALS rotor / Positions rotor
 
@@ -1145,7 +1157,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	satelliteView->sortByColumn(0, Qt::AscendingOrder);
 	satelliteView->setSortingEnabled(true);
 	connect(this, SIGNAL(setRotorVisible(bool)), satelliteView, SLOT(setVisible(bool)));
-	layout->addWidget(satelliteView, 9, 0, 1, 2);
+	layout->addWidget(satelliteView, 10, 0, 1, 2);
 
 	if ((lnbConfig->configuration == DvbConfigBase::UsalsRotor) ||
 	    (lnbConfig->configuration == DvbConfigBase::PositionsRotor)) {
@@ -1160,7 +1172,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 	connect(this, &DvbSConfigObject::setRotorVisible, pushButton,
 		&QPushButton::setVisible);
 	connect(pushButton, SIGNAL(clicked()), this, SLOT(removeSatellite()));
-	layout->addWidget(pushButton, 10, 0, 1, 2);
+	layout->addWidget(pushButton, 11, 0, 1, 2);
 
 	// Latitude/Longitude for USALS rotor
 
@@ -1421,6 +1433,7 @@ void DvbSConfigObject::removeSatellite()
 void DvbSConfigObject::resetConfig()
 {
 	timeoutBox->setValue(1500);
+	higherVoltageBox->setChecked(Qt::PartiallyChecked);
 	configBox->setCurrentIndex(0);
 
 	for (int i = 0; i < lnbConfigs.size(); ++i) {
@@ -1434,6 +1447,7 @@ DvbConfigBase *DvbSConfigObject::createConfig(int lnbNumber)
 {
 	DvbConfigBase *config = new DvbConfigBase(DvbConfigBase::DvbS);
 	config->timeout = 1500;
+	config->higherVoltage = Qt::PartiallyChecked;
 	config->configuration = DvbConfigBase::DiseqcSwitch;
 	config->lnbNumber = lnbNumber;
 	config->currentLnb = device->getLnbSatModels().at(0);
@@ -1441,11 +1455,14 @@ DvbConfigBase *DvbSConfigObject::createConfig(int lnbNumber)
 	return config;
 }
 
-DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
+DvbSLnbConfigObject::DvbSLnbConfigObject(QSpinBox *timeoutSpinBox,
+					 QCheckBox *higherVoltageBox,
+					 QComboBox *sourceBox_,
 	QPushButton *configureButton_, DvbConfigBase *config_, DvbDevice *device_) : QObject(timeoutSpinBox),
 	sourceBox(sourceBox_), configureButton(configureButton_), config(config_), device(device_)
 {
 	connect(timeoutSpinBox, SIGNAL(valueChanged(int)), this, SLOT(timeoutChanged(int)));
+	connect(higherVoltageBox, SIGNAL(stateChanged(int)), this, SLOT(higherVoltageChanged(int)));
 	connect(configureButton, SIGNAL(clicked()), this, SLOT(configure()));
 
 	if (sourceBox != NULL) {
@@ -1474,6 +1491,11 @@ void DvbSLnbConfigObject::resetConfig()
 void DvbSLnbConfigObject::timeoutChanged(int value)
 {
 	config->timeout = value;
+}
+
+void DvbSLnbConfigObject::higherVoltageChanged(int value)
+{
+	config->higherVoltage = value;
 }
 
 void DvbSLnbConfigObject::sourceChanged(int index)
@@ -1632,7 +1654,7 @@ void DvbSLnbConfigObject::selectType(int type)
 void DvbSLnbConfigObject::dialogAccepted()
 {
 	config->currentLnb = device->getLnbSatModels().at(currentType - 1);
-	qDebug() << "Selected LNBf:" << config->currentLnb.alias;
+	qCDebug(logDvb) << "Selected LNBf:" << config->currentLnb.alias;
 
 	dialog->accept();
 }

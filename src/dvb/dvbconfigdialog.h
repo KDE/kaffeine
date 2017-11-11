@@ -233,6 +233,7 @@ private:
 	QStringList sources;
 	QGridLayout *layout;
 	QSpinBox *timeoutBox;
+	QCheckBox *higherVoltageBox;
 	QComboBox *configBox;
 	QComboBox *sourceBox;
 	QSpinBox *rotorSpinBox;
@@ -249,7 +250,8 @@ class DvbSLnbConfigObject : public QObject
 {
 	Q_OBJECT
 public:
-	DvbSLnbConfigObject(QSpinBox *timeoutSpinBox, QComboBox *sourceBox_,
+	DvbSLnbConfigObject(QSpinBox *timeoutSpinBox,
+		QCheckBox *higherVoltageBox, QComboBox *sourceBox_,
 		QPushButton *configureButton_, DvbConfigBase *config_,
 		DvbDevice *device_);
 	~DvbSLnbConfigObject();
@@ -258,6 +260,7 @@ public:
 
 private slots:
 	void timeoutChanged(int value);
+	void higherVoltageChanged(int value);
 	void sourceChanged(int index);
 	void configure();
 	void selectType(int type);

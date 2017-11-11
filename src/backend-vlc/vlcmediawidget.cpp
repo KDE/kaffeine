@@ -72,7 +72,7 @@ bool VlcMediaWidget::init()
 		for (int i = 0; i < argc; i++)
 			log += " " + QLatin1String(argv[i]);
 
-		qDebug("%s", qPrintable(log));
+		qCDebug(logVlc, "%s", qPrintable(log));
 	}
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);
@@ -165,7 +165,7 @@ void VlcMediaWidget::setAudioDevice(QString device)
 	for (i = vlcAudioOutput; i != NULL; i = i->p_next) {
 		if (device.compare(QString::fromUtf8(i->psz_description)))
 			continue;
-		qDebug("Setting audio output to: %s", qPrintable(i->psz_device));
+		qCDebug(logVlc, "Setting audio output to: %s", qPrintable(i->psz_device));
 
 		libvlc_audio_output_device_set(vlcMediaPlayer, NULL, i->psz_device);
 	}
@@ -328,6 +328,7 @@ void VlcMediaWidget::stop()
 
 void VlcMediaWidget::setPaused(bool paused)
 {
+	isPaused = paused;
 	libvlc_media_player_set_pause(vlcMediaPlayer, paused);
 	// we don't monitor playing / buffering / paused state changes
 	addPendingUpdates(PlaybackStatus);
@@ -335,6 +336,9 @@ void VlcMediaWidget::setPaused(bool paused)
 
 void VlcMediaWidget::seek(int time)
 {
+	if (!seekable)
+		return;
+
 	libvlc_media_player_set_time(vlcMediaPlayer, time);
 }
 
@@ -350,7 +354,7 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 
 	QMap<int, int>::const_iterator i = subtitleId.constBegin();
 	while (i != subtitleId.constEnd()) {
-		qDebug("Subtitle #%d, key: %d", i.value(), i.key());
+		qCDebug(logVlc, "Subtitle #%d, key: %d", i.value(), i.key());
 		if (i.value() == currentSubtitle) {
 			requestedSubtitle = i.key();
 			break;
@@ -358,7 +362,7 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 		i++;
 	}
 
-	qDebug("Try to set subtitle #%d, id %d", currentSubtitle, requestedSubtitle);
+	qCDebug(logVlc, "Try to set subtitle #%d, id %d", currentSubtitle, requestedSubtitle);
 	libvlc_video_set_spu(vlcMediaPlayer, requestedSubtitle);
 
 	/* Print what it was actually selected */
@@ -371,7 +375,7 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 		}
 
 		if (track->i_id == requestedSubtitle)
-			qDebug("Subtitle set to id %d: %s", track->i_id, qPrintable(subtitle));
+			qCDebug(logVlc, "Subtitle set to id %d: %s", track->i_id, qPrintable(subtitle));
 		track = track->p_next;
 	}
 	libvlc_track_description_list_release(track);
@@ -457,8 +461,14 @@ int VlcMediaWidget::updatePlaybackStatus()
 		break;
 	case libvlc_Opening:
 	case libvlc_Buffering:
-	case libvlc_Playing:
 		playbackStatus = MediaWidget::Playing;
+		break;
+	case libvlc_Playing:
+		// The first time libVLC is set to pause, it reports status as playing
+		if (isPaused)
+			playbackStatus = MediaWidget::Paused;
+		else
+			playbackStatus = MediaWidget::Playing;
 		break;
 	case libvlc_Paused:
 		playbackStatus = MediaWidget::Paused;
@@ -582,7 +592,7 @@ void VlcMediaWidget::updateSubtitles()
 		// currentSubtitle
 		subtitleId[track->i_id] = ++i;
 		subtitles.append(subtitle);
-		qDebug("Got subtitle id#%d: %s", track->i_id, qPrintable(subtitle));
+		qCDebug(logVlc, "Got subtitle id#%d: %s", track->i_id, qPrintable(subtitle));
 		track = track->p_next;
 	}
 	libvlc_track_description_list_release(track);

@@ -22,6 +22,8 @@
 
 #include <KAboutData>
 #include <KDBusService>
+#include <KStartupInfo>
+#include <KWindowSystem>
 #include <QApplication>
 #include <QCommandLineParser>
 #include <QDateTime>
@@ -92,7 +94,7 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 	}
 
 	if (isatty(STDERR_FILENO))
-		std::cerr << "\x1b[0;37m";
+		std::cerr << "\x1b[0m";
 
 	std::cerr << localMsg.constData() << "\n";
 
@@ -115,6 +117,10 @@ public:
 
 	QCommandLineParser parser;
 	KAboutData aboutData;
+
+public slots:
+	void activateRequested(const QStringList &arguments,
+			       const QString &workingDirectory);
 
 private:
 	QPointer<MainWindow> mainWindow;
@@ -167,6 +173,18 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 	mainWindow = new MainWindow(&aboutData, &parser);
 }
 
+void KaffeineApplication::activateRequested(const QStringList &arguments,
+					    const QString &workingDirectory)
+{
+	if (arguments.isEmpty())
+		return;
+
+	parser.parse(arguments);
+	KStartupInfo::setNewStartupId(mainWindow, KStartupInfo::startupId());
+	KWindowSystem::forceActiveWindow(mainWindow->winId());
+	mainWindow->parseArgs(workingDirectory);
+}
+
 void KaffeineApplication::startWindow()
 {
 	mainWindow->run();
@@ -200,7 +218,10 @@ int main(int argc, char *argv[])
 
 	aboutData->processCommandLine(&app.parser);
 
-	KDBusService service(KDBusService::Unique);
+	const KDBusService service(KDBusService::Unique);
+
+	QObject::connect(&service, &KDBusService::activateRequested,
+			 &app, &KaffeineApplication::activateRequested);
 
 	app.startWindow();
 

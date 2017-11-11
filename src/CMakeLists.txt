@@ -24,6 +24,7 @@ set(kaffeine_SRCS
 
 if(HAVE_DVB)
   set(kaffeinedvb_SRCS
+      iso639.cpp
       dvb/dvbcam_linux.cpp
       dvb/dvbchannel.cpp
       dvb/dvbchanneldialog.cpp
@@ -47,7 +48,7 @@ configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 add_executable(kaffeine ${kaffeinedvb_SRCS} ${kaffeine_SRCS})
 target_link_libraries(kaffeine Qt5::Sql Qt5::X11Extras KF5::XmlGui KF5::I18n KF5::Solid
-		      KF5::KIOCore KF5::KIOFileWidgets
+		      KF5::KIOCore KF5::KIOFileWidgets KF5::WindowSystem
 		      KF5::DBusAddons ${X11_Xscreensaver_LIB} ${VLC_LIBRARY})
 
 if(HAVE_DVB)
@@ -57,4 +58,4 @@ endif(HAVE_DVB)
 install(TARGETS kaffeine ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${DATA_INSTALL_DIR}/kaffeine)
 install(PROGRAMS org.kde.kaffeine.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
-install(FILES org.kde.kaffeine.appdata.xml DESTINATION ${SHARE_INSTALL_PREFIX}/appdata/)
+install(FILES org.kde.kaffeine.appdata.xml DESTINATION ${KDE_INSTALL_METAINFODIR})

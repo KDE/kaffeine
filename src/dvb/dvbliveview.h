@@ -80,6 +80,7 @@ private:
 	int videoPid;
 	int audioPid;
 	int subtitlePid;
+	int pausedTime;
 	QList<int> audioPids;
 	QList<int> subtitlePids;
 };

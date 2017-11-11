@@ -114,7 +114,9 @@
       <serviceName listType="DvbString" lengthFunc="serviceNameLength" type="list"/>
     </DvbServiceDescriptor>
     <DvbShortEventDescriptor>
-      <unused bits="24"/>
+      <languageCode1 bits="8" type="int"/>
+      <languageCode2 bits="8" type="int"/>
+      <languageCode3 bits="8" type="int"/>
       <eventNameLength bits="8" type="int"/>
       <eventName listType="DvbString" lengthFunc="eventNameLength" type="list"/>
       <textLength bits="8" type="int"/>
@@ -123,7 +125,9 @@
     <DvbExtendedEventDescriptor>
       <unused bits="4"/>
       <unused bits="4"/>
-      <unused bits="24"/>
+      <languageCode1 bits="8" type="int"/>
+      <languageCode2 bits="8" type="int"/>
+      <languageCode3 bits="8" type="int"/>
       <itemsLength bits="8" type="int"/>
       <items listType="unused" lengthFunc="itemsLength" type="list"/>
       <textLength bits="8" type="int"/>
@@ -186,7 +190,7 @@
     </DvbPatSection>
     <DvbPmtSection extension="programNumber">
       <unused bits="3"/>
-      <unused bits="13"/>
+      <pcrPid bits="13" type="int"/>
       <unused bits="4"/>
       <descriptorsLength bits="12" type="int"/>
       <descriptors listType="DvbDescriptor" lengthFunc="descriptorsLength" type="list"/>

@@ -63,10 +63,11 @@ Q_LOGGING_CATEGORY(logConfig, "kaffeine.config")
 Q_LOGGING_CATEGORY(logMediaWidget, "kaffeine.mediawidget")
 Q_LOGGING_CATEGORY(logPlaylist, "kaffeine.playlist")
 Q_LOGGING_CATEGORY(logSql, "kaffeine.sql")
+Q_LOGGING_CATEGORY(logVlc, "kaffeine.vlc")
 
 #define FILTER_RULE "kaffeine.*.debug=true"
 
-#define CATEGORIES "cam, dev, dvb, dvbsi, epg, config, mediawidget, playlist, sql"
+#define CATEGORIES "cam, dev, dvb, dvbsi, epg, config, mediawidget, playlist, sql, vlc"
 
 class StackedLayout : public QStackedLayout
 {
@@ -117,19 +118,19 @@ StartTab::StartTab(MainWindow *mainWindow)
 
 	button = addShortcut(i18n("&2 Play Audio CD"), QIcon::fromTheme(QLatin1String("media-optical-audio"), QIcon(":media-optical-audio")), this);
 	button->setShortcut(Qt::Key_2);
-	button->setWhatsThis(i18n("Start playing an audio CD. It assumes that the CD is already there at the CD driver"));
+	button->setWhatsThis(i18n("Start playing an audio CD. It assumes that the CD is already there at the CD drive"));
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
 	button = addShortcut(i18n("&3 Play Video CD"), QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical")), this);
 	button->setShortcut(Qt::Key_3);
-	button->setWhatsThis(i18n("Start playing a Video CD. It assumes that the CD is already there at the CD driver"));
+	button->setWhatsThis(i18n("Start playing a Video CD. It assumes that the CD is already there at the CD drive"));
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openVideoCd()));
 	gridLayout->addWidget(button, 0, 2);
 
 	button = addShortcut(i18n("&4 Play DVD"), QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical")), this);
 	button->setShortcut(Qt::Key_4);
-	button->setWhatsThis(i18n("Start playing a DVD. It assumes that the DVD is already there at the DVD driver"));
+	button->setWhatsThis(i18n("Start playing a DVD. It assumes that the DVD is already there at the DVD drive"));
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openDvd()));
 	gridLayout->addWidget(button, 1, 0);
 
@@ -190,6 +191,8 @@ void MainWindow::run()
 	if (parser->isSet("debug")) {
 		QLoggingCategory::defaultCategory()->setEnabled(QtDebugMsg, true);
 		QLoggingCategory::setFilterRules(QStringLiteral(FILTER_RULE));
+	} else {
+		QLoggingCategory::setFilterRules(QStringLiteral("kaffeine.*.debug=false"));
 	}
 
 	readSettings();
@@ -509,7 +512,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	parser->addPositionalArgument(QLatin1String("[file]"), i18n("Files or URLs to play"));
 }
 
-void MainWindow::parseArgs()
+void MainWindow::parseArgs(const QString workingDirectory)
 {
 	if (parser->isSet("fullscreen")) {
 		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
@@ -579,7 +582,7 @@ void MainWindow::parseArgs()
 		QList<QUrl> urls;
 
 		for (int i = 0; i < parser->positionalArguments().count(); ++i) {
-			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i));
+			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i), workingDirectory);
 
 			if (url.isValid()) {
 				urls.append(url);

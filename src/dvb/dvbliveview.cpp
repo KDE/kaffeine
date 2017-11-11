@@ -38,9 +38,10 @@
 #include "dvbliveview_p.h"
 #include "dvbmanager.h"
 
-void DvbOsd::init(OsdLevel level_, const QString &channelName_,
+void DvbOsd::init(DvbManager *manager_, OsdLevel level_, const QString &channelName_,
 	const QList<DvbSharedEpgEntry> &epgEntries)
 {
+	manager = manager_;
 	level = level_;
 	channelName = channelName_;
 
@@ -68,12 +69,13 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 
 	QString timeString = QLocale().toString(QTime::currentTime());
 	QString entryString;
+	QString lang(manager->currentEpgLanguage);
 	int elapsedTime = 0;
 	int totalTime = 0;
 
 	if (firstEntry.channel.isValid()) {
 		entryString = QLocale().toString(firstEntry.begin.toLocalTime().time())
-			+ QLatin1Char(' ') + firstEntry.title;
+			+ QLatin1Char(' ') + firstEntry.title(lang);
 		elapsedTime = firstEntry.begin.secsTo(QDateTime::currentDateTime());
 		totalTime = QTime(0, 0, 0).secsTo(firstEntry.duration);
 	}
@@ -81,7 +83,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	if ((level == ShortOsd) && secondEntry.channel.isValid()) {
 		entryString = entryString + QLatin1Char('\n') +
 			QLocale().toString(secondEntry.begin.toLocalTime().time()) +
-			QLatin1Char(' ') + secondEntry.title;
+			QLatin1Char(' ') + secondEntry.title(lang);
 	}
 
 	int lineHeight = QFontMetrics(osdFont).height();
@@ -119,17 +121,17 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 		if (level == LongOsd) {
 			QRect boundingRect = entryRect;
 
-			if (!firstEntry.subheading.isEmpty()) {
+			if (!firstEntry.subheading().isEmpty()) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(), lineHeight, Qt::AlignLeft,
-					firstEntry.subheading, &boundingRect);
+					firstEntry.subheading(), &boundingRect);
 			}
 
-			if (!firstEntry.details.isEmpty() && firstEntry.details != firstEntry.title) {
+			if (!firstEntry.details().isEmpty() && firstEntry.details() != firstEntry.title(lang)) {
 				painter.drawText(entryRect.x(), boundingRect.bottom() + 1,
 					entryRect.width(),
 					rect.height() - boundingRect.bottom() - 1,
-					Qt::AlignLeft | Qt::TextWordWrap, firstEntry.details,
+					Qt::AlignLeft | Qt::TextWordWrap, firstEntry.details(),
 					&boundingRect);
 			}
 
@@ -143,7 +145,7 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 }
 
 DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent),
-	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1)
+	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1), pausedTime(0)
 {
 	mediaWidget = manager->getMediaWidget();
 	osdWidget = mediaWidget->getOsdWidget();
@@ -253,7 +255,7 @@ void DvbLiveView::toggleOsd()
 
 	switch (internal->dvbOsd.level) {
 	case DvbOsd::Off:
-		internal->dvbOsd.init(DvbOsd::ShortOsd,
+		internal->dvbOsd.init(manager, DvbOsd::ShortOsd,
 			QString(QLatin1String("%1 - %2")).arg(channel->number).arg(channel->name),
 			manager->getEpgModel()->getCurrentNext(channel));
 		osdWidget->showObject(&internal->dvbOsd, 2500);
@@ -418,18 +420,23 @@ void DvbLiveView::playbackStatusChanged(MediaWidget::PlaybackStatus playbackStat
 		internal->pmtGenerator = DvbSectionGenerator();
 		internal->buffer.clear();
 		internal->timeShiftFile.close();
+		internal->retryCounter = 0;
 		internal->updateUrl();
-		internal->dvbOsd.init(DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
+		internal->dvbOsd.init(manager, DvbOsd::Off, QString(), QList<DvbSharedEpgEntry>());
 		osdWidget->hideObject();
 		break;
 	case MediaWidget::Playing:
 		if (internal->timeShiftFile.isOpen()) {
 			// FIXME
 			mediaWidget->play(internal);
+			mediaWidget->setPosition(pausedTime);
 		}
 
 		break;
 	case MediaWidget::Paused:
+		pausedTime = mediaWidget->getPosition() - 10;
+		if (pausedTime < 0)
+			pausedTime = 0;
 		if (internal->timeShiftFile.isOpen()) {
 			break;
 		}
@@ -518,6 +525,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	DvbPmtSection pmtSection(internal->pmtSectionData);
 	DvbPmtParser pmtParser(pmtSection);
 	QSet<int> newPids;
+	int pcrPid = pmtSection.pcrPid();
 	bool updatePatPmt = forcePatPmtUpdate;
 	bool isTimeShifting = internal->timeShiftFile.isOpen();
 
@@ -541,6 +549,13 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 
 	if (pmtParser.teletextPid != -1) {
 		newPids.insert(pmtParser.teletextPid);
+	}
+
+	/* check PCR PID is set */
+	if (pcrPid != 0x1fff) {
+		/* Check not already in list */
+		if (!newPids.contains(pcrPid))
+			newPids.insert(pcrPid);
 	}
 
 	for (int i = 0; i < pids.size(); ++i) {
@@ -567,7 +582,7 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 }
 
 DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
-	readFd(-1), writeFd(-1)
+	retryCounter(0), readFd(-1), writeFd(-1)
 {
 	fileName = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);
@@ -613,6 +628,9 @@ DvbLiveViewInternal::~DvbLiveViewInternal()
 
 void DvbLiveViewInternal::resetPipe()
 {
+	retryCounter = 0;
+	notifier->setEnabled(false);
+
 	if (!buffers.isEmpty()) {
 		buffer = buffers.at(0);
 		buffers.clear();
@@ -633,27 +651,47 @@ void DvbLiveViewInternal::resetPipe()
 
 void DvbLiveViewInternal::writeToPipe()
 {
-	while (!buffers.isEmpty()) {
+	if (buffers.isEmpty()) {
+		// disable notifier if the buffers are empty
+		notifier->setEnabled(false);
+		return;
+	}
+
+	do {
 		const QByteArray &currentBuffer = buffers.at(0);
 		int bytesWritten = int(write(writeFd, currentBuffer.constData(), currentBuffer.size()));
 
-		if ((bytesWritten < 0) && (errno == EINTR)) {
-			continue;
-		}
+		if (bytesWritten < 0) {
+			// Some interrupt happened while writing. Retry.
+			if (errno == EINTR)
+				continue;
 
-		if (bytesWritten == currentBuffer.size()) {
-			buffers.removeFirst();
-			continue;
-		}
+			if (++retryCounter > 50) {
+				// Too much failures. Warn the user
+				qCWarning(logDvb, "Stream seems to be too havy to be displayed");
+				return;
+			}
 
-		if (bytesWritten > 0) {
-			buffers.first().remove(0, bytesWritten);
+			// EAGAIN may happen when the pipe is full.
+			// That's a normal condition. No need to report.
+			if (errno != EAGAIN)
+				qCWarning(logDvb, "Error %d while writing to pipe", errno);
+		} else {
+			retryCounter = 0;
+			if (bytesWritten == currentBuffer.size()) {
+				buffers.removeFirst();
+				continue;
+			}
+			if (bytesWritten > 0)
+				buffers.first().remove(0, bytesWritten);
 		}
-
+		// If bytesWritten is less than buffer size, or returns an
+		// error, there's no sense on wasting CPU time inside a loop
 		break;
-	}
+	} while (!buffers.isEmpty());
 
 	if (!buffers.isEmpty()) {
+		// Wait for a notification that writeFd is ready to write
 		notifier->setEnabled(true);
 	}
 }
@@ -690,6 +728,7 @@ void DvbLiveViewInternal::processData(const char data[188])
 			}
 		}
 	} else {
+		notifier->setEnabled(false);
 		timeShiftFile.write(buffer); // FIXME avoid buffer reallocation
 		if (emptyBuffer) {
 			startTime = QTime::currentTime();

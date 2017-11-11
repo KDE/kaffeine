@@ -35,6 +35,7 @@ private:
 	explicit VlcMediaWidget(QWidget *parent);
 	bool init();
 	QTimer *timer;
+	bool isPaused;
 
 private slots:
 	void hideMouse();

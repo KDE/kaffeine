@@ -41,6 +41,8 @@ public:
 	void setCurrentChannel(const DvbSharedChannel &channel);
 
 private slots:
+	void languageChanged(const QString);
+	void languageAdded(const QString);
 	void channelActivated(const QModelIndex &index);
 	void entryActivated(const QModelIndex &index);
 	void checkEntry();
@@ -50,9 +52,12 @@ private:
 	DvbManager *manager;
 	DvbEpgChannelTableModel *epgChannelTableModel;
 	DvbEpgTableModel *epgTableModel;
+	QString currentLanguage;
 	QTreeView *channelView;
 	QTreeView *epgView;
 	QLabel *contentLabel;
+	QComboBox *languageBox;
+	QLabel *languageLabel;
 };
 
 #endif /* DVBEPGDIALOG_H */

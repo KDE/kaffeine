@@ -353,7 +353,7 @@ void DvbTab::instantRecord(bool checked)
 			manager->getEpgModel()->getCurrentNext(channel);
 
 		if (!epgEntries.isEmpty()) {
-			recording.name = epgEntries.at(0)->title;
+			recording.name = epgEntries.at(0)->title();
 		}
 
 		if (recording.name.isEmpty()) {

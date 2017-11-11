@@ -123,6 +123,7 @@ public:
 
 	void setEpgModel(DvbEpgModel *epgModel_);
 	void setChannelFilter(const DvbSharedChannel &channel);
+	void setLanguage(QString lang);
 
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -141,6 +142,7 @@ private:
 
 	DvbEpgModel *epgModel;
 	bool contentFilterEventPending;
+	QString currentLanguage;
 };
 
 #endif /* DVBEPGDIALOG_P_H */
