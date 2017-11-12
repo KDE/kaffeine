@@ -35,7 +35,6 @@ public:
 	QString title;
 	QString subheading;
 	QString details;
-	QString parental;
 };
 
 class DvbEpgEntry : public SharedData
@@ -61,7 +60,9 @@ public:
 	QDateTime begin; // UTC
 	QTime duration;
 	QString content;
+	QString parental;
 
+	// ISO 639-2 language-dependent entries
 	QHash<QString, DvbEpgLangEntry> langEntry;
 
 	DvbSharedRecording recording;
@@ -200,52 +201,6 @@ public:
 		return s;
 	}
 
-	QString parental(QString lang = QString()) const {
-		QString s;
-
-		if (!lang.isEmpty()) {
-			/*
-			 * Only return the user requested parental data
-			 * ISO-639-2 code if the parental data is filled.
-			 *
-			 * If it isn't, show all parental info available
-			 */
-			if (langEntry[lang].parental.isEmpty())
-				lang = "";	/* Ignore FIRST_LANG */
-			else if (lang != FIRST_LANG)
-				return langEntry[lang].parental;
-		}
-
-		QHashIterator<QString, DvbEpgLangEntry> i(langEntry);
-		bool first = true;
-
-		while (i.hasNext()) {
-			i.next();
-
-			QString code = i.key();
-			DvbEpgLangEntry entry = i.value();
-
-			if (!entry.parental.isEmpty()) {
-				if (first)
-					first = false;
-				else
-					s += " / ";
-
-				if (lang != FIRST_LANG && code != FIRST_LANG) {
-					s += code;
-					s += ": ";
-				}
-				s += entry.parental;
-			}
-
-			if (lang == FIRST_LANG)
-				break;
-
-			s += "\n\n";
-		}
-		return s;
-	}
-
 	// Check only the user-visible elements
 	bool operator==(const DvbEpgEntry &other) const
 	{
@@ -275,8 +230,6 @@ public:
 			if (thisEntry.subheading != otherEntry.subheading)
 				return false;
 			if (thisEntry.details != otherEntry.details)
-				return false;
-			if (thisEntry.parental != otherEntry.parental)
 				return false;
 
 			// If first language matches, assume entries are identical

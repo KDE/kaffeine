@@ -49,7 +49,7 @@ private:
 				      QString *code = NULL);
 	void processSection(const char *data, int size);
 	QString getContent(DvbContentDescriptor &descriptor);
-	QString getParental(QString code, DvbParentalRatingEntry &entry);
+	QString getParental(DvbParentalRatingDescriptor &descriptor);
 
 	DvbChannelModel *channelModel;
 	DvbEpgModel *epgModel;

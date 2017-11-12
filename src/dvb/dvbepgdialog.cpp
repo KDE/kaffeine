@@ -230,8 +230,8 @@ void DvbEpgDialog::entryActivated(const QModelIndex &index)
 	if (!entry->content.isEmpty()) {
 		text += "<br/><br/><font color=#000080>" + entry->content + "</font>";
 	}
-	if (!entry->parental(currentLanguage).isEmpty()) {
-		text += "<br/><br/><font color=#800000>" + entry->parental(currentLanguage) + "</font>";
+	if (!entry->parental.isEmpty()) {
+		text += "<br/><br/><font color=#800000>" + entry->parental + "</font>";
 	}
 
 	contentLabel->setText(text);
