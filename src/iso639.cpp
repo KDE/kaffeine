@@ -18,6 +18,9 @@
 #include <QCoreApplication>
 #include <QLocale>
 
+namespace Iso639
+{
+
 /*
  * ISO 639-2 language codes as defined on 2017-11-08 at:
  *	https://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt
@@ -510,3 +513,18 @@ static const QHash<QString, QString> iso639_2_codes({
 	{ "ZXX", I18N_NOOP("No linguistic content")},
 	{ "ZZA", I18N_NOOP("Zaza")},
 });
+
+bool lookupCode(const QString &code, QString *language)
+{
+	QHash<QString, QString>::ConstIterator it = iso639_2_codes.constFind(code);
+	if (it == iso639_2_codes.constEnd()) {
+		return false;
+	}
+
+	if (language) {
+		*language = it.value();
+	}
+	return true;
+}
+
+}

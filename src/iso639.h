@@ -16,4 +16,9 @@
 
 class QString;
 
-static const QHash<QString, QString> iso639_2_codes;
+namespace Iso639
+{
+
+bool lookupCode(const QString &code, QString *language);
+
+}
