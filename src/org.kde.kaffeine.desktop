@@ -136,6 +136,4 @@ MimeType=application/ogg;application/ram;application/vnd.rn-realmedia;applicatio
 Terminal=false
 Type=Application
 X-KDE-HasTempFileOption=true
-#Change back to Kaffeine/index.html when docbooks will be available
 X-DocPath=kaffeine/index.html
-X-Desktop-File-Install-Version=0.15
