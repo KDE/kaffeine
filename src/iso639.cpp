@@ -98,7 +98,7 @@ bool lookupCode(const QString &code, QString *language)
 	}
 
 	if (language) {
-		*language = it.value();
+		*language = i18nd("iso_639-2", it.value().toUtf8().constData());
 	}
 	return true;
 }
