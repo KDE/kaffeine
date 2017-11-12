@@ -29,6 +29,10 @@ If you also want the Kaffeine Handbook, you also need:
 
 * KF5DocTools
 
+For runtime translations of the ISO 639 language codes, you also need:
+
+* iso-codes
+
 Debian and Ubuntu
 -----------------
 
