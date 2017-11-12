@@ -195,8 +195,6 @@ public:
 
 			if (lang == FIRST_LANG)
 				break;
-
-			s += "\n\n";
 		}
 		return s;
 	}
