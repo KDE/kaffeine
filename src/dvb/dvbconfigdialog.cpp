@@ -1089,7 +1089,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 		else
 			connect(this, &DvbSConfigObject::setFirstLnbVisible,
 				pushButton, &QPushButton::setVisible);
-		layout->addWidget(pushButton, lnbNumber + 2, 0);
+		layout->addWidget(pushButton, lnbNumber + 3, 0);
 
 		QComboBox *comboBox = new QComboBox(parent);
 		comboBox->addItem(i18n("No Source"));
