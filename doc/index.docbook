@@ -212,7 +212,7 @@ The <guilabel>Begin margin</guilabel> and <guilabel>End margin</guilabel>
 options are used to setup a sort of <quote>security margin</quote> in order
 to avoid losing the beginning and the end of a program, as the time stamps at
 the program guide may not be precise. So, it actually starts recording a few
-minutes before the <guilabel>Start</guilabel> time defined at the
+minutes before the <guilabel>Start</guilabel> time defined in the
 <guimenu>Program Guide</guimenu>. The exact amount of time before is
 defined via <guilabel>Begin margin</guilabel>. It extends the
 record by the amount of time defined by <guilabel>End margin</guilabel>.
@@ -280,19 +280,19 @@ editing the file, with can be useful to add a new set of channels, while
 the upstream file is not updated. If you need to use it, please consider
 sending an update to
 <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/">dtv-scan-tables
-</ulink> for others to also benefit for the new channel definitions.
+</ulink> for others to also benefit from the new channel definitions.
 </para>
 
 <para>
 The <guilabel>Use ISO 8859-1 charset instead of ISO 6937</guilabel>
-option allows to select the default to be used on MPEG-TS messages
+option allows selecting the default to be used on MPEG-TS messages
 that don't explicitly set a charset. If not set, it defaults to using
 ISO-6937 encoding. If set, the default changes to ISO 8859-1.
 </para>
 
 <para>
 The <guilabel>Create info files to accompany EPG recordings</guilabel>
-option enables the creation of an ancillary files for scheduled records
+option enables the creation of ancillary files for scheduled records
 with the contents of the program guide for records made via the
 <guimenu>Program guide</guimenu>.
 </para>
@@ -374,7 +374,7 @@ of taking a lot more time to complete the channel scan operation.
 </para>
 
 <para>
-The channel scan operation is started by clicking at
+The channel scan operation is started by clicking on
 <guibutton>Start Scan</guibutton>.
 Once finished, the discovered channels will appear on the right. These channels can be copied
 to the left side by clicking <guibutton>Add Filtered</guibutton>. It is possible to check the tuning parameters
@@ -451,15 +451,15 @@ pop up menu and select the <guimenuitem>Program Guide</guimenuitem> option:
 </screenshot>
 
 <para>
-On some Countries, the EPG may be availabe on multiple languages. By
+On some Countries, the EPG may be available in multiple languages. By
 default, &kaffeine; shows any languages on EPG. If multiple languages
 are available for a given EPG entry, and no explicit language content is
 select, it will prefix the title, subtitle and description data with a 3
-code language code, as defined by ISO 639-2 specification.
+letter language code, as defined by ISO 639-2 specification.
 </para>
 
 <para>
-The <guilabel>EPG Language</guilabel> option allows to filter just one
+The <guilabel>EPG Language</guilabel> option allows filtering just one
 language. If enabled, the filter will also be applied to the On
 Screen Display - <acronym>OSD</acronym> and to any new scheduled
 recordings. It won't affect pre-existing scheduled recordings.
@@ -467,7 +467,7 @@ recordings. It won't affect pre-existing scheduled recordings.
 
 <para>Besides clicking on the record button
 <inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject>
-when the live view is opened, &kaffeine; also allows to record a program
+when the live view is opened, &kaffeine; also allows recording a program
 via the program guide, by clicking on the
 <inlinemediaobject><imageobject><imagedata fileref="media-record.png" format="PNG"/></imageobject></inlinemediaobject>
 <guibutton>Record Show</guibutton> at the
@@ -502,13 +502,13 @@ to directly define a time and duration for a program to be recorded.
 In this case, it won't use the EPG definitions.
 </para>
 <para>
-By selecting an existing program and clicking at the
+By selecting an existing program and clicking on the
 <guibutton>Edit</guibutton> button, you may change the start time
 and the record duration. You may also program it to be recorded
 weekly or daily.
 </para>
 <para>
-By selecting an existing program and clicking at the
+By selecting an existing program and clicking on the
 <guibutton>Remove</guibutton> button, it will remove the program from
 the recording schedule.
 </para>
