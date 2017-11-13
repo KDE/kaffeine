@@ -1591,7 +1591,7 @@ void DvbSLnbConfigObject::configure()
 	gridLayout->addWidget(lowRangeLabel, 3, 4, 1, 2);
 
 	highRangeLabel = new QLabel(mainWidget);
-	gridLayout->addWidget(highRangeLabel, 4, 5, 1, 2);
+	gridLayout->addWidget(highRangeLabel, 4, 4, 1, 2);
 
 	selectType(currentType);
 
