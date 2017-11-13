@@ -314,14 +314,14 @@ with the contents of the program guide for records made via the
 </screenshot>
 
 <para>
-The <guimenu>Device</guimenu> menus have the per-device setup. Usually selecting the country and the city in the <guilabel>Source</guilabel>
-combo box (or using one of the Autoscan sources) is enough for non-satellite configurations.
-The same happens for devices that support multiple TV standards:
+The <guimenu>Device</guimenu> menus have the per-device setup. Usually
+selecting the country and the city in the <guilabel>Source</guilabel>
+combo box (or using one of the Autoscan sources) is enough for non-satellite
+configurations.
+The same happens for devices that support multiple TV standards. On those
+devices, you need to setup the <guilabel>Source</guilabel> for each
+TV standard:
 </para>
-
-</sect2>
-<sect2 id="dtv-channel-setup">
-<title>Digital TV channel setup</title>
 
 <screenshot>
 <screeninfo>Channel Configuration</screeninfo>
@@ -334,6 +334,182 @@ The same happens for devices that support multiple TV standards:
 </textobject>
 </mediaobject>
 </screenshot>
+
+<para>
+The <guilabel>Tuner timeout</guilabel> specifies the amount of time the
+channel scan will wait to get a signal lock. Usually, the default is
+enough for most devices, but if the device is too slow to lock, such
+value can be increased.
+</para>
+
+<para>
+The <guilabel>Name</guilabel> specifies the name associated of with source
+that will appear at the <guimenu>Channel</guimenu> menu.
+</para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title>Satellite devices</title>
+
+<para>
+The configuration for satellite devices (DVB-S, DVB-S2) are more complex,
+as there are different satellite system arrangements that are possible.
+Also, on satellite systems, it is usually up to the device to power up an
+amplifier located at the satellite dish - called LNBf - via a DC voltage.
+</para>
+<para>
+Also, as satellite systems use a wide bandwidth and accept signals using
+different polarities, it is common to use a protocol - called DiSEqC - in
+order to select a range of channels to be received.
+</para>
+<para>
+The first step is to teach &kaffeine; about the satellite configuration
+via the <guimenu>Configuration</guimenu> combo box:
+</para>
+
+<screenshot>
+<screeninfo>Satellite device definitions</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>Satellite device definitions</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para>
+The following <guimenu>Configuration</guimenu> values are possible:
+</para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para>
+<parameter>DiSEqC Switch</parameter> - The antenna cable is connected to
+a DiSEqC switch or the LNBf requires DiSEqC commands to select a range
+of channels. This is the most common setting. It allows having up to 4
+satellites connected at the same time, each with its own dish. For each
+satellite, you need to set the configuration for the LNBf at the dish
+pointing to it.
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>USALS Rotor</parameter> - The antenna cable is connected to
+a single dish with a USALS Rotor, controlled via DiSEqC. Multiple satellites
+can be configured, as the rotor will change the dish position when a different
+satellite is chosen. You need to specify the position of the dish
+(latitude, longitude).
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>Positions Rotor</parameter> - The antenna cable is connected to
+a single dish with a Rotor with a set of fixed positions, controlled via
+DiSEqC. Multiple satellites can be configured, as the rotor will change the
+dish position when a different satellite is chosen.
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>Disable DiSEqC</parameter> - The antenna cable is connected
+to a dish without any elements supporting DiSEqC. This setup is typically
+used with multipoint bandstacked LNBf, where all channels are present at
+the same time at the antenna cabling.
+</para>
+</listitem>
+</itemizedlist>
+
+<para>
+On a typical satellite system, the LNBf uses the power up voltage to select
+between a lower voltage (13V) for vertical or circular right polarization and
+a higher voltage (18V) for horizontal or circular left polarization.
+However, due to cabling loss, sometimes the LNBf doesn't understand the
+high voltage and several channels won't tune or will tune wrong. So, a few
+devices offer an option to increase the voltage to a higher setting
+(14V or 19V). This is enabled via the tri-state
+<guilabel>Use Higher LNBf voltage</guilabel> option. Three values
+are possible:
+</para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para>
+<parameter>tri-state</parameter> - Don't send a command to the device to
+adjust the voltage level. That's the default.
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>unselected</parameter> - Use normal values (13V/18V) for the
+DC voltage. Only select it if the device supports adjusting the level.
+</para>
+</listitem>
+<listitem>
+<para>
+<parameter>selected</parameter> - Use higher values (14V/19V) for the
+DC voltage. Only select it if the device supports adjusting the level.
+</para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title>Configurations without a rotor</title>
+
+<para>
+When either <parameter>DiSEqC Switch</parameter> or <parameter>Disable DiSEqC
+</parameter> options are used, the first step is to set the satellite that
+will be used as a signal source, via a combo box on the right. With a
+DiSEqC switch, it is possible to select up to 4 sources.
+Each with its own LNBf. After setting the source(s), for each source, click at
+the corresponding <guilabel>LNBf Settings</guilabel> button to open a popup
+window to select the LNBf type inside the dish that corresponds to the source:
+</para>
+
+<screenshot>
+<screeninfo>LNBf definitions</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase>LNBf definitions</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title>Rotor configurations</title>
+
+<para>
+When a rotor is used, there is just one LNBf with is shared with multiple
+satellites. So, the next step is to select the LNBf type via the
+<guilabel>LNB Settings</guilabel> dialog.
+</para>
+<para>
+For USALS rotor, the positioning is done via satellite position (latitude,
+longitude). So, just select the satellites that will be used via a combo box
+and click at the <guilabel>Add Satellite</guilabel> button.
+</para>
+<para>
+For positions rotor, the positioning is done via a preconfigured position
+number. So, just select the satellite position at the number dialog on the
+left and the satellite via a combo box on the right and click at the
+<guilabel>Add Satellite</guilabel> button.
+</para>
+<para>
+If a satellite was added by mistake, you can select the satellite and
+click at the <guilabel>Remove Satellite</guilabel> button to remove it.
+</para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title>Digital TV channel setup</title>
 
 <para>
 After clicking on the <guibutton>Ok</guibutton> button, the next step is to scan for the digital channels, using
