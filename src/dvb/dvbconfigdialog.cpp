@@ -1081,7 +1081,7 @@ DvbSConfigObject::DvbSConfigObject(QWidget *parent_, QBoxLayout *boxLayout, DvbM
 			config = createConfig(lnbNumber);
 		}
 
-		QPushButton *pushButton = new QPushButton(i18n("LNB %1 Settings", lnbNumber + 2),
+		QPushButton *pushButton = new QPushButton(i18n("LNB %1 Settings", lnbNumber + 1),
 							  parent);
 		if (lnbNumber > 0)
 			connect(this, &DvbSConfigObject::setDiseqcVisible,
