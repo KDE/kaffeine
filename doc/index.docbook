@@ -252,7 +252,7 @@ program.
 </para>
 
 <para>
-Cliking at the <guilabel>Update Scan Data over Internet</guilabel> option
+Clicking at the <guilabel>Update Scan Data over Internet</guilabel> option
 makes &kaffeine; to check if a new channel scanning definition file is
 present at <ulink url="https://autoconfig.kde.org/kaffeine/">
 KDE's site</ulink>.
