@@ -85,6 +85,10 @@ namespace IsoCodes
 				break;
 			}
 		}
+		if (hash.isEmpty())
+			qCWarning(logConfig,
+			          "Error parsing %s: no entries found.",
+			          qPrintable(fileName));
 	}
 
 	/*
