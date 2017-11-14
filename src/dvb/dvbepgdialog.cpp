@@ -201,7 +201,8 @@ void DvbEpgDialog::languageChanged(const QString lang)
 
 void DvbEpgDialog::languageAdded(const QString lang)
 {
-	languageBox->addItem(lang);
+	if (lang != FIRST_LANG)
+		languageBox->addItem(lang);
 }
 
 void DvbEpgDialog::entryActivated(const QModelIndex &index)
