@@ -214,8 +214,8 @@ to avoid losing the beginning and the end of a program, as the time stamps at
 the program guide may not be precise. So, it actually starts recording a few
 minutes before the <guilabel>Start</guilabel> time defined in the
 <guimenu>Program Guide</guimenu>. The exact amount of time before is
-defined via <guilabel>Begin margin</guilabel>. It extends the
-record by the amount of time defined by <guilabel>End margin</guilabel>.
+defined via <guilabel>Begin margin</guilabel>. &kaffeine; extends the
+record by the amount of time defined by <guilabel>End margin</guilabel>
 after the end of the program.
 </para>
 
@@ -258,7 +258,7 @@ present at <ulink url="https://autoconfig.kde.org/kaffeine/">
 KDE's site</ulink>.
 </para>
 <para>
-&kaffeine; uses a file called scanfile.dvb with stores a list of known
+&kaffeine; uses a file called scanfile.dvb to store a list of known
 digital TV channels per Country and City. This file is kept in sync with
 the contents of <ulink url="https://git.linuxtv.org/dtv-scan-tables.git">the
 dtv-scan-tables tree</ulink>, maintained
@@ -276,7 +276,7 @@ required to close the TV configuration dialog and reopen.</para>
 
 <para>
 The <guilabel>Edit scanfile</guilabel> option allows
-editing the file, with can be useful to add a new set of channels, while
+editing the file, which can be useful to add a new set of channels, while
 the upstream file is not updated. If you need to use it, please consider
 sending an update to
 <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/">dtv-scan-tables
@@ -343,7 +343,7 @@ value can be increased.
 </para>
 
 <para>
-The <guilabel>Name</guilabel> specifies the name associated of with source
+The <guilabel>Name</guilabel> specifies the name associated with source
 that will appear at the <guimenu>Channel</guimenu> menu.
 </para>
 
@@ -485,7 +485,7 @@ window to select the LNBf type inside the dish that corresponds to the source:
 <title>Rotor configurations</title>
 
 <para>
-When a rotor is used, there is just one LNBf with is shared with multiple
+When a rotor is used, there is just one LNBf which is shared with multiple
 satellites. So, the next step is to select the LNBf type via the
 <guilabel>LNB Settings</guilabel> dialog.
 </para>
@@ -538,14 +538,14 @@ will be used.
 
 <para>
 When &kaffeine; identifies a channel, it reads a <acronym>MPEG-TS</acronym>
-table called Network Information Table (<acronym>NIT</acronym>), with contains
+table called Network Information Table (<acronym>NIT</acronym>), which contains
 information about channels using different tuning parameters transmitted by
 the same broadcaster. On certain networks, it is possible that some tuning
 parameters to be stored on several <acronym>NIT</acronym> tables
 (called <quote>other NITs</quote>). This is more common on some cable and
 satellite systems. By selecting <guilabel>Search transponders for other
 Networks</guilabel>, &kaffeine; is instructed to wait and parse all other
-<acronym>NITs</acronym>, with may make it to find more channels, at the cost
+<acronym>NITs</acronym>, which may make it to find more channels, at the cost
 of taking a lot more time to complete the channel scan operation.
 </para>
 
