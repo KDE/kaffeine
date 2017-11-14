@@ -1,5 +1,5 @@
 /*
- * iso-codes.cpp
+ * iso-codes.h
  *
  * Copyright (C) 2017 Mauro Carvalho Chehab <mchehab@s-opensource.com>
  *
@@ -18,7 +18,6 @@ class QString;
 
 namespace IsoCodes
 {
-
-bool getLanguage(const QString &code, QString *language);
-
+	bool getLanguage(const QString &code, QString *language);
+	bool getCountry(const QString &code, QString *country);
 }
