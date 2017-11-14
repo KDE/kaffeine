@@ -26,6 +26,7 @@
 #include <QStandardPaths>
 
 #include "../ensurenopendingoperation.h"
+#include "../iso-codes.h"
 #include "dvbdevice.h"
 #include "dvbepg.h"
 #include "dvbepg_p.h"
@@ -898,10 +899,15 @@ QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 		code.append(QChar(entry.languageCode2()));
 		code.append(QChar(entry.languageCode3()));
 
+		QString country;
+		IsoCodes::getCountry(code, &country);
+		if (country.isEmpty())
+			country = code;
+
 		// Rating from 0x10 to 0xff are broadcaster's specific
 		if (entry.rating() == 0) {
 			// xgettext:no-c-format
-			parental += i18n("Country %1: not rated\n", code);
+			parental += i18n("Country %1: not rated\n", country);
 		} else if (entry.rating() < 0x10) {
 			if (code == "BRA" && transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
 				unsigned int rating = entry.rating();
@@ -925,10 +931,10 @@ QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 
 				QString ratingStr = i18n(braRating[entry.rating()]);
 				// xgettext:no-c-format
-				parental += i18n("Country %1: rating: %2%3\n", code, ratingStr, GenStr);
+				parental += i18n("Country %1: rating: %2%3\n", country, ratingStr, GenStr);
 			} else {
 				// xgettext:no-c-format
-				parental += i18n("Country %1: rating: %2 years.\n", code, entry.rating() + 3);
+				parental += i18n("Country %1: rating: %2 years.\n", country, entry.rating() + 3);
 			}
 		}
 	}
