@@ -29,9 +29,8 @@ namespace IsoCodes
 			 QString entry_key, QString code_key,
 			 QString name_key)
 	{
-		if (!hash.isEmpty()) {
+		if (!hash.isEmpty())
 			return;
-		}
 
 		const QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, file);
 		if (fileName.isEmpty()) {
@@ -90,12 +89,17 @@ namespace IsoCodes
 
 	bool getLanguage(const QString &code, QString *language)
 	{
-		load(iso639_2_codes,
-		QString("xml/iso-codes/iso_639-2.xml"),
-		QLatin1String("iso_639_entries"),
-		QLatin1String("iso_639_entry"),
-		QLatin1String("iso_639_2B_code"),
-		QLatin1String("name"));
+		static bool first = true;
+
+		if (first) {
+			load(iso639_2_codes,
+			     QString("xml/iso-codes/iso_639-2.xml"),
+			     QLatin1String("iso_639_entries"),
+			     QLatin1String("iso_639_entry"),
+			     QLatin1String("iso_639_2B_code"),
+			     QLatin1String("name"));
+			first = false;
+		}
 
 		QHash<QString, QString>::ConstIterator it = iso639_2_codes.constFind(code);
 		if (it == iso639_2_codes.constEnd()) {
@@ -116,12 +120,17 @@ namespace IsoCodes
 
 	bool getCountry(const QString &code, QString *country)
 	{
-		load(iso3166_1_codes,
-		QString("xml/iso-codes/iso_3166-1.xml"),
-		QLatin1String("iso_3166_entries"),
-		QLatin1String("iso_3166_entry"),
-		QLatin1String("alpha_3_code"),
-		QLatin1String("name"));
+		static bool first = true;
+
+		if (first) {
+			load(iso3166_1_codes,
+			     QString("xml/iso-codes/iso_3166-1.xml"),
+			     QLatin1String("iso_3166_entries"),
+			     QLatin1String("iso_3166_entry"),
+			     QLatin1String("alpha_3_code"),
+			     QLatin1String("name"));
+			first = false;
+		}
 
 		QHash<QString, QString>::ConstIterator it = iso3166_1_codes.constFind(code);
 		if (it == iso3166_1_codes.constEnd()) {
