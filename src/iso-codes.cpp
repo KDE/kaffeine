@@ -15,8 +15,9 @@
  * GNU General Public License for more details.
  */
 
+#include "log.h"
+
 #include <KLocalizedString>
-#include <QDebug>
 #include <QFile>
 #include <QLocale>
 #include <QStandardPaths>
@@ -34,13 +35,18 @@ namespace IsoCodes
 
 		const QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, file);
 		if (fileName.isEmpty()) {
-			qInfo() << "Could not locate" << file << "(is iso-codes installed?)";
+			qCInfo(logConfig,
+			       "Could not locate %s (is iso-codes installed?)",
+			       qPrintable(file));
 			return;
 		}
 
 		QFile f(fileName);
 		if (!f.open(QIODevice::ReadOnly)) {
-			qWarning() << "Could not open" << fileName << f.errorString();
+			qCWarning(logConfig,
+			          "Could not open %s (%s)",
+			          qPrintable(fileName),
+				  qPrintable(f.errorString()));
 			return;
 		}
 
