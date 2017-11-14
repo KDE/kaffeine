@@ -37,7 +37,7 @@
 #include "dvbepgdialog.h"
 #include "dvbepgdialog_p.h"
 #include "dvbmanager.h"
-#include "../iso639.h"
+#include "../iso-codes.h"
 
 DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(parent),
 	manager(manager_)
@@ -98,7 +98,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	langLayout->addWidget(languageLabel);
 	languageLabel->setBuddy(languageBox);
 	QString languageString;
-	if (Iso639::lookupCode(currentLanguage, &languageString))
+	if (IsoCodes::getLanguage(currentLanguage, &languageString))
 		languageLabel->setText(languageString);
 	else if (currentLanguage == "")
 		languageLabel->setText(i18n("Any language"));
@@ -186,7 +186,7 @@ void DvbEpgDialog::languageChanged(const QString lang)
 	else
 		currentLanguage = lang;
 	QString languageString;
-	if (Iso639::lookupCode(currentLanguage, &languageString))
+	if (IsoCodes::getLanguage(currentLanguage, &languageString))
 		languageLabel->setText(languageString);
 	else if (currentLanguage == "")
 		languageLabel->setText(i18n("Any language"));

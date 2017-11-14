@@ -1,5 +1,5 @@
 /*
- * iso639.cpp
+ * iso-codes.cpp
  *
  * Copyright (C) 2017 Mauro Carvalho Chehab <mchehab@s-opensource.com>
  *
@@ -16,9 +16,9 @@
 
 class QString;
 
-namespace Iso639
+namespace IsoCodes
 {
 
-bool lookupCode(const QString &code, QString *language);
+bool getLanguage(const QString &code, QString *language);
 
 }

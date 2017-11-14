@@ -1,5 +1,5 @@
 /*
- * iso639.cpp
+ * iso-codes.cpp
  *
  * Copyright (C) 2017 Mauro Carvalho Chehab <mchehab@s-opensource.com>
  * Copyright (C) 2017 Pino Toscano <pino@kde.org>
@@ -22,25 +22,20 @@
 #include <QStandardPaths>
 #include <QXmlStreamReader>
 
-namespace Iso639
+namespace IsoCodes
 {
-
-/*
- * ISO 639-2 language codes as defined on 2017-11-08 at:
- *	https://www.loc.gov/standards/iso639-2/ISO-639-2_utf-8.txt
- * Loaded and translated at runtime from iso-codes.
- */
-static QHash<QString, QString> iso639_2_codes;
-
-static void load()
+static void load(QHash<QString, QString> &hash,
+		 QString file, QString main_key,
+		 QString entry_key, QString code_key,
+		 QString name_key)
 {
-	if (!iso639_2_codes.isEmpty()) {
+	if (!hash.isEmpty()) {
 		return;
 	}
 
-	const QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, "xml/iso-codes/iso_639-2.xml");
+	const QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, file);
 	if (fileName.isEmpty()) {
-		qInfo() << "Could not locate iso_639-2.xml (is iso-codes installed?)";
+		qInfo() << "Could not locate" << file << "(is iso-codes installed?)";
 		return;
 	}
 
@@ -58,18 +53,18 @@ static void load()
 		switch (t) {
 		case QXmlStreamReader::StartElement:
 			name = r.name();
-			if (inDoc && name == QLatin1String("iso_639_entry")) {
+			if (inDoc && name == entry_key) {
 				const QXmlStreamAttributes attrs = r.attributes();
-				const QString code = attrs.value("iso_639_2B_code").toString().toUpper();
-				const QString lang = attrs.value("name").toString();
-				iso639_2_codes.insert(code, lang);
-			} else if (name == QLatin1String("iso_639_entries")) {
+				const QString code = attrs.value(code_key).toString().toUpper();
+				const QString lang = attrs.value(name_key).toString();
+				hash.insert(code, lang);
+			} else if (name == main_key) {
 				inDoc = true;
 			}
 			break;
 		case QXmlStreamReader::EndElement:
 			name = r.name();
-			if (inDoc && name == QLatin1String("iso_639_entries")) {
+			if (inDoc && name == main_key) {
 				inDoc = false;
 			}
 			break;
@@ -87,10 +82,20 @@ static void load()
 	}
 }
 
+/*
+ * ISO 639-2 language codes
+ * Loaded and translated at runtime from iso-codes.
+ */
+static QHash<QString, QString> iso639_2_codes;
 
-bool lookupCode(const QString &code, QString *language)
+bool getLanguage(const QString &code, QString *language)
 {
-	load();
+	load(iso639_2_codes,
+	     QString("xml/iso-codes/iso_639-2.xml"),
+	     QLatin1String("iso_639_entries"),
+	     QLatin1String("iso_639_entry"),
+	     QLatin1String("iso_639_2B_code"),
+	     QLatin1String("name"));
 
 	QHash<QString, QString>::ConstIterator it = iso639_2_codes.constFind(code);
 	if (it == iso639_2_codes.constEnd()) {
