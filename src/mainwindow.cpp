@@ -796,9 +796,11 @@ bool MainWindow::event(QEvent *event)
 	// and all its children (especially the video widget) ...
 
 	if ((event->type() == QEvent::HoverMove) && autoHideControlBar) {
+		int x = reinterpret_cast<QHoverEvent *> (event)->pos().x();
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
 
-		if ((y < 0) || (y >= height())) {
+		if ((y < 0) || (y >= height()) ||
+		    (x < 0) || (x >= width())) {
 			// QHoverEvent sometimes reports quite strange coordinates - ignore them
 			return retVal;
 		}
@@ -820,6 +822,8 @@ bool MainWindow::event(QEvent *event)
 		if (controlBar->isHidden()) {
 			cursorHideTimer->start();
 		}
+
+		tabs.at(currentTabIndex)->mouse_move(x, y);
 	}
 
 	return retVal;

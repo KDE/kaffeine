@@ -32,7 +32,7 @@ public:
 
 	virtual void activate() = 0;
 	virtual	void toggleDisplayMode(MediaWidget::DisplayMode) {};
-
+	virtual void mouse_move(int, int) {};
 };
 
 #endif /* TABBASE_H */

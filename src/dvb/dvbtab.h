@@ -52,6 +52,7 @@ public:
 	void toggleOsd();
 	void toggleInstantRecord();
 	void toggleDisplayMode(MediaWidget::DisplayMode displayMode);
+	void mouse_move(int x, int y);
 
 	DvbManager *getManager() const
 	{
@@ -95,6 +96,8 @@ private:
 	QTimer osdChannelTimer;
 	QString currentChannel;
 	QString lastChannel;
+	bool autoHideMenu;
+	QTimer *cursorHideTimer;
 
 	DvbTimeShiftCleaner *timeShiftCleaner;
 };

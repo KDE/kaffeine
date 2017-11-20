@@ -216,6 +216,13 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	QTimer *timer = new QTimer(this);
 	timer->start(30000);
 	connect(timer, SIGNAL(timeout()), this, SLOT(cleanTimeShiftFiles()));
+
+	autoHideMenu = false;
+	cursorHideTimer = new QTimer(this);
+	cursorHideTimer->setInterval(1500);
+	cursorHideTimer->setSingleShot(true);
+	connect(cursorHideTimer, SIGNAL(timeout()), this, SLOT(hideCursor()));
+
 }
 
 DvbTab::~DvbTab()
@@ -279,6 +286,19 @@ void DvbTab::enableDvbDump()
 	manager->enableDvbDump();
 }
 
+void DvbTab::mouse_move(int x, int)
+{
+	cursorHideTimer->stop();
+	unsetCursor();
+
+	leftWidget->setVisible(x < 60);
+
+	if (leftWidget->isHidden()) {
+		cursorHideTimer->start();
+	}
+
+}
+
 void DvbTab::toggleDisplayMode(MediaWidget::DisplayMode displayMode)
 {
 	switch (displayMode) {
@@ -286,9 +306,13 @@ void DvbTab::toggleDisplayMode(MediaWidget::DisplayMode displayMode)
 	case MediaWidget::FullScreenReturnToMinimalMode:
 	case MediaWidget::MinimalMode:
 		leftWidget->hide();
+		autoHideMenu = true;
+		cursorHideTimer->start();
 		break;
 	case MediaWidget::NormalMode:
 		leftWidget->show();
+		autoHideMenu = false;
+		cursorHideTimer->stop();
 		break;
 	}
 }
