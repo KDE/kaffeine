@@ -294,7 +294,7 @@ void DvbTab::mouse_move(int x, int)
 	cursorHideTimer->stop();
 	unsetCursor();
 
-	leftWidget->setVisible(x < 60);
+	leftWidget->setVisible(x < 120);
 
 	if (leftWidget->isHidden()) {
 		cursorHideTimer->start();
