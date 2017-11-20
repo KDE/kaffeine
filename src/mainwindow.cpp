@@ -795,7 +795,7 @@ bool MainWindow::event(QEvent *event)
 	// but the latter depends on mouse tracking being enabled on this widget
 	// and all its children (especially the video widget) ...
 
-	if ((event->type() == QEvent::HoverMove) && autoHideControlBar) {
+	if ((event->type() == QEvent::HoverMove)) {
 		int x = reinterpret_cast<QHoverEvent *> (event)->pos().x();
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
 
@@ -805,22 +805,25 @@ bool MainWindow::event(QEvent *event)
 			return retVal;
 		}
 
-		cursorHideTimer->stop();
-		unsetCursor();
+		if (autoHideControlBar) {
+			cursorHideTimer->stop();
+			unsetCursor();
 
-		switch (toolBarArea(controlBar)) {
-		case Qt::TopToolBarArea:
-			controlBar->setVisible(y < 60);
-			break;
-		case Qt::BottomToolBarArea:
-			controlBar->setVisible(y >= (height() - 60));
-			break;
-		default:
-			break;
-		}
+			switch (toolBarArea(controlBar)) {
+			case Qt::TopToolBarArea:
+				controlBar->setVisible(y < 60);
+				break;
+			case Qt::BottomToolBarArea:
+				controlBar->setVisible(y >= (height() - 60));
+				menuBar()->setVisible(y < 60);
+				break;
+			default:
+				break;
+			}
 
-		if (controlBar->isHidden()) {
-			cursorHideTimer->start();
+			if (controlBar->isHidden() || menuBar()->isHidden()) {
+				cursorHideTimer->start();
+			}
 		}
 
 		tabs.at(currentTabIndex)->mouse_move(x, y);
