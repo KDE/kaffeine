@@ -288,6 +288,9 @@ void DvbTab::enableDvbDump()
 
 void DvbTab::mouse_move(int x, int)
 {
+	if (!autoHideMenu)
+		return;
+
 	cursorHideTimer->stop();
 	unsetCursor();
 
