@@ -165,29 +165,36 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	boxLayout = new QHBoxLayout();
 
+	const QSize BUTTON_SIZE = QSize(22, 22);
+
 	QToolButton *toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(configureAction);
 	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	toolButton->setFixedSize(BUTTON_SIZE);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(channelsAction);
 	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	toolButton->setFixedSize(BUTTON_SIZE);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(epgAction);
 	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	toolButton->setFixedSize(BUTTON_SIZE);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(recordingsAction);
 	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	toolButton->setFixedSize(BUTTON_SIZE);
 	boxLayout->addWidget(toolButton);
 
 	toolButton = new QToolButton(leftWidget);
 	toolButton->setDefaultAction(instantRecordAction);
 	toolButton->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	toolButton->setFixedSize(BUTTON_SIZE);
 	boxLayout->addWidget(toolButton);
 	leftLayout->addLayout(boxLayout);
 
