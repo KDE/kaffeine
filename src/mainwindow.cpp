@@ -34,6 +34,7 @@
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QHoverEvent>
+#include <QWheelEvent>
 #include <QInputDialog>
 #include <QLoggingCategory>
 #include <QMainWindow>
@@ -795,7 +796,16 @@ bool MainWindow::event(QEvent *event)
 	// but the latter depends on mouse tracking being enabled on this widget
 	// and all its children (especially the video widget) ...
 
-	if ((event->type() == QEvent::HoverMove)) {
+	switch (event->type()) {
+	case QEvent::Wheel: {
+		QWheelEvent *wheel = static_cast<QWheelEvent *>(event);
+
+		int delta = (wheel->pixelDelta().y() < 0) ? -1 : 1;
+
+		mediaWidget->setVolume(mediaWidget->getVolume() + delta);
+		break;
+	}
+	case QEvent::HoverMove: {
 		int x = reinterpret_cast<QHoverEvent *> (event)->pos().x();
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
 
@@ -827,6 +837,10 @@ bool MainWindow::event(QEvent *event)
 		}
 
 		tabs.at(currentTabIndex)->mouse_move(x, y);
+		break;
+	}
+	default:
+		break;
 	}
 
 	return retVal;
