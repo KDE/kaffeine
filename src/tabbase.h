@@ -22,6 +22,7 @@
 #define TABBASE_H
 
 #include <QWidget>
+#include "mediawidget.h"
 
 class TabBase : public QWidget
 {
@@ -30,6 +31,8 @@ public:
 	~TabBase() { }
 
 	virtual void activate() = 0;
+	virtual	void toggleDisplayMode(MediaWidget::DisplayMode) {};
+
 };
 
 #endif /* TABBASE_H */

@@ -604,7 +604,9 @@ void MainWindow::parseArgs(const QString workingDirectory)
 
 void MainWindow::displayModeChanged()
 {
-	switch (mediaWidget->getDisplayMode()) {
+	MediaWidget::DisplayMode displayMode = mediaWidget->getDisplayMode();
+
+	switch (displayMode) {
 	case MediaWidget::FullScreenMode:
 	case MediaWidget::FullScreenReturnToMinimalMode:
 		setWindowState(windowState() | Qt::WindowFullScreen);
@@ -615,7 +617,7 @@ void MainWindow::displayModeChanged()
 		break;
 	}
 
-	switch (mediaWidget->getDisplayMode()) {
+	switch (displayMode) {
 	case MediaWidget::FullScreenMode:
 	case MediaWidget::FullScreenReturnToMinimalMode:
 	case MediaWidget::MinimalMode:
@@ -624,9 +626,6 @@ void MainWindow::displayModeChanged()
 		controlBar->hide();
 		autoHideControlBar = true;
 		cursorHideTimer->start();
-
-		stackedLayout->setCurrentIndex(PlayerTabId);
-		playerTab->activate();
 		break;
 	case MediaWidget::NormalMode:
 		menuBar()->show();
@@ -635,11 +634,9 @@ void MainWindow::displayModeChanged()
 		autoHideControlBar = false;
 		cursorHideTimer->stop();
 		unsetCursor();
-
-		stackedLayout->setCurrentIndex(currentTabIndex);
-		tabs.at(currentTabIndex)->activate();
 		break;
 	}
+	tabs.at(currentTabIndex)->toggleDisplayMode(displayMode);
 }
 
 void MainWindow::trayShowHide(QSystemTrayIcon::ActivationReason reason)

@@ -25,6 +25,7 @@
 #include <QTimer>
 #include <config-kaffeine.h>
 #include "../tabbase.h"
+#include "../mediawidget.h"
 #include "dvbrecording.h"
 
 class QModelIndex;
@@ -50,6 +51,7 @@ public:
 
 	void toggleOsd();
 	void toggleInstantRecord();
+	void toggleDisplayMode(MediaWidget::DisplayMode displayMode);
 
 	DvbManager *getManager() const
 	{
@@ -84,6 +86,7 @@ private:
 	QAction *instantRecordAction;
 	DvbSharedRecording instantRecording;
 	QSplitter *splitter;
+	QWidget *leftWidget;
 	DvbChannelTableModel *channelProxyModel;
 	DvbChannelView *channelView;
 	QPointer<DvbEpgDialog> epgDialog;

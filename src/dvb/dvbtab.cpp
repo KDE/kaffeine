@@ -132,7 +132,7 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	splitter = new QSplitter(this);
 	boxLayout->addWidget(splitter);
 
-	QWidget *leftWidget = new QWidget(splitter);
+	leftWidget = new QWidget(splitter);
 	QBoxLayout *leftLayout = new QVBoxLayout(leftWidget);
 
 	boxLayout = new QHBoxLayout();
@@ -277,6 +277,20 @@ void DvbTab::toggleInstantRecord()
 void DvbTab::enableDvbDump()
 {
 	manager->enableDvbDump();
+}
+
+void DvbTab::toggleDisplayMode(MediaWidget::DisplayMode displayMode)
+{
+	switch (displayMode) {
+	case MediaWidget::FullScreenMode:
+	case MediaWidget::FullScreenReturnToMinimalMode:
+	case MediaWidget::MinimalMode:
+		leftWidget->hide();
+		break;
+	case MediaWidget::NormalMode:
+		leftWidget->show();
+		break;
+	}
 }
 
 void DvbTab::osdKeyPressed(int key)
