@@ -128,7 +128,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	namingFormatValidLabel->setPixmap(validPixmap);
 	gridLayout->addWidget(namingFormatValidLabel, 4,2);
 
-	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes.")),	5, 0);
+	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes:")),	5, 0);
 
 	actionAfterRecordingLineEdit = new QLineEdit(widget);
 	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());

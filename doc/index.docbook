@@ -72,6 +72,7 @@
 <keyword>dvb-t2</keyword>
 <keyword>dvb-s2</keyword>
 <keyword>isdb-t</keyword>
+<keyword>tv</keyword>
 </keywordset>
 
 </bookinfo>
@@ -88,7 +89,7 @@ Digital TV playback if your machine has a Digital Video Broadcast (DVB)
 device plugged into it.
 </para>
 <para>Once &kaffeine; starts, it presents a screen with the main functions in the middle,
-and it’s possible to switch to other functions via either the pop up menu or the lateral menu:
+and it’s possible to switch to other functions via either the menu bar or the left sidebar:
 </para>
 
 <screenshot>
@@ -129,9 +130,9 @@ It also supports opening a list of files to create and manage <ulink url="https:
 
 <sect1 id="playlistwindow">
 <title>The Playlist Window</title>
-<para>&kaffeine; supports multiple playlists. Choose the active one with the <guilabel>Playlist</guilabel> selector.
-You can easily drag some files or folders from the file browser and drop it on the playlist to enqueue or drop it
-on the player window to create a new playlist. To change a playlist name edit it and confirm with <keycap>Return</keycap>.
+<para>&kaffeine; supports multiple playlists. Choose the active one with the <guilabel>Playlist</guilabel> selector in
+the left sidebar. You can easily drag some files or folders from the file browser and drop it on the playlist to enqueue
+or drop it on the player window to create a new playlist. To change a playlist name edit it and confirm with <keycap>Return</keycap>.
 </para>
 <screenshot>
 <screeninfo>Playlist Window</screeninfo>
@@ -145,7 +146,8 @@ on the player window to create a new playlist. To change a playlist name edit it
   </mediaobject>
 </screenshot>
 
-<para>You can find all playlist related functions in the <guimenu>Playlist</guimenu>-Menu and the context-menu (right-click on playlist).
+<para>You can find all playlist related functions in the <guimenu>Playlist</guimenu> item from the menu bar
+and the context-menu (right-click on playlist).
 </para>
 </sect1>
 </chapter>
@@ -168,9 +170,9 @@ Also, since it uses the &Linux; DVB version 5 API, it supports frontends
 capable of implementing multiple digital TV standards.
 </para>
 
-<para>Setting the TV configuration on &kaffeine; is as simple as clicking on
-the <guimenu>Television</guimenu> pop up menu, and selecting the
-<guimenuitem>Configure Television</guimenuitem> option. A pop up window
+<para>Setting the TV configuration on &kaffeine; is as simple as open the
+<guimenu>Television</guimenu> item from the menu bar and select the
+<guimenuitem>Configure Television...</guimenuitem> option. A pop up window
 will open, allowing setting the parameters to be used:
 </para>
 
@@ -220,8 +222,8 @@ after the end of the program.
 </para>
 
 <para>
-The <guilabel>Naming style for recordings</guilabel> is used to setup how
-&kaffeine; will name a program. Several macros can be used to dynamically
+The <guilabel>Naming style for recordings</guilabel> option is used to setup
+how &kaffeine; will name a program. Several macros can be used to dynamically
 change the name of the record:
 </para>
 <itemizedlist mark='opencircle'>
@@ -314,7 +316,7 @@ with the contents of the program guide for records made via the
 </screenshot>
 
 <para>
-The <guimenu>Device</guimenu> menus have the per-device setup. Usually
+The <guimenu>Device</guimenu> tabs have the per-device setup. Usually
 selecting the country and the city in the <guilabel>Source</guilabel>
 combo box (or using one of the Autoscan sources) is enough for non-satellite
 configurations.
@@ -344,7 +346,8 @@ value can be increased.
 
 <para>
 The <guilabel>Name</guilabel> specifies the name associated with source
-that will appear at the <guimenu>Channel</guimenu> menu.
+that will appear selecting <guimenu>Television</guimenu> item from the menubar
+and <guimenuitem>Channels</guimenuitem> option, for settings panel.
 </para>
 
 <sect3 id="dtv-source-settings-satellite">
@@ -379,7 +382,7 @@ via the <guimenu>Configuration</guimenu> combo box:
 </screenshot>
 
 <para>
-The following <guimenu>Configuration</guimenu> values are possible:
+The following values are possible:
 </para>
 <itemizedlist mark='opencircle'>
 <listitem>
@@ -512,8 +515,10 @@ click at the <guilabel>Remove Satellite</guilabel> button to remove it.
 <title>Digital TV channel setup</title>
 
 <para>
-After clicking on the <guibutton>Ok</guibutton> button, the next step is to scan for the digital channels, using
-the Television pop up menu, option <guimenuitem>Channels</guimenuitem>:
+After clicking on the <guibutton>Ok</guibutton> button, the next step is to
+scan for the digital channels, using the <guimenu>Television</guimenu> item
+from the menubar and select <guimenuitem>Channels</guimenuitem> option, for
+settings panel:
 </para>
 
 
@@ -593,11 +598,11 @@ Once the channels are saved, watching TV is as simple as clicking on the <guibut
 <para>
 &kaffeine; also allows you to click on the
 <inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject>
-to pause it.
-When the button is clicked, &kaffeine; will record the program and once the
+button to pause it.
+With this action, &kaffeine; will record the program and once the
 <inlinemediaobject><imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject></inlinemediaobject>
 button is pressed it will start the program from
-the point it was paused. There is also a
+the point it was paused, this is known as time shifting. There is also a
 <inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject> button
 that allows you to quick record and save the program to disk.
 </para>
@@ -610,8 +615,8 @@ that allows you to quick record and save the program to disk.
 Digital TV channels usually transmit a list of the current and future
 attractions. This is called Electronic Program Guide - <acronym>EPG</acronym>.
 The EPG data is captured when a channel's content is played.
-To see the <acronym>EPG</acronym>, open the <guimenu>Television</guimenu>
-pop up menu and select the <guimenuitem>Program Guide</guimenuitem> option:
+To see the <acronym>EPG</acronym>, open the <guimenu>Television</guimenu> item
+from the menubar and select the <guimenuitem>Program Guide</guimenuitem> option:
 </para>
 
 <screenshot>
@@ -656,7 +661,7 @@ via the program guide, by clicking on the
 
 <para>
 To see the programs that are scheduled to be recorded, open the
-<guimenu>Television</guimenu> pop up menu and select the
+<guimenu>Television</guimenu> item from the menubar and select the
 <guimenuitem>Recording Schedule</guimenuitem> option:
 </para>
 
