@@ -714,7 +714,7 @@ the recording schedule.
 <guimenuitem>Open...</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject> <action>Opens the file dialog</action> and allows you to select a local file to play.
+<inlinemediaobject><imageobject><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject></inlinemediaobject> <action>Opens the file dialog</action> and allows you to select a local file to play.
 </para></listitem>
 </varlistentry>
 
@@ -727,7 +727,7 @@ the recording schedule.
 <guimenuitem>Open URL...</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="text-html.png" format="PNG"/></imageobject> <action>Open a dialog for text input</action>, so you can enter the &URL; of a supported external media stream.
+<inlinemediaobject><imageobject><imagedata fileref="text-html.png" format="PNG"/></imageobject></inlinemediaobject> <action>Open a dialog for text input</action>, so you can enter the &URL; of a supported external media stream.
 <!-- TODO: Must add supported Streamings -->
 </para></listitem>
 </varlistentry>
@@ -738,7 +738,7 @@ the recording schedule.
 <guimenuitem>Open Recent</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject> <action>Offers a drop-down list to open a local recent resource</action>. It has an <guimenuitem>Clear List</guimenuitem> option to clear that list.
+<inlinemediaobject><imageobject><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject></inlinemediaobject> <action>Offers a drop-down list to open a local recent resource</action>. It has an <guimenuitem>Clear List</guimenuitem> option to clear that list.
 </para></listitem>
 </varlistentry>
 
@@ -748,7 +748,7 @@ the recording schedule.
 <guimenuitem>Play Audio &CD;</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject> <action>Select the playback of an Audio &CD;</action> that should already be in the reading drive.
+<inlinemediaobject><imageobject><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject></inlinemediaobject> <action>Select the playback of an Audio &CD;</action> that should already be in the reading drive.
 </para></listitem>
 </varlistentry>
 
@@ -758,7 +758,7 @@ the recording schedule.
 <guimenuitem>Play Video &CD;</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject> <action>Select the playback of a Video &CD;</action> that should already be in the reading drive.
+<inlinemediaobject><imageobject><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject></inlinemediaobject> <action>Select the playback of a Video &CD;</action> that should already be in the reading drive.
 </para></listitem>
 </varlistentry>
 
@@ -768,7 +768,7 @@ the recording schedule.
 <guimenuitem>Play &DVD;</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-optical.png" format="PNG"/></imageobject> <action>Select the playback of a &DVD;</action> that should already be in the reading drive.
+<inlinemediaobject><imageobject><imagedata fileref="media-optical.png" format="PNG"/></imageobject></inlinemediaobject> <action>Select the playback of a &DVD;</action> that should already be in the reading drive.
 </para></listitem>
 </varlistentry>
 
@@ -778,7 +778,7 @@ the recording schedule.
 <guimenuitem>Play &DVD; Folder</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-optical.png" format="PNG"/></imageobject> <action>Opens the file dialog</action> and allows you to select a &DVD; folder to play. This folder contains the raw data found on the &DVD;.
+<inlinemediaobject><imageobject><imagedata fileref="media-optical.png" format="PNG"/></imageobject></inlinemediaobject> <action>Opens the file dialog</action> and allows you to select a &DVD; folder to play. This folder contains the raw data found on the &DVD;.
 </para></listitem>
 </varlistentry>
 
@@ -791,7 +791,7 @@ the recording schedule.
 <guimenuitem>Quit</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject> <action>Quits</action> &kaffeine;.
+<inlinemediaobject><imageobject><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject></inlinemediaobject> <action>Quits</action> &kaffeine;.
 </para></listitem>
 </varlistentry>
 
@@ -812,7 +812,7 @@ the recording schedule.
 <guimenuitem>Previous</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject> If you playback two streams or more in one session, <action>will select the previous one</action>.
+<inlinemediaobject><imageobject><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject></inlinemediaobject> If you playback two streams or more in one session, <action>will select the previous one</action>.
 </para></listitem>
 </varlistentry>
 
@@ -825,7 +825,7 @@ the recording schedule.
 <guimenuitem>Play\Pause</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject> and <imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject> icons. <action>With A check box for play a stream or pause</action> what you are watching. On a television's stream will proceed to record it, this is known as <ulink url="https://en.wikipedia.org/wiki/Time_shifting">time shifting</ulink>.
+<inlinemediaobject><imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>With A check box for play a stream or pause</action> what you are watching. On a television's stream will proceed to record it, this is known as <ulink url="https://en.wikipedia.org/wiki/Time_shifting">time shifting</ulink>.
 </para></listitem>
 </varlistentry>
 
@@ -838,7 +838,7 @@ the recording schedule.
 <guimenuitem>Stop</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject> <action>Stop a stream</action> what you are watching.
+<inlinemediaobject><imageobject><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject></inlinemediaobject> <action>Stop a stream</action> what you are watching.
 </para></listitem>
 </varlistentry>
 
@@ -851,7 +851,7 @@ the recording schedule.
 <guimenuitem>Next</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject> If you playback two streams or more in one session and you are watching the previous one, <action>will select the next one</action>.
+<inlinemediaobject><imageobject><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject></inlinemediaobject> If you playback two streams or more in one session and you are watching the previous one, <action>will select the next one</action>.
 </para></listitem>
 </varlistentry>
 
@@ -864,7 +864,7 @@ the recording schedule.
 <guimenuitem>Full Screen Mode\Exit Full Screen Mode</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject> and <imageobject><imagedata fileref="view-restore.png" format="PNG"/></imageobject> icons. <action>Switch the full screen mode</action>.
+<inlinemediaobject><imageobject><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="view-restore.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>Switch the full screen mode</action>.
 </para></listitem>
 </varlistentry>
 
@@ -877,7 +877,7 @@ the recording schedule.
 <guimenuitem>Minimal Mode\Exit Minimal Mode</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="view-restore.png" format="PNG"/></imageobject> and <imageobject><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject> icons. <action>Switch the minimal mode</action>. A &GUI; mode in a window, where we only have contextual menu and keyboard shortcuts.
+<inlinemediaobject><imageobject><imagedata fileref="view-restore.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>Switch the minimal mode</action>. A &GUI; mode in a window, where we only have contextual menu and keyboard shortcuts.
 </para></listitem>
 </varlistentry>
 
@@ -910,7 +910,7 @@ Offers a drop-down list with <action>options related to the subtitle stream(s)</
   <guimenuitem>Add subtitle file</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject> This option is for <action>add a local subtitle file</action> through a file dialog.
+  <inlinemediaobject><imageobject><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject></inlinemediaobject> This option is for <action>add a local subtitle file</action> through a file dialog.
   </para></listitem>
   </varlistentry>
 
@@ -947,7 +947,7 @@ Offers a drop-down list with <action>options related to the audio stream(s)</act
   <guimenuitem>Increase Volume</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject> Raise the audio volume.
+  <inlinemediaobject><imageobject><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject></inlinemediaobject> Raise the audio volume.
   </para></listitem>
   </varlistentry>
 
@@ -958,7 +958,7 @@ Offers a drop-down list with <action>options related to the audio stream(s)</act
   <guimenuitem>Decrease Volume</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject> Lower the audio volume.
+  <inlinemediaobject><imageobject><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject></inlinemediaobject> Lower the audio volume.
   </para></listitem>
   </varlistentry>
 
@@ -969,7 +969,7 @@ Offers a drop-down list with <action>options related to the audio stream(s)</act
   <guimenuitem>Mute Volume</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject> and <imageobject><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject> icons. Silence the audio volume and return it.
+  <inlinemediaobject><imageobject><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject></inlinemediaobject> icons. Silence the audio volume and return it.
   </para></listitem>
   </varlistentry>
 
@@ -995,7 +995,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Deinterlace</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject> Whith a check box to verify your selection. <action>Is the process of converting interlaced video</action>, such as common analog television signals and more. See <ulink url="https://en.wikipedia.org/wiki/Deinterlacing">Wikipedia</ulink> article for more details.
+  <inlinemediaobject><imageobject><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject></inlinemediaobject> Whith a check box to verify your selection. <action>Is the process of converting interlaced video</action>, such as common analog television signals and more. See <ulink url="https://en.wikipedia.org/wiki/Deinterlacing">Wikipedia</ulink> article for more details.
   </para></listitem>
   </varlistentry>
 
@@ -1034,7 +1034,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Jump to Position</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="go-jump.png" format="PNG"/></imageobject> <action>Offers a spin box for setting the desired time point to which you want to go</action>; with hours, minutes and seconds.
+<inlinemediaobject><imageobject><imagedata fileref="go-jump.png" format="PNG"/></imageobject></inlinemediaobject> <action>Offers a spin box for setting the desired time point to which you want to go</action>; with hours, minutes and seconds.
 </para></listitem>
 </varlistentry>
 
@@ -1059,7 +1059,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Skip 60s Backward</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject> <action>It goes 60 seconds back</action>.
+  <inlinemediaobject><imageobject><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject></inlinemediaobject> <action>It goes 60 seconds back</action>.
   </para></listitem>
   </varlistentry>
 
@@ -1073,7 +1073,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Skip 15s Backward</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject> <action>It goes 15 seconds back</action>.
+  <inlinemediaobject><imageobject><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject></inlinemediaobject> <action>It goes 15 seconds back</action>.
   </para></listitem>
   </varlistentry>
 
@@ -1087,7 +1087,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Skip 15s Forward</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject> <action>It goes 15 seconds forward</action>.
+  <inlinemediaobject><imageobject><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject></inlinemediaobject> <action>It goes 15 seconds forward</action>.
   </para></listitem>
   </varlistentry>
 
@@ -1101,7 +1101,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Skip 60s Forward</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <imageobject><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject> <action>It goes 60 seconds forward</action>.
+  <inlinemediaobject><imageobject><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject></inlinemediaobject> <action>It goes 60 seconds forward</action>.
   </para></listitem>
   </varlistentry>
 
@@ -1115,7 +1115,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>DVD Menu</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject> <action>Start with the original &DVD; graphic menu</action>. That is explored using the cursor keys and the mouse. See <ulink url="https://en.wikipedia.org/wiki/DVD-Video">Wikipedia</ulink> article for more details.
+<inlinemediaobject><imageobject><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject></inlinemediaobject> <action>Start with the original &DVD; graphic menu</action>. That is explored using the cursor keys and the mouse. See <ulink url="https://en.wikipedia.org/wiki/DVD-Video">Wikipedia</ulink> article for more details.
 </para></listitem>
 </varlistentry>
 
@@ -1145,7 +1145,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Angle</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<action>A variant of the chapters: it is possible that they have included several versions (called <quote>angles</quote>) of certain scenes</action>. From here you can go directly.
+<action>A variant of the chapters: it is possible that they have included several versions</action> (called <quote>angles</quote>) of certain scenes. From here you can go directly.
 </para></listitem>
 </varlistentry>
 
@@ -1163,7 +1163,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Repeat</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject> A check box to <action>replay in a loop the file(s)</action> that are in the playlist.
+<inlinemediaobject><imageobject><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject></inlinemediaobject> A check box to <action>replay in a loop the file(s)</action> that are in the playlist.
 </para></listitem>
 </varlistentry>
 
@@ -1173,7 +1173,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Random</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject> A check box to <action>replay randomly the files</action> that are in the playlist until all of them have been played.
+<inlinemediaobject><imageobject><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject></inlinemediaobject> A check box to <action>replay randomly the files</action> that are in the playlist until all of them have been played.
 </para></listitem>
 </varlistentry>
 
@@ -1183,7 +1183,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Clear</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject> <action>Erase all entries in the playlist</action>.
+<inlinemediaobject><imageobject><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject></inlinemediaobject> <action>Erase all entries in the playlist</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1193,7 +1193,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>New</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="list-add.png" format="PNG"/></imageobject> <action>Create a new playlist</action>.
+<inlinemediaobject><imageobject><imagedata fileref="list-add.png" format="PNG"/></imageobject></inlinemediaobject> <action>Create a new playlist</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1203,7 +1203,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Rename</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="edit-rename.png" format="PNG"/></imageobject> <action>Rename the current playlist</action>.
+<inlinemediaobject><imageobject><imagedata fileref="edit-rename.png" format="PNG"/></imageobject></inlinemediaobject> <action>Rename the current playlist</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1213,7 +1213,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Remove</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="edit-delete.png" format="PNG"/></imageobject> <action>Remove the current playlist</action>.
+<inlinemediaobject><imageobject><imagedata fileref="edit-delete.png" format="PNG"/></imageobject></inlinemediaobject> <action>Remove the current playlist</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1226,7 +1226,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Save</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject> <action>Save the current playlist</action>.
+<inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject> <action>Save the current playlist</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1239,7 +1239,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Save As...</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="document-save-as.png" format="PNG"/></imageobject> <action>Save the current playlist with a new name</action>.
+<inlinemediaobject><imageobject><imagedata fileref="document-save-as.png" format="PNG"/></imageobject></inlinemediaobject> <action>Save the current playlist with a new name</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1260,7 +1260,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Channels</guimenuitem>
 </menuchoice></term>
 <listitem><para><action>
-<imageobject><imagedata fileref="video-television.png" format="PNG"/></imageobject> A settings panel will appear for <action>set the channels</action> corresponding to your area. See <link linkend="dtv-channel-setup">Digital TV channel setup</link> section for more details.
+<inlinemediaobject><imageobject><imagedata fileref="video-television.png" format="PNG"/></imageobject></inlinemediaobject> A settings panel will appear for <action>set the channels</action> corresponding to your area. See <link linkend="dtv-channel-setup">Digital TV channel setup</link> section for more details.
 </action></para></listitem>
 </varlistentry>
 
@@ -1273,7 +1273,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Program Guide</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="view-list-details.png" format="PNG"/></imageobject> A window will appear for <action>manage the program guide</action>. See <link linkend="program-guide">Program Guide</link> section for more details.
+<inlinemediaobject><imageobject><imagedata fileref="view-list-details.png" format="PNG"/></imageobject></inlinemediaobject> A window will appear for <action>manage the program guide</action>. See <link linkend="program-guide">Program Guide</link> section for more details.
 </para></listitem>
 </varlistentry>
 
@@ -1286,7 +1286,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>OSD</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="dialog-information.png" format="PNG"/></imageobject> <action>Show the on screen display infobox on the playback window during three seconds</action> with program guide information on the current and next program. Double-clicking on it to see extended information about the current program, and then click again to remove this infobox. See <ulink url="https://en.wikipedia.org/wiki/On-screen_display">Wikipedia</ulink> article for more details.
+<inlinemediaobject><imageobject><imagedata fileref="dialog-information.png" format="PNG"/></imageobject></inlinemediaobject> <action>Show the on screen display infobox on the playback window during three seconds</action> with program guide information on the current and next program. Double-clicking on it to see extended information about the current program, and then click again to remove this infobox. See <ulink url="https://en.wikipedia.org/wiki/On-screen_display">Wikipedia</ulink> article for more details.
 </para></listitem>
 </varlistentry>
 
@@ -1299,7 +1299,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Recording Schedule</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject> A window will appear for <action>manage the recording(s) scheduled</action>. See <link linkend="recording-schedule">Recording Schedule</link> section for more details.
+<inlinemediaobject><imageobject><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject></inlinemediaobject> A window will appear for <action>manage the recording(s) scheduled</action>. See <link linkend="recording-schedule">Recording Schedule</link> section for more details.
 </para></listitem>
 </varlistentry>
 
@@ -1309,7 +1309,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Instant Record</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject> Whith a check box to verify your selection. <action>Start instantly recording of the stream that is being played</action>.
+<inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject> Whith a check box to verify your selection. <action>Start instantly recording of the stream that is being played</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1319,7 +1319,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Configure Television...</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="configure.png" format="PNG"/></imageobject> A window will appear for <action>setting the parameters that manage the <acronym>DVB</acronym> device(s)</action>. See <link linkend="digital-tv">Digital TV configuration</link> section for more details.
+<inlinemediaobject><imageobject><imagedata fileref="configure.png" format="PNG"/></imageobject></inlinemediaobject> A window will appear for <action>setting the parameters that manage the DVB device(s)</action>. See <link linkend="digital-tv">Digital TV configuration</link> section for more details.
 </para></listitem>
 </varlistentry>
 
@@ -1341,7 +1341,7 @@ In order to simplify the use of the &kaffeine;, this menu only contains two men√
 <guimenuitem>Configure Shortcuts...</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject> Allows you to enable, disable, and modify keyboard shortcuts. For more information, see the section called <quote>Using and Customizing Shortcuts</quote>.
+<inlinemediaobject><imageobject><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject></inlinemediaobject> Allows you to enable, disable, and modify keyboard shortcuts. For more information, see the section called <quote>Using and Customizing Shortcuts</quote>.
 </para></listitem>
 </varlistentry>
 
@@ -1351,7 +1351,7 @@ In order to simplify the use of the &kaffeine;, this menu only contains two men√
 <guimenuitem>Configure &kaffeine;...</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<imageobject><imagedata fileref="configure.png" format="PNG"/></imageobject> Opens the configuration panel.
+<inlinemediaobject><imageobject><imagedata fileref="configure.png" format="PNG"/></imageobject></inlinemediaobject> Opens the configuration panel.
 </para></listitem>
 </varlistentry>
 </variablelist>
