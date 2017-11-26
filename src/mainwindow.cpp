@@ -123,7 +123,7 @@ StartTab::StartTab(MainWindow *mainWindow)
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openAudioCd()));
 	gridLayout->addWidget(button, 0, 1);
 
-	button = addShortcut(i18n("&3 Play Video CD"), QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical")), this);
+	button = addShortcut(i18n("&3 Play Video CD"), QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical-video")), this);
 	button->setShortcut(Qt::Key_3);
 	button->setWhatsThis(i18n("Start playing a Video CD. It assumes that the CD is already there at the CD drive"));
 	connect(button, SIGNAL(clicked()), mainWindow, SLOT(openVideoCd()));
@@ -227,7 +227,7 @@ void MainWindow::run()
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openAudioCd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_audiocd"), action));
 
-	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical")), i18n("Play Video CD"), collection);
+	action = new QAction(QIcon::fromTheme(QLatin1String("media-optical"), QIcon(":media-optical-video")), i18n("Play Video CD"), collection);
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(openVideoCd()));
 	menu->addAction(collection->addAction(QLatin1String("file_play_videocd"), action));
 

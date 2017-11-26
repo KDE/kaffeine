@@ -413,7 +413,7 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 
 	menu->addSeparator();
 
-	QAction *newAction = new QAction(QIcon::fromTheme(QLatin1String("list-add"), QIcon(":list-add")), i18nc("@action", "New"), this);
+	QAction *newAction = new QAction(QIcon::fromTheme(QLatin1String("list-add"), QIcon(":list-add")), i18nc("@action:inmenu playlist", "New"), this);
 	connect(newAction, SIGNAL(triggered(bool)), this, SLOT(newPlaylist()));
 	menu->addAction(collection->addAction(QLatin1String("playlist_new"), newAction));
 
