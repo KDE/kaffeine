@@ -204,7 +204,7 @@ program records will be stored.
 <para>
 The <guilabel>Time shift folder</guilabel> is used in conjunction with the
 pause button
-(<inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject>) of the media player screen. When the button
+(<inlinemediaobject><imageobject><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject></inlinemediaobject>) of the media player screen. When the button
 is pressed, a time shift file will be stored at the location pointed by this
 menu option.
 </para>
@@ -597,10 +597,10 @@ Once the channels are saved, watching TV is as simple as clicking on the <guibut
 </screenshot>
 <para>
 &kaffeine; also allows you to click on the
-<inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject>
+<inlinemediaobject><imageobject><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject></inlinemediaobject>
 button to pause it.
 With this action, &kaffeine; will record the program and once the
-<inlinemediaobject><imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject></inlinemediaobject>
+<inlinemediaobject><imageobject><imagedata fileref="media-playback-start-circular.png" format="PNG"/></imageobject></inlinemediaobject>
 button is pressed it will start the program from
 the point it was paused, this is known as time shifting. There is also a
 <inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject> button
