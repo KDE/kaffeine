@@ -822,7 +822,7 @@ the recording schedule.
 <keycombo action="simul">&Space;</keycombo>
 </shortcut>
 <guimenu>Playback</guimenu>
-<guimenuitem>Play\Pause</guimenuitem>
+<guimenuitem>Play/Pause</guimenuitem>
 </menuchoice></term>
 <listitem><para>
 <inlinemediaobject><imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>With A check box for play a stream or pause</action> what you are watching. On a television's stream will proceed to record it, this is known as <ulink url="https://en.wikipedia.org/wiki/Time_shifting">time shifting</ulink>.
@@ -861,7 +861,7 @@ the recording schedule.
 <keycombo action="simul"><keycap>F</keycap></keycombo>
 </shortcut>
 <guimenu>Playback</guimenu>
-<guimenuitem>Full Screen Mode\Exit Full Screen Mode</guimenuitem>
+<guimenuitem>Full Screen Mode/Exit Full Screen Mode</guimenuitem>
 </menuchoice></term>
 <listitem><para>
 <inlinemediaobject><imageobject><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="view-restore.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>Switch the full screen mode</action>.
@@ -874,7 +874,7 @@ the recording schedule.
 <keycombo action="simul"><keycap>.</keycap></keycombo>
 </shortcut>
 <guimenu>Playback</guimenu>
-<guimenuitem>Minimal Mode\Exit Minimal Mode</guimenuitem>
+<guimenuitem>Minimal Mode/Exit Minimal Mode</guimenuitem>
 </menuchoice></term>
 <listitem><para>
 <inlinemediaobject><imageobject><imagedata fileref="view-restore.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>Switch the minimal mode</action>. A &GUI; mode in a window, where we only have contextual menu and keyboard shortcuts.
@@ -896,7 +896,7 @@ Offers a drop-down list with <action>options related to the subtitle stream(s)</
   <term><menuchoice>
   <guimenu>Playback</guimenu>
   <guisubmenu>Subtitle</guisubmenu>
-  <guimenuitem>off\<replaceable>Name-of-subtitle</replaceable></guimenuitem>
+  <guimenuitem>off/<replaceable>Name-of-subtitle</replaceable></guimenuitem>
   </menuchoice></term>
   <listitem><para>
   <action>Select the avaible subtitle</action> from this drop-down list. These subtitles channels will vary depending on the content of the source stream.
