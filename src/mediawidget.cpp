@@ -27,6 +27,7 @@
 #include <QBoxLayout>
 #include <QComboBox>
 #include <QContextMenuEvent>
+#include <QDialogButtonBox>
 #include <QDBusInterface>
 #include <QFileDialog>
 #include <QLabel>
@@ -1424,11 +1425,15 @@ JumpToPositionDialog::JumpToPositionDialog(MediaWidget *mediaWidget_) : QDialog(
 	timeEdit->setTime(QTime().addMSecs(mediaWidget->getPosition()));
 	layout->addWidget(timeEdit);
 
+	QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+
 	timeEdit->setFocus();
 
 	QVBoxLayout *mainLayout = new QVBoxLayout;
 	setLayout(mainLayout);
 	mainLayout->addWidget(widget);
+	mainLayout->addWidget(buttonBox);
+	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
 }
 
 JumpToPositionDialog::~JumpToPositionDialog()
