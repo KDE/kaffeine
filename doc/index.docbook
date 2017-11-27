@@ -825,7 +825,7 @@ the recording schedule.
 <guimenuitem>Play/Pause</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<inlinemediaobject><imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>With A check box for play a stream or pause</action> what you are watching. On a television's stream will proceed to record it, this is known as <ulink url="https://en.wikipedia.org/wiki/Time_shifting">time shifting</ulink>.
+<inlinemediaobject><imageobject><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject></inlinemediaobject> and <inlinemediaobject><imageobject><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject></inlinemediaobject> icons. <action>With a check box for play a stream or pause</action> what you are watching. On a television's stream will proceed to record it, this is known as <ulink url="https://en.wikipedia.org/wiki/Time_shifting">time shifting</ulink>.
 </para></listitem>
 </varlistentry>
 
@@ -899,7 +899,7 @@ Offers a drop-down list with <action>options related to the subtitle stream(s)</
   <guimenuitem>off/<replaceable>Name-of-subtitle</replaceable></guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <action>Select the avaible subtitle</action> from this drop-down list. These subtitles channels will vary depending on the content of the source stream.
+  <action>Select the available subtitle</action> from this drop-down list. These subtitles channels will vary depending on the content of the source stream.
   </para></listitem>
   </varlistentry>
 
@@ -995,7 +995,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Deinterlace</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <inlinemediaobject><imageobject><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject></inlinemediaobject> Whith a check box to verify your selection. <action>Is the process of converting interlaced video</action>, such as common analog television signals and more. See <ulink url="https://en.wikipedia.org/wiki/Deinterlacing">Wikipedia</ulink> article for more details.
+  <inlinemediaobject><imageobject><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject></inlinemediaobject> With a check box to verify your selection. <action>Is the process of converting interlaced video</action>, such as common analog television signals and more. See <ulink url="https://en.wikipedia.org/wiki/Deinterlacing">Wikipedia</ulink> article for more details.
   </para></listitem>
   </varlistentry>
 
@@ -1006,7 +1006,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Aspect Ratio</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <action>Offers a drop-down list with disponible aspect ratios</action>, more an <guimenuitem>Automatic</guimenuitem> option. The <ulink url="https://en.wikipedia.org/wiki/Aspect_ratio_(image)">aspect ratio of an image</ulink> describes the proportional relationship between its width and height.
+  <action>Offers a drop-down list with available aspect ratios</action>, more an <guimenuitem>Automatic</guimenuitem> option. The <ulink url="https://en.wikipedia.org/wiki/Aspect_ratio_(image)">aspect ratio of an image</ulink> describes the proportional relationship between its width and height.
   </para></listitem>
   </varlistentry>
 
@@ -1017,7 +1017,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Video size</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <action>Offers a drop-down list with disponible video sizes</action>. Change the size of the image by a percentage, more <guimenuitem>Automatic</guimenuitem> and <guimenuitem>Original Size</guimenuitem> options.
+  <action>Offers a drop-down list with available video sizes</action>. Change the size of the image by a percentage, more <guimenuitem>Automatic</guimenuitem> and <guimenuitem>Original Size</guimenuitem> options.
   </para></listitem>
   </varlistentry>
 
@@ -1309,7 +1309,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <guimenuitem>Instant Record</guimenuitem>
 </menuchoice></term>
 <listitem><para>
-<inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject> Whith a check box to verify your selection. <action>Start instantly recording of the stream that is being played</action>.
+<inlinemediaobject><imageobject><imagedata fileref="document-save.png" format="PNG"/></imageobject></inlinemediaobject> With a check box to verify your selection. <action>Start instantly recording of the stream that is being played</action>.
 </para></listitem>
 </varlistentry>
 
@@ -1330,7 +1330,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
 <title>The Settings Menu</title> 
 
 <para>
-In order to simplify the use of the &kaffeine;, this menu only contains two menú items:
+In order to simplify the use of the &kaffeine;, this menu only contains two menu items:
 </para>
 
 <variablelist>
