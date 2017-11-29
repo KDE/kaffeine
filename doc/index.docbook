@@ -936,7 +936,7 @@ Offers a drop-down list with <action>options related to the audio stream(s)</act
   <guimenuitem>Audio Device</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  Offers a drop-down list shows the <action>available audio devices</action>.
+  Offers a drop-down list shows the <action>available audio devices</action>. Only available if more than one audio device was detected when Kaffeine was started.
   </para></listitem>
   </varlistentry>
 
