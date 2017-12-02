@@ -1,6 +1,20 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.14 (2017-12-02):
+
+-   Add support for multi-language EPG;
+-   Jump to a position was not working, as it was lacking the Ok button;
+-   On minimal and full screen mode, auto-unride top menu bar and lateral DVB tab bar;
+-   The mouse wheel can now be used to control volume;
+-   Reduce button size at DVB tab, in order to allow showing a bigger playback window;
+-   Fix LNBf numbering and position at DiSEqC satellite configuration;
+-   Kaffeine's handbook now covers all menu bar items;
+-   Kaffeine's handbook was improved to contain more details about Digital TV settings;
+-   LNBf names at DVB satellite configuration are now using translations from libdvbv5;
+-   Get rid on two compilation warnings with gcc++ version 7.2;
+-   scanfile.dvb updated.
+
 Version 2.0.13 (2017-09-14):
 
 -   Add a logic to send LNBf higher voltage commands. That may be
