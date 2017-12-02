@@ -858,7 +858,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 void MainWindow::leaveEvent(QEvent *event)
 {
 	if (autoHideControlBar) {
+		menuBar()->setVisible(false);
 		controlBar->setVisible(false);
+		tabs.at(currentTabIndex)->mouse_move(-1, -1);
 	}
 
 	QMainWindow::leaveEvent(event);
