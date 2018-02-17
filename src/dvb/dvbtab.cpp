@@ -85,6 +85,9 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 {
 	manager = new DvbManager(mediaWidget, this);
 
+	mediaRecordIcon = QIcon::fromTheme(QLatin1String("media-record"), QIcon(":media-record"));
+	documentSaveIcon = QIcon::fromTheme(QLatin1String("document-save"), QIcon(":document-save"));
+
 	QAction *channelsAction = new QAction(QIcon::fromTheme(QLatin1String("video-television"), QIcon(":video-television")), i18n("Channels"), this);
 	channelsAction->setShortcut(Qt::Key_C);
 	connect(channelsAction, SIGNAL(triggered(bool)), this, SLOT(showChannelDialog()));
@@ -108,7 +111,7 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	menu->addSeparator();
 
-	instantRecordAction = new QAction(QIcon::fromTheme(QLatin1String("document-save"), QIcon(":document-save")), i18n("Instant Record"), this);
+	instantRecordAction = new QAction(documentSaveIcon, i18n("Instant Record"), this);
 	instantRecordAction->setCheckable(true);
 	connect(instantRecordAction, SIGNAL(triggered(bool)), this, SLOT(instantRecord(bool)));
 	menu->addAction(collection->addAction(QLatin1String("dvb_instant_record"), instantRecordAction));
@@ -413,10 +416,14 @@ void DvbTab::instantRecord(bool checked)
 		recording.begin = QDateTime::currentDateTime().toUTC();
 		recording.duration = QTime(12, 0);
 		instantRecording = manager->getRecordingModel()->addRecording(recording);
+		instantRecordings.push_back(instantRecording);
+		instantRecordAction->setIcon(mediaRecordIcon);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Started"),
 			1500);
 	} else {
 		manager->getRecordingModel()->removeRecording(instantRecording);
+		instantRecordings.removeOne(instantRecording);
+		instantRecordAction->setIcon(documentSaveIcon);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"),
 			1500);
 	}
@@ -427,9 +434,12 @@ void DvbTab::recordingRemoved(const DvbSharedRecording &recording)
 	if (instantRecording == recording) {
 		instantRecording = DvbSharedRecording();
 		instantRecordAction->setChecked(false);
+		instantRecordAction->setIcon(documentSaveIcon);
 		mediaWidget->getOsdWidget()->showText(i18nc("osd", "Instant Record Stopped"),
 			1500);
 	}
+
+	instantRecordings.removeOne(recording);
 }
 
 void DvbTab::configureDvb()
@@ -505,6 +515,10 @@ void DvbTab::activate()
 
 void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &index)
 {
+	QIcon *icon;
+	DvbSharedRecording *recording;
+	bool isRecording;
+
 	if (!channel.isValid()) {
 		qCWarning(logDvb, "Channel is invalid");
 		return;
@@ -514,6 +528,20 @@ void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &ind
 		lastChannel = currentChannel;
 	}
 
+	recording = getInstantRecording(channel);
+
+	if (recording) {
+		instantRecording = *recording;
+		isRecording = true;
+		icon = &mediaRecordIcon;
+	} else {
+		isRecording = false;
+		icon = &documentSaveIcon;
+	}
+
+	instantRecordAction->setChecked(isRecording);
+	instantRecordAction->setIcon(*icon);
+
 	channelView->setCurrentIndex(index);
 	currentChannel = channel->name;
 	manager->getLiveView()->playChannel(channel);
@@ -521,4 +549,19 @@ void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &ind
 	if (!epgDialog.isNull()) {
 		epgDialog->setCurrentChannel(manager->getLiveView()->getChannel());
 	}
+}
+
+DvbSharedRecording *DvbTab::getInstantRecording(DvbSharedChannel ch) {
+	DvbSharedRecording *ret = NULL;
+
+	QListIterator<DvbSharedRecording> i(instantRecordings);
+	while (i.hasNext()) {
+		DvbSharedRecording r = i.next();
+		if(r.constData()->channel == ch) {
+			ret = &r;
+			break;
+		}
+	}
+
+	return ret;
 }

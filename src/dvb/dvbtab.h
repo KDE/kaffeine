@@ -23,6 +23,8 @@
 
 #include <QPointer>
 #include <QTimer>
+#include <QList>
+#include <QIcon>
 #include <config-kaffeine.h>
 #include "../tabbase.h"
 #include "../mediawidget.h"
@@ -81,10 +83,12 @@ private slots:
 private:
 	void activate();
 	void playChannel(const DvbSharedChannel &channel, const QModelIndex &index);
+	DvbSharedRecording *getInstantRecording(DvbSharedChannel ch);
 
 	MediaWidget *mediaWidget;
 	DvbManager *manager;
 	QAction *instantRecordAction;
+	QList<DvbSharedRecording> instantRecordings;
 	DvbSharedRecording instantRecording;
 	QSplitter *splitter;
 	QWidget *leftWidget;
@@ -96,6 +100,8 @@ private:
 	QTimer osdChannelTimer;
 	QString currentChannel;
 	QString lastChannel;
+	QIcon mediaRecordIcon;
+	QIcon documentSaveIcon;
 	bool autoHideMenu;
 	QTimer *cursorHideTimer;
 
