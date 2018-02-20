@@ -1268,10 +1268,12 @@ void AtscEpgFilter::processEitSection(const char *data, int size)
 
 		DvbEpgLangEntry *langEntry;
 
-		if (epgEntry.langEntry.contains(FIRST_LANG))
-			langEntry = &epgEntry.langEntry[FIRST_LANG];
-		else
-			langEntry = new(DvbEpgLangEntry);
+		/* Should be similar to DvbEpgFilter::getLangEntry */
+		if (!epgEntry.langEntry.contains(FIRST_LANG)) {
+			DvbEpgLangEntry e;
+			epgEntry.langEntry.insert(FIRST_LANG, e);
+		}
+		langEntry = &epgEntry.langEntry[FIRST_LANG];
 
 		langEntry->title = eitEntry.title();
 
