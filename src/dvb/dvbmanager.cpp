@@ -605,6 +605,7 @@ void DvbManager::loadDeviceManager()
 void DvbManager::readDeviceConfigs()
 {
 	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
+	const char *errMsg;
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		qCWarning(logDvb, "Cannot open %s", qPrintable(file.fileName()));
@@ -623,6 +624,7 @@ void DvbManager::readDeviceConfigs()
 		int configCount = reader.readInt(QLatin1String("configCount"));
 
 		if (!reader.isValid()) {
+			errMsg = "device section invalid";
 			break;
 		}
 
@@ -639,10 +641,12 @@ void DvbManager::readDeviceConfigs()
 				reader.readEnum(QLatin1String("type"), DvbConfigBase::TransmissionTypeMax);
 
 			if (!reader.isValid()) {
+				errMsg = "transmission type invalid";
 				break;
 			}
 
 			DvbConfigBase *config = new DvbConfigBase(type);
+
 			config->numberOfTuners = 1;
 			config->name = reader.readString(QLatin1String("name"));
 			config->scanSource = reader.readString(QLatin1String("scanSource"));
@@ -662,6 +666,7 @@ void DvbManager::readDeviceConfigs()
 			}
 
 			if (!reader.isValid()) {
+				errMsg = "DVB device data invalid";
 				delete config;
 				break;
 			}
@@ -673,7 +678,7 @@ void DvbManager::readDeviceConfigs()
 	}
 
 	if (!reader.isValid())
-		qCWarning(logDvb, "Cannot read %s", qPrintable(file.fileName()));
+		qCWarning(logDvb, "Found some problems at %s: %s", qPrintable(file.fileName()), errMsg);
 }
 
 void DvbManager::writeDeviceConfigs()
