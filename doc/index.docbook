@@ -995,7 +995,7 @@ Offers a drop-down list with <action>options related to the video stream(s)</act
   <guimenuitem>Deinterlace</guimenuitem>
   </menuchoice></term>
   <listitem><para>
-  <inlinemediaobject><imageobject><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject></inlinemediaobject> With a check box to verify your selection. <action>Is the process of converting interlaced video</action>, such as common analog television signals and more. See <ulink url="https://en.wikipedia.org/wiki/Deinterlacing">Wikipedia</ulink> article for more details.
+  <inlinemediaobject><imageobject><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject></inlinemediaobject> Offers a drop-down list with available de-interlacing algorithms. <action>Is the process of converting interlaced video</action>, such as common analog television signals and more. See <ulink url="https://en.wikipedia.org/wiki/Deinterlacing">Wikipedia</ulink> article for more details.
   </para></listitem>
   </varlistentry>
 

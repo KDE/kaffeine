@@ -67,7 +67,8 @@ void MPlayerMediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio_)
 	updateVideoWidgetGeometry();
 }
 
-void MPlayerMediaWidget::setDeinterlacing(bool deinterlacing_)
+void MPlayerMediaWidget::setDeinterlacing(MediaWidget::DeinterlaceMode deinterlacing);
+
 {
 	deinterlacing = deinterlacing_;
 	sendCommand(SetDeinterlacing);
@@ -528,11 +529,7 @@ void MPlayerMediaWidget::sendCommand(Command command)
 			break;
 		}
 
-		if (deinterlacing) {
-			process.write("pausing_keep_force set_property deinterlace 1\n");
-		} else {
-			process.write("pausing_keep_force set_property deinterlace 0\n");
-		}
+		process.write("pausing_keep_force set_property deinterlace %1\n", deinterlacing);
 
 		break;
 	case SetVolume: {

@@ -193,26 +193,105 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	menu->addMenu(videoMenu);
 	menu->addSeparator();
 
-	deinterlaceAction = new QWidgetAction(this);
-	deinterlaceAction->setIcon(QIcon::fromTheme(QLatin1String("format-justify-center"), QIcon(":format-justify-center")));
-	deinterlaceAction->setText(i18nc("'Video' menu", "Deinterlace"));
-	deinterlaceAction->setCheckable(true);
-	deinterlaceAction->setChecked(
-		KSharedConfig::openConfig()->group("MediaObject").readEntry("Deinterlace", true));
-	deinterlaceAction->setShortcut(Qt::Key_I);
-	connect(deinterlaceAction, SIGNAL(toggled(bool)), this, SLOT(deinterlacingChanged(bool)));
-	backend->setDeinterlacing(deinterlaceAction->isChecked());
-	videoMenu->addAction(collection->addAction(QLatin1String("controls_deinterlace"), deinterlaceAction));
+	QMenu *deinterlaceMenu = new QMenu(i18nc("'Video' menu", "Deinterlace"), this);
+	deinterlaceMenu->setIcon(QIcon::fromTheme(QLatin1String("format-justify-center"), QIcon(":format-justify-center")));
+	QActionGroup *deinterlaceGroup = new QActionGroup(this);
+	connect(deinterlaceMenu, SIGNAL(triggered(QAction*)),
+		this, SLOT(deinterlacingChanged(QAction*)));
+	videoMenu->addMenu(deinterlaceMenu);
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "disabled"));
+	action->setCheckable(true);
+	action->setShortcut(Qt::Key_D);
+	action->setData(DeinterlaceDisabled);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_disabled"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "discard"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceDiscard);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_discard"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "bob"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceBob);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_bob"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "linear"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceLinear);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_linear"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "yadif"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceYadif);
+	action->setShortcut(Qt::Key_I);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_yadif"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "yadif2x"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceYadif2x);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_yadif2x"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "phosphor"));
+	action->setCheckable(true);
+	action->setData(DeinterlacePhosphor);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_phosphor"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "x"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceX);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_x"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "mean"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceMean);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_mean"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "blend"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceBlend);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_blend"), action));
+
+	action = new QWidgetAction(deinterlaceGroup);
+	action->setText(i18nc("'Deinterlace' menu", "Inverse telecine"));
+	action->setCheckable(true);
+	action->setData(DeinterlaceIvtc);
+	deinterlaceMenu->addAction(collection->addAction(QLatin1String("interlace_ivtc"), action));
+
+	deinterlaceMode =
+		KSharedConfig::openConfig()->group("MediaObject").readEntry("Deinterlace", 0);
+
+	if (deinterlaceMode <= DeinterlaceIvtc) {
+		for (int i = 0; i < deinterlaceGroup->actions().size(); i++) {
+			if (deinterlaceGroup->actions().at(i)->data().toInt() == deinterlaceMode) {
+				deinterlaceGroup->actions().at(i)->setChecked(true);
+				break;
+			}
+		}
+	} else {
+		deinterlaceGroup->actions().at(0)->setChecked(true);
+	}
+	backend->setDeinterlacing(static_cast<DeinterlaceMode>(deinterlaceMode));
 
 	QMenu *aspectMenu = new QMenu(i18nc("'Video' menu", "Aspect Ratio"), this);
 	QActionGroup *aspectGroup = new QActionGroup(this);
 	connect(aspectGroup, SIGNAL(triggered(QAction*)),
 		this, SLOT(aspectRatioChanged(QAction*)));
+	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "Automatic"));
 	action->setCheckable(true);
-	action->setChecked(true);
 	action->setData(AspectRatioAuto);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_auto"), action));
 
@@ -221,56 +300,48 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	action->setCheckable(true);
 	action->setData(AspectRatio1_1);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_1_1"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "4:3"));
 	action->setCheckable(true);
 	action->setData(AspectRatio4_3);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_4_3"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "5:4"));
 	action->setCheckable(true);
 	action->setData(AspectRatio5_4);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_5_4"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "16:9"));
 	action->setCheckable(true);
 	action->setData(AspectRatio16_9);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_16_9"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "16:10"));
 	action->setCheckable(true);
 	action->setData(AspectRatio16_10);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_16_10"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "2.21:1"));
 	action->setCheckable(true);
 	action->setData(AspectRatio221_100);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_221_100"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "2.35:1"));
 	action->setCheckable(true);
 	action->setData(AspectRatio235_100);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_235_100"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	action = new QWidgetAction(aspectGroup);
 	action->setText(i18nc("'Aspect Ratio' menu", "2.39:1"));
 	action->setCheckable(true);
 	action->setData(AspectRatio239_100);
 	aspectMenu->addAction(collection->addAction(QLatin1String("controls_aspect_239_100"), action));
-	videoMenu->addMenu(aspectMenu);
 
 	QMenu *autoResizeMenu = new QMenu(i18n("Video size"), this);
 	QActionGroup *autoResizeGroup = new QActionGroup(this);
@@ -475,8 +546,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 MediaWidget::~MediaWidget()
 {
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
-	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Deinterlace",
-		deinterlaceAction->isChecked());
+	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Deinterlace", deinterlaceMode);
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
 }
 
@@ -847,15 +917,52 @@ void MediaWidget::seek(int position)
 	backend->seek(position);
 }
 
-void MediaWidget::deinterlacingChanged(bool deinterlacing)
+void MediaWidget::deinterlacingChanged(QAction *action)
 {
-	backend->setDeinterlacing(deinterlacing);
+	bool ok;
+	const char *mode;
 
-	if (deinterlacing) {
-		osdWidget->showText(i18nc("osd message", "Deinterlacing On"), 1500);
-	} else {
-		osdWidget->showText(i18nc("osd message", "Deinterlacing Off"), 1500);
+	deinterlaceMode = action->data().toInt(&ok);
+
+	switch (deinterlaceMode) {
+	case DeinterlaceDiscard:
+		mode = "discard";
+		break;
+	case DeinterlaceBob:
+		mode = "bob";
+		break;
+	case DeinterlaceLinear:
+		mode = "linear";
+		break;
+	case DeinterlaceYadif:
+		mode = "yadif";
+		break;
+	case DeinterlaceYadif2x:
+		mode = "yadif2x";
+		break;
+	case DeinterlacePhosphor:
+		mode = "phosphor";
+		break;
+	case DeinterlaceX:
+		mode = "x";
+		break;
+	case DeinterlaceMean:
+		mode = "mean";
+		break;
+	case DeinterlaceBlend:
+		mode = "blend";
+		break;
+	case DeinterlaceIvtc:
+		mode = "ivtc";
+		break;
+	case DeinterlaceDisabled:
+	default:
+		mode = "disabled";
 	}
+
+	backend->setDeinterlacing(static_cast<DeinterlaceMode>(deinterlaceMode));
+
+	osdWidget->showText(i18nc("osd message", "Deinterlace %1", mode), 1500);
 }
 
 void MediaWidget::aspectRatioChanged(QAction *action)
@@ -863,7 +970,7 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 	bool ok;
 	unsigned int aspectRatio_ = action->data().toInt(&ok);
 
-	if (ok && aspectRatio_ <= AspectRatio239_100) {
+	if (aspectRatio_ <= AspectRatio239_100) {
 		backend->setAspectRatio(static_cast<AspectRatio>(aspectRatio_));
 		setVideoSize();
 

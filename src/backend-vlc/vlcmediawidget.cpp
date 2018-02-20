@@ -229,15 +229,46 @@ void VlcMediaWidget::resizeToVideo(float resizeFactor)
 	libvlc_video_set_scale(vlcMediaPlayer, resizeFactor);
 }
 
-void VlcMediaWidget::setDeinterlacing(bool deinterlacing)
+void VlcMediaWidget::setDeinterlacing(MediaWidget::DeinterlaceMode deinterlacing)
 {
-	// "", "blend", "bob", "discard", "ivtc", "linear",
-	// "mean", "phosphor", "x", "yadif", "yadif2x"
-	const char *vlcDeinterlaceMode = "";
+	const char *vlcDeinterlaceMode;
 
-	if (deinterlacing) {
+	switch (deinterlacing) {
+	case MediaWidget::DeinterlaceDiscard:
+		vlcDeinterlaceMode = "discard";
+		break;
+	case MediaWidget::DeinterlaceBob:
+		vlcDeinterlaceMode = "bob";
+		break;
+	case MediaWidget::DeinterlaceLinear:
+		vlcDeinterlaceMode = "linear";
+		break;
+	case MediaWidget::DeinterlaceYadif:
 		vlcDeinterlaceMode = "yadif";
+		break;
+	case MediaWidget::DeinterlaceYadif2x:
+		vlcDeinterlaceMode = "yadif2x";
+		break;
+	case MediaWidget::DeinterlacePhosphor:
+		vlcDeinterlaceMode = "phosphor";
+		break;
+	case MediaWidget::DeinterlaceX:
+		vlcDeinterlaceMode = "x";
+		break;
+	case MediaWidget::DeinterlaceMean:
+		vlcDeinterlaceMode = "mean";
+		break;
+	case MediaWidget::DeinterlaceBlend:
+		vlcDeinterlaceMode = "blend";
+		break;
+	case MediaWidget::DeinterlaceIvtc:
+		vlcDeinterlaceMode = "ivtc";
+		break;
+	case MediaWidget::DeinterlaceDisabled:
+	default:
+		vlcDeinterlaceMode = NULL;
 	}
+
 
 	libvlc_video_set_deinterlace(vlcMediaPlayer, vlcDeinterlaceMode);
 }

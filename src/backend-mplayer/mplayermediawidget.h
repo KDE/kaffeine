@@ -40,7 +40,7 @@ public:
 	void setMuted(bool muted);
 	void setVolume(int volume); // [0 - 200]
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
-	void setDeinterlacing(bool deinterlacing);
+	void setDeinterlacing(MediaWidget::DeinterlaceMode deinterlacing);
 	void play(const MediaSource &source);
 	void stop();
 	void setPaused(bool paused);
@@ -86,7 +86,7 @@ private:
 	bool muted;
 	int volume;
 	MediaWidget::AspectRatio aspectRatio;
-	bool deinterlacing;
+	MediaWidget::DeinterlaceMode deinterlacing;
 	int timerId;
 	QList<int> audioIds;
 	int videoWidth;

@@ -66,6 +66,21 @@ public:
 		AspectRatio239_100,
 	};
 
+	enum DeinterlaceMode
+	{
+		DeinterlaceDisabled,
+		DeinterlaceDiscard,
+		DeinterlaceBob,
+		DeinterlaceLinear,
+		DeinterlaceYadif,
+		DeinterlaceYadif2x,
+		DeinterlacePhosphor,
+		DeinterlaceX,
+		DeinterlaceMean,
+		DeinterlaceBlend,
+		DeinterlaceIvtc,
+	};
+
 	enum DisplayMode
 	{
 		NormalMode,
@@ -164,7 +179,7 @@ private slots:
 	void mutedChanged();
 	void volumeChanged(int volume);
 	void seek(int position);
-	void deinterlacingChanged(bool deinterlacing);
+	void deinterlacingChanged(QAction *action);
 	void aspectRatioChanged(QAction *action);
 	void setVideoSize();
 	void autoResizeTriggered(QAction *action);
@@ -217,7 +232,6 @@ private:
 	QWidgetAction *shortSkipBackwardAction;
 	QWidgetAction *shortSkipForwardAction;
 	QWidgetAction *longSkipForwardAction;
-	QWidgetAction *deinterlaceAction;
 	QWidgetAction *menuAction;
 	QMenu *audioDevMenu;
 	QMenu *titleMenu;
@@ -232,6 +246,7 @@ private:
 
 	DisplayMode displayMode;
 	int autoResizeFactor;
+	int deinterlaceMode;
 	QScopedPointer<MediaSource> dummySource;
 	MediaSource *source;
 	bool blockBackendUpdates;
