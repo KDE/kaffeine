@@ -647,17 +647,18 @@ void DvbManager::readDeviceConfigs()
 			config->name = reader.readString(QLatin1String("name"));
 			config->scanSource = reader.readString(QLatin1String("scanSource"));
 			config->timeout = reader.readInt(QLatin1String("timeout"));
-			config->higherVoltage = reader.readInt(QLatin1String("higherVoltage"));
 
 			if (type == DvbConfigBase::DvbS) {
 				config->latitude = 0;
 				config->longitude = 0;
+				config->higherVoltage = Qt::PartiallyChecked;
 				config->configuration = reader.readEnum(QLatin1String("configuration"),
 					DvbConfigBase::ConfigurationMax);
 				config->lnbNumber = reader.readInt(QLatin1String("lnbNumber"));
 				config->currentLnb.alias = reader.readString(QLatin1String("lnb"));
 				config->latitude = reader.readDouble(QLatin1String("latitude"));
 				config->longitude = reader.readInt(QLatin1String("longitude"));
+				config->higherVoltage = reader.readInt(QLatin1String("higherVoltage"));
 			}
 
 			if (!reader.isValid()) {
@@ -699,7 +700,6 @@ void DvbManager::writeDeviceConfigs()
 			writer.write(QLatin1String("name"), config->name);
 			writer.write(QLatin1String("scanSource"), config->scanSource);
 			writer.write(QLatin1String("timeout"), config->timeout);
-			writer.write(QLatin1String("higherVoltage"), config->higherVoltage);
 
 			if (config->getTransmissionType() == DvbConfigBase::DvbS) {
 				writer.write(QLatin1String("configuration"), config->configuration);
@@ -707,6 +707,7 @@ void DvbManager::writeDeviceConfigs()
 				writer.write(QLatin1String("lnb"), config->currentLnb.alias);
 				writer.write(QLatin1String("latitude"), config->latitude);
 				writer.write(QLatin1String("longitude"), config->longitude);
+				writer.write(QLatin1String("higherVoltage"), config->higherVoltage);
 			}
 		}
 	}
