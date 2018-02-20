@@ -190,7 +190,9 @@ void DvbLiveView::replay()
 				i18nc("@info", "All devices are used for recordings."));
 		} else {
 			KMessageBox::information(manager->getParentWidget(),
-				i18nc("@info", "No device found."));
+				i18nc("@info",
+				      "Didn't find a device with valid settings or access permissions are wrong.\n\n"
+				      "Please check the Configure Television window."));
 		}
 
 		return;
