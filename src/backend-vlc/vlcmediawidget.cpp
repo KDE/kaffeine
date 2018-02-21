@@ -680,13 +680,11 @@ void VlcMediaWidget::hideMouse()
 
 void VlcMediaWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	mouseVisible = this->rect().contains(event->pos());
-
 	if (!timer->isActive()) {
 		setCursor(Qt::BlankCursor);
 		setCursor(Qt::ArrowCursor);
 	}
-	if (mouseVisible)
+	if (this->underMouse())
 		timer->start(1000);
 	else
 		timer->stop();
