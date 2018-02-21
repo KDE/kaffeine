@@ -802,7 +802,7 @@ bool MainWindow::event(QEvent *event)
 
 		int delta = (wheel->pixelDelta().y() < 0) ? -1 : 1;
 
-		mediaWidget->setVolume(mediaWidget->getVolume() + delta);
+		mediaWidget->setVolumeUnderMouse(mediaWidget->getVolume() + delta);
 		break;
 	}
 	case QEvent::HoverMove: {

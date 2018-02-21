@@ -127,6 +127,7 @@ public:
 	void togglePause();
 	void setPosition(int position); // milliseconds
 	void setVolume(int volume); // 0 - 100
+	void setVolumeUnderMouse(int volume);
 	void toggleMuted();
 	void mediaSourceDestroyed(MediaSource *mediaSource);
 

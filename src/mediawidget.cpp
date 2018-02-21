@@ -773,6 +773,14 @@ void MediaWidget::setVolume(int volume)
 	volumeSlider->setValue(volume);
 }
 
+void MediaWidget::setVolumeUnderMouse(int volume)
+{
+	if (!backend->underMouse())
+		return;
+
+	setVolume(volume);
+}
+
 void MediaWidget::toggleMuted()
 {
 	muteAction->trigger();
