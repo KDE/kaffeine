@@ -661,12 +661,34 @@ void VlcMediaWidget::updateVideoSize()
 	// FIXME
 }
 
+void VlcMediaWidget::dvdNavigate(int key)
+{
+	int event;
+
+	switch (key){
+	case Qt::Key_Return:
+		event = libvlc_navigate_activate;
+		break;
+	case Qt::Key_Up:
+		event = libvlc_navigate_up;
+		break;
+	case Qt::Key_Down:
+		event = libvlc_navigate_down;
+		break;
+	case Qt::Key_Left:
+		event = libvlc_navigate_left;
+		break;
+	case Qt::Key_Right:
+		event = libvlc_navigate_right;
+		break;
+	default:
+		return;
+	}
+	libvlc_media_player_navigate(vlcMediaPlayer, event);
+}
+
 void VlcMediaWidget::mousePressEvent(QMouseEvent *event)
 {
-	if (event->button() == Qt::LeftButton) {
-		libvlc_media_player_navigate(vlcMediaPlayer, libvlc_navigate_activate);
-	}
-
 	AbstractMediaWidget::mousePressEvent(event);
 }
 

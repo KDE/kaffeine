@@ -67,6 +67,7 @@ public:
 	bool jumpToPreviousChapter();
 	bool jumpToNextChapter();
 	void showDvdMenu();
+	void dvdNavigate(int key);
 
 	int updatePlaybackStatus();
 	void updateCurrentTotalTime();

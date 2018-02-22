@@ -72,6 +72,7 @@ public:
 	virtual bool jumpToPreviousChapter() = 0;
 	virtual bool jumpToNextChapter() = 0;
 	virtual void showDvdMenu() = 0;
+	virtual void dvdNavigate(int key) = 0;
 
 	enum PendingUpdate
 	{
@@ -159,6 +160,7 @@ public:
 	bool jumpToPreviousChapter() { return false; };
 	bool jumpToNextChapter() { return false; }
 	void showDvdMenu() {};
+	void dvdNavigate(int) {};
 
 	int updatePlaybackStatus() { return true; };
 	void updateCurrentTotalTime() {};

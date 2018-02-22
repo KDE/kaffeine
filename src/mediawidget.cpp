@@ -1303,6 +1303,17 @@ void MediaWidget::keyPressEvent(QKeyEvent *event)
 {
 	int key = event->key();
 
+	if (backend->hasDvdMenu()) {
+		switch (key){
+		case Qt::Key_Return:
+		case Qt::Key_Up:
+		case Qt::Key_Down:
+		case Qt::Key_Left:
+		case Qt::Key_Right:
+			backend->dvdNavigate(key);
+		}
+	}
+
 	if ((key >= Qt::Key_0) && (key <= Qt::Key_9)) {
 		emit osdKeyPressed(key);
 	} else {
@@ -1406,7 +1417,20 @@ void MediaWidget::metadataChanged()
 
 void MediaWidget::dvdMenuChanged()
 {
-	menuAction->setEnabled(backend->hasDvdMenu());
+	bool hasDvdMenu = backend->hasDvdMenu();
+
+	menuAction->setEnabled(hasDvdMenu);
+
+	// Disable key left/right for DVD, in order to allow its usage
+	// to navigate at DVD's menu. Unfortunately, libVlc doesn't provide
+	// a way to tell if the device is at the DVB menu.
+	if (hasDvdMenu) {
+		shortSkipBackwardAction->setShortcut(Qt::Key_unknown);
+		shortSkipForwardAction->setShortcut(Qt::Key_unknown);
+	} else {
+		shortSkipBackwardAction->setShortcut(Qt::Key_Left);
+		shortSkipForwardAction->setShortcut(Qt::Key_Right);
+	}
 }
 
 void MediaWidget::titlesChanged()
