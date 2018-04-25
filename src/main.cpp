@@ -156,12 +156,12 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 	}
 
 	aboutData.addAuthor("Mauro Carvalho Chehab",
-		i18n("KF5 port"),
-		QStringLiteral("mchehab@infradead.org"));
+		i18n("Maintainer"),
+		QStringLiteral("mchehab+samsung@kernel.org"));
 	aboutData.addAuthor("Christoph Pfister", "",
 		QStringLiteral("christophpfister@gmail.com"));
 	aboutData.addAuthor("Lasse Lindqvist",
-		i18n("Maintainer (for KDE4)"),
+		i18n("Previous maintainer (for versions 1.x)"),
 		QStringLiteral("lasse.k.lindqvist@gmail.com"));
 	aboutData.addAuthor("Christophe Thommeret");
 	aboutData.addAuthor(QString::fromUtf8("Jürgen Kofler"));

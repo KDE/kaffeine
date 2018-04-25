@@ -280,16 +280,13 @@ Homepage
 Authors
 =======
 
-KF5 port maintainer:
+Maintainer since KF5/Qt5 port (version 2.x):
 
-* Mauro Carvalho Chehab <mchehab@s-opensource.com> or <mchehab+kde@kernel.org>
-
-Maintainer:
-
-* Lasse Lindqvist <lasse.k.lindqvist@gmail.com>
+* Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
 Former maintainers:
 
+* Lasse Lindqvist <lasse.k.lindqvist@gmail.com>
 * Christoph Pfister
 * Christophe Thommeret
 * Jürgen Kofler

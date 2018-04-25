@@ -2,7 +2,7 @@
  * dvbdevice_linux.cpp
  *
  * Copyright (C) 2007-2011 Christoph Pfister <christophpfister@gmail.com>
- * Copyright (c) 2014 Mauro Carvalho Chehab <mchehab@infradead.org>
+ * Copyright (c) 2014 Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
