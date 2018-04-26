@@ -806,9 +806,17 @@ bool MainWindow::event(QEvent *event)
 
 	switch (event->type()) {
 	case QEvent::Wheel: {
+		int delta, y;
+
 		QWheelEvent *wheel = static_cast<QWheelEvent *>(event);
 
-		int delta = (wheel->pixelDelta().y() < 0) ? -1 : 1;
+		y = wheel->pixelDelta().y();
+		if (!y)
+			y = wheel->angleDelta().y();
+
+		if (!y)
+			break;
+		delta = (y < 0) ? -1 : 1;
 
 		mediaWidget->setVolumeUnderMouse(mediaWidget->getVolume() + delta);
 		break;
