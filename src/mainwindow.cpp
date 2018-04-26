@@ -764,10 +764,14 @@ void MainWindow::activateTab(int tabIndex)
 	currentTabIndex = tabIndex;
 	tabBar->setCurrentIndex(tabIndex);
 
-	if (!autoHideControlBar) {
-		stackedLayout->setCurrentIndex(currentTabIndex);
-		tabs.at(currentTabIndex)->activate();
-	}
+	/*
+	 * Ensure that menus and timers will be properly shown,
+	 * according with the selected display mode.
+	 */
+	stackedLayout->setCurrentIndex(currentTabIndex);
+	tabs.at(currentTabIndex)->activate();
+
+	emit displayModeChanged();
 }
 
 void MainWindow::hideCursor()
