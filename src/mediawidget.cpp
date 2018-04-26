@@ -778,7 +778,10 @@ void MediaWidget::setVolumeUnderMouse(int volume)
 	if (!backend->underMouse())
 		return;
 
-	setVolume(volume);
+	if (volume == 100 || !volume)
+		osdWidget->showText(i18nc("osd", "Volume: %1%", volume), 1500);
+	else
+		setVolume(volume);
 }
 
 void MediaWidget::toggleMuted()
