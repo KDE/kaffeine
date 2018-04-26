@@ -500,6 +500,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("d") << QLatin1String("debug"), i18n("Enable all debug messages. Please notice that Kaffeine also allows enabling debug messages per category, by using the environment var:\nQT_LOGGING_RULES=kaffeine.category.debug=true\nwhere 'category' can be:\n" CATEGORIES)));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tempfile"), i18n("The files/URLs opened by the application will be deleted after use")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("m") << QLatin1String("minimal"), i18n("Start in minimal mode")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dvd"), i18n("Play DVD")));
@@ -517,6 +518,10 @@ void MainWindow::parseArgs(const QString workingDirectory)
 {
 	if (parser->isSet("fullscreen")) {
 		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
+	}
+
+	if (parser->isSet("minimal")) {
+		mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
 	}
 
 	if (parser->isSet("audiocd")) {
@@ -573,7 +578,6 @@ void MainWindow::parseArgs(const QString workingDirectory)
 	if (parser->isSet("lastchannel")) {
 		activateTab(DvbTabId);
 		dvbTab->playLastChannel();
-
 
 		return;
 	}
