@@ -501,6 +501,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("tempfile"), i18n("The files/URLs opened by the application will be deleted after use")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("f") << QLatin1String("fullscreen"), i18n("Start in full screen mode")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("m") << QLatin1String("minimal"), i18n("Start in minimal mode")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("t") << QLatin1String("alwaysontop"), i18n("Start with always on top")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dvd"), i18n("Play DVD")));
@@ -531,6 +532,13 @@ void MainWindow::parseArgs(const QString workingDirectory)
 			openAudioCd();
 		}
 		return;
+	}
+
+	if (parser->isSet("alwaysontop")) {
+		Qt::WindowFlags flags = this->windowFlags();
+		flags |= Qt::WindowStaysOnTopHint;
+		this->setWindowFlags(flags);
+		show();
 	}
 
 	if (parser->isSet("videocd")) {
