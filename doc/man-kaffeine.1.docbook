@@ -33,6 +33,8 @@
 <arg choice="opt"><option>-d, --debug</option></arg>
 <arg choice="opt"><option>--tempfile</option></arg>
 <arg choice="opt"><option>-f, --fullscreen</option></arg>
+<arg choice="opt"><option>-m, --minimal</option></arg>
+<arg choice="opt"><option>-t, --alwaysontop</option></arg>
 <arg choice="opt"><option>--audiocd</option></arg>
 <arg choice="opt"><option>--videocd</option></arg>
 <arg choice="opt"><option>--dvd</option></arg>
@@ -125,7 +127,29 @@ QT_LOGGING_RULES=kaffeine.<emphasis>category</emphasis>.debug=true
 
 <varlistentry>
 <term><option>-f</option> <option>--fullscreen</option></term>
-<listitem><para>Start in full screen mode</para>
+<listitem><para>Start in full screen mode. When in full screen mode, all
+menus are hidden by default. In order to unhide the menus, move the mouse
+to the menu locations, e. g. to the top/bottom or left position of the
+screen.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><option>-m</option> <option>--minimal</option></term>
+<listitem><para>Start in minimal mode. In minimal mode, the window
+decoration with the title bar is shown. All other menus are hidden by default.
+In order to unhide the menus, move the mouse to the menu locations, e. g. to
+the top/bottom or left position of the &kaffeine; window.</para>
+<listitem><para>Starts in minimal mode</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><option>-t</option> <option>--alwaysontop</option></term>
+<listitem><para>Tells the window manager to start &kaffeine; main window
+always on top of other windows. This option can be disabled later via
+the window manager, usually by clicking the title bar with the right
+mouse button and deselecting the always on top button box.</para>
 </listitem>
 </varlistentry>
 
