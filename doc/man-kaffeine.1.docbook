@@ -140,7 +140,7 @@ screen.</para>
 decoration with the title bar is shown. All other menus are hidden by default.
 In order to unhide the menus, move the mouse to the menu locations, e. g. to
 the top/bottom or left position of the &kaffeine; window.</para>
-<listitem><para>Starts in minimal mode</para>
+<para>Starts in minimal mode</para>
 </listitem>
 </varlistentry>
 
