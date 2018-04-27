@@ -47,8 +47,8 @@
 </copyright>
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2017-11-26</date>
-<releaseinfo>&kaffeine; 2.0.14</releaseinfo>
+<date>2018-04-27</date>
+<releaseinfo>&kaffeine; 2.0.15</releaseinfo>
 
 <!-- Abstract about this handbook -->
 
@@ -948,6 +948,8 @@ Offers a drop-down list with <action>options related to the audio stream(s)</act
   </menuchoice></term>
   <listitem><para>
   <inlinemediaobject><imageobject><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject></inlinemediaobject> Raise the audio volume.
+  The volume can also be raised by positioning the mouse over the media
+  player region and scrolling the mouse wheel up.
   </para></listitem>
   </varlistentry>
 
@@ -959,6 +961,8 @@ Offers a drop-down list with <action>options related to the audio stream(s)</act
   </menuchoice></term>
   <listitem><para>
   <inlinemediaobject><imageobject><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject></inlinemediaobject> Lower the audio volume.
+  The volume can also be decreased by positioning the mouse over the media
+  player region and scrolling the mouse wheel down.
   </para></listitem>
   </varlistentry>
 
@@ -1370,7 +1374,7 @@ In order to simplify the use of the &kaffeine;, this menu only contains two menu
 <title>Copyright and License</title>
 
 <para>
-Program copyright 2007-2017, The &kaffeine; Authors
+Program copyright 2007-2018, The &kaffeine; Authors.
 </para>
 
 <para>
