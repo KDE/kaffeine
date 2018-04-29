@@ -368,8 +368,7 @@ void DvbLiveView::deviceStateChanged()
 			startDevice();
 		} else {
 			mediaWidget->stop();
-			osdWidget->showText(i18nc("message box", "No available device found."),
-				2500);
+			osdWidget->showText(i18nc("message box", "No available device found."), 2500);
 		}
 
 		break;

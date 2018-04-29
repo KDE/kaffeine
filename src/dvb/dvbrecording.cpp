@@ -870,6 +870,13 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 			return false;
 		}
 
+		/*
+		 * When there's not enough devices to record while
+		 * watching, switch to the channel that will be recorded
+		 */
+		if (manager->hasReacquired())
+			manager->getLiveView()->playChannel(channel);
+
 		connect(device, SIGNAL(stateChanged()), this, SLOT(deviceStateChanged()));
 		pmtFilter.setProgramNumber(channel->serviceId);
 		device->addSectionFilter(channel->pmtPid, &pmtFilter);

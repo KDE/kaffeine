@@ -74,6 +74,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 	Q_ASSERT(requestType != Exclusive);
 	// FIXME call DvbEpgModel::startEventFilter / DvbEpgModel::stopEventFilter here?
 
+	reacquireDevice = false;
 	for (int i = 0; i < deviceConfigs.size(); ++i) {
 		const DvbDeviceConfig &it = deviceConfigs.at(i);
 
@@ -142,6 +143,7 @@ DvbDevice *DvbManager::requestDevice(const QString &source, const DvbTransponder
 				DvbDevice *device = it.device;
 				device->reacquire(config.constData());
 				device->tune(transponder);
+				reacquireDevice = true;
 				return device;
 			}
 		}

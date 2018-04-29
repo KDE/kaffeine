@@ -156,6 +156,7 @@ public:
 	void writeDeviceConfigs();
 
 	void enableDvbDump();
+	bool hasReacquired() { return reacquireDevice; };
 
 private slots:
 	void requestBuiltinDeviceManager(QObject *&builtinDeviceManager);
@@ -178,6 +179,7 @@ private:
 	DvbEpgModel *epgModel;
 	DvbLiveView *liveView;
 	DvbRecordingModel *recordingModel;
+	bool reacquireDevice;
 
 	QList<DvbDeviceConfig> deviceConfigs;
 	bool dvbDumpEnabled;
