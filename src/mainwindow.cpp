@@ -405,39 +405,8 @@ void MainWindow::run()
 #endif /* HAVE_DVB == 1 */
 	QDBusConnection::sessionBus().registerService(QLatin1String("org.mpris.kaffeine"));
 
-	show();
-
-	// set display mode
-	switch (Configuration::instance()->getStartupDisplayMode()) {
-	case Configuration::StartupNormalMode:
-		// nothing to do
-		break;
-	case Configuration::StartupMinimalMode:
-		mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
-		break;
-	case Configuration::StartupFullScreenMode:
-		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
-		break;
-	case Configuration::StartupRememberLastSetting: {
-		int value = KSharedConfig::openConfig()->group("MainWindow").readEntry("DisplayMode", 0);
-
-		switch (value) {
-		case 0:
-			// nothing to do
-			break;
-		case 1:
-			mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
-			break;
-		case 2:
-			mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
-			break;
-		}
-
-		break;
-	    }
-	}
-
 	parseArgs();
+	show();
 }
 
 MainWindow::~MainWindow()
@@ -517,14 +486,6 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 
 void MainWindow::parseArgs(const QString workingDirectory)
 {
-	if (parser->isSet("fullscreen")) {
-		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
-	}
-
-	if (parser->isSet("minimal")) {
-		mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
-	}
-
 	if (parser->isSet("audiocd")) {
 		if (parser->positionalArguments().count() > 0) {
 			openAudioCd(parser->positionalArguments().first());
@@ -532,13 +493,6 @@ void MainWindow::parseArgs(const QString workingDirectory)
 			openAudioCd();
 		}
 		return;
-	}
-
-	if (parser->isSet("alwaysontop")) {
-		Qt::WindowFlags flags = this->windowFlags();
-		flags |= Qt::WindowStaysOnTopHint;
-		this->setWindowFlags(flags);
-		show();
 	}
 
 	if (parser->isSet("videocd")) {
@@ -612,6 +566,48 @@ void MainWindow::parseArgs(const QString workingDirectory)
 		} else if (!urls.isEmpty()) {
 			openUrl(urls.at(0));
 		}
+	}
+
+	if (parser->isSet("alwaysontop")) {
+		Qt::WindowFlags flags = this->windowFlags();
+		flags |= Qt::WindowStaysOnTopHint;
+		this->setWindowFlags(flags);
+	}
+
+	if (parser->isSet("fullscreen")) {
+		mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
+	} else if (parser->isSet("minimal")) {
+		mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
+	} else {
+		// set display mode
+		switch (Configuration::instance()->getStartupDisplayMode()) {
+		case Configuration::StartupNormalMode:
+			// nothing to do
+			break;
+		case Configuration::StartupMinimalMode:
+			mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
+			break;
+		case Configuration::StartupFullScreenMode:
+			mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
+			break;
+		case Configuration::StartupRememberLastSetting: {
+			int value = KSharedConfig::openConfig()->group("MainWindow").readEntry("DisplayMode", 0);
+
+			switch (value) {
+			case 0:
+				// nothing to do
+				break;
+			case 1:
+				mediaWidget->setDisplayMode(MediaWidget::MinimalMode);
+				break;
+			case 2:
+				mediaWidget->setDisplayMode(MediaWidget::FullScreenMode);
+				break;
+			}
+
+			break;
+		} /* case */
+		} /* switch */
 	}
 }
 
