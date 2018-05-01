@@ -1,6 +1,28 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.15 (2018-05-01):
+
+-   Fix logic that handles ATSC EIT entries (regression fix);
+-   Auto-ride all bars when in minimal/full scree mode and mouse is out
+    of window;
+-   Allow better control of deinterlacing mode;
+-   Better handle higherVoltage settings, as it exists only for sattellite
+    TV delivery systems;
+-   Improve error handling when parsing config.dvb file;
+-   Change volume wheel logic to accept both point and angle-based volume
+    control, accepting it only when the mouse is under the media widget;
+-   Simplify the mouse hide logic;
+-   Fix DVD menu navigation by using the keyboard instead of the mouse
+    (as mouse control is incompatible with newer versions of Qt/libVLC);
+-   Fix handling of display mode, correcting some erratic behavior;
+-   Add options to start Kaffeine on minimal mode and/or with its main
+    window always on top;
+-   When a new record starts and there aren't enough resources to keep
+    playing the current DVB channel, switch to the new channel instead
+    of stop playing.
+-   Improve documentation to match the recent changes.
+
 Version 2.0.14 (2017-12-02):
 
 -   Add support for multi-language EPG;
