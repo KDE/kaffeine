@@ -11,7 +11,7 @@ CMakeFiles/
 CMakeTmp/
 Makefile
 config-kaffeine.h
-doc/index.html
+doc/*.html
 doc/kaffeine.1
 doc/index.cache.bz2
 dtvdaemon/dtvdaemon
