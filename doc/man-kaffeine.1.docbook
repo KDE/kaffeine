@@ -42,8 +42,13 @@
 <arg choice="opt"><option>--channel <replaceable>name</replaceable> / <replaceable>number</replaceable></option></arg>
 <arg choice="opt"><option>--tv <replaceable>channel</replaceable></option></arg>
 <arg choice="opt"><option>--lastchannel</option></arg>
-<arg choice="opt"><option><replaceable>file</replaceable></option></arg>
+<arg choice="opt"><option><replaceable>files</replaceable></option></arg>
 </cmdsynopsis>
+
+<para>Please notice that <option>--channel</option>, <option>--tv</option>,
+<option>--lastchannel</option>, <option>--audiocd</option>,
+<option>--videocd</option>, <option>--dvd</option> and
+<option><replaceable>files</replaceable></option> are mutually exclusive.</para>
 </refsynopsisdiv>
 
 
@@ -196,7 +201,7 @@ mouse button and deselecting the always on top button box.</para>
 </varlistentry>
 
 <varlistentry>
-<term><option><replaceable>file</replaceable></option></term>
+<term><option><replaceable>files</replaceable></option></term>
 <listitem><para>Files or URLs to play</para>
 </listitem>
 </varlistentry>
