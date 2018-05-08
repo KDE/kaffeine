@@ -486,87 +486,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 
 void MainWindow::parseArgs(const QString workingDirectory)
 {
-	if (parser->isSet("audiocd")) {
-		if (parser->positionalArguments().count() > 0) {
-			openAudioCd(parser->positionalArguments().first());
-		} else {
-			openAudioCd();
-		}
-		return;
-	}
-
-	if (parser->isSet("videocd")) {
-		if (parser->positionalArguments().count() > 0) {
-			openVideoCd(parser->positionalArguments().first());
-		} else {
-			openVideoCd();
-		}
-		return;
-	}
-
-	if (parser->isSet("dvd")) {
-		if (parser->positionalArguments().count() > 0) {
-			openDvd(parser->positionalArguments().first());
-		} else {
-			openDvd();
-		}
-		return;
-	}
-
-#if HAVE_DVB == 1
-	QString channel;
-
-	if (parser->isSet("dumpdvb")) {
-		dvbTab->enableDvbDump();
-	}
-
-	channel = parser->value("channel");
-
-	if (!channel.isEmpty()) {
-		activateTab(DvbTabId);
-		dvbTab->playChannel(channel);
-
-		return;
-	}
-
-	channel = parser->value("tv");
-	if (!channel.isEmpty()) {
-		activateTab(DvbTabId);
-		dvbTab->playChannel(channel);
-
-		return;
-	}
-
-	if (parser->isSet("lastchannel")) {
-		activateTab(DvbTabId);
-		dvbTab->playLastChannel();
-
-		return;
-	}
-#endif /* HAVE_DVB == 1 */
-
-	if (parser->positionalArguments().count() > 0) {
-		QList<QUrl> urls;
-
-		for (int i = 0; i < parser->positionalArguments().count(); ++i) {
-			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i), workingDirectory);
-
-			if (url.isValid()) {
-				urls.append(url);
-			}
-		}
-
-		if (parser->isSet("tempfile")) {
-			temporaryUrls.append(urls);
-		}
-
-		if (urls.size() >= 2) {
-			activateTab(PlaylistTabId);
-			playlistTab->appendToVisiblePlaylist(urls, true);
-		} else if (!urls.isEmpty()) {
-			openUrl(urls.at(0));
-		}
-	}
+	/* Parse first arguments that aren't mutually exclusive */
 
 	if (parser->isSet("alwaysontop")) {
 		Qt::WindowFlags flags = this->windowFlags();
@@ -608,6 +528,95 @@ void MainWindow::parseArgs(const QString workingDirectory)
 			break;
 		} /* case */
 		} /* switch */
+	}
+
+#if HAVE_DVB == 1
+	if (parser->isSet("dumpdvb")) {
+		dvbTab->enableDvbDump();
+	}
+#endif
+
+	/*
+	 * Now, parse arguments that are mutually exclusive
+	 */
+
+#if HAVE_DVB == 1
+	QString channel;
+
+	channel = parser->value("channel");
+
+	if (!channel.isEmpty()) {
+		activateTab(DvbTabId);
+		dvbTab->playChannel(channel);
+
+		return;
+	}
+
+	channel = parser->value("tv");
+	if (!channel.isEmpty()) {
+		activateTab(DvbTabId);
+		dvbTab->playChannel(channel);
+
+		return;
+	}
+
+	if (parser->isSet("lastchannel")) {
+		activateTab(DvbTabId);
+		dvbTab->playLastChannel();
+
+		return;
+	}
+#endif /* HAVE_DVB == 1 */
+
+	if (parser->isSet("audiocd")) {
+		if (parser->positionalArguments().count() > 0) {
+			openAudioCd(parser->positionalArguments().first());
+		} else {
+			openAudioCd();
+		}
+		return;
+	}
+
+	if (parser->isSet("videocd")) {
+		if (parser->positionalArguments().count() > 0) {
+			openVideoCd(parser->positionalArguments().first());
+		} else {
+			openVideoCd();
+		}
+		return;
+	}
+
+	if (parser->isSet("dvd")) {
+		if (parser->positionalArguments().count() > 0) {
+			openDvd(parser->positionalArguments().first());
+		} else {
+			openDvd();
+		}
+		return;
+	}
+
+	if (parser->positionalArguments().count() > 0) {
+		QList<QUrl> urls;
+
+		for (int i = 0; i < parser->positionalArguments().count(); ++i) {
+			QUrl url = QUrl::fromUserInput(parser->positionalArguments().at(i), workingDirectory);
+
+			if (url.isValid()) {
+				urls.append(url);
+			}
+		}
+
+		if (parser->isSet("tempfile")) {
+			temporaryUrls.append(urls);
+		}
+
+		if (urls.size() >= 2) {
+			activateTab(PlaylistTabId);
+			playlistTab->appendToVisiblePlaylist(urls, true);
+		} else if (!urls.isEmpty()) {
+			openUrl(urls.at(0));
+		}
+		return;
 	}
 }
 
