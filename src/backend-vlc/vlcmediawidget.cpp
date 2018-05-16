@@ -427,7 +427,7 @@ void VlcMediaWidget::setExternalSubtitle(const QUrl &url)
 		qCWarning(logMediaWidget, "Cannot set subtitle file %s", qPrintable(fname));
 #else
 	if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
-					   qPrintable(fname)) == 0)
+					   fname.toLocal8Bit().constData()) == 0)
 		qCWarning(logMediaWidget, "Cannot set subtitle file %s", qPrintable(fname));
 #endif
 }

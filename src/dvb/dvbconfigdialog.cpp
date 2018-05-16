@@ -1539,7 +1539,7 @@ void DvbSLnbConfigObject::configure()
 
 	for (i = 0; i < size; i++) {
 		struct lnbSat lnb = device->getLnbSatModels().at(i);
-		QRadioButton *radioButton = new QRadioButton(i18nd("libdvbv5", qPrintable(lnb.name)), mainWidget);
+		QRadioButton *radioButton = new QRadioButton(i18nd("libdvbv5", lnb.name.toLocal8Bit().constData()), mainWidget);
 		mainLayout->addWidget(radioButton);
 		lnbSelectionGroup->addButton(radioButton, i + 1);
 		gridLayout->addWidget(radioButton, i % ((size + 1) / 2), i / ((size + 1) / 2));
