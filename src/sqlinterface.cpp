@@ -135,7 +135,7 @@ void SqlInterface::sqlInsert(SqlKey key)
 		break;
 	}
 
-	qCWarning(logSql, "Invalid pending statement '%s'", qPrintable(pendingStatement));
+	qCWarning(logSql, "Invalid pending statement '%d'", pendingStatement);
 }
 
 void SqlInterface::sqlUpdate(SqlKey key)
@@ -155,7 +155,7 @@ void SqlInterface::sqlUpdate(SqlKey key)
 		break;
 	}
 
-	qCWarning(logSql, "Invalid pending statement '%s'", qPrintable(pendingStatement));
+	qCWarning(logSql, "Invalid pending statement '%d'", pendingStatement);
 }
 
 void SqlInterface::sqlRemove(SqlKey key)
@@ -176,7 +176,7 @@ void SqlInterface::sqlRemove(SqlKey key)
 		break;
 	}
 
-	qCWarning(logSql, "Invalid pending statement %s", qPrintable(pendingStatement));
+	qCWarning(logSql, "Invalid pending statement %d", pendingStatement);
 }
 
 void SqlInterface::requestSubmission()
@@ -226,7 +226,7 @@ void SqlInterface::sqlSubmit()
 			continue;
 		}
 
-		qCWarning(logSql, "Invalid pending statement %s", qPrintable(pendingStatement));
+		qCWarning(logSql, "Invalid pending statement %d", pendingStatement);
 	}
 
 	pendingStatements.clear();

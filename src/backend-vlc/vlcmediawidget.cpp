@@ -95,7 +95,7 @@ bool VlcMediaWidget::init()
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qCCritical(logMediaWidget, "Cannot attach event handler %s", qPrintable(eventTypes[i]));
+			qCCritical(logMediaWidget, "Cannot attach event handler %d", eventTypes[i]);
 			return false;
 		}
 	}
@@ -328,7 +328,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
 		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qCWarning(logMediaWidget, "Cannot attach event handler %s", qPrintable(eventTypes[i]));
+			qCWarning(logMediaWidget, "Cannot attach event handler %d", eventTypes[i]);
 		}
 	}
 

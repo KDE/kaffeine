@@ -1245,7 +1245,7 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 		qCWarning(logDev, "Invalid transmission type");
 		return false;
 	default:
-		qCWarning(logDev, "Unknown transmission type %s", qPrintable(transponder.getTransmissionType()));
+		qCWarning(logDev, "Unknown transmission type %d", transponder.getTransmissionType());
 		return false;
 	}
 	return true;

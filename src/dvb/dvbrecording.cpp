@@ -473,7 +473,7 @@ DvbSharedRecording DvbRecordingModel::getLeastImportant(QList<DvbSharedRecording
 	DvbSharedRecording leastImportant = recList.value(0);
 	foreach(DvbSharedRecording listRec, recList)
 	{
-		qCDebug(logDvb, "name and priority %s %s", qPrintable(listRec->name), qPrintable(listRec->priority));
+		qCDebug(logDvb, "name and priority %s %d", qPrintable(listRec->name), listRec->priority);
 		if (listRec->priority < leastImportant->priority) {
 			leastImportant = listRec;
 		}
