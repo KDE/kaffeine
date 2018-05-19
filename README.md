@@ -75,8 +75,11 @@ Fedora
 On Fedora, you need a repository that provides VLC.
 
 For stable fedora releases, you could use the rpmfusion repository.
-See <http://rpmfusion.org/Configuration/> for instructions about how
-to set it up.
+For Fedora 22 and later, it can be installed with:
+
+	sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+
+See <http://rpmfusion.org/Configuration/> for more details.
 
 For Fedora rawhide and beta releases, you could use, instead the
 Unitedrpms repository: <https://unitedrpms.github.io/>. Please read
@@ -86,17 +89,15 @@ for instructions about how to set up.
 Once the repository with VLC is set, install the needed packages
 with:
 
-    dnf install  kf5-kcoreaddons-devel extra-cmake-modules libXScrnSaver-devel \
-		 qt5-qtx11extras-devel \
+    dnf install  kf5-kcoreaddons-devel libXScrnSaver-devel \
+		 qt5-qtx11extras-devel libdvbv5 \
 		 kf5-kwindowsystem-devel kf5-solid-devel kf5-kio-devel \
-		 kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel gettext-devel
+		 kf5-kdbusaddons-devel kf5-ki18n-devel vlc-devel gettext-devel \
+		 cmake extra-cmake-modules make gcc-c++ gettext
 
 And, to build the Kaffeine Handbook documentation:
 
     dnf install kf5-kdoctools-devel
-
-PS.: The above was tested with Fedora 23 and Fedora 24.
-Other versions may have different requirements.
 
 openSUSE
 --------
