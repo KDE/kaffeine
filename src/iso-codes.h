@@ -14,6 +14,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef ISO_CODES_H
+#define ISO_CODES_H
+
 class QString;
 
 namespace IsoCodes
@@ -21,3 +24,5 @@ namespace IsoCodes
 	bool getLanguage(const QString &code, QString *language);
 	bool getCountry(const QString &code, QString *country);
 }
+
+#endif

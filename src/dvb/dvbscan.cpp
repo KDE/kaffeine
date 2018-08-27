@@ -1283,7 +1283,7 @@ void DvbScan::processNitDescriptor(const DvbDescriptor &descriptor)
 	    }
 	case DvbTransponderBase::DvbT2:
 		// FIXME: Implement T2_delivery_system_descriptor
-		// decriptor 0x7f, extension descriptor 0x04  or use libdvbv5
+		// descriptor 0x7f, extension descriptor 0x04  or use libdvbv5
 
 	case DvbTransponderBase::DvbT: {
 		if (descriptor.descriptorTag() != 0x5a) {

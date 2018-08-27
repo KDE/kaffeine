@@ -18,6 +18,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#ifndef LOG_H
+#define LOG_H
+
 #include <KLocalizedString>
 
 #include <QDebug>
@@ -40,3 +43,5 @@ Q_DECLARE_LOGGING_CATEGORY(logMediaWidget)
 Q_DECLARE_LOGGING_CATEGORY(logPlaylist)
 Q_DECLARE_LOGGING_CATEGORY(logSql)
 Q_DECLARE_LOGGING_CATEGORY(logVlc)
+
+#endif
