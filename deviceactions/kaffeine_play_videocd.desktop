@@ -6,7 +6,6 @@ X-KDE-Solid-Predicate=[OpticalDisc.availableContent & 'VideoCd' OR OpticalDisc.a
 [Desktop Action PlayVideoCd]
 Name=Play Video CD with Kaffeine
 Name[ar]=شغّل الأسطوانات المرئيّة ب‍«كافيين»
-Name[ast]=Reproducir CD de videu con Kaffeine
 Name[bg]=Възпроизвеждане на CD с видео с Kaffeine
 Name[bs]=Izvođenje video CD-ova programom Kaffeine
 Name[ca]=Reprodueix un CD de vídeo amb el Kaffeine
