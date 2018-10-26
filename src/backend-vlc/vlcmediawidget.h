@@ -25,6 +25,7 @@
 
 class libvlc_event_t;
 class libvlc_instance_t;
+class libvlc_media_t;
 class libvlc_media_player_t;
 class QTimer;
 
@@ -68,6 +69,8 @@ public:
 	bool jumpToNextChapter();
 	void showDvdMenu();
 	void dvdNavigate(int key);
+	void playDirection(int direction);
+	void makePlay();
 
 	int updatePlaybackStatus();
 	void updateCurrentTotalTime();
@@ -90,10 +93,14 @@ private:
 	static void vlcEventHandler(const libvlc_event_t *event, void *instance);
 
 	libvlc_instance_t *vlcInstance;
+	libvlc_media_t *vlcMedia;
 	libvlc_media_player_t *vlcMediaPlayer;
 	bool playingDvd;
 	bool mouseVisible;
 	QMap<int, int> subtitleId;
+	QByteArray typeOfDevice;
+	int numDevType;
+	int trackNumber = 1;
 };
 
 #endif /* VLCMEDIAWIDGET_H */
