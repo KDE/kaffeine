@@ -27,6 +27,7 @@
 #include <QMap>
 #include <vlc/vlc.h>
 #include <vlc/libvlc_version.h>
+#include <unistd.h>
 
 #include "../configuration.h"
 #include "vlcmediawidget.h"
@@ -279,6 +280,9 @@ void VlcMediaWidget::play(const MediaSource &source)
 	QByteArray url = source.getUrl().toEncoded();
 	playingDvd = false;
 
+	trackNumber = 1;
+	numDevType = 0;
+
 	switch (source.getType()) {
 	case MediaSource::Url:
 		if (url.endsWith(".iso")) {
@@ -287,6 +291,8 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 		break;
 	case MediaSource::AudioCd:
+		numDevType=2;
+
 		if (url.size() >= 7) {
 			url.replace(0, 4, "cdda");
 		} else {
@@ -315,11 +321,24 @@ void VlcMediaWidget::play(const MediaSource &source)
 		break;
 	}
 
-	libvlc_media_t *vlcMedia = libvlc_media_new_location(vlcInstance, url.constData());
+	typeOfDevice = url.constData();
 
+	vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
+	if (numDevType == 2)
+		libvlc_media_add_option(vlcMedia, "cdda-track=1");
+
+	makePlay();
+
+	setCursor(Qt::BlankCursor);
+	setCursor(Qt::ArrowCursor);
+	timer->start(1000);
+	setMouseTracking(true);
+}
+
+void VlcMediaWidget::makePlay()
+{
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		qCWarning(logMediaWidget, "Cannot create media %s", qPrintable(source.getUrl().toDisplayString()));
 		return;
 	}
 
@@ -335,23 +354,45 @@ void VlcMediaWidget::play(const MediaSource &source)
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
 	libvlc_media_release(vlcMedia);
 
-//	FIXME! subtitleUrl is only available for MediaSourceUrl private class
-//	if (source.subtitleUrl.isValid())
-//		setExternalSubtitle(source.subtitleUrl);
+	if (libvlc_media_player_play(vlcMediaPlayer) != 0)
+		return;
+}
 
-	if (libvlc_media_player_play(vlcMediaPlayer) != 0) {
-		qCWarning(logMediaWidget, "Cannot play media %s", qPrintable(source.getUrl().toDisplayString()));
-	}
+void VlcMediaWidget::playDirection(int direction)
+{
+	char numBuff[256];
+	char strBuff[512] = "cdda-track=";
 
-	setCursor(Qt::BlankCursor);
-	setCursor(Qt::ArrowCursor);
-	timer->start(1000);
-	setMouseTracking(true);
+	if (direction == -1)
+		trackNumber--;
+	else
+		trackNumber++;
+
+	sprintf(numBuff, "%d", trackNumber);
+	strcat(strBuff, numBuff);
+
+	if (vlcMedia != NULL)
+		libvlc_media_release(vlcMedia);
+
+    vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
+    libvlc_media_add_option(vlcMedia, strBuff);
+
+	makePlay();
+
+	sleep(1);
+
+	int playerState = libvlc_media_player_get_state(vlcMediaPlayer);
+
+	if (playerState != libvlc_Playing)
+		stop();
 }
 
 void VlcMediaWidget::stop()
 {
 	libvlc_media_player_stop(vlcMediaPlayer);
+
+	if (trackNumber != 1)
+		trackNumber = 1;
 
 	timer->stop();
 	setCursor(Qt::BlankCursor);
@@ -452,7 +493,10 @@ bool VlcMediaWidget::jumpToPreviousChapter()
 {
 	int currentTitle = libvlc_media_player_get_title(vlcMediaPlayer);
 	int currentChapter = libvlc_media_player_get_chapter(vlcMediaPlayer);
-	libvlc_media_player_previous_chapter(vlcMediaPlayer);
+	if (numDevType == 2)
+		playDirection(-1);
+	else
+		libvlc_media_player_previous_chapter(vlcMediaPlayer);
 
 	if ((libvlc_media_player_get_title(vlcMediaPlayer) != currentTitle) ||
 	    (libvlc_media_player_get_chapter(vlcMediaPlayer) != currentChapter)) {
@@ -466,7 +510,10 @@ bool VlcMediaWidget::jumpToNextChapter()
 {
 	int currentTitle = libvlc_media_player_get_title(vlcMediaPlayer);
 	int currentChapter = libvlc_media_player_get_chapter(vlcMediaPlayer);
-	libvlc_media_player_next_chapter(vlcMediaPlayer);
+	if (numDevType == 2)
+		playDirection(1);
+	else
+		libvlc_media_player_next_chapter(vlcMediaPlayer);
 
 	if ((libvlc_media_player_get_title(vlcMediaPlayer) != currentTitle) ||
 	    (libvlc_media_player_get_chapter(vlcMediaPlayer) != currentChapter)) {
@@ -507,6 +554,8 @@ int VlcMediaWidget::updatePlaybackStatus()
 		playbackStatus = MediaWidget::Paused;
 		break;
 	case libvlc_Ended:
+		playDirection(1);
+		break;
 	case libvlc_Error:
 		playbackStatus = MediaWidget::Idle;
 		// don't keep last picture shown
