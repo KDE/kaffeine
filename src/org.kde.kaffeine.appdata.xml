@@ -114,6 +114,7 @@
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kaffeine</url>
   <screenshots>
     <screenshot type="default">
+      <caption>Kaffeine main window</caption>
       <image>http://kde.org/images/screenshots/kaffeine.png</image>
     </screenshot>
   </screenshots>
