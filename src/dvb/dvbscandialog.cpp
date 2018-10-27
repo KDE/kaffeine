@@ -59,13 +59,13 @@ void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 
 	switch(scale) {
 	case DvbBackendDevice::NotSupported: {
-		text = "-";
+		text = '-';
 		max = 100;
 		min = 0;
 		break;
 	    }
 	case DvbBackendDevice::Percentage: {
-		text = QString::number(value, 'f', 0) + "%";
+		text = QString::number(value, 'f', 0) + '%';
 		max = 100;
 		min = 0;
 		break;
@@ -77,7 +77,7 @@ void DvbGradProgress::setValue(float value_, DvbBackendDevice::Scale scale)
 		break;
 	    }
 	case DvbBackendDevice::dBuV: {
-		text = QString::number(value, 'f', 2) + " dB" + QString((QChar) 0x00b5) + "V";
+		text = QString::number(value, 'f', 2) + " dB" + QString((QChar) 0x00b5) + 'V';
 		max = 80;
 		min = 20;
 		break;

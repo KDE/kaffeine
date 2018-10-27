@@ -290,6 +290,6 @@ int main(int argc, char *argv[])
 		file.close();
 	}
 
-	qInfo() << "file extensions updated successfuly.";
+	qInfo() << "file extensions updated successfully.";
 	return 0;
 }

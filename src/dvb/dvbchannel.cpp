@@ -293,7 +293,7 @@ void DvbChannelModel::cloneFrom(DvbChannelModel *other)
 			addChannel(newChannel);
 		}
 	} else {
-		qCWarning(logDvb, "Iillegal type of clone");
+		qCWarning(logDvb, "Illegal type of clone");
 	}
 }
 

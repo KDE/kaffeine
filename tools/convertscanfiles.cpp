@@ -106,7 +106,7 @@ private:
 	QString rollOff = "";
 	QString plscode = "";
 	QString plsmode = "";
-	QString bandwith = "";
+	QString bandwidth = "";
 	QString fec_hi = "";
 	QString fec_lo = "";
 	QString t_mode = "";
@@ -164,7 +164,7 @@ void parseDvbv5::resetParser()
 	rollOff = "";
 	plscode = "";
 	plsmode = "";
-	bandwith = "";
+	bandwidth = "";
 	fec_hi = "";
 	fec_lo = "";
 	t_mode = "";
@@ -282,7 +282,7 @@ bool parseDvbv5::parseInputLine(QString line)
 		return false;
 	}
 	if (line.contains("BANDWIDTH_HZ")) {
-		bandwith = line.split(" = ")[1];
+		bandwidth = line.split(" = ")[1];
 		return false;
 	}
 	if (line.contains("TRANSMISSION_MODE")) {
@@ -425,12 +425,12 @@ QString parseDvbv5::outputLine()
 					<< lineno << " file" << name;
 			return line;
 		}
-		line = "C " + frq + " " + symbolRate + " " + fec + " " + modulation.replace("/", "");
+		line = "C " + frq + ' ' + symbolRate + ' ' + fec + ' ' + modulation.remove("/");
 		return line;
 	}
 	case DvbTransponderBase::DvbS: {
 		if (rollOff.isEmpty() && (modulation.isEmpty() || !modulation.compare("QPSK"))) {
-			line = "S " + frq + " " + polar[0] + " " + symbolRate + " " + fec;
+			line = "S " + frq + ' ' + polar[0] + ' ' + symbolRate + ' ' + fec;
 			return line;
 		}
 		type = DvbTransponderBase::DvbS2;
@@ -445,49 +445,49 @@ QString parseDvbv5::outputLine()
 		if (modulation.isEmpty()) {
 			modulation = "AUTO";
 		} if (modulation.contains("/")) {
-			QString temp1 = modulation.split("/")[0];
-			QString temp2 = modulation.split("/")[1];
+			QString temp1 = modulation.split('/')[0];
+			QString temp2 = modulation.split('/')[1];
 			modulation = temp2 + temp1;
 		}
 
-		line = "S2 " + frq + " " + polar[0] + " " + symbolRate + " " + fec + " " + rollOff + " " + modulation;
+		line = "S2 " + frq + ' ' + polar[0] + ' ' + symbolRate + ' ' + fec + ' ' + rollOff + ' ' + modulation;
 
 		return line;
 	}
 	case DvbTransponderBase::DvbT: {
 		line = "T " + frq;
-		if (!bandwith.isEmpty()) {
-			int number = bandwith.toInt();
+		if (!bandwidth.isEmpty()) {
+			int number = bandwidth.toInt();
 			number = number / 1000000;
-			line += " " + QString::number(number) + "MHz";
+			line += ' ' + QString::number(number) + "MHz";
 		}
 		if (!fec_hi.isEmpty()) {
-			line += " " + fec_hi;
+			line += ' ' + fec_hi;
 		} else {
 			line += " AUTO";
 		}
 		if (!fec_lo.isEmpty()) {
-			line += " " + fec_lo;
+			line += ' ' + fec_lo;
 		} else {
 			line += " AUTO";
 		}
 		if (!modulation.isEmpty()) {
-			line += " " + modulation.replace("/", "").replace("QAMAUTO", "AUTO");
+			line += ' ' + modulation.remove("/").replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!t_mode.isEmpty()) {
-			line += " " + t_mode.replace("K", "k");
+			line += ' ' + t_mode.replace("K", "k");
 		} else {
 			line += " AUTO";
 		}
 		if (!g_interval.isEmpty()) {
-			line += " " + g_interval;
+			line += ' ' + g_interval;
 		} else {
 			line += " AUTO";
 		}
 		if (!hierarchy.isEmpty()) {
-			line += " " + hierarchy;
+			line += ' ' + hierarchy;
 		} else {
 			line += " AUTO";
 		}
@@ -495,53 +495,53 @@ QString parseDvbv5::outputLine()
 	}
 	case DvbTransponderBase::DvbT2: {
 		line = "T2 " + frq;
-		if (!bandwith.isEmpty()) {
-			int number = bandwith.toInt();
+		if (!bandwidth.isEmpty()) {
+			int number = bandwidth.toInt();
 			number = number / 1000000;
-			line += " " + QString::number(number) + "MHz";
+			line += ' ' + QString::number(number) + "MHz";
 		}
 		if (!fec_hi.isEmpty()) {
-			line += " " + fec_hi;
+			line += ' ' + fec_hi;
 		} else {
 			line += " AUTO";
 		}
 		if (!fec_lo.isEmpty()) {
-			line += " " + fec_lo;
+			line += ' ' + fec_lo;
 		} else {
 			line += " AUTO";
 		}
 		if (!modulation.isEmpty()) {
-			line += " " + modulation.replace("/", "").replace("QAMAUTO", "AUTO");
+			line += ' ' + modulation.remove("/").replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!t_mode.isEmpty()) {
-			line += " " + t_mode.replace("K", "k");
+			line += ' ' + t_mode.replace("K", "k");
 		} else {
 			line += " AUTO";
 		}
 		if (!g_interval.isEmpty()) {
-			line += " " + g_interval;
+			line += ' ' + g_interval;
 		} else {
 			line += " AUTO";
 		}
 		if (!hierarchy.isEmpty()) {
-			line += " " + hierarchy;
+			line += ' ' + hierarchy;
 		} else {
 			line += " AUTO";
 		}
-		line += " " + QString::number(streamid);
+		line += ' ' + QString::number(streamid);
 		return line;
 	}
 	case DvbTransponderBase::Atsc: {
 		line = "A " + frq;
 		if (!modulation.isEmpty()) {
-			QString temp1 = modulation.split("/")[0];
-			QString temp2 = modulation.split("/")[1];
+			QString temp1 = modulation.split('/')[0];
+			QString temp2 = modulation.split('/')[1];
 			if (!(temp1 == "QAM")) {
-				line += " " + temp2 + temp1;
+				line += ' ' + temp2 + temp1;
 			} else {
-				line += " " + temp1 + temp2;
+				line += ' ' + temp1 + temp2;
 			}
 		} else {
 			line += " AUTO";
@@ -550,111 +550,111 @@ QString parseDvbv5::outputLine()
 	}
 	case DvbTransponderBase::IsdbT: {
 		line = "I " + frq;
-		if (!bandwith.isEmpty()) {
-			int number = bandwith.toInt();
+		if (!bandwidth.isEmpty()) {
+			int number = bandwidth.toInt();
 			number = number / 1000000;
-			line += " " + QString::number(number) + "MHz";
+			line += ' ' + QString::number(number) + "MHz";
 		} else {
 			line += " 6MHz";
 		}
 		if (!t_mode.isEmpty()) {
-			line += " " + t_mode.replace("K", "k");
+			line += ' ' + t_mode.replace("K", "k");
 		} else {
 			line += " AUTO";
 		}
 		if (!g_interval.isEmpty()) {
-			line += " " + g_interval;
+			line += ' ' + g_interval;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtPartialReception.isEmpty()) {
-			line += " " + isdbtPartialReception;
+			line += ' ' + isdbtPartialReception;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtSb.isEmpty()) {
-			line += " " + isdbtSb;
+			line += ' ' + isdbtSb;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtSbSubchId.isEmpty()) {
-			line += " " + isdbtSbSubchId;
+			line += ' ' + isdbtSbSubchId;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtSbSegCount.isEmpty()) {
-			line += " " + isdbtSbSegCount;
+			line += ' ' + isdbtSbSegCount;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtSbSegIdx.isEmpty()) {
-			line += " " + isdbtSbSegIdx;
+			line += ' ' + isdbtSbSegIdx;
 		} else {
 			line += " AUTO";
 		}
 
-		line += " " + QString::number(isdbtLayers);
+		line += ' ' + QString::number(isdbtLayers);
 
 		// Layer A
 		if (!isdbtLayerAModulation.isEmpty()) {
-			line += " " + isdbtLayerAModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+			line += ' ' + isdbtLayerAModulation.remove("/").replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerAFec.isEmpty()) {
-			line += " " + isdbtLayerAFec;
+			line += ' ' + isdbtLayerAFec;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerASegCount.isEmpty()) {
-			line += " " + isdbtLayerASegCount;
+			line += ' ' + isdbtLayerASegCount;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerAInterleaving.isEmpty()) {
-			line += " " + isdbtLayerAInterleaving;
+			line += ' ' + isdbtLayerAInterleaving;
 		} else {
 			line += " AUTO";
 		}
 		// Layer B
 		if (!isdbtLayerBModulation.isEmpty()) {
-			line += " " + isdbtLayerBModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+			line += ' ' + isdbtLayerBModulation.remove("/").replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerBFec.isEmpty()) {
-			line += " " + isdbtLayerBFec;
+			line += ' ' + isdbtLayerBFec;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerBSegCount.isEmpty()) {
-			line += " " + isdbtLayerBSegCount;
+			line += ' ' + isdbtLayerBSegCount;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerBInterleaving.isEmpty()) {
-			line += " " + isdbtLayerBInterleaving;
+			line += ' ' + isdbtLayerBInterleaving;
 		} else {
 			line += " AUTO";
 		}
 		// Layer C
 		if (!isdbtLayerCModulation.isEmpty()) {
-			line += " " + isdbtLayerCModulation.replace("/", "").replace("QAMAUTO", "AUTO");
+			line += ' ' + isdbtLayerCModulation.remove("/").replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerCFec.isEmpty()) {
-			line += " " + isdbtLayerCFec;
+			line += ' ' + isdbtLayerCFec;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerCSegCount.isEmpty()) {
-			line += " " + isdbtLayerCSegCount;
+			line += ' ' + isdbtLayerCSegCount;
 		} else {
 			line += " AUTO";
 		}
 		if (!isdbtLayerCInterleaving.isEmpty()) {
-			line += " " + isdbtLayerCInterleaving;
+			line += ' ' + isdbtLayerCInterleaving;
 		} else {
 			line += " AUTO";
 		}

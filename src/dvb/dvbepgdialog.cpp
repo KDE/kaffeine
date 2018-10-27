@@ -89,10 +89,10 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 		}
 	}
 	langLayout->addWidget(languageBox);
-	connect(languageBox, SIGNAL(currentTextChanged(QString)),
-		this, SLOT(languageChanged(QString)));
-	connect(manager_->getEpgModel(), SIGNAL(languageAdded(const QString)),
-		this, SLOT(languageAdded(const QString)));
+	connect(languageBox, &QComboBox::currentTextChanged,
+		this, &DvbEpgDialog::languageChanged);
+	connect(manager_->getEpgModel(), &DvbEpgModel::languageAdded,
+		this, &DvbEpgDialog::languageAdded);
 
 	languageLabel = new QLabel(mainWidget);
 	langLayout->addWidget(languageLabel);
@@ -100,7 +100,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 	QString languageString;
 	if (IsoCodes::getLanguage(currentLanguage, &languageString))
 		languageLabel->setText(languageString);
-	else if (currentLanguage == "")
+	else if (currentLanguage.isEmpty())
 		languageLabel->setText(i18n("Any language"));
 	else
 		languageLabel->setText("");
@@ -188,10 +188,10 @@ void DvbEpgDialog::languageChanged(const QString lang)
 	QString languageString;
 	if (IsoCodes::getLanguage(currentLanguage, &languageString))
 		languageLabel->setText(languageString);
-	else if (currentLanguage == "")
+	else if (currentLanguage.isEmpty())
 		languageLabel->setText(i18n("Any language"));
 	else
-		languageLabel->setText("");
+		languageLabel->setText(QString());
 
 	epgTableModel->setLanguage(currentLanguage);
 	epgView->setCurrentIndex(epgTableModel->index(0, 0));

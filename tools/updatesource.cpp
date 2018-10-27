@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 			return 1;
 		}
 
-		if (path.endsWith(".png") || path.endsWith(".svgz")) {
+		if (path.endsWith(QLatin1String(".png")) || path.endsWith(QLatin1String(".svgz"))) {
 			continue;
 		}
 

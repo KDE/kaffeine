@@ -789,7 +789,7 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 		filename = filename.replace("%channel", recording.channel->name);
 		filename = filename.replace("%title", QString(recording.name));
 		filename = filename.replace(QLatin1Char('/'), QLatin1Char('_'));
-		if (filename == "") {
+		if (filename.isEmpty()) {
 			filename = QString(recording.name);
 		}
 

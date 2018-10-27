@@ -172,8 +172,8 @@ QString Playlist::toRelativeUrl(const QUrl &trackUrl) const
 		if (trackPath.startsWith(playlistPath)) {
 			trackPath.remove(0, index + 1);
 			QUrl absolute (playlistPath);
-			QStringList sBase = trackUrl.toString().split("/");
-			QStringList sAbsolute = absolute.toString().split("/");
+			QStringList sBase = trackUrl.toString().split('/');
+			QStringList sAbsolute = absolute.toString().split('/');
 			QStringList res = QStringList(sAbsolute);
 
 			if (trackUrl.isParentOf(absolute)) {

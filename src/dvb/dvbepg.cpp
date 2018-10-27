@@ -289,7 +289,7 @@ DvbSharedEpgEntry DvbEpgModel::addEntry(const DvbEpgEntry &entry)
 	}
 
 	if (hasPendingOperation) {
-		qCWarning(logEpg, "Iillegal recursive call");
+		qCWarning(logEpg, "Illegal recursive call");
 		return DvbSharedEpgEntry();
 	}
 
@@ -859,13 +859,13 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 			if (s == "")
 				s = braNibble1Str[nibble1];
 			if (s != "")
-				content += i18n(s) + "\n";
+				content += i18n(s) + '\n';
 		} else {
 			s = contentStr[nibble1][nibble2];
 			if (s == "")
 				s = nibble1Str[nibble1];
 			if (s != "")
-				content += i18n(s) + "\n";
+				content += i18n(s) + '\n';
 		}
 	}
 
@@ -926,7 +926,7 @@ QString DvbEpgFilter::getParental(DvbParentalRatingDescriptor &descriptor)
 					GenStr = i18n("drugs / ");
 				if (genre) {
 					GenStr.truncate(GenStr.size() - 2);
-					GenStr = " (" + GenStr + ")";
+					GenStr = " (" + GenStr + ')';
 				}
 
 				QString ratingStr = i18n(braRating[entry.rating()]);

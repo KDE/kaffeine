@@ -71,7 +71,7 @@ bool VlcMediaWidget::init()
 	if (argc) {
 		QString log = "Using libVLC with args:";
 		for (int i = 0; i < argc; i++)
-			log += " " + QLatin1String(argv[i]);
+			log += ' ' + QLatin1String(argv[i]);
 
 		qCDebug(logVlc, "%s", qPrintable(log));
 	}

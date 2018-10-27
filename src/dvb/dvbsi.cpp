@@ -481,7 +481,7 @@ QString AtscPsipText::convertText(const char *data, int size)
 			result +=
 				AtscHuffmanString::convertText(comp_string, num_bytes, comp_type);
 		} else {
-			qCInfo(logDvbSi, "Usupported compression / mode %d %d", comp_type, mode);
+			qCInfo(logDvbSi, "Unsupported compression / mode %d %d", comp_type, mode);
 		}
 
 		offset += num_bytes;
