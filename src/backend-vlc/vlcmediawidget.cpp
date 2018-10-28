@@ -355,6 +355,13 @@ void VlcMediaWidget::makePlay()
 	libvlc_media_release(vlcMedia);
 	vlcMedia = NULL;
 
+	/*
+	 * FIXME: This is mostly a boilerplate as, at least with vlc 3,
+	 * this function always return -1
+         */
+	if (urlIsAudioCd)
+		numTracks = libvlc_audio_get_track_count(vlcMediaPlayer);
+
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0)
 		return;
 }
@@ -368,6 +375,8 @@ void VlcMediaWidget::playDirection(int direction)
 	else
 		trackNumber++;
 
+	if (numTracks > 0 && trackNumber > numTracks)
+		trackNumber = numTracks;
 	if (trackNumber < 1)
 		trackNumber = 1;
 

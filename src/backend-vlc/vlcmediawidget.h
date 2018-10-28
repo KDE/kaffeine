@@ -100,7 +100,7 @@ private:
 	QMap<int, int> subtitleId;
 	QByteArray typeOfDevice;
 	bool urlIsAudioCd;
-	int trackNumber = 1;
+	int trackNumber = 1, numTracks;
 };
 
 #endif /* VLCMEDIAWIDGET_H */
