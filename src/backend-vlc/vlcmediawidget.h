@@ -70,7 +70,7 @@ public:
 	void showDvdMenu();
 	void dvdNavigate(int key);
 	void playDirection(int direction);
-	void makePlay();
+	int makePlay();
 
 	int updatePlaybackStatus();
 	void updateCurrentTotalTime();

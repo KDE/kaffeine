@@ -27,7 +27,6 @@
 #include <QMap>
 #include <vlc/vlc.h>
 #include <vlc/libvlc_version.h>
-#include <unistd.h>
 
 #include "../configuration.h"
 #include "vlcmediawidget.h"
@@ -327,7 +326,10 @@ void VlcMediaWidget::play(const MediaSource &source)
 	if (urlIsAudioCd)
 		libvlc_media_add_option(vlcMedia, "cdda-track=1");
 
-	makePlay();
+	if (makePlay() < 0) {
+		stop();
+		return;
+	}
 
 	setCursor(Qt::BlankCursor);
 	setCursor(Qt::ArrowCursor);
@@ -335,11 +337,11 @@ void VlcMediaWidget::play(const MediaSource &source)
 	setMouseTracking(true);
 }
 
-void VlcMediaWidget::makePlay()
+int VlcMediaWidget::makePlay()
 {
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
-		return;
+		return -1;
 	}
 
 	libvlc_event_manager_t *eventManager = libvlc_media_event_manager(vlcMedia);
@@ -362,13 +364,13 @@ void VlcMediaWidget::makePlay()
 	if (urlIsAudioCd)
 		numTracks = libvlc_audio_get_track_count(vlcMediaPlayer);
 
-	if (libvlc_media_player_play(vlcMediaPlayer) != 0)
-		return;
+	return libvlc_media_player_play(vlcMediaPlayer);
 }
 
 void VlcMediaWidget::playDirection(int direction)
 {
 	QString strBuf = "cdda-track=";
+	libvlc_state_t state;
 
 	if (direction == -1)
 		trackNumber--;
@@ -388,13 +390,16 @@ void VlcMediaWidget::playDirection(int direction)
 	vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
 	libvlc_media_add_option(vlcMedia, strBuf.toUtf8());
 
-	makePlay();
+	if (makePlay() < 0)
+		stop();
 
-	sleep(1);
+	do {
+		state = libvlc_media_player_get_state (vlcMediaPlayer);
+	} while(state != libvlc_Playing &&
+		state != libvlc_Error &&
+		state != libvlc_Ended );
 
-	int playerState = libvlc_media_player_get_state(vlcMediaPlayer);
-
-	if (playerState != libvlc_Playing)
+	if (state != libvlc_Playing)
 		stop();
 }
 
