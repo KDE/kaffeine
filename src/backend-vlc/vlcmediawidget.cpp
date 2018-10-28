@@ -371,6 +371,7 @@ void VlcMediaWidget::playDirection(int direction)
 {
 	QString strBuf = "cdda-track=";
 	libvlc_state_t state;
+	int oldTrackNumber = trackNumber;
 
 	if (direction == -1)
 		trackNumber--;
@@ -399,16 +400,15 @@ void VlcMediaWidget::playDirection(int direction)
 		state != libvlc_Error &&
 		state != libvlc_Ended );
 
-	if (state != libvlc_Playing)
+	if (state != libvlc_Playing) {
 		stop();
+		trackNumber = oldTrackNumber;
+	}
 }
 
 void VlcMediaWidget::stop()
 {
 	libvlc_media_player_stop(vlcMediaPlayer);
-
-	if (trackNumber != 1)
-		trackNumber = 1;
 
 	timer->stop();
 	setCursor(Qt::BlankCursor);
