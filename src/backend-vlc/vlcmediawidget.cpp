@@ -353,6 +353,7 @@ void VlcMediaWidget::makePlay()
 
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
 	libvlc_media_release(vlcMedia);
+	vlcMedia = NULL;
 
 	if (libvlc_media_player_play(vlcMediaPlayer) != 0)
 		return;
