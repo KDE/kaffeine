@@ -99,7 +99,7 @@ private:
 	bool mouseVisible;
 	QMap<int, int> subtitleId;
 	QByteArray typeOfDevice;
-	int numDevType;
+	bool urlIsAudioCd;
 	int trackNumber = 1;
 };
 

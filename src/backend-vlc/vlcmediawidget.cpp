@@ -281,7 +281,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 	playingDvd = false;
 
 	trackNumber = 1;
-	numDevType = 0;
+	urlIsAudioCd = false;
 
 	switch (source.getType()) {
 	case MediaSource::Url:
@@ -291,7 +291,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 		break;
 	case MediaSource::AudioCd:
-		numDevType=2;
+		urlIsAudioCd = true;
 
 		if (url.size() >= 7) {
 			url.replace(0, 4, "cdda");
@@ -324,7 +324,7 @@ void VlcMediaWidget::play(const MediaSource &source)
 	typeOfDevice = url.constData();
 
 	vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
-	if (numDevType == 2)
+	if (urlIsAudioCd)
 		libvlc_media_add_option(vlcMedia, "cdda-track=1");
 
 	makePlay();
@@ -493,7 +493,7 @@ bool VlcMediaWidget::jumpToPreviousChapter()
 {
 	int currentTitle = libvlc_media_player_get_title(vlcMediaPlayer);
 	int currentChapter = libvlc_media_player_get_chapter(vlcMediaPlayer);
-	if (numDevType == 2)
+	if (urlIsAudioCd)
 		playDirection(-1);
 	else
 		libvlc_media_player_previous_chapter(vlcMediaPlayer);
@@ -510,7 +510,7 @@ bool VlcMediaWidget::jumpToNextChapter()
 {
 	int currentTitle = libvlc_media_player_get_title(vlcMediaPlayer);
 	int currentChapter = libvlc_media_player_get_chapter(vlcMediaPlayer);
-	if (numDevType == 2)
+	if (urlIsAudioCd)
 		playDirection(1);
 	else
 		libvlc_media_player_next_chapter(vlcMediaPlayer);
