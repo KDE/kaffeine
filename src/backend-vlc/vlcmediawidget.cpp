@@ -361,22 +361,23 @@ void VlcMediaWidget::makePlay()
 
 void VlcMediaWidget::playDirection(int direction)
 {
-	char numBuff[256];
-	char strBuff[512] = "cdda-track=";
+	QString strBuf = "cdda-track=";
 
 	if (direction == -1)
 		trackNumber--;
 	else
 		trackNumber++;
 
-	sprintf(numBuff, "%d", trackNumber);
-	strcat(strBuff, numBuff);
+	if (trackNumber < 1)
+		trackNumber = 1;
+
+	strBuf += QString::number(trackNumber);
 
 	if (vlcMedia != NULL)
 		libvlc_media_release(vlcMedia);
 
 	vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
-	libvlc_media_add_option(vlcMedia, strBuff);
+	libvlc_media_add_option(vlcMedia, strBuf.toUtf8());
 
 	makePlay();
 
