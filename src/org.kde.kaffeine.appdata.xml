@@ -115,6 +115,14 @@
   <screenshots>
     <screenshot type="default">
       <caption>Kaffeine main window</caption>
+      <caption xml:lang="ca">Finestra principal del Kaffeine</caption>
+      <caption xml:lang="ca-valencia">Finestra principal del Kaffeine</caption>
+      <caption xml:lang="gl">Xanela principal de Kaffeine</caption>
+      <caption xml:lang="nl">Hoofdvenster van Kaffeine</caption>
+      <caption xml:lang="pt">Janela principal do Kaffeine</caption>
+      <caption xml:lang="sv">Huvudfönstret i Kaffeine</caption>
+      <caption xml:lang="uk">Головне вікно Kaffeine</caption>
+      <caption xml:lang="x-test">xxKaffeine main windowxx</caption>
       <image>http://kde.org/images/screenshots/kaffeine.png</image>
     </screenshot>
   </screenshots>
