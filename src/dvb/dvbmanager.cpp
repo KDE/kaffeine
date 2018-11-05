@@ -662,9 +662,11 @@ void DvbManager::readDeviceConfigs()
 					DvbConfigBase::ConfigurationMax);
 				config->lnbNumber = reader.readInt(QLatin1String("lnbNumber"));
 				config->currentLnb.alias = reader.readString(QLatin1String("lnb"));
-				config->latitude = reader.readDouble(QLatin1String("latitude"));
-				config->longitude = reader.readInt(QLatin1String("longitude"));
 				config->higherVoltage = reader.readInt(QLatin1String("higherVoltage"));
+				if (config->configuration == DvbConfigBase::UsalsRotor) {
+					config->latitude = reader.readDouble(QLatin1String("latitude"));
+					config->longitude = reader.readInt(QLatin1String("longitude"));
+				}
 			}
 
 			if (!reader.isValid()) {
@@ -712,9 +714,11 @@ void DvbManager::writeDeviceConfigs()
 				writer.write(QLatin1String("configuration"), config->configuration);
 				writer.write(QLatin1String("lnbNumber"), config->lnbNumber);
 				writer.write(QLatin1String("lnb"), config->currentLnb.alias);
-				writer.write(QLatin1String("latitude"), config->latitude);
-				writer.write(QLatin1String("longitude"), config->longitude);
 				writer.write(QLatin1String("higherVoltage"), config->higherVoltage);
+				if (config->configuration == DvbConfigBase::UsalsRotor) {
+					writer.write(QLatin1String("latitude"), config->latitude);
+					writer.write(QLatin1String("longitude"), config->longitude);
+				}
 			}
 		}
 	}
