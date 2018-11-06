@@ -991,6 +991,13 @@ void MediaWidget::aspectRatioChanged(QAction *action)
 	qCWarning(logMediaWidget, "internal error");
 }
 
+
+void MediaWidget::setAspectRatio(MediaWidget::AspectRatio aspectRatio)
+{
+	backend->setAspectRatio(aspectRatio);
+}
+
+
 void MediaWidget::setVideoSize()
 {
 	float scale = autoResizeFactor / 100.0;

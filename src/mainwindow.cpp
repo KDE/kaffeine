@@ -474,6 +474,7 @@ MainWindow::MainWindow(KAboutData *aboutData, QCommandLineParser *parser)
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("audiocd"), i18n("Play Audio CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("videocd"), i18n("Play Video CD")));
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dvd"), i18n("Play DVD")));
+	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("aspectratio"), "Force starting with an specific aspect ratio", QLatin1String("aspect ratio")));
 
 #if HAVE_DVB == 1
 	parser->addOption(QCommandLineOption(QStringList() << QLatin1String("dumpdvb"), i18nc("command line option", "Dump dvb data (debug option)")));
@@ -529,6 +530,33 @@ void MainWindow::parseArgs(const QString workingDirectory)
 		} /* case */
 		} /* switch */
 	}
+
+	if (parser->isSet("aspectratio")) {
+		MediaWidget::AspectRatio aspectRatio = MediaWidget::AspectRatioAuto;
+		QString aspect;
+
+		aspect = parser->value("aspectratio");
+
+		if (aspect == "1:1")
+			aspectRatio = MediaWidget::AspectRatio1_1;
+		else if (aspect == "4:3")
+			aspectRatio = MediaWidget::AspectRatio4_3;
+		else if (aspect == "5:4")
+			aspectRatio = MediaWidget::AspectRatio5_4;
+		else if (aspect == "16:9")
+			aspectRatio = MediaWidget::AspectRatio16_9;
+		else if (aspect == "16:10")
+			aspectRatio = MediaWidget::AspectRatio16_10;
+		else if (aspect == "2.21:1")
+			aspectRatio = MediaWidget::AspectRatio221_100;
+		else if (aspect == "2.35:1")
+			aspectRatio = MediaWidget::AspectRatio235_100;
+		else if (aspect == "2.39:1")
+			aspectRatio = MediaWidget::AspectRatio239_100;
+
+		mediaWidget->setAspectRatio(aspectRatio);
+	}
+
 
 #if HAVE_DVB == 1
 	if (parser->isSet("dumpdvb")) {

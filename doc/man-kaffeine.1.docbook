@@ -37,6 +37,7 @@
 <arg choice="opt"><option>-t, --alwaysontop</option></arg>
 <arg choice="opt"><option>--audiocd</option></arg>
 <arg choice="opt"><option>--videocd</option></arg>
+<arg choice="opt"><option>--aspectratio <replaceable>aspect_ratio</replaceable></option></arg>
 <arg choice="opt"><option>--dvd</option></arg>
 <arg choice="opt"><option>--dumpdvb</option></arg>
 <arg choice="opt"><option>--channel <replaceable>name</replaceable> / <replaceable>number</replaceable></option></arg>
@@ -155,6 +156,18 @@ the top/bottom or left position of the &kaffeine; window.</para>
 always on top of other windows. This option can be disabled later via
 the window manager, usually by clicking the title bar with the right
 mouse button and deselecting the always on top button box.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term><option>--aspectratio</option> <replaceable>aspect_ratio</replaceable></term>
+<listitem><para>Forces &kaffeine; to start with an specific aspect
+ratio, disabling the automatic mode. This can be useful on wide
+and ultra-wide monitors, where the user always want to see video
+in full screen mode using the maximum possible resolution.
+Valid values are: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2.35:1
+and 2.39:1. If an invalid value is passed, or if this option is not
+used, it will default to automatic mode.</para>
 </listitem>
 </varlistentry>
 

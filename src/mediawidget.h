@@ -130,6 +130,7 @@ public:
 	void setVolumeUnderMouse(int volume);
 	void toggleMuted();
 	void mediaSourceDestroyed(MediaSource *mediaSource);
+	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
 
 public slots:
 	void previous();
