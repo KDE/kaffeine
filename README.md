@@ -61,13 +61,22 @@ you need to install the needed tools with:
 
 And run the following commands:
 
-    git clone https://salsa.debian.org/qt-kde-team/extras/kaffeine.git deb-build
-    cd deb-build
-    rsync -ua --exclude '.git*' --exclude deb-build .. .
-    rm CMakeCache.txt
-    cat Changelog |grep Version|head -1|perl -ne 'if (m/Version\s*(\S+)/) { print "kaffeine ($1-1) unstable; urgency=medium\n\n  * New upstream release.\n" }' >debian/changelog
-    echo " -- root <root@localhost>  $(date -R)" >>debian/changelog
-    fakeroot debian/rules binary
+    rm -rf deb-build  # Just in case it were created before
+    git clone https://salsa.debian.org/qt-kde-team/extras/kaffeine.git deb-build && \
+    cd deb-build && \
+    rsync -ua --exclude '.git*' --exclude deb-build .. . && \
+    rm CMakeCache.txt && \
+    cat Changelog |grep Version|head -1|perl -ne 'if (m/Version\s*(\S+)/) { print "kaffeine ($1-1) unstable; urgency=medium\n\n  * New upstream release.\n" }' >debian/changelog && \
+    echo " -- root <root@localhost>  $(date -R)" >>debian/changelog && \
+    fakeroot debian/rules binary && \
+    cd ..
+
+This will produce both Debian/Ubuntu packages, like:
+	kaffeine_2.0.15-2_amd64.deb  kaffeine-dbgsym_2.0.15-2_amd64.ddeb
+
+Installing it is as simple as:
+
+	sudo dpkg -i kaffeine_*_amd64.deb
 
 Fedora
 ------
