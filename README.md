@@ -1,8 +1,8 @@
 Installing Kaffeine
 ===================
 
-Prerequisites
--------------
+Installing Prerequisites
+------------------------
 
 The following tools are needed to build Kaffeine:
 
@@ -51,32 +51,6 @@ And, to build the optional Kaffeine Handbook documentation:
 
 PS.: The above was tested with Debian SID and Ubuntu Xenial (16.04).
      Other versions may have different requirements.
-
-### Debian Packaging
-
-If you want to create a Debian package from Kaffeine's sources,
-you need to install the needed tools with:
-
-    apt-get install fakeroot dpkg-dev pkg-kde-tools debhelper
-
-And run the following commands:
-
-    rm -rf deb-build  # Just in case it were created before
-    git clone https://salsa.debian.org/qt-kde-team/extras/kaffeine.git deb-build && \
-    cd deb-build && \
-    rsync -ua --exclude '.git*' --exclude deb-build .. . && \
-    rm CMakeCache.txt && \
-    cat Changelog |grep Version|head -1|perl -ne 'if (m/Version\s*(\S+)/) { print "kaffeine ($1-1) unstable; urgency=medium\n\n  * New upstream release.\n" }' >debian/changelog && \
-    echo " -- root <root@localhost>  $(date -R)" >>debian/changelog && \
-    fakeroot debian/rules binary && \
-    cd ..
-
-This will produce both Debian/Ubuntu packages, like:
-	kaffeine_2.0.15-2_amd64.deb  kaffeine-dbgsym_2.0.15-2_amd64.ddeb
-
-Installing it is as simple as:
-
-	sudo dpkg -i kaffeine_*_amd64.deb
 
 Fedora
 ------
@@ -208,6 +182,34 @@ For further information look for generic KF5 / cmake instructions.
 The install should be done as root user with:
 
     # make install
+
+How to produce a Debian/Ubuntu package
+======================================
+
+If you want to create a Debian or Ubuntu package from Kaffeine's sources,
+you need to install the needed tools with:
+
+    apt-get install fakeroot dpkg-dev pkg-kde-tools debhelper
+
+And run the following commands:
+
+    rm -rf deb-build  # Just in case it were created before
+
+    git clone https://salsa.debian.org/qt-kde-team/extras/kaffeine.git deb-build && \
+    cd deb-build && \
+    rsync -ua --exclude '.git*' --exclude deb-build .. . && \
+    rm CMakeCache.txt && \
+    cat Changelog |grep Version|head -1|perl -ne 'if (m/Version\s*(\S+)/) { print "kaffeine ($1-1) unstable; urgency=medium\n\n  * New upstream release.\n" }' >debian/changelog && \
+    echo " -- root <root@localhost>  $(date -R)" >>debian/changelog && \
+    fakeroot debian/rules binary && \
+    cd ..
+
+This will produce both Debian/Ubuntu packages, like:
+	kaffeine_*_amd64.deb  kaffeine-dbgsym_*_amd64.ddeb
+
+Installing it is as simple as:
+
+	sudo dpkg -i kaffeine_*_amd64.deb
 
 Known video output issues
 =========================
