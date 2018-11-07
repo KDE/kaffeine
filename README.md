@@ -204,7 +204,8 @@ And run the following commands:
     fakeroot debian/rules binary && \
     cd ..
 
-This will produce both Debian/Ubuntu packages, like:
+This will produce both binary and debug packages, like:
+
 	kaffeine_*_amd64.deb  kaffeine-dbgsym_*_amd64.ddeb
 
 Installing it is as simple as:
