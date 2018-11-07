@@ -57,7 +57,7 @@ PS.: The above was tested with Debian SID and Ubuntu Xenial (16.04).
 If you want to create a Debian package from Kaffeine's sources,
 you need to install the needed tools with:
 
-    apt-get install fakeroot dpkg-dev pkg-kde-tools dephelper
+    apt-get install fakeroot dpkg-dev pkg-kde-tools debhelper
 
 And run the following commands:
 
