@@ -61,7 +61,7 @@ you need to install the needed tools with:
 
 And run the following commands:
 
-    git clone git://anonscm.debian.org/pkg-kde/kde-extras/kaffeine.git deb-build
+    git clone https://salsa.debian.org/qt-kde-team/extras/kaffeine.git deb-build
     cd deb-build
     rsync -ua --exclude '.git*' --exclude deb-build .. .
     rm CMakeCache.txt
