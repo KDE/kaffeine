@@ -118,6 +118,7 @@
       <caption xml:lang="ca">Finestra principal del Kaffeine</caption>
       <caption xml:lang="ca-valencia">Finestra principal del Kaffeine</caption>
       <caption xml:lang="de">Hauptfenster von Kaffeine</caption>
+      <caption xml:lang="en-GB">Kaffeine main window</caption>
       <caption xml:lang="es">Ventana principal de Kaffeine</caption>
       <caption xml:lang="gl">Xanela principal de Kaffeine</caption>
       <caption xml:lang="it">Finestra principale di Kaffeine</caption>
@@ -127,6 +128,7 @@
       <caption xml:lang="sv">Huvudfönstret i Kaffeine</caption>
       <caption xml:lang="uk">Головне вікно Kaffeine</caption>
       <caption xml:lang="x-test">xxKaffeine main windowxx</caption>
+      <caption xml:lang="zh-TW">Kaffeine 主視窗</caption>
       <image>http://kde.org/images/screenshots/kaffeine.png</image>
     </screenshot>
   </screenshots>
