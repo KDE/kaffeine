@@ -1212,14 +1212,33 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 			}
 		}
 
+
+		// Updated with Table 2-34 of ISO/IEC 13818-1:2018 / ITU-T H.222.0 2017
+		// and with https://www.wikiwand.com/en/Program-specific_information
+		// (as private IDs are not at ITU/ISO/IEC specs
+
 		switch (entry.streamType()) {
-		case 0x01: // MPEG1 video
-		case 0x02: // MPEG2 video
-		case 0x10: // MPEG4 video
-		case 0x1b: // H264 video
-		case 0x24: // HEVC (H265) video
+		case 0x01: // ISO/IEC 11172-2 (MPEG-1) video
+		case 0x02: // ITU-T H.262 (MPEG2) video or ISO/IEC 11172-2
+		case 0x10: // ISO/IEC 14496-2 (MPEG-4) video
+		case 0x1b: // ITU-T H.264 video
+		case 0x1e: // ISO/IEC 23002-3 (MPEG-4 auxiliary video)
+		case 0x1f: // ITU-T H.264 Annex G (MPEG-4 SVC sub-bitstream on AVC)
+		case 0x20: // ITU-T H.264 Annex H (MPEG-4 MVC sub-bitstream on AVC)
+		case 0x21: // ITU-T T.800 (JPEG 2000 video)
+		case 0x22: // ITU-T H.262 additional view for 3D
+		case 0x23: // ITU-T H.264 additional view for 3D
+		case 0x24: // ITU-T H.265 or HEVC sub-bitstream
+		case 0x25: // ITU-T H.265 Annex A - HEVC video stream or subset
+		case 0x26: // ITU-T H.264 Annex I - MVCD substream on HEVC
+		case 0x28: // ITU-T H.265 Annex G - HEVC enhancemeng sub-partition
+		case 0x29: // ITU-T H.265 Annex G - HEVC temporal enhancement
+		case 0x2a: // ITU-T H.265 Annex H - HEVC enhancement
+		case 0x2b: // ITU-T H.265 Annex H - HEVC temporal enhancement
 		case 0x42: // CAVS video
+		// User-private video streams
 		case 0x80: // MPEG-2 MOTO video
+		case 0xd1: // Dirac (Ultra HD video)
 			if (videoPid < 0) {
 				videoPid = entry.pid();
 			} else {
@@ -1228,15 +1247,20 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 
 			break;
 
-		case 0x03: // MPEG1 audio
-		case 0x04: // MPEG2 audio
-		case 0x07: // DTS and DTS-HD Audio
-		case 0x0f: // AAC audio
-		case 0x11: // AAC / LATM audio
+		case 0x03: // ISO/IEC 11172-3 (MPEG1) audio
+		case 0x04: // ISO/IEC 13818-3 (MPEG2) audio
+		case 0x07: // ISO/IEC 13522 MHEG - DTS and DTS-HD Audio
+		case 0x0f: // ISO/IEC 13818-7 Audio with ADTS transport syntax
+		case 0x11: // ISO/IEC 14496-3 Audio (AAC / LATM)
 		case 0x1c: // ISO/IEC 14496-3 Audio, without additional transport syntax
+		case 0x2d: // ISO/IEC 23008-3 Audio with MHAS – main stream
+		case 0x2e: // ISO/IEC 23008-3 Audio with MHAS – auxiliary stream
+		// User-private audio streams
 		case 0x81: // AC-3 audio (ATSC specific)
+		case 0x83: // TrueHD lossless audio
 		case 0x84: // SDDS
 		case 0x85: // DTS on HDMV
+		case 0x86: // DTS 8 channel
 		case 0x87: // enhanced AC-3 audio (ATSC specific)
 		case 0x8a: // DTS
 		case 0x91: // A52 VLS
