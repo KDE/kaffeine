@@ -59,7 +59,7 @@ public:
 		FecAuto = 9
 	};
 
-private:
+protected:
 	TransmissionType transmissionType : 8;
 };
 
