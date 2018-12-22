@@ -20,6 +20,8 @@
 
 #include "../log.h"
 
+#include <errno.h>
+
 #include <QCoreApplication>
 #include <QDataStream>
 #include <QDir>
