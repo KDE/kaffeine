@@ -63,7 +63,7 @@ bool VlcMediaWidget::init()
 
 	if (vlcInstance == NULL) {
 		qFatal("Cannot create vlc instance %s", qPrintable(libvlc_errmsg()));
-		delete argv;
+		delete[] argv;
 		return false;
 	}
 
@@ -74,7 +74,7 @@ bool VlcMediaWidget::init()
 
 		qCDebug(logVlc, "%s", qPrintable(log));
 	}
-	delete argv;
+	delete[] argv;
 
 	vlcMediaPlayer = libvlc_media_player_new(vlcInstance);
 
