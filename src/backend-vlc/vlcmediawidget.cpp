@@ -25,7 +25,6 @@
 #include <QMouseEvent>
 #include <QTimer>
 #include <QMap>
-#include <vlc/vlc.h>
 #include <vlc/libvlc_version.h>
 
 #include "../configuration.h"

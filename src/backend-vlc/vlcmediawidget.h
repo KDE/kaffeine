@@ -21,12 +21,10 @@
 #ifndef VLCMEDIAWIDGET_H
 #define VLCMEDIAWIDGET_H
 
+#include <vlc/vlc.h>
+
 #include "../abstractmediawidget.h"
 
-class libvlc_event_t;
-class libvlc_instance_t;
-class libvlc_media_t;
-class libvlc_media_player_t;
 class QTimer;
 
 class VlcMediaWidget : public AbstractMediaWidget
