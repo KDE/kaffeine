@@ -101,6 +101,11 @@ namespace IsoCodes
 	{
 		static bool first = true;
 
+		if (code == "QAA") {
+			*language = i18n("Original Audio");
+			return true;
+		}
+
 		if (first) {
 			load(iso639_2_codes,
 			     QString("xml/iso-codes/iso_639-2.xml"),
