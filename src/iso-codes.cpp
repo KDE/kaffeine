@@ -118,6 +118,21 @@ namespace IsoCodes
 
 		QHash<QString, QString>::ConstIterator it = iso639_2_codes.constFind(code);
 		if (it == iso639_2_codes.constEnd()) {
+			/*
+			 * The ETSI EN 300 468 Annex F spec defines the
+			 * original audio soundtrack code to be "QAA". Yet,
+			 * TV bundle providers could use something else.
+			 *
+			 * At least here, my provider actually uses "ORG"
+			 * instead. Currently, this is an unused ISO 639
+			 * code, so we can safely accept it as well,
+			 * at least as a fallback code while ISO doesn't
+			 * define it.
+			 */
+			if (code == "ORG") {
+				*language = i18n("Original Audio");
+				return true;
+			}
 			return false;
 		}
 
