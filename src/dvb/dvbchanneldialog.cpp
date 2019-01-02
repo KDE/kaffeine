@@ -925,9 +925,6 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), row, 0);
 	audioStreamBox = new QComboBox(groupBox);
 	audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
-	if (audioPids.size() <= 1) {
-		audioStreamBox->setEnabled(false);
-	}
 	gridLayout->addWidget(audioStreamBox, row++, 1);
 
 	gridLayout->addWidget(new QLabel(i18n("Scrambled:")), row, 0);
@@ -959,6 +956,10 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 		audioStreamBox->addItem(text);
 		audioPids.append(it.first);
 	}
+	if (audioStreamBox->count() <= 1)
+		audioStreamBox->setEnabled(false);
+	else
+		audioStreamBox->setEnabled(true);
 
 	if (pmtParser.videoPid >= 0) {
 		gridLayout->addWidget(new QLabel(i18n("Video PID:")), row, 0);
