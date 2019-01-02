@@ -102,7 +102,7 @@ namespace IsoCodes
 		static bool first = true;
 
 		if (code == "QAA") {
-			*language = i18n("Original Audio");
+			*language = i18n("Original Language");
 			return true;
 		}
 
@@ -130,7 +130,7 @@ namespace IsoCodes
 			 * define it.
 			 */
 			if (code == "ORG") {
-				*language = i18n("Original Audio");
+				*language = i18n("Original Language");
 				return true;
 			}
 			return false;
