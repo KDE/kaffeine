@@ -97,9 +97,11 @@ namespace IsoCodes
 	*/
 	static QHash<QString, QString> iso639_2_codes;
 
-	bool getLanguage(const QString &code, QString *language)
+	bool getLanguage(const QString &iso_code, QString *language)
 	{
 		static bool first = true;
+
+		QString code = iso_code.toUpper();
 
 		if (code == "QAA") {
 			*language = i18n("Original Language");

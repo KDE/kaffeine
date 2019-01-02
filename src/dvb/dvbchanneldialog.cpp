@@ -37,6 +37,7 @@
 #include "dvbchanneldialog.h"
 #include "dvbchanneldialog_p.h"
 #include "dvbsi.h"
+#include "../iso-codes.h"
 
 bool DvbChannelLessThan::operator()(const DvbSharedChannel &x, const DvbSharedChannel &y) const
 {
@@ -947,7 +948,12 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 		QString text = QString::number(it.first);
 
 		if (!it.second.isEmpty()) {
-			text = text + QLatin1String(" (") + it.second + QLatin1Char(')');
+			QString languageString;
+
+			if (!IsoCodes::getLanguage(it.second, &languageString))
+				languageString = it.second;
+
+			text = text + QLatin1String(" (") + languageString + QLatin1Char(')');
 		}
 
 		audioStreamBox->addItem(text);
@@ -965,7 +971,13 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 
 	for (int i = 0; i < pmtParser.subtitlePids.size(); ++i) {
 		const QPair<int, QString> &it = pmtParser.subtitlePids.at(i);
-		gridLayout->addWidget(new QLabel(QString(QLatin1String("%1 (%2)")).arg(it.first).arg(it.second)),
+		QString languageString;
+
+		if (!IsoCodes::getLanguage(it.second, &languageString))
+			languageString = it.second;
+
+
+		gridLayout->addWidget(new QLabel(QString(QLatin1String("%1 (%2)")).arg(it.first).arg(languageString)),
 			row++, 1);
 	}
 
