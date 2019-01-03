@@ -928,7 +928,6 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	gridLayout->addWidget(new QLabel(i18n("Audio channel:")), row, 0);
 	if (pmtParser.audioPids.count() > 1) {
 		audioStreamBox = new QComboBox(groupBox);
-		audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
 
 		for (int i = 0; i < pmtParser.audioPids.size(); ++i) {
 			const QPair<int, QString> &it = pmtParser.audioPids.at(i);
@@ -946,6 +945,7 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 			audioStreamBox->addItem(text);
 			audioPids.append(it.first);
 		}
+		audioStreamBox->setCurrentIndex(audioPids.indexOf(channel->audioPid));
 		gridLayout->addWidget(audioStreamBox, row++, 1);
 	} else {
 		const QPair<int, QString> &it = pmtParser.audioPids.at(0);
