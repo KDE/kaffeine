@@ -705,6 +705,8 @@ DvbChannelEditor::DvbChannelEditor(DvbChannelTableModel *model_, const DvbShared
 	QBoxLayout *mainLayout = new QVBoxLayout(widget);
 	QGridLayout *gridLayout = new QGridLayout();
 
+	audioStreamBox = NULL;
+
 	nameEdit = new QLineEdit(widget);
 	nameEdit->setText(channel->name);
 	gridLayout->addWidget(nameEdit, 0, 1);
