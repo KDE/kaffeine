@@ -160,6 +160,8 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	channelView->setSortingEnabled(true);
 	channelView->addEditAction();
 	connect(channelView, SIGNAL(activated(QModelIndex)), this, SLOT(playChannel(QModelIndex)));
+	connect(channelView, SIGNAL(channelPidsUpdated(DvbSharedChannel)), this, SLOT(channelPidsUpdated(DvbSharedChannel)));
+
 	channelProxyModel->setChannelModel(manager->getChannelModel());
 	connect(lineEdit, SIGNAL(textChanged(QString)),
 		channelProxyModel, SLOT(setFilter(QString)));
@@ -273,6 +275,59 @@ void DvbTab::playLastChannel()
 		playChannel(channel, channelProxyModel->find(channel));
 	}
 }
+
+void DvbTab::channelPidsUpdated(const DvbSharedChannel &updatedChannel)
+{
+	DvbSharedChannel channel = manager->getChannelModel()->findChannelByName(lastChannel);
+	MediaWidget::PlaybackStatus status;
+
+	/*
+	 * This slot is called when a channel is played and
+	 * a channel configuration that would require to reload
+	 * the Digital TV filtering was changed at the editor,
+	 * e. g. if a PID has changed.
+	 * The common reason is if someone wants to change the
+	 * audio PID, in order to select a different language or
+	 * enable/disable narration.
+	 */
+
+	// Do nothing if the edited channel is not the active one
+	if (updatedChannel != channel)
+		return;
+
+	status = mediaWidget->getPlaybackStatus();
+
+	// Ignore channels that are not being played
+	if (status == MediaWidget::Idle)
+		return;
+
+	// Re-run the channel play, in order to update the
+	// PID filters
+	playLastChannel();
+
+#if 0
+	/*
+	 * TODO: ideally, if the channel is paused, editing it should
+	 * preserve it. However, togglePause() will only work after
+	 * the channel starts to play, with takes some time. So,
+	 * the code below won't work.
+	 * Also, now the old pause status data is not valid anymore,
+	 * as it contains a different PID, so we need to flush the
+	 * data anyway - or implement a way more complex logic that
+	 * would be handling a paused off-line file, and a new
+	 * on-line paused file.
+	 *
+	 * So, for now, let's just assume that changing the PIDs
+	 * while pausing a video would flush the old pause stuff
+	 * and un-pause the channel.
+	 */
+	if (status == MediaWidget::Paused) {
+		qInfo() << "Toggling pause";
+		mediaWidget->togglePause();
+	}
+#endif
+}
+
 
 void DvbTab::toggleOsd()
 {

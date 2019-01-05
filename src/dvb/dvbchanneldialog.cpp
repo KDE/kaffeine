@@ -323,6 +323,11 @@ void DvbChannelView::checkChannelDragAndDrop(bool *ok)
 	}
 }
 
+void DvbChannelView::channelPidsChanged(const DvbSharedChannel &channel)
+{
+	emit channelPidsUpdated(channel);
+}
+
 void DvbChannelView::editChannel()
 {
 	QModelIndex index = currentIndex();
@@ -331,6 +336,8 @@ void DvbChannelView::editChannel()
 		QDialog *dialog = new DvbChannelEditor(tableModel, tableModel->value(index), this);
 		dialog->setAttribute(Qt::WA_DeleteOnClose, true);
 		dialog->setModal(true);
+		connect(dialog, SIGNAL(channelPidsChanged(DvbSharedChannel)),
+			this, SLOT(channelPidsChanged(DvbSharedChannel)));
 		dialog->show();
 	}
 }
@@ -1024,6 +1031,8 @@ DvbChannelEditor::~DvbChannelEditor()
 void DvbChannelEditor::accept()
 {
 	DvbChannel updatedChannel = *channel;
+	int oldAudioPid = channel->audioPid;
+
 	updatedChannel.name = nameEdit->text();
 	updatedChannel.number = numberBox->value();
 	updatedChannel.networkId = networkIdBox->value();
@@ -1036,5 +1045,15 @@ void DvbChannelEditor::accept()
 
 	updatedChannel.isScrambled = scrambledBox->isChecked();
 	model->getChannelModel()->updateChannel(channel, updatedChannel);
+
+	/*
+	 * If a channel is being played, a change at a PID should
+	 * be reflected at the played channel.
+	 *
+	 * TODO: add support for videos with multiple PIDs
+	 */
+	if (updatedChannel.audioPid != oldAudioPid)
+		emit channelPidsChanged(channel);
+
 	QDialog::accept();
 }

@@ -147,6 +147,12 @@ public slots:
 	void removeChannel();
 	void removeAllChannels();
 
+signals:
+        void channelPidsUpdated(const DvbSharedChannel &channel);
+
+private slots:
+	void channelPidsChanged(const DvbSharedChannel &channel);
+
 private:
 	void setModel(QAbstractItemModel *) { }
 

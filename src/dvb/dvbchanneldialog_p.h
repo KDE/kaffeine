@@ -34,6 +34,7 @@ Q_DECLARE_METATYPE(QList<DvbSharedChannel>)
 
 class DvbChannelEditor : public QDialog
 {
+Q_OBJECT
 public:
 	DvbChannelEditor(DvbChannelTableModel *model_, const DvbSharedChannel &channel_,
 		QWidget *parent);
@@ -52,6 +53,9 @@ private:
 	QComboBox *audioStreamBox;
 	QList<int> audioPids;
 	QCheckBox *scrambledBox;
+
+signals:
+	void channelPidsChanged(const DvbSharedChannel &channel);
 };
 
 #endif /* DVBCHANNELDIALOG_P_H */

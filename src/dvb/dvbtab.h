@@ -79,6 +79,7 @@ private slots:
 	void previousChannel();
 	void nextChannel();
 	void cleanTimeShiftFiles();
+	void channelPidsUpdated(const DvbSharedChannel &updatedChannel);
 
 private:
 	void activate();
