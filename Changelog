@@ -1,6 +1,26 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.16 (2019-01-14):
+-   Immediately apply the new audio language if the user changes it while
+    a channel is being playing;
+-   Fix audio language selection issues;
+-   Add support for "Original Language" for audio and sub-title descriptors;
+-   Add some new PMT stream_type identifiers in order to allow supporting
+    newer audio and video encoding types;
+-   Add support for High DPI pixel maps;
+-   Add a command line option to force an specific aspect ratio;
+-   Only read/write longitude/latitude from config files for USALS
+    satellite configurations;
+-   Add support for parallel instant records;
+-   Fix several issues related to audio CD playing;
+-   Update build instructions for Debian/Ubuntu and Fedora at README.md;
+-   Fix handling of command line arguments and describe the ones that
+    are mutually exclusive at the docs;
+-   Fix compilation issues and clean warnings when built with Clang;
+-   Fix compilation issues with qt5.11-rc2 and with FreeBSD;
+-   Some code cleanups and typo fixes.
+
 Version 2.0.15 (2018-05-01):
 
 -   Fix logic that handles ATSC EIT entries (regression fix);
