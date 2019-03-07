@@ -31,7 +31,7 @@
 #include "vlcmediawidget.h"
 
 VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
-	vlcMediaPlayer(NULL), playingDvd(false)
+	vlcMediaPlayer(NULL), playingDvd(false), urlIsAudioCd(false), trackNumber(0)
 {
 }
 
