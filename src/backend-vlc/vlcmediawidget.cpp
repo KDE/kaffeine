@@ -118,6 +118,11 @@ bool VlcMediaWidget::init()
 
 VlcMediaWidget::~VlcMediaWidget()
 {
+	if (timer != NULL) {
+		timer->stop();
+		delete timer;
+	}
+
 	if (vlcMediaPlayer != NULL) {
 		libvlc_media_player_release(vlcMediaPlayer);
 	}
