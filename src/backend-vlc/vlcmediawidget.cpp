@@ -30,8 +30,10 @@
 #include "../configuration.h"
 #include "vlcmediawidget.h"
 
-VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent), vlcInstance(NULL),
-	vlcMediaPlayer(NULL), playingDvd(false), urlIsAudioCd(false), trackNumber(0)
+VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
+    timer(NULL), vlcInstance(NULL), vlcMedia(NULL), vlcMediaPlayer(NULL),
+    isPaused(false), playingDvd(false), urlIsAudioCd(false),
+    typeOfDevice(""), trackNumber(1), numTracks(1)
 {
 }
 

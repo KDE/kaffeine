@@ -33,8 +33,6 @@ class VlcMediaWidget : public AbstractMediaWidget
 private:
 	explicit VlcMediaWidget(QWidget *parent);
 	bool init();
-	QTimer *timer;
-	bool isPaused;
 
 private slots:
 	void hideMouse();
@@ -90,15 +88,16 @@ private:
 
 	static void vlcEventHandler(const libvlc_event_t *event, void *instance);
 
+	QTimer *timer;
 	libvlc_instance_t *vlcInstance;
 	libvlc_media_t *vlcMedia;
 	libvlc_media_player_t *vlcMediaPlayer;
+	bool isPaused;
 	bool playingDvd;
-	bool mouseVisible;
+	bool urlIsAudioCd;
 	QMap<int, int> subtitleId;
 	QByteArray typeOfDevice;
-	bool urlIsAudioCd;
-	int trackNumber = 1, numTracks;
+	int trackNumber, numTracks;
 };
 
 #endif /* VLCMEDIAWIDGET_H */
