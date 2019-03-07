@@ -437,8 +437,12 @@ void MainWindow::close()
 	dvbTab->mayCloseApplication(&ok, mediaWidget);
 #endif /* HAVE_DVB == 1 */
 
-	if (ok)
+	if (ok) {
+		writeSettings();
+		mediaWidget->stop();
+		QMainWindow::close();
 		QCoreApplication::exit(0);
+	}
 }
 
 void MainWindow::readSettings()
@@ -832,8 +836,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	if (!ok) {
 		event->ignore();
 	} else {
-		writeSettings();
-		QMainWindow::closeEvent(event);
+		MainWindow::close();
 	}
 }
 
