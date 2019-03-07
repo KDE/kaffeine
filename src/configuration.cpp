@@ -51,6 +51,14 @@ Configuration::~Configuration()
 {
 }
 
+void Configuration::detach()
+{
+	if (globalInstance) {
+		delete globalInstance;
+		globalInstance = NULL;
+	}
+}
+
 Configuration *Configuration::instance()
 {
 	if (globalInstance == NULL) {

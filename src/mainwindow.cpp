@@ -441,6 +441,7 @@ void MainWindow::close()
 		writeSettings();
 		mediaWidget->stop();
 		QMainWindow::close();
+		Configuration::detach();
 		QCoreApplication::exit(0);
 	}
 }

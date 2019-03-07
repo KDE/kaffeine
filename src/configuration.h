@@ -32,6 +32,7 @@ private:
 
 public:
 	static Configuration *instance();
+	static void detach();
 
 	enum StartupDisplayMode {
 		StartupNormalMode = 0,
