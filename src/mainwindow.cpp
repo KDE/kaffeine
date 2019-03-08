@@ -290,7 +290,7 @@ void MainWindow::run()
 
 	// control bar
 
-	controlBar = new QToolBar(QLatin1String("control_bar"));
+	controlBar = new QToolBar(QLatin1String("control_bar"), this);
 	this->addToolBar(Qt::BottomToolBarArea, controlBar);
 
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
