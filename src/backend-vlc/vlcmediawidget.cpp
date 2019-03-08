@@ -817,7 +817,7 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	case libvlc_MediaPlayerESDeleted:
 #endif
 	case libvlc_MediaMetaChanged:
-		pendingUpdatesToBeAdded = Metadata | Subtitles;
+		pendingUpdatesToBeAdded = Metadata | Subtitles | AudioStreams;
 		break;
 	case libvlc_MediaPlayerEncounteredError:
 		pendingUpdatesToBeAdded = PlaybackStatus;
