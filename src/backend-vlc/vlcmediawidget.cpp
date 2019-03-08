@@ -30,6 +30,141 @@
 #include "../configuration.h"
 #include "vlcmediawidget.h"
 
+const char *vlcEventName(int event)
+{
+	switch (event) {
+	case libvlc_MediaMetaChanged:
+		return "MediaMetaChanged";
+	case libvlc_MediaPlayerEncounteredError:
+		return "MediaPlayerEncounteredError";
+	case libvlc_MediaPlayerEndReached:
+		return "MediaPlayerEndReached";
+	case libvlc_MediaPlayerLengthChanged:
+		return "MediaPlayerLengthChanged";
+	case libvlc_MediaPlayerSeekableChanged:
+		return "MediaPlayerSeekableChanged";
+	case libvlc_MediaPlayerStopped:
+		return "MediaPlayerStopped";
+	case libvlc_MediaPlayerTimeChanged:
+		return "MediaPlayerTimeChanged";
+	case libvlc_MediaSubItemAdded:
+		return "MediaSubItemAdded";
+	case libvlc_MediaDurationChanged:
+		return "MediaDurationChanged";
+	case libvlc_MediaParsedChanged:
+		return "MediaParsedChanged";
+	case libvlc_MediaFreed:
+		return "MediaFreed";
+	case libvlc_MediaStateChanged:
+		return "MediaStateChanged";
+	case libvlc_MediaSubItemTreeAdded:
+		return "MediaSubItemTreeAdded";
+	case libvlc_MediaPlayerMediaChanged:
+		return "MediaPlayerMediaChanged";
+	case libvlc_MediaPlayerNothingSpecial:
+		return "MediaPlayerNothingSpecial";
+	case libvlc_MediaPlayerOpening:
+		return "MediaPlayerOpening";
+	case libvlc_MediaPlayerBuffering:
+		return "MediaPlayerBuffering";
+	case libvlc_MediaPlayerPlaying:
+		return "MediaPlayerPlaying";
+	case libvlc_MediaPlayerPaused:
+		return "MediaPlayerPaused";
+	case libvlc_MediaPlayerForward:
+		return "MediaPlayerForward";
+	case libvlc_MediaPlayerBackward:
+		return "MediaPlayerBackward";
+	case libvlc_MediaPlayerPositionChanged:
+		return "MediaPlayerPositionChanged";
+	case libvlc_MediaPlayerPausableChanged:
+		return "MediaPlayerPausableChanged";
+	case libvlc_MediaPlayerTitleChanged:
+		return "MediaPlayerTitleChanged";
+	case libvlc_MediaPlayerSnapshotTaken:
+		return "MediaPlayerSnapshotTaken";
+	case libvlc_MediaPlayerVout:
+		return "MediaPlayerVout";
+	case libvlc_MediaPlayerScrambledChanged:
+		return "MediaPlayerScrambledChanged";
+	case libvlc_MediaPlayerUncorked:
+		return "MediaPlayerUncorked";
+	case libvlc_MediaPlayerMuted:
+		return "MediaPlayerMuted";
+	case libvlc_MediaListItemAdded:
+		return "MediaListItemAdded";
+	case libvlc_MediaListWillAddItem:
+		return "MediaListWillAddItem";
+	case libvlc_MediaListItemDeleted:
+		return "MediaListItemDeleted";
+	case libvlc_MediaListWillDeleteItem:
+		return "MediaListWillDeleteItem";
+	case libvlc_MediaListViewItemAdded:
+		return "MediaListViewItemAdded";
+	case libvlc_MediaListViewWillAddItem:
+		return "MediaListViewWillAddItem";
+	case libvlc_MediaListViewItemDeleted:
+		return "MediaListViewItemDeleted";
+	case libvlc_MediaListViewWillDeleteItem:
+		return "MediaListViewWillDeleteItem";
+	case libvlc_MediaListPlayerPlayed:
+		return "MediaListPlayerPlayed";
+	case libvlc_MediaListPlayerNextItemSet:
+		return "MediaListPlayerNextItemSet";
+	case libvlc_MediaListPlayerStopped:
+		return "MediaListPlayerStopped";
+	case libvlc_RendererDiscovererItemAdded:
+		return "RendererDiscovererItemAdded";
+	case libvlc_RendererDiscovererItemDeleted:
+		return "RendererDiscovererItemDeleted";
+	case libvlc_VlmMediaAdded:
+		return "VlmMediaAdded";
+	case libvlc_VlmMediaRemoved:
+		return "VlmMediaRemoved";
+	case libvlc_VlmMediaChanged:
+		return "VlmMediaChanged";
+	case libvlc_VlmMediaInstanceStarted:
+		return "VlmMediaInstanceStarted";
+	case libvlc_VlmMediaInstanceStopped:
+		return "VlmMediaInstanceStopped";
+	case libvlc_VlmMediaInstanceStatusInit:
+		return "VlmMediaInstanceStatusInit";
+	case libvlc_VlmMediaInstanceStatusOpening:
+		return "VlmMediaInstanceStatusOpening";
+	case libvlc_VlmMediaInstanceStatusPlaying:
+		return "VlmMediaInstanceStatusPlaying";
+	case libvlc_VlmMediaInstanceStatusPause:
+		return "VlmMediaInstanceStatusPause";
+	case libvlc_VlmMediaInstanceStatusEnd:
+		return "VlmMediaInstanceStatusEnd";
+	case libvlc_VlmMediaInstanceStatusError:
+		return "VlmMediaInstanceStatusError";
+#if LIBVLC_VERSION_MAJOR > 2
+	case libvlc_MediaPlayerAudioVolume:
+		return "MediaPlayerAudioVolume";
+	case libvlc_MediaPlayerAudioDevice:
+		return "MediaPlayerAudioDevice";
+	case libvlc_MediaListEndReached:
+		return "MediaListEndReached";
+	case libvlc_MediaPlayerChapterChanged:
+		return "MediaPlayerChapterChanged";
+	case libvlc_MediaPlayerESAdded:
+		return "MediaPlayerESAdded";
+	case libvlc_MediaPlayerESDeleted:
+		return "MediaPlayerESDeleted";
+	case libvlc_MediaPlayerESSelected:
+		return "MediaPlayerESSelected";
+	case libvlc_MediaPlayerCorked:
+		return "MediaPlayerCorked";
+	case libvlc_MediaPlayerUnmuted:
+		return "MediaPlayerUnmuted";
+#endif
+
+	default:
+		return "Unknown";
+	}
+}
+
 VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
     timer(NULL), vlcInstance(NULL), vlcMedia(NULL), vlcMediaPlayer(NULL),
     isPaused(false), playingDvd(false), urlIsAudioCd(false),
@@ -843,7 +978,8 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	if (pendingUpdatesToBeAdded != 0) {
 		addPendingUpdates(pendingUpdatesToBeAdded);
 	} else {
-		qCWarning(logMediaWidget, "Unknown libVLC event type %d", event->type);
+		qCWarning(logMediaWidget, "Unhandled event %s (%d)",
+			  vlcEventName(event->type), event->type);
 	}
 }
 
