@@ -118,6 +118,11 @@ bool VlcMediaWidget::init()
 
 VlcMediaWidget::~VlcMediaWidget()
 {
+	metadata.clear();
+	audioStreams.clear();
+	subtitles.clear();
+	subtitleId.clear();
+
 	if (timer != NULL) {
 		timer->stop();
 		delete timer;
@@ -448,6 +453,7 @@ void VlcMediaWidget::setCurrentAudioStream(int _currentAudioStream)
 
 void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 {
+	libvlc_track_description_t *tr, *track;
 	int requestedSubtitle = -1;
 
 	QMap<int, int>::const_iterator i = subtitleId.constBegin();
@@ -464,7 +470,9 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 	libvlc_video_set_spu(vlcMediaPlayer, requestedSubtitle);
 
 	/* Print what it was actually selected */
-	libvlc_track_description_t *track = libvlc_video_get_spu_description(vlcMediaPlayer);
+
+	tr = libvlc_video_get_spu_description(vlcMediaPlayer);
+	track = tr;
 	while (track != NULL) {
 		QString subtitle = QString::fromUtf8(track->psz_name);
 
@@ -476,7 +484,7 @@ void VlcMediaWidget::setCurrentSubtitle(int currentSubtitle)
 			qCDebug(logVlc, "Subtitle set to id %d: %s", track->i_id, qPrintable(subtitle));
 		track = track->p_next;
 	}
-	libvlc_track_description_list_release(track);
+	libvlc_track_description_list_release(tr);
 
 }
 
@@ -646,7 +654,10 @@ void VlcMediaWidget::updateMetadata()
 void VlcMediaWidget::updateAudioStreams()
 {
 	audioStreams.clear();
-	libvlc_track_description_t *track = libvlc_audio_get_track_description(vlcMediaPlayer);
+	libvlc_track_description_t *tr, *track;
+
+	tr = libvlc_audio_get_track_description(vlcMediaPlayer);
+	track = tr;
 
 	if (track != NULL) {
 		// skip the 'deactivate' audio channel
@@ -673,6 +684,7 @@ void VlcMediaWidget::updateAudioStreams()
 		audioStreams.append(audioStream);
 		track = track->p_next;
 	}
+	libvlc_track_description_list_release(tr);
 
 	// skip the 'deactivate' audio channel
 	currentAudioStream = (libvlc_audio_get_track(vlcMediaPlayer) - 1);
@@ -680,11 +692,15 @@ void VlcMediaWidget::updateAudioStreams()
 
 void VlcMediaWidget::updateSubtitles()
 {
-	subtitles.clear();
-	libvlc_track_description_t *track = libvlc_video_get_spu_description(vlcMediaPlayer);
+	libvlc_track_description_t *tr, *track;
 	int i = 0;
 
+	subtitles.clear();
 	subtitleId.clear();
+
+	tr = libvlc_video_get_spu_description(vlcMediaPlayer);
+	track = tr;
+
 	if (track != NULL) {
 		// skip the 'deactivate' subtitle
 		track = track->p_next;
@@ -705,7 +721,7 @@ void VlcMediaWidget::updateSubtitles()
 		qCDebug(logVlc, "Got subtitle id#%d: %s", track->i_id, qPrintable(subtitle));
 		track = track->p_next;
 	}
-	libvlc_track_description_list_release(track);
+	libvlc_track_description_list_release(tr);
 
 	// skip the 'deactivate' subtitle
 	currentSubtitle = subtitleId.value(libvlc_video_get_spu(vlcMediaPlayer), -1);
