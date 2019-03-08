@@ -170,6 +170,22 @@ VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
     isPaused(false), playingDvd(false), urlIsAudioCd(false),
     typeOfDevice(""), trackNumber(1), numTracks(1)
 {
+	libvlc_event_e events[] = {
+		libvlc_MediaMetaChanged,
+		libvlc_MediaPlayerEncounteredError,
+		libvlc_MediaPlayerEndReached,
+		libvlc_MediaPlayerLengthChanged,
+		libvlc_MediaPlayerSeekableChanged,
+		libvlc_MediaPlayerStopped,
+#if LIBVLC_VERSION_MAJOR > 2
+		libvlc_MediaPlayerESAdded,
+		libvlc_MediaPlayerESDeleted,
+#endif
+		libvlc_MediaPlayerTimeChanged,
+	};
+
+	for (uint i = 0; i < (sizeof(events) / sizeof(events[0])); ++i)
+		eventType.append(events[i]);
 }
 
 bool VlcMediaWidget::init()
@@ -220,21 +236,10 @@ bool VlcMediaWidget::init()
 		return false;
 	}
 
-	libvlc_event_manager_t *eventManager = libvlc_media_player_event_manager(vlcMediaPlayer);
-	libvlc_event_e eventTypes[] = { libvlc_MediaPlayerEncounteredError,
-		libvlc_MediaPlayerEndReached, libvlc_MediaPlayerLengthChanged,
-		libvlc_MediaPlayerSeekableChanged, libvlc_MediaPlayerStopped,
-#if LIBVLC_VERSION_MAJOR > 2
-		libvlc_MediaPlayerESAdded, libvlc_MediaPlayerESDeleted,
-#endif
-		libvlc_MediaPlayerTimeChanged };
+	eventManager = libvlc_media_player_event_manager(vlcMediaPlayer);
 
-	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
-		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qCCritical(logMediaWidget, "Cannot attach event handler %d", eventTypes[i]);
-			return false;
-		}
-	}
+	if (!registerEvents())
+		return false;
 
 	timer = new QTimer();
 	connect(timer, SIGNAL(timeout()), this, SLOT(hideMouse()));
@@ -263,6 +268,7 @@ VlcMediaWidget::~VlcMediaWidget()
 		delete timer;
 	}
 
+	unregisterEvents();
 	if (vlcMediaPlayer != NULL) {
 		libvlc_media_player_release(vlcMediaPlayer);
 	}
@@ -483,20 +489,32 @@ void VlcMediaWidget::play(const MediaSource &source)
 	setMouseTracking(true);
 }
 
+void VlcMediaWidget::unregisterEvents()
+{
+	qInfo() << "VlcMediaWidget::unregisterEvents()" << eventManager;
+
+	for (int i = 0; i < eventType.size(); ++i)
+		libvlc_event_detach(eventManager, eventType.at(i),
+				    vlcEventHandler, this);
+}
+
+bool VlcMediaWidget::registerEvents()
+{
+	qInfo() << "VlcMediaWidget::registerEvents()" << eventManager;
+	for (int i = 0; i < eventType.size(); ++i) {
+		if (libvlc_event_attach(eventManager, eventType.at(i), vlcEventHandler, this) != 0) {
+			qCCritical(logMediaWidget, "Cannot attach event handler %d", eventType.at(i));
+			return false;
+		}
+	}
+	return true;
+}
+
 int VlcMediaWidget::makePlay()
 {
 	if (vlcMedia == NULL) {
 		libvlc_media_player_stop(vlcMediaPlayer);
 		return -1;
-	}
-
-	libvlc_event_manager_t *eventManager = libvlc_media_event_manager(vlcMedia);
-	libvlc_event_e eventTypes[] = { libvlc_MediaMetaChanged };
-
-	for (uint i = 0; i < (sizeof(eventTypes) / sizeof(eventTypes[0])); ++i) {
-		if (libvlc_event_attach(eventManager, eventTypes[i], vlcEventHandler, this) != 0) {
-			qCWarning(logMediaWidget, "Cannot attach event handler %d", eventTypes[i]);
-		}
 	}
 
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);

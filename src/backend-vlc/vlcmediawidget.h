@@ -79,6 +79,8 @@ public:
 	void updateAngles();
 	void updateDvdMenu();
 	void updateVideoSize();
+	void unregisterEvents();
+	bool registerEvents();
 
 private:
 	void mousePressEvent(QMouseEvent *event);
@@ -92,12 +94,14 @@ private:
 	libvlc_instance_t *vlcInstance;
 	libvlc_media_t *vlcMedia;
 	libvlc_media_player_t *vlcMediaPlayer;
+	libvlc_event_manager_t *eventManager;
 	bool isPaused;
 	bool playingDvd;
 	bool urlIsAudioCd;
 	QMap<int, int> subtitleId;
 	QByteArray typeOfDevice;
 	int trackNumber, numTracks;
+	QVector<libvlc_event_e> eventType;
 };
 
 #endif /* VLCMEDIAWIDGET_H */
