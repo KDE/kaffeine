@@ -636,7 +636,8 @@ void VlcMediaWidget::stop()
 	timer->stop();
 	setCursor(Qt::BlankCursor);
 	setCursor(Qt::ArrowCursor);
-	addPendingUpdates(PlaybackStatus);
+	addPendingUpdates(PlaybackStatus | Metadata |
+			  Subtitles | AudioStreams);
 }
 
 void VlcMediaWidget::setPaused(bool paused)
