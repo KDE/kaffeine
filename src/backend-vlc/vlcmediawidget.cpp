@@ -326,13 +326,15 @@ VlcMediaWidget::~VlcMediaWidget()
 	}
 
 	unregisterEvents();
-	if (vlcMediaPlayer != NULL) {
-		libvlc_media_player_release(vlcMediaPlayer);
-	}
 
-	if (vlcInstance != NULL) {
+	if (vlcMedia != NULL)
+		libvlc_media_release(vlcMedia);
+
+	if (vlcInstance != NULL)
 		libvlc_release(vlcInstance);
-	}
+
+	if (vlcMediaPlayer != NULL)
+		libvlc_media_player_release(vlcMediaPlayer);
 }
 
 VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent)
