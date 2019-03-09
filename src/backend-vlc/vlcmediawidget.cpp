@@ -533,6 +533,11 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 	typeOfDevice = url.constData();
 
+	if (vlcMedia != NULL) {
+		libvlc_media_player_stop(vlcMediaPlayer);
+		libvlc_media_release(vlcMedia);
+	}
+
 	vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
 	if (urlIsAudioCd)
 		libvlc_media_add_option(vlcMedia, "cdda-track=1");
@@ -577,8 +582,6 @@ int VlcMediaWidget::makePlay()
 	}
 
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
-	libvlc_media_release(vlcMedia);
-	vlcMedia = NULL;
 
 	/*
 	 * FIXME: This is mostly a boilerplate as, at least with vlc 3,
@@ -608,8 +611,10 @@ void VlcMediaWidget::playDirection(int direction)
 
 	strBuf += QString::number(trackNumber);
 
-	if (vlcMedia != NULL)
+	if (vlcMedia != NULL) {
+		libvlc_media_player_stop(vlcMediaPlayer);
 		libvlc_media_release(vlcMedia);
+	}
 
 	vlcMedia = libvlc_media_new_location(vlcInstance, typeOfDevice);
 	libvlc_media_add_option(vlcMedia, strBuf.toUtf8());
@@ -632,6 +637,11 @@ void VlcMediaWidget::playDirection(int direction)
 void VlcMediaWidget::stop()
 {
 	libvlc_media_player_stop(vlcMediaPlayer);
+
+	if (vlcMedia != NULL) {
+		libvlc_media_release(vlcMedia);
+		vlcMedia = NULL;
+	}
 
 	timer->stop();
 	setCursor(Qt::BlankCursor);
