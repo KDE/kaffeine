@@ -658,6 +658,9 @@ void VlcMediaWidget::seek(int time)
 
 void VlcMediaWidget::setCurrentAudioStream(int _currentAudioStream)
 {
+	if (_currentAudioStream < 0 ||
+	    _currentAudioStream > libvlc_audio_get_track(vlcMediaPlayer))
+		_currentAudioStream = 0;
 	// skip the 'deactivate' audio channel
 	libvlc_audio_set_track(vlcMediaPlayer, _currentAudioStream + 1);
 
@@ -901,6 +904,8 @@ void VlcMediaWidget::updateAudioStreams()
 
 	// skip the 'deactivate' audio channel
 	currentAudioStream = (libvlc_audio_get_track(vlcMediaPlayer) - 1);
+	if (currentAudioStream < 0)
+		setCurrentAudioStream(0);
 }
 
 void VlcMediaWidget::updateSubtitles()
