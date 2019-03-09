@@ -555,8 +555,6 @@ void VlcMediaWidget::play(const MediaSource &source)
 
 void VlcMediaWidget::unregisterEvents()
 {
-	qInfo() << "VlcMediaWidget::unregisterEvents()" << eventManager;
-
 	for (int i = 0; i < eventType.size(); ++i)
 		libvlc_event_detach(eventManager, eventType.at(i),
 				    vlcEventHandler, this);
@@ -564,7 +562,6 @@ void VlcMediaWidget::unregisterEvents()
 
 bool VlcMediaWidget::registerEvents()
 {
-	qInfo() << "VlcMediaWidget::registerEvents()" << eventManager;
 	for (int i = 0; i < eventType.size(); ++i) {
 		if (libvlc_event_attach(eventManager, eventType.at(i), vlcEventHandler, this) != 0) {
 			qCCritical(logMediaWidget, "Cannot attach event handler %d", eventType.at(i));
