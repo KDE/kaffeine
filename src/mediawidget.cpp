@@ -131,7 +131,6 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	audioStreamBox = new QComboBox(toolBar);
 	connect(audioStreamBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(currentAudioStreamChanged(int)));
-	audioStreamBox->view()->setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
 	toolBar->addWidget(audioStreamBox);
 
 	audioStreamModel = new QStringListModel(toolBar);
@@ -1107,6 +1106,8 @@ void MediaWidget::currentAudioStreamChanged(int currentAudioStream)
 			backend->setCurrentAudioStream(currentAudioStream);
 		}
 	}
+	audioStreamBox->view()->setMinimumWidth(audioStreamBox->view()->sizeHintForColumn(0));
+
 }
 
 void MediaWidget::currentSubtitleChanged(int currentSubtitle)
