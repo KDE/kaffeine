@@ -855,18 +855,31 @@ void VlcMediaWidget::updateSeekable()
 
 void VlcMediaWidget::updateMetadata()
 {
-	metadata.clear();
-	libvlc_media_t *media = libvlc_media_player_get_media(vlcMediaPlayer);
+	char *meta;
 
-	if (media != NULL) {
-		metadata.insert(MediaWidget::Title,
-			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_Title)));
-		metadata.insert(MediaWidget::Artist,
-			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_Artist)));
-		metadata.insert(MediaWidget::Album,
-			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_Album)));
-		metadata.insert(MediaWidget::TrackNumber,
-			QString::fromUtf8(libvlc_media_get_meta(media, libvlc_meta_TrackNumber)));
+	metadata.clear();
+	if (vlcMedia != NULL) {
+		QString s;
+		meta = libvlc_media_get_meta(vlcMedia, libvlc_meta_Title);
+		if (meta) {
+			metadata.insert(MediaWidget::Title, QString::fromUtf8(meta));
+			free(meta);
+		}
+		meta = libvlc_media_get_meta(vlcMedia, libvlc_meta_Artist);
+		if (meta) {
+			metadata.insert(MediaWidget::Artist, QString::fromUtf8(meta));
+			free(meta);
+		}
+		meta = libvlc_media_get_meta(vlcMedia, libvlc_meta_Album);
+		if (meta) {
+			metadata.insert(MediaWidget::Album, QString::fromUtf8(meta));
+			free(meta);
+		}
+		meta = libvlc_media_get_meta(vlcMedia, libvlc_meta_TrackNumber);
+		if (meta) {
+			metadata.insert(MediaWidget::TrackNumber, QString::fromUtf8(meta));
+			free(meta);
+		}
 	}
 
 	if (urlIsAudioCd)
