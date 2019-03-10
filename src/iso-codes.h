@@ -23,6 +23,7 @@ namespace IsoCodes
 {
 	bool getLanguage(const QString &code, QString *language);
 	bool getCountry(const QString &code, QString *country);
+	const QString code2Convert(const QString &code2);
 }
 
 #endif

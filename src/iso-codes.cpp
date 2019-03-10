@@ -20,17 +20,24 @@
 #include <KLocalizedString>
 #include <QFile>
 #include <QLocale>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QXmlStreamReader>
 
+#include "iso-codes.h"
+
 namespace IsoCodes
 {
-	static void load(QHash<QString, QString> &hash,
-			 QString file, QString main_key,
-			 QString entry_key, QString code_key,
+	static void load(QHash<QString, QString> *code_3letters,
+			 QHash<QString, QString> *code_2letters,
+			 QString file,
+			 QString main_key,
+			 QString entry_key,
+			 QString code_3_key,
+			 QString code_2_key,
 			 QString name_key)
 	{
-		if (!hash.isEmpty())
+		if (!code_3letters->isEmpty())
 			return;
 
 		const QString fileName = QStandardPaths::locate(QStandardPaths::GenericDataLocation, file);
@@ -44,8 +51,8 @@ namespace IsoCodes
 		QFile f(fileName);
 		if (!f.open(QIODevice::ReadOnly)) {
 			qCWarning(logConfig,
-			          "Could not open %s (%s)",
-			          qPrintable(fileName),
+				  "Could not open %s (%s)",
+				  qPrintable(fileName),
 				  qPrintable(f.errorString()));
 			return;
 		}
@@ -60,9 +67,14 @@ namespace IsoCodes
 				name = r.name();
 				if (inDoc && name == entry_key) {
 					const QXmlStreamAttributes attrs = r.attributes();
-					const QString code = attrs.value(code_key).toString().toUpper();
+					const QString code3 = attrs.value(code_3_key).toString().toUpper();
 					const QString lang = attrs.value(name_key).toString();
-					hash.insert(code, lang);
+					code_3letters->insert(code3, lang);
+					if (code_2letters) {
+						const QString code2 = attrs.value(code_2_key).toString().toUpper();
+						if (code2 != "")
+							code_2letters->insert(code2, code3);
+					}
 				} else if (name == main_key) {
 					inDoc = true;
 				}
@@ -85,17 +97,23 @@ namespace IsoCodes
 				break;
 			}
 		}
-		if (hash.isEmpty())
+		if (code_3letters->isEmpty())
 			qCWarning(logConfig,
-			          "Error parsing %s: no entries found.",
-			          qPrintable(fileName));
+				  "Error parsing %s: no entries found.",
+				  qPrintable(fileName));
 	}
 
 	/*
-	* ISO 639-2 language codes
-	* Loaded and translated at runtime from iso-codes.
-	*/
+	 * ISO 639-2 language codes
+	 * Loaded and translated at runtime from iso-codes.
+	 */
 	static QHash<QString, QString> iso639_2_codes;
+
+	/*
+	 * ISO 639-1 to ISO 639-2 language code conversion
+	 * Loaded and translated at runtime from iso-codes.
+	 */
+	static QHash<QString, QString> iso639_1_codes;
 
 	bool getLanguage(const QString &iso_code, QString *language)
 	{
@@ -109,11 +127,13 @@ namespace IsoCodes
 		}
 
 		if (first) {
-			load(iso639_2_codes,
+			load(&iso639_2_codes,
+			     &iso639_1_codes,
 			     QString("xml/iso-codes/iso_639-2.xml"),
 			     QLatin1String("iso_639_entries"),
 			     QLatin1String("iso_639_entry"),
 			     QLatin1String("iso_639_2B_code"),
+			     QLatin1String("iso_639_1_code"),
 			     QLatin1String("name"));
 			first = false;
 		}
@@ -144,6 +164,34 @@ namespace IsoCodes
 		return true;
 	}
 
+	const QString code2Convert(const QString &code2)
+	{
+		static bool first = true;
+
+		QString code = code2.toUpper();
+
+		/* Ignore any embedded Country data */
+		code.remove(QRegularExpression("_.*"));
+
+		if (first) {
+			load(&iso639_2_codes,
+			     &iso639_1_codes,
+			     QString("xml/iso-codes/iso_639-2.xml"),
+			     QLatin1String("iso_639_entries"),
+			     QLatin1String("iso_639_entry"),
+			     QLatin1String("iso_639_2B_code"),
+			     QLatin1String("iso_639_1_code"),
+			     QLatin1String("name"));
+			first = false;
+		}
+
+		QHash<QString, QString>::ConstIterator it = iso639_1_codes.constFind(code);
+		if (it == iso639_1_codes.constEnd()) {
+			return "QAA";
+		}
+		return it.value().toUtf8().constData();
+	}
+
 	/*
 	* ISO 3166-1 Alpha 3 Country codes
 	* Loaded and translated at runtime from iso-codes.
@@ -155,11 +203,13 @@ namespace IsoCodes
 		static bool first = true;
 
 		if (first) {
-			load(iso3166_1_codes,
+			load(&iso3166_1_codes,
+			     NULL,
 			     QString("xml/iso-codes/iso_3166-1.xml"),
 			     QLatin1String("iso_3166_entries"),
 			     QLatin1String("iso_3166_entry"),
 			     QLatin1String("alpha_3_code"),
+			     QString("alpha_2_code"),		// Currently unused
 			     QLatin1String("name"));
 			first = false;
 		}
