@@ -239,6 +239,13 @@ DvbSharedChannel DvbChannelModel::findChannelByName(const QString &channelName) 
 	return channelNames.value(channelName);
 }
 
+bool DvbChannelModel::hasChannelByName(const QString &channelName)
+{
+	if (channelNames.contains(channelName))
+		return true;
+	return false;
+}
+
 DvbSharedChannel DvbChannelModel::findChannelByNumber(int channelNumber) const
 {
 	return channelNumbers.value(channelNumber);

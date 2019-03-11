@@ -36,6 +36,7 @@
 #include "dvbmanager.h"
 #include "dvbmanager_p.h"
 #include "dvbsi.h"
+#include "xmltv.h"
 
 DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(parent_),
 	parent(parent_), mediaWidget(mediaWidget_), channelView(NULL), dvbDumpEnabled(false)
@@ -44,6 +45,7 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 	recordingModel = new DvbRecordingModel(this, this);
 	epgModel = new DvbEpgModel(this, this);
 	liveView = new DvbLiveView(this, this);
+	xmlTv = new XmlTv(this);
 
 	readDeviceConfigs();
 	updateSourceMapping();
@@ -51,6 +53,11 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 	loadDeviceManager();
 
 	DvbSiText::setOverride6937(override6937Charset());
+
+	QString xmlFile = getXmltvFileName();
+
+	if (xmlFile != "")
+		xmlTv->addFile(xmlFile);
 }
 
 DvbManager::~DvbManager()
@@ -59,6 +66,7 @@ DvbManager::~DvbManager()
 
 	// we need an explicit deletion order (device users ; devices ; device manager)
 
+	delete xmlTv;
 	delete epgModel;
 	epgModel = NULL;
 	delete recordingModel;
@@ -347,6 +355,11 @@ QString DvbManager::getTimeShiftFolder() const
 	return KSharedConfig::openConfig()->group("DVB").readEntry("TimeShiftFolder", QDir::homePath());
 }
 
+QString DvbManager::getXmltvFileName() const
+{
+	return KSharedConfig::openConfig()->group("DVB").readEntry("XmltvFileName", "");
+}
+
 int DvbManager::getBeginMargin() const
 {
 	return KSharedConfig::openConfig()->group("DVB").readEntry("BeginMargin", 300);
@@ -405,6 +418,13 @@ void DvbManager::setRecordingFolder(const QString &path)
 void DvbManager::setTimeShiftFolder(const QString &path)
 {
 	KSharedConfig::openConfig()->group("DVB").writeEntry("TimeShiftFolder", path);
+}
+
+void DvbManager::setXmltvFileName(const QString &path)
+{
+	KSharedConfig::openConfig()->group("DVB").writeEntry("XmltvFileName", path);
+	xmlTv->clear();
+	xmlTv->addFile(path);
 }
 
 void DvbManager::setBeginMargin(int beginMargin)

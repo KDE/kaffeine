@@ -80,6 +80,7 @@ signals:
 private slots:
 	void changeRecordingFolder();
 	void changeTimeShiftFolder();
+	void changeXmltvFileName();
 	void updateScanFile();
 	void openScanFile();
 	void newRegex();
@@ -100,6 +101,7 @@ private:
 	QTabWidget *tabWidget;
 	QLineEdit *recordingFolderEdit;
 	QLineEdit *timeShiftFolderEdit;
+	QLineEdit *xmltvFileNameEdit;
 	QSpinBox *beginMarginBox;
 	QSpinBox *endMarginBox;
 	QLineEdit *namingFormat;

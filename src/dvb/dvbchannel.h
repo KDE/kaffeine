@@ -96,6 +96,7 @@ public:
 
 	QMap<int, DvbSharedChannel> getChannels() const;
 	DvbSharedChannel findChannelByName(const QString &channelName) const;
+	bool hasChannelByName(const QString &channelName);
 	DvbSharedChannel findChannelByNumber(int channelNumber) const;
 	DvbSharedChannel findChannelById(const DvbChannel &channel) const;
 

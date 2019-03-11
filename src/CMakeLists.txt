@@ -41,7 +41,8 @@ if(HAVE_DVB)
       dvb/dvbscandialog.cpp
       dvb/dvbsi.cpp
       dvb/dvbtab.cpp
-      dvb/dvbtransponder.cpp)
+      dvb/dvbtransponder.cpp
+      dvb/xmltv.cpp)
 endif(HAVE_DVB)
 
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)

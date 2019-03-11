@@ -40,6 +40,7 @@ class DvbLiveView;
 class DvbRecordingModel;
 class DvbScanData;
 class MediaWidget;
+class XmlTv;
 
 class DvbManager : public QObject
 {
@@ -127,6 +128,7 @@ public:
 
 	QString getRecordingFolder() const;
 	QString getTimeShiftFolder() const;
+	QString getXmltvFileName() const;
 	QString getNamingFormat() const;
 	QString getRecordingRegex() const;
 	QStringList getRecordingRegexList() const;
@@ -139,6 +141,7 @@ public:
 	bool isScanWhenIdle() const;
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
+	void setXmltvFileName(const QString &path);
 	void setNamingFormat(const QString namingFormat);
 	void setRecordingRegex(const QString regex);
 	void setRecordingRegexList(const QStringList regexList);
@@ -177,6 +180,7 @@ private:
 	DvbChannelModel *channelModel;
 	QTreeView *channelView;
 	DvbEpgModel *epgModel;
+	XmlTv *xmlTv;
 	DvbLiveView *liveView;
 	DvbRecordingModel *recordingModel;
 	bool reacquireDevice;

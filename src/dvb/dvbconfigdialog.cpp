@@ -71,69 +71,86 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	mainLayout->addWidget(widget);
 	QBoxLayout *boxLayout = new QVBoxLayout(widget);
 
+	int line = 0;
+
 	QGridLayout *gridLayout = new QGridLayout();
-	gridLayout->addWidget(new QLabel(i18n("Recording folder:")), 0, 0);
+	gridLayout->addWidget(new QLabel(i18n("Recording folder:")), line, 0);
 
 	recordingFolderEdit = new QLineEdit(widget);
 	recordingFolderEdit->setText(manager->getRecordingFolder());
-	gridLayout->addWidget(recordingFolderEdit, 0, 1);
+	gridLayout->addWidget(recordingFolderEdit, line, 1);
 
 	QToolButton *toolButton = new QToolButton(widget);
 	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder"), QIcon(":document-open-folder")));
 	toolButton->setToolTip(i18n("Select Folder"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeRecordingFolder()));
-	gridLayout->addWidget(toolButton, 0, 2);
+	gridLayout->addWidget(toolButton, line++, 2);
 
-	gridLayout->addWidget(new QLabel(i18n("Time shift folder:")), 1, 0);
+	gridLayout->addWidget(new QLabel(i18n("Time shift folder:")), line, 0);
 
 	timeShiftFolderEdit = new QLineEdit(widget);
 	timeShiftFolderEdit->setText(manager->getTimeShiftFolder());
-	gridLayout->addWidget(timeShiftFolderEdit, 1, 1);
+	gridLayout->addWidget(timeShiftFolderEdit, line, 1);
 
 	toolButton = new QToolButton(widget);
 	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder"), QIcon(":document-open-folder")));
 	toolButton->setToolTip(i18n("Select Folder"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeTimeShiftFolder()));
-	gridLayout->addWidget(toolButton, 1, 2);
+	gridLayout->addWidget(toolButton, line++, 2);
 	boxLayout->addLayout(gridLayout);
 
+//
+	gridLayout->addWidget(new QLabel(i18n("xmltv file name (optional):")), line, 0);
+
+	xmltvFileNameEdit = new QLineEdit(widget);
+	xmltvFileNameEdit->setText(manager->getXmltvFileName());
+	gridLayout->addWidget(xmltvFileNameEdit, line, 1);
+
+	toolButton = new QToolButton(widget);
+	toolButton->setIcon(QIcon::fromTheme(QLatin1String("document-open-folder"), QIcon(":document-open-folder")));
+	toolButton->setToolTip(i18n("Add optional file to allow reading EPG data from xmltv files"));
+	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeXmltvFileName()));
+	gridLayout->addWidget(toolButton, line++, 2);
+	boxLayout->addLayout(gridLayout);
+//
+
 	gridLayout = new QGridLayout();
-	gridLayout->addWidget(new QLabel(i18n("Begin margin (minutes):")), 2, 0);
+	gridLayout->addWidget(new QLabel(i18n("Begin margin (minutes):")), line, 0);
 
 	beginMarginBox = new QSpinBox(widget);
 	beginMarginBox->setRange(0, 99);
 	beginMarginBox->setValue(manager->getBeginMargin() / 60);
-	gridLayout->addWidget(beginMarginBox, 2, 1);
+	gridLayout->addWidget(beginMarginBox, line++, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("End margin (minutes):")), 3, 0);
+	gridLayout->addWidget(new QLabel(i18n("End margin (minutes):")), line, 0);
 
 	endMarginBox = new QSpinBox(widget);
 	endMarginBox->setRange(0, 99);
 	endMarginBox->setValue(manager->getEndMargin() / 60);
-	gridLayout->addWidget(endMarginBox, 3, 1);
+	gridLayout->addWidget(endMarginBox, line++, 1);
 
-	gridLayout->addWidget(new QLabel(i18n("Naming style for recordings:")), 4, 0);
+	gridLayout->addWidget(new QLabel(i18n("Naming style for recordings:")), line, 0);
 
 	namingFormat = new QLineEdit(widget);
 	namingFormat->setText(manager->getNamingFormat());
 	namingFormat->setToolTip(i18n("The following substitutions work: \"%year\" for year (YYYY) and the following: %month, %day, %hour, %min, %sec, %channel and %title"));
 	connect(namingFormat, SIGNAL(textChanged(QString)), this, SLOT(namingFormatChanged(QString)));
 
-	gridLayout->addWidget(namingFormat, 4, 1);
+	gridLayout->addWidget(namingFormat, line, 1);
 
 	validPixmap = QIcon::fromTheme(QLatin1String("dialog-ok-apply"), QIcon(":dialog-ok-apply")).pixmap(22);
 	invalidPixmap = QIcon::fromTheme(QLatin1String("dialog-cancel"), QIcon(":dialog-cancel")).pixmap(22);
 
 	namingFormatValidLabel = new QLabel(widget);
 	namingFormatValidLabel->setPixmap(validPixmap);
-	gridLayout->addWidget(namingFormatValidLabel, 4,2);
+	gridLayout->addWidget(namingFormatValidLabel, line++,2);
 
-	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes:")),	5, 0);
+	gridLayout->addWidget(new QLabel(i18n("Action after recording finishes:")), line, 0);
 
 	actionAfterRecordingLineEdit = new QLineEdit(widget);
 	actionAfterRecordingLineEdit->setText(manager->getActionAfterRecording());
 	actionAfterRecordingLineEdit->setToolTip(i18n("Leave empty for no command."));
-	gridLayout->addWidget(actionAfterRecordingLineEdit, 5, 1);
+	gridLayout->addWidget(actionAfterRecordingLineEdit, line++, 1);
 
 	boxLayout->addLayout(gridLayout);
 
@@ -279,6 +296,17 @@ void DvbConfigDialog::changeTimeShiftFolder()
 	}
 
 	timeShiftFolderEdit->setText(path);
+}
+
+void DvbConfigDialog::changeXmltvFileName()
+{
+	QString path = QFileDialog::getOpenFileName(this, QString(), xmltvFileNameEdit->text());
+
+	if (path.isEmpty()) {
+		return;
+	}
+
+	xmltvFileNameEdit->setText(path);
 }
 
 void DvbConfigDialog::updateScanFile()
@@ -531,6 +559,7 @@ void DvbConfigDialog::accept()
 {
 	manager->setRecordingFolder(recordingFolderEdit->text());
 	manager->setTimeShiftFolder(timeShiftFolderEdit->text());
+	manager->setXmltvFileName(xmltvFileNameEdit->text());
 	manager->setNamingFormat(namingFormat->text());
 	manager->setActionAfterRecording(actionAfterRecordingLineEdit->text());
 	manager->setBeginMargin(beginMarginBox->value() * 60);
