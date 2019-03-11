@@ -144,8 +144,9 @@ QPixmap DvbOsd::paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection)
 	return pixmap;
 }
 
-DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) : QObject(parent),
-	manager(manager_), device(NULL), videoPid(-1), audioPid(-1), subtitlePid(-1), pausedTime(0)
+DvbLiveView::DvbLiveView(DvbManager *manager_, QObject *parent) :
+	QObject(parent), manager(manager_), device(NULL), videoPid(-1),
+	audioPid(-1), subtitlePid(-1), pausedTime(0)
 {
 	mediaWidget = manager->getMediaWidget();
 	osdWidget = mediaWidget->getOsdWidget();
@@ -582,8 +583,10 @@ void DvbLiveView::updatePids(bool forcePatPmtUpdate)
 	}
 }
 
-DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) : QObject(parent), mediaWidget(NULL),
-	retryCounter(0), readFd(-1), writeFd(-1)
+DvbLiveViewInternal::DvbLiveViewInternal(QObject *parent) :
+	QObject(parent), mediaWidget(NULL), emptyBuffer(true), timeshift(false),
+	currentAudioStream(-1), currentSubtitle(-1), retryCounter(0),
+	readFd(-1), writeFd(-1), notifier(NULL)
 {
 	fileName = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation) + QLatin1String("/dvbpipe.m2t");
 	QFile::remove(fileName);

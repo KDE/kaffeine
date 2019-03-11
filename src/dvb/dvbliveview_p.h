@@ -65,19 +65,6 @@ public:
 
 	void resetPipe();
 
-	MediaWidget *mediaWidget;
-	QString channelName;
-	DvbPmtFilter pmtFilter;
-	QByteArray pmtSectionData;
-	DvbSectionGenerator patGenerator;
-	DvbSectionGenerator pmtGenerator;
-	QByteArray buffer;
-	QFile timeShiftFile;
-	QString fileName;
-	DvbOsd dvbOsd;
-	bool emptyBuffer;
-	QTime startTime;
-
 	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
 	QStringList getAudioStreams() const { return audioStreams; }
 	QStringList getSubtitles() const { return QStringList(); }
@@ -114,6 +101,18 @@ public:
 	virtual void validateCurrentTotalTime(int &currentTime, int &totalTime) const;
 	bool hideCurrentTotalTime() const { return !timeshift; }
 
+	MediaWidget *mediaWidget;
+	QString channelName;
+	DvbPmtFilter pmtFilter;
+	QByteArray pmtSectionData;
+	DvbSectionGenerator patGenerator;
+	DvbSectionGenerator pmtGenerator;
+	QByteArray buffer;
+	QFile timeShiftFile;
+	QString fileName;
+	DvbOsd dvbOsd;
+	bool emptyBuffer;
+	QTime startTime;
 	bool timeshift;
 	QStringList audioStreams;
 	int currentAudioStream;
