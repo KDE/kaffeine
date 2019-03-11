@@ -99,7 +99,6 @@ private:
 	float freqMHz;
 
 	int verbose;
-	int frontendFd;
 	int dvrFd;
 	int dvrPipe[2];
 	DvbDataBuffer dvrBuffer;

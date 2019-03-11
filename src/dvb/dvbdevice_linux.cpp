@@ -1370,8 +1370,6 @@ float DvbLinuxDevice::getSnr(Scale &scale)
 
 bool DvbLinuxDevice::addPidFilter(int pid)
 {
-	Q_ASSERT(frontendFd >= 0);
-
 	if (dmxFds.contains(pid)) {
 		qCWarning(logDev, "PID filter already set up for pid %d", pid);
 		return false;
@@ -1404,8 +1402,6 @@ bool DvbLinuxDevice::addPidFilter(int pid)
 
 void DvbLinuxDevice::removePidFilter(int pid)
 {
-	Q_ASSERT(frontendFd >= 0);
-
 	if (!dmxFds.contains(pid)) {
 		qCWarning(logDev, "No PID filter set up for PID %i", pid);
 		return;
