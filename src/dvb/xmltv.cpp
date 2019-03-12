@@ -214,6 +214,7 @@ bool XmlTv::parseProgram(void)
 			 */
 			for (; name != list.end(); name++) {
 				if (channelModel->hasChannelByName(*name)) {
+					channel = channelModel->findChannelByName(*name);
 					epgEntry.channel = channel;
 					epgModel->addEntry(epgEntry);
 				}
