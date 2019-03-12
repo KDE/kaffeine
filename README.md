@@ -285,6 +285,53 @@ That can be done by passing an invalid driver name, like:
 
     export VDPAU_DRIVER=none
 
+Using xmltv for EPG data
+========================
+
+As described at Kaffeine's documentation, xmltv files are now supported.
+
+In order to use it, you need to have a xmltv grabber. For example, you
+may use the tv_grab_eu_dotmedia grabber, from xmltv project.
+
+Kaffeine's internal logic will map the channels obtained by the grabber
+into the channel names it has stored internally. The Kaffeine names
+can be obtained with the following command:
+
+    $ echo 'select name from Channels;' | sqlite3 ~/.local/share/kaffeine/sqlite.db
+
+At the xmltv file format, the channel names can be obtained with:
+
+    $ grep display-name some_file.xmltv
+
+If the names don't match, you'll need to use an external script to do the
+map. There's an example about how to do it at:
+
+    tools/map_xmltv_channels.sh
+
+Please notice that you need to have `xmlstarlet` installed for it to work.
+
+Assuming that you modified the script for your needs and copied to your
+`~/bin` directory, a typical usage of obtaining the xmltv tables would be to
+have a script like this running on a shell console:
+
+    $ while :; do tv_grab_eu_dotmedia > eu_dotmedia.xmltv; \
+    ~/bin/map_xmltv_channels.sh eu_dotmedia.xmltv eu_dotmedia-new.xmltv; \
+    sleep 3600; done
+
+And configure Kaffeine to use the `eu_dotmedia-new.xmltv` file produced by
+the script (or whatever other name you use), disabling EPG MPEG-TS table
+reads.
+
+Please also notice that as soon as Kaffeine detects a change on a file, it
+will re-read. So, even if you don't need to do any map, you should
+first generate the xmltv file and then move it to the right place, e. g:
+
+    $ while :; do tv_grab_eu_dotmedia > eu_dotmedia.xmltv; \
+    mv eu_dotmedia.xmltv eu_dotmedia-new.xmltv; \
+    sleep 3600; done
+
+For more details, please read Kaffeine's manual.
+
 Homepage
 ========
 
