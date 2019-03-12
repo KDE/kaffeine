@@ -254,7 +254,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
-	QString starRating, credits, category;
+	QString starRating, credits, category, date;
 	QString current = r->name().toString();
 	while (!r->atEnd()) {
 		const QXmlStreamReader::TokenType t = r->readNext();
@@ -333,8 +333,20 @@ bool XmlTv::parseProgram(void)
 			parseKeyValues(keyValues);
 
 			credits = getAllValues(keyValues);
-		} else if ((element == "date") ||
-			   (element == "episode-num") ||
+		} else if ((element == "date")) {
+			QString rawdate = r->readElementText();
+			date = rawdate.mid(0, 4);
+			QString month = rawdate.mid(5, 2);
+			QString day = rawdate.mid(7, 2);
+			if (month != "")
+				date += "-" + month;
+			if (day != "") {
+				date += "-" + day;
+
+				QDate d = QDate::fromString(date, Qt::ISODate);
+				date = d.toString();
+			}
+		} else if ((element == "episode-num") ||
 			   (element == "quality") ||
 			   (element == "stereo") ||
 			   (element == "url") ||
@@ -358,9 +370,15 @@ bool XmlTv::parseProgram(void)
 		langEntry->details += "Star rating: " + starRating;
 	}
 
+	if (date != "") {
+		if (langEntry->details != "")
+			langEntry->details += "\n";
+		langEntry->details += "Date: " + date;
+	}
+
 	if (category != "") {
 		if (langEntry->details != "")
-			langEntry->details += "\n\n";
+			langEntry->details += "\n";
 		langEntry->details += "Category: " + category;
 	}
 
