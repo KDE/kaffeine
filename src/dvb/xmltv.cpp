@@ -254,7 +254,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
-	QString starRating, credits;
+	QString starRating, credits, category;
 	QString current = r->name().toString();
 	while (!r->atEnd()) {
 		const QXmlStreamReader::TokenType t = r->readNext();
@@ -321,26 +321,24 @@ bool XmlTv::parseProgram(void)
 		} else if (element == "audio") {
 			ignoreTag();
 		} else if (element == "category") {
-			ignoreTag();
+			attrs = r->attributes();
+			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+			langEntry = getLangEntry(epgEntry, lang);
+			if (category != "")
+				category += ", ";
+			category += r->readElementText();
 		} else if (element == "credits") {
 			QHash<QString, QString> keyValues;
 
 			parseKeyValues(keyValues);
 
 			credits = getAllValues(keyValues);
-		} else if (element == "date") {
-			ignoreTag();
-		} else if (element == "episode-num") {
-			ignoreTag();
-		} else if (element == "quality") {
-			ignoreTag();
-		} else if (element == "rating") {
-			ignoreTag();
-		} else if (element == "stereo") {
-			ignoreTag();
-		} else if (element == "url") {
-			ignoreTag();
-		} else if (element == "video") {
+		} else if ((element == "date") ||
+			   (element == "episode-num") ||
+			   (element == "quality") ||
+			   (element == "stereo") ||
+			   (element == "url") ||
+			   (element == "video")) {
 			ignoreTag();
 		} else {
 			static QString lastNotFound("");
@@ -353,18 +351,24 @@ bool XmlTv::parseProgram(void)
 		}
 	}
 
-	langEntry->details.replace(QRegularExpression("\\n+$"), "");
+	langEntry->details.replace(QRegularExpression("\\n*$"), "\n");
 	if (starRating != "") {
 		if (langEntry->details != "")
 			langEntry->details += "\n\n";
 		langEntry->details += "Star rating: " + starRating;
 	}
 
+	if (category != "") {
+		if (langEntry->details != "")
+			langEntry->details += "\n\n";
+		langEntry->details += "Category: " + category;
+	}
+
 	if (credits != "") {
 		if (langEntry->details != "")
 			langEntry->details += "\n\n";
 		langEntry->details += credits;
-		langEntry->details.replace(QRegularExpression("\\n+$"), "");
+		langEntry->details.replace(QRegularExpression("\\n*$"), "\n");
 	}
 
 	langEntry->details.replace(QRegularExpression("\\n"), "<p/>");
