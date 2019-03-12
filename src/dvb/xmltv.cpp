@@ -175,22 +175,22 @@ bool XmlTv::parseProgram(void)
 
 	while (!r->atEnd()) {
 		const QXmlStreamReader::TokenType t = r->readNext();
-		QStringRef name;
+		QStringRef element;
 		QString lang;
 		switch (t) {
 		case QXmlStreamReader::StartElement:
-			name = r->name();
-			if (name == "title") {
+			element = r->name();
+			if (element == "title") {
 				attrs = r->attributes();
 				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 				langEntry = getLangEntry(epgEntry, lang);
 				langEntry->title += r->readElementText();
-			} else if (name == "desc") {
+			} else if (element == "desc") {
 				attrs = r->attributes();
 				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 				langEntry = getLangEntry(epgEntry, lang);
 				langEntry->details += r->readElementText();
-			} else if (name == "rating") {
+			} else if (element == "rating") {
 				attrs = r->attributes();
 				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 				QString system = attrs.value("system").toString();
@@ -204,6 +204,21 @@ bool XmlTv::parseProgram(void)
 			break;
 		case QXmlStreamReader::EndElement:
 			epgModel->addEntry(epgEntry);
+
+			/*
+			 * It is not uncommon to have the same xmltv channel
+			 * associated with multiple DVB channels. It happens,
+			 * for example, when there is a SD, HD, 4K video
+			 * streams associated with the same programs.
+			 * So, add entries also for the other channels.
+			 */
+			for (; name != list.end(); name++) {
+				if (channelModel->hasChannelByName(*name)) {
+					epgEntry.channel = channel;
+					epgModel->addEntry(epgEntry);
+				}
+			}
+
 			return true;
 		default:
 			break;
