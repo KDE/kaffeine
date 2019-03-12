@@ -316,10 +316,6 @@ bool XmlTv::parseProgram(void)
 
 			if (value != "")
 				starRating += value;
-		} else if (element == "aspect") {
-			ignoreTag();
-		} else if (element == "audio") {
-			ignoreTag();
 		} else if (element == "category") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
@@ -348,7 +344,9 @@ bool XmlTv::parseProgram(void)
 				QDate d = QDate::fromString(date, Qt::ISODate);
 				date = d.toString();
 			}
-		} else if ((element == "episode-num") ||
+		} else if ((element == "aspect") ||
+			   (element == "audio") ||
+			   (element == "episode-num") ||
 			   (element == "quality") ||
 			   (element == "stereo") ||
 			   (element == "url") ||
