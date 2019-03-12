@@ -111,6 +111,43 @@ bool XmlTv::parseChannel(void)
 	return false;
 }
 
+bool XmlTv::parseKeyValues(QHash<QString, QString> &keyValues)
+{
+	QXmlStreamAttributes attrs;
+
+	while (!r->atEnd()) {
+		const QXmlStreamReader::TokenType t = r->readNext();
+		QString key, value;
+		switch (t) {
+		case QXmlStreamReader::StartElement:
+			attrs = r->attributes();
+			key = r->name().toString();
+			value = attrs.value("lang").toString();
+
+			keyValues.insert(key, value);
+			break;
+		case QXmlStreamReader::EndElement:
+
+
+			return true;
+		default:
+			break;
+		}
+	}
+	return false;
+}
+
+QString XmlTv::getValue(QHash<QString, QString> &keyValues, QString key)
+{
+	QHash<QString, QString>::ConstIterator it;
+
+	it = keyValues.constFind(key);
+	if (it == keyValues.constEnd())
+		return QString("");
+
+	return *it;
+}
+
 bool XmlTv::parseProgram(void)
 {
 	const QString emptyString("");
@@ -175,6 +212,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
+	QString starRating;
 	while (!r->atEnd()) {
 		const QXmlStreamReader::TokenType t = r->readNext();
 		QStringRef element;
@@ -186,18 +224,54 @@ bool XmlTv::parseProgram(void)
 				attrs = r->attributes();
 				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 				langEntry = getLangEntry(epgEntry, lang);
+				if (langEntry->title != "")
+					langEntry->title += " ";
 				langEntry->title += r->readElementText();
+			} else if (element == "sub-title") {
+				attrs = r->attributes();
+				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+				langEntry = getLangEntry(epgEntry, lang);
+				if (langEntry->subheading != "")
+					langEntry->subheading += " ";
+				langEntry->subheading += r->readElementText();
 			} else if (element == "desc") {
 				attrs = r->attributes();
 				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 				langEntry = getLangEntry(epgEntry, lang);
+				if (langEntry->details != "")
+					langEntry->details += " ";
 				langEntry->details += r->readElementText();
 			} else if (element == "rating") {
+				QHash<QString, QString> keyValues;
+
 				attrs = r->attributes();
-				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+				parseKeyValues(keyValues);
+
 				QString system = attrs.value("system").toString();
-				langEntry = getLangEntry(epgEntry, lang);
-				epgEntry.parental += "System: " + system + " = " + r->readElementText();
+
+				QString value = getValue(keyValues, "value");
+
+				if (system == "" || value == "")
+					break;
+
+				if (epgEntry.parental != "")
+					epgEntry.parental += ", ";
+
+				epgEntry.parental += "System: " + system + ", rating: " + value;
+			} else if (element == "star-rating") {
+				QHash<QString, QString> keyValues;
+
+				attrs = r->attributes();
+				parseKeyValues(keyValues);
+
+				QString value = getValue(keyValues, "value");
+
+				if (value != "") {
+					if (langEntry->details != "")
+						langEntry->details += " ";
+
+					starRating += value;
+				}
 			}
 			/* FIXME: add support for other fields:
 			 * credits, date, country, episode-num, video
@@ -205,6 +279,12 @@ bool XmlTv::parseProgram(void)
 			 */
 			break;
 		case QXmlStreamReader::EndElement:
+			if (starRating != "") {
+				if (langEntry->details != "")
+					langEntry->details += "\n\n";
+				langEntry->details += "Star rating: " + starRating;
+			}
+
 			epgModel->addEntry(epgEntry);
 
 			/*

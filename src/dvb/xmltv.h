@@ -39,6 +39,8 @@ private:
 
 	bool parseChannel(void);
 	bool parseProgram(void);
+	bool parseKeyValues(QHash<QString, QString> &keyValues);
+	QString getValue(QHash<QString, QString> &keyValues, QString key);
 	DvbEpgLangEntry *getLangEntry(DvbEpgEntry &epgEntry,
 				      QString &code);
 
