@@ -437,6 +437,9 @@ void DvbEpgModel::scheduleProgram(const DvbSharedEpgEntry &entry, int extraSecon
 
 void DvbEpgModel::startEventFilter(DvbDevice *device, const DvbSharedChannel &channel)
 {
+	if (manager->disableEpg())
+		return;
+
 	switch (channel->transponder.getTransmissionType()) {
 	case DvbTransponderBase::Invalid:
 		break;

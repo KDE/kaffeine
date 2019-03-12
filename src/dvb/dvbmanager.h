@@ -138,6 +138,7 @@ public:
 	int getEndMargin() const; // seconds
 	bool override6937Charset() const;
 	bool createInfoFile() const;
+	bool disableEpg() const;
 	bool isScanWhenIdle() const;
 	void setRecordingFolder(const QString &path);
 	void setTimeShiftFolder(const QString &path);
@@ -155,6 +156,7 @@ public:
 	void setEndMargin(int endMargin); // seconds
 	void setOverride6937Charset(bool override);
 	void setCreateInfoFile(bool createInfoFile);
+	void setDisableEpg(bool disableEpg);
 	void setScanWhenIdle(bool scanWhenIdle);
 	void writeDeviceConfigs();
 

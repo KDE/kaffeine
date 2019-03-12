@@ -410,6 +410,11 @@ bool DvbManager::createInfoFile() const
 	return KSharedConfig::openConfig()->group("DVB").readEntry("CreateInfoFile", false);
 }
 
+bool DvbManager::disableEpg() const
+{
+	return KSharedConfig::openConfig()->group("DVB").readEntry("DisableEpg", false);
+}
+
 void DvbManager::setRecordingFolder(const QString &path)
 {
 	KSharedConfig::openConfig()->group("DVB").writeEntry("RecordingFolder", path);
@@ -516,6 +521,11 @@ void DvbManager::setScanWhenIdle(bool scanWhenIdle)
 void DvbManager::setCreateInfoFile(bool createInfoFile)
 {
 	KSharedConfig::openConfig()->group("DVB").writeEntry("CreateInfoFile", createInfoFile);
+}
+
+void DvbManager::setDisableEpg(bool disableEpg)
+{
+	KSharedConfig::openConfig()->group("DVB").writeEntry("DisableEpg", disableEpg);
 }
 
 void DvbManager::enableDvbDump()

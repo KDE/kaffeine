@@ -107,6 +107,7 @@ private:
 	QLineEdit *namingFormat;
 	QCheckBox *override6937CharsetBox;
 	QCheckBox *createInfoFileBox;
+	QCheckBox *disableEpgBox;
 	QCheckBox *scanWhenIdleBox;
 	QPixmap validPixmap;
 	QPixmap invalidPixmap;

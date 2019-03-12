@@ -110,6 +110,13 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeXmltvFileName()));
 	gridLayout->addWidget(toolButton, line++, 2);
 
+	gridLayout->addWidget(new QLabel(i18n("Disable parsing EPG data from MPEG-TS tables:")),
+		line, 0);
+	toolButton->setToolTip(i18n("Use this if your TV provider doesn't broadcast reliable EPG data"));
+	disableEpgBox = new QCheckBox(widget);
+	disableEpgBox->setChecked(manager->disableEpg());
+	gridLayout->addWidget(disableEpgBox, line++, 1);
+
 	boxLayout->addLayout(gridLayout);
 
 	gridLayout = new QGridLayout();
@@ -564,6 +571,7 @@ void DvbConfigDialog::accept()
 	manager->setEndMargin(endMarginBox->value() * 60);
 	manager->setOverride6937Charset(override6937CharsetBox->isChecked());
 	manager->setCreateInfoFile(createInfoFileBox->isChecked());
+	manager->setDisableEpg(disableEpgBox->isChecked());
 #if 0
 	manager->setScanWhenIdle(scanWhenIdleBox->isChecked());
 #endif
