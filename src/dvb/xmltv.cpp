@@ -87,14 +87,33 @@ bool XmlTv::parseChannel(void)
 	QStringRef channelName = attrs.value("id");
 	QList<QString>list;
 
-	while (r->readNextStartElement()) {
-		QStringRef name;
-		name = r->name();
+	QString current = r->name().toString();
+	while (!r->atEnd()) {
+		const QXmlStreamReader::TokenType t = r->readNext();
+
+		if (t == QXmlStreamReader::EndElement) {
+			if (r->name() == current)
+				break;
+		}
+
+		if (t != QXmlStreamReader::StartElement)
+			continue;
+
+		QStringRef name = r->name();
 		if (name == "display-name") {
 			QString display = r->readElementText();
 			list.append(display);
+		} else if (name != "icon") {
+			static QString lastNotFound("");
+			if (name.toString() != lastNotFound) {
+				qCWarning(logDvb,
+					"Ignoring unknown channel tag '%s'",
+					qPrintable(name.toString()));
+				lastNotFound = name.toString();
+			}
 		}
 	}
+
 	channelMap.insert(channelName.toString(), list);
 	return true;
 }
@@ -103,14 +122,37 @@ void XmlTv::parseKeyValues(QHash<QString, QString> &keyValues)
 {
 	QXmlStreamAttributes attrs;
 
-	while (r->readNextStartElement()) {
-		QString key, value;
+	QString current = r->name().toString();
+	while (!r->atEnd()) {
+		const QXmlStreamReader::TokenType t = r->readNext();
+
+		if (t == QXmlStreamReader::EndElement) {
+			if (r->name() == current)
+				return;
+		}
+
+		if (t != QXmlStreamReader::StartElement)
+			continue;
 
 		attrs = r->attributes();
-		key = r->name().toString();
-		value = attrs.value("lang").toString();
+		QString key = r->name().toString();
+		QString value = attrs.value("lang").toString();
 
 		keyValues.insert(key, value);
+	}
+}
+
+void XmlTv::ignoreTag(void)
+{
+	QXmlStreamAttributes attrs;
+
+	QString current = r->name().toString();
+	while (!r->atEnd()) {
+		const QXmlStreamReader::TokenType t = r->readNext();
+		if (t == QXmlStreamReader::EndElement) {
+			if (r->name() == current)
+				return;
+		}
 	}
 }
 
@@ -154,7 +196,7 @@ bool XmlTv::parseProgram(void)
 	}
 
 	if (!has_channel) {
-#if 1 // This can be too noisy to keep enabled
+#if 0 // This can be too noisy to keep enabled
 		static QString lastNotFound("");
 		if (channelName.toString() != lastNotFound) {
 			qCWarning(logDvb,
@@ -163,6 +205,8 @@ bool XmlTv::parseProgram(void)
 			lastNotFound = channelName.toString();
 		}
 #endif
+		ignoreTag();
+
 		return true; // Not a parsing error
 	}
 
@@ -194,10 +238,20 @@ bool XmlTv::parseProgram(void)
 	epgEntry.channel = channel;
 
 	QString starRating;
-	while (r->readNextStartElement()) {
-		QStringRef element;
+	QString current = r->name().toString();
+	while (!r->atEnd()) {
+		const QXmlStreamReader::TokenType t = r->readNext();
+
+		if (t == QXmlStreamReader::EndElement) {
+			if (r->name() == current)
+				break;
+		}
+
+		if (t != QXmlStreamReader::StartElement)
+			continue;
+
 		QString lang;
-		element = r->name();
+		QStringRef element = r->name();
 		if (element == "title") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
@@ -230,7 +284,7 @@ bool XmlTv::parseProgram(void)
 			QString value = getValue(keyValues, "value");
 
 			if (system == "" || value == "")
-				break;
+				continue;
 
 			if (epgEntry.parental != "")
 				epgEntry.parental += ", ";
@@ -250,11 +304,37 @@ bool XmlTv::parseProgram(void)
 
 				starRating += value;
 			}
+		} else if (element == "aspect") {
+			ignoreTag();
+		} else if (element == "audio") {
+			ignoreTag();
+		} else if (element == "category") {
+			ignoreTag();
+		} else if (element == "credits") {
+			ignoreTag();
+		} else if (element == "date") {
+			ignoreTag();
+		} else if (element == "episode-num") {
+			ignoreTag();
+		} else if (element == "quality") {
+			ignoreTag();
+		} else if (element == "rating") {
+			ignoreTag();
+		} else if (element == "stereo") {
+			ignoreTag();
+		} else if (element == "url") {
+			ignoreTag();
+		} else if (element == "video") {
+			ignoreTag();
+		} else {
+			static QString lastNotFound("");
+			if (element.toString() != lastNotFound) {
+				qCWarning(logDvb,
+					"Ignoring unknown programme tag '%s'",
+					qPrintable(element.toString()));
+				lastNotFound = element.toString();
+			}
 		}
-		/* FIXME: add support for other fields:
-		 * credits, date, country, episode-num, video
-		 * rating, star-rating
-		 */
 	}
 
 	if (starRating != "") {
@@ -305,36 +385,26 @@ bool XmlTv::load(QString file)
 
 	r = new QXmlStreamReader(&f);
 	while (!r->atEnd()) {
-		const QXmlStreamReader::TokenType t = r->readNext();
-		QStringRef name;
-		switch (t) {
-		case QXmlStreamReader::StartElement:
-			name = r->name();
-			if (name == "tv") {
-				break;
-			} else if (name == "channel") {
-				if (!parseChannel())
-					parseError = true;
-			} else if (name == "programme") {
-				if (!parseProgram())
-					parseError = true;
-			} else {
-#if 1 // This can be too noisy to keep enabled
-				static QString lastNotFound("");
-				if (name.toString() != lastNotFound) {
-					qCWarning(logDvb,
-						"Ignoring tag '%s'",
-						qPrintable(name.toString()));
-					lastNotFound = name.toString();
-				}
-#endif
+		if (r->readNext() != QXmlStreamReader::StartElement)
+			continue;
+
+		QStringRef name = r->name();
+
+		if (name == "channel") {
+			if (!parseChannel())
+				parseError = true;
+		} else if (name == "programme") {
+			if (!parseProgram())
+				parseError = true;
+		} else if (name != "tv") {
+			static QString lastNotFound("");
+			if (name.toString() != lastNotFound) {
+				qCWarning(logDvb,
+					"Ignoring unknown main tag '%s'",
+					qPrintable(r->qualifiedName().toString()));
+				lastNotFound = name.toString();
 			}
-			break;
-		default:
-			break;
 		}
-		if (parseError)
-			break;
 	}
 
 	if (r->error()) {
