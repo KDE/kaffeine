@@ -121,6 +121,7 @@ bool XmlTv::parseChannel(void)
 void XmlTv::parseKeyValues(QHash<QString, QString> &keyValues)
 {
 	QXmlStreamAttributes attrs;
+	QHash<QString, QString>::ConstIterator it;
 
 	QString current = r->name().toString();
 	while (!r->atEnd()) {
@@ -136,7 +137,13 @@ void XmlTv::parseKeyValues(QHash<QString, QString> &keyValues)
 
 		attrs = r->attributes();
 		QString key = r->name().toString();
-		QString value = attrs.value("lang").toString();
+		QString value;
+
+		it = keyValues.constFind(key);
+		if (it != keyValues.constEnd())
+			value = *it + ", ";
+
+		value += r->readElementText();
 
 		keyValues.insert(key, value);
 	}
@@ -165,6 +172,16 @@ QString XmlTv::getValue(QHash<QString, QString> &keyValues, QString key)
 		return QString("");
 
 	return *it;
+}
+
+QString XmlTv::getAllValues(QHash<QString, QString> &keyValues)
+{
+	QString values;
+
+	foreach(const QString &key, keyValues.keys())
+		values += key + "(s): " + keyValues.value(key) + "\n";
+
+	return values;
 }
 
 bool XmlTv::parseProgram(void)
@@ -237,7 +254,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
-	QString starRating;
+	QString starRating, credits;
 	QString current = r->name().toString();
 	while (!r->atEnd()) {
 		const QXmlStreamReader::TokenType t = r->readNext();
@@ -293,17 +310,12 @@ bool XmlTv::parseProgram(void)
 		} else if (element == "star-rating") {
 			QHash<QString, QString> keyValues;
 
-			attrs = r->attributes();
 			parseKeyValues(keyValues);
 
 			QString value = getValue(keyValues, "value");
 
-			if (value != "") {
-				if (langEntry->details != "")
-					langEntry->details += " ";
-
+			if (value != "")
 				starRating += value;
-			}
 		} else if (element == "aspect") {
 			ignoreTag();
 		} else if (element == "audio") {
@@ -311,7 +323,11 @@ bool XmlTv::parseProgram(void)
 		} else if (element == "category") {
 			ignoreTag();
 		} else if (element == "credits") {
-			ignoreTag();
+			QHash<QString, QString> keyValues;
+
+			parseKeyValues(keyValues);
+
+			credits = getAllValues(keyValues);
 		} else if (element == "date") {
 			ignoreTag();
 		} else if (element == "episode-num") {
@@ -337,11 +353,21 @@ bool XmlTv::parseProgram(void)
 		}
 	}
 
+	langEntry->details.replace(QRegularExpression("\\n+$"), "");
 	if (starRating != "") {
-			if (langEntry->details != "")
-				langEntry->details += "\n\n";
-			langEntry->details += "Star rating: " + starRating;
-		}
+		if (langEntry->details != "")
+			langEntry->details += "\n\n";
+		langEntry->details += "Star rating: " + starRating;
+	}
+
+	if (credits != "") {
+		if (langEntry->details != "")
+			langEntry->details += "\n\n";
+		langEntry->details += credits;
+		langEntry->details.replace(QRegularExpression("\\n+$"), "");
+	}
+
+	langEntry->details.replace(QRegularExpression("\\n"), "<p/>");
 
 	epgModel->addEntry(epgEntry);
 
