@@ -87,52 +87,31 @@ bool XmlTv::parseChannel(void)
 	QStringRef channelName = attrs.value("id");
 	QList<QString>list;
 
-	while (!r->atEnd()) {
-		const QXmlStreamReader::TokenType t = r->readNext();
+	while (r->readNextStartElement()) {
 		QStringRef name;
-		switch (t) {
-		case QXmlStreamReader::StartElement:
-			name = r->name();
-			if (name == "display-name") {
-				QString display = r->readElementText();
-				list.append(display);
-			}
-			break;
-		case QXmlStreamReader::EndElement:
-			channelMap.insert(channelName.toString(), list);
-			return true;
-		default:
-			break;
+		name = r->name();
+		if (name == "display-name") {
+			QString display = r->readElementText();
+			list.append(display);
 		}
 	}
 	channelMap.insert(channelName.toString(), list);
-	return false;
+	return true;
 }
 
-bool XmlTv::parseKeyValues(QHash<QString, QString> &keyValues)
+void XmlTv::parseKeyValues(QHash<QString, QString> &keyValues)
 {
 	QXmlStreamAttributes attrs;
 
-	while (!r->atEnd()) {
-		const QXmlStreamReader::TokenType t = r->readNext();
+	while (r->readNextStartElement()) {
 		QString key, value;
-		switch (t) {
-		case QXmlStreamReader::StartElement:
-			attrs = r->attributes();
-			key = r->name().toString();
-			value = attrs.value("lang").toString();
 
-			keyValues.insert(key, value);
-			break;
-		case QXmlStreamReader::EndElement:
+		attrs = r->attributes();
+		key = r->name().toString();
+		value = attrs.value("lang").toString();
 
-
-			return true;
-		default:
-			break;
-		}
+		keyValues.insert(key, value);
 	}
-	return false;
 }
 
 QString XmlTv::getValue(QHash<QString, QString> &keyValues, QString key)
@@ -175,10 +154,14 @@ bool XmlTv::parseProgram(void)
 	}
 
 	if (!has_channel) {
-#if 0 // This can be too noisy to keep enabled
-		qCWarning(logDvb,
-			  "Error: channel %s not found at transponders",
-			  qPrintable(channelName.toString()));
+#if 1 // This can be too noisy to keep enabled
+		static QString lastNotFound("");
+		if (channelName.toString() != lastNotFound) {
+			qCWarning(logDvb,
+				"Error: channel %s not found at transponders",
+				qPrintable(channelName.toString()));
+			lastNotFound = channelName.toString();
+		}
 #endif
 		return true; // Not a parsing error
 	}
@@ -211,101 +194,92 @@ bool XmlTv::parseProgram(void)
 	epgEntry.channel = channel;
 
 	QString starRating;
-	while (!r->atEnd()) {
-		const QXmlStreamReader::TokenType t = r->readNext();
+	while (r->readNextStartElement()) {
 		QStringRef element;
 		QString lang;
-		switch (t) {
-		case QXmlStreamReader::StartElement:
-			element = r->name();
-			if (element == "title") {
-				attrs = r->attributes();
-				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
-				langEntry = getLangEntry(epgEntry, lang);
-				if (langEntry->title != "")
-					langEntry->title += " ";
-				langEntry->title += r->readElementText();
-			} else if (element == "sub-title") {
-				attrs = r->attributes();
-				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
-				langEntry = getLangEntry(epgEntry, lang);
-				if (langEntry->subheading != "")
-					langEntry->subheading += " ";
-				langEntry->subheading += r->readElementText();
-			} else if (element == "desc") {
-				attrs = r->attributes();
-				lang = IsoCodes::code2Convert(attrs.value("lang").toString());
-				langEntry = getLangEntry(epgEntry, lang);
+		element = r->name();
+		if (element == "title") {
+			attrs = r->attributes();
+			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+			langEntry = getLangEntry(epgEntry, lang);
+			if (langEntry->title != "")
+				langEntry->title += " ";
+			langEntry->title += r->readElementText();
+		} else if (element == "sub-title") {
+			attrs = r->attributes();
+			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+			langEntry = getLangEntry(epgEntry, lang);
+			if (langEntry->subheading != "")
+				langEntry->subheading += " ";
+			langEntry->subheading += r->readElementText();
+		} else if (element == "desc") {
+			attrs = r->attributes();
+			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+			langEntry = getLangEntry(epgEntry, lang);
+			if (langEntry->details != "")
+				langEntry->details += " ";
+			langEntry->details += r->readElementText();
+		} else if (element == "rating") {
+			QHash<QString, QString> keyValues;
+
+			attrs = r->attributes();
+			parseKeyValues(keyValues);
+
+			QString system = attrs.value("system").toString();
+
+			QString value = getValue(keyValues, "value");
+
+			if (system == "" || value == "")
+				break;
+
+			if (epgEntry.parental != "")
+				epgEntry.parental += ", ";
+
+			epgEntry.parental += "System: " + system + ", rating: " + value;
+		} else if (element == "star-rating") {
+			QHash<QString, QString> keyValues;
+
+			attrs = r->attributes();
+			parseKeyValues(keyValues);
+
+			QString value = getValue(keyValues, "value");
+
+			if (value != "") {
 				if (langEntry->details != "")
 					langEntry->details += " ";
-				langEntry->details += r->readElementText();
-			} else if (element == "rating") {
-				QHash<QString, QString> keyValues;
 
-				attrs = r->attributes();
-				parseKeyValues(keyValues);
-
-				QString system = attrs.value("system").toString();
-
-				QString value = getValue(keyValues, "value");
-
-				if (system == "" || value == "")
-					break;
-
-				if (epgEntry.parental != "")
-					epgEntry.parental += ", ";
-
-				epgEntry.parental += "System: " + system + ", rating: " + value;
-			} else if (element == "star-rating") {
-				QHash<QString, QString> keyValues;
-
-				attrs = r->attributes();
-				parseKeyValues(keyValues);
-
-				QString value = getValue(keyValues, "value");
-
-				if (value != "") {
-					if (langEntry->details != "")
-						langEntry->details += " ";
-
-					starRating += value;
-				}
+				starRating += value;
 			}
-			/* FIXME: add support for other fields:
-			 * credits, date, country, episode-num, video
-			 * rating, star-rating
-			 */
-			break;
-		case QXmlStreamReader::EndElement:
-			if (starRating != "") {
-				if (langEntry->details != "")
-					langEntry->details += "\n\n";
-				langEntry->details += "Star rating: " + starRating;
-			}
+		}
+		/* FIXME: add support for other fields:
+		 * credits, date, country, episode-num, video
+		 * rating, star-rating
+		 */
+	}
 
+	if (starRating != "") {
+			if (langEntry->details != "")
+				langEntry->details += "\n\n";
+			langEntry->details += "Star rating: " + starRating;
+		}
+
+	epgModel->addEntry(epgEntry);
+
+	/*
+	 * It is not uncommon to have the same xmltv channel
+	 * associated with multiple DVB channels. It happens,
+	 * for example, when there is a SD, HD, 4K video
+	 * streams associated with the same programs.
+	 * So, add entries also for the other channels.
+	 */
+	for (; name != list.end(); name++) {
+		if (channelModel->hasChannelByName(*name)) {
+			channel = channelModel->findChannelByName(*name);
+			epgEntry.channel = channel;
 			epgModel->addEntry(epgEntry);
-
-			/*
-			 * It is not uncommon to have the same xmltv channel
-			 * associated with multiple DVB channels. It happens,
-			 * for example, when there is a SD, HD, 4K video
-			 * streams associated with the same programs.
-			 * So, add entries also for the other channels.
-			 */
-			for (; name != list.end(); name++) {
-				if (channelModel->hasChannelByName(*name)) {
-					channel = channelModel->findChannelByName(*name);
-					epgEntry.channel = channel;
-					epgModel->addEntry(epgEntry);
-				}
-			}
-
-			return true;
-		default:
-			break;
 		}
 	}
-	return false;
+	return true;
 }
 
 bool XmlTv::load(QString file)
@@ -336,15 +310,25 @@ bool XmlTv::load(QString file)
 		switch (t) {
 		case QXmlStreamReader::StartElement:
 			name = r->name();
-			if (name == "channel") {
+			if (name == "tv") {
+				break;
+			} else if (name == "channel") {
 				if (!parseChannel())
 					parseError = true;
 			} else if (name == "programme") {
 				if (!parseProgram())
 					parseError = true;
+			} else {
+#if 1 // This can be too noisy to keep enabled
+				static QString lastNotFound("");
+				if (name.toString() != lastNotFound) {
+					qCWarning(logDvb,
+						"Ignoring tag '%s'",
+						qPrintable(name.toString()));
+					lastNotFound = name.toString();
+				}
+#endif
 			}
-			break;
-		case QXmlStreamReader::EndElement:
 			break;
 		default:
 			break;
@@ -352,6 +336,16 @@ bool XmlTv::load(QString file)
 		if (parseError)
 			break;
 	}
+
+	if (r->error()) {
+		qCWarning(logDvb, "XMLTV: error: %s",
+			  qPrintable(r->errorString()));
+	}
+
+	if (parseError) {
+		qCWarning(logDvb, "XMLTV: parsing error");
+	}
+
 	f.close();
 	watcher.addPath(file);
 	return parseError;
