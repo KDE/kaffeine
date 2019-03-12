@@ -97,9 +97,7 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	toolButton->setToolTip(i18n("Select Folder"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeTimeShiftFolder()));
 	gridLayout->addWidget(toolButton, line++, 2);
-	boxLayout->addLayout(gridLayout);
 
-//
 	gridLayout->addWidget(new QLabel(i18n("xmltv file name (optional):")), line, 0);
 
 	xmltvFileNameEdit = new QLineEdit(widget);
@@ -111,8 +109,8 @@ DvbConfigDialog::DvbConfigDialog(DvbManager *manager_, QWidget *parent) : QDialo
 	toolButton->setToolTip(i18n("Add optional file to allow reading EPG data from xmltv files"));
 	connect(toolButton, SIGNAL(clicked()), this, SLOT(changeXmltvFileName()));
 	gridLayout->addWidget(toolButton, line++, 2);
+
 	boxLayout->addLayout(gridLayout);
-//
 
 	gridLayout = new QGridLayout();
 	gridLayout->addWidget(new QLabel(i18n("Begin margin (minutes):")), line, 0);
