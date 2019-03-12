@@ -306,7 +306,7 @@ bool XmlTv::parseProgram(void)
 			if (epgEntry.parental != "")
 				epgEntry.parental += ", ";
 
-			epgEntry.parental += "System: " + system + ", rating: " + value;
+			epgEntry.parental += i18n("System: ") + system + i18n(", rating: ") + value;
 		} else if (element == "star-rating") {
 			QHash<QString, QString> keyValues;
 
@@ -330,6 +330,8 @@ bool XmlTv::parseProgram(void)
 		} else if (element == "credits") {
 			QHash<QString, QString> keyValues;
 
+			// FIXME: the disadvantage of this simple parsing is
+			// that it won't allow translations
 			parseKeyValues(keyValues);
 
 			credits = getAllValues(keyValues);
@@ -363,33 +365,33 @@ bool XmlTv::parseProgram(void)
 		}
 	}
 
-	langEntry->details.replace(QRegularExpression("\\n*$"), "\n");
+	/* Those extra fields are not language-specific data */
 	if (starRating != "") {
-		if (langEntry->details != "")
-			langEntry->details += "\n\n";
-		langEntry->details += "Star rating: " + starRating;
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("Star rating: ") + starRating;
 	}
 
 	if (date != "") {
-		if (langEntry->details != "")
-			langEntry->details += "\n";
-		langEntry->details += "Date: " + date;
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("Date: ") + date;
 	}
 
 	if (category != "") {
-		if (langEntry->details != "")
-			langEntry->details += "\n";
-		langEntry->details += "Category: " + category;
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("Category: ") + category;
 	}
 
 	if (credits != "") {
-		if (langEntry->details != "")
-			langEntry->details += "\n\n";
-		langEntry->details += credits;
-		langEntry->details.replace(QRegularExpression("\\n*$"), "\n");
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += credits;
 	}
 
-	langEntry->details.replace(QRegularExpression("\\n"), "<p/>");
+	epgEntry.content.replace(QRegularExpression("\\n+$"), "");
+	epgEntry.content.replace(QRegularExpression("\\n"), "<p/>");
 
 	epgModel->addEntry(epgEntry);
 
