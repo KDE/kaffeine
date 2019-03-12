@@ -48,8 +48,6 @@ void XmlTv::addFile(QString file)
 		return;
 
 	load(file);
-
-	watcher.addPath(file);
 };
 
 void XmlTv::clear()
@@ -314,17 +312,16 @@ bool XmlTv::load(QString file)
 {
 	bool parseError = false;
 
+	watcher.removePath(file);
 	if (file.isEmpty()) {
-		qCInfo(logDvb,
-			"Could not locate %s",
-			qPrintable(file));
+		qCInfo(logDvb, "File to load not specified");
 		return false;
 	}
 
 	QFile f(file);
 	if (!f.open(QIODevice::ReadOnly)) {
 		qCWarning(logDvb,
-				"Could not open %s (%s)",
+				"Error opening %s: %s. Will stop monitoring it",
 				qPrintable(file),
 				qPrintable(f.errorString()));
 		return false;
@@ -356,5 +353,6 @@ bool XmlTv::load(QString file)
 			break;
 	}
 	f.close();
+	watcher.addPath(file);
 	return parseError;
 }
