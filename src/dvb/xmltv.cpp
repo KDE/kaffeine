@@ -171,6 +171,8 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin = QDateTime::fromString(start, Qt::ISODate);
 	QDateTime end = QDateTime::fromString(stop, Qt::ISODate);
 	epgEntry.duration = QTime(0, 0, 0).addSecs(epgEntry.begin.secsTo(end));
+
+	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
 	while (!r->atEnd()) {
