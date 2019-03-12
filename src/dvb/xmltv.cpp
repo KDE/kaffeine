@@ -56,6 +56,7 @@ void XmlTv::clear()
 {
 	if (watcher.files().empty())
 		return;
+	channelMap.clear();
 	watcher.removePaths(watcher.files());
 };
 
