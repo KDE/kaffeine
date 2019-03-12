@@ -203,6 +203,20 @@ program records will be stored.
 </para>
 
 <para>
+The <guilabel>xmltv file name (optional)</guilabel> specifies a file name
+with EPG data that was retrieved via an external grabber. When this
+option is used, you'll likely set <guilabel>Disable parsing Electronic
+Program Guide (EPG) data from MPEG-TS tables</guilabel>
+</para>
+
+<para>
+The <guilabel>Disable parsing EPG data
+from MPEG-TS tables</guilabel> disables the Electronic Program Guide (EPG)
+data to be retrieved from the broadcasted signal. Use it in order to save
+some CPU time, if your broadcaster doesn't send reliable EPG data.
+</para>
+
+<para>
 The <guilabel>Time shift folder</guilabel> is used in conjunction with the
 pause button
 (<inlinemediaobject><imageobject><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject></inlinemediaobject>) of the media player screen. When the button
@@ -300,6 +314,67 @@ with the contents of the program guide for records made via the
 <guimenu>Program guide</guimenu>.
 </para>
 
+<sect3 id="EPG-data">
+<title>Electronic Program Guide (EPG) data retrival</title>
+
+<para>
+Most digital TV broadcasters send program information via the broadcast
+information, encoded on a MPEG-TS stream. However, some of them uses
+non-standard encodings for those data. A well known case is BBC in
+United Kingdom, where HD programs are stored using some special proprietary
+format. Other providers just don't fill the EPG data, or the information there
+is not reliable.
+</para>
+
+<para>
+Since Kaffeine 2.0.17, it is now possible to disable parsing the EPG data
+from the broadcasted channels, using an external program to retrieve them.
+In order to disable, just set the <guilabel>Disable parsing Electronic
+Program Guide (EPG) data from MPEG-TS tables</guilabel> box. You can now set
+an external parser to produce a file with EPG data, and use the
+<guilabel>xmltv file name (optional)</guilabel> to specify the file name of
+the produced file. The produced file should use the XMLTV format, as described
+on its DTD. See <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat">
+XMLTV File format</ulink> for more information.
+</para>
+
+<para>
+When &kaffeine; is set to use a XMLTV file, it will automatically detect any
+file changes on it. When a change happens, it will open the file and parse
+its contents, updating EPG data accordingly.
+</para>
+
+<para>
+It should be noticed that the XMLTV file has a table with associates its
+own internal representation for channels with the expected channel name at
+the digital TV broadcasted data. &kaffeine; will only retrieve the EPG data
+if the channels there matches the ones inside &kaffeine;'s channel list.
+So, you need to ensure that the channels there matches what Kaffeine
+expects. If it doesn't match, you could use a command line xml editor program
+in order to add the missing channel information.
+</para>
+
+<para>
+For example, if you have a xmltv grabber program retrieving the file named
+<emphasis>original_xmltv_file.xmltv</emphasis>, you could use the
+<programlisting>xmlstarlet</programlisting> program to add missing
+associations. So, if you want to associate the XMLTV channel named as
+<emphasis>channel.foo.uk</emphasis> with a channel whose &kaffeine; name is
+<emphasis>FOO</emphasis>, you could run this small script:
+</para>
+<para><programlisting>
+channel="xmltv.channel.pt"
+name="DVB_CHANNEL"
+xmlstarlet ed -s "tv/channel[@id='$channel']" -t elem -n display-name -v "$name" original_xmltv_file.xmltv > new_xmltv_file.xmltv
+mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
+</programlisting>
+</para>
+<para>
+Then, set &kaffeine; to use the new <emphasis>/tmp/new_xmltv_file.xmltv</emphasis>
+file.
+</para>
+
+</sect3>
 </sect2>
 <sect2 id="dtv-source-settings">
 <title>Configuring digital TV sources</title>
