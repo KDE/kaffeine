@@ -318,7 +318,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.channel = channel;
 
 	QString starRating, credits, date;
-	QHash<QString, QString>category;
+	QHash<QString, QString>category, keyword;
 
 	QString current = r->name().toString();
 	while (!r->atEnd()) {
@@ -399,6 +399,15 @@ bool XmlTv::parseProgram(void)
 				cat += ", ";
 			cat += r->readElementText();
 			category[lang] = cat;
+		} else if (element == "keyword") {
+			attrs = r->attributes();
+			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
+
+			QString kw = getValue(keyword, lang);
+			if (kw != "")
+				kw += ", ";
+			kw += r->readElementText();
+			keyword[lang] = kw;
 		} else if (element == "credits") {
 			credits = parseCredits();
 		} else if ((element == "date")) {
@@ -419,7 +428,6 @@ bool XmlTv::parseProgram(void)
 			   (element == "country") ||
 			   (element == "episode-num") ||
 			   (element == "icon") ||
-			   (element == "keyword") ||
 			   (element == "language") ||
 			   (element == "length") ||
 			   (element == "last-chance") ||
@@ -460,6 +468,20 @@ bool XmlTv::parseProgram(void)
 
 	foreach(const QString &key, category.keys()) {
 		QString value = i18n("Category: ") + category[key];
+		QString lang = key;
+		if (key != "QAA")
+			langEntry = getLangEntry(epgEntry, lang, false);
+		if (!langEntry) {
+			if (epgEntry.content != "")
+				epgEntry.content += "\n";
+			epgEntry.content += value;
+		} else {
+			langEntry->details.replace(QRegularExpression("\\n*$"), "<p/>");
+			langEntry->details += value;
+		}
+	}
+	foreach(const QString &key, keyword.keys()) {
+		QString value = i18n("Keyword: ") + keyword[key];
 		QString lang = key;
 		if (key != "QAA")
 			langEntry = getLangEntry(epgEntry, lang, false);
