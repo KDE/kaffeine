@@ -414,15 +414,14 @@ bool XmlTv::parseProgram(void)
 		} else if ((element == "date")) {
 			QString rawdate = r->readElementText();
 			date = rawdate.mid(0, 4);
-			QString month = rawdate.mid(5, 2);
-			QString day = rawdate.mid(7, 2);
+			QString month = rawdate.mid(4, 2);
+			QString day = rawdate.mid(6, 2);
 			if (month != "")
 				date += "-" + month;
 			if (day != "") {
 				date += "-" + day;
-
 				QDate d = QDate::fromString(date, Qt::ISODate);
-				date = d.toString();
+				date = d.toString(Qt::DefaultLocaleShortDate);
 			}
 		} else if (element == "language") {
 			language = r->readElementText();
