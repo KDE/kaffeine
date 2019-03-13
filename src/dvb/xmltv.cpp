@@ -219,25 +219,25 @@ QString XmlTv::parseCredits(void)
 	foreach(const QString &key, keyValues.keys()) {
 		// Be explicit here, in order to allow translations
 		if (key == "director")
-			name = i18n("director(s)");
+			name = i18n("Director(s)");
 		else if (key == "actor")
-			name = i18n("actor(s)");
+			name = i18n("Actor(s)");
 		else if (key == "writer")
-			name = i18n("writer(s)");
+			name = i18n("Writer(s)");
 		else if (key == "adapter")
-			name = i18n("adapter(s)");
+			name = i18n("Adapter(s)");
 		else if (key == "producer")
-			name = i18n("producer(s)");
+			name = i18n("Producer(s)");
 		else if (key == "composer")
-			name = i18n("composer(s)");
+			name = i18n("Composer(s)");
 		else if (key == "editor")
-			name = i18n("editor(s)");
+			name = i18n("Editor(s)");
 		else if (key == "presenter")
-			name = i18n("presenter(s)");
+			name = i18n("Presenter(s)");
 		else if (key == "commentator")
-			name = i18n("commentator(s)");
+			name = i18n("Commentator(s)");
 		else if (key == "guest")
-			name = i18n("guest(s)");
+			name = i18n("Guest(s)");
 		else
 			name = key + "(s)";
 
