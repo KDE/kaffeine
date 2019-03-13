@@ -315,12 +315,12 @@ with the contents of the program guide for records made via the
 </para>
 
 <sect3 id="EPG-data">
-<title>Electronic Program Guide (EPG) data retrival</title>
+<title>Electronic Program Guide (EPG) data retrieval</title>
 
 <para>
 Most digital TV broadcasters send program information via the broadcast
-information, encoded on a MPEG-TS stream. However, some of them uses
-non-standard encodings for those data. A well known case is BBC in
+information, encoded on a MPEG-TS stream. However, some of them use
+non-standard encodings for those data. A well-known case is BBC in
 United Kingdom, where HD programs are stored using some special proprietary
 format. Other providers just don't fill the EPG data, or the information there
 is not reliable.
@@ -339,7 +339,7 @@ XMLTV File format</ulink> for more information.
 </para>
 
 <para>
-When &kaffeine; is set to use a XMLTV file, it will automatically detect any
+When &kaffeine; is set to use an XMLTV file, it will automatically detect any
 file changes on it. When a change happens, it will open the file and parse
 its contents, updating EPG data accordingly.
 </para>
@@ -348,9 +348,9 @@ its contents, updating EPG data accordingly.
 It should be noticed that the XMLTV file has a table with associates its
 own internal representation for channels with the expected channel name at
 the digital TV broadcasted data. &kaffeine; will only retrieve the EPG data
-if the channels there matches the ones inside &kaffeine;'s channel list.
-So, you need to ensure that the channels there matches what Kaffeine
-expects. If it doesn't match, you could use a command line xml editor program
+if the channels there match the ones inside &kaffeine;'s channel list.
+So, you need to ensure that the channels there matches what &kaffeine;
+expects. If it doesn't match, you could use a command line &XML; editor program
 in order to add the missing channel information.
 </para>
 
