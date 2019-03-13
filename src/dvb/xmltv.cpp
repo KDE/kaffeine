@@ -318,6 +318,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.channel = channel;
 
 	QString starRating, credits, date, language, origLanguage, country;
+	QString episode;
 	QHash<QString, QString>category, keyword;
 
 	QString current = r->name().toString();
@@ -435,9 +436,25 @@ bool XmlTv::parseProgram(void)
 			country = r->readElementText();
 			if (origLanguage.size() == 2)
 				IsoCodes::getCountry(IsoCodes::code2Convert(country), &country);
+		} else if (element == "episode-num") {
+			attrs = r->attributes();
+			QString system = attrs.value("system").toString();
+
+			if (system != "xmltv_ns")
+				continue;
+
+			episode = r->readElementText();
+			episode.remove(" ");
+			episode.replace(QRegularExpression("/.*"), "");
+			QStringList list = episode.split(".");
+			if (!list.size())
+				continue;
+			episode = i18n("Season ") + QString::number(list[0].toInt() + 1);
+			if (list.size() < 2)
+				continue;
+			episode += i18n(" Episode ") + QString::number(list[1].toInt() + 1);
 		} else if ((element == "aspect") ||
 			   (element == "audio") ||
-			   (element == "episode-num") ||
 			   (element == "icon") ||
 			   (element == "length") ||
 			   (element == "last-chance") ||
@@ -502,6 +519,12 @@ bool XmlTv::parseProgram(void)
 			langEntry->details.replace(QRegularExpression("\\n*$"), "<p/>");
 			langEntry->details += value;
 		}
+	}
+
+	if (episode != "") {
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("language: ") + episode;
 	}
 
 	if (language != "") {
