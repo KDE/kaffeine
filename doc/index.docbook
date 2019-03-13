@@ -327,7 +327,7 @@ is not reliable.
 </para>
 
 <para>
-Since &kaffeine; 2.0.17, it is now possible to disable parsing the EPG data
+Since &kaffeine; 2.0.17, it is possible to disable parsing the EPG data
 from the broadcasted channels, using an external program to retrieve them.
 In order to disable, just set the <guilabel>Disable parsing Electronic
 Program Guide (EPG) data from MPEG-TS tables</guilabel> box. You can now set
@@ -365,7 +365,9 @@ associations. So, if you want to associate the XMLTV channel named as
 <para><programlisting>
 channel="xmltv.channel.pt"
 name="DVB_CHANNEL"
-xmlstarlet ed -s "tv/channel[@id='$channel']" -t elem -n display-name -v "$name" original_xmltv_file.xmltv > new_xmltv_file.xmltv
+xmlstarlet ed \
+	-s "tv/channel[@id='$channel']" -t elem -n display-name \
+	-v "$name" original_xmltv_file.xmltv &gt; new_xmltv_file.xmltv
 mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 </programlisting>
 </para>
