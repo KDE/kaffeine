@@ -320,14 +320,14 @@ with the contents of the program guide for records made via the
 <para>
 Most digital TV broadcasters send program information via the broadcast
 information, encoded on a MPEG-TS stream. However, some of them use
-non-standard encodings for those data. A well-known case is BBC in
-United Kingdom, where HD programs are stored using some special proprietary
+non-standard encodings for those data. As an example, at the United Kingdom,
+HD programs EPG data are usually stored using some a proprietary
 format. Other providers just don't fill the EPG data, or the information there
 is not reliable.
 </para>
 
 <para>
-Since Kaffeine 2.0.17, it is now possible to disable parsing the EPG data
+Since &kaffeine; 2.0.17, it is now possible to disable parsing the EPG data
 from the broadcasted channels, using an external program to retrieve them.
 In order to disable, just set the <guilabel>Disable parsing Electronic
 Program Guide (EPG) data from MPEG-TS tables</guilabel> box. You can now set
@@ -357,7 +357,7 @@ in order to add the missing channel information.
 <para>
 For example, if you have a xmltv grabber program retrieving the file named
 <emphasis>original_xmltv_file.xmltv</emphasis>, you could use the
-<programlisting>xmlstarlet</programlisting> program to add missing
+<emphasis>xmlstarlet</emphasis> program to add missing
 associations. So, if you want to associate the XMLTV channel named as
 <emphasis>channel.foo.uk</emphasis> with a channel whose &kaffeine; name is
 <emphasis>FOO</emphasis>, you could run this small script:
