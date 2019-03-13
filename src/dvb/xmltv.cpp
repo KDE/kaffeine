@@ -3,6 +3,8 @@
  *
  * Copyright (C) 2019 Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
  *
+ * Matches the xmltv dtd found on version 0.6.1
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -103,7 +105,7 @@ bool XmlTv::parseChannel(void)
 		if (name == "display-name") {
 			QString display = r->readElementText();
 			list.append(display);
-		} else if (name != "icon") {
+		} else if (name != "icon" && name != "url") {
 			static QString lastNotFound("");
 			if (name.toString() != lastNotFound) {
 				qCWarning(logDvb,
@@ -410,9 +412,21 @@ bool XmlTv::parseProgram(void)
 			}
 		} else if ((element == "aspect") ||
 			   (element == "audio") ||
+			   (element == "country") ||
 			   (element == "episode-num") ||
+			   (element == "icon") ||
+			   (element == "keyword") ||
+			   (element == "language") ||
+			   (element == "length") ||
+			   (element == "last-chance") ||
+			   (element == "new") ||
+			   (element == "orig-language") ||
+			   (element == "premiere") ||
+			   (element == "previously-shown") ||
 			   (element == "quality") ||
+			   (element == "review") ||
 			   (element == "stereo") ||
+			   (element == "subtitles") ||
 			   (element == "url") ||
 			   (element == "video")) {
 			ignoreTag();
