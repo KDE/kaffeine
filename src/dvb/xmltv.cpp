@@ -372,28 +372,37 @@ bool XmlTv::parseProgram(void)
 			QHash<QString, QString> keyValues;
 
 			attrs = r->attributes();
-			parseKeyValues(keyValues);
-
 			QString system = attrs.value("system").toString();
 
+			parseKeyValues(keyValues);
 			QString value = getValue(keyValues, "value");
 
-			if (system == "" || value == "")
+			if (value == "")
 				continue;
 
 			if (epgEntry.parental != "")
 				epgEntry.parental += ", ";
 
-			epgEntry.parental += i18n("System: ") + system + i18n(", rating: ") + value;
+			if (system != "")
+				epgEntry.parental += system + " ";
+
+			epgEntry.parental += i18n("rating: ") + value;
 		} else if (element == "star-rating") {
 			QHash<QString, QString> keyValues;
 
-			parseKeyValues(keyValues);
+			attrs = r->attributes();
+			QString system = attrs.value("system").toString();
 
+			parseKeyValues(keyValues);
 			QString value = getValue(keyValues, "value");
 
-			if (value != "")
-				starRating += value;
+			if (value == "")
+				continue;
+
+			if (system != "")
+				starRating += system + " ";
+
+			starRating += value;
 		} else if (element == "category") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
