@@ -317,7 +317,7 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
-	QString starRating, credits, date;
+	QString starRating, credits, date, language, origLanguage, country;
 	QHash<QString, QString>category, keyword;
 
 	QString current = r->name().toString();
@@ -423,16 +423,25 @@ bool XmlTv::parseProgram(void)
 				QDate d = QDate::fromString(date, Qt::ISODate);
 				date = d.toString();
 			}
+		} else if (element == "language") {
+			language = r->readElementText();
+			if (language.size() == 2)
+				IsoCodes::getLanguage(IsoCodes::code2Convert(language), &language);
+		} else if (element == "orig-language") {
+			origLanguage = r->readElementText();
+			if (origLanguage.size() == 2)
+				IsoCodes::getLanguage(IsoCodes::code2Convert(origLanguage), &origLanguage);
+		} else if (element == "country") {
+			country = r->readElementText();
+			if (origLanguage.size() == 2)
+				IsoCodes::getCountry(IsoCodes::code2Convert(country), &country);
 		} else if ((element == "aspect") ||
 			   (element == "audio") ||
-			   (element == "country") ||
 			   (element == "episode-num") ||
 			   (element == "icon") ||
-			   (element == "language") ||
 			   (element == "length") ||
 			   (element == "last-chance") ||
 			   (element == "new") ||
-			   (element == "orig-language") ||
 			   (element == "premiere") ||
 			   (element == "previously-shown") ||
 			   (element == "quality") ||
@@ -493,6 +502,24 @@ bool XmlTv::parseProgram(void)
 			langEntry->details.replace(QRegularExpression("\\n*$"), "<p/>");
 			langEntry->details += value;
 		}
+	}
+
+	if (language != "") {
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("language: ") + language;
+	}
+
+	if (origLanguage != "") {
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("Original language: ") + origLanguage;
+	}
+
+	if (country != "") {
+		if (epgEntry.content != "")
+			epgEntry.content += "\n";
+		epgEntry.content += i18n("Country: ") + country;
 	}
 
 	if (credits != "") {
