@@ -40,8 +40,6 @@ XmlTv::XmlTv(DvbManager *manager_) : manager(manager_), r(NULL)
 
 	connect(&watcher, &QFileSystemWatcher::fileChanged,
 		this, &XmlTv::load);
-
-//	exec();
 };
 
 void XmlTv::addFile(QString file)
@@ -180,16 +178,6 @@ QString XmlTv::getValue(QHash<QString, QString> &keyValues, QString key)
 	return *it;
 }
 
-QString XmlTv::getAllValues(QHash<QString, QString> &keyValues)
-{
-	QString values;
-
-	foreach(const QString &key, keyValues.keys())
-		values += key + "(s): " + keyValues.value(key) + "\n";
-
-	return values;
-}
-
 QString XmlTv::parseCredits(void)
 {
 	QHash<QString, QString>::ConstIterator it;
@@ -257,7 +245,6 @@ QString XmlTv::parseCredits(void)
 	}
 
 	return values;
-
 }
 
 bool XmlTv::parseProgram(void)

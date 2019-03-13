@@ -43,7 +43,6 @@ private:
 	void ignoreTag(void);
 	void parseKeyValues(QHash<QString, QString> &keyValues);
 	QString getValue(QHash<QString, QString> &keyValues, QString key);
-	QString getAllValues(QHash<QString, QString> &keyValues);
 	DvbEpgLangEntry *getLangEntry(DvbEpgEntry &epgEntry,
 				      QString &code,
 			              bool add_code);
