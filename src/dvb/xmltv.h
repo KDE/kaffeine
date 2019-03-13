@@ -45,7 +45,9 @@ private:
 	QString getValue(QHash<QString, QString> &keyValues, QString key);
 	QString getAllValues(QHash<QString, QString> &keyValues);
 	DvbEpgLangEntry *getLangEntry(DvbEpgEntry &epgEntry,
-				      QString &code);
+				      QString &code,
+			              bool add_code);
+
 
 	QFileSystemWatcher watcher;
 

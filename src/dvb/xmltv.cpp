@@ -63,11 +63,15 @@ void XmlTv::clear()
 
 // This function is very close to the one at dvbepg.cpp
 DvbEpgLangEntry *XmlTv::getLangEntry(DvbEpgEntry &epgEntry,
-				     QString &code)
+				     QString &code,
+				     bool add_code = true)
 {
 	DvbEpgLangEntry *langEntry;
 
 	if (!epgEntry.langEntry.contains(code)) {
+		if (!add_code)
+			return NULL;
+
 		DvbEpgLangEntry e;
 		epgEntry.langEntry.insert(code, e);
 		if (!manager->languageCodes.contains(code)) {
@@ -326,7 +330,9 @@ bool XmlTv::parseProgram(void)
 	epgEntry.begin.setTimeSpec(Qt::UTC);
 	epgEntry.channel = channel;
 
-	QString starRating, credits, category, date;
+	QString starRating, credits, date;
+	QHash<QString, QString>category;
+
 	QString current = r->name().toString();
 	while (!r->atEnd()) {
 		const QXmlStreamReader::TokenType t = r->readNext();
@@ -391,10 +397,12 @@ bool XmlTv::parseProgram(void)
 		} else if (element == "category") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
-			langEntry = getLangEntry(epgEntry, lang);
-			if (category != "")
-				category += ", ";
-			category += r->readElementText();
+
+			QString cat = getValue(category, lang);
+			if (cat != "")
+				cat += ", ";
+			cat += r->readElementText();
+			category[lang] = cat;
 		} else if (element == "credits") {
 			credits = parseCredits();
 		} else if ((element == "date")) {
@@ -454,10 +462,19 @@ bool XmlTv::parseProgram(void)
 		epgEntry.content += i18n("Date: ") + date;
 	}
 
-	if (category != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
-		epgEntry.content += i18n("Category: ") + category;
+	foreach(const QString &key, category.keys()) {
+		QString value = i18n("Category: ") + category[key];
+		QString lang = key;
+		if (key != "QAA")
+			langEntry = getLangEntry(epgEntry, lang, false);
+		if (!langEntry) {
+			if (epgEntry.content != "")
+				epgEntry.content += "\n";
+			epgEntry.content += value;
+		} else {
+			langEntry->details.replace(QRegularExpression("\\n*$"), "<p/>");
+			langEntry->details += value;
+		}
 	}
 
 	if (credits != "") {
