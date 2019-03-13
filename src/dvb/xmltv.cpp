@@ -184,6 +184,76 @@ QString XmlTv::getAllValues(QHash<QString, QString> &keyValues)
 	return values;
 }
 
+QString XmlTv::parseCredits(void)
+{
+	QHash<QString, QString>::ConstIterator it;
+	QHash<QString, QString> keyValues;
+	QXmlStreamAttributes attrs;
+	QString name, values;
+
+	// Store everything into a hash
+	QString current = r->name().toString();
+	while (!r->atEnd()) {
+		const QXmlStreamReader::TokenType t = r->readNext();
+
+		if (t == QXmlStreamReader::EndElement) {
+			if (r->name() == current)
+				break;
+		}
+
+		if (t != QXmlStreamReader::StartElement)
+			continue;
+
+		attrs = r->attributes();
+		QString key = r->name().toString();
+		QString value;
+
+		it = keyValues.constFind(key);
+		if (it != keyValues.constEnd())
+			value = *it + ", ";
+
+		value += r->readElementText();
+
+		if (key == "actor") {
+			value += i18n(" as ") + attrs.value("role").toString();
+		}
+
+		keyValues.insert(key, value);
+	}
+
+	// Parse the hash values
+	foreach(const QString &key, keyValues.keys()) {
+		// Be explicit here, in order to allow translations
+		if (key == "director")
+			name = i18n("director(s)");
+		else if (key == "actor")
+			name = i18n("actor(s)");
+		else if (key == "writer")
+			name = i18n("writer(s)");
+		else if (key == "adapter")
+			name = i18n("adapter(s)");
+		else if (key == "producer")
+			name = i18n("producer(s)");
+		else if (key == "composer")
+			name = i18n("composer(s)");
+		else if (key == "editor")
+			name = i18n("editor(s)");
+		else if (key == "presenter")
+			name = i18n("presenter(s)");
+		else if (key == "commentator")
+			name = i18n("commentator(s)");
+		else if (key == "guest")
+			name = i18n("guest(s)");
+		else
+			name = key + "(s)";
+
+		values += name + ": " + keyValues.value(key) + "\n";
+	}
+
+	return values;
+
+}
+
 bool XmlTv::parseProgram(void)
 {
 	const QString emptyString("");
@@ -324,13 +394,7 @@ bool XmlTv::parseProgram(void)
 				category += ", ";
 			category += r->readElementText();
 		} else if (element == "credits") {
-			QHash<QString, QString> keyValues;
-
-			// FIXME: the disadvantage of this simple parsing is
-			// that it won't allow translations
-			parseKeyValues(keyValues);
-
-			credits = getAllValues(keyValues);
+			credits = parseCredits();
 		} else if ((element == "date")) {
 			QString rawdate = r->readElementText();
 			date = rawdate.mid(0, 4);

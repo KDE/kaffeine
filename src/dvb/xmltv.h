@@ -39,6 +39,7 @@ private:
 
 	bool parseChannel(void);
 	bool parseProgram(void);
+	QString parseCredits(void);
 	void ignoreTag(void);
 	void parseKeyValues(QHash<QString, QString> &keyValues);
 	QString getValue(QHash<QString, QString> &keyValues, QString key);
