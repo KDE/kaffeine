@@ -196,22 +196,32 @@ namespace IsoCodes
 	* ISO 3166-1 Alpha 3 Country codes
 	* Loaded and translated at runtime from iso-codes.
 	*/
-	static QHash<QString, QString> iso3166_1_codes;
+	static QHash<QString, QString> iso3166_1_codes, iso3166_2_codes;
 
-	bool getCountry(const QString &code, QString *country)
+	bool getCountry(const QString &_code, QString *country)
 	{
 		static bool first = true;
+		QString code;
 
 		if (first) {
 			load(&iso3166_1_codes,
-			     NULL,
+			     &iso3166_2_codes,
 			     QString("xml/iso-codes/iso_3166-1.xml"),
 			     QLatin1String("iso_3166_entries"),
 			     QLatin1String("iso_3166_entry"),
 			     QLatin1String("alpha_3_code"),
-			     QString("alpha_2_code"),		// Currently unused
+			     QString("alpha_2_code"),
 			     QLatin1String("name"));
 			first = false;
+		}
+
+		if (_code.size() == 2) {
+			QHash<QString, QString>::ConstIterator it = iso3166_1_codes.constFind(code);
+			if (it == iso3166_2_codes.constEnd())
+				return false;
+			code = it.value();
+		} else {
+			code = _code;
 		}
 
 		QHash<QString, QString>::ConstIterator it = iso3166_1_codes.constFind(code);
