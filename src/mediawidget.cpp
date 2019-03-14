@@ -794,14 +794,14 @@ void MediaWidget::previous()
 {
 	if (source->getType() == MediaSource::Url)
 		emit playlistPrevious();
-	backend->jumpToPreviousChapter();
+       source->previous();
 }
 
 void MediaWidget::next()
 {
 	if (source->getType() == MediaSource::Url)
 		emit playlistNext();
-	backend->jumpToNextChapter();
+       source->next();
 }
 
 void MediaWidget::stop()
