@@ -23,6 +23,7 @@
 #include <KConfigGroup>
 #include <QAction>
 #include <QBoxLayout>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
 #include <QDialogButtonBox>
@@ -106,6 +107,13 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 		languageLabel->setText("");
 
 	rightLayout->addLayout(langLayout);
+
+	QHBoxLayout *showLayout = new QHBoxLayout();
+	showLayout->addWidget(new QLabel(i18n("Show channels with empty EPG data")));
+	showBox = new QCheckBox(widget);
+	showLayout->addWidget(showBox, Qt::AlignLeft);
+	rightLayout->addLayout(showLayout);
+	connect(showBox, SIGNAL(clicked()), this, SLOT(changeShowMode()));
 
 	QAction *scheduleAction = new QAction(QIcon::fromTheme(QLatin1String("media-record"), QIcon(":media-record")),
 		i18nc("@action:inmenu tv show", "Record Show"), this);
@@ -256,6 +264,11 @@ void DvbEpgDialog::scheduleProgram()
 	}
 }
 
+void DvbEpgDialog::changeShowMode()
+{
+	epgChannelTableModel->setViewMode(showBox->isChecked());
+}
+
 bool DvbEpgEntryLessThan::operator()(const DvbSharedEpgEntry &x, const DvbSharedEpgEntry &y) const
 {
 	if (x->channel != y->channel) {
@@ -294,8 +307,20 @@ DvbEpgChannelTableModel::~DvbEpgChannelTableModel()
 {
 }
 
-void DvbEpgChannelTableModel::setManager(DvbManager *manager)
+void DvbEpgChannelTableModel::setViewMode(bool enableEmptyEpgChannels)
 {
+	if (enableEmptyEpgChannels) {
+		DvbChannelModel *channelModel = manager->getChannelModel();
+		reset(channelModel->getChannels());
+	} else {
+		DvbEpgModel *epgModel = manager->getEpgModel();
+		resetFromKeys(epgModel->getEpgChannels());
+	}
+}
+
+void DvbEpgChannelTableModel::setManager(DvbManager *_manager)
+{
+	manager = _manager;
 	DvbEpgModel *epgModel = manager->getEpgModel();
 	connect(epgModel, SIGNAL(epgChannelAdded(DvbSharedChannel)),
 		this, SLOT(epgChannelAdded(DvbSharedChannel)));
@@ -322,7 +347,8 @@ void DvbEpgChannelTableModel::setManager(DvbManager *manager)
 	}
 
 	internalSort(sortOrder);
-	resetFromKeys(epgModel->getEpgChannels());
+
+	setViewMode(false);
 }
 
 QVariant DvbEpgChannelTableModel::data(const QModelIndex &index, int role) const

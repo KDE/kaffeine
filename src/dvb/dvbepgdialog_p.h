@@ -71,11 +71,16 @@ public:
 class DvbEpgChannelTableModel : public TableModel<DvbEpgChannelTableModelHelper>
 {
 	Q_OBJECT
+
+private:
+	DvbManager *manager;
+
 public:
 	explicit DvbEpgChannelTableModel(QObject *parent);
 	~DvbEpgChannelTableModel();
 
 	void setManager(DvbManager *manager);
+	void setViewMode(bool enableEmptyEpgChannels);
 
 	QVariant data(const QModelIndex &index, int role) const;
 	QVariant headerData(int section, Qt::Orientation orientation, int role) const;

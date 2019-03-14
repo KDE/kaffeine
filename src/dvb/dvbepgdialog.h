@@ -47,6 +47,7 @@ private slots:
 	void entryActivated(const QModelIndex &index);
 	void checkEntry();
 	void scheduleProgram();
+	void changeShowMode();
 
 private:
 	DvbManager *manager;
@@ -57,6 +58,7 @@ private:
 	QTreeView *epgView;
 	QLabel *contentLabel;
 	QComboBox *languageBox;
+	QCheckBox *showBox;
 	QLabel *languageLabel;
 };
 
