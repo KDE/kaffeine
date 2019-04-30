@@ -1059,10 +1059,13 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		break;
 	    }
 	case DvbTransponderBase::Invalid:
-		qCWarning(logDev, "Invalid transmission type");
+		qCWarning(logDev, "Invalid transmission type when tuning to %s",
+			  qPrintable(transponder.toString()));
 		return false;
 	default:
-		qCWarning(logDev, "Unknown transmission type %d", transponder.getTransmissionType());
+		qCWarning(logDev, "Unknown transmission type %d when tuning to %s",
+			  transponder.getTransmissionType(),
+			  qPrintable(transponder.toString()));
 		return false;
 	}
 
@@ -1242,10 +1245,15 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 		break;
 	    }
 	case DvbTransponderBase::Invalid:
-		qCWarning(logDev, "Invalid transmission type");
+		dvb_fe_retrieve_parm(dvbv5_parms, DTV_FREQUENCY, &value);
+		qCWarning(logDev, "Invalid transmission type when get props from %.2f MHz",
+			  value / 1000000.);
 		return false;
 	default:
-		qCWarning(logDev, "Unknown transmission type %d", transponder.getTransmissionType());
+		dvb_fe_retrieve_parm(dvbv5_parms, DTV_FREQUENCY, &value);
+		qCWarning(logDev, "Unknown transmission type %d when get props from %.2f MHz",
+			  transponder.getTransmissionType(),
+			  value / 1000000.);
 		return false;
 	}
 	return true;
