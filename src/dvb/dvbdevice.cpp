@@ -296,8 +296,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 			discardBuffers();
 		} else {
 			setDeviceState(DeviceTuning);
-			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
+			setDeviceState(DeviceIdle);
 		}
 
 		return;
@@ -395,8 +395,8 @@ void DvbDevice::tune(const DvbTransponder &transponder)
 		discardBuffers();
 	} else {
 		setDeviceState(DeviceTuning);
-		setDeviceState(DeviceIdle);
 		autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
+		setDeviceState(DeviceIdle);
 	}
 }
 
@@ -625,8 +625,8 @@ bool DvbDevice::acquire(const DvbConfigBase *config_)
 
 	if (backend->acquire()) {
 		config = config_;
-		setDeviceState(DeviceIdle);
 		autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
+		setDeviceState(DeviceIdle);
 		return true;
 	}
 
@@ -639,8 +639,8 @@ void DvbDevice::reacquire(const DvbConfigBase *config_)
 	setDeviceState(DeviceReleased);
 	stop();
 	config = config_;
-	setDeviceState(DeviceIdle);
 	autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
+	setDeviceState(DeviceIdle);
 }
 
 void DvbDevice::release()
@@ -689,8 +689,8 @@ void DvbDevice::frontendEvent()
 
 		if (!isAuto) {
 			qCDebug(logDvb, "tuning failed on %.2f MHz", backend->getFrqMHz());
-			setDeviceState(DeviceIdle);
 			autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
+			setDeviceState(DeviceIdle);
 			return;
 		}
 
@@ -717,8 +717,8 @@ void DvbDevice::frontendEvent()
 			 * warning, and not fail.
 			 */
 #if 0
-				setDeviceState(DeviceIdle);
 				autoTransponder.setTransmissionType(DvbTransponderBase::Invalid);
+				setDeviceState(DeviceIdle);
 				return;
 #endif
 			}
