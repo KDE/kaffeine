@@ -104,7 +104,6 @@ private:
 	QIcon mediaRecordIcon;
 	QIcon documentSaveIcon;
 	bool autoHideMenu;
-	QTimer *cursorHideTimer;
 
 	DvbTimeShiftCleaner *timeShiftCleaner;
 };

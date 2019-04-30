@@ -223,11 +223,6 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 	connect(timer, SIGNAL(timeout()), this, SLOT(cleanTimeShiftFiles()));
 
 	autoHideMenu = false;
-	cursorHideTimer = new QTimer(this);
-	cursorHideTimer->setInterval(1500);
-	cursorHideTimer->setSingleShot(true);
-	connect(cursorHideTimer, SIGNAL(timeout()), this, SLOT(hideCursor()));
-
 }
 
 DvbTab::~DvbTab()
@@ -349,15 +344,9 @@ void DvbTab::mouse_move(int x, int)
 	if (!autoHideMenu)
 		return;
 
-	cursorHideTimer->stop();
 	unsetCursor();
 
 	leftWidget->setVisible(x >= 0 && x < 120);
-
-	if (leftWidget->isHidden()) {
-		cursorHideTimer->start();
-	}
-
 }
 
 void DvbTab::toggleDisplayMode(MediaWidget::DisplayMode displayMode)
@@ -368,12 +357,10 @@ void DvbTab::toggleDisplayMode(MediaWidget::DisplayMode displayMode)
 	case MediaWidget::MinimalMode:
 		leftWidget->hide();
 		autoHideMenu = true;
-		cursorHideTimer->start();
 		break;
 	case MediaWidget::NormalMode:
 		leftWidget->show();
 		autoHideMenu = false;
-		cursorHideTimer->stop();
 		break;
 	}
 }
