@@ -41,15 +41,13 @@
 
 <copyright>
 <year>2004</year>
-<year>2016</year>
-<year>2017</year>
-<year>2018</year>
+<year>2016-2019</year>
 <holder>The &kaffeine; Authors.</holder>
 </copyright>
 <legalnotice>&FDLNotice;</legalnotice>
 
-<date>2018-04-27</date>
-<releaseinfo>&kaffeine; 2.0.15</releaseinfo>
+<date>2019-05-01</date>
+<releaseinfo>&kaffeine; 2.0.17</releaseinfo>
 
 <!-- Abstract about this handbook -->
 

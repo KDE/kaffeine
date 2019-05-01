@@ -1,6 +1,44 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.17 (2019-05-01):
+-   Fix GCC 9 warningd (due to -Wdeprecated-copy)
+-   dvbtab: remove unused hide cursor logic
+-   dvbdevice: fix a race condition with frontend timeout
+-   dvbdevice_linux: improve some warning messages
+-   mediawidget: fix a regression with next/previous logic
+-   scanfile.dvb: update it to reflect last changes
+-   dvbepgdialog: allow showing channels with empty EPG
+-   index.docbook: some updates at the doc guide
+-   index.docbook: add documentation about XMLTV support
+-   Add support for reading EPG from xmltv files
+-   Add support for disabling MPEG-TS EPG reception
+-   README.md: add a quick description about xmltv
+-   dvbconfigdialog: remove an extra addLayout()
+-   iso-codes: add support for handling 2-letter codes as well
+-   dvbdevice_linux: remove unused frontendFd
+-   dvb: fix initialization for some objects
+-   backend-vlc: don't leak metadata
+-   backend-vlc: remove two temporary debug logs
+-   backend-vlc: only release libvlc_media_new() when stopped
+-   mediawidget: increase language popup size
+-   mediawidget: define a policy for the audio combo dropbox
+-   backend-vlc: ensure that audio stream will be a valid value
+-   backend-vlc: update metadata at stop()
+-   backend-vlc: release libvlc_media at destroy method
+-   backend-vlc: add other events to the list of possible types
+-   backend-vlc: simplify events handling logic
+-   backend-vlc: print unhandled libVLC events by name
+-   backend-vlc: update audio streams at metadata change
+-   mainwindow: associate control bar to main window widget
+-   backend-vlc: avoid memory leaks
+-   mainwindow: free configuration at exit
+-   mainwindow: better implement close event
+-   backend-vlc: don't leak timer at object destroy
+-   vlcmediawidget: properly initialize the class
+-   vlcmediawidget: initialize urlIsAudioCd and trackNumber variables
+-   backend-vlc: store current audio stream
+
 Version 2.0.16 (2019-01-14):
 -   Immediately apply the new audio language if the user changes it while
     a channel is being playing;
