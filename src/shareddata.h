@@ -27,6 +27,7 @@ class SharedData : public QSharedData
 {
 public:
 	SharedData() { }
+	SharedData(const SharedData &sh) : QSharedData(sh) { }
 	~SharedData() { }
 
 	SharedData &operator=(const SharedData &)
