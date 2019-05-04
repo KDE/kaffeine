@@ -776,9 +776,6 @@ void MediaWidget::setVolume(int volume)
 
 void MediaWidget::setVolumeUnderMouse(int volume)
 {
-	if (!backend->underMouse())
-		return;
-
 	if (volume == 100 || !volume)
 		osdWidget->showText(i18nc("osd", "Volume: %1%", volume), 1500);
 	else

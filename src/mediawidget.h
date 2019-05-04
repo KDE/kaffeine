@@ -127,7 +127,6 @@ public:
 	void togglePause();
 	void setPosition(int position); // milliseconds
 	void setVolume(int volume); // 0 - 100
-	void setVolumeUnderMouse(int volume);
 	void toggleMuted();
 	void mediaSourceDestroyed(MediaSource *mediaSource);
 	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
@@ -205,6 +204,7 @@ private:
 	void keyPressEvent(QKeyEvent *event);
 	void resizeEvent(QResizeEvent *event);
 	void wheelEvent(QWheelEvent *event);
+	void setVolumeUnderMouse(int volume);
 
 	QMenu *menu;
 	AbstractMediaWidget *backend;
