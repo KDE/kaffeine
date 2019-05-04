@@ -1342,15 +1342,10 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
-	int shortSkipDuration = Configuration::instance()->getShortSkipDuration();
-	int currentTime =
-		(backend->getCurrentTime() - ((25 * shortSkipDuration * event->delta()) / 3));
+	int y = event->delta();
+	int delta = (y < 0) ? -1 : 1;
 
-	if (currentTime < 0) {
-		currentTime = 0;
-	}
-
-	backend->seek(currentTime);
+	setVolumeUnderMouse(getVolume() + delta);
 }
 
 void MediaWidget::playbackFinished()

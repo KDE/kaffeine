@@ -34,7 +34,6 @@
 #include <QDesktopWidget>
 #include <QFileDialog>
 #include <QHoverEvent>
-#include <QWheelEvent>
 #include <QInputDialog>
 #include <QLoggingCategory>
 #include <QMainWindow>
@@ -850,22 +849,6 @@ bool MainWindow::event(QEvent *event)
 	// and all its children (especially the video widget) ...
 
 	switch (event->type()) {
-	case QEvent::Wheel: {
-		int delta, y;
-
-		QWheelEvent *wheel = static_cast<QWheelEvent *>(event);
-
-		y = wheel->pixelDelta().y();
-		if (!y)
-			y = wheel->angleDelta().y();
-
-		if (!y)
-			break;
-		delta = (y < 0) ? -1 : 1;
-
-		mediaWidget->setVolumeUnderMouse(mediaWidget->getVolume() + delta);
-		break;
-	}
 	case QEvent::HoverMove: {
 		int x = reinterpret_cast<QHoverEvent *> (event)->pos().x();
 		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
