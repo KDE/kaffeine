@@ -559,7 +559,10 @@ void VlcMediaWidget::unregisterEvents()
 		libvlc_event_detach(eventManager, eventType.at(i),
 				    vlcEventHandler, this);
 #if LIBVLC_VERSION_MAJOR <= 2
-	libvlc_event_detach(eventManager, libvlc_MediaMetaChanged,
+	if (!vlcMedia)
+		return;
+	libvlc_event_manager_t *mediaEvent = libvlc_media_event_manager(vlcMedia);
+	libvlc_event_detach(mediaEvent, libvlc_MediaMetaChanged,
 			    vlcEventHandler, this);
 #endif
 }
@@ -583,9 +586,18 @@ int VlcMediaWidget::makePlay()
 	}
 
 #if LIBVLC_VERSION_MAJOR <= 2
-	// For libVlc 2.x to work, we need to add the
-	// MediaMetaChanged event only here
-	if (libvlc_event_attach(eventManager, libvlc_MediaMetaChanged,
+	/*
+	 * There is a difference between libVlc 2.x and 3.x:
+	 * With version 2.x, the event needs to be registered at the
+	 * vlcMedia object, just before calling libvlc_media_player_set_media()
+	 *
+	 * On version 3.x, while this still works, you can simply register the
+	 * event directly at vlcMediaPlayer, together with all other events,
+	 * with simplifies the code.
+	 */
+	libvlc_event_manager_t *mediaEvent = libvlc_media_event_manager(vlcMedia);
+
+	if (libvlc_event_attach(mediaEvent, libvlc_MediaMetaChanged,
 				vlcEventHandler, this) != 0) {
 		qCWarning(logMediaWidget, "Cannot attach event handler %d",
 			  libvlc_MediaMetaChanged);
