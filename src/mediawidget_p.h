@@ -48,6 +48,7 @@ public:
 
 private:
 	void mousePressEvent(QMouseEvent *event);
+	void wheelEvent(QWheelEvent *event);
 };
 
 class MediaSourceUrl : public MediaSource

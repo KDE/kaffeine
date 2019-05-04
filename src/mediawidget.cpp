@@ -1601,3 +1601,12 @@ void SeekSlider::mousePressEvent(QMouseEvent *event)
 		event->buttons() ^ event->button() ^ button, event->modifiers());
 	QSlider::mousePressEvent(&modifiedEvent);
 }
+
+void SeekSlider::wheelEvent(QWheelEvent *event)
+{
+	int delta = (event->delta() < 0) ? -1 : 1;
+	int new_value = value() + delta * maximum() / 100;
+
+	event->accept();
+	setValue(new_value);
+}
