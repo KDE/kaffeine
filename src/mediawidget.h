@@ -206,6 +206,8 @@ private:
 	void wheelEvent(QWheelEvent *event);
 	void setVolumeUnderMouse(int volume);
 
+	bool event(QEvent* event) override;
+
 	QMenu *menu;
 	AbstractMediaWidget *backend;
 	OsdWidget *osdWidget;
