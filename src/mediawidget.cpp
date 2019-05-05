@@ -1413,8 +1413,12 @@ void MediaWidget::metadataChanged()
 		caption = source->getDefaultCaption();
 	}
 
+	QString osdText = caption;
+	if (backend->hasDvdMenu())
+		osdText += "\nUse keys to navigate at DVD menu";
+
 	if (!caption.isEmpty()) {
-		osdWidget->showText(caption, 2500);
+		osdWidget->showText(osdText, 2500);
 	}
 
 	emit changeCaption(caption);
