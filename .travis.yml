@@ -1,0 +1,50 @@
+language: cpp
+compiler: gcc
+dist: xenial
+sudo: required
+notifications:
+  email:
+    recipients:
+    - mchehab@kernel.org
+    on_success: change
+    on_failure: always
+matrix:
+  include:
+  - env: TARGET_OS=xenial
+  - compiler: clang
+    env: TARGET_OS=xenial
+before_install:
+  - sudo apt-get update -qq
+
+install
+  - sudo apt-get install -y \
+        debhelper \
+        cmake \
+        pkg-kde-tools \
+        pkg-config \
+        extra-cmake-modules \
+        qtbase5-dev \
+        libqt5x11extras5-dev \
+        libkf5coreaddons-dev \
+        libkf5doctools-dev \
+        libkf5dbusaddons-dev \
+        libkf5i18n-dev \
+        libkf5kio-dev \
+        libkf5solid-dev \
+        libkf5widgetsaddons-dev \
+        libkf5windowsystem-dev \
+        libkf5xmlgui-dev \
+        libvlc-dev \
+        libx11-dev \
+        libxss-dev \
+        libdvbv5-dev \
+        libudev-dev
+
+script:
+  #!/bin/sh
+set -e
+  - mkdir build
+  - cd build
+  - cmake ..
+  - make
+  - make install
