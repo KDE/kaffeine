@@ -1,6 +1,17 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.18 (2019-05-14):
+
+-   Start using TravisCI for test builds
+-   mediawidget: Override DVD keys instead of changing their settings
+-   mediawidget: warn user to use keys for DVD menu
+-   mediawidget: remove a now uneeded check
+-   mediawidget: fix video position movement with mouse wheel
+-   mediawidget: fix the mouse wheel behavior at the streaming window
+-   vlc: with vlc 2.x, use vlcMedia for libvlc_MediaMetaChanged event
+-   vlc: fix support for vlc 2.x
+
 Version 2.0.17 (2019-05-01):
 -   Fix GCC 9 warningd (due to -Wdeprecated-copy)
 -   dvbtab: remove unused hide cursor logic
