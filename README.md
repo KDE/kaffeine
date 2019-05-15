@@ -212,6 +212,43 @@ Installing it is as simple as:
 
 	sudo dpkg -i kaffeine_*_amd64.deb
 
+Running Kaffeine from Docker.io
+===============================
+
+It is now possible to run kaffeine from Docker without installing it
+on your machine by using Docker. You need to have Docker already
+installed and configured.
+
+The prodedures for installing Docker vary from Distribution. On
+Fedora, it would be:
+
+	sudo dnf install docker && \
+	  sudo systemctl enable docker && \
+	  sudo gpasswd -a $USER docker && \
+	  sudo systemctl restart docker
+
+On other distros, the install command will be different. On
+Debian 19.04, for example, it would be:
+
+	sudo apt install docker.io && \
+	  sudo systemctl enable docker && \
+	  sudo gpasswd -a $USER docker && \
+	  sudo systemctl restart docker
+
+Once you have docker installed, you can download the Kaffeine's
+Docker image from:
+
+	https://cloud.docker.com/u/maurochehab/repository/docker/maurochehab/kaffeine/general
+
+The updated instructions about how to download and use the Docker
+image it will be pointed there.
+
+Please notice that Docker causes the image to run inside a container,
+so the access to the directories on your host machine will be limited
+to the ones explicitly exported with --volume/--mount.
+
+The same applies to the Digital TV devices.
+
 Known video output issues
 =========================
 
