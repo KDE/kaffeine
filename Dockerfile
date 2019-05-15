@@ -37,7 +37,7 @@ RUN apt-get clean -y && rm -rf /var/lib/apt/lists/* ~/kaffeine
 
 # STEP 5: create an user to run it
 
-RUN useradd -m -k -r -u 1000 -g users -Gaudio,video,irc kaffeine
+RUN useradd -m -r -u 1000 -g users -Gaudio,video,irc kaffeine
 USER kaffeine
 
 # STEP 6: command to run the container
