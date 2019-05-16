@@ -21,7 +21,7 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu disco main restricted universe mu
     libkf5coreaddons-dev libkf5dbusaddons-dev libkf5i18n-dev libkf5kio-dev debhelper \
     libkf5solid-dev libkf5widgetsaddons-dev libkf5windowsystem-dev libkf5xmlgui-dev \
     libkf5doctools-dev git libx11-dev libxss-dev libudev-dev libvlc-dev libqt5dbus5 \
-    dh-autoreconf autotools-dev autoconf-archive libtool pkg-config \
+    dh-autoreconf autotools-dev autoconf-archive libtool pkg-config libqt5sql5-sqlite \
     appstream dbus-x11 wget openssl ca-certificates && \
     apt-get install -y --no-install-recommends vlc-data vlc-plugin-base vlc-plugin-qt \
     vlc-plugin-video-output && \
