@@ -6,7 +6,7 @@ Version 2.0.18 (2019-05-14):
 -   Start using TravisCI for test builds
 -   mediawidget: Override DVD keys instead of changing their settings
 -   mediawidget: warn user to use keys for DVD menu
--   mediawidget: remove a now uneeded check
+-   mediawidget: remove a now unneeded check
 -   mediawidget: fix video position movement with mouse wheel
 -   mediawidget: fix the mouse wheel behavior at the streaming window
 -   vlc: with vlc 2.x, use vlcMedia for libvlc_MediaMetaChanged event
@@ -182,7 +182,7 @@ Version 2.0.5 (2016-10-04):
 -   A newly-created recording entry should default to enable;
 -   CMakeLists.txt was including ECM config twice, causing build
     failures with newer versions of cmake;
--   Don't quit while recording without explict ack from the user;
+-   Don't quit while recording without explicit ack from the user;
 -   Fix handling of subtitles for DVB streams;
 -   Prevent VLC build warnings with version 3.0.0-git;
 -   Handle the new VLC 3.0 ES change events;
@@ -261,7 +261,7 @@ Version 2.0.1 (2016-05-31):
 
 -   Fix the usage of global scanfile.dvb;
 -   Reduce the size of the latitude/longitude validation icon;
--   Fix some a regresion at dvbdevice_linux;
+-   Fix a regression at dvbdevice_linux;
 -   Fix DVB live view play/pause logic;
 -   Add support for playing DVB after stop;
 -   Show play time while playing from DVB.
