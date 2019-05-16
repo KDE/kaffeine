@@ -212,42 +212,108 @@ Installing it is as simple as:
 
 	sudo dpkg -i kaffeine_*_amd64.deb
 
-Running Kaffeine from Docker.io
-===============================
+Running Kaffeine from Docker
+============================
 
 It is now possible to run kaffeine from Docker without installing it
 on your machine by using Docker. You need to have Docker already
 installed and configured.
 
-The prodedures for installing Docker vary from Distribution. On
-Fedora, it would be:
+Installing Docker
+-----------------
 
-	sudo dnf install docker && \
-	  sudo systemctl enable docker && \
-	  sudo gpasswd -a $USER docker && \
-	  sudo systemctl restart docker
+The prodedures for installing Docker vary from Distribution. It usually
+involves using the distro package manager to install it from the
+usual repositories:
 
-On other distros, the install command will be different. On
-Debian 19.04, for example, it would be:
+	sudo dnf install docker                         # Fedora
+	sudo apt install docker.io                      # Debian/Ubuntu
+	sudo zypper install docker docker-compose       # SUSE
+	sudo emerge app-emulation/docker                # Gentoo
+	sudo pacman -S docker                           # Arch Linux
 
-	sudo apt install docker.io && \
-	  sudo systemctl enable docker && \
-	  sudo gpasswd -a $USER docker && \
-	  sudo systemctl restart docker
+(some distros like Gentoo may require additional steps)
+
+Then add the current user into a docker group, in order to allow
+itr to run the docker command without sudo:
+
+	sudo groupadd docker            # if the docker group doesn't exist yet
+	sudo gpasswd -a $USER docker
+	newgrp docker                   # or close the session and re-open
+
+Finally, ask systemd to enable dockerd at boot time and to (re)start it:
+
+	sudo systemctl enable docker
+	sudo systemctl restart docker
+
+In case of doubts, please seek at the Internet for a guide especific
+for the distro you're using.
+
+Running Kaffeine's docker image
+-------------------------------
 
 Once you have docker installed, you can download the Kaffeine's
 Docker image from:
 
-	https://cloud.docker.com/u/maurochehab/repository/docker/maurochehab/kaffeine/general
+- <https://cloud.docker.com/u/maurochehab/repository/docker/maurochehab/kaffeine/general>
 
 The updated instructions about how to download and use the Docker
 image it will be pointed there.
 
-Please notice that Docker causes the image to run inside a container,
-so the access to the directories on your host machine will be limited
-to the ones explicitly exported with --volume/--mount.
+Please notice that Docker works by running an image created from the
+Dockerfile packaged with Kaffeine. Such image is executed inside
+a container, so it needs permission to open files, sockets and
+devices from the host machine.
 
-The same applies to the Digital TV devices.
+This command, for example, allows the docker.io Kaffeine image
+to access the host X11 server, mapping your user's home dir to
+the image's internal `kaffeine` home user, mapping a few devices
+(DVB, cdrom and DVD) to be used inside the container:
+
+	DEVS=$(ls /dev/cdrom /dev/sr* /dev/dvb/adapter*/* 2>/dev/null)
+	docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" \
+	   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+	   --volume="$HOME:/home/kaffeine:rw"  \
+	   $(for i in $DEVS; do echo -n "--device=$i:$i:rwm "; done)\
+	   "maurochehab/kaffeine"
+
+As the device map happens before starting the container,
+Kaffeine's capability of auto-detecting device hot-plug won't
+work.
+
+Notes:
+
+1) The container assumes that your user ID is 1000, with is
+   usually the default for the first user on most modern distros.
+   If your user is different, you may need to re-generate the
+   container locally.
+
+2) the docker image hosted at docker.io doesn't contain the
+   packages that are needed for DVD navigation and for decrypt DVD
+   streams. If you want such features, you need to add the packages
+   `libdvdread4` and `libdvdnav` to the Dockerfile and re-generate
+   the container locally.
+
+Generating the Kaffeine container locally
+-----------------------------------------
+
+Building a Kaffeine's container should be as easy as running this command:
+
+	docker create -t "mykaffeine" .
+
+It should take a while for it to download the base image and the
+needed packages, before starting build the container.
+
+When using a local container, the `docker run` command is the
+same. You just need to replace the docker.io name (`maurochehab/kaffeine`)
+with your container's tag name (in the above example, `mykaffeine`), e. g.:
+
+	DEVS=$(ls /dev/cdrom /dev/sr* /dev/dvb/adapter*/* 2>/dev/null)
+	docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" \
+	   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
+	   --volume="$HOME:/home/kaffeine:rw"  \
+	   $(for i in $DEVS; do echo -n "--device=$i:$i:rwm "; done)\
+	   "mykaffeine"
 
 Known video output issues
 =========================
