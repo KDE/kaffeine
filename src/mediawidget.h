@@ -197,13 +197,13 @@ private slots:
 	void longSkipDurationChanged(int longSkipDuration);
 
 private:
-	void contextMenuEvent(QContextMenuEvent *event);
-	void mouseDoubleClickEvent(QMouseEvent *event);
-	void dragEnterEvent(QDragEnterEvent *event);
-	void dropEvent(QDropEvent *event);
-	void keyPressEvent(QKeyEvent *event);
-	void resizeEvent(QResizeEvent *event);
-	void wheelEvent(QWheelEvent *event);
+	void contextMenuEvent(QContextMenuEvent *event) override;
+	void mouseDoubleClickEvent(QMouseEvent *event) override;
+	void dragEnterEvent(QDragEnterEvent *event) override;
+	void dropEvent(QDropEvent *event) override;
+	void keyPressEvent(QKeyEvent *event) override;
+	void resizeEvent(QResizeEvent *event) override;
+	void wheelEvent(QWheelEvent *event) override;
 	void setVolumeUnderMouse(int volume);
 
 	bool event(QEvent* event) override;
