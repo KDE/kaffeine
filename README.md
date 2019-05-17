@@ -257,6 +257,13 @@ Docker image from:
 
 - <https://cloud.docker.com/u/maurochehab/repository/docker/maurochehab/kaffeine/general>
 
+This can easily be done by running:
+
+	docker pull maurochehab/kaffeine
+
+Note: docker pull will also update the image to the newest one, in
+case you have download it already.
+
 The updated instructions about how to download and use the Docker
 image it will be pointed there.
 
@@ -265,34 +272,32 @@ Dockerfile packaged with Kaffeine. Such image is executed inside
 a container, so it needs permission to open files, sockets and
 devices from the host machine.
 
-This command, for example, allows the docker.io Kaffeine image
-to access the host X11 server, mapping your user's home dir to
-the image's internal `kaffeine` home user, mapping a few devices
-(DVB, cdrom and DVD) to be used inside the container:
+Getting the right mapping for volumes, groups and devices is tricky.
+So, we have a script that should hopefully do what it is expected
+(tested with Docker version 1.13):
 
-	DEVS=$(ls /dev/cdrom /dev/sr* /dev/dvb/adapter*/* 2>/dev/null)
-	docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" \
-	   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-	   --volume="$HOME:/home/kaffeine:rw"  \
-	   $(for i in $DEVS; do echo -n "--device=$i:$i:rwm "; done)\
-	   "maurochehab/kaffeine"
+	./kaffeine-docker.sh
 
-As the device map happens before starting the container,
-Kaffeine's capability of auto-detecting device hot-plug won't
-work.
+There are some limitations when running Kaffeine via a docker
+container:
 
-Notes:
-
-1) The container assumes that your user ID is 1000, with is
-   usually the default for the first user on most modern distros.
-   If your user is different, you may need to re-generate the
-   container locally.
-
-2) the docker image hosted at docker.io doesn't contain the
-   packages that are needed for DVD navigation and for decrypt DVD
-   streams. If you want such features, you need to add the packages
-   `libdvdread4` and `libdvdnav` to the Dockerfile and re-generate
+1) The container runs with a non-root user (user ID is 1000). This
+   is a requirement, as libVlc refuses to run as root. The user ID
+   1000 is usually the default for the first user on most modern
+   distros. If your user is different, the container won't get the
+   right permissions to read files from your home dir and will fail.
+   So, if you use a different user ID, you may need to re-generate
    the container locally.
+
+2) In order to avoid legal discussions, the docker image hosted at
+   docker.io doesn't contain the packages that are needed for DVD
+   navigation and for decrypt DVD streams. If you need such features,
+   you need to add the packages `libdvdread4` and `libdvdnav` to
+   the Dockerfile and re-generate the container locally.
+
+3) As the device map happens before starting the container,
+   Kaffeine's capability of auto-detecting device hot-plug won't
+   work.
 
 Generating the Kaffeine container locally
 -----------------------------------------
@@ -304,16 +309,11 @@ Building a Kaffeine's container should be as easy as running this command:
 It should take a while for it to download the base image and the
 needed packages, before starting build the container.
 
-When using a local container, the `docker run` command is the
-same. You just need to replace the docker.io name (`maurochehab/kaffeine`)
-with your container's tag name (in the above example, `mykaffeine`), e. g.:
+When using a local container, you need to tell the script to use the
+new docker image you created. You do that by passing one parameeter to
+the `kernel-docker.sh` script with the name of the image you created, e. g.:
 
-	DEVS=$(ls /dev/cdrom /dev/sr* /dev/dvb/adapter*/* 2>/dev/null)
-	docker run -it --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" \
-	   --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-	   --volume="$HOME:/home/kaffeine:rw"  \
-	   $(for i in $DEVS; do echo -n "--device=$i:$i:rwm "; done)\
-	   "mykaffeine"
+	./kaffeine-docker.sh "mykaffeine"
 
 Known video output issues
 =========================
