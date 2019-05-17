@@ -299,7 +299,7 @@ Generating the Kaffeine container locally
 
 Building a Kaffeine's container should be as easy as running this command:
 
-	docker create -t "mykaffeine" .
+	docker build -t "mykaffeine" .
 
 It should take a while for it to download the base image and the
 needed packages, before starting build the container.
