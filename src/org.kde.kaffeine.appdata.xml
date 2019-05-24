@@ -110,7 +110,7 @@
     <p xml:lang="x-test">xxKaffeine is a media player. What makes it different from the others is its excellent support of digital TV (DVB). Kaffeine has user-friendly interface, so that even first time users can start immediately playing their movies: from DVD (including DVD menus, titles, chapters, etc.), VCD, or a file.xx</p>
     <p xml:lang="zh-TW">Kaffeine 是一個媒體播放器。其與其他播放器不同之處在於其對數位電視 (DVB) 有良好的支援。Kaffeine 有友善的使用者介面，所以使用者一開始就能立即播放他們的電影：從 DVD（包含了 DVD 選單、標題、章節等等）、VCD 或是檔案等。</p>
   </description>
-  <url type="homepage">http://kaffeine.kde.org</url>
+  <url type="homepage">https://kde.org/applications/multimedia/kaffeine/</url>
   <url type="bugtracker">https://bugs.kde.org/enter_bug.cgi?format=guided&amp;product=kaffeine</url>
   <screenshots>
     <screenshot type="default">
