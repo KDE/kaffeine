@@ -38,6 +38,12 @@
 #include "dvbliveview_p.h"
 #include "dvbmanager.h"
 
+#if EAGAIN == EWOULDBLOCK
+  #define IS_EAGAIN(e) (e == EAGAIN)
+#else
+  #define IS_EAGAIN(e) (e == EAGAIN || e == EWOULDBLOCK)
+#endif
+
 void DvbOsd::init(DvbManager *manager_, OsdLevel level_, const QString &channelName_,
 	const QList<DvbSharedEpgEntry> &epgEntries)
 {
@@ -678,7 +684,7 @@ void DvbLiveViewInternal::writeToPipe()
 
 			// EAGAIN may happen when the pipe is full.
 			// That's a normal condition. No need to report.
-			if (errno != EAGAIN)
+			if (!IS_EAGAIN(errno))
 				qCWarning(logDvb, "Error %d while writing to pipe", errno);
 		} else {
 			retryCounter = 0;

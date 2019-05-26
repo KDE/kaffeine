@@ -39,6 +39,12 @@ extern "C" {
 #include "dvbdevice_linux.h"
 #include "dvbtransponder.h"
 
+#if EAGAIN == EWOULDBLOCK
+  #define IS_EAGAIN(e) (e == EAGAIN)
+#else
+  #define IS_EAGAIN(e) (e == EAGAIN || e == EWOULDBLOCK)
+#endif
+
 // krazy:excludeall=syscalls
 
 DvbLinuxDevice::DvbLinuxDevice(QObject *parent) : QThread(parent), ready(false), frontend(NULL),
@@ -1490,7 +1496,7 @@ void DvbLinuxDevice::startDvr()
 		int dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 		if (dataSize < 0) {
-			if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+			if (IS_EAGAIN(errno)) {
 				break;
 			}
 
@@ -1501,7 +1507,7 @@ void DvbLinuxDevice::startDvr()
 			dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 			if (dataSize < 0) {
-				if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+				if (IS_EAGAIN(errno)) {
 					break;
 				}
 
@@ -1569,7 +1575,7 @@ void DvbLinuxDevice::run()
 			int dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 			if (dataSize < 0) {
-				if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+				if (IS_EAGAIN(errno)) {
 					break;
 				}
 
@@ -1581,7 +1587,7 @@ void DvbLinuxDevice::run()
 				dataSize = int(read(dvrFd, dvrBuffer.data, bufferSize));
 
 				if (dataSize < 0) {
-					if ((errno == EAGAIN) || (errno == EWOULDBLOCK)) {
+					if (IS_EAGAIN(errno)) {
 						break;
 					}
 
