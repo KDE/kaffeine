@@ -43,9 +43,9 @@ public:
 	void startCa();
 	void stopCa();
 	void stopDevice();
-	void enableDvbDump();
-	QString getDeviceId();
-	QString getFrontendName();
+	void enableDvbDump() override;
+	QString getDeviceId() override;
+	QString getFrontendName() override;
 
 	QString caPath;
 	QString caUdi;
@@ -61,31 +61,31 @@ public:
 	QString frontendUdi;
 
 protected:
-	TransmissionTypes getTransmissionTypes();
-	Capabilities getCapabilities();
-	void setFrontendDevice(DvbFrontendDevice *frontend_);
-	void setDeviceEnabled(bool enabled_);
-	bool acquire();
-	bool setHighVoltage(int higherVoltage);
-	bool sendMessage(const char *message, int length);
-	bool sendBurst(SecBurst burst);
-	bool satSetup(QString lnbModel, int satNumber, int bpf);
-	bool tune(const DvbTransponder &transponder); // discards obsolete data
-	bool getProps(DvbTransponder &transponder);
-	bool isTuned();
-	float getFrqMHz();
-	float getSignal(Scale &scale);
-	float getSnr(DvbBackendDevice::Scale &scale);
-	bool addPidFilter(int pid);
-	void removePidFilter(int pid);
-	void startDescrambling(const QByteArray &pmtSectionData);
-	void stopDescrambling(int serviceId);
-	void release();
+	TransmissionTypes getTransmissionTypes() override;
+	Capabilities getCapabilities() override;
+	void setFrontendDevice(DvbFrontendDevice *frontend_) override;
+	void setDeviceEnabled(bool enabled_) override;
+	bool acquire() override;
+	bool setHighVoltage(int higherVoltage) override;
+	bool sendMessage(const char *message, int length) override;
+	bool sendBurst(SecBurst burst) override;
+	bool satSetup(QString lnbModel, int satNumber, int bpf) override;
+	bool tune(const DvbTransponder &transponder) override; // discards obsolete data
+	bool getProps(DvbTransponder &transponder) override;
+	bool isTuned() override;
+	float getFrqMHz() override;
+	float getSignal(Scale &scale) override;
+	float getSnr(DvbBackendDevice::Scale &scale) override;
+	bool addPidFilter(int pid) override;
+	void removePidFilter(int pid) override;
+	void startDescrambling(const QByteArray &pmtSectionData) override;
+	void stopDescrambling(int serviceId) override;
+	void release() override;
 
 private:
 	void startDvr();
 	void stopDvr();
-	void run();
+	void run() override;
 
 	bool ready;
 	QString deviceId;

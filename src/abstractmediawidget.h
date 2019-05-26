@@ -126,7 +126,7 @@ protected:
 	QSize videoSize;
 
 private:
-	void customEvent(QEvent *event);
+	void customEvent(QEvent *event) override;
 
 	MediaWidget *mediaWidget;
 	QAtomicInt pendingUpdates;
@@ -140,40 +140,40 @@ public:
 	explicit DummyMediaWidget(QWidget *parent): AbstractMediaWidget(parent) {};
 	~DummyMediaWidget() {};
 
-	QStringList getAudioDevices() { QStringList empty; return empty; };
-	void setAudioDevice(QString) {};
-	void setMuted(bool) {};
-	void setVolume(int) {}; // [0 - 200]
-	void setAspectRatio(MediaWidget::AspectRatio) {};
-	void resizeToVideo(float) {};
-	void setDeinterlacing(MediaWidget::DeinterlaceMode) {};
-	void play(const MediaSource &) {};
-	void stop() {};
-	void setPaused(bool) {};
-	void seek(int) {}; // milliseconds
-	void setCurrentAudioStream(int) {};
-	void setCurrentSubtitle(int) {};
-	void setExternalSubtitle(const QUrl &) {};
-	void setCurrentTitle(int) {};
-	void setCurrentChapter(int) {};
-	void setCurrentAngle(int) {};
-	bool jumpToPreviousChapter() { return false; };
-	bool jumpToNextChapter() { return false; }
-	void showDvdMenu() {};
-	void dvdNavigate(int) {};
+	QStringList getAudioDevices() override { QStringList empty; return empty; };
+	void setAudioDevice(QString) override {};
+	void setMuted(bool) override {};
+	void setVolume(int) override {}; // [0 - 200]
+	void setAspectRatio(MediaWidget::AspectRatio) override {};
+	void resizeToVideo(float) override {};
+	void setDeinterlacing(MediaWidget::DeinterlaceMode) override {};
+	void play(const MediaSource &) override {};
+	void stop() override {};
+	void setPaused(bool) override {};
+	void seek(int) override {}; // milliseconds
+	void setCurrentAudioStream(int) override {};
+	void setCurrentSubtitle(int) override {};
+	void setExternalSubtitle(const QUrl &) override {};
+	void setCurrentTitle(int) override {};
+	void setCurrentChapter(int) override {};
+	void setCurrentAngle(int) override {};
+	bool jumpToPreviousChapter() override { return false; };
+	bool jumpToNextChapter() override { return false; }
+	void showDvdMenu() override {};
+	void dvdNavigate(int) override {};
 
-	int updatePlaybackStatus() { return true; };
-	void updateCurrentTotalTime() {};
-	void updateSeekable() {};
-	void updateMetadata() {};
+	int updatePlaybackStatus() override { return true; };
+	void updateCurrentTotalTime() override {};
+	void updateSeekable() override {};
+	void updateMetadata() override {};
 	void updateAudioDevices() {};
-	void updateAudioStreams() {};
-	void updateSubtitles() {};
-	void updateTitles() {};
-	void updateChapters() {};
-	void updateAngles() {};
-	void updateDvdMenu() {};
-	void updateVideoSize() {};
+	void updateAudioStreams() override {};
+	void updateSubtitles() override {};
+	void updateTitles() override {};
+	void updateChapters() override {};
+	void updateAngles() override {};
+	void updateDvdMenu() override {};
+	void updateVideoSize() override {};
 };
 
 #endif /* ABSTRACTMEDIAWIDGET_H */

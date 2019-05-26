@@ -53,8 +53,8 @@ public:
 
 	void toggleOsd();
 	void toggleInstantRecord();
-	void toggleDisplayMode(MediaWidget::DisplayMode displayMode);
-	void mouse_move(int x, int y);
+	void toggleDisplayMode(MediaWidget::DisplayMode displayMode) override;
+	void mouse_move(int x, int y) override;
 
 	DvbManager *getManager() const
 	{
@@ -82,7 +82,7 @@ private slots:
 	void channelPidsUpdated(const DvbSharedChannel &updatedChannel);
 
 private:
-	void activate();
+	void activate() override;
 	void playChannel(const DvbSharedChannel &channel, const QModelIndex &index);
 	DvbSharedRecording *getInstantRecording(DvbSharedChannel ch);
 

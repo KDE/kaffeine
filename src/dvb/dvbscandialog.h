@@ -96,7 +96,7 @@ public:
 	void setValue(float value_,  DvbBackendDevice::Scale scale);
 
 protected:
-	void paintEvent(QPaintEvent *event);
+	void paintEvent(QPaintEvent *event) override;
 
 private:
 	float value, max, min;

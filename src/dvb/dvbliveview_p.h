@@ -48,7 +48,7 @@ public:
 	OsdLevel level;
 
 private:
-	QPixmap paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection direction);
+	QPixmap paintOsd(QRect &rect, const QFont &font, Qt::LayoutDirection direction) override;
 
 	QString channelName;
 	DvbEpgEntry firstEntry;
@@ -65,31 +65,31 @@ public:
 
 	void resetPipe();
 
-	bool overrideAudioStreams() const { return !audioStreams.isEmpty(); }
-	QStringList getAudioStreams() const { return audioStreams; }
-	QStringList getSubtitles() const { return QStringList(); }
-	int getCurrentAudioStream() const { return currentAudioStream; }
-	int getCurrentSubtitle() const { return currentSubtitle; }
+	bool overrideAudioStreams() const override { return !audioStreams.isEmpty(); }
+	QStringList getAudioStreams() const override { return audioStreams; }
+	QStringList getSubtitles() const override { return QStringList(); }
+	int getCurrentAudioStream() const override { return currentAudioStream; }
+	int getCurrentSubtitle() const override { return currentSubtitle; }
 
-	void setCurrentAudioStream(int currentAudioStream_)
+	void setCurrentAudioStream(int currentAudioStream_) override
 	{
 		currentAudioStream = currentAudioStream_;
 		emit currentAudioStreamChanged(currentAudioStream);
 	}
 
-	void setCurrentSubtitle(int currentSubtitle_)
+	void setCurrentSubtitle(int currentSubtitle_) override
 	{
 		currentSubtitle = currentSubtitle_;
 		emit currentSubtitleChanged(currentSubtitle);
 	}
 
-	bool overrideCaption() const { return true; }
+	bool overrideCaption() const override { return true; }
 
-	QString getDefaultCaption() const { return channelName; }
+	QString getDefaultCaption() const override { return channelName; }
 
-	Type getType() const { return Dvb; }
+	Type getType() const override { return Dvb; }
 
-	QUrl getUrl() const { return url; }
+	QUrl getUrl() const override { return url; }
 
 	void updateUrl() {
 		if (timeShiftFile.isOpen())
@@ -98,8 +98,8 @@ public:
 			url = QUrl::fromLocalFile(fileName);
 	}
 
-	virtual void validateCurrentTotalTime(int &currentTime, int &totalTime) const;
-	bool hideCurrentTotalTime() const { return !timeshift; }
+	virtual void validateCurrentTotalTime(int &currentTime, int &totalTime) const override;
+	bool hideCurrentTotalTime() const override { return !timeshift; }
 
 	MediaWidget *mediaWidget;
 	QString channelName;
@@ -122,17 +122,17 @@ public:
 signals:
 	void currentAudioStreamChanged(int currentAudioStream);
 	void currentSubtitleChanged(int currentSubtitle);
-	void replay();
-	void playbackFinished();
-	void playbackStatusChanged(MediaWidget::PlaybackStatus playbackStatus);
-	void previous();
-	void next();
+	void replay() override;
+	void playbackFinished() override;
+	void playbackStatusChanged(MediaWidget::PlaybackStatus playbackStatus) override;
+	void previous() override;
+	void next() override;
 
 private slots:
 	void writeToPipe();
 
 private:
-	void processData(const char data[188]);
+	void processData(const char data[188]) override;
 
 	QUrl url;
 	int readFd;

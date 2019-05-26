@@ -53,7 +53,7 @@ public:
 	explicit ConfigurationDialog(QWidget *parent);
 	~ConfigurationDialog();
 
-	void accept();
+	void accept() override;
 
 private slots:
 	void showDmesg();

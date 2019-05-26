@@ -40,7 +40,7 @@ public:
 	DvbDummyPidFilter() { }
 	~DvbDummyPidFilter() { }
 
-	void processData(const char [188]) { }
+	void processData(const char [188]) override { }
 };
 
 class DvbDummySectionFilter : public DvbSectionFilter
@@ -49,7 +49,7 @@ public:
 	DvbDummySectionFilter() { }
 	~DvbDummySectionFilter() { }
 
-	void processSection(const char *, int) { }
+	void processSection(const char *, int) override { }
 };
 
 // FIXME make DvbDevice shared ...
@@ -91,10 +91,10 @@ public:
 
 	void tune(const DvbTransponder &transponder);
 	void autoTune(const DvbTransponder &transponder);
-	bool addPidFilter(int pid, DvbPidFilter *filter);
-	bool addSectionFilter(int pid, DvbSectionFilter *filter);
-	void removePidFilter(int pid, DvbPidFilter *filter);
-	void removeSectionFilter(int pid, DvbSectionFilter *filter);
+	bool addPidFilter(int pid, DvbPidFilter *filter) override;
+	bool addSectionFilter(int pid, DvbSectionFilter *filter) override;
+	void removePidFilter(int pid, DvbPidFilter *filter) override;
+	void removeSectionFilter(int pid, DvbSectionFilter *filter) override;
 	void startDescrambling(const QByteArray &pmtSectionData, QObject *user);
 	void stopDescrambling(const QByteArray &pmtSectionData, QObject *user);
 	bool isTuned() const;
@@ -124,9 +124,9 @@ private:
 	void stop();
 
 	void processData(const char data[188]);
-	DvbDataBuffer getBuffer();
-	void writeBuffer(const DvbDataBuffer &dataBuffer);
-	void customEvent(QEvent *);
+	DvbDataBuffer getBuffer() override;
+	void writeBuffer(const DvbDataBuffer &dataBuffer) override;
+	void customEvent(QEvent *) override;
 
 	DvbBackendDevice *backend;
 	DeviceState deviceState;

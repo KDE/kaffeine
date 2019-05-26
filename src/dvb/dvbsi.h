@@ -284,7 +284,7 @@ signals:
 	void pmtSectionChanged(const QByteArray &pmtSectionData);
 
 private:
-	void processSection(const char *data, int size);
+	void processSection(const char *data, int size) override;
 
 	int programNumber;
 	QByteArray lastPmtSectionData;

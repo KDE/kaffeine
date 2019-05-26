@@ -80,8 +80,8 @@ private:
 
 	bool checkMultipleSection(const DvbStandardSection &section);
 	bool isFinished();
-	void processSection(const char *data, int size);
-	void timerEvent(QTimerEvent *);
+	void processSection(const char *data, int size) override;
+	void timerEvent(QTimerEvent *) override;
 
 	DvbScan *scan;
 

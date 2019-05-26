@@ -303,7 +303,7 @@ public:
 	~PlaylistBrowserView() { }
 
 protected:
-	void keyPressEvent(QKeyEvent *event);
+	void keyPressEvent(QKeyEvent *event) override;
 };
 
 void PlaylistBrowserView::keyPressEvent(QKeyEvent *event)

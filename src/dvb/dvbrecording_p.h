@@ -47,7 +47,7 @@ private slots:
 	void insertPatPmt();
 
 private:
-	void processData(const char data[188]);
+	void processData(const char data[188]) override;
 
 	DvbManager *manager;
 	DvbSharedChannel channel;

@@ -101,9 +101,9 @@ public:
 
 	void setRecordingModel(DvbRecordingModel *recordingModel_);
 
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	void sort(int column, Qt::SortOrder order);
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+	QVariant data(const QModelIndex &index, int role) const override;
+	void sort(int column, Qt::SortOrder order) override;
 
 private slots:
 	void recordingAdded(const DvbSharedRecording &recording);
@@ -132,7 +132,7 @@ private slots:
 	void checkValidity();
 
 private:
-	void accept();
+	void accept() override;
 
 	DvbManager *manager;
 	DvbSharedRecording recording;

@@ -118,8 +118,8 @@ signals:
 	void channelRemoved(const DvbSharedChannel &channel);
 
 private:
-	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
-	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
+	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const override;
+	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index) override;
 
 	QString extractBaseName(const QString &name) const;
 	QString findNextFreeChannelName(const QString &name) const;

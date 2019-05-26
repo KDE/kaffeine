@@ -77,10 +77,10 @@ private:
 
 	void readSettings();
 	void writeSettings();
-	void closeEvent(QCloseEvent *event);
-	bool event(QEvent *event);
-	void keyPressEvent(QKeyEvent *event);
-	void leaveEvent(QEvent *event);
+	void closeEvent(QCloseEvent *event) override;
+	bool event(QEvent *event) override;
+	void keyPressEvent(QKeyEvent *event) override;
+	void leaveEvent(QEvent *event) override;
 
 	KAboutData *aboutData;
 	QCommandLineParser *parser;

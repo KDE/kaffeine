@@ -41,7 +41,7 @@ public:
 	~DvbChannelEditor();
 
 private:
-	void accept();
+	void accept() override;
 
 	DvbChannelTableModel *model;
 	DvbSharedChannel channel;

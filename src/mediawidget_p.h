@@ -34,7 +34,7 @@ public:
 	~JumpToPositionDialog();
 
 private:
-	void accept();
+	void accept() override;
 
 	MediaWidget *mediaWidget;
 	QTimeEdit *timeEdit;
@@ -47,8 +47,8 @@ public:
 	~SeekSlider() { }
 
 private:
-	void mousePressEvent(QMouseEvent *event);
-	void wheelEvent(QWheelEvent *event);
+	void mousePressEvent(QMouseEvent *event) override;
+	void wheelEvent(QWheelEvent *event) override;
 };
 
 class MediaSourceUrl : public MediaSource
@@ -58,8 +58,8 @@ public:
 		subtitleUrl(subtitleUrl_) { }
 	~MediaSourceUrl() { }
 
-	Type getType() const { return Url; }
-	QUrl getUrl() const { return url; }
+	Type getType() const override { return Url; }
+	QUrl getUrl() const override { return url; }
 
 	QUrl url;
 	QUrl subtitleUrl;
@@ -71,8 +71,8 @@ public:
 	explicit MediaSourceAudioCd(const QUrl &url_) : url(url_) { }
 	~MediaSourceAudioCd() { }
 
-	Type getType() const { return AudioCd; }
-	QUrl getUrl() const { return url; }
+	Type getType() const override { return AudioCd; }
+	QUrl getUrl() const override { return url; }
 
 	QUrl url;
 };
@@ -83,8 +83,8 @@ public:
 	explicit MediaSourceVideoCd(const QUrl &url_) : url(url_) { }
 	~MediaSourceVideoCd() { }
 
-	Type getType() const { return VideoCd; }
-	QUrl getUrl() const { return url; }
+	Type getType() const override { return VideoCd; }
+	QUrl getUrl() const override { return url; }
 
 	QUrl url;
 };
@@ -95,8 +95,8 @@ public:
 	explicit MediaSourceDvd(const QUrl &url_) : url(url_) { }
 	~MediaSourceDvd() { }
 
-	Type getType() const { return Dvd; }
-	QUrl getUrl() const { return url; }
+	Type getType() const override { return Dvd; }
+	QUrl getUrl() const override { return url; }
 
 	QUrl url;
 };

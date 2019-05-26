@@ -110,10 +110,10 @@ signals:
 	void recordingRemoved(const DvbSharedRecording &recording);
 
 private:
-	void timerEvent(QTimerEvent *event);
+	void timerEvent(QTimerEvent *event) override;
 
-	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const;
-	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index);
+	void bindToSqlQuery(SqlKey sqlKey, QSqlQuery &query, int index) const override;
+	bool insertFromSqlQuery(SqlKey sqlKey, const QSqlQuery &query, int index) override;
 	bool updateStatus(DvbRecording &recording);
 	bool existsSimilarRecording(DvbEpgEntry recording);
 

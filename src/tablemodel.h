@@ -63,7 +63,7 @@ public:
 		return sharedNull;
 	}
 
-	int columnCount(const QModelIndex &parent) const
+	int columnCount(const QModelIndex &parent) const override
 	{
 		if (!parent.isValid()) {
 			return helper.columnCount();
@@ -72,7 +72,7 @@ public:
 		return 0;
 	}
 
-	int rowCount(const QModelIndex &parent) const
+	int rowCount(const QModelIndex &parent) const override
 	{
 		if (!parent.isValid()) {
 			return items.size();

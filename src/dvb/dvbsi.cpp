@@ -153,22 +153,22 @@ public:
 	Iso6937Codec() { }
 	~Iso6937Codec() { }
 
-	QByteArray name() const
+	QByteArray name() const override
 	{
 		return "ISO 6937"; // actually a superset of ISO 6937
 	}
 
-	int mibEnum() const
+	int mibEnum() const override
 	{
 		return 14;
 	}
 
-	QByteArray convertFromUnicode(const QChar *, int, QTextCodec::ConverterState *) const
+	QByteArray convertFromUnicode(const QChar *, int, QTextCodec::ConverterState *) const override
 	{
 		return QByteArray();
 	}
 
-	QString convertToUnicode(const char *input, int size, QTextCodec::ConverterState *) const
+	QString convertToUnicode(const char *input, int size, QTextCodec::ConverterState *) const override
 	{
 		QString result;
 		unsigned short diacriticalMark = 0;

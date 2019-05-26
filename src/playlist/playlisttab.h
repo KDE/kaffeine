@@ -41,8 +41,8 @@ public slots:
 	void removeSelectedRows();
 
 protected:
-	void contextMenuEvent(QContextMenuEvent *event);
-	void keyPressEvent(QKeyEvent *event);
+	void contextMenuEvent(QContextMenuEvent *event) override;
+	void keyPressEvent(QKeyEvent *event) override;
 };
 
 class PlaylistBrowserModel : public QAbstractListModel
@@ -57,16 +57,16 @@ public:
 	Playlist *getPlaylist(int row) const;
 	void setCurrentPlaylist(Playlist *playlist);
 	Playlist *getCurrentPlaylist() const;
-	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
+	bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override;
 
 signals:
 	void playTrack(Playlist *playlist, int track);
 
 private:
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	bool setData(const QModelIndex &index, const QVariant &value, int role);
+	int rowCount(const QModelIndex &parent) const override;
+	QVariant data(const QModelIndex &index, int role) const override;
+	Qt::ItemFlags flags(const QModelIndex &index) const override;
+	bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 	PlaylistModel *playlistModel;
 	QList<Playlist *> playlists;
@@ -112,7 +112,7 @@ private slots:
 
 private:
 	static QString subtitleExtensionFilter(); // usable for KFileDialog::setFilter()
-	void activate();
+	void activate() override;
 	void savePlaylist(bool askName);
 
 	MediaWidget *mediaWidget;

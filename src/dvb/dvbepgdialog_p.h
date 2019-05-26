@@ -82,8 +82,8 @@ public:
 	void setManager(DvbManager *manager);
 	void setViewMode(bool enableEmptyEpgChannels);
 
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
 private slots:
 	void epgChannelAdded(const DvbSharedChannel &channel);
@@ -130,8 +130,8 @@ public:
 	void setChannelFilter(const DvbSharedChannel &channel);
 	void setLanguage(QString lang);
 
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+	QVariant data(const QModelIndex &index, int role) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
 public slots:
 	void setContentFilter(const QString &pattern);
@@ -143,7 +143,7 @@ private slots:
 	void entryRemoved(const DvbSharedEpgEntry &entry);
 
 private:
-	void customEvent(QEvent *event);
+	void customEvent(QEvent *event) override;
 
 	DvbEpgModel *epgModel;
 	bool contentFilterEventPending;

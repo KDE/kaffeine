@@ -57,7 +57,7 @@ public:
 	int activeSectionFilters;
 
 private:
-	void processData(const char [188]);
+	void processData(const char [188]) override;
 	void processSections(bool force);
 
 	unsigned char continuityCounter;
@@ -217,7 +217,7 @@ public:
 	DvbDataDumper();
 	~DvbDataDumper();
 
-	void processData(const char [188]);
+	void processData(const char [188]) override;
 };
 
 DvbDataDumper::DvbDataDumper()

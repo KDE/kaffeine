@@ -296,7 +296,7 @@ private slots:
 	void recordingRemoved(const DvbSharedRecording &recording);
 
 private:
-	void timerEvent(QTimerEvent *event);
+	void timerEvent(QTimerEvent *event) override;
 	void Debug(QString text, const DvbSharedEpgEntry &entry);
 
 	Iterator removeEntry(Iterator it);

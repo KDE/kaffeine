@@ -44,47 +44,47 @@ public:
 
 	// zero-based numbering is used everywhere (e.g. first audio channel = 0)
 
-	QStringList getAudioDevices();
-	void setAudioDevice(QString device);
-	void setMuted(bool muted);
-	void setVolume(int volume); // [0 - 200]
-	void setAspectRatio(MediaWidget::AspectRatio aspectRatio);
-	void resizeToVideo(float resizeFactor);
-	void setDeinterlacing(MediaWidget::DeinterlaceMode deinterlacing);
-	void play(const MediaSource &source);
-	void stop();
-	void setPaused(bool paused);
-	void seek(int time); // milliseconds
-	void setCurrentAudioStream(int currentAudioStream);
-	void setCurrentSubtitle(int currentSubtitle);
-	void setExternalSubtitle(const QUrl &subtitleUrl);
-	void setCurrentTitle(int currentTitle);
-	void setCurrentChapter(int currentChapter);
-	void setCurrentAngle(int currentAngle);
-	bool jumpToPreviousChapter();
-	bool jumpToNextChapter();
-	void showDvdMenu();
-	void dvdNavigate(int key);
+	QStringList getAudioDevices() override;
+	void setAudioDevice(QString device) override;
+	void setMuted(bool muted) override;
+	void setVolume(int volume) override; // [0 - 200]
+	void setAspectRatio(MediaWidget::AspectRatio aspectRatio) override;
+	void resizeToVideo(float resizeFactor) override;
+	void setDeinterlacing(MediaWidget::DeinterlaceMode deinterlacing) override;
+	void play(const MediaSource &source) override;
+	void stop() override;
+	void setPaused(bool paused) override;
+	void seek(int time) override; // milliseconds
+	void setCurrentAudioStream(int currentAudioStream) override;
+	void setCurrentSubtitle(int currentSubtitle) override;
+	void setExternalSubtitle(const QUrl &subtitleUrl) override;
+	void setCurrentTitle(int currentTitle) override;
+	void setCurrentChapter(int currentChapter) override;
+	void setCurrentAngle(int currentAngle) override;
+	bool jumpToPreviousChapter() override;
+	bool jumpToNextChapter() override;
+	void showDvdMenu() override;
+	void dvdNavigate(int key) override;
 	void playDirection(int direction);
 	int makePlay();
 
-	int updatePlaybackStatus();
-	void updateCurrentTotalTime();
-	void updateSeekable();
-	void updateMetadata();
-	void updateAudioStreams();
-	void updateSubtitles();
-	void updateTitles();
-	void updateChapters();
-	void updateAngles();
-	void updateDvdMenu();
-	void updateVideoSize();
+	int updatePlaybackStatus() override;
+	void updateCurrentTotalTime() override;
+	void updateSeekable() override;
+	void updateMetadata() override;
+	void updateAudioStreams() override;
+	void updateSubtitles() override;
+	void updateTitles() override;
+	void updateChapters() override;
+	void updateAngles() override;
+	void updateDvdMenu() override;
+	void updateVideoSize() override;
 	void unregisterEvents();
 	bool registerEvents();
 
 private:
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
+	void mousePressEvent(QMouseEvent *event) override;
+	void mouseMoveEvent(QMouseEvent *event) override;
 
 	void vlcEvent(const libvlc_event_t *event);
 

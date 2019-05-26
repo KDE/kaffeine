@@ -47,7 +47,7 @@ private:
 				      int code1, int code2, int code3,
 				      bool add_code = true,
 				      QString *code = NULL);
-	void processSection(const char *data, int size);
+	void processSection(const char *data, int size) override;
 	QString getContent(DvbContentDescriptor &descriptor);
 	QString getParental(DvbParentalRatingDescriptor &descriptor);
 
@@ -64,7 +64,7 @@ public:
 
 private:
 	Q_DISABLE_COPY(AtscEpgMgtFilter)
-	void processSection(const char *data, int size);
+	void processSection(const char *data, int size) override;
 
 	AtscEpgFilter *epgFilter;
 };
@@ -77,7 +77,7 @@ public:
 
 private:
 	Q_DISABLE_COPY(AtscEpgEitFilter)
-	void processSection(const char *data, int size);
+	void processSection(const char *data, int size) override;
 
 	AtscEpgFilter *epgFilter;
 };
@@ -90,7 +90,7 @@ public:
 
 private:
 	Q_DISABLE_COPY(AtscEpgEttFilter)
-	void processSection(const char *data, int size);
+	void processSection(const char *data, int size) override;
 
 	AtscEpgFilter *epgFilter;
 };

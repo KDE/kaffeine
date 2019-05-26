@@ -112,19 +112,19 @@ private:
 	void insertUrls(Playlist *playlist, int row, const QList<QUrl> &urls,
 		bool playImmediately);
 
-	int columnCount(const QModelIndex &parent) const;
-	int rowCount(const QModelIndex &parent) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	bool removeRows(int row, int count, const QModelIndex &parent);
-	void sort(int column, Qt::SortOrder order);
+	int columnCount(const QModelIndex &parent) const override;
+	int rowCount(const QModelIndex &parent) const override;
+	QVariant data(const QModelIndex &index, int role) const override;
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+	bool removeRows(int row, int count, const QModelIndex &parent) override;
+	void sort(int column, Qt::SortOrder order) override;
 
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QStringList mimeTypes() const;
-	Qt::DropActions supportedDropActions() const;
-	QMimeData *mimeData(const QModelIndexList &indexes) const;
+	Qt::ItemFlags flags(const QModelIndex &index) const override;
+	QStringList mimeTypes() const override;
+	Qt::DropActions supportedDropActions() const override;
+	QMimeData *mimeData(const QModelIndexList &indexes) const override;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
-		const QModelIndex &parent);
+		const QModelIndex &parent) override;
 
 	Playlist *visiblePlaylist;
 };

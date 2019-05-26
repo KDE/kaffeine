@@ -46,7 +46,7 @@ public:
 	void hideObject();
 
 protected:
-	void paintEvent(QPaintEvent *);
+	void paintEvent(QPaintEvent *) override;
 
 private slots:
 	void hideOsd();

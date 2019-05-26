@@ -98,16 +98,16 @@ public:
 		return channelModel;
 	}
 
-	QVariant headerData(int section, Qt::Orientation orientation, int role) const;
-	QVariant data(const QModelIndex &index, int role) const;
-	void sort(int column, Qt::SortOrder order);
+	QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+	QVariant data(const QModelIndex &index, int role) const override;
+	void sort(int column, Qt::SortOrder order) override;
 
-	Qt::ItemFlags flags(const QModelIndex &index) const;
-	QMimeData *mimeData(const QModelIndexList &indexes) const;
-	QStringList mimeTypes() const;
-	Qt::DropActions supportedDropActions() const;
+	Qt::ItemFlags flags(const QModelIndex &index) const override;
+	QMimeData *mimeData(const QModelIndexList &indexes) const override;
+	QStringList mimeTypes() const override;
+	Qt::DropActions supportedDropActions() const override;
 	bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column,
-		const QModelIndex &parent);
+		const QModelIndex &parent) override;
 
 public slots:
 	void setFilter(const QString &filter);
@@ -122,7 +122,7 @@ private slots:
 	void channelRemoved(const DvbSharedChannel &channel);
 
 private:
-	void customEvent(QEvent *event);
+	void customEvent(QEvent *event) override;
 
 	DvbChannelModel *channelModel;
 	QList<DvbSharedChannel> dndSelectedChannels;
@@ -154,7 +154,7 @@ private slots:
 	void channelPidsChanged(const DvbSharedChannel &channel);
 
 private:
-	void setModel(QAbstractItemModel *) { }
+	void setModel(QAbstractItemModel *) override { }
 
 	DvbChannelTableModel *tableModel;
 };

@@ -75,7 +75,7 @@ public:
 	explicit StackedLayout(QWidget *parent) : QStackedLayout(parent) { }
 	~StackedLayout() { }
 
-	QSize minimumSize() const
+	QSize minimumSize() const override
 	{
 		QWidget *widget = currentWidget();
 
@@ -94,7 +94,7 @@ public:
 	~StartTab() { }
 
 private:
-	void activate() { }
+	void activate() override { }
 
 	QAbstractButton *addShortcut(const QString &name, const QIcon &icon, QWidget *parent);
 };
@@ -162,7 +162,7 @@ public:
 	explicit PlayerTab(MediaWidget *mediaWidget_);
 	~PlayerTab() { }
 
-	void activate()
+	void activate() override
 	{
 		layout()->addWidget(mediaWidget);
 		mediaWidget->setFocus();

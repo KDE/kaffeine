@@ -95,7 +95,7 @@ private:
 	void initRegexButtons(QGridLayout *buttonGrid);
 	//void deleteChildWidgets(QLayoutItem *item);
 
-	void accept();
+	void accept() override;
 
 	DvbManager *manager;
 	QTabWidget *tabWidget;

@@ -122,7 +122,7 @@ private:
 	void handleSessionLayer(const unsigned char *data, int size);
 	void handleApplicationLayer(const unsigned char *data, int size);
 	void handlePendingCommands();
-	void customEvent(QEvent *event);
+	void customEvent(QEvent *event) override;
 	void sendCaPmt(const DvbPmtSection &pmtSection, CaPmtListManagement listManagement,
 		CaPmtCommand command);
 	void sendApplicationLayerMessage(ApplicationLayerTag tag, char *data, char *end);

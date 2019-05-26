@@ -58,7 +58,7 @@ public:
 	void remove(const QString &path_, const QStringList &files_);
 
 private:
-	void run();
+	void run() override;
 
 	QString path;
 	QStringList files;
