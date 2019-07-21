@@ -910,7 +910,7 @@ void VlcMediaWidget::updateMetadata()
 
 	if (urlIsAudioCd)
 		metadata.insert(MediaWidget::Title,
-				i18n("CD track ") + QString::number(trackNumber));
+				i18n("CD track %1", QString::number(trackNumber)));
 }
 
 void VlcMediaWidget::updateAudioStreams()

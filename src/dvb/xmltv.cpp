@@ -209,7 +209,7 @@ QString XmlTv::parseCredits(void)
 		value += r->readElementText();
 
 		if (key == "actor") {
-			value += i18n(" as ") + attrs.value("role").toString();
+			value = i18nc("%1 is a person; %2 is their character", "%1 as %2", value, attrs.value("role").toString());
 		}
 
 		keyValues.insert(key, value);
@@ -241,7 +241,7 @@ QString XmlTv::parseCredits(void)
 		else
 			name = key + "(s)";
 
-		values += name + ": " + keyValues.value(key) + "\n";
+		values += i18nc("%1 is a role (actor, director, etc); %2 is one or more people", "%1: %2\n", name, keyValues.value(key));
 	}
 
 	return values;
@@ -374,7 +374,7 @@ bool XmlTv::parseProgram(void)
 			if (system != "")
 				epgEntry.parental += system + " ";
 
-			epgEntry.parental += i18n("rating: ") + value;
+			epgEntry.parental += i18n("rating: %1", value);
 		} else if (element == "star-rating") {
 			QHash<QString, QString> keyValues;
 
@@ -448,10 +448,10 @@ bool XmlTv::parseProgram(void)
 			QStringList list = episode.split(".");
 			if (!list.size())
 				continue;
-			episode = i18n("Season ") + QString::number(list[0].toInt() + 1);
+			episode = i18n("Season %1", QString::number(list[0].toInt() + 1));
 			if (list.size() < 2)
 				continue;
-			episode += i18n(" Episode ") + QString::number(list[1].toInt() + 1);
+			episode += i18n(" Episode %1", QString::number(list[1].toInt() + 1));
 		} else if ((element == "aspect") ||
 			   (element == "audio") ||
 			   (element == "icon") ||
@@ -482,17 +482,17 @@ bool XmlTv::parseProgram(void)
 	if (starRating != "") {
 		if (epgEntry.content != "")
 			epgEntry.content += "\n";
-		epgEntry.content += i18n("Star rating: ") + starRating;
+		epgEntry.content += i18n("Star rating: %1", starRating);
 	}
 
 	if (date != "") {
 		if (epgEntry.content != "")
 			epgEntry.content += "\n";
-		epgEntry.content += i18n("Date: ") + date;
+		epgEntry.content += i18n("Date: %1", date);
 	}
 
 	foreach(const QString &key, category.keys()) {
-		QString value = i18n("Category: ") + category[key];
+		QString value = i18n("Category: %1", category[key]);
 		QString lang = key;
 		if (key != "QAA")
 			langEntry = getLangEntry(epgEntry, lang, false);
@@ -506,7 +506,7 @@ bool XmlTv::parseProgram(void)
 		}
 	}
 	foreach(const QString &key, keyword.keys()) {
-		QString value = i18n("Keyword: ") + keyword[key];
+		QString value = i18n("Keyword: %1", keyword[key]);
 		QString lang = key;
 		if (key != "QAA")
 			langEntry = getLangEntry(epgEntry, lang, false);
@@ -523,25 +523,25 @@ bool XmlTv::parseProgram(void)
 	if (episode != "") {
 		if (epgEntry.content != "")
 			epgEntry.content += "\n";
-		epgEntry.content += i18n("language: ") + episode;
+		epgEntry.content += i18n("language: %1", episode);
 	}
 
 	if (language != "") {
 		if (epgEntry.content != "")
 			epgEntry.content += "\n";
-		epgEntry.content += i18n("language: ") + language;
+		epgEntry.content += i18n("language: %1", language);
 	}
 
 	if (origLanguage != "") {
 		if (epgEntry.content != "")
 			epgEntry.content += "\n";
-		epgEntry.content += i18n("Original language: ") + origLanguage;
+		epgEntry.content += i18n("Original language: %1", origLanguage);
 	}
 
 	if (country != "") {
 		if (epgEntry.content != "")
 			epgEntry.content += "\n";
-		epgEntry.content += i18n("Country: ") + country;
+		epgEntry.content += i18n("Country: %1", country);
 	}
 
 	if (credits != "") {
