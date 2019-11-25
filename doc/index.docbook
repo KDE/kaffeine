@@ -109,7 +109,7 @@ and it’s possible to switch to other functions via either the menu bar or the 
 <title>Play a File</title>
 <para>Playing a video or audio file is as simple as clicking on the <guibutton>Play File</guibutton>
 button. It will ask you to select the file to be played, and will begin playing it. Since &kaffeine;
-uses LibVLC for the backend, it supports all the same <ulink url="http://www.videolan.org/vlc/features.html">file formats</ulink> as VLC.
+uses LibVLC for the backend, it supports all the same <ulink url="https://www.videolan.org/vlc/features.html">file formats</ulink> as VLC.
 It also supports opening a list of files to create and manage <ulink url="https://wiki.videolan.org/Playlist/">playlists</ulink>.
 </para>
 
@@ -1441,7 +1441,7 @@ In order to simplify the use of the &kaffeine;, this menu only contains two menu
 <sect1 id="help-menu">
 <title>The Help Menu</title> 
 <para>
-&kaffeine; has the common &kde; <guimenu>Help</guimenu> menu items, for more information read the sections about the <ulink url="help:/fundamentals/ui.html#menus-help">Help Menu</ulink> of the &kde; Fundamentals.
+&kaffeine; has the common &kde; <guimenu>Help</guimenu> menu items, for more information read the sections about the <ulink url="help:/fundamentals/menus.html#menus-help">Help Menu</ulink> of the &kde; Fundamentals.
 </para>
 </sect1>
 </chapter>
