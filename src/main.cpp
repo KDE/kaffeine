@@ -142,7 +142,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		// Optional additional text
 		"",
 		// Home page
-		QStringLiteral("http://kaffeine.kde.org")
+		QStringLiteral("https://kde.org/applications/multimedia/org.kde.kaffeine")
 	)
 {
 	QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
