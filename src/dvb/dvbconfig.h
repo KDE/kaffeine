@@ -39,7 +39,7 @@ public:
 		TransmissionTypeMax = IsdbT
 	};
 
-	DvbConfigBase(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }
+	explicit DvbConfigBase(TransmissionType transmissionType_) : transmissionType(transmissionType_) { }
 	~DvbConfigBase() { }
 
 	TransmissionType getTransmissionType() const

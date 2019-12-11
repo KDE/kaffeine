@@ -72,7 +72,7 @@ namespace IsoCodes
 					code_3letters->insert(code3, lang);
 					if (code_2letters) {
 						const QString code2 = attrs.value(code_2_key).toString().toUpper();
-						if (code2 != "")
+						if (!code2.isEmpty())
 							code_2letters->insert(code2, code3);
 					}
 				} else if (name == main_key) {

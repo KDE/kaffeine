@@ -88,7 +88,7 @@ int main(int argc, char *argv[])
 		// FIXME make src/scanfile.dvb ascii-only
 
 		if ((path == "README") || (path == "src/scanfile.dvb") ||
-		    path.endsWith(".desktop")) {
+		    path.endsWith(QLatin1String(".desktop"))) {
 			continue;
 		}
 

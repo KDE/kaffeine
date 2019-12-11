@@ -44,7 +44,7 @@ XmlTv::XmlTv(DvbManager *manager_) : manager(manager_), r(NULL)
 
 void XmlTv::addFile(QString file)
 {
-	if (file == "")
+	if (file.isEmpty())
 		return;
 
 	load(file);
@@ -268,7 +268,7 @@ bool XmlTv::parseProgram(void)
 	QList<QString>::iterator name;
 	bool has_channel = false;
 
-	for (name = list.begin(); name != list.end(); name++) {
+	for (name = list.begin(); name != list.end(); ++name) {
 		if (channelModel->hasChannelByName(*name)) {
 			has_channel = true;
 			break;
@@ -339,22 +339,22 @@ bool XmlTv::parseProgram(void)
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 			langEntry = getLangEntry(epgEntry, lang);
-			if (langEntry->title != "")
-				langEntry->title += " ";
+			if (!langEntry->title.isEmpty())
+				langEntry->title += ' ';
 			langEntry->title += r->readElementText();
 		} else if (element == "sub-title") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 			langEntry = getLangEntry(epgEntry, lang);
-			if (langEntry->subheading != "")
-				langEntry->subheading += " ";
+			if (!langEntry->subheading.isEmpty())
+				langEntry->subheading += ' ';
 			langEntry->subheading += r->readElementText();
 		} else if (element == "desc") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 			langEntry = getLangEntry(epgEntry, lang);
-			if (langEntry->details != "")
-				langEntry->details += " ";
+			if (!langEntry->details.isEmpty())
+				langEntry->details += ' ';
 			langEntry->details += r->readElementText();
 		} else if (element == "rating") {
 			QHash<QString, QString> keyValues;
@@ -365,14 +365,14 @@ bool XmlTv::parseProgram(void)
 			parseKeyValues(keyValues);
 			QString value = getValue(keyValues, "value");
 
-			if (value == "")
+			if (value.isEmpty())
 				continue;
 
-			if (epgEntry.parental != "")
+			if (!epgEntry.parental.isEmpty())
 				epgEntry.parental += ", ";
 
-			if (system != "")
-				epgEntry.parental += system + " ";
+			if (!system.isEmpty())
+				epgEntry.parental += system + ' ';
 
 			epgEntry.parental += i18n("rating: %1", value);
 		} else if (element == "star-rating") {
@@ -384,11 +384,11 @@ bool XmlTv::parseProgram(void)
 			parseKeyValues(keyValues);
 			QString value = getValue(keyValues, "value");
 
-			if (value == "")
+			if (value.isEmpty())
 				continue;
 
-			if (system != "")
-				starRating += system + " ";
+			if (!system.isEmpty())
+				starRating += system + ' ';
 
 			starRating += value;
 		} else if (element == "category") {
@@ -396,7 +396,7 @@ bool XmlTv::parseProgram(void)
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 
 			QString cat = getValue(category, lang);
-			if (cat != "")
+			if (!cat.isEmpty())
 				cat += ", ";
 			cat += r->readElementText();
 			category[lang] = cat;
@@ -405,7 +405,7 @@ bool XmlTv::parseProgram(void)
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 
 			QString kw = getValue(keyword, lang);
-			if (kw != "")
+			if (!kw.isEmpty())
 				kw += ", ";
 			kw += r->readElementText();
 			keyword[lang] = kw;
@@ -416,10 +416,10 @@ bool XmlTv::parseProgram(void)
 			date = rawdate.mid(0, 4);
 			QString month = rawdate.mid(4, 2);
 			QString day = rawdate.mid(6, 2);
-			if (month != "")
-				date += "-" + month;
-			if (day != "") {
-				date += "-" + day;
+			if (!month.isEmpty())
+				date += '-' + month;
+			if (!day.isEmpty()) {
+				date += '-' + day;
 				QDate d = QDate::fromString(date, Qt::ISODate);
 				date = d.toString(Qt::DefaultLocaleShortDate);
 			}
@@ -443,9 +443,9 @@ bool XmlTv::parseProgram(void)
 				continue;
 
 			episode = r->readElementText();
-			episode.remove(" ");
-			episode.replace(QRegularExpression("/.*"), "");
-			QStringList list = episode.split(".");
+			episode.remove(' ');
+			episode.remove(QRegularExpression("/.*"));
+			QStringList list = episode.split('.');
 			if (!list.size())
 				continue;
 			episode = i18n("Season %1", QString::number(list[0].toInt() + 1));
@@ -479,15 +479,15 @@ bool XmlTv::parseProgram(void)
 	}
 
 	/* Those extra fields are not language-specific data */
-	if (starRating != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!starRating.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += i18n("Star rating: %1", starRating);
 	}
 
-	if (date != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!date.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += i18n("Date: %1", date);
 	}
 
@@ -497,8 +497,8 @@ bool XmlTv::parseProgram(void)
 		if (key != "QAA")
 			langEntry = getLangEntry(epgEntry, lang, false);
 		if (!langEntry) {
-			if (epgEntry.content != "")
-				epgEntry.content += "\n";
+			if (!epgEntry.content.isEmpty())
+				epgEntry.content += '\n';
 			epgEntry.content += value;
 		} else {
 			langEntry->details.replace(QRegularExpression("\\n*$"), "<p/>");
@@ -511,8 +511,8 @@ bool XmlTv::parseProgram(void)
 		if (key != "QAA")
 			langEntry = getLangEntry(epgEntry, lang, false);
 		if (!langEntry) {
-			if (epgEntry.content != "")
-				epgEntry.content += "\n";
+			if (!epgEntry.content.isEmpty())
+				epgEntry.content += '\n';
 			epgEntry.content += value;
 		} else {
 			langEntry->details.replace(QRegularExpression("\\n*$"), "<p/>");
@@ -520,33 +520,33 @@ bool XmlTv::parseProgram(void)
 		}
 	}
 
-	if (episode != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!episode.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += i18n("language: %1", episode);
 	}
 
-	if (language != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!language.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += i18n("language: %1", language);
 	}
 
-	if (origLanguage != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!origLanguage.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += i18n("Original language: %1", origLanguage);
 	}
 
-	if (country != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!country.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += i18n("Country: %1", country);
 	}
 
-	if (credits != "") {
-		if (epgEntry.content != "")
-			epgEntry.content += "\n";
+	if (!credits.isEmpty()) {
+		if (!epgEntry.content.isEmpty())
+			epgEntry.content += '\n';
 		epgEntry.content += credits;
 	}
 

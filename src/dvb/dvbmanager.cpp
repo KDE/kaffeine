@@ -56,7 +56,7 @@ DvbManager::DvbManager(MediaWidget *mediaWidget_, QWidget *parent_) : QObject(pa
 
 	QString xmlFile = getXmltvFileName();
 
-	if (xmlFile != "")
+	if (!xmlFile.isEmpty())
 		xmlTv->addFile(xmlFile);
 }
 

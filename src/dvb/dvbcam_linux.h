@@ -32,7 +32,7 @@ class DvbLinuxCam : public QObject
 {
 	Q_OBJECT
 public:
-	DvbLinuxCam(QObject *parent);
+	explicit DvbLinuxCam(QObject *parent);
 	~DvbLinuxCam();
 
 	void startCa(const QString &path);

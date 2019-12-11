@@ -1039,7 +1039,7 @@ bool DvbLinuxDevice::tune(const DvbTransponder &transponder)
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SB_SEGMENT_IDX, isdbTTransponder->sbSegmentIdx);
 		dvb_fe_store_parm(dvbv5_parms, DTV_ISDBT_SB_SEGMENT_COUNT, isdbTTransponder->sbSegmentCount);
 
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 3; ++i) {
 			if (isdbTTransponder->layerEnabled[i])
 				layers |= 1 << i;
 		}
@@ -1216,7 +1216,7 @@ bool DvbLinuxDevice::getProps(DvbTransponder &transponder)
 
 		dvb_fe_retrieve_parm(dvbv5_parms, DTV_ISDBT_LAYER_ENABLED, &value);
 		layers = (int)value;
-		for (i = 0; i < 3; i++) {
+		for (i = 0; i < 3; ++i) {
 			if (isdbTTransponder->layerEnabled[i])
 				layers |= 1 << i;
 		}

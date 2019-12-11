@@ -859,20 +859,20 @@ QString DvbEpgFilter::getContent(DvbContentDescriptor &descriptor)
 		// as the Japanese variation uses the same codes as DVB
 		if (transponder.getTransmissionType() == DvbTransponderBase::IsdbT) {
 			s = braNibble2Str[nibble1][nibble2];
-			if (s == "")
+			if (s.isEmpty())
 				s = braNibble1Str[nibble1];
-			if (s != "")
+			if (!s.isEmpty())
 				content += i18n(s) + '\n';
 		} else {
 			s = contentStr[nibble1][nibble2];
-			if (s == "")
+			if (s.isEmpty())
 				s = nibble1Str[nibble1];
-			if (s != "")
+			if (!s.isEmpty())
 				content += i18n(s) + '\n';
 		}
 	}
 
-	if (content != "") {
+	if (!content.isEmpty()) {
 		// xgettext:no-c-format
 		return (i18n("Genre: %1", content));
 	}

@@ -54,7 +54,7 @@ private slots:
 	bool load(QString file);
 
 public:
-	XmlTv(DvbManager *manager);
+	explicit XmlTv(DvbManager *manager);
 	void addFile(QString file);
 	void clear();
 };

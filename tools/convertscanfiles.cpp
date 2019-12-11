@@ -425,7 +425,7 @@ QString parseDvbv5::outputLine()
 					<< lineno << " file" << name;
 			return line;
 		}
-		line = "C " + frq + ' ' + symbolRate + ' ' + fec + ' ' + modulation.remove("/");
+		line = "C " + frq + ' ' + symbolRate + ' ' + fec + ' ' + modulation.remove('/');
 		return line;
 	}
 	case DvbTransponderBase::DvbS: {
@@ -472,12 +472,12 @@ QString parseDvbv5::outputLine()
 			line += " AUTO";
 		}
 		if (!modulation.isEmpty()) {
-			line += ' ' + modulation.remove("/").replace("QAMAUTO", "AUTO");
+			line += ' ' + modulation.remove('/').replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!t_mode.isEmpty()) {
-			line += ' ' + t_mode.replace("K", "k");
+			line += ' ' + t_mode.replace('K', 'k');
 		} else {
 			line += " AUTO";
 		}
@@ -511,12 +511,12 @@ QString parseDvbv5::outputLine()
 			line += " AUTO";
 		}
 		if (!modulation.isEmpty()) {
-			line += ' ' + modulation.remove("/").replace("QAMAUTO", "AUTO");
+			line += ' ' + modulation.remove('/').replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
 		if (!t_mode.isEmpty()) {
-			line += ' ' + t_mode.replace("K", "k");
+			line += ' ' + t_mode.replace('K', 'k');
 		} else {
 			line += " AUTO";
 		}
@@ -558,7 +558,7 @@ QString parseDvbv5::outputLine()
 			line += " 6MHz";
 		}
 		if (!t_mode.isEmpty()) {
-			line += ' ' + t_mode.replace("K", "k");
+			line += ' ' + t_mode.replace('K', 'k');
 		} else {
 			line += " AUTO";
 		}
@@ -597,7 +597,7 @@ QString parseDvbv5::outputLine()
 
 		// Layer A
 		if (!isdbtLayerAModulation.isEmpty()) {
-			line += ' ' + isdbtLayerAModulation.remove("/").replace("QAMAUTO", "AUTO");
+			line += ' ' + isdbtLayerAModulation.remove('/').replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
@@ -618,7 +618,7 @@ QString parseDvbv5::outputLine()
 		}
 		// Layer B
 		if (!isdbtLayerBModulation.isEmpty()) {
-			line += ' ' + isdbtLayerBModulation.remove("/").replace("QAMAUTO", "AUTO");
+			line += ' ' + isdbtLayerBModulation.remove('/').replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
@@ -639,7 +639,7 @@ QString parseDvbv5::outputLine()
 		}
 		// Layer C
 		if (!isdbtLayerCModulation.isEmpty()) {
-			line += ' ' + isdbtLayerCModulation.remove("/").replace("QAMAUTO", "AUTO");
+			line += ' ' + isdbtLayerCModulation.remove('/').replace("QAMAUTO", "AUTO");
 		} else {
 			line += " AUTO";
 		}
