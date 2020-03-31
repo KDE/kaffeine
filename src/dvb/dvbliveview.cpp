@@ -19,7 +19,7 @@
  */
 
 #include "../log.h"
-
+#include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <KMessageBox>
@@ -250,6 +250,8 @@ void DvbLiveView::playChannel(const DvbSharedChannel &channel_)
 	}
 
 	playbackStatusChanged(MediaWidget::Idle);
+	// 1 second delay to release dvb tuner from previous playback
+	usleep(1000000);
 	channel = channel_;
 	device = newDevice;
 
