@@ -59,6 +59,7 @@ Name[th]=เล่นแผ่นซีดีวีดิโอด้วย 'แ
 Name[tr]=Video CD'sini Kaffeine ile Oynat
 Name[ug]=سىن CD نى Kaffeine دا قويۇش
 Name[uk]=Відтворити відео-КД за допомогою Kaffeine
+Name[x-test]=xxPlay Video CD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放视频 CD
 Name[zh_TW]=用 Kaffeine 播放影像光碟
 Exec=kaffeine --videocd %d
