@@ -71,7 +71,23 @@ find_package(VLC 1.2 REQUIRED)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include ${CMAKE_BINARY_DIR} ${VLC_INCLUDE_DIRS}
+if(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
+  # FreeBSD has a fully-working v4l, but needs help finding it
+  find_package(Libdvbv5)
+  if (Libdvbv5_FOUND)
+    find_path(_dvb_headers
+      NAMES dmx.h
+      PATH_SUFFIXES dvb linux/dvb
+    )
+    if(_dvb_headers)
+      include_directories(${_dvb_headers})
+    endif()
+  endif()
+else()
+  # Linux (and others) have a weird copy of v4l headers to use
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+endif()
+include_directories(${CMAKE_BINARY_DIR} ${VLC_INCLUDE_DIRS}
                     ${X11_Xscreensaver_INCLUDE_PATH})
 
 check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
