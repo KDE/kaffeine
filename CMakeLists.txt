@@ -73,6 +73,7 @@ feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAG
 
 if(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
   # FreeBSD has a fully-working v4l, but needs help finding it
+  unset(_dvb_headers)
   find_package(Libdvbv5)
   if (Libdvbv5_FOUND)
     find_path(_dvb_headers
@@ -82,6 +83,9 @@ if(CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
     if(_dvb_headers)
       include_directories(${_dvb_headers})
     endif()
+  endif()
+  if(NOT _dvb_headers)
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
   endif()
 else()
   # Linux (and others) have a weird copy of v4l headers to use
