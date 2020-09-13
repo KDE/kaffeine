@@ -1161,7 +1161,8 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 		QString subtitleLanguage;
 		QString fourcc;
 		bool teletextPresent = false;
-		bool ac3Present = false;
+		bool audioPresent = false;
+		bool videoPresent = false;
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
 		     descriptor.advance()) {
@@ -1173,6 +1174,19 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				fourcc.append(QChar(registrationDescriptor.formatIdentifier1()));
 				fourcc.append(QChar(registrationDescriptor.formatIdentifier2()));
 				fourcc.append(QChar(registrationDescriptor.formatIdentifier3()));
+
+				/* Handle audio and video fourcc's */
+				if (entry.streamType() == 0x06 &&
+				    (fourcc == "EAC3" ||
+				     fourcc == "AC-3" ||
+				     fourcc == "DTS1" ||
+				     fourcc == "DTS2" ||
+				     fourcc == "DTS3" ||
+				     fourcc == "BSSD"))
+					audioPresent = true;
+				else if ((entry.streamType() == 0x06 && fourcc == "HEVC") ||
+					 (entry.streamType() == 0xea && fourcc == "VC-1"))
+					videoPresent = true;
 				break;
 			    }
 
@@ -1218,11 +1232,24 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 
 			case 0x6a:
 			case 0x7a:
-				ac3Present = true;
+				audioPresent = true;
 				break;
 			}
 		}
 
+		/*
+		 * The code above already checks for streamType. So,
+		 * once we add a video channel here, just rely on it,
+		 * without parsing the streamType() again.
+		 */
+		if (videoPresent) {
+			if (videoPid < 0) {
+				videoPid = entry.pid();
+			} else {
+				qCInfo(logDvbSi, "More than one video PID");
+			}
+			continue;
+		}
 
 		// Updated with Table 2-34 of ISO/IEC 13818-1:2018 / ITU-T H.222.0 2017
 		// and with https://www.wikiwand.com/en/Program-specific_information
@@ -1296,7 +1323,7 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 				}
 			}
 
-			if (ac3Present) {
+			if (audioPresent) {
 				audioPids.append(qMakePair(entry.pid(), streamLanguage));
 			}
 
