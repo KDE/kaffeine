@@ -1159,12 +1159,23 @@ DvbPmtParser::DvbPmtParser(const DvbPmtSection &section) : videoPid(-1), teletex
 	for (DvbPmtSectionEntry entry = section.entries(); entry.isValid(); entry.advance()) {
 		QString streamLanguage;
 		QString subtitleLanguage;
+		QString fourcc;
 		bool teletextPresent = false;
 		bool ac3Present = false;
 
 		for (DvbDescriptor descriptor = entry.descriptors(); descriptor.isValid();
 		     descriptor.advance()) {
 			switch (descriptor.descriptorTag()) {
+			case 0x05: {
+				DvbRegistrationDescriptor registrationDescriptor(descriptor);
+				fourcc.clear();
+				fourcc.append(QChar(registrationDescriptor.formatIdentifier0()));
+				fourcc.append(QChar(registrationDescriptor.formatIdentifier1()));
+				fourcc.append(QChar(registrationDescriptor.formatIdentifier2()));
+				fourcc.append(QChar(registrationDescriptor.formatIdentifier3()));
+				break;
+			    }
+
 			case 0x0a: {
 				DvbLanguageDescriptor languageDescriptor(descriptor);
 
@@ -1503,6 +1514,15 @@ void AtscVctSectionEntry::initVctSectionEntry(const char *data, int size)
 	}
 
 	initSectionData(data, entryLength, size);
+}
+
+DvbRegistrationDescriptor::DvbRegistrationDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)
+{
+	if (getLength() < 6) {
+		qCWarning(logDvbSi, "Invalid descriptor");
+		initSectionData();
+		return;
+	}
 }
 
 DvbLanguageDescriptor::DvbLanguageDescriptor(const DvbDescriptor &descriptor) : DvbDescriptor(descriptor)

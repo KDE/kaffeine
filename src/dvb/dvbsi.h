@@ -723,6 +723,36 @@ private:
 	void initVctSectionEntry(const char *data, int size);
 };
 
+class DvbRegistrationDescriptor : public DvbDescriptor
+{
+public:
+	explicit DvbRegistrationDescriptor(const DvbDescriptor &descriptor);
+	~DvbRegistrationDescriptor() { }
+
+	int formatIdentifier0() const
+	{
+		return at(2);
+	}
+
+	int formatIdentifier1() const
+	{
+		return at(3);
+	}
+
+	int formatIdentifier2() const
+	{
+		return at(4);
+	}
+
+	int formatIdentifier3() const
+	{
+		return at(5);
+	}
+
+private:
+	Q_DISABLE_COPY(DvbRegistrationDescriptor)
+};
+
 class DvbLanguageDescriptor : public DvbDescriptor
 {
 public:

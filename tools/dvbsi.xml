@@ -92,6 +92,12 @@
     </AtscVctSectionEntry>
   </entries>
   <descriptors>
+    <DvbRegistrationDescriptor>
+      <formatIdentifier0 bits="8" type="int"/>
+      <formatIdentifier1 bits="8" type="int"/>
+      <formatIdentifier2 bits="8" type="int"/>
+      <formatIdentifier3 bits="8" type="int"/>
+    </DvbRegistrationDescriptor>
     <DvbLanguageDescriptor>
       <languageCode1 bits="8" type="int"/>
       <languageCode2 bits="8" type="int"/>
