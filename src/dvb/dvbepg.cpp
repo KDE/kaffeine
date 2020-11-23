@@ -614,9 +614,24 @@ DvbEpgFilter::~DvbEpgFilter()
 
 QTime DvbEpgFilter::bcdToTime(int bcd)
 {
-	return QTime(((bcd >> 20) & 0x0f) * 10 + ((bcd >> 16) & 0x0f),
-		((bcd >> 12) & 0x0f) * 10 + ((bcd >> 8) & 0x0f),
-		((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f));
+	int h = ((bcd >> 20) & 0x0f) * 10 + ((bcd >> 16) & 0x0f);
+	int m = ((bcd >> 12) & 0x0f) * 10 + ((bcd >> 8) & 0x0f);
+	int s = ((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f);
+	int t = s + m * 60 + h * 3600;
+
+	// Just in case seconds or minutes would be greater than 60
+	s = t % 60;
+	m = (t / 60) % 60;
+	h = t / 3600;
+
+	// Maximum value supported by QTime()
+	if (h > 23) {
+		h = 23;
+		m = 59;
+		s = 59;
+	}
+
+	return QTime(h, m, s);
 }
 
 static const QByteArray contentStr[16][16] = {
