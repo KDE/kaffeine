@@ -618,6 +618,7 @@ QTime DvbEpgFilter::bcdToTime(int bcd)
 	int m = ((bcd >> 12) & 0x0f) * 10 + ((bcd >> 8) & 0x0f);
 	int s = ((bcd >> 4) & 0x0f) * 10 + (bcd & 0x0f);
 	int t = s + m * 60 + h * 3600;
+	static bool first = true;
 
 	// Just in case seconds or minutes would be greater than 60
 	s = t % 60;
@@ -626,6 +627,10 @@ QTime DvbEpgFilter::bcdToTime(int bcd)
 
 	// Maximum value supported by QTime()
 	if (h > 23) {
+		if (first) {
+			qCWarning(logEpg, "Warning: some EIT event last longer than 24 hours. Truncating them.");
+			first = false;
+		}
 		h = 23;
 		m = 59;
 		s = 59;
