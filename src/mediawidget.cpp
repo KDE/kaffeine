@@ -547,6 +547,9 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 
 MediaWidget::~MediaWidget()
 {
+	// Ensure that the screen saver will be disabled
+	checkScreenSaver(true);
+
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Volume", volumeSlider->value());
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("Deinterlace", deinterlaceMode);
 	KSharedConfig::openConfig()->group("MediaObject").writeEntry("AutoResizeFactor", autoResizeFactor);
@@ -834,17 +837,19 @@ void MediaWidget::decreaseVolume()
 	volumeSlider->setValue(volumeSlider->value() - 5);
 }
 
-void MediaWidget::checkScreenSaver()
+void MediaWidget::checkScreenSaver(bool noDisable)
 {
 	bool suspendScreenSaver = false;
 
-	switch (backend->getPlaybackStatus()) {
-	case Idle:
-	case Paused:
-		break;
-	case Playing:
-		suspendScreenSaver = isVisible();
-		break;
+	if (!noDisable) {
+		switch (backend->getPlaybackStatus()) {
+		case Idle:
+		case Paused:
+			break;
+		case Playing:
+			suspendScreenSaver = isVisible();
+			break;
+		}
 	}
 
 	if (suspendScreenSaver) {

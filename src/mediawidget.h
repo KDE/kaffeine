@@ -174,7 +174,7 @@ signals:
 	void osdKeyPressed(int key);
 
 private slots:
-	void checkScreenSaver();
+	void checkScreenSaver(bool noDisable = false);
 
 	void setAudioCard();
 	void mutedChanged();
