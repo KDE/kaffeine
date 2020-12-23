@@ -25,6 +25,10 @@
 #include <QMap>
 #include <QSqlQuery>
 
+#if QT_VERSION >= 0x050a00
+#  include <QRandomGenerator>
+#endif
+
 class SqlHelper;
 
 class SqlKey
@@ -86,7 +90,12 @@ public:
 			sqlKey = SqlKey((container.constEnd() - 1).key().sqlKey + 1);
 
 			while (container.contains(sqlKey) || !sqlKey.isSqlKeyValid()) {
-				sqlKey = SqlKey(qrand());
+#if QT_VERSION >= 0x050a00
+				quint32 rand = QRandomGenerator::global()->generate();
+#else
+				quint32 rand = qrand();
+#endif
+				sqlKey = SqlKey(rand);
 			}
 		}
 

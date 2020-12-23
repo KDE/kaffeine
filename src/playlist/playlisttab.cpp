@@ -33,6 +33,10 @@
 #include <QTimer>
 #include <QToolButton>
 
+#if QT_VERSION >= 0x050a00
+#  include <QRandomGenerator>
+#endif
+
 #include "playlistmodel.h"
 #include "playlisttab.h"
 
@@ -722,7 +726,12 @@ void PlaylistTab::playNextTrack()
 		if (size < 2) {
 			playTrack(currentPlaylist, 0);
 		} else if (currentPlaylist->currentTrack != -1) {
-			int track = (qrand() % (size - 1));
+#if QT_VERSION >= 0x050a00
+			quint32 rand = QRandomGenerator::global()->generate();
+#else
+			quint32 rand = qrand();
+#endif
+			int track = (rand % (size - 1));
 
 			if (track >= currentPlaylist->currentTrack) {
 				++track;

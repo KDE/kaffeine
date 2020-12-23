@@ -22,6 +22,10 @@
 
 #include <QCoreApplication>
 #include <QDir>
+
+#if QT_VERSION >= 0x050a00
+#  include <QRandomGenerator>
+#endif
 #include <unistd.h>
 
 #include <cmath>
@@ -222,7 +226,13 @@ public:
 
 DvbDataDumper::DvbDataDumper()
 {
-	setFileName(QDir::homePath() + QLatin1String("/KaffeineDvbDump-") + QString::number(qrand(), 16) +
+#if QT_VERSION >= 0x050a00
+	quint32 rand = QRandomGenerator::global()->generate();
+#else
+	quint32 rand = qrand();
+#endif
+
+	setFileName(QDir::homePath() + QLatin1String("/KaffeineDvbDump-") + QString::number(rand, 16) +
 		QLatin1String(".bin"));
 
 	if (!open(QIODevice::WriteOnly | QIODevice::Truncate)) {
