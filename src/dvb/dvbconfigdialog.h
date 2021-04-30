@@ -138,6 +138,7 @@ private:
 	QByteArray scanData;
 	QVBoxLayout *mainLayout;
 	QDialogButtonBox *buttonBox;
+	QString errorMsg;
 };
 
 class DvbConfigPage : public QWidget

@@ -614,6 +614,8 @@ DvbScanFileDownloadDialog::DvbScanFileDownloadDialog(DvbManager *manager_, QWidg
 	setLayout(mainLayout);
 	mainLayout->addWidget(mainWidget);
 
+	errorMsg = "Scan data update aborted.";
+
 	buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 	buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 	connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
@@ -655,10 +657,20 @@ void DvbScanFileDownloadDialog::progressChanged(KJob *, unsigned long percent)
 
 void DvbScanFileDownloadDialog::dataArrived(KIO::Job *, const QByteArray &data)
 {
-	if ((scanData.size() + data.size()) <= (64 * 1024)) {
-		scanData.append(data);
-	} else {
-		job->kill(KJob::EmitResult);
+	scanData.append(data);
+
+	/*
+	 * Current size in April, 2021 is 104KB.
+	 * Add an upper size limit here (1 MB), just in case, in order to
+	 * prevent potential issues.
+	 */
+	int maxLimit = 1024 * 1024;
+
+	if (scanData.size() > maxLimit) {
+	    errorMsg = i18n("Scan file is becoming bigger than %1 KB.\n"
+			    "Aborting, as something might be wrong...\n",
+			    QString::number(maxLimit / 1024., 'f', 2));
+               job->kill(KJob::EmitResult);
 	}
 }
 
@@ -668,7 +680,7 @@ void DvbScanFileDownloadDialog::jobFinished()
 
 	if (job->error() != 0) {
 		if (job->error() == KJob::KilledJobError) {
-			label->setText(i18n("Scan data update failed."));
+			label->setText(errorMsg);
 		} else {
 			label->setText(job->errorString());
 		}
@@ -678,8 +690,10 @@ void DvbScanFileDownloadDialog::jobFinished()
 
 	if (manager->updateScanData(scanData)) {
 		buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-		label->setText(i18n("Scan data successfully updated. Changes take\n"
-				    "effect after you have closed the configuration dialog."));
+		label->setText(i18n("Scan data successfully updated. %1 KB received.\n"
+				    "Changes take effect after you have closed\n"
+				    "the configuration dialog.",
+			            QString::number(scanData.size() / 1024., 'f', 2)));
 	} else {
 		label->setText(i18n("Scan data update failed."));
 	}
