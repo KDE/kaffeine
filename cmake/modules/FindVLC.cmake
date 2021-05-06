@@ -8,7 +8,7 @@
 #  VLC_LIBRARY_DIRS        = directories where the libraries are located.
 #  VLC_LIBRARY             = full path to the vlc library.
 #  VLC_CORE_LIBRARY        = full path to the vlccore library.
-#  VLC_VERSION_STRING      = the vlc version found
+#  VLC_VERSION      = the vlc version found
 #       VLC_VERSION_MAJOR
 #       VLC_VERSION_MINOR
 #       VLC_VERSION_PATCH
@@ -93,13 +93,13 @@ if(VLC_INCLUDE_DIR)
         string(REGEX REPLACE ".*LIBVLC_VERSION_MINOR +\\(([0-9]+)\\).*" "\\1"    VLC_VERSION_MINOR "${VLC_INFO_H}")
         string(REGEX REPLACE ".*LIBVLC_VERSION_REVISION +\\(([0-9]+)\\).*" "\\1" VLC_VERSION_PATCH "${VLC_INFO_H}")
         string(REGEX REPLACE ".*LIBVLC_VERSION_EXTRA +\\(([0-9]+)\\).*" "\\1" VLC_VERSION_EXTRA "${VLC_INFO_H}")
-        set(VLC_VERSION_STRING "${VLC_VERSION_MAJOR}.${VLC_VERSION_MINOR}.${VLC_VERSION_PATCH}.${VLC_VERSION_EXTRA}")
+        set(VLC_VERSION "${VLC_VERSION_MAJOR}.${VLC_VERSION_MINOR}.${VLC_VERSION_PATCH}.${VLC_VERSION_EXTRA}")
         mark_as_advanced(
             VLC_VERSION_MAJOR
             VLC_VERSION_MINOR
             VLC_VERSION_PATCH
             VLC_VERSION_EXTRA
-            VLC_VERSION_STRING)
+            VLC_VERSION)
     else()
         message(FATAL_ERROR "Could not find ${VLC_INCLUDE_DIR}/vlc/libvlc_version.h")
     endif()
@@ -112,6 +112,6 @@ include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(
     VLC
     REQUIRED_VARS ${_VLC_REQUIRED_VARS}
-    VERSION_VAR VLC_VERSION_STRING
+    VERSION_VAR VLC_VERSION
     )
 
