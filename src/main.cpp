@@ -180,7 +180,7 @@ void KaffeineApplication::activateRequested(const QStringList &arguments,
 		return;
 
 	parser.parse(arguments);
-	KStartupInfo::setNewStartupId(mainWindow, KStartupInfo::startupId());
+	KStartupInfo::setNewStartupId(mainWindow->window()->windowHandle(), KStartupInfo::startupId());
 	KWindowSystem::forceActiveWindow(mainWindow->winId());
 	mainWindow->parseArgs(workingDirectory);
 }
