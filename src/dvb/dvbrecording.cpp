@@ -287,7 +287,8 @@ void DvbRecordingModel::executeActionAfterRecording(DvbRecording recording)
 	if (!stopCommand.isEmpty())
 	{
 		QProcess* child = new QProcess();
-		child->start(stopCommand);
+		child->setProgram(stopCommand);
+		child->start();
 		qCWarning(logDvb, "Not executing command after recording");
 	}
 	qCDebug(logDvb, "executed.");

@@ -165,7 +165,8 @@ DmesgDialog::DmesgDialog(QWidget *parent) : QDialog(parent)
 	dmesgProcess = new QProcess(this);
 	dmesgProcess->setProcessChannelMode(QProcess::MergedChannels);
 	connect(dmesgProcess, SIGNAL(readyRead()), this, SLOT(readyRead()));
-	dmesgProcess->start(QLatin1String("dmesg"), QIODevice::ReadOnly);
+	dmesgProcess->setProgram(QLatin1String("dmesg"));
+	dmesgProcess->start(QIODevice::ReadOnly);
 
 	dmesgTextEdit = new QPlainTextEdit(this);
 	dmesgTextEdit->setLineWrapMode(QPlainTextEdit::NoWrap);
