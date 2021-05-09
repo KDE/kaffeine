@@ -46,6 +46,7 @@ private slots:
 
 public:
 	enum PendingCommand {
+		Nothing = 0,
 		ExpectingReply = (1 << 0),
 		ResetCa = (1 << 1),
 		SendCreateTransportConnection = (1 << 2),

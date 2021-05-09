@@ -75,7 +75,9 @@ void DvbLinuxCam::startCa(const QString &path)
 	pendingCommands = ResetCa;
 
 	if (!detectSlot()) {
-		pendingCommands = 0;
+		pendingCommands = Nothing;
+	} else {
+		pendingCommands = ResetCa;
 	}
 }
 
@@ -471,7 +473,7 @@ void DvbLinuxCam::handlePendingCommands()
 			qCDebug(logCam, "--> CAM reset");
 			slot = -1;
 			pollTimer.start(100);
-			pendingCommands = 0;
+			pendingCommands = Nothing;
 			break;
 		case SendCreateTransportConnection:
 			messageData[0] = ConnectionId;

@@ -76,6 +76,7 @@ public:
 
 	enum PendingUpdate
 	{
+		Nothing = 0,
 		PlaybackFinished = (1 << 0),
 		PlaybackStatus = (1 << 1),
 		CurrentTotalTime = (1 << 2),

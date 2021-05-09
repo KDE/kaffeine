@@ -29,6 +29,7 @@ class DvbDeviceBase
 {
 public:
 	enum TransmissionType {
+		Nothing = 0,
 		DvbC  = (1 << 0),
 		DvbS  = (1 << 1),
 		DvbS2 = (1 << 2),
@@ -41,6 +42,7 @@ public:
 	Q_DECLARE_FLAGS(TransmissionTypes, TransmissionType)
 
 	enum Capability {
+		None = 0,
 		DvbTModulationAuto = (1 << 0),
 		DvbTFecAuto = (1 << 1),
 		DvbTTransmissionModeAuto = (1 << 2),

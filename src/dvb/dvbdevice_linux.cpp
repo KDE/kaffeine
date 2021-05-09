@@ -105,7 +105,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 		return;
 	}
 
-	transmissionTypes = 0;
+	transmissionTypes = Nothing;
 	for (int i = 0; i < parms->num_systems; i++) {
 		switch (parms->systems[i]) {
 		case SYS_DVBS:
@@ -140,7 +140,7 @@ void DvbLinuxDevice::startDevice(const QString &deviceId_)
 	deviceId = deviceId_;
 	frontendName = QString::fromUtf8(parms->info.name);
 
-	capabilities = 0;
+	capabilities = None;
 
 	if ((parms->info.caps & FE_CAN_QAM_AUTO) != 0) {
 		capabilities |= DvbTModulationAuto;

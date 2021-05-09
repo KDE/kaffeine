@@ -1073,7 +1073,7 @@ void VlcMediaWidget::mouseMoveEvent(QMouseEvent *event)
 
 void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 {
-	PendingUpdates pendingUpdatesToBeAdded = 0;
+	PendingUpdates pendingUpdatesToBeAdded = Nothing;
 
 	switch (event->type) {
 #if LIBVLC_VERSION_MAJOR > 2
