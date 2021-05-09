@@ -845,14 +845,14 @@ bool DvbRecordingFile::start(DvbRecording &recording)
 			if (file.open(QIODevice::ReadWrite))
 			{
 			    QTextStream stream(&file);
-			    stream << "EPG info" << endl;
-			    stream << "Title: " + QString(recording.name) << endl;
-			    stream << "Description: " + QString(recording.subheading) << endl;
-			    //stream << "Details: " + QString(recording.details) << endl; // Details is almost always empty
-			    stream << "Channel: " + QString(recording.channel->name) << endl;
-			    stream << "Date: " + recording.beginEPG.toLocalTime().toString("yyyy-MM-dd") << endl;
-			    stream << "Start time: " + recording.beginEPG.toLocalTime().toString("hh:mm:ss") << endl;
-			    stream << "Duration: " + recording.durationEPG.toString("HH:mm:ss") << endl;
+			    stream << "EPG info" << Qt::endl;
+			    stream << "Title: " + QString(recording.name) << Qt::endl;
+			    stream << "Description: " + QString(recording.subheading) << Qt::endl;
+			    //stream << "Details: " + QString(recording.details) << Qt::endl; // Details is almost always empty
+			    stream << "Channel: " + QString(recording.channel->name) << Qt::endl;
+			    stream << "Date: " + recording.beginEPG.toLocalTime().toString("yyyy-MM-dd") << Qt::endl;
+			    stream << "Start time: " + recording.beginEPG.toLocalTime().toString("hh:mm:ss") << Qt::endl;
+			    stream << "Duration: " + recording.durationEPG.toString("HH:mm:ss") << Qt::endl;
 			}
 		}
 
