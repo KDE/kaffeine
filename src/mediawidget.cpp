@@ -1364,7 +1364,7 @@ void MediaWidget::resizeEvent(QResizeEvent *event)
 
 void MediaWidget::wheelEvent(QWheelEvent *event)
 {
-	int y = event->delta();
+	int y = event->angleDelta().y();
 	int delta = (y < 0) ? -1 : 1;
 
 	setVolumeUnderMouse(getVolume() + delta);
@@ -1619,7 +1619,7 @@ void SeekSlider::mousePressEvent(QMouseEvent *event)
 
 void SeekSlider::wheelEvent(QWheelEvent *event)
 {
-	int delta = (event->delta() < 0) ? -1 : 1;
+	int delta = (event->angleDelta().y() < 0) ? -1 : 1;
 	int new_value = value() + delta * maximum() / 100;
 
 	event->accept();
