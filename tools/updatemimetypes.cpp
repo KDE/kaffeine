@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 			}
 
 			mimeTypeIndex = i;
-			mimeTypes = lines.at(i).mid(9).split(';', QString::SkipEmptyParts);
+			mimeTypes = lines.at(i).mid(9).split(';', Qt::SkipEmptyParts);
 		}
 	}
 

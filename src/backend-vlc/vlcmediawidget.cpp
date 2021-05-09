@@ -251,7 +251,7 @@ bool VlcMediaWidget::init()
 	QStringList argList;
 	int argc = 0, size;
 
-	argList = args.split(' ', QString::SkipEmptyParts);
+	argList = args.split(' ', Qt::SkipEmptyParts);
 	size = argList.size();
 
 	const char **argv = new const char *[size];
