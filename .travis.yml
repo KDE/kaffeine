@@ -1,6 +1,6 @@
 language: cpp
 compiler: gcc
-dist: xenial
+dist: bionic
 notifications:
   email:
     recipients:
@@ -9,16 +9,16 @@ notifications:
     on_failure: always
 matrix:
   include:
-  - env: TARGET_OS=xenial
+  - env: TARGET_OS=bionic
   - compiler: clang
-    env: TARGET_OS=xenial
+    env: TARGET_OS=bionic
 
 before_install:
   - sudo apt-get update -qq
-  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu xenial main restricted universe multiverse"
-  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse"
-  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu xenial-updates main restricted universe multiverse"
-  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu xenial-backports main restricted universe multiverse"
+  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic main restricted universe multiverse"
+  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic-security main restricted universe multiverse"
+  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic-updates main restricted universe multiverse"
+  - sudo add-apt-repository "deb http://archive.ubuntu.com/ubuntu bionic-backports main restricted universe multiverse"
   - sudo apt-get update -qq
 
 install:
