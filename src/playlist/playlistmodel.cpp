@@ -897,7 +897,11 @@ void PlaylistModel::sort(int column, Qt::SortOrder order)
 
 		if (i != target) {
 			qSwap(mapping[i], mapping[target]);
+#if QT_VERSION < 0x050c00
+			visiblePlaylist->tracks.swap(i, target);
+#else
 			visiblePlaylist->tracks.swapItemsAt(i, target);
+#endif
 		} else {
 			++i;
 		}

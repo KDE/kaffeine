@@ -490,7 +490,11 @@ void DvbConfigDialog::moveLeft(DvbConfigPage *configPage)
 		return;
 	}
 
+#if QT_VERSION < 0x050c00
+	configPages.swap(index, index - 1);
+#else
 	configPages.swapItemsAt(index, index - 1);
+#endif
 
 	if (index == 1) {
 		configPages.at(0)->setMoveLeftEnabled(false);
@@ -517,7 +521,11 @@ void DvbConfigDialog::moveRight(DvbConfigPage *configPage)
 		return;
 	}
 
+#if QT_VERSION < 0x050c00
+	configPages.swap(index, index - 1);
+#else
 	configPages.swapItemsAt(index, index - 1);
+#endif
 
 	if (index == 1) {
 		configPages.at(0)->setMoveLeftEnabled(false);

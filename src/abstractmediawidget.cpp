@@ -125,6 +125,8 @@ void AbstractMediaWidget::customEvent(QEvent *event)
 			updateVideoSize();
 			mediaWidget->videoSizeChanged();
 			break;
+		case Nothing:
+			break;
 		}
 
 		if (newValue == 0) {
