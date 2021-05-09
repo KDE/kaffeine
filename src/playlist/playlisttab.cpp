@@ -739,7 +739,12 @@ void PlaylistTab::playNextTrack()
 
 			playTrack(currentPlaylist, track);
 		} else {
-			playTrack(currentPlaylist, qrand() % size);
+#if QT_VERSION >= 0x050a00
+			quint32 rand = QRandomGenerator::global()->generate();
+#else
+			quint32 rand = qrand();
+#endif
+			playTrack(currentPlaylist, rand % size);
 		}
 	} else if (((currentPlaylist->currentTrack + 1) == currentPlaylist->tracks.size()) &&
 		   repeatAction->isChecked()) {

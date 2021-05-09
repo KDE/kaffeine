@@ -387,8 +387,10 @@ void MainWindow::run()
 	// workaround setAutoSaveSettings() which doesn't accept "IconOnly" as initial state
 	controlBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
 
+#if QT_VERSION < 0x050a00
 	// initialize random number generator
 	qsrand(QTime(0, 0, 0).msecsTo(QTime::currentTime()));
+#endif
 
 	// initialize dbus objects
 	QDBusConnection::sessionBus().registerObject(QLatin1String("/"), new MprisRootObject(this),
