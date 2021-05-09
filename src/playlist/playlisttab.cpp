@@ -314,7 +314,7 @@ void PlaylistBrowserView::keyPressEvent(QKeyEvent *event)
 {
 	if (event->key() == Qt::Key_Delete) {
 		QModelIndexList selectedRows = selectionModel()->selectedRows();
-		qSort(selectedRows);
+		std::sort(selectedRows.begin(), selectedRows.end());
 
 		for (int i = selectedRows.size() - 1; i >= 0; --i) {
 			// FIXME compress
@@ -338,7 +338,7 @@ PlaylistView::~PlaylistView()
 void PlaylistView::removeSelectedRows()
 {
 	QModelIndexList selectedRows = selectionModel()->selectedRows();
-	qSort(selectedRows);
+	std::sort(selectedRows.begin(), selectedRows.end());
 
 	for (int i = selectedRows.size() - 1; i >= 0; --i) {
 		// FIXME compress
@@ -649,7 +649,7 @@ void PlaylistTab::renamePlaylist()
 void PlaylistTab::removePlaylist()
 {
 	QModelIndexList selectedRows = playlistBrowserView->selectionModel()->selectedRows();
-	qSort(selectedRows);
+	std::sort(selectedRows.begin(), selectedRows.end());
 
 	for (int i = selectedRows.size() - 1; i >= 0; --i) {
 		// FIXME compress

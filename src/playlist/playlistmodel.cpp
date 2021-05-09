@@ -881,8 +881,8 @@ void PlaylistModel::sort(int column, Qt::SortOrder order)
 		mapping[i] = i;
 	}
 
-	qSort(mapping.begin(), mapping.end(),
-		PlaylistTrackLessThan(visiblePlaylist, column, order));
+	std::sort(mapping.begin(), mapping.end(),
+		  PlaylistTrackLessThan(visiblePlaylist, column, order));
 
 	QVector<int> reverseMapping(mapping.size());
 

@@ -96,7 +96,7 @@ protected:
 			}
 		}
 
-		qSort(items.begin(), items.end(), lessThan);
+		std::sort(items.begin(), items.end(), lessThan);
 		endLayoutChange();
 	}
 
@@ -114,7 +114,7 @@ protected:
 			}
 		}
 
-		qSort(items.begin(), items.end(), lessThan);
+		std::sort(items.begin(), items.end(), lessThan);
 		endLayoutChange();
 	}
 
@@ -190,7 +190,7 @@ protected:
 		if (lessThan.getSortOrder() != sortOrder) {
 			beginLayoutChange();
 			lessThan.setSortOrder(sortOrder);
-			qSort(items.begin(), items.end(), lessThan);
+			std::sort(items.begin(), items.end(), lessThan);
 			endLayoutChange();
 		}
 	}
@@ -198,13 +198,13 @@ protected:
 private:
 	int binaryFind(const ItemType &item) const
 	{
-		return (qBinaryFind(items.constBegin(), items.constEnd(), item, lessThan) -
+		return (std::lower_bound(items.constBegin(), items.constEnd(), item, lessThan) -
 			items.constBegin());
 	}
 
 	int upperBound(const ItemType &item) const
 	{
-		return (qUpperBound(items.constBegin(), items.constEnd(), item, lessThan) -
+		return (std::upper_bound(items.constBegin(), items.constEnd(), item, lessThan) -
 			items.constBegin());
 	}
 

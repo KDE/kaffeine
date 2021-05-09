@@ -1189,7 +1189,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 
 		if ((tableType >= 0x0100) && (tableType <= 0x017f)) {
 			int pid = entry.pid();
-			int index = (qLowerBound(newEitPids, pid) - newEitPids.constBegin());
+			int index = (std::lower_bound(newEitPids.constBegin(), newEitPids.constEnd(), pid) - newEitPids.constBegin());
 
 			if ((index >= newEitPids.size()) || (newEitPids.at(index) != pid)) {
 				newEitPids.insert(index, pid);
@@ -1198,7 +1198,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 
 		if ((tableType >= 0x0200) && (tableType <= 0x027f)) {
 			int pid = entry.pid();
-			int index = (qLowerBound(newEttPids, pid) - newEttPids.constBegin());
+			int index = (std::lower_bound(newEttPids.constBegin(), newEttPids.constEnd(), pid) - newEttPids.constBegin());
 
 			if ((index >= newEttPids.size()) || (newEttPids.at(index) != pid)) {
 				newEttPids.insert(index, pid);
@@ -1210,7 +1210,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 
 	for (int i = 0; i < eitPids.size(); ++i) {
 		int pid = eitPids.at(i);
-		int index = (qBinaryFind(newEitPids, pid) - newEitPids.constBegin());
+		int index = (std::lower_bound(newEitPids.constBegin(), newEitPids.constEnd(), pid) - newEitPids.constBegin());
 
 		if (index < newEitPids.size()) {
 			newEitPids.removeAt(index);
@@ -1223,7 +1223,7 @@ void AtscEpgFilter::processMgtSection(const char *data, int size)
 
 	for (int i = 0; i < ettPids.size(); ++i) {
 		int pid = ettPids.at(i);
-		int index = (qBinaryFind(newEttPids, pid) - newEttPids.constBegin());
+		int index = (std::lower_bound(newEttPids.constBegin(), newEttPids.constEnd(), pid) - newEttPids.constBegin());
 
 		if (index < newEttPids.size()) {
 			newEttPids.removeAt(index);

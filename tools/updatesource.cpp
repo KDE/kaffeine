@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	qSort(paths);
+	std::sort(paths.begin(), paths.end());
 
 	foreach (const QString &path, paths) {
 		QFile file(path);

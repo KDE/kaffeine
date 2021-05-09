@@ -505,7 +505,7 @@ void DvbScanDialog::foundChannels(const QList<DvbPreviewChannel> &channels)
 			continue;
 		}
 
-		QStringList::const_iterator it = qLowerBound(providers.constBegin(),
+		QStringList::const_iterator it = std::lower_bound(providers.constBegin(),
 			providers.constEnd(), channel.provider, localeAwareLessThan2);
 
 		if ((it != providers.constEnd()) && (*it == channel.provider)) {

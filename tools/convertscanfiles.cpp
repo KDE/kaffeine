@@ -880,7 +880,7 @@ static void readScanDirectory(QTextStream &out, const QString &path)
 
 		out << '[' << name << "]\n";
 
-		qSort(transponders.begin(), transponders.end(), NumericalLessThan());
+		std::sort(transponders.begin(), transponders.end(), NumericalLessThan());
 
 		foreach (const QString &transponder, transponders) {
 			out << transponder << '\n';
