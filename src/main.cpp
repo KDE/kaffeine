@@ -32,6 +32,8 @@
 #include <QStandardPaths>
 #include <QString>
 
+#include <kwindowsystem_version.h>
+
 #include <iostream>
 
 #include <config-kaffeine.h>
@@ -180,7 +182,11 @@ void KaffeineApplication::activateRequested(const QStringList &arguments,
 		return;
 
 	parser.parse(arguments);
+#if KWINDOWSYSTEM_VERSION  >= 0x056200
 	KStartupInfo::setNewStartupId(mainWindow->window()->windowHandle(), KStartupInfo::startupId());
+#else
+	KStartupInfo::setNewStartupId(mainWindow, KStartupInfo::startupId());
+#endif
 	KWindowSystem::forceActiveWindow(mainWindow->winId());
 	mainWindow->parseArgs(workingDirectory);
 }
