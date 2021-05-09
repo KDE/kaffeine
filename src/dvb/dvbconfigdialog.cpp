@@ -490,7 +490,7 @@ void DvbConfigDialog::moveLeft(DvbConfigPage *configPage)
 		return;
 	}
 
-	configPages.swap(index, index - 1);
+	configPages.swapItemsAt(index, index - 1);
 
 	if (index == 1) {
 		configPages.at(0)->setMoveLeftEnabled(false);
@@ -517,7 +517,7 @@ void DvbConfigDialog::moveRight(DvbConfigPage *configPage)
 		return;
 	}
 
-	configPages.swap(index, index - 1);
+	configPages.swapItemsAt(index, index - 1);
 
 	if (index == 1) {
 		configPages.at(0)->setMoveLeftEnabled(false);

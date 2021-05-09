@@ -897,7 +897,7 @@ void PlaylistModel::sort(int column, Qt::SortOrder order)
 
 		if (i != target) {
 			qSwap(mapping[i], mapping[target]);
-			visiblePlaylist->tracks.swap(i, target);
+			visiblePlaylist->tracks.swapItemsAt(i, target);
 		} else {
 			++i;
 		}
