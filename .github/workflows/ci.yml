@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+jobs:
+  Ubuntu:
+    name: Ubuntu
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [x64_64, aarch64]
+    steps:
+      - uses: actions/checkout@v2
+      - name: prepare
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential debhelper cmake \
+            pkg-kde-tools pkg-config extra-cmake-modules qtbase5-dev \
+            libqt5x11extras5-dev libkf5coreaddons-dev libkf5dbusaddons-dev \
+            libkf5i18n-dev libkf5solid-dev libkf5widgetsaddons-dev \
+            libkf5windowsystem-dev libkf5xmlgui-dev libkf5kio-dev \
+            libvlc-dev libx11-dev libxss-dev libdvbv5-dev libudev-dev
+      - name: build
+        run: |
+          cmake .
+          make
+          sudo make install
