@@ -23,6 +23,8 @@
 #include <QTextCodec>
 
 #include "dvbsi.h"
+#include "dvbsih.h"
+
 
 void DvbSection::initSection(const char *data, int size)
 {
@@ -305,6 +307,17 @@ QString DvbSiText::convertText(const char *data, int size)
 			size -= 2;
 			break;
 		    }
+		case 0x1f: {
+			std::string decoded;
+			int e = freesat_huffman_decode((const uint8_t*) data, size, decoded);
+			if (e) {
+				return QString();
+			}
+			else {
+				QString ret = QString::fromStdString(decoded);
+				return ret;
+			}
+		}
 		}
 
 		data++;

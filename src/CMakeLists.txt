@@ -40,6 +40,7 @@ if(HAVE_DVB)
       dvb/dvbscan.cpp
       dvb/dvbscandialog.cpp
       dvb/dvbsi.cpp
+      dvb/dvbsih.cpp
       dvb/dvbtab.cpp
       dvb/dvbtransponder.cpp
       dvb/xmltv.cpp)
