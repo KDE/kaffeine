@@ -4,6 +4,7 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <name>Kaffeine</name>
+  <name xml:lang="ar">كافيين</name>
   <name xml:lang="bs">Kaffeine</name>
   <name xml:lang="ca">Kaffeine</name>
   <name xml:lang="ca-valencia">Kaffeine</name>
@@ -41,6 +42,7 @@
   <name xml:lang="zh-CN">Kaffeine</name>
   <name xml:lang="zh-TW">Kaffeine</name>
   <summary>Multimedia Player</summary>
+  <summary xml:lang="ar">مشغل وسائط</summary>
   <summary xml:lang="bs">Multimedijalni plejer</summary>
   <summary xml:lang="ca">Reproductor multimèdia</summary>
   <summary xml:lang="ca-valencia">Reproductor multimèdia</summary>
@@ -83,6 +85,7 @@
       Kaffeine has user-friendly interface, so that even first time users can start immediately playing their movies:
       from DVD (including DVD menus, titles, chapters, etc.), VCD, or a file.
     </p>
+    <p xml:lang="ar">كافيين مشغل وسائط. ما يجعله مختلفًا عن الآخرين هو دعمه الممتاز للتلفزيون الرقمي (DVB). يحتوي كافيين على واجهة سهلة الاستخدام، بحيث يمكن للمستخدمين من أول مرة تشغيل أفلامهم على الفور: من DVD (بما في ذلك قوائم DVD، والعناوين، والفصول، وما إلى ذلك)، أو VCD، أو ملف.</p>
     <p xml:lang="bs">Kaffeine je media player. Ono što ga razlikuje od drugih je odličnu podrška digitalne TV (DVB). Kaffeine ima user-friendly sučelje, tako da čak i novi korisnici mogu odmah početi da igraju svoje filmove: od DVD (uključujući DVD izbornike, naslova, poglavlja, itd), VCD, ili datoteke.</p>
     <p xml:lang="ca">El Kaffeine és un reproductor multimèdia. El que el fa diferent dels altres és el seu excel·lent suport de televisió digital (DVB). El Kaffeine té una interfície fàcil d'usar, de manera que fins i tot els usuaris principiants podran començar immediatament a reproduir les seves pel·lícules: des d'un DVD (incloent-hi els menús, títols, capítols, etc. del DVD), VCD o un fitxer.</p>
     <p xml:lang="ca-valencia">El Kaffeine és un reproductor multimèdia. El que el fa diferent dels altres és el seu excel·lent suport de televisió digital (DVB). El Kaffeine té una interfície fàcil d'usar, de manera que fins i tot els usuaris principiants podran començar immediatament a reproduir les seues pel·lícules: des d'un DVD (incloent-hi els menús, títols, capítols, etc. del DVD), VCD o un fitxer.</p>
@@ -123,6 +126,7 @@
   <screenshots>
     <screenshot type="default">
       <caption>Kaffeine main window</caption>
+      <caption xml:lang="ar">النّافذة الرّئيسة لكافيين</caption>
       <caption xml:lang="ca">Finestra principal del Kaffeine</caption>
       <caption xml:lang="ca-valencia">Finestra principal del Kaffeine</caption>
       <caption xml:lang="cs">Hlavní okno Kaffeine</caption>
