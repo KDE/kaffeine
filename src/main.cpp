@@ -178,16 +178,19 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 void KaffeineApplication::activateRequested(const QStringList &arguments,
 					    const QString &workingDirectory)
 {
-	if (arguments.isEmpty())
-		return;
-
 	parser.parse(arguments);
-#if KWINDOWSYSTEM_VERSION  >= 0x056200
+
+#if KWINDOWSYSTEM_VERSION > QT_VERSION_CHECK(5, 91, 0)
+	KWindowSystem::updateStartupId(mainWindow->windowHandle());
+	KWindowSystem::activateWindow(mainWindow->windowHandle());
+#else
+#if KWINDOWSYSTEM_VERSION  >= QT_VERSION_CHECK(5, 62, 0)
 	KStartupInfo::setNewStartupId(mainWindow->window()->windowHandle(), KStartupInfo::startupId());
 #else
 	KStartupInfo::setNewStartupId(mainWindow, KStartupInfo::startupId());
 #endif
 	KWindowSystem::forceActiveWindow(mainWindow->winId());
+#endif
 	mainWindow->parseArgs(workingDirectory);
 }
 
