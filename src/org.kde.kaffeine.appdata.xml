@@ -161,7 +161,7 @@
     </screenshot>
   </screenshots>
   <project_group>KDE</project_group>
-    <releases>
+  <releases>
     <release version="22.04.1" date="2022-05-12"/>
     <release version="22.04.0" date="2022-04-21"/>
     <release version="21.12.3" date="2022-03-03"/>
