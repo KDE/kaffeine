@@ -464,7 +464,7 @@ void DvbScanDialog::scanButtonClicked(bool checked)
 			}
 		} else {
 			scanButton->setChecked(false);
-			KMessageBox::sorry(this,
+			KMessageBox::information(this,
 				i18nc("message box", "No available device found."));
 			return;
 		}

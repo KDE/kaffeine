@@ -193,7 +193,7 @@ void DvbLiveView::replay()
 		mediaWidget->stop();
 
 		if (manager->getRecordingModel()->hasActiveRecordings()) {
-			KMessageBox::sorry(manager->getParentWidget(),
+			KMessageBox::information(manager->getParentWidget(),
 				i18nc("@info", "All devices are used for recordings."));
 		} else {
 			KMessageBox::information(manager->getParentWidget(),
