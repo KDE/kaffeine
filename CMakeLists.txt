@@ -30,7 +30,6 @@ find_package(Qt5Core)
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH
 	${ECM_MODULE_PATH}
-	${ECM_KDE_MODULE_DIR}
 	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules"
 )
 
