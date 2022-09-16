@@ -57,5 +57,5 @@ ecm_install_icons(ICONS
 	sc-status-audio-volume-muted.svg
 	sc-status-dialog-error.svg
 	sc-status-dialog-information.svg
-	DESTINATION ${ICON_INSTALL_DIR}
+	DESTINATION ${KDE_INSTALL_ICONDIR}
 )
