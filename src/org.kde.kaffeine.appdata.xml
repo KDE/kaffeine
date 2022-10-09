@@ -22,6 +22,7 @@
   <name xml:lang="ia">Kaffeine</name>
   <name xml:lang="id">Kaffeine</name>
   <name xml:lang="it">Kaffeine</name>
+  <name xml:lang="ka">Kaffeine</name>
   <name xml:lang="ko">Kaffeine</name>
   <name xml:lang="nl">Kaffeine</name>
   <name xml:lang="nn">Kaffeine</name>
@@ -60,6 +61,7 @@
   <summary xml:lang="ia">Reproductor multimedial</summary>
   <summary xml:lang="id">Pemutar Multimedia</summary>
   <summary xml:lang="it">Lettore multimediale</summary>
+  <summary xml:lang="ka">მულტიმედიის დამკვრელი</summary>
   <summary xml:lang="ko">멀티미디어 재생기</summary>
   <summary xml:lang="nl">Multimediaspeler</summary>
   <summary xml:lang="nn">Multimediespelar</summary>
@@ -143,6 +145,7 @@
       <caption xml:lang="ia">Fenestra principal de Kaffeine</caption>
       <caption xml:lang="id">Jendela utama Kaffeine</caption>
       <caption xml:lang="it">Finestra principale di Kaffeine</caption>
+      <caption xml:lang="ka">Kaffeine-ის მთავარი ფანჯარა</caption>
       <caption xml:lang="ko">Kaffeine 주 창</caption>
       <caption xml:lang="nl">Hoofdvenster van Kaffeine</caption>
       <caption xml:lang="nn">Hovudvindauge for Kaffeine</caption>
