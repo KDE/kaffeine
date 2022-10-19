@@ -2,6 +2,7 @@
 Type=Service
 Actions=PlayDVD;
 X-KDE-Solid-Predicate=OpticalDisc.availableContent & 'VideoDvd'
+X-KDE-AliasFor=org.kde.kaffeine
 
 [Desktop Action PlayDVD]
 Name=Play DVD with Kaffeine

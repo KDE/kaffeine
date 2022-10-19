@@ -2,6 +2,7 @@
 Type=Service
 Actions=PlayAudioCd;
 X-KDE-Solid-Predicate=OpticalDisc.availableContent & 'Audio'
+X-KDE-AliasFor=org.kde.kaffeine
 
 [Desktop Action PlayAudioCd]
 Name=Play Audio CD with Kaffeine
