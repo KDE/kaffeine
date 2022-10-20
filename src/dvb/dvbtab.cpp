@@ -20,6 +20,7 @@
 
 #include "../log.h"
 
+#include <kwidgetsaddons_version.h>
 #include <KActionCollection>
 #include <KConfigGroup>
 #include <KMessageBox>
@@ -381,9 +382,22 @@ void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 		DvbRecordingModel *recordingModel = manager->getRecordingModel();
 
 		if (recordingModel->hasActiveRecordings()) {
-			if (KMessageBox::warningYesNo(parent, i18nc("message box",
+#if KWIDGETSADDONS_VERSION >= QT_VERSION_CHECK(5, 100, 0)
+			if (KMessageBox::warningTwoActions(parent,
+#else
+			if (KMessageBox::warningYesNo(parent,
+#endif
+			    i18nc("message box",
 			    "Kaffeine is currently recording programs.\n"
-			    "Do you really want to close the application?")) != KMessageBox::Yes) {
+			    "Do you really want to close the application?"),
+			    QString(),
+			    KStandardGuiItem::quit(),
+			    KStandardGuiItem::cancel())
+#if KWIDGETSADDONS_VERSION >= QT_VERSION_CHECK(5, 100, 0)
+			    != KMessageBox::PrimaryAction) {
+#else
+			    != KMessageBox::Yes) {
+#endif
 				*ok = false;
 			}
 
@@ -391,11 +405,21 @@ void DvbTab::mayCloseApplication(bool *ok, QWidget *parent)
 		}
 
 		if (recordingModel->hasRecordings()) {
-			if (KMessageBox::questionYesNo(parent, i18nc("message box",
+#if KWIDGETSADDONS_VERSION >= QT_VERSION_CHECK(5, 100, 0)
+			if (KMessageBox::questionTwoActions(parent,
+#else
+			if (KMessageBox::questionYesNo(parent,
+#endif
+			    i18nc("message box",
 			    "Kaffeine has scheduled recordings.\n"
 			    "Do you really want to close the application?"), QString(),
-			    KStandardGuiItem::yes(), KStandardGuiItem::no(),
-			    QLatin1String("ScheduledRecordings")) != KMessageBox::Yes) {
+			    KStandardGuiItem::quit(), KStandardGuiItem::cancel(),
+			    QLatin1String("ScheduledRecordings"))
+#if KWIDGETSADDONS_VERSION >= QT_VERSION_CHECK(5, 100, 0)
+			    != KMessageBox::PrimaryAction) {
+#else
+			    != KMessageBox::Yes) {
+#endif
 				*ok = false;
 			}
 
