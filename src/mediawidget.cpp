@@ -43,6 +43,7 @@
 #include <QX11Info>
 #include <Solid/Block>
 #include <Solid/Device>
+#include <KWindowSystem>
 #include <X11/extensions/scrnsaver.h>
 
 #include "backend-vlc/vlcmediawidget.h"
@@ -866,8 +867,10 @@ void MediaWidget::checkScreenSaver(bool noDisable)
 
 	if (screenSaverSuspended != suspendScreenSaver) {
 		// X11 - needed if none of the above applications is running
-		screenSaverSuspended = suspendScreenSaver;
-		XScreenSaverSuspend(QX11Info::display(), suspendScreenSaver);
+		if (KWindowSystem::isPlatformX11()) {
+			screenSaverSuspended = suspendScreenSaver;
+			XScreenSaverSuspend(QX11Info::display(), suspendScreenSaver);
+		}
 	}
 }
 
