@@ -20,7 +20,6 @@ install/
 install_manifest.txt
 moc*.cpp
 patches/
-po/
 src/kaffeine
 src/kaffeine.qrc.depends
 src/qrc_kaffeine.cpp

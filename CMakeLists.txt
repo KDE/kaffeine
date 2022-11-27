@@ -115,14 +115,12 @@ add_subdirectory(deviceactions)
 add_subdirectory(icons)
 add_subdirectory(profiles)
 add_subdirectory(src)
-if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/po")
-  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/po/CMakeLists.txt" )
-    add_subdirectory(po)
-  endif()
-endif()
+
+ki18n_install(po)
 
 if(KF5DocTools_VERSION)
   add_subdirectory(doc)
+  kdoctools_install(po)
 endif(KF5DocTools_VERSION)
 
 if(BUILD_TOOLS)
