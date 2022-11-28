@@ -1,0 +1,2167 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % German "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>Das Handbuch zu &kaffeine;</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab+kde@kernel.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<othercredit role="translator"
+><firstname
+>Deutsches</firstname
+><surname
+>KDE-Übersetzerteam</surname
+><affiliation
+><address
+><email
+>kde-i18n-de@kde.org</email
+></address
+></affiliation
+><contrib
+>Übersetzung</contrib
+></othercredit
+> 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016-2019</year>
+<holder
+>Die &kaffeine;-Autoren.</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>2019-05-01</date>
+<releaseinfo
+>&kaffeine; 2.0.17</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+><ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine</ulink
+> ist eine Medienwiedergabe von &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>kaffeine</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>Video</keyword>
+<keyword
+>Audio</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>atsc</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+<keyword
+>tv</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>&kaffeine;-Medienwiedergabe</title>
+
+<sect1 id="startwindow">
+<title
+>Das Startfenster</title>
+
+<para
+>Wie viele andere Mediaplayer unterstützt &kaffeine; eine breite Palette von Video- und Audioformaten sowie die Wiedergabe von Audio und Video von DVD und &CD;. Außerdem unterstützt es die Live-Wiedergabe von Digital-TV, wenn ein DVB-Gerät (Digital Video Broadcast) angeschlossen ist. </para>
+<para
+>Nach dem Start von &kaffeine; erscheint ein Bildschirm mit den Hauptfunktionen in der in der Mitte. Sie können entweder über die Menüleiste oder die linke Seitenleiste zu anderen Funktionen wechseln. </para>
+
+<screenshot>
+<screeninfo
+>Startfenster</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Startfenster</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>Wiedergabe einer Datei</title>
+<para
+>Zum Abspielen einer Video- oder Audiodatei klicken auf <guibutton
+>Datei abspielen</guibutton
+> und wählen eine Datei aus. Da &kaffeine; die Bibliothek LibVLC verwendet, unterstützt es die gleichen <ulink url="https://www.videolan.org/vlc/features.html"
+>Dateiformate</ulink
+> wie VLC. Es unterstützt auch das Öffnen einer Liste von Dateien zum Erstellen und Verwalten von <ulink url="https://wiki.videolan.org/Playlist/"
+>Wiedergabelisten</ulink
+>. </para>
+
+<screenshot>
+<screeninfo
+>Wiedergabe einer Datei</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Wiedergabe einer Datei</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>Das Fenster mit der Wiedergabeliste</title>
+<para
+>&kaffeine; unterstützt mehrere Wiedergabelisten. Wählen Sie die aktive Liste mit <guilabel
+>Wiedergabeliste</guilabel
+> in der linken Seitenleiste. Sie können einige Dateien oder Ordner aus dem Dateibrowser ziehen und auf der Wiedergabeliste ablegen, um sie in die Warteschlange zu stellen, oder sie auf dem Wiedergabefenster ablegen, um eine neue Wiedergabeliste zu erstellen. Um den Namen einer Wiedergabeliste zu ändern, bearbeiten Sie ihn und bestätigen Sie mit <keycap
+>Eingabe</keycap
+>. </para>
+<screenshot>
+<screeninfo
+>Fenster mit der Wiedergabeliste</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>Fenster mit der Wiedergabeliste</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>Alle Funktionen für die Wiedergabeliste finden Sie unter dem Eintrag <guimenu
+>Wiedergabeliste</guimenu
+> in der Menüleiste und im Kontextmenü (Rechtsklick auf Wiedergabeliste). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>Wiedergabe von digitalem Fernstehen</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>Einrichtung für digitales Fernsehen</title>
+
+<para
+>Während die Grundfunktionen für ein einfaches, aber leistungsfähiges Wiedergabeprogramm ausreichend sind, kann &kaffeine; zusätzlich auch grafische Bedienungsoberfläche zum Anschauen und Aufnehmen von digitalem Fernsehen genutzt werden. </para>
+
+<para
+>Seit &kaffeine; Version 2.0 wird für Digital-TV die Bibliothek libdvbv5 verwendet und es werden neue Standards wie DVB-T2 und ISDB-T unterstützt. Das Erweitern der Unterstützung für neuere digitale TV-Standards ist nun einfacher. Da &kaffeine; außerdem die die DVB Version 5 API von &Linux; verwendet, können auch mehrere digitale TV-Standards unterstützt werden. </para>
+
+<para
+>Zur Einrichtung von digitalem Fernsehen Öffnen Sie im Menü <guimenu
+>Fernsehen</guimenu
+> den Eintrag  <guimenuitem
+>Fernsehen einrichten ...</guimenuitem
+>. Ein Dialog wird geöffnet, in dem Sie die zu verwendenden Parameter einstellen können: </para>
+
+<screenshot>
+<screeninfo
+>TV-Einrichtung - Allgemeine Einstellungen</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>TV-Einrichtung - Allgemeine Einstellungen</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title
+>Allgemeine Einstellungen zum digitalen Fernsehen</title>
+
+<para
+>Im Menü <guimenu
+>Allgemeine Einstellungen</guimenu
+> können Sie die geräteunabhängigen Einstellungen vornehmen. </para>
+
+<para
+>Im <guilabel
+>Ordner für Aufnahmen</guilabel
+> werden alle Aufnahmen von TV-Programmen gespeichert. </para>
+
+<para
+>Im Feld <guilabel
+>xmltv-Dateiname (optional)</guilabel
+> wird der Dateiname mit EPG-Daten eingegeben, die über einen externes Programm abgerufen wurden. Mit dieser Einstellung sollten Sie die <guilabel
+>Verarbeitung von EPG-Daten aus MPEG-TS-Tabellen abschalten</guilabel
+> </para>
+
+<para
+>Mit <guilabel
+>Verarbeitung von EPG-Daten aus MPEG-TS-Tabellen abschalten</guilabel
+> wird das Abrufen von EPG-Daten von Ihren Fernsehsender verhindert, wenn Ihr Fernsehsender keine zuverlässigen EPG-Daten sendet. </para>
+
+<para
+>Der <guilabel
+>Ordner für Zeitverschiebung</guilabel
+> wird in Verbindung mit der Pausentaste (<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>) der Medienwiedergabe benutzt. Wenn die Taste gedrückt wird, wird eine zeitversetzte Datei an dem Ort gespeichert, der in diesem Menüeintrag angegeben ist. </para>
+
+<para
+>Mit den Einstellungen <guilabel
+>Anfangspuffer</guilabel
+> und <guilabel
+>Endpuffer</guilabel
+> können Sie einen <quote
+>Sicherheitspuffer</quote
+> vorgeben, um den Anfang und das Ende einer Programmaufnahme nicht zu verpassen, da die Zeitstempel in Programmführern nicht immer genau sind. Die Aufnahme beginnt dann um die im <guilabel
+>Anfangspuffer</guilabel
+> eingestellten Minuten vor der <guilabel
+>Start</guilabel
+>zeit aus dem <guimenu
+>Programmführer</guimenu
+> und endet erst nach den in <guilabel
+>Endpuffer</guilabel
+> eingestellten Minuten nach dem Ende aus dem Programmführer. </para>
+
+<para
+>Mit <guilabel
+>Namensschema für Aufnahmen</guilabel
+> können Sie festlegen, unter welchem Namensschema Programmaufnahmen gespeichert werden. Folgende Platzhalter können verwendet werden, um den Namen der Aufnahme dynamisch zu ändern: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>%title</parameter
+> - Titel des Programms wie in den Menüs <guimenu
+>Programmführer</guimenu
+> und <guimenu
+>Aufnahmeplan</guimenu
+>. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%day, %month, %year, %hour, %min, %sec</parameter
+> - Felder Aus dem Zeitstempel mit der Zeit, an der &kaffeine; die Aufnahme eines Programms beginnt. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%channel</parameter
+> - Name des Kanals, der das Programm streamed. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>Mit <guilabel
+>Aktion nach Aufnahmeende</guilabel
+> können Sie einen optionalen Befehl eingeben, der nach dem Ende der Aufnahme eines Programms von &kaffeine; ausgeführt wird. </para>
+
+<para
+>Aktivieren Sie die Einstellung <guilabel
+>Suchlaufdaten über Internet aktualisieren</guilabel
+>, damit &kaffeine; überprüft, ob eine neue Kanal-Definitionsdatei auf der <ulink url="https://autoconfig.kde.org/kaffeine/"
+>&kaffeine;-Webseite</ulink
+> vorhanden ist. </para>
+<para
+>&kaffeine; verwendet eine Datei namens scanfile.dvb für die Liste der bekannten digitalen TV-Kanäle pro Land und Stadt. Diese Datei wird mit dem Inhalt des Git-Archivs <ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+> dtv-scan-tables</ulink
+> abgeglichen, das von der <ulink url="https://linuxtv.org"
+>LinuxTV</ulink
+>-Gemeinschaft betreut wird. Für weitere Details finden Sie auf der <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>Wikiseite für dtv-scan-tables</ulink
+>. </para>
+<para
+>Mit dieser Aktion lädt &kaffeine; die neueste Version der Kanaldefinitionen herunter und speichert sie in einer lokalen Datendatei, dabei wird die alte Datei überschrieben. </para>
+<para
+>Um die neuesten Definitionen zu verwenden, müssen Sie den TV-Einrichtungsdialog schließen und wieder neu öffnen.</para>
+
+<para
+>Um die Datei zu bearbeiten, benutzen Sie die Aktion <guilabel
+>Scandatei bearbeiten</guilabel
+>. Dies ist nötig, um neue Kanäle hinzuzufügen, ohne die Datei scanfile.dvb über das Internet zu aktualisieren. Senden Sie dann diese Aktualisierung an <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+>dtv-scan-tables </ulink
+>, damit auch andere die neuen Definitionen verwenden können. </para>
+
+<para
+>Wählen Sie <guilabel
+>Zeichensatz ISO 8859-1 anstelle von ISO 6937 verwenden</guilabel
+> für alle TS-Nachrichten, die keinen Zeichensatz vorgeben. Ansonsten wird der Zeichensatz ISO 6937 verwendet. </para>
+
+<para
+>Mit <guilabel
+>Info-Dateien zu EPG-Aufnahmen erstellen</guilabel
+> können Sie Zusatzdateien für geplante Aufzeichnungen mit dem Inhalt des <guimenu
+>Programmführer</guimenu
+>s für Aufnahmen erstellen. </para>
+
+<sect3 id="EPG-data">
+<title
+>Daten für Elektronische Programmführer (EPG) herunterladen</title>
+
+<para
+>Die meisten digitalen TV-Sender strahlen Programminformationen zusammen mit der Sendung aus, kodiert in einem MPEG-TS-Stream. Einige der Sender verwenden jedoch keine Standardkodierungen für diese Daten. Zum Beispiel werden in Großbritannien EPG-Daten für HD-Programme in der Regel unter Verwendung eines proprietären Formats gespeichert. Andere Anbieter füllen die EPG-Daten einfach nicht aus, oder die Informationen dort sind nicht zuverlässig. </para>
+
+<para
+>Seit der Version 2.0.17 von &kaffeine; können EPG-Daten von ausgestrahlten Kanälen analysiert und ein externes Programm verwendet werden, um sie abzurufen. Um dies zu deaktivieren, wählen Sie <guilabel
+>Verarbeitung von EPG-Daten aus MPEG-TS-Tabellen abschalten</guilabel
+>. Sie können nun ein externes Programm verwenden, um eine Datei mit EPG-Daten zu erzeugen. Im <guilabel
+>xmltv-Dateiname (optional)</guilabel
+> geben Sie den Dateinamen der erzeugten Datei an. Auf der Seite <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+>XMLTV-Dateiformat</ulink
+> finden Sie dazu weitere Informationen. </para>
+
+<para
+>Wenn &kaffeine; eine XMLTV-Datei verwendet, werden automatisch alle Änderungen an der Datei erkannt. Bei einer Änderung wird die Datei geöffnet, ihr Inhalt analysiert und die EPG-Daten werden entsprechend aktualisiert. </para>
+
+<para
+>Die XMLTV-Datei enthält eine Tabelle, in der die interne Darstellung für Kanäle den erwarteten Kanalnamen aus den Digital-TV-Sendedaten entsprechen müssen. Die EPG-Daten werden nur abgerufen, wenn die Kanäle dort mit denen in der Kanalliste in &kaffeine; übereinstimmen. Sie müssen also sicherstellen, dass die Kanäle dort mit denen in &kaffeine; übereinstimmen.Ist dies nicht der Fall, können Sie als Befehlszeilenprogramm einen &XML;-Editor verwenden, um die fehlenden Kanalinformationen hinzuzufügen. </para>
+
+<para
+>Wenn Sie zum Beispiel ein xmltv-Programm verwenden, das die Datei mit dem Namen <emphasis
+>original_xmltv_file.xmltv</emphasis
+> abruft, können Sie mit dem Programm<emphasis
+>xmlstarlet</emphasis
+> die fehlenden Zuordnungen hinzufügen. Wenn Sie den XMLTV-Kanal mit dem Namen <emphasis
+>channel.foo.uk</emphasis
+> einem Kanal zuordnen wollen, der in &kaffeine; den Name <emphasis
+>FOO</emphasis
+> hat, können Sie dieses kleine Skript ausführen: </para>
+<para
+><programlisting
+>channel="xmltv.channel.pt"
+name="DVB_CHANNEL"
+xmlstarlet ed \
+        -s "tv/channel[@id='$channel']" -t elem -n display-name \
+        -v "$name" original_xmltv_file.xmltv &gt; new_xmltv_file.xmltv
+mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
+</programlisting>
+</para>
+<para
+>Stellen Sie dann in &kaffeine; ein, die neue Datei <emphasis
+>/tmp/new_xmltv_file.xmltv</emphasis
+> zu benutzen. </para>
+
+</sect3>
+</sect2>
+<sect2 id="dtv-source-settings">
+<title
+>Quellen für digitales Fernsehen einrichten</title>
+
+<screenshot>
+<screeninfo
+>Einstellungen für TV-Geräte</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>TV-Einrichtung</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Auf der Karteikarte <guimenu
+>Gerät</guimenu
+> werden die Einstellungen für jedes einzelne Gerät vorgenommen. Normalerweise reicht die Auswahl des Landes und der Stadt im Kombinationsfeld <guilabel
+>Quelle</guilabel
+> oder eine der Quellen aus dem automatischer Suchlauf bei Einstellungen für terrestrische Sender. Das Gleiche gilt für Geräte, die mehrere TV Standards unterstützen. Bei diesen Geräten müssen Sie die <guilabel
+>Quelle</guilabel
+> für jeden TV-Standard einzeln einrichten: </para>
+
+<screenshot>
+<screeninfo
+>Kanal-Einrichtung</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanal-Einrichtung</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Die <guilabel
+>Tuner-Zeitüberschreitung</guilabel
+> gibt an, wie lange der Kanalsuchlauf wartet, um eine Signalsperre zu erhalten. Normalerweise ist der Standardwert für die meisten Geräte ausreichend, aber wenn das Gerät zu langsam ist, kann dieser Wert erhöht werden.  </para>
+
+<para
+>Als <guilabel
+>Name</guilabel
+> wird die Quelle angezeigt, wenn Sie in der Menüleiste den Eintrag <menuchoice
+><guimenu
+>Fernsehen</guimenu
+><guimenuitem
+>Kanäle</guimenuitem
+></menuchoice
+> anzeigen. </para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title
+>Satellitengeräte</title>
+
+<para
+>Die Einrichtung für Satellitengeräte (DVB-S, DVB-S2) ist schwieriger, da es verschiedene mögliche Anordnungen von Satellitenanlagen gib. Außerdem muss das Gerät bei Satellitenanlagen einen Verstärker in der Satellitenschüssel - LNBf genannt - mit einer Gleichspannung versorgen. </para>
+<para
+>Da Satellitensysteme eine große Bandbreite nutzen und Signale mit unterschiedlichen Polaritäten akzeptieren, wird ein Protokoll - DiSEqC genannt - verwendet, um einen Bereich von Kanälen zum Empfang auszuwählen. </para>
+<para
+>Zuerst stellen Sie die Satelliten für &kaffeine; im Kombinationsfeld <guimenu
+>Einrichtung</guimenu
+> ein: </para>
+
+<screenshot>
+<screeninfo
+>Satelliten-Geräte</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Satelliten-Geräte</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Die folgenden Werte sind möglich: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>DiSEqC-Schalter</parameter
+> - Das Antennenkabel ist an einem DiSEqC-Schalter angeschlossen oder der LNBf benötigt DiSEqC-Befehle zur Auswahl eines Bereichs von Kanälen. Dies ist die häufigste Einstellung. Sie ermöglicht den gleichzeitigen Anschluss von bis zu 4 Satelliten gleichzeitig, jeder mit seiner eigenen Schüssel. Für jeden Satelliten müssen Sie die zugehörige Einrichtung für den LNBf an der Schüssel einstellen. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>USALS-Rotor</parameter
+> - Das Antennenkabel ist mit einer einzelnen Schüssel mit einem USALS-Rotor verbunden, der über DiSEqC gesteuert wird. Mehrere Satelliten können eingerichtet werden, da der Rotor die Position der Schüssel ändert, wenn ein ein anderer Satellit gewählt wird. Sie müssen die Position für die Schüssel als Breitengrad und Längengrad angeben. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Positionen-Rotor</parameter
+> - Das Antennenkabel ist mit einer einzelnen Schüssel mit einem Rotor mit einer Reihe von festen Positionen verbunden, die über DiSEqC gesteuert werden. Es können mehrere Satelliten eingestellt werden, da der Rotor die Schüsselposition ändert, wenn ein anderer Satellit gewählt wird. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>DiSEqC deaktivieren</parameter
+> - Das Antennenkabel ist an eine Schüssel ohne Bauteile mit Unterstützung für DiSEqC angeschlossen. Diese Einrichtung wird typischerweise mit Multipoint-Bandstacked-LNBf verwendet, bei denen alle Kanäle gleichzeitig gleichzeitig an der Antennenverkabelung anliegen. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>Bei einer typischen Satellitenanlage verwendet der LNBf die Einschaltspannung zur Auswahl einer niedrigeren Spannung (13V) für vertikale oder zirkulare rechte Polarisation und einer höheren Spannung (18V) für die horizontale oder zirkulare linke Polarisation. Aufgrund von Verkabelungsverlusten versteht der LNBf jedoch manchmal nicht die hohe Spannung nicht und einige Kanäle werden nicht oder falsch abgestimmt. Deshalb bieten einige Geräte eine Option an, die Spannung auf einen höhere Wert (14V oder 19V) einzustellen. Dies wird über die Einstellung <guilabel
+>Höhere LNBf-Spannung verwenden</guilabel
+>- erreicht. Es sind drei Werte möglich: </para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>tri-state</parameter
+> - Sendet keinen Befehl an das Gerät, um den Spannungspegel einzustellen. Das ist die Voreinstellung. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>nicht ausgewählt</parameter
+> - Normale Werte (13V/18V) werden für die Gleichspannung verwendet, Wählen Sie es nur, wenn das Gerät die Einstellung des Pegels unterstützt. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>ausgewählt</parameter
+> - Verwendet höhere Werte (14V/19V) für die Gleichspannung. Wählen Sie sie nur, wenn das Gerät die Einstellung des Pegels unterstützt. </para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title
+>Einrichtung ohne Rotor</title>
+
+<para
+>Wenn entweder die Einstellungen <parameter
+>DiSEqC-Schalter</parameter
+> oder <parameter
+>DiSEqC deaktivieren</parameter
+> verwendet werden, wird zunächst der Satellit der als Signalquelle verwendet werden soll, über ein Kombinationsfeld auf der rechten Seite ausgewählt. Mit einem DiSEqC-Schalter ist es möglich, bis zu 4 Quellen auszuwählen, jede mit eigenem LNBf. Nachdem Sie die Quellen eingestellt haben, klicken Sie für jede Quelle auf den zugehörigen Knopf <guilabel
+>LNBf-Einstellungen</guilabel
+>, um in einem Dialog den LNBf-Typ innerhalb der Schüssel für die Quelle zu wählen: </para>
+
+<screenshot>
+<screeninfo
+>LNBf-Einrichtung</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>LNBf-Einrichtung</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title
+>Rotor-Einrichtung</title>
+
+<para
+>Bei Verwendung eines Rotors gibt es nur einen LNBf, der mit mehreren Satelliten geteilt wird. Der nächste Schritt ist also die Auswahl des LNBf-Typs über den Dialog <guilabel
+>LNB-Einstellungen</guilabel
+>. </para>
+<para
+>Bei einem USALS-Rotor erfolgt die Positionierung über die Satellitenposition (Breitengrad, Längengrad). Wählen Sie also einfach die Satelliten, die verwendet werden sollen, über ein Kombinationsfeld aus und klicken Sie auf <guilabel
+>Satellit hinzufügen</guilabel
+>. </para>
+<para
+>Beim Positions-Rotor erfolgt die Ausrichtung über eine vorkonfigurierte Positionsnummer. Wählen Sie also einfach die Satellitenposition über den Zahlendialog auf der links Seite und den Satelliten über ein Kombinationsfeld rechts und klicken Sie auf <guilabel
+>Satellit hinzufügen</guilabel
+>. </para>
+<para
+>Wurde ein Satellit irrtümlich hinzugefügt, können Sie ihn mit <guilabel
+>Satellit entfernen</guilabel
+> wieder löschen. </para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title
+>Kanaleinstellungen für digitales Fernsehen</title>
+
+<para
+>Nachdem Sie auf <guibutton
+>OK</guibutton
+> geklickt haben, suchen Sie als nächstes nach den digitalen Kanälen, indem Sie in der Menüleiste <menuchoice
+><guimenu
+>Fernsehen</guimenu
+><guimenuitem
+>Kanäle</guimenuitem
+></menuchoice
+> auswählen: </para>
+
+
+<screenshot>
+<screeninfo
+>Kanäle durchsuchen</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanäle durchsuchen</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Wenn mehr als ein Standard unterstützt wird, können Sie im Kombinationsfeld <guilabel
+>Quelle</guilabel
+> den Standard auszuwählen, der zum Scannen verwendet werden soll. Vergessen Sie nicht, das Antennenkabel des Geräts so anzuschließen, dass es dem verwendeten Standard entspricht.  </para>
+
+<para
+>Wenn &kaffeine; einen Kanal erkennt, liest es eine <acronym
+>MPEG-TS</acronym
+>-Tabelle (Network Information Table <acronym
+>NIT</acronym
+>) ein, die Informationen über Kanäle mit unterschiedlichen Abstimmungsparametern enthält, die von demselben Sender übertragen werden. In bestimmten Netzwerken können einige Abstimmungsparameter in mehreren <acronym
+>NIT</acronym
+>-Tabellen gespeichert werden, dies wird <quote
+>Andere NITs</quote
+> genannt. Dies kommt häufiger bei einigen Kabel- und Satellitensystemen vor. Durch Auswahl von <guilabel
+>Transponder suchen für andere Netzwerke</guilabel
+> wartet &kaffeine; und analysiert alle anderen <acronym
+>NITs</acronym
+> . Dann werden mehr Kanäle gefunden werden, der Kanalsuchlauf dauert jedoch länger. </para>
+
+<para
+>Der Sendersuchlauf wird gestartet, indem Sie auf <guibutton
+>Suchlauf starten</guibutton
+> klicken. Sobald er beendet ist, erscheinen die gefundenen Kanäle auf der rechten Seite. Diese Kanäle können auf die linke Seite kopiert werden, indem Sie <guibutton
+>Gefilterte hinzufügen</guibutton
+> wählen. sie können die Abstimmungsparameter für den Kanal auf der linken Seite zu überprüfen, indem Sie auf <guibutton
+>Bearbeiten</guibutton
+> klicken. Einige Parameter können dann im Dialog eingestellt werden. </para>
+
+<screenshot>
+<screeninfo
+>Kanaleinstellungen bearbeiten</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanaleinstellungen bearbeiten</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Sobald die Kanäle gespeichert sind, müssen Sie zum fernsehen nur auf <guibutton
+>Digitales Fernsehen</guibutton
+> im Hauptfenster klicken: </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title
+>Fernsehen</title>
+
+<screenshot>
+<screeninfo
+>Fernsehen</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Fernsehen</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>Die können auch auf das Symbol <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> klicken, um die Wiedergabe anzuhalten. Dann wird das Programm aufgezeichnet und sobald Sie auf das Symbol <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> klicken, wird die Wiedergabe an der Stelle fortgesetzte, an der sie angehalten wurde. Dies wird als Zeitverschiebung bezeichnet. Es gibt auch den Knopf <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+>, mit dem Sie das Programm aufnehmen und auf einem Laufwerk speichern können. </para>
+
+</sect1>
+<sect1 id="program-guide">
+<title
+>Programmführer</title>
+
+<para
+>Digitale TV-Sender übertragen in der Regel eine Liste der aktuellen und zukünftigen Sendungen. Dies wird als elektronischer Programmführer - <acronym
+>EPG</acronym
+> bezeichnet. Die EPG-Daten werden erfasst, wenn der Inhalt eines Senders abgespielt wird. Um die <acronym
+>EPG</acronym
+>-Daten zu sehen, öffnen Sie in der Menüleiste <guimenu
+>Fernsehen</guimenu
+> und dann <guimenuitem
+>Programmführer</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Programmführer</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Programmführer</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>In einigen Ländern kann der Programmführer (EPG) in mehreren Sprachen verfügbar sein. Standardmäßig zeigt &kaffeine; alle Sprachen im EPG an. Wenn mehrere Sprachen für einen bestimmten EPG-Eintrag verfügbar sind und kein expliziter Sprachinhalt ausgewählt ist, wird den Titel-, Untertitel- und Beschreibungsdaten ein 3-Buchstaben-Sprachcode vorangestellt, wie in der ISO 639-2-Spezifikation definiert. </para>
+
+<para
+>Die Einstellung <guilabel
+>EPG-Sprache</guilabel
+> ermöglicht das Filtern von nur einer Sprache. Wenn aktiviert, wird der Filter auch auf das On-Screen-Display (<acronym
+>OSD</acronym
+>) und auf alle neuen geplanten Aufnahmen angewendet. Er wirkt sich nicht auf bereits existierende geplante Aufnahmen aus. </para>
+
+<para
+>Neben dem Klick auf den Knopf <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> können Sie auch eine Sendung über den Programmführer aufzeichnen, indem Sie auf <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>Anzeige aufnehmen</guibutton
+> im Fenster <guimenuitem
+>Programmführer</guimenuitem
+> klicken. </para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title
+>Aufnahmeplan</title>
+
+<para
+>Um die Programme zu sehen, die für die Aufnahme vorgesehen sind, öffnen Sie <guimenu
+>Fernsehen</guimenu
+> in der Menüleiste und wählen Sie den Menüeintrag <guimenuitem
+>Aufnahmeplan</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Aufnahmeplan</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Aufnahmeplan</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Klicken Sie auf <guibutton
+>Neu</guibutton
+>, dann können Sie den Beginn und die Dauer einer Aufnahmen direkt eingeben. In diesem Fall werden die EPG-Daten aus dem Programmführer nicht verwendet. </para>
+<para
+>Durch Auswahl eines vorhandenen Programms und klicken auf <guibutton
+>Bearbeiten</guibutton
+> können Sie den Beginn und die Dauer einer Aufnahme ändern oder auch eine tägliche oder wöchentliche Aufnahme einstellen. </para>
+<para
+>Durch Auswahl eines vorhandenen Programms und klicken auf <guibutton
+>Entfernen</guibutton
+> wird das Programm aus dem Aufnahmeplan gelöscht. </para>
+
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-menubar">
+<title
+>Die &kaffeine;-Menüleiste</title>
+
+<sect1 id="file-menu">
+<title
+>Das Menü Datei</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Datei</guimenu
+> <guimenuitem
+>Öffnen ...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Öffnet einen Dateidialog</action
+>, um eine lokale Datei zur Wiedergabe auszuwählen. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>U</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Datei</guimenu
+> <guimenuitem
+>URL öffnen ...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="text-html.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Öffnet einen Dialog zur Texteingabe</action
+>, in dem Sie eine &URL; eines unterstützten externen Medien-Streams eintragen können. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Datei</guimenu
+> <guimenuitem
+>Zuletzt geöffnete Dateien</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Öffnete eine Liste mit zuletzt abgespielten Dateien</action
+>. Mit <guimenuitem
+>Löschen</guimenuitem
+> können Sie alle vorhandenen Einträge aus der Liste entfernen. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Datei</guimenu
+> <guimenuitem
+>Audio-&CD; abspielen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Auswahl der Wiedergabe einer Audio- &CD;</action
+>, die bereits im Laufwerk eingelegt wurde. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Datei</guimenu
+> <guimenuitem
+>Video-&CD; abspielen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Auswahl der Wiedergabe einer Video-&CD;</action
+> , die bereits im Laufwerk eingelegt wurde. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Datei</guimenu
+> <guimenuitem
+>&DVD; abspielen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Auswahl der Wiedergabe einer &DVD;</action
+> , die bereits im Laufwerk eingelegt wurde. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Datei</guimenu
+> <guimenuitem
+>&DVD;-Ordner abspielen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Öffnet einen Dateidialog</action
+>, um einen &DVD;-Ordner zur Wiedergabe auszuwählen. Dieser Ordner enthält die Rohdaten einer &DVD;. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Datei</guimenu
+> <guimenuitem
+>Beenden</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Beendet</action
+> &kaffeine;. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playback-menu">
+<title
+>Das Menü Wiedergabe</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgUp;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Zurück</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Wenn Sie zwei oder mehr Streams in einer Sitzung wiedergeben, wird mit dieser Aktion <action
+>der vorherige ausgewählt</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Space;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Abspielen/Pause</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> und das Symbol <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Mit einem Ankreuzfeld zum Abspielen oder Anhalten eines Streams </action
+> den Sie gerade ansehen. Beim Stream eines Fernsehsenders wird die Aufnahme fortgesetzt, dies wird <ulink url="https://en.wikipedia.org/wiki/Time_shifting"
+>Zeitverschiebung</ulink
+> genannt. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Backspace;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Anhalten</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Hält einen Stream an</action
+>, den Sie gerade ansehen. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgDn;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Weiter</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Wenn Sie zwei oder mehr Streams in einer Sitzung wiedergeben und den vorherigen ansehen, wird mit dieser Aktion <action
+> der nächste ausgewählt</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>F</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Vollbildmodus/Vollbildmodus verlassen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+> und das Symbol <inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Wechselt den Vollbildmodus</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>.</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Minimaler Modus/Minimalen Modus verlassen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> und das Symbol <inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Wechselt in den minimalen Modus</action
+>, in dem im Fenster nur Kontextmenüs und Kurzbefehle verfügbar sind. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Untertitel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Öffnet ein Auswahlfeld mit <action
+>Einstellungen für Untertitel-Streams</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Untertitel</guisubmenu
+> <guimenuitem
+>aus/<replaceable
+>Name des Untertitels</replaceable
+></guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Auswahl von verfügbaren Untertiteln</action
+> aus einem Auswahlfeld. Die Untertitel-Kanäle hängen vom Inhalt des Quell-Streams ab. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Untertitel</guisubmenu
+> <guimenuitem
+>Untertiteldatei hinzufügen</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Mit dieser Aktion <action
+>fügen Sie eine lokale Untertiteldatei</action
+> mit einem Dateidialog hinzu. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Audio</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Öffnet ein Auswahlfeld mit <action
+>Einstellungen für Audio-Streams</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Audiogerät</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+>Öffnet ein Auswahlfeld mit den <action
+>verfügbaren Audiogeräten</action
+>. Nur vorhanden, wenn beim Starten von Kaffeine mehr als ein Audiogerät erkannt wurde. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Lautstärke erhöhen</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Erhöht die Audiolautstärke. Die Lautstärke kann auch erhöht werden, indem Sie den Mauszeiger in den Wiedergabebereich verschieben und das Mausrad nach oben drehen. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Lautstärke verringern</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Verringert die Audiolautstärke. Die Lautstärke kann auch erhöht werden, indem Sie den Mauszeiger in den Wiedergabebereich verschieben und das Mausrad nach unten drehen. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Stumm</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject
+></inlinemediaobject
+> und das Symbol <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. Schaltet die Audiolautstärke ab. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Video</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Öffnet ein Auswahlfeld mit <action
+>Einstellungen für Video-Streams</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Deinterlace</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Öffnet ein Untermenü mit verfügbaren Algorithmen zum Deinterlacing (Zeilenentflechtung). <action
+>Das bezeichnet einen Vorgang, bei dem Bilder eines im Zeilensprungverfahren vorliegenden Videosignals in Vollbilder konvertiert werden</action
+>, siehe diesen <ulink url="https://de.wikipedia.org/wiki/Deinterlacing"
+>Wikipedia-Artikel</ulink
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Seitenverhältnis</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Öffnet ein Auswahlfeld mit verfügbaren Seitenverhältnissen des Videos, darunter auch <guimenuitem
+>Automatisch</guimenuitem
+>.</action
+> Das <ulink url="https://de.wikipedia.org/wiki/Seitenverhältnis"
+>Seitenverhältniss</ulink
+> beschreibt das Verhältnis der Breite eines Bildes zu seiner Höhe. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Video-Größe</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Öffnet ein Auswahlfeld mit verfügbaren Fenstergrößen des angezeigten Videos.</action
+> Sie können die Größe um einen Prozentwert ändern, die <guimenuitem
+>Originalgröße</guimenuitem
+> oder <guimenuitem
+>Automatisch</guimenuitem
+> auswählen. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>J</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Geh zu Position</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="go-jump.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Öffnet ein Drehfeld zur Einstellung des gewünschten Zeitpunkts, zu dem Sie gehen wollen.</action
+> Stunden, Minuten und Sekunden können hier eingestellt werden. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Überspringen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Öffnet ein Auswahlfeld mit vier vordefinierten Sprungzeiten</action
+> mit den folgenden Optionen: </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;&Left;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Überspringen</guisubmenu
+> <guimenuitem
+>60 Sekunden rückwärts</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Geht 60 Sekunden zurück</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Left;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Überspringen</guisubmenu
+> <guimenuitem
+>15 Sekunden rückwärts</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Geht 15 Sekunden zurück</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Right;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Überspringen</guisubmenu
+> <guimenuitem
+>15 Sekunden vorwärts</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Geht 15 Sekunden vorwärts</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;&Right;</keycombo
+> </shortcut
+> <guimenu
+>Wiedergabe</guimenu
+> <guisubmenu
+>Überspringen</guisubmenu
+> <guimenuitem
+>60 Sekunden vorwärts</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Geht 60 Sekunden vorwärts</action
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>DVD-Menü</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Öffnet das &DVD;.Menü.</action
+> Informationen dazu im Wikipedia-Artikel <ulink url="https://de.wikipedia.org/wiki/DVD-Video"
+>DVD-Video</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Titel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Der Inhalt der &DVD; ist in Titel zur leichteren Navigation aufgeteilt</action
+>, zu denen Sie direkt gehen können. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Kapitel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Der Inhalt der &DVD; ist in Kapitel zur leichteren Navigation aufgeteilt</action
+>, zu denen Sie direkt gehen können. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabe</guimenu
+> <guimenuitem
+>Perspektiven</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Eine Variante der Kapitel</action
+>: es können mehrere Versionen (<quote
+>Perspektiven</quote
+>) von bestimmten Szenen enthalten sein, zu denen Sie direkt gehen können. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playlist-menu">
+<title
+>Das Menü Wiedergabeliste</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Wiederholen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Ein Ankreuzfeld, um <action
+>Dateien in der Wiedergabeliste wiederholt abzuspielen</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Zufällig</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Ein Ankreuzfeld, um <action
+>Dateien in der Wiedergabeliste zufällig nacheinander abzuspielen</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Leeren</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Entfernt alle Einträge aus der Wiedergabeliste</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Neu</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="list-add.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Erstellt eine neue Wiedergabeliste.</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Umbenennen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-rename.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Ändert den Namen der aktuellen Wiedergabeliste</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Entfernen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-delete.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Entfernt die aktuelle Wiedergabeliste</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Speichern</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Speichert die aktuelle Wiedergabeliste</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;&Shift;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Wiedergabeliste</guimenu
+> <guimenuitem
+>Speichern unter ...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save-as.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Speichert die Wiedergabeliste unter einem neuen Namen</action
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="television-menu">
+<title
+>Das Menü Fernsehen</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>C</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fernsehen</guimenu
+> <guimenuitem
+>Kanäle</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="video-television.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Es erscheint ein Einstellungsdialog, <action
+>um die Kanäle für Ihre Region einzustellen</action
+>. Weitere Informationen finden Sie im Abschnitt <link linkend="dtv-channel-setup"
+>Kanaleinstellungen für digitales Fernsehen</link
+>. </action
+></para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>G</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fernsehen</guimenu
+> <guimenuitem
+>Programmführer</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-list-details.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Es wird ein Dialog zur <action
+>Verwaltung des Programmführers</action
+> angezeigt. Weitere Informationen dazu finden Sie im Abschnitt <link linkend="program-guide"
+>Programmführer</link
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fernsehen</guimenu
+> <guimenuitem
+>OSD</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Anzeige des On-Screen-Display auf dem Bildschirm im Wiedergabefenster für drei Sekunden</action
+> mit Informationen aus dem Programmführer über das aktuelle und nächste Programm. Ein Doppelklick darauf zeigt zusätzliche Informationen zum aktuellen Programm. Klicken Sie dann erneut, um diese Infofenster zu entfernen. Weitere Details unter <ulink url="https://de.wikipedia.org/wiki/OSD"
+>OSD</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>R</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fernsehen</guimenu
+> <guimenuitem
+>Aufnahmeplan</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Es wird ein Dialog zur <action
+>Verwaltung des Aufnahmeplans</action
+> angezeigt Weitere Informationen dazu finden Sie im Abschnitt <link linkend="recording-schedule"
+>Aufnahmeplan</link
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fernsehen</guimenu
+> <guimenuitem
+>Sofortaufnahme</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Aktiviren Sie das Ankreuzfeld, um <action
+>sofort mit der Aufnahme des Streams zu beginnen</action
+>, der gerade abgespielt wird. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fernsehen </guimenu
+> <guimenuitem
+>Fernsehen einrichten ...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Es wird ein Dialog zur <action
+>Einstellung der Parameter für DVB-Geräte</action
+> angezeigt Weitere Informationen dazu finden Sie im Abschnitt <link linkend="digital-tv"
+>Einrichtung von digitalem Fernsehen</link
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="settings-menu">
+<title
+>Das Menü Einstellungen</title
+> 
+
+<para
+>Um die Bedienung von &kaffeine; zu vereinfachen, enthält dieses Menü nur zwei Einträge: </para>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Einstellungen</guimenu
+> <guimenuitem
+>Kurzbefehle festlegen ...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Öffnet einen Dialog zum Aktivieren, Deaktivieren und Ändern von Kurzbefehlen. Weitere Informationen finden Sie im Abschnitt <quote
+>Kurzbefehle</quote
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Einstellungen</guimenu
+> <guimenuitem
+>&kaffeine; einrichten ...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Öffnet den Einrichtungsdialog. </para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="help-menu">
+<title
+>Das Menü Hilfe</title
+> 
+<para
+>&kaffeine; hat  die bekannten &kde;-Einträge im Menü <guimenu
+>Hilfe</guimenu
+>, weitere Informationen dazu finden Sie im Abschnitt über das Menü <ulink url="help:/fundamentals/menus.html#menus-help"
+>Hilfe</ulink
+> der &kde;-Grundlagen. </para>
+</sect1>
+</chapter>
+
+<chapter id="credits">
+<title
+>Copyright und Lizenz</title>
+
+<para
+>Program Copyright 2007-2018, die &kaffeine;-Autoren. </para>
+
+<para
+>Copyright der Dokumentation 2003-2005, Jürgen Kofler <email
+>kaffeine@gmx.net</email
+>, Christophe Thommeret <email
+>hftom@free.fr</email
+>, Mauro Carvalho Chehab <email
+>mchehab+kde@kernel.org</email
+> </para>
+<para
+>Übersetzung Deutsches KDE-Übersetzerteam<email
+>kde-i18n-de@kde.org</email
+></para
+> &underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+

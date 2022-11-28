@@ -1,0 +1,2151 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Catalan  "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>El manual del &kaffeine;</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab+kde@kernel.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+&traductor.Antoni.Bella; 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016-2019</year>
+<holder
+>Els autors del &kaffeine;.</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>1 de maig de 2019</date>
+<releaseinfo
+>&kaffeine; 2.0.17</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+>El <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine</ulink
+> és un reproductor multimèdia creat per la comunitat &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>kaffeine</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>vídeo</keyword>
+<keyword
+>àudio</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>atsc</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+<keyword
+>tv</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>El reproductor &kaffeine;</title>
+
+<sect1 id="startwindow">
+<title
+>La finestra d'inici</title>
+
+<para
+>Com la majoria dels altres reproductors multimèdia, el &kaffeine; admet un ampli ventall de formats de vídeo i àudio, així com la reproducció d'àudio i vídeo des d'un DVD i &CD;. A més, permet la reproducció en viu de televisió digital si la vostra màquina disposa d'un dispositiu de <ulink url="https://ca.wikipedia.org/wiki/DVB"
+>difusió de vídeo digital</ulink
+> (Digital Video Broadcast -DVB-) connectat. </para>
+<para
+>Una vegada s'inicia el &kaffeine;, es presenta una pantalla amb les funcions principals enmig, i és possible canviar a altres funcions, ja sigui a través de la barra de menús o de la barra lateral esquerra: </para>
+
+<screenshot>
+<screeninfo
+>La finestra d'inici</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>La finestra d'inici</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>Reproduir un fitxer</title>
+<para
+>La reproducció d'un fitxer de vídeo o d'àudio és tan simple com fer clic al botó <guibutton
+>Reprodueix un fitxer</guibutton
+>. Se us demanarà que seleccioneu el que voleu veure, i començarà a reproduir-lo. Des que el &kaffeine; utilitza el dorsal de la LibVLC, és compatible amb els mateixos <ulink url="https://www.videolan.org/vlc/features.html"
+>formats de fitxer</ulink
+> que el VLC. També és compatible amb l'obertura d'una llista de fitxers per a crear i gestionar les <ulink url="https://wiki.videolan.org/Playlist/"
+>llistes de reproducció</ulink
+>. </para>
+
+<screenshot>
+<screeninfo
+>Reproduint un fitxer</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Reproduint un fitxer</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>La finestra de la llista de reproducció</title>
+<para
+>El &kaffeine; admet múltiples llistes de reproducció. Escolliu la que estarà activa amb el selector <guilabel
+>Llista de reproducció</guilabel
+> a la barra lateral esquerra. Hi podeu arrossegar alguns fitxers o carpetes amb facilitat des de l'explorador de fitxers i deixar-los anar a la llista de reproducció per posar-los a la cua o deixar-los anar a la finestra del reproductor per a crear una llista de reproducció. Per a canviar un nom de la llista de reproducció, editeu-lo i confirmeu amb la tecla <keycap
+>Retorn</keycap
+>. </para>
+<screenshot>
+<screeninfo
+>Finestra de la llista de reproducció</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>Finestra de la llista de reproducció</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>Podeu trobar totes les funcions relacionades amb la reproducció a l'element <guimenu
+>Llista de reproducció</guimenu
+> des de la barra de menús i al menú contextual (fent clic dret sobre la llista de reproducció). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>Reproductor de TV digital</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>Configurar la TV digital</title>
+
+<para
+>Mentre que la funcionalitat bàsica és prou útil per a algú que vol un senzill i encara potent reproductor multimèdia, la millor característica en el &kaffeine; és utilitzar-lo com un frontal amb &IGU; per a veure i gravar la televisió digital. </para>
+
+<para
+>En el &kaffeine; versió 2.0, el suport de televisió digital utilitza la libdvbv5 i s'ha ampliat per implementar nous estàndards com la DVB-T2 i la ISDB-T. També, ja que utilitza l'API de la DVB versió 5 per a &Linux;, ara, admet frontals capaços d'implementar múltiples estàndards de televisió digital. </para>
+
+<para
+>Ajustar la configuració del televisor al &kaffeine; és tan simple com obrir l'element <guimenu
+>Televisió</guimenu
+> des de la barra de menús i seleccionar l'opció <guimenuitem
+>Configura la televisió...</guimenuitem
+>. S'obrirà una finestra emergent que us permetrà ajustar els paràmetres a utilitzar: </para>
+
+<screenshot>
+<screeninfo
+>Configuració de la TV: opcions generals</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Configuració de la TV: opcions generals</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title
+>Arranjament general de la TV digital</title>
+
+<para
+>El menú <guimenu
+>Opcions generals</guimenu
+> permet indicar la configuració independent del dispositiu. </para>
+
+<para
+>La <guilabel
+>Carpeta d'enregistrament</guilabel
+> estableix la ubicació on s'emmagatzemaran els enregistraments de tots els programes de TV. </para>
+
+<para
+>L'opció <guilabel
+>Nom del fitxer xmltv (opcional)</guilabel
+> especifica un nom de fitxer amb dades EPG que s'han recuperat a través d'una capturadora externa. Quan s'utilitza aquesta opció, és probable que vulgueu establir <guilabel
+>Inhabilita l'anàlisi de les dades EPG de les taules MPEG-TS</guilabel
+>. </para>
+
+<para
+>L'opció <guilabel
+>Inhabilita l'anàlisi de les dades EPG de les taules MPEG-TS</guilabel
+> inhabilita les dades de la Guia electrònica de programes (EPG) que s'han recuperat des del senyal transmès. Utilitzeu-la per estalviar temps de la CPU, si la vostra emissora no envia dades EPG fiables. </para>
+
+<para
+>La <guilabel
+>Carpeta de desplaçament temporal</guilabel
+> s'utilitza conjuntament amb el botó de pausa (<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>), que hi ha a la pantalla del reproductor multimèdia. Quan es prem el botó, es desarà un fitxer de desplaçament temporal a la ubicació indicada per aquesta opció del menú. </para>
+
+<para
+>Les opcions <guilabel
+>Marge a l'inici</guilabel
+> i <guilabel
+>Marge al final</guilabel
+> s'utilitzen per a configurar una mena de <quote
+>marge de seguretat</quote
+> per evitar perdre's el començament i el final d'un programa, ja que les marques de temps a la guia del programa poden no ser precises. De fet, comença a enregistrar-se uns minuts abans del temps <guilabel
+>Inici</guilabel
+> definit a la <guimenu
+>Guia de programes</guimenu
+>. La quantitat exacta de temps abans es defineix mitjançant <guilabel
+>Marge a l'inici</guilabel
+>. El &kaffeine; amplia el registre per la quantitat de temps definit per <guilabel
+>Marge al final</guilabel
+>, després del final del programa. </para>
+
+<para
+>L'opció <guilabel
+>Estil per anomenar els enregistraments</guilabel
+> s'utilitza per a configurar com anomenarà el &kaffeine; un programa. Es poden utilitzar diverses macros per a canviar dinàmicament el nom de l'enregistrament: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>%title</parameter
+> - Títol del programa, tal com es veu als menús <guimenu
+>Guia de programes</guimenu
+> i <guimenu
+>Planificació de l'enregistrament</guimenu
+>; </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%day, %month, %year, %hour, %min, %sec</parameter
+> - Els camps de la marca de temps representen el moment en què el &kaffeine; comença a enregistrar un programa; </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%channel</parameter
+> - El nom del canal que ha reproduït el programa. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>L'opció <guilabel
+>Acció per a després de finalitzar l'enregistrament</guilabel
+> s'utilitza per a configurar una ordre opcional que s'executarà quan el &kaffeine; deixa d'enregistrar un programa. </para>
+
+<para
+>En fer clic a l'opció <guilabel
+>Actualitza les dades d'exploració mitjançant Internet</guilabel
+> fareu que el &kaffeine; comprovi si hi ha un fitxer de definició de l'exploració amb canals nous al <ulink url="https://autoconfig.kde.org/kaffeine/"
+>lloc web del KDE</ulink
+>. </para>
+<para
+>El &kaffeine; utilitza un fitxer anomenat scanfile.dvb per emmagatzemar una llista de canals de televisió digital coneguts per país i ciutat. Aquest fitxer es manté sincronitzat amb el contingut de l'<ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+>arbre dtv-scan-tables</ulink
+>, mantingut per la comunitat de <ulink url="https://linuxtv.org"
+>LinuxTV</ulink
+>. Per obtenir més informació, consulteu la <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>pàgina wiki de dtv-scan-tables</ulink
+>. </para>
+<para
+>Quan es fa clic al botó, el &kaffeine; baixarà la versió més recent de les definicions de canals i les emmagatzemarà en un fitxer de dades local específic per a l'usuari, anul·lant qualsevol contingut d'un anterior. </para>
+<para
+>Tingueu en compte que, per utilitzar les definicions més noves, cal tancar el diàleg de configuració de la TV i tornar a obrir-lo.</para>
+
+<para
+>L'opció <guilabel
+>Edita el fitxer de canals</guilabel
+> permet editar el fitxer, el qual pot ser útil per afegir un nou conjunt de canals, de manera que el fitxer distribuït no s'actualitzarà. Si necessiteu emprar-la, si us plau, envieu una actualització a <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+>dtv-scan-tables</ulink
+> perquè els altres també es beneficiïn de les noves definicions de canals. </para>
+
+<para
+>L'opció <guilabel
+>Usa el joc de caràcters ISO 8859-1 en comptes de l'ISO 6937</guilabel
+> permet seleccionar el valor predeterminat que s'utilitza en els missatges MPEG-TS que no estableixen explícitament un joc de caràcters. Si no s'estableix, per omissió s'emprarà la codificació ISO-6937. Si s'estableix, canviarà a l'ISO 8859-1. </para>
+
+<para
+>L'opció <guilabel
+>Crea fitxers info per acompanyar els enregistraments EPG</guilabel
+> permet crear fitxers auxiliars per als registres programats amb el contingut de la guia del programa per als enregistraments realitzats a través de la <guimenu
+>Guia de programes</guimenu
+>. </para>
+
+<sect3 id="EPG-data">
+<title
+>Recuperar les dades de la Guia electrònica de programes (EPG)</title>
+
+<para
+>La majoria de les emissores de televisió digital envien informació del programa a través de la informació transmesa, codificada en un flux MPEG-TS. No obstant això, algunes d'elles utilitzen codificacions no estàndard per a aquestes dades. Com per exemple, al Regne Unit, les dades EPG dels programes en HD generalment s'emmagatzemen utilitzant algun format propietari. Altres proveïdors simplement no omplen les dades EPG, o aquesta informació no és fiable. </para>
+
+<para
+>Des del &kaffeine; 2.0.17, és possible inhabilitar l'anàlisi de les dades EPG dels canals emesos, utilitzant un programa extern per a recuperar-los. Per a inhabilitar-ho, simplement marqueu el quadre de selecció <guilabel
+>Inhabilita l'anàlisi de les dades EPG de les taules MPEG-TS</guilabel
+>. Ara podreu establir un analitzador extern per a produir un fitxer amb dades EPG i utilitzar l'opció <guilabel
+>Nom del fitxer xmltv (opcional)</guilabel
+> per especificar el nom del fitxer produït. El fitxer produït haurà d'emprar el format XMLTV, tal com es descriu a la seva DTD. Vegeu el <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+>format de fitxer XMLTV</ulink
+> per obtenir més informació. </para>
+
+<para
+>Quan s'hagi establert el &kaffeine; a utilitzar un fitxer XMLTV, es detectarà automàticament qualsevol canvi de fitxer. Quan es produeixi un canvi, obrirà el fitxer i analitzarà el seu contingut, actualitzant les dades EPG en conseqüència. </para>
+
+<para
+>Cal tenir present que el fitxer XMLTV té una taula amb associacions amb la seva pròpia representació interna per als canals amb el nom de la cadena esperada en les dades de transmissió de TV digital. El &kaffeine; només recuperarà les dades EPG si els canals coincideixen amb els de la llista de canals del &kaffeine;. Per tant, us haureu d'assegurar que els canals coincideixin amb els que espera el &kaffeine;. Si no coincideixen, podríeu emprar un programa editor d'&XML; des de la línia d'ordres per afegir la informació de la cadena que manca. </para>
+
+<para
+>Per exemple, si teniu un programa de captura xmltv recuperant el fitxer anomenat <emphasis
+>original_xmltv_file.xmltv</emphasis
+>, podeu utilitzar el programa <emphasis
+>xmlstarlet</emphasis
+> per afegir les associacions que manquin. Per tant, si voleu associar el canal XMLTV anomenat <emphasis
+>channel.foo.uk</emphasis
+> amb un canal que al &kaffeine; s'anomena <emphasis
+>FOO</emphasis
+>, podeu executar aquest petit script: </para>
+<para
+><programlisting
+>channel="xmltv.channel.pt"
+name="DVB_CHANNEL"
+xmlstarlet ed \
+        -s "tv/channel[@id='$channel']" -t elem -n display-name \
+        -v "$name" original_xmltv_file.xmltv &gt; new_xmltv_file.xmltv
+mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
+</programlisting>
+</para>
+<para
+>Llavors, establiu el &kaffeine; a emprar el fitxer nou a <emphasis
+>/tmp/new_xmltv_file.xmltv</emphasis
+>. </para>
+
+</sect3>
+</sect2>
+<sect2 id="dtv-source-settings">
+<title
+>Configurar les fonts de TV digital</title>
+
+<screenshot>
+<screeninfo
+>Configuració del dispositiu de TV</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Configuració de la TV</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Les pestanyes del <guimenu
+>Dispositiu</guimenu
+> tenen una configuració preestablerta per dispositiu. En general, seleccionant el país i la ciutat en el quadre combinat <guilabel
+>Font</guilabel
+> (o utilitzar «Escaneja automàticament» en una de les fonts) és suficient per a configuracions sense satèl·lits. El mateix succeeix per als dispositius que admeten múltiples estàndards de televisió. En aquests dispositius, heu d'establir la <guilabel
+>Font</guilabel
+> per a cada estàndard de televisió: </para>
+
+<screenshot>
+<screeninfo
+>Configuració dels canals</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Configuració dels canals</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>El <guilabel
+>Temps d'espera del sintonitzador</guilabel
+> especifica la quantitat de temps que l'exploració de canals esperarà per obtenir un bloqueig del senyal. Normalment, la configuració predeterminada és suficient per a la majoria dels dispositius, però si el dispositiu és massa lent per bloquejar-se, es pot augmentar aquest valor. </para>
+
+<para
+>El <guilabel
+>Nom</guilabel
+> especifica el nom associat amb la font que apareixerà seleccionant l'element <guimenu
+>Televisió</guimenu
+> des de la barra de menús i seleccionant l'opció <guimenu
+>Canals</guimenu
+>, per al plafó de configuració. </para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title
+>Dispositius de satèl·lit</title>
+
+<para
+>La configuració pels dispositius de satèl·lit (DVB-S, DVB-S2) és més complexa, ja que hi ha diferents sistemes de satèl·lit possibles. A més, en els sistemes de satèl·lit, normalment el dispositiu pot engegar un amplificador ubicat a l'antena parabòlica -anomenat LNBf-, a través d'un voltatge de CC. </para>
+<para
+>A més, com els sistemes de satèl·lit utilitzen una àmplia amplada de banda i accepten senyals amb polaritats diferents, és habitual utilitzar un protocol anomenat DiSEqC, per a seleccionar un interval dels canals que es reben. </para>
+<para
+>El primer pas és indicar al &kaffeine; la configuració del satèl·lit a través del quadre combinat <guimenu
+>Configuració</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>Definicions del dispositiu de satèl·lit</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Definicions del dispositiu de satèl·lit</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Són possibles els següents valors: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>Interruptor DiSEqC</parameter
+>: El cable de l'antena està connectat a un interruptor DiSEqC o el LNBf requereix ordres DiSEqC per a seleccionar un interval de canals. Aquesta és l'opció més comuna. Permet tenir fins a 4 satèl·lits connectats alhora, cadascun amb el seu propi plat. Per a cada satèl·lit, haureu d'establir la configuració del LNBf per al plat que apunta. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Rotor USALS</parameter
+>: El cable de l'antena està connectat a un sol plat amb un rotor USALS, controlat mitjançant DiSEqC. Es poden configurar múltiples satèl·lits, ja que el rotor canviarà la posició del plat quan se seleccioni un altre satèl·lit. Cal especificar la posició del plat (latitud, longitud). </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Posicionament del rotor</parameter
+>: El cable de l'antena està connectat a un sol plat amb un rotor amb un conjunt de posicions fixades, controlat mitjançant DiSEqC. Es poden configurar múltiples satèl·lits, ja que el rotor canviarà la posició del plat quan es triï un altre satèl·lit. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Desactiva el DiSEqC</parameter
+>: El cable de l'antena està connectat a un plat sense cap element que admeti DiSEqC. Aquesta configuració s'utilitza normalment amb LNBf multipunt amb sobreposició de les bandes, on tots els canals estan presents alhora al cable de l'antena. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>En un sistema de satèl·lit típic, el LNBf utilitza la tensió d'alimentació per a seleccionar entre una tensió baixa (13V) per a la polarització dreta vertical o circular i una tensió més alta (18V) per a la polarització esquerra horitzontal o circular. No obstant això, a causa de la pèrdua en el cable, de vegades el LNBf no entén el voltatge alt i diversos canals no sintonitzaran ni afinaran. Així, alguns dispositius ofereixen una opció per augmentar la tensió a una configuració més alta (14V o 19V). Això s'activa a través de l'estat triple amb l'opció <guilabel
+>Empra un voltatge més alt al LNBf</guilabel
+>. Hi ha tres valors possibles: </para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>Estat triple</parameter
+>: No envia cap ordre al dispositiu per ajustar el nivell de tensió. Aquest és el valor predeterminat. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Sense seleccionar</parameter
+>: Utilitza els valors normals (13V/18V) per a la tensió de la CC. Seleccioneu-ho només si el dispositiu admet ajustar el nivell. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Seleccionat</parameter
+>: Utilitza els valors alts (14V/19V) per a la tensió de la CC. Seleccioneu-ho només si el dispositiu admet ajustar el nivell. </para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title
+>Configuracions sense un rotor</title>
+
+<para
+>Quan s'utilitzen les opcions <parameter
+>Interruptor DiSEqC</parameter
+> o <parameter
+>Desactiva el DiSEqC</parameter
+>, el primer pas és establir el satèl·lit que s'utilitzarà com a font del senyal, a través d'un quadre combinat a la dreta. Amb un interruptor DiSEqC, és possible seleccionar fins a 4 fonts. Cadascuna amb el seu propi LNBf. Després d'establir la/es font/s, per a cada font, feu clic al botó <guilabel
+>Arranjament del LNBf</guilabel
+> corresponent per obrir una finestra emergent per a seleccionar el tipus de LNBf dins del plat que correspon a la font: </para>
+
+<screenshot>
+<screeninfo
+>Definicions del LNBf</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Definicions del LNBf</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title
+>Configuracions del rotor</title>
+
+<para
+>Quan s'utilitza un rotor, només hi ha un LNBf que es comparteix amb múltiples satèl·lits. Per tant, el següent pas és seleccionar el tipus de LNBf a través del diàleg <guilabel
+>Arranjament del LNB</guilabel
+>. </para>
+<para
+>Per al rotor USALS, el posicionament es realitza per la posició del satèl·lit (latitud, longitud). Per tant, només heu de seleccionar els satèl·lits que s'utilitzaran a través d'un quadre combinat i fer clic al botó <guilabel
+>Afegeix un satèl·lit</guilabel
+>. </para>
+<para
+>Per a les posicions del rotor, el posicionament es fa a través d'un número de posició preconfigurat. Per tant, només heu de seleccionar la posició del satèl·lit al diàleg de números a l'esquerra, el satèl·lit a través d'un quadre combinat a la dreta i fer clic al botó <guilabel
+>Afegeix un satèl·lit</guilabel
+>. </para>
+<para
+>Si s'ha afegit un satèl·lit per error, podeu seleccionar el satèl·lit i fer clic al botó <guilabel
+>Elimina el satèl·lit</guilabel
+> per eliminar-lo. </para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title
+>Configurar els canals de la TV digital</title>
+
+<para
+>Després de fer clic al botó <guibutton
+>D'acord</guibutton
+>, el següent pas és explorar per a cercar els canals digitals, utilitzant l'element <guimenu
+>Televisió</guimenu
+> des de la barra de menús i seleccionant l'opció <guimenuitem
+>Canals</guimenuitem
+>, per al plafó de configuració: </para>
+
+
+<screenshot>
+<screeninfo
+>Explorant els canals</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Explorant els canals</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Si hi ha més d'un estàndard admès, el quadre combinat <guilabel
+>Fonts</guilabel
+> permetrà seleccionar la que s'utilitzarà per explorar. No oblideu connectar el cable de l'antena del dispositiu perquè coincideixi amb l'estàndard que s'utilitzarà. </para>
+
+<para
+>Quan el &kaffeine; identifica un canal, llegeix una taula <acronym
+>MPEG-TS</acronym
+> anomenada taula d'informació de la xarxa (Network Information Table -<acronym
+>NIT</acronym
+>-), la qual conté informació sobre els canals que utilitzen diferents paràmetres d'ajust transmesos per la mateixa emissora. En determinades xarxes, és possible que alguns paràmetres d'ajust s'emmagatzemin en diverses taules <acronym
+>NIT</acronym
+> (anomenades <quote
+>altres NIT</quote
+>). Això és més comú en alguns sistemes de cable i de satèl·lit. Si seleccioneu <guilabel
+>Cerca els transponedors d'altres xarxes</guilabel
+>, el &kaffeine; rebrà les instruccions d'esperar i analitzar totes les altres <acronym
+>NIT</acronym
+>, el qual pot fer que es trobin més canals, a costa de passar molt més temps per a completar l'operació d'exploració dels canals. </para>
+
+<para
+>L'operació d'exploració dels canals s'iniciarà fent clic a <guibutton
+>Inicia l'exploració</guibutton
+>. Un cop acabada, els canals descoberts apareixeran a la dreta. Aquests canals es poden copiar al costat esquerre fent clic a <guibutton
+>Afegeix els filtrats</guibutton
+>. És possible comprovar els paràmetres d'ajust per al canal al costat esquerre, fent clic al botó <guibutton
+>Edita</guibutton
+>. Alguns paràmetres són ajustables des de la finestra que apareixerà. </para>
+
+<screenshot>
+<screeninfo
+>Editant la configuració del canal</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Editant la configuració del canal</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Una vegada s'han desat els canals, veure la televisió és tan simple com fer clic al botó <guibutton
+>TV digital</guibutton
+> a la finestra principal: </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title
+>Veure la TV</title>
+
+<screenshot>
+<screeninfo
+>Veient la TV</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Veient la TV</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>El &kaffeine; també permet fer clic al botó <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> per a posar-lo en pausa. Quan es fa clic al botó, el &kaffeine; enregistrarà el programa i una vegada es premi el botó <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> s'iniciarà el programa des del punt en què es va interrompre, això s'anomena <ulink  url="https://ca.wikipedia.org/wiki/Time_shifting"
+>Time Shifting</ulink
+>. També hi ha un botó <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> que permet enregistrar de forma ràpida i desar el programa al disc. </para>
+
+</sect1>
+<sect1 id="program-guide">
+<title
+>Guia de programes</title>
+
+<para
+>Els canals de televisió digital solen transmetre una llista dels programes actuals i futurs. Això s'anomena guia electrònica de programació (Electronic Program Guide -<acronym
+>EPG</acronym
+>-). Les dades EPG es capturen quan es reprodueix el contingut d'un canal. Per a veure l'<acronym
+>EPG</acronym
+>, obriu l'element <guimenu
+>Televisió</guimenu
+> des de la barra de menús i seleccioneu l'opció <guimenuitem
+>Guia de programes</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Guia de programes</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Guia de programes</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>En alguns països, l'EPG pot estar disponible en múltiples idiomes. Per omissió, el &kaffeine; mostra qualsevol idioma a l'EPG. Si hi ha múltiples idiomes disponibles per a una entrada EPG determinada, i no hi ha cap contingut d'idioma explícit, és prefixará el títol, el subtítol i la descripció amb un codi d'idioma de 3 lletres, tal com està definit per l'especificació ISO 639-2. </para>
+
+<para
+>L'opció <guilabel
+>Idiomes a l'EPG</guilabel
+> permet filtrar un únic idioma. Si està activada, el filtre també s'aplicarà a la visualització en pantalla (On Screen Display -<acronym
+>OSD</acronym
+>-) i a qualsevol enregistrament nou programat. No afectarà els enregistraments preexistents. </para>
+
+<para
+>A més de fer clic al botó d'enregistrament <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> quan s'obre la vista en viu, el &kaffeine; també permet enregistrar un programa a través de la guia de programes, fent clic al botó <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>Grava el programa</guibutton
+> a la finestra de la <guimenuitem
+>Guia de programes</guimenuitem
+>. </para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title
+>Planificar l'enregistrament</title>
+
+<para
+>Per a veure els programes que han estat programats per a ser enregistrats, obriu l'element <guimenu
+>Televisió</guimenu
+> des de la barra de menús i seleccioneu l'opció <guimenuitem
+>Planificació de l'enregistrament</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Planificació de l'enregistrament</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Planificació de l'enregistrament</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>En fer clic al botó <guibutton
+>Nou</guibutton
+>, també és possible definir directament una hora i durada per a un programa que voleu enregistrar. En aquest cas, no s'utilitzaran les definicions de l'EPG. </para>
+<para
+>En seleccionar un programa existent i en fer clic al botó <guibutton
+>Edita</guibutton
+>, podreu canviar l'hora d'inici i la durada de l'enregistrament. També podeu programar que s'enregistri setmanalment o diàriament. </para>
+<para
+>En seleccionar un programa existent i en fer clic al botó <guibutton
+>Elimina</guibutton
+>, s'eliminarà el programa de la planificació de l'enregistrament. </para>
+
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-menubar">
+<title
+>La barra de menús del &kaffeine;</title>
+
+<sect1 id="file-menu">
+<title
+>El menú Fitxer</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Obre...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Obre el diàleg de fitxers</action
+> i permet seleccionar un fitxer local per a reproduir-lo. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>U</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Fitxer a obrir...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="text-html.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Obre un diàleg per a la introducció de text</action
+>, de manera que podreu introduir l'&URL; d'un flux multimèdia extern compatible. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fitxer</guimenu
+> <guisubmenu
+>Obre recent</guisubmenu
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Ofereix una llista desplegable per obrir un recurs local recent</action
+>. Disposa d'una opció <guimenuitem
+>Neteja la llista</guimenuitem
+> per a netejar la llista. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Reprodueix un &CD; d'àudio</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Selecciona la reproducció d'un &CD; d'àudio</action
+> que ja s'hauria de trobar a la unitat de lectura. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Reprodueix un &CD; de vídeo</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Selecciona la reproducció d'un &CD; de vídeo</action
+> que ja s'hauria de trobar a la unitat de lectura. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Reprodueix un &DVD;</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Selecciona la reproducció d'un &DVD;</action
+> que ja s'hauria de trobar a la unitat de lectura. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Reprodueix una carpeta de &DVD;</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Obre el diàleg de fitxers</action
+> i permet seleccionar una carpeta de &DVD; per a reproduir-la. Aquesta carpeta contindrà les dades en brut que es troben al &DVD;. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Fitxer</guimenu
+> <guimenuitem
+>Surt</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Surt</action
+> del &kaffeine;. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playback-menu">
+<title
+>El menú Reproducció</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgUp;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Anterior</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Si reproduïu dos fluxos o més en una sessió, <action
+>se seleccionarà l'anterior</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Space;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Reprodueix/Pausa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> i <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Amb una casella de selecció per reproduir un flux o posar en pausa</action
+> el que esteu veient. En un flux de televisió es procedirà a gravar-lo, això s'anomena «<ulink url="https://ca.wikipedia.org/wiki/Time_shifting"
+>time shifting</ulink
+>». </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Retro;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Atura</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Atura un flux</action
+> que esteu visualitzant. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgDn;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Següent</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Si reproduïu dos fluxos o més en una sessió i esteu visualitzant-ne un d'anterior, <action
+>se seleccionarà el següent</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>F</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Mode de pantalla completa/Surt del mode de pantalla completa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+> i <inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Alterna el mode de pantalla completa</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>.</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Mode mínim/Surt del mode mínim</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> i <inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Alterna el mode mínim</action
+>. Un mode de la &IGU; en una finestra, on només disposarem del menú contextual i les dreceres de teclat. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Subtítols</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Ofereix una llista desplegable amb les <action
+>opcions relacionades amb el/s flux/os del/s subtítol/s</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Subtítols</guisubmenu
+> <guimenuitem
+>Desactivats/<replaceable
+>Nom-del-subtítol</replaceable
+></guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Selecciona el subtítol disponible</action
+> a partir d'aquesta llista desplegable. Aquests canals de subtítols variaran depenent del contingut en el flux d'origen. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Subtítols</guisubmenu
+> <guimenuitem
+>Afegeix un fitxer de subtítols</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Aquesta opció és per <action
+>afegir un fitxer de subtítols local</action
+> mitjançant un diàleg de fitxers. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Àudio</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Ofereix una llista desplegable amb les <action
+>opcions relacionades amb el/s flux/os d'àudio</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Àudio</guisubmenu
+> <guimenuitem
+>Dispositiu d'àudio</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+>Ofereix una llista desplegable que mostra els <action
+>dispositius d'àudio disponibles</action
+>. Només disponible si es detecta més d'un dispositiu d'àudio quan s'inicia el &kaffeine;. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Àudio</guisubmenu
+> <guimenuitem
+>Augmenta el volum</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Augmenta el volum de l'àudio. També es pot augmentar posicionant el ratolí sobre la regió del reproductor multimèdia i desplaçant la roda del ratolí cap amunt. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Àudio</guisubmenu
+> <guimenuitem
+>Disminueix el volum</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Disminueix el volum de l'àudio. També es pot disminuir posicionant el ratolí sobre la regió del reproductor multimèdia i desplaçant la roda del ratolí cap avall. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Àudio</guisubmenu
+> <guimenuitem
+>Silencia el volum</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject
+></inlinemediaobject
+> i <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. Silencia el volum de l'àudio i el retorna. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Vídeo</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Ofereix una llista desplegable amb les <action
+>opcions relacionades amb el/s flux/os del vídeo</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Vídeo</guisubmenu
+> <guimenuitem
+>Desentrellaça</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Ofereix una llista desplegable amb els algorismes de desentrellaçat disponibles. <action
+>És el procés de conversió del vídeo entrellaçat</action
+>, com ara senyals de televisió analògica comuns i molt més. Vegeu l'article de la <ulink url="https://en.wikipedia.org/wiki/Deinterlacing"
+>Viquipèdia</ulink
+> per a més detalls. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Vídeo</guisubmenu
+> <guimenuitem
+>Relació d'aspecte</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Ofereix una llista desplegable amb les relacions d'aspecte que hi ha disponibles</action
+>, més una opció <guimenuitem
+>Automàtica</guimenuitem
+>. La <ulink url="https://ca.wikipedia.org/wiki/Relació_d%27aspecte"
+>relació d'aspecte d'una imatge</ulink
+> descriu la relació proporcional entre la seva amplada i alçada. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Vídeo</guisubmenu
+> <guimenuitem
+>Mida del vídeo</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Ofereix una llista desplegable amb mides de vídeo que hi ha disponibles</action
+>. Canvia la mida de la imatge seguint un percentatge, més les opcions <guimenuitem
+>Automàtica</guimenuitem
+> i <guimenuitem
+>Mida original</guimenuitem
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>J</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Salta a la posició</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="go-jump.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Ofereix un botó de selecció de valors per a configurar el punt de temps desitjat al qual voleu anar</action
+>; amb hores, minuts i segons. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Salta</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Ofereix una llista desplegable amb quatre temps de salt predefinits</action
+>. Amb les següents opcions: </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Maj;&Left;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Salta</guisubmenu
+> <guimenuitem
+>Salta 60 s enrere</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Va enrere 60 segons</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Left;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Salta</guisubmenu
+> <guimenuitem
+>Salta 15 s enrere</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Va enrere 15 segons</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Right;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Salta</guisubmenu
+> <guimenuitem
+>Salta 15 s endavant</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Va endavant 15 segons</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Maj;&Right;</keycombo
+> </shortcut
+> <guimenu
+>Reproducció</guimenu
+> <guisubmenu
+>Salta</guisubmenu
+> <guimenuitem
+>Salta 60 s endavant</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Va endavant 60 segons</action
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Menú del &DVD;</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Comença amb el menú gràfic original del &DVD;</action
+>. S'explora utilitzant les tecles del cursor i del ratolí. Vegeu l'article de la <ulink url="https://en.wikipedia.org/wiki/DVD-Video"
+>Viquipèdia</ulink
+> per a més detalls. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Títol</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>El contingut del &DVD; es divideix en títols per a facilitar la navegació</action
+>. Des d'aquí hi anireu directament. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Capítol</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>El contingut del &DVD; es divideix en capítols per a facilitar la navegació</action
+>. Des d'aquí hi anireu directament. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Reproducció</guimenu
+> <guimenuitem
+>Angle</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Una variant dels capítols: és possible que hagin inclòs diverses versions</action
+> (anomenades <quote
+>angles</quote
+>) de certes escenes. Des d'aquí hi anireu directament. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playlist-menu">
+<title
+>El menú Llista de reproducció</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Repeteix</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Una casella de selecció per a <action
+>reproduir en un bucle el/s fitxer/s</action
+> que es troben a la llista de reproducció. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Aleatòria</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Una casella de selecció per a <action
+>reproduir aleatòriament els fitxers</action
+> que es troben a la llista de reproducció fins que s'hagin reproduït tots. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Neteja</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Esborra totes les entrades que hi ha a la llista de reproducció</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Nova</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="list-add.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Crea una llista de reproducció nova</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Reanomena</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-rename.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Canvia el nom de la llista de reproducció actual</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Elimina</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-delete.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Elimina la llista de reproducció actual</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Desa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Desa la llista de reproducció actual</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;&Maj;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Llista de reproducció</guimenu
+> <guimenuitem
+>Desa com a...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save-as.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Desa la llista de reproducció actual amb un nom nou</action
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="television-menu">
+<title
+>El menú Televisió</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>C</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisió</guimenu
+> <guimenuitem
+>Canals</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="video-television.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Apareixerà un diàleg de configuració per <action
+>establir els canals</action
+> corresponents a la vostra àrea. Vegeu la secció <link linkend="dtv-channel-setup"
+>Configurar els canals de TV</link
+> per a més detalls. </action
+></para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>G</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisió</guimenu
+> <guimenuitem
+>Guia de programes</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-list-details.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Apareixerà una finestra per a <action
+>gestionar la guia de programes</action
+>. Vegeu la secció <link linkend="program-guide"
+>Guia de programes</link
+> per a més detalls. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisió</guimenu
+> <guimenuitem
+>OSD</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Mostra el rètol informatiu a la finestra de reproducció durant tres segons</action
+> amb la informació de la guia de programes sobre el programa actual i el següent. Feu doble clic sobre seu per a veure informació ampliada sobre el programa actual i, a continuació, torneu-hi a fer clic per eliminar aquest rètol informatiu. Vegeu l'article de la <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
+>Viquipèdia</ulink
+> per a més detalls. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>R</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisió</guimenu
+> <guimenuitem
+>Planificació de l'enregistrament</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Apareixerà una finestra per a <action
+>gestionar el/s enregistrament/s programat/s</action
+>. Vegeu la secció <link linkend="recording-schedule"
+>Planificar l'enregistrament</link
+> per a més detalls. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Televisió</guimenu
+> <guimenuitem
+>Instant Record</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Amb una casella de selecció per a verificar la vostra selecció. <action
+>Inicia l'enregistrament instantani del flux que s'està reproduint</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Televisió</guimenu
+> <guimenuitem
+>Configura la televisió...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Apareixerà una finestra per <action
+>establir els paràmetres que gestionen el/s dispositiu/s de DVB</action
+>. Vegeu la secció <link linkend="digital-tv"
+>Configurar la TV digital</link
+> per a més detalls. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="settings-menu">
+<title
+>El menú Arranjament</title
+> 
+
+<para
+>Per tal de simplificar l'ús del &kaffeine;, aquest menú només conté dos elements de menú: </para>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arranjament</guimenu
+> <guimenuitem
+>Configura les dreceres...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Permet activar, desactivar i modificar les dreceres de teclat. Per obtenir més informació, vegeu la secció anomenada <quote
+>Ús i personalització de les dreceres</quote
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arranjament</guimenu
+> <guimenuitem
+>Configura el &kaffeine;...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Obre el diàleg de configuració. </para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="help-menu">
+<title
+>El menú Ajuda</title
+> 
+<para
+>El &kaffeine; té la configuració comuna al &kde; i els elements del menú <guimenu
+>Ajuda</guimenu
+>. Per a obtenir més informació, vegeu la secció sobre <ulink url="help:/fundamentals/menus.html#menus-help"
+>El menú Ajuda</ulink
+> en els Fonaments del &kde;. </para>
+</sect1>
+</chapter>
+
+<chapter id="credits">
+<title
+>Copyright i llicència</title>
+
+<para
+>Copyright del programa 2007-2018, Els autors del &kaffeine;. </para>
+
+<para
+>Copyright de la documentació 2003-2005, Jürgen Kofler <email
+>kaffeine@gmxnet</email
+>, Christophe Thommeret <email
+>hftom@free.fr</email
+>, Mauro Carvalho Chehab <email
+>mchehab+kde@kernel.org</email
+> </para>
+<para
+>Traductor/Revisor de la documentació: &credits.Antoni.Bella;</para
+> &underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+

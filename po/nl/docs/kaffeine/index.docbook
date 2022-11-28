@@ -1,0 +1,2145 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Dutch "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>Het handboek van &kaffeine;</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab+kde@kernel.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+&Freek.de.Kruijf; 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016-2019</year>
+<holder
+>De auteurs van &kaffeine;.</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>2019-05-01</date>
+<releaseinfo
+>&kaffeine; 2.0.17</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+><ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine</ulink
+> is een mediaspeler door &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>kaffeine</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>video</keyword>
+<keyword
+>audio</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>atsc</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+<keyword
+>tv</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>Afspeler &kaffeine;</title>
+
+<sect1 id="startwindow">
+<title
+>Het startvenster</title>
+
+<para
+>Zoals vele andere mediaspelers ondersteunt &kaffeine; een brede reeks van video- en audioformaten evenals afspelen van audio en video vanaf dvd en &CD;. Daarnaast ondersteunt het live digitale tv afspelen als er in uw machine een Digital Video Broadcast (DVB) apparaat is ingeplugd. </para>
+<para
+>Nadat &kaffeine; is gestart presenteert het een scherm met de hoofdfuncties in het midden en is het mogelijk om andere functies in te schakelen via ofwel de menubalk of de linker zijbalk: </para>
+
+<screenshot>
+<screeninfo
+>Startvenster</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Startvenster</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>Een bestand afspelen</title>
+<para
+>Afspelen van een video- of audio-bestand is zo eenvoudig als het klikken op de knop <guibutton
+>Bestand afspelen</guibutton
+>. Het zal u vragen om het af te spelen bestand te selecteren en zal beginnen met het af te spelen. Omdat &kaffeine; LibVLC gebruikt als de backend, ondersteunt het dezelfde <ulink url="https://www.videolan.org/vlc/features.html"
+>bestandsformaten</ulink
+> als VLC. Het ondersteunt ook het openen van een lijst met bestanden om <ulink url="https://wiki.videolan.org/Playlist/"
+>afspeellijsten</ulink
+> te maken en te beheren. </para>
+
+<screenshot>
+<screeninfo
+>Een bestand afspelen</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Een bestand afspelen</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>Het afspeellijstvenster</title>
+<para
+>&kaffeine; ondersteunt meerdere afspeellijsten. Kies de actieve met de kiezer van een <guilabel
+>Afspeellijst</guilabel
+> in de linker zijbalk. U kunt gemakkelijk enige bestanden of mappen verslepen vanuit de browser van bestanden en deze op de afspeellijst laten vallen om ze in de wachtrij te zetten of laten vallen op het afspeelvenster om een nieuwe afspeellijst te maken. Om een naam van een afspeellijst te bewerken en bevestigen met <keycap
+>Return</keycap
+>. </para>
+<screenshot>
+<screeninfo
+>Afspeellijstvenster</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>Afspeellijstvenster</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>Alle functies gerelateerd aan een afspeellijst zijn te vinden in het menu-item <guimenu
+>Afspeellijst</guimenu
+> in de menubalk en het context-menu (rechts-klikken op afspeellijst). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>Digitale tv-speler</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>Digitale TV-configuratie</title>
+
+<para
+>Terwijl de basis functionaliteit bruikbaar genoeg is voor iemand die een eenvoudige, maar toch krachtige mediaspeler wil, is de beste functie in &kaffeine; het te gebruiken als een &GUI;-frontend voor het kijken en opnemen van digitale TV. </para>
+
+<para
+>Sinds &kaffeine; versie 2.0, gebruikt de ondersteuning van digitale TV libdvbv5 en is uitgebreid om nieuwe standaards zoals DVB-T2 en ISDB-T te ondersteunen. Ondersteuning van nieuwere digitale TV standaarden is nu eenvoudiger. Ook omdat het de &Linux; DVB versie 5 API gebruikt, het ondersteunt het frontends die in staat frontends die in staat zijn meerdere digitale TV standaarden te implementeren. </para>
+
+<para
+>Instellen van de TV configuratie in &kaffeine; is net zo eenvoudig als het openen van het menu-item <guimenu
+>Televisie</guimenu
+> in de munubalk en de optie <guimenuitem
+>Televisie configureren</guimenuitem
+> te selecteren. Een pop-up venster zal openen die de te gebruiken parameters laat instellen: </para>
+
+<screenshot>
+<screeninfo
+>TV-configuratie - Algemene opties</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>TV-configuratie - Algemene opties</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title
+>Algemene digitale TV-instellingen</title>
+
+<para
+>Het menu <guimenu
+>Algenene opties</guimenu
+> stelt u in staat de instellingen die niet van het apparaat afhankelijk zijn in te stellen. </para>
+
+<para
+>De <guilabel
+>Opnamemap</guilabel
+> stelt de locatie in waar alle opnamen van TV programma's opgeslagen zullen worden. </para>
+
+<para
+>De <guilabel
+>xmltv bestandsnaam (optioneel)</guilabel
+> specificeert een bestandsnaam met EPG-gegevens die was opgehaald via een externe grabber. Wanneer deze optie wordt gebruikt, zult u waarschijnlijk instellen <guilabel
+>Ontleden van Electronic Program Guide (EPG) gegevens uit MPEG-TS tabellen uitschakelen</guilabel
+> </para>
+
+<para
+>De <guilabel
+>Ontleden van EPG-gegevens uit MPEG-TS tabellen uitschakelen</guilabel
+> schakelt de Electronic Program Guide (EPG) gegevens uit om uit het uitgezonden signaal te halen. Gebruik het om enige CPU-tijd uit te sparen, als uw omroep geen betrouwbare EPG-gegevens uitzendt. </para>
+
+<para
+>De <guilabel
+>map Tijdverschuiving</guilabel
+> wordt gebruikt samen met de pauzeknop (<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>) van het mediaspelerscherm. Wanneer de knop wordt ingedrukt, zal een tijdverschuivingsbestand worden opgeslagen op de locatie aangewezen door deze menu-optie. </para>
+
+<para
+>De opties <guilabel
+>Startmarge</guilabel
+> en <guilabel
+>Eindmarge</guilabel
+> worden gebruikt om een soort van <quote
+>beveiligingsmarge</quote
+> in te stellen om verlies aan het begin en einde van een programma te voorkomen, omdat de tijdstippen in de programmagids niet erg precies zijn. Het echt opnemen begint een paar minuten voor de <guilabel
+>Begintijd</guilabel
+> gedefinieerd in de <guimenu
+>Programmagids</guimenu
+>. De exacte hoeveelheid tijd ervoor is gedefinieerd via <guilabel
+>Startmarge</guilabel
+>. &kaffeine; verlengt de opname met de hoeveelheid time gedefinieerd door <guilabel
+>Eindmarge</guilabel
+> na het einde van het programma. </para>
+
+<para
+>De optie <guilabel
+>Stijl van naamgeving voor opnamen</guilabel
+> wordt gebruikt om in te stellen hoe &kaffeine; een programma zal noemen. Verschillende macro's kunnen gebruikt worden om dynamisch de naam van de opname te wijzigen: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>%title</parameter
+> - Titel van het programma, te zien in de menu's <guimenu
+>Programmagids</guimenu
+> en <guimenu
+>Opnameplanning</guimenu
+>; </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%day, %month, %year, %hour, %min, %sec</parameter
+> - Velden uit het tijdstip dat de tijd weergeeft wanneer &kaffeine; begint met een programma op te nemen; </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%channel</parameter
+> - naam van het kanaal dat het programma streamt. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>De optie <guilabel
+>Actie nadat opnemen eindigt</guilabel
+> wordt gebruikt om een optioneel commando uit te voeren wanneer &kaffeine; stopt met het opnemen van een programma. </para>
+
+<para
+>Op de optie <guilabel
+>Scangegevens over internet bijwerken</guilabel
+> laten &kaffeine; controleren of een nieuwe kanaalscandefinitiebestand aanwezig is op <ulink url="https://autoconfig.kde.org/kaffeine/"
+>de site van KDE</ulink
+>. </para>
+<para
+>&kaffeine; gebruikt een bestand genaamd scanfile.dvb om een lijst met bekende digitale TV-kanalen per land en stad op te slaan. Dit bestand wordt gesynchroniseerd met de inhoud van <ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+>de boomstructuur dtv-scan-tables</ulink
+>, onderhouden door de <ulink url="https://linuxtv.org"
+>LinuxTV</ulink
+> gemeenschap. Voor meer details, kijk op <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>de dtv-scan-tables wiki-pagina</ulink
+>. </para>
+<para
+>Wanneer de knop wordt ingedrukt zal &kaffeine; de laatste versie van de kanaaldefinities downloaden en opslaan op een gebruikergespecificeerd lokaal gegevensbestand, waarbij elke eerdere inhoud wordt overschreven. </para>
+<para
+>Merk op dat, om de nieuwste definities te gebruiken, het vereist is om de TV-configuratiedialoog te sluiten en te heropenen.</para>
+
+<para
+>De optie <guilabel
+>Scanbestand bewerken</guilabel
+> laat u het bestand bewerken, wat nuttig kan zijn om een nieuwe set kanalen toe te voegen, terwijl het bestand upstream niet is bijgewerkt. Als u het wilt gebruiken, overweeg dan een update naar <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+>dtv-scan-tables </ulink
+> voor anderen te zenden om deze ook te laten profiteren van de nieuwe kanaaldefinities. </para>
+
+<para
+>De optie <guilabel
+>ISO 8859-1 tekenset gebruiken in plaats van ISO 6937</guilabel
+> stelt u in staat om de standaarden te selecteren om te worden gebruikt in de MPEG-TS berichten die niet expliciet een tekenset instellen. Indien niet ingesteld, is de standaard om ISO-6937 codering te gebruiken. Indien ingesteld wijzigt de standaard naar ISO 8859-1. </para>
+
+<para
+>De optie <guilabel
+>Infobestanden aanmaken om EPG-opnamen te vergezellen</guilabel
+> schakelt het aanmaken van begeleidende bestanden in voor geplande opnamen met de inhoud van de programmagids voor opnamen gemaakt via de <guimenu
+>Programmagids</guimenu
+>. </para>
+
+<sect3 id="EPG-data">
+<title
+>Ophalen van Electronic Program Guide (EPG) gegevens</title>
+
+<para
+>De meeste digitale TV-omroepen sturen programmainformatie via de omroepinformatie, gecodeerd in een MPEG-TS stream. Sommigen daarvan gebruiken niet-standaard coderingen voor die gegevens. Als voorbeeld, in het Verenigt Koninkrijk, zijn EPG-gegevens van HD programma's gewoonlijk opgeslagen met een eigen formaat. Andere leveranciers vullen gewoon de EPG-gegevens niet in of de informatie daar is onbetrouwbaar. </para>
+
+<para
+>Vanaf &kaffeine; 2.0.17 is het mogelijk om ontleden van de EPG-gegevens uit te schakelen uit de uitgezonden kanalen, door een extern programma te gebruiken om ze op te halen. Om uit te schakelen, activeer het vakje <guilabel
+>Ontleden van Electronic Program Guide (EPG) gegevens uit MPEG-TS tabellen uitschakelen</guilabel
+>. U kunt nu een externe ontleder instellen om een bestand met EPG-gegevens te produceren en de <guilabel
+>xmltv bestandsnaam (optioneel)</guilabel
+> gebruiken om de bestandsnaam van het geproduceerde bestand te specificeren. Het geproduceerd bestand zou het XMLTV-formaat moeten gebruiken, zoals beschreven in zijn DTD. Zie <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+> XMLTV bestandsformaat</ulink
+> voor meer informatie. </para>
+
+<para
+>Wanneer &kaffeine; is ingesteld om een XMLTV-bestand te gebruiken, zal het automatisch elke wijziging erin detecteren. Wanneer er een wijziging is, zal het het bestand openen en zijn inhoud ontleden, waarbij EPG-gegevens overeenkomstig worden bijgewerkt. </para>
+
+<para
+>Het moet opgemerkt worden dat het XMLTV-bestand een tabel heeft met associaties met zijn eigen interne representatie voor channels met de vewachte channelnaam in de digitale TV verkregen gegevens. &kaffeine; zal alleen de EPG-gegevens ophalen als de channels daar overeenkomen met die in de channellijst van &kaffeine;. U moet er dus voor zorgen dat de channels daar overeenkomen met wat &kaffeine; verwacht. Als er geen overeenkomst is, dan kunt u &XML;-bewerkingsprogramma op de commandoregel gebruiken om de ontbrekende channelinformatie toe te voegen. </para>
+
+<para
+>Als u, bijvoorbeeld, een xmltv-grabberprogramma hebt om het bestand genaamd <emphasis
+>original_xmltv_file.xmltv</emphasis
+> op te halen, dan kunt u het programma <emphasis
+>xmlstarlet</emphasis
+> gebruiken om de ontbrekende associaties toe te voegen. Als u dus het XMLTV-channel genaamd als <emphasis
+>channel.foo.uk</emphasis
+> wilt associëren met een channel waarvan de naam in &kaffeine; is <emphasis
+>FOO</emphasis
+>, dan zou u dit kleine script kunnen uitvoeren: </para>
+<para
+><programlisting
+>channel="xmltv.channel.pt"
+name="DVB_CHANNEL"
+xmlstarlet ed \
+        -s "tv/channel[@id='$channel']" -t elem -n display-name \
+        -v "$name" original_xmltv_file.xmltv &gt; new_xmltv_file.xmltv
+mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
+</programlisting>
+</para>
+<para
+>Stel &kaffeine; dan zo in om het nieuwe <emphasis
+>/tmp/new_xmltv_file.xmltv</emphasis
+> bestand te gebruiken. </para>
+
+</sect3>
+</sect2>
+<sect2 id="dtv-source-settings">
+<title
+>Digitale TV-bronnen configureren</title>
+
+<screenshot>
+<screeninfo
+>Configuratie van TV-apparaten</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>TV-configuratie</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>De tabbladen <guimenu
+>Apparaat</guimenu
+> hebben instellingen per apparaat. Gewoonlijk is selecteren van het land en de stad in het keuzevak <guilabel
+>Bron</guilabel
+> (of een van de Autoscan-bronnen gebruiken) genoeg voor niet-satelliet instellingen. Hetzelfde gebeurt voor apparaten die meerdere TV-standaarden ondersteunen. Op die apparaten moet u de <guilabel
+>Bron</guilabel
+> voor elke TV standaard instellen: </para>
+
+<screenshot>
+<screeninfo
+>Kanaalinstellingen</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanaalinstellingen</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>De <guilabel
+>Tuner-timeout</guilabel
+> specificeert de hoeveelheid tijd die de scan van het kanaal zal wachten om een signaalvergendeling te krijgen. De standaard is gewoondlijk genoeg voor de meeste apparaten, maar als het apparaat te langzaam is om te vergrendelen, dan kan die waarde worden verhoogd. </para>
+
+<para
+>De <guilabel
+>Naam</guilabel
+> specificeert de naam geassocieerd met de bron die zal verschijnen door het item <guimenu
+>Televisie</guimenu
+> te selecteren in de menubalk en de optie <guimenuitem
+>Kanalen</guimenuitem
+>, voor het instellingenpaneel. </para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title
+>Satellietapparaten</title>
+
+<para
+>De configuratie voor satellietapparaten (DVB-S, DVB-S2) zijn complexer, omdat er verschillende satellietsysteemarrangementen mogelijk zijn. Het is ook gewoonlijk zo dat bij satellietsystemen het aan het apparaat is om een versterker gelokaliseerd op de satellietdisk - genaamd LNBf - via een DC voltage van power te voorzien. </para>
+<para
+>Omdat satellietsystemen ook een brede bandbreedte gebruiken en signalen accepteren met verschillende polariteiten, is het normaal om een protocol - genaamd DiSEqC - te gebruiken om een reeks van te ontvangen kanalen te selecteren. </para>
+<para
+>De eerste stap om &kaffeine; te informeren over de satellietconfiguratie is via de keuzelijst <guimenu
+>Configuratie</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>Definities voor het satellietapparaat</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Definities voor het satellietapparaat</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>De volgende waarden zijn mogelijk: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>DiSEqC schakelaar</parameter
+> - De antennekabel is verbonden met een DiSEqC schakelaar of de LNBf vereist DiSEqC commando's om een reeks van kanalen te selecteren. Dit is de meest algemene instelling. Het staat toe tot tegelijk met 4 satellieten te verbinden, elk met zijn eigen disk. Voor elke satelliet moet u de configuratie voor de LNBf instellen op de disk de er naar wijst. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>USALS-rotor</parameter
+> - De antennekabel is verbonden met een enkele disk met een USALS-rotor, bestuurd via DiSEqC. Meerdere satellieten kunnen geconfigureerd worden, omdat de rotor de diskpositie zal wijzigen wanneer een andere satelliet wordt gekozen. U moet de positie van de disk (breedtegraad, lengtegraad) specificeren. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Posities van de rotor</parameter
+> - De antennekabel is verbonden met een enkele disk met een rotor met een set van vaste posities, bestuurd via DiSEqC. Meerdere satellieten kunnen geconfigureerd worden, omdat de rotor de positie van de disk zal wijzigen wanneer een andere satelliet wordt gekozen. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>DiSEqC uitschakelen</parameter
+> - De antennekabel is verbonden met een disk zonder een element die DiSEqC ondersteunt. Deze opzet wordt typisch gebruikt met "multipoint bandstacked LNBf", waar alle kanalen op hetzelfde moment aanwezig zijn in de antennekabel. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>Op een typisch satellietsysteem gebruikt de LNBf het power aan voltage om te selecteren tussen een lager voltage (13V) voor verticale of rechtsom circulaire polarisatie en een hoger voltage (18V) voor horizontal of linksom circulaire polarisatie. Vanwege verlies in de bekabeling begrijpt de LNBf soms het hoge voltage niet en zullen verschillende kanalen niet afgestemd zijn of zullen verkeerd worden afgestemd. Er zijn dus een aantal apparaten die een optie bieden om he voltage te verhogen naar een hogere instelling (14V of 19V). Dit wordt ingeschakeld via de driestandenoptie <guilabel
+>Hogere LNBf voltages gebruiken</guilabel
+>. Er zijn drie waarden mogelijk: </para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>tri-state</parameter
+> - stuur geen commando naar het apparaat om het voltageniveau aan te passen. Dat is de standaard. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>unselected</parameter
+> - normale waarden (13V/18V) gebruiken voor het DC-voltage. Selecteer het alleen als het apparaat aanpassen van het niveau ondersteunt. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>geselecteerd</parameter
+> - hogere waarden (14V/19V) voor het DC voltage. Selecteer het alleen als het apparaat aanpassen van het niveau ondersteunt. </para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title
+>Configuraties zonder een rotor</title>
+
+<para
+>Wanneer ofwel optie <parameter
+>DiSEqC-schakelaar</parameter
+> of <parameter
+>DiSEqC uitschakelen</parameter
+> wordt gebruikt, is de eerste stap om de satelliet in te stellen die als een signaalbron zal worden gebruikt, via een keuzelijst rechts. Met een DiSEqC-schakelaar, is het mogelijk tot 4 bronnen in te stellen. Elk met zijn eigen LNBf. Na instelling van de bron(nen), klik voor elke bron, op de overeenkomstige knop <guilabel
+>LNBf-instelling</guilabel
+> om een popupvenster te openen om het type LNBf binnen de disk die overeenkomt met de bron: </para>
+
+<screenshot>
+<screeninfo
+>LNBf-definities</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>LNBf-definities</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title
+>Rotor-configuraties</title>
+
+<para
+>Wanneer een rotor wordt gebruikt is er slechts één LNBf die wordt gedeeld met meerdere satellieten. De volgende stap is dus om het type LNBf te selecteren via de dialoog <guilabel
+>LNB-instellingen</guilabel
+>. </para>
+<para
+>Voor USALS-rotor wordt de positionering gedaan via de satellietpositie (breedtegraad, lengtegraad). Selecteer dus de satellieten die gebruikt zullen worden via een keuzelijst en klik op de knop <guilabel
+>Satelliet toevoegen</guilabel
+>. </para>
+<para
+>Voor de positioneringsrotor wordt de positionering gedaan via een voorgeconfigureerd positiegetal. Selecteer dus de satellietpositie in de getaldialoog links en de satelliet via een keuzelijst rechts en klik op de knop <guilabel
+>Satelliet toevoegen</guilabel
+>. </para>
+<para
+>Als een per ongeluk een satelliet is toegevoegd, dan kunt u de satelliet selecteren en op de knop <guilabel
+>Satelliet verwijderen</guilabel
+> drukken om deze te verwijderen. </para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title
+>Instellingen voor digitale tv-kanalen</title>
+
+<para
+>Na klikken op de knop <guibutton
+>OK</guibutton
+> is de volgende stap om te scannen naar de digitale kanalen met het item <guimenu
+>Televisie</guimenu
+> uit de menubalk en de optie <guimenuitem
+>Kanalen</guimenuitem
+> te selecteren voor het instellingenpaneel: </para>
+
+
+<screenshot>
+<screeninfo
+>Kanalen scannen</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanalen scannen</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Als meer dan een standaard wordt ondersteund zal de keuzelijst <guilabel
+>Bron</guilabel
+> u toestaan om diegene die u wilt gebruiken te scannen. Vergeet niet om de antennekabel van het apparaat overeen te laten komen met de standaard die zal worden gebruikt. </para>
+
+<para
+>Wanneer &kaffeine; een kanaal identificeert, leest het een <acronym
+>MPEG-TS</acronym
+>-tabel genaamd Network Information Table (<acronym
+>NIT</acronym
+>), die informatie bevat over kanalen die verschillende afstemmingsparameters gebruiken, uitgezonden door dezelfde omroep. Op bepaalde netwerken is het mogelijk dat sommige afstemmingsparameters opgeslagen worden op verschillende <acronym
+>NIT</acronym
+>-tabellen (genaamd <quote
+>andere NITs</quote
+>). Dit is meer algemeen op sommige kabel- en satellietsystemen. Door selectie van <guilabel
+>Transponders zoeken voor andere netwerken</guilabel
+> wordt &kaffeine; geïnstrueerd om te wachten en alle andere <acronym
+>NITs</acronym
+> te bekijken, die het misschien mogelijk maakt om meer kanalen te zoeken, ten koste van heel wat meer tijd om de kanaalscan te voltooien. </para>
+
+<para
+>Het scannen van de kanalen wordt gestart door op <guibutton
+>Scan starten</guibutton
+> te drukken. Na gereed komen zullen de ontdekte kanalen aan de rechterkant verschijnen. Deze kanalen kunnen gekopieerd worden naar de linkerzijde door te klikken op <guibutton
+>Gefilterden toevoegen</guibutton
+>. Het is mogelijk om de afstemmingsparameters voor de kanalen in de linkerkant te besturen door te drukken op de knop <guibutton
+>Bewerken</guibutton
+>. Enkele parameters zijn aan te passen in het venster dat verschijnt. </para>
+
+<screenshot>
+<screeninfo
+>Kanaalinstellingen bewerken</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanaalinstellingen bewerken</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Nadat de kanalen zijn opgeslagen is TV kijken net zo eenvoudig als klikken op de knop <guibutton
+>Digitale TV</guibutton
+> in het hoofdvenster: </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title
+>TV kijken</title>
+
+<screenshot>
+<screeninfo
+>TV kijken</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>TV kijken</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>&kaffeine; stelt u ook in staat om te klikken op de knop <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> om te pauzeren. Met deze actie zal &kaffeine; het programma opnemen en nadat de knop <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> is ingedrukt zal het het programma starten vanaf het punt waar het was gepauzeerd, dit heet tijdverschuiving. Er is ook een knop <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> die u in staat stelt om snel op te nemen en het programma op schijf op te slaan. </para>
+
+</sect1>
+<sect1 id="program-guide">
+<title
+>Programmagids</title>
+
+<para
+>Digitale TV kanalen sturen gewoonlijk een lijst met de huidige en toekomstige attracties. Dit wordt Elektronische programmagids - <acronym
+>EPG</acronym
+> genoemd. De EPG gegevens worden opgenomen wanneer de inhoud van een kanaal wordt afgespeeld. Om de <acronym
+>EPG</acronym
+> te bekijken, open het item <guimenu
+>Television</guimenu
+> uit de menubalk en selecteer de optie <guimenuitem
+>Program Guide</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Programmagids</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Programmagids</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>In sommige landen is de EPG beschikbaar in meerdere talen. Standaard toont &kaffeine; elke taal in de EPG. Als meerdere talen beschikbaar zijn voor een gegeven EPG item en er geen expliciete taalinhoud is geselecteerd, zal het de gegevens titel, ondertitel en beschrijving van een voorvoegsel voorzien met 3 letters taalcode, zoals gedefinieerd door de ISO 639-2 specificatie. </para>
+
+<para
+>De optie <guilabel
+>EPG-taal</guilabel
+> biedt filtering van alleen één taal. Indien ingeschakeld zal het filter ook toegepast worden op de On Screen Display - <acronym
+>OSD</acronym
+> en aan elke nieuw geplande opname. Het heeft geen effect op eerder geplande opnamen. </para>
+
+<para
+>Naast het klikken op de opnameknop <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> wanneer de live weergave is geopend, staat &kaffeine; ook toe een programma via de programmagids op te nemen, door te drukken op <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>Show opnemen</guibutton
+> in het venster <guimenuitem
+>Programmagids</guimenuitem
+>. </para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title
+>Opnameplanning</title>
+
+<para
+>Om de programma's te zien die gepland zijn om opgenomen te worden, open het item <guimenu
+>Television</guimenu
+> uit de menubalk en selecteer de optie <guimenuitem
+>Opnameplanning</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Opnameplanning</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Opnameplanning</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Door te drukken op de knop <guibutton
+>Nieuw</guibutton
+>, is het mogelijk om direct een tijd en duur voor een op te nemen programma te definiëren. In dat geval zal het niet de EPG-definities gebruiken. </para>
+<para
+>Door een bestaand programma te selecteren en te drukken op de knop <guibutton
+>Bewerken</guibutton
+> kunt u de begintijd en duur van de opnamen wijzigen. U kunt het ook programmeren om wekelijks of dagelijks te worden opgenomen. </para>
+<para
+>Door een bestaand programma te selecteren en te drukken op de knop <guibutton
+>Verwijderen</guibutton
+>, zal het programma verwijderd worden uit de opnameplanning. </para>
+
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-menubar">
+<title
+>De menubalk van &kaffeine;</title>
+
+<sect1 id="file-menu">
+<title
+>Het menu Bestand</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Bestand</guimenu
+> <guimenuitem
+>Openen...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Opent de bestandsdialoog</action
+> en stelt u in staat om een lokaal bestand te selecteren om af te spelen. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>U</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Bestand</guimenu
+> <guimenuitem
+>URL openen...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="text-html.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Opent een dialoog voor tekstinvoer</action
+>, u kunt dus een &URL; invoeren van een ondersteunde externe mediastream. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Bestand</guimenu
+> <guimenuitem
+>Recent geopend</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Biedt een afrollijst om een lokale recente bron te openen</action
+>. Het heeft een optie <guimenuitem
+>Lijst wissen</guimenuitem
+> om die lijst te wissen. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Bestand</guimenu
+> <guimenuitem
+>Audio-&CD; afspelen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Selecteert het afspelen van een audio-&CD;</action
+> die al in het te lezen apparaat moet zitten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Bestand</guimenu
+> <guimenuitem
+>Video &CD; afspelen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Selecteer het afspelen van een Video &CD;</action
+> die al in het leesapparaat zou moeten zitten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Bestand</guimenu
+> <guimenuitem
+>&DVD; afspelen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Selecteer het afspelen van een &DVD;</action
+> die al in het leesapparaat zou moeten zitten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Bestand</guimenu
+> <guimenuitem
+>&DVD; map afspelen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Opent de bestandsdialoog</action
+> en stelt u in staat om een af te spelen &DVD; map te selecteren. De map bevat de ruwe gegevens gevonden op de &DVD;. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Bestand</guimenu
+> <guimenuitem
+>Afsluiten</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Sluit af</action
+> &kaffeine;. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playback-menu">
+<title
+>Het menu Afspelen</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgUp;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Vorige</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Als u twee of meer stromen in een sessie afspeelt, <action
+>zal de vorige geselecteerd worden</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Space;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Spelen/Pauzeren</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> en <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+> pictogrammen. <action
+>Met een keuzevakje voor afspelen van een stream of pauzeren</action
+> wat u aan het bekijken bent. Op een televisiestream zal het doorgaan met opnemen, dit staat bekend als <ulink url="https://en.wikipedia.org/wiki/Time_shifting"
+>verschuiven in tijd</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Backspace;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Stoppen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Stop een stream</action
+> die u aan het bekijken bent. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgDn;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Volgende</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Als u twee streams of meer afspeelt in één sessie en u bent de vorige aan het bekijken, <action
+>zal de volgende geselecteerd worden</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>F</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Modus volledig scherm/Modus volledig scherm verlaten</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+> en <inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> pictogrammen. <action
+>Schakel om naar modus volledig scherm</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>.</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Modus minimaal/Modus minimaal verlaten</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> en pictogrammen<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Schakel naar de minimale modus</action
+>. Een &GUI;-modus in een venster, waar we alleen een contextueel menu en sneltoetsen. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Ondertiteling</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Biedt een afrollijst met <action
+>opties gerelateerd aan de ondertitelingsstream(s)</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Ondertiteling</guisubmenu
+> <guimenuitem
+>uit/<replaceable
+>Naam-van-ondertiteling</replaceable
+></guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Selecteer de beschikbare ondertiteling</action
+> uit deze afrollijst. Deze ondertitelingskanalen zullen variëren afhankelijk van de inhoud van de bronstream. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Ondertiteling</guisubmenu
+> <guimenuitem
+>Ondertitelingsbestand toevoegen</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Deze optie is voor <action
+>een lokaal ondertitelingsbestand toevoegen</action
+> via een bestandendialoog. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Audio</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Biedt een afrollijst met <action
+>opties gerelateerd aan de audiostream(s)</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Geluid</guisubmenu
+> <guimenuitem
+>Geluidsapparaat</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+>Biedt een afrollijst die de <action
+>beschikbare geluidsapparaten</action
+> toont. Alleen beschikbaar als meer dan één geluidsapparaat is gedetecteerd toen Kaffeine is gestart. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Volume verhogen</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Verhoog het geluidsvolume. Het volume kan ook verhoogd worden door de muis te positioneren boven het mediaspelergebied en het muiswiel omhoog te rollen. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Volume verlagen</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Verlaag het geluidsvolume. Het volume kan ook verlaagd worden door de muis te positioneren boven het mediaspelergebied en het muiswiel omlaag te rollen. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Audio</guisubmenu
+> <guimenuitem
+>Volume dempen</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject
+></inlinemediaobject
+> en <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject
+></inlinemediaobject
+> pictogrammen. Zet het geluidsvolume op nul en keer terug naar het oorspronkelijke. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Video</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Biedt een afrollijst met <action
+>opties gerelateerd aan de videostream(s)</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Deinterlace</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Biedt een afrollijst met beschikbare de-interlacing algoritmen. <action
+>Is het proces van conversie van interlaced video</action
+>, zoals algemene analoge televisiesignalen en meer. Zie <ulink url="https://en.wikipedia.org/wiki/Deinterlacing"
+>Wikipedia</ulink
+> article voor meer details. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Beeldverhouding</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Biedt een afrollijst met beschikbare beeldverhoudingen</action
+>, meer een optie <guimenuitem
+>Automatisch</guimenuitem
+>. De <ulink url="https://en.wikipedia.org/wiki/Aspect_ratio_(image)"
+>beeldverhouding van een afbeelding</ulink
+> beschrijft de verhouding tussen zijn breedte en hoogte. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Videoafmeting</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Biedt een afrollijst met beschikbare videoafmetingen</action
+>. Wijzig de grootte van de afbeelding met een percentage, meer opties <guimenuitem
+>Automatisch</guimenuitem
+> en <guimenuitem
+>Oorspronkelijke afmeting</guimenuitem
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>J</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Naar positie springen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="go-jump.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Biedt een draaischakelaar voor instellen van het gewenste tijdstip waarnaar u wilt gaan</action
+>; met uren, minuten en seconden. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Overslaan</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Biedt een afrollijst met vier voorgedefinieerde tijdstippen</action
+>. Met de volgende opties: </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;&Left;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Overslaan</guisubmenu
+> <guimenuitem
+>60s achteruit overslaan</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Gaat 60 seconden terug</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Left;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Overslaan</guisubmenu
+> <guimenuitem
+>15s achteruit overslaan</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Gaat 15 seconden terug</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Right;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Overslaan</guisubmenu
+> <guimenuitem
+>15s vooruit overslaan</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Het gaat 15 seconden vooruit</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;&Right;</keycombo
+> </shortcut
+> <guimenu
+>Afspelen</guimenu
+> <guisubmenu
+>Overslaan</guisubmenu
+> <guimenuitem
+>60s vooruit overslaan</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Het gaat 60 seconden vooruit</action
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>DVD-menu</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Start met het originele &DVD; grafische menu</action
+>. Dat kan bekeken worden met de cursortoetsen en de muis. Zie het <ulink url="https://en.wikipedia.org/wiki/DVD-Video"
+>Wikipedia</ulink
+> artikel voor meer details. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Titel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>De inhoud van de &DVD; is opgedeeld in titels om gemakkelijk te navigeren</action
+>. Vanaf hier kunt u er direct naar toe. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Hoofdstuk</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>De inhoud van de &DVD; is opgedeeld in hoofdstukken om gemakkelijk te navigeren</action
+>. Vanaf hier kunt u er direct naar toe. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspelen</guimenu
+> <guimenuitem
+>Hoek</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Een variant van de hoofdstukken: het is mogelijk dat er verschillende versies zijn ingevoegd</action
+> (genaamd <quote
+>hoeken</quote
+>) van bepaalde scènes. Vanaf hier kunt u er direct heen. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playlist-menu">
+<title
+>Het menu Afspeellijst</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Herhalen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Een keuzevakje om <action
+>het/de bestand(en) herhaald af te spelen</action
+> die in de afspeellijst zitten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Willekeurig</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Een keuzevakje om <action
+>de bestanden willekeurig af te spelen</action
+> die in de afspeellijst zitten totdat ze allemaal zijn afgespeeld. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Wissen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Alle items in de afspeellijst wissen</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Nieuw</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="list-add.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Maakt een nieuwe afspeellijst aan</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Hernoemen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-rename.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>De huidige afspeellijst hernoemen</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Verwijderen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-delete.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>De huidige afspeellijst verwijderen</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Opslaan</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>De huidige afspeellijst opslaan</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;&Shift;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Afspeellijst</guimenu
+> <guimenuitem
+>Opslaan als...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save-as.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>De huidige afspeellijst opslaan met een nieuwe naam</action
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="television-menu">
+<title
+>Het televisiemenu</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>C</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisie</guimenu
+> <guimenuitem
+>Kanalen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="video-television.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Er zal een instellingenpaneel verschijnen voor <action
+>instellen van de de kanalen</action
+> overeenkomend met uw gebied. Zie de sectie <link linkend="dtv-channel-setup"
+>Instellingen Digitale TV-kanalen</link
+> voor meer details. </action
+></para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>G</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisie</guimenu
+> <guimenuitem
+>Programmagids</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-list-details.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Er zal een venster verschijnen voor <action
+>de programmagids beheren</action
+>. Zie de sectie <link linkend="program-guide"
+>Programmagids</link
+> voor meer details. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisie</guimenu
+> <guimenuitem
+>OSD</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Toont het on-screen informatievak op het afspeelvenster gedurende drie seconden</action
+> met informatie uit de programmagids over het huidige en volgende programma. Er dubbel op klikken geeft uitgebreide informatie over het huidige programma en dan opnieuw klikken om dit informatievak te verwijderen. Zie het artikel <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
+>Wikipedia</ulink
+> voor meer details. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>R</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Televisie</guimenu
+> <guimenuitem
+>Opnameplanning</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Er zal een venster verschijnen voor <action
+>het plannen van (de) opname(n)</action
+>. Zie de sectie <link linkend="recording-schedule"
+>Opnameplanning</link
+> voor meer details. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Televisie</guimenu
+> <guimenuitem
+>Direct opnemen</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Met een keuzevakje om uw selectie te verifiëren. <action
+>Start onmiddellijk opnemen van de stream die wordt afgespeeld</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Televisie</guimenu
+> <guimenuitem
+>Televisie instellen...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Er zal een venster verschijnen voor <action
+>het instellen van de parameters die het/de DVB-appara(a)t(en) beheren</action
+>. Zie de sectie <link linkend="digital-tv"
+>Digitale TV configuratie</link
+> voor meer details. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="settings-menu">
+<title
+>Het menu Instellingen</title
+> 
+
+<para
+>Om het gebruik van &kaffeine; te vereenvoudigen bevat dit menu slechts twee menu-items: </para>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Instellingen</guimenu
+> <guimenuitem
+>Sneltoetsen instellen...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Stelt u in staat om sneltoetsen in en uit te schakelen en deze te wijzigen. Voor meer informatie, zie de sectie genaamd <quote
+>Sneltoetsen gebruiken en aanpassen</quote
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Instellingen</guimenu
+> <guimenuitem
+>&kaffeine; instellen...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Opent het configuratiepaneel. </para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="help-menu">
+<title
+>Het menu Help</title
+> 
+<para
+>&kaffeine; heeft  een aantal van de gemeenschappelijk &kde; items in het menu <guimenu
+>Help</guimenu
+>, voor meer informatie lees de secties hierover in het <ulink url="help:/fundamentals/menus.html#menus-help"
+>Menu Help</ulink
+> van de basisinformatie van &kde;. </para>
+</sect1>
+</chapter>
+
+<chapter id="credits">
+<title
+>Copyright en licentie</title>
+
+<para
+>Programma copyright 2007-2018, de auteurs van &kaffeine;. </para>
+
+<para
+>Documentatie copyright 2003-2005, Jürgen Kofler <email
+>kaffeine@gmx.net</email
+>, Christophe Thommeret <email
+>hftom@free.fr</email
+>, Mauro Carvalho Chehab <email
+>mchehab+kde@kernel.org</email
+> </para>
+&meld.fouten;&vertaling.freek; &underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+

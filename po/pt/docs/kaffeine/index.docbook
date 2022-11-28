@@ -1,0 +1,454 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Portuguese "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>O Manual do &kaffeine;</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab@infradead.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<othercredit role="translator"
+><firstname
+>José</firstname
+><surname
+>Pires</surname
+><affiliation
+><address
+><email
+>zepires@gmail.com</email
+></address
+></affiliation
+><contrib
+>Tradução</contrib
+></othercredit
+> 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016</year>
+<holder
+>Os Autores do &kaffeine;</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>2016-06-26</date>
+<releaseinfo
+>&kaffeine; 2.0.4</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+>O <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine</ulink
+> é um Leitor Multimédia do &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>kaffeine</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>vídeo</keyword>
+<keyword
+>áudio</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>Leitor do &kaffeine;</title>
+
+<sect1 id="startwindow">
+<title
+>A Janela Inicial</title>
+
+<para
+>Como em muitos leitores multimédia, o &kaffeine; suporta uma grande variedade de formatos de vídeo e áudio, assim como reproduzir o áudio e vídeo de um DVD ou &CD;. Para além disso, suporta a visualização de TV Digital, caso a sua máquina tenha um dispositivo de Difusão de Vídeo Digital (DVB) ligado a ela. </para>
+<para
+>Assim que o &kaffeine; é iniciado, apresenta um ecrã com as funções principais no meio, sendo possível mudar para outras funções através do menu de contexto ou do menu lateral: </para>
+
+<screenshot>
+<screeninfo
+>Janela Inicial</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Janela Inicial</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>Reproduzir um Ficheiro</title>
+<para
+>A reprodução de um ficheiro de vídeo ou áudio é tão simples como carregar no botão <guibutton
+>Reproduzir um Ficheiro</guibutton
+>. O mesmo irá pedir para seleccionar o ficheiro a reproduzir, iniciando a reprodução desde logo. Dado que o &kaffeine; usa a LibVLC como infra-estrutura de base, suporta exactamente os mesmos <ulink url="http://www.videolan.org/vlc/features.html"
+>formatos</ulink
+> que o VLC. Também suporta a abertura de uma lista de ficheiros para criar e gerir as <ulink url="https://wiki.videolan.org/Playlist/"
+>listas de reprodução</ulink
+>. </para>
+
+<screenshot>
+<screeninfo
+>Reproduzir um Ficheiro</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Reproduzir um Ficheiro</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>A Janela de Lista de Músicas</title>
+<para
+>O &kaffeine; suporta várias listas de músicas. Escolha a activa com o selector <guilabel
+>Lista de Reprodução</guilabel
+>. Poderá arrastar com facilidade alguns ficheiros e pastas do selector de ficheiros e largá-los na lista de reprodução para os colocar em espera ou na janela do leitor para criar uma nova lista de reprodução. Para mudar o nome da lista, edite-a e confirme com o <keycap
+>Return</keycap
+>. </para>
+<screenshot>
+<screeninfo
+>Janela da Lista de Reprodução</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>Janela da Lista de Reprodução</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>Poderá encontrar todas as funções relacionadas com listas de músicas no menu <guimenu
+>Lista de Músicas</guimenu
+> e no menu de contexto (ao carregar com o botão direito do rato na lista de músicas). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>Leitor de TV Digital</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>Interface Gráfica de Utilizador para TV Digital</title>
+
+<para
+>Embora as funcionalidades básicas sejam úteis o suficiente para alguém que deseje um leitor multimédia simples mas poderoso, a melhor capacidade no &kaffeine; é usá-lo como uma interface &GUI; para ver e gravar TV digital. </para>
+
+<para
+>No &kaffeine; versão 2.0, o suporte de TV digital foi alargado para suportar o DVB-T2 e o ISDB-T. Dado que agora usa a 'libdvbv5', o alargamento do suporte para outras normas de TV digital será à partida simples. Da mesma forma, dado que usa a versão 5 da API de DVB do &Linux;, suporta as interfaces que são capazes de implementar várias TV's em simultâneo. </para>
+
+<para
+>A configuração da TV no &kaffeine; é tão simples como carregar no menu de contexto <guimenu
+>Televisão</guimenu
+> e seleccionar a opção <guimenuitem
+>Configurar a Televisão</guimenuitem
+>. Irá aparecer uma janela que pede os parâmetros a usar: </para>
+
+<screenshot>
+<screeninfo
+>Configuração da TV</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Configuração da TV</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Os menus <guimenu
+>Dispositivo</guimenu
+> têm a configuração por dispositivo. Normalmente a selecção do país e a cidade na lista <guilabel
+>Origem</guilabel
+> (ou usar uma das fontes de Sintonia Automática) é o suficiente para as configurações sem satélite. O mesmo acontece para os dispositivos que suportam diversas normas de TV: </para>
+
+<screenshot>
+<screeninfo
+>Configuração dos Canais</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Configuração dos Canais</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Depois de carregar no botão <guibutton
+>Ok</guibutton
+>, o próximo passo é sintonizar os canais digitais, usando no menu Televisão a opção <guimenuitem
+>Canais</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Sintonizar os Canais</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Sintonizar os Canais</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Se for suportada mais que uma norma, a lista <guilabel
+>Origem</guilabel
+> permitir-lhe-á seleccionar a que deseja usar na sintonia. Não se esqueça de ligar o cabo de antena do dispositivo à entrada correspondente à norma a usar. Depois, carregue em <guibutton
+>Iniciar a Sintonia</guibutton
+> para começar a sintonizar os canais. Assim que terminar, os canais descobertos irão aparecer do lado esquerdo. Estes canais poderão ser copiados para o lado esquerdo se carregar em <guibutton
+>Adicionar os Filtrados</guibutton
+>. É possível verificar os parâmetros de sintonia para o canal do lado esquerdo se carregar no botão <guibutton
+>Editar</guibutton
+>. Alguns dos parâmetros são ajustáveis na janela que aparece. </para>
+
+<screenshot>
+<screeninfo
+>Editar a Configuração do Canal</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Editar a Configuração do Canal</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Assim que os canais estejam gravados, ver TV é tão simples como carregar no botão <guibutton
+>TV Digital</guibutton
+> na janela principal: </para>
+
+<screenshot>
+<screeninfo
+>Ver TV</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Ver TV</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>O &kaffeine; também lhe permite carregar no botão <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+> para colocar em pausa. Quando carregar no botão, o &kaffeine; irá gravar o programa e, assim que o botão <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> seja carregado, irá iniciar o programa no ponto em que foi colocado em pausa. Existe também um botão <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> que lhe permite gravar rapidamente o programa no disco. </para>
+
+</sect1>
+
+<sect1 id="recording-programs">
+<title
+>Gravar os Programas</title>
+
+<para
+>Para além de carregar no botão de gravação <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+>, quando está aberta a vista em directo, o &kaffeine; tem outras formas de gravar um programa Um método é seleccionar o programa a gravar com o menu de contexto <guimenu
+>Televisão</guimenu
+> e seleccionando a opção <guimenuitem
+>Guia de Programação</guimenuitem
+>. O mesmo irá apresentar uma lista de programas que foram identificados num programa previamente reproduzido: </para>
+
+<screenshot>
+<screeninfo
+>Guia de Programação</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Guia de Programação</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Se carregar no botão <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>Gravar o Programa</guibutton
+>, irá marcar o mesmo para gravação. A gravação tem de ser activada com a opção <guilabel
+>Agenda de Gravações</guilabel
+>, que também se localiza no menu <guimenu
+>Televisão</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>Agenda de Gravações</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Agenda de Gravações</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Se carregar no botão <guibutton
+>Novo</guibutton
+>, também é possível definir directamente uma hora e duração para a gravação de um programa. </para>
+</sect1>
+
+</chapter>
+
+<chapter id="credits">
+<title
+>'Copyright' e Licença</title>
+
+<para
+>Programa com 'copyright' 2007-2016 dos Autores do &kaffeine; </para>
+
+<para
+>Documentação com 'copyright' 2003-2005 de Jürgen Kofler <email
+>kaffeine@gmx.net</email
+>, Christophe Thommeret <email
+>hftom@free.fr</email
+>, Mauro Carvalho Chehab <email
+>mchehab@infradead.org</email
+> </para>
+<para
+>Tradução de José Nuno Pires <email
+>zepires@gmail.com</email
+></para
+> 
+&underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+

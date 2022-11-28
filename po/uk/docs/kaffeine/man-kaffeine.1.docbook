@@ -1,0 +1,510 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Ukrainian "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Підручник користувача Kaffeine</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>1 травня 2018 року</date>
+<releaseinfo
+>Kaffeine 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>Програвач мультимедійних файлів для KDE з підтримкою цифрового телебачення</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>співвідношення_розмірів</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>назва</replaceable
+> / <replaceable
+>число</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>канал</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>файли</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>Будь ласка, зауважте, що параметри <option
+>--channel</option
+>, <option
+>--tv</option
+>, <option
+>--lastchannel</option
+>, <option
+>--audiocd</option
+>, <option
+>--videocd</option
+>, <option
+>--dvd</option
+> та <option
+><replaceable
+>файли</replaceable
+></option
+> не можна використовувати одночасно у одній команді.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Опис</title>
+<para
+>Kaffeine — мультимедійний програвач. Від інших програвачів його відрізняє чудова підтримка цифрового телебачення (DVB). У Kaffeine передбачено зручний для користувачів інтерфейс: насолодитися фільмами у ньому зможуть навіть початківці. Можна переглянути будь-що: від DVD (з використанням меню DVD, субтитрів, частин тощо) до VCD або окремого файла.</para>
+
+<para
+>Для відтворення звуку та відео Kaffeine використовує libVLC.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Параметри</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Увімкнути усі діагностичні повідомлення. Будь ласка, зауважте, що у Kaffeine також передбачено регулювання діагностичних повідомлень вмиканням лише повідомлень певної категорії за допомогою змінної середовища:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>категорія</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>де значенням <emphasis
+>категорія</emphasis
+> може бути:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>для журналу CAM dvb</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>для журналу пристроїв dvb та libdvbv5</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>для журналу обробки SI MPEG-TS dvb</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>для журналу EPG dvb</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>для інших журналів dvb</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>для журналу налаштувань</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>для журналу мультимедійного віджета</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>для журналу списку відтворення</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>для журналу SQLite</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>для журналу libVlc</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>Файли або адреси, відкриті за допомогою програми, буде вилучено після використання</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>Запустити програму у повноекранному режимі. У повноекранному режимі усі меню типово приховано. Щоб побачити меню, наведіть вказівник миші на місце його розташування, тобто на верхній, нижній або лівий край екрана.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>Запустити програму у мінімальному режимі. У мінімальному режимі буде показано лише обрамлення вікна зі смужкою заголовка. Усі інші меню буде типово приховано. Щоб побачити меню, наведіть вказівник миші на його місце, тобто на верхній, нижче або лівий край вікна &kaffeine;.</para>
+<para
+>Запускати у мінімальному режимі</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>Повідомляє програмі для керування вікнами, що головне вікно &kaffeine; слід утримувати над іншими вікнами. Такий варіант роботи можна буде скасувати у процесі взаємодії із програмою за допомогою засобів керування вікнами. Для цього, зазвичай, достатньо навести вказівник миші на смужку заголовка вікна, клацнути правою кнопкою миші і зняти позначення з пункту утримування вікна над іншими вікнами.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>співвідношення_розмірів</replaceable
+></term>
+<listitem
+><para
+>Примусово вказує &kaffeine;, що слід виконати відтворення із вказаним співвідношенням розмірів кадру, вимкнувши автоматичне визначення цього співвідношення. Може бути корисним для дуже видовжених моніторів, на яких користувач завжди хоче переглядати відео у повноекранному режимі із максимальним використанням доступної роздільної здатності. Коректними є такі значення: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2.35:1 та 2.39:1. Якщо буде передано некоректне значення або цей параметр не буде використано, програма виконає автоматичне визначення співвідношення розмірів.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Відтворити аудіо-КД</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Відтворити відео-КД</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>Відтворити DVD</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>Створити знімок даних dvb (параметр для усування вад)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>назва</replaceable
+> / <replaceable
+>номер</replaceable
+></term>
+<listitem
+><para
+>Відтворити канал ТБ</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>канал</replaceable
+></term>
+<listitem
+><para
+>(застарілий параметр)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Розпочати відтворення останнього налаштованого каналу ТБ</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>файли</replaceable
+></option
+></term>
+<listitem
+><para
+>Файли або адреси url, які слід відтворити</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>Файли</title>
+<para
+>Kaffeine використовує файл <filename
+>scanfile.dvb</filename
+> для зберігання списку відомих каналів за місцем та супутниками (для DVB-S).</para>
+<para
+>Якщо для певного місця було додано нові канали або виявлено нові супутникові потоки даних, які є недоступними у Kaffeine, скористайтеся dvbv5-scan або w_scan для створення нового файла (у останньому випадку перетвореному у належний формат за допомогою dvb-format-convert) і надішліть нові дані на адресу <email
+>linux-media@vger.kernel.org</email
+>, вказавши тему листа <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>опис змін</replaceable
+></quote
+>. Нові дані буде додано до <filename
+>scanfile.dvb</filename
+>, а оновлений файл стане доступним усім користувачам програми Kaffeine. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Прочитайте також</title>
+<simplelist>
+<member
+>Докладніша документація для користувачів доступна у <ulink url="help:/kaffeine"
+>help:/kaffeine</ulink
+> (або введіть цю адресу <acronym
+>URL</acronym
+> у поле адреси &konqueror;, або виконайте команду <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>Докладнішу інформацію можна знайти на <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>домашній сторінці Kaffeine</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Автори</title>
+<para
+>Щоб переглянути список авторів Kaffeine, скористайтеся командою <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> у терміналі.</para>
+</refsect1>
+
+</refentry>

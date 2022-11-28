@@ -1,0 +1,2179 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Swedish "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>Handbok &kaffeine;</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab+kde@kernel.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<othercredit role="translator"
+> <firstname
+>Stefan</firstname
+> <surname
+>Asserhäll</surname
+> <affiliation
+><address
+><email
+>stefan.asserhall@bredband.net</email
+></address
+></affiliation
+> <contrib
+>Översättare</contrib
+></othercredit
+> 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016-2019</year>
+<holder
+>Upphovsmännen till &kaffeine;.</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>2019-05-01</date>
+<releaseinfo
+>&kaffeine; 2.0.17</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+><ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine</ulink
+> är en mediaspelare av &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>kaffeine</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>video</keyword>
+<keyword
+>ljud</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>atsc</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+<keyword
+>tv</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>&kaffeine; spelare</title>
+
+<sect1 id="startwindow">
+<title
+>Startfönstret</title>
+
+<para
+>Som många andra mediaspelare stöder &kaffeine; ett stort antal video- och ljudformat samt uppspelning av ljud och video från dvd och cd-skivor. Dessutom stöds uppspelning av direktsänd digital-tv om datorn har en DVB-mottagare (Digital Video Broadcast) inkopplad. </para>
+<para
+>När &kaffeine; väl har startats visas en skärm med huvudfunktionerna i mitten, och det går att byta till andra funktioner antingen via menyraden eller sidomenyn: </para>
+
+<screenshot>
+<screeninfo
+>Startfönstret</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Startfönstret</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>Spela upp en fil</title>
+<para
+>Att spela upp en video- eller ljudfil är så enkelt som att klicka på knappen <guibutton
+>Spela fil</guibutton
+>. Den ber dig att välja filen som ska spelas upp och börjar spela den. Eftersom &kaffeine; använder LibVLC som gränssnitt, stöds samma <ulink url="https://www.videolan.org/vlc/features.html"
+>filformat</ulink
+> som VLC. Den stöder också att öppna en lista med filer för att skapa och hantera <ulink url="https://wiki.videolan.org/Playlist/"
+>spellistor</ulink
+>. </para>
+
+<screenshot>
+<screeninfo
+>Spela upp en fil</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Spela upp en fil</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>Spellistefönstret</title>
+<para
+>&kaffeine; stöder flera spellistor. Välj den aktiva med väljaren <guilabel
+>Spellista</guilabel
+> i vänster sidorad. Det går enkelt att dra några filer eller kataloger från filhanteraren och släppa dem på spellistan för att köa dem, eller släppa dem på spelarfönstret för att skapa en ny spellista. För att ändra en spellistas namn, redigera den och bekräfta med <keycap
+>retur</keycap
+>. </para>
+<screenshot>
+<screeninfo
+>Spellistefönstret</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>Spellistefönstret</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>Alla funktioner relaterade till spellistor finns i menyn <guimenu
+>Spellista</guimenu
+> i menyraden och den sammanhangsberoende menyn (högerklicka på spellistan). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>Digital-tvspelare</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>Inställning av digital-tv</title>
+
+<para
+>Medan grundfunktionerna är nog användbara för någon som vill ha en enkel men ändå kraftfull mediaspelare, är den bästa funktionen i &kaffeine; att använda den som ett grafiskt användargränssnitt för att titta på och spela in digital-tv. </para>
+
+<para
+>Sedan &kaffeine; version 2.0 använder stödet för digital-tv libdvbv5 och har utökats för att stödja nya standarder som DVB-T2 och ISDB-T. Det är nu enklare att utöka stödet för nyare standarder av digital-tv. Dessutom stöder den gränssnitt som klarar av att implementera flera digitala tv-standarder, eftersom den använder &Linux; DVB version 5 programmeringsgränssnitt. </para>
+
+<para
+>Inställning av tv i &kaffeine; är så enkelt som att öppna menyn <guimenu
+>Television</guimenu
+> i menyraden, och välja alternativet <guimenuitem
+>Anpassa television</guimenuitem
+>. Ett fönster visas som gör det möjligt att ställa in parametrarna som ska användas: </para>
+
+<screenshot>
+<screeninfo
+>Inställning av tv - Allmänna alternativ</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Inställning av tv - Allmänna alternativ</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title
+>Allmänna inställningar av digital-tv</title>
+
+<para
+>Menyn <guimenu
+>Allmänna alternativ</guimenu
+> gör det möjligt att ställa in mottagarberoende inställningar. </para>
+
+<para
+><guilabel
+>Inspelningskatalog</guilabel
+> ställer in platsen där alla inspelade tv-program lagras. </para>
+
+<para
+><guilabel
+>xmltv-filnamn (valfritt)</guilabel
+> anger ett filnamn med programtablåer som hämtats via ett externt hämtningsprogram. När alternativet används bör troligen också <guilabel
+>Inaktivera tolkning av programtablå från MPEG-TS-tabeller</guilabel
+> aktiveras. </para>
+
+<para
+><guilabel
+>Inaktivera tolkning av programtablå från MPEG-TS-tabeller</guilabel
+> inaktiverar hämtning av programtablåer (Electronic Program Guide, EPG) från den utsända signalen. Använd det för att spara en del processortid om programföretaget inte skickar ut tillförlitliga programtablåer. </para>
+
+<para
+><guilabel
+>Tidsförskjutningskatalog</guilabel
+> används tillsammans med pausknappen (<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>) på mediaspelarens skärm. När knappen klickas, lagras en tidsförskjutningsfil på platsen som anges av menyalternativet. </para>
+
+<para
+>Alternativen <guilabel
+>Inledande marginal</guilabel
+> och <guilabel
+>Avslutande marginal</guilabel
+> används för att ställa in en sorts <quote
+>säkerhetsmarginal</quote
+> för att undvika att början och slutet av ett program går förlorade, eftersom tidsangivelserna i programtablån kanske inte är precisa. Alltså börjar inspelningen några minuter innan starttiden definierad i <guimenu
+>Programtablå</guimenu
+>. Den exakta tiden innan innan definieras av <guilabel
+>Inledande marginal</guilabel
+>.  &kaffeine; förlänger inspelningen med tiden definierad av <guilabel
+>Avslutande marginal</guilabel
+> efter programmets slut. </para>
+
+<para
+>Alternativet <guilabel
+>Namngivningsstil för inspelningar</guilabel
+> används för att ställa in hur &kaffeine; namnger ett program. Flera makron kan användas för att dynamiskt ändra inspelningens namn: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>%title</parameter
+> - Programmets titel, som det visas i menyerna <guimenu
+>Programtablå</guimenu
+> och <guimenu
+>Inspelningsschema</guimenu
+>, </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%day, %month, %year, %hour, %min, %sec</parameter
+> - Fält från tidsangivelsen som representerar tiden då &kaffeine; börjar spela in programmet, </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%channel</parameter
+> - Namn på kanalen som sände programmet. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>Alternativet <guilabel
+>Åtgärd efter inspelningen är klar</guilabel
+> används för att ställa in ett valfritt kommando att köra när &kaffeine; slutar spela in ett program. </para>
+
+<para
+>Att klicka på alternativet <guilabel
+>Uppdatera sökdata via Internet</guilabel
+> gör att &kaffeine; kontrollerar om en ny kanalsökningsfil finns på <ulink url="https://autoconfig.kde.org/kaffeine/"
+>KDE:s sida</ulink
+>. </para>
+<para
+>&kaffeine; använder en fil som kallas scanfile.dvb för att lagra en lista med kända digitala tv-kanaler per land och stad. Filen hålls uppdaterad med innehållet i <ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+>dtv-scan-tables trädet</ulink
+>, som underhålls av <ulink url="https://linuxtv.org"
+>LinuxTV</ulink
+>. För mer detaljerad information, se <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>Wiki-sidan dtv-scan-tables</ulink
+>. </para>
+<para
+>När knappen klickas laddar &kaffeine; ner den senaste versionen av kanaldefinitionerna och lagrar den i en användarspecificerad lokal datafil, och skriver över innehållet i en tidigare fil. </para>
+<para
+>Observera att för att använda de senaste definitionerna krävs att tv-inställningsdialogrutan stängs och öppnas igen.</para>
+
+<para
+>Alternativet <guilabel
+>Redigera sökdatafil</guilabel
+> tillåter att filen redigeras, vilket kan vara användbart för att lägga till en ny uppsättning kanaler, när originalfilen inte har uppdaterats. Om du behöver använda det, fundera gärna på att skicka en uppdatering till <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+>dtv-scan-tables</ulink
+> för att andra också ska kunna dra nytta av de nya kanaldefinitionerna. </para>
+
+<para
+>Alternativet <guilabel
+>Använd ISO 8859-1 teckenuppsättning istället för ISO 6937</guilabel
+> gör det möjligt att välja standardvärdet för MPEG-TS-meddelanden som inte explicit anger en teckenuppsättning. Om det inte är aktiverat är standardvärdet att använda kodningen ISO-6937. Om det är aktiverat, ändras standardvärdet till ISO 8859-1. </para>
+
+<para
+>Alternativet <guilabel
+>Skapa informationsfiler att åtfölja inspelningar från programtablå</guilabel
+> möjliggör att skapa kompletterande filer för schemalagda inspelningar med innehållet i programtablå för inspelningar gjorda via <guimenu
+>Programtablå</guimenu
+>. </para>
+
+<sect3 id="EPG-data">
+<title
+>Hämtning av programtablåer</title>
+
+<para
+>De flesta digital-tv programföretag skickar programinformation via den utsända informationen kodad som en MPEG-TS-ström. Dock använder vissa av dem icke-standardiserad kodning av data. Som exempel, i Storbritannien lagras programtablåer för HD-program oftast med något företagsspecifikt format. Andra företag fyller helt enkelt inte i programtablåerna, eller så är informationen i dem inte tillförlitlig. </para>
+
+<para
+>Sedan &kaffeine; 2.0.17 är det möjligt att inaktivera tolkning av programtablåer från utsända kanaler, genom att använda ett externt program för att hämta dem. För att inaktivera dem, markera bara rutan <guilabel
+>Inaktivera tolkning av programtablå från MPEG-TS-tabeller</guilabel
+>. Nu kan en extern tolk ställas in för att producera en fil med programtablåer, och <guilabel
+>xmltv-filnamn (valfritt)</guilabel
+> kan användas för att ange filnamnet på den skapade filen. Den skapade filen ska använda XMLTV-formatet, som beskrivs av dess DTD. Se <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+>XMLTV File format</ulink
+> för mer information. </para>
+
+<para
+>När &kaffeine; är inställt att använda en XMLTV-fil, detekteras automatiskt eventuella ändringar av filen. När en ändring sker, öppnas filen och dess innehåll tolkas, och programtablåerna uppdateras i enlighet därmed. </para>
+
+<para
+>Observera att XMLTV-filen har en tabell som kopplar ihop dess egna interna representation av kanaler med det förväntade kanalnamnet i utsänd digital-tv data. &kaffeine; hämtar bara programtablåer om kanalerna där motsvarar de i &kaffeine;s kanallista. Du måste alltså säkerställa att kanalerna där motsvarar vad &kaffeine; förväntar sig. Om de inte stämmer, kan ett &XML;-editorprogram användas på kommandoraden för att lägga till kanalinformationen som saknas. </para>
+
+<para
+>Om du exempelvis har ett xmltv-hämtningsprogram som hämtar en filen vid namn <emphasis
+>original_xmltv_fil.xmltv</emphasis
+>, skulle programmet <emphasis
+>xmlstarlet</emphasis
+> kunna användas för att lägga till saknade kopplingar. Så om du vill koppla XMLTV-kanalen som heter <emphasis
+>kanal.exempel.se</emphasis
+> med en kanal vars namn i &kaffeine; är <emphasis
+>EXEMPEL</emphasis
+>, skulle du kunna köra följande lilla skript: </para>
+<para
+><programlisting
+>channel="kanal.exempel.se"
+name="EXEMPEL"
+xmlstarlet ed \
+        -s "tv/channel[@id='$channel']" -t elem -n display-name \
+        -v "$name" original_xmltv_fil.xmltv &gt; ny_xmltv_fil.xmltv
+mv ny_xmltv_fil.xmltv /tmp/ny_xmltv_fil.xmltv
+</programlisting>
+</para>
+<para
+>Ställ därefter in &kaffeine; att använda den nya filen <emphasis
+>/tmp/ny_xmltv_fil.xmltv</emphasis
+>. </para>
+
+</sect3>
+</sect2>
+<sect2 id="dtv-source-settings">
+<title
+>Anpassa digitala tv-källor</title>
+
+<screenshot>
+<screeninfo
+>Mottagarinställning av tv</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Inställning av tv</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Flikarna <guimenu
+>Mottagare</guimenu
+> har inställningen per mottagare. Oftast är det nog att välja land och stad i kombinationsrutan <guilabel
+>Källa</guilabel
+> (eller använda någon av källorna för automatisk sökning) för inställningar utan satellit. Samma sak gäller för mottagare som stöder flera tv-standarder. För sådana mottagare måste <guilabel
+>Källa</guilabel
+> ställas in för varje tv-standard: </para>
+
+<screenshot>
+<screeninfo
+>Kanalinställning</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Kanalinställning</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+><guilabel
+>Mottagarens tidsgräns</guilabel
+> anger tiden som kanalsökningen väntar på att få signallåsning. Oftast är standardvärdet nog för de flesta mottagare, men om mottagaren är för långsam att låsa, kan värdet ökas. </para>
+
+<para
+><guilabel
+>Namn</guilabel
+> anger namnet som hör ihop med källan som visas när menyn <guimenu
+>Television</guimenu
+> väljes i menyraden, och alternativet <guimenuitem
+>Kanaler</guimenuitem
+> i inställningsrutan. </para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title
+>Satellitmottagare</title>
+
+<para
+>Inställningen för satellitmottagare (DVB-S, DVB-S2) är mer komplicerat, eftersom det finns olika möjliga arrangemang av satellitsystem. Dessutom är det ofta mottagarens uppgift att sätta på en förstärkare lokaliserad vid parabolantennen, benämnd LNBf, via en DC-spänning. </para>
+<para
+>Dessutom, eftersom satellitsystem använder bred bandbredd och accepterar signaler av olika polaritet, är det vanligt att använda ett protokoll, kallat DiSEqC, för att välja ett kanalintervall att ta emot. </para>
+<para
+>Det första steget är att lära &kaffeine; om satellitinställningen via kombinationsrutan <guimenu
+>Inställning</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>Definition av satellitmottagare</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Definition av satellitmottagare</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Följande värden är möjliga: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>Diseqc-omkopplare</parameter
+> - Antennkabeln är ansluten till en DiSEqC-omkopplare eller kräver LNBf DiSEqC-kommandon för att välja ett kanalintervall. Det är den vanligaste inställningen. Den gör det möjligt att ha upp till fyra satelliter anslutna samtidigt, var och en med sin egen parabol. För varje satellit måste inställning av LNBf för parabolen som pekar mot den göras. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>USALS-rotor</parameter
+> - Antennkabeln är ansluten till en enda parabol med en USALS-rotor, styrd via DiSEqC. Flera satelliter kan ställas in, eftersom rotorn ändrar parabolens position när en annan satellit väljes. Du måste ange parabolantennens position (latitud, longitud). </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Positionsrotor</parameter
+> - Antennkabeln är ansluten till en enda parabol med en rotor som har ett antal fasta positioner, styrd via DiSEqC. Flera satelliter kan ställas in, eftersom rotorn ändrar parabolens position när en annan satellit väljes. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Inaktivera DiSEqC</parameter
+> - Antennkabeln är ansluten till en parabol utan några element som stöder DiSEqC. Inställningen används oftast med flerpunkters bandöverlagrad LNBf, där alla kanaler är tillgängliga samtidigt via antennanslutningen. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>I ett typiskt satellitsystem använder LNBf startspänningen för att välja mellan en lägra spänning (13 V) för vertikal eller cirkulär högerpolarisering, och en högre spänning (18 V) för horisontell eller cirkulär vänsterpolarisering. På grund av kabelförluster förstår inte LNBf ibland den högre spänningen, och flera kanaler går inte att ställa in eller ställs in felaktigt. Alltså erbjuder ett fåtal enheter ett alternativ för att öka spänningen till ett högre värde (14 V eller 19 V). Det aktiveras via trelägesalternativet <guilabel
+>Använd högre LNBf-spänning</guilabel
+>. Tre värden är möjliga: </para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>oansluten</parameter
+> - Skicka inte något kommando till enheten för att justera spänningsnivån. Det är normalvärdet. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>avmarkerad</parameter
+> - Använd normala värden (13 V, 18 V) för DC-spänningen. Välj bara om enheten stöder att justera nivån. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>markerad</parameter
+> - Använd högre värden (14 V, 19 V) för DC-spänningen. Välj bara om enheten stöder att justera nivån. </para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title
+>Inställningar utan en rotor</title>
+
+<para
+>När antingen alternativet <parameter
+>DiSEqC-omkopplare</parameter
+> eller <parameter
+>Inaktivera DiSEqC</parameter
+> används, är det första steget att ställa in satelliten som ska användas som signalkälla via en kombinationsruta till höger. Med en DiSEqC-omkopplare är det möjligt att välja upp till fyra källor, var och en med sin egen LNBf. Efter att ha ställt in källan eller källorna, klicka på motsvarande knapp med <guilabel
+>Inställningar av LNB</guilabel
+> för varje källa, för att visa ett fönster där typ av LNBf i parabolen som motsvarar källan kan väljas: </para>
+
+<screenshot>
+<screeninfo
+>Definition av LNBf</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Definition av LNBf</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title
+>Inställning av positionsrotor</title>
+
+<para
+>När en rotor används finns bara en LNBf som delas mellan flera satelliter. Alltså är nästa steg att välja typ av LNBf via dialogrutan <guilabel
+>Inställningar av LNB</guilabel
+>. </para>
+<para
+>Med en USALS-rotor görs positioneringen visa satellitposition (latitud, longitud). Välj bara satelliterna som ska användas via en kombinationsruta och klicka på knappen <guilabel
+>Lägg till satellit</guilabel
+>. </para>
+<para
+>Med positionsrotor görs positioneringen via ett förinställt positionsnummer. Välj alltså bara satellitposition i den numeriska dialogrutan till vänster och satellit via kombinationsrutan till höger och klicka på knappen <guilabel
+>Lägg till satellit</guilabel
+>. </para>
+<para
+>Om en satellit har lagts till av misstag går det att markera satelliten och klicka på knappen <guilabel
+>Ta bort satellit</guilabel
+>. </para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title
+>Inställning av kanaler för digital-tv</title>
+
+<para
+>Efter att ha klickat på knappen <guibutton
+>Ok</guibutton
+> är nästa steg att söka efter digitalkanalerna med menyn <guimenu
+>Television</guimenu
+> i menyraden, och välja alternativet <guimenuitem
+>Kanaler</guimenuitem
+> för att visa inställningsrutan: </para>
+
+
+<screenshot>
+<screeninfo
+>Söka efter kanaler</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Söka efter kanaler</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Om mer än en standard stöds, gör kombinationsrutan <guilabel
+>Källa</guilabel
+> det möjligt att välja den som ska användas för sökningen. Glöm inte bort att ansluta enhetens antennkabel så att den stämmer med standarden som ska användas. </para>
+
+<para
+>När &kaffeine; identifierar en kanal läses en <acronym
+>MPEG-TS</acronym
+>-tabell som kallas nätverksinformationstabell (<acronym
+>NIT</acronym
+>), som innehåller information om kanaler som använder olika inställningsparametrar utsända av samma utsändare. I vissa nätverk är det möjligt att några inställningsparametrar är lagrade i flera <acronym
+>NIT</acronym
+>-tabeller (kallade <quote
+>andra NIT:er</quote
+>). Det är vanligare i vissa kabel- och satellitsystem. Genom att välja <guilabel
+>Sök igenom transpondrar efter andra nätverk</guilabel
+> instrueras &kaffeine; att vänta och tolka alla andra <acronym
+>NIT</acronym
+>:er, vilket kan leda till att flera kanaler hittas, på bekostnad av att det tar mycket längre tid att slutföra kanalsökningen. </para>
+
+<para
+>Kanalsökningen startas genom att klicka på <guibutton
+>Starta sökning</guibutton
+>. När det väl är färdigt dyker upptäckta kanaler upp till höger. Kanalerna kan kopieras till vänster sida genom att klicka på <guibutton
+>Lägg till filtrerad</guibutton
+>. Det är möjligt att kontrollera kanalens inställningsparametrar på vänster sida genom att klicka på knappen <guibutton
+>Redigera</guibutton
+>. Vissa parametrar går att justera i fönstret som dyker upp. </para>
+
+<screenshot>
+<screeninfo
+>Redigera kanalinställningar</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Redigera kanalinställningar</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>När kanalerna väl har sparats är det så enkelt att titta på tv som att klicka på knappen <guibutton
+>Digital-tv</guibutton
+> i huvudfönstret: </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title
+>Titta på tv</title>
+
+<screenshot>
+<screeninfo
+>Titta på tv</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Titta på tv</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>&kaffeine; låter dig också klicka på knappen <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> för att pausa. Efter åtgärden spelar &kaffeine; in programmet, och när knappen <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> väl klickas fortsätter programmet från stället det pausades, vilket kallas för tidsförskjutning. Knappen <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> som låter dig snabbt spela in och lagra programmet på disk finns också. </para>
+
+</sect1>
+<sect1 id="program-guide">
+<title
+>Programtablå</title>
+
+<para
+>Digital-tvkanaler skickar oftast ut en lista med pågående och framtida program. Det kallas elektronisk programtablå, <acronym
+>EPG</acronym
+>. Programtablåns data lagras när en kanals innehåll visas. För att visa programtablån, använd menyn <acronym
+>Television</acronym
+> i menyraden och välj alternativet <guimenu
+>Programtablå</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>Programtablå</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Programtablå</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>I vissa länder kan programtablån vara tillgänglig på flera språk. Normalt visar &kaffeine; alla språk i programtablån. Om flera språk är tillgängliga för en given post i programtablån, och inget specifikt språk är valt, läggs en trebokstävers språkkod till före titel-, undertitel- och beskrivningsdata, definierad enligt specifikationen ISO 639-2. </para>
+
+<para
+>Alternativet <guilabel
+>Språk för programtablå</guilabel
+> gör det möjligt att filtrera till bara ett språk. Om det är aktiverat, gäller filtret också skärmvisningen, <acronym
+>OSD</acronym
+>, och alla nya schemalagda inspelningar. Det påverkar inte befintliga schemalagda inspelningar. </para>
+
+<para
+>Förutom att klicka på inspelningsknappen <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> när direktsändning visas, tillåter &kaffeine; också att spela in ett program via programtablån genom att klicka på <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>Spela in program</guibutton
+> i fönstret <guimenuitem
+>Programtablå</guimenuitem
+>. </para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title
+>Inspelningsschema</title>
+
+<para
+>För att se programmen som är schemalagda för inspelning, öppna den menyn <guimenu
+>Television</guimenu
+> i menyraden och välj alternativet <guimenuitem
+>Inspelningsschema</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Inspelningsschema</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Inspelningsschema</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Genom att klicka på knappen <guibutton
+>Ny</guibutton
+>, är det också möjligt att direkt definiera en tid och längd för ett program som ska spelas in. I detta fall används inte definitionerna i programtablån. </para>
+<para
+>Genom att markera ett befintligt program och klicka på knappen <guibutton
+>Redigera</guibutton
+> går det att ändra starttid och inspelningslängd. Det går också att programmera det att spelas in varje vecka eller varje dag. </para>
+<para
+>Genom att markera ett befintligt program och klicka på knappen <guibutton
+>Ta bort</guibutton
+> tas det bort från inspelningsschemat. </para>
+
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-menubar">
+<title
+>Menyraden i &kaffeine;</title>
+
+<sect1 id="file-menu">
+<title
+>Menyn Arkiv</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Öppna...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Visar fildialogrutan</action
+> och låter dig välja en lokal fil att spela. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>U</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Öppna webbadress...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="text-html.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Visar en dialogruta för textinmatning</action
+> så att du kan skriva in webbadressen för en extern mediaström som stöds. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Öppna senaste</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Erbjuder en kombinationslista för att öppna en nyligen använd lokal resurs</action
+>. Den har alternativet <guimenuitem
+>Rensa lista</guimenuitem
+> för att rensa listan. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Spela ljud-cd</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Välj uppspelning av en ljud-cd</action
+> som redan ska finnas att läsa i enheten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Spela video-cd</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Välj uppspelning av en video-cd</action
+> som redan ska finnas att läsa i enheten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Spela dvd</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Välj uppspelning av en dvd</action
+> som redan ska finnas att läsa i enheten. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Spela dvd-katalog</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Visar fildialogrutan</action
+> och låter dig välja en dvd-katalog att spela. Katalogen innehåller rådata som finns på dvd:n. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Arkiv</guimenu
+> <guimenuitem
+>Avsluta</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Avslutar</action
+> &kaffeine;. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playback-menu">
+<title
+>Menyn Uppspelning</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Page Up</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Föregående</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Om två eller flera strömmar spelas upp i en session, <action
+>väljes den föregående</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Mellanslag</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Spela/Paus</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> och ikonen <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Med en kryssruta för att spela upp en ström eller pausa</action
+> vad du tittar på. För en televisionsström fortsätter den spelas in, vilket är känt som <ulink url="https://en.wikipedia.org/wiki/Time_shifting"
+>tidsförskjutning</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Bakstreck</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Stoppa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Stoppa en ström</action
+> med det du tittar på. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Page Down</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Nästa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Om två eller flera strömmar spelas upp i en session och du tittar på den föregående, <action
+>väljes den nästa</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>F</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Fullskärmsläge/Avsluta fullskärmsläge</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+> och ikonen <inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Ändra fullskärmsläge</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>.</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Minimalt läge/Avsluta minimalt läge</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> och ikonen <inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Ändra minimalt läge</action
+>. Ett grafiskt användarläge i ett fönster, där vi bara har en sammanhangsberoende meny och snabbtangenter. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Textning</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Erbjuder en kombinationslista med <action
+>alternativ relaterade till textningsströmmar</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Textning</guisubmenu
+> <guimenuitem
+>av/<replaceable
+>textningsnamn</replaceable
+></guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Välj tillgänglig textning</action
+> från kombinationslistan. Textningskanalerna varier beroende på källströmmens sammanhang. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Textning</guisubmenu
+> <guimenuitem
+>Lägg till textningsfil</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Alternativet är till för att <action
+>lägga till en lokal textningsfil</action
+> via en fildialogruta. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Ljud</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Erbjuder en kombinationslista med <action
+>alternativ relaterade till ljudströmmar</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Ljud</guisubmenu
+> <guimenuitem
+>Ljudenhet</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+>Erbjuder en kombinationslista som visar <action
+>tillgängliga ljudenheter</action
+>. Bara tillgänglig om mer än en ljudenhet detekterades när Kaffeine startades. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Ljud</guisubmenu
+> <guimenuitem
+>Öka volym</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Öka ljudvolym. Volymen kan också ökas genom att hålla musen över mediaspelarens område och rulla uppåt med mushjulet. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Ljud</guisubmenu
+> <guimenuitem
+>Minska volym</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Sänk ljudvolym. Volymen kan också sänkas genom att hålla musen över mediaspelarens område och rulla uppåt med mushjulet. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Ljud</guisubmenu
+> <guimenuitem
+>Tysta volym</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject
+></inlinemediaobject
+> och ikonen <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. Tysta ljudvolymen och returnera den. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Video</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Erbjuder en kombinationslista med <action
+>alternativ relaterade till videoströmmar</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Ta bort inflätning</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Erbjuder en kombinationslista med tillgängliga algoritmer för borttagning av inflätning, vilket är <action
+>processen att konvertera inflätad video</action
+>, såsom vanliga analoga televisionssignaler med mera. Se <ulink url="https://en.wikipedia.org/wiki/Deinterlacing"
+>Wikipedia-artikeln</ulink
+> för mer detaljerad information. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Proportion</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Erbjuder en kombinationslista med tillgängliga proportioner</action
+>, med alternativet <guimenuitem
+>Automatisk</guimenuitem
+>. <ulink url="https://sv.wikipedia.org/wiki/Bildformat_(film)"
+>Bildens proportion</ulink
+> beskriver det proportionella förhållandet mellan höjden och bredden. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Video</guisubmenu
+> <guimenuitem
+>Videostorlek</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Erbjuder en kombinationslista med tillgängliga videostorlekar</action
+>. Ändra bildens storlek med ett procentvärde, med alternativen <guimenuitem
+>Automatisk</guimenuitem
+> och <guimenuitem
+>Originalstorlek</guimenuitem
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>J</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Gå till position</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="go-jump.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Erbjuder en nummerruta för att ställa in önskad tidpunkt du vill gå till</action
+>, med timmar, minuter och sekunder. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Gå</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Erbjuder en kombinationslista med fyra fördefinierade tider att gå till</action
+>, med följande alternativ: </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Skift</keycap
+> <keycap
+>Vänster</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Gå</guisubmenu
+> <guimenuitem
+>Gå 60 s bakåt</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Går bakåt 60 sekunder</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Vänster</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Gå</guisubmenu
+> <guimenuitem
+>Gå 15 s bakåt</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Går bakåt 15 sekunder</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Höger</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Gå</guisubmenu
+> <guimenuitem
+>Gå 15 s framåt</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Går framåt 15 sekunder</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>Skift</keycap
+> <keycap
+>Höger</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Uppspelning</guimenu
+> <guisubmenu
+>Gå</guisubmenu
+> <guimenuitem
+>Gå 60 s framåt</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Går framåt 60 sekunder</action
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Dvd-meny</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Börja med den grafiska menyn från original-dvd:n</action
+>. Den kan utforskas med piltangenterna och musen. Se <ulink url="https://sv.wikipedia.org/wiki/DVD-video"
+></ulink
+> för mer detaljerad information. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Titel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Dvd-innehållet är uppdelat i titlar för enkel navigering</action
+>. Härifrån kan du gå direkt. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Kapitel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Dvd-innehållet är uppdelat i kapitel för enkel navigering</action
+>. Härifrån kan du gå direkt. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Uppspelning</guimenu
+> <guimenuitem
+>Vinkel</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>En variation av kapitel: Det är möjligt att flera versioner av vissa scener ingår</action
+> (benämnda <quote
+>vinklar</quote
+>). Härifrån kan du gå direkt. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playlist-menu">
+<title
+>Menyn Spellista</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Upprepa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject
+></inlinemediaobject
+> En kryssruta för att  <action
+>upprepa uppspelning av filerna i spellistan</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Slumpmässig</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject
+></inlinemediaobject
+> En kryssruta för att <action
+>slumpmässigt spela filerna i spellistan igen</action
+> till alla har spelats. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Rensa</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Radera alla poster i spellistan</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Ny</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="list-add.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Skapa en ny spellista</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Byt namn</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-rename.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Byt namn på aktuell spellista</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Ta bort</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-delete.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Ta bort aktuell spellista</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Spara</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Spara aktuell spellista</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;&Shift;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Spellista</guimenu
+> <guimenuitem
+>Spara som...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save-as.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Spara aktuell spellista med ett nytt namn</action
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="television-menu">
+<title
+>Menyn Television</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>C</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Television</guimenu
+> <guimenuitem
+>Kanaler</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="video-television.png" format="PNG"/></imageobject
+></inlinemediaobject
+> En inställningsruta visas för att <action
+>ställa in kanalerna</action
+> som motsvarar ditt område. Se <link linkend="dtv-channel-setup"
+>Inställning av kanaler för digital-tv</link
+> för mer detaljerad information. </action
+></para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>G</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Television</guimenu
+> <guimenuitem
+>Programtablå</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-list-details.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Ett fönster visas för att <action
+>hantera programtablån</action
+>. Se avsnittet <link linkend="program-guide"
+>Programtablå</link
+> för mer information. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Television</guimenu
+> <guimenuitem
+>Skärmvisning</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Visa skärmvisningsinformationsrutan på uppspelningsfönstret i tre sekunder</action
+> med information från programtablån om pågående och nästa program. Dubbelklicka på den för att se utökad information om pågående program, och klicka därefter igen för att ta bort informationsrutan. Se <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
+>Wikipedia-artikeln</ulink
+> för mer detaljerad information. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>R</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Television</guimenu
+> <guimenuitem
+>Inspelningsschema</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Ett fönster visas för att <action
+>hantera schemalagda inspelningar</action
+>. Se avsnittet <link linkend="recording-schedule"
+>Inspelningsschema</link
+> för mer information. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Television</guimenu
+> <guimenuitem
+>Snabbinspelning</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Med en kryssruta för att verifiera valet, <action
+>börja omedelbart spela in strömmen som spelas</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Television</guimenu
+> <guimenuitem
+>Anpassa television...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Ett fönster visas för att <action
+>ställa in parametrarna som hanterar DVB-enheter</action
+>. Se avsnittet <link linkend="digital-tv"
+>Inställning av digital-tv</link
+> för mer detaljerad information. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="settings-menu">
+<title
+>Menyn Inställningar</title
+> 
+
+<para
+>För att förenkla användningen av &kaffeine; innehåller menyn bara två menyalternativ: </para>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guimenuitem
+>Anpassa genvägar...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Låter dig aktivera, inaktivera och ändra snabbtangenter. Se avsnittet som heter <quote
+>Använda och anpassa genvägar</quote
+> för mer information. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guimenuitem
+>Anpassa &kaffeine;...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Visar inställningsrutan. </para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="help-menu">
+<title
+>Menyn Hjälp</title
+> 
+<para
+>&kaffeine; har &kde;:s vanliga alternativ i menyn <guimenu
+>Hjälp</guimenu
+>. För mer information läs avsnittet om <ulink url="help:/fundamentals/menus.html#menus-help"
+>hjälpmenyn</ulink
+> i &kde;:s grunder. </para>
+</sect1>
+</chapter>
+
+<chapter id="credits">
+<title
+>Copyright och licens</title>
+
+<para
+>Program copyright 2007-2018, Upphovsmännen till &kaffeine;. </para>
+
+<para
+>Dokumentation copyright 2003-2005, Jürgen Kofler <email
+>kaffeine@gmx.net</email
+>, Christophe Thommeret <email
+>hftom@free.fr</email
+>, Mauro Carvalho Chehab <email
+>mchehab+kde@kernel.org</email
+> </para>
+<para
+>Översättning Stefan Asserhäll <email
+>stefan.asserhall@bredband.net</email
+></para
+> &underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+

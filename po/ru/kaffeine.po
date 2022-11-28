@@ -1,0 +1,3510 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Maxim Tsepkov <azrael.com@gmail.com>, 2008.
+# Evgeniy Ivanov <powerfox@kde.ru>, 2008.
+# Nick Shaforostoff <shaforostoff@kde.ru>, 2009.
+# Styopa Semenukha <semenukha@gmail.com>, 2009.
+# Artem Sereda <overmind88@gmail.com>, 2009, 2010.
+# Alexander Potashev <aspotashev@gmail.com>, 2009, 2010, 2011, 2012, 2016, 2017, 2019.
+# Yuri Efremov <yur.arh@gmail.com>, 2011.
+# Alexander Yavorsky <kekcuha@gmail.com>, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: kaffeine\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-10-21 00:46+0000\n"
+"PO-Revision-Date: 2019-11-07 04:03+0300\n"
+"Last-Translator: Alexander Potashev <aspotashev@gmail.com>\n"
+"Language-Team: Russian <kde-russian@lists.kde.ru>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 19.07.70\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+
+#: backend-mplayer/mplayermediawidget.cpp:260
+#, kde-format
+msgid "Cannot start mplayer process."
+msgstr "Не удалось запустить процесс «mplayer»."
+
+#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
+#, kde-format
+msgid "Subtitle %1"
+msgstr "Субтитры %1"
+
+#: backend-vlc/vlcmediawidget.cpp:917
+#, fuzzy, kde-format
+#| msgid "CD track "
+msgid "CD track %1"
+msgstr "Дорожка CD "
+
+#: configurationdialog.cpp:42
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Kaffeine"
+msgstr "Настройка Kaffeine"
+
+#: configurationdialog.cpp:49
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Normal Mode"
+msgstr "Обычный режим"
+
+#: configurationdialog.cpp:51
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Minimal Mode"
+msgstr "Минимальный режим"
+
+#: configurationdialog.cpp:53
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Full Screen Mode"
+msgstr "Полноэкранный режим"
+
+#: configurationdialog.cpp:55
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Remember Last Setting"
+msgstr "Запоминать последний режим"
+
+#: configurationdialog.cpp:59
+#, kde-format
+msgctxt "@label:listbox"
+msgid "Startup display mode:"
+msgstr "Режим показа при запуске:"
+
+#: configurationdialog.cpp:68
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Short skip duration:"
+msgstr "Короткий шаг перемотки:"
+
+#: configurationdialog.cpp:77
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Long skip duration:"
+msgstr "Длинный шаг перемотки:"
+
+#: configurationdialog.cpp:82
+#, kde-format
+msgctxt "@title:group"
+msgid "General"
+msgstr "Основное"
+
+#: configurationdialog.cpp:89
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Log messages:"
+msgstr "Журнал сообщений:"
+
+#: configurationdialog.cpp:92
+#, kde-format
+msgctxt "@action:button"
+msgid "Show dmesg"
+msgstr "Показать сообщения ядра ОС (dmesg)"
+
+#: configurationdialog.cpp:106
+#, kde-format
+msgctxt "@title:group"
+msgid "Diagnostics"
+msgstr "Диагностика"
+
+#: configurationdialog.cpp:114
+#, kde-format
+msgctxt "@label:textbox"
+msgid "LibVLC arguments:"
+msgstr "Параметры libVLC:"
+
+#: configurationdialog.cpp:121
+#, kde-format
+msgctxt "@label:textbox"
+msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
+msgstr ""
+"Замечание: чтобы новые параметры вступили в силу, необходимо перезапустить "
+"Kaffeine"
+
+#: configurationdialog.cpp:126
+#, kde-format
+msgctxt "@title:group"
+msgid "libVLC"
+msgstr "libVLC"
+
+#: configurationdialog.cpp:163
+#, kde-format
+msgctxt "@title:window"
+msgid "dmesg"
+msgstr "Сообщения ядра ОС (dmesg)"
+
+#: dvb/dvbchanneldialog.cpp:108 dvb/dvbepgdialog.cpp:369
+#: dvb/dvbepgdialog.cpp:483 dvb/dvbrecordingdialog.cpp:256
+#: dvb/dvbscandialog.cpp:235
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Channel"
+msgstr "Канал"
+
+#: dvb/dvbchanneldialog.cpp:110
+#, kde-format
+msgctxt "@title:column tv channel"
+msgid "Number"
+msgstr "Номер"
+
+#: dvb/dvbchanneldialog.cpp:292 dvb/dvbrecordingdialog.cpp:77
+#, kde-format
+msgctxt "@action"
+msgid "Edit"
+msgstr "Изменить"
+
+#: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:728
+#: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:410
+#: playlist/playlisttab.cpp:430
+#, kde-format
+msgctxt "@action"
+msgid "Remove"
+msgstr "Удалить"
+
+#: dvb/dvbchanneldialog.cpp:317
+#, kde-format
+msgctxt "@info"
+msgid ""
+"The channels will be sorted by number to allow drag and drop.\n"
+"Do you want to continue?"
+msgstr ""
+"Каналы будут отсортированы по номеру, чтобы их пункты можно было "
+"перетаскивать.\n"
+"Продолжить?"
+
+#: dvb/dvbchanneldialog.cpp:415
+#, kde-format
+msgid "Horizontal"
+msgstr "Горизонтальная"
+
+#: dvb/dvbchanneldialog.cpp:416
+#, kde-format
+msgid "Vertical"
+msgstr "Вертикальная"
+
+#: dvb/dvbchanneldialog.cpp:417
+#, kde-format
+msgid "Circular left"
+msgstr "Левая круговая"
+
+#: dvb/dvbchanneldialog.cpp:418
+#, kde-format
+msgid "Circular right"
+msgstr "Правая круговая"
+
+#: dvb/dvbchanneldialog.cpp:419
+#, kde-format
+msgid "Off"
+msgstr "Выкл."
+
+#: dvb/dvbchanneldialog.cpp:709
+#, kde-format
+msgctxt "@title:window"
+msgid "Edit Channel"
+msgstr "Настройка канала"
+
+#: dvb/dvbchanneldialog.cpp:721
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Name:"
+msgstr "Название:"
+
+#: dvb/dvbchanneldialog.cpp:730
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Number:"
+msgstr "Номер:"
+
+#: dvb/dvbchanneldialog.cpp:739
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Source:"
+msgstr "Источник:"
+
+#: dvb/dvbchanneldialog.cpp:749 dvb/dvbchanneldialog.cpp:771
+#: dvb/dvbchanneldialog.cpp:789 dvb/dvbchanneldialog.cpp:810
+#: dvb/dvbchanneldialog.cpp:835 dvb/dvbchanneldialog.cpp:894
+#, kde-format
+msgid "Frequency (MHz):"
+msgstr "Частота (МГц):"
+
+#: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
+#, kde-format
+msgid "Symbol rate (kS/s):"
+msgstr "Скорость передачи (кСимв/с)"
+
+#: dvb/dvbchanneldialog.cpp:754 dvb/dvbchanneldialog.cpp:779
+#: dvb/dvbchanneldialog.cpp:794 dvb/dvbchanneldialog.cpp:815
+#: dvb/dvbchanneldialog.cpp:897
+#, kde-format
+msgid "Modulation:"
+msgstr "Модуляция:"
+
+#: dvb/dvbchanneldialog.cpp:756 dvb/dvbchanneldialog.cpp:775
+#: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
+#, kde-format
+msgid "FEC rate:"
+msgstr "Скорость FEC:"
+
+#: dvb/dvbchanneldialog.cpp:769
+#, kde-format
+msgid "Polarization:"
+msgstr "Поляризация:"
+
+#: dvb/dvbchanneldialog.cpp:781
+#, kde-format
+msgid "Roll-off:"
+msgstr "Спад:"
+
+#: dvb/dvbchanneldialog.cpp:792 dvb/dvbchanneldialog.cpp:813
+#: dvb/dvbchanneldialog.cpp:838
+#, kde-format
+msgid "Bandwidth:"
+msgstr "Диапазон:"
+
+#: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
+#, kde-format
+msgid "FEC rate LP:"
+msgstr "Скорость низкоприоритетной FEC:"
+
+#: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
+#: dvb/dvbchanneldialog.cpp:840
+#, kde-format
+msgid "Transmission mode:"
+msgstr "Режим передачи:"
+
+#: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
+#: dvb/dvbchanneldialog.cpp:842
+#, kde-format
+msgid "Guard interval:"
+msgstr "Полоса расфильтровки:"
+
+#: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
+#, kde-format
+msgid "Hierarchy:"
+msgstr "Иерархия:"
+
+#: dvb/dvbchanneldialog.cpp:827
+#, kde-format
+msgid "PLP (stream ID):"
+msgstr "PLP (идентификатор транспортного потока):"
+
+#: dvb/dvbchanneldialog.cpp:845
+#, kde-format
+msgid "Partial reception:"
+msgstr "Частичный приём:"
+
+#: dvb/dvbchanneldialog.cpp:847
+#, kde-format
+msgid "Sound broadcasting:"
+msgstr "Радиовещание:"
+
+#: dvb/dvbchanneldialog.cpp:851
+#, kde-format
+msgid "SB channel ID:"
+msgstr "Канал радиовещания:"
+
+#: dvb/dvbchanneldialog.cpp:853
+#, kde-format
+msgid "SB index:"
+msgstr "Индекс радиовещания:"
+
+#: dvb/dvbchanneldialog.cpp:855
+#, kde-format
+msgid "SB count:"
+msgstr "Номер канала:"
+
+#: dvb/dvbchanneldialog.cpp:860
+#, kde-format
+msgid "Layer A Modulation:"
+msgstr "Модуляция слоя А:"
+
+#: dvb/dvbchanneldialog.cpp:862
+#, kde-format
+msgid "Layer A FEC rate:"
+msgstr "Скорость FEC уровня А:"
+
+#: dvb/dvbchanneldialog.cpp:864
+#, kde-format
+msgid "Layer A segments:"
+msgstr "Сегменты уровня А:"
+
+#: dvb/dvbchanneldialog.cpp:866
+#, kde-format
+msgid "Layer A interleaving:"
+msgstr "Перемежение в слое А:"
+
+#: dvb/dvbchanneldialog.cpp:870
+#, kde-format
+msgid "Layer B Modulation:"
+msgstr "Модуляция слоя В:"
+
+#: dvb/dvbchanneldialog.cpp:872
+#, kde-format
+msgid "Layer B FEC rate:"
+msgstr "Скорость FEC уровня В:"
+
+#: dvb/dvbchanneldialog.cpp:874
+#, kde-format
+msgid "Layer B segments:"
+msgstr "Сегменты уровня В:"
+
+#: dvb/dvbchanneldialog.cpp:876
+#, kde-format
+msgid "Layer B interleaving:"
+msgstr "Перемежение в слое В:"
+
+#: dvb/dvbchanneldialog.cpp:880
+#, kde-format
+msgid "Layer C Modulation:"
+msgstr "Модуляция слоя С:"
+
+#: dvb/dvbchanneldialog.cpp:882
+#, kde-format
+msgid "Layer C FEC rate:"
+msgstr "Скорость FEC уровня С:"
+
+#: dvb/dvbchanneldialog.cpp:884
+#, kde-format
+msgid "Layer C segments:"
+msgstr "Сегменты уровня С:"
+
+#: dvb/dvbchanneldialog.cpp:886
+#, kde-format
+msgid "Layer C interleaving:"
+msgstr "Перемежение в слое С:"
+
+#: dvb/dvbchanneldialog.cpp:911
+#, kde-format
+msgid "Network ID:"
+msgstr "Идентификатор сети:"
+
+#: dvb/dvbchanneldialog.cpp:920
+#, kde-format
+msgid "Transport stream ID:"
+msgstr "Идентификатор транспортного потока:"
+
+#: dvb/dvbchanneldialog.cpp:927
+#, kde-format
+msgid "Service ID:"
+msgstr "Идентификатор сервиса:"
+
+#: dvb/dvbchanneldialog.cpp:937
+#, kde-format
+msgid "Audio channel:"
+msgstr "Канал звука:"
+
+#: dvb/dvbchanneldialog.cpp:974
+#, kde-format
+msgid "Scrambled:"
+msgstr "Шифрование:"
+
+#: dvb/dvbchanneldialog.cpp:981
+#, kde-format
+msgid "PMT PID:"
+msgstr "PID PMT:"
+
+#: dvb/dvbchanneldialog.cpp:985
+#, kde-format
+msgid "Video PID:"
+msgstr "PID видео:"
+
+#: dvb/dvbchanneldialog.cpp:990
+#, kde-format
+msgid "Subtitle PID:"
+msgstr "PID субтитра:"
+
+#: dvb/dvbchanneldialog.cpp:1006
+#, kde-format
+msgid "Teletext PID:"
+msgstr "PID телетекста:"
+
+#: dvb/dvbconfigdialog.cpp:59
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Television"
+msgstr "Настройка телевидения"
+
+#: dvb/dvbconfigdialog.cpp:77
+#, kde-format
+msgid "Recording folder:"
+msgstr "Папка для записи:"
+
+#: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
+#, kde-format
+msgid "Select Folder"
+msgstr "Выбрать папку"
+
+#: dvb/dvbconfigdialog.cpp:89
+#, kde-format
+msgid "Time shift folder:"
+msgstr "Папка для временно́го сдвига:"
+
+#: dvb/dvbconfigdialog.cpp:101
+#, kde-format
+msgid "xmltv file name (optional):"
+msgstr "имя файла xmltv (необязательно):"
+
+#: dvb/dvbconfigdialog.cpp:109
+#, kde-format
+msgid "Add optional file to allow reading EPG data from xmltv files"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:113
+#, kde-format
+msgid "Disable parsing EPG data from MPEG-TS tables:"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:115
+#, kde-format
+msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:123
+#, kde-format
+msgid "Begin margin (minutes):"
+msgstr "Запас перед началом (в минутах):"
+
+#: dvb/dvbconfigdialog.cpp:130
+#, kde-format
+msgid "End margin (minutes):"
+msgstr "Запас после окончания (в минутах):"
+
+#: dvb/dvbconfigdialog.cpp:137
+#, kde-format
+msgid "Naming style for recordings:"
+msgstr "Формат названий записей."
+
+#: dvb/dvbconfigdialog.cpp:141
+#, kde-format
+msgid ""
+"The following substitutions work: \"%year\" for year (YYYY) and the "
+"following: %month, %day, %hour, %min, %sec, %channel and %title"
+msgstr ""
+"Доступны следующие подставляемые значения: %year (год в формате ГГГГ), "
+"%month (месяц), %day (день), %hour (часы), %min (минуты), %sec (секунды), "
+"%channel (канал) и %title (название телепередачи)."
+
+#: dvb/dvbconfigdialog.cpp:153
+#, kde-format
+msgid "Action after recording finishes:"
+msgstr "Действие после окончания записи:"
+
+#: dvb/dvbconfigdialog.cpp:157
+#, kde-format
+msgid "Leave empty for no command."
+msgstr "Оставьте поле пустым, если не требуется выполнять никаких команд."
+
+#: dvb/dvbconfigdialog.cpp:163
+#, kde-format
+msgid "Use ISO 8859-1 charset instead of ISO 6937:"
+msgstr "Использовать кодировку ISO 8859-1 вместо ISO 6937:"
+
+#: dvb/dvbconfigdialog.cpp:170
+#, kde-format
+msgid "Create info files to accompany EPG recordings:"
+msgstr "Создать файлы с информацией о записях EPG:"
+
+#: dvb/dvbconfigdialog.cpp:179
+#, kde-format
+msgid "Scan channels when idle to fetch fresh EPG data:"
+msgstr "Сканировать каналы в режиме ожидания для сбора свежих данных EPG:"
+
+#: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
+#, kde-format
+msgid "Scan data last updated on %1"
+msgstr "Данные поиска последний раз обновлялись %1"
+
+#: dvb/dvbconfigdialog.cpp:193
+#, kde-format
+msgid "Update Scan Data over Internet"
+msgstr "Обновить данные поиска через Интернет"
+
+#: dvb/dvbconfigdialog.cpp:197
+#, kde-format
+msgid "Edit Scanfile"
+msgstr "Редактировать Scanfile"
+
+#: dvb/dvbconfigdialog.cpp:200
+#, kde-format
+msgid "You can add channels manually to this file before scanning for them."
+msgstr "Каналы возможно добавить в файл вручную до запуска сканирования."
+
+#: dvb/dvbconfigdialog.cpp:217
+#, kde-format
+msgid "General Options"
+msgstr "Общие параметры"
+
+#: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
+#, kde-format
+msgid "Automatic Recording"
+msgstr "Автоматическая запись"
+
+#: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
+#: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
+#: dvb/dvbconfigdialog.cpp:543 dvb/dvbconfigdialog.cpp:567
+#, kde-format
+msgid "Device %1"
+msgstr "Устройство %1"
+
+#: dvb/dvbconfigdialog.cpp:387
+#, kde-format
+msgctxt "@action"
+msgid "Add new Regex"
+msgstr "Добавить регулярное выражение"
+
+#: dvb/dvbconfigdialog.cpp:394
+#, kde-format
+msgid "Add another regular expression."
+msgstr "Добавить ещё одно регулярное выражение."
+
+#: dvb/dvbconfigdialog.cpp:398
+#, kde-format
+msgctxt "@action"
+msgid "Remove Regex"
+msgstr "Удалить регулярные выражения"
+
+#: dvb/dvbconfigdialog.cpp:404
+#, kde-format
+msgid "Remove checked regular expressions."
+msgstr "Удалить выбранные регулярные выражения."
+
+#: dvb/dvbconfigdialog.cpp:618
+#, kde-format
+msgid "Update Scan Data"
+msgstr "Обновить данные поиска"
+
+#: dvb/dvbconfigdialog.cpp:637
+#, kde-format
+msgid "Downloading scan data"
+msgstr "Загрузка данных поиска"
+
+#: dvb/dvbconfigdialog.cpp:678
+#, kde-format
+msgid ""
+"Scan file is becoming bigger than %1 KB.\n"
+"Aborting, as something might be wrong...\n"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:701
+#, fuzzy, kde-format
+#| msgid ""
+#| "Scan data successfully updated. Changes take\n"
+#| "effect after you have closed the configuration dialog."
+msgid ""
+"Scan data successfully updated. %1 KB received.\n"
+"Changes take effect after you have closed\n"
+"the configuration dialog."
+msgstr ""
+"Данные поиска обновлены. Изменения вступят в силу\n"
+"после закрытия диалога настройки."
+
+#: dvb/dvbconfigdialog.cpp:706
+#, kde-format
+msgid "Scan data update failed."
+msgstr "Не удалось обновить данные поиска."
+
+#: dvb/dvbconfigdialog.cpp:715
+#, kde-format
+msgid "Name: %1"
+msgstr "Имя: %1"
+
+#: dvb/dvbconfigdialog.cpp:718
+#, kde-format
+msgid "Move Left"
+msgstr "Влево"
+
+#: dvb/dvbconfigdialog.cpp:723
+#, kde-format
+msgid "Reset"
+msgstr "Сброс"
+
+#: dvb/dvbconfigdialog.cpp:733
+#, kde-format
+msgid "Move Right"
+msgstr "Вправо"
+
+#: dvb/dvbconfigdialog.cpp:739
+#, kde-format
+msgid "Device not connected."
+msgstr "Устройство не подключено."
+
+#: dvb/dvbconfigdialog.cpp:775
+#, kde-format
+msgid "DVB-C"
+msgstr "DVB-C"
+
+#: dvb/dvbconfigdialog.cpp:791
+#, kde-format
+msgid "DVB-S2"
+msgstr "DVB-S2"
+
+#: dvb/dvbconfigdialog.cpp:793
+#, kde-format
+msgid "DVB-S"
+msgstr "DVB-S"
+
+#: dvb/dvbconfigdialog.cpp:803
+#, kde-format
+msgid "DVB-T2"
+msgstr "DVB-T2"
+
+#: dvb/dvbconfigdialog.cpp:805
+#, kde-format
+msgid "DVB-T"
+msgstr "DVB-T"
+
+#: dvb/dvbconfigdialog.cpp:819
+#, kde-format
+msgid "ATSC"
+msgstr "ATSC"
+
+#: dvb/dvbconfigdialog.cpp:832 dvb/dvbconfigdialog.cpp:955
+#, kde-format
+msgid "ISDB-T"
+msgstr "ISDB-T"
+
+#: dvb/dvbconfigdialog.cpp:917
+#, kde-format
+msgid "Cable"
+msgstr "Кабельное"
+
+#: dvb/dvbconfigdialog.cpp:926
+#, kde-format
+msgid "Terrestrial (T2)"
+msgstr "Эфирное (T2)"
+
+#: dvb/dvbconfigdialog.cpp:934
+#, kde-format
+msgid "Terrestrial"
+msgstr "Эфирное"
+
+#: dvb/dvbconfigdialog.cpp:943 dvb/dvbconfigdialog.cpp:957
+#, kde-format
+msgid "Autoscan"
+msgstr "Автопоиск"
+
+#: dvb/dvbconfigdialog.cpp:944
+#, kde-format
+msgid "Autoscan with 167 kHz Offsets"
+msgstr "Автопоиск с шагом 167 кГц"
+
+#: dvb/dvbconfigdialog.cpp:945
+#, kde-format
+msgid "Autoscan Australia"
+msgstr "Автопоиск по Австралии"
+
+#: dvb/dvbconfigdialog.cpp:946
+#, kde-format
+msgid "Autoscan Italy"
+msgstr "Автопоиск по Италии"
+
+#: dvb/dvbconfigdialog.cpp:947
+#, kde-format
+msgid "Autoscan Taiwan"
+msgstr "Автопоиск по Тайваню"
+
+#: dvb/dvbconfigdialog.cpp:950
+#, kde-format
+msgid "Atsc"
+msgstr "ATSC"
+
+#: dvb/dvbconfigdialog.cpp:966 dvb/dvbconfigdialog.cpp:1095
+#, kde-format
+msgid "Tuner timeout (ms):"
+msgstr "Тайм-аут тюнера (мс)"
+
+#: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
+#, kde-format
+msgid "Source:"
+msgstr "Источник:"
+
+#: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
+#, kde-format
+msgid "No Source"
+msgstr "Нет источника"
+
+#: dvb/dvbconfigdialog.cpp:984
+#, kde-format
+msgid "Name:"
+msgstr "Имя:"
+
+#: dvb/dvbconfigdialog.cpp:1103
+#, kde-format
+msgid "Use Higher LNBf voltage:"
+msgstr "Повышенное напряжение питания конвертера LNBf:"
+
+#: dvb/dvbconfigdialog.cpp:1109
+#, kde-format
+msgid ""
+"On some DVB devices, there's an extra control that allows to increase the \n"
+"voltage sent to LNBf, in order to compensate for cabling loss. This tri-"
+"state\n"
+"button defaults to not use it. It may be set to:\n"
+"- normal mode (unchecked);\n"
+"- higher voltage mode (checked);\n"
+"- tristate (don't send the control)."
+msgstr ""
+"У некоторых устройств DVB существует дополнительный регулятор, позволяющий\n"
+"повышать напряжение питания конвертера LNBf, чтобы компенсировать потери "
+"напряжения в кабеле. По умолчанию\n"
+"этот переключатель находится в положении, при котором регулятор не "
+"используется.\n"
+"Переключатель используется для выбора одного из трёх режимов:\n"
+"— нормальный режим (флажок не установлен);\n"
+"— режим повышенного напряжения (флажок установлен);\n"
+"— тристабильный режим (сигнал на изменение напряжения не отправляется)."
+
+#: dvb/dvbconfigdialog.cpp:1117
+#, kde-format
+msgid "Configuration:"
+msgstr "Настройка:"
+
+#: dvb/dvbconfigdialog.cpp:1120
+#, kde-format
+msgid "DiSEqC Switch"
+msgstr "Переключатель DiSEqC"
+
+#: dvb/dvbconfigdialog.cpp:1121
+#, kde-format
+msgid "USALS Rotor"
+msgstr "Ротор USALS"
+
+#: dvb/dvbconfigdialog.cpp:1122
+#, kde-format
+msgid "Positions Rotor"
+msgstr "Ротор позиционера"
+
+#: dvb/dvbconfigdialog.cpp:1123
+#, kde-format
+msgid "Disable DiSEqC"
+msgstr "Отключить DiSEqC"
+
+#: dvb/dvbconfigdialog.cpp:1141
+#, kde-format
+msgid "LNB %1 Settings"
+msgstr "Параметры конвертера LNB %1"
+
+#: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
+#, kde-format
+msgid "LNB Settings"
+msgstr "Параметры конвертера LNB"
+
+#: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
+#, kde-format
+msgid "Add Satellite"
+msgstr "Добавить спутник"
+
+#: dvb/dvbconfigdialog.cpp:1211
+#, kde-format
+msgid "Satellite"
+msgstr "Спутник"
+
+#: dvb/dvbconfigdialog.cpp:1211
+#, kde-format
+msgid "Position"
+msgstr "Координаты"
+
+#: dvb/dvbconfigdialog.cpp:1228
+#, kde-format
+msgid "Remove Satellite"
+msgstr "Удалить спутник"
+
+#: dvb/dvbconfigdialog.cpp:1241
+#, kde-format
+msgid "Your position:"
+msgstr "Ваше местоположение:"
+
+#: dvb/dvbconfigdialog.cpp:1246
+#, kde-format
+msgid "Latitude:"
+msgstr "Широта:"
+
+#: dvb/dvbconfigdialog.cpp:1251
+#, kde-format
+msgid "[S -90 ... 90 N]"
+msgstr "[Ю −90 ... 90 С]"
+
+#: dvb/dvbconfigdialog.cpp:1269
+#, kde-format
+msgid "Longitude:"
+msgstr "Долгота:"
+
+#: dvb/dvbconfigdialog.cpp:1274
+#, kde-format
+msgid "[W -180 ... 180 E]"
+msgstr "[З −180 ... 180 В]"
+
+#: dvb/dvbconfigdialog.cpp:1623
+#, kde-format
+msgid "Low frequency (KHz)"
+msgstr "Низкие частоты (КГц)"
+
+#: dvb/dvbconfigdialog.cpp:1631
+#, kde-format
+msgid "High frequency (MHz)"
+msgstr "Высокие частоты (МГц)"
+
+#: dvb/dvbconfigdialog.cpp:1639
+#, kde-format
+msgid "Switch frequency (MHz)"
+msgstr "Частота переключения (МГц)"
+
+#: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
+#, kde-format
+msgid "Low range: %1 MHz to %2 MHz"
+msgstr "НЧ диапазон: %1 МГц до %2 МГц"
+
+#: dvb/dvbconfigdialog.cpp:1700
+#, kde-format
+msgid "Bandstacked"
+msgstr "Режим разноса частот"
+
+#: dvb/dvbconfigdialog.cpp:1704
+#, kde-format
+msgid "High range: %1 MHz to %2 MHz"
+msgstr "ВЧ диапазон: %1 МГц до %2 МГц"
+
+#: dvb/dvbepg.cpp:647
+#, kde-format
+msgid "Detective"
+msgstr "Детектив"
+
+#: dvb/dvbepg.cpp:648
+#, kde-format
+msgid "Adventure"
+msgstr "Приключения"
+
+#: dvb/dvbepg.cpp:649
+#, kde-format
+msgid "Science Fiction"
+msgstr "Фантастика"
+
+#: dvb/dvbepg.cpp:650
+#, kde-format
+msgid "Comedy"
+msgstr "Комедия"
+
+#: dvb/dvbepg.cpp:651
+#, kde-format
+msgid "Soap"
+msgstr "Мелодрама"
+
+#: dvb/dvbepg.cpp:652
+#, kde-format
+msgid "Romance"
+msgstr "Романтика"
+
+#: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
+#, kde-format
+msgid "Classical"
+msgstr "Классика"
+
+#: dvb/dvbepg.cpp:654
+#, kde-format
+msgid "Adult"
+msgstr "18+"
+
+#: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:790
+#, kde-format
+msgid "User defined"
+msgstr "Пользовательский"
+
+#: dvb/dvbepg.cpp:660
+#, kde-format
+msgid "Weather"
+msgstr "Погода"
+
+#: dvb/dvbepg.cpp:661 dvb/dvbepg.cpp:678 dvb/dvbepg.cpp:723 dvb/dvbepg.cpp:730
+#, kde-format
+msgid "Magazine"
+msgstr "Журнал"
+
+#: dvb/dvbepg.cpp:662 dvb/dvbepg.cpp:822
+#, kde-format
+msgid "Documentary"
+msgstr "Документальные"
+
+#: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:858
+#, kde-format
+msgid "Discussion"
+msgstr "Дискуссии"
+
+#: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:688 dvb/dvbepg.cpp:698
+#: dvb/dvbepg.cpp:709 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:733 dvb/dvbepg.cpp:745
+#: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:766
+#, kde-format
+msgid "User Defined"
+msgstr "Пользовательские"
+
+#: dvb/dvbepg.cpp:669
+#, kde-format
+msgid "Quiz"
+msgstr "Викторина"
+
+#: dvb/dvbepg.cpp:670 dvb/dvbepg.cpp:800
+#, kde-format
+msgid "Variety"
+msgstr "Эстрада"
+
+#: dvb/dvbepg.cpp:671
+#, kde-format
+msgid "Talk"
+msgstr "Ток-шоу"
+
+#: dvb/dvbepg.cpp:677
+#, kde-format
+msgid "Events"
+msgstr "События"
+
+#: dvb/dvbepg.cpp:679
+#, kde-format
+msgid "Football"
+msgstr "Футбол"
+
+#: dvb/dvbepg.cpp:680
+#, kde-format
+msgid "Tennis"
+msgstr "Теннис"
+
+#: dvb/dvbepg.cpp:681
+#, kde-format
+msgid "Team"
+msgstr "Командные игры"
+
+#: dvb/dvbepg.cpp:682
+#, kde-format
+msgid "Athletics"
+msgstr "Атлетика"
+
+#: dvb/dvbepg.cpp:683
+#, kde-format
+msgid "Motor"
+msgstr "Авто-шоу"
+
+#: dvb/dvbepg.cpp:684
+#, kde-format
+msgid "Water"
+msgstr "Водные виды спорта"
+
+#: dvb/dvbepg.cpp:685
+#, kde-format
+msgid "Winter"
+msgstr "Зимние виды спорта"
+
+#: dvb/dvbepg.cpp:686
+#, kde-format
+msgid "Equestrian"
+msgstr "Конные виды спорта"
+
+#: dvb/dvbepg.cpp:687
+#, kde-format
+msgid "Martial"
+msgstr "Боевые искусства"
+
+#: dvb/dvbepg.cpp:693
+#, kde-format
+msgid "Preschool"
+msgstr "Для дошкольников"
+
+#: dvb/dvbepg.cpp:694
+#, kde-format
+msgid "06 to 14"
+msgstr "от 06 до 14"
+
+#: dvb/dvbepg.cpp:695
+#, kde-format
+msgid "10 to 16"
+msgstr "от 10 до 16"
+
+#: dvb/dvbepg.cpp:696
+#, kde-format
+msgid "Educational"
+msgstr "Образовательные"
+
+#: dvb/dvbepg.cpp:697
+#, kde-format
+msgid "Cartoons"
+msgstr "Мультфильмы"
+
+#: dvb/dvbepg.cpp:703
+#, kde-format
+msgid "Poprock"
+msgstr "Поп-рок"
+
+#: dvb/dvbepg.cpp:705
+#, kde-format
+msgid "Folk"
+msgstr "Фолк"
+
+#: dvb/dvbepg.cpp:706
+#, kde-format
+msgid "Jazz"
+msgstr "Джаз"
+
+#: dvb/dvbepg.cpp:707
+#, kde-format
+msgid "Opera"
+msgstr "Опера"
+
+#: dvb/dvbepg.cpp:708
+#, kde-format
+msgid "Ballet"
+msgstr "Балет"
+
+#: dvb/dvbepg.cpp:714
+#, kde-format
+msgid "Performance"
+msgstr "Театр"
+
+#: dvb/dvbepg.cpp:715
+#, kde-format
+msgid "Fine Arts"
+msgstr "Изобразительное искусство"
+
+#: dvb/dvbepg.cpp:716 dvb/dvbepg.cpp:865
+#, kde-format
+msgid "Religion"
+msgstr "Религия"
+
+#: dvb/dvbepg.cpp:717
+#, kde-format
+msgid "Traditional"
+msgstr "Традиции"
+
+#: dvb/dvbepg.cpp:718
+#, kde-format
+msgid "Literature"
+msgstr "Литература"
+
+#: dvb/dvbepg.cpp:719
+#, kde-format
+msgid "Cinema"
+msgstr "Кино"
+
+#: dvb/dvbepg.cpp:720
+#, kde-format
+msgid "Experimental"
+msgstr "Экспериментальные"
+
+#: dvb/dvbepg.cpp:721
+#, kde-format
+msgid "Press"
+msgstr "Пресса"
+
+#: dvb/dvbepg.cpp:722
+#, kde-format
+msgid "New Media"
+msgstr "Новые медиа"
+
+#: dvb/dvbepg.cpp:724 dvb/dvbepg.cpp:843
+#, kde-format
+msgid "Fashion"
+msgstr "Мода"
+
+#: dvb/dvbepg.cpp:731
+#, kde-format
+msgid "Advisory"
+msgstr "Информационные"
+
+#: dvb/dvbepg.cpp:732
+#, kde-format
+msgid "People"
+msgstr "Люди"
+
+#: dvb/dvbepg.cpp:738
+#, kde-format
+msgid "Nature"
+msgstr "Природа"
+
+#: dvb/dvbepg.cpp:739
+#, kde-format
+msgid "Technology"
+msgstr "Технологии"
+
+#: dvb/dvbepg.cpp:740
+#, kde-format
+msgid "Medicine"
+msgstr "Медицина"
+
+#: dvb/dvbepg.cpp:741
+#, kde-format
+msgid "Foreign"
+msgstr "Иностранные"
+
+#: dvb/dvbepg.cpp:742 dvb/dvbepg.cpp:783
+#, kde-format
+msgid "Social"
+msgstr "Социальные"
+
+#: dvb/dvbepg.cpp:743
+#, kde-format
+msgid "Further"
+msgstr "Дополнительное образование"
+
+#: dvb/dvbepg.cpp:744
+#, kde-format
+msgid "Language"
+msgstr "Языки"
+
+#: dvb/dvbepg.cpp:750 dvb/dvbepg.cpp:846
+#, kde-format
+msgid "Travel"
+msgstr "Путешествия"
+
+#: dvb/dvbepg.cpp:751
+#, kde-format
+msgid "Handicraft"
+msgstr "Рукоделие"
+
+#: dvb/dvbepg.cpp:752
+#, kde-format
+msgid "Motoring"
+msgstr "Автомобили"
+
+#: dvb/dvbepg.cpp:753
+#, kde-format
+msgid "Fitness"
+msgstr "Фитнес"
+
+#: dvb/dvbepg.cpp:754 dvb/dvbepg.cpp:842
+#, kde-format
+msgid "Cooking"
+msgstr "Кулинария"
+
+#: dvb/dvbepg.cpp:755
+#, kde-format
+msgid "Shopping"
+msgstr "Покупки"
+
+#: dvb/dvbepg.cpp:756
+#, kde-format
+msgid "Gardening"
+msgstr "Садоводство"
+
+#: dvb/dvbepg.cpp:761 iso-codes.cpp:125 iso-codes.cpp:155
+#, kde-format
+msgid "Original Language"
+msgstr "На языке оригинала"
+
+#: dvb/dvbepg.cpp:762
+#, kde-format
+msgid "Black and White "
+msgstr "Ч/Б"
+
+#: dvb/dvbepg.cpp:763
+#, kde-format
+msgid "Unpublished"
+msgstr "Не вышло на экраны"
+
+#: dvb/dvbepg.cpp:764
+#, kde-format
+msgid "Live"
+msgstr "Прямой эфир"
+
+#: dvb/dvbepg.cpp:765
+#, kde-format
+msgid "Planostereoscopic"
+msgstr "3D"
+
+#: dvb/dvbepg.cpp:767
+#, kde-format
+msgid "User Defined 1"
+msgstr "Пользовательские 1"
+
+#: dvb/dvbepg.cpp:768
+#, kde-format
+msgid "User Defined 2"
+msgstr "Пользовательские 2"
+
+#: dvb/dvbepg.cpp:769
+#, kde-format
+msgid "User Defined 3"
+msgstr "Пользовательские 3"
+
+#: dvb/dvbepg.cpp:770
+#, kde-format
+msgid "User Defined 4"
+msgstr "Пользовательские 4"
+
+#: dvb/dvbepg.cpp:775
+#, kde-format
+msgid "Undefined"
+msgstr "Не определено"
+
+#: dvb/dvbepg.cpp:776 dvb/dvbepg.cpp:806
+#, kde-format
+msgid "Movie"
+msgstr "Кино"
+
+#: dvb/dvbepg.cpp:777 dvb/dvbepg.cpp:794 dvb/dvbepg.cpp:820
+#, kde-format
+msgid "News"
+msgstr "Новости"
+
+#: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:834
+#, kde-format
+msgid "Show"
+msgstr "Шоу"
+
+#: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:795
+#, kde-format
+msgid "Sports"
+msgstr "Спорт"
+
+#: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:804
+#, kde-format
+msgid "Children"
+msgstr "Детям"
+
+#: dvb/dvbepg.cpp:781
+#, kde-format
+msgid "Music"
+msgstr "Музыка"
+
+#: dvb/dvbepg.cpp:782
+#, kde-format
+msgid "Culture"
+msgstr "Культура"
+
+#: dvb/dvbepg.cpp:784 dvb/dvbepg.cpp:796
+#, kde-format
+msgid "Education"
+msgstr "Образование"
+
+#: dvb/dvbepg.cpp:785
+#, kde-format
+msgid "Leisure"
+msgstr "Досуг"
+
+#: dvb/dvbepg.cpp:786
+#, kde-format
+msgid "Special"
+msgstr "Специальные"
+
+#: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
+#, kde-format
+msgid "Reserved"
+msgstr "Резерв"
+
+#: dvb/dvbepg.cpp:797
+#, kde-format
+msgid "Soap opera"
+msgstr "Мелодрама"
+
+#: dvb/dvbepg.cpp:798
+#, kde-format
+msgid "Mini-series"
+msgstr "Мини-сериал"
+
+#: dvb/dvbepg.cpp:799
+#, kde-format
+msgid "Series"
+msgstr "Сериал"
+
+#: dvb/dvbepg.cpp:801
+#, kde-format
+msgid "Reality show"
+msgstr "Реалити-шоу"
+
+#: dvb/dvbepg.cpp:802
+#, kde-format
+msgid "Information"
+msgstr "Информация"
+
+#: dvb/dvbepg.cpp:803
+#, kde-format
+msgid "Comical"
+msgstr "Комедия"
+
+#: dvb/dvbepg.cpp:805
+#, kde-format
+msgid "Erotic"
+msgstr "Эротика"
+
+#: dvb/dvbepg.cpp:807
+#, kde-format
+msgid "Raffle, television sales, prizing"
+msgstr "Лотерея, теле-магазин, конкурсы"
+
+#: dvb/dvbepg.cpp:808
+#, kde-format
+msgid "Debate/interview"
+msgstr "Дебаты / интервью"
+
+#: dvb/dvbepg.cpp:809
+#, kde-format
+msgid "Other"
+msgstr "Прочее"
+
+#: dvb/dvbepg.cpp:821
+#, kde-format
+msgid "Report"
+msgstr "Репортаж"
+
+#: dvb/dvbepg.cpp:823
+#, kde-format
+msgid "Biography"
+msgstr "Биография"
+
+#: dvb/dvbepg.cpp:827
+#, kde-format
+msgid "Educative"
+msgstr "Образование"
+
+#: dvb/dvbepg.cpp:833
+#, kde-format
+msgid "Auditorium"
+msgstr "Аудитория"
+
+#: dvb/dvbepg.cpp:835
+#, kde-format
+msgid "Musical"
+msgstr "Мюзикл"
+
+#: dvb/dvbepg.cpp:836
+#, kde-format
+msgid "Making of"
+msgstr "За сценой"
+
+#: dvb/dvbepg.cpp:837
+#, kde-format
+msgid "Feminine"
+msgstr "Для женщин"
+
+#: dvb/dvbepg.cpp:838
+#, kde-format
+msgid "Game show"
+msgstr "Игровые шоу"
+
+#: dvb/dvbepg.cpp:844
+#, kde-format
+msgid "Country"
+msgstr "Дача"
+
+#: dvb/dvbepg.cpp:845
+#, kde-format
+msgid "Health"
+msgstr "Здоровье"
+
+#: dvb/dvbepg.cpp:853
+#, kde-format
+msgid "Raffle"
+msgstr "Лотерея"
+
+#: dvb/dvbepg.cpp:854
+#, kde-format
+msgid "Television sales"
+msgstr "Теле-магазин"
+
+#: dvb/dvbepg.cpp:855
+#, kde-format
+msgid "Prizing"
+msgstr "Конкурсы"
+
+#: dvb/dvbepg.cpp:859
+#, kde-format
+msgid "Interview"
+msgstr "Интервью"
+
+#: dvb/dvbepg.cpp:862
+#, kde-format
+msgid "Adult cartoon"
+msgstr "Мультфильмы 18+"
+
+#: dvb/dvbepg.cpp:863
+#, kde-format
+msgid "Interactive"
+msgstr "Интерактивные"
+
+#: dvb/dvbepg.cpp:864
+#, kde-format
+msgid "Policy"
+msgstr "Политика"
+
+#: dvb/dvbepg.cpp:897
+#, no-c-format, kde-format
+msgid "Genre: %1"
+msgstr "Жанр: %1"
+
+#: dvb/dvbepg.cpp:904
+#, kde-format
+msgid "reserved"
+msgstr "резерв"
+
+#: dvb/dvbepg.cpp:905
+#, kde-format
+msgid "all audiences"
+msgstr "любая аудитория"
+
+#: dvb/dvbepg.cpp:906
+#, kde-format
+msgid "10 years"
+msgstr "10 лет"
+
+#: dvb/dvbepg.cpp:907
+#, kde-format
+msgid "12 years"
+msgstr "12 лет"
+
+#: dvb/dvbepg.cpp:908
+#, kde-format
+msgid "14 years"
+msgstr "14 лет"
+
+#: dvb/dvbepg.cpp:909
+#, kde-format
+msgid "16 years"
+msgstr "16 лет"
+
+#: dvb/dvbepg.cpp:910
+#, kde-format
+msgid "18 years"
+msgstr "18 лет"
+
+#: dvb/dvbepg.cpp:933
+#, no-c-format, kde-format
+msgid "Country %1: not rated\n"
+msgstr "Страна %1: без оценки\n"
+
+#: dvb/dvbepg.cpp:945
+#, kde-format
+msgid "violence / "
+msgstr "жестокость / "
+
+#: dvb/dvbepg.cpp:947
+#, kde-format
+msgid "sex / "
+msgstr "секс / "
+
+#: dvb/dvbepg.cpp:949
+#, kde-format
+msgid "drugs / "
+msgstr "наркотики / "
+
+#: dvb/dvbepg.cpp:957
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2%3\n"
+msgstr "Страна %1: рейтинг: %2%3\n"
+
+#: dvb/dvbepg.cpp:960
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2 years.\n"
+msgstr "Страна %1: рейтинг: %2 г.\n"
+
+#: dvb/dvbepgdialog.cpp:46
+#, kde-format
+msgctxt "@title:window"
+msgid "Program Guide"
+msgstr "Программа передач"
+
+#: dvb/dvbepgdialog.cpp:73
+#, kde-format
+msgid "EPG language:"
+msgstr "Язык EPG:"
+
+#: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
+#, kde-format
+msgid "Any language"
+msgstr "Любой язык"
+
+#: dvb/dvbepgdialog.cpp:112
+#, kde-format
+msgid "Show channels with empty EPG data"
+msgstr "Показывать каналы, для которых нет данных EPG "
+
+#: dvb/dvbepgdialog.cpp:119
+#, kde-format
+msgctxt "@action:inmenu tv show"
+msgid "Record Show"
+msgstr "Запись передачи"
+
+#: dvb/dvbepgdialog.cpp:127
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Search:"
+msgstr "Поиск:"
+
+#: dvb/dvbepgdialog.cpp:477 dvb/dvbrecordingdialog.cpp:258
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Start"
+msgstr "Начало"
+
+#: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Duration"
+msgstr "Длительность"
+
+#: dvb/dvbepgdialog.cpp:481
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Title"
+msgstr "Название"
+
+#: dvb/dvbliveview.cpp:197
+#, kde-format
+msgctxt "@info"
+msgid "All devices are used for recordings."
+msgstr "Все устройства уже используются для записи."
+
+#: dvb/dvbliveview.cpp:201
+#, kde-format
+msgctxt "@info"
+msgid ""
+"Didn't find a device with valid settings or access permissions are wrong.\n"
+"\n"
+"Please check the Configure Television window."
+msgstr ""
+"Устройство с действующей настройкой не найдено, или разрешения доступа "
+"неверны.\n"
+"\n"
+"Проверьте правильность настройки параметров в окне «Настройка телевидения»."
+
+#: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
+#, kde-format
+msgctxt "message box"
+msgid "No available device found."
+msgstr "Доступных устройств не обнаружено."
+
+#: dvb/dvbrecordingdialog.cpp:45
+#, kde-format
+msgctxt "@title:window"
+msgid "Recording Schedule"
+msgstr "Планирование записи"
+
+#: dvb/dvbrecordingdialog.cpp:70
+#, kde-format
+msgctxt "@action"
+msgid "New"
+msgstr "Создать"
+
+#: dvb/dvbrecordingdialog.cpp:254
+#, kde-format
+msgctxt "@title:column recording"
+msgid "Name"
+msgstr "Название"
+
+#: dvb/dvbrecordingdialog.cpp:262
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Disabled"
+msgstr "Отключено"
+
+#: dvb/dvbrecordingdialog.cpp:307
+#, kde-format
+msgid "Disabled"
+msgstr "Отключено"
+
+#: dvb/dvbrecordingdialog.cpp:309
+#, kde-format
+msgid "Enabled"
+msgstr "Включено"
+
+#: dvb/dvbrecordingdialog.cpp:384
+#, kde-format
+msgctxt "@title:window recording"
+msgid "Edit Schedule Entry"
+msgstr "Настройка планируемой записи"
+
+#: dvb/dvbrecordingdialog.cpp:394
+#, kde-format
+msgctxt "@label recording"
+msgid "Name:"
+msgstr "Название:"
+
+#: dvb/dvbrecordingdialog.cpp:408
+#, kde-format
+msgctxt "@label tv show"
+msgid "Channel:"
+msgstr "Канал:"
+
+#: dvb/dvbrecordingdialog.cpp:420
+#, kde-format
+msgctxt "@label tv show"
+msgid "Start:"
+msgstr "Начало:"
+
+#: dvb/dvbrecordingdialog.cpp:430
+#, kde-format
+msgctxt "@label tv show"
+msgid "Duration:"
+msgstr "Продолжительность:"
+
+#: dvb/dvbrecordingdialog.cpp:441
+#, kde-format
+msgctxt "@label tv show"
+msgid "End:"
+msgstr "Окончание:"
+
+#: dvb/dvbrecordingdialog.cpp:446
+#, kde-format
+msgctxt "@label recording"
+msgid "Repeat:"
+msgstr "Повторять:"
+
+#: dvb/dvbrecordingdialog.cpp:450
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Never"
+msgstr "Никогда"
+
+#: dvb/dvbrecordingdialog.cpp:454
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Daily"
+msgstr "Ежедневно"
+
+#: dvb/dvbscandialog.cpp:87
+#, kde-format
+msgid "%1"
+msgstr "%1"
+
+#: dvb/dvbscandialog.cpp:237
+#, kde-format
+msgid "Provider"
+msgstr "Провайдер"
+
+#: dvb/dvbscandialog.cpp:239
+#, kde-format
+msgid "SNR"
+msgstr "ОСШ"
+
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#, kde-format
+msgid "Channels"
+msgstr "Каналы"
+
+#: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:414
+#, kde-format
+msgctxt "remove all items from a list"
+msgid "Clear"
+msgstr "Очистить"
+
+#: dvb/dvbscandialog.cpp:298
+#, kde-format
+msgid "Channel Scan"
+msgstr "Поиск каналов"
+
+#: dvb/dvbscandialog.cpp:306
+#, kde-format
+msgid "Search transponders for other Networks"
+msgstr "Искать транспондеры других сетей"
+
+#: dvb/dvbscandialog.cpp:307
+#, kde-format
+msgid ""
+"On certain networks, it is possible that some transponders are encoded on "
+"separate Network Information Tables (other NITs). This is more common on DVB-"
+"C systems. Clicking on this icon will change the scan algorithm to take "
+"those other NIT data into account. Please notice that the scan will be a lot "
+"more slow if enabled."
+msgstr ""
+"Транспондеры некоторых сетей могут быть закодированы в отдельных таблицах "
+"NIT (таблицах с информацией о сети). Это более типично для систем DVB-C. "
+"Нажатие этого значка изменит алгоритм поиска, который теперь будет учитывать "
+"данные из этих других таблиц. Важно, что в этом случае процесс поиска займёт "
+"больше времени."
+
+#: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
+#, kde-format
+msgid "Start Scan"
+msgstr "Начать поиск"
+
+#: dvb/dvbscandialog.cpp:322
+#, kde-format
+msgid "Signal:"
+msgstr "Сигнал:"
+
+#: dvb/dvbscandialog.cpp:327
+#, kde-format
+msgid "SNR:"
+msgstr "ОСШ:"
+
+#: dvb/dvbscandialog.cpp:332
+#, kde-format
+msgid "Tuned:"
+msgstr "Настроено:"
+
+#: dvb/dvbscandialog.cpp:345
+#, kde-format
+msgid "Filter"
+msgstr "Фильтр"
+
+#: dvb/dvbscandialog.cpp:348
+#, kde-format
+msgid "Free to air"
+msgstr "Некодированные"
+
+#: dvb/dvbscandialog.cpp:351
+#, kde-format
+msgid "Radio"
+msgstr "Радио"
+
+#: dvb/dvbscandialog.cpp:354
+#, kde-format
+msgid "TV"
+msgstr "ТВ"
+
+#: dvb/dvbscandialog.cpp:357
+#, kde-format
+msgid "Provider:"
+msgstr "Провайдер:"
+
+#: dvb/dvbscandialog.cpp:365
+#, kde-format
+msgid "Add Filtered"
+msgstr "Добавить отфильтрованные"
+
+#: dvb/dvbscandialog.cpp:369
+#, kde-format
+msgid "Add Selected"
+msgstr "Добавить выбранные"
+
+#: dvb/dvbscandialog.cpp:375
+#, kde-format
+msgid "Scan Results"
+msgstr "Результаты поиска"
+
+#: dvb/dvbscandialog.cpp:391
+#, kde-format
+msgid "Current Transponder"
+msgstr "Текущий транспондер"
+
+#: dvb/dvbscandialog.cpp:473
+#, kde-format
+msgid "Stop Scan"
+msgstr "Остановить поиск"
+
+#: dvb/dvbtab.cpp:97
+#, kde-format
+msgid "Program Guide"
+msgstr "Программа передач"
+
+#: dvb/dvbtab.cpp:102
+#, kde-format
+msgid "OSD"
+msgstr "Индикация на экране"
+
+#: dvb/dvbtab.cpp:108
+#, kde-format
+msgctxt "dialog"
+msgid "Recording Schedule"
+msgstr "Планирование записи"
+
+#: dvb/dvbtab.cpp:115
+#, kde-format
+msgid "Instant Record"
+msgstr "Немедленная запись"
+
+#: dvb/dvbtab.cpp:123
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Configure Television..."
+msgstr "Настроить телевидение..."
+
+#: dvb/dvbtab.cpp:143
+#, kde-format
+msgid "Search:"
+msgstr "Поиск:"
+
+#: dvb/dvbtab.cpp:374
+#, kde-format
+msgctxt "osd"
+msgid "Channel: %1_"
+msgstr "Канал: %1_"
+
+#: dvb/dvbtab.cpp:391
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine is currently recording programs.\n"
+"Do you really want to close the application?"
+msgstr ""
+"Kaffeine сейчас выполняет запись телепрограмм.\n"
+"Вы действительно хотите закрыть приложение?"
+
+#: dvb/dvbtab.cpp:414
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine has scheduled recordings.\n"
+"Do you really want to close the application?"
+msgstr ""
+"В расписании Kaffeine имеются пункты записи телепрограмм.\n"
+"Вы действительно хотите закрыть приложение?"
+
+#: dvb/dvbtab.cpp:487
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Started"
+msgstr "Запись начата"
+
+#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Stopped"
+msgstr "Запись прекращена"
+
+#: dvb/xmltv.cpp:212
+#, kde-format
+msgctxt "%1 is a person; %2 is their character"
+msgid "%1 as %2"
+msgstr "%1 в роли %2"
+
+#: dvb/xmltv.cpp:222
+#, kde-format
+msgid "Director(s)"
+msgstr "Режиссёры"
+
+#: dvb/xmltv.cpp:224
+#, kde-format
+msgid "Actor(s)"
+msgstr "Актёры"
+
+#: dvb/xmltv.cpp:226
+#, kde-format
+msgid "Writer(s)"
+msgstr "Авторы сценария"
+
+#: dvb/xmltv.cpp:228
+#, kde-format
+msgid "Adapter(s)"
+msgstr "Авторы адоптации"
+
+#: dvb/xmltv.cpp:230
+#, kde-format
+msgid "Producer(s)"
+msgstr "Продюсеры"
+
+#: dvb/xmltv.cpp:232
+#, kde-format
+msgid "Composer(s)"
+msgstr "Композиторы"
+
+#: dvb/xmltv.cpp:234
+#, kde-format
+msgid "Editor(s)"
+msgstr "Редакторы:"
+
+#: dvb/xmltv.cpp:236
+#, kde-format
+msgid "Presenter(s)"
+msgstr "Ведущие:"
+
+#: dvb/xmltv.cpp:238
+#, kde-format
+msgid "Commentator(s)"
+msgstr "Комментаторы:"
+
+#: dvb/xmltv.cpp:240
+#, kde-format
+msgid "Guest(s)"
+msgstr "Приглашённые актёры:"
+
+#: dvb/xmltv.cpp:244
+#, kde-format
+msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
+msgid "%1: %2\n"
+msgstr "%1: %2\n"
+
+#: dvb/xmltv.cpp:377
+#, kde-format
+msgid "rating: %1"
+msgstr "рейтинг: %1"
+
+#: dvb/xmltv.cpp:451
+#, kde-format
+msgid "Season %1"
+msgstr "Сезон %1"
+
+#: dvb/xmltv.cpp:454
+#, kde-format
+msgid " Episode %1"
+msgstr " Серия %1"
+
+#: dvb/xmltv.cpp:485
+#, kde-format
+msgid "Star rating: %1"
+msgstr "Оценка: %1"
+
+#: dvb/xmltv.cpp:491
+#, kde-format
+msgid "Date: %1"
+msgstr "Дата: %1"
+
+#: dvb/xmltv.cpp:495
+#, kde-format
+msgid "Category: %1"
+msgstr "Категория: %1"
+
+#: dvb/xmltv.cpp:509
+#, kde-format
+msgid "Keyword: %1"
+msgstr "Ключевое слово: %1"
+
+#: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
+#, kde-format
+msgid "language: %1"
+msgstr "язык: %1"
+
+#: dvb/xmltv.cpp:538
+#, kde-format
+msgid "Original language: %1"
+msgstr "Язык оригинала: %1"
+
+#: dvb/xmltv.cpp:544
+#, kde-format
+msgid "Country: %1"
+msgstr "Страна: %1"
+
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
+#, kde-format
+msgid "Kaffeine"
+msgstr "Kaffeine"
+
+#: main.cpp:139
+#, kde-format
+msgid "A media player by KDE with digital TV support."
+msgstr "Проигрыватель мультимедиа с поддержкой цифрового телевидения от KDE."
+
+#: main.cpp:143
+#, kde-format
+msgid "(C) 2007-2019 The Kaffeine Authors."
+msgstr "© Разработчики Kaffeine, 2007­–2019"
+
+#: main.cpp:161
+#, kde-format
+msgid "Maintainer"
+msgstr "Сопровождающий"
+
+#: main.cpp:166
+#, kde-format
+msgid "Previous maintainer (for versions 1.x)"
+msgstr "Предыдущий сопровождающий (версии 1.х)"
+
+#: main.cpp:170
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+"Максим Цепков,Евгений Болотов,Николай Ерёмин,Стёпа Семенуха, Ольга Миронова"
+
+#: main.cpp:171
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+"azrael.com@gmail.com,lordinferius@gmail.com,doktorkster@gmail.com,"
+"semenukha@gmail.com, omiro@basealt.ru"
+
+#: mainwindow.cpp:113
+#, kde-format
+msgid "&1 Play File"
+msgstr "&1 Воспроизвести файл"
+
+#: mainwindow.cpp:115
+#, kde-format
+msgid "Open dialog to play a file"
+msgstr "Открыть диалоговое окно для воспроизведения файла"
+
+#: mainwindow.cpp:119
+#, kde-format
+msgid "&2 Play Audio CD"
+msgstr "&2 Воспроизвести Audio CD"
+
+#: mainwindow.cpp:121
+#, kde-format
+msgid ""
+"Start playing an audio CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr ""
+"Начать воспроизведение Audio CD (звукового компакт-диска). Предполагается, "
+"что диск уже находится в дисководе."
+
+#: mainwindow.cpp:125
+#, kde-format
+msgid "&3 Play Video CD"
+msgstr "&3 Воспроизвести Video CD"
+
+#: mainwindow.cpp:127
+#, kde-format
+msgid ""
+"Start playing a Video CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr ""
+"Начать воспроизведение Video CD (видео компакт-диска). Предполагается, что "
+"диск уже находится в дисководе."
+
+#: mainwindow.cpp:131
+#, kde-format
+msgid "&4 Play DVD"
+msgstr "&4 Воспроизвести DVD"
+
+#: mainwindow.cpp:133
+#, kde-format
+msgid ""
+"Start playing a DVD. It assumes that the DVD is already there at the DVD "
+"drive"
+msgstr ""
+"Начать воспроизведение DVD. Предполагается, что диск уже находится в "
+"дисководе"
+
+#: mainwindow.cpp:138
+#, kde-format
+msgid "&5 Digital TV"
+msgstr "&5 Цифровое телевидение"
+
+#: mainwindow.cpp:207
+#, kde-format
+msgid "&File"
+msgstr "&Файл"
+
+#: mainwindow.cpp:214
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Open URL..."
+msgstr "Открыть адрес..."
+
+#: mainwindow.cpp:225 mainwindow.cpp:480
+#, kde-format
+msgid "Play Audio CD"
+msgstr "Воспроизвести Audio CD"
+
+#: mainwindow.cpp:229 mainwindow.cpp:481
+#, kde-format
+msgid "Play Video CD"
+msgstr "Воспроизвести Video CD"
+
+#: mainwindow.cpp:233 mainwindow.cpp:482
+#, kde-format
+msgid "Play DVD"
+msgstr "Воспроизвести DVD"
+
+#: mainwindow.cpp:237
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Play DVD Folder"
+msgstr "Воспроизвести папку DVD"
+
+#: mainwindow.cpp:247
+#, kde-format
+msgid "&Playback"
+msgstr "&Воспроизведение"
+
+#: mainwindow.cpp:250
+#, kde-format
+msgctxt "menu bar"
+msgid "Play&list"
+msgstr "&Список воспроизведения"
+
+#: mainwindow.cpp:254
+#, kde-format
+msgid "&Television"
+msgstr "&Телевидение"
+
+#: mainwindow.cpp:258
+#, kde-format
+msgid "&Settings"
+msgstr "&Настройка"
+
+#: mainwindow.cpp:279
+#, kde-format
+msgid "Start"
+msgstr "Начало"
+
+#: mainwindow.cpp:280
+#, kde-format
+msgid "Playback"
+msgstr "Воспроизведение"
+
+# убрал "Список воспроизведения", чтобы высота главного окна Kaffeine не была слишком большой (иначе возникают проблемы при разрешении экрана 1024x600) --aspotashev
+#: mainwindow.cpp:281
+#, kde-format
+msgid "Playlist"
+msgstr "Список"
+
+#: mainwindow.cpp:283
+#, kde-format
+msgid "Television"
+msgstr "Телевидение"
+
+#: mainwindow.cpp:347
+#, kde-format
+msgid "Play &File"
+msgstr "Воспроизвести &файл"
+
+#: mainwindow.cpp:351
+#, kde-format
+msgid "Play &Audio CD"
+msgstr "Воспроизвести &Audio CD"
+
+#: mainwindow.cpp:355
+#, kde-format
+msgid "Play &Video CD"
+msgstr "Воспроизвести &Video CD"
+
+#: mainwindow.cpp:359
+#, kde-format
+msgid "Play &DVD"
+msgstr "Воспроизвести &DVD"
+
+#: mainwindow.cpp:364
+#, kde-format
+msgid "&Watch Digital TV"
+msgstr "&Смотреть цифровое ТВ"
+
+#: mainwindow.cpp:368
+#, kde-format
+msgid "&Quit"
+msgstr "&Выход"
+
+#: mainwindow.cpp:475
+#, kde-format
+msgid ""
+"Enable all debug messages. Please notice that Kaffeine also allows enabling "
+"debug messages per category, by using the environment var:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"where 'category' can be:\n"
+msgstr ""
+"Выводить все сообщения об отладке. Обратите внимание, что Kaffeine позволяет "
+"распределять сообщения об отладке по категориям, используя окружение var:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"где 'category' может принимать значения:\n"
+
+#: mainwindow.cpp:476
+#, kde-format
+msgid "The files/URLs opened by the application will be deleted after use"
+msgstr ""
+"Файлы или ссылки, открытые приложением, будут удалены после использования."
+
+#: mainwindow.cpp:477
+#, kde-format
+msgid "Start in full screen mode"
+msgstr "Запустить в полноэкранном режиме"
+
+#: mainwindow.cpp:478
+#, kde-format
+msgid "Start in minimal mode"
+msgstr "Запустить в минимальном режиме"
+
+#: mainwindow.cpp:479
+#, kde-format
+msgid "Start with always on top"
+msgstr "Запускать поверх других окон"
+
+#: mainwindow.cpp:486
+#, kde-format
+msgctxt "command line option"
+msgid "Dump dvb data (debug option)"
+msgstr "Дамп данных DVB (отладочная команда)"
+
+#: mainwindow.cpp:487
+#, kde-format
+msgctxt "command line option"
+msgid "Play TV channel"
+msgstr "Смотреть ТВ канал"
+
+#: mainwindow.cpp:488
+#, kde-format
+msgctxt "command line option"
+msgid "(deprecated option)"
+msgstr "(устаревший параметр)"
+
+#: mainwindow.cpp:489
+#, kde-format
+msgctxt "command line option"
+msgid "Play last tuned TV channel"
+msgstr "Смотреть последний настроенный ТВ канал"
+
+#: mainwindow.cpp:491
+#, kde-format
+msgid "Files or URLs to play"
+msgstr "Воспроизвести файлы или адреса"
+
+#: mainwindow.cpp:713
+#, kde-format
+msgctxt "@title:window"
+msgid "Open files"
+msgstr "Открытие файлов"
+
+#: mainwindow.cpp:726
+#, kde-format
+msgctxt "@title:window"
+msgid "Open URL"
+msgstr "Открытие адреса URL"
+
+#: mainwindow.cpp:726
+#, kde-format
+msgid "Enter a URL:"
+msgstr "Введите адрес:"
+
+#: mediawidget.cpp:85
+#, kde-format
+msgid "Previous"
+msgstr "Предыдущий"
+
+#: mediawidget.cpp:93
+#, kde-format
+msgid "Play"
+msgstr "Воспроизвести"
+
+#: mediawidget.cpp:94
+#, kde-format
+msgid "Pause"
+msgstr "Пауза"
+
+#: mediawidget.cpp:103
+#, kde-format
+msgid "Stop"
+msgstr "Стоп"
+
+#: mediawidget.cpp:111
+#, kde-format
+msgid "Next"
+msgstr "Следующий"
+
+#: mediawidget.cpp:120 mediawidget.cpp:591
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Full Screen Mode"
+msgstr "Полноэкранный режим"
+
+#: mediawidget.cpp:127 mediawidget.cpp:606
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Minimal Mode"
+msgstr "Минимальный режим"
+
+#: mediawidget.cpp:140
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Subtitle"
+msgstr "Субтитры"
+
+#: mediawidget.cpp:144
+#, kde-format
+msgctxt "subtitle selection entry"
+msgid "off"
+msgstr "выкл."
+
+#: mediawidget.cpp:152
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Add subtitle file"
+msgstr "Добавить файл субтитров"
+
+#: mediawidget.cpp:159
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio"
+msgstr "Звук"
+
+#: mediawidget.cpp:162
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Audio Device"
+msgstr "Звуковое устройство"
+
+#: mediawidget.cpp:164
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio Device"
+msgstr "Звуковое устройство"
+
+#: mediawidget.cpp:171
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Increase Volume"
+msgstr "Увеличить громкость"
+
+#: mediawidget.cpp:178
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Decrease Volume"
+msgstr "Уменьшить громкость"
+
+#: mediawidget.cpp:184
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Mute Volume"
+msgstr "Выключить звук"
+
+#: mediawidget.cpp:194
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Video"
+msgstr "Видео"
+
+#: mediawidget.cpp:198
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Deinterlace"
+msgstr "Подавление чересстрочности"
+
+#: mediawidget.cpp:206
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "disabled"
+msgstr "отключено"
+
+#: mediawidget.cpp:213
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "discard"
+msgstr "отбрасывание"
+
+#: mediawidget.cpp:219
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "bob"
+msgstr "удвоение"
+
+#: mediawidget.cpp:225
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "linear"
+msgstr "линейное"
+
+#: mediawidget.cpp:231
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif"
+msgstr "yadif"
+
+#: mediawidget.cpp:238
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif2x"
+msgstr "yadif2x"
+
+#: mediawidget.cpp:244
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "phosphor"
+msgstr "фосфор"
+
+#: mediawidget.cpp:250
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "x"
+msgstr "x"
+
+#: mediawidget.cpp:256
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "mean"
+msgstr "среднее"
+
+#: mediawidget.cpp:262
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "blend"
+msgstr "смешивание"
+
+#: mediawidget.cpp:268
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "Inverse telecine"
+msgstr "обратное преобразование"
+
+#: mediawidget.cpp:288
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Aspect Ratio"
+msgstr "Соотношение сторон"
+
+#: mediawidget.cpp:295
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "Automatic"
+msgstr "Автоматически"
+
+#: mediawidget.cpp:301
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "1:1"
+msgstr "1:1"
+
+#: mediawidget.cpp:307
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "4:3"
+msgstr "4:3"
+
+#: mediawidget.cpp:313
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "5:4"
+msgstr "5:4"
+
+#: mediawidget.cpp:319
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:9"
+msgstr "16:9"
+
+#: mediawidget.cpp:325
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:10"
+msgstr "16:10"
+
+#: mediawidget.cpp:331
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.21:1"
+msgstr "2.21:1"
+
+#: mediawidget.cpp:337
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.35:1"
+msgstr "2.35:1"
+
+#: mediawidget.cpp:343
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.39:1"
+msgstr "2.39:1"
+
+#: mediawidget.cpp:348
+#, kde-format
+msgid "Video size"
+msgstr "Размер видео"
+
+#: mediawidget.cpp:356
+#, kde-format
+msgctxt "Video size"
+msgid "Automatic"
+msgstr "Автоматический"
+
+#: mediawidget.cpp:362
+#, kde-format
+msgctxt "Video size"
+msgid "25%"
+msgstr "25%"
+
+#: mediawidget.cpp:368
+#, kde-format
+msgctxt "Video size"
+msgid "50%"
+msgstr "50%"
+
+#: mediawidget.cpp:375
+#, kde-format
+msgctxt "Video size"
+msgid "75%"
+msgstr "75%"
+
+#: mediawidget.cpp:381
+#, kde-format
+msgctxt "Video size"
+msgid "Original Size"
+msgstr "исходный размер"
+
+#: mediawidget.cpp:387
+#, kde-format
+msgctxt "Video size"
+msgid "150%"
+msgstr "150%"
+
+#: mediawidget.cpp:393
+#, kde-format
+msgctxt "Video size"
+msgid "200%"
+msgstr "200%"
+
+#: mediawidget.cpp:399
+#, kde-format
+msgctxt "Video size"
+msgid "250%"
+msgstr "250%"
+
+#: mediawidget.cpp:405
+#, kde-format
+msgctxt "Video size"
+msgid "300%"
+msgstr "300%"
+
+#: mediawidget.cpp:428
+#, kde-format
+msgid "Volume Slider"
+msgstr "Регулятор громкости"
+
+#: mediawidget.cpp:443
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Jump to Position..."
+msgstr "Перейти ко времени..."
+
+#: mediawidget.cpp:448
+#, kde-format
+msgctxt "playback menu"
+msgid "Skip"
+msgstr "Перемотка"
+
+#: mediawidget.cpp:462 mediawidget.cpp:471 mediawidget.cpp:1154
+#: mediawidget.cpp:1164
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Backward"
+msgstr "Отмотать на %1 с назад"
+
+#: mediawidget.cpp:480 mediawidget.cpp:489 mediawidget.cpp:1157
+#: mediawidget.cpp:1167
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Forward"
+msgstr "Перемотать на %1 с вперёд"
+
+#: mediawidget.cpp:495 mediawidget.cpp:498
+#, kde-format
+msgid "Seek Slider"
+msgstr "Ползунок поиска"
+
+#: mediawidget.cpp:509
+#, kde-format
+msgctxt "dvd navigation"
+msgid "DVD Menu"
+msgstr "Меню DVD"
+
+#: mediawidget.cpp:513
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Title"
+msgstr "Заголовок"
+
+#: mediawidget.cpp:519
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Chapter"
+msgstr "Глава"
+
+#: mediawidget.cpp:525
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Angle"
+msgstr "Ракурс"
+
+#: mediawidget.cpp:532
+#, kde-format
+msgid "Switch between elapsed and remaining time display"
+msgstr "Показать, сколько прошло или осталось времени"
+
+#: mediawidget.cpp:561
+#, kde-format
+msgid ""
+"Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf "
+"*.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
+"Files (*)"
+msgstr ""
+"Поддерживаемые файлы мультимедиа: (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *."
+"aiff *.anim1 *.anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 "
+"*.animj *.asf *.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *."
+"f4a *.f4b *.f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u "
+"*.m3u8 *.m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *."
+"mp2 *.mp3 *.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *."
+"mts *.nsv *.oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra "
+"*.ram *.rax *.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn "
+"*.snd *.spl *.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav "
+"*.wax *.webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *."
+"iso);;Все файлы (*)"
+
+#: mediawidget.cpp:597
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Full Screen Mode"
+msgstr "Выйти из полноэкранного режима"
+
+#: mediawidget.cpp:610
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Minimal Mode"
+msgstr "Выйти из минимального режима"
+
+#: mediawidget.cpp:643
+#, kde-format
+msgctxt "@title:window"
+msgid "Open subtitle"
+msgstr "Открытие субтитров"
+
+#: mediawidget.cpp:644
+#, kde-format
+msgid ""
+"Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
+"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+msgstr ""
+"Субтитры (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
+"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+
+#: mediawidget.cpp:784 mediawidget.cpp:891
+#, kde-format
+msgctxt "osd"
+msgid "Volume: %1%"
+msgstr "Громкость: %1%"
+
+#: mediawidget.cpp:815
+#, kde-format
+msgctxt "osd"
+msgid "Stopped"
+msgstr "Остановлено"
+
+#: mediawidget.cpp:881
+#, kde-format
+msgctxt "osd"
+msgid "Mute On"
+msgstr "Звук выключен"
+
+#: mediawidget.cpp:884
+#, kde-format
+msgctxt "osd"
+msgid "Mute Off"
+msgstr "Звук включён"
+
+#: mediawidget.cpp:980
+#, kde-format
+msgctxt "osd message"
+msgid "Deinterlace %1"
+msgstr "Подавление чересстрочности %1"
+
+#: mediawidget.cpp:1395
+#, kde-format
+msgctxt "osd"
+msgid "Playing"
+msgstr "Воспроизведение"
+
+#: mediawidget.cpp:1400
+#, kde-format
+msgctxt "osd"
+msgid "Paused"
+msgstr "Пауза"
+
+#: mediawidget.cpp:1578
+#, kde-format
+msgctxt "@title:window"
+msgid "Jump to Position"
+msgstr "Переход ко времени"
+
+#: mediawidget.cpp:1583
+#, kde-format
+msgid "Enter a position:"
+msgstr "Введите время:"
+
+#: playlist/playlistmodel.cpp:800
+#, kde-format
+msgctxt "playlist track"
+msgid "Title"
+msgstr "Заголовок"
+
+#: playlist/playlistmodel.cpp:802
+#, kde-format
+msgctxt "playlist track"
+msgid "Artist"
+msgstr "Исполнитель"
+
+#: playlist/playlistmodel.cpp:804
+#, kde-format
+msgctxt "playlist track"
+msgid "Album"
+msgstr "Альбом"
+
+#: playlist/playlistmodel.cpp:806
+#, kde-format
+msgctxt "playlist track"
+msgid "Track Number"
+msgstr "Номер дорожки"
+
+#: playlist/playlistmodel.cpp:808
+#, kde-format
+msgctxt "playlist track"
+msgid "Length"
+msgstr "Длина"
+
+#: playlist/playlisttab.cpp:372
+#, kde-format
+msgctxt "playlist browser"
+msgid "Temporary Playlist"
+msgstr "Временный список воспроизведения"
+
+#: playlist/playlisttab.cpp:396
+#, kde-format
+msgctxt "playlist menu"
+msgid "Repeat"
+msgstr "Повтор"
+
+#: playlist/playlisttab.cpp:401
+#, kde-format
+msgctxt "playlist menu"
+msgid "Random"
+msgstr "Случайное"
+
+#: playlist/playlisttab.cpp:406
+#, kde-format
+msgid "Add Subtitle"
+msgstr "Добавить субтитры"
+
+#: playlist/playlisttab.cpp:420
+#, kde-format
+msgctxt "@action:inmenu playlist"
+msgid "New"
+msgstr "Создать"
+
+#: playlist/playlisttab.cpp:425
+#, kde-format
+msgctxt "rename an entry in a list"
+msgid "Rename"
+msgstr "Переименовать"
+
+#: playlist/playlisttab.cpp:634
+#, kde-format
+msgctxt "playlist browser"
+msgid "Unnamed Playlist"
+msgstr "Безымянный список воспроизведения"
+
+#: playlist/playlisttab.cpp:848
+#, kde-format
+msgctxt "file filter"
+msgid "Subtitle Files"
+msgstr "Файлы субтитров"
+
+#: playlist/playlisttab.cpp:865
+#, kde-format
+msgctxt "file filter"
+msgid ""
+"*.xspf|XSPF Playlist\n"
+"*.m3u|M3U Playlist\n"
+"*.pls|PLS Playlist"
+msgstr ""
+"*.xspf|Список воспроизведения XSPF\n"
+"*.m3u|Список воспроизведения M3U\n"
+"*.pls|Список воспроизведения PLS"
+
+#: sqlhelper.cpp:48
+#, kde-format
+msgctxt "message box"
+msgid "Please install the Qt SQLite plugin."
+msgstr "Установите модуль SQLite для Qt"
+
+#: sqlhelper.cpp:63
+#, kde-format
+msgctxt "message box"
+msgid "Cannot open the SQLite database."
+msgstr "Не удалось открыть базу данных SQLite"
+
+#~ msgid "KF5 port"
+#~ msgstr "Перенос на KF5"
+
+#~ msgctxt "@info"
+#~ msgid "No device found."
+#~ msgstr "Устройств не обнаружено."
+
+#~ msgctxt "osd message"
+#~ msgid "Deinterlacing On"
+#~ msgstr "Подавление чересстрочности включено"
+
+#~ msgctxt "osd message"
+#~ msgid "Deinterlacing Off"
+#~ msgstr "Подавление чересстрочности выключено"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Algonquian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Apache languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Artificial languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Athapascan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Australian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Banda languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Bamileke languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Baltic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Berber languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Bihari languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Batak languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Caucasian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Celtic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Chamic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Cushitic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Land Dayak languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Dravidian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Finno-Ugrian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Germanic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgid "Horizontal"
+#~ msgid "Gorontalo"
+#~ msgstr "Горизонтальная"
+
+#, fuzzy
+#~| msgctxt "@title:column tv show"
+#~| msgid "Duration"
+#~ msgid "Gujarati"
+#~ msgstr "Длительность"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Himachali languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Ijo languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "'Video' menu"
+#~| msgid "Deinterlace"
+#~ msgid "Interlingue"
+#~ msgstr "Подавление чересстрочности"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Indic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Iranian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Iroquoian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Karen languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Khoisan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Kru languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Austronesian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Uncoded languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Mon-Khmer languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Manobo languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Multiple languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Munda languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Mayan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Nahuatl languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Nubian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Otomian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Papuan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Philippine languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Prakrit languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Romance languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Salishan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Semitic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Sign Languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Siouan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Slavic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Sami languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Songhai languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Tai languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Tupi languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Altaic languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "rename an entry in a list"
+#~| msgid "Rename"
+#~ msgid "Vietnamese"
+#~ msgstr "Переименовать"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Wakashan languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Sorbian languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Yupik languages"
+#~ msgstr "Исходный размер"
+
+#, fuzzy
+#~| msgctxt "automatic resize"
+#~| msgid "Original Size"
+#~ msgid "Zande languages"
+#~ msgstr "Исходный размер"
+
+#~ msgctxt "'Aspect Ratio' menu"
+#~ msgid "Fit to Window"
+#~ msgstr "Уместить в окне"
+
+#~ msgid "Automatic Resize"
+#~ msgstr "Подобрать размер"
+
+#~ msgctxt "automatic resize"
+#~ msgid "Off"
+#~ msgstr "Выкл."
+
+#~ msgctxt "automatic resize"
+#~ msgid "Double Size"
+#~ msgstr "Двойной размер"
+
+#~ msgctxt "@info tv show title"
+#~ msgid "<font color=#008000 size=\"+1\">%1</font><br>"
+#~ msgstr "<font color=#008000 size=\"+1\">%1</font><br>"
+
+#~ msgctxt "@info tv show subheading"
+#~ msgid "<font color=#808000>%1</font><br>"
+#~ msgstr "<font color=#808000>%1</font><br>"
+
+#~ msgctxt "@info tv show start, end"
+#~ msgid "<font color=#800000>%1 - %2</font><br><br>"
+#~ msgstr "<font color=#800000>%1 - %2</font><br><br>"
+
+#~ msgid "Your position (only needed for USALS rotor)"
+#~ msgstr "Ваше местонахождение (только для ротора USALS)"
+
+#, fuzzy
+#~| msgctxt "@label:textbox"
+#~| msgid "LibVLC arguments:"
+#~ msgid "Using libVLC without arguments"
+#~ msgstr "Параметры libVLC:"
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot set volume %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot play media %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Add Subtitle"
+#~ msgid "cannot set subtitle file %1"
+#~ msgstr "Добавить субтитры"
+
+#, fuzzy
+#~| msgctxt "@label:listbox"
+#~| msgid "Startup display mode:"
+#~ msgid "unknown startup display mode %1"
+#~ msgstr "Режим показа при запуске:"
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot open %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot remove %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Audio channel:"
+#~ msgid "invalid channel"
+#~ msgstr "Канал звука:"
+
+#~ msgid "Universal LNB"
+#~ msgstr "Универсальный конвертор"
+
+#~ msgid "C-band LNB"
+#~ msgstr "C-диапазон конвертора"
+
+#~ msgid "C-band Multipoint LNB"
+#~ msgstr "Многоканальный конвертор C-диапазона"
+
+#~ msgid "Custom LNB"
+#~ msgstr "Пользовательский LNB"
+
+#~ msgid "Low band LOF (MHz)"
+#~ msgstr "Потеря кадра нижнего диапазона (МГц)"
+
+#~ msgid "High band LOF (MHz)"
+#~ msgstr "Потеря кадра верхнего диапазона (МГц)"
+
+#~ msgid "Horizontal LOF (MHz)"
+#~ msgstr "Потеря горизонтального кадра (МГц)"
+
+#~ msgid "Vertical LOF (MHz)"
+#~ msgstr "Потеря вертикального кадра (МГц)"
+
+#~ msgid "LOF (MHz)"
+#~ msgstr "Потеря кадра (МГц)"
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "Can't open %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot open frontend %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot open dvr %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Transmission mode:"
+#~ msgid "unknown transmission type"
+#~ msgstr "Режим передачи:"
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot open demux %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot open file %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgctxt "@title:window"
+#~| msgid "Open files"
+#~ msgid "open failed"
+#~ msgstr "Открытие файлов"
+
+#, fuzzy
+#~| msgid "No source"
+#~ msgid "invalid source"
+#~ msgstr "Нет источника"
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot read %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot parse %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot copy %1 %2"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Cannot open %1."
+#~ msgid "cannot remove file %1"
+#~ msgstr "Не удалось открыть %1."
+
+#, fuzzy
+#~| msgid "Edit Recording"
+#~ msgid "invalid recording"
+#~ msgstr "Редактировать запись"
+
+#, fuzzy
+#~| msgid "Cable"
+#~ msgid "disabled %1"
+#~ msgstr "Кабельное"
+
+#, fuzzy
+#~| msgctxt "@title:window"
+#~| msgid "Open files"
+#~ msgid "special subtitle found"
+#~ msgstr "Открытие файлов"
+
+#~ msgid "Christoph Pfister"
+#~ msgstr "Christoph Pfister"
+
+#~ msgctxt "file filter"
+#~ msgid "Supported Media Files"
+#~ msgstr "Поддерживаемые файлы"
+
+#~ msgctxt "file filter"
+#~ msgid "All Files"
+#~ msgstr "Все файлы"
+
+#, fuzzy
+#~| msgid "Remove Satellite"
+#~ msgid "Remove Regexes"
+#~ msgstr "Удалить спутник"
+
+#~ msgctxt "dvd navigation"
+#~ msgid "Toggle Menu"
+#~ msgstr "Показать меню"
+
+#~ msgctxt "program description"
+#~ msgid "Internal utility for Kaffeine."
+#~ msgstr "Внутренняя утилита для Kaffeine."
+
+#~ msgid "Channel Settings"
+#~ msgstr "Настройка канала"
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgctxt "remove an item from a list"
+#~ msgid "Remove"
+#~ msgstr "Удалить"
+
+#, fuzzy
+#~| msgid "Begin"
+#~ msgctxt "@title:column tv show"
+#~ msgid "Begin"
+#~ msgstr "Начать"
+
+#, fuzzy
+#~| msgid "Begin:"
+#~ msgctxt "@label tv show"
+#~ msgid "Begin:"
+#~ msgstr "Начало:"
+
+#~ msgctxt "add a new item to a list"
+#~ msgid "New"
+#~ msgstr "Создать"
+
+#~ msgid "Channel"
+#~ msgstr "Канал"
+
+#~ msgctxt "program guide"
+#~ msgid "Schedule Program"
+#~ msgstr "Запланировать программу"
+
+#, fuzzy
+#~| msgid "Name"
+#~ msgctxt "@title:column tv channel name"
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgctxt "epg"
+#~ msgid "Refresh"
+#~ msgstr "Обновить"
+
+#~ msgctxt "program guide"
+#~ msgid "Program successfully scheduled."
+#~ msgstr "Планирование программы выполнено."
+
+#~ msgid "Unknown playlist format."
+#~ msgstr "Неизвестный формат списка воспроизведения."
+
+#, fuzzy
+#~| msgid "Skip 1min Backward"
+#~ msgctxt "submenu of skip"
+#~ msgid "Skip 1min Backward"
+#~ msgstr "Отмотать на 1 мин назад"
+
+#, fuzzy
+#~| msgid "Skip 1min Forward"
+#~ msgctxt "submenu of skip"
+#~ msgid "Skip 1min Forward"
+#~ msgstr "Перемотать на 1 мин вперёд"
+
+#~ msgid "Remove All"
+#~ msgstr "Удалить всё"
+
+#~ msgid ""
+#~ "<center><font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your "
+#~ "desktop!</font></center>"
+#~ msgstr ""
+#~ "<center><font size=\"+4\"><b>[Проигрыватель Kaffeine]</b><br>кофеин для "
+#~ "вашего рабочего стола!</font></center>"
+
+#~ msgid "Navigation"
+#~ msgstr "Перемещение"
+
+#~ msgid "Recordings"
+#~ msgstr "Записи"
+
+#~| msgid "New"
+#~ msgctxt "playlist menu"
+#~ msgid "New"
+#~ msgstr "Создать"
+
+#~ msgid "Start scan"
+#~ msgstr "Начать сканирование"
+
+#~ msgid "&View"
+#~ msgstr "&Вид"
+
+#~ msgid "&Player"
+#~ msgstr "&Проигрыватель"
+
+#~ msgid "&DVB"
+#~ msgstr "&DVB"
+
+#, fuzzy
+#~| msgid "Delete channel"
+#~ msgid "Tune to the selected channel"
+#~ msgstr "Удалить канал"
+
+#~ msgid "Use right click to edit/delete"
+#~ msgstr "Щелчок правой кнопкой для редактирования/удаления"
+
+#~ msgid "Channel search"
+#~ msgstr "Поиск канала"
+
+#~ msgid "Change icon"
+#~ msgstr "Изменить значок"
+
+#~ msgid "DVB Settings"
+#~ msgstr "Настройки DVB"
+
+#~ msgid "Configure DVB"
+#~ msgstr "Настроить DVB"
+
+#~ msgid "Player"
+#~ msgstr "Проигрыватель"
+
+#~ msgctxt "View|Full Screen Mode"
+#~ msgid "F"
+#~ msgstr "F"
+
+#~ msgid "Main Controls"
+#~ msgstr "Основные настройки"
+
+#~ msgid "Position Slider"
+#~ msgstr "Позиция"
+
+#~ msgid "Tab Manager"
+#~ msgstr "Менеджер вкладок"

@@ -1,0 +1,424 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Portuguese "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Manual de Utilizador do Kaffeine</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>2016-06-07</date>
+<releaseinfo
+>Kaffeine 2.0.3</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>Um leitor multimédia do KDE com suporte para TV digital</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>nome</replaceable
+> / <replaceable
+>número</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>canal</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>ficheiro</replaceable
+></option
+></arg
+> </cmdsynopsis>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Descrição</title>
+<para
+>O Kaffeine é um leitor de conteúdos multimédia. O que o torna diferente dos outros é o seu suporte excelente para TV digital (DVB). O Kaffeine tem uma interface de utilizador amigável, para que mesmos os utilizadores iniciais comecem logo a ver os seus filmes: desde os DVD's (incluindo os menus, títulos, capítulos, etc.) aos VCD's e ficheiros individuais.</para>
+
+<para
+>O Kaffeine usa a libVLC como infra-estrutura de base para a reprodução de vídeo/áudio.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Opções</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Activa todas as mensagens de depuração. Lembre-se também que o Kaffeine também permite o ajuste fino das mensagens de depuração, activando as mensagens por categorias, usando a variável de ambiente:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>categoria</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>onde a <emphasis
+>categoria</emphasis
+> pode ser:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>para os registos CAM do DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>para os registos do dispositivo DVB e da libdvbv5</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>para os registos de processamento de MPEG-TS SI do DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>para os registos de EPG do DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>para os outros registos do DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>para os registos de configuração</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>para os registos do elemento multimédia</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>para os registos da lista de reprodução</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>para os registos do SQLite</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>Os ficheiros/URLs abertos pela aplicação serão apagados depois de utilizados</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>Iniciar com o ecrã completo</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Reproduzir um CD Áudio</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Reproduzir um CD Vídeo</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>Reproduzir um DVD</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>Apresenta os dados do DVB (opção de depuração)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>nome</replaceable
+> / <replaceable
+>número</replaceable
+></term>
+<listitem
+><para
+>Reproduz um canal de TV</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>canal</replaceable
+></term>
+<listitem
+><para
+>(opção desactualizada)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Reproduz o último canal de TV sintonizado</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>ficheiro</replaceable
+></option
+></term>
+<listitem
+><para
+>Ficheiros ou URL's a reproduzir</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>Ficheiros</title>
+<para
+>O Kaffeine usa o ficheiro <filename
+>scanfile.dvb</filename
+> com uma lista dos canais conhecidos por cada localidade e por Satélite (no caso do DVB-S).</para>
+<para
+>Quando são adicionados novos canais numa dada cidade, ou quando são adicionados novos sinais de satélite, que não estejam disponíveis no Kaffeine, tanto poderá usar o 'dvbv5-scan' como o 'w_scan' para gerar um novo ficheiro (no último caso, convertido para o formato adequado com o comando 'dvb-format-convert'), enviando o conteúdo para <email
+>linux-media@vger.kernel.org</email
+> com o assunto <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>alguma descrição</replaceable
+></quote
+>. A nova modificação será adicionada ao ficheiro <filename
+>scanfile.dvb</filename
+>, ficando o ficheiro actualizado disponível para actualizações pela Internet na aplicação Kaffeine. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Veja Também</title>
+<simplelist>
+<member
+>Existe mais documentação do utilizador detalhada em <ulink url="help:/kaffeine "
+>help:/kaffeine</ulink
+> (quer introduzindo este &URL; no &konqueror; ou executando <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>Existe também mais informações disponíveis na <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Página do Kaffeine</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Autores</title>
+<para
+>Para apresentar uma lista dos autores do Kaffeine, use a opção <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> num terminal.</para>
+</refsect1>
+
+</refentry>

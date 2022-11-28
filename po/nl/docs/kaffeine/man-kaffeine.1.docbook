@@ -1,0 +1,508 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Dutch "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Gebruikershandleiding voor Kaffeine</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>2018-05-01</date>
+<releaseinfo
+>Kaffeine 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>Een mediaspeler door KDE met ondersteuning voor digitale TV</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>beeldverhouding</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>naam</replaceable
+> / <replaceable
+>nummer</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>kanaal</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>bestanden</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>Merk op dat <option
+>--channel</option
+>, <option
+>--tv</option
+>, <option
+>--lastchannel</option
+>, <option
+>--audiocd</option
+>, <option
+>--videocd</option
+>, <option
+>--dvd</option
+> en <option
+><replaceable
+>bestanden</replaceable
+></option
+> elkaar uitsluiten.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Beschrijving</title>
+<para
+>Kaffeine is een mediaspeler. Wat het anders maakt ten opzichte van de anderen is zijn uitmuntende ondersteuning van digitale TV (DVB). Kaffeine heeft een gebruikersvriendelijk interface, zodat zelfs gebruikers de eerste keer onmiddellijk kunnen beginnen met het afspelen van hun films: van dvd's (inclusief dvd-menu's, titels, hoofdstukken, etc.), vcd of een bestand.</para>
+
+<para
+>Kaffeine gebruikt libVLC als video/audio afspeel-backend.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Opties</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Alle debug-messages inschakelen. Merk op dat Kaffeine ook fine-tuning van debug-messages toestaat, door messages per categorie in te schakelen, met de omgevingsvariable:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>categorie</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>waar <emphasis
+>categorie</emphasis
+> zijn kan:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>voor dvb CAM logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>voor dvb-apparaat en libdvbv5-logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>voor dvb MPEG-TS SI ontleedlogs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>Voor dvb EPG-logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>voor andere dvb-logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>voor configuratie-logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>voor mediawidget-logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>voor afspeellogs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>voor SQL lite-logs</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>voor libVlc-logs</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>De bestanden/URL-adressen geopend door de toepassing zullen na gebruik worden verwijderd</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>In modus volledig-scherm starten. Wanneer in modus volledig-scherm worden alle menu's standaard verborgen. Om de menu's weer zichtbaar te maken, verplaats de muis naar de menulocaties, bijv. naar de boven/onderkant of linker positie van het scherm.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>In modus minimaal beginnen. In modus minimaal wordt de vensterdecoratie met de titelbalk getoond. Alle andere menu's zijn standaard verborgen. Om de menu's weer zichtbaar te maken, verplaats de muis naar de menulocaties, bijv. naar de positie aan de boven/onderkant of links van het &kaffeine;-venster.</para>
+<para
+>Start in modus minimaal</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>Vertelt de vensterbeheerder om het hoofdvenster van &kaffeine; altijd boven andere vensters te starten. Deze optie kan later uitgeschakeld worden via de vensterbeheerder, gewoonlijk door te klikken op de titelbalk met de rechter muisknop en de selectie van het vakje altijd bovenaan.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>beeldverhouding</replaceable
+></term>
+<listitem
+><para
+>Laat &kaffeine; beginnen met een specifieke beeldverhouding, waarmee de automatische modus wordt uitgeschakeld. Dit kan nuttig zijn op brede en ultrabrede monitoren, waar de gebruiker de video in modus volledig-scherm wil zien met de maximaal mogelijke resolutie. Geldige waarden zijn: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2.35:1 en 2.39:1. Als een ongeldige waarde wordt doorgegeven of als deze optie niet wordt gebruikt, zal de standaard automatische modus worden gebruikt.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Audio-cd afspelen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Video-cd afspelen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>Dvd afspelen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>DVB-gegevens dumpen (verouderde optie)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>naam</replaceable
+> / <replaceable
+>nummer</replaceable
+></term>
+<listitem
+><para
+>TV-kanaal afspelen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>kanaal</replaceable
+></term>
+<listitem
+><para
+>(verouderde optie)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Laatst afgestemde TV-kanaal afspelen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>bestanden</replaceable
+></option
+></term>
+<listitem
+><para
+>Af te spelen bestanden of URL's</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>Bestanden</title>
+<para
+>Kaffeine gebruikt het bestand <filename
+>scanfile.dvb</filename
+> met een lijst van bekende kanalen per taalregio en per satelliet (for DVB-S).</para>
+<para
+>Wanneer ofwel nieuw kanalen zijn toegevoegd aan een Stad of wanneer nieuwe satellietkanalen zijn toegevoegd, die niet beschikbaar zijn in Kaffeine, gebruik dan ofwel dvbv5-scan of w_scan om een nieuw bestand te genereren (in het laatste geval, converteer naar het juiste formaat met dvb-format-convert) en biedt het aan aan <email
+>linux-media@vger.kernel.org</email
+>, met het onderwerp <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>enige beschrijving</replaceable
+></quote
+>. De nieuw patch zal toegevoegd worden aan <filename
+>scanfile.dvb</filename
+> en het bijgewerkte bestand zal beschikbaar zijn om vanaf het Internet de toepassing Kaffeine bij te werken. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Zie ook</title>
+<simplelist>
+<member
+>Meer uitgebreide informatie vindt u in <ulink url="help:/kaffeine"
+>help:/kaffeine</ulink
+> (voer deze &URL; in in &konqueror; of typ <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+> in op de opdrachtregel)</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>Er is ook verdere informatie beschikbaar op <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine pagina</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Auteurs</title>
+<para
+>Om de lijst met auteurs van Kaffeine te maken gebruik <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> in een terminal.</para>
+</refsect1>
+
+</refentry>

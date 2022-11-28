@@ -1,0 +1,508 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Catalan  "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Manual d'usuari del Kaffeine</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>1 de maig de 2018</date>
+<releaseinfo
+>Kaffeine 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>Un reproductor multimèdia creat per la comunitat KDE que admet la TV digital</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>relació_aspecte</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>nom</replaceable
+> / <replaceable
+>número</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>canal</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>fitxers</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>Tingueu en compte que <option
+>--channel</option
+>, <option
+>--tv</option
+>, <option
+>--lastchannel</option
+>, <option
+>--audiocd</option
+>, <option
+>--videocd</option
+>, <option
+>--dvd</option
+> i <option
+><replaceable
+>fitxers</replaceable
+></option
+> són mútuament excloents.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Descripció</title>
+<para
+>El Kaffeine és un reproductor multimèdia. El que el fa diferent dels altres és el seu excel·lent suport de la televisió digital (DVB). El Kaffeine té una interfície fàcil d'utilitzar, de manera que fins i tot els usuaris principiants poden començar immediatament a reproduir les seves pel·lícules: des d'un DVD (incloent-hi els menús del DVD, títols, capítols, etc.), VCD o un fitxer.</para>
+
+<para
+>El Kaffeine empra la libVLC com a dorsal de reproducció de vídeo/àudio.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Opcions</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Permet tots els missatges de depuració. Si us plau, tingueu en compte que el Kaffeine també permet afinar els missatges de depuració per categoria, utilitzant la variable d'entorn:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>categoria</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>a on la <emphasis
+>categoria</emphasis
+> podrà ser:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>pels registres CAM del DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>pels registres del dispositiu DVB i de la «libdvbv5»</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>pels registres d'anàlisi del MPEG-TS SI del DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>pels registres EPG (guia de programes) del DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>pels altres registres del DVB</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>pels registres de la configuració</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>pels registres del giny multimèdia</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>pels registres de la llista de reproducció</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>pels registres del «SQL lite»</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>pels registres de la libVlc</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>Els fitxers/URL oberts per l'aplicació se suprimiran després d'utilitzar-los.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>Inicia en el mode de pantalla completa. Quan s'està en el mode de pantalla completa, tots els menús restaran ocults de manera predeterminada. Per a mostrar-los, moveu el ratolí a la ubicació del menú, p. ex., a la posició superior/inferior o esquerra de la pantalla.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>Inicia en el mode mínim. En el mode mínim, es mostra la decoració de la finestra amb la barra de títol. Tots els altres menús restaran ocults de manera predeterminada. Per a mostrar-los, moveu el ratolí a les ubicacions del menú, p. ex., a la posició superior/inferior o esquerra de la finestra del &kaffeine;.</para>
+<para
+>Inicia en el mode mínim</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>Indica al gestor de finestres que iniciï la finestra principal del &kaffeine; sempre a sobre de les altres finestres. Aquesta opció es pot inhabilitar més endavant a través del gestor de finestres, generalment fent clic a la barra de títol amb el botó dret del ratolí i desseleccionant la casella del botó de sempre a sobre.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>relació_aspecte</replaceable
+></term>
+<listitem
+><para
+>Força el &kaffeine; que comenci amb una relació d'aspecte específica, inhabilitant el mode automàtic. Això pot ser útil en monitors ultra amplis i ultra llargs, on l'usuari sempre vol veure el vídeo en el mode de pantalla completa amb la màxima resolució possible. Els valors vàlids són: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2.35:1 i 2.39:1. Si es passa un valor no vàlid o si no s'utilitza aquesta opció, el predeterminat serà el mode automàtic.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Reprodueix un CD d'àudio</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Reprodueix un CD de vídeo</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>Reprodueix un DVD</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>Bolca la informació del DVD (opció del depurador)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>nom</replaceable
+> / <replaceable
+>número</replaceable
+></term>
+<listitem
+><para
+>Reprodueix un canal de TV</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>canal</replaceable
+></term>
+<listitem
+><para
+>(Opció obsoleta)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Reprodueix l'últim canal de TV sintonitzat</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>fitxers</replaceable
+></option
+></term>
+<listitem
+><para
+>Fitxers o URL a reproduir</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>Fitxers</title>
+<para
+>El Kaffeine utilitza el fitxer <filename
+>scanfile.dvb</filename
+> amb una llista de canals coneguts per localitat i per satèl·lit (per a DVB-S).</para>
+<para
+>Quan s'afegeixi qualsevol canal nou en alguna ciutat, o quan s'afegeixin satèl·lits nous, quan no estan disponibles al Kaffeine, ja sigui per a utilitzar «dvbv5-scan» o «w_scan» per a generar un nou fitxer (en aquest últim cas, convertit al format correcte utilitzant dvb-format-convert), i envieu-los a <email
+>linux-media@vger.kernel.org</email
+>, amb l'assumpte <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>alguna descripció</replaceable
+></quote
+>. El nou pedaç ser afegit al <filename
+>scanfile.dvb</filename
+> i el fitxer d'actualització estarà disponible per a ser actualitzat des d'Internet a l'aplicació Kaffeine. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Vegeu també</title>
+<simplelist>
+<member
+>Hi ha disponible documentació d'usuari més detallada des de <ulink url="help:/kaffeine "
+>help:/kaffeine</ulink
+> (podeu emprar aquest &URL; al &konqueror; o bé executar <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>També hi ha més informació disponible a la <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>pàgina del Kaffeine</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Autors</title>
+<para
+>Per a una llista dels autors del Kaffeine, utilitzeu <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> a un terminal.</para>
+</refsect1>
+
+</refentry>

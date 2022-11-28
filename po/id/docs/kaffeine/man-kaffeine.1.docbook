@@ -1,0 +1,508 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Indonesian "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Manual Penggunaan Kaffeine</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>01-05-2018</date>
+<releaseinfo
+>Kaffeine 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>Sebuah pemutar media oleh KDE dengan dukungan TV digital</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>aspect_ratio</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>name</replaceable
+> / <replaceable
+>number</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>channel</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>files</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>Mohon ingat bahwa <option
+>--channel</option
+>, <option
+>--tv</option
+>, <option
+>--lastchannel</option
+>, <option
+>--audiocd</option
+>, <option
+>--videocd</option
+>, <option
+>--dvd</option
+> dan <option
+><replaceable
+>files</replaceable
+></option
+> adalah saling terpisah dengan yang lain.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Deskripsi</title>
+<para
+>Kaffeine adalah sebuah pemutar media. Apa yang membuatnya berbeda dari yang lainnya adalah dukungan baik pada TV digital (DVB). Kaffeine memiliki antarmuka yang mudah, jadi pengguna pertama pun dapat memulai dengan seketika memutar film mereka: dari DVD (termasuk menu-menu DVD, judul, bab, dll), VCD, atau sebuah file.</para>
+
+<para
+>Kaffeine menggunakan libVLC sebagai backend memutar video/audio.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Opsi</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Fungsikan semua pesan debug. Harap perhatikan bahwa Kaffeine juga memungkinkan penalaan-halus pesan debug, dengan memfungsikan pesan tiap kategori, dengan menggunakan variasi lingkungan:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>category</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>di mana <emphasis
+>category</emphasis
+> bisa menjadi:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>untuk log-log dvb CAM</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>untuk perangkat dvb dan log-log libdvbv5</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>untuk log-log penguraian dvb MPEG-TS SI</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>untuk log-log dvb EPG</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>untuk log-log dvb lainnya</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>untuk konfigurasi log-log</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>untuk log-log widget media</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>untuk log-log playlist</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>untuk log-log SQL lite</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>untuk log-log libVlc</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>File/URL yang dibuka oleh aplikasi akan dihapus setelah penggunaan</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>Mulai dalam mode layar penuh. Ketika dalam mode layar penuh, secara baku semua menu disembunyikan. Untuk memunculkan menu, gerakkan mouse ke lokasi menu, yaitu ke posisi kiri atau atas/bawah pada layar.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>Mulai dalam mode minimal. Dalam mode minimal, dekorasi window dengan bilah judul telah ditampilkan. Secara baku semua menu lainnya disembunyikan. Untuk memunculkan menu, gerakkan mouse ke lokasi menu, yaitu ke posisi kiri atau atas/bawah pada window &kaffeine;.</para>
+<para
+>Mulaikan dalam mode minimal</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>Memberitahu pengelola window untuk memulai window utama &kaffeine; selalu berada di atas window lain. Opsi ini bisa dinonfungsikan nanti melalui pengelola window, biasanya dengan mengeklik bilah judul dengan tombol mouse kanan dan tidak memilih kotak tombol selalu berada di atas.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>aspect_ratio</replaceable
+></term>
+<listitem
+><para
+>Memaksakan &kaffeine; untuk berjalan dengan sebuah aspek rasio tertentu, menonaktifkan mode otomatis. Ini bisa berguna pada monitor wide dan ultra-wide, dimana pengguna selalu ingin melihat video dalam mode layar penuh menggunakan resolusi semaksimum mungkin. Nilai absah adalah: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2.35:1 dan 2.39:1. Jika sebuah nilai absah telah lulus, atau jika opsi ini tidaklah digunakan, itu akan membaku ke mode otomatis.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Putar Audio CD</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Putar Video CD</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>Putar DVD</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>Gardu data dvd (opsi debug)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>name</replaceable
+> / <replaceable
+>number</replaceable
+></term>
+<listitem
+><para
+>Tayangkan channel TV</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>channel</replaceable
+></term>
+<listitem
+><para
+>(opsi usang)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Tayangkan channel TV yang ditala terakhir</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>file</replaceable
+></option
+></term>
+<listitem
+><para
+>File atau URL yang mau diputar</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>File</title>
+<para
+>Kaffeine menggunakan file <filename
+>scanfile.dvb</filename
+> dengan daftar channel yang dikenal tiap lokalitas dan tiap Satelit (untuk DVB-S).</para>
+<para
+>Saat channel baru ditambahkan di beberapa kota, atau ketika sorotan Satelit baru telah ditambahkan, yang tidak tersedia di Kaffeine, gunakan antara dvbv5-scan atau w_scan untuk membuat file baru (dalam kasus terakhir, dikonversi ke format yang tepat menggunakan dvb-format-convert), dan sampaikan ke <email
+>linux-media@vger.kernel.org</email
+>, dengan subjek <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>beberapa deskripsi</replaceable 
+></quote
+>. Alur baru akan ditambahkan ke <filename
+>scanfile.dvb</filename
+> dan file yang diperbarui akan tersedia untuk diperbarui dari Internet dalam aplikasi Kaffeine. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Lihat Juga</title>
+<simplelist>
+<member
+>Perincian selebihnya dokumentasi penggunaan telah tersedia dari <ulink url="help:/kaffeine "
+>help:/kaffeine</ulink
+> (antara memasukkan &URL; ini ke dalam &konqueror;, atau jalankan <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>Ada juga informasi lebih lanjut yang tersedia di <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Halaman Kaffeine</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Penulis</title>
+<para
+>Untuk daftar para penulis Kaffeine gunakan <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> di dalam sebuah terminal.</para>
+</refsect1>
+
+</refentry>

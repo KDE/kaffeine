@@ -1,0 +1,508 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % German "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Kaffeine-Benutzerhandbuch</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>2018-05-01</date>
+<releaseinfo
+>Kaffeine 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>Eine Medienwiedergabe von KDE mit Unterstützung für digitales Fernsehen</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>aspect_ratio</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>name</replaceable
+> / <replaceable
+>number</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>channel</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>files</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>Die Optionen <option
+>--channel</option
+>, <option
+>--tv</option
+>, <option
+>--lastchannel</option
+>, <option
+>--audiocd</option
+>, <option
+>--videocd</option
+>, <option
+>--dvd</option
+> and <option
+><replaceable
+>files</replaceable
+></option
+> schließen sich gegenseitig aus.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Beschreibung</title>
+<para
+>Kaffeine ist eine Anwendung zur Medienwiedergabe. Was sie von den anderen unterscheidet, ist die hervorragende Unterstützung von digitalem Fernsehen (DVB). Kaffeine hat eine benutzerfreundliche Oberfläche, so dass auch Erstbenutzer sofort mit der Wiedergabe ihrer Filme beginnen können: Von DVD (einschließlich DVD-Menüs, Titeln, Kapiteln, etc.), VCD oder einer Datei.</para>
+
+<para
+>Kaffeine verwendet libVLC als Backend zur Wiedergabe von Video und Audio.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Optionen</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Aktiviert alle Debug-Meldungen. Bitte beachten Sie, dass Kaffeine auch eine Feinabstimmung der Debug-Meldungen ermöglicht, indem Sie Meldungen pro Kategorie mit folgender Umgebungsvariable aktivieren:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>category</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>Dabei kann folgendes als <emphasis
+>category</emphasis
+> benutzt werden:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>für DVB-CAM-Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>für Protokolle von DVB-Geräten und libdvbv5</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>für DVB MPEG-TS SI Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>für DVB-EPG-Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>für andere DVB-Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>für Einrichtungsprotokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>für mediawidget-Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>für Wiedergabelisten-Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>für SQL-Lite-Protokolle</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>für VLC-Protokolle</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>Die von der Anwendung geöffneten Dateien/URLs werden nach Gebrauch gelöscht</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>Start im Vollbildmodus. Im Vollbildmodus sind alle Menüs standardmäßig ausgeblendet. Um die Menüs wieder einzublenden, bewegen Sie die Maus an die Menüpositionen, z. B. an die obere/untere oder linke Position des Bildschirms.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>Start im Minimalmodus. Im Minimalmodus wird die Fensterdekoration mit der Titelleiste angezeigt. Alle anderen Menüs sind standardmäßig ausgeblendet. Um die Menüs wieder einzublenden, bewegen Sie die Maus an die Menüpositionen, z. B. an die obere/untere oder linke Position des &kaffeine;-Fensters.</para>
+<para
+>Start im Minimalmodus</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>Weist die Fensterverwaltung an, das &kaffeine;-Hauptfenster immer im Vordergrund vor anderen Fenstern zu halten. Diese Option kann später über die Fensterverwaltung deaktiviert werden, normalerweise durch Anklicken der Titelleiste mit der rechten Maustaste und Abwahl von  „Immer im Vordergrund“.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>aspect_ratio</replaceable
+></term>
+<listitem
+><para
+>Startet &kaffeine; mit einem bestimmten Seitenverhältnis und deaktiviert den automatischen Modus. Dies kann auf breiten und ultrabreiten Monitoren nützlich sein, wenn der Benutzer das Video immer im Vollbildmodus in der maximal möglichen Auflösung sehen möchte. Gültige Werte sind: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2,35:1 und 2,39:1. Wenn ein ungültiger Wert übergeben wird oder wenn diese Option nicht verwendet wird, wird standardmäßig der automatische Modus verwendet.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Audio-CD abspielen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Video-CD abspielen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>DVD abspielen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>Ausgabe der DVB-Daten (Debug-Option)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>name</replaceable
+> / <replaceable
+>number</replaceable
+></term>
+<listitem
+><para
+>TV-Kanal abspielen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>channel</replaceable
+></term>
+<listitem
+><para
+>(veraltete Option)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Zuletzt eingestellten TV-Kanal abspielen</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>Dateien</replaceable
+></option
+></term>
+<listitem
+><para
+>Abzuspielende Dateien oder URLs</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>Dateien</title>
+<para
+>Kaffeine verwendet die Datei <filename
+>scanfile.dvb</filename
+> mit einer Liste bekannter Kanäle je Ort und je Satellit für DVB-S.</para>
+<para
+>Wenn entweder neue Kanäle oder neue Satellitenprogramme hinzugefügt werden, die in Kaffeine nicht verfügbar sind, verwenden Sie entweder dvbv5-scan oder w_scan, um eine neue Datei zu erzeugen (im letzteren Fall in das richtige Format konvertiert) und senden Sie sie an <email
+>linux-media@vger.kernel.org</email
+>, mit dem Betreff <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>Beschreibung</replaceable
+></quote
+>. Der neue Patch wird zu <filename
+>scanfile.dvb</filename
+> hinzugefügt und die aktualisierte Datei  kann über das Internet in Kaffeine aktualisiert werden. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Siehe auch</title>
+<simplelist>
+<member
+>Weitere ausführliche Dokumentation finden Sie unter <ulink url="help:/kaffeine "
+>help:/kaffeine</ulink
+>. Geben Sie diese &URL; entweder in &konqueror; ein oder starten Sie <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>Weitere Informationen finden Sie außerdem auf der <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine-Seite</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Autoren</title>
+<para
+>Eine Liste aller Autoren von Kaffeine wird durch Eingabe von <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> in einem Terminal angezeigt.</para>
+</refsect1>
+
+</refentry>

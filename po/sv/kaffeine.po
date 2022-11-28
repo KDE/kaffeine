@@ -1,0 +1,4116 @@
+# translation of kaffeine.po to Swedish
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Stefan Asserhäll <stefan.asserhall@bredband.net>, 2008, 2009, 2010.
+# Stefan Asserhall <stefan.asserhall@bredband.net>, 2010, 2011, 2015, 2016, 2017, 2018, 2019, 2021.
+# Arve Eriksson <031299870@telia.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: kaffeine\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2022-10-21 00:46+0000\n"
+"PO-Revision-Date: 2021-05-01 14:16+0200\n"
+"Last-Translator: Stefan Asserhäll <stefan.asserhall@bredband.net>\n"
+"Language-Team: Swedish <kde-i18n-doc@kde.org>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 20.08.1\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: backend-mplayer/mplayermediawidget.cpp:260
+#, kde-format
+msgid "Cannot start mplayer process."
+msgstr "Kan inte starta mplayer-process."
+
+#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
+#, kde-format
+msgid "Subtitle %1"
+msgstr "Textning %1"
+
+#: backend-vlc/vlcmediawidget.cpp:917
+#, kde-format
+msgid "CD track %1"
+msgstr "Cd-spår %1"
+
+#: configurationdialog.cpp:42
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Kaffeine"
+msgstr "Anpassa Kaffeine"
+
+#: configurationdialog.cpp:49
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Normal Mode"
+msgstr "Normalt läge"
+
+#: configurationdialog.cpp:51
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Minimal Mode"
+msgstr "Minimalt läge"
+
+#: configurationdialog.cpp:53
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Full Screen Mode"
+msgstr "Fullskärmsläge"
+
+#: configurationdialog.cpp:55
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Remember Last Setting"
+msgstr "Kom ihåg senaste inställning"
+
+#: configurationdialog.cpp:59
+#, kde-format
+msgctxt "@label:listbox"
+msgid "Startup display mode:"
+msgstr "Visningsläge vid start:"
+
+#: configurationdialog.cpp:68
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Short skip duration:"
+msgstr "Kort tidslängd för överhopp:"
+
+#: configurationdialog.cpp:77
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Long skip duration:"
+msgstr "Lång tidslängd för överhopp:"
+
+#: configurationdialog.cpp:82
+#, kde-format
+msgctxt "@title:group"
+msgid "General"
+msgstr "Allmänna alternativ"
+
+#: configurationdialog.cpp:89
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Log messages:"
+msgstr "Loggmeddelanden:"
+
+#: configurationdialog.cpp:92
+#, kde-format
+msgctxt "@action:button"
+msgid "Show dmesg"
+msgstr "Visa dmesg"
+
+#: configurationdialog.cpp:106
+#, kde-format
+msgctxt "@title:group"
+msgid "Diagnostics"
+msgstr "Diagnostik"
+
+#: configurationdialog.cpp:114
+#, kde-format
+msgctxt "@label:textbox"
+msgid "LibVLC arguments:"
+msgstr "LibVLC-argument:"
+
+#: configurationdialog.cpp:121
+#, kde-format
+msgctxt "@label:textbox"
+msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
+msgstr ""
+"Observera: Kaffeine måste startas om för att de nya argumenten ska få effekt"
+
+#: configurationdialog.cpp:126
+#, kde-format
+msgctxt "@title:group"
+msgid "libVLC"
+msgstr "libVLC"
+
+#: configurationdialog.cpp:163
+#, kde-format
+msgctxt "@title:window"
+msgid "dmesg"
+msgstr "dmesg"
+
+#: dvb/dvbchanneldialog.cpp:108 dvb/dvbepgdialog.cpp:369
+#: dvb/dvbepgdialog.cpp:483 dvb/dvbrecordingdialog.cpp:256
+#: dvb/dvbscandialog.cpp:235
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Channel"
+msgstr "Kanal"
+
+#: dvb/dvbchanneldialog.cpp:110
+#, kde-format
+msgctxt "@title:column tv channel"
+msgid "Number"
+msgstr "Nummer"
+
+#: dvb/dvbchanneldialog.cpp:292 dvb/dvbrecordingdialog.cpp:77
+#, kde-format
+msgctxt "@action"
+msgid "Edit"
+msgstr "Redigera"
+
+#: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:728
+#: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:410
+#: playlist/playlisttab.cpp:430
+#, kde-format
+msgctxt "@action"
+msgid "Remove"
+msgstr "Ta bort"
+
+#: dvb/dvbchanneldialog.cpp:317
+#, kde-format
+msgctxt "@info"
+msgid ""
+"The channels will be sorted by number to allow drag and drop.\n"
+"Do you want to continue?"
+msgstr ""
+"Kanalerna kommer att sorteras enligt nummer för att tillåta dra och släpp.\n"
+"Vill du fortsätta?"
+
+#: dvb/dvbchanneldialog.cpp:415
+#, kde-format
+msgid "Horizontal"
+msgstr "Horisontell"
+
+#: dvb/dvbchanneldialog.cpp:416
+#, kde-format
+msgid "Vertical"
+msgstr "Vertikal"
+
+#: dvb/dvbchanneldialog.cpp:417
+#, kde-format
+msgid "Circular left"
+msgstr "Vänstercirkulär"
+
+#: dvb/dvbchanneldialog.cpp:418
+#, kde-format
+msgid "Circular right"
+msgstr "Högercirkulär"
+
+#: dvb/dvbchanneldialog.cpp:419
+#, kde-format
+msgid "Off"
+msgstr "Av"
+
+#: dvb/dvbchanneldialog.cpp:709
+#, kde-format
+msgctxt "@title:window"
+msgid "Edit Channel"
+msgstr "Redigera kanal"
+
+#: dvb/dvbchanneldialog.cpp:721
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Name:"
+msgstr "Namn:"
+
+#: dvb/dvbchanneldialog.cpp:730
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Number:"
+msgstr "Nummer:"
+
+#: dvb/dvbchanneldialog.cpp:739
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Source:"
+msgstr "Källa:"
+
+#: dvb/dvbchanneldialog.cpp:749 dvb/dvbchanneldialog.cpp:771
+#: dvb/dvbchanneldialog.cpp:789 dvb/dvbchanneldialog.cpp:810
+#: dvb/dvbchanneldialog.cpp:835 dvb/dvbchanneldialog.cpp:894
+#, kde-format
+msgid "Frequency (MHz):"
+msgstr "Frekvens (MHz):"
+
+#: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
+#, kde-format
+msgid "Symbol rate (kS/s):"
+msgstr "Symbolfrekvens (kS/s):"
+
+#: dvb/dvbchanneldialog.cpp:754 dvb/dvbchanneldialog.cpp:779
+#: dvb/dvbchanneldialog.cpp:794 dvb/dvbchanneldialog.cpp:815
+#: dvb/dvbchanneldialog.cpp:897
+#, kde-format
+msgid "Modulation:"
+msgstr "Modulation:"
+
+#: dvb/dvbchanneldialog.cpp:756 dvb/dvbchanneldialog.cpp:775
+#: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
+#, kde-format
+msgid "FEC rate:"
+msgstr "FEC-frekvens:"
+
+#: dvb/dvbchanneldialog.cpp:769
+#, kde-format
+msgid "Polarization:"
+msgstr "Polarisation:"
+
+#: dvb/dvbchanneldialog.cpp:781
+#, kde-format
+msgid "Roll-off:"
+msgstr "Dämpning:"
+
+#: dvb/dvbchanneldialog.cpp:792 dvb/dvbchanneldialog.cpp:813
+#: dvb/dvbchanneldialog.cpp:838
+#, kde-format
+msgid "Bandwidth:"
+msgstr "Bandbredd:"
+
+#: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
+#, kde-format
+msgid "FEC rate LP:"
+msgstr "FEC-frekvens LP:"
+
+#: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
+#: dvb/dvbchanneldialog.cpp:840
+#, kde-format
+msgid "Transmission mode:"
+msgstr "Överföringsläge:"
+
+#: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
+#: dvb/dvbchanneldialog.cpp:842
+#, kde-format
+msgid "Guard interval:"
+msgstr "Skyddsintervall:"
+
+#: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
+#, kde-format
+msgid "Hierarchy:"
+msgstr "Hierarki:"
+
+#: dvb/dvbchanneldialog.cpp:827
+#, kde-format
+msgid "PLP (stream ID):"
+msgstr "PLP (strömidentifikation):"
+
+#: dvb/dvbchanneldialog.cpp:845
+#, kde-format
+msgid "Partial reception:"
+msgstr "Partiell mottagning:"
+
+#: dvb/dvbchanneldialog.cpp:847
+#, kde-format
+msgid "Sound broadcasting:"
+msgstr "Ljudutsändning"
+
+#: dvb/dvbchanneldialog.cpp:851
+#, kde-format
+msgid "SB channel ID:"
+msgstr "SB-kanalidentifikation:"
+
+#: dvb/dvbchanneldialog.cpp:853
+#, kde-format
+msgid "SB index:"
+msgstr "SB-index:"
+
+#: dvb/dvbchanneldialog.cpp:855
+#, kde-format
+msgid "SB count:"
+msgstr "SB-antal:"
+
+#: dvb/dvbchanneldialog.cpp:860
+#, kde-format
+msgid "Layer A Modulation:"
+msgstr "Lager A modulation:"
+
+#: dvb/dvbchanneldialog.cpp:862
+#, kde-format
+msgid "Layer A FEC rate:"
+msgstr "Lager A FEC-frekvens:"
+
+#: dvb/dvbchanneldialog.cpp:864
+#, kde-format
+msgid "Layer A segments:"
+msgstr "Lager A segment:"
+
+#: dvb/dvbchanneldialog.cpp:866
+#, kde-format
+msgid "Layer A interleaving:"
+msgstr "Lager A interfoliering:"
+
+#: dvb/dvbchanneldialog.cpp:870
+#, kde-format
+msgid "Layer B Modulation:"
+msgstr "Lager B modulation:"
+
+#: dvb/dvbchanneldialog.cpp:872
+#, kde-format
+msgid "Layer B FEC rate:"
+msgstr "Lager B FEC-frekvens:"
+
+#: dvb/dvbchanneldialog.cpp:874
+#, kde-format
+msgid "Layer B segments:"
+msgstr "Lager B segment:"
+
+#: dvb/dvbchanneldialog.cpp:876
+#, kde-format
+msgid "Layer B interleaving:"
+msgstr "Lager B interfoliering:"
+
+#: dvb/dvbchanneldialog.cpp:880
+#, kde-format
+msgid "Layer C Modulation:"
+msgstr "Lager C modulation:"
+
+#: dvb/dvbchanneldialog.cpp:882
+#, kde-format
+msgid "Layer C FEC rate:"
+msgstr "Lager C FEC-frekvens:"
+
+#: dvb/dvbchanneldialog.cpp:884
+#, kde-format
+msgid "Layer C segments:"
+msgstr "Lager C segment:"
+
+#: dvb/dvbchanneldialog.cpp:886
+#, kde-format
+msgid "Layer C interleaving:"
+msgstr "Lager C interfoliering:"
+
+#: dvb/dvbchanneldialog.cpp:911
+#, kde-format
+msgid "Network ID:"
+msgstr "Nätverksidentifikation:"
+
+#: dvb/dvbchanneldialog.cpp:920
+#, kde-format
+msgid "Transport stream ID:"
+msgstr "Transportströmidentifikation:"
+
+#: dvb/dvbchanneldialog.cpp:927
+#, kde-format
+msgid "Service ID:"
+msgstr "Tjänstidentifikation:"
+
+#: dvb/dvbchanneldialog.cpp:937
+#, kde-format
+msgid "Audio channel:"
+msgstr "Ljudkanal:"
+
+#: dvb/dvbchanneldialog.cpp:974
+#, kde-format
+msgid "Scrambled:"
+msgstr "Krypterad:"
+
+#: dvb/dvbchanneldialog.cpp:981
+#, kde-format
+msgid "PMT PID:"
+msgstr "Processidentifierare för PMT:"
+
+#: dvb/dvbchanneldialog.cpp:985
+#, kde-format
+msgid "Video PID:"
+msgstr "Processidentifierare för video:"
+
+#: dvb/dvbchanneldialog.cpp:990
+#, kde-format
+msgid "Subtitle PID:"
+msgstr "Processidentifierare för textning:"
+
+#: dvb/dvbchanneldialog.cpp:1006
+#, kde-format
+msgid "Teletext PID:"
+msgstr "Processidentifierare för teletext:"
+
+#: dvb/dvbconfigdialog.cpp:59
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Television"
+msgstr "Anpassa television"
+
+#: dvb/dvbconfigdialog.cpp:77
+#, kde-format
+msgid "Recording folder:"
+msgstr "Inspelningskatalog:"
+
+#: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
+#, kde-format
+msgid "Select Folder"
+msgstr "Välj katalog"
+
+#: dvb/dvbconfigdialog.cpp:89
+#, kde-format
+msgid "Time shift folder:"
+msgstr "Tidsförskjutningskatalog:"
+
+#: dvb/dvbconfigdialog.cpp:101
+#, kde-format
+msgid "xmltv file name (optional):"
+msgstr "xmltv-filnamn (valfritt):"
+
+#: dvb/dvbconfigdialog.cpp:109
+#, kde-format
+msgid "Add optional file to allow reading EPG data from xmltv files"
+msgstr ""
+"Lägg till valfri fil för att tillåta läsning av programtablå från xmltv-filer"
+
+#: dvb/dvbconfigdialog.cpp:113
+#, kde-format
+msgid "Disable parsing EPG data from MPEG-TS tables:"
+msgstr "Inaktivera tolkning av programtablå från MPEG-TS-tabeller:"
+
+#: dvb/dvbconfigdialog.cpp:115
+#, kde-format
+msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
+msgstr ""
+"Använd det här om programföretaget inte sänder ut tillförlitliga "
+"programtablåer"
+
+#: dvb/dvbconfigdialog.cpp:123
+#, kde-format
+msgid "Begin margin (minutes):"
+msgstr "Inledande marginal (minuter)"
+
+#: dvb/dvbconfigdialog.cpp:130
+#, kde-format
+msgid "End margin (minutes):"
+msgstr "Avslutande marginal (minuter)"
+
+#: dvb/dvbconfigdialog.cpp:137
+#, kde-format
+msgid "Naming style for recordings:"
+msgstr "Namngivningsstil för inspelningar:"
+
+#: dvb/dvbconfigdialog.cpp:141
+#, kde-format
+msgid ""
+"The following substitutions work: \"%year\" for year (YYYY) and the "
+"following: %month, %day, %hour, %min, %sec, %channel and %title"
+msgstr ""
+"Följande substitutioner fungerar: \"%year\" för år (ÅÅÅÅ) och de följande:"
+"%month, %day, %hour, %min, %sec, %channel och %title"
+
+#: dvb/dvbconfigdialog.cpp:153
+#, kde-format
+msgid "Action after recording finishes:"
+msgstr "Åtgärd efter inspelningen är klar:"
+
+#: dvb/dvbconfigdialog.cpp:157
+#, kde-format
+msgid "Leave empty for no command."
+msgstr "Lämna tom för inget kommando."
+
+#: dvb/dvbconfigdialog.cpp:163
+#, kde-format
+msgid "Use ISO 8859-1 charset instead of ISO 6937:"
+msgstr "Använd ISO 8859-1 teckenuppsättning istället för ISO 6937:"
+
+#: dvb/dvbconfigdialog.cpp:170
+#, kde-format
+msgid "Create info files to accompany EPG recordings:"
+msgstr "Skapa informationsfiler att åtfölja inspelningar från programtablå:"
+
+#: dvb/dvbconfigdialog.cpp:179
+#, kde-format
+msgid "Scan channels when idle to fetch fresh EPG data:"
+msgstr ""
+"Sök igenom kanaler vid inaktivitet för att hämta aktuell data för "
+"programtablå:"
+
+#: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
+#, kde-format
+msgid "Scan data last updated on %1"
+msgstr "Sökdata senast uppdaterat den %1"
+
+#: dvb/dvbconfigdialog.cpp:193
+#, kde-format
+msgid "Update Scan Data over Internet"
+msgstr "Uppdatera sökdata via Internet"
+
+#: dvb/dvbconfigdialog.cpp:197
+#, kde-format
+msgid "Edit Scanfile"
+msgstr "Redigera sökdatafil"
+
+#: dvb/dvbconfigdialog.cpp:200
+#, kde-format
+msgid "You can add channels manually to this file before scanning for them."
+msgstr ""
+"Du kan lägga till kanaler för hand i den här filen innan du söker efter dem."
+
+#: dvb/dvbconfigdialog.cpp:217
+#, kde-format
+msgid "General Options"
+msgstr "Allmänna alternativ"
+
+#: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
+#, kde-format
+msgid "Automatic Recording"
+msgstr "Automatisk inspelning"
+
+#: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
+#: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
+#: dvb/dvbconfigdialog.cpp:543 dvb/dvbconfigdialog.cpp:567
+#, kde-format
+msgid "Device %1"
+msgstr "Mottagare %1"
+
+#: dvb/dvbconfigdialog.cpp:387
+#, kde-format
+msgctxt "@action"
+msgid "Add new Regex"
+msgstr "Lägg till nytt reguljärt uttryck"
+
+#: dvb/dvbconfigdialog.cpp:394
+#, kde-format
+msgid "Add another regular expression."
+msgstr "Lägg till ett annat reguljärt uttryck."
+
+#: dvb/dvbconfigdialog.cpp:398
+#, kde-format
+msgctxt "@action"
+msgid "Remove Regex"
+msgstr "Ta bort reguljärt uttryck"
+
+#: dvb/dvbconfigdialog.cpp:404
+#, kde-format
+msgid "Remove checked regular expressions."
+msgstr "Ta bort markerade reguljära uttryck."
+
+#: dvb/dvbconfigdialog.cpp:618
+#, kde-format
+msgid "Update Scan Data"
+msgstr "Uppdatera sökdata"
+
+#: dvb/dvbconfigdialog.cpp:637
+#, kde-format
+msgid "Downloading scan data"
+msgstr "Laddar ner sökdata"
+
+#: dvb/dvbconfigdialog.cpp:678
+#, kde-format
+msgid ""
+"Scan file is becoming bigger than %1 KB.\n"
+"Aborting, as something might be wrong...\n"
+msgstr ""
+"Sökdatafilen håller på att bli större än %1 KB.\n"
+"Avbryter, eftersom någonting kan vara fel...\n"
+
+#: dvb/dvbconfigdialog.cpp:701
+#, kde-format
+msgid ""
+"Scan data successfully updated. %1 KB received.\n"
+"Changes take effect after you have closed\n"
+"the configuration dialog."
+msgstr ""
+"Sökdata uppdaterad med lyckat resultat. %1 KiB\n"
+"mottagna. Ändringarna får effekt efter du har\n"
+"stängt inställningsdialogrutan."
+
+#: dvb/dvbconfigdialog.cpp:706
+#, kde-format
+msgid "Scan data update failed."
+msgstr "Uppdatering av sökdata misslyckades."
+
+#: dvb/dvbconfigdialog.cpp:715
+#, kde-format
+msgid "Name: %1"
+msgstr "Namn: %1"
+
+#: dvb/dvbconfigdialog.cpp:718
+#, kde-format
+msgid "Move Left"
+msgstr "Flytta åt vänster"
+
+#: dvb/dvbconfigdialog.cpp:723
+#, kde-format
+msgid "Reset"
+msgstr "Återställ"
+
+#: dvb/dvbconfigdialog.cpp:733
+#, kde-format
+msgid "Move Right"
+msgstr "Flytta åt höger"
+
+#: dvb/dvbconfigdialog.cpp:739
+#, kde-format
+msgid "Device not connected."
+msgstr "Mottagare inte ansluten."
+
+#: dvb/dvbconfigdialog.cpp:775
+#, kde-format
+msgid "DVB-C"
+msgstr "DVB-C"
+
+#: dvb/dvbconfigdialog.cpp:791
+#, kde-format
+msgid "DVB-S2"
+msgstr "DVB-S2"
+
+#: dvb/dvbconfigdialog.cpp:793
+#, kde-format
+msgid "DVB-S"
+msgstr "DVB-S"
+
+#: dvb/dvbconfigdialog.cpp:803
+#, kde-format
+msgid "DVB-T2"
+msgstr "DVB-T2"
+
+#: dvb/dvbconfigdialog.cpp:805
+#, kde-format
+msgid "DVB-T"
+msgstr "DVB-T"
+
+#: dvb/dvbconfigdialog.cpp:819
+#, kde-format
+msgid "ATSC"
+msgstr "ATSC"
+
+#: dvb/dvbconfigdialog.cpp:832 dvb/dvbconfigdialog.cpp:955
+#, kde-format
+msgid "ISDB-T"
+msgstr "ISDB-T"
+
+#: dvb/dvbconfigdialog.cpp:917
+#, kde-format
+msgid "Cable"
+msgstr "Kabel"
+
+#: dvb/dvbconfigdialog.cpp:926
+#, kde-format
+msgid "Terrestrial (T2)"
+msgstr "Markbunden (T2)"
+
+#: dvb/dvbconfigdialog.cpp:934
+#, kde-format
+msgid "Terrestrial"
+msgstr "Markbunden"
+
+#: dvb/dvbconfigdialog.cpp:943 dvb/dvbconfigdialog.cpp:957
+#, kde-format
+msgid "Autoscan"
+msgstr "Sök automatiskt"
+
+#: dvb/dvbconfigdialog.cpp:944
+#, kde-format
+msgid "Autoscan with 167 kHz Offsets"
+msgstr "Sök automatiskt med steg om 167 kHz"
+
+#: dvb/dvbconfigdialog.cpp:945
+#, kde-format
+msgid "Autoscan Australia"
+msgstr "Sök automatiskt i Australien"
+
+#: dvb/dvbconfigdialog.cpp:946
+#, kde-format
+msgid "Autoscan Italy"
+msgstr "Sök automatiskt i Italien"
+
+#: dvb/dvbconfigdialog.cpp:947
+#, kde-format
+msgid "Autoscan Taiwan"
+msgstr "Sök automatiskt i Taiwan"
+
+#: dvb/dvbconfigdialog.cpp:950
+#, kde-format
+msgid "Atsc"
+msgstr "ATSC"
+
+#: dvb/dvbconfigdialog.cpp:966 dvb/dvbconfigdialog.cpp:1095
+#, kde-format
+msgid "Tuner timeout (ms):"
+msgstr "Mottagarens tidsgräns (ms):"
+
+#: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
+#, kde-format
+msgid "Source:"
+msgstr "Källa:"
+
+#: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
+#, kde-format
+msgid "No Source"
+msgstr "Ingen källa"
+
+#: dvb/dvbconfigdialog.cpp:984
+#, kde-format
+msgid "Name:"
+msgstr "Namn:"
+
+#: dvb/dvbconfigdialog.cpp:1103
+#, kde-format
+msgid "Use Higher LNBf voltage:"
+msgstr "Använd högre LNBf-spänning:"
+
+#: dvb/dvbconfigdialog.cpp:1109
+#, kde-format
+msgid ""
+"On some DVB devices, there's an extra control that allows to increase the \n"
+"voltage sent to LNBf, in order to compensate for cabling loss. This tri-"
+"state\n"
+"button defaults to not use it. It may be set to:\n"
+"- normal mode (unchecked);\n"
+"- higher voltage mode (checked);\n"
+"- tristate (don't send the control)."
+msgstr ""
+"För vissa DVB-mottagare finns en extra inställning som gör det möjligt att "
+"öka\n"
+"spänningen som skickas till LNBf för att kompensera kabelförluster. Den här\n"
+"trelägesknappen är normalt inställd att inte använda den. Den kan ställas in "
+"till:\n"
+"- normalläge (avmarkerad),\n"
+"- högre spänningsläge (markerad),\n"
+"- oansluten (påverka inte inställningen)."
+
+#: dvb/dvbconfigdialog.cpp:1117
+#, kde-format
+msgid "Configuration:"
+msgstr "Inställning:"
+
+#: dvb/dvbconfigdialog.cpp:1120
+#, kde-format
+msgid "DiSEqC Switch"
+msgstr "DiSEqC-omkopplare"
+
+#: dvb/dvbconfigdialog.cpp:1121
+#, kde-format
+msgid "USALS Rotor"
+msgstr "USALS-rotor"
+
+#: dvb/dvbconfigdialog.cpp:1122
+#, kde-format
+msgid "Positions Rotor"
+msgstr "Positionsrotor"
+
+#: dvb/dvbconfigdialog.cpp:1123
+#, kde-format
+msgid "Disable DiSEqC"
+msgstr "Inaktivera DiSEqC"
+
+#: dvb/dvbconfigdialog.cpp:1141
+#, kde-format
+msgid "LNB %1 Settings"
+msgstr "Inställningar av LNB %1"
+
+#: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
+#, kde-format
+msgid "LNB Settings"
+msgstr "Inställningar av LNB"
+
+#: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
+#, kde-format
+msgid "Add Satellite"
+msgstr "Lägg till satellit"
+
+#: dvb/dvbconfigdialog.cpp:1211
+#, kde-format
+msgid "Satellite"
+msgstr "Satellit"
+
+#: dvb/dvbconfigdialog.cpp:1211
+#, kde-format
+msgid "Position"
+msgstr "Position"
+
+#: dvb/dvbconfigdialog.cpp:1228
+#, kde-format
+msgid "Remove Satellite"
+msgstr "Ta bort satellit"
+
+#: dvb/dvbconfigdialog.cpp:1241
+#, kde-format
+msgid "Your position:"
+msgstr "Din position:"
+
+#: dvb/dvbconfigdialog.cpp:1246
+#, kde-format
+msgid "Latitude:"
+msgstr "Latitud:"
+
+#: dvb/dvbconfigdialog.cpp:1251
+#, kde-format
+msgid "[S -90 ... 90 N]"
+msgstr "[S -90 ... 90 N]"
+
+#: dvb/dvbconfigdialog.cpp:1269
+#, kde-format
+msgid "Longitude:"
+msgstr "Longitud:"
+
+#: dvb/dvbconfigdialog.cpp:1274
+#, kde-format
+msgid "[W -180 ... 180 E]"
+msgstr "[V -180 ... 180 Ö]"
+
+#: dvb/dvbconfigdialog.cpp:1623
+#, kde-format
+msgid "Low frequency (KHz)"
+msgstr "Låg frekvens (kHz)"
+
+#: dvb/dvbconfigdialog.cpp:1631
+#, kde-format
+msgid "High frequency (MHz)"
+msgstr "Hög frekvens (MHz)"
+
+#: dvb/dvbconfigdialog.cpp:1639
+#, kde-format
+msgid "Switch frequency (MHz)"
+msgstr "Bytesfrekvens (MHz)"
+
+#: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
+#, kde-format
+msgid "Low range: %1 MHz to %2 MHz"
+msgstr "Lågt intervall: %1 MHz till %2 MHz"
+
+#: dvb/dvbconfigdialog.cpp:1700
+#, kde-format
+msgid "Bandstacked"
+msgstr "bandöverlagrad"
+
+#: dvb/dvbconfigdialog.cpp:1704
+#, kde-format
+msgid "High range: %1 MHz to %2 MHz"
+msgstr "Högt intervall: %1 MHz till %2 MHz"
+
+#: dvb/dvbepg.cpp:647
+#, kde-format
+msgid "Detective"
+msgstr "Deckare"
+
+#: dvb/dvbepg.cpp:648
+#, kde-format
+msgid "Adventure"
+msgstr "Äventyr"
+
+#: dvb/dvbepg.cpp:649
+#, kde-format
+msgid "Science Fiction"
+msgstr "Science Fiction"
+
+#: dvb/dvbepg.cpp:650
+#, kde-format
+msgid "Comedy"
+msgstr "Komedi"
+
+#: dvb/dvbepg.cpp:651
+#, kde-format
+msgid "Soap"
+msgstr "Tvålopera"
+
+#: dvb/dvbepg.cpp:652
+#, kde-format
+msgid "Romance"
+msgstr "Romantik"
+
+#: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
+#, kde-format
+msgid "Classical"
+msgstr "Klassisk"
+
+#: dvb/dvbepg.cpp:654
+#, kde-format
+msgid "Adult"
+msgstr "Barnförbjuden"
+
+#: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:790
+#, kde-format
+msgid "User defined"
+msgstr "Användardefinierad"
+
+#: dvb/dvbepg.cpp:660
+#, kde-format
+msgid "Weather"
+msgstr "Väder"
+
+#: dvb/dvbepg.cpp:661 dvb/dvbepg.cpp:678 dvb/dvbepg.cpp:723 dvb/dvbepg.cpp:730
+#, kde-format
+msgid "Magazine"
+msgstr "Magasin"
+
+#: dvb/dvbepg.cpp:662 dvb/dvbepg.cpp:822
+#, kde-format
+msgid "Documentary"
+msgstr "Dokumentär"
+
+#: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:858
+#, kde-format
+msgid "Discussion"
+msgstr "Diskussion"
+
+#: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:688 dvb/dvbepg.cpp:698
+#: dvb/dvbepg.cpp:709 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:733 dvb/dvbepg.cpp:745
+#: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:766
+#, kde-format
+msgid "User Defined"
+msgstr "Användardefinierad"
+
+#: dvb/dvbepg.cpp:669
+#, kde-format
+msgid "Quiz"
+msgstr "Frågesport"
+
+#: dvb/dvbepg.cpp:670 dvb/dvbepg.cpp:800
+#, kde-format
+msgid "Variety"
+msgstr "Revy"
+
+#: dvb/dvbepg.cpp:671
+#, kde-format
+msgid "Talk"
+msgstr "Pratprogram"
+
+#: dvb/dvbepg.cpp:677
+#, kde-format
+msgid "Events"
+msgstr "Händelser"
+
+#: dvb/dvbepg.cpp:679
+#, kde-format
+msgid "Football"
+msgstr "Fotboll"
+
+#: dvb/dvbepg.cpp:680
+#, kde-format
+msgid "Tennis"
+msgstr "Tennis"
+
+#: dvb/dvbepg.cpp:681
+#, kde-format
+msgid "Team"
+msgstr "Lagsport"
+
+#: dvb/dvbepg.cpp:682
+#, kde-format
+msgid "Athletics"
+msgstr "Friidrott"
+
+#: dvb/dvbepg.cpp:683
+#, kde-format
+msgid "Motor"
+msgstr "Motorsport"
+
+#: dvb/dvbepg.cpp:684
+#, kde-format
+msgid "Water"
+msgstr "Vattensport"
+
+#: dvb/dvbepg.cpp:685
+#, kde-format
+msgid "Winter"
+msgstr "Vintersport"
+
+#: dvb/dvbepg.cpp:686
+#, kde-format
+msgid "Equestrian"
+msgstr "Hästsport"
+
+#: dvb/dvbepg.cpp:687
+#, kde-format
+msgid "Martial"
+msgstr "Kampsport"
+
+#: dvb/dvbepg.cpp:693
+#, kde-format
+msgid "Preschool"
+msgstr "Barnprogram"
+
+#: dvb/dvbepg.cpp:694
+#, kde-format
+msgid "06 to 14"
+msgstr "6 till 14"
+
+#: dvb/dvbepg.cpp:695
+#, kde-format
+msgid "10 to 16"
+msgstr "10 till 16"
+
+#: dvb/dvbepg.cpp:696
+#, kde-format
+msgid "Educational"
+msgstr "Utbildning"
+
+#: dvb/dvbepg.cpp:697
+#, kde-format
+msgid "Cartoons"
+msgstr "Tecknat"
+
+#: dvb/dvbepg.cpp:703
+#, kde-format
+msgid "Poprock"
+msgstr "Pop och rock"
+
+#: dvb/dvbepg.cpp:705
+#, kde-format
+msgid "Folk"
+msgstr "Folkmusik"
+
+#: dvb/dvbepg.cpp:706
+#, kde-format
+msgid "Jazz"
+msgstr "Jazz"
+
+#: dvb/dvbepg.cpp:707
+#, kde-format
+msgid "Opera"
+msgstr "Opera"
+
+#: dvb/dvbepg.cpp:708
+#, kde-format
+msgid "Ballet"
+msgstr "Balett"
+
+#: dvb/dvbepg.cpp:714
+#, kde-format
+msgid "Performance"
+msgstr "Uppträdande"
+
+#: dvb/dvbepg.cpp:715
+#, kde-format
+msgid "Fine Arts"
+msgstr "Konst"
+
+#: dvb/dvbepg.cpp:716 dvb/dvbepg.cpp:865
+#, kde-format
+msgid "Religion"
+msgstr "Religion"
+
+#: dvb/dvbepg.cpp:717
+#, kde-format
+msgid "Traditional"
+msgstr "Traditionell"
+
+#: dvb/dvbepg.cpp:718
+#, kde-format
+msgid "Literature"
+msgstr "Litteratur"
+
+#: dvb/dvbepg.cpp:719
+#, kde-format
+msgid "Cinema"
+msgstr "Filmprogram"
+
+#: dvb/dvbepg.cpp:720
+#, kde-format
+msgid "Experimental"
+msgstr "Experimentell"
+
+#: dvb/dvbepg.cpp:721
+#, kde-format
+msgid "Press"
+msgstr "Press"
+
+#: dvb/dvbepg.cpp:722
+#, kde-format
+msgid "New Media"
+msgstr "Ny media"
+
+#: dvb/dvbepg.cpp:724 dvb/dvbepg.cpp:843
+#, kde-format
+msgid "Fashion"
+msgstr "Mode"
+
+#: dvb/dvbepg.cpp:731
+#, kde-format
+msgid "Advisory"
+msgstr "Rådgivning"
+
+#: dvb/dvbepg.cpp:732
+#, kde-format
+msgid "People"
+msgstr "Familj"
+
+#: dvb/dvbepg.cpp:738
+#, kde-format
+msgid "Nature"
+msgstr "Natur"
+
+#: dvb/dvbepg.cpp:739
+#, kde-format
+msgid "Technology"
+msgstr "Teknologi"
+
+#: dvb/dvbepg.cpp:740
+#, kde-format
+msgid "Medicine"
+msgstr "Medicin"
+
+#: dvb/dvbepg.cpp:741
+#, kde-format
+msgid "Foreign"
+msgstr "Utländsk"
+
+#: dvb/dvbepg.cpp:742 dvb/dvbepg.cpp:783
+#, kde-format
+msgid "Social"
+msgstr "Samhälle"
+
+#: dvb/dvbepg.cpp:743
+#, kde-format
+msgid "Further"
+msgstr "Vidare"
+
+#: dvb/dvbepg.cpp:744
+#, kde-format
+msgid "Language"
+msgstr "Språk"
+
+#: dvb/dvbepg.cpp:750 dvb/dvbepg.cpp:846
+#, kde-format
+msgid "Travel"
+msgstr "Resor"
+
+#: dvb/dvbepg.cpp:751
+#, kde-format
+msgid "Handicraft"
+msgstr "Hantverk"
+
+#: dvb/dvbepg.cpp:752
+#, kde-format
+msgid "Motoring"
+msgstr "Motorprogram"
+
+#: dvb/dvbepg.cpp:753
+#, kde-format
+msgid "Fitness"
+msgstr "Hälsa"
+
+#: dvb/dvbepg.cpp:754 dvb/dvbepg.cpp:842
+#, kde-format
+msgid "Cooking"
+msgstr "Matlagning"
+
+#: dvb/dvbepg.cpp:755
+#, kde-format
+msgid "Shopping"
+msgstr "Shopping"
+
+#: dvb/dvbepg.cpp:756
+#, kde-format
+msgid "Gardening"
+msgstr "Trädgårdsskötsel"
+
+#: dvb/dvbepg.cpp:761 iso-codes.cpp:125 iso-codes.cpp:155
+#, kde-format
+msgid "Original Language"
+msgstr "Originalspråk"
+
+#: dvb/dvbepg.cpp:762
+#, kde-format
+msgid "Black and White "
+msgstr "Svartvitt"
+
+#: dvb/dvbepg.cpp:763
+#, kde-format
+msgid "Unpublished"
+msgstr "Opublicerad"
+
+#: dvb/dvbepg.cpp:764
+#, kde-format
+msgid "Live"
+msgstr "Direktsändning"
+
+#: dvb/dvbepg.cpp:765
+#, kde-format
+msgid "Planostereoscopic"
+msgstr "Stereoskopisk"
+
+#: dvb/dvbepg.cpp:767
+#, kde-format
+msgid "User Defined 1"
+msgstr "Användardefinierad 1"
+
+#: dvb/dvbepg.cpp:768
+#, kde-format
+msgid "User Defined 2"
+msgstr "Användardefinierad 2"
+
+#: dvb/dvbepg.cpp:769
+#, kde-format
+msgid "User Defined 3"
+msgstr "Användardefinierad 3"
+
+#: dvb/dvbepg.cpp:770
+#, kde-format
+msgid "User Defined 4"
+msgstr "Användardefinierad 4"
+
+#: dvb/dvbepg.cpp:775
+#, kde-format
+msgid "Undefined"
+msgstr "Odefinierad"
+
+#: dvb/dvbepg.cpp:776 dvb/dvbepg.cpp:806
+#, kde-format
+msgid "Movie"
+msgstr "Film"
+
+#: dvb/dvbepg.cpp:777 dvb/dvbepg.cpp:794 dvb/dvbepg.cpp:820
+#, kde-format
+msgid "News"
+msgstr "Nyheter"
+
+#: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:834
+#, kde-format
+msgid "Show"
+msgstr "Show"
+
+#: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:795
+#, kde-format
+msgid "Sports"
+msgstr "Sport"
+
+#: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:804
+#, kde-format
+msgid "Children"
+msgstr "Barnprogram"
+
+#: dvb/dvbepg.cpp:781
+#, kde-format
+msgid "Music"
+msgstr "Musik"
+
+#: dvb/dvbepg.cpp:782
+#, kde-format
+msgid "Culture"
+msgstr "Kultur"
+
+#: dvb/dvbepg.cpp:784 dvb/dvbepg.cpp:796
+#, kde-format
+msgid "Education"
+msgstr "Utbildning"
+
+#: dvb/dvbepg.cpp:785
+#, kde-format
+msgid "Leisure"
+msgstr "Fritid"
+
+#: dvb/dvbepg.cpp:786
+#, kde-format
+msgid "Special"
+msgstr "Specialprogram"
+
+#: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
+#, kde-format
+msgid "Reserved"
+msgstr "Reserverad"
+
+#: dvb/dvbepg.cpp:797
+#, kde-format
+msgid "Soap opera"
+msgstr "Tvålopera"
+
+#: dvb/dvbepg.cpp:798
+#, kde-format
+msgid "Mini-series"
+msgstr "Miniserier"
+
+#: dvb/dvbepg.cpp:799
+#, kde-format
+msgid "Series"
+msgstr "Serier"
+
+#: dvb/dvbepg.cpp:801
+#, kde-format
+msgid "Reality show"
+msgstr "Dokusåpa"
+
+#: dvb/dvbepg.cpp:802
+#, kde-format
+msgid "Information"
+msgstr "Information"
+
+#: dvb/dvbepg.cpp:803
+#, kde-format
+msgid "Comical"
+msgstr "Komedi"
+
+#: dvb/dvbepg.cpp:805
+#, kde-format
+msgid "Erotic"
+msgstr "Erotik"
+
+#: dvb/dvbepg.cpp:807
+#, kde-format
+msgid "Raffle, television sales, prizing"
+msgstr "Lotteri, tv-försäljning, pris"
+
+#: dvb/dvbepg.cpp:808
+#, kde-format
+msgid "Debate/interview"
+msgstr "Debatt eller intervju"
+
+#: dvb/dvbepg.cpp:809
+#, kde-format
+msgid "Other"
+msgstr "Annat"
+
+#: dvb/dvbepg.cpp:821
+#, kde-format
+msgid "Report"
+msgstr "Rapport"
+
+#: dvb/dvbepg.cpp:823
+#, kde-format
+msgid "Biography"
+msgstr "Biografi"
+
+#: dvb/dvbepg.cpp:827
+#, kde-format
+msgid "Educative"
+msgstr "Bildning"
+
+#: dvb/dvbepg.cpp:833
+#, kde-format
+msgid "Auditorium"
+msgstr "Möte"
+
+#: dvb/dvbepg.cpp:835
+#, kde-format
+msgid "Musical"
+msgstr "Musikal"
+
+#: dvb/dvbepg.cpp:836
+#, kde-format
+msgid "Making of"
+msgstr "Inspelningsdokumentär"
+
+#: dvb/dvbepg.cpp:837
+#, kde-format
+msgid "Feminine"
+msgstr "Kvinnlig"
+
+#: dvb/dvbepg.cpp:838
+#, kde-format
+msgid "Game show"
+msgstr "Lekprogram"
+
+#: dvb/dvbepg.cpp:844
+#, kde-format
+msgid "Country"
+msgstr "Lantlig"
+
+#: dvb/dvbepg.cpp:845
+#, kde-format
+msgid "Health"
+msgstr "Hälsoprogram"
+
+#: dvb/dvbepg.cpp:853
+#, kde-format
+msgid "Raffle"
+msgstr "Lotteri"
+
+#: dvb/dvbepg.cpp:854
+#, kde-format
+msgid "Television sales"
+msgstr "Tv-försäljning"
+
+#: dvb/dvbepg.cpp:855
+#, kde-format
+msgid "Prizing"
+msgstr "Pris"
+
+#: dvb/dvbepg.cpp:859
+#, kde-format
+msgid "Interview"
+msgstr "Intervju"
+
+#: dvb/dvbepg.cpp:862
+#, kde-format
+msgid "Adult cartoon"
+msgstr "Vuxenserie"
+
+#: dvb/dvbepg.cpp:863
+#, kde-format
+msgid "Interactive"
+msgstr "Interaktiv"
+
+#: dvb/dvbepg.cpp:864
+#, kde-format
+msgid "Policy"
+msgstr "Politik"
+
+#: dvb/dvbepg.cpp:897
+#, no-c-format, kde-format
+msgid "Genre: %1"
+msgstr "Genre: %1"
+
+#: dvb/dvbepg.cpp:904
+#, kde-format
+msgid "reserved"
+msgstr "reserverad"
+
+#: dvb/dvbepg.cpp:905
+#, kde-format
+msgid "all audiences"
+msgstr "all publik"
+
+#: dvb/dvbepg.cpp:906
+#, kde-format
+msgid "10 years"
+msgstr "10 år"
+
+#: dvb/dvbepg.cpp:907
+#, kde-format
+msgid "12 years"
+msgstr "12 år"
+
+#: dvb/dvbepg.cpp:908
+#, kde-format
+msgid "14 years"
+msgstr "14 år"
+
+#: dvb/dvbepg.cpp:909
+#, kde-format
+msgid "16 years"
+msgstr "16 år"
+
+#: dvb/dvbepg.cpp:910
+#, kde-format
+msgid "18 years"
+msgstr "18 år"
+
+#: dvb/dvbepg.cpp:933
+#, no-c-format, kde-format
+msgid "Country %1: not rated\n"
+msgstr "Land %1: oklassificerad\n"
+
+#: dvb/dvbepg.cpp:945
+#, kde-format
+msgid "violence / "
+msgstr "våld, "
+
+#: dvb/dvbepg.cpp:947
+#, kde-format
+msgid "sex / "
+msgstr "sex, "
+
+#: dvb/dvbepg.cpp:949
+#, kde-format
+msgid "drugs / "
+msgstr "droger,"
+
+#: dvb/dvbepg.cpp:957
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2%3\n"
+msgstr "Land %1: klassificering: %2%3\n"
+
+#: dvb/dvbepg.cpp:960
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2 years.\n"
+msgstr "Land %1: klassificering: %2 år\n"
+
+#: dvb/dvbepgdialog.cpp:46
+#, kde-format
+msgctxt "@title:window"
+msgid "Program Guide"
+msgstr "Programtablå"
+
+#: dvb/dvbepgdialog.cpp:73
+#, kde-format
+msgid "EPG language:"
+msgstr "Språk för programtablå:"
+
+#: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
+#, kde-format
+msgid "Any language"
+msgstr "Vilket språk som helst"
+
+#: dvb/dvbepgdialog.cpp:112
+#, kde-format
+msgid "Show channels with empty EPG data"
+msgstr "Visa kanaler med tom programtablå"
+
+#: dvb/dvbepgdialog.cpp:119
+#, kde-format
+msgctxt "@action:inmenu tv show"
+msgid "Record Show"
+msgstr "Spela in program"
+
+#: dvb/dvbepgdialog.cpp:127
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Search:"
+msgstr "Sök:"
+
+#: dvb/dvbepgdialog.cpp:477 dvb/dvbrecordingdialog.cpp:258
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Start"
+msgstr "Starta"
+
+#: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Duration"
+msgstr "Tidslängd"
+
+#: dvb/dvbepgdialog.cpp:481
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Title"
+msgstr "Titel"
+
+#: dvb/dvbliveview.cpp:197
+#, kde-format
+msgctxt "@info"
+msgid "All devices are used for recordings."
+msgstr "Alla mottagare används för inspelningar."
+
+#: dvb/dvbliveview.cpp:201
+#, kde-format
+msgctxt "@info"
+msgid ""
+"Didn't find a device with valid settings or access permissions are wrong.\n"
+"\n"
+"Please check the Configure Television window."
+msgstr ""
+"Hittade inte en enhet med giltiga inställningar, eller är åtkomsträttigheter "
+"felaktiga.\n"
+"\n"
+"Kontrollera fönstret Anpassa television."
+
+#: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
+#, kde-format
+msgctxt "message box"
+msgid "No available device found."
+msgstr "Ingen tillgänglig mottagare hittades."
+
+#: dvb/dvbrecordingdialog.cpp:45
+#, kde-format
+msgctxt "@title:window"
+msgid "Recording Schedule"
+msgstr "Inspelningsschema"
+
+#: dvb/dvbrecordingdialog.cpp:70
+#, kde-format
+msgctxt "@action"
+msgid "New"
+msgstr "Ny"
+
+#: dvb/dvbrecordingdialog.cpp:254
+#, kde-format
+msgctxt "@title:column recording"
+msgid "Name"
+msgstr "Namn"
+
+#: dvb/dvbrecordingdialog.cpp:262
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Disabled"
+msgstr "Inaktiverad"
+
+#: dvb/dvbrecordingdialog.cpp:307
+#, kde-format
+msgid "Disabled"
+msgstr "Inaktiverad"
+
+#: dvb/dvbrecordingdialog.cpp:309
+#, kde-format
+msgid "Enabled"
+msgstr "Aktiverad"
+
+#: dvb/dvbrecordingdialog.cpp:384
+#, kde-format
+msgctxt "@title:window recording"
+msgid "Edit Schedule Entry"
+msgstr "Redigera post i schemat"
+
+#: dvb/dvbrecordingdialog.cpp:394
+#, kde-format
+msgctxt "@label recording"
+msgid "Name:"
+msgstr "Namn:"
+
+#: dvb/dvbrecordingdialog.cpp:408
+#, kde-format
+msgctxt "@label tv show"
+msgid "Channel:"
+msgstr "Kanal:"
+
+#: dvb/dvbrecordingdialog.cpp:420
+#, kde-format
+msgctxt "@label tv show"
+msgid "Start:"
+msgstr "Start:"
+
+#: dvb/dvbrecordingdialog.cpp:430
+#, kde-format
+msgctxt "@label tv show"
+msgid "Duration:"
+msgstr "Längd:"
+
+#: dvb/dvbrecordingdialog.cpp:441
+#, kde-format
+msgctxt "@label tv show"
+msgid "End:"
+msgstr "Slut:"
+
+#: dvb/dvbrecordingdialog.cpp:446
+#, kde-format
+msgctxt "@label recording"
+msgid "Repeat:"
+msgstr "Upprepa:"
+
+#: dvb/dvbrecordingdialog.cpp:450
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Never"
+msgstr "Aldrig"
+
+#: dvb/dvbrecordingdialog.cpp:454
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Daily"
+msgstr "Dagligen"
+
+#: dvb/dvbscandialog.cpp:87
+#, kde-format
+msgid "%1"
+msgstr "%1"
+
+#: dvb/dvbscandialog.cpp:237
+#, kde-format
+msgid "Provider"
+msgstr "Leverantör"
+
+#: dvb/dvbscandialog.cpp:239
+#, kde-format
+msgid "SNR"
+msgstr "Signal/brus"
+
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#, kde-format
+msgid "Channels"
+msgstr "Kanaler"
+
+#: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:414
+#, kde-format
+msgctxt "remove all items from a list"
+msgid "Clear"
+msgstr "Rensa"
+
+#: dvb/dvbscandialog.cpp:298
+#, kde-format
+msgid "Channel Scan"
+msgstr "Kanalsökning"
+
+#: dvb/dvbscandialog.cpp:306
+#, kde-format
+msgid "Search transponders for other Networks"
+msgstr "Sök igenom transpondrar efter andra nätverk"
+
+#: dvb/dvbscandialog.cpp:307
+#, kde-format
+msgid ""
+"On certain networks, it is possible that some transponders are encoded on "
+"separate Network Information Tables (other NITs). This is more common on DVB-"
+"C systems. Clicking on this icon will change the scan algorithm to take "
+"those other NIT data into account. Please notice that the scan will be a lot "
+"more slow if enabled."
+msgstr ""
+"För vissa nätverk är det möjligt att en del transpondrar är kodade i "
+"separata nätverksinformationstabeller (annan NIT). Det är vanligare för DVB-"
+"C system. Att klicka på ikonen ändrar sökalgoritmen så att andra NIT tas "
+"hänsyn till. Observera att sökningen är mycket långsammare om det är "
+"aktiverat."
+
+#: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
+#, kde-format
+msgid "Start Scan"
+msgstr "Starta sökning"
+
+#: dvb/dvbscandialog.cpp:322
+#, kde-format
+msgid "Signal:"
+msgstr "Signal:"
+
+#: dvb/dvbscandialog.cpp:327
+#, kde-format
+msgid "SNR:"
+msgstr "Signal/brus:"
+
+#: dvb/dvbscandialog.cpp:332
+#, kde-format
+msgid "Tuned:"
+msgstr "Inställd:"
+
+#: dvb/dvbscandialog.cpp:345
+#, kde-format
+msgid "Filter"
+msgstr "Filter"
+
+#: dvb/dvbscandialog.cpp:348
+#, kde-format
+msgid "Free to air"
+msgstr "Fri utsändning"
+
+#: dvb/dvbscandialog.cpp:351
+#, kde-format
+msgid "Radio"
+msgstr "Radio"
+
+#: dvb/dvbscandialog.cpp:354
+#, kde-format
+msgid "TV"
+msgstr "Tv"
+
+#: dvb/dvbscandialog.cpp:357
+#, kde-format
+msgid "Provider:"
+msgstr "Leverantör:"
+
+#: dvb/dvbscandialog.cpp:365
+#, kde-format
+msgid "Add Filtered"
+msgstr "Lägg till filtrerad"
+
+#: dvb/dvbscandialog.cpp:369
+#, kde-format
+msgid "Add Selected"
+msgstr "Lägg till markerad"
+
+#: dvb/dvbscandialog.cpp:375
+#, kde-format
+msgid "Scan Results"
+msgstr "Sökresultat"
+
+#: dvb/dvbscandialog.cpp:391
+#, kde-format
+msgid "Current Transponder"
+msgstr "Nuvarande transponder"
+
+#: dvb/dvbscandialog.cpp:473
+#, kde-format
+msgid "Stop Scan"
+msgstr "Stoppa sökning"
+
+#: dvb/dvbtab.cpp:97
+#, kde-format
+msgid "Program Guide"
+msgstr "Programtablå"
+
+#: dvb/dvbtab.cpp:102
+#, kde-format
+msgid "OSD"
+msgstr "Skärmvisning"
+
+#: dvb/dvbtab.cpp:108
+#, kde-format
+msgctxt "dialog"
+msgid "Recording Schedule"
+msgstr "Inspelningsschema"
+
+#: dvb/dvbtab.cpp:115
+#, kde-format
+msgid "Instant Record"
+msgstr "Snabbinspelning"
+
+#: dvb/dvbtab.cpp:123
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Configure Television..."
+msgstr "Anpassa television..."
+
+#: dvb/dvbtab.cpp:143
+#, kde-format
+msgid "Search:"
+msgstr "Sök:"
+
+#: dvb/dvbtab.cpp:374
+#, kde-format
+msgctxt "osd"
+msgid "Channel: %1_"
+msgstr "Kanal: %1_"
+
+#: dvb/dvbtab.cpp:391
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine is currently recording programs.\n"
+"Do you really want to close the application?"
+msgstr ""
+"Kaffeine spelar för närvarande in program.\n"
+"Vill du verkligen avsluta programmet?"
+
+#: dvb/dvbtab.cpp:414
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine has scheduled recordings.\n"
+"Do you really want to close the application?"
+msgstr ""
+"Kaffeine har schemalagda inspelningar.\n"
+"Vill du verkligen avsluta programmet?"
+
+#: dvb/dvbtab.cpp:487
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Started"
+msgstr "Snabbinspelning startad"
+
+#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Stopped"
+msgstr "Snabbinspelning stoppad"
+
+#: dvb/xmltv.cpp:212
+#, kde-format
+msgctxt "%1 is a person; %2 is their character"
+msgid "%1 as %2"
+msgstr "%1 som %2"
+
+#: dvb/xmltv.cpp:222
+#, kde-format
+msgid "Director(s)"
+msgstr "Regissör(er)"
+
+#: dvb/xmltv.cpp:224
+#, kde-format
+msgid "Actor(s)"
+msgstr "Skådespelare"
+
+#: dvb/xmltv.cpp:226
+#, kde-format
+msgid "Writer(s)"
+msgstr "Författare"
+
+#: dvb/xmltv.cpp:228
+#, kde-format
+msgid "Adapter(s)"
+msgstr "Bearbetare"
+
+#: dvb/xmltv.cpp:230
+#, kde-format
+msgid "Producer(s)"
+msgstr "Producent(er)"
+
+#: dvb/xmltv.cpp:232
+#, kde-format
+msgid "Composer(s)"
+msgstr "Tonsättare"
+
+#: dvb/xmltv.cpp:234
+#, kde-format
+msgid "Editor(s)"
+msgstr "Redaktör(er)"
+
+#: dvb/xmltv.cpp:236
+#, kde-format
+msgid "Presenter(s)"
+msgstr "Presentatör(er)"
+
+#: dvb/xmltv.cpp:238
+#, kde-format
+msgid "Commentator(s)"
+msgstr "Kommentator(er)"
+
+#: dvb/xmltv.cpp:240
+#, kde-format
+msgid "Guest(s)"
+msgstr "Gäst(er)"
+
+#: dvb/xmltv.cpp:244
+#, kde-format
+msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
+msgid "%1: %2\n"
+msgstr "%1: %2\n"
+
+#: dvb/xmltv.cpp:377
+#, kde-format
+msgid "rating: %1"
+msgstr "Betyg: %1"
+
+#: dvb/xmltv.cpp:451
+#, kde-format
+msgid "Season %1"
+msgstr "Säsong %1"
+
+#: dvb/xmltv.cpp:454
+#, kde-format
+msgid " Episode %1"
+msgstr " Avsnitt %1"
+
+#: dvb/xmltv.cpp:485
+#, kde-format
+msgid "Star rating: %1"
+msgstr "Stjärnor: %1"
+
+#: dvb/xmltv.cpp:491
+#, kde-format
+msgid "Date: %1"
+msgstr "Datum: %1"
+
+#: dvb/xmltv.cpp:495
+#, kde-format
+msgid "Category: %1"
+msgstr "Kategori: %1"
+
+#: dvb/xmltv.cpp:509
+#, kde-format
+msgid "Keyword: %1"
+msgstr "Nyckelord: %1"
+
+#: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
+#, kde-format
+msgid "language: %1"
+msgstr "Språk: %1"
+
+#: dvb/xmltv.cpp:538
+#, kde-format
+msgid "Original language: %1"
+msgstr "Originalspråk: %1"
+
+#: dvb/xmltv.cpp:544
+#, kde-format
+msgid "Country: %1"
+msgstr "Land: %1"
+
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
+#, kde-format
+msgid "Kaffeine"
+msgstr "Kaffeine"
+
+#: main.cpp:139
+#, kde-format
+msgid "A media player by KDE with digital TV support."
+msgstr "En mediaspelare av KDE med stöd för digital-tv."
+
+#: main.cpp:143
+#, kde-format
+msgid "(C) 2007-2019 The Kaffeine Authors."
+msgstr "© 2007-2019 Upphovsmännen till Kaffeine"
+
+#: main.cpp:161
+#, kde-format
+msgid "Maintainer"
+msgstr "Underhåll"
+
+#: main.cpp:166
+#, kde-format
+msgid "Previous maintainer (for versions 1.x)"
+msgstr "Föregående underhåll (för version 1.x)"
+
+#: main.cpp:170
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Stefan Asserhäll"
+
+#: main.cpp:171
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "stefan.asserhall@bredband.net"
+
+#: mainwindow.cpp:113
+#, kde-format
+msgid "&1 Play File"
+msgstr "&1 Spela fil"
+
+#: mainwindow.cpp:115
+#, kde-format
+msgid "Open dialog to play a file"
+msgstr "Visa dialogruta för att spela upp en fil"
+
+#: mainwindow.cpp:119
+#, kde-format
+msgid "&2 Play Audio CD"
+msgstr "&2 Spela ljudcd"
+
+#: mainwindow.cpp:121
+#, kde-format
+msgid ""
+"Start playing an audio CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr ""
+"Börja spela upp en ljud-cd. Det förutsätter att cd-skivan redan finns i cd-"
+"spelaren."
+
+#: mainwindow.cpp:125
+#, kde-format
+msgid "&3 Play Video CD"
+msgstr "&3 Spela video-cd"
+
+#: mainwindow.cpp:127
+#, kde-format
+msgid ""
+"Start playing a Video CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr ""
+"Börja spela upp en video-cd. Det förutsätter att cd-skivan redan finns i cd-"
+"spelaren."
+
+#: mainwindow.cpp:131
+#, kde-format
+msgid "&4 Play DVD"
+msgstr "&4 Spela dvd"
+
+#: mainwindow.cpp:133
+#, kde-format
+msgid ""
+"Start playing a DVD. It assumes that the DVD is already there at the DVD "
+"drive"
+msgstr ""
+"Börja spela upp en dvd. Det förutsätter att dvd-skivan redan finns i dvd-"
+"spelaren."
+
+#: mainwindow.cpp:138
+#, kde-format
+msgid "&5 Digital TV"
+msgstr "&5 Digital-tv"
+
+#: mainwindow.cpp:207
+#, kde-format
+msgid "&File"
+msgstr "&Arkiv"
+
+#: mainwindow.cpp:214
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Open URL..."
+msgstr "Öppna webbadress..."
+
+#: mainwindow.cpp:225 mainwindow.cpp:480
+#, kde-format
+msgid "Play Audio CD"
+msgstr "Spela ljudcd"
+
+#: mainwindow.cpp:229 mainwindow.cpp:481
+#, kde-format
+msgid "Play Video CD"
+msgstr "Spela video-cd"
+
+#: mainwindow.cpp:233 mainwindow.cpp:482
+#, kde-format
+msgid "Play DVD"
+msgstr "Spela dvd"
+
+#: mainwindow.cpp:237
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Play DVD Folder"
+msgstr "Spela dvd-katalog"
+
+#: mainwindow.cpp:247
+#, kde-format
+msgid "&Playback"
+msgstr "U&ppspelning"
+
+#: mainwindow.cpp:250
+#, kde-format
+msgctxt "menu bar"
+msgid "Play&list"
+msgstr "Spel&lista"
+
+#: mainwindow.cpp:254
+#, kde-format
+msgid "&Television"
+msgstr "&Television"
+
+#: mainwindow.cpp:258
+#, kde-format
+msgid "&Settings"
+msgstr "In&ställningar"
+
+#: mainwindow.cpp:279
+#, kde-format
+msgid "Start"
+msgstr "Starta"
+
+#: mainwindow.cpp:280
+#, kde-format
+msgid "Playback"
+msgstr "Uppspelning"
+
+#: mainwindow.cpp:281
+#, kde-format
+msgid "Playlist"
+msgstr "Spellista"
+
+#: mainwindow.cpp:283
+#, kde-format
+msgid "Television"
+msgstr "Television"
+
+#: mainwindow.cpp:347
+#, kde-format
+msgid "Play &File"
+msgstr "Spela &fil"
+
+#: mainwindow.cpp:351
+#, kde-format
+msgid "Play &Audio CD"
+msgstr "Spela &ljudcd"
+
+#: mainwindow.cpp:355
+#, kde-format
+msgid "Play &Video CD"
+msgstr "Spela &video-cd"
+
+#: mainwindow.cpp:359
+#, kde-format
+msgid "Play &DVD"
+msgstr "Spela &dvd"
+
+#: mainwindow.cpp:364
+#, kde-format
+msgid "&Watch Digital TV"
+msgstr "&Titta på digital-tv"
+
+#: mainwindow.cpp:368
+#, kde-format
+msgid "&Quit"
+msgstr "&Avsluta"
+
+#: mainwindow.cpp:475
+#, kde-format
+msgid ""
+"Enable all debug messages. Please notice that Kaffeine also allows enabling "
+"debug messages per category, by using the environment var:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"where 'category' can be:\n"
+msgstr ""
+"Aktivera alla felsökningsmeddelanden. Observera att Kaffeine också tillåter "
+"att felsökningsmeddelanden aktiveras per kategori, genom att använda "
+"miljövariabeln:\n"
+"QT_LOGGING_RULES=kaffeine.kategori.debug=true\n"
+"där 'kategori' kan vara:\n"
+
+#: mainwindow.cpp:476
+#, kde-format
+msgid "The files/URLs opened by the application will be deleted after use"
+msgstr ""
+"Filerna eller webbadresserna som öppnas av programmet tas bort efter "
+"användning"
+
+#: mainwindow.cpp:477
+#, kde-format
+msgid "Start in full screen mode"
+msgstr "Starta med fullskärmsläge"
+
+#: mainwindow.cpp:478
+#, kde-format
+msgid "Start in minimal mode"
+msgstr "Starta i minimalt läge"
+
+#: mainwindow.cpp:479
+#, kde-format
+msgid "Start with always on top"
+msgstr "Starta alltid överst"
+
+#: mainwindow.cpp:486
+#, kde-format
+msgctxt "command line option"
+msgid "Dump dvb data (debug option)"
+msgstr "Dumpa DVB-data (felsökningsalternativ)"
+
+#: mainwindow.cpp:487
+#, kde-format
+msgctxt "command line option"
+msgid "Play TV channel"
+msgstr "Visa tv-kanal"
+
+#: mainwindow.cpp:488
+#, kde-format
+msgctxt "command line option"
+msgid "(deprecated option)"
+msgstr "(alternativet avråds från)"
+
+#: mainwindow.cpp:489
+#, kde-format
+msgctxt "command line option"
+msgid "Play last tuned TV channel"
+msgstr "Visa senast inställda tv-kanal"
+
+#: mainwindow.cpp:491
+#, kde-format
+msgid "Files or URLs to play"
+msgstr "Filer eller webbadresser att spela"
+
+#: mainwindow.cpp:713
+#, kde-format
+msgctxt "@title:window"
+msgid "Open files"
+msgstr "Öppna filer"
+
+#: mainwindow.cpp:726
+#, kde-format
+msgctxt "@title:window"
+msgid "Open URL"
+msgstr "Öppna webbadress"
+
+#: mainwindow.cpp:726
+#, kde-format
+msgid "Enter a URL:"
+msgstr "Skriv in webbadress:"
+
+#: mediawidget.cpp:85
+#, kde-format
+msgid "Previous"
+msgstr "Föregående"
+
+#: mediawidget.cpp:93
+#, kde-format
+msgid "Play"
+msgstr "Spela"
+
+#: mediawidget.cpp:94
+#, kde-format
+msgid "Pause"
+msgstr "Paus"
+
+#: mediawidget.cpp:103
+#, kde-format
+msgid "Stop"
+msgstr "Stoppa"
+
+#: mediawidget.cpp:111
+#, kde-format
+msgid "Next"
+msgstr "Nästa"
+
+#: mediawidget.cpp:120 mediawidget.cpp:591
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Full Screen Mode"
+msgstr "Fullskärmsläge"
+
+#: mediawidget.cpp:127 mediawidget.cpp:606
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Minimal Mode"
+msgstr "Minimalt läge"
+
+#: mediawidget.cpp:140
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Subtitle"
+msgstr "Textning"
+
+#: mediawidget.cpp:144
+#, kde-format
+msgctxt "subtitle selection entry"
+msgid "off"
+msgstr "av"
+
+#: mediawidget.cpp:152
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Add subtitle file"
+msgstr "Lägg till textningsfil"
+
+#: mediawidget.cpp:159
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio"
+msgstr "Ljud"
+
+#: mediawidget.cpp:162
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Audio Device"
+msgstr "Ljudenhet"
+
+#: mediawidget.cpp:164
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio Device"
+msgstr "Ljudenhet"
+
+#: mediawidget.cpp:171
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Increase Volume"
+msgstr "Öka volym"
+
+#: mediawidget.cpp:178
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Decrease Volume"
+msgstr "Minska volym"
+
+#: mediawidget.cpp:184
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Mute Volume"
+msgstr "Tysta volym"
+
+#: mediawidget.cpp:194
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Video"
+msgstr "Video"
+
+#: mediawidget.cpp:198
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Deinterlace"
+msgstr "Ta bort inflätning"
+
+#: mediawidget.cpp:206
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "disabled"
+msgstr "inaktiverad"
+
+#: mediawidget.cpp:213
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "discard"
+msgstr "kasta"
+
+#: mediawidget.cpp:219
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "bob"
+msgstr "bob"
+
+#: mediawidget.cpp:225
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "linear"
+msgstr "linjär"
+
+#: mediawidget.cpp:231
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif"
+msgstr "yadif"
+
+#: mediawidget.cpp:238
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif2x"
+msgstr "yadif2x"
+
+#: mediawidget.cpp:244
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "phosphor"
+msgstr "fosfor"
+
+#: mediawidget.cpp:250
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "x"
+msgstr "x"
+
+#: mediawidget.cpp:256
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "mean"
+msgstr "medelvärde"
+
+#: mediawidget.cpp:262
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "blend"
+msgstr "kombinera"
+
+#: mediawidget.cpp:268
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "Inverse telecine"
+msgstr "Invers telecine"
+
+#: mediawidget.cpp:288
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Aspect Ratio"
+msgstr "Proportion"
+
+#: mediawidget.cpp:295
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "Automatic"
+msgstr "Automatisk"
+
+#: mediawidget.cpp:301
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "1:1"
+msgstr "1:1"
+
+#: mediawidget.cpp:307
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "4:3"
+msgstr "4:3"
+
+#: mediawidget.cpp:313
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "5:4"
+msgstr "5:4"
+
+#: mediawidget.cpp:319
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:9"
+msgstr "16:9"
+
+#: mediawidget.cpp:325
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:10"
+msgstr "16:10"
+
+#: mediawidget.cpp:331
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.21:1"
+msgstr "2,21:1"
+
+#: mediawidget.cpp:337
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.35:1"
+msgstr "2,35:1"
+
+#: mediawidget.cpp:343
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.39:1"
+msgstr "2,39:1"
+
+#: mediawidget.cpp:348
+#, kde-format
+msgid "Video size"
+msgstr "Videostorlek"
+
+#: mediawidget.cpp:356
+#, kde-format
+msgctxt "Video size"
+msgid "Automatic"
+msgstr "Automatisk"
+
+#: mediawidget.cpp:362
+#, kde-format
+msgctxt "Video size"
+msgid "25%"
+msgstr "25 %"
+
+#: mediawidget.cpp:368
+#, kde-format
+msgctxt "Video size"
+msgid "50%"
+msgstr "50 %"
+
+#: mediawidget.cpp:375
+#, kde-format
+msgctxt "Video size"
+msgid "75%"
+msgstr "75 %"
+
+#: mediawidget.cpp:381
+#, kde-format
+msgctxt "Video size"
+msgid "Original Size"
+msgstr "Originalstorlek"
+
+#: mediawidget.cpp:387
+#, kde-format
+msgctxt "Video size"
+msgid "150%"
+msgstr "150 %"
+
+#: mediawidget.cpp:393
+#, kde-format
+msgctxt "Video size"
+msgid "200%"
+msgstr "200 %"
+
+#: mediawidget.cpp:399
+#, kde-format
+msgctxt "Video size"
+msgid "250%"
+msgstr "250 %"
+
+#: mediawidget.cpp:405
+#, kde-format
+msgctxt "Video size"
+msgid "300%"
+msgstr "300 %"
+
+#: mediawidget.cpp:428
+#, kde-format
+msgid "Volume Slider"
+msgstr "Volymskjutreglage"
+
+#: mediawidget.cpp:443
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Jump to Position..."
+msgstr "Gå till position..."
+
+#: mediawidget.cpp:448
+#, kde-format
+msgctxt "playback menu"
+msgid "Skip"
+msgstr "Gå"
+
+#: mediawidget.cpp:462 mediawidget.cpp:471 mediawidget.cpp:1154
+#: mediawidget.cpp:1164
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Backward"
+msgstr "Gå %1 s bakåt"
+
+#: mediawidget.cpp:480 mediawidget.cpp:489 mediawidget.cpp:1157
+#: mediawidget.cpp:1167
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Forward"
+msgstr "Gå %1 s framåt"
+
+#: mediawidget.cpp:495 mediawidget.cpp:498
+#, kde-format
+msgid "Seek Slider"
+msgstr "Sökreglage"
+
+#: mediawidget.cpp:509
+#, kde-format
+msgctxt "dvd navigation"
+msgid "DVD Menu"
+msgstr "Dvd-meny"
+
+#: mediawidget.cpp:513
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Title"
+msgstr "Titel"
+
+#: mediawidget.cpp:519
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Chapter"
+msgstr "Kapitel"
+
+#: mediawidget.cpp:525
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Angle"
+msgstr "Vinkel"
+
+#: mediawidget.cpp:532
+#, kde-format
+msgid "Switch between elapsed and remaining time display"
+msgstr "Byt mellan visning av förfluten eller återstående tid"
+
+#: mediawidget.cpp:561
+#, kde-format
+msgid ""
+"Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf "
+"*.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
+"Files (*)"
+msgstr ""
+"Mediafiler som stöds (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf "
+"*.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;Alla "
+"Alla filer (*)"
+
+#: mediawidget.cpp:597
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Full Screen Mode"
+msgstr "Avsluta fullskärmsläge"
+
+#: mediawidget.cpp:610
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Minimal Mode"
+msgstr "Avsluta minimalt läge"
+
+#: mediawidget.cpp:643
+#, kde-format
+msgctxt "@title:window"
+msgid "Open subtitle"
+msgstr "Öppna textning"
+
+#: mediawidget.cpp:644
+#, kde-format
+msgid ""
+"Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
+"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+msgstr ""
+"Textning (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
+"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp)"
+
+#: mediawidget.cpp:784 mediawidget.cpp:891
+#, kde-format
+msgctxt "osd"
+msgid "Volume: %1%"
+msgstr "Volym: %1 %"
+
+#: mediawidget.cpp:815
+#, kde-format
+msgctxt "osd"
+msgid "Stopped"
+msgstr "Stoppad"
+
+#: mediawidget.cpp:881
+#, kde-format
+msgctxt "osd"
+msgid "Mute On"
+msgstr "Tyst"
+
+#: mediawidget.cpp:884
+#, kde-format
+msgctxt "osd"
+msgid "Mute Off"
+msgstr "Inte tyst"
+
+#: mediawidget.cpp:980
+#, kde-format
+msgctxt "osd message"
+msgid "Deinterlace %1"
+msgstr "Ta bort inflätning %1"
+
+#: mediawidget.cpp:1395
+#, kde-format
+msgctxt "osd"
+msgid "Playing"
+msgstr "Spelar"
+
+#: mediawidget.cpp:1400
+#, kde-format
+msgctxt "osd"
+msgid "Paused"
+msgstr "Paus"
+
+#: mediawidget.cpp:1578
+#, kde-format
+msgctxt "@title:window"
+msgid "Jump to Position"
+msgstr "Gå till position"
+
+#: mediawidget.cpp:1583
+#, kde-format
+msgid "Enter a position:"
+msgstr "Ange en position:"
+
+#: playlist/playlistmodel.cpp:800
+#, kde-format
+msgctxt "playlist track"
+msgid "Title"
+msgstr "Titel"
+
+#: playlist/playlistmodel.cpp:802
+#, kde-format
+msgctxt "playlist track"
+msgid "Artist"
+msgstr "Artist"
+
+#: playlist/playlistmodel.cpp:804
+#, kde-format
+msgctxt "playlist track"
+msgid "Album"
+msgstr "Album"
+
+#: playlist/playlistmodel.cpp:806
+#, kde-format
+msgctxt "playlist track"
+msgid "Track Number"
+msgstr "Spårnummer"
+
+#: playlist/playlistmodel.cpp:808
+#, kde-format
+msgctxt "playlist track"
+msgid "Length"
+msgstr "Längd"
+
+#: playlist/playlisttab.cpp:372
+#, kde-format
+msgctxt "playlist browser"
+msgid "Temporary Playlist"
+msgstr "Tillfällig spellista"
+
+#: playlist/playlisttab.cpp:396
+#, kde-format
+msgctxt "playlist menu"
+msgid "Repeat"
+msgstr "Upprepa"
+
+#: playlist/playlisttab.cpp:401
+#, kde-format
+msgctxt "playlist menu"
+msgid "Random"
+msgstr "Slumpmässig"
+
+#: playlist/playlisttab.cpp:406
+#, kde-format
+msgid "Add Subtitle"
+msgstr "Lägg till textning"
+
+#: playlist/playlisttab.cpp:420
+#, kde-format
+msgctxt "@action:inmenu playlist"
+msgid "New"
+msgstr "Ny"
+
+#: playlist/playlisttab.cpp:425
+#, kde-format
+msgctxt "rename an entry in a list"
+msgid "Rename"
+msgstr "Byt namn"
+
+#: playlist/playlisttab.cpp:634
+#, kde-format
+msgctxt "playlist browser"
+msgid "Unnamed Playlist"
+msgstr "Namnlös spellista"
+
+#: playlist/playlisttab.cpp:848
+#, kde-format
+msgctxt "file filter"
+msgid "Subtitle Files"
+msgstr "Textningsfiler"
+
+#: playlist/playlisttab.cpp:865
+#, kde-format
+msgctxt "file filter"
+msgid ""
+"*.xspf|XSPF Playlist\n"
+"*.m3u|M3U Playlist\n"
+"*.pls|PLS Playlist"
+msgstr ""
+"*.xspf|XSPF-spellista\n"
+"*.m3u|M3U-spellista\n"
+"*.pls|PLS-spellista"
+
+#: sqlhelper.cpp:48
+#, kde-format
+msgctxt "message box"
+msgid "Please install the Qt SQLite plugin."
+msgstr "Installera Qt:s SQLite-insticksprogram"
+
+#: sqlhelper.cpp:63
+#, kde-format
+msgctxt "message box"
+msgid "Cannot open the SQLite database."
+msgstr "Kan inte öppna SQLite-databasen."
+
+#~ msgid "KF5 port"
+#~ msgstr "Konvertering till KF5"
+
+#~ msgctxt "@info"
+#~ msgid "No device found."
+#~ msgstr "Ingen mottagare hittades."
+
+#~ msgctxt "osd message"
+#~ msgid "Deinterlacing On"
+#~ msgstr "Borttagning av inflätning på"
+
+#~ msgctxt "osd message"
+#~ msgid "Deinterlacing Off"
+#~ msgstr "Borttagning av inflätning av"
+
+#~ msgid "not rated\n"
+#~ msgstr "oklassificerad\n"
+
+#~ msgid "Parental rate: %1%2\n"
+#~ msgstr "Klassificering: %1%2\n"
+
+#~ msgid "Parental rate: %1 years.\n"
+#~ msgstr "Klassificering: %1 år.\n"
+
+#~ msgid "Afar"
+#~ msgstr "Afar"
+
+#~ msgid "Abkhazian"
+#~ msgstr "Abkhasiska"
+
+#~ msgid "Achinese"
+#~ msgstr "Acehnesiska"
+
+#~ msgid "Acoli"
+#~ msgstr "Acholi"
+
+#~ msgid "Adangme"
+#~ msgstr "Dangme"
+
+#~ msgid "Adyghe"
+#~ msgstr "Adygeiska"
+
+#~ msgid "Afro-Asiatic languages"
+#~ msgstr "Afroasiatiska språk"
+
+#~ msgid "Afrihili"
+#~ msgstr "Afrihili"
+
+#~ msgid "Afrikaans"
+#~ msgstr "Afrikaans"
+
+#~ msgid "Ainu"
+#~ msgstr "Ainu"
+
+#~ msgid "Akan"
+#~ msgstr "Akan"
+
+#~ msgid "Akkadian"
+#~ msgstr "Akkadiska"
+
+#~ msgid "Albanian"
+#~ msgstr "Albanska"
+
+#~ msgid "Aleut"
+#~ msgstr "Aleutiska"
+
+#~ msgid "Algonquian languages"
+#~ msgstr "Algonkinspråk"
+
+#~ msgid "Southern Altai"
+#~ msgstr "Sydaltaiska"
+
+#~ msgid "Amharic"
+#~ msgstr "Amarinja"
+
+#~ msgid "English"
+#~ msgstr "Engelska"
+
+#~ msgid "Angika"
+#~ msgstr "Angika"
+
+#~ msgid "Apache languages"
+#~ msgstr "Apachespråk"
+
+#~ msgid "Arabic"
+#~ msgstr "Arabiska"
+
+#~ msgid "Official Aramaic (700-300 BCE)"
+#~ msgstr "Officiell arameiska (700-300 f.v.t.)"
+
+#~ msgid "Aragonese"
+#~ msgstr "Aragonska"
+
+#~ msgid "Armenian"
+#~ msgstr "Armeniska"
+
+#~ msgid "Mapudungun"
+#~ msgstr "Mapudungun"
+
+#~ msgid "Arapaho"
+#~ msgstr "Arapaho"
+
+#~ msgid "Artificial languages"
+#~ msgstr "Artificiella språk"
+
+#~ msgid "Arawak"
+#~ msgstr "Arawak"
+
+#~ msgid "Assamese"
+#~ msgstr "Assamesiska"
+
+#~ msgid "Asturian"
+#~ msgstr "Asturiska"
+
+#~ msgid "Athapascan languages"
+#~ msgstr "Athabaskiska språk"
+
+#~ msgid "Australian languages"
+#~ msgstr "Australiska språk"
+
+#~ msgid "Avaric"
+#~ msgstr "Avariska"
+
+#~ msgid "Avestan"
+#~ msgstr "Avestiska"
+
+#~ msgid "Awadhi"
+#~ msgstr "Awadhi"
+
+#~ msgid "Aymara"
+#~ msgstr "Aymara"
+
+#~ msgid "Azerbaijani"
+#~ msgstr "Azerbajdzjanska"
+
+#~ msgid "Banda languages"
+#~ msgstr "Bandaspråk"
+
+#~ msgid "Bamileke languages"
+#~ msgstr "Bamilekespråk"
+
+#~ msgid "Bashkir"
+#~ msgstr "Bashkir"
+
+#~ msgid "Baluchi"
+#~ msgstr "Baluchi"
+
+#~ msgid "Bambara"
+#~ msgstr "Bambara"
+
+#~ msgid "Balinese"
+#~ msgstr "Balinesiska"
+
+#~ msgid "Basque"
+#~ msgstr "Baskiska"
+
+#~ msgid "Basa"
+#~ msgstr "Basa"
+
+#~ msgid "Baltic languages"
+#~ msgstr "Baltiska språk"
+
+#~ msgid "Beja"
+#~ msgstr "Beja"
+
+#~ msgid "Belarusian"
+#~ msgstr "Vitryska"
+
+#~ msgid "Bemba"
+#~ msgstr "Bemba"
+
+#~ msgid "Bengali"
+#~ msgstr "Bengali"
+
+#~ msgid "Berber languages"
+#~ msgstr "Berberspråk"
+
+#~ msgid "Bhojpuri"
+#~ msgstr "Bhojpuri"
+
+#~ msgid "Bihari languages"
+#~ msgstr "Biharispråk"
+
+#~ msgid "Bikol"
+#~ msgstr "Bikol"
+
+#~ msgid "Bini"
+#~ msgstr "Edo"
+
+#~ msgid "Bislama"
+#~ msgstr "Bislama"
+
+#~ msgid "Siksika"
+#~ msgstr "Siksiká"
+
+#~ msgid "Bantu (Other)"
+#~ msgstr "Bantu (övriga)"
+
+#~ msgid "Bosnian"
+#~ msgstr "Bosniska"
+
+#~ msgid "Braj"
+#~ msgstr "Braj-Bhakha"
+
+#~ msgid "Breton"
+#~ msgstr "Bretonska"
+
+#~ msgid "Batak languages"
+#~ msgstr "Batakspråk"
+
+#~ msgid "Buriat"
+#~ msgstr "Burjatiska"
+
+#~ msgid "Buginese"
+#~ msgstr "Buginesiska"
+
+#~ msgid "Bulgarian"
+#~ msgstr "Bulgariska"
+
+#~ msgid "Burmese"
+#~ msgstr "Burmesiska"
+
+#~ msgid "Blin"
+#~ msgstr "Bilen"
+
+#~ msgid "Caddo"
+#~ msgstr "Caddo"
+
+#~ msgid "Central American Indian languages"
+#~ msgstr "Centralamerikanska indianspråk"
+
+#~ msgid "Galibi Carib"
+#~ msgstr "Karibiska"
+
+#~ msgid "Catalan"
+#~ msgstr "Katalanska"
+
+#~ msgid "Caucasian languages"
+#~ msgstr "Kaukasiska språk"
+
+#~ msgid "Celtic languages"
+#~ msgstr "Keltiska språk"
+
+#~ msgid "Chamorro"
+#~ msgstr "Chamorro"
+
+#~ msgid "Chechen"
+#~ msgstr "Tjetjenska"
+
+#~ msgid "Chinese"
+#~ msgstr "Kinesiska"
+
+#~ msgid "Cherokee"
+#~ msgstr "Cherokee"
+
+#~ msgid "Church Slavic"
+#~ msgstr "Kyrkoslaviska"
+
+#~ msgid "Chuvash"
+#~ msgstr "Tjuvasjiska"
+
+#~ msgid "Cheyenne"
+#~ msgstr "Cheyenne"
+
+#~ msgid "Coptic"
+#~ msgstr "Koptiska"
+
+#~ msgid "Cornish"
+#~ msgstr "Korniska"
+
+#~ msgid "Corsican"
+#~ msgstr "Korsikanska"
+
+#~ msgid "Crimean Tatar"
+#~ msgstr "Krimtatariska"
+
+#~ msgid "Kashubian"
+#~ msgstr "Kasjubiska"
+
+#~ msgid "Czech"
+#~ msgstr "Tjeckiska"
+
+#~ msgid "Dakota"
+#~ msgstr "Dakota"
+
+#~ msgid "Danish"
+#~ msgstr "Danska"
+
+#~ msgid "Delaware"
+#~ msgstr "Delaware"
+
+#~ msgid "Dravidian languages"
+#~ msgstr "Dravidiska språk"
+
+#~ msgid "Lower Sorbian"
+#~ msgstr "Lågsorbiska"
+
+#~ msgid "Dutch"
+#~ msgstr "Holländska"
+
+#~ msgid "Dzongkha"
+#~ msgstr "Dzongkha"
+
+#~ msgid "Esperanto"
+#~ msgstr "Esperanto"
+
+#~ msgid "Estonian"
+#~ msgstr "Estniska"
+
+#~ msgid "Faroese"
+#~ msgstr "Färöiska"
+
+#~ msgid "Fijian"
+#~ msgstr "Fijianska"
+
+#~ msgid "Filipino"
+#~ msgstr "Filippinska"
+
+#~ msgid "Finnish"
+#~ msgstr "Finska"
+
+#~ msgid "French"
+#~ msgstr "Franska"
+
+#~ msgid "Germanic languages"
+#~ msgstr "Germanska språk"
+
+#~ msgid "Georgian"
+#~ msgstr "Georgiska"
+
+#~ msgid "German"
+#~ msgstr "Tyska"
+
+#~ msgid "Gaelic"
+#~ msgstr "Gäliska"
+
+#~ msgid "Irish"
+#~ msgstr "Iriska"
+
+#~ msgid "Galician"
+#~ msgstr "Galiciska"
+
+#~ msgid "Manx"
+#~ msgstr "Manx"
+
+#~ msgid "Gorontalo"
+#~ msgstr "Gorontalo"
+
+#~ msgid "Gothic"
+#~ msgstr "Gotiska"
+
+#~ msgid "Greek"
+#~ msgstr "Grekiska"
+
+#~ msgid "Guarani"
+#~ msgstr "Guarani"
+
+#~ msgid "Swiss German"
+#~ msgstr "Schweizisk tyska"
+
+#~ msgid "Gujarati"
+#~ msgstr "Gujarati"
+
+#~ msgid "Haitian"
+#~ msgstr "Haitiska"
+
+#~ msgid "Hausa"
+#~ msgstr "Hausa"
+
+#~ msgid "Hebrew"
+#~ msgstr "Hebreiska"
+
+#~ msgid "Herero"
+#~ msgstr "Herero"
+
+#~ msgid "Hindi"
+#~ msgstr "Hindi"
+
+#~ msgid "Hiri Motu"
+#~ msgstr "Hirimotu"
+
+#~ msgid "Croatian"
+#~ msgstr "Kroatiska"
+
+#~ msgid "Upper Sorbian"
+#~ msgstr "Högsorbiska"
+
+#~ msgid "Hungarian"
+#~ msgstr "Ungerska"
+
+#~ msgid "Icelandic"
+#~ msgstr "Isländska"
+
+#~ msgid "Ido"
+#~ msgstr "Ido"
+
+#~ msgid "Inuktitut"
+#~ msgstr "Inuktitut"
+
+#~ msgid "Interlingue"
+#~ msgstr "Interlingua"
+
+#~ msgid "Interlingua"
+#~ msgstr "Interlingua"
+
+#~ msgid "Indonesian"
+#~ msgstr "Indonesiska"
+
+#~ msgid "Indo-European languages"
+#~ msgstr "Indoeuropeiska språk"
+
+#~ msgid "Inupiaq"
+#~ msgstr "Inupiaq"
+
+#~ msgid "Iranian languages"
+#~ msgstr "Iranska språk"
+
+#~ msgid "Italian"
+#~ msgstr "Italienska"
+
+#~ msgid "Javanese"
+#~ msgstr "Javanesiska"
+
+#~ msgid "Japanese"
+#~ msgstr "Japanska"
+
+#~ msgid "Kachin"
+#~ msgstr "Kachin"
+
+#~ msgid "Kalaallisut"
+#~ msgstr "Grönländska"
+
+#~ msgid "Kannada"
+#~ msgstr "Kanaresiska"
+
+#~ msgid "Kashmiri"
+#~ msgstr "Kashmiri"
+
+#~ msgid "Kazakh"
+#~ msgstr "Kazakiska"
+
+#~ msgid "Kikuyu"
+#~ msgstr "Kikuyu"
+
+#~ msgid "Kinyarwanda"
+#~ msgstr "Rwanda"
+
+#~ msgid "Kirghiz"
+#~ msgstr "Kirghiziska"
+
+#~ msgid "Komi"
+#~ msgstr "Komi"
+
+#~ msgid "Korean"
+#~ msgstr "Koreanska"
+
+#~ msgid "Kurdish"
+#~ msgstr "Kurdiska"
+
+#~ msgid "Lao"
+#~ msgstr "Laotiska"
+
+#~ msgid "Latin"
+#~ msgstr "Latin"
+
+#~ msgid "Latvian"
+#~ msgstr "Lettiska"
+
+#~ msgid "Limburgan"
+#~ msgstr "Limburgiska"
+
+#~ msgid "Lingala"
+#~ msgstr "Lingala"
+
+#~ msgid "Lithuanian"
+#~ msgstr "Litauiska"
+
+#~ msgid "Luxembourgish"
+#~ msgstr "Luxemburgiska"
+
+#~ msgid "Macedonian"
+#~ msgstr "Makedonska"
+
+#~ msgid "Marshallese"
+#~ msgstr "Marshall"
+
+#~ msgid "Maithili"
+#~ msgstr "Maithili"
+
+#~ msgid "Malayalam"
+#~ msgstr "Malayalam"
+
+#~ msgid "Maori"
+#~ msgstr "Maoriska"
+
+#~ msgid "Marathi"
+#~ msgstr "Marathi"
+
+#~ msgid "Malay"
+#~ msgstr "Malajiska"
+
+#~ msgid "Mende"
+#~ msgstr "Mende"
+
+#~ msgid "Uncoded languages"
+#~ msgstr "Okodade språk"
+
+#~ msgid "Malagasy"
+#~ msgstr "Malagassiska"
+
+#~ msgid "Maltese"
+#~ msgstr "Maltesiska"
+
+#~ msgid "Mongolian"
+#~ msgstr "Mongoliska"
+
+#~ msgid "Multiple languages"
+#~ msgstr "Flera språk"
+
+#~ msgid "Nauru"
+#~ msgstr "Nauru"
+
+#~ msgid "Navajo"
+#~ msgstr "Navajo"
+
+#~ msgid "Ndonga"
+#~ msgstr "Ndonga"
+
+#~ msgid "Low German"
+#~ msgstr "Lågtyska"
+
+#~ msgid "Nepali"
+#~ msgstr "Nepalesiska"
+
+#~ msgid "Norwegian Nynorsk"
+#~ msgstr "Norska Nynorska"
+
+#~ msgid "Bokmål"
+#~ msgstr "Bokmål"
+
+#~ msgid "Norse"
+#~ msgstr "Nordiska"
+
+#~ msgid "Norwegian"
+#~ msgstr "Norska"
+
+#~ msgid "Chichewa"
+#~ msgstr "Chewa"
+
+#~ msgid "Oriya"
+#~ msgstr "Oriya"
+
+#~ msgid "Oromo"
+#~ msgstr "Oromo"
+
+#~ msgid "Ossetian"
+#~ msgstr "Ossetsiska"
+
+#~ msgid "Turkish"
+#~ msgstr "Turkiska"
+
+#~ msgid "Pangasinan"
+#~ msgstr "Pangasinan"
+
+#~ msgid "Pampanga"
+#~ msgstr "Pampanga"
+
+#~ msgid "Panjabi"
+#~ msgstr "Panjabi"
+
+#~ msgid "Persian"
+#~ msgstr "Persiska"
+
+#~ msgid "Philippine languages"
+#~ msgstr "Filippinska språk"
+
+#~ msgid "Phoenician"
+#~ msgstr "Feniciska"
+
+#~ msgid "Pali"
+#~ msgstr "Pali"
+
+#~ msgid "Polish"
+#~ msgstr "Polska"
+
+#~ msgid "Portuguese"
+#~ msgstr "Portugisiska"
+
+#~ msgid "Pushto"
+#~ msgstr "Pashto"
+
+#~ msgid "Reserved for local use"
+#~ msgstr "Reserverat för lokal användning"
+
+#~ msgid "Quechua"
+#~ msgstr "Quechua"
+
+#~ msgid "Romany"
+#~ msgstr "Romanés"
+
+#~ msgid "Romanian"
+#~ msgstr "Rumänska"
+
+#~ msgid "Rundi"
+#~ msgstr "Rundi"
+
+#~ msgid "Russian"
+#~ msgstr "Ryska"
+
+#~ msgid "Sango"
+#~ msgstr "Sango"
+
+#~ msgid "South American Indian (Other)"
+#~ msgstr "Sydamerikanska indianspråk (övriga)"
+
+#~ msgid "Sanskrit"
+#~ msgstr "Sanskrit"
+
+#~ msgid "Semitic languages"
+#~ msgstr "Semitiska språk"
+
+#~ msgid "Sign Languages"
+#~ msgstr "Teckenspråk"
+
+#~ msgid "Sinhala"
+#~ msgstr "Singalesiska"
+
+#~ msgid "Slavic languages"
+#~ msgstr "Slaviska språk"
+
+#~ msgid "Slovak"
+#~ msgstr "Slovakiska"
+
+#~ msgid "Slovenian"
+#~ msgstr "Slovenska"
+
+#~ msgid "Northern Sami"
+#~ msgstr "Samiska"
+
+#~ msgid "Samoan"
+#~ msgstr "Samoanska"
+
+#~ msgid "Shona"
+#~ msgstr "Shona"
+
+#~ msgid "Sindhi"
+#~ msgstr "Sindhi"
+
+#~ msgid "Somali"
+#~ msgstr "Somali"
+
+#~ msgid "Spanish"
+#~ msgstr "Spanska"
+
+#~ msgid "Sardinian"
+#~ msgstr "Sardinska"
+
+#~ msgid "Serbian"
+#~ msgstr "Serbiska"
+
+#~ msgid "Swati"
+#~ msgstr "Swazi"
+
+#~ msgid "Sundanese"
+#~ msgstr "Sundanesiska"
+
+#~ msgid "Swahili"
+#~ msgstr "Swahili"
+
+#~ msgid "Swedish"
+#~ msgstr "Svenska"
+
+#~ msgid "Tahitian"
+#~ msgstr "Tahitiska"
+
+#~ msgid "Tamil"
+#~ msgstr "Tamil"
+
+#~ msgid "Tatar"
+#~ msgstr "Tatariska"
+
+#~ msgid "Telugu"
+#~ msgstr "Telugu"
+
+#~ msgid "Tajik"
+#~ msgstr "Tadzjikiska"
+
+#~ msgid "Tagalog"
+#~ msgstr "Tagalog"
+
+#~ msgid "Thai"
+#~ msgstr "Thailändska"
+
+#~ msgid "Tibetan"
+#~ msgstr "Tibetanska"
+
+#~ msgid "Tigrinya"
+#~ msgstr "Tigrinja"
+
+#~ msgid "Tokelau"
+#~ msgstr "Tokelau"
+
+#~ msgid "Klingon"
+#~ msgstr "Klingon"
+
+#~ msgid "Tswana"
+#~ msgstr "Tswana"
+
+#~ msgid "Tsonga"
+#~ msgstr "Tsonga"
+
+#~ msgid "Turkmen"
+#~ msgstr "Turkmenska"
+
+#~ msgid "Tuvalu"
+#~ msgstr "Tuvalu"
+
+#~ msgid "Twi"
+#~ msgstr "Twi"
+
+#~ msgid "Ugaritic"
+#~ msgstr "Ugaritiska"
+
+#~ msgid "Uighur"
+#~ msgstr "Uiguriska"
+
+#~ msgid "Ukrainian"
+#~ msgstr "Ukrainska"
+
+#~ msgid "Undetermined"
+#~ msgstr "Obestämt"
+
+#~ msgid "Urdu"
+#~ msgstr "Urdu"
+
+#~ msgid "Uzbek"
+#~ msgstr "Uzbekiska"
+
+#~ msgid "Venda"
+#~ msgstr "Venda"
+
+#~ msgid "Vietnamese"
+#~ msgstr "Vietnamesiska"
+
+#~ msgid "Volapük"
+#~ msgstr "Volapük"
+
+#~ msgid "Welsh"
+#~ msgstr "Walesiska"
+
+#~ msgid "Sorbian languages"
+#~ msgstr "Sorbiska språk"
+
+#~ msgid "Walloon"
+#~ msgstr "Vallonska"
+
+#~ msgid "Wolof"
+#~ msgstr "Wolof"
+
+#~ msgid "Xhosa"
+#~ msgstr "Xhosa"
+
+#~ msgid "Yiddish"
+#~ msgstr "Yiddish"
+
+#~ msgid "Yoruba"
+#~ msgstr "Yoruba"
+
+#~ msgid "Zhuang"
+#~ msgstr "Zhuang"
+
+#~ msgid "Zulu"
+#~ msgstr "Zulu"
+
+#~ msgid "No linguistic content"
+#~ msgstr "Inget lingvistiskt innehåll"
+
+#~ msgctxt "'Aspect Ratio' menu"
+#~ msgid "Fit to Window"
+#~ msgstr "Anpassa till fönster"
+
+#~ msgid "Automatic Resize"
+#~ msgstr "Automatisk storleksändring"
+
+#~ msgctxt "automatic resize"
+#~ msgid "Off"
+#~ msgstr "Av"
+
+#~ msgctxt "automatic resize"
+#~ msgid "Double Size"
+#~ msgstr "Dubbel storlek"
+
+#~ msgid "Enable debug messages"
+#~ msgstr "Aktivera felsökningsmeddelanden"
+
+#~ msgctxt "@info tv show title"
+#~ msgid "<font color=#008000 size=\"+1\">%1</font><br>"
+#~ msgstr "<font color=#008000 size=\"+1\">%1</font><br>"
+
+#~ msgctxt "@info tv show subheading"
+#~ msgid "<font color=#808000>%1</font><br>"
+#~ msgstr "<font color=#808000>%1</font><br>"
+
+#~ msgctxt "@info tv show start, end"
+#~ msgid "<font color=#800000>%1 - %2</font><br><br>"
+#~ msgstr "<font color=#800000>%1 - %2</font><br><br>"
+
+#~ msgid "Using libVLC with args:"
+#~ msgstr "Använder libVLC med argument:"
+
+#~ msgid "MPEG-TS session doesn't have a payload"
+#~ msgstr "MPEG-TS session har ingen nyttolast"
+
+#~ msgid "Your position (only needed for USALS rotor)"
+#~ msgstr "Din position (behövs bara för USALS rotor)"
+
+#~ msgid "libVLC: failed to use extra args: %1"
+#~ msgstr "libVLC: misslyckades använda extra argument: %1"
+
+#~ msgid "Using libVLC without arguments"
+#~ msgstr "Använder libVLC utan argument"
+
+#~ msgid "cannot create vlc instance %1"
+#~ msgstr "kan inte skapa VLC-instansen %1"
+
+#~ msgid "cannot create vlc media player %1"
+#~ msgstr "kan inte skapa VLC-mediaspelare %1"
+
+#~ msgid "cannot attach event handler %1"
+#~ msgstr "kan inte ansluta händelsehanterare %1"
+
+#~ msgid "cannot set volume %1"
+#~ msgstr "kan inte ställa in volymen %1"
+
+#~ msgid "cannot create media %1"
+#~ msgstr "kan inte skapa media %1"
+
+#~ msgid "cannot play media %1"
+#~ msgstr "kan inte spela media %1"
+
+#~ msgid "cannot set subtitle file %1"
+#~ msgstr "kan inte lägga till textningsfilen %1"
+
+#~ msgid "unknown event type %1"
+#~ msgstr "okänd händelsetyp %1"
+
+#~ msgid "unknown startup display mode %1"
+#~ msgstr "okänt visningsläge vid start %1"
+
+#~ msgid "cannot open %1"
+#~ msgstr "kan inte öppna %1"
+
+#~ msgid "pmt section is invalid"
+#~ msgstr "pmt-sektion är ogiltig"
+
+#~ msgid "cannot find service id %1"
+#~ msgstr "kan inte hitta tjänst-id %1"
+
+#~ msgid "service is already being removed"
+#~ msgstr "tjänsten håller redan på att tas bort"
+
+#~ msgid "request timed out"
+#~ msgstr "tidsgräns överskreds för begäran"
+
+#~ msgid "unknown recipient"
+#~ msgstr "okänd mottagare"
+
+#~ msgid "cannot perform ioctl CA_GET_CAP"
+#~ msgstr "kan inte utföra ioctl CA_GET_CAP"
+
+#~ msgid "cannot perform ioctl CA_GET_SLOT_INFO for slot %1"
+#~ msgstr "kan inte utföra ioctl CA_GET_SLOT_INFO för slot %1"
+
+#~ msgid "unknown type %1"
+#~ msgstr "okänd typ %1"
+
+#~ msgid "invalid StatusByte object"
+#~ msgstr "ogiltigt StatusByte objekt"
+
+#~ msgid "invalid CreateTransportConnectionReply object"
+#~ msgstr "ogiltigt CreateTransportConnectionReply objekt"
+
+#~ msgid "invalid DataLast object"
+#~ msgstr "ogiltigt DataLast objekt"
+
+#~ msgid "unknown tag %1"
+#~ msgstr "okänd etikett %1"
+
+#~ msgid "invalid OpenSessionRequest object"
+#~ msgstr "ogiltigt OpenSessionRequest objekt"
+
+#~ msgid "invalid SessionNumber object"
+#~ msgstr "ogiltigt SessionNumber objekt"
+
+#~ msgid "cannot perform ioctl CA_RESET"
+#~ msgstr "kan inte utföra ioctl CA_RESET"
+
+#~ msgid "unknown pending command %1"
+#~ msgstr "okänt väntande kommando %1"
+
+#~ msgid "impossible"
+#~ msgstr "omöjligt"
+
+#~ msgid "cannot send message of length %1"
+#~ msgstr "kan inte skicka meddelande av längd %1"
+
+#~ msgid "illegal recursive call"
+#~ msgstr "illegalt rekursivt anrop"
+
+#~ msgid "invalid channels in file %1"
+#~ msgstr "ogiltiga kanaler i filen %1"
+
+#~ msgid "cannot remove %1"
+#~ msgstr "kan inte ta bort %1"
+
+#~ msgid "illegal type of clone"
+#~ msgstr "Illegal typ av klon"
+
+#~ msgid "invalid channel"
+#~ msgstr "ogiltig kanal"
+
+#~ msgid "channel model already set"
+#~ msgstr "kanalmodell redan inställd"
+
+#~ msgid "Universal LNB"
+#~ msgstr "Universell LNB"
+
+#~ msgid "C-band LNB"
+#~ msgstr "C-band LNB"
+
+#~ msgid "C-band Multipoint LNB"
+#~ msgstr "C-band flerpunkts LNB"
+
+#~ msgid "Custom LNB"
+#~ msgstr "Egen LNB"
+
+#~ msgid "Low band LOF (MHz)"
+#~ msgstr "Lågbands-LOF (MHz)"
+
+#~ msgid "High band LOF (MHz)"
+#~ msgstr "Högbands-LOF (MHz)"
+
+#~ msgid "Horizontal LOF (MHz)"
+#~ msgstr "Horisontell LOF (MHz)"
+
+#~ msgid "Vertical LOF (MHz)"
+#~ msgstr "Vertikal LOF (MHz)"
+
+#~ msgid "LOF (MHz)"
+#~ msgstr "LOF (MHz)"
+
+#~ msgid "Can't open %1"
+#~ msgstr "Kan inte öppna %1"
+
+#~ msgid "Can't extract orbital position from %1"
+#~ msgstr "Kan inte extrahera banposition från %1"
+
+#~ msgid "Can't do auto-tune for  %1"
+#~ msgstr "Kan inte utföra automatisk inställning för %1"
+
+#~ msgid "Using the same filter for the same pid more than once"
+#~ msgstr "Använder samma filter för samma processidentifierare mer än en gång"
+
+#~ msgid "Trying to remove a nonexistent filter"
+#~ msgstr "Försöker ta bort ett icke existerande filter"
+
+#~ msgid "PMT section is invalid"
+#~ msgstr "PMT-sektion är ogiltig"
+
+#~ msgid "Service has not been started while stop descrambling"
+#~ msgstr "Tjänsten har inte startats vid stopp av dekryptering"
+
+#~ msgid "tuning failed (signal too weak) on %1 MHz"
+#~ msgstr "inställning misslyckades (signalen för svag) för %1 MHz"
+
+#~ msgid "cannot open frontend %1"
+#~ msgstr "kan inte öppna gränssnitt %1"
+
+#~ msgid "unsupported transmission type:  %1"
+#~ msgstr "överföringstyp stöds inte: %1"
+
+#~ msgid "found dvb device %1: %2"
+#~ msgstr "hittade DVB-enhet %1: %2"
+
+#~ msgid "cannot open dvr %1"
+#~ msgstr "kan inte öppna DVR %1"
+
+#~ msgid "ioctl FE_SET_TONE failed for frontend %1"
+#~ msgstr "ioctl FE_SET_TONE misslyckades för gränssnitt %1"
+
+#~ msgid "ioctl FE_SET_VOLTAGE failed for frontend %1"
+#~ msgstr "ioctl FE_SET_VOLTAGE misslyckades för gränssnitt %1"
+
+#~ msgid "ioctl FE_DISEQC_SEND_MASTER_CMD failed for frontend %1"
+#~ msgstr "ioctl FE_DISEQC_SEND_MASTER_CMD misslyckades för gränssnitt %1"
+
+#~ msgid "ioctl FE_DISEQC_SEND_BURST failed for frontend %1"
+#~ msgstr "ioctl FE_DISEQC_SEND_BURST misslyckades för gränssnitt %1"
+
+#~ msgid "unknown transmission type"
+#~ msgstr "okänd överföringstyp"
+
+#~ msgid "unknown transmission type %1"
+#~ msgstr "okänd överföringstyp %1"
+
+#~ msgid "ioctl FE_SET_PROPERTY failed for frontend %1"
+#~ msgstr "ioctl FE_SET_PROPERTY misslyckades för gränssnitt %1"
+
+#~ msgid "ioctl FE_READ_STATUS failed for frontend %1"
+#~ msgstr "ioctl FE_READ_STATUS misslyckades för gränssnitt %1"
+
+#~ msgid "pid filter already set up for pid %1"
+#~ msgstr ""
+#~ "processidentifikationsfilter redan inställt för processidentifierare %1"
+
+#~ msgid "cannot open demux %1"
+#~ msgstr "kan inte öppna demultiplexer %1"
+
+#~ msgid "cannot set up pid filter for demux %1"
+#~ msgstr ""
+#~ "kan inte ställa in processidentifikationsfilter för demultiplexer %1"
+
+#~ msgid "no pid filter set up for pid %1"
+#~ msgstr ""
+#~ "inget processidentifikationsfilter inställt för processidentifierare %1"
+
+#~ msgid "cannot create pipe"
+#~ msgstr "kan inte skapa rörledning"
+
+#~ msgid "cannot read from dvr %1 %2"
+#~ msgstr "kan inte läsa från DVR %1 %2"
+
+#~ msgid "cannot write to pipe"
+#~ msgstr "kan inte skriva till rörledning"
+
+#~ msgid "cannot read from pipe"
+#~ msgstr "kan inte läsa från rörledning"
+
+#~ msgid "poll failed"
+#~ msgstr "pollning misslyckades"
+
+#~ msgid "starting DvbDeviceMonitor"
+#~ msgstr "startar DvbDeviceMonitor"
+
+#~ msgid "cannot determine adapter or index for device %1"
+#~ msgstr "kan inte bestämma adapter eller index för enhet %1"
+
+#~ msgid "cannot determine path for device %1"
+#~ msgstr "kan inte bestämma sökväg för enhet %1"
+
+#~ msgid "Digital TV device removed %1: %2"
+#~ msgstr "Digital tv-enhet borttagen %1: %2"
+
+#~ msgid "wrong version %1"
+#~ msgstr "fel version %1"
+
+#~ msgid "corrupt data %1"
+#~ msgstr "skadad data %1"
+
+#~ msgid "filter list not empty"
+#~ msgstr "filterlista ej tom"
+
+#~ msgid "invalid entry"
+#~ msgstr "ogiltig post"
+
+#~ msgid "epg model already set"
+#~ msgstr "EPG-modell redan inställd"
+
+#~ msgid "cannot open file %1"
+#~ msgstr "kan inte öppna filen %1"
+
+#~ msgid "mkfifo failed"
+#~ msgstr "mkfifo misslyckades"
+
+#~ msgid "open failed"
+#~ msgstr "öppna misslyckades"
+
+#~ msgid "invalid source"
+#~ msgstr "ogiltig källa"
+
+#~ msgid "qUncompress failed"
+#~ msgstr "qUncompress misslyckades"
+
+#~ msgid "invalid format"
+#~ msgstr "ogiltigt format"
+
+#~ msgid "cannot load dvb device manager %1"
+#~ msgstr "kan inte ladda DVB-enhetshanterare %1"
+
+#~ msgid "using dvb device manager %1"
+#~ msgstr "använder DVB-enhetshanterare %1"
+
+#~ msgid "using built-in dvb device manager"
+#~ msgstr "använder inbyggd DVB-enhetshanterare"
+
+#~ msgid "cannot read %1"
+#~ msgstr "kan inte läsa %1"
+
+#~ msgid "cannot parse %1"
+#~ msgstr "kan inte tolka %1"
+
+#~ msgid "cannot open global scanfile  %1"
+#~ msgstr "kan inte öppna global avsökningsfil %1"
+
+#~ msgid "cannot copy %1 %2"
+#~ msgstr "kan inte kopiera %1 %2"
+
+#~ msgid "unrecognized line:  %1"
+#~ msgstr "rad känns inte igen: %1"
+
+#~ msgid "transmission type %1 unknown"
+#~ msgstr "överföringstyp %1 okänd"
+
+#~ msgid "error parsing line : '%1'"
+#~ msgstr "fel vid tolkning av rad: '%1'"
+
+#~ msgid "some data were not parsed"
+#~ msgstr "en del data tolkades inte"
+
+#~ msgid "invalid recordings in file %1"
+#~ msgstr "ogiltiga inspelningar i filen %1"
+
+#~ msgid "cannot remove file %1"
+#~ msgstr "kan inte ta bort filen %1"
+
+#~ msgid "invalid recording"
+#~ msgstr "ogiltig inspelning"
+
+#~ msgid "disabled %1"
+#~ msgstr "inaktiverad %1"
+
+#~ msgid "not execute cmd"
+#~ msgstr "kör inte kommando"
+
+#~ msgid "removed. %1"
+#~ msgstr "borttagen. %1"
+
+#~ msgid "Delayed for %1 seconds"
+#~ msgstr "Fördröjd %1 sekunder"
+
+#~ msgid "cannot create folder %1"
+#~ msgstr "kan inte skapa katalog %1"
+
+#~ msgid "cannot find a suitable device"
+#~ msgstr "kan inte hitta lämplig enhet"
+
+#~ msgid "recording model already set"
+#~ msgstr "inspelningsmodell redan inställd"
+
+#~ msgid "current section is bigger than the last one"
+#~ msgstr "nuvarande sektion är större än den senaste"
+
+#~ msgid "inconsistent number of sections"
+#~ msgstr "inkonsistent antal sektioner"
+
+#~ msgid "timeout while reading section; type = %1, pid = %2"
+#~ msgstr ""
+#~ "tidsgräns överskriden när sektion skulle läsas, typ = %1, "
+#~ "processidentifierare = %2"
+
+#~ msgid "Device was released. Stopping scan"
+#~ msgstr "Enheten har frisläppts. Stoppar sökning"
+
+#~ msgid "Scanning while live stream. Can't change the transponder"
+#~ msgstr "Söker i direktsänd ström. Kan inte byta transponder"
+
+#~ msgid "Invalid transponder type"
+#~ msgstr "Ogiltig transpondertyp"
+
+#~ msgid "adjusting length"
+#~ msgstr "justerar längd"
+
+#~ msgid "invalid descriptor"
+#~ msgstr "ogiltig deskriptor"
+
+#~ msgid "Unsupported ATSC Text mode %1"
+#~ msgstr "ATSC-textläge %1 stöds inte"
+
+#~ msgid "Unsupported compression / mode %1 %2"
+#~ msgstr "Kompression eller läge %1 stöds inte %2"
+
+#~ msgid "special subtitle found"
+#~ msgstr "specialtextning hittades"
+
+#~ msgid "more than one video pid"
+#~ msgstr "mer än en video-processidentifierare"
+
+#~ msgid "more than one teletext pid"
+#~ msgstr "mer än en teletext-processidentifierare"
+
+#~ msgid "subtitle and teletext on the same pid"
+#~ msgstr "textning och teletext på samma processidentifierare"
+
+#~ msgid "subtitle with unexpected stream type found"
+#~ msgstr "textning med oväntat strömtyp hittades"
+
+#~ msgid "teletext with unexpected stream type found"
+#~ msgstr "teletext med oväntad strömtyp hittades"
+
+#~ msgid "adjusting length on descriptor"
+#~ msgstr "justerar deskriptorns längd"
+
+#~ msgid "invalid entry at descriptor"
+#~ msgstr "ogiltig post vid deskriptor"
+
+#~ msgid "channel is invalid"
+#~ msgstr "kanal är ogiltig"
+
+#~ msgid "internal error"
+#~ msgstr "internt fel"
+
+#~ msgid "opening remote playlists not supported yet"
+#~ msgstr "öppna fjärrspellistor stöds inte ännu"
+
+#~ msgid "cannot read file %1"
+#~ msgstr "kan inte läsa filen %1"
+
+#~ msgid "error while preparing statement %1"
+#~ msgstr "fel vid förberedning av sats %1"
+
+#~ msgid "error while executing statement %1"
+#~ msgstr "fel vid körning av sats %1"
+
+#~ msgid "pending statements at destruction"
+#~ msgstr "väntande satser vid destruktion"
+
+#~ msgid "invalid key %1"
+#~ msgstr "ogiltig nyckel %1"
+
+#~ msgid "invalid pending statement %1"
+#~ msgstr "ogiltig väntande sats %1"
+
+#~ msgid "Christoph Pfister"
+#~ msgstr "Christoph Pfister"
+
+#~ msgctxt "file filter"
+#~ msgid "Supported Media Files"
+#~ msgstr "Mediafiler som stöds"
+
+#~ msgctxt "file filter"
+#~ msgid "All Files"
+#~ msgstr "Alla filer"
+
+#~| msgid "Remove Satellite"
+#~ msgid "Remove Regexes"
+#~ msgstr "Ta bort reguljära uttryck"
+
+#~ msgid "Regex for automatic recording:"
+#~ msgstr "Reguljärt uttryck för automatisk inspelning:"
+
+#~ msgid "Automatically schedules recordings for matching titles."
+#~ msgstr "Schemalägger automatiskt inspellningar för matchande titlar."
+
+#~ msgctxt "dvd navigation"
+#~ msgid "Toggle Menu"
+#~ msgstr "Växla meny"
+
+#~ msgctxt "program description"
+#~ msgid "Internal utility for Kaffeine."
+#~ msgstr "Internverktyg för Kaffeine."
+
+#~ msgid "Channel Settings"
+#~ msgstr "Kanalinställningar"
+
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgctxt "remove an item from a list"
+#~ msgid "Remove"
+#~ msgstr "Ta bort"
+
+#, fuzzy
+#~| msgid "Begin"
+#~ msgctxt "@title:column tv show"
+#~ msgid "Begin"
+#~ msgstr "Början"
+
+#, fuzzy
+#~| msgid "Begin:"
+#~ msgctxt "@label tv show"
+#~ msgid "Begin:"
+#~ msgstr "Början:"
+
+#~ msgctxt "add a new item to a list"
+#~ msgid "New"
+#~ msgstr "Nytt"
+
+#~ msgctxt "program guide"
+#~ msgid "Schedule Program"
+#~ msgstr "Schemalägg program"
+
+#~ msgctxt "@title:column tv channel name"
+#~ msgid "Name"
+#~ msgstr "Namn"
+
+#~ msgctxt "epg"
+#~ msgid "Refresh"
+#~ msgstr "Uppdatera"
+
+#~ msgctxt "program guide"
+#~ msgid "Program successfully scheduled."
+#~ msgstr "Program schemalagt med lyckat resultat."
+
+#~ msgid "Unknown playlist format."
+#~ msgstr "Okänt spellisteformat."
+
+#~ msgctxt "submenu of skip"
+#~ msgid "Skip 1min Backward"
+#~ msgstr "Gå en minut bakåt"
+
+#~ msgctxt "submenu of skip"
+#~ msgid "Skip 1min Forward"
+#~ msgstr "Gå en minut framåt"

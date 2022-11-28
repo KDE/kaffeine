@@ -1,0 +1,2168 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Ukrainian "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>Підручник з &kaffeine;</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab+kde@kernel.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<othercredit role="translator"
+><firstname
+>Юрій</firstname
+><surname
+>Чорноіван</surname
+><affiliation
+><address
+><email
+>yurchor@ukr.net</email
+></address
+></affiliation
+><contrib
+>Переклад українською</contrib
+></othercredit
+> 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016-2019</year>
+<holder
+>Автори &kaffeine;.</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>1 травня 2019 року</date>
+<releaseinfo
+>&kaffeine; 2.0.17</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+><ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine</ulink
+> — програвач мультимедійних даних, створений командою &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>kaffeine</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>відео</keyword>
+<keyword
+>звук</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>atsc</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+<keyword
+>ТБ</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>Програвач &kaffeine;</title>
+
+<sect1 id="startwindow">
+<title
+>Початкове вікно</title>
+
+<para
+>Подібно багатьом іншим програмам для відтворення мультимедійних даних, у &kaffeine; передбачено підтримку відтворення даних у широкому діапазоні форматів, а також відтворення звуку та відео із DVD та компакт дисків. Крім того, передбачено можливість відтворення цифрового телебачення, якщо із комп’ютером з’єднано пристрій-приймач цифрових відеотрансляцій (DVB). </para>
+<para
+>Одразу після запуску &kaffeine; програма показує вікно із пунктами основних функціональних можливостей посередині. Іншими можливостями можна скористатися за допомогою основного меню програми або лівої бічної панелі: </para>
+
+<screenshot>
+<screeninfo
+>Початкове вікно</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Початкове вікно</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>Відтворення файла</title>
+<para
+>Для відтворення файла із відео або звуковими даними достатньо натиснути кнопку <guibutton
+>Відтворити файл</guibutton
+>. Програма попросить вас вибрати файл для відтворення і почне його відтворювати. Оскільки для роботи з даними &kaffeine; використовує LibVLC, у програмі передбачено підтримку усіх <ulink url="https://www.videolan.org/vlc/features.html"
+>типів файлів</ulink
+>, які можна відтворювати у VLC. Крім того, передбачено підтримку відкриття списку файлів для створення і керування <ulink url="https://wiki.videolan.org/Playlist/"
+>списками відтворення</ulink
+>. </para>
+
+<screenshot>
+<screeninfo
+>Відтворення файла</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Відтворення файла</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>Вікно списку відтворення</title>
+<para
+>У &kaffeine; передбачено підтримку роботи із декількома списками відтворення. Вибрати активний список можна за допомогою списку <guilabel
+>Список відтворення</guilabel
+> на лівій бічній панелі. Ви можете просто перетягти пункти файлів і тек із вікна програми для навігації файловою системою і скинути їх на панель списку відтворення, щоб запланувати відтворення відповідних файлів, або скинути ці пункти до вікна програвача, щоб створити новий список відтворення. Щоб змінити назву списку відтворення, введіть нову назву і натисніть клавішу &Enter;. </para>
+<screenshot>
+<screeninfo
+>Вікно списку відтворення</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>Вікно списку відтворення</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>Пункти дій, пов’язані зі списками відтворення, розташовано у меню <guimenu
+>Список відтворення</guimenu
+> та контекстному меню (можна викликати клацанням правою кнопкою миші, коли вказівник миші перебуває на панелі списку відтворення). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>Відтворення цифрового телебачення</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>Налаштовування цифрового телебачення</title>
+
+<para
+>Хоча базові функціональні можливості програми можуть виявитися достатніми для тих, кому потрібен простий але потужний засіб для відтворення мультимедійних даних, найпотужніші можливості &kaffeine; полягають у використанні програми як графічного інтерфейсу для перегляду і запису програм цифрового телебачення. </para>
+
+<para
+>У версії 2.0 &kaffeine; підтримку цифрового телебачення було розширено форматами DVB-T2 і ISDB-T. Оскільки ця версія використовує libdvbv5, розширення підтримки на інші стандарти цифрового мовлення є доволі простим. Крім того, використовується програмний інтерфейс DVB версії 5 у &Linux;, а ним передбачено можливість одночасного перегляду декількох каналів телебачення у різних стандартах. </para>
+
+<para
+>Щоб налаштувати перегляд телебачення у &kaffeine; достатньо скористатися пунктом <guimenu
+>Телебачення</guimenu
+> головного і вибрати у ньому підпункт <guimenuitem
+>Налаштувати телебачення</guimenuitem
+>. У відповідь буде відкрито контекстне вікно, за допомогою якого ви зможете вказати потрібні параметри: </para>
+
+<screenshot>
+<screeninfo
+>Налаштовування телебачення — загальні параметри</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Налаштовування телебачення — загальні параметри</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title
+>Загальні параметри цифрового телебачення</title>
+
+<para
+>За допомогою меню <guimenu
+>Загальні параметри</guimenu
+> можна налаштувати параметри, які працюватимуть для усіх пристроїв. </para>
+
+<para
+>Параметр <guilabel
+>Тека записів</guilabel
+> визначає теку, до якої зберігатимуться усі записи телепрограм. </para>
+
+<para
+><guilabel
+>Назва файла xmltv (необов'язкова)</guilabel
+> визначає назву файла даних EPG, який було отримано зовнішньою програмою. Якщо буде використано цей пункт, варто також позначити пункт <guilabel
+>Вимкнути обробку даних електронної телепрограми (EPG) з таблиць MPEG-TS</guilabel
+> </para>
+
+<para
+>Пункт <guilabel
+>Вимкнути обробку даних електронної телепрограми (EPG) з таблиць MPEG-TS</guilabel
+> вимикає отримання даних електронної телепрограми (EPG) з трансльованого сигналу. Скористайтеся ним для заощадження процесорного часу, якщо ваш надавач послуг телебачення не надсилає якісних даних EPG. </para>
+
+<para
+>Параметр <guilabel
+>Тека файла часового зсуву</guilabel
+> використовується разом із кнопкою призупинення відтворення (<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>) на панелі відтворення мультимедійних даних. Коли ви натискаєте цю кнопку, програма починає записувати на диск у вказаній теці файл із даними для відкладеного показу. </para>
+
+<para
+>Параметри <guilabel
+>Початковий відступ</guilabel
+> і <guilabel
+>Кінцевий відступ</guilabel
+> використовуються для створення так званого «безпечного поля», яке запобігає випадковому пропуску початку або кінця програми, оскільки час показу програми у телепрограмі може бути вказано неточно. Отже, програма розпочинатиме запис за декілька хвилин до часу <guilabel
+>Початок</guilabel
+>, який визначено у <guimenu
+>Розклад передач</guimenu
+>. Точне значення часового відступу перед початком програми визначається параметром <guilabel
+>Початковий відступ</guilabel
+>. Програма також продовжує запис після формального завершення телепрограми протягом часу, вказаного за допомогою параметра <guilabel
+>Кінцевий відступ</guilabel
+>. </para>
+
+<para
+>Параметр <guilabel
+>Стиль іменування для записів</guilabel
+> використовується для налаштовування способу, у який &kaffeine; називатиме записані програми. Для зміни назви запису може бути використано декілька макросів-замінників: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>%title</parameter
+> — назва програми у <guimenu
+>Розкладі передач</guimenu
+> та <guimenu
+>Розкладі записів</guimenu
+> menus; </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%day, %month, %year, %hour, %min, %sec</parameter
+> — поля для часової позначки, яка відповідає моменту часу, коли &kaffeine; розпочинає запис програми; </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%channel</parameter
+> — назва каналу, яким передається програма. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>За допомогою параметра <guilabel
+>Дія після завершення запису</guilabel
+> можна налаштувати додаткову команду, яку буде виконано після завершення запису телепрограми за допомогою &kaffeine;. </para>
+
+<para
+>За допомогою пункту <guilabel
+>Оновити дані сканування за допомогою інтернету</guilabel
+> можна наказати &kaffeine; виконати пошук нового файла визначення сканування на <ulink url="https://autoconfig.kde.org/kaffeine/"
+>сайті KDE</ulink
+>. </para>
+<para
+>У &kaffeine; для зберігання списку відомих цифрових каналів для певних країн та міст використовується файл із назвою scanfile.dvb. Вміст цього файла синхронізується із <ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+>записами ієрархії dtv-scan-tables</ulink
+>, супровід яких здійснює спільнота <ulink url="https://linuxtv.org"
+>LinuxTV</ulink
+>. Докладніший опис можна знайти на  <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>сторінці вікі dtv-scan-tables</ulink
+>. </para>
+<para
+>Якщо ви натиснете відповідну кнопку, &kaffeine; отримає найсвіжішу версію визначень каналів і збереже її до локального файла даних користувача, перезаписавши увесь його вміст. </para>
+<para
+>Будь ласка, зауважте, що для того, щоб скористатися новими визначеннями, доведеться закрити діалогове вікно налаштовування телебачення і відкрити його знову.</para>
+
+<para
+>За допомогою пункту <guilabel
+>Редагувати файл каналів</guilabel
+> ви зможете виконати редагування файла каналів, що може бути корисним, якщо ви хочете додати новий набір каналів, якого ще немає у основному файлі списку. Будь ласка, не забудьте надіслати ваше оновлення <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+>dtv-scan-tables</ulink
+>, щоб інші користувачі змогли скористатися новими визначеннями каналів. </para>
+
+<para
+>За допомогою пункту <guilabel
+>Використовувати набір ISO 8859-1 замість ISO 6937</guilabel
+> можна вибрати типове кодування символів, яке буде використовуватися для повідомлень MPEG-TS, для яких кодування не вказано явним чином. Якщо кодування не встановлено, типово використовуватиметься кодування ISO-6937. Якщо ж цей пункт буде позначено, типовим вважатиметься кодування ISO 8859-1. </para>
+
+<para
+>За допомогою пункту <guilabel
+>Створювати супутні інформаційні файли записів EPG</guilabel
+> можна увімкнути створення допоміжних файлів для запланованих записів. У цих файлах міститимуться дані розкладу передач, якщо записи виконуються за допомогою пункту <guimenu
+>Розклад передач</guimenu
+>. </para>
+
+<sect3 id="EPG-data">
+<title
+>Отримання даних електронної телепрограми (EPG)</title>
+
+<para
+>Більшість трансляторів цифрового телебачення надсилають дані щодо телепрограми у потоці трансляції, закодованими у потік даних MPEG-TS. Втім, деякі з них використовують нестандартні кодування для цих даних. Відомим прикладом є BBC у Великобританії, де програми із високою роздільною здатністю зображення зберігаються за допомогою закритого формату. Інші ж надавачі послуг цифрового телебачення просто не заповнюють дані EPG або постачають неякісні дані. </para>
+
+<para
+>Починаючи з версії &kaffeine; 2.0.17, можна вимкнути обробку даних EPG з трансльованих каналів, скориставшись зовнішньою програмою для отримання цих даних. Щоб зробити це, просто позначте пункт <guilabel
+>Вимкнути обробку даних електронної телепрограми (EPG) з таблиць MPEG-TS</guilabel
+>. Після цього ви можете встановити зовнішню програму для створення файла із даними EPG і скористатися пунктом <guilabel
+>Назва файла xmltv (необов'язкова)</guilabel
+> для зазначення назви створеного файла. Файл із телепрограмою має бути збережено у форматі XMLTV, який описано у відповідному DTD. Див. <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+>формат файлів XMLTV</ulink
+>, щоб дізнатися більше. </para>
+
+<para
+>Якщо &kaffeine; налаштовано на використання файла XMLTV, програма автоматично слідкуватиме за будь-якими змінами у цьому файлі. Якщо до файла буде внесено зміни, програма повторно відкриє його і обробити дані, оновивши EPG відповідним чином. </para>
+
+<para
+>Слід зауважити, що у файлі XMLTV є таблиця з власною прив'язкою до внутрішнього представлення каналів із очікуваними назвами каналів у даних цифрової трансляції телебачення. &kaffeine; отримуватиме дані EPG, лише якщо записи каналів у файлів відповідатимуть списку каналів у &kaffeine;. Отже, вам слід забезпечити відповідність каналів у файлі очікуваним каналам &kaffeine;. Якщо відповідності немає, ви можете скористатися програмою-редактором &XML; з командного рядка для додавання пропущених даних щодо каналів. </para>
+
+<para
+>Наприклад, якщо у вас є програма для отримання даних xmltv, яка отримує файл із назвою <emphasis
+>original_xmltv_file.xmltv</emphasis
+>, ви можете скористатися програмою <emphasis
+>xmlstarlet</emphasis
+> для додавання пропущених прив'язок. Отже, якщо ви хочете пов'язати канал XMLTV із назвою <emphasis
+>channel.foo.uk</emphasis
+> із каналом, навою якого у &kaffeine; є <emphasis
+>FOO</emphasis
+>, можете скористатися таким скриптом: </para>
+<para
+><programlisting
+>channel="xmltv.channel.pt"
+name="DVB_CHANNEL"
+xmlstarlet ed \
+        -s "tv/channel[@id='$channel']" -t elem -n display-name \
+        -v "$name" original_xmltv_file.xmltv &gt; new_xmltv_file.xmltv
+mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
+</programlisting>
+</para>
+<para
+>Далі, налаштуйте &kaffeine; на використання нового файла <emphasis
+>/tmp/new_xmltv_file.xmltv</emphasis
+>. </para>
+
+</sect3>
+</sect2>
+<sect2 id="dtv-source-settings">
+<title
+>Налаштовування джерел цифрового телебачення</title>
+
+<screenshot>
+<screeninfo
+>Налаштовування телевізійного пристрою</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Налаштовування телебачення</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>На вкладках <guimenu
+>Пристрій</guimenu
+> розташовано пункти налаштовування пристроїв. Зазвичай, достатньо вибрати країну і місто у спадному списку <guilabel
+>Джерело</guilabel
+> (або скористатися одним із джерел автоматичного сканування), якщо здійснюється перегляд ефірного (не супутникового) телебачення. Те саме можна сказати і про налаштовування пристроїв, у яких передбачено підтримку перегляду телебачення у декількох стандартах. Для таких пристроїв вам слід налаштувати <guilabel
+>Джерело</guilabel
+> для кожного зі стандартів сигналу: </para>
+
+<screenshot>
+<screeninfo
+>Налаштовування каналів</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Налаштовування каналів</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>За допомогою пункту <guilabel
+>Час очікування тюнера</guilabel
+> можна вказати проміжок часу, протягом якого засіб сканування очікуватиме на фіксування сигналу. Зазвичай, типового значення достатньо для більшості пристроїв, але якщо фіксування сигналу на пристрої відбувається надто довго, слід збільшити час очікування. </para>
+
+<para
+>Поле <guilabel
+>Назва</guilabel
+> визначає назву, яку буде пов'язано із джерелом і яку буде показано у меню <guimenu
+>Телебачення</guimenu
+> та списку <guimenu
+>Канали</guimenu
+>. </para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title
+>Супутникові пристрої</title>
+
+<para
+>Налаштовування супутникових пристроїв (DVB-S, DVB-S2) дещо складніше, оскільки можливі різні конфігурації супутникової системи. Крім того, у супутникових системах вмикання підсилювача (який називають LNBf), розташованого на супутниковій тарілці, здійснюється самим пристроєм приймача за допомогою керівного ланцюга. </para>
+<para
+>Крім того, супутникові системи використовують широкий діапазон частот і приймають сигнали у різних поляризаціях. Загалом, використовують протокол, який називають DiSEqC, для вибору діапазонів каналів, які буде отримувати пристрій. </para>
+<para
+>На першому кроці слід навчити &kaffeine; налаштовувати отримання даних із супутника за допомогою поля <guimenu
+>Налаштування</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>Визначення супутникових пристроїв</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Визначення супутникових пристроїв</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Можна налаштувати такі значення: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>Перемикач DiSEqC</parameter
+> — кабель антени з'єднано із перемикачем DiSEqC або LNBf потребує команд DiSEqC для вибору діапазону каналів. Це найпоширеніший випадок. Він надає змогу одночасно підтримувати зв'язок із 4 супутниками, з кожним за допомогою окремої тарілки. Для кожного із супутників вам слід вказати налаштування LNBf на тарілці, яка здійснює приймання сигналу з нього. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Ротор USALS</parameter
+> — кабель антени з'єднано із однією тарілкою з ротором USALS, керування яким здійснюється за допомогою DiSEqC. Можна налаштувати зв'язок із декількома супутниками, оскільки ротор може змінювати позицію тарілки, якщо ви змінюєте вибір супутника. Вам слід вказати позицію тарілки (широту і довготу). </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Ротор позиціювання</parameter
+> — кабель антени з'єднано з однією тарілкою із ротором із набором фіксованих позицій. Керування ротором здійснюється за допомогою DiSEqC. Можна налаштувати зв'язок із декількома супутниками, оскільки ротор може змінювати позицію тарілки, якщо ви виберете інший супутник. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>Вимкнути DiSEqC</parameter
+> — кабель антени з'єднано із тарілкою без елементів з підтримкою DiSEqC. Такі налаштування типово використовуються із багатоточковими LNBf у стосі, де усі канали одночасно передаються з антени одним кабелем. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>У типовій супутниковій системі LNBf використовує електричний сигнал для вибору між низьким напруженням (13 В) для вертикальної або правої окружної поляризації і високим напруженням (18 В) для горизонтальної або лівої окружної поляризації. Втім, через втрату напруги у кабелі іноді LNBf не отримує високої напруги, що призводить до неможливості налаштуватися на певні канали або помилкового налаштовування на ці канали. Тому на деяких пристроях передбачено можливість збільшити напругу (до 14 В або до 19 В). Увімкнути підсилення можна за допомогою трипозиційного параметра <guilabel
+>Підвищена напруга LNBf</guilabel
+>. Передбачено три варіанти: </para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>трипозиційний режим</parameter
+> — не надсилати команди щодо коригування рівня напруги на пристрій. Типовий варіант. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>не позначено</parameter
+> — звичайні значення (13 В/18 В) для керівних напруг. Вибирайте, лише якщо на пристрої передбачено коригування рівня напруги. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>позначено</parameter
+> — використовувати підвищені рівні напруги (14 В/19 В). Використовуйте, лише якщо на пристрої передбачено підтримку коригування рівня напруги. </para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title
+>Налаштування без обертання</title>
+
+<para
+>Якщо використано пункт <parameter
+>Перемикач DiSEqC</parameter
+> або <parameter
+>Вимкнути DiSEqC </parameter
+>, першим кроком є встановлення супутника, який буде використано як джерело сигналу. Можна вибрати до 4 джерел. Для кожного джерела має бути власний LNBf. Після встановлення джерел для кожного джерела слід натиснути кнопку <guilabel
+>Параметри LNBf</guilabel
+> для відкриття контекстного вікна і вибору типу LNBf на тарілці, яка відповідає джерелу: </para>
+
+<screenshot>
+<screeninfo
+>Визначення LNBf</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Визначення LNBf</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title
+>Налаштовування обертання</title>
+
+<para
+>Якщо використовується ротатор, LNBf буде одним, спільним для декількох супутників. Отже, на наступному кроці слід вибрати тип LNBf за допомогою діалогового вікна <guilabel
+>Параметри LNB</guilabel
+>. </para>
+<para
+>Для ротора USALS позиціювання здійснюється за допомогою даних про позицію супутника (широту і довготу). Отже, просто виберіть супутники, які буде використано, за допомогою спадного списку і натискання кнопки <guilabel
+>Додати супутник</guilabel
+>. </para>
+<para
+>Для ротора позиціювання позиціювання виконується на основі попередньо налаштованого номера позиції. Отже, просто виберіть позицію супутника у діалоговому вікні номера, розташованому ліворуч, і супутник за допомогою спадного списку праворуч і натисніть кнопку <guilabel
+>Додати супутник</guilabel
+>. </para>
+<para
+>Якщо супутник було додано помилково, ви можете позначити його пункт і натиснути кнопку <guilabel
+>Вилучити супутник</guilabel
+>, щоб вилучити помилково доданий запис. </para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title
+>Налаштовування каналу цифрового телебачення</title>
+
+<para
+>Після натискання кнопки <guibutton
+>Гаразд</guibutton
+> наступним кроком є сканування цифрових каналів за допомогою пункту <guimenuitem
+>Канали</guimenuitem
+> меню <guimenu
+>Телебачення»</guimenu
+>: </para>
+
+
+<screenshot>
+<screeninfo
+>Сканування каналів</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Сканування каналів</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Якщо передбачено підтримку декількох стандартів, за допомогою спадного списку <guilabel
+>Джерело</guilabel
+> можна вибрати стандарт, який буде використано для сканування. Не забудьте з'єднати кабель антени пристрою відповідно до стандарту, який буде використано. </para>
+
+<para
+>Після виявлення каналу &kaffeine; виконує читання таблиці <acronym
+>MPEG-TS</acronym
+>, яка має назву «Мережева інформаційна таблиця» (Network Information Table або просто <acronym
+>NIT</acronym
+>) і містить дані щодо каналів, які використовують різні параметри настроювання, але надсилаються одним мовником. У деяких мережах деякі параметри настроювання зберігаються у декількох <acronym
+>NIT</acronym
+> (які називають <quote
+>інші NIT</quote
+>). Така практика поширена у деяких кабельних та супутникових системах. Якщо ви позначите пункт <guilabel
+>Шукати інші мережі на ретрансляторі</guilabel
+> &kaffeine; чекатиме і оброблятиме усі інші <acronym
+>NIT</acronym
+>, що може надати змогу знайти додаткові канали, але сканування у такому випадку триватиме значно довше. </para>
+
+<para
+>Пошук каналів розпочинається із натискання кнопки <guibutton
+>Почати сканування</guibutton
+>. Після завершення сканування список виявлених каналів буде показано праворуч. Показані пункти каналів можна скопіювати ліворуч натисканням кнопки <guibutton
+>Додати відфільтровані</guibutton
+>. Передбачено можливість змінити параметри налаштовування для окремих каналів: достатньо натиснути кнопку <guibutton
+>Змінити</guibutton
+>. У вікні, яке буде відкрито, можна змінити деякі з параметрів налаштовування на канал. </para>
+
+<screenshot>
+<screeninfo
+>Редагування параметрів каналу</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Редагування параметрів каналу</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Щойно список каналів буде збережено, для перегляду телеканалу достатньо буде натиснути кнопку <guibutton
+>Цифрове ТБ</guibutton
+> у головному вікні програми: </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title
+>Перегляд телеканалу</title>
+
+<screenshot>
+<screeninfo
+>Перегляд телеканалу</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Перегляд телеканалу</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>Крім того, у &kaffeine; передбачено можливість натискання кнопки <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> для призупинення відтворення. Після натискання цієї кнопки &kaffeine; розпочне записувати програму, і після натискання кнопки <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> ви зможете розпочати перегляд програми з того місця, де його було призупинено. Також передбачено кнопку <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>, за допомогою натискання якої ви можете розпочати запис і збереження програми на диск. </para>
+
+</sect1>
+<sect1 id="program-guide">
+<title
+>Розклад передач</title>
+
+<para
+>У цифрових телевізійних каналах сигнал містить дані щодо списку поточних і майбутніх передач. Цей список називається «Електронний розклад передач» (Electronic Program Guide або <acronym
+>EPG</acronym
+>). Дані EPG отримуються програмою під час відтворення вмісту каналу. Щоб переглянути <acronym
+>EPG</acronym
+>, відкрийте пункт головного меню <guimenu
+>Телебачення</guimenu
+> і виберіть пункт <guimenuitem
+>Розклад передач</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Розклад передач</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Розклад передач</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>У деяких країнах дані EPG доступні декількома мовами. Типово, &kaffeine; показує EPG будь-якою мовою. Якщо доступні декілька мов для певного запису EPG і мову не вибрано явним чином, програма додаватиме до назви, підназви та опису програми трилітерний код мови, відповідно до специфікації ISO 639-2. </para>
+
+<para
+>За допомогою параметра <guilabel
+>Мова EPG</guilabel
+> можна виконати фільтрування за мовою. Якщо пункт позначено, фільтрування також буде застосовано і для екранної панелі, <acronym
+>OSD</acronym
+>, та усіх нових запланованих записів. Фільтрування не стосуватиметься попередньо створених запланованих записів. </para>
+
+<para
+>Окрім натискання кнопки <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> під час перегляду телепрограми, у &kaffeine; передбачено записування програми за допомогою списку програм. Достатньо натиснути кнопку <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>Записати програму</guibutton
+> у вікні <guimenuitem
+>Розклад передач</guimenuitem
+>. </para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title
+>Розклад запису</title>
+
+<para
+>Щоб переглянути список програм, запланованих до запису, відкрийте пункт головного меню <guimenu
+>Телебачення</guimenu
+> і виберіть пункт <guimenuitem
+>Розклад запису</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>Розклад запису</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>Розклад запису</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>Натисканням кнопки <guibutton
+>Створити</guibutton
+> можна безпосередньо задати час і тривалість програми, яку слід записати. У цьому випадку визначення EPG не використовуватимуться. </para>
+<para
+>Позначенням наявної програми із наступним натисканням кнопки <guibutton
+>Змінити</guibutton
+> можна змінити час початку і тривалість запису. Також можна налаштувати щотижневий або щоденний запис. </para>
+<para
+>Позначенням наявної програми із наступним натисканням кнопки <guibutton
+>Вилучити</guibutton
+> можна вилучити програму із розкладу запису. </para>
+
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-menubar">
+<title
+>Панель меню &kaffeine;</title>
+
+<sect1 id="file-menu">
+<title
+>Меню «Файл»</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відкрити...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Відкриває діалогове вікно роботи з файлами</action
+>, за допомогою якого ви можете вибрати локальний файл для відтворення. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>U</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відкрити адресу...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="text-html.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Відкрити діалогове вікно для введення тексту</action
+>, щоб ви могли вказати адресу підтримуваного зовнішнього потоку мультимедійних даних. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відкрити недавні</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Відкриває спадний список, за допомогою якого можна відтворити нещодавно відкритий локальний ресурс</action
+>. Також у меню міститься пункт <guimenuitem
+>Спорожнити список</guimenuitem
+>, за допомогою якого можна спорожнити список ресурсів. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відтворити аудіо-КД</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Вибрати відтворення звукового компакт-диска</action
+>, який має бути розміщено у пристрої для читання компакт-дисків. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відтворити відео-КД</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Вибрати відтворення компакт-диска з відео</action
+>, який має бути розміщено у пристрої для читання компакт-дисків. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відтворити DVD</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Вибрати відтворення DVD</action
+>, який має бути розміщено у пристрої для читання компакт-дисків. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Файл</guimenu
+> <guimenuitem
+>Відтворити теку DVD</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Відкриває діалогове вікно роботи з файлами</action
+> і надає вам змогу вибрати теку DVD для відтворення. У теці мають міститися необроблені дані, які скопійовано з DVD. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Файл</guimenu
+> <guimenuitem
+>Вийти</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Завершує роботу</action
+> &kaffeine;. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playback-menu">
+<title
+>Меню «Відтворення»</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgUp;</keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Попередній</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Якщо ви відтворювали протягом одного сеансу два або більше потоки даних, <action
+>вибирає попередній потік даних</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Space;</keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Пуск/Пауза</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> та <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Вмикає і призупиняє відтворення потокових даних</action
+>. Для телевізійних даних призупинення відтворення призводить до того, що програма починає записувати дані для їхнього подальшого відтворення. У телебаченні це називається <ulink url="https://uk.wikipedia.org/wiki/Time_Shifted_TV"
+>часовий зсув</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Backspace;</keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Stop</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Припинити відтворення потоку даних</action
+>, який ви переглядаєте. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgDn;</keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Далі</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Якщо протягом одного сеансу відбувалося відтворення двох або декількох потоків даних, і ви переглядаєте один з попередніх потоків, за допомогою цього пункту можна <action
+>перейти до наступного потоку даних у списку</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>F</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Повноекранний режим/Вийти з повноекранного режиму</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+> та <inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Вмикає і вимикає повноекранний режим відтворення</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>.</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Мінімальний режим/Вийти з мінімального режиму</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> та <inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>Вмикає і вимикає мінімальний режим</action
+>, графічний режим у вікні, де для керування програмою використовуватимуться лише контекстне меню та клавіатурні скорочення. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Субтитри</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Відкриває спадний список <action
+>пунктів, які пов'язано із потоками даних субтитрів</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Субтитри</guisubmenu
+> <guimenuitem
+>вимкнено/<replaceable
+>Назва субтитрів</replaceable
+></guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Надає змогу вибрати доступні субтитри</action
+> зі спадного списку. Вміст списку каналів субтитрів залежить від вмісту потоку початкових даних. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Субтитри</guisubmenu
+> <guimenuitem
+>Додати файл субтитрів</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
+></inlinemediaobject
+> За допомогою цього пункту можна <action
+>додати локальний файл субтитрів</action
+> з використанням діалогового вікна вибору файлів. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Звук</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Відкриває спадний список <action
+>пунктів, які пов'язано із потоками звукових даних</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Звук</guisubmenu
+> <guimenuitem
+>Звуковий пристрій</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+>Відкриває спадний список із <action
+>доступними звуковими пристроями</action
+>. Цим пунктом можна буде скористатися, лише якщо під час запуску &kaffeine; буде виявлено декілька звукових пристроїв. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Звук</guisubmenu
+> <guimenuitem
+>Збільшити гучність</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Збільшити гучність. Гучність також можна збільшити так: навести вказівник на область відтворення мультимедійних даних і прокрутити коліщатко миші від себе. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Звук</guisubmenu
+> <guimenuitem
+>Зменшити гучність</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Зменшити гучність. Гучність також можна зменшити так: навести вказівник на область відтворення мультимедійних даних і прокрутити коліщатко миші до себе </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Звук</guisubmenu
+> <guimenuitem
+>Вимкнути звук</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject
+></inlinemediaobject
+> та <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. Вимикає звук і вмикає його. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Відео</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>Відкриває спадний список <action
+>пунктів, які пов'язано із потоками відеоданих</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Відео</guisubmenu
+> <guimenuitem
+>Усунути черезрядковість</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Показує спадний список із доступними алгоритмами усування черезрядковості. <action
+>Вмикає або вимикає обробку черезрядкового відео</action
+>, яким часто є аналоговий телевізійний сигнал. Докладніше про це у статті <ulink url="https://uk.wikipedia.org/wiki/%D0%94%D0%B5%D1%96%D0%BD%D1%82%D0%B5%D1%80%D0%BB%D0%B5%D0%B9%D1%81%D0%B8%D0%BD%D0%B3"
+>Вікіпедії</ulink
+> </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Відео</guisubmenu
+> <guimenuitem
+>Співвідношення розмірів</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Відкриває спадний список доступних співвідношень розмірів кадру</action
+> із додатковим пунктом <guimenuitem
+>Автоматично</guimenuitem
+>. <ulink url="https://en.wikipedia.org/wiki/Aspect_ratio_(image)"
+>Співвідношення розмірів зображення</ulink
+> визначає пропорційне відношення ширини і висоти зображення. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Відео</guisubmenu
+> <guimenuitem
+>Розмір зображення</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>Відкриває спадний список доступних розмірів відео</action
+>. Можна змінити розмір зображення у відсотках або скористатися пунктами <guimenuitem
+>Автоматично</guimenuitem
+> і <guimenuitem
+>Початковий розмір</guimenuitem
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>J</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Перейти до позиції</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="go-jump.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Відкриває поле для встановлення бажаного моменту часу, до якого слід здійснити перехід</action
+>; передбачено поля для годин, хвилин та секунд. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Перемотування</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Відкриває спадний список із чотирма попередньо визначеними варіантами перемотування</action
+>. Список містить такі пункти: </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;<keycap
+>←</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Перемотування</guisubmenu
+> <guimenuitem
+>Повернутися на 60 сек.</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Перемотати на 60 секунд назад</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>←</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Перемотування</guisubmenu
+> <guimenuitem
+>Повернутися на 15 сек.</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Перемотати на 15 секунд назад</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>→</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Перемотування</guisubmenu
+> <guimenuitem
+>Перейти на 15 сек. вперед</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Перемотати на 15 секунд вперед</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;<keycap
+>→</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Відтворення</guimenu
+> <guisubmenu
+>Перемотування</guisubmenu
+> <guimenuitem
+>Перейти на 60 сек. вперед</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Перемотати на 60 секунд вперед</action
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Меню DVD</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Відкрити початкове графічне меню &DVD;</action
+>. Переходити між пунктами цього меню можна за допомогою клавіш зі стрілками та миші. Докладніший опис наведено у <ulink url="https://en.wikipedia.org/wiki/DVD-Video"
+>статті Вікіпедії</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Назва</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Вміст &DVD; поділено на назви творів для спрощення навігації</action
+>. За допомогою цього пункту ви можете безпосередньо перейти до потрібної вам частини. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Частина</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Вміст &DVD; поділено на частини для спрощення навігації</action
+>. За допомогою цього пункту ви можете безпосередньо перейти до потрібної вам частини. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Відтворення</guimenu
+> <guimenuitem
+>Кут</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>Різновид частин: частини іноді можуть мати різні версії</action
+> (такі версії називають <quote
+>кутами</quote
+>) певних сцен. За допомогою цього пункту ви можете безпосередньо перейти до таких частин. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playlist-menu">
+<title
+>Меню «Список відтворення»</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Повторити</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Пункт для <action
+>циклічного повторення файлів</action
+> зі списку відтворення. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Випадковий порядок</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Пункт для визначення <action
+>випадкового порядку відтворення файлів</action
+> зі списку відтворення. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Спорожнити</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Вилучити усі записи зі списку відтворення</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Створити</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="list-add.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Створити список відтворення</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Перейменувати</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-rename.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Перейменувати поточний список відтворення</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Вилучити</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-delete.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Вилучити поточний список відтворення</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Зберегти</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Зберегти поточний список відтворення</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;&Shift;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Список відтворення</guimenu
+> <guimenuitem
+>Зберегти як...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save-as.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Зберегти поточний список відтворення до файла із новою назвою</action
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="television-menu">
+<title
+>Меню «Телебачення»</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>C</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Телебачення</guimenu
+> <guimenuitem
+>Канали</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="video-television.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Відкриває панель параметрів для <action
+>налаштовування каналів</action
+>, які відповідають місцевості, де ви перебуваєте. Докладніший опис наведено у розділі <link linkend="dtv-channel-setup"
+>Налаштовування каналів цифрового телебачення</link
+>. </action
+></para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>G</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Телебачення</guimenu
+> <guimenuitem
+>Розклад передач</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-list-details.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Відкриває вікно для <action
+>керування розкладом передач</action
+>. Докладніший його опис можна знайти у розділі <link linkend="program-guide"
+>Розклад передач</link
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Телебачення</guimenu
+> <guimenuitem
+>Екранна панель</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>Показати екранну інформаційну панель у вікні відтворення протягом трьох секунд</action
+>. На панелі буде показано дані щодо поточної і наступної передачі у програмі. У відповідь на подвійне клацання програма покаже додаткову інформацію щодо поточної передачі. Прибрати цю інформацію можна клацанням кнопкою миші. Докладніше про екранну панель у <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
+>статті Вікіпедії</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>R</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>Телебачення</guimenu
+> <guimenuitem
+>Розклад запису</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Відкриває вікно для <action
+>керування запланованим записом</action
+>. Докладніший його опис можна знайти у розділі <link linkend="recording-schedule"
+>Розклад запису</link
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Телебачення</guimenu
+> <guimenuitem
+>Негайний запис</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Пункт із позначкою для визначення поточного стану. <action
+>Негайно розпочинає запис потокових даних, які відтворюються</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Телебачення</guimenu
+> <guimenuitem
+>Налаштувати телебачення...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Відкриває вікно для <action
+>налаштовування параметрів пристроїв DVB</action
+>. Докладніший його опис можна знайти у розділі <link linkend="digital-tv"
+>Налаштовування цифрового телебачення</link
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="settings-menu">
+<title
+>Меню «Параметри»</title
+> 
+
+<para
+>Для спрощення користування &kaffeine; у цьому меню міститься лише два пункти: </para>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Параметри</guimenu
+> <guimenuitem
+>Налаштувати скорочення...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Надає вам змогу вмикати, вимикати і змінювати комбінації клавіш для керування програмою. Докладніший опис наведено у розділі <quote
+>Користування клавіатурними скороченнями та їхнє налаштовування</quote
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>Параметри</guimenu
+> <guimenuitem
+>Налаштувати &kaffeine;...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> Відкриває панель налаштовування. </para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="help-menu">
+<title
+>Меню «Довідка»</title
+> 
+<para
+>У &kaffeine; передбачено типові пункти меню <guimenu
+>Довідка</guimenu
+> &kde;. Докладний опис цього меню наведено у розділі <ulink url="help:/fundamentals/menus.html#menus-help"
+>Меню «Довідка»</ulink
+> підручника з основ роботи у &kde;. </para>
+</sect1>
+</chapter>
+
+<chapter id="credits">
+<title
+>Авторські права та ліцензування</title>
+
+<para
+>Авторські права на програму належать розробникам &kaffeine;, 2007–2018. </para>
+
+<para
+>Авторські права на документацію належать Jürgen Kofler <email
+>kaffeine@gmx.net</email
+>, Christophe Thommeret <email
+>hftom@free.fr</email
+>, Mauro Carvalho Chehab <email
+>mchehab+kde@kernel.org</email
+>, 2003–2005. </para>
+<para
+>Переклад українською: Юрій Чорноіван <email
+>yurchor@ukr.net</email
+></para
+> 
+&underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+

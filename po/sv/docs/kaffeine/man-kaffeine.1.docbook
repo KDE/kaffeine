@@ -1,0 +1,508 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Swedish "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>Kaffeine användarhandbok</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>2018-05-01</date>
+<releaseinfo
+>Kaffeine 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>En mediaspelare av KDE med stöd för digital-tv</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>proportion</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>namn</replaceable
+> / <replaceable
+>nummer</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>kanal</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>filer</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>Observera att <option
+>--channel</option
+>, <option
+>--tv</option
+>, <option
+>--lastchannel</option
+>, <option
+>--audiocd</option
+>, <option
+>--videocd</option
+>, <option
+>--dvd</option
+> och <option
+><replaceable
+>filer</replaceable
+></option
+> är ömsesidigt uteslutande.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>Beskrivning</title>
+<para
+>Kaffeine är en mediaspelare. Vad som skiljer den från övriga är dess utmärkta stöd för digital-tv (DVB). Kaffeine har ett användarvänligt gränssnitt, så att även förstagångsanvändare kan omedelbart börja spela sina filmer: från dvd (inklusive dvd-menyer, titlar, kapitel, etc.), vcd, eller en fil.</para>
+
+<para
+>Kaffeine använder libVLC som gränssnitt för uppspelning av video och ljud.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>Väljare</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>Aktivera alla felsökningsmeddelanden. Observera att Kaffeine också tillåter att felsökningsmeddelanden aktiveras per kategori, genom att använda miljövariabeln:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>kategori</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>där <emphasis
+>kategori</emphasis
+> kan vara:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>för dvb CAM-loggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>for dvb-enhets och libdvbv5-loggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>för dvb MPEG-TS SI-tolkningsloggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>for dvb EPG-loggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>for övriga dvb-loggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>för konfigurationsloggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>for mediakomponentloggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>för spellistloggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>för SQL lite-loggar</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>för libVlc-loggar</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>Filerna eller webbadresserna som öppnas av programmet tas bort efter användning</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>Starta med fullskärmsläge. Med fullskärmsläge är alla menyer normalt dolda. För att visa menyerna, flytta musen till menyernas plats, t.ex. längst upp, längst ner eller till vänster på skärmen.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>Starta med minimalt läge. Med minimalt läge visas fönsterdekorationen med namnlisten. Alla andra menyer är normalt dolda. För att visa menyerna, flytta musen till menyernas plats, t.ex. längst upp, längst ner eller till vänster i &kaffeine;s fönster.</para>
+<para
+>Starta med minimalt läge</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>Talar om för fönsterhanteraren att alltid starta &kaffeine; ovanpå andra fönster. Alternativet kan senare inaktiveras via fönsterhanteraren, oftast genom att klicka på namnlisten med höger musknapp och avmarkera rutan Behåll över andra.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>proportion</replaceable
+></term>
+<listitem
+><para
+>Tvingar &kaffeine; att starta med en specifik proportion, och inaktivera det automatiska läget. Det kan vara användbart på breda och ultrabreda bildskärmar, där användaren alltid vill se videon i fullskärmsläge med den maximalt möjliga upplösningen. Giltiga värden är: 1:1, 4:3, 16:9, 16:10, 2.21:1, 2.35:1 och 2.39:1. Om ett ogiltigt värde anges, eller om alternativet inte används, väljs det automatiska standardläget.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>Spela ljud-cd</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>Spela video-cd</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>Spela dvd</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>Dumpa DVB-data (felsökningsalternativ)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>namn</replaceable
+> / <replaceable
+>nummer</replaceable
+></term>
+<listitem
+><para
+>Visa tv-kanal</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>kanal</replaceable
+></term>
+<listitem
+><para
+>(alternativet avråds från)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>Visa senast inställda tv-kanal</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>filer</replaceable
+></option
+></term>
+<listitem
+><para
+>Filer eller webbadresser att spela</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>Filer</title>
+<para
+>Kaffeine använder filen <filename
+>scanfile.dvb</filename
+> med en lista över kända kanaler per plats och satellit (för DVB-S).</para>
+<para
+>Använd antingen dvbv5-scan eller w_scan för att skapa en ny fil, antingen när nya kanaler läggs till för någon stad eller när nya satellitutsändningar läggs till som inte är tillgängliga i Kaffeine (i det senare fallet konverterade till riktigt format genom att använda dvb-format-convert), och skicka in den till <email
+>linux-media@vger.kernel.org</email
+>, med rubriken <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>någon beskrivning</replaceable
+></quote
+>. Den nya uppdateringen läggs till i <filename
+>scanfile.dvb</filename
+> och den uppdaterade filen görs tillgänglig för uppdatering från Internet i Kaffeine. </para>
+</refsect1>
+
+<refsect1>
+<title
+>Se också</title>
+<simplelist>
+<member
+>Mer detaljerad användardokumentation är tillgänglig med <ulink url="help:/kaffeine "
+>help:/kaffeine</ulink
+> (skriv antingen in webbadressen i &konqueror;, eller kör <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>Det finns också ytterligare information tillgänglig på <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine-sidan</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>Upphovsmän</title>
+<para
+>Använd <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> i en terminal för att lista Kaffeines upphovsmän.</para>
+</refsect1>
+
+</refentry>

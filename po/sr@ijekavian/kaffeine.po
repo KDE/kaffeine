@@ -1,0 +1,2951 @@
+# Translation of kaffeine.po into Serbian.
+# Slobodan Simic <slsimic@gmail.com>, 2009, 2010.
+# Dalibor Djuric <daliborddjuric@gmail.com>, 2010, 2011.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2011, 2012, 2015, 2016, 2017.
+msgid ""
+msgstr ""
+"Project-Id-Version: kaffeine\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2019-07-22 02:37+0200\n"
+"PO-Revision-Date: 2017-12-15 12:37+0100\n"
+"Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
+"Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
+"Language: sr@ijekavian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
+"X-Generator: Lokalize 1.1\n"
+"X-Environment: kde\n"
+
+#: backend-mplayer/mplayermediawidget.cpp:260
+#, kde-format
+msgid "Cannot start mplayer process."
+msgstr "Не могу да покренем процес М‑плејера."
+
+#: backend-vlc/vlcmediawidget.cpp:729 backend-vlc/vlcmediawidget.cpp:977
+#, kde-format
+msgid "Subtitle %1"
+msgstr "Титл %1"
+
+#: backend-vlc/vlcmediawidget.cpp:913
+#, kde-format
+msgid "CD track %1"
+msgstr ""
+
+#: configurationdialog.cpp:42
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Kaffeine"
+msgstr "Подешавање Кафеина"
+
+#: configurationdialog.cpp:49
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Normal Mode"
+msgstr "уобичајени"
+
+#: configurationdialog.cpp:51
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Minimal Mode"
+msgstr "минималистички"
+
+#: configurationdialog.cpp:53
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Full Screen Mode"
+msgstr "преко цијелог екрана"
+
+# rewrite-msgid: /Remember Last Setting/Last Used Mode/
+#: configurationdialog.cpp:55
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Remember Last Setting"
+msgstr "посљедње коришћен"
+
+#: configurationdialog.cpp:59
+#, kde-format
+msgctxt "@label:listbox"
+msgid "Startup display mode:"
+msgstr "Почетни режим приказа:"
+
+#: configurationdialog.cpp:68
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Short skip duration:"
+msgstr "Мали прескок:"
+
+#: configurationdialog.cpp:77
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Long skip duration:"
+msgstr "Велики прескок:"
+
+#: configurationdialog.cpp:82
+#, kde-format
+msgctxt "@title:group"
+msgid "General"
+msgstr "Опште"
+
+#: configurationdialog.cpp:89
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Log messages:"
+msgstr "Дневничке поруке:"
+
+#: configurationdialog.cpp:92
+#, kde-format
+msgctxt "@action:button"
+msgid "Show dmesg"
+msgstr "Покажи dmesg"
+
+#: configurationdialog.cpp:106
+#, kde-format
+msgctxt "@title:group"
+msgid "Diagnostics"
+msgstr "Дијагностика"
+
+#: configurationdialog.cpp:114
+#, kde-format
+msgctxt "@label:textbox"
+msgid "LibVLC arguments:"
+msgstr "Аргументи за ЛибВЛЦ:"
+
+#: configurationdialog.cpp:121
+#, kde-format
+msgctxt "@label:textbox"
+msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
+msgstr ""
+"НАПОМЕНА: Нови аргументи ће ступити у дејство по наредном покретању Кафеина."
+
+#: configurationdialog.cpp:126
+#, kde-format
+msgctxt "@title:group"
+msgid "libVLC"
+msgstr "ЛибВЛЦ"
+
+#: configurationdialog.cpp:163
+#, kde-format
+msgctxt "@title:window"
+msgid "dmesg"
+msgstr "dmesg"
+
+#: dvb/dvbchanneldialog.cpp:108 dvb/dvbepgdialog.cpp:369
+#: dvb/dvbepgdialog.cpp:483 dvb/dvbrecordingdialog.cpp:256
+#: dvb/dvbscandialog.cpp:235
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Channel"
+msgstr "канал"
+
+#: dvb/dvbchanneldialog.cpp:110
+#, kde-format
+msgctxt "@title:column tv channel"
+msgid "Number"
+msgstr "број"
+
+#: dvb/dvbchanneldialog.cpp:292 dvb/dvbrecordingdialog.cpp:77
+#, kde-format
+msgctxt "@action"
+msgid "Edit"
+msgstr "Уреди"
+
+#: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:706
+#: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:406
+#: playlist/playlisttab.cpp:426
+#, kde-format
+msgctxt "@action"
+msgid "Remove"
+msgstr "Уклони"
+
+#: dvb/dvbchanneldialog.cpp:317
+#, kde-format
+msgctxt "@info"
+msgid ""
+"The channels will be sorted by number to allow drag and drop.\n"
+"Do you want to continue?"
+msgstr ""
+"Канали ће бити поређани по бројевима да би се омогућило превлачење.\n"
+"Желите ли да наставите?"
+
+# >> @item polarization
+#: dvb/dvbchanneldialog.cpp:415
+#, kde-format
+msgid "Horizontal"
+msgstr "хоризонтална"
+
+# >> @item polarization
+#: dvb/dvbchanneldialog.cpp:416
+#, kde-format
+msgid "Vertical"
+msgstr "вертикална"
+
+# >> @item polarization
+#: dvb/dvbchanneldialog.cpp:417
+#, kde-format
+msgid "Circular left"
+msgstr "кружна лијево"
+
+# >> @item polarization
+#: dvb/dvbchanneldialog.cpp:418
+#, kde-format
+msgid "Circular right"
+msgstr "кружна десно"
+
+#: dvb/dvbchanneldialog.cpp:419
+#, kde-format
+msgid "Off"
+msgstr "искључено"
+
+#: dvb/dvbchanneldialog.cpp:709
+#, kde-format
+msgctxt "@title:window"
+msgid "Edit Channel"
+msgstr "Уређивање канала"
+
+#: dvb/dvbchanneldialog.cpp:721
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Name:"
+msgstr "Име:"
+
+#: dvb/dvbchanneldialog.cpp:730
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Number:"
+msgstr "Број:"
+
+#: dvb/dvbchanneldialog.cpp:739
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Source:"
+msgstr "Извор:"
+
+#: dvb/dvbchanneldialog.cpp:749 dvb/dvbchanneldialog.cpp:771
+#: dvb/dvbchanneldialog.cpp:789 dvb/dvbchanneldialog.cpp:810
+#: dvb/dvbchanneldialog.cpp:835 dvb/dvbchanneldialog.cpp:894
+#, kde-format
+msgid "Frequency (MHz):"
+msgstr "Фреквенција (MHz):"
+
+# http://en.wikipedia.org/wiki/Symbol_rate
+#: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
+#, kde-format
+msgid "Symbol rate (kS/s):"
+msgstr "Модулациони проток (Bd):"
+
+#: dvb/dvbchanneldialog.cpp:754 dvb/dvbchanneldialog.cpp:779
+#: dvb/dvbchanneldialog.cpp:794 dvb/dvbchanneldialog.cpp:815
+#: dvb/dvbchanneldialog.cpp:897
+#, kde-format
+msgid "Modulation:"
+msgstr "Модулација:"
+
+#: dvb/dvbchanneldialog.cpp:756 dvb/dvbchanneldialog.cpp:775
+#: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
+#, kde-format
+msgid "FEC rate:"
+msgstr "ФЕЦ проток:"
+
+#: dvb/dvbchanneldialog.cpp:769
+#, kde-format
+msgid "Polarization:"
+msgstr "Поларизација:"
+
+# http://en.wikipedia.org/wiki/Roll-off
+#: dvb/dvbchanneldialog.cpp:781
+#, kde-format
+msgid "Roll-off:"
+msgstr "Фреквентни пад:"
+
+#: dvb/dvbchanneldialog.cpp:792 dvb/dvbchanneldialog.cpp:813
+#: dvb/dvbchanneldialog.cpp:838
+#, kde-format
+msgid "Bandwidth:"
+msgstr "Опсег:"
+
+#: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
+#, kde-format
+msgid "FEC rate LP:"
+msgstr "ФЕЦ проток ниског приоритета:"
+
+#: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
+#: dvb/dvbchanneldialog.cpp:840
+#, kde-format
+msgid "Transmission mode:"
+msgstr "Режим преноса:"
+
+#: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
+#: dvb/dvbchanneldialog.cpp:842
+#, kde-format
+msgid "Guard interval:"
+msgstr "Заштитни период:"
+
+#: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
+#, kde-format
+msgid "Hierarchy:"
+msgstr "Хијерархија:"
+
+#: dvb/dvbchanneldialog.cpp:827
+#, kde-format
+msgid "PLP (stream ID):"
+msgstr "ПЛП (ИД тока):"
+
+#: dvb/dvbchanneldialog.cpp:845
+#, kde-format
+msgid "Partial reception:"
+msgstr "Делимичан пријем:"
+
+# well-spelled: ЕЗ
+#: dvb/dvbchanneldialog.cpp:847
+#, kde-format
+msgid "Sound broadcasting:"
+msgstr "Емитовање звука (ЕЗ):"
+
+# well-spelled: ЕЗ
+#: dvb/dvbchanneldialog.cpp:851
+#, kde-format
+msgid "SB channel ID:"
+msgstr "ЕЗ ИД канала:"
+
+# well-spelled: ЕЗ
+#: dvb/dvbchanneldialog.cpp:853
+#, kde-format
+msgid "SB index:"
+msgstr "ЕЗ индекс:"
+
+# well-spelled: ЕЗ
+#: dvb/dvbchanneldialog.cpp:855
+#, kde-format
+msgid "SB count:"
+msgstr "ЕЗ бројач:"
+
+#: dvb/dvbchanneldialog.cpp:860
+#, kde-format
+msgid "Layer A Modulation:"
+msgstr "Модулација слоја А:"
+
+#: dvb/dvbchanneldialog.cpp:862
+#, kde-format
+msgid "Layer A FEC rate:"
+msgstr "ФЕЦ проток слоја А:"
+
+#: dvb/dvbchanneldialog.cpp:864
+#, kde-format
+msgid "Layer A segments:"
+msgstr "Сегменти слоја А:"
+
+#: dvb/dvbchanneldialog.cpp:866
+#, kde-format
+msgid "Layer A interleaving:"
+msgstr "Преплитање слоја А:"
+
+#: dvb/dvbchanneldialog.cpp:870
+#, kde-format
+msgid "Layer B Modulation:"
+msgstr "Модулација слоја Б:"
+
+#: dvb/dvbchanneldialog.cpp:872
+#, kde-format
+msgid "Layer B FEC rate:"
+msgstr "ФЕЦ проток слоја Б:"
+
+#: dvb/dvbchanneldialog.cpp:874
+#, kde-format
+msgid "Layer B segments:"
+msgstr "Сегменти слоја Б:"
+
+#: dvb/dvbchanneldialog.cpp:876
+#, kde-format
+msgid "Layer B interleaving:"
+msgstr "Преплитање слоја Б:"
+
+#: dvb/dvbchanneldialog.cpp:880
+#, kde-format
+msgid "Layer C Modulation:"
+msgstr "Модулација слоја Ц:"
+
+#: dvb/dvbchanneldialog.cpp:882
+#, kde-format
+msgid "Layer C FEC rate:"
+msgstr "ФЕЦ проток слоја Ц:"
+
+#: dvb/dvbchanneldialog.cpp:884
+#, kde-format
+msgid "Layer C segments:"
+msgstr "Сегменти слоја Ц:"
+
+#: dvb/dvbchanneldialog.cpp:886
+#, kde-format
+msgid "Layer C interleaving:"
+msgstr "Преплитање слоја Ц:"
+
+#: dvb/dvbchanneldialog.cpp:911
+#, kde-format
+msgid "Network ID:"
+msgstr "ИД мреже:"
+
+#: dvb/dvbchanneldialog.cpp:920
+#, kde-format
+msgid "Transport stream ID:"
+msgstr "ИД преносног тока:"
+
+#: dvb/dvbchanneldialog.cpp:927
+#, kde-format
+msgid "Service ID:"
+msgstr "ИД сервиса:"
+
+#: dvb/dvbchanneldialog.cpp:937
+#, kde-format
+msgid "Audio channel:"
+msgstr "Аудио канал:"
+
+#: dvb/dvbchanneldialog.cpp:974
+#, kde-format
+msgid "Scrambled:"
+msgstr "Кодиран:"
+
+#: dvb/dvbchanneldialog.cpp:981
+#, kde-format
+msgid "PMT PID:"
+msgstr "ПИД ПМТ‑а:"
+
+#: dvb/dvbchanneldialog.cpp:985
+#, kde-format
+msgid "Video PID:"
+msgstr "ПИД видеа:"
+
+#: dvb/dvbchanneldialog.cpp:990
+#, kde-format
+msgid "Subtitle PID:"
+msgstr "ПИД титла:"
+
+#: dvb/dvbchanneldialog.cpp:1006
+#, kde-format
+msgid "Teletext PID:"
+msgstr "ПИД телетекста:"
+
+#: dvb/dvbconfigdialog.cpp:59
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Television"
+msgstr "Подешавање телевизије"
+
+#: dvb/dvbconfigdialog.cpp:77
+#, kde-format
+msgid "Recording folder:"
+msgstr "Фасцикла за снимање:"
+
+#: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
+#, kde-format
+msgid "Select Folder"
+msgstr "Изаберите фасциклу"
+
+#: dvb/dvbconfigdialog.cpp:89
+#, kde-format
+msgid "Time shift folder:"
+msgstr "Фасцикла за временско смицање:"
+
+#: dvb/dvbconfigdialog.cpp:101
+#, kde-format
+msgid "xmltv file name (optional):"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:109
+#, kde-format
+msgid "Add optional file to allow reading EPG data from xmltv files"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:113
+#, kde-format
+msgid "Disable parsing EPG data from MPEG-TS tables:"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:115
+#, kde-format
+msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:123
+#, kde-format
+msgid "Begin margin (minutes):"
+msgstr "Почетна граница (у минутима):"
+
+#: dvb/dvbconfigdialog.cpp:130
+#, kde-format
+msgid "End margin (minutes):"
+msgstr "Завршна граница (у минутима):"
+
+#: dvb/dvbconfigdialog.cpp:137
+#, kde-format
+msgid "Naming style for recordings:"
+msgstr "Стил именовања за снимке:"
+
+# well-spelled: ГГГГ
+#: dvb/dvbconfigdialog.cpp:141
+#, kde-format
+msgid ""
+"The following substitutions work: \"%year\" for year (YYYY) and the "
+"following: %month, %day, %hour, %min, %sec, %channel and %title"
+msgstr ""
+"Доступне су следеће смене: %year (година као ГГГГ), %month, %day, %hour, "
+"%min, %sec, %channel и %title."
+
+#: dvb/dvbconfigdialog.cpp:153
+#, kde-format
+msgid "Action after recording finishes:"
+msgstr "Радња пошто се снимање заврши:"
+
+# rewrite-msgid: /command/run/
+#: dvb/dvbconfigdialog.cpp:157
+#, kde-format
+msgid "Leave empty for no command."
+msgstr "Оставите празно да се ништа не изврши."
+
+#: dvb/dvbconfigdialog.cpp:163
+#, kde-format
+msgid "Use ISO 8859-1 charset instead of ISO 6937:"
+msgstr "Кодирање ИСО 8859-1 умјесто ИСО‑а 6937:"
+
+#: dvb/dvbconfigdialog.cpp:170
+#, kde-format
+msgid "Create info files to accompany EPG recordings:"
+msgstr "Инфо‑фајлови упарени са ЕПГ снимцима:"
+
+#: dvb/dvbconfigdialog.cpp:179
+#, kde-format
+msgid "Scan channels when idle to fetch fresh EPG data:"
+msgstr "Скенирај канале током мировања за свежим ЕПГ подацима:"
+
+#: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
+#, kde-format
+msgid "Scan data last updated on %1"
+msgstr ""
+"Подаци о скенирању ажурирани %1|/|Подаци о скенирању ажурирани $[на-ријеч %1 "
+"ген]"
+
+#: dvb/dvbconfigdialog.cpp:193
+#, kde-format
+msgid "Update Scan Data over Internet"
+msgstr "Освежи податке о скенирању са Интернета"
+
+#: dvb/dvbconfigdialog.cpp:197
+#, kde-format
+msgid "Edit Scanfile"
+msgstr "Уреди фајл скенирања"
+
+#: dvb/dvbconfigdialog.cpp:200
+#, kde-format
+msgid "You can add channels manually to this file before scanning for them."
+msgstr "У овај фајл можете ручно додати канале за скенирање."
+
+#: dvb/dvbconfigdialog.cpp:217
+#, kde-format
+msgid "General Options"
+msgstr "Опште опције"
+
+#: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
+#, kde-format
+msgid "Automatic Recording"
+msgstr "Аутоматско снимање"
+
+#: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:507
+#: dvb/dvbconfigdialog.cpp:508 dvb/dvbconfigdialog.cpp:534
+#: dvb/dvbconfigdialog.cpp:535 dvb/dvbconfigdialog.cpp:559
+#, kde-format
+msgid "Device %1"
+msgstr "Уређај %1"
+
+#: dvb/dvbconfigdialog.cpp:387
+#, kde-format
+msgctxt "@action"
+msgid "Add new Regex"
+msgstr "Додај нови региз"
+
+#: dvb/dvbconfigdialog.cpp:394
+#, kde-format
+msgid "Add another regular expression."
+msgstr "Додајте још један регуларни израз."
+
+#: dvb/dvbconfigdialog.cpp:398
+#, kde-format
+msgctxt "@action"
+msgid "Remove Regex"
+msgstr "Уклони региз"
+
+#: dvb/dvbconfigdialog.cpp:404
+#, kde-format
+msgid "Remove checked regular expressions."
+msgstr "Уклоните изабране регуларне изразе."
+
+#: dvb/dvbconfigdialog.cpp:610
+#, kde-format
+msgid "Update Scan Data"
+msgstr "Освјежи податке о скенирању"
+
+#: dvb/dvbconfigdialog.cpp:627
+#, kde-format
+msgid "Downloading scan data"
+msgstr "Преузимам податке о скенирању"
+
+#: dvb/dvbconfigdialog.cpp:671 dvb/dvbconfigdialog.cpp:684
+#, kde-format
+msgid "Scan data update failed."
+msgstr "Неуспјело освјежавање података о скенирању."
+
+#: dvb/dvbconfigdialog.cpp:681
+#, kde-format
+msgid ""
+"Scan data successfully updated. Changes take\n"
+"effect after you have closed the configuration dialog."
+msgstr ""
+"Подаци о скенирању успјешно ажурирани. Промјене ће\n"
+"ступити на снагу након што затворите дијалог за подешавање."
+
+#: dvb/dvbconfigdialog.cpp:693
+#, kde-format
+msgid "Name: %1"
+msgstr "Име: %1"
+
+#: dvb/dvbconfigdialog.cpp:696
+#, kde-format
+msgid "Move Left"
+msgstr "Помјери улијево"
+
+#: dvb/dvbconfigdialog.cpp:701
+#, kde-format
+msgid "Reset"
+msgstr "Ресетуј"
+
+#: dvb/dvbconfigdialog.cpp:711
+#, kde-format
+msgid "Move Right"
+msgstr "Помјери удесно"
+
+#: dvb/dvbconfigdialog.cpp:717
+#, kde-format
+msgid "Device not connected."
+msgstr "Уређај није повезан."
+
+#: dvb/dvbconfigdialog.cpp:753
+#, kde-format
+msgid "DVB-C"
+msgstr "ДВБ‑Ц"
+
+#: dvb/dvbconfigdialog.cpp:769
+#, kde-format
+msgid "DVB-S2"
+msgstr "ДВБ‑С2"
+
+#: dvb/dvbconfigdialog.cpp:771
+#, kde-format
+msgid "DVB-S"
+msgstr "ДВБ‑С"
+
+#: dvb/dvbconfigdialog.cpp:781
+#, kde-format
+msgid "DVB-T2"
+msgstr "ДВБ‑Т2"
+
+#: dvb/dvbconfigdialog.cpp:783
+#, kde-format
+msgid "DVB-T"
+msgstr "ДВБ‑Т"
+
+#: dvb/dvbconfigdialog.cpp:797
+#, kde-format
+msgid "ATSC"
+msgstr "АТСЦ"
+
+#: dvb/dvbconfigdialog.cpp:810 dvb/dvbconfigdialog.cpp:933
+#, kde-format
+msgid "ISDB-T"
+msgstr "ИСДБ‑Т"
+
+#: dvb/dvbconfigdialog.cpp:895
+#, kde-format
+msgid "Cable"
+msgstr "Кабловска"
+
+# well-spelled: Т2
+#: dvb/dvbconfigdialog.cpp:904
+#, kde-format
+msgid "Terrestrial (T2)"
+msgstr "Земаљска (Т2)"
+
+#: dvb/dvbconfigdialog.cpp:912
+#, kde-format
+msgid "Terrestrial"
+msgstr "Земаљска"
+
+#: dvb/dvbconfigdialog.cpp:921 dvb/dvbconfigdialog.cpp:935
+#, kde-format
+msgid "Autoscan"
+msgstr "Аутоскенирање"
+
+#: dvb/dvbconfigdialog.cpp:922
+#, kde-format
+msgid "Autoscan with 167 kHz Offsets"
+msgstr "Аутоскенирање са помацима од 167 kHz"
+
+#: dvb/dvbconfigdialog.cpp:923
+#, kde-format
+msgid "Autoscan Australia"
+msgstr "Аутоскенирање за Аустралију"
+
+#: dvb/dvbconfigdialog.cpp:924
+#, kde-format
+msgid "Autoscan Italy"
+msgstr "Аутоскенирање за Италију"
+
+#: dvb/dvbconfigdialog.cpp:925
+#, kde-format
+msgid "Autoscan Taiwan"
+msgstr "Аутоскенирање за Тајван"
+
+#: dvb/dvbconfigdialog.cpp:928
+#, kde-format
+msgid "Atsc"
+msgstr "АТСЦ"
+
+#: dvb/dvbconfigdialog.cpp:944 dvb/dvbconfigdialog.cpp:1073
+#, kde-format
+msgid "Tuner timeout (ms):"
+msgstr "Прековријеме бирача (ms):"
+
+#: dvb/dvbconfigdialog.cpp:953 dvb/dvbscandialog.cpp:301
+#, kde-format
+msgid "Source:"
+msgstr "Извор:"
+
+# >> @item:inlistbox
+#: dvb/dvbconfigdialog.cpp:956 dvb/dvbconfigdialog.cpp:1130
+#, kde-format
+msgid "No Source"
+msgstr "нема извора"
+
+#: dvb/dvbconfigdialog.cpp:962
+#, kde-format
+msgid "Name:"
+msgstr "Име:"
+
+#: dvb/dvbconfigdialog.cpp:1081
+#, kde-format
+msgid "Use Higher LNBf voltage:"
+msgstr "Повишен напон на ЛНБф‑у:"
+
+# >> ? Tri-state, "defaults to not use it"?
+#: dvb/dvbconfigdialog.cpp:1087
+#, kde-format
+msgid ""
+"On some DVB devices, there's an extra control that allows to increase the \n"
+"voltage sent to LNBf, in order to compensate for cabling loss. This tri-"
+"state\n"
+"button defaults to not use it. It may be set to:\n"
+"- normal mode (unchecked);\n"
+"- higher voltage mode (checked);\n"
+"- tristate (don't send the control)."
+msgstr ""
+"Неки ДВБ уређаји пружају додатно управљање над напоном који се шаље ЛНБф‑у, "
+"како би се надокнадили губици кроз каблове. Ово дугме даје три стања, а "
+"подразумевано се не користи:\n"
+"— уобичајен режим (празно);\n"
+"— режим повишеног напона (попуњено);\n"
+"— три стања (без слања контроле)."
+
+#: dvb/dvbconfigdialog.cpp:1095
+#, kde-format
+msgid "Configuration:"
+msgstr "Подешавање:"
+
+#: dvb/dvbconfigdialog.cpp:1098
+#, kde-format
+msgid "DiSEqC Switch"
+msgstr "Дајсек прекидач"
+
+#: dvb/dvbconfigdialog.cpp:1099
+#, kde-format
+msgid "USALS Rotor"
+msgstr "УСАЛС ротор"
+
+#: dvb/dvbconfigdialog.cpp:1100
+#, kde-format
+msgid "Positions Rotor"
+msgstr "Позициони ротор"
+
+#: dvb/dvbconfigdialog.cpp:1101
+#, kde-format
+msgid "Disable DiSEqC"
+msgstr "Искључи дајсек"
+
+#: dvb/dvbconfigdialog.cpp:1119
+#, kde-format
+msgid "LNB %1 Settings"
+msgstr "Поставке ЛНБ‑а %1"
+
+#: dvb/dvbconfigdialog.cpp:1148 dvb/dvbconfigdialog.cpp:1556
+#, kde-format
+msgid "LNB Settings"
+msgstr "Поставке ЛНБ‑а"
+
+#: dvb/dvbconfigdialog.cpp:1166 dvb/dvbconfigdialog.cpp:1180
+#, kde-format
+msgid "Add Satellite"
+msgstr "Додај сателит"
+
+# >> @title:column
+#: dvb/dvbconfigdialog.cpp:1189
+#, kde-format
+msgid "Satellite"
+msgstr "сателит"
+
+# >> @title:column
+#: dvb/dvbconfigdialog.cpp:1189
+#, kde-format
+msgid "Position"
+msgstr "положај"
+
+#: dvb/dvbconfigdialog.cpp:1206
+#, kde-format
+msgid "Remove Satellite"
+msgstr "Уклони сателит"
+
+#: dvb/dvbconfigdialog.cpp:1219
+#, kde-format
+msgid "Your position:"
+msgstr "Ваша позиција:"
+
+#: dvb/dvbconfigdialog.cpp:1224
+#, kde-format
+msgid "Latitude:"
+msgstr "Гео. ширина:"
+
+#: dvb/dvbconfigdialog.cpp:1229
+#, kde-format
+msgid "[S -90 ... 90 N]"
+msgstr "[Ј -90 ... 90 С]"
+
+#: dvb/dvbconfigdialog.cpp:1247
+#, kde-format
+msgid "Longitude:"
+msgstr "Гео. дужина:"
+
+#: dvb/dvbconfigdialog.cpp:1252
+#, kde-format
+msgid "[W -180 ... 180 E]"
+msgstr "[З -180 ... 180 И]"
+
+#: dvb/dvbconfigdialog.cpp:1601
+#, kde-format
+msgid "Low frequency (KHz)"
+msgstr "Ниска фреквенција (kHz)"
+
+#: dvb/dvbconfigdialog.cpp:1609
+#, kde-format
+msgid "High frequency (MHz)"
+msgstr "Висока фреквенција (MHz)"
+
+#: dvb/dvbconfigdialog.cpp:1617
+#, kde-format
+msgid "Switch frequency (MHz)"
+msgstr "Фреквенција пребацивања (MHz)"
+
+#: dvb/dvbconfigdialog.cpp:1625 dvb/dvbconfigdialog.cpp:1672
+#, kde-format
+msgid "Low range: %1 MHz to %2 MHz"
+msgstr "Ниски појас: %1 MHz до %2 MHz"
+
+# well-spelled: Вишепојасно
+#: dvb/dvbconfigdialog.cpp:1678
+#, kde-format
+msgid "Bandstacked"
+msgstr "Вишепојасно"
+
+#: dvb/dvbconfigdialog.cpp:1682
+#, kde-format
+msgid "High range: %1 MHz to %2 MHz"
+msgstr "Високи појас: %1 MHz до %2 MHz"
+
+# >> @item
+#: dvb/dvbepg.cpp:627
+#, kde-format
+msgid "Detective"
+msgstr "детективски"
+
+# >> @item
+#: dvb/dvbepg.cpp:628
+#, kde-format
+msgid "Adventure"
+msgstr "авантуристички"
+
+# >> @item
+#: dvb/dvbepg.cpp:629
+#, kde-format
+msgid "Science Fiction"
+msgstr "научна фантастика"
+
+# >> @item
+#: dvb/dvbepg.cpp:630
+#, kde-format
+msgid "Comedy"
+msgstr "комедија"
+
+# >> @item
+#: dvb/dvbepg.cpp:631
+#, kde-format
+msgid "Soap"
+msgstr "сапуница"
+
+# >> @item
+#: dvb/dvbepg.cpp:632
+#, kde-format
+msgid "Romance"
+msgstr "љубавни"
+
+# >> @item
+#: dvb/dvbepg.cpp:633 dvb/dvbepg.cpp:684
+#, kde-format
+msgid "Classical"
+msgstr "класични"
+
+# >> @item
+#: dvb/dvbepg.cpp:634
+#, kde-format
+msgid "Adult"
+msgstr "за одрасле"
+
+# >> @item
+#: dvb/dvbepg.cpp:635 dvb/dvbepg.cpp:770
+#, kde-format
+msgid "User defined"
+msgstr "кориснички дефинисан"
+
+# >> @item
+#: dvb/dvbepg.cpp:640
+#, kde-format
+msgid "Weather"
+msgstr "време"
+
+# >> @item
+#: dvb/dvbepg.cpp:641 dvb/dvbepg.cpp:658 dvb/dvbepg.cpp:703 dvb/dvbepg.cpp:710
+#, kde-format
+msgid "Magazine"
+msgstr "часопис"
+
+# >> @item
+#: dvb/dvbepg.cpp:642 dvb/dvbepg.cpp:802
+#, kde-format
+msgid "Documentary"
+msgstr "документарац"
+
+# >> @item
+#: dvb/dvbepg.cpp:643 dvb/dvbepg.cpp:838
+#, kde-format
+msgid "Discussion"
+msgstr "разговор"
+
+# >> @item
+#: dvb/dvbepg.cpp:644 dvb/dvbepg.cpp:652 dvb/dvbepg.cpp:668 dvb/dvbepg.cpp:678
+#: dvb/dvbepg.cpp:689 dvb/dvbepg.cpp:705 dvb/dvbepg.cpp:713 dvb/dvbepg.cpp:725
+#: dvb/dvbepg.cpp:737 dvb/dvbepg.cpp:746
+#, kde-format
+msgid "User Defined"
+msgstr "кориснички дефинисан"
+
+# >> @item
+#: dvb/dvbepg.cpp:649
+#, kde-format
+msgid "Quiz"
+msgstr "квиз"
+
+# >> @item
+# ? Шта је ово тачно?
+#: dvb/dvbepg.cpp:650 dvb/dvbepg.cpp:780
+#, kde-format
+msgid "Variety"
+msgstr "забавни програм"
+
+# Пазити да изнад има „Discussion“
+# >> @item
+#: dvb/dvbepg.cpp:651
+#, kde-format
+msgid "Talk"
+msgstr "ћаскање"
+
+# >> @item
+#: dvb/dvbepg.cpp:657
+#, kde-format
+msgid "Events"
+msgstr "догађаји"
+
+# >> @item
+#: dvb/dvbepg.cpp:659
+#, kde-format
+msgid "Football"
+msgstr "фудбал"
+
+# >> @item
+#: dvb/dvbepg.cpp:660
+#, kde-format
+msgid "Tennis"
+msgstr "тенис"
+
+# >> @item
+#: dvb/dvbepg.cpp:661
+#, kde-format
+msgid "Team"
+msgstr "тимски"
+
+# >> @item
+#: dvb/dvbepg.cpp:662
+#, kde-format
+msgid "Athletics"
+msgstr "атлетика"
+
+# >> @item
+#: dvb/dvbepg.cpp:663
+#, kde-format
+msgid "Motor"
+msgstr "моторни"
+
+# >> @item
+#: dvb/dvbepg.cpp:664
+#, kde-format
+msgid "Water"
+msgstr "водени"
+
+# >> @item
+#: dvb/dvbepg.cpp:665
+#, kde-format
+msgid "Winter"
+msgstr "зимски"
+
+# >> @item
+#: dvb/dvbepg.cpp:666
+#, kde-format
+msgid "Equestrian"
+msgstr "коњички"
+
+# >> @item
+#: dvb/dvbepg.cpp:667
+#, kde-format
+msgid "Martial"
+msgstr "борилачки"
+
+# >> @item
+#: dvb/dvbepg.cpp:673
+#, kde-format
+msgid "Preschool"
+msgstr "за обданиште"
+
+# >> @item
+#: dvb/dvbepg.cpp:674
+#, kde-format
+msgid "06 to 14"
+msgstr "6 до 14"
+
+# >> @item
+#: dvb/dvbepg.cpp:675
+#, kde-format
+msgid "10 to 16"
+msgstr "10 до 16"
+
+# >> @item
+#: dvb/dvbepg.cpp:676
+#, kde-format
+msgid "Educational"
+msgstr "образовни"
+
+# >> @item
+#: dvb/dvbepg.cpp:677
+#, kde-format
+msgid "Cartoons"
+msgstr "цртани"
+
+# >> @item
+#: dvb/dvbepg.cpp:683
+#, kde-format
+msgid "Poprock"
+msgstr "поп‑рок"
+
+# >> @item
+#: dvb/dvbepg.cpp:685
+#, kde-format
+msgid "Folk"
+msgstr "народна"
+
+# >> @item
+#: dvb/dvbepg.cpp:686
+#, kde-format
+msgid "Jazz"
+msgstr "џез"
+
+# >> @item
+#: dvb/dvbepg.cpp:687
+#, kde-format
+msgid "Opera"
+msgstr "опера"
+
+# >> @item
+#: dvb/dvbepg.cpp:688
+#, kde-format
+msgid "Ballet"
+msgstr "балет"
+
+# >> @item
+#: dvb/dvbepg.cpp:694
+#, kde-format
+msgid "Performance"
+msgstr "перформанс"
+
+# >> @item
+#: dvb/dvbepg.cpp:695
+#, kde-format
+msgid "Fine Arts"
+msgstr "уметност"
+
+# >> @item
+#: dvb/dvbepg.cpp:696 dvb/dvbepg.cpp:845
+#, kde-format
+msgid "Religion"
+msgstr "религија"
+
+# >> @item
+#: dvb/dvbepg.cpp:697
+#, kde-format
+msgid "Traditional"
+msgstr "традиција"
+
+# >> @item
+#: dvb/dvbepg.cpp:698
+#, kde-format
+msgid "Literature"
+msgstr "литература"
+
+# >> @item
+#: dvb/dvbepg.cpp:699
+#, kde-format
+msgid "Cinema"
+msgstr "биоскоп"
+
+# >> @item
+#: dvb/dvbepg.cpp:700
+#, kde-format
+msgid "Experimental"
+msgstr "експериментални"
+
+# >> @item
+#: dvb/dvbepg.cpp:701
+#, kde-format
+msgid "Press"
+msgstr "штампа"
+
+# >> @item
+#: dvb/dvbepg.cpp:702
+#, kde-format
+msgid "New Media"
+msgstr "нови медији"
+
+# >> @item
+#: dvb/dvbepg.cpp:704 dvb/dvbepg.cpp:823
+#, kde-format
+msgid "Fashion"
+msgstr "мода"
+
+# >> @item
+#: dvb/dvbepg.cpp:711
+#, kde-format
+msgid "Advisory"
+msgstr "савети"
+
+# >> @item
+#: dvb/dvbepg.cpp:712
+#, kde-format
+msgid "People"
+msgstr "људи"
+
+# >> @item
+#: dvb/dvbepg.cpp:718
+#, kde-format
+msgid "Nature"
+msgstr "природа"
+
+# >> @item
+#: dvb/dvbepg.cpp:719
+#, kde-format
+msgid "Technology"
+msgstr "технологија"
+
+# >> @item
+#: dvb/dvbepg.cpp:720
+#, kde-format
+msgid "Medicine"
+msgstr "медицина"
+
+# >> @item
+#: dvb/dvbepg.cpp:721
+#, kde-format
+msgid "Foreign"
+msgstr "страни"
+
+# >> @item
+#: dvb/dvbepg.cpp:722 dvb/dvbepg.cpp:763
+#, kde-format
+msgid "Social"
+msgstr "друштвени"
+
+# ? Шта је ово?
+# >> @item
+#: dvb/dvbepg.cpp:723
+#, kde-format
+msgid "Further"
+msgstr "даље"
+
+# >> @item
+#: dvb/dvbepg.cpp:724
+#, kde-format
+msgid "Language"
+msgstr "језик"
+
+# >> @item
+#: dvb/dvbepg.cpp:730 dvb/dvbepg.cpp:826
+#, kde-format
+msgid "Travel"
+msgstr "путовање"
+
+# >> @item
+#: dvb/dvbepg.cpp:731
+#, kde-format
+msgid "Handicraft"
+msgstr "ручни рад"
+
+# >> @item
+#: dvb/dvbepg.cpp:732
+#, kde-format
+msgid "Motoring"
+msgstr "кола"
+
+# >> @item
+#: dvb/dvbepg.cpp:733
+#, kde-format
+msgid "Fitness"
+msgstr "фитнес"
+
+# >> @item
+#: dvb/dvbepg.cpp:734 dvb/dvbepg.cpp:822
+#, kde-format
+msgid "Cooking"
+msgstr "кување"
+
+# >> @item
+#: dvb/dvbepg.cpp:735
+#, kde-format
+msgid "Shopping"
+msgstr "куповина"
+
+# >> @item
+#: dvb/dvbepg.cpp:736
+#, kde-format
+msgid "Gardening"
+msgstr "баштованство"
+
+# >> @item
+#: dvb/dvbepg.cpp:741 iso-codes.cpp:125 iso-codes.cpp:155
+#, kde-format
+msgid "Original Language"
+msgstr "изворни језик"
+
+# >> @item
+#: dvb/dvbepg.cpp:742
+#, kde-format
+msgid "Black and White "
+msgstr "црно‑бело"
+
+# >> @item
+#: dvb/dvbepg.cpp:743
+#, kde-format
+msgid "Unpublished"
+msgstr "необјављено"
+
+# >> @item
+#: dvb/dvbepg.cpp:744
+#, kde-format
+msgid "Live"
+msgstr "уживо"
+
+# >> @item
+# well-spelled: планостереоскопски
+#: dvb/dvbepg.cpp:745
+#, kde-format
+msgid "Planostereoscopic"
+msgstr "планостереоскопски"
+
+# >> @item
+#: dvb/dvbepg.cpp:747
+#, kde-format
+msgid "User Defined 1"
+msgstr "кориснички дефинисан 1"
+
+# >> @item
+#: dvb/dvbepg.cpp:748
+#, kde-format
+msgid "User Defined 2"
+msgstr "кориснички дефинисан 2"
+
+# >> @item
+#: dvb/dvbepg.cpp:749
+#, kde-format
+msgid "User Defined 3"
+msgstr "кориснички дефинисан 3"
+
+# >> @item
+#: dvb/dvbepg.cpp:750
+#, kde-format
+msgid "User Defined 4"
+msgstr "кориснички дефинисан 4"
+
+# >> @item
+#: dvb/dvbepg.cpp:755
+#, kde-format
+msgid "Undefined"
+msgstr "недефинисан"
+
+# >> @item
+#: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:786
+#, kde-format
+msgid "Movie"
+msgstr "филм"
+
+# >> @item
+#: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:774 dvb/dvbepg.cpp:800
+#, kde-format
+msgid "News"
+msgstr "вести"
+
+# >> @item
+#: dvb/dvbepg.cpp:758 dvb/dvbepg.cpp:814
+#, kde-format
+msgid "Show"
+msgstr "серија"
+
+# >> @item
+#: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:775
+#, kde-format
+msgid "Sports"
+msgstr "спорт"
+
+# >> @item
+#: dvb/dvbepg.cpp:760 dvb/dvbepg.cpp:784
+#, kde-format
+msgid "Children"
+msgstr "деца"
+
+# >> @item
+#: dvb/dvbepg.cpp:761
+#, kde-format
+msgid "Music"
+msgstr "музика"
+
+# >> @item
+#: dvb/dvbepg.cpp:762
+#, kde-format
+msgid "Culture"
+msgstr "култура"
+
+# >> @item
+#: dvb/dvbepg.cpp:764 dvb/dvbepg.cpp:776
+#, kde-format
+msgid "Education"
+msgstr "образовање"
+
+# >> @item
+#: dvb/dvbepg.cpp:765
+#, kde-format
+msgid "Leisure"
+msgstr "одмор"
+
+# >> @item
+#: dvb/dvbepg.cpp:766
+#, kde-format
+msgid "Special"
+msgstr "посебно"
+
+# >> @item
+#: dvb/dvbepg.cpp:767 dvb/dvbepg.cpp:768 dvb/dvbepg.cpp:769
+#, kde-format
+msgid "Reserved"
+msgstr "резервисано"
+
+# >> @item
+#: dvb/dvbepg.cpp:777
+#, kde-format
+msgid "Soap opera"
+msgstr "сапуница"
+
+# >> @item
+#: dvb/dvbepg.cpp:778
+#, kde-format
+msgid "Mini-series"
+msgstr "мини‑серија"
+
+# >> @item
+#: dvb/dvbepg.cpp:779
+#, kde-format
+msgid "Series"
+msgstr "серија"
+
+# well-spelled: ријалити
+# >> @item
+#: dvb/dvbepg.cpp:781
+#, kde-format
+msgid "Reality show"
+msgstr "ријалити шоу"
+
+# >> @item
+#: dvb/dvbepg.cpp:782
+#, kde-format
+msgid "Information"
+msgstr "информације"
+
+# >> @item
+#: dvb/dvbepg.cpp:783
+#, kde-format
+msgid "Comical"
+msgstr "комедија"
+
+# >> @item
+#: dvb/dvbepg.cpp:785
+#, kde-format
+msgid "Erotic"
+msgstr "еротика"
+
+# >> @item
+#: dvb/dvbepg.cpp:787
+#, kde-format
+msgid "Raffle, television sales, prizing"
+msgstr "томбола, продаја, награде"
+
+# >> @item
+#: dvb/dvbepg.cpp:788
+#, kde-format
+msgid "Debate/interview"
+msgstr "дебата/интервју"
+
+# >> @item
+#: dvb/dvbepg.cpp:789
+#, kde-format
+msgid "Other"
+msgstr "друго"
+
+# >> @item
+#: dvb/dvbepg.cpp:801
+#, kde-format
+msgid "Report"
+msgstr "извештај"
+
+# >> @item
+#: dvb/dvbepg.cpp:803
+#, kde-format
+msgid "Biography"
+msgstr "биографија"
+
+# >> @item
+#: dvb/dvbepg.cpp:807
+#, kde-format
+msgid "Educative"
+msgstr "образовање"
+
+# >> @item
+#: dvb/dvbepg.cpp:813
+#, kde-format
+msgid "Auditorium"
+msgstr "аудиторијум"
+
+# >> @item
+#: dvb/dvbepg.cpp:815
+#, kde-format
+msgid "Musical"
+msgstr "музички"
+
+# >> @item
+#: dvb/dvbepg.cpp:816
+#, kde-format
+msgid "Making of"
+msgstr "како се правило"
+
+# >> @item
+#: dvb/dvbepg.cpp:817
+#, kde-format
+msgid "Feminine"
+msgstr "женски"
+
+# >> @item
+#: dvb/dvbepg.cpp:818
+#, kde-format
+msgid "Game show"
+msgstr "игра"
+
+# >> @item
+#: dvb/dvbepg.cpp:824
+#, kde-format
+msgid "Country"
+msgstr "природа"
+
+# >> @item
+#: dvb/dvbepg.cpp:825
+#, kde-format
+msgid "Health"
+msgstr "здравље"
+
+# >> @item
+#: dvb/dvbepg.cpp:833
+#, kde-format
+msgid "Raffle"
+msgstr "томбола"
+
+# >> @item
+#: dvb/dvbepg.cpp:834
+#, kde-format
+msgid "Television sales"
+msgstr "телевизијска продаја"
+
+# >> @item
+#: dvb/dvbepg.cpp:835
+#, kde-format
+msgid "Prizing"
+msgstr "награде"
+
+# >> @item
+#: dvb/dvbepg.cpp:839
+#, kde-format
+msgid "Interview"
+msgstr "интервју"
+
+# >> @item
+#: dvb/dvbepg.cpp:842
+#, kde-format
+msgid "Adult cartoon"
+msgstr "цртани за одрасле"
+
+# >> @item
+#: dvb/dvbepg.cpp:843
+#, kde-format
+msgid "Interactive"
+msgstr "интерактивни"
+
+# >> @item
+#: dvb/dvbepg.cpp:844
+#, kde-format
+msgid "Policy"
+msgstr "политика"
+
+#: dvb/dvbepg.cpp:877
+#, no-c-format, kde-format
+msgid "Genre: %1"
+msgstr "Жанр: %1"
+
+#: dvb/dvbepg.cpp:884
+#, kde-format
+msgid "reserved"
+msgstr "резервисано"
+
+#: dvb/dvbepg.cpp:885
+#, kde-format
+msgid "all audiences"
+msgstr "сва годишта"
+
+#: dvb/dvbepg.cpp:886
+#, kde-format
+msgid "10 years"
+msgstr "10 година"
+
+#: dvb/dvbepg.cpp:887
+#, kde-format
+msgid "12 years"
+msgstr "12 година"
+
+#: dvb/dvbepg.cpp:888
+#, kde-format
+msgid "14 years"
+msgstr "14 година"
+
+#: dvb/dvbepg.cpp:889
+#, kde-format
+msgid "16 years"
+msgstr "16 година"
+
+#: dvb/dvbepg.cpp:890
+#, kde-format
+msgid "18 years"
+msgstr "18 година"
+
+#: dvb/dvbepg.cpp:913
+#, no-c-format, kde-format
+msgid "Country %1: not rated\n"
+msgstr "Држава %1: без рејтинга\n"
+
+#: dvb/dvbepg.cpp:925
+#, kde-format
+msgid "violence / "
+msgstr "насиље / "
+
+#: dvb/dvbepg.cpp:927
+#, kde-format
+msgid "sex / "
+msgstr "секс / "
+
+#: dvb/dvbepg.cpp:929
+#, kde-format
+msgid "drugs / "
+msgstr "дрога / "
+
+#: dvb/dvbepg.cpp:937
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2%3\n"
+msgstr "Држава %1: рејтинг: %2%3\n"
+
+# >> %2 is person's age
+#: dvb/dvbepg.cpp:940
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2 years.\n"
+msgstr "Држава %1: рејтинг: %2 година.\n"
+
+#: dvb/dvbepgdialog.cpp:46
+#, kde-format
+msgctxt "@title:window"
+msgid "Program Guide"
+msgstr "Програмски водич"
+
+#: dvb/dvbepgdialog.cpp:73
+#, kde-format
+msgid "EPG language:"
+msgstr "Језик ЕПГ‑а:"
+
+# >> @item
+#: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
+#, kde-format
+msgid "Any language"
+msgstr "било који"
+
+#: dvb/dvbepgdialog.cpp:112
+#, fuzzy, kde-format
+#| msgid "Scan channels when idle to fetch fresh EPG data:"
+msgid "Show channels with empty EPG data"
+msgstr "Скенирај канале током мировања за свежим ЕПГ подацима:"
+
+#: dvb/dvbepgdialog.cpp:119
+#, kde-format
+msgctxt "@action:inmenu tv show"
+msgid "Record Show"
+msgstr "Снимај емисију"
+
+#: dvb/dvbepgdialog.cpp:127
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Search:"
+msgstr "Тражи:"
+
+#: dvb/dvbepgdialog.cpp:477 dvb/dvbrecordingdialog.cpp:258
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Start"
+msgstr "почетак"
+
+#: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Duration"
+msgstr "трајање"
+
+#: dvb/dvbepgdialog.cpp:481
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Title"
+msgstr "наслов"
+
+#: dvb/dvbliveview.cpp:197
+#, kde-format
+msgctxt "@info"
+msgid "All devices are used for recordings."
+msgstr "Сви уређаји се користе за снимања."
+
+#: dvb/dvbliveview.cpp:201
+#, kde-format
+msgctxt "@info"
+msgid ""
+"Didn't find a device with valid settings or access permissions are wrong.\n"
+"\n"
+"Please check the Configure Television window."
+msgstr ""
+
+#: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
+#, kde-format
+msgctxt "message box"
+msgid "No available device found."
+msgstr "Није нађен доступан уређај."
+
+#: dvb/dvbrecordingdialog.cpp:45
+#, kde-format
+msgctxt "@title:window"
+msgid "Recording Schedule"
+msgstr "Распоред снимања"
+
+#: dvb/dvbrecordingdialog.cpp:70
+#, kde-format
+msgctxt "@action"
+msgid "New"
+msgstr "Ново"
+
+#: dvb/dvbrecordingdialog.cpp:254
+#, kde-format
+msgctxt "@title:column recording"
+msgid "Name"
+msgstr "име"
+
+#: dvb/dvbrecordingdialog.cpp:262
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Disabled"
+msgstr "искључено"
+
+#: dvb/dvbrecordingdialog.cpp:307
+#, kde-format
+msgid "Disabled"
+msgstr "искључено"
+
+#: dvb/dvbrecordingdialog.cpp:309
+#, kde-format
+msgid "Enabled"
+msgstr "укључено"
+
+#: dvb/dvbrecordingdialog.cpp:384
+#, kde-format
+msgctxt "@title:window recording"
+msgid "Edit Schedule Entry"
+msgstr "Уређивање уноса распореда"
+
+#: dvb/dvbrecordingdialog.cpp:394
+#, kde-format
+msgctxt "@label recording"
+msgid "Name:"
+msgstr "Име:"
+
+#: dvb/dvbrecordingdialog.cpp:408
+#, kde-format
+msgctxt "@label tv show"
+msgid "Channel:"
+msgstr "Канал:"
+
+#: dvb/dvbrecordingdialog.cpp:420
+#, kde-format
+msgctxt "@label tv show"
+msgid "Start:"
+msgstr "Почетак:"
+
+#: dvb/dvbrecordingdialog.cpp:430
+#, kde-format
+msgctxt "@label tv show"
+msgid "Duration:"
+msgstr "Трајање:"
+
+#: dvb/dvbrecordingdialog.cpp:441
+#, kde-format
+msgctxt "@label tv show"
+msgid "End:"
+msgstr "Завршетак:"
+
+#: dvb/dvbrecordingdialog.cpp:446
+#, kde-format
+msgctxt "@label recording"
+msgid "Repeat:"
+msgstr "Понови:"
+
+#: dvb/dvbrecordingdialog.cpp:450
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Never"
+msgstr "никад"
+
+#: dvb/dvbrecordingdialog.cpp:454
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Daily"
+msgstr "дневно"
+
+#: dvb/dvbscandialog.cpp:87
+#, kde-format
+msgid "%1"
+msgstr "%1"
+
+# >> @title:column
+#: dvb/dvbscandialog.cpp:237
+#, kde-format
+msgid "Provider"
+msgstr "провајдер"
+
+# >> @title:column
+#: dvb/dvbscandialog.cpp:239
+#, kde-format
+msgid "SNR"
+msgstr "СНР"
+
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
+#, kde-format
+msgid "Channels"
+msgstr "Канали"
+
+#: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:410
+#, kde-format
+msgctxt "remove all items from a list"
+msgid "Clear"
+msgstr "Очисти"
+
+#: dvb/dvbscandialog.cpp:298
+#, kde-format
+msgid "Channel Scan"
+msgstr "Скенирање канала"
+
+# >? What is being searched for, transponders or networks?
+#: dvb/dvbscandialog.cpp:306
+#, kde-format
+msgid "Search transponders for other Networks"
+msgstr "Тражи транспондере за друге мреже"
+
+# skip-rule: t-account
+#: dvb/dvbscandialog.cpp:307
+#, kde-format
+msgid ""
+"On certain networks, it is possible that some transponders are encoded on "
+"separate Network Information Tables (other NITs). This is more common on DVB-"
+"C systems. Clicking on this icon will change the scan algorithm to take "
+"those other NIT data into account. Please notice that the scan will be a lot "
+"more slow if enabled."
+msgstr ""
+"На појединим мрежама, могуће је да су неки транспондери кодирани у засебним "
+"табелама података о мрежи (НИТ). Ово је чешће код ДВБ‑Ц система. Кликом на "
+"ову иконицу променићете алгоритам скенирања тако да се ти други НИТ подаци "
+"узимају у обзир. Имајте на уму и да ће тада скенирање бити много спорије."
+
+#: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
+#, kde-format
+msgid "Start Scan"
+msgstr "Почни скенирање"
+
+#: dvb/dvbscandialog.cpp:322
+#, kde-format
+msgid "Signal:"
+msgstr "Сигнал:"
+
+#: dvb/dvbscandialog.cpp:327
+#, kde-format
+msgid "SNR:"
+msgstr "СНР:"
+
+#: dvb/dvbscandialog.cpp:332
+#, kde-format
+msgid "Tuned:"
+msgstr "Намештено:"
+
+#: dvb/dvbscandialog.cpp:345
+#, kde-format
+msgid "Filter"
+msgstr "Филтер"
+
+#: dvb/dvbscandialog.cpp:348
+#, kde-format
+msgid "Free to air"
+msgstr "Јавно емитовање"
+
+#: dvb/dvbscandialog.cpp:351
+#, kde-format
+msgid "Radio"
+msgstr "Радио"
+
+#: dvb/dvbscandialog.cpp:354
+#, kde-format
+msgid "TV"
+msgstr "ТВ"
+
+#: dvb/dvbscandialog.cpp:357
+#, kde-format
+msgid "Provider:"
+msgstr "Провајдер:"
+
+#: dvb/dvbscandialog.cpp:365
+#, kde-format
+msgid "Add Filtered"
+msgstr "Додај филтрирано"
+
+#: dvb/dvbscandialog.cpp:369
+#, kde-format
+msgid "Add Selected"
+msgstr "Додај изабрано"
+
+#: dvb/dvbscandialog.cpp:375
+#, kde-format
+msgid "Scan Results"
+msgstr "Резултати скенирања"
+
+#: dvb/dvbscandialog.cpp:391
+#, kde-format
+msgid "Current Transponder"
+msgstr "Тренутни транспондер"
+
+#: dvb/dvbscandialog.cpp:473
+#, kde-format
+msgid "Stop Scan"
+msgstr "Заустави скенирање"
+
+#: dvb/dvbtab.cpp:96
+#, kde-format
+msgid "Program Guide"
+msgstr "Програмски водич"
+
+#: dvb/dvbtab.cpp:101
+#, kde-format
+msgid "OSD"
+msgstr "ОСД"
+
+#: dvb/dvbtab.cpp:107
+#, kde-format
+msgctxt "dialog"
+msgid "Recording Schedule"
+msgstr "Распоред снимања"
+
+#: dvb/dvbtab.cpp:114
+#, kde-format
+msgid "Instant Record"
+msgstr "Тренутно снимање"
+
+#: dvb/dvbtab.cpp:122
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Configure Television..."
+msgstr "Подеси телевизију..."
+
+#: dvb/dvbtab.cpp:142
+#, kde-format
+msgid "Search:"
+msgstr "Тражи:"
+
+#: dvb/dvbtab.cpp:373
+#, kde-format
+msgctxt "osd"
+msgid "Channel: %1_"
+msgstr "Канал: %1_"
+
+#: dvb/dvbtab.cpp:385
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine is currently recording programs.\n"
+"Do you really want to close the application?"
+msgstr ""
+"Кафеин тренутно снима емисије.\n"
+"Желите ли заиста да га затворите?"
+
+#: dvb/dvbtab.cpp:395
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine has scheduled recordings.\n"
+"Do you really want to close the application?"
+msgstr ""
+"Кафеин има заказана снимања.\n"
+"Желите ли заиста да га затворите?"
+
+#: dvb/dvbtab.cpp:463
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Started"
+msgstr "Тренутно снимање је покренуто"
+
+#: dvb/dvbtab.cpp:469 dvb/dvbtab.cpp:480
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Stopped"
+msgstr "Тренутно снимање је заустављено"
+
+#: dvb/xmltv.cpp:212
+#, kde-format
+msgctxt "%1 is a person; %2 is their character"
+msgid "%1 as %2"
+msgstr ""
+
+#: dvb/xmltv.cpp:222
+#, kde-format
+msgid "Director(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:224
+#, kde-format
+msgid "Actor(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:226
+#, kde-format
+msgid "Writer(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:228
+#, kde-format
+msgid "Adapter(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:230
+#, kde-format
+msgid "Producer(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:232
+#, kde-format
+msgid "Composer(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:234
+#, fuzzy, kde-format
+#| msgctxt "@action"
+#| msgid "Edit"
+msgid "Editor(s)"
+msgstr "Уреди"
+
+#: dvb/xmltv.cpp:236
+#, kde-format
+msgid "Presenter(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:238
+#, kde-format
+msgid "Commentator(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:240
+#, kde-format
+msgid "Guest(s)"
+msgstr ""
+
+#: dvb/xmltv.cpp:244
+#, kde-format
+msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
+msgid "%1: %2\n"
+msgstr ""
+
+#: dvb/xmltv.cpp:377
+#, fuzzy, kde-format
+#| msgctxt "@label tv show"
+#| msgid "Duration:"
+msgid "rating: %1"
+msgstr "Трајање:"
+
+#: dvb/xmltv.cpp:451
+#, kde-format
+msgid "Season %1"
+msgstr ""
+
+#: dvb/xmltv.cpp:454
+#, kde-format
+msgid " Episode %1"
+msgstr ""
+
+#: dvb/xmltv.cpp:485
+#, fuzzy, kde-format
+#| msgctxt "@label tv show"
+#| msgid "Start:"
+msgid "Star rating: %1"
+msgstr "Почетак:"
+
+#: dvb/xmltv.cpp:491
+#, fuzzy, kde-format
+#| msgid "Name: %1"
+msgid "Date: %1"
+msgstr "Име: %1"
+
+#: dvb/xmltv.cpp:495
+#, fuzzy, kde-format
+#| msgid "Name: %1"
+msgid "Category: %1"
+msgstr "Име: %1"
+
+#: dvb/xmltv.cpp:509
+#, fuzzy, kde-format
+#| msgid "Genre: %1"
+msgid "Keyword: %1"
+msgstr "Жанр: %1"
+
+#: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
+#, fuzzy, kde-format
+#| msgid "EPG language:"
+msgid "language: %1"
+msgstr "Језик ЕПГ‑а:"
+
+# >> @item
+#: dvb/xmltv.cpp:538
+#, fuzzy, kde-format
+#| msgid "Original Language"
+msgid "Original language: %1"
+msgstr "изворни језик"
+
+# >> @item
+#: dvb/xmltv.cpp:544
+#, fuzzy, kde-format
+#| msgid "Country"
+msgid "Country: %1"
+msgstr "природа"
+
+#: main.cpp:133 mainwindow.cpp:345 mainwindow.cpp:377
+#, kde-format
+msgid "Kaffeine"
+msgstr "Кафеин"
+
+#: main.cpp:137
+#, kde-format
+msgid "A media player by KDE with digital TV support."
+msgstr "КДЕ‑ов медија плејер са подршком за дигиталну телевизију."
+
+#: main.cpp:141
+#, fuzzy, kde-format
+#| msgid "(C) 2007-2017 The Kaffeine Authors"
+msgid "(C) 2007-2019 The Kaffeine Authors."
+msgstr "© 2007–2017, аутори Кафеина"
+
+#: main.cpp:159
+#, fuzzy, kde-format
+#| msgid "Maintainer (for KDE4)"
+msgid "Maintainer"
+msgstr "Одржавалац (за КДЕ‑4)"
+
+#: main.cpp:164
+#, kde-format
+msgid "Previous maintainer (for versions 1.x)"
+msgstr ""
+
+#: main.cpp:168
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Слободан Симић"
+
+#: main.cpp:169
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "slsimic@gmail.com"
+
+#: mainwindow.cpp:113
+#, kde-format
+msgid "&1 Play File"
+msgstr "&1 Пусти фајл"
+
+#: mainwindow.cpp:115
+#, kde-format
+msgid "Open dialog to play a file"
+msgstr "Отвори дијалог за пуштање фајла."
+
+#: mainwindow.cpp:119
+#, kde-format
+msgid "&2 Play Audio CD"
+msgstr "&2 Пусти аудио ЦД"
+
+# rewrite-msgid: /drive//
+#: mainwindow.cpp:121
+#, kde-format
+msgid ""
+"Start playing an audio CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr "Почни пуштање аудио ЦД‑а. Претпоставља се да је ЦД већ убачен."
+
+#: mainwindow.cpp:125
+#, kde-format
+msgid "&3 Play Video CD"
+msgstr "&3 Пусти видео ЦД"
+
+# rewrite-msgid: /drive//
+#: mainwindow.cpp:127
+#, kde-format
+msgid ""
+"Start playing a Video CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr "Почни пуштање видео ЦД‑а. Претпоставља се да је ЦД већ убачен."
+
+#: mainwindow.cpp:131
+#, kde-format
+msgid "&4 Play DVD"
+msgstr "&4 Пусти ДВД"
+
+# rewrite-msgid: /drive//
+#: mainwindow.cpp:133
+#, kde-format
+msgid ""
+"Start playing a DVD. It assumes that the DVD is already there at the DVD "
+"drive"
+msgstr "Почни пуштање ДВД‑а. Претпоставља се да је ДВД већ убачен."
+
+#: mainwindow.cpp:138
+#, kde-format
+msgid "&5 Digital TV"
+msgstr "&5 Дигитална ТВ"
+
+#: mainwindow.cpp:207
+#, kde-format
+msgid "&File"
+msgstr "&Фајл"
+
+#: mainwindow.cpp:214
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Open URL..."
+msgstr "Отвори УРЛ..."
+
+#: mainwindow.cpp:225 mainwindow.cpp:478
+#, kde-format
+msgid "Play Audio CD"
+msgstr "Пусти аудио ЦД"
+
+#: mainwindow.cpp:229 mainwindow.cpp:479
+#, kde-format
+msgid "Play Video CD"
+msgstr "Пусти видео ЦД"
+
+#: mainwindow.cpp:233 mainwindow.cpp:480
+#, kde-format
+msgid "Play DVD"
+msgstr "Пусти ДВД"
+
+#: mainwindow.cpp:237
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Play DVD Folder"
+msgstr "Пусти ДВД фасциклу"
+
+#: mainwindow.cpp:247
+#, kde-format
+msgid "&Playback"
+msgstr "&Пуштање"
+
+#: mainwindow.cpp:250
+#, kde-format
+msgctxt "menu bar"
+msgid "Play&list"
+msgstr "&Листа пуштања"
+
+#: mainwindow.cpp:254
+#, kde-format
+msgid "&Television"
+msgstr "&Телевизија"
+
+#: mainwindow.cpp:258
+#, kde-format
+msgid "&Settings"
+msgstr "&Подешавање"
+
+# >> @title:tab Start page
+#: mainwindow.cpp:279
+#, kde-format
+msgid "Start"
+msgstr "Почетна"
+
+#: mainwindow.cpp:280
+#, kde-format
+msgid "Playback"
+msgstr "Пуштање"
+
+#: mainwindow.cpp:281
+#, kde-format
+msgid "Playlist"
+msgstr "Листа пуштања"
+
+#: mainwindow.cpp:283
+#, kde-format
+msgid "Television"
+msgstr "Телевизија"
+
+#: mainwindow.cpp:347
+#, kde-format
+msgid "Play &File"
+msgstr "Пусти &фајл"
+
+#: mainwindow.cpp:351
+#, kde-format
+msgid "Play &Audio CD"
+msgstr "Пусти &аудио ЦД"
+
+#: mainwindow.cpp:355
+#, kde-format
+msgid "Play &Video CD"
+msgstr "Пусти &видео ЦД"
+
+#: mainwindow.cpp:359
+#, kde-format
+msgid "Play &DVD"
+msgstr "Пусти &ДВД"
+
+#: mainwindow.cpp:364
+#, kde-format
+msgid "&Watch Digital TV"
+msgstr "&Пусти дигиталну ТВ"
+
+#: mainwindow.cpp:368
+#, kde-format
+msgid "&Quit"
+msgstr "&Напусти"
+
+#: mainwindow.cpp:473
+#, kde-format
+msgid ""
+"Enable all debug messages. Please notice that Kaffeine also allows enabling "
+"debug messages per category, by using the environment var:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"where 'category' can be:\n"
+msgstr ""
+"Активира све исправљачке поруке. Кафеин такође омогућава активирање "
+"исправљачких порука по категорији, преко променљиве окружења:\n"
+"QT_LOGGING_RULES=kaffeine.kategorija.debug=true\n"
+"где ‘kategorija’ може да буде:\n"
+
+#: mainwindow.cpp:474
+#, kde-format
+msgid "The files/URLs opened by the application will be deleted after use"
+msgstr "Фајлови и УРЛ‑ови отворени програмом биће обрисани после употребе"
+
+#: mainwindow.cpp:475
+#, kde-format
+msgid "Start in full screen mode"
+msgstr "Покрени преко целог екрана"
+
+#: mainwindow.cpp:476
+#, fuzzy, kde-format
+#| msgid "Start in full screen mode"
+msgid "Start in minimal mode"
+msgstr "Покрени преко целог екрана"
+
+#: mainwindow.cpp:477
+#, kde-format
+msgid "Start with always on top"
+msgstr ""
+
+#: mainwindow.cpp:484
+#, kde-format
+msgctxt "command line option"
+msgid "Dump dvb data (debug option)"
+msgstr "Попиши ДВБ податке (исправљачка опција)"
+
+#: mainwindow.cpp:485
+#, kde-format
+msgctxt "command line option"
+msgid "Play TV channel"
+msgstr "Пусти ТВ канал"
+
+#: mainwindow.cpp:486
+#, kde-format
+msgctxt "command line option"
+msgid "(deprecated option)"
+msgstr "(превазиђена опција)"
+
+#: mainwindow.cpp:487
+#, kde-format
+msgctxt "command line option"
+msgid "Play last tuned TV channel"
+msgstr "Пусти посљедњи изабран ТВ канал"
+
+#: mainwindow.cpp:489
+#, kde-format
+msgid "Files or URLs to play"
+msgstr "Фајлови или УРЛ‑ови за пуштање"
+
+#: mainwindow.cpp:711
+#, kde-format
+msgctxt "@title:window"
+msgid "Open files"
+msgstr "Отварање фајлова"
+
+#: mainwindow.cpp:724
+#, kde-format
+msgctxt "@title:window"
+msgid "Open URL"
+msgstr "Отварање УРЛ‑а"
+
+#: mainwindow.cpp:724
+#, kde-format
+msgid "Enter a URL:"
+msgstr "Унесите УРЛ:"
+
+#: mediawidget.cpp:85
+#, kde-format
+msgid "Previous"
+msgstr "Претходно"
+
+#: mediawidget.cpp:93
+#, kde-format
+msgid "Play"
+msgstr "Пусти"
+
+#: mediawidget.cpp:94
+#, kde-format
+msgid "Pause"
+msgstr "Паузирај"
+
+#: mediawidget.cpp:103
+#, kde-format
+msgid "Stop"
+msgstr "Заустави"
+
+#: mediawidget.cpp:111
+#, kde-format
+msgid "Next"
+msgstr "Сљедеће"
+
+#: mediawidget.cpp:120 mediawidget.cpp:588
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Full Screen Mode"
+msgstr "Преко целог екрана"
+
+#: mediawidget.cpp:127 mediawidget.cpp:603
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Minimal Mode"
+msgstr "Минималистички режим"
+
+#: mediawidget.cpp:140
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Subtitle"
+msgstr "Титл"
+
+#: mediawidget.cpp:144
+#, kde-format
+msgctxt "subtitle selection entry"
+msgid "off"
+msgstr "искључен"
+
+#: mediawidget.cpp:152
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Add subtitle file"
+msgstr "Додај фајл титла"
+
+#: mediawidget.cpp:159
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio"
+msgstr "Аудио"
+
+#: mediawidget.cpp:162
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Audio Device"
+msgstr "Аудио уређај"
+
+#: mediawidget.cpp:164
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio Device"
+msgstr "Аудио уређај"
+
+#: mediawidget.cpp:171
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Increase Volume"
+msgstr "Повећај јачину звука"
+
+#: mediawidget.cpp:178
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Decrease Volume"
+msgstr "Смањи јачину звука"
+
+#: mediawidget.cpp:184
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Mute Volume"
+msgstr "Искључи звук"
+
+#: mediawidget.cpp:194
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Video"
+msgstr "Видео"
+
+#: mediawidget.cpp:198
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Deinterlace"
+msgstr "Расплићи"
+
+#: mediawidget.cpp:206
+#, fuzzy, kde-format
+#| msgid "Disabled"
+msgctxt "'Deinterlace' menu"
+msgid "disabled"
+msgstr "искључено"
+
+#: mediawidget.cpp:213
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "discard"
+msgstr ""
+
+#: mediawidget.cpp:219
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "bob"
+msgstr ""
+
+#: mediawidget.cpp:225
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "linear"
+msgstr ""
+
+#: mediawidget.cpp:231
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif"
+msgstr ""
+
+#: mediawidget.cpp:238
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif2x"
+msgstr ""
+
+#: mediawidget.cpp:244
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "phosphor"
+msgstr ""
+
+#: mediawidget.cpp:250
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "x"
+msgstr ""
+
+#: mediawidget.cpp:256
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "mean"
+msgstr ""
+
+#: mediawidget.cpp:262
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "blend"
+msgstr ""
+
+#: mediawidget.cpp:268
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "Inverse telecine"
+msgstr ""
+
+#: mediawidget.cpp:288
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Aspect Ratio"
+msgstr "Пропорција"
+
+#: mediawidget.cpp:295
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "Automatic"
+msgstr "Аутоматски"
+
+#: mediawidget.cpp:301
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "1:1"
+msgstr "1:1"
+
+#: mediawidget.cpp:307
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "4:3"
+msgstr "4:3"
+
+#: mediawidget.cpp:313
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "5:4"
+msgstr "5:4"
+
+#: mediawidget.cpp:319
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:9"
+msgstr "16:9"
+
+#: mediawidget.cpp:325
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:10"
+msgstr "16:10"
+
+#: mediawidget.cpp:331
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.21:1"
+msgstr "2,21:1"
+
+#: mediawidget.cpp:337
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.35:1"
+msgstr "2,35:1"
+
+#: mediawidget.cpp:343
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.39:1"
+msgstr "2,39:1"
+
+#: mediawidget.cpp:348
+#, kde-format
+msgid "Video size"
+msgstr "Величина видеа"
+
+# >> @item:inmenu
+#: mediawidget.cpp:356
+#, kde-format
+msgctxt "Video size"
+msgid "Automatic"
+msgstr "аутоматски"
+
+# >> @item:inmenu
+#: mediawidget.cpp:362
+#, kde-format
+msgctxt "Video size"
+msgid "25%"
+msgstr "25%"
+
+# >> @item:inmenu
+#: mediawidget.cpp:368
+#, kde-format
+msgctxt "Video size"
+msgid "50%"
+msgstr "50%"
+
+# >> @item:inmenu
+#: mediawidget.cpp:375
+#, kde-format
+msgctxt "Video size"
+msgid "75%"
+msgstr "75%"
+
+# >> @item:inmenu
+#: mediawidget.cpp:381
+#, kde-format
+msgctxt "Video size"
+msgid "Original Size"
+msgstr "изворна величина"
+
+# >> @item:inmenu
+#: mediawidget.cpp:387
+#, kde-format
+msgctxt "Video size"
+msgid "150%"
+msgstr "150%"
+
+#: mediawidget.cpp:393
+#, kde-format
+msgctxt "Video size"
+msgid "200%"
+msgstr "200%"
+
+#: mediawidget.cpp:399
+#, kde-format
+msgctxt "Video size"
+msgid "250%"
+msgstr "250%"
+
+#: mediawidget.cpp:405
+#, kde-format
+msgctxt "Video size"
+msgid "300%"
+msgstr "300%"
+
+#: mediawidget.cpp:428
+#, kde-format
+msgid "Volume Slider"
+msgstr "Клизач јачине звука"
+
+#: mediawidget.cpp:443
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Jump to Position..."
+msgstr "Скочи на позицију..."
+
+#: mediawidget.cpp:448
+#, kde-format
+msgctxt "playback menu"
+msgid "Skip"
+msgstr "Скочи"
+
+#: mediawidget.cpp:462 mediawidget.cpp:471 mediawidget.cpp:1149
+#: mediawidget.cpp:1159
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Backward"
+msgstr "Скочи %1 сек. уназад"
+
+#: mediawidget.cpp:480 mediawidget.cpp:489 mediawidget.cpp:1152
+#: mediawidget.cpp:1162
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Forward"
+msgstr "Скочи %1 сек. унапријед"
+
+#: mediawidget.cpp:495 mediawidget.cpp:498
+#, kde-format
+msgid "Seek Slider"
+msgstr "Клизач тражења"
+
+#: mediawidget.cpp:509
+#, kde-format
+msgctxt "dvd navigation"
+msgid "DVD Menu"
+msgstr "ДВД мени"
+
+#: mediawidget.cpp:513
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Title"
+msgstr "Наслов"
+
+#: mediawidget.cpp:519
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Chapter"
+msgstr "Поглавље"
+
+#: mediawidget.cpp:525
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Angle"
+msgstr "Угао"
+
+#: mediawidget.cpp:532
+#, kde-format
+msgid "Switch between elapsed and remaining time display"
+msgstr "Пребаци између приказа протеклог и преосталог времена"
+
+# >> @item
+#: mediawidget.cpp:558
+#, kde-format
+msgid ""
+"Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf "
+"*.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
+"Files (*)"
+msgstr ""
+"подржани медија фајлови (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 "
+"*.anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *."
+"asf *.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b "
+"*.f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;сви "
+"фајлови (*)"
+
+#: mediawidget.cpp:594
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Full Screen Mode"
+msgstr "Напусти цео екран"
+
+#: mediawidget.cpp:607
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Minimal Mode"
+msgstr "Напусти минималистички режим"
+
+#: mediawidget.cpp:640
+#, kde-format
+msgctxt "@title:window"
+msgid "Open subtitle"
+msgstr "Отварање титла"
+
+# >> @item
+#: mediawidget.cpp:641
+#, kde-format
+msgid ""
+"Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
+"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+msgstr ""
+"титлови (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
+"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp)"
+
+#: mediawidget.cpp:781 mediawidget.cpp:886
+#, kde-format
+msgctxt "osd"
+msgid "Volume: %1%"
+msgstr "Јачина: %1%"
+
+#: mediawidget.cpp:812
+#, kde-format
+msgctxt "osd"
+msgid "Stopped"
+msgstr "Заустављено"
+
+#: mediawidget.cpp:876
+#, kde-format
+msgctxt "osd"
+msgid "Mute On"
+msgstr "Звук искључен"
+
+#: mediawidget.cpp:879
+#, kde-format
+msgctxt "osd"
+msgid "Mute Off"
+msgstr "Звук обновљен"
+
+#: mediawidget.cpp:975
+#, fuzzy, kde-format
+#| msgctxt "'Video' menu"
+#| msgid "Deinterlace"
+msgctxt "osd message"
+msgid "Deinterlace %1"
+msgstr "Расплићи"
+
+#: mediawidget.cpp:1390
+#, kde-format
+msgctxt "osd"
+msgid "Playing"
+msgstr "Пушта се"
+
+#: mediawidget.cpp:1395
+#, kde-format
+msgctxt "osd"
+msgid "Paused"
+msgstr "Паузирано"
+
+#: mediawidget.cpp:1573
+#, kde-format
+msgctxt "@title:window"
+msgid "Jump to Position"
+msgstr "Скок на позицију"
+
+#: mediawidget.cpp:1578
+#, kde-format
+msgid "Enter a position:"
+msgstr "Унесите позицију:"
+
+# >> @title:column
+#: playlist/playlistmodel.cpp:800
+#, kde-format
+msgctxt "playlist track"
+msgid "Title"
+msgstr "наслов"
+
+# >> @title:column
+#: playlist/playlistmodel.cpp:802
+#, kde-format
+msgctxt "playlist track"
+msgid "Artist"
+msgstr "извођач"
+
+# >> @title:column
+#: playlist/playlistmodel.cpp:804
+#, kde-format
+msgctxt "playlist track"
+msgid "Album"
+msgstr "албум"
+
+# >> @title:column
+#: playlist/playlistmodel.cpp:806
+#, kde-format
+msgctxt "playlist track"
+msgid "Track Number"
+msgstr "број нумере"
+
+# >> @title:column
+#: playlist/playlistmodel.cpp:808
+#, kde-format
+msgctxt "playlist track"
+msgid "Length"
+msgstr "трајање"
+
+#: playlist/playlisttab.cpp:368
+#, kde-format
+msgctxt "playlist browser"
+msgid "Temporary Playlist"
+msgstr "Привремена листа пуштања"
+
+#: playlist/playlisttab.cpp:392
+#, kde-format
+msgctxt "playlist menu"
+msgid "Repeat"
+msgstr "Понављај"
+
+#: playlist/playlisttab.cpp:397
+#, kde-format
+msgctxt "playlist menu"
+msgid "Random"
+msgstr "Насумично"
+
+#: playlist/playlisttab.cpp:402
+#, kde-format
+msgid "Add Subtitle"
+msgstr "Додај титл"
+
+#: playlist/playlisttab.cpp:416
+#, kde-format
+msgctxt "@action:inmenu playlist"
+msgid "New"
+msgstr "Ново"
+
+#: playlist/playlisttab.cpp:421
+#, kde-format
+msgctxt "rename an entry in a list"
+msgid "Rename"
+msgstr "Преименуј"
+
+#: playlist/playlisttab.cpp:630
+#, kde-format
+msgctxt "playlist browser"
+msgid "Unnamed Playlist"
+msgstr "Неименована листа пуштања"
+
+#: playlist/playlisttab.cpp:834
+#, kde-format
+msgctxt "file filter"
+msgid "Subtitle Files"
+msgstr "фајлови титлова"
+
+#: playlist/playlisttab.cpp:851
+#, kde-format
+msgctxt "file filter"
+msgid ""
+"*.xspf|XSPF Playlist\n"
+"*.m3u|M3U Playlist\n"
+"*.pls|PLS Playlist"
+msgstr ""
+"*.xspf|ИксСПФ листа\n"
+"*.m3u|М3У листа\n"
+"*.pls|ПЛС листа"
+
+#: sqlhelper.cpp:48
+#, kde-format
+msgctxt "message box"
+msgid "Please install the Qt SQLite plugin."
+msgstr "Инсталирајте прикључак СКуЛајта за КуТ."
+
+#: sqlhelper.cpp:63
+#, kde-format
+msgctxt "message box"
+msgid "Cannot open the SQLite database."
+msgstr "Не могу да отворим СКуЛајтову базу."
