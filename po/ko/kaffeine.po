@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-10-21 00:46+0000\n"
+"POT-Creation-Date: 2022-12-14 00:46+0000\n"
 "PO-Revision-Date: 2022-05-15 22:19+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -2230,360 +2230,360 @@ msgstr "URL 열기"
 msgid "Enter a URL:"
 msgstr "URL 입력:"
 
-#: mediawidget.cpp:85
+#: mediawidget.cpp:86
 #, kde-format
 msgid "Previous"
 msgstr "이전"
 
-#: mediawidget.cpp:93
+#: mediawidget.cpp:94
 #, kde-format
 msgid "Play"
 msgstr "재생"
 
-#: mediawidget.cpp:94
+#: mediawidget.cpp:95
 #, kde-format
 msgid "Pause"
 msgstr "일시 정지"
 
-#: mediawidget.cpp:103
+#: mediawidget.cpp:104
 #, kde-format
 msgid "Stop"
 msgstr "정지"
 
-#: mediawidget.cpp:111
+#: mediawidget.cpp:112
 #, kde-format
 msgid "Next"
 msgstr "다음"
 
-#: mediawidget.cpp:120 mediawidget.cpp:591
+#: mediawidget.cpp:121 mediawidget.cpp:592
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Full Screen Mode"
 msgstr "전체 화면 모드"
 
-#: mediawidget.cpp:127 mediawidget.cpp:606
+#: mediawidget.cpp:128 mediawidget.cpp:607
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
 msgstr "최소 모드"
 
-#: mediawidget.cpp:140
+#: mediawidget.cpp:141
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
 msgstr "자막"
 
-#: mediawidget.cpp:144
+#: mediawidget.cpp:145
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
 msgstr "꺼짐"
 
-#: mediawidget.cpp:152
+#: mediawidget.cpp:153
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
 msgstr "자막 파일 추가"
 
-#: mediawidget.cpp:159
+#: mediawidget.cpp:160
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio"
 msgstr "오디오"
 
-#: mediawidget.cpp:162
+#: mediawidget.cpp:163
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
 msgstr "오디오 장치"
 
-#: mediawidget.cpp:164
+#: mediawidget.cpp:165
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
 msgstr "오디오 장치"
 
-#: mediawidget.cpp:171
+#: mediawidget.cpp:172
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
 msgstr "음량 증가"
 
-#: mediawidget.cpp:178
+#: mediawidget.cpp:179
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
 msgstr "음량 감소"
 
-#: mediawidget.cpp:184
+#: mediawidget.cpp:185
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
 msgstr "볼륨 음소거"
 
-#: mediawidget.cpp:194
+#: mediawidget.cpp:195
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Video"
 msgstr "비디오"
 
-#: mediawidget.cpp:198
+#: mediawidget.cpp:199
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
 msgstr "디인터레이스"
 
-#: mediawidget.cpp:206
+#: mediawidget.cpp:207
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
 msgstr "사용 안 함"
 
-#: mediawidget.cpp:213
+#: mediawidget.cpp:214
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
 msgstr "무시"
 
-#: mediawidget.cpp:219
+#: mediawidget.cpp:220
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
 msgstr "bob"
 
-#: mediawidget.cpp:225
+#: mediawidget.cpp:226
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
 msgstr "선형"
 
-#: mediawidget.cpp:231
+#: mediawidget.cpp:232
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
 msgstr "yadif"
 
-#: mediawidget.cpp:238
+#: mediawidget.cpp:239
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
 msgstr "yadif2x"
 
-#: mediawidget.cpp:244
+#: mediawidget.cpp:245
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
 msgstr "phosphor"
 
-#: mediawidget.cpp:250
+#: mediawidget.cpp:251
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
 msgstr "x"
 
-#: mediawidget.cpp:256
+#: mediawidget.cpp:257
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
 msgstr "평균값"
 
-#: mediawidget.cpp:262
+#: mediawidget.cpp:263
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
 msgstr "혼합"
 
-#: mediawidget.cpp:268
+#: mediawidget.cpp:269
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
 msgstr "역 텔레시네"
 
-#: mediawidget.cpp:288
+#: mediawidget.cpp:289
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
 msgstr "종횡 비율"
 
-#: mediawidget.cpp:295
+#: mediawidget.cpp:296
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "Automatic"
 msgstr "자동"
 
-#: mediawidget.cpp:301
+#: mediawidget.cpp:302
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
 msgstr "1:1"
 
-#: mediawidget.cpp:307
+#: mediawidget.cpp:308
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "4:3"
 msgstr "4:3"
 
-#: mediawidget.cpp:313
+#: mediawidget.cpp:314
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "5:4"
 msgstr "5:4"
 
-#: mediawidget.cpp:319
+#: mediawidget.cpp:320
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:9"
 msgstr "16:9"
 
-#: mediawidget.cpp:325
+#: mediawidget.cpp:326
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:10"
 msgstr "16:10"
 
-#: mediawidget.cpp:331
+#: mediawidget.cpp:332
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.21:1"
 msgstr "2.21:1"
 
-#: mediawidget.cpp:337
+#: mediawidget.cpp:338
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.35:1"
 msgstr "2.35:1"
 
-#: mediawidget.cpp:343
+#: mediawidget.cpp:344
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.39:1"
 msgstr "2.39:1"
 
-#: mediawidget.cpp:348
+#: mediawidget.cpp:349
 #, kde-format
 msgid "Video size"
 msgstr "비디오 크기"
 
-#: mediawidget.cpp:356
+#: mediawidget.cpp:357
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
 msgstr "자동"
 
-#: mediawidget.cpp:362
+#: mediawidget.cpp:363
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
 msgstr "25%"
 
-#: mediawidget.cpp:368
+#: mediawidget.cpp:369
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
 msgstr "50%"
 
-#: mediawidget.cpp:375
+#: mediawidget.cpp:376
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
 msgstr "75%"
 
-#: mediawidget.cpp:381
+#: mediawidget.cpp:382
 #, kde-format
 msgctxt "Video size"
 msgid "Original Size"
 msgstr "원래 크기"
 
-#: mediawidget.cpp:387
+#: mediawidget.cpp:388
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
 msgstr "150%"
 
-#: mediawidget.cpp:393
+#: mediawidget.cpp:394
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
 msgstr "200%"
 
-#: mediawidget.cpp:399
+#: mediawidget.cpp:400
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
 msgstr "250%"
 
-#: mediawidget.cpp:405
+#: mediawidget.cpp:406
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
 msgstr "300%"
 
-#: mediawidget.cpp:428
+#: mediawidget.cpp:429
 #, kde-format
 msgid "Volume Slider"
 msgstr "음량 슬라이더"
 
-#: mediawidget.cpp:443
+#: mediawidget.cpp:444
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
 msgstr "위치로 이동..."
 
-#: mediawidget.cpp:448
+#: mediawidget.cpp:449
 #, kde-format
 msgctxt "playback menu"
 msgid "Skip"
 msgstr "건너뛰기"
 
-#: mediawidget.cpp:462 mediawidget.cpp:471 mediawidget.cpp:1154
-#: mediawidget.cpp:1164
+#: mediawidget.cpp:463 mediawidget.cpp:472 mediawidget.cpp:1157
+#: mediawidget.cpp:1167
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Backward"
 msgstr "%1초 뒤로 건너뛰기"
 
-#: mediawidget.cpp:480 mediawidget.cpp:489 mediawidget.cpp:1157
-#: mediawidget.cpp:1167
+#: mediawidget.cpp:481 mediawidget.cpp:490 mediawidget.cpp:1160
+#: mediawidget.cpp:1170
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Forward"
 msgstr "%1초 앞으로 건너뛰기"
 
-#: mediawidget.cpp:495 mediawidget.cpp:498
+#: mediawidget.cpp:496 mediawidget.cpp:499
 #, kde-format
 msgid "Seek Slider"
 msgstr "검색 슬라이더"
 
-#: mediawidget.cpp:509
+#: mediawidget.cpp:510
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
 msgstr "DVD 메뉴"
 
-#: mediawidget.cpp:513
+#: mediawidget.cpp:514
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Title"
 msgstr "타이틀"
 
-#: mediawidget.cpp:519
+#: mediawidget.cpp:520
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
 msgstr "챕터"
 
-#: mediawidget.cpp:525
+#: mediawidget.cpp:526
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Angle"
 msgstr "각도"
 
-#: mediawidget.cpp:532
+#: mediawidget.cpp:533
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
 msgstr "지난 시간과 남은 시간 표시 바꾸기"
 
-#: mediawidget.cpp:561
+#: mediawidget.cpp:562
 #, kde-format
 msgid ""
 "Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
@@ -2610,25 +2610,25 @@ msgstr ""
 "webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;모든 "
 "파일 (*)"
 
-#: mediawidget.cpp:597
+#: mediawidget.cpp:598
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Full Screen Mode"
 msgstr "전체 화면 모드 나가기"
 
-#: mediawidget.cpp:610
+#: mediawidget.cpp:611
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Minimal Mode"
 msgstr "최소 모드 나가기"
 
-#: mediawidget.cpp:643
+#: mediawidget.cpp:644
 #, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
 msgstr "자막 열기"
 
-#: mediawidget.cpp:644
+#: mediawidget.cpp:645
 #, kde-format
 msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
@@ -2637,55 +2637,55 @@ msgstr ""
 "자막 (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *.smi "
 "*.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 
-#: mediawidget.cpp:784 mediawidget.cpp:891
+#: mediawidget.cpp:785 mediawidget.cpp:894
 #, kde-format
 msgctxt "osd"
 msgid "Volume: %1%"
 msgstr "음량: %1%"
 
-#: mediawidget.cpp:815
+#: mediawidget.cpp:816
 #, kde-format
 msgctxt "osd"
 msgid "Stopped"
 msgstr "정지됨"
 
-#: mediawidget.cpp:881
+#: mediawidget.cpp:884
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
 msgstr "음소거"
 
-#: mediawidget.cpp:884
+#: mediawidget.cpp:887
 #, kde-format
 msgctxt "osd"
 msgid "Mute Off"
 msgstr "음소거 해제"
 
-#: mediawidget.cpp:980
+#: mediawidget.cpp:983
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
 msgstr "디인터레이스 %1"
 
-#: mediawidget.cpp:1395
+#: mediawidget.cpp:1398
 #, kde-format
 msgctxt "osd"
 msgid "Playing"
 msgstr "재생 중"
 
-#: mediawidget.cpp:1400
+#: mediawidget.cpp:1403
 #, kde-format
 msgctxt "osd"
 msgid "Paused"
 msgstr "일시 정지됨"
 
-#: mediawidget.cpp:1578
+#: mediawidget.cpp:1581
 #, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
 msgstr "위치로 이동"
 
-#: mediawidget.cpp:1583
+#: mediawidget.cpp:1586
 #, kde-format
 msgid "Enter a position:"
 msgstr "위치 입력:"
