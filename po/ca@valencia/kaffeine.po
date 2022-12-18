@@ -541,7 +541,7 @@ msgstr "Opcions generals"
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
 #, kde-format
 msgid "Automatic Recording"
-msgstr "Gravació automàtic"
+msgstr "Gravació automàtica"
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -1796,7 +1796,7 @@ msgstr "Planificació de la gravació"
 #: dvb/dvbtab.cpp:115
 #, kde-format
 msgid "Instant Record"
-msgstr "Gravació instantani"
+msgstr "Gravació instantània"
 
 #: dvb/dvbtab.cpp:123
 #, kde-format
@@ -1839,13 +1839,13 @@ msgstr ""
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
-msgstr "S'ha iniciat la gravació instantani"
+msgstr "S'ha iniciat la gravació instantània"
 
 #: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
-msgstr "S'ha parat la gravació instantani"
+msgstr "S'ha parat la gravació instantània"
 
 #: dvb/xmltv.cpp:212
 #, kde-format
