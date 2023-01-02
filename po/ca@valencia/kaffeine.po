@@ -476,7 +476,7 @@ msgstr "Marge al final (minuts):"
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr "Estil per a anomenar els enregistraments:"
+msgstr "Estil per a anomenar les gravacions:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
@@ -505,7 +505,7 @@ msgstr "Utilitza el joc de caràcters ISO 8859-1 en comptes de l'ISO 6937:"
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
 msgid "Create info files to accompany EPG recordings:"
-msgstr "Crea fitxers info per a acompanyar els enregistraments EPG:"
+msgstr "Crea fitxers info per a acompanyar les gravacions EPG:"
 
 #: dvb/dvbconfigdialog.cpp:179
 #, kde-format
@@ -1822,7 +1822,7 @@ msgid ""
 "Kaffeine is currently recording programs.\n"
 "Do you really want to close the application?"
 msgstr ""
-"Actualment Kaffeine està enregistrant programes.\n"
+"Actualment Kaffeine està gravant programes.\n"
 "Segur que voleu tancar l'aplicació?"
 
 #: dvb/dvbtab.cpp:414
@@ -1832,7 +1832,7 @@ msgid ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 msgstr ""
-"Kaffeine té enregistraments programats.\n"
+"Kaffeine té gravacions programades.\n"
 "Segur que voleu tancar l'aplicació?"
 
 #: dvb/dvbtab.cpp:487
@@ -2019,8 +2019,8 @@ msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
-"Inicia la reproducció d'un CD d'àudio. Assumix que el CD ja està a la unitat "
-"de CD"
+"Inicia la reproducció d'un CD d'àudio. Assumix que el CD ja es troba en la "
+"unitat de CD"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -2033,7 +2033,7 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
-"Inicia la reproducció d'un CD de vídeo. Assumix que el CD ja està a la "
+"Inicia la reproducció d'un CD de vídeo. Assumix que el CD ja es troba en la "
 "unitat de CD"
 
 #: mainwindow.cpp:131
@@ -2047,7 +2047,8 @@ msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
 msgstr ""
-"Inicia la reproducció d'un DVD. Assumix que el DVD ja està a la unitat de DVD"
+"Inicia la reproducció d'un DVD. Assumix que el DVD ja es troba en la unitat "
+"de DVD"
 
 #: mainwindow.cpp:138
 #, kde-format
