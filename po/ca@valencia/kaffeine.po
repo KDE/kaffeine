@@ -41,7 +41,7 @@ msgstr "Pista %1 de CD"
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
-msgstr "Configuració de Kaffeine"
+msgstr "Configureu Kaffeine"
 
 #: configurationdialog.cpp:49
 #, kde-format
@@ -202,7 +202,7 @@ msgstr "Desactivat"
 #, kde-format
 msgctxt "@title:window"
 msgid "Edit Channel"
-msgstr "Edició del canal"
+msgstr "Editeu el canal"
 
 #: dvb/dvbchanneldialog.cpp:721
 #, kde-format
@@ -424,7 +424,7 @@ msgstr "PID del teletext:"
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Television"
-msgstr "Configuració de la televisió"
+msgstr "Configureu la televisió"
 
 #: dvb/dvbconfigdialog.cpp:77
 #, kde-format
@@ -788,7 +788,7 @@ msgstr "Configuració de LNB %1"
 #: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
 #, kde-format
 msgid "LNB Settings"
-msgstr "Configuració del LNB"
+msgstr "Configureu el LNB"
 
 #: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
 #, kde-format
@@ -1560,7 +1560,7 @@ msgstr ""
 "No s'ha trobat un dispositiu amb configuració vàlida o els permisos d'accés "
 "són incorrectes.\n"
 "\n"
-"Comproveu la finestra Configuració de la televisió."
+"Comproveu la finestra Configureu la televisió."
 
 #: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
 #, kde-format
@@ -1606,7 +1606,7 @@ msgstr "Activat"
 #, kde-format
 msgctxt "@title:window recording"
 msgid "Edit Schedule Entry"
-msgstr "Edició de l'entrada planificada"
+msgstr "Editeu l'entrada planificada"
 
 #: dvb/dvbrecordingdialog.cpp:394
 #, kde-format
@@ -1685,7 +1685,7 @@ msgstr "Neteja"
 #: dvb/dvbscandialog.cpp:298
 #, kde-format
 msgid "Channel Scan"
-msgstr "Exploració dels canals"
+msgstr "Exploreu els canals"
 
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
