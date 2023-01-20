@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2022-10-08 12:54+0200\n"
+"PO-Revision-Date: 2023-01-19 08:30+0100\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,28 +16,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
 msgid "Cannot start mplayer process."
-msgstr ""
+msgstr "Mplayer-ის პროცესის გაშვების შეცდომა."
 
 #: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
 #, kde-format
 msgid "Subtitle %1"
-msgstr ""
+msgstr "სუბტიტრები: %1"
 
 #: backend-vlc/vlcmediawidget.cpp:917
 #, kde-format
 msgid "CD track %1"
-msgstr ""
+msgstr "CD ტრეკი %1"
 
 #: configurationdialog.cpp:42
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
-msgstr ""
+msgstr "Kaffeine-ის მორგება"
 
 #: configurationdialog.cpp:49
 #, kde-format
@@ -49,7 +49,7 @@ msgstr "ნორმალური რეჟიმი"
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Minimal Mode"
-msgstr ""
+msgstr "მინიმალური რეჟიმი"
 
 #: configurationdialog.cpp:53
 #, kde-format
@@ -61,25 +61,25 @@ msgstr "მთელი ეკრანის რეჟიმი"
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Remember Last Setting"
-msgstr ""
+msgstr "ბოლო პარამეტრის დამახსოვრება"
 
 #: configurationdialog.cpp:59
 #, kde-format
 msgctxt "@label:listbox"
 msgid "Startup display mode:"
-msgstr ""
+msgstr "გაშვების ჩვენების რეჟიმი:"
 
 #: configurationdialog.cpp:68
 #, kde-format
 msgctxt "@label:spinbox"
 msgid "Short skip duration:"
-msgstr ""
+msgstr "გადახვევის მოკლე ბიჯი:"
 
 #: configurationdialog.cpp:77
 #, kde-format
 msgctxt "@label:spinbox"
 msgid "Long skip duration:"
-msgstr ""
+msgstr "გადახვევის გრძელი ბიჯი:"
 
 #: configurationdialog.cpp:82
 #, kde-format
@@ -91,13 +91,13 @@ msgstr "მთავარი"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "Log messages:"
-msgstr ""
+msgstr "ჟურნალის შეტყობინებები:"
 
 #: configurationdialog.cpp:92
 #, kde-format
 msgctxt "@action:button"
 msgid "Show dmesg"
-msgstr ""
+msgstr "Dmesg-ის ჩვენება"
 
 #: configurationdialog.cpp:106
 #, kde-format
@@ -109,7 +109,7 @@ msgstr "დიაგნოსტიკა"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "LibVLC arguments:"
-msgstr ""
+msgstr "LibVLC -ის არგუმენტები:"
 
 #: configurationdialog.cpp:121
 #, kde-format
@@ -178,12 +178,12 @@ msgstr "ვერტიკალური"
 #: dvb/dvbchanneldialog.cpp:417
 #, kde-format
 msgid "Circular left"
-msgstr ""
+msgstr "მარცხენა წრიული"
 
 #: dvb/dvbchanneldialog.cpp:418
 #, kde-format
 msgid "Circular right"
-msgstr ""
+msgstr "მარჯვენა წრიული"
 
 #: dvb/dvbchanneldialog.cpp:419
 #, kde-format
@@ -194,7 +194,7 @@ msgstr "გამორთული"
 #, kde-format
 msgctxt "@title:window"
 msgid "Edit Channel"
-msgstr ""
+msgstr "არხის ჩასწორება"
 
 #: dvb/dvbchanneldialog.cpp:721
 #, kde-format
@@ -224,7 +224,7 @@ msgstr "სიხშირე (MHz):"
 #: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
 #, kde-format
 msgid "Symbol rate (kS/s):"
-msgstr ""
+msgstr "სიმბოლოების სიჩქარე (კს/წმ)"
 
 #: dvb/dvbchanneldialog.cpp:754 dvb/dvbchanneldialog.cpp:779
 #: dvb/dvbchanneldialog.cpp:794 dvb/dvbchanneldialog.cpp:815
@@ -237,7 +237,7 @@ msgstr "მოდულაცია:"
 #: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
 #, kde-format
 msgid "FEC rate:"
-msgstr ""
+msgstr "FEC-ის სიჩქარე:"
 
 #: dvb/dvbchanneldialog.cpp:769
 #, kde-format
@@ -247,24 +247,24 @@ msgstr "პოლარიზაცია:"
 #: dvb/dvbchanneldialog.cpp:781
 #, kde-format
 msgid "Roll-off:"
-msgstr ""
+msgstr "დაცემა:"
 
 #: dvb/dvbchanneldialog.cpp:792 dvb/dvbchanneldialog.cpp:813
 #: dvb/dvbchanneldialog.cpp:838
 #, kde-format
 msgid "Bandwidth:"
-msgstr ""
+msgstr "გამტარობა:"
 
 #: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
 #, kde-format
 msgid "FEC rate LP:"
-msgstr ""
+msgstr "FEC-ის სიჩქარე LP:"
 
 #: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
 #: dvb/dvbchanneldialog.cpp:840
 #, kde-format
 msgid "Transmission mode:"
-msgstr ""
+msgstr "გადაცემის რეჟიმი:"
 
 #: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
 #: dvb/dvbchanneldialog.cpp:842
@@ -275,52 +275,52 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
 #, kde-format
 msgid "Hierarchy:"
-msgstr ""
+msgstr "იერარქია:"
 
 #: dvb/dvbchanneldialog.cpp:827
 #, kde-format
 msgid "PLP (stream ID):"
-msgstr ""
+msgstr "PLP (ნაკადის ID):"
 
 #: dvb/dvbchanneldialog.cpp:845
 #, kde-format
 msgid "Partial reception:"
-msgstr ""
+msgstr "ნაწილობრივი მიღება:"
 
 #: dvb/dvbchanneldialog.cpp:847
 #, kde-format
 msgid "Sound broadcasting:"
-msgstr ""
+msgstr "ხმის მაუწყებლობა:"
 
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr ""
+msgstr "SB არხის ID:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr ""
+msgstr "SB ინდექსი:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr ""
+msgstr "SB count:"
 
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
 msgid "Layer A Modulation:"
-msgstr ""
+msgstr "A ფენის მოდულაცია:"
 
 #: dvb/dvbchanneldialog.cpp:862
 #, kde-format
 msgid "Layer A FEC rate:"
-msgstr ""
+msgstr "A ფენის FEC სიჩქარე:"
 
 #: dvb/dvbchanneldialog.cpp:864
 #, kde-format
 msgid "Layer A segments:"
-msgstr ""
+msgstr "A ფენის სეგმენტები:"
 
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
@@ -330,17 +330,17 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:870
 #, kde-format
 msgid "Layer B Modulation:"
-msgstr ""
+msgstr "B ფენის მოდულაცია:"
 
 #: dvb/dvbchanneldialog.cpp:872
 #, kde-format
 msgid "Layer B FEC rate:"
-msgstr ""
+msgstr "B ფენის FEC სიჩქარე:"
 
 #: dvb/dvbchanneldialog.cpp:874
 #, kde-format
 msgid "Layer B segments:"
-msgstr ""
+msgstr "B ფენის სეგმენტები:"
 
 #: dvb/dvbchanneldialog.cpp:876
 #, kde-format
@@ -350,17 +350,17 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:880
 #, kde-format
 msgid "Layer C Modulation:"
-msgstr ""
+msgstr "C ფენის მოდულაცია:"
 
 #: dvb/dvbchanneldialog.cpp:882
 #, kde-format
 msgid "Layer C FEC rate:"
-msgstr ""
+msgstr "C ფენის FEC სიჩქარე:"
 
 #: dvb/dvbchanneldialog.cpp:884
 #, kde-format
 msgid "Layer C segments:"
-msgstr ""
+msgstr "C ფენის სეგმენტები:"
 
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
@@ -375,17 +375,17 @@ msgstr "ქსელის ID:"
 #: dvb/dvbchanneldialog.cpp:920
 #, kde-format
 msgid "Transport stream ID:"
-msgstr ""
+msgstr "ტრანსპორტის ნაკადის ID:"
 
 #: dvb/dvbchanneldialog.cpp:927
 #, kde-format
 msgid "Service ID:"
-msgstr ""
+msgstr "სერვისის ID:"
 
 #: dvb/dvbchanneldialog.cpp:937
 #, kde-format
 msgid "Audio channel:"
-msgstr ""
+msgstr "აუდიო არხი:"
 
 #: dvb/dvbchanneldialog.cpp:974
 #, kde-format
@@ -395,33 +395,33 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:981
 #, kde-format
 msgid "PMT PID:"
-msgstr ""
+msgstr "PMT PID:"
 
 #: dvb/dvbchanneldialog.cpp:985
 #, kde-format
 msgid "Video PID:"
-msgstr ""
+msgstr "ვიდეოს PID:"
 
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
 msgid "Subtitle PID:"
-msgstr ""
+msgstr "სუბტიტრის PID:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
 msgid "Teletext PID:"
-msgstr ""
+msgstr "ტელეტექსტის PID:"
 
 #: dvb/dvbconfigdialog.cpp:59
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Television"
-msgstr ""
+msgstr "ტელევიზიის მორგება"
 
 #: dvb/dvbconfigdialog.cpp:77
 #, kde-format
 msgid "Recording folder:"
-msgstr ""
+msgstr "ჩაწერის საქაღალდე:"
 
 #: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
 #, kde-format
@@ -431,12 +431,12 @@ msgstr "აირჩიეთ საქაღალდე"
 #: dvb/dvbconfigdialog.cpp:89
 #, kde-format
 msgid "Time shift folder:"
-msgstr ""
+msgstr "დროის წანაცვლების საქაღალდე:"
 
 #: dvb/dvbconfigdialog.cpp:101
 #, kde-format
 msgid "xmltv file name (optional):"
-msgstr ""
+msgstr "xmltv ფაილის სახელი (არასავალდებულო):"
 
 #: dvb/dvbconfigdialog.cpp:109
 #, kde-format
@@ -483,12 +483,12 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
 msgid "Leave empty for no command."
-msgstr ""
+msgstr "თუ ბრძანება არ გჭირდებათ, ცარიელი დატოვეთ."
 
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
 msgid "Use ISO 8859-1 charset instead of ISO 6937:"
-msgstr ""
+msgstr "ISO 6937-ის მაგიერ ISO 8859-1 კოდირების გამოყენება:"
 
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
@@ -535,7 +535,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:543 dvb/dvbconfigdialog.cpp:567
 #, kde-format
 msgid "Device %1"
-msgstr ""
+msgstr "მოწყობილობა %1"
 
 #: dvb/dvbconfigdialog.cpp:387
 #, kde-format
@@ -759,12 +759,12 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
 msgid "LNB %1 Settings"
-msgstr ""
+msgstr "LNB %1 -ის მორგება"
 
 #: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
 #, kde-format
 msgid "LNB Settings"
-msgstr ""
+msgstr "LNB -ის მორგება"
 
 #: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
 #, kde-format
@@ -799,7 +799,7 @@ msgstr "გეოლოკაციის განედი:"
 #: dvb/dvbconfigdialog.cpp:1251
 #, kde-format
 msgid "[S -90 ... 90 N]"
-msgstr ""
+msgstr "[ს -90 ... 90 ჩ]"
 
 #: dvb/dvbconfigdialog.cpp:1269
 #, kde-format
@@ -809,22 +809,22 @@ msgstr "გეოლოკაციის გრძედი:"
 #: dvb/dvbconfigdialog.cpp:1274
 #, kde-format
 msgid "[W -180 ... 180 E]"
-msgstr ""
+msgstr "[დ -180 ... 180 ა]"
 
 #: dvb/dvbconfigdialog.cpp:1623
 #, kde-format
 msgid "Low frequency (KHz)"
-msgstr ""
+msgstr "დაბალი სიხშირე (კჰც)"
 
 #: dvb/dvbconfigdialog.cpp:1631
 #, kde-format
 msgid "High frequency (MHz)"
-msgstr ""
+msgstr "მაღალი სიხშირე (მჰც)"
 
 #: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
 msgid "Switch frequency (MHz)"
-msgstr ""
+msgstr "სიხშირის გადართვა (მჰც)"
 
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
@@ -854,7 +854,7 @@ msgstr "თავგადასავალი"
 #: dvb/dvbepg.cpp:649
 #, kde-format
 msgid "Science Fiction"
-msgstr ""
+msgstr "სამეცნიერო ფანტასტიკა"
 
 #: dvb/dvbepg.cpp:650
 #, kde-format
@@ -864,12 +864,12 @@ msgstr "კომედია"
 #: dvb/dvbepg.cpp:651
 #, kde-format
 msgid "Soap"
-msgstr ""
+msgstr "საპონი"
 
 #: dvb/dvbepg.cpp:652
 #, kde-format
 msgid "Romance"
-msgstr ""
+msgstr "რომანტიკა"
 
 #: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
 #, kde-format
@@ -879,7 +879,7 @@ msgstr "კლასიკა"
 #: dvb/dvbepg.cpp:654
 #, kde-format
 msgid "Adult"
-msgstr ""
+msgstr "ზრდასრულთა"
 
 #: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:790
 #, kde-format
@@ -894,17 +894,17 @@ msgstr "ამინდი"
 #: dvb/dvbepg.cpp:661 dvb/dvbepg.cpp:678 dvb/dvbepg.cpp:723 dvb/dvbepg.cpp:730
 #, kde-format
 msgid "Magazine"
-msgstr ""
+msgstr "ჟურნალი"
 
 #: dvb/dvbepg.cpp:662 dvb/dvbepg.cpp:822
 #, kde-format
 msgid "Documentary"
-msgstr ""
+msgstr "დოკუმენტური"
 
 #: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:858
 #, kde-format
 msgid "Discussion"
-msgstr ""
+msgstr "კამათი"
 
 #: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:688 dvb/dvbepg.cpp:698
 #: dvb/dvbepg.cpp:709 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:733 dvb/dvbepg.cpp:745
@@ -921,12 +921,12 @@ msgstr "ქვიზი"
 #: dvb/dvbepg.cpp:670 dvb/dvbepg.cpp:800
 #, kde-format
 msgid "Variety"
-msgstr ""
+msgstr "სხვადასხვა"
 
 #: dvb/dvbepg.cpp:671
 #, kde-format
 msgid "Talk"
-msgstr ""
+msgstr "საუბარი"
 
 #: dvb/dvbepg.cpp:677
 #, kde-format
@@ -951,12 +951,12 @@ msgstr "გუნდი"
 #: dvb/dvbepg.cpp:682
 #, kde-format
 msgid "Athletics"
-msgstr ""
+msgstr "ათლეტიკა"
 
 #: dvb/dvbepg.cpp:683
 #, kde-format
 msgid "Motor"
-msgstr ""
+msgstr "მოტორი"
 
 #: dvb/dvbepg.cpp:684
 #, kde-format
@@ -996,7 +996,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:696
 #, kde-format
 msgid "Educational"
-msgstr ""
+msgstr "საგანმანათლებლო"
 
 #: dvb/dvbepg.cpp:697
 #, kde-format
@@ -1006,7 +1006,7 @@ msgstr "მულტფილმი"
 #: dvb/dvbepg.cpp:703
 #, kde-format
 msgid "Poprock"
-msgstr ""
+msgstr "პოპროკი"
 
 #: dvb/dvbepg.cpp:705
 #, kde-format
@@ -1026,7 +1026,7 @@ msgstr "Opera"
 #: dvb/dvbepg.cpp:708
 #, kde-format
 msgid "Ballet"
-msgstr ""
+msgstr "ბალეტი"
 
 #: dvb/dvbepg.cpp:714
 #, kde-format
@@ -1046,12 +1046,12 @@ msgstr "რელიგია"
 #: dvb/dvbepg.cpp:717
 #, kde-format
 msgid "Traditional"
-msgstr ""
+msgstr "ტრადიციული"
 
 #: dvb/dvbepg.cpp:718
 #, kde-format
 msgid "Literature"
-msgstr ""
+msgstr "ლიტერატურა"
 
 #: dvb/dvbepg.cpp:719
 #, kde-format
@@ -1071,12 +1071,12 @@ msgstr "დააჭირე"
 #: dvb/dvbepg.cpp:722
 #, kde-format
 msgid "New Media"
-msgstr ""
+msgstr "ახალი მედია"
 
 #: dvb/dvbepg.cpp:724 dvb/dvbepg.cpp:843
 #, kde-format
 msgid "Fashion"
-msgstr ""
+msgstr "მოდა"
 
 #: dvb/dvbepg.cpp:731
 #, kde-format
@@ -1101,7 +1101,7 @@ msgstr "ტექნოლოგია"
 #: dvb/dvbepg.cpp:740
 #, kde-format
 msgid "Medicine"
-msgstr ""
+msgstr "მედიცინა"
 
 #: dvb/dvbepg.cpp:741
 #, kde-format
@@ -1141,7 +1141,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:753
 #, kde-format
 msgid "Fitness"
-msgstr ""
+msgstr "ფიტნესი"
 
 #: dvb/dvbepg.cpp:754 dvb/dvbepg.cpp:842
 #, kde-format
@@ -1151,27 +1151,27 @@ msgstr ""
 #: dvb/dvbepg.cpp:755
 #, kde-format
 msgid "Shopping"
-msgstr ""
+msgstr "შოპინგი"
 
 #: dvb/dvbepg.cpp:756
 #, kde-format
 msgid "Gardening"
-msgstr ""
+msgstr "მებაღეობა"
 
 #: dvb/dvbepg.cpp:761 iso-codes.cpp:125 iso-codes.cpp:155
 #, kde-format
 msgid "Original Language"
-msgstr ""
+msgstr "საწყისი ენა"
 
 #: dvb/dvbepg.cpp:762
 #, kde-format
 msgid "Black and White "
-msgstr ""
+msgstr "შავთეთრი "
 
 #: dvb/dvbepg.cpp:763
 #, kde-format
 msgid "Unpublished"
-msgstr ""
+msgstr "გამოუქვეყნებელი"
 
 #: dvb/dvbepg.cpp:764
 #, kde-format
@@ -1186,22 +1186,22 @@ msgstr ""
 #: dvb/dvbepg.cpp:767
 #, kde-format
 msgid "User Defined 1"
-msgstr ""
+msgstr "მომხმარებლის მიერ აღწერილი 1"
 
 #: dvb/dvbepg.cpp:768
 #, kde-format
 msgid "User Defined 2"
-msgstr ""
+msgstr "მომხმარებლის მიერ აღწერილი 2"
 
 #: dvb/dvbepg.cpp:769
 #, kde-format
 msgid "User Defined 3"
-msgstr ""
+msgstr "მომხმარებლის მიერ აღწერილი 3"
 
 #: dvb/dvbepg.cpp:770
 #, kde-format
 msgid "User Defined 4"
-msgstr ""
+msgstr "მომხმარებლის მიერ აღწერილი 4"
 
 #: dvb/dvbepg.cpp:775
 #, kde-format
@@ -1261,7 +1261,7 @@ msgstr "სპეციალური"
 #: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
 #, kde-format
 msgid "Reserved"
-msgstr ""
+msgstr "რეზერვირებული"
 
 #: dvb/dvbepg.cpp:797
 #, kde-format
@@ -1291,12 +1291,12 @@ msgstr "ინფორმაცია"
 #: dvb/dvbepg.cpp:803
 #, kde-format
 msgid "Comical"
-msgstr ""
+msgstr "კომიკური"
 
 #: dvb/dvbepg.cpp:805
 #, kde-format
 msgid "Erotic"
-msgstr ""
+msgstr "ეროტიკა"
 
 #: dvb/dvbepg.cpp:807
 #, kde-format
@@ -1306,12 +1306,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:808
 #, kde-format
 msgid "Debate/interview"
-msgstr ""
+msgstr "დებატები/ინტერვიუ"
 
 #: dvb/dvbepg.cpp:809
 #, kde-format
 msgid "Other"
-msgstr ""
+msgstr "სხვა"
 
 #: dvb/dvbepg.cpp:821
 #, kde-format
@@ -1326,12 +1326,12 @@ msgstr "ბიოგრაფია"
 #: dvb/dvbepg.cpp:827
 #, kde-format
 msgid "Educative"
-msgstr ""
+msgstr "სასწავლო"
 
 #: dvb/dvbepg.cpp:833
 #, kde-format
 msgid "Auditorium"
-msgstr ""
+msgstr "აუდიტორია"
 
 #: dvb/dvbepg.cpp:835
 #, kde-format
@@ -1341,7 +1341,7 @@ msgstr "მუსიკალური"
 #: dvb/dvbepg.cpp:836
 #, kde-format
 msgid "Making of"
-msgstr ""
+msgstr "გადაღება"
 
 #: dvb/dvbepg.cpp:837
 #, kde-format
@@ -1381,12 +1381,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:859
 #, kde-format
 msgid "Interview"
-msgstr ""
+msgstr "ინტერვიუ"
 
 #: dvb/dvbepg.cpp:862
 #, kde-format
 msgid "Adult cartoon"
-msgstr ""
+msgstr "არასაბავშვო მულტფილმი"
 
 #: dvb/dvbepg.cpp:863
 #, kde-format
@@ -1401,7 +1401,7 @@ msgstr "წესები"
 #: dvb/dvbepg.cpp:897
 #, no-c-format, kde-format
 msgid "Genre: %1"
-msgstr ""
+msgstr "ჟანრი: %1"
 
 #: dvb/dvbepg.cpp:904
 #, kde-format
@@ -1411,32 +1411,32 @@ msgstr "რეზერვირებული"
 #: dvb/dvbepg.cpp:905
 #, kde-format
 msgid "all audiences"
-msgstr ""
+msgstr "ნებისმიერი საზოგადოებისთვის"
 
 #: dvb/dvbepg.cpp:906
 #, kde-format
 msgid "10 years"
-msgstr ""
+msgstr "10 წელი"
 
 #: dvb/dvbepg.cpp:907
 #, kde-format
 msgid "12 years"
-msgstr ""
+msgstr "12 წელი"
 
 #: dvb/dvbepg.cpp:908
 #, kde-format
 msgid "14 years"
-msgstr ""
+msgstr "14 წელი"
 
 #: dvb/dvbepg.cpp:909
 #, kde-format
 msgid "16 years"
-msgstr ""
+msgstr "16 წელი"
 
 #: dvb/dvbepg.cpp:910
 #, kde-format
 msgid "18 years"
-msgstr ""
+msgstr "18 წელი"
 
 #: dvb/dvbepg.cpp:933
 #, no-c-format, kde-format
@@ -1446,22 +1446,22 @@ msgstr ""
 #: dvb/dvbepg.cpp:945
 #, kde-format
 msgid "violence / "
-msgstr ""
+msgstr "ძალადობა / "
 
 #: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "sex / "
-msgstr ""
+msgstr "სექსი / "
 
 #: dvb/dvbepg.cpp:949
 #, kde-format
 msgid "drugs / "
-msgstr ""
+msgstr "ნარკოტიკები / "
 
 #: dvb/dvbepg.cpp:957
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
-msgstr ""
+msgstr "ქვეყანა %1: რეიტინგი: %2%3\n"
 
 #: dvb/dvbepg.cpp:960
 #, no-c-format, kde-format
@@ -1472,12 +1472,12 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Program Guide"
-msgstr ""
+msgstr "პროგრამის გიდი"
 
 #: dvb/dvbepgdialog.cpp:73
 #, kde-format
 msgid "EPG language:"
-msgstr ""
+msgstr "EPG-ის ენა:"
 
 #: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
 #, kde-format
@@ -1493,7 +1493,7 @@ msgstr ""
 #, kde-format
 msgctxt "@action:inmenu tv show"
 msgid "Record Show"
-msgstr ""
+msgstr "შოუს ჩაწერა"
 
 #: dvb/dvbepgdialog.cpp:127
 #, kde-format
@@ -1505,7 +1505,7 @@ msgstr "ძებნა:"
 #, kde-format
 msgctxt "@title:column tv show"
 msgid "Start"
-msgstr ""
+msgstr "დაწყება"
 
 #: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
 #, kde-format
@@ -1544,7 +1544,7 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Recording Schedule"
-msgstr ""
+msgstr "ჩაწერის განრიგი"
 
 #: dvb/dvbrecordingdialog.cpp:70
 #, kde-format
@@ -1556,7 +1556,7 @@ msgstr "&ახალი"
 #, kde-format
 msgctxt "@title:column recording"
 msgid "Name"
-msgstr ""
+msgstr "სახელი"
 
 #: dvb/dvbrecordingdialog.cpp:262
 #, kde-format
@@ -1657,7 +1657,7 @@ msgstr "სუფთა ცა"
 #: dvb/dvbscandialog.cpp:298
 #, kde-format
 msgid "Channel Scan"
-msgstr ""
+msgstr "არხების სკანირება"
 
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
@@ -1682,12 +1682,12 @@ msgstr "სკანირების დაწყება"
 #: dvb/dvbscandialog.cpp:322
 #, kde-format
 msgid "Signal:"
-msgstr ""
+msgstr "სიგნალი:"
 
 #: dvb/dvbscandialog.cpp:327
 #, kde-format
 msgid "SNR:"
-msgstr ""
+msgstr "SNR:"
 
 #: dvb/dvbscandialog.cpp:332
 #, kde-format
@@ -1697,7 +1697,7 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:345
 #, kde-format
 msgid "Filter"
-msgstr ""
+msgstr "ფილტრი"
 
 #: dvb/dvbscandialog.cpp:348
 #, kde-format
@@ -1732,22 +1732,22 @@ msgstr "მონიშნულის დამატება"
 #: dvb/dvbscandialog.cpp:375
 #, kde-format
 msgid "Scan Results"
-msgstr ""
+msgstr "სკანირების შედეგები"
 
 #: dvb/dvbscandialog.cpp:391
 #, kde-format
 msgid "Current Transponder"
-msgstr ""
+msgstr "მიმდინარე ტრანსპონდერი"
 
 #: dvb/dvbscandialog.cpp:473
 #, kde-format
 msgid "Stop Scan"
-msgstr ""
+msgstr "ძებნის შეჩერება"
 
 #: dvb/dvbtab.cpp:97
 #, kde-format
 msgid "Program Guide"
-msgstr ""
+msgstr "პროგრამის გიდი"
 
 #: dvb/dvbtab.cpp:102
 #, kde-format
@@ -1758,18 +1758,18 @@ msgstr "OSD"
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
-msgstr ""
+msgstr "ჩაწერის განრიგი"
 
 #: dvb/dvbtab.cpp:115
 #, kde-format
 msgid "Instant Record"
-msgstr ""
+msgstr "მყისი ჩაწერა"
 
 #: dvb/dvbtab.cpp:123
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
-msgstr ""
+msgstr "ტელევიზიის მორგება..."
 
 #: dvb/dvbtab.cpp:143
 #, kde-format
@@ -1780,7 +1780,7 @@ msgstr "ძებნა:"
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
-msgstr ""
+msgstr "არხი: %1_"
 
 #: dvb/dvbtab.cpp:391
 #, kde-format
@@ -1819,17 +1819,17 @@ msgstr ""
 #: dvb/xmltv.cpp:222
 #, kde-format
 msgid "Director(s)"
-msgstr ""
+msgstr "რეჟისორ(ებ)ი"
 
 #: dvb/xmltv.cpp:224
 #, kde-format
 msgid "Actor(s)"
-msgstr ""
+msgstr "მსახიობ(ებ)ი"
 
 #: dvb/xmltv.cpp:226
 #, kde-format
 msgid "Writer(s)"
-msgstr ""
+msgstr "მწერალი(მწერლები)"
 
 #: dvb/xmltv.cpp:228
 #, kde-format
@@ -1849,22 +1849,22 @@ msgstr ""
 #: dvb/xmltv.cpp:234
 #, kde-format
 msgid "Editor(s)"
-msgstr ""
+msgstr "რედაქტორ(ებ)ი"
 
 #: dvb/xmltv.cpp:236
 #, kde-format
 msgid "Presenter(s)"
-msgstr ""
+msgstr "წარმომდგენ(ებ)ი"
 
 #: dvb/xmltv.cpp:238
 #, kde-format
 msgid "Commentator(s)"
-msgstr ""
+msgstr "კომენტატორ(ებ)ი"
 
 #: dvb/xmltv.cpp:240
 #, kde-format
 msgid "Guest(s)"
-msgstr ""
+msgstr "სტუმარი(სტუმრები)"
 
 #: dvb/xmltv.cpp:244
 #, kde-format
@@ -1875,22 +1875,22 @@ msgstr "%1: %2\n"
 #: dvb/xmltv.cpp:377
 #, kde-format
 msgid "rating: %1"
-msgstr ""
+msgstr "შეფასება: %1"
 
 #: dvb/xmltv.cpp:451
 #, kde-format
 msgid "Season %1"
-msgstr ""
+msgstr "სეზონი: %1"
 
 #: dvb/xmltv.cpp:454
 #, kde-format
 msgid " Episode %1"
-msgstr ""
+msgstr " ეპიზოდი: %1"
 
 #: dvb/xmltv.cpp:485
 #, kde-format
 msgid "Star rating: %1"
-msgstr ""
+msgstr "ვარსკვლავების რეიტინგი: %1"
 
 #: dvb/xmltv.cpp:491
 #, kde-format
@@ -1905,22 +1905,22 @@ msgstr "კატეგორია: %1"
 #: dvb/xmltv.cpp:509
 #, kde-format
 msgid "Keyword: %1"
-msgstr ""
+msgstr "საკვანძო სიტყვა: %1"
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
 #, kde-format
 msgid "language: %1"
-msgstr ""
+msgstr "ენა: %1"
 
 #: dvb/xmltv.cpp:538
 #, kde-format
 msgid "Original language: %1"
-msgstr ""
+msgstr "საწყისი ენა: %1"
 
 #: dvb/xmltv.cpp:544
 #, kde-format
 msgid "Country: %1"
-msgstr ""
+msgstr "ქვეყანა: %1"
 
 #: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
@@ -2013,28 +2013,28 @@ msgstr ""
 #: mainwindow.cpp:207
 #, kde-format
 msgid "&File"
-msgstr ""
+msgstr "&ფაილი"
 
 #: mainwindow.cpp:214
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr ""
+msgstr "URL-ის გახსნა..."
 
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
 msgid "Play Audio CD"
-msgstr ""
+msgstr "აუდიო CD-ის დაკვრა"
 
 #: mainwindow.cpp:229 mainwindow.cpp:481
 #, kde-format
 msgid "Play Video CD"
-msgstr ""
+msgstr "ვიდეო CD-ის დაკვრა"
 
 #: mainwindow.cpp:233 mainwindow.cpp:482
 #, kde-format
 msgid "Play DVD"
-msgstr ""
+msgstr "DVD-ის დაკვრა"
 
 #: mainwindow.cpp:237
 #, kde-format
@@ -2045,7 +2045,7 @@ msgstr ""
 #: mainwindow.cpp:247
 #, kde-format
 msgid "&Playback"
-msgstr ""
+msgstr "&დაკვრა"
 
 #: mainwindow.cpp:250
 #, kde-format
@@ -2056,17 +2056,17 @@ msgstr "&დასაკრავი სია"
 #: mainwindow.cpp:254
 #, kde-format
 msgid "&Television"
-msgstr ""
+msgstr "&ტელევიზია"
 
 #: mainwindow.cpp:258
 #, kde-format
 msgid "&Settings"
-msgstr ""
+msgstr "&გამართვა"
 
 #: mainwindow.cpp:279
 #, kde-format
 msgid "Start"
-msgstr ""
+msgstr "გაშვება"
 
 #: mainwindow.cpp:280
 #, kde-format
@@ -2086,22 +2086,22 @@ msgstr "ტელევიზია"
 #: mainwindow.cpp:347
 #, kde-format
 msgid "Play &File"
-msgstr ""
+msgstr "ფაილის &დაკვრა"
 
 #: mainwindow.cpp:351
 #, kde-format
 msgid "Play &Audio CD"
-msgstr ""
+msgstr "&აუდიო CD-ის დაკვრა"
 
 #: mainwindow.cpp:355
 #, kde-format
 msgid "Play &Video CD"
-msgstr ""
+msgstr "&ვიდეო CD-ის დაკვრა"
 
 #: mainwindow.cpp:359
 #, kde-format
 msgid "Play &DVD"
-msgstr ""
+msgstr "&DVD-ის დაკვრა"
 
 #: mainwindow.cpp:364
 #, kde-format
@@ -2186,7 +2186,7 @@ msgstr "URL-ის გახსნა"
 #: mainwindow.cpp:726
 #, kde-format
 msgid "Enter a URL:"
-msgstr ""
+msgstr "შეიყვანეთ URL:"
 
 #: mediawidget.cpp:86
 #, kde-format
@@ -2223,7 +2223,7 @@ msgstr "მთელი ეკრანის რეჟიმი"
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
-msgstr ""
+msgstr "მინიმალური რეჟიმი"
 
 #: mediawidget.cpp:141
 #, kde-format
@@ -2289,7 +2289,7 @@ msgstr "ვიდეო"
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
-msgstr ""
+msgstr "დეინტერლეისი"
 
 #: mediawidget.cpp:207
 #, kde-format
@@ -2420,7 +2420,7 @@ msgstr "2.39:1"
 #: mediawidget.cpp:349
 #, kde-format
 msgid "Video size"
-msgstr ""
+msgstr "ვიდეოს ზომა"
 
 #: mediawidget.cpp:357
 #, kde-format
@@ -2432,7 +2432,7 @@ msgstr "ავტომატური"
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: mediawidget.cpp:369
 #, kde-format
@@ -2468,7 +2468,7 @@ msgstr "200%"
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
-msgstr ""
+msgstr "250%"
 
 #: mediawidget.cpp:406
 #, kde-format
@@ -2479,7 +2479,7 @@ msgstr "300%"
 #: mediawidget.cpp:429
 #, kde-format
 msgid "Volume Slider"
-msgstr ""
+msgstr "ხმის რეგულატორი"
 
 #: mediawidget.cpp:444
 #, kde-format
@@ -2516,7 +2516,7 @@ msgstr ""
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
-msgstr ""
+msgstr "DVD მენიუ"
 
 #: mediawidget.cpp:514
 #, kde-format
@@ -2581,6 +2581,8 @@ msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
+"სუბტიტრები (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
+"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 
 #: mediawidget.cpp:785 mediawidget.cpp:894
 #, kde-format
@@ -2598,19 +2600,19 @@ msgstr "გაჩერებული"
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
-msgstr ""
+msgstr "გაჩუმება"
 
 #: mediawidget.cpp:887
 #, kde-format
 msgctxt "osd"
 msgid "Mute Off"
-msgstr ""
+msgstr "დადუმება: გამორთ"
 
 #: mediawidget.cpp:983
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr ""
+msgstr "დეინტერლეისი: %1"
 
 #: mediawidget.cpp:1398
 #, kde-format
@@ -2686,7 +2688,7 @@ msgstr "შემთხვევითი"
 #: playlist/playlisttab.cpp:406
 #, kde-format
 msgid "Add Subtitle"
-msgstr ""
+msgstr "სუბტიტრის დამატება"
 
 #: playlist/playlisttab.cpp:420
 #, kde-format
@@ -2698,7 +2700,7 @@ msgstr "&ახალი"
 #, kde-format
 msgctxt "rename an entry in a list"
 msgid "Rename"
-msgstr ""
+msgstr "გადარქმევა"
 
 #: playlist/playlisttab.cpp:634
 #, kde-format
