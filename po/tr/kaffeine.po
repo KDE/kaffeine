@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-01-19 22:39+0300\n"
+"PO-Revision-Date: 2023-02-05 12:29+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.1\n"
+"X-Generator: Lokalize 22.12.2\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -1485,12 +1485,12 @@ msgstr "ilaçlar / "
 #: dvb/dvbepg.cpp:957
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
-msgstr "Ülke: %1: beğeni: %2 %3\n"
+msgstr "Ülke: %1: Derecelendirme: %2 %3\n"
 
 #: dvb/dvbepg.cpp:960
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
-msgstr "Ülke %1: beğeni: %2 yıl.\n"
+msgstr "Ülke %1: Derecelendirme: %2 yıl.\n"
 
 #: dvb/dvbepgdialog.cpp:46
 #, kde-format
@@ -1911,7 +1911,7 @@ msgstr "%1: %2\n"
 #: dvb/xmltv.cpp:377
 #, kde-format
 msgid "rating: %1"
-msgstr "beğeni: %1"
+msgstr "derecelendirme: %1"
 
 #: dvb/xmltv.cpp:451
 #, kde-format
@@ -1926,7 +1926,7 @@ msgstr " %1. Bölüm"
 #: dvb/xmltv.cpp:485
 #, kde-format
 msgid "Star rating: %1"
-msgstr "Yıldız beğenisi: %1"
+msgstr "Yıldız derecelendirmesi: %1"
 
 #: dvb/xmltv.cpp:491
 #, kde-format
