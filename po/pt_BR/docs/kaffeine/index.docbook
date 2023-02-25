@@ -1469,7 +1469,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><para
 ><action
 >Oferece uma lista lateral com os tamanhos de vídeo disponíveis</action
->. Permite alterar a percentagem de ampliação da imagem, além das opções <guimenuitem
+>. Permite alterar a porcentagem de ampliação da imagem, além das opções <guimenuitem
 >Automático</guimenuitem
 > e <guimenuitem
 >Tamanho Original</guimenuitem
