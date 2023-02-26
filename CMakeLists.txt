@@ -113,7 +113,6 @@ endif(HAVE_DVB)
 
 add_subdirectory(deviceactions)
 add_subdirectory(icons)
-add_subdirectory(profiles)
 add_subdirectory(src)
 
 ki18n_install(po)
