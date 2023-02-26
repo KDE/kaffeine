@@ -143,18 +143,6 @@ simple as:
 
     pacman -S kaffeine
 
-Installing translations
------------------------
-
-This step is optional, and should be done only if you want to
-use Kaffeine on non-English setups.
-
-The Kaffeine tarballs should already have the translations on it,
-but, if you're installing from the git tree, you'll need to run a
-script to get them:
-
-    (cd .. && kaffeine/tools/update_l10n.sh)
-
 How to build Kaffeine
 =====================
 
