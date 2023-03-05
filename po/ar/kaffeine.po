@@ -1950,7 +1950,7 @@ msgstr "كافيين"
 #: main.cpp:139
 #, kde-format
 msgid "A media player by KDE with digital TV support."
-msgstr "مشغل وسائط لكدي مع دعم التلفاز الرقمي."
+msgstr "مشغل وسائط لكِيدِي مع دعم التلفاز الرقمي."
 
 #: main.cpp:143
 #, kde-format
