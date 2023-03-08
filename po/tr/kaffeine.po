@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-02-05 12:29+0300\n"
+"PO-Revision-Date: 2023-03-07 20:18+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 22.12.2\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -2055,7 +2055,7 @@ msgstr "&Dosya"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr "Adres Aç..."
+msgstr "URL Aç..."
 
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
@@ -2211,7 +2211,7 @@ msgstr "Son ayarlanan TV kanalını oynat"
 #: mainwindow.cpp:491
 #, kde-format
 msgid "Files or URLs to play"
-msgstr "Oynatılacak dosyalar veya adresler"
+msgstr "Oynatılacak dosyalar veya URL'ler"
 
 #: mainwindow.cpp:713
 #, kde-format
@@ -2223,12 +2223,12 @@ msgstr "Dosya aç"
 #, kde-format
 msgctxt "@title:window"
 msgid "Open URL"
-msgstr "Adres Aç"
+msgstr "URL Aç"
 
 #: mainwindow.cpp:726
 #, kde-format
 msgid "Enter a URL:"
-msgstr "Bir Adres Girin:"
+msgstr "Bir URL gir:"
 
 #: mediawidget.cpp:86
 #, kde-format
