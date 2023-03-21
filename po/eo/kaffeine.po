@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2009-11-15 12:06+0100\n"
-"Last-Translator: Axel Rousseau <axel@esperanto-jeunes.org>\n"
+"PO-Revision-Date: 2023-03-20 22:31+0100\n"
+"Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
@@ -32,11 +32,10 @@ msgid "CD track %1"
 msgstr ""
 
 #: configurationdialog.cpp:42
-#, fuzzy, kde-format
-#| msgid "Kaffeine"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
-msgstr "Kaffeine"
+msgstr ""
 
 #: configurationdialog.cpp:49
 #, kde-format
@@ -185,18 +184,15 @@ msgid "Circular right"
 msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:419
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Off"
+#, kde-format
 msgid "Off"
 msgstr "Neniam"
 
 #: dvb/dvbchanneldialog.cpp:709
-#, fuzzy, kde-format
-#| msgid "Channel"
+#, kde-format
 msgctxt "@title:window"
 msgid "Edit Channel"
-msgstr "Kanalo"
+msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:721
 #, kde-format
@@ -295,11 +291,9 @@ msgid "Sound broadcasting:"
 msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:851
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Channel:"
+#, kde-format
 msgid "SB channel ID:"
-msgstr "Kanalo:"
+msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
@@ -515,10 +509,9 @@ msgid "Update Scan Data over Internet"
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:197
-#, fuzzy, kde-format
-#| msgid "Channel"
+#, kde-format
 msgid "Edit Scanfile"
-msgstr "Kanalo"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
@@ -531,11 +524,9 @@ msgid "General Options"
 msgstr "Ĝeneralaj opcioj"
 
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
-#, fuzzy, kde-format
-#| msgctxt "'Aspect Ratio' menu"
-#| msgid "Automatic"
+#, kde-format
 msgid "Automatic Recording"
-msgstr "Aŭtomata"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -556,11 +547,10 @@ msgid "Add another regular expression."
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:398
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr "Forigi"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
@@ -638,10 +628,9 @@ msgid "DVB-S"
 msgstr "DVB-S"
 
 #: dvb/dvbconfigdialog.cpp:803
-#, fuzzy, kde-format
-#| msgid "DVB-T"
+#, kde-format
 msgid "DVB-T2"
-msgstr "DVB-T"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:805
 #, kde-format
@@ -796,10 +785,9 @@ msgid "Remove Satellite"
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1241
-#, fuzzy, kde-format
-#| msgid "Position"
+#, kde-format
 msgid "Your position:"
-msgstr "Pozicio"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -1004,10 +992,9 @@ msgid "10 to 16"
 msgstr ""
 
 #: dvb/dvbepg.cpp:696
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgid "Educational"
-msgstr "Daŭro"
+msgstr ""
 
 #: dvb/dvbepg.cpp:697
 #, kde-format
@@ -1055,10 +1042,9 @@ msgid "Religion"
 msgstr ""
 
 #: dvb/dvbepg.cpp:717
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgid "Traditional"
-msgstr "Daŭro"
+msgstr ""
 
 #: dvb/dvbepg.cpp:718
 #, kde-format
@@ -1256,10 +1242,9 @@ msgid "Culture"
 msgstr ""
 
 #: dvb/dvbepg.cpp:784 dvb/dvbepg.cpp:796
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgid "Education"
-msgstr "Daŭro"
+msgstr ""
 
 #: dvb/dvbepg.cpp:785
 #, kde-format
@@ -1272,10 +1257,9 @@ msgid "Special"
 msgstr ""
 
 #: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
-#, fuzzy, kde-format
-#| msgid "Reset"
+#, kde-format
 msgid "Reserved"
-msgstr "Restarigu"
+msgstr ""
 
 #: dvb/dvbepg.cpp:797
 #, kde-format
@@ -1298,11 +1282,9 @@ msgid "Reality show"
 msgstr ""
 
 #: dvb/dvbepg.cpp:802
-#, fuzzy, kde-format
-#| msgctxt "@title:column tv show"
-#| msgid "Duration"
+#, kde-format
 msgid "Information"
-msgstr "Daŭro"
+msgstr ""
 
 #: dvb/dvbepg.cpp:803
 #, kde-format
@@ -1340,17 +1322,14 @@ msgid "Biography"
 msgstr ""
 
 #: dvb/dvbepg.cpp:827
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgid "Educative"
-msgstr "Daŭro"
+msgstr ""
 
 #: dvb/dvbepg.cpp:833
-#, fuzzy, kde-format
-#| msgctxt "'Playback' menu"
-#| msgid "Audio"
+#, kde-format
 msgid "Auditorium"
-msgstr "Sono"
+msgstr ""
 
 #: dvb/dvbepg.cpp:835
 #, kde-format
@@ -1612,11 +1591,10 @@ msgid "Channel:"
 msgstr "Kanalo:"
 
 #: dvb/dvbrecordingdialog.cpp:420
-#, fuzzy, kde-format
-#| msgid "Start"
+#, kde-format
 msgctxt "@label tv show"
 msgid "Start:"
-msgstr "Lanĉi"
+msgstr "Lanĉi:"
 
 #: dvb/dvbrecordingdialog.cpp:430
 #, kde-format
@@ -1649,10 +1627,9 @@ msgid "Daily"
 msgstr "Ĉiu-tage"
 
 #: dvb/dvbscandialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgid "%1"
-msgstr "%1%"
+msgstr "%1"
 
 #: dvb/dvbscandialog.cpp:237
 #, kde-format
@@ -1868,10 +1845,9 @@ msgid "Composer(s)"
 msgstr ""
 
 #: dvb/xmltv.cpp:234
-#, fuzzy, kde-format
-#| msgid "Edit"
+#, kde-format
 msgid "Editor(s)"
-msgstr "Redakti"
+msgstr ""
 
 #: dvb/xmltv.cpp:236
 #, kde-format
@@ -1895,11 +1871,9 @@ msgid "%1: %2\n"
 msgstr ""
 
 #: dvb/xmltv.cpp:377
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Duration:"
+#, kde-format
 msgid "rating: %1"
-msgstr "Daŭro:"
+msgstr ""
 
 #: dvb/xmltv.cpp:451
 #, kde-format
@@ -1912,22 +1886,19 @@ msgid " Episode %1"
 msgstr ""
 
 #: dvb/xmltv.cpp:485
-#, fuzzy, kde-format
-#| msgid "Start"
+#, kde-format
 msgid "Star rating: %1"
-msgstr "Lanĉi"
+msgstr ""
 
 #: dvb/xmltv.cpp:491
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Date: %1"
-msgstr "Nomo: %1"
+msgstr ""
 
 #: dvb/xmltv.cpp:495
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Category: %1"
-msgstr "Nomo: %1"
+msgstr ""
 
 #: dvb/xmltv.cpp:509
 #, kde-format
@@ -1935,11 +1906,9 @@ msgid "Keyword: %1"
 msgstr ""
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
-#, fuzzy, kde-format
-#| msgctxt "osd"
-#| msgid "Volume: %1%"
+#, kde-format
 msgid "language: %1"
-msgstr "Laŭteco: %1%"
+msgstr ""
 
 #: dvb/xmltv.cpp:538
 #, kde-format
@@ -1967,8 +1936,7 @@ msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr ""
 
 #: main.cpp:161
-#, fuzzy, kde-format
-#| msgid "Maintainer"
+#, kde-format
 msgid "Maintainer"
 msgstr "Prizorganto"
 
@@ -2046,11 +2014,10 @@ msgid "&File"
 msgstr "&Dosiero"
 
 #: mainwindow.cpp:214
-#, fuzzy, kde-format
-#| msgid "Open URL"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr "Malfermu URLon"
+msgstr "Malfermi URL..."
 
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
@@ -2115,10 +2082,9 @@ msgid "Television"
 msgstr ""
 
 #: mainwindow.cpp:347
-#, fuzzy, kde-format
-#| msgid "&File"
+#, kde-format
 msgid "Play &File"
-msgstr "&Dosiero"
+msgstr ""
 
 #: mainwindow.cpp:351
 #, kde-format
@@ -2131,10 +2097,9 @@ msgid "Play &Video CD"
 msgstr ""
 
 #: mainwindow.cpp:359
-#, fuzzy, kde-format
-#| msgid "Play"
+#, kde-format
 msgid "Play &DVD"
-msgstr "Ludi"
+msgstr ""
 
 #: mainwindow.cpp:364
 #, kde-format
@@ -2259,12 +2224,10 @@ msgid "Minimal Mode"
 msgstr ""
 
 #: mediawidget.cpp:141
-#, fuzzy, kde-format
-#| msgctxt "@title:column tv show"
-#| msgid "Title"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "Titolo"
+msgstr ""
 
 #: mediawidget.cpp:145
 #, kde-format
@@ -2453,16 +2416,12 @@ msgid "2.39:1"
 msgstr ""
 
 #: mediawidget.cpp:349
-#, fuzzy, kde-format
-#| msgctxt "'Playback' menu"
-#| msgid "Video"
+#, kde-format
 msgid "Video size"
-msgstr "Filmo"
+msgstr ""
 
 #: mediawidget.cpp:357
-#, fuzzy, kde-format
-#| msgctxt "'Aspect Ratio' menu"
-#| msgid "Automatic"
+#, kde-format
 msgctxt "Video size"
 msgid "Automatic"
 msgstr "Aŭtomata"
@@ -2474,11 +2433,10 @@ msgid "25%"
 msgstr ""
 
 #: mediawidget.cpp:369
-#, fuzzy, kde-format
-#| msgid "0%"
+#, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr "0%"
+msgstr ""
 
 #: mediawidget.cpp:376
 #, kde-format
@@ -2548,10 +2506,9 @@ msgid "Skip %1s Forward"
 msgstr ""
 
 #: mediawidget.cpp:496 mediawidget.cpp:499
-#, fuzzy, kde-format
-#| msgid "Select Folder"
+#, kde-format
 msgid "Seek Slider"
-msgstr "Elekti leterujon"
+msgstr ""
 
 #: mediawidget.cpp:510
 #, kde-format
@@ -2666,11 +2623,10 @@ msgid "Paused"
 msgstr ""
 
 #: mediawidget.cpp:1581
-#, fuzzy, kde-format
-#| msgid "Position"
+#, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
-msgstr "Pozicio"
+msgstr ""
 
 #: mediawidget.cpp:1586
 #, kde-format
@@ -2696,11 +2652,10 @@ msgid "Album"
 msgstr ""
 
 #: playlist/playlistmodel.cpp:806
-#, fuzzy, kde-format
-#| msgid "Number"
+#, kde-format
 msgctxt "playlist track"
 msgid "Track Number"
-msgstr "Numero"
+msgstr ""
 
 #: playlist/playlistmodel.cpp:808
 #, kde-format
@@ -2709,11 +2664,10 @@ msgid "Length"
 msgstr ""
 
 #: playlist/playlisttab.cpp:372
-#, fuzzy, kde-format
-#| msgid "Playlist"
+#, kde-format
 msgctxt "playlist browser"
 msgid "Temporary Playlist"
-msgstr "Ludlisto"
+msgstr ""
 
 #: playlist/playlisttab.cpp:396
 #, kde-format
@@ -2722,11 +2676,10 @@ msgid "Repeat"
 msgstr ""
 
 #: playlist/playlisttab.cpp:401
-#, fuzzy, kde-format
-#| msgid "Radio"
+#, kde-format
 msgctxt "playlist menu"
 msgid "Random"
-msgstr "Radio"
+msgstr ""
 
 #: playlist/playlisttab.cpp:406
 #, kde-format
@@ -2734,9 +2687,7 @@ msgid "Add Subtitle"
 msgstr ""
 
 #: playlist/playlisttab.cpp:420
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "New"
+#, kde-format
 msgctxt "@action:inmenu playlist"
 msgid "New"
 msgstr "Nova"
@@ -2748,11 +2699,10 @@ msgid "Rename"
 msgstr "Renomi"
 
 #: playlist/playlisttab.cpp:634
-#, fuzzy, kde-format
-#| msgid "Playlist"
+#, kde-format
 msgctxt "playlist browser"
 msgid "Unnamed Playlist"
-msgstr "Ludlisto"
+msgstr ""
 
 #: playlist/playlisttab.cpp:848
 #, kde-format
@@ -2780,78 +2730,3 @@ msgstr ""
 msgctxt "message box"
 msgid "Cannot open the SQLite database."
 msgstr ""
-
-#, fuzzy
-#~| msgid "Horizontal"
-#~ msgid "Gorontalo"
-#~ msgstr "Horizontala"
-
-#, fuzzy
-#~| msgctxt "@title:column tv show"
-#~| msgid "Duration"
-#~ msgid "Gujarati"
-#~ msgstr "Daŭro"
-
-#, fuzzy
-#~| msgctxt "rename an entry in a list"
-#~| msgid "Rename"
-#~ msgid "Vietnamese"
-#~ msgstr "Renomi"
-
-#~ msgctxt "automatic resize"
-#~ msgid "Off"
-#~ msgstr "Neniam"
-
-#~ msgctxt "@info tv show title"
-#~ msgid "<font color=#008000 size=\"+1\">%1</font><br>"
-#~ msgstr "<font color=#008000 size=\"+1\">%1</font><br>"
-
-#~ msgctxt "@info tv show subheading"
-#~ msgid "<font color=#808000>%1</font><br>"
-#~ msgstr "<font color=#808000>%1</font><br>"
-
-#~ msgctxt "@info tv show start, end"
-#~ msgid "<font color=#800000>%1 - %2</font><br><br>"
-#~ msgstr "<font color=#800000>%1 - %2</font><br><br>"
-
-#~ msgid "LOF (MHz)"
-#~ msgstr "LOF (MHz)"
-
-#, fuzzy
-#~| msgctxt "'Aspect Ratio' menu"
-#~| msgid "Automatic"
-#~ msgid "invalid recording"
-#~ msgstr "Aŭtomata"
-
-#~ msgid "Christoph Pfister"
-#~ msgstr "Christoph Pfister"
-
-#~ msgctxt "file filter"
-#~ msgid "All Files"
-#~ msgstr "Ĉiuj dosieroj"
-
-#, fuzzy
-#~| msgid "Remove"
-#~ msgid "Remove Regexes"
-#~ msgstr "Forigi"
-
-#~ msgid "Name"
-#~ msgstr "Nomo"
-
-#, fuzzy
-#~| msgctxt "City name (optional, probably does not need a translation)"
-#~| msgid "Berlin"
-#~ msgctxt "@title:column tv show"
-#~ msgid "Begin"
-#~ msgstr "Berlino"
-
-#, fuzzy
-#~| msgctxt "City name (optional, probably does not need a translation)"
-#~| msgid "Berlin"
-#~ msgctxt "@label tv show"
-#~ msgid "Begin:"
-#~ msgstr "Berlino"
-
-#~ msgctxt "@title:column tv channel name"
-#~ msgid "Name"
-#~ msgstr "Nomo"
