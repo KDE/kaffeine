@@ -828,7 +828,7 @@ msgstr "[S -90... 90 N]"
 #: dvb/dvbconfigdialog.cpp:1269
 #, kde-format
 msgid "Longitude:"
-msgstr "Llargària:"
+msgstr "Longitud:"
 
 #: dvb/dvbconfigdialog.cpp:1274
 #, kde-format
