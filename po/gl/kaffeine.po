@@ -1,18 +1,18 @@
 # translation of kaffeine.po to galician
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-#
 # mvillarino <mvillarino@users.sourceforge.net>, 2008, 2009.
 # Marce Villarino <mvillarino@users.sourceforge.net>, 2008.
 # Xosé <xosecalvo@gmail.com>, 2012.
 # Adrián Chaves Fernández (Gallaecio) <adriyetichaves@gmail.com>, 2015, 2016, 2017.
-# Adrián Chaves (Gallaecio) <adrian@chaves.io>, 2017, 2018, 2019.
+# Adrián Chaves (Gallaecio) <adrian@chaves.io>, 2017, 2018, 2019, 2023.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2019-10-27 07:36+0100\n"
+"PO-Revision-Date: 2023-04-24 07:29+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 19.11.70\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -590,19 +590,19 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"O ficheiro de varrido está facéndose máis grande de %1 KB.\n"
+"Interrompendo, dado que podería haber un problema…\n"
 
 #: dvb/dvbconfigdialog.cpp:701
-#, fuzzy, kde-format
-#| msgid ""
-#| "Scan data successfully updated. Changes take\n"
-#| "effect after you have closed the configuration dialog."
+#, kde-format
 msgid ""
 "Scan data successfully updated. %1 KB received.\n"
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
-"Actualizáronse os datos do varrido. Os cambios\n"
-"serán efectivos cando se peche o diálogo de configuración."
+"Actualizáronse os datos do varrido. Recibíronse %1 KB.\n"
+"Os cambios serán efectivos cando se peche o diálogo\n"
+"de configuración."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -1205,10 +1205,11 @@ msgstr "Sen publicar"
 msgid "Live"
 msgstr "Ao vivo"
 
+# well-spelled: Planoestereoscópico
 #: dvb/dvbepg.cpp:765
 #, kde-format
 msgid "Planostereoscopic"
-msgstr "Plano-estereoscópico"
+msgstr "Planoestereoscópico"
 
 #: dvb/dvbepg.cpp:767
 #, kde-format
@@ -1298,7 +1299,7 @@ msgstr "Telenovela"
 #: dvb/dvbepg.cpp:798
 #, kde-format
 msgid "Mini-series"
-msgstr "Miniserie"
+msgstr "Serie curta"
 
 #: dvb/dvbepg.cpp:799
 #, kde-format
@@ -1693,7 +1694,7 @@ msgstr "Varrer as canles"
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
 msgid "Search transponders for other Networks"
-msgstr "Buscar outras redes nos transpondedores"
+msgstr "Buscar outras redes nos receptores"
 
 #: dvb/dvbscandialog.cpp:307
 #, kde-format
@@ -1704,7 +1705,7 @@ msgid ""
 "those other NIT data into account. Please notice that the scan will be a lot "
 "more slow if enabled."
 msgstr ""
-"En certas redes, pode que algúns transpondedores estean codificados noutras "
+"En certas redes, pode que algúns receptores estean codificados noutras "
 "táboas de información de rede (NIT). Isto é máis habitual nos sistemas DVB-"
 "C. Prema esta icona para cambiar o algoritmo de escaneo para ter en conta os "
 "datos desas outras NIT. Teña en conta que se activa esta opción o escaneo "
@@ -1773,7 +1774,7 @@ msgstr "Resultados do varrido"
 #: dvb/dvbscandialog.cpp:391
 #, kde-format
 msgid "Current Transponder"
-msgstr "Transpondedor actual"
+msgstr "Receptor actual"
 
 #: dvb/dvbscandialog.cpp:473
 #, kde-format
@@ -1848,7 +1849,7 @@ msgstr "Iniciouse a gravación instantánea"
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
-msgstr "Deteuse a gravación instantánea"
+msgstr "Detívose a gravación instantánea"
 
 #: dvb/xmltv.cpp:212
 #, kde-format
@@ -2196,7 +2197,7 @@ msgstr "Empezar sempre enriba."
 #, kde-format
 msgctxt "command line option"
 msgid "Dump dvb data (debug option)"
-msgstr "Envorcar os datos do dvd (opción de depuración)"
+msgstr "Envorcar os datos do dvb (opción de depuración)"
 
 #: mainwindow.cpp:487
 #, kde-format
@@ -2339,7 +2340,7 @@ msgstr "Vídeo"
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
-msgstr "Desentralazar"
+msgstr "Desentrelazar"
 
 #: mediawidget.cpp:207
 #, kde-format
@@ -2673,7 +2674,7 @@ msgstr "O son está activado"
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr "Desentralazar %1"
+msgstr "Desentrelazar %1"
 
 #: mediawidget.cpp:1398
 #, kde-format
