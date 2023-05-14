@@ -673,7 +673,7 @@ msgstr "كايبل"
 #: dvb/dvbconfigdialog.cpp:926
 #, kde-format
 msgid "Terrestrial (T2)"
-msgstr "أرضي (تي ٢)"
+msgstr "أرضي (تي 2)"
 
 #: dvb/dvbconfigdialog.cpp:934
 #, kde-format
@@ -1006,12 +1006,12 @@ msgstr "ما قبل المدرسة"
 #: dvb/dvbepg.cpp:694
 #, kde-format
 msgid "06 to 14"
-msgstr "٠٦ إلى ١٤"
+msgstr "06 إلى 14"
 
 #: dvb/dvbepg.cpp:695
 #, kde-format
 msgid "10 to 16"
-msgstr "١٠ إلى ١٦"
+msgstr "10 إلى 16"
 
 #: dvb/dvbepg.cpp:696
 #, kde-format
@@ -1206,22 +1206,22 @@ msgstr "مستوى مجسم"
 #: dvb/dvbepg.cpp:767
 #, kde-format
 msgid "User Defined 1"
-msgstr "عرّفه المستخدم ١"
+msgstr "عرّفه المستخدم 1"
 
 #: dvb/dvbepg.cpp:768
 #, kde-format
 msgid "User Defined 2"
-msgstr "عرّفه المستخدم ٢"
+msgstr "عرّفه المستخدم 2"
 
 #: dvb/dvbepg.cpp:769
 #, kde-format
 msgid "User Defined 3"
-msgstr "عرّفه المستخدم ٣"
+msgstr "عرّفه المستخدم 3"
 
 #: dvb/dvbepg.cpp:770
 #, kde-format
 msgid "User Defined 4"
-msgstr "عرّفه المستخدم ٤"
+msgstr "عرّفه المستخدم 4"
 
 #: dvb/dvbepg.cpp:775
 #, kde-format
@@ -1436,27 +1436,27 @@ msgstr "كل الفئات"
 #: dvb/dvbepg.cpp:906
 #, kde-format
 msgid "10 years"
-msgstr "١٠ سنوات"
+msgstr "10 سنوات"
 
 #: dvb/dvbepg.cpp:907
 #, kde-format
 msgid "12 years"
-msgstr "١٢ سنة"
+msgstr "12 سنة"
 
 #: dvb/dvbepg.cpp:908
 #, kde-format
 msgid "14 years"
-msgstr "١٤ سنة"
+msgstr "14 سنة"
 
 #: dvb/dvbepg.cpp:909
 #, kde-format
 msgid "16 years"
-msgstr "١٦ سنة"
+msgstr "16 سنة"
 
 #: dvb/dvbepg.cpp:910
 #, kde-format
 msgid "18 years"
-msgstr "١٨ سنة"
+msgstr "18 سنة"
 
 #: dvb/dvbepg.cpp:933
 #, no-c-format, kde-format
@@ -1965,7 +1965,7 @@ msgstr "المصين"
 #: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr "المصين السّابق (لإصدارات ١.س)"
+msgstr "المصين السّابق (لإصدارات 1.س)"
 
 #: main.cpp:170
 #, kde-format
@@ -2345,7 +2345,7 @@ msgstr "يادف"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
-msgstr "يادف٢اكس"
+msgstr "يادف2اكس"
 
 #: mediawidget.cpp:245
 #, kde-format
