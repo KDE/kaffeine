@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# giovanni <g.sora@tiscali.it>, 2017, 2020, 2021, 2022.
+# giovanni <g.sora@tiscali.it>, 2017, 2020, 2021, 2022, 2023.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2022-11-29 22:36+0100\n"
+"PO-Revision-Date: 2023-05-19 22:25+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.11.80\n"
+"X-Generator: Lokalize 23.04.1\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -853,7 +853,7 @@ msgstr "Aventura:"
 #: dvb/dvbepg.cpp:649
 #, kde-format
 msgid "Science Fiction"
-msgstr ""
+msgstr "Scientia Fictive"
 
 #: dvb/dvbepg.cpp:650
 #, kde-format
@@ -868,7 +868,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:652
 #, kde-format
 msgid "Romance"
-msgstr ""
+msgstr "Romance"
 
 #: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
 #, kde-format
@@ -925,7 +925,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:671
 #, kde-format
 msgid "Talk"
-msgstr ""
+msgstr "Parla"
 
 #: dvb/dvbepg.cpp:677
 #, kde-format
@@ -1105,7 +1105,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:741
 #, kde-format
 msgid "Foreign"
-msgstr ""
+msgstr "Estranie"
 
 #: dvb/dvbepg.cpp:742 dvb/dvbepg.cpp:783
 #, kde-format
@@ -1676,7 +1676,7 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
 msgid "Start Scan"
-msgstr ""
+msgstr "Initia Scansion"
 
 #: dvb/dvbscandialog.cpp:322
 #, kde-format
@@ -2023,23 +2023,23 @@ msgstr "Aperir URL..."
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
 msgid "Play Audio CD"
-msgstr ""
+msgstr "Reproduce CD Audio"
 
 #: mainwindow.cpp:229 mainwindow.cpp:481
 #, kde-format
 msgid "Play Video CD"
-msgstr ""
+msgstr "Reproduce CD Video"
 
 #: mainwindow.cpp:233 mainwindow.cpp:482
 #, kde-format
 msgid "Play DVD"
-msgstr ""
+msgstr "Reproduce DVD"
 
 #: mainwindow.cpp:237
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Play DVD Folder"
-msgstr ""
+msgstr "Reproduce Dossier de DVD"
 
 #: mainwindow.cpp:247
 #, kde-format
@@ -2090,17 +2090,17 @@ msgstr "Reproduce &File"
 #: mainwindow.cpp:351
 #, kde-format
 msgid "Play &Audio CD"
-msgstr ""
+msgstr "Reproduce CD &Audio"
 
 #: mainwindow.cpp:355
 #, kde-format
 msgid "Play &Video CD"
-msgstr ""
+msgstr "Reproduce CD &Video"
 
 #: mainwindow.cpp:359
 #, kde-format
 msgid "Play &DVD"
-msgstr ""
+msgstr "Reproduce &DVD"
 
 #: mainwindow.cpp:364
 #, kde-format
@@ -2152,7 +2152,7 @@ msgstr ""
 #, kde-format
 msgctxt "command line option"
 msgid "Play TV channel"
-msgstr ""
+msgstr "Reproduce Canal TV"
 
 #: mainwindow.cpp:488
 #, kde-format
@@ -2241,7 +2241,7 @@ msgstr "non activate (off)"
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr ""
+msgstr "Adde file de subtitulo"
 
 #: mediawidget.cpp:160
 #, kde-format
@@ -2331,7 +2331,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
-msgstr ""
+msgstr "phosphoro"
 
 #: mediawidget.cpp:251
 #, kde-format
@@ -2479,7 +2479,7 @@ msgstr "300%"
 #: mediawidget.cpp:429
 #, kde-format
 msgid "Volume Slider"
-msgstr ""
+msgstr "Glissator de Volumine"
 
 #: mediawidget.cpp:444
 #, kde-format
@@ -2498,14 +2498,14 @@ msgstr "Salta"
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Backward"
-msgstr ""
+msgstr "Salta %1s Retro"
 
 #: mediawidget.cpp:481 mediawidget.cpp:490 mediawidget.cpp:1160
 #: mediawidget.cpp:1170
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Forward"
-msgstr ""
+msgstr "Salta %1s Avante"
 
 #: mediawidget.cpp:496 mediawidget.cpp:499
 #, kde-format
@@ -2710,7 +2710,7 @@ msgstr ""
 #, kde-format
 msgctxt "file filter"
 msgid "Subtitle Files"
-msgstr ""
+msgstr "Files de subtitulo"
 
 #: playlist/playlisttab.cpp:865
 #, kde-format
