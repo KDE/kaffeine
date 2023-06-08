@@ -614,7 +614,7 @@ msgstr "Nom: %1"
 #: dvb/dvbconfigdialog.cpp:718
 #, kde-format
 msgid "Move Left"
-msgstr "Mou a l'esquerra"
+msgstr "Mou cap a l'esquerra"
 
 #: dvb/dvbconfigdialog.cpp:723
 #, kde-format
@@ -624,7 +624,7 @@ msgstr "Restablix"
 #: dvb/dvbconfigdialog.cpp:733
 #, kde-format
 msgid "Move Right"
-msgstr "Mou a la dreta"
+msgstr "Mou cap a la dreta"
 
 #: dvb/dvbconfigdialog.cpp:739
 #, kde-format
