@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-05-24 01:18+0300\n"
+"PO-Revision-Date: 2023-06-11 21:51+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -41,7 +41,7 @@ msgstr "CD izi %1"
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
-msgstr "Kaffeine Uygulamasını Yapılandır"
+msgstr "Kafein Uygulamasını Yapılandır"
 
 #: configurationdialog.cpp:49
 #, kde-format
@@ -119,8 +119,7 @@ msgstr "LibVLC bağımsız değişkenleri:"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
-msgstr ""
-"NOT: Kaffeine yeni değişkenlerin etkin olması için yeniden başlatılmalı"
+msgstr "NOT: Kafein yeni değişkenlerin etkin olması için yeniden başlatılmalı"
 
 #: configurationdialog.cpp:126
 #, kde-format
@@ -1961,7 +1960,7 @@ msgstr "Ülke: %1"
 #: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
-msgstr "Kaffeine"
+msgstr "Kafein"
 
 #: main.cpp:139
 #, kde-format
@@ -1971,7 +1970,7 @@ msgstr "KDE için dijital TV destekli çoklu ortam oynatıcı."
 #: main.cpp:143
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr "(C) 2007-2019 Kaffeine Yazarları."
+msgstr "(C) 2007-2019 Kafein Yazarları."
 
 #: main.cpp:161
 #, kde-format
@@ -2157,7 +2156,7 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
-"Tüm hata ayıklama iletilerini etkinleştir. Kaffeine'nin hata ayıklama "
+"Tüm hata ayıklama iletilerini etkinleştir. Kafein'nin hata ayıklama "
 "iletilerini şu çevre değişkenini kullanarak kategoriye göre de "
 "etkinleştirebildiğini unutmayın:\n"
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
