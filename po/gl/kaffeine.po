@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-04-24 07:29+0200\n"
+"PO-Revision-Date: 2023-06-17 16:25+0200\n"
 "Last-Translator: Adrián Chaves (Gallaecio) <adrian@chaves.io>\n"
 "Language-Team: Galician <proxecto@trasno.gal>\n"
 "Language: gl\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 23.04.2\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -302,17 +302,17 @@ msgstr "Emisión de son:"
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr "Identificador da canle da emisión de son:"
+msgstr "Identificador da canle de SB:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr "Índice da emisión de son:"
+msgstr "Índice de SB:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr "Conta da emisión de son:"
+msgstr "Conta de SB:"
 
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
@@ -1890,7 +1890,7 @@ msgstr "Composición"
 #: dvb/xmltv.cpp:234
 #, kde-format
 msgid "Editor(s)"
-msgstr "Edición"
+msgstr "Editores"
 
 #: dvb/xmltv.cpp:236
 #, kde-format
@@ -2662,7 +2662,7 @@ msgstr "Detido"
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
-msgstr "O son está desactivado"
+msgstr "Silenciado"
 
 #: mediawidget.cpp:887
 #, kde-format
