@@ -101,7 +101,7 @@ msgstr "Mensaxes de rexistro:"
 #, kde-format
 msgctxt "@action:button"
 msgid "Show dmesg"
-msgstr "Mostrar dmesg"
+msgstr "Amosar dmesg"
 
 #: configurationdialog.cpp:106
 #, kde-format
@@ -501,7 +501,7 @@ msgstr "Deixar baleiro para non definir unha orde."
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
 msgid "Use ISO 8859-1 charset instead of ISO 6937:"
-msgstr "Empregar o conxunto de caracteres ISO 8859-1 no canto de ISO 6937:"
+msgstr "Usar o conxunto de caracteres ISO 8859-1 no canto de ISO 6937:"
 
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
@@ -1515,7 +1515,7 @@ msgstr "Calquera idioma"
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
 msgid "Show channels with empty EPG data"
-msgstr "Mostrar as canles con datos de EPG baleiros"
+msgstr "Amosar as canles con datos de EPG baleiros"
 
 #: dvb/dvbepgdialog.cpp:119
 #, kde-format
@@ -2590,7 +2590,7 @@ msgstr "Ángulo"
 #: mediawidget.cpp:533
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
-msgstr "Cambiar entre mostrar tempo transcorrido ou restante"
+msgstr "Cambiar entre amosar tempo transcorrido ou restante"
 
 #: mediawidget.cpp:562
 #, kde-format
