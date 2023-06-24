@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-01-20 06:14+0100\n"
+"PO-Revision-Date: 2023-06-23 05:13+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.2.2\n"
+"X-Generator: Poedit 3.3.1\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -116,6 +116,8 @@ msgstr "LibVLC -ის არგუმენტები:"
 msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
 msgstr ""
+"შენიშვნა: ახალი პარამეტრების ძალაში შესასვლელად აუცილებელია, დაარესტარტოთ "
+"Kaffeine"
 
 #: configurationdialog.cpp:126
 #, kde-format
@@ -164,6 +166,8 @@ msgid ""
 "The channels will be sorted by number to allow drag and drop.\n"
 "Do you want to continue?"
 msgstr ""
+"არხები ნომრის მიხედვით დალაგდება, რათა გადათრევა შეძლოთ.\n"
+"გნებავთ, გააგრძლოთ?"
 
 #: dvb/dvbchanneldialog.cpp:415
 #, kde-format
@@ -270,7 +274,7 @@ msgstr "გადაცემის რეჟიმი:"
 #: dvb/dvbchanneldialog.cpp:842
 #, kde-format
 msgid "Guard interval:"
-msgstr ""
+msgstr "ფილტრის ინტერვალი:"
 
 #: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
 #, kde-format
@@ -442,16 +446,18 @@ msgstr "xmltv ფაილის სახელი (არასავალდ
 #, kde-format
 msgid "Add optional file to allow reading EPG data from xmltv files"
 msgstr ""
+"არასავალდებულო ფაილი, რომელიც xmltv ფაილებიდან EPG-ის მონაცემების წაკითხვის "
+"საშუალებას გაძლევთ"
 
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
 msgid "Disable parsing EPG data from MPEG-TS tables:"
-msgstr ""
+msgstr "MPEG-TS-ის ცხრილებიდან EPG-ის მონაცემების დამუშავების გამორთვა:"
 
 #: dvb/dvbconfigdialog.cpp:115
 #, kde-format
 msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
-msgstr ""
+msgstr "გამოიყენეთ, თუ თქვენი TV პროვაიდერი სანდო EPG მონაცემებს არ გიგზავნით"
 
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
@@ -466,7 +472,7 @@ msgstr "დასასრულის ზღვარი (წთ):"
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr ""
+msgstr "ჩანაწერის სახელის სტილი:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
@@ -478,7 +484,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
 msgid "Action after recording finishes:"
-msgstr ""
+msgstr "ქმედება ჩაწერის დასრულების შემდეგ:"
 
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
@@ -493,32 +499,32 @@ msgstr "ISO 6937-ის მაგიერ ISO 8859-1 კოდირები�
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
 msgid "Create info files to accompany EPG recordings:"
-msgstr ""
+msgstr "EPG-ის ჩანაწერების მიმყოლი ინფორმაციის ფაილის შექმნა:"
 
 #: dvb/dvbconfigdialog.cpp:179
 #, kde-format
 msgid "Scan channels when idle to fetch fresh EPG data:"
-msgstr ""
+msgstr "ახალი EPG მონაცემების მისაღებად უქმობის დროს არხების სკანირება:"
 
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
 #, kde-format
 msgid "Scan data last updated on %1"
-msgstr ""
+msgstr "სკანირების მონაცემების ბოლო განახლება: %1"
 
 #: dvb/dvbconfigdialog.cpp:193
 #, kde-format
 msgid "Update Scan Data over Internet"
-msgstr ""
+msgstr "სკანირების მონაცემების განახლება ინტერნეტიდან"
 
 #: dvb/dvbconfigdialog.cpp:197
 #, kde-format
 msgid "Edit Scanfile"
-msgstr ""
+msgstr "სკანირების ფაილის ჩასწორება"
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
 msgid "You can add channels manually to this file before scanning for them."
-msgstr ""
+msgstr "სკანირებამდე ამ ფაილში არხების ჩამატება ხელითაც შეგიძლიათ."
 
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
@@ -575,6 +581,8 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"სკანირების ფაილი %1 კბ-ზე დიდი ხდება\n"
+"ოპერაცია დასრულდება, რადგან რაღაც არასწორია...\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -583,6 +591,9 @@ msgid ""
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
+"სკანირების მონაცემები წარმატებით განახლდა. მიღებულია %1 კბ.\n"
+"ცვლილებები ძალაში მაშინ შევა, როცა\n"
+"მორგების ფანჯარას დახურავთ."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -1538,7 +1549,7 @@ msgstr ""
 #, kde-format
 msgctxt "message box"
 msgid "No available device found."
-msgstr ""
+msgstr "ხელმისაწვდომი მოწყობილობა ვერ ვპოვე."
 
 #: dvb/dvbrecordingdialog.cpp:45
 #, kde-format
@@ -1578,7 +1589,7 @@ msgstr "ჩართულია"
 #, kde-format
 msgctxt "@title:window recording"
 msgid "Edit Schedule Entry"
-msgstr ""
+msgstr "გეგმის ჩანაწერის ჩასწორება"
 
 #: dvb/dvbrecordingdialog.cpp:394
 #, kde-format
@@ -1662,7 +1673,7 @@ msgstr "არხების სკანირება"
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
 msgid "Search transponders for other Networks"
-msgstr ""
+msgstr "ტრანსპონდერის ძებნა სხვა ქსელებისთვის"
 
 #: dvb/dvbscandialog.cpp:307
 #, kde-format
@@ -1789,6 +1800,8 @@ msgid ""
 "Kaffeine is currently recording programs.\n"
 "Do you really want to close the application?"
 msgstr ""
+"Kaffeine ამჟამად პროგრამებს იწერს.\n"
+"დარწმუნებული ბრძანდებით, რომ გნებავთ, დახუროთ აპლიკაცია?"
 
 #: dvb/dvbtab.cpp:414
 #, kde-format
@@ -1797,6 +1810,8 @@ msgid ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 msgstr ""
+"Kaffeine-ს დაგეგმილი ჩაწერები აქვს.\n"
+"დარწმუნებული ბრძანდებით, რომ გნებავთ, დახუროთ აპლიკაცია?"
 
 #: dvb/dvbtab.cpp:487
 #, kde-format
@@ -1930,12 +1945,12 @@ msgstr "Kaffeine"
 #: main.cpp:139
 #, kde-format
 msgid "A media player by KDE with digital TV support."
-msgstr ""
+msgstr "მედიის დამკვრელი KDE-სთვის ციფრული ტელევიზიის მხარდაჭერით."
 
 #: main.cpp:143
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr ""
+msgstr "(C) 2007-2019 Kaffeine-ის ავტორები."
 
 #: main.cpp:161
 #, kde-format
@@ -1945,7 +1960,7 @@ msgstr "წამყვანი პროგრამისტი"
 #: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr ""
+msgstr "პროექტის წინა ხელმძღვანელი (ვერსია 1.x)"
 
 #: main.cpp:170
 #, kde-format
@@ -1979,7 +1994,7 @@ msgstr "&2 აუდიო CD-ის დაკვრა"
 msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr ""
+msgstr "აუდიო CD-ის დაკვრის დაწყება. ჩათვლის, რომ CD ამძრავში უკვე დევს"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -1991,7 +2006,7 @@ msgstr "&3 ვიდეო CD-ის დაკვრა"
 msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr ""
+msgstr "ვიდეო CD-ის დაკვრის დაწყება. ჩათვლის, რომ CD ამძრავში უკვე დევს"
 
 #: mainwindow.cpp:131
 #, kde-format
@@ -2003,7 +2018,7 @@ msgstr "&4 DVD-ის დაკვრა"
 msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
-msgstr ""
+msgstr "DVD-ის დაკვრის დაწყება. ჩათვლის, რომ DVD ამძრავში უკვე დევს"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2125,7 +2140,7 @@ msgstr ""
 #: mainwindow.cpp:476
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
-msgstr ""
+msgstr "აპლიკაციის მიერ გახსნილი ფაილები/URL-ები წაიშლება გამოყენების შემდეგ"
 
 #: mainwindow.cpp:477
 #, kde-format
@@ -2146,7 +2161,7 @@ msgstr "ყველა ფანჯარაზე ზემოთ გაშვ
 #, kde-format
 msgctxt "command line option"
 msgid "Dump dvb data (debug option)"
-msgstr ""
+msgstr "DVB-ის მონაცემების გამოტანა (გამართვის პარამეტრი)"
 
 #: mainwindow.cpp:487
 #, kde-format
@@ -2164,7 +2179,7 @@ msgstr "(მოძველებული პარამეტრი)"
 #, kde-format
 msgctxt "command line option"
 msgid "Play last tuned TV channel"
-msgstr ""
+msgstr "ბოლოს მორგებული სატელევიზიო არხის დაკვრა"
 
 #: mainwindow.cpp:491
 #, kde-format
@@ -2539,7 +2554,7 @@ msgstr "კუთხე"
 #: mediawidget.cpp:533
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
-msgstr ""
+msgstr "დარჩენილსა და გასულ დროს შორის გადართვა"
 
 #: mediawidget.cpp:562
 #, kde-format
@@ -2741,10 +2756,10 @@ msgstr ""
 #, kde-format
 msgctxt "message box"
 msgid "Please install the Qt SQLite plugin."
-msgstr ""
+msgstr "დააყენეთ Qt-ის SQLite დამატება."
 
 #: sqlhelper.cpp:63
 #, kde-format
 msgctxt "message box"
 msgid "Cannot open the SQLite database."
-msgstr ""
+msgstr "SQLite-ის ბაზის გახსნის შეცდომა."
