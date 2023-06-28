@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-06-23 05:13+0200\n"
+"PO-Revision-Date: 2023-06-27 09:33+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 3.3.1\n"
+"X-Generator: Poedit 3.3.2\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -329,7 +329,7 @@ msgstr "A ფენის სეგმენტები:"
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
 msgid "Layer A interleaving:"
-msgstr ""
+msgstr "ფენა A-ის რიგითობა:"
 
 #: dvb/dvbchanneldialog.cpp:870
 #, kde-format
@@ -349,7 +349,7 @@ msgstr "B ფენის სეგმენტები:"
 #: dvb/dvbchanneldialog.cpp:876
 #, kde-format
 msgid "Layer B interleaving:"
-msgstr ""
+msgstr "ფენა B-ის რიგითობა:"
 
 #: dvb/dvbchanneldialog.cpp:880
 #, kde-format
@@ -369,7 +369,7 @@ msgstr "C ფენის სეგმენტები:"
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
 msgid "Layer C interleaving:"
-msgstr ""
+msgstr "ფენა C-ის რიგითობა:"
 
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
@@ -480,6 +480,8 @@ msgid ""
 "The following substitutions work: \"%year\" for year (YYYY) and the "
 "following: %month, %day, %hour, %min, %sec, %channel and %title"
 msgstr ""
+"მუშაობს შემდეგი ჩანაცვლებები: \"%year\" წლისთვის (წწწწ) და კიდევ: %month, "
+"%day, %hour, %min, %sec, %channel და %title"
 
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
@@ -845,7 +847,7 @@ msgstr "დაბალი დიაპაზონი: %1 მჰც-დან %
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
-msgstr ""
+msgstr "Bandstacked"
 
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
@@ -1544,6 +1546,9 @@ msgid ""
 "\n"
 "Please check the Configure Television window."
 msgstr ""
+"სწორი პარამეტრების მქონე მოწყობილობა ვერ ვიპოვე, ან წვდომა აკრძალულია.\n"
+"\n"
+"შეამოწმეთ ტელევიზიის მორგების ფანჯარა."
 
 #: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
 #, kde-format
