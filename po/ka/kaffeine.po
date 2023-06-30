@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2022-12-14 00:46+0000\n"
-"PO-Revision-Date: 2023-06-27 09:33+0200\n"
+"PO-Revision-Date: 2023-06-29 06:29+0200\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
 "Language-Team: Georgian <kde-i18n-doc@kde.org>\n"
 "Language: ka\n"
@@ -743,6 +743,14 @@ msgid ""
 "- higher voltage mode (checked);\n"
 "- tristate (don't send the control)."
 msgstr ""
+"ზოგიერთ DVB მოწყობილობას გააჩნია დამატებითი კონტროლი, რომელიც საშუალებას "
+"გაძლევთ\n"
+"LNBf-სთვის მიწოდებული ვოლტაჟი გაზარდოთ, კაბელის კარგვების კომპენსაციისთვის. "
+"ეს სამ-მდგომარეობიანი\n"
+"ღილაკი ნაგულისხმებად გამორთულია. შესაძლო ვარიანტებია:\n"
+"- ნორმალური რეჟიმი (გამორთული);\n"
+"- მაღალი ვოლტაჟის რეჟიმი (ჩართული);\n"
+"- ტრისტატი - (კონტროლი არ გაიგზავნება)."
 
 #: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
@@ -1689,6 +1697,11 @@ msgid ""
 "those other NIT data into account. Please notice that the scan will be a lot "
 "more slow if enabled."
 msgstr ""
+"ზოგიერთ ქსელებში შესაძლებელია, რომ ზოგიერთი ტრანსპონდერი განსხვავებულ "
+"ქსელური ინფორმაციის ცხრილებზეა (NIT) კოდირებული). ეს უფრო DVB-C სისტემებშია "
+"გავრცელებული. ამ ხატულაზე დაწკაპუნება სხვა NIT-ის მონაცემებს მხედველობაში "
+"მიიღებს. დაიმახსოვრეთ, რომ სკანირება, თუ ის ჩართულია, ბევრად უფრო ნელი "
+"იქნება."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
@@ -2141,6 +2154,11 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
+"ყველა გამართვის შეტყობინების ჩართვა. დაიმახსოვრეთ, რომ Kaffeine ასევე "
+"საშუალებას გაძლევთ, გამართვის შეტყობინებები კატეგორიების მიხედვით "
+"გამოიტანოთ, გარემოს ცვლადით:\n"
+"QT_LOGGING_RULES=caffeine.category.debug=true\n"
+"სადაც 'category' შეიძლება იყოს:\n"
 
 #: mainwindow.cpp:476
 #, kde-format
