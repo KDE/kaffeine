@@ -631,3 +631,5 @@ DvbSharedRecording *DvbTab::getInstantRecording(DvbSharedChannel ch) {
 
 	return ret;
 }
+
+#include "moc_dvbtab.cpp"

@@ -579,3 +579,6 @@ void DvbRecordingEditor::accept()
 
 	QDialog::accept();
 }
+
+#include "moc_dvbrecordingdialog.cpp"
+#include "moc_dvbrecordingdialog_p.cpp"

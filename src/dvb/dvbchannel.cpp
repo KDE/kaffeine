@@ -668,3 +668,5 @@ int DvbChannelModel::findNextFreeChannelNumber(int number) const
 
 	return number;
 }
+
+#include "moc_dvbchannel.cpp"

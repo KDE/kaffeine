@@ -410,3 +410,5 @@ void DBusTelevisionObject::RemoveProgram(quint32 key)
 }
 
 #endif /* HAVE_DVB == 1 */
+
+#include "moc_dbusobjects.cpp"

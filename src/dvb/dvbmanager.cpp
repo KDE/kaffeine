@@ -1054,3 +1054,5 @@ QDate DvbScanData::readDate()
 
 	return QDate::fromString(QString::fromLatin1(readLine()), Qt::ISODate);
 }
+
+#include "moc_dvbmanager.cpp"

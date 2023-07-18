@@ -1810,3 +1810,5 @@ void AtscEttSection::initEttSection(const char *data, int size)
 
 	initStandardSection(data, size);
 }
+
+#include "moc_dvbsi.cpp"

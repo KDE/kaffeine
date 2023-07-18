@@ -1715,3 +1715,5 @@ void DvbSLnbConfigObject::dialogAccepted()
 
 	dialog->accept();
 }
+
+#include "moc_dvbconfigdialog.cpp"

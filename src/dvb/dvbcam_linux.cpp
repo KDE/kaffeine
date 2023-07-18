@@ -714,3 +714,5 @@ void DvbLinuxCam::sendApplicationLayerMessage(ApplicationLayerTag tag, char *dat
 
 	sendSessionLayerMessage(SessionNumber, data, end);
 }
+
+#include "moc_dvbcam_linux.cpp"

@@ -1380,3 +1380,5 @@ void DvbScan::filterFinished(DvbScanFilter *filter)
 	--activeFilters;
 	updateState();
 }
+
+#include "moc_dvbscan.cpp"

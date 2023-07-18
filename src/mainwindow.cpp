@@ -911,3 +911,5 @@ void MainWindow::leaveEvent(QEvent *event)
 
 	QMainWindow::leaveEvent(event);
 }
+
+#include "moc_mainwindow.cpp"

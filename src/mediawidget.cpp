@@ -44,13 +44,17 @@
 #include <Solid/Block>
 #include <Solid/Device>
 #include <KWindowSystem>
-#include <X11/extensions/scrnsaver.h>
 
 #include "backend-vlc/vlcmediawidget.h"
 #include "configuration.h"
 #include "mediawidget.h"
 #include "mediawidget_p.h"
 #include "osdwidget.h"
+
+// Needs to be included before X11 headers, which deine some things like "Bool"
+#include "moc_mediawidget.cpp"
+
+#include <X11/extensions/scrnsaver.h>
 
 MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),

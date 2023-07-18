@@ -1057,3 +1057,6 @@ void DvbChannelEditor::accept()
 
 	QDialog::accept();
 }
+
+#include "moc_dvbchanneldialog_p.cpp"
+#include "moc_dvbchanneldialog.cpp"

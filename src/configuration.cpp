@@ -101,3 +101,5 @@ void Configuration::setLibVlcArguments(QString newArguments)
 }
 
 Configuration *Configuration::globalInstance = NULL;
+
+#include "moc_configuration.cpp"

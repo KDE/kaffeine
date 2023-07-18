@@ -188,3 +188,6 @@ void DmesgDialog::readyRead()
 	dmesgTextEdit->setPlainText(dmesgTextEdit->toPlainText() +
 		QString::fromLocal8Bit(dmesgProcess->readAll().constData()));
 }
+
+#include "moc_configurationdialog_p.cpp"
+#include "moc_configurationdialog.cpp"

@@ -886,3 +886,5 @@ void PlaylistTab::savePlaylist(bool askName)
 		playlist->save(format);
 	}
 }
+
+#include "moc_playlisttab.cpp"

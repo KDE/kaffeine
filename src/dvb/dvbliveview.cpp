@@ -749,3 +749,6 @@ void DvbLiveViewInternal::processData(const char data[188])
 	buffer.clear();
 	buffer.reserve(87 * 188);
 }
+
+#include "moc_dvbliveview_p.cpp"
+#include "moc_dvbliveview.cpp"

@@ -116,3 +116,5 @@ void OsdWidget::hideOsd()
 	timer->stop();
 	hide();
 }
+
+#include "moc_osdwidget.cpp"

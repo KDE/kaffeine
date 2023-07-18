@@ -1346,3 +1346,5 @@ void AtscEpgFilter::processEttSection(const char *data, int size)
 		}
 	}
 }
+
+#include "moc_dvbepg.cpp"

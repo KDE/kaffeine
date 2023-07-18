@@ -630,3 +630,5 @@ bool XmlTv::load(QString file)
 	watcher.addPath(file);
 	return parseError;
 }
+
+#include "moc_xmltv.cpp"

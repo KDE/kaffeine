@@ -609,3 +609,5 @@ void DvbScanDialog::setDevice(DvbDevice *newDevice)
 		updateStatus();
 	}
 }
+
+#include "moc_dvbscandialog.cpp"

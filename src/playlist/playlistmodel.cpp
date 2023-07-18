@@ -999,3 +999,5 @@ bool PlaylistModel::dropMimeData(const QMimeData *data, Qt::DropAction action, i
 
 	return false;
 }
+
+#include "moc_playlistmodel.cpp"

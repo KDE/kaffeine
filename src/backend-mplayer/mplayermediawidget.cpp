@@ -624,3 +624,5 @@ void MPlayerMediaWidget::updateVideoWidgetGeometry()
 		videoWidget->setGeometry(geometry);
 	}
 }
+
+#include "moc_mplayermediawidget.cpp"

@@ -1862,3 +1862,5 @@ int DvbLinuxDeviceManager::readSysAttr(const QString &path)
 
 	return value;
 }
+
+#include "moc_dvbdevice_linux.cpp"

@@ -536,3 +536,6 @@ void DvbEpgTableModel::customEvent(QEvent *event)
 		reset(epgModel->getEntries());
 	}
 }
+
+#include "moc_dvbepgdialog.cpp"
+#include "moc_dvbepgdialog_p.cpp"

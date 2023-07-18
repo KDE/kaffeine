@@ -1120,3 +1120,5 @@ void VlcMediaWidget::vlcEventHandler(const libvlc_event_t *event, void *instance
 {
 	reinterpret_cast<VlcMediaWidget *>(instance)->vlcEvent(event);
 }
+
+#include "moc_vlcmediawidget.cpp"

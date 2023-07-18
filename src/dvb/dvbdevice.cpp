@@ -1011,3 +1011,5 @@ void DvbDevice::customEvent(QEvent *)
 		}
 	}
 }
+
+#include "moc_dvbdevice.cpp"

@@ -128,3 +128,5 @@ void SqlHelper::collectSubmissions()
 }
 
 SqlHelper *SqlHelper::instance = NULL;
+
+#include "moc_sqlhelper.cpp"

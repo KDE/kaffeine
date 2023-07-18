@@ -1081,3 +1081,5 @@ void DvbRecordingFile::processData(const char data[188])
 	file.write(data, 188);
 }
 
+#include "moc_dvbrecording_p.cpp"
+#include "moc_dvbrecording.cpp"
