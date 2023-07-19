@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2022-12-14 00:46+0000\n"
+"POT-Creation-Date: 2023-07-19 00:49+0000\n"
 "PO-Revision-Date: 2023-05-19 22:25+0200\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
@@ -2188,360 +2188,360 @@ msgstr "Aperir URL"
 msgid "Enter a URL:"
 msgstr "Inserta un URL:"
 
-#: mediawidget.cpp:86
+#: mediawidget.cpp:90
 #, kde-format
 msgid "Previous"
 msgstr "Precedente"
 
-#: mediawidget.cpp:94
+#: mediawidget.cpp:98
 #, kde-format
 msgid "Play"
 msgstr "Reproduce"
 
-#: mediawidget.cpp:95
+#: mediawidget.cpp:99
 #, kde-format
 msgid "Pause"
 msgstr "Pausa"
 
-#: mediawidget.cpp:104
+#: mediawidget.cpp:108
 #, kde-format
 msgid "Stop"
 msgstr "Stoppa"
 
-#: mediawidget.cpp:112
+#: mediawidget.cpp:116
 #, kde-format
 msgid "Next"
 msgstr "Proxime"
 
-#: mediawidget.cpp:121 mediawidget.cpp:592
+#: mediawidget.cpp:125 mediawidget.cpp:596
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Full Screen Mode"
 msgstr "Modo de Schermo Integre"
 
-#: mediawidget.cpp:128 mediawidget.cpp:607
+#: mediawidget.cpp:132 mediawidget.cpp:611
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
 msgstr "Modo minime"
 
-#: mediawidget.cpp:141
+#: mediawidget.cpp:145
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
 msgstr "Sub-Titulo"
 
-#: mediawidget.cpp:145
+#: mediawidget.cpp:149
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
 msgstr "non activate (off)"
 
-#: mediawidget.cpp:153
+#: mediawidget.cpp:157
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
 msgstr "Adde file de subtitulo"
 
-#: mediawidget.cpp:160
+#: mediawidget.cpp:164
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio"
 msgstr "Audio"
 
-#: mediawidget.cpp:163
+#: mediawidget.cpp:167
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
 msgstr "Dispositivo audio"
 
-#: mediawidget.cpp:165
+#: mediawidget.cpp:169
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
 msgstr "Dispositivo audio"
 
-#: mediawidget.cpp:172
+#: mediawidget.cpp:176
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
 msgstr "Augmenta volumine"
 
-#: mediawidget.cpp:179
+#: mediawidget.cpp:183
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
 msgstr "Diminue Volumine"
 
-#: mediawidget.cpp:185
+#: mediawidget.cpp:189
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
 msgstr "Silentia Volume"
 
-#: mediawidget.cpp:195
+#: mediawidget.cpp:199
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Video"
 msgstr "Video"
 
-#: mediawidget.cpp:199
+#: mediawidget.cpp:203
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
 msgstr "Deinterlace "
 
-#: mediawidget.cpp:207
+#: mediawidget.cpp:211
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
 msgstr "dishabilitate"
 
-#: mediawidget.cpp:214
+#: mediawidget.cpp:218
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
 msgstr "abandona"
 
-#: mediawidget.cpp:220
+#: mediawidget.cpp:224
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
 msgstr ""
 
-#: mediawidget.cpp:226
+#: mediawidget.cpp:230
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
 msgstr "linear "
 
-#: mediawidget.cpp:232
+#: mediawidget.cpp:236
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
 msgstr ""
 
-#: mediawidget.cpp:239
+#: mediawidget.cpp:243
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
 msgstr ""
 
-#: mediawidget.cpp:245
+#: mediawidget.cpp:249
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
 msgstr "phosphoro"
 
-#: mediawidget.cpp:251
+#: mediawidget.cpp:255
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
 msgstr "x"
 
-#: mediawidget.cpp:257
+#: mediawidget.cpp:261
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
 msgstr "media"
 
-#: mediawidget.cpp:263
+#: mediawidget.cpp:267
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
 msgstr "mixtura"
 
-#: mediawidget.cpp:269
+#: mediawidget.cpp:273
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
 msgstr ""
 
-#: mediawidget.cpp:289
+#: mediawidget.cpp:293
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
 msgstr "Proportiones"
 
-#: mediawidget.cpp:296
+#: mediawidget.cpp:300
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "Automatic"
 msgstr "Automatic"
 
-#: mediawidget.cpp:302
+#: mediawidget.cpp:306
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
 msgstr "1:1"
 
-#: mediawidget.cpp:308
+#: mediawidget.cpp:312
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "4:3"
 msgstr "4:3"
 
-#: mediawidget.cpp:314
+#: mediawidget.cpp:318
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "5:4"
 msgstr "5:4"
 
-#: mediawidget.cpp:320
+#: mediawidget.cpp:324
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:9"
 msgstr "16:9"
 
-#: mediawidget.cpp:326
+#: mediawidget.cpp:330
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:10"
 msgstr "16:10"
 
-#: mediawidget.cpp:332
+#: mediawidget.cpp:336
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.21:1"
 msgstr "2.21:1"
 
-#: mediawidget.cpp:338
+#: mediawidget.cpp:342
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.35:1"
 msgstr "2.35:1"
 
-#: mediawidget.cpp:344
+#: mediawidget.cpp:348
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.39:1"
 msgstr "2.39:1"
 
-#: mediawidget.cpp:349
+#: mediawidget.cpp:353
 #, kde-format
 msgid "Video size"
 msgstr "Grandor de video"
 
-#: mediawidget.cpp:357
+#: mediawidget.cpp:361
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
 msgstr "Automatic"
 
-#: mediawidget.cpp:363
+#: mediawidget.cpp:367
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
 msgstr "25%"
 
-#: mediawidget.cpp:369
+#: mediawidget.cpp:373
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
 msgstr "50%"
 
-#: mediawidget.cpp:376
+#: mediawidget.cpp:380
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
 msgstr "75%"
 
-#: mediawidget.cpp:382
+#: mediawidget.cpp:386
 #, kde-format
 msgctxt "Video size"
 msgid "Original Size"
 msgstr "Grandor original"
 
-#: mediawidget.cpp:388
+#: mediawidget.cpp:392
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
 msgstr "150%"
 
-#: mediawidget.cpp:394
+#: mediawidget.cpp:398
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
 msgstr "200%"
 
-#: mediawidget.cpp:400
+#: mediawidget.cpp:404
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
 msgstr "250%"
 
-#: mediawidget.cpp:406
+#: mediawidget.cpp:410
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
 msgstr "300%"
 
-#: mediawidget.cpp:429
+#: mediawidget.cpp:433
 #, kde-format
 msgid "Volume Slider"
 msgstr "Glissator de Volumine"
 
-#: mediawidget.cpp:444
+#: mediawidget.cpp:448
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
 msgstr "Salta a Position..."
 
-#: mediawidget.cpp:449
+#: mediawidget.cpp:453
 #, kde-format
 msgctxt "playback menu"
 msgid "Skip"
 msgstr "Salta"
 
-#: mediawidget.cpp:463 mediawidget.cpp:472 mediawidget.cpp:1157
-#: mediawidget.cpp:1167
+#: mediawidget.cpp:467 mediawidget.cpp:476 mediawidget.cpp:1161
+#: mediawidget.cpp:1171
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Backward"
 msgstr "Salta %1s Retro"
 
-#: mediawidget.cpp:481 mediawidget.cpp:490 mediawidget.cpp:1160
-#: mediawidget.cpp:1170
+#: mediawidget.cpp:485 mediawidget.cpp:494 mediawidget.cpp:1164
+#: mediawidget.cpp:1174
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Forward"
 msgstr "Salta %1s Avante"
 
-#: mediawidget.cpp:496 mediawidget.cpp:499
+#: mediawidget.cpp:500 mediawidget.cpp:503
 #, kde-format
 msgid "Seek Slider"
 msgstr ""
 
-#: mediawidget.cpp:510
+#: mediawidget.cpp:514
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
 msgstr "Menu de DVD"
 
-#: mediawidget.cpp:514
+#: mediawidget.cpp:518
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Title"
 msgstr "Titulo"
 
-#: mediawidget.cpp:520
+#: mediawidget.cpp:524
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
 msgstr "Capitulo"
 
-#: mediawidget.cpp:526
+#: mediawidget.cpp:530
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Angle"
 msgstr "Angulo"
 
-#: mediawidget.cpp:533
+#: mediawidget.cpp:537
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
 msgstr ""
 
-#: mediawidget.cpp:562
+#: mediawidget.cpp:566
 #, kde-format
 msgid ""
 "Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
@@ -2557,80 +2557,80 @@ msgid ""
 "Files (*)"
 msgstr ""
 
-#: mediawidget.cpp:598
+#: mediawidget.cpp:602
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Full Screen Mode"
 msgstr "Exi del modo de schermo integre"
 
-#: mediawidget.cpp:611
+#: mediawidget.cpp:615
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Minimal Mode"
 msgstr ""
 
-#: mediawidget.cpp:644
+#: mediawidget.cpp:648
 #, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
 msgstr "Aperi subtitulo"
 
-#: mediawidget.cpp:645
+#: mediawidget.cpp:649
 #, kde-format
 msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
 
-#: mediawidget.cpp:785 mediawidget.cpp:894
+#: mediawidget.cpp:789 mediawidget.cpp:898
 #, kde-format
 msgctxt "osd"
 msgid "Volume: %1%"
 msgstr "Volumine: %1%"
 
-#: mediawidget.cpp:816
+#: mediawidget.cpp:820
 #, kde-format
 msgctxt "osd"
 msgid "Stopped"
 msgstr "Stoppate"
 
-#: mediawidget.cpp:884
+#: mediawidget.cpp:888
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
 msgstr "Silentia  sur "
 
-#: mediawidget.cpp:887
+#: mediawidget.cpp:891
 #, kde-format
 msgctxt "osd"
 msgid "Mute Off"
 msgstr ""
 
-#: mediawidget.cpp:983
+#: mediawidget.cpp:987
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
 msgstr "Deinterlace %1"
 
-#: mediawidget.cpp:1398
+#: mediawidget.cpp:1402
 #, kde-format
 msgctxt "osd"
 msgid "Playing"
 msgstr "Reproducente"
 
-#: mediawidget.cpp:1403
+#: mediawidget.cpp:1407
 #, kde-format
 msgctxt "osd"
 msgid "Paused"
 msgstr "In pausa"
 
-#: mediawidget.cpp:1581
+#: mediawidget.cpp:1585
 #, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
 msgstr "Salta a Position"
 
-#: mediawidget.cpp:1586
+#: mediawidget.cpp:1590
 #, kde-format
 msgid "Enter a position:"
 msgstr "Inserta un position:"
