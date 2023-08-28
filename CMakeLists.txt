@@ -1,3 +1,5 @@
+cmake_minimum_required(VERSION 3.16)
+
 project(kaffeine)
 
 set(KAFFEINE_MAJOR_VERSION 2)
@@ -12,19 +14,8 @@ set(KAFFEINE_VERSION
 
 option(BUILD_TOOLS "Build the helper tools" OFF)
 
-# Minimal versions where build is known to work
-cmake_minimum_required(VERSION 2.8.12)
 set(QT_MIN_VERSION "5.4.0")
 set(KF5_MIN_VERSION "5.11.0")
-
-# shut up cmake warnings about newer policies
-if(POLICY CMP0063)
-  cmake_policy(SET CMP0063 NEW)
-endif(POLICY CMP0063)
-
-if(POLICY CMP0002)
-  cmake_policy(SET CMP0002 NEW)
-endif(POLICY CMP0002)
 
 find_package(Qt5Core)
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
