@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-07-19 00:49+0000\n"
-"PO-Revision-Date: 2023-08-26 12:22+0300\n"
+"PO-Revision-Date: 2023-08-29 00:33+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -53,7 +53,7 @@ msgstr "Normal Kip"
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Minimal Mode"
-msgstr "Sade Kip"
+msgstr "Yalın Kip"
 
 #: configurationdialog.cpp:53
 #, kde-format
@@ -71,7 +71,7 @@ msgstr "Son Ayarı Anımsa"
 #, kde-format
 msgctxt "@label:listbox"
 msgid "Startup display mode:"
-msgstr "Başlangıç görünüm kipi:"
+msgstr "Başlangıç görüntü kipi:"
 
 #: configurationdialog.cpp:68
 #, kde-format
@@ -101,7 +101,7 @@ msgstr "Günlük kayıtları:"
 #, kde-format
 msgctxt "@action:button"
 msgid "Show dmesg"
-msgstr "Dmesg çıktısını göster"
+msgstr "Göster: dmesg"
 
 #: configurationdialog.cpp:106
 #, kde-format
@@ -113,13 +113,14 @@ msgstr "Hata Tanılama Araçları"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "LibVLC arguments:"
-msgstr "LibVLC bağımsız değişkenleri:"
+msgstr "LibVLC argümanları:"
 
 #: configurationdialog.cpp:121
 #, kde-format
 msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
-msgstr "NOT: Kafein yeni değişkenlerin etkin olması için yeniden başlatılmalı"
+msgstr ""
+"NOT: Kafein yeni argümanların etkin olması için yeniden başlatılmalıdır"
 
 #: configurationdialog.cpp:126
 #, kde-format
@@ -1640,7 +1641,7 @@ msgstr "Bitiş:"
 #, kde-format
 msgctxt "@label recording"
 msgid "Repeat:"
-msgstr "Tekrarlama:"
+msgstr "Yinele:"
 
 #: dvb/dvbrecordingdialog.cpp:450
 #, kde-format
@@ -1783,7 +1784,7 @@ msgstr "Program Rehberi"
 #: dvb/dvbtab.cpp:102
 #, kde-format
 msgid "OSD"
-msgstr "OSD"
+msgstr "Ekran Üzeri Görünüm"
 
 #: dvb/dvbtab.cpp:108
 #, kde-format
@@ -2176,7 +2177,7 @@ msgstr "Tam ekran kipi ile başla"
 #: mainwindow.cpp:478
 #, kde-format
 msgid "Start in minimal mode"
-msgstr "Sade kipte başlat"
+msgstr "Yalın kipte başlat"
 
 #: mainwindow.cpp:479
 #, kde-format
@@ -2247,7 +2248,7 @@ msgstr "Duraklat"
 #: mediawidget.cpp:108
 #, kde-format
 msgid "Stop"
-msgstr "Dur"
+msgstr "Durdur"
 
 #: mediawidget.cpp:116
 #, kde-format
@@ -2264,7 +2265,7 @@ msgstr "Tam Ekran Kipi"
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
-msgstr "Sade Kip"
+msgstr "Yalın Kip"
 
 #: mediawidget.cpp:145
 #, kde-format
@@ -2282,7 +2283,7 @@ msgstr "kapalı"
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr "Altyazı dosyası ekle"
+msgstr "Altyazı Dosyası Ekle"
 
 #: mediawidget.cpp:164
 #, kde-format
@@ -2330,7 +2331,7 @@ msgstr "Video"
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
-msgstr "Deinterlace"
+msgstr "Görüntüyü Ayrıştır"
 
 #: mediawidget.cpp:211
 #, kde-format
@@ -2354,7 +2355,7 @@ msgstr "inip çık"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
-msgstr "çizgisel"
+msgstr "doğrusal"
 
 #: mediawidget.cpp:236
 #, kde-format
@@ -2384,13 +2385,13 @@ msgstr "x"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
-msgstr "kötü niyetli"
+msgstr "ortala"
 
 #: mediawidget.cpp:267
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
-msgstr "karış"
+msgstr "harmanla"
 
 #: mediawidget.cpp:273
 #, kde-format
@@ -2461,7 +2462,7 @@ msgstr "2.39:1"
 #: mediawidget.cpp:353
 #, kde-format
 msgid "Video size"
-msgstr "Video boyutu"
+msgstr "Video Boyutu"
 
 #: mediawidget.cpp:361
 #, kde-format
@@ -2619,7 +2620,7 @@ msgstr "Tam Ekran Kipinden Çık"
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Minimal Mode"
-msgstr "Sade Kipten Çık"
+msgstr "Yalın Kipten Çık"
 
 #: mediawidget.cpp:648
 #, kde-format
@@ -2664,7 +2665,7 @@ msgstr "Ses Açık"
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr "%1 görüntüsünü ayrıştır"
+msgstr "Görüntüyü Ayrıştır: %1"
 
 #: mediawidget.cpp:1402
 #, kde-format
@@ -2729,7 +2730,7 @@ msgstr "Geçici Oynatma Listesi"
 #, kde-format
 msgctxt "playlist menu"
 msgid "Repeat"
-msgstr "Tekrarla"
+msgstr "Yinele"
 
 #: playlist/playlisttab.cpp:401
 #, kde-format
