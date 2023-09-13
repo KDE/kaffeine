@@ -2536,7 +2536,7 @@ msgstr "Control lliscant del volum"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
-msgstr "Salta a la posició..."
+msgstr "Salta fins a la posició..."
 
 #: mediawidget.cpp:453
 #, kde-format
@@ -2692,7 +2692,7 @@ msgstr "En pausa"
 #, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
-msgstr "Salta a la posició"
+msgstr "Salta fins a la posició"
 
 #: mediawidget.cpp:1590
 #, kde-format
