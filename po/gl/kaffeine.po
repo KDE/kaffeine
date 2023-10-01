@@ -25,7 +25,7 @@ msgstr ""
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
 msgid "Cannot start mplayer process."
-msgstr "Non se pode iniciar o proceso mplayer."
+msgstr "Non é posíbel iniciar o proceso mplayer."
 
 #: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
 #, kde-format
@@ -2798,7 +2798,7 @@ msgstr "Instale o complemento de SQLite para Qt."
 #, kde-format
 msgctxt "message box"
 msgid "Cannot open the SQLite database."
-msgstr "Non se pode abrir a base de datos SQLite."
+msgstr "Non é posíbel abrir a base de datos SQLite."
 
 #~ msgid "KF5 port"
 #~ msgstr "Adaptación a KF5."
