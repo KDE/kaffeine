@@ -64,7 +64,6 @@ Name[th]=เล่นแผ่นดีวีดีด้วย 'แคฟเฟ
 Name[tr]=DVD'yi Kafein ile Oynat
 Name[ug]=CD نى Kaffeine دا قويۇش
 Name[uk]=Відтворити DVD за допомогою Kaffeine
-Name[x-test]=xxPlay DVD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放 DVD
 Name[zh_TW]=用 Kaffeine 播放 DVD
 Exec=kaffeine --dvd %d
