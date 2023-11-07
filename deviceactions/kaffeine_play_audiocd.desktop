@@ -64,6 +64,7 @@ Name[th]=เล่นแผ่นซีดีเสียงด้วย 'แค
 Name[tr]=Ses CD'sini Kafein ile Çal
 Name[ug]=CD نى Kaffeine دا قويۇش
 Name[uk]=Відтворити Аудіо-КД за допомогою Kaffeine
+Name[x-test]=xxPlay Audio CD with Kaffeinexx
 Name[zh_CN]=用 Kaffeine 播放音频 CD
 Name[zh_TW]=用 Kaffeine 播放音樂光碟
 Exec=kaffeine --audiocd %d
