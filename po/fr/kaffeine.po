@@ -7,16 +7,16 @@
 # Joëlle Cornavin <jcorn@free.fr>, 2009, 2010, 2011.
 # Thomas Vergnaud <thomas.vergnaud@gmx.fr>, 2015, 2016, 2017, 2018, 2019, 2022.
 # Simon Depiets <sdepiets@gmail.com>, 2018, 2019.
-# Xavier Besnard <xavier.besnard@neuf.fr>, 2021.
+# SPDX-FileCopyrightText: 2021, 2023 Xavier Besnard <xavier.besnard@neuf.fr>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:30+0000\n"
-"PO-Revision-Date: 2022-10-09 17:33+0200\n"
-"Last-Translator: Thomas Vergnaud <thomas.vergnaud@mailo.eu>\n"
-"Language-Team: French <kde-francophone@kde.org>\n"
+"PO-Revision-Date: 2023-11-05 18:39+0100\n"
+"Last-Translator: Xavier BESNARD <xavier.besnard@neuf.fr>\n"
+"Language-Team: fr\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,12 +25,12 @@ msgstr ""
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
-"X-Generator: Lokalize 21.12.3\n"
+"X-Generator: Lokalize 23.08.2\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
 msgid "Cannot start mplayer process."
-msgstr "Impossible de démarrer le processus mplayer."
+msgstr "Impossible de démarrer le processus « mplayer »."
 
 #: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
 #, kde-format
@@ -752,7 +752,7 @@ msgstr "Nom :"
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
-msgstr "Utiliser un voltage LNBf supérieur :"
+msgstr "Utiliser une tension « LNBf » supérieur :"
 
 #: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
@@ -765,10 +765,10 @@ msgid ""
 "- higher voltage mode (checked);\n"
 "- tristate (don't send the control)."
 msgstr ""
-"Sur certains périphériques DVB, il n'y a pas de contrôle permettant "
+"Sur certains périphériques « DVB », il n'y a aucun contrôle permettant "
 "d'augmenter le\n"
-"voltage envoyé au LNBf afin de compenser la perte due au câble. Ce bouton "
-"tri-state\n"
+"voltage envoyé au « LNBf » afin de compenser la perte due au câble. Ce "
+"bouton à trois état\n"
 " ne l'utilise pas par défaut. Il peut être réglé sur :\n"
 "- mode normal (sans vérification) ;\n"
 "- mode haut voltage (vérifié) ;\n"
@@ -1385,7 +1385,7 @@ msgstr "Musical"
 #: dvb/dvbepg.cpp:836
 #, kde-format
 msgid "Making of"
-msgstr "Making of"
+msgstr "La fabrication"
 
 #: dvb/dvbepg.cpp:837
 #, kde-format
