@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:30+0000\n"
-"PO-Revision-Date: 2023-12-24 07:20+0900\n"
+"PO-Revision-Date: 2023-12-29 20:17+0900\n"
 "Last-Translator: Kisaragi Hiu <mail@kisaragi-hiu.com>\n"
 "Language-Team: Traditional Chinese <zh-l10n@lists.slat.org>\n"
 "Language: zh_TW\n"
@@ -14,12 +14,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Lokalize 23.08.4\n"
+"X-Generator: Lokalize 24.01.85\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
 msgid "Cannot start mplayer process."
-msgstr "無法啟動 mplayer。"
+msgstr "無法啟動 mplayer 行程。"
 
 #: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
 #, kde-format
@@ -519,11 +519,9 @@ msgid "Update Scan Data over Internet"
 msgstr "從網際網路上更新掃描資料"
 
 #: dvb/dvbconfigdialog.cpp:197
-#, fuzzy, kde-format
-#| msgctxt "@title:window"
-#| msgid "Edit Channel"
+#, kde-format
 msgid "Edit Scanfile"
-msgstr "編輯頻道"
+msgstr "編輯掃描檔案"
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
@@ -551,19 +549,18 @@ msgstr "裝置 %1"
 #, kde-format
 msgctxt "@action"
 msgid "Add new Regex"
-msgstr ""
+msgstr "新增正則表達式"
 
 #: dvb/dvbconfigdialog.cpp:394
 #, kde-format
 msgid "Add another regular expression."
-msgstr ""
+msgstr "新增另一個正則表達式。"
 
 #: dvb/dvbconfigdialog.cpp:398
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr "移除"
+msgstr "移除正則表達式"
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
@@ -586,17 +583,18 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"掃描檔案已變得超過 %1 KB。\n"
+"正在中止，因為這代表應該有東西出錯...\n"
 
 #: dvb/dvbconfigdialog.cpp:701
-#, fuzzy, kde-format
-#| msgid ""
-#| "Scan data successfully updated. Changes take\n"
-#| "effect after you have closed the configuration dialog."
+#, kde-format
 msgid ""
 "Scan data successfully updated. %1 KB received.\n"
 "Changes take effect after you have closed\n"
 "the configuration dialog."
-msgstr "掃描資料已成功更新。變更將在您關閉設定對話框後生效。"
+msgstr ""
+"掃描資料已成功更新。收到了 %1 KB。\n"
+"變更將在您關閉設定對話框後生效。"
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -616,7 +614,7 @@ msgstr "左移"
 #: dvb/dvbconfigdialog.cpp:723
 #, kde-format
 msgid "Reset"
-msgstr "重置"
+msgstr "重設"
 
 #: dvb/dvbconfigdialog.cpp:733
 #, kde-format
@@ -644,10 +642,9 @@ msgid "DVB-S"
 msgstr "DVB-S"
 
 #: dvb/dvbconfigdialog.cpp:803
-#, fuzzy, kde-format
-#| msgid "DVB-T"
+#, kde-format
 msgid "DVB-T2"
-msgstr "DVB-T"
+msgstr "DVB-T2"
 
 #: dvb/dvbconfigdialog.cpp:805
 #, kde-format
@@ -662,7 +659,7 @@ msgstr "ATSC"
 #: dvb/dvbconfigdialog.cpp:832 dvb/dvbconfigdialog.cpp:955
 #, kde-format
 msgid "ISDB-T"
-msgstr ""
+msgstr "ISDB-T"
 
 #: dvb/dvbconfigdialog.cpp:917
 #, kde-format
@@ -670,10 +667,9 @@ msgid "Cable"
 msgstr "有線訊號（Cable）"
 
 #: dvb/dvbconfigdialog.cpp:926
-#, fuzzy, kde-format
-#| msgid "Terrestrial"
+#, kde-format
 msgid "Terrestrial (T2)"
-msgstr "地面訊號"
+msgstr "地面訊號 (T2)"
 
 #: dvb/dvbconfigdialog.cpp:934
 #, kde-format
@@ -768,10 +764,9 @@ msgid "Positions Rotor"
 msgstr "Positions Rotor"
 
 #: dvb/dvbconfigdialog.cpp:1123
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Disable DiSEqC"
-msgstr "有線訊號（Cable）"
+msgstr "停用 DiSEqC"
 
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
@@ -804,10 +799,9 @@ msgid "Remove Satellite"
 msgstr "移除衛星"
 
 #: dvb/dvbconfigdialog.cpp:1241
-#, fuzzy, kde-format
-#| msgid "Enter a position:"
+#, kde-format
 msgid "Your position:"
-msgstr "輸入位置："
+msgstr "您的位置："
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -830,16 +824,14 @@ msgid "[W -180 ... 180 E]"
 msgstr "【西 -180...180 東】"
 
 #: dvb/dvbconfigdialog.cpp:1623
-#, fuzzy, kde-format
-#| msgid "Switch frequency (MHz)"
+#, kde-format
 msgid "Low frequency (KHz)"
-msgstr "切換頻率（MHz）"
+msgstr "低頻率（MHz）"
 
 #: dvb/dvbconfigdialog.cpp:1631
-#, fuzzy, kde-format
-#| msgid "Switch frequency (MHz)"
+#, kde-format
 msgid "High frequency (MHz)"
-msgstr "切換頻率（MHz）"
+msgstr "高頻率（MHz）"
 
 #: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
@@ -849,7 +841,7 @@ msgstr "切換頻率（MHz）"
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "低頻範圍：%1 MHz 到 %2 MHz"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
@@ -859,27 +851,27 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "高頻範圍：%1 MHz 到 %2 MHz"
 
 #: dvb/dvbepg.cpp:647
 #, kde-format
 msgid "Detective"
-msgstr ""
+msgstr "偵探"
 
 #: dvb/dvbepg.cpp:648
 #, kde-format
 msgid "Adventure"
-msgstr ""
+msgstr "冒險"
 
 #: dvb/dvbepg.cpp:649
 #, kde-format
 msgid "Science Fiction"
-msgstr ""
+msgstr "科幻"
 
 #: dvb/dvbepg.cpp:650
 #, kde-format
 msgid "Comedy"
-msgstr ""
+msgstr "喜劇"
 
 #: dvb/dvbepg.cpp:651
 #, kde-format
@@ -889,49 +881,49 @@ msgstr ""
 #: dvb/dvbepg.cpp:652
 #, kde-format
 msgid "Romance"
-msgstr ""
+msgstr "浪漫"
 
 #: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
 #, kde-format
 msgid "Classical"
-msgstr ""
+msgstr "古典"
 
 #: dvb/dvbepg.cpp:654
 #, kde-format
 msgid "Adult"
-msgstr ""
+msgstr "成人"
 
 #: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:790
 #, kde-format
 msgid "User defined"
-msgstr ""
+msgstr "使用者定義"
 
 #: dvb/dvbepg.cpp:660
 #, kde-format
 msgid "Weather"
-msgstr ""
+msgstr "天氣"
 
 #: dvb/dvbepg.cpp:661 dvb/dvbepg.cpp:678 dvb/dvbepg.cpp:723 dvb/dvbepg.cpp:730
 #, kde-format
 msgid "Magazine"
-msgstr ""
+msgstr "雜誌"
 
 #: dvb/dvbepg.cpp:662 dvb/dvbepg.cpp:822
 #, kde-format
 msgid "Documentary"
-msgstr ""
+msgstr "紀錄片"
 
 #: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:858
 #, kde-format
 msgid "Discussion"
-msgstr ""
+msgstr "討論"
 
 #: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:688 dvb/dvbepg.cpp:698
 #: dvb/dvbepg.cpp:709 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:733 dvb/dvbepg.cpp:745
 #: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:766
 #, kde-format
 msgid "User Defined"
-msgstr ""
+msgstr "使用者定義"
 
 #: dvb/dvbepg.cpp:669
 #, kde-format
@@ -1014,15 +1006,14 @@ msgid "10 to 16"
 msgstr ""
 
 #: dvb/dvbepg.cpp:696
-#, fuzzy, kde-format
-#| msgid "Modulation:"
+#, kde-format
 msgid "Educational"
-msgstr "調變方式（Modulation）："
+msgstr "教育"
 
 #: dvb/dvbepg.cpp:697
 #, kde-format
 msgid "Cartoons"
-msgstr ""
+msgstr "卡通"
 
 #: dvb/dvbepg.cpp:703
 #, kde-format
@@ -1037,7 +1028,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:706
 #, kde-format
 msgid "Jazz"
-msgstr ""
+msgstr "爵士"
 
 #: dvb/dvbepg.cpp:707
 #, kde-format
@@ -1062,13 +1053,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:716 dvb/dvbepg.cpp:865
 #, kde-format
 msgid "Religion"
-msgstr ""
+msgstr "宗教"
 
 #: dvb/dvbepg.cpp:717
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgid "Traditional"
-msgstr "期間"
+msgstr "傳統"
 
 #: dvb/dvbepg.cpp:718
 #, kde-format
@@ -1083,7 +1073,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:720
 #, kde-format
 msgid "Experimental"
-msgstr ""
+msgstr "實驗性"
 
 #: dvb/dvbepg.cpp:721
 #, kde-format
@@ -1093,7 +1083,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:722
 #, kde-format
 msgid "New Media"
-msgstr ""
+msgstr "新媒體"
 
 #: dvb/dvbepg.cpp:724 dvb/dvbepg.cpp:843
 #, kde-format
@@ -1108,32 +1098,32 @@ msgstr ""
 #: dvb/dvbepg.cpp:732
 #, kde-format
 msgid "People"
-msgstr ""
+msgstr "人們"
 
 #: dvb/dvbepg.cpp:738
 #, kde-format
 msgid "Nature"
-msgstr ""
+msgstr "自然"
 
 #: dvb/dvbepg.cpp:739
 #, kde-format
 msgid "Technology"
-msgstr ""
+msgstr "科技"
 
 #: dvb/dvbepg.cpp:740
 #, kde-format
 msgid "Medicine"
-msgstr ""
+msgstr "醫學"
 
 #: dvb/dvbepg.cpp:741
 #, kde-format
 msgid "Foreign"
-msgstr ""
+msgstr "外來"
 
 #: dvb/dvbepg.cpp:742 dvb/dvbepg.cpp:783
 #, kde-format
 msgid "Social"
-msgstr ""
+msgstr "社會"
 
 #: dvb/dvbepg.cpp:743
 #, kde-format
@@ -1143,12 +1133,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:744
 #, kde-format
 msgid "Language"
-msgstr ""
+msgstr "語言"
 
 #: dvb/dvbepg.cpp:750 dvb/dvbepg.cpp:846
 #, kde-format
 msgid "Travel"
-msgstr ""
+msgstr "旅行"
 
 #: dvb/dvbepg.cpp:751
 #, kde-format
@@ -1181,26 +1171,24 @@ msgid "Gardening"
 msgstr ""
 
 #: dvb/dvbepg.cpp:761 iso-codes.cpp:125 iso-codes.cpp:155
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Original Language"
-msgstr "原始大小"
+msgstr "原始語言"
 
 #: dvb/dvbepg.cpp:762
 #, kde-format
 msgid "Black and White "
-msgstr ""
+msgstr "黑白 "
 
 #: dvb/dvbepg.cpp:763
 #, kde-format
 msgid "Unpublished"
-msgstr ""
+msgstr "未出版"
 
 #: dvb/dvbepg.cpp:764
 #, kde-format
 msgid "Live"
-msgstr ""
+msgstr "現場"
 
 #: dvb/dvbepg.cpp:765
 #, kde-format
@@ -1210,37 +1198,37 @@ msgstr ""
 #: dvb/dvbepg.cpp:767
 #, kde-format
 msgid "User Defined 1"
-msgstr ""
+msgstr "使用者定義 1"
 
 #: dvb/dvbepg.cpp:768
 #, kde-format
 msgid "User Defined 2"
-msgstr ""
+msgstr "使用者定義 2"
 
 #: dvb/dvbepg.cpp:769
 #, kde-format
 msgid "User Defined 3"
-msgstr ""
+msgstr "使用者定義 3"
 
 #: dvb/dvbepg.cpp:770
 #, kde-format
 msgid "User Defined 4"
-msgstr ""
+msgstr "使用者定義 4"
 
 #: dvb/dvbepg.cpp:775
 #, kde-format
 msgid "Undefined"
-msgstr ""
+msgstr "未定義"
 
 #: dvb/dvbepg.cpp:776 dvb/dvbepg.cpp:806
 #, kde-format
 msgid "Movie"
-msgstr ""
+msgstr "電影"
 
 #: dvb/dvbepg.cpp:777 dvb/dvbepg.cpp:794 dvb/dvbepg.cpp:820
 #, kde-format
 msgid "News"
-msgstr ""
+msgstr "新聞"
 
 #: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:834
 #, kde-format
@@ -1250,28 +1238,27 @@ msgstr ""
 #: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:795
 #, kde-format
 msgid "Sports"
-msgstr ""
+msgstr "運動"
 
 #: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:804
 #, kde-format
 msgid "Children"
-msgstr ""
+msgstr "兒童"
 
 #: dvb/dvbepg.cpp:781
 #, kde-format
 msgid "Music"
-msgstr ""
+msgstr "音樂"
 
 #: dvb/dvbepg.cpp:782
 #, kde-format
 msgid "Culture"
-msgstr ""
+msgstr "文化"
 
 #: dvb/dvbepg.cpp:784 dvb/dvbepg.cpp:796
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgid "Education"
-msgstr "期間"
+msgstr "教育"
 
 #: dvb/dvbepg.cpp:785
 #, kde-format
@@ -1281,13 +1268,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:786
 #, kde-format
 msgid "Special"
-msgstr ""
+msgstr "特殊"
 
 #: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
-#, fuzzy, kde-format
-#| msgid "Reset"
+#, kde-format
 msgid "Reserved"
-msgstr "重置"
+msgstr "保留"
 
 #: dvb/dvbepg.cpp:797
 #, kde-format
@@ -1297,17 +1283,17 @@ msgstr ""
 #: dvb/dvbepg.cpp:798
 #, kde-format
 msgid "Mini-series"
-msgstr ""
+msgstr "迷你系列"
 
 #: dvb/dvbepg.cpp:799
 #, kde-format
 msgid "Series"
-msgstr ""
+msgstr "系列"
 
 #: dvb/dvbepg.cpp:801
 #, kde-format
 msgid "Reality show"
-msgstr ""
+msgstr "實境秀"
 
 #: dvb/dvbepg.cpp:802
 #, fuzzy, kde-format
@@ -1338,7 +1324,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:809
 #, kde-format
 msgid "Other"
-msgstr ""
+msgstr "其他"
 
 #: dvb/dvbepg.cpp:821
 #, kde-format
@@ -1386,7 +1372,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:844
 #, kde-format
 msgid "Country"
-msgstr ""
+msgstr "鄉村"
 
 #: dvb/dvbepg.cpp:845
 #, kde-format
@@ -1412,7 +1398,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:859
 #, kde-format
 msgid "Interview"
-msgstr ""
+msgstr "訪談"
 
 #: dvb/dvbepg.cpp:862
 #, kde-format
@@ -1420,86 +1406,84 @@ msgid "Adult cartoon"
 msgstr ""
 
 #: dvb/dvbepg.cpp:863
-#, fuzzy, kde-format
-#| msgctxt "'Video' menu"
-#| msgid "Deinterlace"
+#, kde-format
 msgid "Interactive"
-msgstr "解交錯"
+msgstr "互動式"
 
 #: dvb/dvbepg.cpp:864
 #, kde-format
 msgid "Policy"
-msgstr ""
+msgstr "政策"
 
 #: dvb/dvbepg.cpp:897
 #, no-c-format, kde-format
 msgid "Genre: %1"
-msgstr ""
+msgstr "風格：%1"
 
 #: dvb/dvbepg.cpp:904
 #, kde-format
 msgid "reserved"
-msgstr ""
+msgstr "保留區"
 
 #: dvb/dvbepg.cpp:905
 #, kde-format
 msgid "all audiences"
-msgstr ""
+msgstr "所有受眾"
 
 #: dvb/dvbepg.cpp:906
 #, kde-format
 msgid "10 years"
-msgstr ""
+msgstr "10 歲"
 
 #: dvb/dvbepg.cpp:907
 #, kde-format
 msgid "12 years"
-msgstr ""
+msgstr "12 歲"
 
 #: dvb/dvbepg.cpp:908
 #, kde-format
 msgid "14 years"
-msgstr ""
+msgstr "14 歲"
 
 #: dvb/dvbepg.cpp:909
 #, kde-format
 msgid "16 years"
-msgstr ""
+msgstr "16 歲"
 
 #: dvb/dvbepg.cpp:910
 #, kde-format
 msgid "18 years"
-msgstr ""
+msgstr "18 歲"
 
 #: dvb/dvbepg.cpp:933
 #, no-c-format, kde-format
 msgid "Country %1: not rated\n"
-msgstr ""
+msgstr "國家 %1：未評斷等級\n"
 
 #: dvb/dvbepg.cpp:945
 #, kde-format
 msgid "violence / "
-msgstr ""
+msgstr "暴力 / "
 
 #: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "sex / "
-msgstr ""
+msgstr "性 / "
 
 #: dvb/dvbepg.cpp:949
 #, kde-format
 msgid "drugs / "
-msgstr ""
+msgstr "藥物 / "
 
 #: dvb/dvbepg.cpp:957
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
-msgstr ""
+msgstr "國家 %1：內容評級：%2%3\n"
 
 #: dvb/dvbepg.cpp:960
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
-msgstr ""
+msgstr "國家 %1：內容評級：%2 歲。\n"
 
 #: dvb/dvbepgdialog.cpp:46
 #, kde-format
@@ -1510,19 +1494,17 @@ msgstr "節目指南"
 #: dvb/dvbepgdialog.cpp:73
 #, kde-format
 msgid "EPG language:"
-msgstr ""
+msgstr "EPG 語言："
 
 #: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Any language"
-msgstr "原始大小"
+msgstr "任何語言"
 
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
 msgid "Show channels with empty EPG data"
-msgstr ""
+msgstr "顯示 EPG 資料空白的頻道"
 
 #: dvb/dvbepgdialog.cpp:119
 #, kde-format
@@ -1594,23 +1576,20 @@ msgid "Name"
 msgstr "名稱"
 
 #: dvb/dvbrecordingdialog.cpp:262
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Disabled"
-msgstr "有線訊號（Cable）"
+msgstr "已停用"
 
 #: dvb/dvbrecordingdialog.cpp:307
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Disabled"
-msgstr "有線訊號（Cable）"
+msgstr "已停用"
 
 #: dvb/dvbrecordingdialog.cpp:309
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Enabled"
-msgstr "有線訊號（Cable）"
+msgstr "已啟用"
 
 #: dvb/dvbrecordingdialog.cpp:384
 #, kde-format
@@ -1667,10 +1646,9 @@ msgid "Daily"
 msgstr "每天"
 
 #: dvb/dvbscandialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgid "%1"
-msgstr "%1%"
+msgstr "%1"
 
 #: dvb/dvbscandialog.cpp:237
 #, kde-format
@@ -1890,9 +1868,7 @@ msgid "Composer(s)"
 msgstr ""
 
 #: dvb/xmltv.cpp:234
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "Edit"
+#, kde-format
 msgid "Editor(s)"
 msgstr "編輯"
 
@@ -1918,64 +1894,54 @@ msgid "%1: %2\n"
 msgstr ""
 
 #: dvb/xmltv.cpp:377
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Duration:"
+#, kde-format
 msgid "rating: %1"
-msgstr "期間："
+msgstr "內容評分：%1"
 
 #: dvb/xmltv.cpp:451
 #, kde-format
 msgid "Season %1"
-msgstr ""
+msgstr "第 %1 季"
 
 #: dvb/xmltv.cpp:454
 #, kde-format
 msgid " Episode %1"
-msgstr ""
+msgstr " 第 %1 集"
 
 #: dvb/xmltv.cpp:485
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Start:"
+#, kde-format
 msgid "Star rating: %1"
-msgstr "開始："
+msgstr "星級：%1"
 
 #: dvb/xmltv.cpp:491
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Date: %1"
-msgstr "名稱： %1"
+msgstr "日期：%1"
 
 #: dvb/xmltv.cpp:495
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Category: %1"
-msgstr "名稱： %1"
+msgstr "分類：%1"
 
 #: dvb/xmltv.cpp:509
 #, kde-format
 msgid "Keyword: %1"
-msgstr ""
+msgstr "關鍵字：%1"
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "language: %1"
-msgstr "原始大小"
+msgstr "語言：%1"
 
 #: dvb/xmltv.cpp:538
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Original language: %1"
-msgstr "原始大小"
+msgstr "原始語言：%1"
 
 #: dvb/xmltv.cpp:544
 #, kde-format
 msgid "Country: %1"
-msgstr ""
+msgstr "國家：%1"
 
 #: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
@@ -1983,16 +1949,14 @@ msgid "Kaffeine"
 msgstr "Kaffeine"
 
 #: main.cpp:139
-#, fuzzy, kde-format
-#| msgid "A media player for KDE with digital TV support."
+#, kde-format
 msgid "A media player by KDE with digital TV support."
-msgstr "KDE 的媒體播放器，有支援數位電視。"
+msgstr "KDE 所做的媒體播放器，有支援數位電視。"
 
 #: main.cpp:143
-#, fuzzy, kde-format
-#| msgid "(C) 2007-2011 The Kaffeine Authors"
+#, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr "(C) 2007-2011 Kaffeine 作者群"
+msgstr "(C) 2007-2019 Kaffeine 作者群。"
 
 #: main.cpp:161
 #, kde-format
@@ -2002,7 +1966,7 @@ msgstr "維護者"
 #: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr ""
+msgstr "前任維護者（1.x 版）"
 
 #: main.cpp:170
 #, kde-format
@@ -2024,19 +1988,19 @@ msgstr "&1 播放檔案"
 #: mainwindow.cpp:115
 #, kde-format
 msgid "Open dialog to play a file"
-msgstr ""
+msgstr "開啟對話框來播放檔案"
 
 #: mainwindow.cpp:119
 #, kde-format
 msgid "&2 Play Audio CD"
-msgstr "&2 播放音樂光碟"
+msgstr "&2 播放音訊 CD"
 
 #: mainwindow.cpp:121
 #, kde-format
 msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr ""
+msgstr "開始播放音效 CD。會假設 CD 已經在光碟機裡了"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -2048,7 +2012,7 @@ msgstr "&3 播放影像光碟"
 msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr ""
+msgstr "開始播放影像光碟。會假設影像光碟已經在光碟機裡了"
 
 #: mainwindow.cpp:131
 #, kde-format
@@ -2060,7 +2024,7 @@ msgstr "&4 播放 DVD"
 msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
-msgstr ""
+msgstr "開始播放 DVD。會假設 DVD 已經在光碟機裡了"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2081,7 +2045,7 @@ msgstr "開啟網址..."
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
 msgid "Play Audio CD"
-msgstr "播放音樂光碟"
+msgstr "播放音訊 CD"
 
 #: mainwindow.cpp:229 mainwindow.cpp:481
 #, kde-format
@@ -2141,39 +2105,34 @@ msgid "Television"
 msgstr "電視"
 
 #: mainwindow.cpp:347
-#, fuzzy, kde-format
-#| msgid "&1 Play File"
+#, kde-format
 msgid "Play &File"
-msgstr "&1 播放檔案"
+msgstr "播放檔案(&F)"
 
 #: mainwindow.cpp:351
-#, fuzzy, kde-format
-#| msgid "Play Audio CD"
+#, kde-format
 msgid "Play &Audio CD"
-msgstr "播放音樂光碟"
+msgstr "播放音訊 CD(&A)"
 
 #: mainwindow.cpp:355
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Play &Video CD"
-msgstr "播放影像光碟"
+msgstr "播放影像光碟(&V)"
 
 #: mainwindow.cpp:359
-#, fuzzy, kde-format
-#| msgid "Play DVD"
+#, kde-format
 msgid "Play &DVD"
-msgstr "播放 DVD"
+msgstr "播放 DVD(&D)"
 
 #: mainwindow.cpp:364
-#, fuzzy, kde-format
-#| msgid "&5 Digital TV"
+#, kde-format
 msgid "&Watch Digital TV"
-msgstr "&5 數位電視"
+msgstr "看數位電視(&W)"
 
 #: mainwindow.cpp:368
 #, kde-format
 msgid "&Quit"
-msgstr ""
+msgstr "離開(&Q)"
 
 #: mainwindow.cpp:475
 #, kde-format
@@ -2183,11 +2142,15 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
+"啟用所有除錯訊息。Kaffeine 也支援為個別分類啟用除錯訊息，要這麼做請使用環境變"
+"數：\n"
+"QT_LOGGING_RULES=kaffeine.分類.debug=true\n"
+"其中 '分類' 可以是：\n"
 
 #: mainwindow.cpp:476
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
-msgstr ""
+msgstr "應用程式開啟的檔案 / URL 在使用後會被刪除"
 
 #: mainwindow.cpp:477
 #, kde-format
@@ -2195,15 +2158,14 @@ msgid "Start in full screen mode"
 msgstr "以全螢幕模式開始"
 
 #: mainwindow.cpp:478
-#, fuzzy, kde-format
-#| msgid "Start in full screen mode"
+#, kde-format
 msgid "Start in minimal mode"
-msgstr "以全螢幕模式開始"
+msgstr "以最小化模式開始"
 
 #: mainwindow.cpp:479
 #, kde-format
 msgid "Start with always on top"
-msgstr ""
+msgstr "開始時將視窗置於其他視窗之上"
 
 #: mainwindow.cpp:486
 #, kde-format
@@ -2238,7 +2200,7 @@ msgstr "要播放的檔案或網址"
 #, kde-format
 msgctxt "@title:window"
 msgid "Open files"
-msgstr ""
+msgstr "開啟檔案"
 
 #: mainwindow.cpp:726
 #, kde-format
@@ -2289,11 +2251,10 @@ msgid "Minimal Mode"
 msgstr "最小化模式"
 
 #: mediawidget.cpp:145
-#, fuzzy, kde-format
-#| msgid "Add Subtitle"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "新增字幕"
+msgstr "字幕"
 
 #: mediawidget.cpp:149
 #, kde-format
@@ -2302,11 +2263,10 @@ msgid "off"
 msgstr "關"
 
 #: mediawidget.cpp:157
-#, fuzzy, kde-format
-#| msgid "Add Subtitle"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr "新增字幕"
+msgstr "新增字幕檔"
 
 #: mediawidget.cpp:164
 #, kde-format
@@ -2315,36 +2275,34 @@ msgid "Audio"
 msgstr "音效"
 
 #: mediawidget.cpp:167
-#, fuzzy, kde-format
-#| msgid "Audio channel:"
+#, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
-msgstr "聲道："
+msgstr "音訊裝置"
 
 #: mediawidget.cpp:169
-#, fuzzy, kde-format
-#| msgid "Audio channel:"
+#, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
-msgstr "聲道："
+msgstr "音訊裝置"
 
 #: mediawidget.cpp:176
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
-msgstr "遞增音量"
+msgstr "提高音量"
 
 #: mediawidget.cpp:183
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
-msgstr "遞減音量"
+msgstr "降低音量"
 
 #: mediawidget.cpp:189
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
-msgstr "靜音音量"
+msgstr "靜音"
 
 #: mediawidget.cpp:199
 #, kde-format
@@ -2359,11 +2317,10 @@ msgid "Deinterlace"
 msgstr "解交錯"
 
 #: mediawidget.cpp:211
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
-msgstr "有線訊號（Cable）"
+msgstr "已停用"
 
 #: mediawidget.cpp:218
 #, kde-format
@@ -2441,7 +2398,7 @@ msgstr "自動"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
-msgstr ""
+msgstr "1:1"
 
 #: mediawidget.cpp:312
 #, kde-format
@@ -2453,7 +2410,7 @@ msgstr "4:3"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "5:4"
-msgstr ""
+msgstr "5:4"
 
 #: mediawidget.cpp:324
 #, kde-format
@@ -2465,32 +2422,30 @@ msgstr "16:9"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:10"
-msgstr ""
+msgstr "16:10"
 
 #: mediawidget.cpp:336
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.21:1"
-msgstr ""
+msgstr "2.21:1"
 
 #: mediawidget.cpp:342
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.35:1"
-msgstr ""
+msgstr "2.35:1"
 
 #: mediawidget.cpp:348
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.39:1"
-msgstr ""
+msgstr "2.39:1"
 
 #: mediawidget.cpp:353
-#, fuzzy, kde-format
-#| msgctxt "'Playback' menu"
-#| msgid "Video"
+#, kde-format
 msgid "Video size"
-msgstr "影像"
+msgstr "影像大小"
 
 #: mediawidget.cpp:361
 #, kde-format
@@ -2502,20 +2457,19 @@ msgstr "自動"
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: mediawidget.cpp:373
-#, fuzzy, kde-format
-#| msgid "0%"
+#, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr "0%"
+msgstr "50%"
 
 #: mediawidget.cpp:380
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
-msgstr ""
+msgstr "75%"
 
 #: mediawidget.cpp:386
 #, kde-format
@@ -2527,25 +2481,25 @@ msgstr "原始大小"
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
-msgstr ""
+msgstr "150%"
 
 #: mediawidget.cpp:398
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
-msgstr ""
+msgstr "200%"
 
 #: mediawidget.cpp:404
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
-msgstr ""
+msgstr "250%"
 
 #: mediawidget.cpp:410
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
-msgstr ""
+msgstr "300%"
 
 #: mediawidget.cpp:433
 #, kde-format
@@ -2627,6 +2581,16 @@ msgid ""
 "webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
 "Files (*)"
 msgstr ""
+"支援的媒體檔案 (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *.anim2 "
+"*.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf *.asx "
+"*.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *.f4v *."
+"flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *.m4a *."
+"m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 *.mp4 "
+"*.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *.oga *."
+"ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax *.rm *."
+"rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl *.stm *."
+"swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *.webm *.wma "
+"*.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;所有檔案 (*)"
 
 #: mediawidget.cpp:602
 #, kde-format
@@ -2641,11 +2605,10 @@ msgid "Exit Minimal Mode"
 msgstr "離開最小化模式"
 
 #: mediawidget.cpp:648
-#, fuzzy, kde-format
-#| msgid "Add Subtitle"
+#, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
-msgstr "新增字幕"
+msgstr "開啟字幕"
 
 #: mediawidget.cpp:649
 #, kde-format
@@ -2653,6 +2616,8 @@ msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
+"字幕檔 (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
+"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 
 #: mediawidget.cpp:789 mediawidget.cpp:898
 #, kde-format
@@ -2679,12 +2644,10 @@ msgid "Mute Off"
 msgstr "解除靜音"
 
 #: mediawidget.cpp:987
-#, fuzzy, kde-format
-#| msgctxt "'Video' menu"
-#| msgid "Deinterlace"
+#, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr "解交錯"
+msgstr "解交錯 %1"
 
 #: mediawidget.cpp:1402
 #, kde-format
