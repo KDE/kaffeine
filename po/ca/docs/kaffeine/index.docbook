@@ -184,7 +184,7 @@
 <para
 >El &kaffeine; admet múltiples llistes de reproducció. Escolliu la que estarà activa amb el selector <guilabel
 >Llista de reproducció</guilabel
-> a la barra lateral esquerra. Hi podeu arrossegar alguns fitxers o carpetes amb facilitat des de l'explorador de fitxers i deixar-los anar a la llista de reproducció per posar-los a la cua o deixar-los anar a la finestra del reproductor per a crear una llista de reproducció. Per a canviar un nom de la llista de reproducció, editeu-lo i confirmeu amb la tecla <keycap
+> a la barra lateral esquerra. Hi podeu arrossegar alguns fitxers o carpetes amb facilitat des de l'explorador de fitxers i deixar-los anar a la llista de reproducció per a posar-los a la cua o deixar-los anar a la finestra del reproductor per a crear una llista de reproducció. Per a canviar un nom de la llista de reproducció, editeu-lo i confirmeu amb la tecla <keycap
 >Retorn</keycap
 >. </para>
 <screenshot>
@@ -221,7 +221,7 @@
 >Mentre que la funcionalitat bàsica és prou útil per a algú que vol un senzill i encara potent reproductor multimèdia, la millor característica en el &kaffeine; és utilitzar-lo com un frontal amb &IGU; per a veure i gravar la televisió digital. </para>
 
 <para
->En el &kaffeine; versió 2.0, el suport de televisió digital utilitza la libdvbv5 i s'ha ampliat per implementar nous estàndards com la DVB-T2 i la ISDB-T. També, ja que utilitza l'API de la DVB versió 5 per a &Linux;, ara, admet frontals capaços d'implementar múltiples estàndards de televisió digital. </para>
+>En el &kaffeine; versió 2.0, el suport de televisió digital utilitza la libdvbv5 i s'ha ampliat per a implementar estàndards nous com la DVB-T2 i la ISDB-T. També, ja que utilitza l'API de la DVB versió 5 per a &Linux;, ara, admet frontals capaços d'implementar múltiples estàndards de televisió digital. </para>
 
 <para
 >Ajustar la configuració del televisor al &kaffeine; és tan simple com obrir l'element <guimenu
@@ -268,7 +268,7 @@
 <para
 >L'opció <guilabel
 >Inhabilita l'anàlisi de les dades EPG de les taules MPEG-TS</guilabel
-> inhabilita les dades de la Guia electrònica de programes (EPG) que s'han recuperat des del senyal transmès. Utilitzeu-la per estalviar temps de la CPU, si la vostra emissora no envia dades EPG fiables. </para>
+> inhabilita les dades de la Guia electrònica de programes (EPG) que s'han recuperat des del senyal transmès. Utilitzeu-la per a estalviar temps de la CPU, si la vostra emissora no envia dades EPG fiables. </para>
 
 <para
 >La <guilabel
@@ -286,7 +286,7 @@
 >Marge al final</guilabel
 > s'utilitzen per a configurar una mena de <quote
 >marge de seguretat</quote
-> per evitar perdre's el començament i el final d'un programa, ja que les marques de temps a la guia del programa poden no ser precises. De fet, comença a enregistrar-se uns minuts abans del temps <guilabel
+> per a evitar perdre's el començament i el final d'un programa, ja que les marques de temps a la guia del programa poden no ser precises. De fet, comença a enregistrar-se uns minuts abans del temps <guilabel
 >Inici</guilabel
 > definit a la <guimenu
 >Guia de programes</guimenu
@@ -298,7 +298,7 @@
 
 <para
 >L'opció <guilabel
->Estil per anomenar els enregistraments</guilabel
+>Estil per a anomenar els enregistraments</guilabel
 > s'utilitza per a configurar com anomenarà el &kaffeine; un programa. Es poden utilitzar diverses macros per a canviar dinàmicament el nom de l'enregistrament: </para>
 <itemizedlist mark='opencircle'>
 <listitem>
@@ -337,7 +337,7 @@
 >lloc web del KDE</ulink
 >. </para>
 <para
->El &kaffeine; utilitza un fitxer anomenat scanfile.dvb per emmagatzemar una llista de canals de televisió digital coneguts per país i ciutat. Aquest fitxer es manté sincronitzat amb el contingut de l'<ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+>El &kaffeine; utilitza un fitxer anomenat scanfile.dvb per a emmagatzemar una llista de canals de televisió digital coneguts per país i ciutat. Aquest fitxer es manté sincronitzat amb el contingut de l'<ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
 >arbre dtv-scan-tables</ulink
 >, mantingut per la comunitat de <ulink url="https://linuxtv.org"
 >LinuxTV</ulink
@@ -347,14 +347,14 @@
 <para
 >Quan es fa clic al botó, el &kaffeine; baixarà la versió més recent de les definicions de canals i les emmagatzemarà en un fitxer de dades local específic per a l'usuari, anul·lant qualsevol contingut d'un anterior. </para>
 <para
->Tingueu en compte que, per utilitzar les definicions més noves, cal tancar el diàleg de configuració de la TV i tornar a obrir-lo.</para>
+>Tingueu en compte que, per a utilitzar les definicions més noves, cal tancar el diàleg de configuració de la TV i tornar a obrir-lo.</para>
 
 <para
 >L'opció <guilabel
 >Edita el fitxer de canals</guilabel
-> permet editar el fitxer, el qual pot ser útil per afegir un nou conjunt de canals, de manera que el fitxer distribuït no s'actualitzarà. Si necessiteu emprar-la, si us plau, envieu una actualització a <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+> permet editar el fitxer, el qual pot ser útil per a afegir un conjunt nou de canals, de manera que el fitxer distribuït no s'actualitzarà. Si necessiteu emprar-la, si us plau, envieu una actualització a <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
 >dtv-scan-tables</ulink
-> perquè els altres també es beneficiïn de les noves definicions de canals. </para>
+> perquè els altres també es beneficiïn de les definicions noves de canals. </para>
 
 <para
 >L'opció <guilabel
@@ -363,7 +363,7 @@
 
 <para
 >L'opció <guilabel
->Crea fitxers info per acompanyar els enregistraments EPG</guilabel
+>Crea fitxers info per a acompanyar els enregistraments EPG</guilabel
 > permet crear fitxers auxiliars per als registres programats amb el contingut de la guia del programa per als enregistraments realitzats a través de la <guimenu
 >Guia de programes</guimenu
 >. </para>
@@ -380,22 +380,22 @@
 >Inhabilita l'anàlisi de les dades EPG de les taules MPEG-TS</guilabel
 >. Ara podreu establir un analitzador extern per a produir un fitxer amb dades EPG i utilitzar l'opció <guilabel
 >Nom del fitxer xmltv (opcional)</guilabel
-> per especificar el nom del fitxer produït. El fitxer produït haurà d'emprar el format XMLTV, tal com es descriu a la seva DTD. Vegeu el <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+> per a especificar el nom del fitxer produït. El fitxer produït haurà d'emprar el format XMLTV, tal com es descriu a la seva DTD. Vegeu el <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
 >format de fitxer XMLTV</ulink
-> per obtenir més informació. </para>
+> per a obtenir més informació. </para>
 
 <para
 >Quan s'hagi establert el &kaffeine; a utilitzar un fitxer XMLTV, es detectarà automàticament qualsevol canvi de fitxer. Quan es produeixi un canvi, obrirà el fitxer i analitzarà el seu contingut, actualitzant les dades EPG en conseqüència. </para>
 
 <para
->Cal tenir present que el fitxer XMLTV té una taula amb associacions amb la seva pròpia representació interna per als canals amb el nom de la cadena esperada en les dades de transmissió de TV digital. El &kaffeine; només recuperarà les dades EPG si els canals coincideixen amb els de la llista de canals del &kaffeine;. Per tant, us haureu d'assegurar que els canals coincideixin amb els que espera el &kaffeine;. Si no coincideixen, podríeu emprar un programa editor d'&XML; des de la línia d'ordres per afegir la informació de la cadena que manca. </para>
+>Cal tenir present que el fitxer XMLTV té una taula amb associacions amb la seva pròpia representació interna per als canals amb el nom de la cadena esperada en les dades de transmissió de TV digital. El &kaffeine; només recuperarà les dades EPG si els canals coincideixen amb els de la llista de canals del &kaffeine;. Per tant, us haureu d'assegurar que els canals coincideixin amb els que espera el &kaffeine;. Si no coincideixen, podríeu emprar un programa editor d'&XML; des de la línia d'ordres per a afegir la informació de la cadena que manca. </para>
 
 <para
 >Per exemple, si teniu un programa de captura xmltv recuperant el fitxer anomenat <emphasis
 >original_xmltv_file.xmltv</emphasis
 >, podeu utilitzar el programa <emphasis
 >xmlstarlet</emphasis
-> per afegir les associacions que manquin. Per tant, si voleu associar el canal XMLTV anomenat <emphasis
+> per a afegir les associacions que manquin. Per tant, si voleu associar el canal XMLTV anomenat <emphasis
 >channel.foo.uk</emphasis
 > amb un canal que al &kaffeine; s'anomena <emphasis
 >FOO</emphasis
@@ -461,7 +461,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 <para
 >El <guilabel
 >Temps d'espera del sintonitzador</guilabel
-> especifica la quantitat de temps que l'exploració de canals esperarà per obtenir un bloqueig del senyal. Normalment, la configuració predeterminada és suficient per a la majoria dels dispositius, però si el dispositiu és massa lent per bloquejar-se, es pot augmentar aquest valor. </para>
+> especifica la quantitat de temps que l'exploració de canals esperarà per a obtenir un bloqueig del senyal. Normalment, la configuració predeterminada és suficient per a la majoria dels dispositius, però si el dispositiu és massa lent per a bloquejar-se, es pot augmentar aquest valor. </para>
 
 <para
 >El <guilabel
@@ -529,7 +529,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 </itemizedlist>
 
 <para
->En un sistema de satèl·lit típic, el LNBf utilitza la tensió d'alimentació per a seleccionar entre una tensió baixa (13V) per a la polarització dreta vertical o circular i una tensió més alta (18V) per a la polarització esquerra horitzontal o circular. No obstant això, a causa de la pèrdua en el cable, de vegades el LNBf no entén el voltatge alt i diversos canals no sintonitzaran ni afinaran. Així, alguns dispositius ofereixen una opció per augmentar la tensió a una configuració més alta (14V o 19V). Això s'activa a través de l'estat triple amb l'opció <guilabel
+>En un sistema de satèl·lit típic, el LNBf utilitza la tensió d'alimentació per a seleccionar entre una tensió baixa (13V) per a la polarització dreta vertical o circular i una tensió més alta (18V) per a la polarització esquerra horitzontal o circular. No obstant això, a causa de la pèrdua en el cable, de vegades el LNBf no entén el voltatge alt i diversos canals no sintonitzaran ni afinaran. Així, alguns dispositius ofereixen una opció per a augmentar la tensió a una configuració més alta (14V o 19V). Això s'activa a través de l'estat triple amb l'opció <guilabel
 >Empra un voltatge més alt al LNBf</guilabel
 >. Hi ha tres valors possibles: </para>
 
@@ -567,7 +567,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 >Desactiva el DiSEqC</parameter
 >, el primer pas és establir el satèl·lit que s'utilitzarà com a font del senyal, a través d'un quadre combinat a la dreta. Amb un interruptor DiSEqC, és possible seleccionar fins a 4 fonts. Cadascuna amb el seu propi LNBf. Després d'establir la/es font/s, per a cada font, feu clic al botó <guilabel
 >Arranjament del LNBf</guilabel
-> corresponent per obrir una finestra emergent per a seleccionar el tipus de LNBf dins del plat que correspon a la font: </para>
+> corresponent per a obrir una finestra emergent per a seleccionar el tipus de LNBf dins del plat que correspon a la font: </para>
 
 <screenshot>
 <screeninfo
@@ -604,7 +604,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 <para
 >Si s'ha afegit un satèl·lit per error, podeu seleccionar el satèl·lit i fer clic al botó <guilabel
 >Elimina el satèl·lit</guilabel
-> per eliminar-lo. </para>
+> per a eliminar-lo. </para>
 
 </sect3>
 
@@ -640,7 +640,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 <para
 >Si hi ha més d'un estàndard admès, el quadre combinat <guilabel
 >Fonts</guilabel
-> permetrà seleccionar la que s'utilitzarà per explorar. No oblideu connectar el cable de l'antena del dispositiu perquè coincideixi amb l'estàndard que s'utilitzarà. </para>
+> permetrà seleccionar la que s'utilitzarà per a explorar. No oblideu connectar el cable de l'antena del dispositiu perquè coincideixi amb l'estàndard que s'utilitzarà. </para>
 
 <para
 >Quan el &kaffeine; identifica un canal, llegeix una taula <acronym
@@ -752,7 +752,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 </screenshot>
 
 <para
->En alguns països, l'EPG pot estar disponible en múltiples idiomes. Per omissió, el &kaffeine; mostra qualsevol idioma a l'EPG. Si hi ha múltiples idiomes disponibles per a una entrada EPG determinada, i no hi ha cap contingut d'idioma explícit, és prefixará el títol, el subtítol i la descripció amb un codi d'idioma de 3 lletres, tal com està definit per l'especificació ISO 639-2. </para>
+>En alguns països, l'EPG pot estar disponible en múltiples idiomes. Per omissió, el &kaffeine; mostra qualsevol idioma a l'EPG. Si hi ha múltiples idiomes disponibles per a una entrada EPG determinada, i no hi ha cap contingut d'idioma explícit, es prefixarà el títol, el subtítol i la descripció amb un codi d'idioma de 3 lletres, tal com està definit per l'especificació ISO 639-2. </para>
 
 <para
 >L'opció <guilabel
@@ -898,7 +898,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
 ></inlinemediaobject
 > <action
->Ofereix una llista desplegable per obrir un recurs local recent</action
+>Ofereix una llista desplegable per a obrir un recurs local recent</action
 >. Disposa d'una opció <guimenuitem
 >Neteja la llista</guimenuitem
 > per a netejar la llista. </para
@@ -1074,7 +1074,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
 ></inlinemediaobject
 >. <action
->Amb una casella de selecció per reproduir un flux o posar en pausa</action
+>Amb una casella de selecció per a reproduir un flux o posar en pausa</action
 > el que esteu veient. En un flux de televisió es procedirà a gravar-lo, això s'anomena «<ulink url="https://ca.wikipedia.org/wiki/Time_shifting"
 >time shifting</ulink
 >». </para
@@ -1909,7 +1909,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imageobject
 ><imagedata fileref="video-television.png" format="PNG"/></imageobject
 ></inlinemediaobject
-> Apareixerà un diàleg de configuració per <action
+> Apareixerà un diàleg de configuració per a <action
 >establir els canals</action
 > corresponents a la vostra àrea. Vegeu la secció <link linkend="dtv-channel-setup"
 >Configurar els canals de TV</link
@@ -2041,7 +2041,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imageobject
 ><imagedata fileref="configure.png" format="PNG"/></imageobject
 ></inlinemediaobject
-> Apareixerà una finestra per <action
+> Apareixerà una finestra per a <action
 >establir els paràmetres que gestionen el/s dispositiu/s de DVB</action
 >. Vegeu la secció <link linkend="digital-tv"
 >Configurar la TV digital</link
@@ -2077,7 +2077,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imageobject
 ><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
 ></inlinemediaobject
-> Permet activar, desactivar i modificar les dreceres de teclat. Per obtenir més informació, vegeu la secció anomenada <quote
+> Permet activar, desactivar i modificar les dreceres de teclat. Per a obtenir més informació, vegeu la secció anomenada <quote
 >Ús i personalització de les dreceres</quote
 >. </para
 ></listitem>
