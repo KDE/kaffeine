@@ -341,7 +341,7 @@
 >arbre dtv-scan-tables</ulink
 >, mantingut per la comunitat de <ulink url="https://linuxtv.org"
 >LinuxTV</ulink
->. Per obtenir més informació, consulteu la <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>. Per a obtenir més informació, consulteu la <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
 >pàgina wiki de dtv-scan-tables</ulink
 >. </para>
 <para
@@ -538,7 +538,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 <para
 ><parameter
 >Estat triple</parameter
->: No envia cap ordre al dispositiu per ajustar el nivell de tensió. Aquest és el valor predeterminat. </para>
+>: No envia cap ordre al dispositiu per a ajustar el nivell de tensió. Aquest és el valor predeterminat. </para>
 </listitem>
 <listitem>
 <para
@@ -1248,7 +1248,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imageobject
 ><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
 ></inlinemediaobject
-> Aquesta opció és per <action
+> Aquesta opció és per a <action
 >afegir un fitxer de subtítols local</action
 > mitjançant un diàleg de fitxers. </para
 ></listitem>
@@ -1970,7 +1970,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ></inlinemediaobject
 > <action
 >Mostra el rètol informatiu a la finestra de reproducció durant tres segons</action
-> amb la informació de la guia de programes sobre el programa actual i el següent. Feu doble clic sobre seu per a veure informació ampliada sobre el programa actual i, a continuació, torneu-hi a fer clic per eliminar aquest rètol informatiu. Vegeu l'article de la <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
+> amb la informació de la guia de programes sobre el programa actual i el següent. Feu doble clic sobre seu per a veure informació ampliada sobre el programa actual i, a continuació, torneu-hi a fer clic per a eliminar aquest rètol informatiu. Vegeu l'article de la <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
 >Viquipèdia</ulink
 > per a més detalls. </para
 ></listitem>
