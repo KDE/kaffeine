@@ -6,13 +6,13 @@
 # Ozan Çağlayan <ozan@pardus.org.tr>, 2010.
 # obsoleteman <tulliana@gmail.com>, 2008-2009,2011-2012.
 # Volkan Gezer <volkangezer@gmail.com>, 2014.
-# Emir SARI <emir_sari@icloud.com>, 2022, 2023.
+# SPDX-FileCopyrightText: 2022, 2023, 2024 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:30+0000\n"
-"PO-Revision-Date: 2023-11-25 20:28+0300\n"
+"PO-Revision-Date: 2024-02-09 19:08+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.11.70\n"
+"X-Generator: Lokalize 24.01.95\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -41,7 +41,7 @@ msgstr "CD izi %1"
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
-msgstr "Kafein'i Yapılandır"
+msgstr "Kafein’i Yapılandır"
 
 #: configurationdialog.cpp:49
 #, kde-format
@@ -288,7 +288,7 @@ msgstr "Hiyerarşi:"
 #: dvb/dvbchanneldialog.cpp:827
 #, kde-format
 msgid "PLP (stream ID):"
-msgstr "PLP (akış ID'si):"
+msgstr "PLP (akış kimliği):"
 
 #: dvb/dvbchanneldialog.cpp:845
 #, kde-format
@@ -303,7 +303,7 @@ msgstr "Ses yayını:"
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr "SB kanal ID'si:"
+msgstr "SB kanal kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
@@ -588,8 +588,8 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
-"Tarama dosyası %1 KB'den büyük oldu.\n"
-"Bir şeyler büyük olasılıkla ters gittiğinden iptal ediliyor...\n"
+"Tarama dosyası %1 KB’den büyük oldu.\n"
+"Bir şeyler büyük olasılıkla ters gittiğinden iptal ediliyor…\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -690,7 +690,7 @@ msgstr "Otomatik Tara"
 #: dvb/dvbconfigdialog.cpp:944
 #, kde-format
 msgid "Autoscan with 167 kHz Offsets"
-msgstr "167 kHz'lik ofsetlerle otomatik tara"
+msgstr "167 kHz’lik ofsetlerle kendiliğinden tara"
 
 #: dvb/dvbconfigdialog.cpp:945
 #, kde-format
@@ -748,7 +748,7 @@ msgid ""
 "- higher voltage mode (checked);\n"
 "- tristate (don't send the control)."
 msgstr ""
-"Bazı DVB aygıtlarında, kablolama kaybını telafi etmek için LNBf'ye \n"
+"Bazı DVB aygıtlarında, kablolama kaybını telafi etmek için LNBf’ye \n"
 "gönderilen gerilimi artırmaya izin veren ek bir denetim vardır. Bu\n"
 "üçlü düğme varsayılan olarak onu kullanmaz. Şu şekilde ayarlanabilir:\n"
 "- normal kip (seçili değil);\n"
@@ -778,7 +778,7 @@ msgstr "Konum Çarkı"
 #: dvb/dvbconfigdialog.cpp:1123
 #, kde-format
 msgid "Disable DiSEqC"
-msgstr "DiSEqC'yi kapat"
+msgstr "DiSEqC’yi kapat"
 
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
@@ -823,7 +823,7 @@ msgstr "Enlem:"
 #: dvb/dvbconfigdialog.cpp:1251
 #, kde-format
 msgid "[S -90 ... 90 N]"
-msgstr "[S -90 ... 90 N]"
+msgstr "[S -90 … 90 N]"
 
 #: dvb/dvbconfigdialog.cpp:1269
 #, kde-format
@@ -833,7 +833,7 @@ msgstr "Boylam:"
 #: dvb/dvbconfigdialog.cpp:1274
 #, kde-format
 msgid "[W -180 ... 180 E]"
-msgstr "[W -180 ... 180 E]"
+msgstr "[W -180 … 180 E]"
 
 #: dvb/dvbconfigdialog.cpp:1623
 #, kde-format
@@ -853,7 +853,7 @@ msgstr "Frekans değiştir (MHz)"
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr "Düşük aralık: %1 MHz'den %2 MHz'ye"
+msgstr "Düşük aralık: %1 MHz’den %2 MHz’ye"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
@@ -863,7 +863,7 @@ msgstr "Bantyığınlı"
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr "Yüksek aralık: %1 MHz'den %2 MHz'ye"
+msgstr "Yüksek aralık: %1 MHz’den %2 MHz’ye"
 
 #: dvb/dvbepg.cpp:647
 #, kde-format
@@ -1010,12 +1010,12 @@ msgstr "Okul öncesi"
 #: dvb/dvbepg.cpp:694
 #, kde-format
 msgid "06 to 14"
-msgstr "06'dan 14'e"
+msgstr "06’dan 14’e"
 
 #: dvb/dvbepg.cpp:695
 #, kde-format
 msgid "10 to 16"
-msgstr "10'dan 16'ya"
+msgstr "10’dan 16’ya"
 
 #: dvb/dvbepg.cpp:696
 #, kde-format
@@ -1700,11 +1700,11 @@ msgid ""
 "those other NIT data into account. Please notice that the scan will be a lot "
 "more slow if enabled."
 msgstr ""
-"Bazı ağlarda, baız vericilerin ayrı Ağ Bilgi Tablolarında (diğer NIT'lerde) "
-"kodlanması mümkün olabilir. Bu DVB-C sistemlerde daha yaygındır. Bu simgeye "
-"tıklamak tarama algoritmasını bu diğer NIT verisini hesaba katacak şekilde "
-"değiştirmeyi sağlar. Eğer etkinleşirse taramanın epey yavaşlayacağını "
-"unutmayın."
+"Bazı ağlarda, bazı vericilerin ayrı Ağ Bilgi Tablolarında (diğer NIT’lerde) "
+"kodlanması olanaklı olabilir. Bu DVB-C sistemlerde daha yaygındır. Bu "
+"simgeye tıklamak tarama algoritmasını bu diğer NIT verisini hesaba katacak "
+"şekilde değiştirmeyi sağlar. Eğer etkinleşirse taramanın epey "
+"yavaşlayacağını unutmayın."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
@@ -1801,7 +1801,7 @@ msgstr "Anında Kayıt"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
-msgstr "Televizyonu Yapılandır..."
+msgstr "Televizyonu Yapılandır…"
 
 #: dvb/dvbtab.cpp:143
 #, kde-format
@@ -2008,14 +2008,14 @@ msgstr "Dosya oynatmak için iletişim kutusu aç"
 #: mainwindow.cpp:119
 #, kde-format
 msgid "&2 Play Audio CD"
-msgstr "&2 Ses CD'si Çal"
+msgstr "&2 Ses CD’si Çal"
 
 #: mainwindow.cpp:121
 #, kde-format
 msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr "Ses CD'si çalmaya başla. CD'nin CD sürücüsünde olduğu varsayılır"
+msgstr "Ses CD’sini çalmaya başlayın. CD’nin CD sürücüsünde olduğu varsayılır"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -2027,7 +2027,8 @@ msgstr "&3 Video CD Oynat"
 msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr "Bir Video CD oynatmaya başla. CD'nin CD sürücüsünde olduğu varsayılır"
+msgstr ""
+"Bir Video CD’yi oynatmaya başlayın. CD’nin CD sürücüsünde olduğu varsayılır"
 
 #: mainwindow.cpp:131
 #, kde-format
@@ -2039,7 +2040,7 @@ msgstr "&4 DVD Oynat"
 msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
-msgstr "Bir DVD oynatmaya başla. DVD'nin DVD sürücüde olduğu varsayılır"
+msgstr "Bir DVD’yi oynatmaya başlayın. DVD’nin DVD sürücüde olduğu varsayılır"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2055,12 +2056,12 @@ msgstr "&Dosya"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr "URL Aç..."
+msgstr "URL Aç…"
 
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
 msgid "Play Audio CD"
-msgstr "Ses CD'si Çal"
+msgstr "Ses CD’si Çal"
 
 #: mainwindow.cpp:229 mainwindow.cpp:481
 #, kde-format
@@ -2127,12 +2128,12 @@ msgstr "Dosya &Oynat"
 #: mainwindow.cpp:351
 #, kde-format
 msgid "Play &Audio CD"
-msgstr "&Ses CD'si Çal"
+msgstr "&Ses CD’si Çal"
 
 #: mainwindow.cpp:355
 #, kde-format
 msgid "Play &Video CD"
-msgstr "&Video CD'si Oynat"
+msgstr "&Video CD’si Oynat"
 
 #: mainwindow.cpp:359
 #, kde-format
@@ -2157,17 +2158,17 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
-"Tüm hata ayıklama iletilerini etkinleştir. Kafein'nin hata ayıklama "
+"Tüm hata ayıklama iletilerini etkinleştir. Kafein’in hata ayıklama "
 "iletilerini şu çevre değişkenini kullanarak kategoriye göre de "
 "etkinleştirebildiğini unutmayın:\n"
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
-"'kategori' şunlardan biri olabilir:\n"
+"‘kategori’ şunlardan biri olabilir:\n"
 
 #: mainwindow.cpp:476
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
 msgstr ""
-"Uygulama tarafından açılan dosyalar/URL'ler kullanımdan sonra silinecek"
+"Uygulama tarafından açılan dosyalar/URL’ler kullanımdan sonra silinecek"
 
 #: mainwindow.cpp:477
 #, kde-format
@@ -2211,7 +2212,7 @@ msgstr "Son ayarlanan TV kanalını oynat"
 #: mainwindow.cpp:491
 #, kde-format
 msgid "Files or URLs to play"
-msgstr "Oynatılacak dosyalar veya URL'ler"
+msgstr "Oynatılacak dosyalar veya URL’ler"
 
 #: mainwindow.cpp:713
 #, kde-format
@@ -2527,7 +2528,7 @@ msgstr "Ses Ayar Çubuğu"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
-msgstr "Konuma Atla..."
+msgstr "Konuma Atla…"
 
 #: mediawidget.cpp:453
 #, kde-format
