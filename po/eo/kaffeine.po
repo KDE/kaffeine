@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:30+0000\n"
-"PO-Revision-Date: 2023-03-20 22:31+0100\n"
+"PO-Revision-Date: 2024-02-17 13:21+0100\n"
 "Last-Translator: Oliver Kellogg <okellogg@users.sourceforge.net>\n"
 "Language-Team: esperanto <kde-i18n-eo@kde.org>\n"
 "Language: eo\n"
@@ -24,7 +24,7 @@ msgstr ""
 #: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
 #, kde-format
 msgid "Subtitle %1"
-msgstr ""
+msgstr "Subtitolo %1"
 
 #: backend-vlc/vlcmediawidget.cpp:917
 #, kde-format
@@ -41,7 +41,7 @@ msgstr ""
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Normal Mode"
-msgstr ""
+msgstr "Normala Reĝimo"
 
 #: configurationdialog.cpp:51
 #, kde-format
@@ -101,7 +101,7 @@ msgstr ""
 #, kde-format
 msgctxt "@title:group"
 msgid "Diagnostics"
-msgstr ""
+msgstr "Diagnozo"
 
 #: configurationdialog.cpp:114
 #, kde-format
@@ -192,7 +192,7 @@ msgstr "Neniam"
 #, kde-format
 msgctxt "@title:window"
 msgid "Edit Channel"
-msgstr ""
+msgstr "Redakti Kanalon"
 
 #: dvb/dvbchanneldialog.cpp:721
 #, kde-format
@@ -210,7 +210,7 @@ msgstr "Nombro:"
 #, kde-format
 msgctxt "@label tv channel"
 msgid "Source:"
-msgstr ""
+msgstr "Fonto:"
 
 #: dvb/dvbchanneldialog.cpp:749 dvb/dvbchanneldialog.cpp:771
 #: dvb/dvbchanneldialog.cpp:789 dvb/dvbchanneldialog.cpp:810
@@ -251,7 +251,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:838
 #, kde-format
 msgid "Bandwidth:"
-msgstr ""
+msgstr "Kapacito:"
 
 #: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
 #, kde-format
@@ -273,7 +273,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
 #, kde-format
 msgid "Hierarchy:"
-msgstr ""
+msgstr "Hierarkio:"
 
 #: dvb/dvbchanneldialog.cpp:827
 #, kde-format
@@ -368,7 +368,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
 msgid "Network ID:"
-msgstr ""
+msgstr "Reto ID:"
 
 #: dvb/dvbchanneldialog.cpp:920
 #, kde-format
@@ -378,7 +378,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:927
 #, kde-format
 msgid "Service ID:"
-msgstr ""
+msgstr "Serva ID:"
 
 #: dvb/dvbchanneldialog.cpp:937
 #, kde-format
@@ -700,7 +700,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
 #, kde-format
 msgid "Source:"
-msgstr ""
+msgstr "Fonto:"
 
 #: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
 #, kde-format
@@ -732,7 +732,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
 msgid "Configuration:"
-msgstr ""
+msgstr "Agordo:"
 
 #: dvb/dvbconfigdialog.cpp:1120
 #, kde-format
@@ -772,7 +772,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1211
 #, kde-format
 msgid "Satellite"
-msgstr ""
+msgstr "Satelito"
 
 #: dvb/dvbconfigdialog.cpp:1211
 #, kde-format
@@ -847,17 +847,17 @@ msgstr ""
 #: dvb/dvbepg.cpp:648
 #, kde-format
 msgid "Adventure"
-msgstr ""
+msgstr "Aventuro"
 
 #: dvb/dvbepg.cpp:649
 #, kde-format
 msgid "Science Fiction"
-msgstr ""
+msgstr "Sciencfikcio"
 
 #: dvb/dvbepg.cpp:650
 #, kde-format
 msgid "Comedy"
-msgstr ""
+msgstr "Komedio"
 
 #: dvb/dvbepg.cpp:651
 #, kde-format
@@ -867,32 +867,32 @@ msgstr ""
 #: dvb/dvbepg.cpp:652
 #, kde-format
 msgid "Romance"
-msgstr ""
+msgstr "Enamiĝo"
 
 #: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
 #, kde-format
 msgid "Classical"
-msgstr ""
+msgstr "Klasika"
 
 #: dvb/dvbepg.cpp:654
 #, kde-format
 msgid "Adult"
-msgstr ""
+msgstr "Plenkreskulo"
 
 #: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:790
 #, kde-format
 msgid "User defined"
-msgstr ""
+msgstr "Uzantodifinita"
 
 #: dvb/dvbepg.cpp:660
 #, kde-format
 msgid "Weather"
-msgstr ""
+msgstr "Vetero"
 
 #: dvb/dvbepg.cpp:661 dvb/dvbepg.cpp:678 dvb/dvbepg.cpp:723 dvb/dvbepg.cpp:730
 #, kde-format
 msgid "Magazine"
-msgstr ""
+msgstr "Revuo"
 
 #: dvb/dvbepg.cpp:662 dvb/dvbepg.cpp:822
 #, kde-format
@@ -909,7 +909,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:766
 #, kde-format
 msgid "User Defined"
-msgstr ""
+msgstr "Uzanto-difinita"
 
 #: dvb/dvbepg.cpp:669
 #, kde-format
@@ -929,12 +929,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:677
 #, kde-format
 msgid "Events"
-msgstr ""
+msgstr "Eventoj"
 
 #: dvb/dvbepg.cpp:679
 #, kde-format
 msgid "Football"
-msgstr ""
+msgstr "Futbalo"
 
 #: dvb/dvbepg.cpp:680
 #, kde-format
@@ -944,7 +944,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:681
 #, kde-format
 msgid "Team"
-msgstr ""
+msgstr "Teamo"
 
 #: dvb/dvbepg.cpp:682
 #, kde-format
@@ -954,17 +954,17 @@ msgstr ""
 #: dvb/dvbepg.cpp:683
 #, kde-format
 msgid "Motor"
-msgstr ""
+msgstr "Motoro"
 
 #: dvb/dvbepg.cpp:684
 #, kde-format
 msgid "Water"
-msgstr ""
+msgstr "Maro"
 
 #: dvb/dvbepg.cpp:685
 #, kde-format
 msgid "Winter"
-msgstr ""
+msgstr "Vintro"
 
 #: dvb/dvbepg.cpp:686
 #, kde-format
@@ -1009,17 +1009,17 @@ msgstr ""
 #: dvb/dvbepg.cpp:705
 #, kde-format
 msgid "Folk"
-msgstr ""
+msgstr "Folk"
 
 #: dvb/dvbepg.cpp:706
 #, kde-format
 msgid "Jazz"
-msgstr ""
+msgstr "Ĵazo"
 
 #: dvb/dvbepg.cpp:707
 #, kde-format
 msgid "Opera"
-msgstr ""
+msgstr "Opera"
 
 #: dvb/dvbepg.cpp:708
 #, kde-format
@@ -1029,22 +1029,22 @@ msgstr ""
 #: dvb/dvbepg.cpp:714
 #, kde-format
 msgid "Performance"
-msgstr ""
+msgstr "Rendimento"
 
 #: dvb/dvbepg.cpp:715
 #, kde-format
 msgid "Fine Arts"
-msgstr ""
+msgstr "Belartoj"
 
 #: dvb/dvbepg.cpp:716 dvb/dvbepg.cpp:865
 #, kde-format
 msgid "Religion"
-msgstr ""
+msgstr "Religio"
 
 #: dvb/dvbepg.cpp:717
 #, kde-format
 msgid "Traditional"
-msgstr ""
+msgstr "Tradicia"
 
 #: dvb/dvbepg.cpp:718
 #, kde-format
@@ -1054,17 +1054,17 @@ msgstr ""
 #: dvb/dvbepg.cpp:719
 #, kde-format
 msgid "Cinema"
-msgstr ""
+msgstr "Kino"
 
 #: dvb/dvbepg.cpp:720
 #, kde-format
 msgid "Experimental"
-msgstr ""
+msgstr "Eksperimenta"
 
 #: dvb/dvbepg.cpp:721
 #, kde-format
 msgid "Press"
-msgstr ""
+msgstr "Premu"
 
 #: dvb/dvbepg.cpp:722
 #, kde-format
@@ -1074,27 +1074,27 @@ msgstr ""
 #: dvb/dvbepg.cpp:724 dvb/dvbepg.cpp:843
 #, kde-format
 msgid "Fashion"
-msgstr ""
+msgstr "Modo"
 
 #: dvb/dvbepg.cpp:731
 #, kde-format
 msgid "Advisory"
-msgstr ""
+msgstr "Konsila"
 
 #: dvb/dvbepg.cpp:732
 #, kde-format
 msgid "People"
-msgstr ""
+msgstr "Homoj"
 
 #: dvb/dvbepg.cpp:738
 #, kde-format
 msgid "Nature"
-msgstr ""
+msgstr "Naturo"
 
 #: dvb/dvbepg.cpp:739
 #, kde-format
 msgid "Technology"
-msgstr ""
+msgstr "Teknologio"
 
 #: dvb/dvbepg.cpp:740
 #, kde-format
@@ -1104,7 +1104,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:741
 #, kde-format
 msgid "Foreign"
-msgstr ""
+msgstr "Fremda"
 
 #: dvb/dvbepg.cpp:742 dvb/dvbepg.cpp:783
 #, kde-format
@@ -1119,12 +1119,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:744
 #, kde-format
 msgid "Language"
-msgstr ""
+msgstr "Lingvo"
 
 #: dvb/dvbepg.cpp:750 dvb/dvbepg.cpp:846
 #, kde-format
 msgid "Travel"
-msgstr ""
+msgstr "Vojaĝoj"
 
 #: dvb/dvbepg.cpp:751
 #, kde-format
@@ -1154,12 +1154,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:756
 #, kde-format
 msgid "Gardening"
-msgstr ""
+msgstr "Ĝardenado"
 
 #: dvb/dvbepg.cpp:761 iso-codes.cpp:125 iso-codes.cpp:155
 #, kde-format
 msgid "Original Language"
-msgstr ""
+msgstr "Origina Lingvo"
 
 #: dvb/dvbepg.cpp:762
 #, kde-format
@@ -1169,12 +1169,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:763
 #, kde-format
 msgid "Unpublished"
-msgstr ""
+msgstr "Neeldonita"
 
 #: dvb/dvbepg.cpp:764
 #, kde-format
 msgid "Live"
-msgstr ""
+msgstr "Tuja"
 
 #: dvb/dvbepg.cpp:765
 #, kde-format
@@ -1204,37 +1204,37 @@ msgstr ""
 #: dvb/dvbepg.cpp:775
 #, kde-format
 msgid "Undefined"
-msgstr ""
+msgstr "Nedifinita"
 
 #: dvb/dvbepg.cpp:776 dvb/dvbepg.cpp:806
 #, kde-format
 msgid "Movie"
-msgstr ""
+msgstr "Filmo"
 
 #: dvb/dvbepg.cpp:777 dvb/dvbepg.cpp:794 dvb/dvbepg.cpp:820
 #, kde-format
 msgid "News"
-msgstr ""
+msgstr "Novaĵoj"
 
 #: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:834
 #, kde-format
 msgid "Show"
-msgstr ""
+msgstr "Montri"
 
 #: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:795
 #, kde-format
 msgid "Sports"
-msgstr ""
+msgstr "Sportoj"
 
 #: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:804
 #, kde-format
 msgid "Children"
-msgstr ""
+msgstr "Infanoj"
 
 #: dvb/dvbepg.cpp:781
 #, kde-format
 msgid "Music"
-msgstr ""
+msgstr "Muziko"
 
 #: dvb/dvbepg.cpp:782
 #, kde-format
@@ -1244,7 +1244,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:784 dvb/dvbepg.cpp:796
 #, kde-format
 msgid "Education"
-msgstr ""
+msgstr "Edukado"
 
 #: dvb/dvbepg.cpp:785
 #, kde-format
@@ -1254,7 +1254,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:786
 #, kde-format
 msgid "Special"
-msgstr ""
+msgstr "Speciala"
 
 #: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
 #, kde-format
@@ -1274,7 +1274,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:799
 #, kde-format
 msgid "Series"
-msgstr ""
+msgstr "Serio"
 
 #: dvb/dvbepg.cpp:801
 #, kde-format
@@ -1284,7 +1284,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:802
 #, kde-format
 msgid "Information"
-msgstr ""
+msgstr "Informoj"
 
 #: dvb/dvbepg.cpp:803
 #, kde-format
@@ -1309,17 +1309,17 @@ msgstr ""
 #: dvb/dvbepg.cpp:809
 #, kde-format
 msgid "Other"
-msgstr ""
+msgstr "Alia"
 
 #: dvb/dvbepg.cpp:821
 #, kde-format
 msgid "Report"
-msgstr ""
+msgstr "Raporto"
 
 #: dvb/dvbepg.cpp:823
 #, kde-format
 msgid "Biography"
-msgstr ""
+msgstr "Biografio"
 
 #: dvb/dvbepg.cpp:827
 #, kde-format
@@ -1334,7 +1334,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:835
 #, kde-format
 msgid "Musical"
-msgstr ""
+msgstr "Muzika"
 
 #: dvb/dvbepg.cpp:836
 #, kde-format
@@ -1344,7 +1344,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:837
 #, kde-format
 msgid "Feminine"
-msgstr ""
+msgstr "Ina"
 
 #: dvb/dvbepg.cpp:838
 #, kde-format
@@ -1354,12 +1354,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:844
 #, kde-format
 msgid "Country"
-msgstr ""
+msgstr "Lando"
 
 #: dvb/dvbepg.cpp:845
 #, kde-format
 msgid "Health"
-msgstr ""
+msgstr "Sano"
 
 #: dvb/dvbepg.cpp:853
 #, kde-format
@@ -1379,7 +1379,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:859
 #, kde-format
 msgid "Interview"
-msgstr ""
+msgstr "Intervjuo"
 
 #: dvb/dvbepg.cpp:862
 #, kde-format
@@ -1389,12 +1389,12 @@ msgstr ""
 #: dvb/dvbepg.cpp:863
 #, kde-format
 msgid "Interactive"
-msgstr ""
+msgstr "Interaga"
 
 #: dvb/dvbepg.cpp:864
 #, kde-format
 msgid "Policy"
-msgstr ""
+msgstr "Politiko"
 
 #: dvb/dvbepg.cpp:897
 #, no-c-format, kde-format
@@ -1560,17 +1560,17 @@ msgstr "Nomo"
 #, kde-format
 msgctxt "@title:column tv show"
 msgid "Disabled"
-msgstr ""
+msgstr "Malŝaltita"
 
 #: dvb/dvbrecordingdialog.cpp:307
 #, kde-format
 msgid "Disabled"
-msgstr ""
+msgstr "Malŝaltita"
 
 #: dvb/dvbrecordingdialog.cpp:309
 #, kde-format
 msgid "Enabled"
-msgstr ""
+msgstr "Ebligita"
 
 #: dvb/dvbrecordingdialog.cpp:384
 #, kde-format
@@ -1639,7 +1639,7 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:239
 #, kde-format
 msgid "SNR"
-msgstr ""
+msgstr "SNR"
 
 #: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
 #, kde-format
@@ -1675,7 +1675,7 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
 msgid "Start Scan"
-msgstr ""
+msgstr "Komenci Skanadon"
 
 #: dvb/dvbscandialog.cpp:322
 #, kde-format
@@ -1710,12 +1710,12 @@ msgstr "Radio"
 #: dvb/dvbscandialog.cpp:354
 #, kde-format
 msgid "TV"
-msgstr ""
+msgstr "televido"
 
 #: dvb/dvbscandialog.cpp:357
 #, kde-format
 msgid "Provider:"
-msgstr ""
+msgstr "Provizanto:"
 
 #: dvb/dvbscandialog.cpp:365
 #, kde-format
@@ -1725,7 +1725,7 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:369
 #, kde-format
 msgid "Add Selected"
-msgstr ""
+msgstr "Aldoni Elektitajn"
 
 #: dvb/dvbscandialog.cpp:375
 #, kde-format
@@ -1750,7 +1750,7 @@ msgstr ""
 #: dvb/dvbtab.cpp:102
 #, kde-format
 msgid "OSD"
-msgstr ""
+msgstr "OSD"
 
 #: dvb/dvbtab.cpp:108
 #, kde-format
@@ -1868,12 +1868,12 @@ msgstr ""
 #, kde-format
 msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
 msgid "%1: %2\n"
-msgstr ""
+msgstr "%1: %2\n"
 
 #: dvb/xmltv.cpp:377
 #, kde-format
 msgid "rating: %1"
-msgstr ""
+msgstr "taksado: %1"
 
 #: dvb/xmltv.cpp:451
 #, kde-format
@@ -1893,12 +1893,12 @@ msgstr ""
 #: dvb/xmltv.cpp:491
 #, kde-format
 msgid "Date: %1"
-msgstr ""
+msgstr "Dato: %1"
 
 #: dvb/xmltv.cpp:495
 #, kde-format
 msgid "Category: %1"
-msgstr ""
+msgstr "Kategorio: %1"
 
 #: dvb/xmltv.cpp:509
 #, kde-format
@@ -2043,13 +2043,13 @@ msgstr ""
 #: mainwindow.cpp:247
 #, kde-format
 msgid "&Playback"
-msgstr ""
+msgstr "&Reproduktado"
 
 #: mainwindow.cpp:250
 #, kde-format
 msgctxt "menu bar"
 msgid "Play&list"
-msgstr ""
+msgstr "Lud&listo"
 
 #: mainwindow.cpp:254
 #, kde-format
@@ -2079,7 +2079,7 @@ msgstr "Ludlisto"
 #: mainwindow.cpp:283
 #, kde-format
 msgid "Television"
-msgstr ""
+msgstr "Televido"
 
 #: mainwindow.cpp:347
 #, kde-format
@@ -2109,7 +2109,7 @@ msgstr ""
 #: mainwindow.cpp:368
 #, kde-format
 msgid "&Quit"
-msgstr ""
+msgstr "&Forlasi"
 
 #: mainwindow.cpp:475
 #, kde-format
@@ -2123,7 +2123,7 @@ msgstr ""
 #: mainwindow.cpp:476
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
-msgstr ""
+msgstr "La dosieroj/URL malfermitaj de la aplikaĵo estos forigitaj post uzo"
 
 #: mainwindow.cpp:477
 #, kde-format
@@ -2227,13 +2227,13 @@ msgstr ""
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr ""
+msgstr "Subtitolo"
 
 #: mediawidget.cpp:149
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
-msgstr ""
+msgstr "malŝaltita"
 
 #: mediawidget.cpp:157
 #, kde-format
@@ -2293,25 +2293,25 @@ msgstr ""
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
-msgstr ""
+msgstr "malŝaltita"
 
 #: mediawidget.cpp:218
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
-msgstr ""
+msgstr "forĵeti"
 
 #: mediawidget.cpp:224
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
-msgstr ""
+msgstr "boĉjo"
 
 #: mediawidget.cpp:230
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
-msgstr ""
+msgstr "lineara"
 
 #: mediawidget.cpp:236
 #, kde-format
@@ -2335,19 +2335,19 @@ msgstr ""
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: mediawidget.cpp:261
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
-msgstr ""
+msgstr "signifas"
 
 #: mediawidget.cpp:267
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
-msgstr ""
+msgstr "miksi"
 
 #: mediawidget.cpp:273
 #, kde-format
@@ -2359,7 +2359,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
-msgstr ""
+msgstr "Bildformato"
 
 #: mediawidget.cpp:300
 #, kde-format
@@ -2371,7 +2371,7 @@ msgstr "Aŭtomata"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
-msgstr ""
+msgstr "1:1"
 
 #: mediawidget.cpp:312
 #, kde-format
@@ -2430,49 +2430,49 @@ msgstr "Aŭtomata"
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: mediawidget.cpp:373
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr ""
+msgstr "50%"
 
 #: mediawidget.cpp:380
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
-msgstr ""
+msgstr "75%"
 
 #: mediawidget.cpp:386
 #, kde-format
 msgctxt "Video size"
 msgid "Original Size"
-msgstr ""
+msgstr "Originala Grandeco"
 
 #: mediawidget.cpp:392
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
-msgstr ""
+msgstr "150%"
 
 #: mediawidget.cpp:398
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
-msgstr ""
+msgstr "200%"
 
 #: mediawidget.cpp:404
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
-msgstr ""
+msgstr "250%"
 
 #: mediawidget.cpp:410
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
-msgstr ""
+msgstr "300%"
 
 #: mediawidget.cpp:433
 #, kde-format
@@ -2526,7 +2526,7 @@ msgstr "Titolo"
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
-msgstr ""
+msgstr "Ĉapitro"
 
 #: mediawidget.cpp:530
 #, kde-format
@@ -2614,13 +2614,13 @@ msgstr ""
 #, kde-format
 msgctxt "osd"
 msgid "Playing"
-msgstr ""
+msgstr "Legante"
 
 #: mediawidget.cpp:1407
 #, kde-format
 msgctxt "osd"
 msgid "Paused"
-msgstr ""
+msgstr "Paŭzita"
 
 #: mediawidget.cpp:1585
 #, kde-format
@@ -2643,25 +2643,25 @@ msgstr "Titolo"
 #, kde-format
 msgctxt "playlist track"
 msgid "Artist"
-msgstr ""
+msgstr "Artisto"
 
 #: playlist/playlistmodel.cpp:804
 #, kde-format
 msgctxt "playlist track"
 msgid "Album"
-msgstr ""
+msgstr "Albumo"
 
 #: playlist/playlistmodel.cpp:806
 #, kde-format
 msgctxt "playlist track"
 msgid "Track Number"
-msgstr ""
+msgstr "Voja Nombro"
 
 #: playlist/playlistmodel.cpp:808
 #, kde-format
 msgctxt "playlist track"
 msgid "Length"
-msgstr ""
+msgstr "Longo"
 
 #: playlist/playlisttab.cpp:372
 #, kde-format
@@ -2673,18 +2673,18 @@ msgstr ""
 #, kde-format
 msgctxt "playlist menu"
 msgid "Repeat"
-msgstr ""
+msgstr "Ripeti"
 
 #: playlist/playlisttab.cpp:401
 #, kde-format
 msgctxt "playlist menu"
 msgid "Random"
-msgstr ""
+msgstr "Hazarda"
 
 #: playlist/playlisttab.cpp:406
 #, kde-format
 msgid "Add Subtitle"
-msgstr ""
+msgstr "Aldoni Subtitolon"
 
 #: playlist/playlisttab.cpp:420
 #, kde-format
