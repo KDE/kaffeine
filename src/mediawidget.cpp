@@ -40,7 +40,6 @@
 #include <QTimeEdit>
 #include <QTimer>
 #include <QWidgetAction>
-#include <QX11Info>
 #include <Solid/Block>
 #include <Solid/Device>
 #include <KWindowSystem>
@@ -940,14 +939,6 @@ void MediaWidget::checkScreenSaver(bool noDisable)
 		QDBusInterface(QLatin1String("org.gnome.ScreenSaver"), QLatin1String("/"),
 			       QLatin1String("org.gnome.ScreenSaver")).
 			call(QDBus::NoBlock, QLatin1String("SimulateUserActivity"));
-	}
-
-	if (screenSaverSuspended != suspendScreenSaver) {
-		// X11 - needed if none of the above applications is running
-		if (KWindowSystem::isPlatformX11()) {
-			screenSaverSuspended = suspendScreenSaver;
-			XScreenSaverSuspend(QX11Info::display(), suspendScreenSaver);
-		}
 	}
 }
 
