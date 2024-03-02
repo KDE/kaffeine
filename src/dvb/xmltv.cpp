@@ -104,10 +104,10 @@ bool XmlTv::parseChannel(void)
 			continue;
 
 		QStringView name = r->name();
-		if (name == "display-name") {
+		if (name == QLatin1String("display-name")) {
 			QString display = r->readElementText();
 			list.append(display);
-		} else if (name != "icon" && name != "url") {
+		} else if (name != QLatin1String("icon") && name != QLatin1String("url")) {
 			static QString lastNotFound("");
 			if (name.toString() != lastNotFound) {
 				qCWarning(logDvb,
@@ -335,28 +335,28 @@ bool XmlTv::parseProgram(void)
 
 		QString lang;
 		QStringView element = r->name();
-		if (element == "title") {
+		if (element == QLatin1String("title")) {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 			langEntry = getLangEntry(epgEntry, lang);
 			if (!langEntry->title.isEmpty())
 				langEntry->title += ' ';
 			langEntry->title += r->readElementText();
-		} else if (element == "sub-title") {
+		} else if (element == QLatin1String("sub-title")) {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 			langEntry = getLangEntry(epgEntry, lang);
 			if (!langEntry->subheading.isEmpty())
 				langEntry->subheading += ' ';
 			langEntry->subheading += r->readElementText();
-		} else if (element == "desc") {
+		} else if (element == QLatin1String("desc")) {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 			langEntry = getLangEntry(epgEntry, lang);
 			if (!langEntry->details.isEmpty())
 				langEntry->details += ' ';
 			langEntry->details += r->readElementText();
-		} else if (element == "rating") {
+		} else if (element == QLatin1String("rating")) {
 			QHash<QString, QString> keyValues;
 
 			attrs = r->attributes();
@@ -375,7 +375,7 @@ bool XmlTv::parseProgram(void)
 				epgEntry.parental += system + ' ';
 
 			epgEntry.parental += i18n("rating: %1", value);
-		} else if (element == "star-rating") {
+		} else if (element == QLatin1String("star-rating")) {
 			QHash<QString, QString> keyValues;
 
 			attrs = r->attributes();
@@ -391,7 +391,7 @@ bool XmlTv::parseProgram(void)
 				starRating += system + ' ';
 
 			starRating += value;
-		} else if (element == "category") {
+		} else if (element == QLatin1String("category")) {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 
@@ -400,7 +400,7 @@ bool XmlTv::parseProgram(void)
 				cat += ", ";
 			cat += r->readElementText();
 			category[lang] = cat;
-		} else if (element == "keyword") {
+		} else if (element == QLatin1String("keyword")) {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
 
@@ -409,9 +409,9 @@ bool XmlTv::parseProgram(void)
 				kw += ", ";
 			kw += r->readElementText();
 			keyword[lang] = kw;
-		} else if (element == "credits") {
+		} else if (element == QLatin1String("credits")) {
 			credits = parseCredits();
-		} else if ((element == "date")) {
+		} else if ((element == QLatin1String("date"))) {
 			QString rawdate = r->readElementText();
 			date = rawdate.mid(0, 4);
 			QString month = rawdate.mid(4, 2);
@@ -423,19 +423,19 @@ bool XmlTv::parseProgram(void)
 				QDate d = QDate::fromString(date, Qt::ISODate);
 				date = d.toString(Qt::DefaultLocaleShortDate);
 			}
-		} else if (element == "language") {
+		} else if (element == QLatin1String("language")) {
 			language = r->readElementText();
 			if (language.size() == 2)
 				IsoCodes::getLanguage(IsoCodes::code2Convert(language), &language);
-		} else if (element == "orig-language") {
+		} else if (element == QLatin1String("orig-language")) {
 			origLanguage = r->readElementText();
 			if (origLanguage.size() == 2)
 				IsoCodes::getLanguage(IsoCodes::code2Convert(origLanguage), &origLanguage);
-		} else if (element == "country") {
+		} else if (element == QLatin1String("country")) {
 			country = r->readElementText();
 			if (origLanguage.size() == 2)
 				IsoCodes::getCountry(IsoCodes::code2Convert(country), &country);
-		} else if (element == "episode-num") {
+		} else if (element == QLatin1String("episode-num")) {
 			attrs = r->attributes();
 			QString system = attrs.value("system").toString();
 
@@ -452,20 +452,20 @@ bool XmlTv::parseProgram(void)
 			if (list.size() < 2)
 				continue;
 			episode += i18n(" Episode %1", QString::number(list[1].toInt() + 1));
-		} else if ((element == "aspect") ||
-			   (element == "audio") ||
-			   (element == "icon") ||
-			   (element == "length") ||
-			   (element == "last-chance") ||
-			   (element == "new") ||
-			   (element == "premiere") ||
-			   (element == "previously-shown") ||
-			   (element == "quality") ||
-			   (element == "review") ||
-			   (element == "stereo") ||
-			   (element == "subtitles") ||
-			   (element == "url") ||
-			   (element == "video")) {
+		} else if ((element == QLatin1String("aspect")) ||
+			   (element == QLatin1String("audio")) ||
+			   (element == QLatin1String("icon")) ||
+			   (element == QLatin1String("length")) ||
+			   (element == QLatin1String("last-chance")) ||
+			   (element == QLatin1String("new")) ||
+			   (element == QLatin1String("premiere")) ||
+			   (element == QLatin1String("previously-shown")) ||
+			   (element == QLatin1String("quality")) ||
+			   (element == QLatin1String("review")) ||
+			   (element == QLatin1String("stereo")) ||
+			   (element == QLatin1String("subtitles")) ||
+			   (element == QLatin1String("url")) ||
+			   (element == QLatin1String("video"))) {
 			ignoreTag();
 		} else {
 			static QString lastNotFound("");
@@ -600,13 +600,13 @@ bool XmlTv::load(QString file)
 
 		QStringView name = r->name();
 
-		if (name == "channel") {
+		if (name == QLatin1String("channel")) {
 			if (!parseChannel())
 				parseError = true;
-		} else if (name == "programme") {
+		} else if (name == QLatin1String("programme")) {
 			if (!parseProgram())
 				parseError = true;
-		} else if (name != "tv") {
+		} else if (name != QLatin1String("tv")) {
 			static QString lastNotFound("");
 			if (name.toString() != lastNotFound) {
 				qCWarning(logDvb,

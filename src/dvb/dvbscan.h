@@ -37,7 +37,7 @@ class DvbSdtSection;
 class DvbPreviewChannel : public DvbChannel
 {
 public:
-	DvbPreviewChannel() : snr(-1) { }
+	DvbPreviewChannel() : snr(QString::number(-1)) { }
 	~DvbPreviewChannel() { }
 
 	/*
