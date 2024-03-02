@@ -27,6 +27,7 @@
 #include <QFile>
 #include <QMimeDatabase>
 #include <QMimeType>
+#include <QRegularExpression>
 
 int main(int argc, char *argv[])
 {
@@ -165,7 +166,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-		QRegExp regExp("\\*\\.[a-z0-9+]+");
+		QRegularExpression regExp("\\*\\.[a-z0-9+]+");
 
 		for (int i = 0; i < extensions.size(); ++i) {
 			if (extensions.at(i) == "*.anim[1-9j]") {

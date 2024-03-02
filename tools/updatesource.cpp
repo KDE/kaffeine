@@ -25,6 +25,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QRegularExpression>
 
 int main(int argc, char *argv[])
 {
@@ -109,7 +110,7 @@ int main(int argc, char *argv[])
 
 		QStringList lines = content.split('\n');
 		bool ignoreLineLength = false;
-		QRegExp logRegExp("Log[^0-9A-Za-z]*[(][^0-9A-Za-z]*\"");
+		QRegularExpression logRegExp("Log[^0-9A-Za-z]*[(][^0-9A-Za-z]*\"");
 		QString logFunctionName;
 		int bracketLevel = 0;
 
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
 			}
 
 			if ((bracketLevel == 0) && !line.startsWith('\t')) {
-				QRegExp logFunctionRegExp("[0-9A-Za-z:~]*[(]");
+				QRegularExpression logFunctionRegExp("[0-9A-Za-z:~]*[(]");
 				int index = logFunctionRegExp.indexIn(line);
 
 				if (index >= 0) {

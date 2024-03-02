@@ -31,6 +31,7 @@
 #include <QPointer>
 #include <QStandardPaths>
 #include <QString>
+#include <QRegularExpression>
 
 #include <kwindowsystem_version.h>
 
@@ -65,7 +66,8 @@ void verboseMessageHandler(QtMsgType type, const QMessageLogContext &context, co
 	QByteArray localMsg = msg.toLocal8Bit();
 	QString log;
 
-	file.remove(QRegExp(".*/kaffeine/"));
+	QRegularExpression regKaffeineFolder = QRegularExpression(QString(".*/kaffeine/"));
+	file.remove(regKaffeineFolder);
 
 	if (context.line && QLoggingCategory::defaultCategory()->isEnabled(QtDebugMsg))
 		contextString = QStringLiteral("%1#%2: %3: ")

@@ -25,7 +25,7 @@
 
 #include <QDomDocument>
 #include <QFile>
-#include <QRegExp>
+#include <QRegularExpression>
 
 class Element
 {
@@ -205,7 +205,8 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 	}
 
 	QString entryName = node.nodeName();
-	QString initFunctionName = QString(entryName).replace(QRegExp("^Dvb|^Atsc"), "init");
+	QRegularExpression regFuncName("^Dvb|^Atsc");
+	QString initFunctionName = QString(entryName).replace(regFuncName), "init");
 	bool ignoreFirstNewLine = false;
 
 	QString funcName = entryName + "::";
@@ -256,7 +257,8 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 			while (true) {
 				int oldSize = entryLengthCalculation.size();
-				entryLengthCalculation.replace(QRegExp("at\\(([0-9]*)\\)"), "quint8(data[\\1])");
+				QRegularExpression entryLengthRegEx("at\\(([0-9]*)\\)"), "quint8(data[\\1])");
+				entryLengthCalculation.replace(entryLengthRegEx);
 
 				if (entryLengthCalculation.size() == oldSize) {
 					break;
