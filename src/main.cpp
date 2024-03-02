@@ -147,7 +147,7 @@ KaffeineApplication::KaffeineApplication(int &argc, char **argv) : QApplication(
 		QStringLiteral("https://kde.org/applications/multimedia/org.kde.kaffeine")
 	)
 {
-	QString path = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+	QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
 
 	QDir dir(path);
 	if (!dir.exists())

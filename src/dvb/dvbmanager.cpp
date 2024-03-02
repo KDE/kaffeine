@@ -331,7 +331,7 @@ bool DvbManager::updateScanData(const QByteArray &data)
 		return false;
 	}
 
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/scanfile.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		qCWarning(logDvb, "Cannot open %s", qPrintable(file.fileName()));
@@ -636,7 +636,7 @@ void DvbManager::loadDeviceManager()
 
 void DvbManager::readDeviceConfigs()
 {
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/config.dvb"));
 	const char *errMsg;
 
 	if (!file.open(QIODevice::ReadOnly)) {
@@ -717,7 +717,7 @@ void DvbManager::readDeviceConfigs()
 
 void DvbManager::writeDeviceConfigs()
 {
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/config.dvb"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/config.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		qCWarning(logDvb, "Cannot open %s", qPrintable(file.fileName()));
@@ -811,7 +811,7 @@ void DvbManager::readScanData()
 		qCWarning(logDvb, "Cannot open global scanfile %s", qPrintable(globalFile.fileName()));
 	}
 
-	QFile localFile(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
+	QFile localFile(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/scanfile.dvb"));
 	QByteArray localData;
 	QDate localDate;
 

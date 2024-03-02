@@ -72,7 +72,7 @@ DvbRecordingModel::DvbRecordingModel(DvbManager *manager_, QObject *parent) : QO
 
 	// compatibility code
 
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/recordings.dvb"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/recordings.dvb"));
 
 	if (!file.exists()) {
 		return;

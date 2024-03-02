@@ -46,10 +46,10 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 {
 	playlists.append(temporaryPlaylist);
 
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
-		file.setFileName(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlists"));
+		file.setFileName(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/playlists"));
 
 		if (!file.open(QIODevice::ReadOnly)) {
 			qCWarning(logPlaylist, "Cannot open file %s", qPrintable(file.fileName()));
@@ -127,7 +127,7 @@ PlaylistBrowserModel::PlaylistBrowserModel(PlaylistModel *playlistModel_,
 
 PlaylistBrowserModel::~PlaylistBrowserModel()
 {
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/playlistsK4"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/playlistsK4"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		qCWarning(logPlaylist, "Cannot open file %s", qPrintable(file.fileName()));

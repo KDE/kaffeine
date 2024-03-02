@@ -460,7 +460,7 @@ void DvbConfigDialog::removeRegex()
 
 void DvbConfigDialog::openScanFile()
 {
-	QString file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/scanfile.dvb"));
+	QString file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/scanfile.dvb"));
 	QDesktopServices::openUrl(QUrl(file));
 }
 

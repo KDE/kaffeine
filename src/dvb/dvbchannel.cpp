@@ -139,7 +139,7 @@ DvbChannelModel *DvbChannelModel::createSqlModel(QObject *parent)
 
 	// compatibility code
 
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/channels.dtv"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/channels.dtv"));
 
 	if (!file.exists()) {
 		return channelModel;

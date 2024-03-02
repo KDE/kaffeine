@@ -73,7 +73,7 @@ DvbEpgModel::DvbEpgModel(DvbManager *manager_, QObject *parent) : QObject(parent
 
 	// TODO use SQL to store epg data
 
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::ReadOnly)) {
 		qCWarning(logEpg, "Cannot open %s", qPrintable(file.fileName()));
@@ -179,7 +179,7 @@ DvbEpgModel::~DvbEpgModel()
 		qCWarning(logEpg, "filter list not empty");
 	}
 
-	QFile file(QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1String("/epgdata.dvb"));
+	QFile file(QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1String("/epgdata.dvb"));
 
 	if (!file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
 		qCWarning(logEpg, "Cannot open %s", qPrintable(file.fileName()));
