@@ -791,7 +791,8 @@ void MainWindow::playDvb()
 
 void MainWindow::configureKeys()
 {
-	KShortcutsDialog::configure(collection);
+	shortcuts = new KShortcutsDialog(this);
+	shortcuts->addCollection(collection);
 }
 
 void MainWindow::configureKaffeine()

@@ -22,6 +22,8 @@
 #define MAINWINDOW_H
 
 #include <KMainWindow>
+#include <KShortcutsDialog>
+
 #include <QCommandLineParser>
 #include <QSystemTrayIcon>
 #include "mediawidget.h"
@@ -87,6 +89,7 @@ private:
 
 	QSystemTrayIcon *trayIcon;
 
+	KShortcutsDialog *shortcuts;
 	KActionCollection *collection;
 	KRecentFilesAction *actionOpenRecent;
 	QToolBar *navigationBar;
