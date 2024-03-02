@@ -31,7 +31,6 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QDBusConnection>
-#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QHoverEvent>
 #include <QInputDialog>
@@ -43,6 +42,7 @@
 #include <QStackedLayout>
 #include <QTabBar>
 #include <QToolBar>
+#include <QWindow>
 
 #include "configuration.h"
 #include "configurationdialog.h"
@@ -453,7 +453,8 @@ void MainWindow::readSettings()
     const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
     if (geometry.isEmpty()) {
         winId(); // force creation of windowHandle()
-        const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
+        QScreen *screen = this->window()->windowHandle()->screen();
+        const QRect availableGeometry = screen->availableGeometry();
         resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
         move((availableGeometry.width() - width()) / 2,
              (availableGeometry.height() - height()) / 2);
