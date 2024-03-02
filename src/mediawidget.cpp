@@ -40,6 +40,8 @@
 #include <QTimeEdit>
 #include <QTimer>
 #include <QWidgetAction>
+#include <QActionGroup>
+
 #include <Solid/Block>
 #include <Solid/Device>
 #include <KWindowSystem>
