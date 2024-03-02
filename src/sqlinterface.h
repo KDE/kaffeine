@@ -87,7 +87,7 @@ public:
 		SqlKey sqlKey(1);
 
 		if (!container.isEmpty()) {
-			sqlKey = SqlKey((container.constEnd() - 1).key().sqlKey + 1);
+			sqlKey = SqlKey(std::prev(container.constEnd(), -1).key().sqlKey + 1);
 
 			while (container.contains(sqlKey) || !sqlKey.isSqlKeyValid()) {
 #if QT_VERSION >= 0x050a00

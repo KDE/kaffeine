@@ -524,7 +524,7 @@ void DvbChannelModel::dndMoveChannels(const QList<DvbSharedChannel> &selectedCha
 	int currentNumber = 1;
 
 	if (it != channelNumbers.constBegin()) {
-		currentNumber = ((it - 1).key() + 1);
+		currentNumber = (std::prev(it, -1).key() + 1);
 	}
 
 	while (!channelQueue.isEmpty()) {
