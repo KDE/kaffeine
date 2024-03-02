@@ -854,8 +854,8 @@ bool MainWindow::event(QEvent *event)
 
 	switch (event->type()) {
 	case QEvent::HoverMove: {
-		int x = reinterpret_cast<QHoverEvent *> (event)->pos().x();
-		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
+		int x = reinterpret_cast<QHoverEvent *> (event)->position().x();
+		int y = reinterpret_cast<QHoverEvent *> (event)->position().y();
 
 		if ((y < 0) || (y >= height()) ||
 		    (x < 0) || (x >= width())) {
