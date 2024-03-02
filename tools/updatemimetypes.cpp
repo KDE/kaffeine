@@ -50,7 +50,6 @@ int main(int argc, char *argv[])
 		}
 
 		QTextStream stream(&file);
-		stream.setCodec("UTF-8");
 
 		while (!stream.atEnd()) {
 			lines.append(stream.readLine());
@@ -220,7 +219,6 @@ int main(int argc, char *argv[])
 		}
 
 		QTextStream stream(&file);
-		stream.setCodec("UTF-8");
 
 		lines[mimeTypeIndex] = "MimeType=" + mimeTypes.join(";") + ';';
 
@@ -241,7 +239,6 @@ int main(int argc, char *argv[])
 		}
 
 		QTextStream stream(&file);
-		stream.setCodec("UTF-8");
 
 		while (!stream.atEnd()) {
 			lines.append(stream.readLine());
@@ -258,7 +255,6 @@ int main(int argc, char *argv[])
 		}
 
 		QTextStream stream(&file);
-		stream.setCodec("UTF-8");
 
 		for (int i = 0; i < lines.size(); ++i) {
 			stream << lines.at(i) << '\n';

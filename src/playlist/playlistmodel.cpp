@@ -247,7 +247,6 @@ bool Playlist::loadKaffeinePlaylist(QIODevice *device)
 bool Playlist::loadM3UPlaylist(QIODevice *device)
 {
 	QTextStream stream(device);
-	stream.setCodec("UTF-8");
 	PlaylistTrack track;
 
 	while (!stream.atEnd()) {
@@ -278,7 +277,6 @@ bool Playlist::loadM3UPlaylist(QIODevice *device)
 void Playlist::saveM3UPlaylist(QIODevice *device) const
 {
 	QTextStream stream(device);
-	stream.setCodec("UTF-8");
 	stream << "#EXTM3U\n";
 
 	foreach (const PlaylistTrack &track, tracks) {
@@ -296,7 +294,6 @@ void Playlist::saveM3UPlaylist(QIODevice *device) const
 bool Playlist::loadPLSPlaylist(QIODevice *device)
 {
 	QTextStream stream(device);
-	stream.setCodec("UTF-8");
 
 	if (stream.readLine().compare(QLatin1String("[playlist]"), Qt::CaseInsensitive) != 0) {
 		return false;
@@ -366,7 +363,6 @@ bool Playlist::loadPLSPlaylist(QIODevice *device)
 void Playlist::savePLSPlaylist(QIODevice *device) const
 {
 	QTextStream stream(device);
-	stream.setCodec("UTF-8");
 	stream << "[Playlist]\n"
 		"NumberOfEntries=" << tracks.size() << '\n';
 	int index = 1;

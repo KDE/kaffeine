@@ -44,10 +44,7 @@ private:
 class DvbDeviceConfigReader : public QTextStream
 {
 public:
-	explicit DvbDeviceConfigReader(QIODevice *device) : QTextStream(device), valid(true)
-	{
-		setCodec("UTF-8");
-	}
+	explicit DvbDeviceConfigReader(QIODevice *device) : QTextStream(device), valid(true) { }
 
 	~DvbDeviceConfigReader() { }
 
@@ -125,10 +122,7 @@ private:
 class DvbDeviceConfigWriter : public QTextStream
 {
 public:
-	explicit DvbDeviceConfigWriter(QIODevice *device) : QTextStream(device)
-	{
-		setCodec("UTF-8");
-	}
+	explicit DvbDeviceConfigWriter(QIODevice *device) : QTextStream(device) { }
 
 	~DvbDeviceConfigWriter() { }
 

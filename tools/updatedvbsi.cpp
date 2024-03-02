@@ -545,10 +545,8 @@ FileHelper::FileHelper(const QString &name) : valid(false)
 	}
 
 	QTextStream inStream(&inFile);
-	inStream.setCodec("UTF-8");
 
 	outStream.setDevice(&outFile);
-	outStream.setCodec("UTF-8");
 
 	while (true) {
 		if (inStream.atEnd()) {
