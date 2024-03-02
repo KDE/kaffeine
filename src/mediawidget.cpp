@@ -580,6 +580,79 @@ QString MediaWidget::extensionFilter()
 		"All Files (*)");
 }
 
+QList<KFileFilter> MediaWidget::extensionFilters() {
+	QList<KFileFilter> l = {
+		KFileFilter { QStringLiteral("Media files"),
+			QStringList(), QStringList{
+			QStringLiteral("x-content/video-vcd"),
+			QStringLiteral("x-content/video-svcd"),
+			QStringLiteral("x-content/video-dvd"),
+			QStringLiteral("x-content/audio-player"),
+			QStringLiteral("x-content/audio-cdda"),
+			QStringLiteral("video/x-ogm+ogg"),
+			QStringLiteral("video/x-nsv"),
+			QStringLiteral("video/x-ms-wmv"),
+			QStringLiteral("video/x-mng"),
+			QStringLiteral("video/x-matroska"),
+			QStringLiteral("video/x-flv"),
+			QStringLiteral("video/x-flic"),
+			QStringLiteral("video/x-anim"),
+			QStringLiteral("video/webm"),
+			QStringLiteral("video/vnd.rn-realvideo"),
+			QStringLiteral("video/vnd.avi"),
+			QStringLiteral("video/quicktime"),
+			QStringLiteral("video/ogg"),
+			QStringLiteral("video/mpeg"),
+			QStringLiteral("video/mp4"),
+			QStringLiteral("video/mp2t"),
+			QStringLiteral("video/dv"),
+			QStringLiteral("inode/directory"),
+			QStringLiteral("image/vnd.rn-realpix"),
+			QStringLiteral("audio/x-xm"),
+			QStringLiteral("audio/x-wavpack"),
+			QStringLiteral("audio/x-vorbis+ogg"),
+			QStringLiteral("audio/x-voc"),
+			QStringLiteral("audio/x-tta"),
+			QStringLiteral("audio/x-stm"),
+			QStringLiteral("audio/x-scpls"),
+			QStringLiteral("audio/x-s3m"),
+			QStringLiteral("audio/x-pn-realaudio-plugin"),
+			QStringLiteral("audio/x-musepack"),
+			QStringLiteral("audio/x-ms-wma"),
+			QStringLiteral("audio/x-ms-asx"),
+			QStringLiteral("audio/x-mpegurl"),
+			QStringLiteral("audio/x-mod"),
+			QStringLiteral("audio/x-matroska"),
+			QStringLiteral("audio/x-m4b"),
+			QStringLiteral("audio/x-it"),
+			QStringLiteral("audio/x-aiff"),
+			QStringLiteral("audio/webm"),
+			QStringLiteral("audio/vnd.wave"),
+			QStringLiteral("audio/vnd.rn-realaudio"),
+			QStringLiteral("audio/ogg"),
+			QStringLiteral("audio/mpeg"),
+			QStringLiteral("audio/mp4"),
+			QStringLiteral("audio/flac"),
+			QStringLiteral("audio/basic"),
+			QStringLiteral("audio/ac3"),
+			QStringLiteral("application/xspf+xml"),
+			QStringLiteral("application/x-shorten"),
+			QStringLiteral("application/x-quicktime-media-link"),
+			QStringLiteral("application/x-matroska"),
+			QStringLiteral("application/vnd.rn-realmedia"),
+			QStringLiteral("application/vnd.ms-asf"),
+			QStringLiteral("application/vnd.adobe.flash.movie"),
+			QStringLiteral("application/ram"),
+			QStringLiteral("application/ogg")
+			} },
+		// manual entries
+		KFileFilter { QStringLiteral("Iso files"), QStringList { QStringLiteral("*.iso") }, QStringList() },
+		KFileFilter { QStringLiteral("Kaffeine files"), QStringList { QStringLiteral("*.kaffeine") }, QStringList() },
+		KFileFilter { QStringLiteral("All files"), QStringList { QStringLiteral("(*)") }, QStringList() }
+	};
+	return l;
+}
+
 MediaWidget::DisplayMode MediaWidget::getDisplayMode() const
 {
 	return displayMode;

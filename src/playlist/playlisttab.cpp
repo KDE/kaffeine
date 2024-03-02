@@ -616,7 +616,7 @@ bool PlaylistTab::getRepeat() const
 void PlaylistTab::createFileWidget()
 {
 	KFileWidget *fileWidget = new KFileWidget(QUrl(), fileWidgetSplitter);
-	fileWidget->setFilter(MediaWidget::extensionFilter());
+	fileWidget->setFilters(MediaWidget::extensionFilters(), MediaWidget::extensionFilters()[0]);
 	fileWidget->setMode(KFile::Files | KFile::ExistingOnly);
 	fileWidgetSplitter->setStretchFactor(1, 1);
 
