@@ -23,7 +23,7 @@
 #include <KLocalizedString>
 
 #include <KConfigGroup>
-#include <KIO/Job>
+#include <KIO/TransferJob>
 #include <QBoxLayout>
 #include <QButtonGroup>
 #include <QCheckBox>
