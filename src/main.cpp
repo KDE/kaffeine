@@ -220,7 +220,6 @@ int main(int argc, char *argv[])
 	app.setApplicationName("kaffeine");
 	app.setOrganizationDomain("kde.org");
 	app.setWindowIcon(QIcon::fromTheme(QLatin1String("kaffeine"), QIcon(":kaffeine")));
-	app.setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 
 	app.parser.addVersionOption();
 	app.parser.addHelpOption();
