@@ -131,7 +131,7 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 		this, SLOT(recordingRemoved(DvbSharedRecording)));
 
 	QBoxLayout *boxLayout = new QHBoxLayout(this);
-	boxLayout->setMargin(0);
+	boxLayout->setContentsMargins(0, 0, 0, 0);
 
 	splitter = new QSplitter(this);
 	boxLayout->addWidget(splitter);
@@ -206,7 +206,7 @@ DvbTab::DvbTab(QMenu *menu, KActionCollection *collection, MediaWidget *mediaWid
 
 	QWidget *mediaContainer = new QWidget(splitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
-	mediaLayout->setMargin(0);
+	mediaLayout->setContentsMargins(0, 0, 0, 0);
 	splitter->setStretchFactor(1, 1);
 
 	connect(mediaWidget, SIGNAL(osdKeyPressed(int)), this, SLOT(osdKeyPressed(int)));

@@ -151,7 +151,7 @@ DvbEpgDialog::DvbEpgDialog(DvbManager *manager_, QWidget *parent) : QDialog(pare
 
 	contentLabel = new QLabel(widget);
 	contentLabel->setAlignment(Qt::AlignLeft | Qt::AlignTop);
-	contentLabel->setMargin(5);
+	contentLabel->setContentsMargins(5, 5, 5, 5);
 	contentLabel->setWordWrap(true);
 
 	QScrollArea *scrollArea = new QScrollArea(widget);

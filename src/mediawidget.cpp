@@ -65,7 +65,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	source = dummySource.data();
 
 	QBoxLayout *layout = new QVBoxLayout(this);
-	layout->setMargin(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 
 	QPalette palette = QWidget::palette();
 	palette.setColor(backgroundRole(), Qt::black);

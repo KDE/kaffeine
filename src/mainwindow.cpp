@@ -106,7 +106,7 @@ StartTab::StartTab(MainWindow *mainWindow)
 
 	QGridLayout *gridLayout = new QGridLayout(this);
 	gridLayout->setAlignment(Qt::AlignCenter);
-	gridLayout->setMargin(10);
+	gridLayout->setContentsMargins(10, 10, 10, 10);
 	gridLayout->setSpacing(15);
 
 	QAbstractButton *button =
@@ -175,7 +175,7 @@ private:
 PlayerTab::PlayerTab(MediaWidget *mediaWidget_) : mediaWidget(mediaWidget_)
 {
 	QHBoxLayout *layout = new QHBoxLayout(this);
-	layout->setMargin(0);
+	layout->setContentsMargins(0, 0, 0, 0);
 }
 
 void MainWindow::run()

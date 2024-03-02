@@ -439,7 +439,7 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 	menu->addAction(collection->addAction(QLatin1String("playlist_save_as"), savePlaylistAsAction));
 
 	QBoxLayout *widgetLayout = new QHBoxLayout(this);
-	widgetLayout->setMargin(0);
+	widgetLayout->setContentsMargins(0, 0, 0, 0);
 
 	QSplitter *horizontalSplitter = new QSplitter(this);
 	widgetLayout->addWidget(horizontalSplitter);
@@ -448,7 +448,7 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 
 	QWidget *widget = new QWidget(verticalSplitter);
 	QBoxLayout *sideLayout = new QVBoxLayout(widget);
-	sideLayout->setMargin(0);
+	sideLayout->setContentsMargins(0, 0, 0, 0);
 
 	QBoxLayout *boxLayout = new QHBoxLayout();
 
@@ -501,7 +501,7 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 
 	widget = new QWidget(verticalSplitter);
 	sideLayout = new QVBoxLayout(widget);
-	sideLayout->setMargin(0);
+	sideLayout->setContentsMargins(0, 0, 0, 0);
 
 	boxLayout = new QHBoxLayout();
 
@@ -547,7 +547,7 @@ PlaylistTab::PlaylistTab(QMenu *menu, KActionCollection *collection, MediaWidget
 
 	QWidget *mediaContainer = new QWidget(verticalSplitter);
 	mediaLayout = new QHBoxLayout(mediaContainer);
-	mediaLayout->setMargin(0);
+	mediaLayout->setContentsMargins(0, 0, 0, 0);
 
 	verticalSplitter->setStretchFactor(1, 1);
 	horizontalSplitter->setStretchFactor(1, 1);
