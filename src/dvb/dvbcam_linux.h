@@ -134,7 +134,7 @@ private:
 	int slot;
 	QTimer pollTimer;
 	QSocketNotifier *socketNotifier;
-	PendingCommands pendingCommands;
+	int pendingCommands;
 	QByteArray message;
 	char *messageData;
 	bool ready;
