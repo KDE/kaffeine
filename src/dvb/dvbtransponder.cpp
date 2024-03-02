@@ -20,6 +20,8 @@
 
 #include <QDataStream>
 #include <QTextStream>
+#include <QString>
+
 #include <stdint.h>
 
 #include "dvbtransponder.h"
