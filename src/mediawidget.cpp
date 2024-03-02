@@ -1685,7 +1685,7 @@ void SeekSlider::mousePressEvent(QMouseEvent *event)
 {
 	int buttons = style()->styleHint(QStyle::SH_Slider_AbsoluteSetButtons);
 	Qt::MouseButton button = static_cast<Qt::MouseButton>(buttons & (~(buttons - 1)));
-	QMouseEvent modifiedEvent(event->type(), event->pos(), event->globalPos(), button,
+	QMouseEvent modifiedEvent(event->type(), event->pos(), event->globalPosition(), button,
 		event->buttons() ^ event->button() ^ button, event->modifiers());
 	QSlider::mousePressEvent(&modifiedEvent);
 }
