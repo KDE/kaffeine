@@ -343,13 +343,13 @@ VlcMediaWidget::~VlcMediaWidget()
 
 VlcMediaWidget *VlcMediaWidget::createVlcMediaWidget(QWidget *parent)
 {
-	QScopedPointer<VlcMediaWidget> vlcMediaWidget(new VlcMediaWidget(parent));
+	std::unique_ptr<VlcMediaWidget> vlcMediaWidget(new VlcMediaWidget(parent));
 
 	if (!vlcMediaWidget->init()) {
 		return NULL;
 	}
 
-	return vlcMediaWidget.take();
+	return vlcMediaWidget.release();
 }
 
 QStringList VlcMediaWidget::getAudioDevices()
