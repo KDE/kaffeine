@@ -302,7 +302,7 @@ public:
 
 	void setMediaWidget(const MediaWidget *mediaWidget)
 	{
-		MediaWidget *oldMediaWidget = weakMediaWidget.data();
+		 MediaWidget *oldMediaWidget = weakMediaWidget.toStrongRef().get();
 
 		if (mediaWidget != oldMediaWidget) {
 			if (oldMediaWidget != NULL) {
