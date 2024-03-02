@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.16)
 project(kaffeine)
 
 set(KAFFEINE_MAJOR_VERSION 2)
-set(KAFFEINE_MINOR_VERSION 0)
-set(KAFFEINE_PATCH_VERSION 19)
+set(KAFFEINE_MINOR_VERSION 1)
+set(KAFFEINE_PATCH_VERSION 0)
 
 # comment/uuncomment below if either the version is a production or a development one
 #set(KAFFEINE_EXTRA_VERSION -git)
@@ -14,10 +14,10 @@ set(KAFFEINE_VERSION
 
 option(BUILD_TOOLS "Build the helper tools" OFF)
 
-set(QT_MIN_VERSION "5.4.0")
-set(KF5_MIN_VERSION "5.11.0")
+set(QT_MIN_VERSION "6.6.0")
+set(KF6_MIN_VERSION "6.0.0")
 
-find_package(Qt5Core)
+find_package(Qt6Core)
 find_package(ECM 1.0.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH
 	${ECM_MODULE_PATH}
@@ -35,16 +35,15 @@ include(CheckIncludeFiles)
 set(CMAKE_AUTOMOC ON)
 
 # Find Qt modules
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
 	Core    # QCommandLineParser, QStringLiteral
 	Widgets # QApplication
 	Network
 	Sql
-	X11Extras
 )
 
 # Find KDE modules
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
+find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
 	CoreAddons      # KAboutData
 	I18n            # KLocalizedString
 	WidgetsAddons   # KMessageBox
@@ -54,9 +53,8 @@ find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS
 	Solid
 	DBusAddons
 )
-find_package(KF5DocTools ${KF5_MIN_VERSION} QUIET)
+find_package(KF6DocTools ${KF6_MIN_VERSION} QUIET)
 
-find_package(X11 REQUIRED)
 find_package(VLC 1.2 REQUIRED)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
@@ -81,8 +79,7 @@ else()
   # Linux (and others) have a weird copy of v4l headers to use
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 endif()
-include_directories(${CMAKE_BINARY_DIR} ${VLC_INCLUDE_DIRS}
-                    ${X11_Xscreensaver_INCLUDE_PATH})
+include_directories(${CMAKE_BINARY_DIR} ${VLC_INCLUDE_DIRS})
 
 check_include_files(${CMAKE_CURRENT_SOURCE_DIR}/include/frontend.h HAVE_DVB)
 
@@ -108,10 +105,10 @@ add_subdirectory(src)
 
 ki18n_install(po)
 
-if(KF5DocTools_VERSION)
+if(KF6DocTools_VERSION)
   add_subdirectory(doc)
   kdoctools_install(po)
-endif(KF5DocTools_VERSION)
+endif(KF6DocTools_VERSION)
 
 if(BUILD_TOOLS)
   add_subdirectory(tools)
