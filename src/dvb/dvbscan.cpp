@@ -952,13 +952,14 @@ void DvbScan::processVct(const AtscVctSection &section)
 		if (sdtEntry.name.isEmpty()) {
 			// Extended Channel name not available, fall back
 			// to the short name
-			QChar shortName[] = { entry.shortName1(),
-						entry.shortName2(),
-						entry.shortName3(),
-						entry.shortName4(),
-						entry.shortName5(),
-						entry.shortName6(),
-						entry.shortName7(), 0 };
+			QChar shortName[] = { QChar(entry.shortName1()),
+						QChar(entry.shortName2()),
+						QChar(entry.shortName3()),
+						QChar(entry.shortName4()),
+						QChar(entry.shortName5()),
+						QChar(entry.shortName6()),
+						QChar(entry.shortName7()),
+						QChar(0) };
 			int nameLength = 0;
 			while (shortName[nameLength] != 0) {
 				++nameLength;

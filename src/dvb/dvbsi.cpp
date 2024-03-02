@@ -406,13 +406,13 @@ QString AtscPsipText::interpretTextData(const char *data, unsigned int len,
 	    (mode >= 0x30 && mode <= 0x33)) {
 		// Select UNICODE Code range based on mode as leading octet
 		for (unsigned int i = 0; i < len; i++) {
-			QChar val = (data[i] | (mode << 8));
+			QChar val = QChar(data[i] | (mode << 8));
 			result += val;
 		}
 	} else if (mode == 0x3f) {
 		// UTF-16
 		for (unsigned int i = 0; i < len; i += 2) {
-			QChar val = ((unsigned char)data[i] * 256) + (unsigned char)data[i+1];
+			QChar val = QChar(((unsigned char)data[i] * 256) + (unsigned char)data[i+1]);
 			result += val;
 		}
 	} else {
