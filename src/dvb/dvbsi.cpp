@@ -20,7 +20,7 @@
 
 #include "../log.h"
 
-#include <QTextCodec>
+#include <QStringConverter>
 
 #include "dvbsi.h"
 
@@ -147,28 +147,28 @@ void DvbStandardSection::initStandardSection(const char *data, int size)
 	initSection(data, size);
 }
 
-class Iso6937Codec : public QTextCodec
+class Iso6937Codec
 {
 public:
 	Iso6937Codec() { }
 	~Iso6937Codec() { }
 
-	QByteArray name() const override
+	QByteArray name() const
 	{
 		return "ISO 6937"; // actually a superset of ISO 6937
 	}
 
-	int mibEnum() const override
+	int mibEnum() const
 	{
 		return 14;
 	}
 
-	QByteArray convertFromUnicode(const QChar *, int, QTextCodec::ConverterState *) const override
+	QByteArray convertFromUnicode(const QChar *, int) const
 	{
 		return QByteArray();
 	}
 
-	QString convertToUnicode(const char *input, int size, QTextCodec::ConverterState *) const override
+	QString convertToUnicode(const char *input, int size) const
 	{
 		QString result;
 		unsigned short diacriticalMark = 0;
@@ -311,57 +311,53 @@ QString DvbSiText::convertText(const char *data, int size)
 		size--;
 	}
 
-	if (codecTable[encoding] == NULL) {
-		QTextCodec *codec = NULL;
-
-		switch (encoding) {
-		case Iso6937: codec = new Iso6937Codec(); break;
-		case Iso8859_1: codec = QTextCodec::codecForName("ISO 8859-1"); break;
-		case Iso8859_2: codec = QTextCodec::codecForName("ISO 8859-2"); break;
-		case Iso8859_3: codec = QTextCodec::codecForName("ISO 8859-3"); break;
-		case Iso8859_4: codec = QTextCodec::codecForName("ISO 8859-4"); break;
-		case Iso8859_5: codec = QTextCodec::codecForName("ISO 8859-5"); break;
-		case Iso8859_6: codec = QTextCodec::codecForName("ISO 8859-6"); break;
-		case Iso8859_7: codec = QTextCodec::codecForName("ISO 8859-7"); break;
-		case Iso8859_8: codec = QTextCodec::codecForName("ISO 8859-8"); break;
-		case Iso8859_9: codec = QTextCodec::codecForName("ISO 8859-9"); break;
-		case Iso8859_10: codec = QTextCodec::codecForName("ISO 8859-10"); break;
-		case Iso8859_11: codec = QTextCodec::codecForName("ISO 8859-11"); break;
-		case Iso8859_13: codec = QTextCodec::codecForName("ISO 8859-13"); break;
-		case Iso8859_14: codec = QTextCodec::codecForName("ISO 8859-14"); break;
-		case Iso8859_15: codec = QTextCodec::codecForName("ISO 8859-15"); break;
-		case Iso10646_ucs2: codec = QTextCodec::codecForName("UTF-16"); break;
-		case Iso2022_kr: codec = QTextCodec::codecForName("ISO 2022-KR"); break;
-		case Gb2312: codec = QTextCodec::codecForName("GB2312"); break;
-		case Utf_16be: codec = QTextCodec::codecForName("UTF-16BE"); break;
-		case Utf_8: codec = QTextCodec::codecForName("UTF-8"); break;
-		}
-
-		Q_ASSERT(codec != NULL);
-		codecTable[encoding] = codec;
+	QStringDecoder::Encoding enc;
+	switch (encoding) {
+	case Iso6937: enc = QStringDecoder::Latin1; break;
+	case Iso8859_1: enc = QStringDecoder::Latin1; break;
+	case Iso8859_2: enc = QStringDecoder::Latin1; break;
+	case Iso8859_3: enc = QStringDecoder::Latin1; break;
+	case Iso8859_4: enc = QStringDecoder::Latin1; break;
+	case Iso8859_5: enc = QStringDecoder::Latin1; break;
+	case Iso8859_6: enc = QStringDecoder::Latin1; break;
+	case Iso8859_7: enc = QStringDecoder::Latin1; break;
+	case Iso8859_8: enc = QStringDecoder::Latin1; break;
+	case Iso8859_9: enc = QStringDecoder::Latin1; break;
+	case Iso8859_10: enc = QStringDecoder::Latin1; break;
+	case Iso8859_11: enc = QStringDecoder::Latin1; break;
+	case Iso8859_13: enc = QStringDecoder::Latin1; break;
+	case Iso8859_14: enc = QStringDecoder::Latin1; break;
+	case Iso8859_15: enc = QStringDecoder::Latin1; break;
+	case Iso10646_ucs2: enc = QStringDecoder::Utf16; break;
+	case Iso2022_kr: enc = QStringDecoder::Latin1; break;
+	case Gb2312: enc = QStringDecoder::Latin1; break;
+	case Utf_16be: enc = QStringDecoder::Utf16BE; break;
+	case Utf_8: enc = QStringDecoder::Utf8; break;
 	}
 
+	QStringDecoder convert(enc);
+	QByteArray tmp;
 	if (encoding <= Iso8859_15) {
 		// only strip control codes for one-byte character tables
 
 		char *dest = new char[size];
-		char *destIt = dest;
 
 		for (const char *it = data; it != (data + size); ++it) {
 			unsigned char value = *it;
 
 			if ((value < 0x80) || (value > 0x9f)) {
-				*(destIt++) = value;
+				tmp += value;
 			}
 		}
 
-		QString result = codecTable[encoding]->toUnicode(dest, int(destIt - dest));
+		QString result = convert(tmp);
 		delete[] dest;
 
 		return result;
 	}
 
-	return codecTable[encoding]->toUnicode(data, size);
+	tmp = QByteArray(data, size);
+	return convert(tmp);
 }
 
 void DvbSiText::setOverride6937(bool override)
@@ -369,7 +365,6 @@ void DvbSiText::setOverride6937(bool override)
 	override6937 = override;
 }
 
-QTextCodec *DvbSiText::codecTable[EncodingTypeMax + 1] = { NULL };
 bool DvbSiText::override6937 = false;
 
 void DvbDescriptor::initDescriptor(const char *data, int size)
