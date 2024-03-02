@@ -637,8 +637,8 @@ int DvbRecordingModel::getSecondsUntilNextRecording() const
 			break;
 		}
 		if (rec.begin > QDateTime::currentDateTime().toUTC()) {
-			if (timeUntil == -1 || timeUntil > rec.begin.toTime_t() - QDateTime::currentDateTime().toUTC().toTime_t()) {
-				timeUntil = rec.begin.toTime_t() - QDateTime::currentDateTime().toUTC().toTime_t();
+			if (timeUntil == -1 || timeUntil > rec.begin.toSecsSinceEpoch() - QDateTime::currentDateTime().toUTC().toSecsSinceEpoch()) {
+				timeUntil = rec.begin.toSecsSinceEpoch() - QDateTime::currentDateTime().toUTC().toSecsSinceEpoch();
 			}
 		}
 
