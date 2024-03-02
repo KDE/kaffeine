@@ -447,7 +447,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	jumpToPositionAction = new QWidgetAction(this);
 	jumpToPositionAction->setIcon(QIcon::fromTheme(QLatin1String("go-jump"), QIcon(":go-jump")));
 	jumpToPositionAction->setText(i18nc("@action:inmenu", "Jump to Position..."));
-	jumpToPositionAction->setShortcut(Qt::CTRL + Qt::Key_J);
+	jumpToPositionAction->setShortcut(Qt::CTRL | Qt::Key_J);
 	connect(jumpToPositionAction, SIGNAL(triggered()), this, SLOT(jumpToPosition()));
 	menu->addAction(collection->addAction(QLatin1String("controls_jump_to_position"), jumpToPositionAction));
 
@@ -466,7 +466,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	longSkipBackwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-backward"), QIcon(":media-skip-backward")));
 	// xgettext:no-c-format
 	longSkipBackwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Backward", longSkipDuration));
-	longSkipBackwardAction->setShortcut(Qt::SHIFT + Qt::Key_Left);
+	longSkipBackwardAction->setShortcut(Qt::SHIFT | Qt::Key_Left);
 	connect(longSkipBackwardAction, SIGNAL(triggered()), this, SLOT(longSkipBackward()));
 	navigationMenu->addAction(
 		collection->addAction(QLatin1String("controls_long_skip_backward"), longSkipBackwardAction));
@@ -493,7 +493,7 @@ MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *col
 	longSkipForwardAction->setIcon(QIcon::fromTheme(QLatin1String("media-skip-forward"), QIcon(":media-skip-forward")));
 	// xgettext:no-c-format
 	longSkipForwardAction->setText(i18nc("submenu of 'Skip'", "Skip %1s Forward", longSkipDuration));
-	longSkipForwardAction->setShortcut(Qt::SHIFT + Qt::Key_Right);
+	longSkipForwardAction->setShortcut(Qt::SHIFT | Qt::Key_Right);
 	connect(longSkipForwardAction, SIGNAL(triggered()), this, SLOT(longSkipForward()));
 	navigationMenu->addAction(
 		collection->addAction(QLatin1String("controls_long_skip_forward"), longSkipForwardAction));
