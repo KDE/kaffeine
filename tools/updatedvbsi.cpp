@@ -23,9 +23,12 @@
 # define qInfo qDebug
 #endif
 
+#include <QRegularExpression>
+#include <QString>
+
 #include <QDomDocument>
 #include <QFile>
-#include <QRegularExpression>
+
 
 class Element
 {
@@ -206,7 +209,7 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 	QString entryName = node.nodeName();
 	QRegularExpression regFuncName("^Dvb|^Atsc");
-	QString initFunctionName = QString(entryName).replace(regFuncName), "init");
+    QString initFunctionName = QString(entryName).replace(regFuncName, "init");
 	bool ignoreFirstNewLine = false;
 
 	QString funcName = entryName + "::";
@@ -257,8 +260,8 @@ void SiXmlParser::parseEntry(QDomNode node, Type type, QTextStream &headerStream
 
 			while (true) {
 				int oldSize = entryLengthCalculation.size();
-				QRegularExpression entryLengthRegEx("at\\(([0-9]*)\\)"), "quint8(data[\\1])");
-				entryLengthCalculation.replace(entryLengthRegEx);
+                QRegularExpression entryLengthRegEx("at\\(([0-9]*)\\)");
+                entryLengthCalculation.replace(entryLengthRegEx, "quint8(data[\\1])");
 
 				if (entryLengthCalculation.size() == oldSize) {
 					break;

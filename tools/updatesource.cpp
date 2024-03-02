@@ -128,9 +128,9 @@ int main(int argc, char *argv[])
 					"is longer than 99 characters";
 			}
 
-			int logIndex = logRegExp.indexIn(line);
-
-			if (logIndex >= 0) {
+            QRegularExpressionMatch match = logRegExp.match(line);
+            if (match.hasMatch()) {
+                int logIndex = match.capturedStart();
 				logIndex = (line.indexOf('"', logIndex) + 1);
 
 				if (!line.mid(logIndex).startsWith(logFunctionName)) {
@@ -153,11 +153,10 @@ int main(int argc, char *argv[])
 
 			if ((bracketLevel == 0) && !line.startsWith('\t')) {
 				QRegularExpression logFunctionRegExp("[0-9A-Za-z:~]*[(]");
-				int index = logFunctionRegExp.indexIn(line);
-
-				if (index >= 0) {
+                QRegularExpressionMatch match = logFunctionRegExp.match(line);
+                if (match.hasMatch()) {
 					logFunctionName =
-						line.mid(index, logFunctionRegExp.matchedLength());
+                        line.mid(match.capturedStart(), match.capturedLength());
 					logFunctionName.chop(1);
 					logFunctionName.append(": ");
 				}

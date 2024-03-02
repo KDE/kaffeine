@@ -85,10 +85,10 @@ DvbEpgLangEntry *XmlTv::getLangEntry(DvbEpgEntry &epgEntry,
 bool XmlTv::parseChannel(void)
 {
 	const QString emptyString("");
-	QStringRef empty(&emptyString);
+	QStringView empty(emptyString);
 
 	const QXmlStreamAttributes attrs = r->attributes();
-	QStringRef channelName = attrs.value("id");
+	QStringView channelName = attrs.value("id");
 	QList<QString>list;
 
 	QString current = r->name().toString();
@@ -103,7 +103,7 @@ bool XmlTv::parseChannel(void)
 		if (t != QXmlStreamReader::StartElement)
 			continue;
 
-		QStringRef name = r->name();
+		QStringView name = r->name();
 		if (name == "display-name") {
 			QString display = r->readElementText();
 			list.append(display);
@@ -250,10 +250,10 @@ QString XmlTv::parseCredits(void)
 bool XmlTv::parseProgram(void)
 {
 	const QString emptyString("");
-	QStringRef empty(&emptyString);
+	QStringView empty(emptyString);
 
 	QXmlStreamAttributes attrs = r->attributes();
-	QStringRef channelName = attrs.value("channel");
+	QStringView channelName = attrs.value("channel");
 	QHash<QString, QList<QString>>::ConstIterator it;
 
 	it = channelMap.constFind(channelName.toString());
@@ -334,7 +334,7 @@ bool XmlTv::parseProgram(void)
 			continue;
 
 		QString lang;
-		QStringRef element = r->name();
+		QStringView element = r->name();
 		if (element == "title") {
 			attrs = r->attributes();
 			lang = IsoCodes::code2Convert(attrs.value("lang").toString());
@@ -598,7 +598,7 @@ bool XmlTv::load(QString file)
 		if (r->readNext() != QXmlStreamReader::StartElement)
 			continue;
 
-		QStringRef name = r->name();
+		QStringView name = r->name();
 
 		if (name == "channel") {
 			if (!parseChannel())
