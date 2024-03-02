@@ -421,7 +421,7 @@ bool XmlTv::parseProgram(void)
 			if (!day.isEmpty()) {
 				date += '-' + day;
 				QDate d = QDate::fromString(date, Qt::ISODate);
-				date = d.toString(Qt::DefaultLocaleShortDate);
+				date = QLocale().toString(d, QLocale::ShortFormat);
 			}
 		} else if (element == QLatin1String("language")) {
 			language = r->readElementText();
