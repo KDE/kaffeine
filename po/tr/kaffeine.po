@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:30+0000\n"
-"PO-Revision-Date: 2024-02-09 19:08+0300\n"
+"PO-Revision-Date: 2024-04-23 01:24+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.01.95\n"
+"X-Generator: Lokalize 24.07.70\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -95,7 +95,7 @@ msgstr "Genel"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "Log messages:"
-msgstr "Günlük kayıtları:"
+msgstr "Günlük iletileri:"
 
 #: configurationdialog.cpp:92
 #, kde-format
@@ -232,7 +232,7 @@ msgstr "Frekans (MHz):"
 #: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
 #, kde-format
 msgid "Symbol rate (kS/s):"
-msgstr "Sembol oranı (kS/s):"
+msgstr "Sembol oranı (kS/sn):"
 
 #: dvb/dvbchanneldialog.cpp:754 dvb/dvbchanneldialog.cpp:779
 #: dvb/dvbchanneldialog.cpp:794 dvb/dvbchanneldialog.cpp:815
@@ -245,7 +245,7 @@ msgstr "Modülasyon:"
 #: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
 #, kde-format
 msgid "FEC rate:"
-msgstr "FEC oranı:"
+msgstr "FEC hızı:"
 
 #: dvb/dvbchanneldialog.cpp:769
 #, kde-format
@@ -261,7 +261,7 @@ msgstr "Roll-off:"
 #: dvb/dvbchanneldialog.cpp:838
 #, kde-format
 msgid "Bandwidth:"
-msgstr "Bantgenişliği:"
+msgstr "Bant genişliği:"
 
 #: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
 #, kde-format
@@ -318,17 +318,17 @@ msgstr "SB sayısı:"
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
 msgid "Layer A Modulation:"
-msgstr "A Katmanı Modülasyonu:"
+msgstr "A katmanı modülasyonu:"
 
 #: dvb/dvbchanneldialog.cpp:862
 #, kde-format
 msgid "Layer A FEC rate:"
-msgstr "A Katmanı FEC oranı:"
+msgstr "A katmanı FEC hızı:"
 
 #: dvb/dvbchanneldialog.cpp:864
 #, kde-format
 msgid "Layer A segments:"
-msgstr "A Katmanı dilimleri:"
+msgstr "A katmanı dilimleri:"
 
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
@@ -338,12 +338,12 @@ msgstr "A katmanı harmanlaması:"
 #: dvb/dvbchanneldialog.cpp:870
 #, kde-format
 msgid "Layer B Modulation:"
-msgstr "B Katmanı Modülasyonu:"
+msgstr "B katmanı modülasyonu:"
 
 #: dvb/dvbchanneldialog.cpp:872
 #, kde-format
 msgid "Layer B FEC rate:"
-msgstr "B Katmanı FEC oranı:"
+msgstr "B katmanı FEC hızı:"
 
 #: dvb/dvbchanneldialog.cpp:874
 #, kde-format
@@ -358,37 +358,37 @@ msgstr "B katmanı harmanlaması:"
 #: dvb/dvbchanneldialog.cpp:880
 #, kde-format
 msgid "Layer C Modulation:"
-msgstr "C Katmanı Modülasyonu:"
+msgstr "C katmanı modülasyonu:"
 
 #: dvb/dvbchanneldialog.cpp:882
 #, kde-format
 msgid "Layer C FEC rate:"
-msgstr "C Katmanı FEC değeri:"
+msgstr "C katmanı FEC hızı:"
 
 #: dvb/dvbchanneldialog.cpp:884
 #, kde-format
 msgid "Layer C segments:"
-msgstr "C Katmanı dilimleri:"
+msgstr "C katmanı dilimleri:"
 
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
 msgid "Layer C interleaving:"
-msgstr "C Katmanı harmanlaması:"
+msgstr "C katmanı harmanlaması:"
 
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
 msgid "Network ID:"
-msgstr "Ağ Kimliği:"
+msgstr "Ağ kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:920
 #, kde-format
 msgid "Transport stream ID:"
-msgstr "Yayın akışını taşıma kimliği:"
+msgstr "Akış taşıma kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:927
 #, kde-format
 msgid "Service ID:"
-msgstr "Hizmet Kimliği:"
+msgstr "Hizmet kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:937
 #, kde-format
@@ -403,22 +403,22 @@ msgstr "Karıştırılmış:"
 #: dvb/dvbchanneldialog.cpp:981
 #, kde-format
 msgid "PMT PID:"
-msgstr "PMT Kimliği:"
+msgstr "PMT süreç kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:985
 #, kde-format
 msgid "Video PID:"
-msgstr "Video Kimliği:"
+msgstr "Video süreç kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
 msgid "Subtitle PID:"
-msgstr "Altyazı Kimliği:"
+msgstr "Altyazı süreç kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
 msgid "Teletext PID:"
-msgstr "Teleteks Kimliği:"
+msgstr "Teleteks süreç kimliği:"
 
 #: dvb/dvbconfigdialog.cpp:59
 #, kde-format
@@ -485,7 +485,7 @@ msgid ""
 "The following substitutions work: \"%year\" for year (YYYY) and the "
 "following: %month, %day, %hour, %min, %sec, %channel and %title"
 msgstr ""
-"Şu ikameler de çalışır: yıl (YYYY) için \"%year\" ve şunlar: %month, %day, "
+"Şu ikameler de çalışır: yıl (YYYY) için “%year” ve şunlar: %month, %day, "
 "%hour, %min, %sec, %channel ve %title"
 
 #: dvb/dvbconfigdialog.cpp:153
@@ -735,7 +735,7 @@ msgstr "Ad:"
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
-msgstr "Daha Yüksek LNBf gerilimi kullan:"
+msgstr "Daha yüksek LNBf gerilimi kullan:"
 
 #: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
@@ -808,7 +808,7 @@ msgstr "Konum"
 #: dvb/dvbconfigdialog.cpp:1228
 #, kde-format
 msgid "Remove Satellite"
-msgstr "Uydu Kaldır"
+msgstr "Uyduyu Kaldır"
 
 #: dvb/dvbconfigdialog.cpp:1241
 #, kde-format
@@ -1971,7 +1971,7 @@ msgstr "Sayısal TV destekli, KDE tarafından yapılmış bir ortam oynatıcıs�
 #: main.cpp:143
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr "(C) 2007-2019 Kafein Yazarları."
+msgstr "(C) 2007–2019 Kafein Yazarları."
 
 #: main.cpp:161
 #, kde-format
@@ -2469,7 +2469,7 @@ msgstr "Video Boyutu"
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
-msgstr "Otomatik"
+msgstr "Kendiliğinden"
 
 #: mediawidget.cpp:367
 #, kde-format
@@ -2522,7 +2522,7 @@ msgstr "%​300"
 #: mediawidget.cpp:433
 #, kde-format
 msgid "Volume Slider"
-msgstr "Ses Ayar Çubuğu"
+msgstr "Ses Düzeyi Sürgüsü"
 
 #: mediawidget.cpp:448
 #, kde-format
@@ -2553,7 +2553,7 @@ msgstr "%1 sn İleri Atla"
 #: mediawidget.cpp:500 mediawidget.cpp:503
 #, kde-format
 msgid "Seek Slider"
-msgstr "Konum Çubuğu"
+msgstr "Konum Sürgüsü"
 
 #: mediawidget.cpp:514
 #, kde-format
@@ -2666,7 +2666,7 @@ msgstr "Ses Açık"
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr "Görüntüyü Ayrıştır: %1"
+msgstr "Görüntüyü ayrıştır: %1"
 
 #: mediawidget.cpp:1402
 #, kde-format
