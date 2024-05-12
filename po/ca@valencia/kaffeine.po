@@ -589,7 +589,7 @@ msgid ""
 "Aborting, as something might be wrong...\n"
 msgstr ""
 "La mida del fitxer d'escanejat supera els %1 kB.\n"
-"S'interromp, ja que podria estar malament alguna cosa...\n"
+"S'interromp, ja que podria estar malament alguna cosa…\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -823,7 +823,7 @@ msgstr "Latitud:"
 #: dvb/dvbconfigdialog.cpp:1251
 #, kde-format
 msgid "[S -90 ... 90 N]"
-msgstr "[S -90... 90 N]"
+msgstr "[S -90… 90 N]"
 
 #: dvb/dvbconfigdialog.cpp:1269
 #, kde-format
@@ -833,7 +833,7 @@ msgstr "Longitud:"
 #: dvb/dvbconfigdialog.cpp:1274
 #, kde-format
 msgid "[W -180 ... 180 E]"
-msgstr "[O -180... 180 E]"
+msgstr "[O -180… 180 E]"
 
 #: dvb/dvbconfigdialog.cpp:1623
 #, kde-format
@@ -1802,7 +1802,7 @@ msgstr "Gravació instantània"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
-msgstr "Configura la televisió..."
+msgstr "Configura la televisió…"
 
 #: dvb/dvbtab.cpp:143
 #, kde-format
@@ -2064,7 +2064,7 @@ msgstr "Fi&txer"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr "Obri un URL..."
+msgstr "Obri un URL…"
 
 #: mainwindow.cpp:225 mainwindow.cpp:480
 #, kde-format
@@ -2536,7 +2536,7 @@ msgstr "Control lliscant del volum"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
-msgstr "Salta fins a la posició..."
+msgstr "Salta fins a la posició…"
 
 #: mediawidget.cpp:453
 #, kde-format
