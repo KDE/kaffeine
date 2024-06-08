@@ -2,7 +2,7 @@
 # Copyright © 2009, 2010, 2011, 2012 This_file_is_part_of_KDE
 # This file is distributed under the same license as the kaffeine package.
 # Mikael Lammentausta <mikael.lammentausta+kdetrans@gmail.com>, 2009.
-# Tommi Nieminen <translator@legisign.org>, 2010, 2012, 2014, 2015, 2018, 2019, 2021, 2022.
+# Tommi Nieminen <translator@legisign.org>, 2010, 2012, 2014, 2015, 2018, 2019, 2021, 2022, 2024.
 # Lasse Liehu <lasse.liehu@gmail.com>, 2011, 2013, 2014, 2015, 2016.
 #
 # KDE Finnish translation sprint participants:
@@ -12,16 +12,16 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2023-11-05 12:30+0000\n"
-"PO-Revision-Date: 2022-09-06 16:42+0300\n"
+"PO-Revision-Date: 2024-05-09 09:47+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
-"Language-Team: KDE\n"
+"Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-POT-Import-Date: 2012-12-01 22:20:47+0000\n"
-"X-Generator: Lokalize 20.12.0\n"
+"X-Generator: Lokalize 22.12.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -255,10 +255,11 @@ msgstr "FEC-taajuus:"
 msgid "Polarization:"
 msgstr "Polarisaatio:"
 
+# ”Roll-off is the steepness of a transfer function with frequency” (Wikipedia). Vakiintunutta käännöstä ei liene olemassa.
 #: dvb/dvbchanneldialog.cpp:781
 #, kde-format
 msgid "Roll-off:"
-msgstr ""
+msgstr "Jyrkkyys:"
 
 #: dvb/dvbchanneldialog.cpp:792 dvb/dvbchanneldialog.cpp:813
 #: dvb/dvbchanneldialog.cpp:838
@@ -859,10 +860,11 @@ msgstr "Vaihda taajuutta (MHz)"
 msgid "Low range: %1 MHz to %2 MHz"
 msgstr "Alempi alue: %1–%2 MHz"
 
+# Tällekään ei taida olla olemassa virallista käännöstä? ”Band” on tässä (taajuus)kaista, mutta ”stacked” jää avoimeksi.
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
-msgstr ""
+msgstr "Kaistaniputettu"
 
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
@@ -1206,10 +1208,11 @@ msgstr "Julkaisematon"
 msgid "Live"
 msgstr "Suora"
 
+# Ilmeisesti yhdenlaisen 3D-kuvan markkinointinimi, jolle ei ole vielä suomennosta. Plano- kuitenkin viittaa tässä geometrian käsitteeseen ”plane”, taso.
 #: dvb/dvbepg.cpp:765
 #, kde-format
 msgid "Planostereoscopic"
-msgstr ""
+msgstr "Tasostereoskooppinen"
 
 #: dvb/dvbepg.cpp:767
 #, kde-format
