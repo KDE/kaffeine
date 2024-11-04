@@ -452,6 +452,7 @@ void MainWindow::readSettings()
     QSettings settings(QCoreApplication::organizationName(), QCoreApplication::applicationName());
     const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
     if (geometry.isEmpty()) {
+        winId(); // force creation of windowHandle()
         QScreen *screen = this->window()->windowHandle()->screen();
         const QRect availableGeometry = screen->availableGeometry();
         resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
