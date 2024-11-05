@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:30+0000\n"
+"POT-Creation-Date: 2024-11-05 01:49+0000\n"
 "PO-Revision-Date: 2008-09-26 20:07+0300\n"
 "Last-Translator: Darafei Praliaskouski <komzpa@gmail.com>\n"
 "Language-Team: Belarusian <i18n@mova.org>\n"
@@ -853,630 +853,519 @@ msgstr ""
 msgid "High range: %1 MHz to %2 MHz"
 msgstr ""
 
-#: dvb/dvbepg.cpp:647
-#, kde-format
+#: dvb/dvbepg.cpp:649
 msgid "Detective"
 msgstr ""
 
-#: dvb/dvbepg.cpp:648
-#, kde-format
+#: dvb/dvbepg.cpp:650
 msgid "Adventure"
 msgstr ""
 
-#: dvb/dvbepg.cpp:649
-#, kde-format
+#: dvb/dvbepg.cpp:651
 msgid "Science Fiction"
 msgstr ""
 
-#: dvb/dvbepg.cpp:650
-#, kde-format
+#: dvb/dvbepg.cpp:652
 msgid "Comedy"
 msgstr ""
 
-#: dvb/dvbepg.cpp:651
-#, kde-format
+#: dvb/dvbepg.cpp:653
 msgid "Soap"
 msgstr ""
 
-#: dvb/dvbepg.cpp:652
-#, kde-format
+#: dvb/dvbepg.cpp:654
 msgid "Romance"
 msgstr ""
 
-#: dvb/dvbepg.cpp:653 dvb/dvbepg.cpp:704
-#, kde-format
+#: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:706
 msgid "Classical"
 msgstr ""
 
-#: dvb/dvbepg.cpp:654
-#, kde-format
+#: dvb/dvbepg.cpp:656
 msgid "Adult"
 msgstr ""
 
-#: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:790
-#, kde-format
+#: dvb/dvbepg.cpp:657 dvb/dvbepg.cpp:792
 msgid "User defined"
 msgstr ""
 
-#: dvb/dvbepg.cpp:660
-#, kde-format
+#: dvb/dvbepg.cpp:662
 msgid "Weather"
 msgstr ""
 
-#: dvb/dvbepg.cpp:661 dvb/dvbepg.cpp:678 dvb/dvbepg.cpp:723 dvb/dvbepg.cpp:730
-#, kde-format
+#: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
 msgid "Magazine"
 msgstr ""
 
-#: dvb/dvbepg.cpp:662 dvb/dvbepg.cpp:822
-#, kde-format
+#: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
 msgid "Documentary"
 msgstr ""
 
-#: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:858
-#, kde-format
+#: dvb/dvbepg.cpp:665 dvb/dvbepg.cpp:860
 msgid "Discussion"
 msgstr ""
 
-#: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:688 dvb/dvbepg.cpp:698
-#: dvb/dvbepg.cpp:709 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:733 dvb/dvbepg.cpp:745
-#: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:766
-#, kde-format
+#: dvb/dvbepg.cpp:666 dvb/dvbepg.cpp:674 dvb/dvbepg.cpp:690 dvb/dvbepg.cpp:700
+#: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
+#: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:768
 msgid "User Defined"
 msgstr ""
 
-#: dvb/dvbepg.cpp:669
-#, kde-format
+#: dvb/dvbepg.cpp:671
 msgid "Quiz"
 msgstr ""
 
-#: dvb/dvbepg.cpp:670 dvb/dvbepg.cpp:800
-#, kde-format
+#: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
 msgid "Variety"
 msgstr ""
 
-#: dvb/dvbepg.cpp:671
-#, kde-format
+#: dvb/dvbepg.cpp:673
 msgid "Talk"
 msgstr ""
 
-#: dvb/dvbepg.cpp:677
-#, kde-format
+#: dvb/dvbepg.cpp:679
 msgid "Events"
 msgstr ""
 
-#: dvb/dvbepg.cpp:679
-#, kde-format
+#: dvb/dvbepg.cpp:681
 msgid "Football"
 msgstr ""
 
-#: dvb/dvbepg.cpp:680
-#, kde-format
+#: dvb/dvbepg.cpp:682
 msgid "Tennis"
 msgstr ""
 
-#: dvb/dvbepg.cpp:681
-#, kde-format
+#: dvb/dvbepg.cpp:683
 msgid "Team"
 msgstr ""
 
-#: dvb/dvbepg.cpp:682
-#, kde-format
+#: dvb/dvbepg.cpp:684
 msgid "Athletics"
 msgstr ""
 
-#: dvb/dvbepg.cpp:683
-#, kde-format
+#: dvb/dvbepg.cpp:685
 msgid "Motor"
 msgstr ""
 
-#: dvb/dvbepg.cpp:684
-#, kde-format
+#: dvb/dvbepg.cpp:686
 msgid "Water"
 msgstr ""
 
-#: dvb/dvbepg.cpp:685
-#, kde-format
+#: dvb/dvbepg.cpp:687
 msgid "Winter"
 msgstr ""
 
-#: dvb/dvbepg.cpp:686
-#, kde-format
+#: dvb/dvbepg.cpp:688
 msgid "Equestrian"
 msgstr ""
 
-#: dvb/dvbepg.cpp:687
-#, kde-format
+#: dvb/dvbepg.cpp:689
 msgid "Martial"
 msgstr ""
 
-#: dvb/dvbepg.cpp:693
-#, kde-format
+#: dvb/dvbepg.cpp:695
 msgid "Preschool"
 msgstr ""
 
-#: dvb/dvbepg.cpp:694
-#, kde-format
+#: dvb/dvbepg.cpp:696
 msgid "06 to 14"
 msgstr ""
 
-#: dvb/dvbepg.cpp:695
-#, kde-format
+#: dvb/dvbepg.cpp:697
 msgid "10 to 16"
 msgstr ""
 
-#: dvb/dvbepg.cpp:696
-#, fuzzy, kde-format
+#: dvb/dvbepg.cpp:698
+#, fuzzy
 msgid "Educational"
 msgstr "Файлы настаўленняў"
 
-#: dvb/dvbepg.cpp:697
-#, kde-format
+#: dvb/dvbepg.cpp:699
 msgid "Cartoons"
 msgstr ""
 
-#: dvb/dvbepg.cpp:703
-#, kde-format
+#: dvb/dvbepg.cpp:705
 msgid "Poprock"
 msgstr ""
 
-#: dvb/dvbepg.cpp:705
-#, kde-format
+#: dvb/dvbepg.cpp:707
 msgid "Folk"
 msgstr ""
 
-#: dvb/dvbepg.cpp:706
-#, kde-format
+#: dvb/dvbepg.cpp:708
 msgid "Jazz"
 msgstr ""
 
-#: dvb/dvbepg.cpp:707
-#, kde-format
+#: dvb/dvbepg.cpp:709
 msgid "Opera"
 msgstr ""
 
-#: dvb/dvbepg.cpp:708
-#, kde-format
+#: dvb/dvbepg.cpp:710
 msgid "Ballet"
 msgstr ""
 
-#: dvb/dvbepg.cpp:714
-#, kde-format
+#: dvb/dvbepg.cpp:716
 msgid "Performance"
 msgstr ""
 
-#: dvb/dvbepg.cpp:715
-#, kde-format
+#: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
 msgstr ""
 
-#: dvb/dvbepg.cpp:716 dvb/dvbepg.cpp:865
-#, kde-format
+#: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
 msgid "Religion"
 msgstr ""
 
-#: dvb/dvbepg.cpp:717
-#, fuzzy, kde-format
+#: dvb/dvbepg.cpp:719
+#, fuzzy
 msgid "Traditional"
 msgstr "Файлы настаўленняў"
 
-#: dvb/dvbepg.cpp:718
-#, kde-format
+#: dvb/dvbepg.cpp:720
 msgid "Literature"
 msgstr ""
 
-#: dvb/dvbepg.cpp:719
-#, kde-format
+#: dvb/dvbepg.cpp:721
 msgid "Cinema"
 msgstr ""
 
-#: dvb/dvbepg.cpp:720
-#, kde-format
+#: dvb/dvbepg.cpp:722
 msgid "Experimental"
 msgstr ""
 
-#: dvb/dvbepg.cpp:721
-#, kde-format
+#: dvb/dvbepg.cpp:723
 msgid "Press"
 msgstr ""
 
-#: dvb/dvbepg.cpp:722
-#, kde-format
+#: dvb/dvbepg.cpp:724
 msgid "New Media"
 msgstr ""
 
-#: dvb/dvbepg.cpp:724 dvb/dvbepg.cpp:843
-#, kde-format
+#: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
 msgstr ""
 
-#: dvb/dvbepg.cpp:731
-#, kde-format
+#: dvb/dvbepg.cpp:733
 msgid "Advisory"
 msgstr ""
 
-#: dvb/dvbepg.cpp:732
-#, kde-format
+#: dvb/dvbepg.cpp:734
 msgid "People"
 msgstr ""
 
-#: dvb/dvbepg.cpp:738
-#, kde-format
+#: dvb/dvbepg.cpp:740
 msgid "Nature"
 msgstr ""
 
-#: dvb/dvbepg.cpp:739
-#, kde-format
+#: dvb/dvbepg.cpp:741
 msgid "Technology"
 msgstr ""
 
-#: dvb/dvbepg.cpp:740
-#, kde-format
+#: dvb/dvbepg.cpp:742
 msgid "Medicine"
 msgstr ""
 
-#: dvb/dvbepg.cpp:741
-#, kde-format
+#: dvb/dvbepg.cpp:743
 msgid "Foreign"
 msgstr ""
 
-#: dvb/dvbepg.cpp:742 dvb/dvbepg.cpp:783
-#, kde-format
+#: dvb/dvbepg.cpp:744 dvb/dvbepg.cpp:785
 msgid "Social"
 msgstr ""
 
-#: dvb/dvbepg.cpp:743
-#, kde-format
+#: dvb/dvbepg.cpp:745
 msgid "Further"
 msgstr ""
 
-#: dvb/dvbepg.cpp:744
-#, kde-format
+#: dvb/dvbepg.cpp:746
 msgid "Language"
 msgstr ""
 
-#: dvb/dvbepg.cpp:750 dvb/dvbepg.cpp:846
-#, kde-format
+#: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
 msgid "Travel"
 msgstr ""
 
-#: dvb/dvbepg.cpp:751
-#, kde-format
+#: dvb/dvbepg.cpp:753
 msgid "Handicraft"
 msgstr ""
 
-#: dvb/dvbepg.cpp:752
-#, kde-format
+#: dvb/dvbepg.cpp:754
 msgid "Motoring"
 msgstr ""
 
-#: dvb/dvbepg.cpp:753
-#, kde-format
+#: dvb/dvbepg.cpp:755
 msgid "Fitness"
 msgstr ""
 
-#: dvb/dvbepg.cpp:754 dvb/dvbepg.cpp:842
-#, kde-format
+#: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:844
 msgid "Cooking"
 msgstr ""
 
-#: dvb/dvbepg.cpp:755
-#, kde-format
+#: dvb/dvbepg.cpp:757
 msgid "Shopping"
 msgstr ""
 
-#: dvb/dvbepg.cpp:756
-#, kde-format
+#: dvb/dvbepg.cpp:758
 msgid "Gardening"
 msgstr ""
 
-#: dvb/dvbepg.cpp:761 iso-codes.cpp:125 iso-codes.cpp:155
+#: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
 #, kde-format
 msgid "Original Language"
 msgstr ""
 
-#: dvb/dvbepg.cpp:762
-#, kde-format
+#: dvb/dvbepg.cpp:764
 msgid "Black and White "
 msgstr ""
 
-#: dvb/dvbepg.cpp:763
-#, kde-format
+#: dvb/dvbepg.cpp:765
 msgid "Unpublished"
 msgstr ""
 
-#: dvb/dvbepg.cpp:764
-#, kde-format
+#: dvb/dvbepg.cpp:766
 msgid "Live"
 msgstr ""
 
-#: dvb/dvbepg.cpp:765
-#, kde-format
+#: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
 msgstr ""
 
-#: dvb/dvbepg.cpp:767
-#, kde-format
+#: dvb/dvbepg.cpp:769
 msgid "User Defined 1"
 msgstr ""
 
-#: dvb/dvbepg.cpp:768
-#, kde-format
+#: dvb/dvbepg.cpp:770
 msgid "User Defined 2"
 msgstr ""
 
-#: dvb/dvbepg.cpp:769
-#, kde-format
+#: dvb/dvbepg.cpp:771
 msgid "User Defined 3"
 msgstr ""
 
-#: dvb/dvbepg.cpp:770
-#, kde-format
+#: dvb/dvbepg.cpp:772
 msgid "User Defined 4"
 msgstr ""
 
-#: dvb/dvbepg.cpp:775
-#, kde-format
+#: dvb/dvbepg.cpp:777
 msgid "Undefined"
 msgstr ""
 
-#: dvb/dvbepg.cpp:776 dvb/dvbepg.cpp:806
-#, kde-format
+#: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:808
 msgid "Movie"
 msgstr ""
 
-#: dvb/dvbepg.cpp:777 dvb/dvbepg.cpp:794 dvb/dvbepg.cpp:820
-#, kde-format
+#: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:796 dvb/dvbepg.cpp:822
 msgid "News"
 msgstr ""
 
-#: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:834
-#, kde-format
+#: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:836
 msgid "Show"
 msgstr ""
 
-#: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:795
-#, kde-format
+#: dvb/dvbepg.cpp:781 dvb/dvbepg.cpp:797
 msgid "Sports"
 msgstr ""
 
-#: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:804
-#, kde-format
+#: dvb/dvbepg.cpp:782 dvb/dvbepg.cpp:806
 msgid "Children"
 msgstr ""
 
-#: dvb/dvbepg.cpp:781
-#, kde-format
+#: dvb/dvbepg.cpp:783
 msgid "Music"
 msgstr ""
 
-#: dvb/dvbepg.cpp:782
-#, kde-format
+#: dvb/dvbepg.cpp:784
 msgid "Culture"
 msgstr ""
 
-#: dvb/dvbepg.cpp:784 dvb/dvbepg.cpp:796
-#, fuzzy, kde-format
+#: dvb/dvbepg.cpp:786 dvb/dvbepg.cpp:798
+#, fuzzy
 msgid "Education"
 msgstr "Файлы настаўленняў"
 
-#: dvb/dvbepg.cpp:785
-#, kde-format
+#: dvb/dvbepg.cpp:787
 msgid "Leisure"
 msgstr ""
 
-#: dvb/dvbepg.cpp:786
-#, kde-format
+#: dvb/dvbepg.cpp:788
 msgid "Special"
 msgstr ""
 
-#: dvb/dvbepg.cpp:787 dvb/dvbepg.cpp:788 dvb/dvbepg.cpp:789
-#, kde-format
+#: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
 msgid "Reserved"
 msgstr ""
 
-#: dvb/dvbepg.cpp:797
-#, kde-format
+#: dvb/dvbepg.cpp:799
 msgid "Soap opera"
 msgstr ""
 
-#: dvb/dvbepg.cpp:798
-#, kde-format
+#: dvb/dvbepg.cpp:800
 msgid "Mini-series"
 msgstr ""
 
-#: dvb/dvbepg.cpp:799
-#, kde-format
+#: dvb/dvbepg.cpp:801
 msgid "Series"
 msgstr ""
 
-#: dvb/dvbepg.cpp:801
-#, kde-format
+#: dvb/dvbepg.cpp:803
 msgid "Reality show"
 msgstr ""
 
-#: dvb/dvbepg.cpp:802
-#, fuzzy, kde-format
+#: dvb/dvbepg.cpp:804
+#, fuzzy
 msgid "Information"
 msgstr "Файлы настаўленняў"
 
-#: dvb/dvbepg.cpp:803
-#, kde-format
+#: dvb/dvbepg.cpp:805
 msgid "Comical"
 msgstr ""
 
-#: dvb/dvbepg.cpp:805
-#, kde-format
+#: dvb/dvbepg.cpp:807
 msgid "Erotic"
 msgstr ""
 
-#: dvb/dvbepg.cpp:807
-#, kde-format
+#: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
 msgstr ""
 
-#: dvb/dvbepg.cpp:808
-#, kde-format
+#: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
 msgstr ""
 
-#: dvb/dvbepg.cpp:809
-#, kde-format
+#: dvb/dvbepg.cpp:811
 msgid "Other"
 msgstr ""
 
-#: dvb/dvbepg.cpp:821
-#, kde-format
+#: dvb/dvbepg.cpp:823
 msgid "Report"
 msgstr ""
 
-#: dvb/dvbepg.cpp:823
-#, kde-format
+#: dvb/dvbepg.cpp:825
 msgid "Biography"
 msgstr ""
 
-#: dvb/dvbepg.cpp:827
-#, fuzzy, kde-format
+#: dvb/dvbepg.cpp:829
+#, fuzzy
 msgid "Educative"
 msgstr "Файлы настаўленняў"
 
-#: dvb/dvbepg.cpp:833
-#, fuzzy, kde-format
+#: dvb/dvbepg.cpp:835
+#, fuzzy
 #| msgid "Radio"
 msgid "Auditorium"
 msgstr "Радыё"
 
-#: dvb/dvbepg.cpp:835
-#, kde-format
+#: dvb/dvbepg.cpp:837
 msgid "Musical"
 msgstr ""
 
-#: dvb/dvbepg.cpp:836
-#, kde-format
+#: dvb/dvbepg.cpp:838
 msgid "Making of"
 msgstr ""
 
-#: dvb/dvbepg.cpp:837
-#, kde-format
+#: dvb/dvbepg.cpp:839
 msgid "Feminine"
 msgstr ""
 
-#: dvb/dvbepg.cpp:838
-#, kde-format
+#: dvb/dvbepg.cpp:840
 msgid "Game show"
 msgstr ""
 
-#: dvb/dvbepg.cpp:844
-#, kde-format
+#: dvb/dvbepg.cpp:846
 msgid "Country"
 msgstr ""
 
-#: dvb/dvbepg.cpp:845
-#, kde-format
+#: dvb/dvbepg.cpp:847
 msgid "Health"
 msgstr ""
 
-#: dvb/dvbepg.cpp:853
-#, kde-format
+#: dvb/dvbepg.cpp:855
 msgid "Raffle"
 msgstr ""
 
-#: dvb/dvbepg.cpp:854
-#, kde-format
+#: dvb/dvbepg.cpp:856
 msgid "Television sales"
 msgstr ""
 
-#: dvb/dvbepg.cpp:855
-#, kde-format
+#: dvb/dvbepg.cpp:857
 msgid "Prizing"
 msgstr ""
 
-#: dvb/dvbepg.cpp:859
-#, kde-format
+#: dvb/dvbepg.cpp:861
 msgid "Interview"
 msgstr ""
 
-#: dvb/dvbepg.cpp:862
-#, kde-format
+#: dvb/dvbepg.cpp:864
 msgid "Adult cartoon"
 msgstr ""
 
-#: dvb/dvbepg.cpp:863
-#, kde-format
+#: dvb/dvbepg.cpp:865
 msgid "Interactive"
 msgstr ""
 
-#: dvb/dvbepg.cpp:864
-#, kde-format
+#: dvb/dvbepg.cpp:866
 msgid "Policy"
 msgstr ""
 
-#: dvb/dvbepg.cpp:897
+#: dvb/dvbepg.cpp:899
 #, no-c-format, kde-format
 msgid "Genre: %1"
 msgstr ""
 
-#: dvb/dvbepg.cpp:904
-#, kde-format
+#: dvb/dvbepg.cpp:906
 msgid "reserved"
 msgstr ""
 
-#: dvb/dvbepg.cpp:905
-#, kde-format
+#: dvb/dvbepg.cpp:907
 msgid "all audiences"
 msgstr ""
 
-#: dvb/dvbepg.cpp:906
-#, kde-format
+#: dvb/dvbepg.cpp:908
 msgid "10 years"
 msgstr ""
 
-#: dvb/dvbepg.cpp:907
-#, kde-format
+#: dvb/dvbepg.cpp:909
 msgid "12 years"
 msgstr ""
 
-#: dvb/dvbepg.cpp:908
-#, kde-format
+#: dvb/dvbepg.cpp:910
 msgid "14 years"
 msgstr ""
 
-#: dvb/dvbepg.cpp:909
-#, kde-format
+#: dvb/dvbepg.cpp:911
 msgid "16 years"
 msgstr ""
 
-#: dvb/dvbepg.cpp:910
-#, kde-format
+#: dvb/dvbepg.cpp:912
 msgid "18 years"
 msgstr ""
 
-#: dvb/dvbepg.cpp:933
+#: dvb/dvbepg.cpp:935
 #, no-c-format, kde-format
 msgid "Country %1: not rated\n"
 msgstr ""
 
-#: dvb/dvbepg.cpp:945
+#: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "violence / "
 msgstr ""
 
-#: dvb/dvbepg.cpp:947
+#: dvb/dvbepg.cpp:949
 #, kde-format
 msgid "sex / "
 msgstr ""
 
-#: dvb/dvbepg.cpp:949
+#: dvb/dvbepg.cpp:951
 #, kde-format
 msgid "drugs / "
 msgstr ""
 
-#: dvb/dvbepg.cpp:957
+#: dvb/dvbepg.cpp:959
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
 msgstr ""
 
-#: dvb/dvbepg.cpp:960
+#: dvb/dvbepg.cpp:962
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
 msgstr ""
@@ -1940,38 +1829,38 @@ msgstr ""
 msgid "Country: %1"
 msgstr ""
 
-#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr ""
 
-#: main.cpp:139
+#: main.cpp:141
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr ""
 
-#: main.cpp:143
+#: main.cpp:145
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr ""
 
-#: main.cpp:161
+#: main.cpp:163
 #, kde-format
 msgid "Maintainer"
 msgstr ""
 
-#: main.cpp:166
+#: main.cpp:168
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr ""
 
-#: main.cpp:170
+#: main.cpp:172
 #, fuzzy, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Дарафей Праляскоўскі"
 
-#: main.cpp:171
+#: main.cpp:173
 #, fuzzy, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
@@ -2040,17 +1929,17 @@ msgctxt "@action:inmenu"
 msgid "Open URL..."
 msgstr "Адкрыць URL"
 
-#: mainwindow.cpp:225 mainwindow.cpp:480
+#: mainwindow.cpp:225 mainwindow.cpp:482
 #, kde-format
 msgid "Play Audio CD"
 msgstr ""
 
-#: mainwindow.cpp:229 mainwindow.cpp:481
+#: mainwindow.cpp:229 mainwindow.cpp:483
 #, kde-format
 msgid "Play Video CD"
 msgstr ""
 
-#: mainwindow.cpp:233 mainwindow.cpp:482
+#: mainwindow.cpp:233 mainwindow.cpp:484
 #, kde-format
 msgid "Play DVD"
 msgstr ""
@@ -2132,7 +2021,7 @@ msgstr ""
 msgid "&Quit"
 msgstr ""
 
-#: mainwindow.cpp:475
+#: mainwindow.cpp:477
 #, kde-format
 msgid ""
 "Enable all debug messages. Please notice that Kaffeine also allows enabling "
@@ -2141,432 +2030,432 @@ msgid ""
 "where 'category' can be:\n"
 msgstr ""
 
-#: mainwindow.cpp:476
+#: mainwindow.cpp:478
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
 msgstr ""
 
-#: mainwindow.cpp:477
+#: mainwindow.cpp:479
 #, fuzzy, kde-format
 #| msgid "Full Screen Mode"
 msgid "Start in full screen mode"
 msgstr "Поўнаэкранны рэжым"
 
-#: mainwindow.cpp:478
+#: mainwindow.cpp:480
 #, fuzzy, kde-format
 #| msgid "Full Screen Mode"
 msgid "Start in minimal mode"
 msgstr "Поўнаэкранны рэжым"
 
-#: mainwindow.cpp:479
+#: mainwindow.cpp:481
 #, kde-format
 msgid "Start with always on top"
-msgstr ""
-
-#: mainwindow.cpp:486
-#, kde-format
-msgctxt "command line option"
-msgid "Dump dvb data (debug option)"
-msgstr ""
-
-#: mainwindow.cpp:487
-#, kde-format
-msgctxt "command line option"
-msgid "Play TV channel"
 msgstr ""
 
 #: mainwindow.cpp:488
 #, kde-format
 msgctxt "command line option"
-msgid "(deprecated option)"
+msgid "Dump dvb data (debug option)"
 msgstr ""
 
 #: mainwindow.cpp:489
 #, kde-format
 msgctxt "command line option"
-msgid "Play last tuned TV channel"
+msgid "Play TV channel"
+msgstr ""
+
+#: mainwindow.cpp:490
+#, kde-format
+msgctxt "command line option"
+msgid "(deprecated option)"
 msgstr ""
 
 #: mainwindow.cpp:491
 #, kde-format
+msgctxt "command line option"
+msgid "Play last tuned TV channel"
+msgstr ""
+
+#: mainwindow.cpp:493
+#, kde-format
 msgid "Files or URLs to play"
 msgstr ""
 
-#: mainwindow.cpp:713
+#: mainwindow.cpp:715
 #, fuzzy, kde-format
 #| msgid "Open file"
 msgctxt "@title:window"
 msgid "Open files"
 msgstr "Адкрыць файл"
 
-#: mainwindow.cpp:726
+#: mainwindow.cpp:728
 #, fuzzy, kde-format
 #| msgid "Open URL"
 msgctxt "@title:window"
 msgid "Open URL"
 msgstr "Адкрыць URL"
 
-#: mainwindow.cpp:726
+#: mainwindow.cpp:728
 #, kde-format
 msgid "Enter a URL:"
 msgstr "Вызначце URL:"
 
-#: mediawidget.cpp:90
+#: mediawidget.cpp:91
 #, fuzzy, kde-format
 msgid "Previous"
 msgstr "Папярэдні"
 
-#: mediawidget.cpp:98
+#: mediawidget.cpp:99
 #, fuzzy, kde-format
 msgid "Play"
 msgstr "Граць"
 
-#: mediawidget.cpp:99
+#: mediawidget.cpp:100
 #, fuzzy, kde-format
 msgid "Pause"
 msgstr "Pause"
 
-#: mediawidget.cpp:108
+#: mediawidget.cpp:109
 #, kde-format
 msgid "Stop"
 msgstr "Спыніць"
 
-#: mediawidget.cpp:116
+#: mediawidget.cpp:117
 #, fuzzy, kde-format
 msgid "Next"
 msgstr "Наступная"
 
-#: mediawidget.cpp:125 mediawidget.cpp:596
+#: mediawidget.cpp:126 mediawidget.cpp:670
 #, fuzzy, kde-format
 #| msgid "Full Screen Mode"
 msgctxt "'Playback' menu"
 msgid "Full Screen Mode"
 msgstr "Поўнаэкранны рэжым"
 
-#: mediawidget.cpp:132 mediawidget.cpp:611
+#: mediawidget.cpp:133 mediawidget.cpp:685
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
 msgstr ""
 
-#: mediawidget.cpp:145
+#: mediawidget.cpp:146
 #, fuzzy, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
 msgstr "Дадаць выбраны"
 
-#: mediawidget.cpp:149
+#: mediawidget.cpp:150
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
 msgstr ""
 
-#: mediawidget.cpp:157
+#: mediawidget.cpp:158
 #, fuzzy, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
 msgstr "Дадаць выбраны"
 
-#: mediawidget.cpp:164
+#: mediawidget.cpp:165
 #, fuzzy, kde-format
 #| msgid "Radio"
 msgctxt "'Playback' menu"
 msgid "Audio"
 msgstr "Радыё"
 
-#: mediawidget.cpp:167
+#: mediawidget.cpp:168
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
 msgstr ""
 
-#: mediawidget.cpp:169
+#: mediawidget.cpp:170
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
 msgstr ""
 
-#: mediawidget.cpp:176
+#: mediawidget.cpp:177
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
 msgstr ""
 
-#: mediawidget.cpp:183
+#: mediawidget.cpp:184
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
 msgstr ""
 
-#: mediawidget.cpp:189
+#: mediawidget.cpp:190
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
 msgstr ""
 
-#: mediawidget.cpp:199
+#: mediawidget.cpp:200
 #, fuzzy, kde-format
 msgctxt "'Playback' menu"
 msgid "Video"
 msgstr "&Паказаць"
 
-#: mediawidget.cpp:203
+#: mediawidget.cpp:204
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
 msgstr ""
 
-#: mediawidget.cpp:211
+#: mediawidget.cpp:212
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
 msgstr ""
 
-#: mediawidget.cpp:218
+#: mediawidget.cpp:219
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
 msgstr ""
 
-#: mediawidget.cpp:224
+#: mediawidget.cpp:225
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
 msgstr ""
 
-#: mediawidget.cpp:230
+#: mediawidget.cpp:231
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
 msgstr ""
 
-#: mediawidget.cpp:236
+#: mediawidget.cpp:237
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
 msgstr ""
 
-#: mediawidget.cpp:243
+#: mediawidget.cpp:244
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
 msgstr ""
 
-#: mediawidget.cpp:249
+#: mediawidget.cpp:250
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
 msgstr ""
 
-#: mediawidget.cpp:255
+#: mediawidget.cpp:256
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
 msgstr ""
 
-#: mediawidget.cpp:261
+#: mediawidget.cpp:262
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
 msgstr ""
 
-#: mediawidget.cpp:267
+#: mediawidget.cpp:268
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
 msgstr ""
 
-#: mediawidget.cpp:273
+#: mediawidget.cpp:274
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
 msgstr ""
 
-#: mediawidget.cpp:293
+#: mediawidget.cpp:294
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
 msgstr ""
 
-#: mediawidget.cpp:300
+#: mediawidget.cpp:301
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "Automatic"
 msgstr ""
 
-#: mediawidget.cpp:306
+#: mediawidget.cpp:307
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
 msgstr ""
 
-#: mediawidget.cpp:312
+#: mediawidget.cpp:313
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "4:3"
 msgstr ""
 
-#: mediawidget.cpp:318
+#: mediawidget.cpp:319
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "5:4"
 msgstr ""
 
-#: mediawidget.cpp:324
+#: mediawidget.cpp:325
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:9"
 msgstr ""
 
-#: mediawidget.cpp:330
+#: mediawidget.cpp:331
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:10"
 msgstr ""
 
-#: mediawidget.cpp:336
+#: mediawidget.cpp:337
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.21:1"
 msgstr ""
 
-#: mediawidget.cpp:342
+#: mediawidget.cpp:343
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.35:1"
 msgstr ""
 
-#: mediawidget.cpp:348
+#: mediawidget.cpp:349
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.39:1"
 msgstr ""
 
-#: mediawidget.cpp:353
+#: mediawidget.cpp:354
 #, fuzzy, kde-format
 msgid "Video size"
 msgstr "&Паказаць"
 
-#: mediawidget.cpp:361
+#: mediawidget.cpp:362
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
 msgstr ""
 
-#: mediawidget.cpp:367
+#: mediawidget.cpp:368
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
 msgstr ""
 
-#: mediawidget.cpp:373
+#: mediawidget.cpp:374
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
 msgstr ""
 
-#: mediawidget.cpp:380
+#: mediawidget.cpp:381
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
 msgstr ""
 
-#: mediawidget.cpp:386
+#: mediawidget.cpp:387
 #, kde-format
 msgctxt "Video size"
 msgid "Original Size"
 msgstr ""
 
-#: mediawidget.cpp:392
+#: mediawidget.cpp:393
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
 msgstr ""
 
-#: mediawidget.cpp:398
+#: mediawidget.cpp:399
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
 msgstr ""
 
-#: mediawidget.cpp:404
+#: mediawidget.cpp:405
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
 msgstr ""
 
-#: mediawidget.cpp:410
+#: mediawidget.cpp:411
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
 msgstr ""
 
-#: mediawidget.cpp:433
+#: mediawidget.cpp:434
 #, kde-format
 msgid "Volume Slider"
 msgstr ""
 
-#: mediawidget.cpp:448
+#: mediawidget.cpp:449
 #, fuzzy, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
 msgstr "Пазіцыя"
 
-#: mediawidget.cpp:453
+#: mediawidget.cpp:454
 #, kde-format
 msgctxt "playback menu"
 msgid "Skip"
 msgstr ""
 
-#: mediawidget.cpp:467 mediawidget.cpp:476 mediawidget.cpp:1161
-#: mediawidget.cpp:1171
+#: mediawidget.cpp:468 mediawidget.cpp:477 mediawidget.cpp:1227
+#: mediawidget.cpp:1237
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Backward"
 msgstr ""
 
-#: mediawidget.cpp:485 mediawidget.cpp:494 mediawidget.cpp:1164
-#: mediawidget.cpp:1174
+#: mediawidget.cpp:486 mediawidget.cpp:495 mediawidget.cpp:1230
+#: mediawidget.cpp:1240
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Forward"
 msgstr ""
 
-#: mediawidget.cpp:500 mediawidget.cpp:503
+#: mediawidget.cpp:501 mediawidget.cpp:504
 #, kde-format
 msgid "Seek Slider"
 msgstr ""
 
-#: mediawidget.cpp:514
+#: mediawidget.cpp:515
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
 msgstr ""
 
-#: mediawidget.cpp:518
+#: mediawidget.cpp:519
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Title"
 msgstr ""
 
-#: mediawidget.cpp:524
+#: mediawidget.cpp:525
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
 msgstr ""
 
-#: mediawidget.cpp:530
+#: mediawidget.cpp:531
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Angle"
 msgstr ""
 
-#: mediawidget.cpp:537
+#: mediawidget.cpp:538
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
 msgstr ""
 
-#: mediawidget.cpp:566
+#: mediawidget.cpp:567
 #, kde-format
 msgid ""
 "Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
@@ -2582,113 +2471,113 @@ msgid ""
 "Files (*)"
 msgstr ""
 
-#: mediawidget.cpp:602
+#: mediawidget.cpp:676
 #, fuzzy, kde-format
 #| msgid "Full Screen Mode"
 msgctxt "'Playback' menu"
 msgid "Exit Full Screen Mode"
 msgstr "Поўнаэкранны рэжым"
 
-#: mediawidget.cpp:615
+#: mediawidget.cpp:689
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Minimal Mode"
 msgstr ""
 
-#: mediawidget.cpp:648
+#: mediawidget.cpp:722
 #, fuzzy, kde-format
 #| msgid "Open file"
 msgctxt "@title:window"
 msgid "Open subtitle"
 msgstr "Адкрыць файл"
 
-#: mediawidget.cpp:649
+#: mediawidget.cpp:723
 #, kde-format
 msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
 
-#: mediawidget.cpp:789 mediawidget.cpp:898
+#: mediawidget.cpp:863 mediawidget.cpp:964
 #, fuzzy, kde-format
 msgctxt "osd"
 msgid "Volume: %1%"
 msgstr "Назва:"
 
-#: mediawidget.cpp:820
+#: mediawidget.cpp:894
 #, fuzzy, kde-format
 #| msgid "Stop"
 msgctxt "osd"
 msgid "Stopped"
 msgstr "Спыніць"
 
-#: mediawidget.cpp:888
+#: mediawidget.cpp:954
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
 msgstr ""
 
-#: mediawidget.cpp:891
+#: mediawidget.cpp:957
 #, kde-format
 msgctxt "osd"
 msgid "Mute Off"
 msgstr ""
 
-#: mediawidget.cpp:987
+#: mediawidget.cpp:1053
 #, fuzzy, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
 msgstr "Прылада:"
 
-#: mediawidget.cpp:1402
+#: mediawidget.cpp:1468
 #, fuzzy, kde-format
 msgctxt "osd"
 msgid "Playing"
 msgstr "Граць"
 
-#: mediawidget.cpp:1407
+#: mediawidget.cpp:1473
 #, fuzzy, kde-format
 msgctxt "osd"
 msgid "Paused"
 msgstr "Pause"
 
-#: mediawidget.cpp:1585
+#: mediawidget.cpp:1651
 #, fuzzy, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
 msgstr "Пазіцыя"
 
-#: mediawidget.cpp:1590
+#: mediawidget.cpp:1656
 #, fuzzy, kde-format
 #| msgid "Enter a URL:"
 msgid "Enter a position:"
 msgstr "Вызначце URL:"
 
-#: playlist/playlistmodel.cpp:800
+#: playlist/playlistmodel.cpp:796
 #, kde-format
 msgctxt "playlist track"
 msgid "Title"
 msgstr ""
 
-#: playlist/playlistmodel.cpp:802
+#: playlist/playlistmodel.cpp:798
 #, kde-format
 msgctxt "playlist track"
 msgid "Artist"
 msgstr ""
 
-#: playlist/playlistmodel.cpp:804
+#: playlist/playlistmodel.cpp:800
 #, kde-format
 msgctxt "playlist track"
 msgid "Album"
 msgstr ""
 
-#: playlist/playlistmodel.cpp:806
+#: playlist/playlistmodel.cpp:802
 #, fuzzy, kde-format
 msgctxt "playlist track"
 msgid "Track Number"
 msgstr "Лік"
 
-#: playlist/playlistmodel.cpp:808
+#: playlist/playlistmodel.cpp:804
 #, kde-format
 msgctxt "playlist track"
 msgid "Length"
