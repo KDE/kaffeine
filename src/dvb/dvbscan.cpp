@@ -799,7 +799,7 @@ void DvbScan::updateState()
 				emit scanProgress((100 * transponderIndex) / transponders.size());
 			}
 
-			qCDebug(logDvb, "Transponder %d/%lld", transponderIndex, transponders.size());
+			qCDebug(logDvb, "Transponder %d/%d", transponderIndex, transponders.size());
 			if (transponderIndex >= transponders.size()) {
 				emit scanFinished();
 				return;

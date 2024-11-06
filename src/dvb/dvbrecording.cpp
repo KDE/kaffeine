@@ -31,7 +31,6 @@
 #include <QSet>
 #include <QStandardPaths>
 #include <QVariant>
-#include <QRegularExpression>
 
 #include "../ensurenopendingoperation.h"
 #include "dvbdevice.h"
@@ -522,11 +521,10 @@ void DvbRecordingModel::findNewRecordings()
 		QStringList regexList = manager->getRecordingRegexList();
 		int i = 0;
 		foreach(QString regex, regexList) {
-			QRegularExpression recordingRegex = QRegularExpression(regex);
-			if (recordingRegex.isValid())
+			QRegExp recordingRegex = QRegExp(regex);
+			if (!recordingRegex.isEmpty())
 				{
-				QRegularExpressionMatch match = recordingRegex.match(title);
-				if (match.hasMatch())
+				if (recordingRegex.indexIn(title) != -1)
 				{
 					if (!DvbRecordingModel::existsSimilarRecording(*epgMap.value(key)))
 					{

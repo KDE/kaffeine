@@ -25,7 +25,6 @@
 
 #include <QCoreApplication>
 #include <QDir>
-#include <QRegularExpression>
 
 int main(int argc, char *argv[])
 {
@@ -110,7 +109,7 @@ int main(int argc, char *argv[])
 
 		QStringList lines = content.split('\n');
 		bool ignoreLineLength = false;
-		QRegularExpression logRegExp("Log[^0-9A-Za-z]*[(][^0-9A-Za-z]*\"");
+		QRegExp logRegExp("Log[^0-9A-Za-z]*[(][^0-9A-Za-z]*\"");
 		QString logFunctionName;
 		int bracketLevel = 0;
 
@@ -128,9 +127,9 @@ int main(int argc, char *argv[])
 					"is longer than 99 characters";
 			}
 
-            QRegularExpressionMatch match = logRegExp.match(line);
-            if (match.hasMatch()) {
-                int logIndex = match.capturedStart();
+			int logIndex = logRegExp.indexIn(line);
+
+			if (logIndex >= 0) {
 				logIndex = (line.indexOf('"', logIndex) + 1);
 
 				if (!line.mid(logIndex).startsWith(logFunctionName)) {
@@ -152,11 +151,12 @@ int main(int argc, char *argv[])
 			}
 
 			if ((bracketLevel == 0) && !line.startsWith('\t')) {
-				QRegularExpression logFunctionRegExp("[0-9A-Za-z:~]*[(]");
-                QRegularExpressionMatch match = logFunctionRegExp.match(line);
-                if (match.hasMatch()) {
+				QRegExp logFunctionRegExp("[0-9A-Za-z:~]*[(]");
+				int index = logFunctionRegExp.indexIn(line);
+
+				if (index >= 0) {
 					logFunctionName =
-                        line.mid(match.capturedStart(), match.capturedLength());
+						line.mid(index, logFunctionRegExp.matchedLength());
 					logFunctionName.chop(1);
 					logFunctionName.append(": ");
 				}

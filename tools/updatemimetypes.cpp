@@ -27,7 +27,6 @@
 #include <QFile>
 #include <QMimeDatabase>
 #include <QMimeType>
-#include <QRegularExpression>
 
 int main(int argc, char *argv[])
 {
@@ -166,7 +165,7 @@ int main(int argc, char *argv[])
 			}
 		}
 
-        QRegularExpression regExp(QRegularExpression::anchoredPattern("\\*\\.[a-z0-9+]+"));
+		QRegExp regExp("\\*\\.[a-z0-9+]+");
 
 		for (int i = 0; i < extensions.size(); ++i) {
 			if (extensions.at(i) == "*.anim[1-9j]") {
@@ -187,7 +186,7 @@ int main(int argc, char *argv[])
 				extensions.insert(i, "*.vdr");
 			}
 
-            if (!regExp.match(extensions.at(i)).hasMatch()) {
+			if (!regExp.exactMatch(extensions.at(i))) {
 				qCritical() << "unknown extension syntax" << extensions.at(i);
 				dontUpdate = true;
 			}

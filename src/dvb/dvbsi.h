@@ -25,6 +25,7 @@
 #include <QObject>
 #include <QByteArray>
 #include <QString>
+#include <QTextCodec>
 #include "dvbbackenddevice.h"
 
 class DvbPmtSection;
@@ -188,6 +189,7 @@ private:
 		EncodingTypeMax	= 19
 	};
 
+	static QTextCodec *codecTable[EncodingTypeMax + 1];
 	static bool override6937;
 };
 

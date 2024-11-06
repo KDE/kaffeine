@@ -31,6 +31,7 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QDBusConnection>
+#include <QDesktopWidget>
 #include <QFileDialog>
 #include <QHoverEvent>
 #include <QInputDialog>
@@ -42,7 +43,6 @@
 #include <QStackedLayout>
 #include <QTabBar>
 #include <QToolBar>
-#include <QWindow>
 
 #include "configuration.h"
 #include "configurationdialog.h"
@@ -453,8 +453,7 @@ void MainWindow::readSettings()
     const QByteArray geometry = settings.value("geometry", QByteArray()).toByteArray();
     if (geometry.isEmpty()) {
         winId(); // force creation of windowHandle()
-        QScreen *screen = this->window()->windowHandle()->screen();
-        const QRect availableGeometry = screen->availableGeometry();
+        const QRect availableGeometry = QApplication::desktop()->availableGeometry(this);
         resize(availableGeometry.width() / 3, availableGeometry.height() / 2);
         move((availableGeometry.width() - width()) / 2,
              (availableGeometry.height() - height()) / 2);
@@ -855,8 +854,8 @@ bool MainWindow::event(QEvent *event)
 
 	switch (event->type()) {
 	case QEvent::HoverMove: {
-		int x = reinterpret_cast<QHoverEvent *> (event)->position().x();
-		int y = reinterpret_cast<QHoverEvent *> (event)->position().y();
+		int x = reinterpret_cast<QHoverEvent *> (event)->pos().x();
+		int y = reinterpret_cast<QHoverEvent *> (event)->pos().y();
 
 		if ((y < 0) || (y >= height()) ||
 		    (x < 0) || (x >= width())) {
