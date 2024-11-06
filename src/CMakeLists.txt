@@ -2,7 +2,7 @@ if(Libdvbv5_FOUND)
   include_directories(${Libdvbv5_INCLUDE_DIRS})
 endif(Libdvbv5_FOUND)
 
-qt6_add_resources(RESOURCE_ADDED kaffeine.qrc)
+qt5_add_resources(RESOURCE_ADDED kaffeine.qrc)
 
 set(kaffeine_SRCS
     kaffeine.qrc
@@ -48,9 +48,9 @@ endif(HAVE_DVB)
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 add_executable(kaffeine ${kaffeinedvb_SRCS} ${kaffeine_SRCS})
-target_link_libraries(kaffeine Qt6::Sql KF6::XmlGui KF6::I18n KF6::Solid
-		      KF6::KIOCore KF6::KIOFileWidgets KF6::WindowSystem
-		      KF6::DBusAddons ${VLC_LIBRARY})
+target_link_libraries(kaffeine Qt5::Sql Qt5::X11Extras KF5::XmlGui KF5::I18n KF5::Solid
+		      KF5::KIOCore KF5::KIOFileWidgets KF5::WindowSystem
+		      KF5::DBusAddons ${X11_Xscreensaver_LIB} ${VLC_LIBRARY})
 
 if(HAVE_DVB)
     target_link_libraries(kaffeine ${Libdvbv5_LIBRARIES})

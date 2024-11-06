@@ -21,8 +21,6 @@
 #ifndef MEDIAWIDGET_H
 #define MEDIAWIDGET_H
 
-#include <KFileFilter>
-
 #include <QWidget>
 #include <QIcon>
 #include <QWeakPointer>
@@ -53,8 +51,7 @@ public:
 		QWidget *parent);
 	~MediaWidget();
 
-	static QString extensionFilter(); // raw file extension list
-	static QList<KFileFilter> extensionFilters(); // usable for KFileDialog::setFilters()
+	static QString extensionFilter(); // usable for KFileDialog::setFilter()
 
 	enum AspectRatio
 	{

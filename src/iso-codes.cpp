@@ -61,7 +61,7 @@ namespace IsoCodes
 		bool inDoc = false;
 		while (!r.atEnd()) {
 			const QXmlStreamReader::TokenType t = r.readNext();
-			QStringView name;
+			QStringRef name;
 			switch (t) {
 			case QXmlStreamReader::StartElement:
 				name = r.name();
