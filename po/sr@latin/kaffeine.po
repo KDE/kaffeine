@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2019-07-22 02:37+0200\n"
+"POT-Creation-Date: 2024-11-05 01:49+0000\n"
 "PO-Revision-Date: 2017-12-15 12:37+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -26,12 +26,12 @@ msgstr ""
 msgid "Cannot start mplayer process."
 msgstr "Ne mogu da pokrenem proces MPlayera."
 
-#: backend-vlc/vlcmediawidget.cpp:729 backend-vlc/vlcmediawidget.cpp:977
+#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
 #, kde-format
 msgid "Subtitle %1"
 msgstr "Titl %1"
 
-#: backend-vlc/vlcmediawidget.cpp:913
+#: backend-vlc/vlcmediawidget.cpp:917
 #, kde-format
 msgid "CD track %1"
 msgstr ""
@@ -155,9 +155,9 @@ msgctxt "@action"
 msgid "Edit"
 msgstr "Uredi"
 
-#: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:706
-#: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:406
-#: playlist/playlisttab.cpp:426
+#: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:728
+#: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:410
+#: playlist/playlisttab.cpp:430
 #, kde-format
 msgctxt "@action"
 msgid "Remove"
@@ -554,9 +554,9 @@ msgstr "Opšte opcije"
 msgid "Automatic Recording"
 msgstr "Automatsko snimanje"
 
-#: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:507
-#: dvb/dvbconfigdialog.cpp:508 dvb/dvbconfigdialog.cpp:534
-#: dvb/dvbconfigdialog.cpp:535 dvb/dvbconfigdialog.cpp:559
+#: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
+#: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
+#: dvb/dvbconfigdialog.cpp:543 dvb/dvbconfigdialog.cpp:567
 #, kde-format
 msgid "Device %1"
 msgstr "Uređaj %1"
@@ -583,164 +583,175 @@ msgstr "Ukloni regiz"
 msgid "Remove checked regular expressions."
 msgstr "Uklonite izabrane regularne izraze."
 
-#: dvb/dvbconfigdialog.cpp:610
+#: dvb/dvbconfigdialog.cpp:618
 #, kde-format
 msgid "Update Scan Data"
 msgstr "Osveži podatke o skeniranju"
 
-#: dvb/dvbconfigdialog.cpp:627
+#: dvb/dvbconfigdialog.cpp:637
 #, kde-format
 msgid "Downloading scan data"
 msgstr "Preuzimam podatke o skeniranju"
 
-#: dvb/dvbconfigdialog.cpp:671 dvb/dvbconfigdialog.cpp:684
-#, kde-format
-msgid "Scan data update failed."
-msgstr "Neuspelo osvežavanje podataka o skeniranju."
-
-#: dvb/dvbconfigdialog.cpp:681
+#: dvb/dvbconfigdialog.cpp:678
 #, kde-format
 msgid ""
-"Scan data successfully updated. Changes take\n"
-"effect after you have closed the configuration dialog."
+"Scan file is becoming bigger than %1 KB.\n"
+"Aborting, as something might be wrong...\n"
+msgstr ""
+
+#: dvb/dvbconfigdialog.cpp:701
+#, fuzzy, kde-format
+#| msgid ""
+#| "Scan data successfully updated. Changes take\n"
+#| "effect after you have closed the configuration dialog."
+msgid ""
+"Scan data successfully updated. %1 KB received.\n"
+"Changes take effect after you have closed\n"
+"the configuration dialog."
 msgstr ""
 "Podaci o skeniranju uspešno ažurirani. Promene će\n"
 "stupiti na snagu nakon što zatvorite dijalog za podešavanje."
 
-#: dvb/dvbconfigdialog.cpp:693
+#: dvb/dvbconfigdialog.cpp:706
+#, kde-format
+msgid "Scan data update failed."
+msgstr "Neuspelo osvežavanje podataka o skeniranju."
+
+#: dvb/dvbconfigdialog.cpp:715
 #, kde-format
 msgid "Name: %1"
 msgstr "Ime: %1"
 
-#: dvb/dvbconfigdialog.cpp:696
+#: dvb/dvbconfigdialog.cpp:718
 #, kde-format
 msgid "Move Left"
 msgstr "Pomeri ulevo"
 
-#: dvb/dvbconfigdialog.cpp:701
+#: dvb/dvbconfigdialog.cpp:723
 #, kde-format
 msgid "Reset"
 msgstr "Resetuj"
 
-#: dvb/dvbconfigdialog.cpp:711
+#: dvb/dvbconfigdialog.cpp:733
 #, kde-format
 msgid "Move Right"
 msgstr "Pomeri udesno"
 
-#: dvb/dvbconfigdialog.cpp:717
+#: dvb/dvbconfigdialog.cpp:739
 #, kde-format
 msgid "Device not connected."
 msgstr "Uređaj nije povezan."
 
-#: dvb/dvbconfigdialog.cpp:753
+#: dvb/dvbconfigdialog.cpp:775
 #, kde-format
 msgid "DVB-C"
 msgstr "DVB‑C"
 
-#: dvb/dvbconfigdialog.cpp:769
+#: dvb/dvbconfigdialog.cpp:791
 #, kde-format
 msgid "DVB-S2"
 msgstr "DVB‑S2"
 
-#: dvb/dvbconfigdialog.cpp:771
+#: dvb/dvbconfigdialog.cpp:793
 #, kde-format
 msgid "DVB-S"
 msgstr "DVB‑S"
 
-#: dvb/dvbconfigdialog.cpp:781
+#: dvb/dvbconfigdialog.cpp:803
 #, kde-format
 msgid "DVB-T2"
 msgstr "DVB‑T2"
 
-#: dvb/dvbconfigdialog.cpp:783
+#: dvb/dvbconfigdialog.cpp:805
 #, kde-format
 msgid "DVB-T"
 msgstr "DVB‑T"
 
-#: dvb/dvbconfigdialog.cpp:797
+#: dvb/dvbconfigdialog.cpp:819
 #, kde-format
 msgid "ATSC"
 msgstr "ATSC"
 
-#: dvb/dvbconfigdialog.cpp:810 dvb/dvbconfigdialog.cpp:933
+#: dvb/dvbconfigdialog.cpp:832 dvb/dvbconfigdialog.cpp:955
 #, kde-format
 msgid "ISDB-T"
 msgstr "ISDB‑T"
 
-#: dvb/dvbconfigdialog.cpp:895
+#: dvb/dvbconfigdialog.cpp:917
 #, kde-format
 msgid "Cable"
 msgstr "Kablovska"
 
 # well-spelled: Т2
-#: dvb/dvbconfigdialog.cpp:904
+#: dvb/dvbconfigdialog.cpp:926
 #, kde-format
 msgid "Terrestrial (T2)"
 msgstr "Zemaljska (T2)"
 
-#: dvb/dvbconfigdialog.cpp:912
+#: dvb/dvbconfigdialog.cpp:934
 #, kde-format
 msgid "Terrestrial"
 msgstr "Zemaljska"
 
-#: dvb/dvbconfigdialog.cpp:921 dvb/dvbconfigdialog.cpp:935
+#: dvb/dvbconfigdialog.cpp:943 dvb/dvbconfigdialog.cpp:957
 #, kde-format
 msgid "Autoscan"
 msgstr "Autoskeniranje"
 
-#: dvb/dvbconfigdialog.cpp:922
+#: dvb/dvbconfigdialog.cpp:944
 #, kde-format
 msgid "Autoscan with 167 kHz Offsets"
 msgstr "Autoskeniranje sa pomacima od 167 kHz"
 
-#: dvb/dvbconfigdialog.cpp:923
+#: dvb/dvbconfigdialog.cpp:945
 #, kde-format
 msgid "Autoscan Australia"
 msgstr "Autoskeniranje za Australiju"
 
-#: dvb/dvbconfigdialog.cpp:924
+#: dvb/dvbconfigdialog.cpp:946
 #, kde-format
 msgid "Autoscan Italy"
 msgstr "Autoskeniranje za Italiju"
 
-#: dvb/dvbconfigdialog.cpp:925
+#: dvb/dvbconfigdialog.cpp:947
 #, kde-format
 msgid "Autoscan Taiwan"
 msgstr "Autoskeniranje za Tajvan"
 
-#: dvb/dvbconfigdialog.cpp:928
+#: dvb/dvbconfigdialog.cpp:950
 #, kde-format
 msgid "Atsc"
 msgstr "ATSC"
 
-#: dvb/dvbconfigdialog.cpp:944 dvb/dvbconfigdialog.cpp:1073
+#: dvb/dvbconfigdialog.cpp:966 dvb/dvbconfigdialog.cpp:1095
 #, kde-format
 msgid "Tuner timeout (ms):"
 msgstr "Prekovreme birača (ms):"
 
-#: dvb/dvbconfigdialog.cpp:953 dvb/dvbscandialog.cpp:301
+#: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
 #, kde-format
 msgid "Source:"
 msgstr "Izvor:"
 
 # >> @item:inlistbox
-#: dvb/dvbconfigdialog.cpp:956 dvb/dvbconfigdialog.cpp:1130
+#: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
 #, kde-format
 msgid "No Source"
 msgstr "nema izvora"
 
-#: dvb/dvbconfigdialog.cpp:962
+#: dvb/dvbconfigdialog.cpp:984
 #, kde-format
 msgid "Name:"
 msgstr "Ime:"
 
-#: dvb/dvbconfigdialog.cpp:1081
+#: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
 msgstr "Povišen napon na LNBf‑u:"
 
 # >> ? Tri-state, "defaults to not use it"?
-#: dvb/dvbconfigdialog.cpp:1087
+#: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
 msgid ""
 "On some DVB devices, there's an extra control that allows to increase the \n"
@@ -758,859 +769,742 @@ msgstr ""
 "— režim povišenog napona (popunjeno);\n"
 "— tri stanja (bez slanja kontrole)."
 
-#: dvb/dvbconfigdialog.cpp:1095
+#: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
 msgid "Configuration:"
 msgstr "Podešavanje:"
 
-#: dvb/dvbconfigdialog.cpp:1098
+#: dvb/dvbconfigdialog.cpp:1120
 #, kde-format
 msgid "DiSEqC Switch"
 msgstr "DiSEqC prekidač"
 
-#: dvb/dvbconfigdialog.cpp:1099
+#: dvb/dvbconfigdialog.cpp:1121
 #, kde-format
 msgid "USALS Rotor"
 msgstr "USALS rotor"
 
-#: dvb/dvbconfigdialog.cpp:1100
+#: dvb/dvbconfigdialog.cpp:1122
 #, kde-format
 msgid "Positions Rotor"
 msgstr "Pozicioni rotor"
 
-#: dvb/dvbconfigdialog.cpp:1101
+#: dvb/dvbconfigdialog.cpp:1123
 #, kde-format
 msgid "Disable DiSEqC"
 msgstr "Isključi DiSEqC"
 
-#: dvb/dvbconfigdialog.cpp:1119
+#: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
 msgid "LNB %1 Settings"
 msgstr "Postavke LNB‑a %1"
 
-#: dvb/dvbconfigdialog.cpp:1148 dvb/dvbconfigdialog.cpp:1556
+#: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
 #, kde-format
 msgid "LNB Settings"
 msgstr "Postavke LNB‑a"
 
-#: dvb/dvbconfigdialog.cpp:1166 dvb/dvbconfigdialog.cpp:1180
+#: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
 #, kde-format
 msgid "Add Satellite"
 msgstr "Dodaj satelit"
 
 # >> @title:column
-#: dvb/dvbconfigdialog.cpp:1189
+#: dvb/dvbconfigdialog.cpp:1211
 #, kde-format
 msgid "Satellite"
 msgstr "satelit"
 
 # >> @title:column
-#: dvb/dvbconfigdialog.cpp:1189
+#: dvb/dvbconfigdialog.cpp:1211
 #, kde-format
 msgid "Position"
 msgstr "položaj"
 
-#: dvb/dvbconfigdialog.cpp:1206
+#: dvb/dvbconfigdialog.cpp:1228
 #, kde-format
 msgid "Remove Satellite"
 msgstr "Ukloni satelit"
 
-#: dvb/dvbconfigdialog.cpp:1219
+#: dvb/dvbconfigdialog.cpp:1241
 #, kde-format
 msgid "Your position:"
 msgstr "Vaša pozicija:"
 
-#: dvb/dvbconfigdialog.cpp:1224
+#: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
 msgid "Latitude:"
 msgstr "Geo. širina:"
 
-#: dvb/dvbconfigdialog.cpp:1229
+#: dvb/dvbconfigdialog.cpp:1251
 #, kde-format
 msgid "[S -90 ... 90 N]"
 msgstr "[J -90 ... 90 S]"
 
-#: dvb/dvbconfigdialog.cpp:1247
+#: dvb/dvbconfigdialog.cpp:1269
 #, kde-format
 msgid "Longitude:"
 msgstr "Geo. dužina:"
 
-#: dvb/dvbconfigdialog.cpp:1252
+#: dvb/dvbconfigdialog.cpp:1274
 #, kde-format
 msgid "[W -180 ... 180 E]"
 msgstr "[Z -180 ... 180 I]"
 
-#: dvb/dvbconfigdialog.cpp:1601
+#: dvb/dvbconfigdialog.cpp:1623
 #, kde-format
 msgid "Low frequency (KHz)"
 msgstr "Niska frekvencija (kHz)"
 
-#: dvb/dvbconfigdialog.cpp:1609
+#: dvb/dvbconfigdialog.cpp:1631
 #, kde-format
 msgid "High frequency (MHz)"
 msgstr "Visoka frekvencija (MHz)"
 
-#: dvb/dvbconfigdialog.cpp:1617
+#: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
 msgid "Switch frequency (MHz)"
 msgstr "Frekvencija prebacivanja (MHz)"
 
-#: dvb/dvbconfigdialog.cpp:1625 dvb/dvbconfigdialog.cpp:1672
+#: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
 msgstr "Niski pojas: %1 MHz do %2 MHz"
 
 # well-spelled: Вишепојасно
-#: dvb/dvbconfigdialog.cpp:1678
+#: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
 msgstr "Višepojasno"
 
-#: dvb/dvbconfigdialog.cpp:1682
+#: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
 msgstr "Visoki pojas: %1 MHz do %2 MHz"
 
 # >> @item
-#: dvb/dvbepg.cpp:627
-#, kde-format
+#: dvb/dvbepg.cpp:649
 msgid "Detective"
 msgstr "detektivski"
 
 # >> @item
-#: dvb/dvbepg.cpp:628
-#, kde-format
+#: dvb/dvbepg.cpp:650
 msgid "Adventure"
 msgstr "avanturistički"
 
 # >> @item
-#: dvb/dvbepg.cpp:629
-#, kde-format
+#: dvb/dvbepg.cpp:651
 msgid "Science Fiction"
 msgstr "naučna fantastika"
 
 # >> @item
-#: dvb/dvbepg.cpp:630
-#, kde-format
+#: dvb/dvbepg.cpp:652
 msgid "Comedy"
 msgstr "komedija"
 
 # >> @item
-#: dvb/dvbepg.cpp:631
-#, kde-format
+#: dvb/dvbepg.cpp:653
 msgid "Soap"
 msgstr "sapunica"
 
 # >> @item
-#: dvb/dvbepg.cpp:632
-#, kde-format
+#: dvb/dvbepg.cpp:654
 msgid "Romance"
 msgstr "ljubavni"
 
 # >> @item
-#: dvb/dvbepg.cpp:633 dvb/dvbepg.cpp:684
-#, kde-format
+#: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:706
 msgid "Classical"
 msgstr "klasični"
 
 # >> @item
-#: dvb/dvbepg.cpp:634
-#, kde-format
+#: dvb/dvbepg.cpp:656
 msgid "Adult"
 msgstr "za odrasle"
 
 # >> @item
-#: dvb/dvbepg.cpp:635 dvb/dvbepg.cpp:770
-#, kde-format
+#: dvb/dvbepg.cpp:657 dvb/dvbepg.cpp:792
 msgid "User defined"
 msgstr "korisnički definisan"
 
 # >> @item
-#: dvb/dvbepg.cpp:640
-#, kde-format
+#: dvb/dvbepg.cpp:662
 msgid "Weather"
 msgstr "vreme"
 
 # >> @item
-#: dvb/dvbepg.cpp:641 dvb/dvbepg.cpp:658 dvb/dvbepg.cpp:703 dvb/dvbepg.cpp:710
-#, kde-format
+#: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
 msgid "Magazine"
 msgstr "časopis"
 
 # >> @item
-#: dvb/dvbepg.cpp:642 dvb/dvbepg.cpp:802
-#, kde-format
+#: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
 msgid "Documentary"
 msgstr "dokumentarac"
 
 # >> @item
-#: dvb/dvbepg.cpp:643 dvb/dvbepg.cpp:838
-#, kde-format
+#: dvb/dvbepg.cpp:665 dvb/dvbepg.cpp:860
 msgid "Discussion"
 msgstr "razgovor"
 
 # >> @item
-#: dvb/dvbepg.cpp:644 dvb/dvbepg.cpp:652 dvb/dvbepg.cpp:668 dvb/dvbepg.cpp:678
-#: dvb/dvbepg.cpp:689 dvb/dvbepg.cpp:705 dvb/dvbepg.cpp:713 dvb/dvbepg.cpp:725
-#: dvb/dvbepg.cpp:737 dvb/dvbepg.cpp:746
-#, kde-format
+#: dvb/dvbepg.cpp:666 dvb/dvbepg.cpp:674 dvb/dvbepg.cpp:690 dvb/dvbepg.cpp:700
+#: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
+#: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:768
 msgid "User Defined"
 msgstr "korisnički definisan"
 
 # >> @item
-#: dvb/dvbepg.cpp:649
-#, kde-format
+#: dvb/dvbepg.cpp:671
 msgid "Quiz"
 msgstr "kviz"
 
 # >> @item
 # ? Шта је ово тачно?
-#: dvb/dvbepg.cpp:650 dvb/dvbepg.cpp:780
-#, kde-format
+#: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
 msgid "Variety"
 msgstr "zabavni program"
 
 # Пазити да изнад има „Discussion“
 # >> @item
-#: dvb/dvbepg.cpp:651
-#, kde-format
+#: dvb/dvbepg.cpp:673
 msgid "Talk"
 msgstr "ćaskanje"
 
 # >> @item
-#: dvb/dvbepg.cpp:657
-#, kde-format
+#: dvb/dvbepg.cpp:679
 msgid "Events"
 msgstr "događaji"
 
 # >> @item
-#: dvb/dvbepg.cpp:659
-#, kde-format
+#: dvb/dvbepg.cpp:681
 msgid "Football"
 msgstr "fudbal"
 
 # >> @item
-#: dvb/dvbepg.cpp:660
-#, kde-format
+#: dvb/dvbepg.cpp:682
 msgid "Tennis"
 msgstr "tenis"
 
 # >> @item
-#: dvb/dvbepg.cpp:661
-#, kde-format
+#: dvb/dvbepg.cpp:683
 msgid "Team"
 msgstr "timski"
 
 # >> @item
-#: dvb/dvbepg.cpp:662
-#, kde-format
+#: dvb/dvbepg.cpp:684
 msgid "Athletics"
 msgstr "atletika"
 
 # >> @item
-#: dvb/dvbepg.cpp:663
-#, kde-format
+#: dvb/dvbepg.cpp:685
 msgid "Motor"
 msgstr "motorni"
 
 # >> @item
-#: dvb/dvbepg.cpp:664
-#, kde-format
+#: dvb/dvbepg.cpp:686
 msgid "Water"
 msgstr "vodeni"
 
 # >> @item
-#: dvb/dvbepg.cpp:665
-#, kde-format
+#: dvb/dvbepg.cpp:687
 msgid "Winter"
 msgstr "zimski"
 
 # >> @item
-#: dvb/dvbepg.cpp:666
-#, kde-format
+#: dvb/dvbepg.cpp:688
 msgid "Equestrian"
 msgstr "konjički"
 
 # >> @item
-#: dvb/dvbepg.cpp:667
-#, kde-format
+#: dvb/dvbepg.cpp:689
 msgid "Martial"
 msgstr "borilački"
 
 # >> @item
-#: dvb/dvbepg.cpp:673
-#, kde-format
+#: dvb/dvbepg.cpp:695
 msgid "Preschool"
 msgstr "za obdanište"
 
 # >> @item
-#: dvb/dvbepg.cpp:674
-#, kde-format
+#: dvb/dvbepg.cpp:696
 msgid "06 to 14"
 msgstr "6 do 14"
 
 # >> @item
-#: dvb/dvbepg.cpp:675
-#, kde-format
+#: dvb/dvbepg.cpp:697
 msgid "10 to 16"
 msgstr "10 do 16"
 
 # >> @item
-#: dvb/dvbepg.cpp:676
-#, kde-format
+#: dvb/dvbepg.cpp:698
 msgid "Educational"
 msgstr "obrazovni"
 
 # >> @item
-#: dvb/dvbepg.cpp:677
-#, kde-format
+#: dvb/dvbepg.cpp:699
 msgid "Cartoons"
 msgstr "crtani"
 
 # >> @item
-#: dvb/dvbepg.cpp:683
-#, kde-format
+#: dvb/dvbepg.cpp:705
 msgid "Poprock"
 msgstr "pop‑rok"
 
 # >> @item
-#: dvb/dvbepg.cpp:685
-#, kde-format
+#: dvb/dvbepg.cpp:707
 msgid "Folk"
 msgstr "narodna"
 
 # >> @item
-#: dvb/dvbepg.cpp:686
-#, kde-format
+#: dvb/dvbepg.cpp:708
 msgid "Jazz"
 msgstr "džez"
 
 # >> @item
-#: dvb/dvbepg.cpp:687
-#, kde-format
+#: dvb/dvbepg.cpp:709
 msgid "Opera"
 msgstr "opera"
 
 # >> @item
-#: dvb/dvbepg.cpp:688
-#, kde-format
+#: dvb/dvbepg.cpp:710
 msgid "Ballet"
 msgstr "balet"
 
 # >> @item
-#: dvb/dvbepg.cpp:694
-#, kde-format
+#: dvb/dvbepg.cpp:716
 msgid "Performance"
 msgstr "performans"
 
 # >> @item
-#: dvb/dvbepg.cpp:695
-#, kde-format
+#: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
 msgstr "umetnost"
 
 # >> @item
-#: dvb/dvbepg.cpp:696 dvb/dvbepg.cpp:845
-#, kde-format
+#: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
 msgid "Religion"
 msgstr "religija"
 
 # >> @item
-#: dvb/dvbepg.cpp:697
-#, kde-format
+#: dvb/dvbepg.cpp:719
 msgid "Traditional"
 msgstr "tradicija"
 
 # >> @item
-#: dvb/dvbepg.cpp:698
-#, kde-format
+#: dvb/dvbepg.cpp:720
 msgid "Literature"
 msgstr "literatura"
 
 # >> @item
-#: dvb/dvbepg.cpp:699
-#, kde-format
+#: dvb/dvbepg.cpp:721
 msgid "Cinema"
 msgstr "bioskop"
 
 # >> @item
-#: dvb/dvbepg.cpp:700
-#, kde-format
+#: dvb/dvbepg.cpp:722
 msgid "Experimental"
 msgstr "eksperimentalni"
 
 # >> @item
-#: dvb/dvbepg.cpp:701
-#, kde-format
+#: dvb/dvbepg.cpp:723
 msgid "Press"
 msgstr "štampa"
 
 # >> @item
-#: dvb/dvbepg.cpp:702
-#, kde-format
+#: dvb/dvbepg.cpp:724
 msgid "New Media"
 msgstr "novi mediji"
 
 # >> @item
-#: dvb/dvbepg.cpp:704 dvb/dvbepg.cpp:823
-#, kde-format
+#: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
 msgstr "moda"
 
 # >> @item
-#: dvb/dvbepg.cpp:711
-#, kde-format
+#: dvb/dvbepg.cpp:733
 msgid "Advisory"
 msgstr "saveti"
 
 # >> @item
-#: dvb/dvbepg.cpp:712
-#, kde-format
+#: dvb/dvbepg.cpp:734
 msgid "People"
 msgstr "ljudi"
 
 # >> @item
-#: dvb/dvbepg.cpp:718
-#, kde-format
+#: dvb/dvbepg.cpp:740
 msgid "Nature"
 msgstr "priroda"
 
 # >> @item
-#: dvb/dvbepg.cpp:719
-#, kde-format
+#: dvb/dvbepg.cpp:741
 msgid "Technology"
 msgstr "tehnologija"
 
 # >> @item
-#: dvb/dvbepg.cpp:720
-#, kde-format
+#: dvb/dvbepg.cpp:742
 msgid "Medicine"
 msgstr "medicina"
 
 # >> @item
-#: dvb/dvbepg.cpp:721
-#, kde-format
+#: dvb/dvbepg.cpp:743
 msgid "Foreign"
 msgstr "strani"
 
 # >> @item
-#: dvb/dvbepg.cpp:722 dvb/dvbepg.cpp:763
-#, kde-format
+#: dvb/dvbepg.cpp:744 dvb/dvbepg.cpp:785
 msgid "Social"
 msgstr "društveni"
 
 # ? Шта је ово?
 # >> @item
-#: dvb/dvbepg.cpp:723
-#, kde-format
+#: dvb/dvbepg.cpp:745
 msgid "Further"
 msgstr "dalje"
 
 # >> @item
-#: dvb/dvbepg.cpp:724
-#, kde-format
+#: dvb/dvbepg.cpp:746
 msgid "Language"
 msgstr "jezik"
 
 # >> @item
-#: dvb/dvbepg.cpp:730 dvb/dvbepg.cpp:826
-#, kde-format
+#: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
 msgid "Travel"
 msgstr "putovanje"
 
 # >> @item
-#: dvb/dvbepg.cpp:731
-#, kde-format
+#: dvb/dvbepg.cpp:753
 msgid "Handicraft"
 msgstr "ručni rad"
 
 # >> @item
-#: dvb/dvbepg.cpp:732
-#, kde-format
+#: dvb/dvbepg.cpp:754
 msgid "Motoring"
 msgstr "kola"
 
 # >> @item
-#: dvb/dvbepg.cpp:733
-#, kde-format
+#: dvb/dvbepg.cpp:755
 msgid "Fitness"
 msgstr "fitnes"
 
 # >> @item
-#: dvb/dvbepg.cpp:734 dvb/dvbepg.cpp:822
-#, kde-format
+#: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:844
 msgid "Cooking"
 msgstr "kuvanje"
 
 # >> @item
-#: dvb/dvbepg.cpp:735
-#, kde-format
+#: dvb/dvbepg.cpp:757
 msgid "Shopping"
 msgstr "kupovina"
 
 # >> @item
-#: dvb/dvbepg.cpp:736
-#, kde-format
+#: dvb/dvbepg.cpp:758
 msgid "Gardening"
 msgstr "baštovanstvo"
 
 # >> @item
-#: dvb/dvbepg.cpp:741 iso-codes.cpp:125 iso-codes.cpp:155
+#: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
 #, kde-format
 msgid "Original Language"
 msgstr "izvorni jezik"
 
 # >> @item
-#: dvb/dvbepg.cpp:742
-#, kde-format
+#: dvb/dvbepg.cpp:764
 msgid "Black and White "
 msgstr "crno‑belo"
 
 # >> @item
-#: dvb/dvbepg.cpp:743
-#, kde-format
+#: dvb/dvbepg.cpp:765
 msgid "Unpublished"
 msgstr "neobjavljeno"
 
 # >> @item
-#: dvb/dvbepg.cpp:744
-#, kde-format
+#: dvb/dvbepg.cpp:766
 msgid "Live"
 msgstr "uživo"
 
 # >> @item
 # well-spelled: планостереоскопски
-#: dvb/dvbepg.cpp:745
-#, kde-format
+#: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
 msgstr "planostereoskopski"
 
 # >> @item
-#: dvb/dvbepg.cpp:747
-#, kde-format
+#: dvb/dvbepg.cpp:769
 msgid "User Defined 1"
 msgstr "korisnički definisan 1"
 
 # >> @item
-#: dvb/dvbepg.cpp:748
-#, kde-format
+#: dvb/dvbepg.cpp:770
 msgid "User Defined 2"
 msgstr "korisnički definisan 2"
 
 # >> @item
-#: dvb/dvbepg.cpp:749
-#, kde-format
+#: dvb/dvbepg.cpp:771
 msgid "User Defined 3"
 msgstr "korisnički definisan 3"
 
 # >> @item
-#: dvb/dvbepg.cpp:750
-#, kde-format
+#: dvb/dvbepg.cpp:772
 msgid "User Defined 4"
 msgstr "korisnički definisan 4"
 
 # >> @item
-#: dvb/dvbepg.cpp:755
-#, kde-format
+#: dvb/dvbepg.cpp:777
 msgid "Undefined"
 msgstr "nedefinisan"
 
 # >> @item
-#: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:786
-#, kde-format
+#: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:808
 msgid "Movie"
 msgstr "film"
 
 # >> @item
-#: dvb/dvbepg.cpp:757 dvb/dvbepg.cpp:774 dvb/dvbepg.cpp:800
-#, kde-format
+#: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:796 dvb/dvbepg.cpp:822
 msgid "News"
 msgstr "vesti"
 
 # >> @item
-#: dvb/dvbepg.cpp:758 dvb/dvbepg.cpp:814
-#, kde-format
+#: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:836
 msgid "Show"
 msgstr "serija"
 
 # >> @item
-#: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:775
-#, kde-format
+#: dvb/dvbepg.cpp:781 dvb/dvbepg.cpp:797
 msgid "Sports"
 msgstr "sport"
 
 # >> @item
-#: dvb/dvbepg.cpp:760 dvb/dvbepg.cpp:784
-#, kde-format
+#: dvb/dvbepg.cpp:782 dvb/dvbepg.cpp:806
 msgid "Children"
 msgstr "deca"
 
 # >> @item
-#: dvb/dvbepg.cpp:761
-#, kde-format
+#: dvb/dvbepg.cpp:783
 msgid "Music"
 msgstr "muzika"
 
 # >> @item
-#: dvb/dvbepg.cpp:762
-#, kde-format
+#: dvb/dvbepg.cpp:784
 msgid "Culture"
 msgstr "kultura"
 
 # >> @item
-#: dvb/dvbepg.cpp:764 dvb/dvbepg.cpp:776
-#, kde-format
+#: dvb/dvbepg.cpp:786 dvb/dvbepg.cpp:798
 msgid "Education"
 msgstr "obrazovanje"
 
 # >> @item
-#: dvb/dvbepg.cpp:765
-#, kde-format
+#: dvb/dvbepg.cpp:787
 msgid "Leisure"
 msgstr "odmor"
 
 # >> @item
-#: dvb/dvbepg.cpp:766
-#, kde-format
+#: dvb/dvbepg.cpp:788
 msgid "Special"
 msgstr "posebno"
 
 # >> @item
-#: dvb/dvbepg.cpp:767 dvb/dvbepg.cpp:768 dvb/dvbepg.cpp:769
-#, kde-format
+#: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
 msgid "Reserved"
 msgstr "rezervisano"
 
 # >> @item
-#: dvb/dvbepg.cpp:777
-#, kde-format
+#: dvb/dvbepg.cpp:799
 msgid "Soap opera"
 msgstr "sapunica"
 
 # >> @item
-#: dvb/dvbepg.cpp:778
-#, kde-format
+#: dvb/dvbepg.cpp:800
 msgid "Mini-series"
 msgstr "mini‑serija"
 
 # >> @item
-#: dvb/dvbepg.cpp:779
-#, kde-format
+#: dvb/dvbepg.cpp:801
 msgid "Series"
 msgstr "serija"
 
 # well-spelled: ријалити
 # >> @item
-#: dvb/dvbepg.cpp:781
-#, kde-format
+#: dvb/dvbepg.cpp:803
 msgid "Reality show"
 msgstr "rijaliti šou"
 
 # >> @item
-#: dvb/dvbepg.cpp:782
-#, kde-format
+#: dvb/dvbepg.cpp:804
 msgid "Information"
 msgstr "informacije"
 
 # >> @item
-#: dvb/dvbepg.cpp:783
-#, kde-format
+#: dvb/dvbepg.cpp:805
 msgid "Comical"
 msgstr "komedija"
 
 # >> @item
-#: dvb/dvbepg.cpp:785
-#, kde-format
+#: dvb/dvbepg.cpp:807
 msgid "Erotic"
 msgstr "erotika"
 
 # >> @item
-#: dvb/dvbepg.cpp:787
-#, kde-format
+#: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
 msgstr "tombola, prodaja, nagrade"
 
 # >> @item
-#: dvb/dvbepg.cpp:788
-#, kde-format
+#: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
 msgstr "debata/intervju"
 
 # >> @item
-#: dvb/dvbepg.cpp:789
-#, kde-format
+#: dvb/dvbepg.cpp:811
 msgid "Other"
 msgstr "drugo"
 
 # >> @item
-#: dvb/dvbepg.cpp:801
-#, kde-format
+#: dvb/dvbepg.cpp:823
 msgid "Report"
 msgstr "izveštaj"
 
 # >> @item
-#: dvb/dvbepg.cpp:803
-#, kde-format
+#: dvb/dvbepg.cpp:825
 msgid "Biography"
 msgstr "biografija"
 
 # >> @item
-#: dvb/dvbepg.cpp:807
-#, kde-format
+#: dvb/dvbepg.cpp:829
 msgid "Educative"
 msgstr "obrazovanje"
 
 # >> @item
-#: dvb/dvbepg.cpp:813
-#, kde-format
+#: dvb/dvbepg.cpp:835
 msgid "Auditorium"
 msgstr "auditorijum"
 
 # >> @item
-#: dvb/dvbepg.cpp:815
-#, kde-format
+#: dvb/dvbepg.cpp:837
 msgid "Musical"
 msgstr "muzički"
 
 # >> @item
-#: dvb/dvbepg.cpp:816
-#, kde-format
+#: dvb/dvbepg.cpp:838
 msgid "Making of"
 msgstr "kako se pravilo"
 
 # >> @item
-#: dvb/dvbepg.cpp:817
-#, kde-format
+#: dvb/dvbepg.cpp:839
 msgid "Feminine"
 msgstr "ženski"
 
 # >> @item
-#: dvb/dvbepg.cpp:818
-#, kde-format
+#: dvb/dvbepg.cpp:840
 msgid "Game show"
 msgstr "igra"
 
 # >> @item
-#: dvb/dvbepg.cpp:824
-#, kde-format
+#: dvb/dvbepg.cpp:846
 msgid "Country"
 msgstr "priroda"
 
 # >> @item
-#: dvb/dvbepg.cpp:825
-#, kde-format
+#: dvb/dvbepg.cpp:847
 msgid "Health"
 msgstr "zdravlje"
 
 # >> @item
-#: dvb/dvbepg.cpp:833
-#, kde-format
+#: dvb/dvbepg.cpp:855
 msgid "Raffle"
 msgstr "tombola"
 
 # >> @item
-#: dvb/dvbepg.cpp:834
-#, kde-format
+#: dvb/dvbepg.cpp:856
 msgid "Television sales"
 msgstr "televizijska prodaja"
 
 # >> @item
-#: dvb/dvbepg.cpp:835
-#, kde-format
+#: dvb/dvbepg.cpp:857
 msgid "Prizing"
 msgstr "nagrade"
 
 # >> @item
-#: dvb/dvbepg.cpp:839
-#, kde-format
+#: dvb/dvbepg.cpp:861
 msgid "Interview"
 msgstr "intervju"
 
 # >> @item
-#: dvb/dvbepg.cpp:842
-#, kde-format
+#: dvb/dvbepg.cpp:864
 msgid "Adult cartoon"
 msgstr "crtani za odrasle"
 
 # >> @item
-#: dvb/dvbepg.cpp:843
-#, kde-format
+#: dvb/dvbepg.cpp:865
 msgid "Interactive"
 msgstr "interaktivni"
 
 # >> @item
-#: dvb/dvbepg.cpp:844
-#, kde-format
+#: dvb/dvbepg.cpp:866
 msgid "Policy"
 msgstr "politika"
 
-#: dvb/dvbepg.cpp:877
+#: dvb/dvbepg.cpp:899
 #, no-c-format, kde-format
 msgid "Genre: %1"
 msgstr "Žanr: %1"
 
-#: dvb/dvbepg.cpp:884
-#, kde-format
+#: dvb/dvbepg.cpp:906
 msgid "reserved"
 msgstr "rezervisano"
 
-#: dvb/dvbepg.cpp:885
-#, kde-format
+#: dvb/dvbepg.cpp:907
 msgid "all audiences"
 msgstr "sva godišta"
 
-#: dvb/dvbepg.cpp:886
-#, kde-format
+#: dvb/dvbepg.cpp:908
 msgid "10 years"
 msgstr "10 godina"
 
-#: dvb/dvbepg.cpp:887
-#, kde-format
+#: dvb/dvbepg.cpp:909
 msgid "12 years"
 msgstr "12 godina"
 
-#: dvb/dvbepg.cpp:888
-#, kde-format
+#: dvb/dvbepg.cpp:910
 msgid "14 years"
 msgstr "14 godina"
 
-#: dvb/dvbepg.cpp:889
-#, kde-format
+#: dvb/dvbepg.cpp:911
 msgid "16 years"
 msgstr "16 godina"
 
-#: dvb/dvbepg.cpp:890
-#, kde-format
+#: dvb/dvbepg.cpp:912
 msgid "18 years"
 msgstr "18 godina"
 
-#: dvb/dvbepg.cpp:913
+#: dvb/dvbepg.cpp:935
 #, no-c-format, kde-format
 msgid "Country %1: not rated\n"
 msgstr "Država %1: bez rejtinga\n"
 
-#: dvb/dvbepg.cpp:925
+#: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "violence / "
 msgstr "nasilje / "
 
-#: dvb/dvbepg.cpp:927
+#: dvb/dvbepg.cpp:949
 #, kde-format
 msgid "sex / "
 msgstr "seks / "
 
-#: dvb/dvbepg.cpp:929
+#: dvb/dvbepg.cpp:951
 #, kde-format
 msgid "drugs / "
 msgstr "droga / "
 
-#: dvb/dvbepg.cpp:937
+#: dvb/dvbepg.cpp:959
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
 msgstr "Država %1: rejting: %2%3\n"
 
 # >> %2 is person's age
-#: dvb/dvbepg.cpp:940
+#: dvb/dvbepg.cpp:962
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
 msgstr "Država %1: rejting: %2 godina.\n"
@@ -1794,12 +1688,12 @@ msgstr "provajder"
 msgid "SNR"
 msgstr "SNR"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
 #, kde-format
 msgid "Channels"
 msgstr "Kanali"
 
-#: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:410
+#: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:414
 #, kde-format
 msgctxt "remove all items from a list"
 msgid "Clear"
@@ -1901,45 +1795,45 @@ msgstr "Trenutni transponder"
 msgid "Stop Scan"
 msgstr "Zaustavi skeniranje"
 
-#: dvb/dvbtab.cpp:96
+#: dvb/dvbtab.cpp:97
 #, kde-format
 msgid "Program Guide"
 msgstr "Programski vodič"
 
-#: dvb/dvbtab.cpp:101
+#: dvb/dvbtab.cpp:102
 #, kde-format
 msgid "OSD"
 msgstr "OSD"
 
-#: dvb/dvbtab.cpp:107
+#: dvb/dvbtab.cpp:108
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr "Raspored snimanja"
 
-#: dvb/dvbtab.cpp:114
+#: dvb/dvbtab.cpp:115
 #, kde-format
 msgid "Instant Record"
 msgstr "Trenutno snimanje"
 
-#: dvb/dvbtab.cpp:122
+#: dvb/dvbtab.cpp:123
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "Podesi televiziju..."
 
-#: dvb/dvbtab.cpp:142
+#: dvb/dvbtab.cpp:143
 #, kde-format
 msgid "Search:"
 msgstr "Traži:"
 
-#: dvb/dvbtab.cpp:373
+#: dvb/dvbtab.cpp:374
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "Kanal: %1_"
 
-#: dvb/dvbtab.cpp:385
+#: dvb/dvbtab.cpp:391
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1949,7 +1843,7 @@ msgstr ""
 "Kaffeine trenutno snima emisije.\n"
 "Želite li zaista da ga zatvorite?"
 
-#: dvb/dvbtab.cpp:395
+#: dvb/dvbtab.cpp:414
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1959,13 +1853,13 @@ msgstr ""
 "Kaffeine ima zakazana snimanja.\n"
 "Želite li zaista da ga zatvorite?"
 
-#: dvb/dvbtab.cpp:463
+#: dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr "Trenutno snimanje je pokrenuto"
 
-#: dvb/dvbtab.cpp:469 dvb/dvbtab.cpp:480
+#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -2097,40 +1991,40 @@ msgstr "izvorni jezik"
 msgid "Country: %1"
 msgstr "priroda"
 
-#: main.cpp:133 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr "Kaffeine"
 
-#: main.cpp:137
+#: main.cpp:141
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr "KDE‑ov medija plejer sa podrškom za digitalnu televiziju."
 
-#: main.cpp:141
+#: main.cpp:145
 #, fuzzy, kde-format
 #| msgid "(C) 2007-2017 The Kaffeine Authors"
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "© 2007–2017, autori Kaffeinea"
 
-#: main.cpp:159
+#: main.cpp:163
 #, fuzzy, kde-format
 #| msgid "Maintainer (for KDE4)"
 msgid "Maintainer"
 msgstr "Održavalac (za KDE4)"
 
-#: main.cpp:164
+#: main.cpp:168
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr ""
 
-#: main.cpp:168
+#: main.cpp:172
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Slobodan Simić"
 
-#: main.cpp:169
+#: main.cpp:173
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
@@ -2201,17 +2095,17 @@ msgctxt "@action:inmenu"
 msgid "Open URL..."
 msgstr "Otvori URL..."
 
-#: mainwindow.cpp:225 mainwindow.cpp:478
+#: mainwindow.cpp:225 mainwindow.cpp:482
 #, kde-format
 msgid "Play Audio CD"
 msgstr "Pusti audio CD"
 
-#: mainwindow.cpp:229 mainwindow.cpp:479
+#: mainwindow.cpp:229 mainwindow.cpp:483
 #, kde-format
 msgid "Play Video CD"
 msgstr "Pusti video CD"
 
-#: mainwindow.cpp:233 mainwindow.cpp:480
+#: mainwindow.cpp:233 mainwindow.cpp:484
 #, kde-format
 msgid "Play DVD"
 msgstr "Pusti DVD"
@@ -2294,7 +2188,7 @@ msgstr "&Pusti digitalnu TV"
 msgid "&Quit"
 msgstr "&Napusti"
 
-#: mainwindow.cpp:473
+#: mainwindow.cpp:477
 #, kde-format
 msgid ""
 "Enable all debug messages. Please notice that Kaffeine also allows enabling "
@@ -2307,435 +2201,435 @@ msgstr ""
 "QT_LOGGING_RULES=kaffeine.kategorija.debug=true\n"
 "gde ‘kategorija’ može da bude:\n"
 
-#: mainwindow.cpp:474
+#: mainwindow.cpp:478
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
 msgstr "Fajlovi i URL‑ovi otvoreni programom biće obrisani posle upotrebe"
 
-#: mainwindow.cpp:475
+#: mainwindow.cpp:479
 #, kde-format
 msgid "Start in full screen mode"
 msgstr "Pokreni preko celog ekrana"
 
-#: mainwindow.cpp:476
+#: mainwindow.cpp:480
 #, fuzzy, kde-format
 #| msgid "Start in full screen mode"
 msgid "Start in minimal mode"
 msgstr "Pokreni preko celog ekrana"
 
-#: mainwindow.cpp:477
+#: mainwindow.cpp:481
 #, kde-format
 msgid "Start with always on top"
 msgstr ""
 
-#: mainwindow.cpp:484
+#: mainwindow.cpp:488
 #, kde-format
 msgctxt "command line option"
 msgid "Dump dvb data (debug option)"
 msgstr "Popiši DVB podatke (ispravljačka opcija)"
 
-#: mainwindow.cpp:485
+#: mainwindow.cpp:489
 #, kde-format
 msgctxt "command line option"
 msgid "Play TV channel"
 msgstr "Pusti TV kanal"
 
-#: mainwindow.cpp:486
+#: mainwindow.cpp:490
 #, kde-format
 msgctxt "command line option"
 msgid "(deprecated option)"
 msgstr "(prevaziđena opcija)"
 
-#: mainwindow.cpp:487
+#: mainwindow.cpp:491
 #, kde-format
 msgctxt "command line option"
 msgid "Play last tuned TV channel"
 msgstr "Pusti poslednji izabran TV kanal"
 
-#: mainwindow.cpp:489
+#: mainwindow.cpp:493
 #, kde-format
 msgid "Files or URLs to play"
 msgstr "Fajlovi ili URL‑ovi za puštanje"
 
-#: mainwindow.cpp:711
+#: mainwindow.cpp:715
 #, kde-format
 msgctxt "@title:window"
 msgid "Open files"
 msgstr "Otvaranje fajlova"
 
-#: mainwindow.cpp:724
+#: mainwindow.cpp:728
 #, kde-format
 msgctxt "@title:window"
 msgid "Open URL"
 msgstr "Otvaranje URL‑a"
 
-#: mainwindow.cpp:724
+#: mainwindow.cpp:728
 #, kde-format
 msgid "Enter a URL:"
 msgstr "Unesite URL:"
 
-#: mediawidget.cpp:85
+#: mediawidget.cpp:91
 #, kde-format
 msgid "Previous"
 msgstr "Prethodno"
 
-#: mediawidget.cpp:93
+#: mediawidget.cpp:99
 #, kde-format
 msgid "Play"
 msgstr "Pusti"
 
-#: mediawidget.cpp:94
+#: mediawidget.cpp:100
 #, kde-format
 msgid "Pause"
 msgstr "Pauziraj"
 
-#: mediawidget.cpp:103
+#: mediawidget.cpp:109
 #, kde-format
 msgid "Stop"
 msgstr "Zaustavi"
 
-#: mediawidget.cpp:111
+#: mediawidget.cpp:117
 #, kde-format
 msgid "Next"
 msgstr "Sledeće"
 
-#: mediawidget.cpp:120 mediawidget.cpp:588
+#: mediawidget.cpp:126 mediawidget.cpp:670
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Full Screen Mode"
 msgstr "Preko celog ekrana"
 
-#: mediawidget.cpp:127 mediawidget.cpp:603
+#: mediawidget.cpp:133 mediawidget.cpp:685
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
 msgstr "Minimalistički režim"
 
-#: mediawidget.cpp:140
+#: mediawidget.cpp:146
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
 msgstr "Titl"
 
-#: mediawidget.cpp:144
+#: mediawidget.cpp:150
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
 msgstr "isključen"
 
-#: mediawidget.cpp:152
+#: mediawidget.cpp:158
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
 msgstr "Dodaj fajl titla"
 
-#: mediawidget.cpp:159
+#: mediawidget.cpp:165
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio"
 msgstr "Audio"
 
-#: mediawidget.cpp:162
+#: mediawidget.cpp:168
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
 msgstr "Audio uređaj"
 
-#: mediawidget.cpp:164
+#: mediawidget.cpp:170
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
 msgstr "Audio uređaj"
 
-#: mediawidget.cpp:171
+#: mediawidget.cpp:177
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
 msgstr "Povećaj jačinu zvuka"
 
-#: mediawidget.cpp:178
+#: mediawidget.cpp:184
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
 msgstr "Smanji jačinu zvuka"
 
-#: mediawidget.cpp:184
+#: mediawidget.cpp:190
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
 msgstr "Isključi zvuk"
 
-#: mediawidget.cpp:194
+#: mediawidget.cpp:200
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Video"
 msgstr "Video"
 
-#: mediawidget.cpp:198
+#: mediawidget.cpp:204
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
 msgstr "Rasplići"
 
-#: mediawidget.cpp:206
+#: mediawidget.cpp:212
 #, fuzzy, kde-format
 #| msgid "Disabled"
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
 msgstr "isključeno"
 
-#: mediawidget.cpp:213
+#: mediawidget.cpp:219
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
 msgstr ""
 
-#: mediawidget.cpp:219
+#: mediawidget.cpp:225
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
 msgstr ""
 
-#: mediawidget.cpp:225
+#: mediawidget.cpp:231
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
 msgstr ""
 
-#: mediawidget.cpp:231
+#: mediawidget.cpp:237
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
 msgstr ""
 
-#: mediawidget.cpp:238
+#: mediawidget.cpp:244
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
 msgstr ""
 
-#: mediawidget.cpp:244
+#: mediawidget.cpp:250
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
 msgstr ""
 
-#: mediawidget.cpp:250
+#: mediawidget.cpp:256
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
 msgstr ""
 
-#: mediawidget.cpp:256
+#: mediawidget.cpp:262
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
 msgstr ""
 
-#: mediawidget.cpp:262
+#: mediawidget.cpp:268
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
 msgstr ""
 
-#: mediawidget.cpp:268
+#: mediawidget.cpp:274
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
 msgstr ""
 
-#: mediawidget.cpp:288
+#: mediawidget.cpp:294
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
 msgstr "Proporcija"
 
-#: mediawidget.cpp:295
+#: mediawidget.cpp:301
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "Automatic"
 msgstr "Automatski"
 
-#: mediawidget.cpp:301
+#: mediawidget.cpp:307
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
 msgstr "1:1"
 
-#: mediawidget.cpp:307
+#: mediawidget.cpp:313
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "4:3"
 msgstr "4:3"
 
-#: mediawidget.cpp:313
+#: mediawidget.cpp:319
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "5:4"
 msgstr "5:4"
 
-#: mediawidget.cpp:319
+#: mediawidget.cpp:325
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:9"
 msgstr "16:9"
 
-#: mediawidget.cpp:325
+#: mediawidget.cpp:331
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:10"
 msgstr "16:10"
 
-#: mediawidget.cpp:331
+#: mediawidget.cpp:337
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.21:1"
 msgstr "2,21:1"
 
-#: mediawidget.cpp:337
+#: mediawidget.cpp:343
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.35:1"
 msgstr "2,35:1"
 
-#: mediawidget.cpp:343
+#: mediawidget.cpp:349
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.39:1"
 msgstr "2,39:1"
 
-#: mediawidget.cpp:348
+#: mediawidget.cpp:354
 #, kde-format
 msgid "Video size"
 msgstr "Veličina videa"
 
 # >> @item:inmenu
-#: mediawidget.cpp:356
+#: mediawidget.cpp:362
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
 msgstr "automatski"
 
 # >> @item:inmenu
-#: mediawidget.cpp:362
+#: mediawidget.cpp:368
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
 msgstr "25%"
 
 # >> @item:inmenu
-#: mediawidget.cpp:368
+#: mediawidget.cpp:374
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
 msgstr "50%"
 
 # >> @item:inmenu
-#: mediawidget.cpp:375
+#: mediawidget.cpp:381
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
 msgstr "75%"
 
 # >> @item:inmenu
-#: mediawidget.cpp:381
+#: mediawidget.cpp:387
 #, kde-format
 msgctxt "Video size"
 msgid "Original Size"
 msgstr "izvorna veličina"
 
 # >> @item:inmenu
-#: mediawidget.cpp:387
+#: mediawidget.cpp:393
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
 msgstr "150%"
 
-#: mediawidget.cpp:393
+#: mediawidget.cpp:399
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
 msgstr "200%"
 
-#: mediawidget.cpp:399
+#: mediawidget.cpp:405
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
 msgstr "250%"
 
-#: mediawidget.cpp:405
+#: mediawidget.cpp:411
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
 msgstr "300%"
 
-#: mediawidget.cpp:428
+#: mediawidget.cpp:434
 #, kde-format
 msgid "Volume Slider"
 msgstr "Klizač jačine zvuka"
 
-#: mediawidget.cpp:443
+#: mediawidget.cpp:449
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
 msgstr "Skoči na poziciju..."
 
-#: mediawidget.cpp:448
+#: mediawidget.cpp:454
 #, kde-format
 msgctxt "playback menu"
 msgid "Skip"
 msgstr "Skoči"
 
-#: mediawidget.cpp:462 mediawidget.cpp:471 mediawidget.cpp:1149
-#: mediawidget.cpp:1159
+#: mediawidget.cpp:468 mediawidget.cpp:477 mediawidget.cpp:1227
+#: mediawidget.cpp:1237
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Backward"
 msgstr "Skoči %1 sek. unazad"
 
-#: mediawidget.cpp:480 mediawidget.cpp:489 mediawidget.cpp:1152
-#: mediawidget.cpp:1162
+#: mediawidget.cpp:486 mediawidget.cpp:495 mediawidget.cpp:1230
+#: mediawidget.cpp:1240
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Forward"
 msgstr "Skoči %1 sek. unapred"
 
-#: mediawidget.cpp:495 mediawidget.cpp:498
+#: mediawidget.cpp:501 mediawidget.cpp:504
 #, kde-format
 msgid "Seek Slider"
 msgstr "Klizač traženja"
 
-#: mediawidget.cpp:509
+#: mediawidget.cpp:515
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
 msgstr "DVD meni"
 
-#: mediawidget.cpp:513
+#: mediawidget.cpp:519
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Title"
 msgstr "Naslov"
 
-#: mediawidget.cpp:519
+#: mediawidget.cpp:525
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
 msgstr "Poglavlje"
 
-#: mediawidget.cpp:525
+#: mediawidget.cpp:531
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Angle"
 msgstr "Ugao"
 
-#: mediawidget.cpp:532
+#: mediawidget.cpp:538
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
 msgstr "Prebaci između prikaza proteklog i preostalog vremena"
 
 # >> @item
-#: mediawidget.cpp:558
+#: mediawidget.cpp:567
 #, kde-format
 msgid ""
 "Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
@@ -2762,26 +2656,26 @@ msgstr ""
 "webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;svi "
 "fajlovi (*)"
 
-#: mediawidget.cpp:594
+#: mediawidget.cpp:676
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Full Screen Mode"
 msgstr "Napusti ceo ekran"
 
-#: mediawidget.cpp:607
+#: mediawidget.cpp:689
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Minimal Mode"
 msgstr "Napusti minimalistički režim"
 
-#: mediawidget.cpp:640
+#: mediawidget.cpp:722
 #, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
 msgstr "Otvaranje titla"
 
 # >> @item
-#: mediawidget.cpp:641
+#: mediawidget.cpp:723
 #, kde-format
 msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
@@ -2790,31 +2684,31 @@ msgstr ""
 "titlovi (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
 "smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp)"
 
-#: mediawidget.cpp:781 mediawidget.cpp:886
+#: mediawidget.cpp:863 mediawidget.cpp:964
 #, kde-format
 msgctxt "osd"
 msgid "Volume: %1%"
 msgstr "Jačina: %1%"
 
-#: mediawidget.cpp:812
+#: mediawidget.cpp:894
 #, kde-format
 msgctxt "osd"
 msgid "Stopped"
 msgstr "Zaustavljeno"
 
-#: mediawidget.cpp:876
+#: mediawidget.cpp:954
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
 msgstr "Zvuk isključen"
 
-#: mediawidget.cpp:879
+#: mediawidget.cpp:957
 #, kde-format
 msgctxt "osd"
 msgid "Mute Off"
 msgstr "Zvuk obnovljen"
 
-#: mediawidget.cpp:975
+#: mediawidget.cpp:1053
 #, fuzzy, kde-format
 #| msgctxt "'Video' menu"
 #| msgid "Deinterlace"
@@ -2822,112 +2716,112 @@ msgctxt "osd message"
 msgid "Deinterlace %1"
 msgstr "Rasplići"
 
-#: mediawidget.cpp:1390
+#: mediawidget.cpp:1468
 #, kde-format
 msgctxt "osd"
 msgid "Playing"
 msgstr "Pušta se"
 
-#: mediawidget.cpp:1395
+#: mediawidget.cpp:1473
 #, kde-format
 msgctxt "osd"
 msgid "Paused"
 msgstr "Pauzirano"
 
-#: mediawidget.cpp:1573
+#: mediawidget.cpp:1651
 #, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
 msgstr "Skok na poziciju"
 
-#: mediawidget.cpp:1578
+#: mediawidget.cpp:1656
 #, kde-format
 msgid "Enter a position:"
 msgstr "Unesite poziciju:"
 
 # >> @title:column
-#: playlist/playlistmodel.cpp:800
+#: playlist/playlistmodel.cpp:796
 #, kde-format
 msgctxt "playlist track"
 msgid "Title"
 msgstr "naslov"
 
 # >> @title:column
-#: playlist/playlistmodel.cpp:802
+#: playlist/playlistmodel.cpp:798
 #, kde-format
 msgctxt "playlist track"
 msgid "Artist"
 msgstr "izvođač"
 
 # >> @title:column
-#: playlist/playlistmodel.cpp:804
+#: playlist/playlistmodel.cpp:800
 #, kde-format
 msgctxt "playlist track"
 msgid "Album"
 msgstr "album"
 
 # >> @title:column
-#: playlist/playlistmodel.cpp:806
+#: playlist/playlistmodel.cpp:802
 #, kde-format
 msgctxt "playlist track"
 msgid "Track Number"
 msgstr "broj numere"
 
 # >> @title:column
-#: playlist/playlistmodel.cpp:808
+#: playlist/playlistmodel.cpp:804
 #, kde-format
 msgctxt "playlist track"
 msgid "Length"
 msgstr "trajanje"
 
-#: playlist/playlisttab.cpp:368
+#: playlist/playlisttab.cpp:372
 #, kde-format
 msgctxt "playlist browser"
 msgid "Temporary Playlist"
 msgstr "Privremena lista puštanja"
 
-#: playlist/playlisttab.cpp:392
+#: playlist/playlisttab.cpp:396
 #, kde-format
 msgctxt "playlist menu"
 msgid "Repeat"
 msgstr "Ponavljaj"
 
-#: playlist/playlisttab.cpp:397
+#: playlist/playlisttab.cpp:401
 #, kde-format
 msgctxt "playlist menu"
 msgid "Random"
 msgstr "Nasumično"
 
-#: playlist/playlisttab.cpp:402
+#: playlist/playlisttab.cpp:406
 #, kde-format
 msgid "Add Subtitle"
 msgstr "Dodaj titl"
 
-#: playlist/playlisttab.cpp:416
+#: playlist/playlisttab.cpp:420
 #, kde-format
 msgctxt "@action:inmenu playlist"
 msgid "New"
 msgstr "Novo"
 
-#: playlist/playlisttab.cpp:421
+#: playlist/playlisttab.cpp:425
 #, kde-format
 msgctxt "rename an entry in a list"
 msgid "Rename"
 msgstr "Preimenuj"
 
-#: playlist/playlisttab.cpp:630
+#: playlist/playlisttab.cpp:634
 #, kde-format
 msgctxt "playlist browser"
 msgid "Unnamed Playlist"
 msgstr "Neimenovana lista puštanja"
 
-#: playlist/playlisttab.cpp:834
+#: playlist/playlisttab.cpp:848
 #, kde-format
 msgctxt "file filter"
 msgid "Subtitle Files"
 msgstr "fajlovi titlova"
 
-#: playlist/playlisttab.cpp:851
+#: playlist/playlisttab.cpp:865
 #, kde-format
 msgctxt "file filter"
 msgid ""
