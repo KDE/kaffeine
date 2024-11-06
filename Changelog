@@ -1,6 +1,79 @@
 Kaffeine Changelog
 ==================
 
+Version 2.0.19 (2024-11-06):
+
+-   Add a Dockerfile to allow building Kaffeine inside a container
+-   Add desktop file name to solid actions
+-   Add developer_name and launchable to appdata
+-   Add explicit moc includes to sources for moc-covered headers
+-   Add missing QActionGroup include
+-   Add missing QString include
+-   Add releases and content rating
+-   appdata: use canonical cdn screenshot location
+-   Call cmake_minimum_required as first thing (& bump to cmake 3.16)
+-   Changelog: fix some typos
+-   CMakeLists.txt: remove a warning
+-   Date: Use QLocale for date to string conversion
+-   Don't invoke XScreenSaverSuspend on Wayland
+-   Drop kdelirc profile
+-   dvb: add a descriptor parser for registration descriptor
+-   dvb: avoid warning when EAGAIN == EWOULDBLOCK
+-   dvbconfigdialog: increase max download size for scandata
+-   dvb: epg: add a warning if event lasts more than 24 hours
+-   dvb: fix QFlags() initialization
+-   dvb: re-write bcdToTime function
+-   dvbsi: improve stream type detection logic
+-   FindVLC.cmake: use <pkg>_VERSION over old <pkg>_VERSION_STRING pattern
+-   Fix activating existing window
+-   Fix minor EBN issues
+-   Fix releases
+-   Fix some warnings for random generator
+-   Fix translation handling on install
+-   Force creating the windowHandle before using it
+-   get rid of deprecated qrand() function
+-   i18n: reduce the string puzzles
+-   i18n: Replace I18N_NOOP() macro with KLazyLocalizedString kli18n()
+-   kio: Switch from generic to TransferJob
+-   KShortcuts: Use an persistant instance
+-   main: restore backward compat with  KF < 5.62
+-   mediawidget: don't keep screen saver suspended on exit
+-   mediawidget: mark override virtual functions as such
+-   mediawidget: use angleDelta() instead of delta()
+-   Port away from API deprecated in >KF-5.62
+-   Port away from deprecated KMessageBox::sorry
+-   Port away from deprecated KMessageBox Yes/No API
+-   QChar: Wrap to-assign content into QChar where necessary
+-   qt: replace QList::swap() by QList::swapItemsAt()
+-   Remove arcconfig
+-   Remove deprecated iterator usage, use std::prev insted
+-   Remove deprecated use od QScopedPtr.take()
+-   Remove explicit use of ECM_KDE_MODULE_DIR, is part of ECM_MODULE_PATH
+-   Remove releases with improper dates.
+-   Remove setting of Attribute AA_UseHighDpiPixmaps
+-   Remove use of QKeyCombination::operator()+, use operator()| instead
+-   Replace Qt sort and search APIs
+-   Replace std::endl by Qt::endl
+-   scantable.dvb: update it to the latest version
+-   src: mark several functions as override
+-   Some CI fixes
+-   StandardPaths: Replace QStandardPaths::DataLocation with AppLocalDataLocation
+-   Streams: Remove setCodec()
+-   Strings: Wrap raw content (string/number) in QLatin1String()/QString()
+-   Support FreeBSD-without-v4l, by using the include/dmx.h again
+-   Switch from QFlags to int implementation
+-   Time: switch from toTime_t() to toSecsSinceEpoch()
+-   travis: use Bionic instead of Xenial
+-   Update homepage and URL addresses
+-   update_l10n.sh: drop, obsolete
+-   Update scanfile.dvb
+-   Use non-deprecated KDEInstallDirs variables
+-   Use QProcess::setProgram()
+-   vlc: use Qt::SkipEmptyParts
+-   Widgets: Replace setMargin() with setContentsMargins()
+-   Widgets/Screensaver: Remove X11 screensaver fallback
+-   Widgets: Switch over Widget.data to .toStongRef().get()
+
 Version 2.0.18 (2019-05-14):
 
 -   Start using TravisCI for test builds
