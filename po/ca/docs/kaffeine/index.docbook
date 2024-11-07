@@ -284,9 +284,7 @@
 >Marge a l'inici</guilabel
 > i <guilabel
 >Marge al final</guilabel
-> s'utilitzen per a configurar una mena de <quote
->marge de seguretat</quote
-> per a evitar perdre's el començament i el final d'un programa, ja que les marques de temps a la guia del programa poden no ser precises. De fet, comença a enregistrar-se uns minuts abans del temps <guilabel
+> s'utilitzen per a configurar una mena de «marge de seguretat» per a evitar perdre's el començament i el final d'un programa, ja que les marques de temps a la guia del programa poden no ser precises. De fet, comença a enregistrar-se uns minuts abans del temps <guilabel
 >Inici</guilabel
 > definit a la <guimenu
 >Guia de programes</guimenu
@@ -649,9 +647,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 >NIT</acronym
 >-), la qual conté informació sobre els canals que utilitzen diferents paràmetres d'ajust transmesos per la mateixa emissora. En determinades xarxes, és possible que alguns paràmetres d'ajust s'emmagatzemin en diverses taules <acronym
 >NIT</acronym
-> (anomenades <quote
->altres NIT</quote
->). Això és més comú en alguns sistemes de cable i de satèl·lit. Si seleccioneu <guilabel
+> (anomenades «altres NIT»). Això és més comú en alguns sistemes de cable i de satèl·lit. Si seleccioneu <guilabel
 >Cerca els transponedors d'altres xarxes</guilabel
 >, el &kaffeine; rebrà les instruccions d'esperar i analitzar totes les altres <acronym
 >NIT</acronym
@@ -1683,9 +1679,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><para
 ><action
 >Una variant dels capítols: és possible que hagin inclòs diverses versions</action
-> (anomenades <quote
->angles</quote
->) de certes escenes. Des d'aquí hi anireu directament. </para
+> (anomenades «angles») de certes escenes. Des d'aquí hi anireu directament. </para
 ></listitem>
 </varlistentry>
 
@@ -2077,9 +2071,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imageobject
 ><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
 ></inlinemediaobject
-> Permet activar, desactivar i modificar les dreceres de teclat. Per a obtenir més informació, vegeu la secció anomenada <quote
->Ús i personalització de les dreceres</quote
->. </para
+> Permet activar, desactivar i modificar les dreceres de teclat. Per a obtenir més informació, vegeu la secció anomenada «Ús i personalització de les dreceres». </para
 ></listitem>
 </varlistentry>
 

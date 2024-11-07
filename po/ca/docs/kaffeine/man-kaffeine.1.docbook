@@ -454,11 +454,9 @@
 <para
 >Quan s'afegeixi qualsevol canal nou en alguna ciutat, o quan s'afegeixin satèl·lits nous, quan no estan disponibles al Kaffeine, ja sigui per a utilitzar «dvbv5-scan» o «w_scan» per a generar un nou fitxer (en aquest últim cas, convertit al format correcte utilitzant dvb-format-convert), i envieu-los a <email
 >linux-media@vger.kernel.org</email
->, amb l'assumpte <quote
->[PATCH] dtv-scan-tables: <replaceable
+>, amb l'assumpte «[PATCH] dtv-scan-tables: <replaceable
 >alguna descripció</replaceable
-></quote
->. El nou pedaç ser afegit al <filename
+>». El pedaç nou s'afegirà al <filename
 >scanfile.dvb</filename
 > i el fitxer d'actualització estarà disponible per a ser actualitzat des d'Internet a l'aplicació Kaffeine. </para>
 </refsect1>
