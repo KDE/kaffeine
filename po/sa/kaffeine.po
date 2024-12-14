@@ -1,0 +1,2662 @@
+# Sanskrit translations for kaffeine package.
+# Copyright (C) 2024 This file is copyright:
+# This file is distributed under the same license as the kaffeine package.
+# Kali <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: kaffeine\n"
+"Report-Msgid-Bugs-To: https://bugs.kde.org\n"
+"POT-Creation-Date: 2024-11-05 01:49+0000\n"
+"PO-Revision-Date: 2024-12-13 19:09+0530\n"
+"Last-Translator: Kali <EMAIL@ADDRESS>\n"
+"Language-Team: Sanskrit\n"
+"Language: sa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: backend-mplayer/mplayermediawidget.cpp:260
+#, kde-format
+msgid "Cannot start mplayer process."
+msgstr "mplayer प्रक्रियां आरभुं न शक्नोति।"
+
+#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
+#, kde-format
+msgid "Subtitle %1"
+msgstr "उपशीर्षक %1"
+
+#: backend-vlc/vlcmediawidget.cpp:917
+#, kde-format
+msgid "CD track %1"
+msgstr "CD track %1"
+
+#: configurationdialog.cpp:42
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Kaffeine"
+msgstr "कैफीन विन्यस्तं कुर्वन्तु"
+
+#: configurationdialog.cpp:49
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Normal Mode"
+msgstr "सामान्य मोड"
+
+#: configurationdialog.cpp:51
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Minimal Mode"
+msgstr "न्यूनतम मोड"
+
+#: configurationdialog.cpp:53
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Full Screen Mode"
+msgstr "पूर्ण स्क्रीन मोड"
+
+#: configurationdialog.cpp:55
+#, kde-format
+msgctxt "@item:inlistbox 'Startup display mode:'"
+msgid "Remember Last Setting"
+msgstr "अन्तिमसेटिंग् स्मर्यताम्"
+
+#: configurationdialog.cpp:59
+#, kde-format
+msgctxt "@label:listbox"
+msgid "Startup display mode:"
+msgstr "प्रारम्भप्रदर्शनविधिः : १."
+
+#: configurationdialog.cpp:68
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Short skip duration:"
+msgstr "लघु स्किप् अवधिः : १."
+
+#: configurationdialog.cpp:77
+#, kde-format
+msgctxt "@label:spinbox"
+msgid "Long skip duration:"
+msgstr "दीर्घकालं लङ्घनस्य अवधिः : १."
+
+#: configurationdialog.cpp:82
+#, kde-format
+msgctxt "@title:group"
+msgid "General"
+msgstr "सामान्य"
+
+#: configurationdialog.cpp:89
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Log messages:"
+msgstr "लॉग् सन्देशाः : १."
+
+#: configurationdialog.cpp:92
+#, kde-format
+msgctxt "@action:button"
+msgid "Show dmesg"
+msgstr "dmesg दर्शयतु"
+
+#: configurationdialog.cpp:106
+#, kde-format
+msgctxt "@title:group"
+msgid "Diagnostics"
+msgstr "निदानम्"
+
+#: configurationdialog.cpp:114
+#, kde-format
+msgctxt "@label:textbox"
+msgid "LibVLC arguments:"
+msgstr "LibVLC तर्काः : १."
+
+#: configurationdialog.cpp:121
+#, kde-format
+msgctxt "@label:textbox"
+msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
+msgstr "NOTE: नूतनतर्कानाम् प्रभावाय कफीनस्य पुनः आरम्भः करणीयः"
+
+#: configurationdialog.cpp:126
+#, kde-format
+msgctxt "@title:group"
+msgid "libVLC"
+msgstr "libVLC इति"
+
+#: configurationdialog.cpp:163
+#, kde-format
+msgctxt "@title:window"
+msgid "dmesg"
+msgstr "द्मेस्ग्"
+
+#: dvb/dvbchanneldialog.cpp:108 dvb/dvbepgdialog.cpp:369
+#: dvb/dvbepgdialog.cpp:483 dvb/dvbrecordingdialog.cpp:256
+#: dvb/dvbscandialog.cpp:235
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Channel"
+msgstr "चैनल"
+
+#: dvb/dvbchanneldialog.cpp:110
+#, kde-format
+msgctxt "@title:column tv channel"
+msgid "Number"
+msgstr "संख्या"
+
+#: dvb/dvbchanneldialog.cpp:292 dvb/dvbrecordingdialog.cpp:77
+#, kde-format
+msgctxt "@action"
+msgid "Edit"
+msgstr "सम्पादन"
+
+#: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:728
+#: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:410
+#: playlist/playlisttab.cpp:430
+#, kde-format
+msgctxt "@action"
+msgid "Remove"
+msgstr "अपाकरोति"
+
+#: dvb/dvbchanneldialog.cpp:317
+#, kde-format
+msgctxt "@info"
+msgid ""
+"The channels will be sorted by number to allow drag and drop.\n"
+"Do you want to continue?"
+msgstr ""
+"ड्रैग् एण्ड् ड्रॉप् इत्यस्य अनुमतिं दातुं चैनल्स् संख्यानुसारं क्रमबद्धाः भविष्यन्ति ।\n"
+"किं त्वं निरन्तरं कर्तुम् इच्छसि ?"
+
+#: dvb/dvbchanneldialog.cpp:415
+#, kde-format
+msgid "Horizontal"
+msgstr "क्षैतिज"
+
+#: dvb/dvbchanneldialog.cpp:416
+#, kde-format
+msgid "Vertical"
+msgstr "ऊर्ध्वाधर"
+
+#: dvb/dvbchanneldialog.cpp:417
+#, kde-format
+msgid "Circular left"
+msgstr "वृत्ताकार वाम"
+
+#: dvb/dvbchanneldialog.cpp:418
+#, kde-format
+msgid "Circular right"
+msgstr "वृत्ताकार दक्षिण"
+
+#: dvb/dvbchanneldialog.cpp:419
+#, kde-format
+msgid "Off"
+msgstr "दूरे"
+
+#: dvb/dvbchanneldialog.cpp:709
+#, kde-format
+msgctxt "@title:window"
+msgid "Edit Channel"
+msgstr "चैनल सम्पादयतु"
+
+#: dvb/dvbchanneldialog.cpp:721
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Name:"
+msgstr "नामः:"
+
+#: dvb/dvbchanneldialog.cpp:730
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Number:"
+msgstr "संख्या:"
+
+#: dvb/dvbchanneldialog.cpp:739
+#, kde-format
+msgctxt "@label tv channel"
+msgid "Source:"
+msgstr "स्रोतः:"
+
+#: dvb/dvbchanneldialog.cpp:749 dvb/dvbchanneldialog.cpp:771
+#: dvb/dvbchanneldialog.cpp:789 dvb/dvbchanneldialog.cpp:810
+#: dvb/dvbchanneldialog.cpp:835 dvb/dvbchanneldialog.cpp:894
+#, kde-format
+msgid "Frequency (MHz):"
+msgstr "आवृत्ति (मेगाहर्ट्ज): १."
+
+#: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
+#, kde-format
+msgid "Symbol rate (kS/s):"
+msgstr "प्रतीक दर (kS/s): ."
+
+#: dvb/dvbchanneldialog.cpp:754 dvb/dvbchanneldialog.cpp:779
+#: dvb/dvbchanneldialog.cpp:794 dvb/dvbchanneldialog.cpp:815
+#: dvb/dvbchanneldialog.cpp:897
+#, kde-format
+msgid "Modulation:"
+msgstr "मॉडुलेशन : १."
+
+#: dvb/dvbchanneldialog.cpp:756 dvb/dvbchanneldialog.cpp:775
+#: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
+#, kde-format
+msgid "FEC rate:"
+msgstr "FEC दरः : १."
+
+#: dvb/dvbchanneldialog.cpp:769
+#, kde-format
+msgid "Polarization:"
+msgstr "ध्रुवीकरणम् : १."
+
+#: dvb/dvbchanneldialog.cpp:781
+#, kde-format
+msgid "Roll-off:"
+msgstr "रोल-ऑफ : १."
+
+#: dvb/dvbchanneldialog.cpp:792 dvb/dvbchanneldialog.cpp:813
+#: dvb/dvbchanneldialog.cpp:838
+#, kde-format
+msgid "Bandwidth:"
+msgstr "बैण्डविड्थः : १."
+
+#: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
+#, kde-format
+msgid "FEC rate LP:"
+msgstr "एफईसी दर एलपी: ."
+
+#: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
+#: dvb/dvbchanneldialog.cpp:840
+#, kde-format
+msgid "Transmission mode:"
+msgstr "संचरणविधिः : १."
+
+#: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
+#: dvb/dvbchanneldialog.cpp:842
+#, kde-format
+msgid "Guard interval:"
+msgstr "रक्षकान्तरम् : १."
+
+#: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
+#, kde-format
+msgid "Hierarchy:"
+msgstr "पदानुक्रमं:"
+
+#: dvb/dvbchanneldialog.cpp:827
+#, kde-format
+msgid "PLP (stream ID):"
+msgstr "पीएलपी (धारा आईडी): ."
+
+#: dvb/dvbchanneldialog.cpp:845
+#, kde-format
+msgid "Partial reception:"
+msgstr "आंशिकस्वागतः : १."
+
+#: dvb/dvbchanneldialog.cpp:847
+#, kde-format
+msgid "Sound broadcasting:"
+msgstr "ध्वनिप्रसारणम् : १."
+
+#: dvb/dvbchanneldialog.cpp:851
+#, kde-format
+msgid "SB channel ID:"
+msgstr "एसबी चैनल ID: 1.1."
+
+#: dvb/dvbchanneldialog.cpp:853
+#, kde-format
+msgid "SB index:"
+msgstr "एस बी अनुक्रमणिका : १."
+
+#: dvb/dvbchanneldialog.cpp:855
+#, kde-format
+msgid "SB count:"
+msgstr "एस बी गणना : १."
+
+#: dvb/dvbchanneldialog.cpp:860
+#, kde-format
+msgid "Layer A Modulation:"
+msgstr "लेयर ए मॉडुलेशन : १."
+
+#: dvb/dvbchanneldialog.cpp:862
+#, kde-format
+msgid "Layer A FEC rate:"
+msgstr "स्तरः A FEC दरः : १."
+
+#: dvb/dvbchanneldialog.cpp:864
+#, kde-format
+msgid "Layer A segments:"
+msgstr "स्तर क खण्डाः : १."
+
+#: dvb/dvbchanneldialog.cpp:866
+#, kde-format
+msgid "Layer A interleaving:"
+msgstr "स्तर A अन्तरालम् : १."
+
+#: dvb/dvbchanneldialog.cpp:870
+#, kde-format
+msgid "Layer B Modulation:"
+msgstr "स्तर ख मॉडुलेशन : १."
+
+#: dvb/dvbchanneldialog.cpp:872
+#, kde-format
+msgid "Layer B FEC rate:"
+msgstr "स्तर ख FEC दरः : १."
+
+#: dvb/dvbchanneldialog.cpp:874
+#, kde-format
+msgid "Layer B segments:"
+msgstr "स्तर ख खण्डाः : १."
+
+#: dvb/dvbchanneldialog.cpp:876
+#, kde-format
+msgid "Layer B interleaving:"
+msgstr "स्तर ख अन्तराल : १."
+
+#: dvb/dvbchanneldialog.cpp:880
+#, kde-format
+msgid "Layer C Modulation:"
+msgstr "स्तर ग मॉडुलेशन : १."
+
+#: dvb/dvbchanneldialog.cpp:882
+#, kde-format
+msgid "Layer C FEC rate:"
+msgstr "लेयर सी FEC दर: 1।"
+
+#: dvb/dvbchanneldialog.cpp:884
+#, kde-format
+msgid "Layer C segments:"
+msgstr "स्तर ग खण्डाः : १."
+
+#: dvb/dvbchanneldialog.cpp:886
+#, kde-format
+msgid "Layer C interleaving:"
+msgstr "लेयर ग इंटरलीविंग : १."
+
+#: dvb/dvbchanneldialog.cpp:911
+#, kde-format
+msgid "Network ID:"
+msgstr "संजालस्य ID: ."
+
+#: dvb/dvbchanneldialog.cpp:920
+#, kde-format
+msgid "Transport stream ID:"
+msgstr "परिवहनधारा ID: ."
+
+#: dvb/dvbchanneldialog.cpp:927
+#, kde-format
+msgid "Service ID:"
+msgstr "सेवापरिचयः : १."
+
+#: dvb/dvbchanneldialog.cpp:937
+#, kde-format
+msgid "Audio channel:"
+msgstr "श्रव्यचैनलः : १."
+
+#: dvb/dvbchanneldialog.cpp:974
+#, kde-format
+msgid "Scrambled:"
+msgstr "स्क्रैम्बलः : १."
+
+#: dvb/dvbchanneldialog.cpp:981
+#, kde-format
+msgid "PMT PID:"
+msgstr "पीएमटी पीआईडी : १."
+
+#: dvb/dvbchanneldialog.cpp:985
+#, kde-format
+msgid "Video PID:"
+msgstr "विडियो पीआईडी:"
+
+#: dvb/dvbchanneldialog.cpp:990
+#, kde-format
+msgid "Subtitle PID:"
+msgstr "उपशीर्षक PID: ."
+
+#: dvb/dvbchanneldialog.cpp:1006
+#, kde-format
+msgid "Teletext PID:"
+msgstr "दूरपाठः PID: ."
+
+#: dvb/dvbconfigdialog.cpp:59
+#, kde-format
+msgctxt "@title:window"
+msgid "Configure Television"
+msgstr "दूरदर्शनं विन्यस्यताम्"
+
+#: dvb/dvbconfigdialog.cpp:77
+#, kde-format
+msgid "Recording folder:"
+msgstr "रिकार्डिङ्ग् फोल्डर् : १."
+
+#: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
+#, kde-format
+msgid "Select Folder"
+msgstr "Folder इति चिनोतु"
+
+#: dvb/dvbconfigdialog.cpp:89
+#, kde-format
+msgid "Time shift folder:"
+msgstr "समयपरिवर्तनपुटम् : १."
+
+#: dvb/dvbconfigdialog.cpp:101
+#, kde-format
+msgid "xmltv file name (optional):"
+msgstr "xmltv सञ्चिकानाम (वैकल्पिकम्):"
+
+#: dvb/dvbconfigdialog.cpp:109
+#, kde-format
+msgid "Add optional file to allow reading EPG data from xmltv files"
+msgstr "xmltv सञ्चिकाभ्यः EPG-दत्तांशं पठितुं अनुमतिं दातुं वैकल्पिकसञ्चिकां योजयन्तु"
+
+#: dvb/dvbconfigdialog.cpp:113
+#, kde-format
+msgid "Disable parsing EPG data from MPEG-TS tables:"
+msgstr "MPEG-TS सारणीभ्यः EPG आँकडानां विश्लेषणं निष्क्रियं कुर्वन्तु:"
+
+#: dvb/dvbconfigdialog.cpp:115
+#, kde-format
+msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
+msgstr ""
+"यदि भवतः टीवी-प्रदाता विश्वसनीयं EPG-दत्तांशं न प्रसारयति तर्हि एतस्य उपयोगं कुर्वन्तु"
+
+#: dvb/dvbconfigdialog.cpp:123
+#, kde-format
+msgid "Begin margin (minutes):"
+msgstr "आरम्भ मार्जिन (निमेष) : १."
+
+#: dvb/dvbconfigdialog.cpp:130
+#, kde-format
+msgid "End margin (minutes):"
+msgstr "समाप्तिमार्जिनम् (निमेषाः) : १."
+
+#: dvb/dvbconfigdialog.cpp:137
+#, kde-format
+msgid "Naming style for recordings:"
+msgstr "रिकार्डिङ्ग्स् कृते नामकरणशैली : १."
+
+#: dvb/dvbconfigdialog.cpp:141
+#, kde-format
+msgid ""
+"The following substitutions work: \"%year\" for year (YYYY) and the "
+"following: %month, %day, %hour, %min, %sec, %channel and %title"
+msgstr ""
+"निम्नलिखित प्रतिस्थापनं कार्यं करोति: वर्षस्य (YYYY) कृते \"%year\" तथा च निम्नलिखितम्: "
+"%month, %day, %hour, %min, %sec, %channel तथा %title"
+
+#: dvb/dvbconfigdialog.cpp:153
+#, kde-format
+msgid "Action after recording finishes:"
+msgstr "रिकार्डिङ्ग् समाप्तस्य अनन्तरं क्रिया : १."
+
+#: dvb/dvbconfigdialog.cpp:157
+#, kde-format
+msgid "Leave empty for no command."
+msgstr "अनिर्देशं विना रिक्तं त्यजन्तु।"
+
+#: dvb/dvbconfigdialog.cpp:163
+#, kde-format
+msgid "Use ISO 8859-1 charset instead of ISO 6937:"
+msgstr "ISO 6937 इत्यस्य स्थाने ISO 8859-1 charset इत्यस्य उपयोगं कुर्वन्तु:"
+
+#: dvb/dvbconfigdialog.cpp:170
+#, kde-format
+msgid "Create info files to accompany EPG recordings:"
+msgstr "EPG रिकार्डिङ्ग्स् सह सूचनासञ्चिकाः रचयन्तु:"
+
+#: dvb/dvbconfigdialog.cpp:179
+#, kde-format
+msgid "Scan channels when idle to fetch fresh EPG data:"
+msgstr "ताजा EPG आँकडा आनेतुं निष्क्रियतायां चैनल्स् स्कैन् कुर्वन्तु:"
+
+#: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
+#, kde-format
+msgid "Scan data last updated on %1"
+msgstr "%1 इत्यत्र अन्तिमवारं अद्यतनं दत्तांशं स्कैन कुर्वन्तु"
+
+#: dvb/dvbconfigdialog.cpp:193
+#, kde-format
+msgid "Update Scan Data over Internet"
+msgstr "अन्तर्जालमाध्यमेन Scan Data अद्यतनं कुर्वन्तु"
+
+#: dvb/dvbconfigdialog.cpp:197
+#, kde-format
+msgid "Edit Scanfile"
+msgstr "Scanfile सम्पादयतु"
+
+#: dvb/dvbconfigdialog.cpp:200
+#, kde-format
+msgid "You can add channels manually to this file before scanning for them."
+msgstr "अस्मिन् सञ्चिकायां भवन्तः तान् स्कैनिङ्गं कर्तुं पूर्वं मैन्युअल् रूपेण चैनल् योजयितुं शक्नुवन्ति ।"
+
+#: dvb/dvbconfigdialog.cpp:217
+#, kde-format
+msgid "General Options"
+msgstr "सामान्यविकल्पाः"
+
+#: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
+#, kde-format
+msgid "Automatic Recording"
+msgstr "स्वचालित रिकार्डिंग"
+
+#: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
+#: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
+#: dvb/dvbconfigdialog.cpp:543 dvb/dvbconfigdialog.cpp:567
+#, kde-format
+msgid "Device %1"
+msgstr "यन्त्र %1"
+
+#: dvb/dvbconfigdialog.cpp:387
+#, kde-format
+msgctxt "@action"
+msgid "Add new Regex"
+msgstr "नूतनं Regex योजयन्तु"
+
+#: dvb/dvbconfigdialog.cpp:394
+#, kde-format
+msgid "Add another regular expression."
+msgstr "अन्यं नियमितव्यञ्जनं योजयन्तु।"
+
+#: dvb/dvbconfigdialog.cpp:398
+#, kde-format
+msgctxt "@action"
+msgid "Remove Regex"
+msgstr "Regex निष्कासित करें"
+
+#: dvb/dvbconfigdialog.cpp:404
+#, kde-format
+msgid "Remove checked regular expressions."
+msgstr "चेक् कृतानि नियमितव्यञ्जनानि निष्कासयन्तु।"
+
+#: dvb/dvbconfigdialog.cpp:618
+#, kde-format
+msgid "Update Scan Data"
+msgstr "स्कैन डाटा अद्यतन करें"
+
+#: dvb/dvbconfigdialog.cpp:637
+#, kde-format
+msgid "Downloading scan data"
+msgstr "स्कैन् डाटा डाउनलोड् करणम्"
+
+#: dvb/dvbconfigdialog.cpp:678
+#, kde-format
+msgid ""
+"Scan file is becoming bigger than %1 KB.\n"
+"Aborting, as something might be wrong...\n"
+msgstr ""
+"स्कैन् सञ्चिका %1 KB इत्यस्मात् बृहत्तरं भवति ।\n"
+"गर्भपातः, यथा किमपि दोषः भवितुम् अर्हति...\n"
+
+#: dvb/dvbconfigdialog.cpp:701
+#, kde-format
+msgid ""
+"Scan data successfully updated. %1 KB received.\n"
+"Changes take effect after you have closed\n"
+"the configuration dialog."
+msgstr ""
+"स्कैन् डाटा सफलतया अद्यतनम्। %1 KB प्राप्तम् ।\n"
+"भवतः बन्दीकरणानन्तरं परिवर्तनं प्रभावी भवति\n"
+"विन्याससंवादः ।"
+
+#: dvb/dvbconfigdialog.cpp:706
+#, kde-format
+msgid "Scan data update failed."
+msgstr "स्कैन् डाटा अपडेट् विफलम् अभवत् ।"
+
+#: dvb/dvbconfigdialog.cpp:715
+#, kde-format
+msgid "Name: %1"
+msgstr "नाम: %1"
+
+#: dvb/dvbconfigdialog.cpp:718
+#, kde-format
+msgid "Move Left"
+msgstr "वामभागे गच्छतु"
+
+#: dvb/dvbconfigdialog.cpp:723
+#, kde-format
+msgid "Reset"
+msgstr "पुनः सेट् करें"
+
+#: dvb/dvbconfigdialog.cpp:733
+#, kde-format
+msgid "Move Right"
+msgstr "दक्षिणतः गच्छतु"
+
+#: dvb/dvbconfigdialog.cpp:739
+#, kde-format
+msgid "Device not connected."
+msgstr "यन्त्रं न सम्बद्धम्।"
+
+#: dvb/dvbconfigdialog.cpp:775
+#, kde-format
+msgid "DVB-C"
+msgstr "DVB-C"
+
+#: dvb/dvbconfigdialog.cpp:791
+#, kde-format
+msgid "DVB-S2"
+msgstr "DVB-S2"
+
+#: dvb/dvbconfigdialog.cpp:793
+#, kde-format
+msgid "DVB-S"
+msgstr "DVB-S"
+
+#: dvb/dvbconfigdialog.cpp:803
+#, kde-format
+msgid "DVB-T2"
+msgstr "DVB-T2"
+
+#: dvb/dvbconfigdialog.cpp:805
+#, kde-format
+msgid "DVB-T"
+msgstr "DVB-T"
+
+#: dvb/dvbconfigdialog.cpp:819
+#, kde-format
+msgid "ATSC"
+msgstr "एटीएससी"
+
+#: dvb/dvbconfigdialog.cpp:832 dvb/dvbconfigdialog.cpp:955
+#, kde-format
+msgid "ISDB-T"
+msgstr "ISDB-T"
+
+#: dvb/dvbconfigdialog.cpp:917
+#, kde-format
+msgid "Cable"
+msgstr "केबल"
+
+#: dvb/dvbconfigdialog.cpp:926
+#, kde-format
+msgid "Terrestrial (T2)"
+msgstr "स्थलीय (T2) ९."
+
+#: dvb/dvbconfigdialog.cpp:934
+#, kde-format
+msgid "Terrestrial"
+msgstr "स्थलीय"
+
+#: dvb/dvbconfigdialog.cpp:943 dvb/dvbconfigdialog.cpp:957
+#, kde-format
+msgid "Autoscan"
+msgstr "ऑटोस्कैन"
+
+#: dvb/dvbconfigdialog.cpp:944
+#, kde-format
+msgid "Autoscan with 167 kHz Offsets"
+msgstr "167 kHz Offsets सह Autoscan"
+
+#: dvb/dvbconfigdialog.cpp:945
+#, kde-format
+msgid "Autoscan Australia"
+msgstr "ऑटोस्कैन ऑस्ट्रेलिया"
+
+#: dvb/dvbconfigdialog.cpp:946
+#, kde-format
+msgid "Autoscan Italy"
+msgstr "ऑटोस्कैन इटली"
+
+#: dvb/dvbconfigdialog.cpp:947
+#, kde-format
+msgid "Autoscan Taiwan"
+msgstr "ऑटोस्कैन ताइवान"
+
+#: dvb/dvbconfigdialog.cpp:950
+#, kde-format
+msgid "Atsc"
+msgstr "Atsc"
+
+#: dvb/dvbconfigdialog.cpp:966 dvb/dvbconfigdialog.cpp:1095
+#, kde-format
+msgid "Tuner timeout (ms):"
+msgstr "ट्यूनर समयसमाप्ति (ms): ."
+
+#: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
+#, kde-format
+msgid "Source:"
+msgstr "स्रोतः:"
+
+#: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
+#, kde-format
+msgid "No Source"
+msgstr "न स्रोतः"
+
+#: dvb/dvbconfigdialog.cpp:984
+#, kde-format
+msgid "Name:"
+msgstr "नामः:"
+
+#: dvb/dvbconfigdialog.cpp:1103
+#, kde-format
+msgid "Use Higher LNBf voltage:"
+msgstr "उच्चतर LNBf वोल्टेजस्य उपयोगं कुर्वन्तु:"
+
+#: dvb/dvbconfigdialog.cpp:1109
+#, kde-format
+msgid ""
+"On some DVB devices, there's an extra control that allows to increase the \n"
+"voltage sent to LNBf, in order to compensate for cabling loss. This tri-"
+"state\n"
+"button defaults to not use it. It may be set to:\n"
+"- normal mode (unchecked);\n"
+"- higher voltage mode (checked);\n"
+"- tristate (don't send the control)."
+msgstr ""
+"केषुचित् DVB-यन्त्रेषु अतिरिक्तं नियन्त्रणं भवति यत्... \n"
+"LNBf कृते प्रेषितः वोल्टेजः, केबलिंग् हानिः क्षतिपूर्तिं कर्तुं । एतत् त्रि-अवस्था\n"
+"बटनं पूर्वनिर्धारितं भवति यत् तस्य उपयोगः न भवति । इदं सेट् कर्तुं शक्यते :\n"
+"- सामान्य मोड (अनिरीक्षित);\n"
+"- उच्चतर वोल्टेज मोड (जाँचितम्);\n"
+"- त्रिराज्यम् (नियन्त्रणं न प्रेषयतु)।"
+
+#: dvb/dvbconfigdialog.cpp:1117
+#, kde-format
+msgid "Configuration:"
+msgstr "विन्यासः : १."
+
+#: dvb/dvbconfigdialog.cpp:1120
+#, kde-format
+msgid "DiSEqC Switch"
+msgstr "DiSEqC स्विच"
+
+#: dvb/dvbconfigdialog.cpp:1121
+#, kde-format
+msgid "USALS Rotor"
+msgstr "USALS रोटर"
+
+#: dvb/dvbconfigdialog.cpp:1122
+#, kde-format
+msgid "Positions Rotor"
+msgstr "स्थितिः रोटर"
+
+#: dvb/dvbconfigdialog.cpp:1123
+#, kde-format
+msgid "Disable DiSEqC"
+msgstr "DiSEqC अक्षम करें"
+
+#: dvb/dvbconfigdialog.cpp:1141
+#, kde-format
+msgid "LNB %1 Settings"
+msgstr "LNB %1 सेटिंग्स्"
+
+#: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
+#, kde-format
+msgid "LNB Settings"
+msgstr "LNB सेटिंग्स्"
+
+#: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
+#, kde-format
+msgid "Add Satellite"
+msgstr "उपग्रहं योजयन्तु"
+
+#: dvb/dvbconfigdialog.cpp:1211
+#, kde-format
+msgid "Satellite"
+msgstr "उपग्रहः"
+
+#: dvb/dvbconfigdialog.cpp:1211
+#, kde-format
+msgid "Position"
+msgstr "स्थितिः"
+
+#: dvb/dvbconfigdialog.cpp:1228
+#, kde-format
+msgid "Remove Satellite"
+msgstr "उपग्रहं निष्कासयन्तु"
+
+#: dvb/dvbconfigdialog.cpp:1241
+#, kde-format
+msgid "Your position:"
+msgstr "भवतः स्थितिः : १."
+
+#: dvb/dvbconfigdialog.cpp:1246
+#, kde-format
+msgid "Latitude:"
+msgstr "अक्षांशः : १."
+
+#: dvb/dvbconfigdialog.cpp:1251
+#, kde-format
+msgid "[S -90 ... 90 N]"
+msgstr "[स -९० ... ९० न] ।"
+
+#: dvb/dvbconfigdialog.cpp:1269
+#, kde-format
+msgid "Longitude:"
+msgstr "देशान्तर : १."
+
+#: dvb/dvbconfigdialog.cpp:1274
+#, kde-format
+msgid "[W -180 ... 180 E]"
+msgstr "[प -१८० ... १८० ई] ।"
+
+#: dvb/dvbconfigdialog.cpp:1623
+#, kde-format
+msgid "Low frequency (KHz)"
+msgstr "निम्न आवृत्ति (KHz) २."
+
+#: dvb/dvbconfigdialog.cpp:1631
+#, kde-format
+msgid "High frequency (MHz)"
+msgstr "उच्चावृत्तिः (MHz) २."
+
+#: dvb/dvbconfigdialog.cpp:1639
+#, kde-format
+msgid "Switch frequency (MHz)"
+msgstr "स्विच आवृत्ति (MHz) ९."
+
+#: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
+#, kde-format
+msgid "Low range: %1 MHz to %2 MHz"
+msgstr "निम्नपरिधिः : %1 मेगाहर्ट्जतः %2 मेगाहर्ट्जपर्यन्तं"
+
+#: dvb/dvbconfigdialog.cpp:1700
+#, kde-format
+msgid "Bandstacked"
+msgstr "बैण्डस्टैक्ड"
+
+#: dvb/dvbconfigdialog.cpp:1704
+#, kde-format
+msgid "High range: %1 MHz to %2 MHz"
+msgstr "उच्चपरिधिः : %1 मेगाहर्ट्जतः %2 मेगाहर्ट्जपर्यन्तं"
+
+#: dvb/dvbepg.cpp:649
+msgid "Detective"
+msgstr "जासूसः"
+
+#: dvb/dvbepg.cpp:650
+msgid "Adventure"
+msgstr "साहस"
+
+#: dvb/dvbepg.cpp:651
+msgid "Science Fiction"
+msgstr "विज्ञान कथा"
+
+#: dvb/dvbepg.cpp:652
+msgid "Comedy"
+msgstr "हास्यम्"
+
+#: dvb/dvbepg.cpp:653
+msgid "Soap"
+msgstr "फेनक"
+
+#: dvb/dvbepg.cpp:654
+msgid "Romance"
+msgstr "रोमांस"
+
+#: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:706
+msgid "Classical"
+msgstr "शास्त्रीय"
+
+#: dvb/dvbepg.cpp:656
+msgid "Adult"
+msgstr "प्रौढः"
+
+#: dvb/dvbepg.cpp:657 dvb/dvbepg.cpp:792
+msgid "User defined"
+msgstr "उपयोक्ता परिभाषितम्"
+
+#: dvb/dvbepg.cpp:662
+msgid "Weather"
+msgstr "वातावरणम्‌"
+
+#: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
+msgid "Magazine"
+msgstr "पत्रिका"
+
+#: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
+msgid "Documentary"
+msgstr "वृत्तचित्र"
+
+#: dvb/dvbepg.cpp:665 dvb/dvbepg.cpp:860
+msgid "Discussion"
+msgstr "विवरण"
+
+#: dvb/dvbepg.cpp:666 dvb/dvbepg.cpp:674 dvb/dvbepg.cpp:690 dvb/dvbepg.cpp:700
+#: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
+#: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:768
+msgid "User Defined"
+msgstr "उपयोक्ता परिभाषितम्"
+
+#: dvb/dvbepg.cpp:671
+msgid "Quiz"
+msgstr "प्रश्नोत्तरी"
+
+#: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
+msgid "Variety"
+msgstr "विविधता"
+
+#: dvb/dvbepg.cpp:673
+msgid "Talk"
+msgstr "प्रलपतु"
+
+#: dvb/dvbepg.cpp:679
+msgid "Events"
+msgstr "घटनाः"
+
+#: dvb/dvbepg.cpp:681
+msgid "Football"
+msgstr "फुटबालं"
+
+#: dvb/dvbepg.cpp:682
+msgid "Tennis"
+msgstr "टेनिसः"
+
+#: dvb/dvbepg.cpp:683
+msgid "Team"
+msgstr "दल"
+
+#: dvb/dvbepg.cpp:684
+msgid "Athletics"
+msgstr "एथलेटिक्स"
+
+#: dvb/dvbepg.cpp:685
+msgid "Motor"
+msgstr "मोटर"
+
+#: dvb/dvbepg.cpp:686
+msgid "Water"
+msgstr "जलम्‌"
+
+#: dvb/dvbepg.cpp:687
+msgid "Winter"
+msgstr "शीतकाल"
+
+#: dvb/dvbepg.cpp:688
+msgid "Equestrian"
+msgstr "अश्ववाहकः"
+
+#: dvb/dvbepg.cpp:689
+msgid "Martial"
+msgstr "मार्शल"
+
+#: dvb/dvbepg.cpp:695
+msgid "Preschool"
+msgstr "पूर्वस्कूली"
+
+#: dvb/dvbepg.cpp:696
+msgid "06 to 14"
+msgstr "०६ तः १४ पर्यन्तम्"
+
+#: dvb/dvbepg.cpp:697
+msgid "10 to 16"
+msgstr "१० तः १६ पर्यन्तम्"
+
+#: dvb/dvbepg.cpp:698
+msgid "Educational"
+msgstr "शैक्षिक"
+
+#: dvb/dvbepg.cpp:699
+msgid "Cartoons"
+msgstr "कार्टून"
+
+#: dvb/dvbepg.cpp:705
+msgid "Poprock"
+msgstr "पॉप रॉक"
+
+#: dvb/dvbepg.cpp:707
+msgid "Folk"
+msgstr "लोक"
+
+#: dvb/dvbepg.cpp:708
+msgid "Jazz"
+msgstr "जाज्"
+
+#: dvb/dvbepg.cpp:709
+msgid "Opera"
+msgstr "ओपेरा"
+
+#: dvb/dvbepg.cpp:710
+msgid "Ballet"
+msgstr "बैले"
+
+#: dvb/dvbepg.cpp:716
+msgid "Performance"
+msgstr "प्रदर्शनम्‌"
+
+#: dvb/dvbepg.cpp:717
+msgid "Fine Arts"
+msgstr "ललित कला"
+
+#: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
+msgid "Religion"
+msgstr "धर्म"
+
+#: dvb/dvbepg.cpp:719
+msgid "Traditional"
+msgstr "पारंपरिक"
+
+#: dvb/dvbepg.cpp:720
+msgid "Literature"
+msgstr "साहित्यं"
+
+#: dvb/dvbepg.cpp:721
+msgid "Cinema"
+msgstr "सिनेमा"
+
+#: dvb/dvbepg.cpp:722
+msgid "Experimental"
+msgstr "प्रयोगात्मकः"
+
+#: dvb/dvbepg.cpp:723
+msgid "Press"
+msgstr "मुद्रणशाला"
+
+#: dvb/dvbepg.cpp:724
+msgid "New Media"
+msgstr "न्यू मीडिया"
+
+#: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
+msgid "Fashion"
+msgstr "चलनं"
+
+#: dvb/dvbepg.cpp:733
+msgid "Advisory"
+msgstr "सल्लाहकारः"
+
+#: dvb/dvbepg.cpp:734
+msgid "People"
+msgstr "जनाः"
+
+#: dvb/dvbepg.cpp:740
+msgid "Nature"
+msgstr "प्रकृति"
+
+#: dvb/dvbepg.cpp:741
+msgid "Technology"
+msgstr "तन्त्रज्ञान"
+
+#: dvb/dvbepg.cpp:742
+msgid "Medicine"
+msgstr "चिकित्सा"
+
+#: dvb/dvbepg.cpp:743
+msgid "Foreign"
+msgstr "विदेशः"
+
+#: dvb/dvbepg.cpp:744 dvb/dvbepg.cpp:785
+msgid "Social"
+msgstr "सामाजिक"
+
+#: dvb/dvbepg.cpp:745
+msgid "Further"
+msgstr "अग्रे"
+
+#: dvb/dvbepg.cpp:746
+msgid "Language"
+msgstr "भाषा"
+
+#: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
+msgid "Travel"
+msgstr "यात्रा"
+
+#: dvb/dvbepg.cpp:753
+msgid "Handicraft"
+msgstr "हस्तशिल्प"
+
+#: dvb/dvbepg.cpp:754
+msgid "Motoring"
+msgstr "मोटरचालनम्"
+
+#: dvb/dvbepg.cpp:755
+msgid "Fitness"
+msgstr "फिटनेस"
+
+#: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:844
+msgid "Cooking"
+msgstr "पाक"
+
+#: dvb/dvbepg.cpp:757
+msgid "Shopping"
+msgstr "विपणि"
+
+#: dvb/dvbepg.cpp:758
+msgid "Gardening"
+msgstr "उद्यानकार्यम्"
+
+#: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
+#, kde-format
+msgid "Original Language"
+msgstr "मूल भाषा"
+
+#: dvb/dvbepg.cpp:764
+msgid "Black and White "
+msgstr "कृष्णः श्वेतश्च "
+
+#: dvb/dvbepg.cpp:765
+msgid "Unpublished"
+msgstr "अप्रकाशित"
+
+#: dvb/dvbepg.cpp:766
+msgid "Live"
+msgstr "निवसति"
+
+#: dvb/dvbepg.cpp:767
+msgid "Planostereoscopic"
+msgstr "प्लेनोस्टेरिओस्कोपिक"
+
+#: dvb/dvbepg.cpp:769
+msgid "User Defined 1"
+msgstr "उपयोक्ता परिभाषितः 1"
+
+#: dvb/dvbepg.cpp:770
+msgid "User Defined 2"
+msgstr "उपयोक्ता परिभाषितः 2"
+
+#: dvb/dvbepg.cpp:771
+msgid "User Defined 3"
+msgstr "उपयोक्ता परिभाषितः 3"
+
+#: dvb/dvbepg.cpp:772
+msgid "User Defined 4"
+msgstr "उपयोक्ता परिभाषितः 4"
+
+#: dvb/dvbepg.cpp:777
+msgid "Undefined"
+msgstr "अनिर्दिष्टम्"
+
+#: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:808
+msgid "Movie"
+msgstr "चलचित्रं"
+
+#: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:796 dvb/dvbepg.cpp:822
+msgid "News"
+msgstr "समाचारं"
+
+#: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:836
+msgid "Show"
+msgstr "दर्शयतु"
+
+#: dvb/dvbepg.cpp:781 dvb/dvbepg.cpp:797
+msgid "Sports"
+msgstr "क्रीडा"
+
+#: dvb/dvbepg.cpp:782 dvb/dvbepg.cpp:806
+msgid "Children"
+msgstr "बालकाः"
+
+#: dvb/dvbepg.cpp:783
+msgid "Music"
+msgstr "संगीतं"
+
+#: dvb/dvbepg.cpp:784
+msgid "Culture"
+msgstr "संस्कृति"
+
+#: dvb/dvbepg.cpp:786 dvb/dvbepg.cpp:798
+msgid "Education"
+msgstr "शिक्षा"
+
+#: dvb/dvbepg.cpp:787
+msgid "Leisure"
+msgstr "अवकाशः"
+
+#: dvb/dvbepg.cpp:788
+msgid "Special"
+msgstr "विशेषः"
+
+#: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
+msgid "Reserved"
+msgstr "आरक्षित"
+
+#: dvb/dvbepg.cpp:799
+msgid "Soap opera"
+msgstr "सोप ओपेरा"
+
+#: dvb/dvbepg.cpp:800
+msgid "Mini-series"
+msgstr "लघु-श्रृङ्खला"
+
+#: dvb/dvbepg.cpp:801
+msgid "Series"
+msgstr "श्रेणी"
+
+#: dvb/dvbepg.cpp:803
+msgid "Reality show"
+msgstr "रियलिटी शो"
+
+#: dvb/dvbepg.cpp:804
+msgid "Information"
+msgstr "सूचना"
+
+#: dvb/dvbepg.cpp:805
+msgid "Comical"
+msgstr "हास्यपूर्ण"
+
+#: dvb/dvbepg.cpp:807
+msgid "Erotic"
+msgstr "कामुक"
+
+#: dvb/dvbepg.cpp:809
+msgid "Raffle, television sales, prizing"
+msgstr "रैफल्, दूरदर्शनविक्रयः, पुरस्कारः"
+
+#: dvb/dvbepg.cpp:810
+msgid "Debate/interview"
+msgstr "वादविवाद/साक्षात्कार"
+
+#: dvb/dvbepg.cpp:811
+msgid "Other"
+msgstr "इतर"
+
+#: dvb/dvbepg.cpp:823
+msgid "Report"
+msgstr "वृत्तान्तः"
+
+#: dvb/dvbepg.cpp:825
+msgid "Biography"
+msgstr "जीवनी"
+
+#: dvb/dvbepg.cpp:829
+msgid "Educative"
+msgstr "शैक्षिक"
+
+#: dvb/dvbepg.cpp:835
+msgid "Auditorium"
+msgstr "सभागारः"
+
+#: dvb/dvbepg.cpp:837
+msgid "Musical"
+msgstr "संगीतमय"
+
+#: dvb/dvbepg.cpp:838
+msgid "Making of"
+msgstr "करणं"
+
+#: dvb/dvbepg.cpp:839
+msgid "Feminine"
+msgstr "स्त्रीलिङ्गम्"
+
+#: dvb/dvbepg.cpp:840
+msgid "Game show"
+msgstr "गेम शो"
+
+#: dvb/dvbepg.cpp:846
+msgid "Country"
+msgstr "देशः"
+
+#: dvb/dvbepg.cpp:847
+msgid "Health"
+msgstr "आरोग्यम्‌"
+
+#: dvb/dvbepg.cpp:855
+msgid "Raffle"
+msgstr "रैफल्स"
+
+#: dvb/dvbepg.cpp:856
+msgid "Television sales"
+msgstr "दूरदर्शनस्य विक्रयः"
+
+#: dvb/dvbepg.cpp:857
+msgid "Prizing"
+msgstr "पुरस्कृत्य"
+
+#: dvb/dvbepg.cpp:861
+msgid "Interview"
+msgstr "साक्षात्कारं"
+
+#: dvb/dvbepg.cpp:864
+msgid "Adult cartoon"
+msgstr "वयस्क कार्टुन"
+
+#: dvb/dvbepg.cpp:865
+msgid "Interactive"
+msgstr "अन्तरक्रियाशील"
+
+#: dvb/dvbepg.cpp:866
+msgid "Policy"
+msgstr "नीति"
+
+#: dvb/dvbepg.cpp:899
+#, no-c-format, kde-format
+msgid "Genre: %1"
+msgstr "विधाः %1"
+
+#: dvb/dvbepg.cpp:906
+msgid "reserved"
+msgstr "आरक्षितः"
+
+#: dvb/dvbepg.cpp:907
+msgid "all audiences"
+msgstr "सर्वे प्रेक्षकाः"
+
+#: dvb/dvbepg.cpp:908
+msgid "10 years"
+msgstr "१० वर्षाणि"
+
+#: dvb/dvbepg.cpp:909
+msgid "12 years"
+msgstr "१२ वर्षाणि"
+
+#: dvb/dvbepg.cpp:910
+msgid "14 years"
+msgstr "१४ वर्षाणि"
+
+#: dvb/dvbepg.cpp:911
+msgid "16 years"
+msgstr "१६ वर्षाणि"
+
+#: dvb/dvbepg.cpp:912
+msgid "18 years"
+msgstr "१८ वर्षाणि"
+
+#: dvb/dvbepg.cpp:935
+#, no-c-format, kde-format
+msgid "Country %1: not rated\n"
+msgstr "देशः %1: मूल्याङ्कितः नास्ति\n"
+
+#: dvb/dvbepg.cpp:947
+#, kde-format
+msgid "violence / "
+msgstr "अपद्रव / "
+
+#: dvb/dvbepg.cpp:949
+#, kde-format
+msgid "sex / "
+msgstr "लिंग / . "
+
+#: dvb/dvbepg.cpp:951
+#, kde-format
+msgid "drugs / "
+msgstr "औषधानि / . "
+
+#: dvb/dvbepg.cpp:959
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2%3\n"
+msgstr "देशः %1: रेटिंग्: %2%3\n"
+
+#: dvb/dvbepg.cpp:962
+#, no-c-format, kde-format
+msgid "Country %1: rating: %2 years.\n"
+msgstr "देश %1: रेटिंग्: %2 वर्ष।\n"
+
+#: dvb/dvbepgdialog.cpp:46
+#, kde-format
+msgctxt "@title:window"
+msgid "Program Guide"
+msgstr "कार्यक्रम मार्गदर्शिका"
+
+#: dvb/dvbepgdialog.cpp:73
+#, kde-format
+msgid "EPG language:"
+msgstr "ईपीजी भाषा : १."
+
+#: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
+#, kde-format
+msgid "Any language"
+msgstr "कापि भाषा"
+
+#: dvb/dvbepgdialog.cpp:112
+#, kde-format
+msgid "Show channels with empty EPG data"
+msgstr "रिक्त EPG आँकडा सह चैनल्स् दर्शयतु"
+
+#: dvb/dvbepgdialog.cpp:119
+#, kde-format
+msgctxt "@action:inmenu tv show"
+msgid "Record Show"
+msgstr "Record Show"
+
+#: dvb/dvbepgdialog.cpp:127
+#, kde-format
+msgctxt "@label:textbox"
+msgid "Search:"
+msgstr "अन्वेषण:"
+
+#: dvb/dvbepgdialog.cpp:477 dvb/dvbrecordingdialog.cpp:258
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Start"
+msgstr "प्रारंभः"
+
+#: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Duration"
+msgstr "अवधि"
+
+#: dvb/dvbepgdialog.cpp:481
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Title"
+msgstr "शीर्षक"
+
+#: dvb/dvbliveview.cpp:197
+#, kde-format
+msgctxt "@info"
+msgid "All devices are used for recordings."
+msgstr "सर्वाणि यन्त्राणि रिकार्डिङ्ग् कृते उपयुज्यन्ते ।"
+
+#: dvb/dvbliveview.cpp:201
+#, kde-format
+msgctxt "@info"
+msgid ""
+"Didn't find a device with valid settings or access permissions are wrong.\n"
+"\n"
+"Please check the Configure Television window."
+msgstr ""
+"वैधसेटिंग्स् सहितं यन्त्रं न लब्धम् अथवा अभिगमनानुमतिः गलता अस्ति।\n"
+"\n"
+"कृपया Configure Television इति विण्डो पश्यन्तु ।"
+
+#: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
+#, kde-format
+msgctxt "message box"
+msgid "No available device found."
+msgstr "उपलब्धं यन्त्रं न लब्धम्।"
+
+#: dvb/dvbrecordingdialog.cpp:45
+#, kde-format
+msgctxt "@title:window"
+msgid "Recording Schedule"
+msgstr "रिकार्डिङ्ग समयसूची"
+
+#: dvb/dvbrecordingdialog.cpp:70
+#, kde-format
+msgctxt "@action"
+msgid "New"
+msgstr "नूतनम्‌"
+
+#: dvb/dvbrecordingdialog.cpp:254
+#, kde-format
+msgctxt "@title:column recording"
+msgid "Name"
+msgstr "नामः"
+
+#: dvb/dvbrecordingdialog.cpp:262
+#, kde-format
+msgctxt "@title:column tv show"
+msgid "Disabled"
+msgstr "अक्षमित"
+
+#: dvb/dvbrecordingdialog.cpp:307
+#, kde-format
+msgid "Disabled"
+msgstr "अक्षमित"
+
+#: dvb/dvbrecordingdialog.cpp:309
+#, kde-format
+msgid "Enabled"
+msgstr "सक्षमम्"
+
+#: dvb/dvbrecordingdialog.cpp:384
+#, kde-format
+msgctxt "@title:window recording"
+msgid "Edit Schedule Entry"
+msgstr "अनुसूची प्रविष्टि सम्पादयतु"
+
+#: dvb/dvbrecordingdialog.cpp:394
+#, kde-format
+msgctxt "@label recording"
+msgid "Name:"
+msgstr "नामः:"
+
+#: dvb/dvbrecordingdialog.cpp:408
+#, kde-format
+msgctxt "@label tv show"
+msgid "Channel:"
+msgstr "चैनलः : १."
+
+#: dvb/dvbrecordingdialog.cpp:420
+#, kde-format
+msgctxt "@label tv show"
+msgid "Start:"
+msgstr "प्रारंभः:"
+
+#: dvb/dvbrecordingdialog.cpp:430
+#, kde-format
+msgctxt "@label tv show"
+msgid "Duration:"
+msgstr "अवधि:"
+
+#: dvb/dvbrecordingdialog.cpp:441
+#, kde-format
+msgctxt "@label tv show"
+msgid "End:"
+msgstr "अंत:"
+
+#: dvb/dvbrecordingdialog.cpp:446
+#, kde-format
+msgctxt "@label recording"
+msgid "Repeat:"
+msgstr "परिहरन:"
+
+#: dvb/dvbrecordingdialog.cpp:450
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Never"
+msgstr "कदापि न"
+
+#: dvb/dvbrecordingdialog.cpp:454
+#, kde-format
+msgctxt "@action next to 'Repeat:'"
+msgid "Daily"
+msgstr "प्रतिदिन"
+
+#: dvb/dvbscandialog.cpp:87
+#, kde-format
+msgid "%1"
+msgstr "%1"
+
+#: dvb/dvbscandialog.cpp:237
+#, kde-format
+msgid "Provider"
+msgstr "प्रदाता"
+
+#: dvb/dvbscandialog.cpp:239
+#, kde-format
+msgid "SNR"
+msgstr "एस एन आर"
+
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#, kde-format
+msgid "Channels"
+msgstr "चैनल्स्"
+
+#: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:414
+#, kde-format
+msgctxt "remove all items from a list"
+msgid "Clear"
+msgstr "स्पष्टः"
+
+#: dvb/dvbscandialog.cpp:298
+#, kde-format
+msgid "Channel Scan"
+msgstr "चैनल स्कैन"
+
+#: dvb/dvbscandialog.cpp:306
+#, kde-format
+msgid "Search transponders for other Networks"
+msgstr "अन्येषां Networks कृते transponders अन्वेष्टुम्"
+
+#: dvb/dvbscandialog.cpp:307
+#, kde-format
+msgid ""
+"On certain networks, it is possible that some transponders are encoded on "
+"separate Network Information Tables (other NITs). This is more common on DVB-"
+"C systems. Clicking on this icon will change the scan algorithm to take "
+"those other NIT data into account. Please notice that the scan will be a lot "
+"more slow if enabled."
+msgstr ""
+"कतिपयेषु संजालेषु, सम्भवति यत् केचन ट्रांसपोण्डर् पृथक् संजालसूचनासारणीषु (अन्येषु NITs) एन्कोड् "
+"भवन्ति । एतत् DVB-C प्रणालीषु अधिकं भवति । अस्मिन् चिह्ने क्लिक् करणेन तानि अन्ये NIT-"
+"दत्तांशं गृहीतुं स्कैन् एल्गोरिदम् परिवर्तयिष्यते । कृपया अवलोकयन्तु यत् सक्षमं चेत् स्कैन् बहु अधिकं "
+"मन्दं भविष्यति ।"
+
+#: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
+#, kde-format
+msgid "Start Scan"
+msgstr "स्कैन् आरभत"
+
+#: dvb/dvbscandialog.cpp:322
+#, kde-format
+msgid "Signal:"
+msgstr "संकेतः : १."
+
+#: dvb/dvbscandialog.cpp:327
+#, kde-format
+msgid "SNR:"
+msgstr "एस एन आर : १."
+
+#: dvb/dvbscandialog.cpp:332
+#, kde-format
+msgid "Tuned:"
+msgstr "ट्यून्ड् : १."
+
+#: dvb/dvbscandialog.cpp:345
+#, kde-format
+msgid "Filter"
+msgstr "फ़िल्टर"
+
+#: dvb/dvbscandialog.cpp:348
+#, kde-format
+msgid "Free to air"
+msgstr "वायुः मुक्तः"
+
+#: dvb/dvbscandialog.cpp:351
+#, kde-format
+msgid "Radio"
+msgstr "रेडियो"
+
+#: dvb/dvbscandialog.cpp:354
+#, kde-format
+msgid "TV"
+msgstr "टीवी"
+
+#: dvb/dvbscandialog.cpp:357
+#, kde-format
+msgid "Provider:"
+msgstr "प्रदाता : १."
+
+#: dvb/dvbscandialog.cpp:365
+#, kde-format
+msgid "Add Filtered"
+msgstr "Filtered इति योजयतु"
+
+#: dvb/dvbscandialog.cpp:369
+#, kde-format
+msgid "Add Selected"
+msgstr "चयनितं योजयतु"
+
+#: dvb/dvbscandialog.cpp:375
+#, kde-format
+msgid "Scan Results"
+msgstr "स्कैन परिणाम"
+
+#: dvb/dvbscandialog.cpp:391
+#, kde-format
+msgid "Current Transponder"
+msgstr "वर्तमान ट्रांसपोंडर"
+
+#: dvb/dvbscandialog.cpp:473
+#, kde-format
+msgid "Stop Scan"
+msgstr "स्कैन् स्थगयन्तु"
+
+#: dvb/dvbtab.cpp:97
+#, kde-format
+msgid "Program Guide"
+msgstr "कार्यक्रम मार्गदर्शिका"
+
+#: dvb/dvbtab.cpp:102
+#, kde-format
+msgid "OSD"
+msgstr "ओएसडी"
+
+#: dvb/dvbtab.cpp:108
+#, kde-format
+msgctxt "dialog"
+msgid "Recording Schedule"
+msgstr "रिकार्डिङ्ग समयसूची"
+
+#: dvb/dvbtab.cpp:115
+#, kde-format
+msgid "Instant Record"
+msgstr "तत्काल अभिलेख"
+
+#: dvb/dvbtab.cpp:123
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Configure Television..."
+msgstr "दूरदर्शनं विन्यस्तं कुर्वन्तु..."
+
+#: dvb/dvbtab.cpp:143
+#, kde-format
+msgid "Search:"
+msgstr "अन्वेषण:"
+
+#: dvb/dvbtab.cpp:374
+#, kde-format
+msgctxt "osd"
+msgid "Channel: %1_"
+msgstr "चैनलः %1_ ."
+
+#: dvb/dvbtab.cpp:391
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine is currently recording programs.\n"
+"Do you really want to close the application?"
+msgstr ""
+"कफीनः सम्प्रति कार्यक्रमान् रिकार्ड् करोति ।\n"
+"किं भवन्तः वास्तवमेव अनुप्रयोगं बन्दं कर्तुम् इच्छन्ति?"
+
+#: dvb/dvbtab.cpp:414
+#, kde-format
+msgctxt "message box"
+msgid ""
+"Kaffeine has scheduled recordings.\n"
+"Do you really want to close the application?"
+msgstr ""
+"कफीनस्य रिकार्डिङ्ग् निर्धारितम् अस्ति ।\n"
+"किं भवन्तः वास्तवमेव अनुप्रयोगं बन्दं कर्तुम् इच्छन्ति?"
+
+#: dvb/dvbtab.cpp:487
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Started"
+msgstr "तत्क्षणं अभिलेखः आरब्धः"
+
+#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#, kde-format
+msgctxt "osd"
+msgid "Instant Record Stopped"
+msgstr "तत्क्षणं अभिलेखः स्थगितः"
+
+#: dvb/xmltv.cpp:212
+#, kde-format
+msgctxt "%1 is a person; %2 is their character"
+msgid "%1 as %2"
+msgstr "%1 यथा %2"
+
+#: dvb/xmltv.cpp:222
+#, kde-format
+msgid "Director(s)"
+msgstr "निदेशक (निदेशकाः) ९."
+
+#: dvb/xmltv.cpp:224
+#, kde-format
+msgid "Actor(s)"
+msgstr "अभिनेता (अभिनेता) ९."
+
+#: dvb/xmltv.cpp:226
+#, kde-format
+msgid "Writer(s)"
+msgstr "लेखक (लेखक) ९."
+
+#: dvb/xmltv.cpp:228
+#, kde-format
+msgid "Adapter(s)"
+msgstr "एडाप्टर(s) 1.1."
+
+#: dvb/xmltv.cpp:230
+#, kde-format
+msgid "Producer(s)"
+msgstr "निर्माता (निर्माता) ९."
+
+#: dvb/xmltv.cpp:232
+#, kde-format
+msgid "Composer(s)"
+msgstr "रचयिता (रचयिता) ९."
+
+#: dvb/xmltv.cpp:234
+#, kde-format
+msgid "Editor(s)"
+msgstr "सम्पादक ( सम्पादक ) ९."
+
+#: dvb/xmltv.cpp:236
+#, kde-format
+msgid "Presenter(s)"
+msgstr "प्रस्तोता (प्रस्तोता) ९."
+
+#: dvb/xmltv.cpp:238
+#, kde-format
+msgid "Commentator(s)"
+msgstr "टीकाकारः (भाष्यकाराः) ९."
+
+#: dvb/xmltv.cpp:240
+#, kde-format
+msgid "Guest(s)"
+msgstr "अतिथि (अतिथि) ९."
+
+#: dvb/xmltv.cpp:244
+#, kde-format
+msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
+msgid "%1: %2\n"
+msgstr "%1: %2\n"
+
+#: dvb/xmltv.cpp:377
+#, kde-format
+msgid "rating: %1"
+msgstr "रेटिंग्: %1"
+
+#: dvb/xmltv.cpp:451
+#, kde-format
+msgid "Season %1"
+msgstr "ऋतुः %1"
+
+#: dvb/xmltv.cpp:454
+#, kde-format
+msgid " Episode %1"
+msgstr " प्रकरणम् %1"
+
+#: dvb/xmltv.cpp:485
+#, kde-format
+msgid "Star rating: %1"
+msgstr "तारा रेटिंग्: %1"
+
+#: dvb/xmltv.cpp:491
+#, kde-format
+msgid "Date: %1"
+msgstr "तिथिः %1"
+
+#: dvb/xmltv.cpp:495
+#, kde-format
+msgid "Category: %1"
+msgstr "श्रेणी: %1"
+
+#: dvb/xmltv.cpp:509
+#, kde-format
+msgid "Keyword: %1"
+msgstr "कीवर्ड: %1"
+
+#: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
+#, kde-format
+msgid "language: %1"
+msgstr "भाषा: %1"
+
+#: dvb/xmltv.cpp:538
+#, kde-format
+msgid "Original language: %1"
+msgstr "मूलभाषा: %1"
+
+#: dvb/xmltv.cpp:544
+#, kde-format
+msgid "Country: %1"
+msgstr "देशः %1"
+
+#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#, kde-format
+msgid "Kaffeine"
+msgstr "कैफीन"
+
+#: main.cpp:141
+#, kde-format
+msgid "A media player by KDE with digital TV support."
+msgstr "डिजिटलटीवीसमर्थनेन सह KDE द्वारा एकः मीडियाप्लेयरः ।"
+
+#: main.cpp:145
+#, kde-format
+msgid "(C) 2007-2019 The Kaffeine Authors."
+msgstr "(C) 2007-2019 द कफीन लेखक।"
+
+#: main.cpp:163
+#, kde-format
+msgid "Maintainer"
+msgstr "परिपालकः"
+
+#: main.cpp:168
+#, kde-format
+msgid "Previous maintainer (for versions 1.x)"
+msgstr "पूर्वपालकः (संस्करणानाम् १.x कृते)"
+
+#: main.cpp:172
+#, kde-format
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "भवतः नामानि"
+
+#: main.cpp:173
+#, kde-format
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "भवतः ईमेलपत्राणि"
+
+#: mainwindow.cpp:113
+#, kde-format
+msgid "&1 Play File"
+msgstr "&1 Play File इति"
+
+#: mainwindow.cpp:115
+#, kde-format
+msgid "Open dialog to play a file"
+msgstr "सञ्चिकां वादयितुं संवादं उद्घाटयन्तु"
+
+#: mainwindow.cpp:119
+#, kde-format
+msgid "&2 Play Audio CD"
+msgstr "&2 ऑडियो सीडी प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:121
+#, kde-format
+msgid ""
+"Start playing an audio CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr "श्रव्यसीडी वादयितुं आरभत। एतत् कल्पयति यत् CD पूर्वमेव CD ड्राइव् मध्ये अस्ति"
+
+#: mainwindow.cpp:125
+#, kde-format
+msgid "&3 Play Video CD"
+msgstr "&3 विडियो सीडी प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:127
+#, kde-format
+msgid ""
+"Start playing a Video CD. It assumes that the CD is already there at the CD "
+"drive"
+msgstr "Video CD वादयितुं आरभत। CD ड्राइव् इत्यत्र पूर्वमेव CD अस्ति इति कल्पयति"
+
+#: mainwindow.cpp:131
+#, kde-format
+msgid "&4 Play DVD"
+msgstr "&4 DVD प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:133
+#, kde-format
+msgid ""
+"Start playing a DVD. It assumes that the DVD is already there at the DVD "
+"drive"
+msgstr "DVD वादयितुं आरभत। एतत् कल्पयति यत् DVD DVD ड्राइव् इत्यत्र पूर्वमेव अस्ति"
+
+#: mainwindow.cpp:138
+#, kde-format
+msgid "&5 Digital TV"
+msgstr "&5 डिजिटल टीवी"
+
+#: mainwindow.cpp:207
+#, kde-format
+msgid "&File"
+msgstr "&संचिका"
+
+#: mainwindow.cpp:214
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Open URL..."
+msgstr "URL उद्घाटयन्तु..."
+
+#: mainwindow.cpp:225 mainwindow.cpp:482
+#, kde-format
+msgid "Play Audio CD"
+msgstr "ऑडियो सीडी प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:229 mainwindow.cpp:483
+#, kde-format
+msgid "Play Video CD"
+msgstr "विडियो सीडी प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:233 mainwindow.cpp:484
+#, kde-format
+msgid "Play DVD"
+msgstr "DVD प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:237
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Play DVD Folder"
+msgstr "DVD फोल्डर् प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:247
+#, kde-format
+msgid "&Playback"
+msgstr "&प्लेबैक"
+
+#: mainwindow.cpp:250
+#, kde-format
+msgctxt "menu bar"
+msgid "Play&list"
+msgstr "प्ले&सूची"
+
+#: mainwindow.cpp:254
+#, kde-format
+msgid "&Television"
+msgstr "&दूरदर्शन"
+
+#: mainwindow.cpp:258
+#, kde-format
+msgid "&Settings"
+msgstr "&सेटिंग्स"
+
+#: mainwindow.cpp:279
+#, kde-format
+msgid "Start"
+msgstr "प्रारंभः"
+
+#: mainwindow.cpp:280
+#, kde-format
+msgid "Playback"
+msgstr "प्लेबैक"
+
+#: mainwindow.cpp:281
+#, kde-format
+msgid "Playlist"
+msgstr "प्लेलिस्ट्"
+
+#: mainwindow.cpp:283
+#, kde-format
+msgid "Television"
+msgstr "दूरदर्शनम्"
+
+#: mainwindow.cpp:347
+#, kde-format
+msgid "Play &File"
+msgstr "&File प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:351
+#, kde-format
+msgid "Play &Audio CD"
+msgstr "&Audio CD वादयन्तु"
+
+#: mainwindow.cpp:355
+#, kde-format
+msgid "Play &Video CD"
+msgstr "&Video CD प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:359
+#, kde-format
+msgid "Play &DVD"
+msgstr "प्ले &DVD"
+
+#: mainwindow.cpp:364
+#, kde-format
+msgid "&Watch Digital TV"
+msgstr "&डिजिटल टीवी पश्यन्तु"
+
+#: mainwindow.cpp:368
+#, kde-format
+msgid "&Quit"
+msgstr "&परिजहातु"
+
+#: mainwindow.cpp:477
+#, kde-format
+msgid ""
+"Enable all debug messages. Please notice that Kaffeine also allows enabling "
+"debug messages per category, by using the environment var:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"where 'category' can be:\n"
+msgstr ""
+"सर्वे त्रुटिनिवारणसन्देशाः सक्षमाः कुर्वन्तु । कृपया अवलोकयन्तु यत् Kaffeine प्रतिवर्गं "
+"त्रुटिनिवारणसन्देशान् सक्षमीकरणमपि अनुमन्यते, वातावरणस्य उपयोगेन var:\n"
+"QT_LOGGING_RULES=कफीन.श्रेणी.डीबग=सत्यम्\n"
+"यत्र 'वर्गः' भवितुम् अर्हति : १.\n"
+
+#: mainwindow.cpp:478
+#, kde-format
+msgid "The files/URLs opened by the application will be deleted after use"
+msgstr "अनुप्रयोगेन उद्घाटिताः सञ्चिकाः/URLs उपयोगानन्तरं विलोपिताः भविष्यन्ति"
+
+#: mainwindow.cpp:479
+#, kde-format
+msgid "Start in full screen mode"
+msgstr "पूर्णपर्दे मोड् मध्ये आरभत"
+
+#: mainwindow.cpp:480
+#, kde-format
+msgid "Start in minimal mode"
+msgstr "न्यूनतमविधाने आरभत"
+
+#: mainwindow.cpp:481
+#, kde-format
+msgid "Start with always on top"
+msgstr "सर्वदा उपरि एव आरभ्यताम्"
+
+#: mainwindow.cpp:488
+#, kde-format
+msgctxt "command line option"
+msgid "Dump dvb data (debug option)"
+msgstr "dvb data (debug विकल्पः) डम्प कुर्वन्तु ।"
+
+#: mainwindow.cpp:489
+#, kde-format
+msgctxt "command line option"
+msgid "Play TV channel"
+msgstr "टीवी चैनलं प्ले कुर्वन्तु"
+
+#: mainwindow.cpp:490
+#, kde-format
+msgctxt "command line option"
+msgid "(deprecated option)"
+msgstr "(अप्रचलितः विकल्पः) २."
+
+#: mainwindow.cpp:491
+#, kde-format
+msgctxt "command line option"
+msgid "Play last tuned TV channel"
+msgstr "अन्तिम-ट्यून् कृतं टीवी-चैनलम् वादयन्तु"
+
+#: mainwindow.cpp:493
+#, kde-format
+msgid "Files or URLs to play"
+msgstr "क्रीडितुं सञ्चिकाः अथवा URL"
+
+#: mainwindow.cpp:715
+#, kde-format
+msgctxt "@title:window"
+msgid "Open files"
+msgstr "सञ्चिकाः उद्घाटयन्तु"
+
+#: mainwindow.cpp:728
+#, kde-format
+msgctxt "@title:window"
+msgid "Open URL"
+msgstr "URL उद्घाटयन्तु"
+
+#: mainwindow.cpp:728
+#, kde-format
+msgid "Enter a URL:"
+msgstr "एकं URL प्रविष्टं कुर्वन्तु:"
+
+#: mediawidget.cpp:91
+#, kde-format
+msgid "Previous"
+msgstr "पूर्वतनम्‌"
+
+#: mediawidget.cpp:99
+#, kde-format
+msgid "Play"
+msgstr "क्रीडतु"
+
+#: mediawidget.cpp:100
+#, kde-format
+msgid "Pause"
+msgstr "विराम"
+
+#: mediawidget.cpp:109
+#, kde-format
+msgid "Stop"
+msgstr "विरमतु"
+
+#: mediawidget.cpp:117
+#, kde-format
+msgid "Next"
+msgstr "अग्रिम"
+
+#: mediawidget.cpp:126 mediawidget.cpp:670
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Full Screen Mode"
+msgstr "पूर्ण स्क्रीन मोड"
+
+#: mediawidget.cpp:133 mediawidget.cpp:685
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Minimal Mode"
+msgstr "न्यूनतम मोड"
+
+#: mediawidget.cpp:146
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Subtitle"
+msgstr "उपशीर्षकम्"
+
+#: mediawidget.cpp:150
+#, kde-format
+msgctxt "subtitle selection entry"
+msgid "off"
+msgstr "दूरे"
+
+#: mediawidget.cpp:158
+#, kde-format
+msgctxt "'Subtitle' menu"
+msgid "Add subtitle file"
+msgstr "उपशीर्षकसञ्चिकां योजयन्तु"
+
+#: mediawidget.cpp:165
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio"
+msgstr "श्रव्यः"
+
+#: mediawidget.cpp:168
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Audio Device"
+msgstr "श्रव्ययन्त्रम्"
+
+#: mediawidget.cpp:170
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Audio Device"
+msgstr "श्रव्ययन्त्रम्"
+
+#: mediawidget.cpp:177
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Increase Volume"
+msgstr "Volume वर्धयतु"
+
+#: mediawidget.cpp:184
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Decrease Volume"
+msgstr "मात्रां न्यूनीकरोतु"
+
+#: mediawidget.cpp:190
+#, kde-format
+msgctxt "'Audio' menu"
+msgid "Mute Volume"
+msgstr "म्यूट वॉल्यूम"
+
+#: mediawidget.cpp:200
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Video"
+msgstr "विडिओ"
+
+#: mediawidget.cpp:204
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Deinterlace"
+msgstr "Deinterlace इति"
+
+#: mediawidget.cpp:212
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "disabled"
+msgstr "अक्षमित"
+
+#: mediawidget.cpp:219
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "discard"
+msgstr "तनूकृ"
+
+#: mediawidget.cpp:225
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "bob"
+msgstr "बोब"
+
+#: mediawidget.cpp:231
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "linear"
+msgstr "रेखीय"
+
+#: mediawidget.cpp:237
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif"
+msgstr "यदिफ"
+
+#: mediawidget.cpp:244
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "yadif2x"
+msgstr "यदिफ२x"
+
+#: mediawidget.cpp:250
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "phosphor"
+msgstr "फॉस्फोरस"
+
+#: mediawidget.cpp:256
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "x"
+msgstr "x"
+
+#: mediawidget.cpp:262
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "mean"
+msgstr "अर्थः"
+
+#: mediawidget.cpp:268
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "blend"
+msgstr "मिश्रण"
+
+#: mediawidget.cpp:274
+#, kde-format
+msgctxt "'Deinterlace' menu"
+msgid "Inverse telecine"
+msgstr "विलोम दूरसंचार"
+
+#: mediawidget.cpp:294
+#, kde-format
+msgctxt "'Video' menu"
+msgid "Aspect Ratio"
+msgstr "आस्पेक्ट रेशियो"
+
+#: mediawidget.cpp:301
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "Automatic"
+msgstr "स्वतः"
+
+#: mediawidget.cpp:307
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "1:1"
+msgstr "१:१"
+
+#: mediawidget.cpp:313
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "4:3"
+msgstr "४:३"
+
+#: mediawidget.cpp:319
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "5:4"
+msgstr "५:४"
+
+#: mediawidget.cpp:325
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:9"
+msgstr "१६ - ९"
+
+#: mediawidget.cpp:331
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "16:10"
+msgstr "१६ - १०"
+
+#: mediawidget.cpp:337
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.21:1"
+msgstr "२.२१:१"
+
+#: mediawidget.cpp:343
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.35:1"
+msgstr "२.३५:१"
+
+#: mediawidget.cpp:349
+#, kde-format
+msgctxt "'Aspect Ratio' menu"
+msgid "2.39:1"
+msgstr "२.३९:१"
+
+#: mediawidget.cpp:354
+#, kde-format
+msgid "Video size"
+msgstr "विडियो आकार"
+
+#: mediawidget.cpp:362
+#, kde-format
+msgctxt "Video size"
+msgid "Automatic"
+msgstr "स्वतः"
+
+#: mediawidget.cpp:368
+#, kde-format
+msgctxt "Video size"
+msgid "25%"
+msgstr "२५% २."
+
+#: mediawidget.cpp:374
+#, kde-format
+msgctxt "Video size"
+msgid "50%"
+msgstr "५०% २."
+
+#: mediawidget.cpp:381
+#, kde-format
+msgctxt "Video size"
+msgid "75%"
+msgstr "७५% २."
+
+#: mediawidget.cpp:387
+#, kde-format
+msgctxt "Video size"
+msgid "Original Size"
+msgstr "मूल आकार"
+
+#: mediawidget.cpp:393
+#, kde-format
+msgctxt "Video size"
+msgid "150%"
+msgstr "१५०% २."
+
+#: mediawidget.cpp:399
+#, kde-format
+msgctxt "Video size"
+msgid "200%"
+msgstr "२००% २."
+
+#: mediawidget.cpp:405
+#, kde-format
+msgctxt "Video size"
+msgid "250%"
+msgstr "२५०% २."
+
+#: mediawidget.cpp:411
+#, kde-format
+msgctxt "Video size"
+msgid "300%"
+msgstr "३००% २."
+
+#: mediawidget.cpp:434
+#, kde-format
+msgid "Volume Slider"
+msgstr "आयतन स्लाइडर"
+
+#: mediawidget.cpp:449
+#, kde-format
+msgctxt "@action:inmenu"
+msgid "Jump to Position..."
+msgstr "पदं प्रति कूदन्तु..."
+
+#: mediawidget.cpp:454
+#, kde-format
+msgctxt "playback menu"
+msgid "Skip"
+msgstr "क्षिपते"
+
+#: mediawidget.cpp:468 mediawidget.cpp:477 mediawidget.cpp:1227
+#: mediawidget.cpp:1237
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Backward"
+msgstr "%1s पृष्ठतः त्यजन्तु"
+
+#: mediawidget.cpp:486 mediawidget.cpp:495 mediawidget.cpp:1230
+#: mediawidget.cpp:1240
+#, no-c-format, kde-format
+msgctxt "submenu of 'Skip'"
+msgid "Skip %1s Forward"
+msgstr "%1s अग्रे त्यजन्तु"
+
+#: mediawidget.cpp:501 mediawidget.cpp:504
+#, kde-format
+msgid "Seek Slider"
+msgstr "स्लाइडरं अन्वेष्टुम्"
+
+#: mediawidget.cpp:515
+#, kde-format
+msgctxt "dvd navigation"
+msgid "DVD Menu"
+msgstr "DVD मेनू"
+
+#: mediawidget.cpp:519
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Title"
+msgstr "शीर्षक"
+
+#: mediawidget.cpp:525
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Chapter"
+msgstr "अध्यायः"
+
+#: mediawidget.cpp:531
+#, kde-format
+msgctxt "dvd navigation"
+msgid "Angle"
+msgstr "कोण"
+
+#: mediawidget.cpp:538
+#, kde-format
+msgid "Switch between elapsed and remaining time display"
+msgstr "व्यतीतस्य अवशिष्टस्य च समयप्रदर्शनस्य मध्ये स्विच् कुर्वन्तु"
+
+#: mediawidget.cpp:567
+#, kde-format
+msgid ""
+"Supported Media Files (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf "
+"*.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
+"Files (*)"
+msgstr ""
+"समर्थित मीडिया सञ्चिकाः (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 * .अनिम्९ *.अनिम्ज *.अस्फ "
+"*.अस्क्ष *.औ *.अवफ *.अवि *.ब्दम् *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *. m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *. mtm *.mts *.nsv "
+"*.oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.रा *.राम *."
+"रक्स *.र्म *.र्मज *.र्म्म *.र्म्स *.र्मवब *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *."
+"spl *. stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.मोम "
+"*.webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;सभी "
+"सञ्चिकाः (*)"
+
+#: mediawidget.cpp:676
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Full Screen Mode"
+msgstr "Full Screen Mode इत्यस्मात् बहिः गच्छन्तु"
+
+#: mediawidget.cpp:689
+#, kde-format
+msgctxt "'Playback' menu"
+msgid "Exit Minimal Mode"
+msgstr "न्यूनतम मोडतः निर्गच्छन्तु"
+
+#: mediawidget.cpp:722
+#, kde-format
+msgctxt "@title:window"
+msgid "Open subtitle"
+msgstr "उपशीर्षकं उद्घाटयतु"
+
+#: mediawidget.cpp:723
+#, kde-format
+msgid ""
+"Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
+"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+msgstr ""
+"उपशीर्षक (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
+"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+
+#: mediawidget.cpp:863 mediawidget.cpp:964
+#, kde-format
+msgctxt "osd"
+msgid "Volume: %1%"
+msgstr "मात्रा: %1% ."
+
+#: mediawidget.cpp:894
+#, kde-format
+msgctxt "osd"
+msgid "Stopped"
+msgstr "स्थगितम्"
+
+#: mediawidget.cpp:954
+#, kde-format
+msgctxt "osd"
+msgid "Mute On"
+msgstr "Mute On"
+
+#: mediawidget.cpp:957
+#, kde-format
+msgctxt "osd"
+msgid "Mute Off"
+msgstr "Mute Off इति"
+
+#: mediawidget.cpp:1053
+#, kde-format
+msgctxt "osd message"
+msgid "Deinterlace %1"
+msgstr "Deinterlace %1"
+
+#: mediawidget.cpp:1468
+#, kde-format
+msgctxt "osd"
+msgid "Playing"
+msgstr "क्रीडति"
+
+#: mediawidget.cpp:1473
+#, kde-format
+msgctxt "osd"
+msgid "Paused"
+msgstr "विरामः कृतः"
+
+#: mediawidget.cpp:1651
+#, kde-format
+msgctxt "@title:window"
+msgid "Jump to Position"
+msgstr "पदं प्रति कूदन्तु"
+
+#: mediawidget.cpp:1656
+#, kde-format
+msgid "Enter a position:"
+msgstr "एकं स्थानं प्रविशतु : १."
+
+#: playlist/playlistmodel.cpp:796
+#, kde-format
+msgctxt "playlist track"
+msgid "Title"
+msgstr "शीर्षक"
+
+#: playlist/playlistmodel.cpp:798
+#, kde-format
+msgctxt "playlist track"
+msgid "Artist"
+msgstr "कलाकार"
+
+#: playlist/playlistmodel.cpp:800
+#, kde-format
+msgctxt "playlist track"
+msgid "Album"
+msgstr "एल्बम"
+
+#: playlist/playlistmodel.cpp:802
+#, kde-format
+msgctxt "playlist track"
+msgid "Track Number"
+msgstr "ट्रैक नम्बर"
+
+#: playlist/playlistmodel.cpp:804
+#, kde-format
+msgctxt "playlist track"
+msgid "Length"
+msgstr "दैर्घ्यम्‌"
+
+#: playlist/playlisttab.cpp:372
+#, kde-format
+msgctxt "playlist browser"
+msgid "Temporary Playlist"
+msgstr "अस्थायी प्लेलिस्ट"
+
+#: playlist/playlisttab.cpp:396
+#, kde-format
+msgctxt "playlist menu"
+msgid "Repeat"
+msgstr "परिहरन"
+
+#: playlist/playlisttab.cpp:401
+#, kde-format
+msgctxt "playlist menu"
+msgid "Random"
+msgstr "यदृच्छासङ्ख्या"
+
+#: playlist/playlisttab.cpp:406
+#, kde-format
+msgid "Add Subtitle"
+msgstr "उपशीर्षकं योजयतु"
+
+#: playlist/playlisttab.cpp:420
+#, kde-format
+msgctxt "@action:inmenu playlist"
+msgid "New"
+msgstr "नूतनम्‌"
+
+#: playlist/playlisttab.cpp:425
+#, kde-format
+msgctxt "rename an entry in a list"
+msgid "Rename"
+msgstr "पुनर्नाम"
+
+#: playlist/playlisttab.cpp:634
+#, kde-format
+msgctxt "playlist browser"
+msgid "Unnamed Playlist"
+msgstr "अनाम प्लेलिस्ट"
+
+#: playlist/playlisttab.cpp:848
+#, kde-format
+msgctxt "file filter"
+msgid "Subtitle Files"
+msgstr "उपशीर्षकसञ्चिकाः"
+
+#: playlist/playlisttab.cpp:865
+#, kde-format
+msgctxt "file filter"
+msgid ""
+"*.xspf|XSPF Playlist\n"
+"*.m3u|M3U Playlist\n"
+"*.pls|PLS Playlist"
+msgstr ""
+"*.xspf|XSPF प्लेलिस्ट\n"
+"*.m3u|M3U प्लेलिस्ट\n"
+"*.pls|PLS प्लेलिस्ट"
+
+#: sqlhelper.cpp:48
+#, kde-format
+msgctxt "message box"
+msgid "Please install the Qt SQLite plugin."
+msgstr "कृपया Qt SQLite प्लगिन् संस्थापयन्तु ।"
+
+#: sqlhelper.cpp:63
+#, kde-format
+msgctxt "message box"
+msgid "Cannot open the SQLite database."
+msgstr "SQLite दत्तांशकोशं उद्घाटयितुं न शक्यते ।"
