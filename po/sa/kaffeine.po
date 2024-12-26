@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2024-12-24 20:39+0530\n"
+"PO-Revision-Date: 2024-12-25 19:45+0530\n"
 "Last-Translator: kali <shreekantkalwar@gmail.com>\n"
 "Language-Team: Sanskrit <kde-i18n-doc@kde.org>\n"
 "Language: sa\n"
@@ -424,7 +424,7 @@ msgstr "दूरदर्शनं विन्यस्यताम्"
 #: dvb/dvbconfigdialog.cpp:77
 #, kde-format
 msgid "Recording folder:"
-msgstr "रिकार्डिङ्ग् फोल्डर् :"
+msgstr "रिकार्डिङ्ग् समुच्चय :"
 
 #: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
 #, kde-format
@@ -1951,7 +1951,7 @@ msgstr "DVD प्ले कुर्वन्तु"
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Play DVD Folder"
-msgstr "DVD फोल्डर् प्ले कुर्वन्तु"
+msgstr "DVD समुच्चय प्ले कुर्वन्तु"
 
 #: mainwindow.cpp:247
 #, kde-format
