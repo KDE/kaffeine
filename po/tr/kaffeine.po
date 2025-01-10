@@ -6,13 +6,13 @@
 # Ozan Çağlayan <ozan@pardus.org.tr>, 2010.
 # obsoleteman <tulliana@gmail.com>, 2008-2009,2011-2012.
 # Volkan Gezer <volkangezer@gmail.com>, 2014.
-# SPDX-FileCopyrightText: 2022, 2023, 2024 Emir SARI <emir_sari@icloud.com>
+# SPDX-FileCopyrightText: 2022, 2023, 2024, 2025 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2024-09-23 15:31+0300\n"
+"PO-Revision-Date: 2025-01-09 16:17+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 24.11.70\n"
+"X-Generator: Lokalize 25.03.70\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -2043,9 +2043,9 @@ msgid ""
 msgstr ""
 "Tüm hata ayıklama iletilerini etkinleştir. Kafein’in hata ayıklama "
 "iletilerini şu çevre değişkenini kullanarak kategoriye göre de "
-"etkinleştirebildiğini unutmayın:\n"
+"etkinleştirilebildiğini unutmayın:\n"
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
-"‘kategori’ şunlardan biri olabilir:\n"
+"“kategori” şunlardan biri olabilir:\n"
 
 #: mainwindow.cpp:478
 #, kde-format
