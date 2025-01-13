@@ -1,12 +1,12 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# Zayed Al-Saidi <zayed.alsaidi@gmail.com>, 2010, 2022.
+# SPDX-FileCopyrightText: 2010, 2022, 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2022-01-19 22:00+0400\n"
+"PO-Revision-Date: 2025-01-12 14:47+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -15,6 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+"X-Generator: Lokalize 23.08.5\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -32,7 +33,7 @@ msgid "CD track %1"
 msgstr "مسار السي دي %1"
 
 #: configurationdialog.cpp:42
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
 msgstr "اضبط كافيين"
@@ -65,16 +66,16 @@ msgstr "تذكر آخر إعداد"
 #, kde-format
 msgctxt "@label:listbox"
 msgid "Startup display mode:"
-msgstr ""
+msgstr "وضع عرض بدء التشغيل:"
 
 #: configurationdialog.cpp:68
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "@label:spinbox"
 msgid "Short skip duration:"
 msgstr "مدة القفزة القصيرة:"
 
 #: configurationdialog.cpp:77
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "@label:spinbox"
 msgid "Long skip duration:"
 msgstr "مدّة القفزة الطويلة:"
@@ -107,13 +108,13 @@ msgstr "تشخيصات"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "LibVLC arguments:"
-msgstr ""
+msgstr "وسيطات LibVLC:"
 
 #: configurationdialog.cpp:121
 #, kde-format
 msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
-msgstr ""
+msgstr "ملاحظة: يجب إعادة تشغيل كافيين حتى تدخل الوسائط الجديدة حيز التنفيذ"
 
 #: configurationdialog.cpp:126
 #, kde-format
@@ -162,6 +163,8 @@ msgid ""
 "The channels will be sorted by number to allow drag and drop.\n"
 "Do you want to continue?"
 msgstr ""
+"ستفرز القنوات حسب الأرقام للسماح بالسحب والإسقاط.\n"
+"هل تريد المتابعة؟"
 
 #: dvb/dvbchanneldialog.cpp:415
 #, kde-format
@@ -276,103 +279,94 @@ msgid "Hierarchy:"
 msgstr "التسلسل الهرمي:"
 
 #: dvb/dvbchanneldialog.cpp:827
-#, fuzzy, kde-format
-#| msgid "Transport stream ID:"
+#, kde-format
 msgid "PLP (stream ID):"
-msgstr "رقم هوية سيل النقل:"
+msgstr "PLP(رقم هوية سيل النقل):"
 
 #: dvb/dvbchanneldialog.cpp:845
-#, fuzzy, kde-format
-#| msgid "Polarization:"
+#, kde-format
 msgid "Partial reception:"
-msgstr "الاستقطاب:"
+msgstr "الاستقبال الجزئي:"
 
 #: dvb/dvbchanneldialog.cpp:847
 #, kde-format
 msgid "Sound broadcasting:"
-msgstr ""
+msgstr "البث الصوتي:"
 
 #: dvb/dvbchanneldialog.cpp:851
-#, fuzzy, kde-format
-#| msgid "Audio channel:"
+#, kde-format
 msgid "SB channel ID:"
-msgstr "صوت القناة:"
+msgstr "معرف قناة SB:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr ""
+msgstr "مؤشر إس بي:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr ""
+msgstr "عدد SB:"
 
 #: dvb/dvbchanneldialog.cpp:860
-#, fuzzy, kde-format
-#| msgid "Modulation:"
+#, kde-format
 msgid "Layer A Modulation:"
-msgstr "التحوير:"
+msgstr "تعديل الطبقة أ:"
 
 #: dvb/dvbchanneldialog.cpp:862
-#, fuzzy, kde-format
-#| msgid "FEC rate:"
+#, kde-format
 msgid "Layer A FEC rate:"
-msgstr "معدل FEC :"
+msgstr "معدل الطبقة أ FEC:"
 
 #: dvb/dvbchanneldialog.cpp:864
 #, kde-format
 msgid "Layer A segments:"
-msgstr ""
+msgstr "شرائح الطبقة أ:"
 
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
 msgid "Layer A interleaving:"
-msgstr ""
+msgstr "تشذير الطبقة أ:"
 
 #: dvb/dvbchanneldialog.cpp:870
-#, fuzzy, kde-format
-#| msgid "Modulation:"
+#, kde-format
 msgid "Layer B Modulation:"
-msgstr "التحوير:"
+msgstr "تعديل الطبقة ب:"
 
 #: dvb/dvbchanneldialog.cpp:872
-#, fuzzy, kde-format
-#| msgid "FEC rate:"
+#, kde-format
 msgid "Layer B FEC rate:"
-msgstr "معدل FEC :"
+msgstr "معدل FEC للطبقة ب:"
 
 #: dvb/dvbchanneldialog.cpp:874
 #, kde-format
 msgid "Layer B segments:"
-msgstr ""
+msgstr "شرائح الطبقة ب:"
 
 #: dvb/dvbchanneldialog.cpp:876
 #, kde-format
 msgid "Layer B interleaving:"
-msgstr ""
+msgstr "تشذير الطبقة ب:"
 
 #: dvb/dvbchanneldialog.cpp:880
-#, fuzzy, kde-format
-#| msgid "Modulation:"
+#, kde-format
 msgid "Layer C Modulation:"
-msgstr "التحوير:"
+msgstr "تعديل الطبقة س:"
 
 #: dvb/dvbchanneldialog.cpp:882
-#, fuzzy, kde-format
-#| msgid "FEC rate:"
+#, kde-format
 msgid "Layer C FEC rate:"
-msgstr "معدل FEC :"
+msgstr "معدل FEC للطبقة س:"
 
 #: dvb/dvbchanneldialog.cpp:884
 #, kde-format
 msgid "Layer C segments:"
-msgstr ""
+msgstr "شرائح الطبقة س:"
 
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
 msgid "Layer C interleaving:"
-msgstr ""
+msgstr "تشذير الطبقة س:"
 
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
@@ -443,22 +437,24 @@ msgstr "مجلد نقل الوقت:"
 #: dvb/dvbconfigdialog.cpp:101
 #, kde-format
 msgid "xmltv file name (optional):"
-msgstr ""
+msgstr "اسم ملف xmltv (اختياري):"
 
 #: dvb/dvbconfigdialog.cpp:109
 #, kde-format
 msgid "Add optional file to allow reading EPG data from xmltv files"
-msgstr ""
+msgstr "إضافة ملف اختياري للسماح بقراءة بيانات EPG من ملفات xmltv"
 
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
 msgid "Disable parsing EPG data from MPEG-TS tables:"
-msgstr ""
+msgstr "تعطيل تحليل بيانات EPG من جداول MPEG-TS:"
 
 #: dvb/dvbconfigdialog.cpp:115
 #, kde-format
 msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
 msgstr ""
+"استخدم هذا إذا كان موفر خدمة التلفزيون لا يبث بيانات دليل البرامج الإلكتروني "
+"(EPG) موثوقة"
 
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
@@ -473,7 +469,7 @@ msgstr "هامش النهاية (دقائق):"
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr ""
+msgstr "نمط التسمية للتسجيلات:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
@@ -481,16 +477,18 @@ msgid ""
 "The following substitutions work: \"%year\" for year (YYYY) and the "
 "following: %month, %day, %hour, %min, %sec, %channel and %title"
 msgstr ""
+"تعمل البدائل التالية: \"%year\" للسنة (YYYY) وما يلي:  %month، %day، %hour، "
+"%min، %sec، %channel و %title"
 
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
 msgid "Action after recording finishes:"
-msgstr ""
+msgstr "الإجراء بعد انتهاء التسجيل:"
 
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
 msgid "Leave empty for no command."
-msgstr ""
+msgstr "اتركه فارغًا بدون أمر."
 
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
@@ -500,12 +498,14 @@ msgstr "استخدم الترميز  ISO 8859-1 عوضاً عن الترميز I
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
 msgid "Create info files to accompany EPG recordings:"
-msgstr ""
+msgstr "أنشئ ملفات معلومات لمرافقة تسجيلات EPG:"
 
 #: dvb/dvbconfigdialog.cpp:179
 #, kde-format
 msgid "Scan channels when idle to fetch fresh EPG data:"
 msgstr ""
+"امسح القنوات عندما تكون في وضع الخمول لجلب بيانات دليل البرامج الإلكتروني "
+"الجديدة:"
 
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
 #, kde-format
@@ -513,20 +513,19 @@ msgid "Scan data last updated on %1"
 msgstr "آخر تحديث لبيانات المسح تم في %1 "
 
 #: dvb/dvbconfigdialog.cpp:193
-#, fuzzy, kde-format
-#| msgid "Update scan data over Internet"
+#, kde-format
 msgid "Update Scan Data over Internet"
 msgstr "تحديث بيانات المسح من خلال الإنترنت"
 
 #: dvb/dvbconfigdialog.cpp:197
-#, fuzzy, kde-format
+#, kde-format
 msgid "Edit Scanfile"
-msgstr "القناة"
+msgstr "حرر ملف المسح"
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
 msgid "You can add channels manually to this file before scanning for them."
-msgstr ""
+msgstr "يمكنك إضافة القنوات يدويًا إلى هذا الملف قبل البحث عنها."
 
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
@@ -534,10 +533,9 @@ msgid "General Options"
 msgstr "خيارات عامة"
 
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
-#, fuzzy, kde-format
-#| msgid "Automatic Resize"
+#, kde-format
 msgid "Automatic Recording"
-msgstr "إعادة التحجيم بشكل آلي"
+msgstr "التسجيل التلقائي"
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -550,29 +548,28 @@ msgstr "جهاز %1"
 #, kde-format
 msgctxt "@action"
 msgid "Add new Regex"
-msgstr ""
+msgstr "أضف تعبيرًا نمطيًا جديدًا"
 
 #: dvb/dvbconfigdialog.cpp:394
 #, kde-format
 msgid "Add another regular expression."
-msgstr ""
+msgstr "أضف تعبيرًا نمطي آخر."
 
 #: dvb/dvbconfigdialog.cpp:398
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr "أزل"
+msgstr "أزل التعبير النمطي"
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
 msgid "Remove checked regular expressions."
-msgstr ""
+msgstr "أزل التعبيرات النمطية المحددة."
 
 #: dvb/dvbconfigdialog.cpp:618
-#, fuzzy, kde-format
+#, kde-format
 msgid "Update Scan Data"
-msgstr "تحديث بيانات المسح من خلال الإنترنت"
+msgstr "حدّث بيانات المسح"
 
 #: dvb/dvbconfigdialog.cpp:637
 #, kde-format
@@ -585,19 +582,19 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"ملف الفحص أصبح أكبر من %1 كيلو بايت.\n"
+"جاري الإجهاض، لأنه قد يكون هناك خطأ ما...\n"
 
 #: dvb/dvbconfigdialog.cpp:701
-#, fuzzy, kde-format
-#| msgid ""
-#| "Scan data successfully updated. Changes take\n"
-#| "effect after you have closed the configuration dialog."
+#, kde-format
 msgid ""
 "Scan data successfully updated. %1 KB received.\n"
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
-"تحديث بيانات المسح تم بنجاح. والتغيرات سيسري \n"
-" مفعولها بعد إغلاقك قائمة الإعداد."
+" حُدثت بيانات المسح بنجاح. تم استلام %1 كيلوبايت.\n"
+"تدخل التغييرات حيز التنفيذ بعد إغلاق\n"
+"مربع حوار الضبط."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -732,7 +729,7 @@ msgstr "الاسم:"
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
-msgstr ""
+msgstr "استخدم جهد LNBf أعلى:"
 
 #: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
@@ -745,6 +742,12 @@ msgid ""
 "- higher voltage mode (checked);\n"
 "- tristate (don't send the control)."
 msgstr ""
+"في بعض أجهزة DVB، يوجد عنصر تحكم إضافي يسمح بزيادة الجهد المرسل إلى LNBf، "
+"وذلك للتعويض عن فقدان الكابلات. هذا الزر ثلاثي الحالة لا يستخدمه افتراضيًا. "
+"يمكن ضبطه على:\n"
+"- الوضع العادي (غير محدد)؛\n"
+"- وضع الجهد الأعلى (محدد)؛\n"
+"- ثلاثي الحالة (لا ترسل عنصر التحكم)."
 
 #: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
@@ -767,10 +770,9 @@ msgid "Positions Rotor"
 msgstr "تدوير المواضع"
 
 #: dvb/dvbconfigdialog.cpp:1123
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Disable DiSEqC"
-msgstr "كايبل"
+msgstr "تعطيل دايسك"
 
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
@@ -803,10 +805,9 @@ msgid "Remove Satellite"
 msgstr "أزل القمر"
 
 #: dvb/dvbconfigdialog.cpp:1241
-#, fuzzy, kde-format
-#| msgid "Enter a position:"
+#, kde-format
 msgid "Your position:"
-msgstr "أدخل موضع:"
+msgstr "موقعك:"
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -829,16 +830,14 @@ msgid "[W -180 ... 180 E]"
 msgstr "[W -180 ... 180 E]"
 
 #: dvb/dvbconfigdialog.cpp:1623
-#, fuzzy, kde-format
-#| msgid "Switch frequency (MHz)"
+#, kde-format
 msgid "Low frequency (KHz)"
-msgstr "تغيير التردد (ميجا هرتز)"
+msgstr "التردد المنخفض (كيلو هرتز)"
 
 #: dvb/dvbconfigdialog.cpp:1631
-#, fuzzy, kde-format
-#| msgid "Switch frequency (MHz)"
+#, kde-format
 msgid "High frequency (MHz)"
-msgstr "تغيير التردد (ميجا هرتز)"
+msgstr "التردد العالي (ميجاهرتز)"
 
 #: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
@@ -848,17 +847,17 @@ msgstr "تغيير التردد (ميجا هرتز)"
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "النطاق المنخفض: %1 ميجا هرتز إلى %2 ميجا هرتز"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
-msgstr ""
+msgstr "مكدسة"
 
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "النطاق العالي: %1 ميجا هرتز إلى %2 ميجا هرتز"
 
 #: dvb/dvbepg.cpp:649
 msgid "Detective"
@@ -1435,6 +1434,9 @@ msgid ""
 "\n"
 "Please check the Configure Television window."
 msgstr ""
+"لم يعثر على جهاز بإعدادات صالحة أو أن أذونات الوصول خاطئة.\n"
+"\n"
+"الرجاء التحقق من نافذة ضبط التلفاز."
 
 #: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
 #, kde-format
@@ -1477,10 +1479,10 @@ msgid "Enabled"
 msgstr "ممكّن"
 
 #: dvb/dvbrecordingdialog.cpp:384
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "@title:window recording"
 msgid "Edit Schedule Entry"
-msgstr "حرّر مدخلة الجدولة"
+msgstr "حرر إدخال الجدول"
 
 #: dvb/dvbrecordingdialog.cpp:394
 #, kde-format
@@ -1564,7 +1566,7 @@ msgstr "مسح القناة"
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
 msgid "Search transponders for other Networks"
-msgstr ""
+msgstr "ابحث عن أجهزة الإرسال والاستقبال للشبكات الأخرى"
 
 #: dvb/dvbscandialog.cpp:307
 #, kde-format
@@ -1575,6 +1577,10 @@ msgid ""
 "those other NIT data into account. Please notice that the scan will be a lot "
 "more slow if enabled."
 msgstr ""
+"في بعض الشبكات تُرمز بعض أجهزة الإرسال والاستقبال على جداول معلومات الشبكة "
+"المنفصلة (جداول معلومات الشبكة الأخرى). وهذا أكثر شيوعًا في أنظمة DVB-C. "
+"سيؤدي النقر فوق هذا الرمز إلى تغيير خوارزمية المسح لتأخذ بيانات جدول معلومات "
+"الشبكة الأخرى في الاعتبار. يرجى ملاحظة أن المسح سيكون أبطأ كثيرًا إذا مُكن."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
@@ -1691,6 +1697,8 @@ msgid ""
 "Kaffeine is currently recording programs.\n"
 "Do you really want to close the application?"
 msgstr ""
+"يقوم كافيين حاليًا بتسجيل البرامج.\n"
+"هل تريد حقًا إغلاق التطبيق؟"
 
 #: dvb/dvbtab.cpp:414
 #, kde-format
@@ -1699,6 +1707,8 @@ msgid ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 msgstr ""
+"قام كافين بجدولة التسجيلات.\n"
+"هل تريد حقًا إغلاق التطبيق؟"
 
 #: dvb/dvbtab.cpp:487
 #, kde-format
@@ -1716,7 +1726,7 @@ msgstr "التسجيل الآني تَوقف"
 #, kde-format
 msgctxt "%1 is a person; %2 is their character"
 msgid "%1 as %2"
-msgstr ""
+msgstr "%1 كـ %2"
 
 #: dvb/xmltv.cpp:222
 #, kde-format
@@ -1882,6 +1892,8 @@ msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"ابدأ تشغيل قرص مضغوط صوتي. يفترض أن القرص المضغوط موجود بالفعل في محرك "
+"الأقراص المضغوطة"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -1894,6 +1906,8 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"ابدأ تشغيل قرص فيديو مضغوط. يفترض أن القرص المضغوط موجود بالفعل في محرك "
+"الأقراص المضغوطة"
 
 #: mainwindow.cpp:131
 #, kde-format
@@ -1905,7 +1919,7 @@ msgstr "&4 شغّل فيديو ديفيدي"
 msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
-msgstr ""
+msgstr "ابدأ تشغيل قرص DVD. يفترض أن قرص DVD موجود بالفعل في محرك أقراص DVD"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2023,6 +2037,10 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
+"تمكين جميع رسائل التصحيح. يرجى ملاحظة أن Kaffeine يسمح أيضًا بتمكين رسائل "
+"التصحيح لكل فئة، باستخدام متغير البيئة:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"حيث يمكن أن يكون \"category\":\n"
 
 #: mainwindow.cpp:478
 #, kde-format
@@ -2042,7 +2060,7 @@ msgstr "ابدأ في النمط المصغر"
 #: mainwindow.cpp:481
 #, kde-format
 msgid "Start with always on top"
-msgstr ""
+msgstr "ابدأ بالأعلى دائمًا"
 
 #: mainwindow.cpp:488
 #, kde-format
@@ -2257,13 +2275,13 @@ msgstr "خليط"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
-msgstr ""
+msgstr "عكس السينما المتلفزة"
 
 #: mediawidget.cpp:294
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
-msgstr "نسبة الإرتفاع"
+msgstr "النسبة الباعيّة"
 
 #: mediawidget.cpp:301
 #, kde-format
@@ -2275,7 +2293,7 @@ msgstr "آلي"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
-msgstr ""
+msgstr "1:1"
 
 #: mediawidget.cpp:313
 #, kde-format
