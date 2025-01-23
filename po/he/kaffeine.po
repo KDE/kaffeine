@@ -7,15 +7,14 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-20 16:14+0200\n"
+"PO-Revision-Date: 2025-01-22 14:46+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
-"n % 10 == 0) ? 2 : 3));\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 24.12.0\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
@@ -515,7 +514,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:197
 #, kde-format
 msgid "Edit Scanfile"
-msgstr ""
+msgstr "עריכת קובץ סריקה"
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
@@ -525,7 +524,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
 msgid "General Options"
-msgstr ""
+msgstr "אפשרויות כלליות"
 
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
 #, kde-format
@@ -569,7 +568,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:637
 #, kde-format
 msgid "Downloading scan data"
-msgstr ""
+msgstr "נתוני הסריקה יורדים"
 
 #: dvb/dvbconfigdialog.cpp:678
 #, kde-format
@@ -704,17 +703,17 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
 #, kde-format
 msgid "Source:"
-msgstr ""
+msgstr "מקור:"
 
 #: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
 #, kde-format
 msgid "No Source"
-msgstr ""
+msgstr "אין מקור"
 
 #: dvb/dvbconfigdialog.cpp:984
 #, kde-format
 msgid "Name:"
-msgstr ""
+msgstr "שם:"
 
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
@@ -771,22 +770,22 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
 #, kde-format
 msgid "Add Satellite"
-msgstr ""
+msgstr "הוספת לוויין"
 
 #: dvb/dvbconfigdialog.cpp:1211
 #, kde-format
 msgid "Satellite"
-msgstr ""
+msgstr "לוויין"
 
 #: dvb/dvbconfigdialog.cpp:1211
 #, kde-format
 msgid "Position"
-msgstr ""
+msgstr "מקום"
 
 #: dvb/dvbconfigdialog.cpp:1228
 #, kde-format
 msgid "Remove Satellite"
-msgstr ""
+msgstr "הסרת לוויין"
 
 #: dvb/dvbconfigdialog.cpp:1241
 #, kde-format
@@ -849,39 +848,39 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:650
 msgid "Adventure"
-msgstr ""
+msgstr "הרפתקה"
 
 #: dvb/dvbepg.cpp:651
 msgid "Science Fiction"
-msgstr ""
+msgstr "מדע בדיוני"
 
 #: dvb/dvbepg.cpp:652
 msgid "Comedy"
-msgstr ""
+msgstr "קומדיה"
 
 #: dvb/dvbepg.cpp:653
 msgid "Soap"
-msgstr ""
+msgstr "סבון"
 
 #: dvb/dvbepg.cpp:654
 msgid "Romance"
-msgstr ""
+msgstr "רומנטיקה"
 
 #: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:706
 msgid "Classical"
-msgstr ""
+msgstr "קלסי"
 
 #: dvb/dvbepg.cpp:656
 msgid "Adult"
-msgstr ""
+msgstr "למבוגרים"
 
 #: dvb/dvbepg.cpp:657 dvb/dvbepg.cpp:792
 msgid "User defined"
-msgstr ""
+msgstr "בהגדרת המשתמש"
 
 #: dvb/dvbepg.cpp:662
 msgid "Weather"
-msgstr ""
+msgstr "מזג אוויר"
 
 #: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
 msgid "Magazine"
@@ -889,49 +888,49 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
 msgid "Documentary"
-msgstr ""
+msgstr "תיעודי"
 
 #: dvb/dvbepg.cpp:665 dvb/dvbepg.cpp:860
 msgid "Discussion"
-msgstr ""
+msgstr "דיון"
 
 #: dvb/dvbepg.cpp:666 dvb/dvbepg.cpp:674 dvb/dvbepg.cpp:690 dvb/dvbepg.cpp:700
 #: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
 #: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:768
 msgid "User Defined"
-msgstr ""
+msgstr "בהגדרת המשתמש"
 
 #: dvb/dvbepg.cpp:671
 msgid "Quiz"
-msgstr ""
+msgstr "בוחן"
 
 #: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
 msgid "Variety"
-msgstr ""
+msgstr "מגוון"
 
 #: dvb/dvbepg.cpp:673
 msgid "Talk"
-msgstr ""
+msgstr "שיחה"
 
 #: dvb/dvbepg.cpp:679
 msgid "Events"
-msgstr ""
+msgstr "אירועים"
 
 #: dvb/dvbepg.cpp:681
 msgid "Football"
-msgstr ""
+msgstr "כדורגל"
 
 #: dvb/dvbepg.cpp:682
 msgid "Tennis"
-msgstr ""
+msgstr "טניס"
 
 #: dvb/dvbepg.cpp:683
 msgid "Team"
-msgstr ""
+msgstr "צוות"
 
 #: dvb/dvbepg.cpp:684
 msgid "Athletics"
-msgstr ""
+msgstr "אתלטיקה קלה"
 
 #: dvb/dvbepg.cpp:685
 msgid "Motor"
@@ -939,11 +938,11 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:686
 msgid "Water"
-msgstr ""
+msgstr "מים"
 
 #: dvb/dvbepg.cpp:687
 msgid "Winter"
-msgstr ""
+msgstr "חורף"
 
 #: dvb/dvbepg.cpp:688
 msgid "Equestrian"
@@ -959,63 +958,63 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:696
 msgid "06 to 14"
-msgstr ""
+msgstr "06 עד 14"
 
 #: dvb/dvbepg.cpp:697
 msgid "10 to 16"
-msgstr ""
+msgstr "10 עד 16"
 
 #: dvb/dvbepg.cpp:698
 msgid "Educational"
-msgstr ""
+msgstr "חינוכי"
 
 #: dvb/dvbepg.cpp:699
 msgid "Cartoons"
-msgstr ""
+msgstr "מצוירים"
 
 #: dvb/dvbepg.cpp:705
 msgid "Poprock"
-msgstr ""
+msgstr "פופ־רוק"
 
 #: dvb/dvbepg.cpp:707
 msgid "Folk"
-msgstr ""
+msgstr "עממי"
 
 #: dvb/dvbepg.cpp:708
 msgid "Jazz"
-msgstr ""
+msgstr "ג׳אז"
 
 #: dvb/dvbepg.cpp:709
 msgid "Opera"
-msgstr ""
+msgstr "אופרה"
 
 #: dvb/dvbepg.cpp:710
 msgid "Ballet"
-msgstr ""
+msgstr "בלט"
 
 #: dvb/dvbepg.cpp:716
 msgid "Performance"
-msgstr ""
+msgstr "ביצועים"
 
 #: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
-msgstr ""
+msgstr "אומנות עדינה"
 
 #: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
 msgid "Religion"
-msgstr ""
+msgstr "דתי"
 
 #: dvb/dvbepg.cpp:719
 msgid "Traditional"
-msgstr ""
+msgstr "מסורתי"
 
 #: dvb/dvbepg.cpp:720
 msgid "Literature"
-msgstr ""
+msgstr "ספרות"
 
 #: dvb/dvbepg.cpp:721
 msgid "Cinema"
-msgstr ""
+msgstr "קולנוע"
 
 #: dvb/dvbepg.cpp:722
 msgid "Experimental"
@@ -1031,7 +1030,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
-msgstr ""
+msgstr "אופנה"
 
 #: dvb/dvbepg.cpp:733
 msgid "Advisory"
@@ -1039,27 +1038,27 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:734
 msgid "People"
-msgstr ""
+msgstr "אנשים"
 
 #: dvb/dvbepg.cpp:740
 msgid "Nature"
-msgstr ""
+msgstr "טבע"
 
 #: dvb/dvbepg.cpp:741
 msgid "Technology"
-msgstr ""
+msgstr "טכנולוגיה"
 
 #: dvb/dvbepg.cpp:742
 msgid "Medicine"
-msgstr ""
+msgstr "רפואה"
 
 #: dvb/dvbepg.cpp:743
 msgid "Foreign"
-msgstr ""
+msgstr "זר"
 
 #: dvb/dvbepg.cpp:744 dvb/dvbepg.cpp:785
 msgid "Social"
-msgstr ""
+msgstr "חברתי"
 
 #: dvb/dvbepg.cpp:745
 msgid "Further"
@@ -1067,7 +1066,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
-msgstr ""
+msgstr "שפה"
 
 #: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
 msgid "Travel"
@@ -1083,28 +1082,28 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:755
 msgid "Fitness"
-msgstr ""
+msgstr "חיטוב"
 
 #: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:844
 msgid "Cooking"
-msgstr ""
+msgstr "בישול"
 
 #: dvb/dvbepg.cpp:757
 msgid "Shopping"
-msgstr ""
+msgstr "קניות"
 
 #: dvb/dvbepg.cpp:758
 msgid "Gardening"
-msgstr ""
+msgstr "גינון"
 
 #: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
 #, kde-format
 msgid "Original Language"
-msgstr ""
+msgstr "שפת המקור"
 
 #: dvb/dvbepg.cpp:764
 msgid "Black and White "
-msgstr ""
+msgstr "שחור ולבן "
 
 #: dvb/dvbepg.cpp:765
 msgid "Unpublished"
@@ -1236,31 +1235,31 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:835
 msgid "Auditorium"
-msgstr ""
+msgstr "אודיטוריום"
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
-msgstr ""
+msgstr "מחזות זמר"
 
 #: dvb/dvbepg.cpp:838
 msgid "Making of"
-msgstr ""
+msgstr "איך זה נוצר"
 
 #: dvb/dvbepg.cpp:839
 msgid "Feminine"
-msgstr ""
+msgstr "נשי"
 
 #: dvb/dvbepg.cpp:840
 msgid "Game show"
-msgstr ""
+msgstr "שעשועון"
 
 #: dvb/dvbepg.cpp:846
 msgid "Country"
-msgstr ""
+msgstr "מדינה"
 
 #: dvb/dvbepg.cpp:847
 msgid "Health"
-msgstr ""
+msgstr "בריאות"
 
 #: dvb/dvbepg.cpp:855
 msgid "Raffle"
@@ -1268,80 +1267,80 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:856
 msgid "Television sales"
-msgstr ""
+msgstr "מכירות בטלוויזיה"
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
-msgstr ""
+msgstr "חלוקת פרסים"
 
 #: dvb/dvbepg.cpp:861
 msgid "Interview"
-msgstr ""
+msgstr "ריאיון"
 
 #: dvb/dvbepg.cpp:864
 msgid "Adult cartoon"
-msgstr ""
+msgstr "הנפשה למבוגרים"
 
 #: dvb/dvbepg.cpp:865
 msgid "Interactive"
-msgstr ""
+msgstr "אינטראקטיבי"
 
 #: dvb/dvbepg.cpp:866
 msgid "Policy"
-msgstr ""
+msgstr "מדיניות"
 
 #: dvb/dvbepg.cpp:899
 #, no-c-format, kde-format
 msgid "Genre: %1"
-msgstr ""
+msgstr "סוגה: %1"
 
 #: dvb/dvbepg.cpp:906
 msgid "reserved"
-msgstr ""
+msgstr "שמור"
 
 #: dvb/dvbepg.cpp:907
 msgid "all audiences"
-msgstr ""
+msgstr "כל סוגי הקהל"
 
 #: dvb/dvbepg.cpp:908
 msgid "10 years"
-msgstr ""
+msgstr "מגיל 10"
 
 #: dvb/dvbepg.cpp:909
 msgid "12 years"
-msgstr ""
+msgstr "מגיל 12"
 
 #: dvb/dvbepg.cpp:910
 msgid "14 years"
-msgstr ""
+msgstr "מגיל 14"
 
 #: dvb/dvbepg.cpp:911
 msgid "16 years"
-msgstr ""
+msgstr "מגיל 16"
 
 #: dvb/dvbepg.cpp:912
 msgid "18 years"
-msgstr ""
+msgstr "מגיל 18"
 
 #: dvb/dvbepg.cpp:935
 #, no-c-format, kde-format
 msgid "Country %1: not rated\n"
-msgstr ""
+msgstr "מדינה %1: אין דירוג\n"
 
 #: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "violence / "
-msgstr ""
+msgstr "אלימות / "
 
 #: dvb/dvbepg.cpp:949
 #, kde-format
 msgid "sex / "
-msgstr ""
+msgstr "מין / "
 
 #: dvb/dvbepg.cpp:951
 #, kde-format
 msgid "drugs / "
-msgstr ""
+msgstr "סמים / "
 
 #: dvb/dvbepg.cpp:959
 #, no-c-format, kde-format
@@ -1367,7 +1366,7 @@ msgstr ""
 #: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
 #, kde-format
 msgid "Any language"
-msgstr ""
+msgstr "כל שפה שהיא"
 
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
@@ -1469,59 +1468,59 @@ msgstr ""
 #, kde-format
 msgctxt "@label recording"
 msgid "Name:"
-msgstr ""
+msgstr "שם:"
 
 #: dvb/dvbrecordingdialog.cpp:408
 #, kde-format
 msgctxt "@label tv show"
 msgid "Channel:"
-msgstr ""
+msgstr "ערוץ:"
 
 #: dvb/dvbrecordingdialog.cpp:420
 #, kde-format
 msgctxt "@label tv show"
 msgid "Start:"
-msgstr ""
+msgstr "התחלה:"
 
 #: dvb/dvbrecordingdialog.cpp:430
 #, kde-format
 msgctxt "@label tv show"
 msgid "Duration:"
-msgstr ""
+msgstr "משך:"
 
 #: dvb/dvbrecordingdialog.cpp:441
 #, kde-format
 msgctxt "@label tv show"
 msgid "End:"
-msgstr ""
+msgstr "סוף:"
 
 #: dvb/dvbrecordingdialog.cpp:446
 #, kde-format
 msgctxt "@label recording"
 msgid "Repeat:"
-msgstr ""
+msgstr "חזרה:"
 
 #: dvb/dvbrecordingdialog.cpp:450
 #, kde-format
 msgctxt "@action next to 'Repeat:'"
 msgid "Never"
-msgstr ""
+msgstr "אף פעם"
 
 #: dvb/dvbrecordingdialog.cpp:454
 #, kde-format
 msgctxt "@action next to 'Repeat:'"
 msgid "Daily"
-msgstr ""
+msgstr "יומית"
 
 #: dvb/dvbscandialog.cpp:87
 #, kde-format
 msgid "%1"
-msgstr ""
+msgstr "%1"
 
 #: dvb/dvbscandialog.cpp:237
 #, kde-format
 msgid "Provider"
-msgstr ""
+msgstr "ספק"
 
 #: dvb/dvbscandialog.cpp:239
 #, kde-format
@@ -1531,18 +1530,18 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
 #, kde-format
 msgid "Channels"
-msgstr ""
+msgstr "ערוצים"
 
 #: dvb/dvbscandialog.cpp:288 playlist/playlisttab.cpp:414
 #, kde-format
 msgctxt "remove all items from a list"
 msgid "Clear"
-msgstr ""
+msgstr "פינוי"
 
 #: dvb/dvbscandialog.cpp:298
 #, kde-format
 msgid "Channel Scan"
-msgstr ""
+msgstr "סריקת ערוצים"
 
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
@@ -1562,12 +1561,12 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
 msgid "Start Scan"
-msgstr ""
+msgstr "התחלת סריקה"
 
 #: dvb/dvbscandialog.cpp:322
 #, kde-format
 msgid "Signal:"
-msgstr ""
+msgstr "אות:"
 
 #: dvb/dvbscandialog.cpp:327
 #, kde-format
@@ -1582,7 +1581,7 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:345
 #, kde-format
 msgid "Filter"
-msgstr ""
+msgstr "סינון"
 
 #: dvb/dvbscandialog.cpp:348
 #, kde-format
@@ -1592,32 +1591,32 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:351
 #, kde-format
 msgid "Radio"
-msgstr ""
+msgstr "תחנת רדיו"
 
 #: dvb/dvbscandialog.cpp:354
 #, kde-format
 msgid "TV"
-msgstr ""
+msgstr "טלוויזיה"
 
 #: dvb/dvbscandialog.cpp:357
 #, kde-format
 msgid "Provider:"
-msgstr ""
+msgstr "ספק:"
 
 #: dvb/dvbscandialog.cpp:365
 #, kde-format
 msgid "Add Filtered"
-msgstr ""
+msgstr "הוספת מסוננים"
 
 #: dvb/dvbscandialog.cpp:369
 #, kde-format
 msgid "Add Selected"
-msgstr ""
+msgstr "הוספת הנבחרים"
 
 #: dvb/dvbscandialog.cpp:375
 #, kde-format
 msgid "Scan Results"
-msgstr ""
+msgstr "תוצאות חיפוש"
 
 #: dvb/dvbscandialog.cpp:391
 #, kde-format
@@ -1627,45 +1626,45 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:473
 #, kde-format
 msgid "Stop Scan"
-msgstr ""
+msgstr "עצירת סריקה"
 
 #: dvb/dvbtab.cpp:97
 #, kde-format
 msgid "Program Guide"
-msgstr ""
+msgstr "מדריך ערוצים"
 
 #: dvb/dvbtab.cpp:102
 #, kde-format
 msgid "OSD"
-msgstr ""
+msgstr "חיווי על המסך"
 
 #: dvb/dvbtab.cpp:108
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
-msgstr ""
+msgstr "תזמון הקלטה"
 
 #: dvb/dvbtab.cpp:115
 #, kde-format
 msgid "Instant Record"
-msgstr ""
+msgstr "הקלטה מיידית"
 
 #: dvb/dvbtab.cpp:123
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
-msgstr ""
+msgstr "הגדרת טלוויזיה…"
 
 #: dvb/dvbtab.cpp:143
 #, kde-format
 msgid "Search:"
-msgstr ""
+msgstr "חיפוש:"
 
 #: dvb/dvbtab.cpp:374
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
-msgstr ""
+msgstr "ערוץ: %1_"
 
 #: dvb/dvbtab.cpp:391
 #, kde-format
@@ -1755,62 +1754,62 @@ msgstr ""
 #, kde-format
 msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
 msgid "%1: %2\n"
-msgstr ""
+msgstr "%1: %2\n"
 
 #: dvb/xmltv.cpp:377
 #, kde-format
 msgid "rating: %1"
-msgstr ""
+msgstr "דירוג: %1"
 
 #: dvb/xmltv.cpp:451
 #, kde-format
 msgid "Season %1"
-msgstr ""
+msgstr "עונה %1"
 
 #: dvb/xmltv.cpp:454
 #, kde-format
 msgid " Episode %1"
-msgstr ""
+msgstr " פרק %1"
 
 #: dvb/xmltv.cpp:485
 #, kde-format
 msgid "Star rating: %1"
-msgstr ""
+msgstr "דירוג כוכבים: %1"
 
 #: dvb/xmltv.cpp:491
 #, kde-format
 msgid "Date: %1"
-msgstr ""
+msgstr "תאריך: %1"
 
 #: dvb/xmltv.cpp:495
 #, kde-format
 msgid "Category: %1"
-msgstr ""
+msgstr "קטגוריה: %1"
 
 #: dvb/xmltv.cpp:509
 #, kde-format
 msgid "Keyword: %1"
-msgstr ""
+msgstr "מילת מפתח: %1"
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
 #, kde-format
 msgid "language: %1"
-msgstr ""
+msgstr "שפה: %1"
 
 #: dvb/xmltv.cpp:538
 #, kde-format
 msgid "Original language: %1"
-msgstr ""
+msgstr "שפת המקור: %1"
 
 #: dvb/xmltv.cpp:544
 #, kde-format
 msgid "Country: %1"
-msgstr ""
+msgstr "מדינה: %1"
 
 #: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
-msgstr ""
+msgstr "קפאין"
 
 #: main.cpp:141
 #, kde-format
@@ -1820,29 +1819,29 @@ msgstr ""
 #: main.cpp:145
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr ""
+msgstr "(C) 2007-‏2019 יוצרי קפאין."
 
 #: main.cpp:163
 #, kde-format
 msgid "Maintainer"
-msgstr ""
+msgstr "מתחזק"
 
 #: main.cpp:168
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr ""
+msgstr "מתחזק לשעבר (לגרסאות ‎1.x‎)"
 
 #: main.cpp:172
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "צוות התרגום של KDE ישראל"
 
 #: main.cpp:173
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "kde-l10n-he@kde.org"
 
 #: mainwindow.cpp:113
 #, kde-format
@@ -1898,80 +1897,80 @@ msgstr ""
 #: mainwindow.cpp:207
 #, kde-format
 msgid "&File"
-msgstr ""
+msgstr "&קובץ"
 
 #: mainwindow.cpp:214
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr ""
+msgstr "פתיחת כתובת…"
 
 #: mainwindow.cpp:225 mainwindow.cpp:482
 #, kde-format
 msgid "Play Audio CD"
-msgstr ""
+msgstr "השמעת תקליטור"
 
 #: mainwindow.cpp:229 mainwindow.cpp:483
 #, kde-format
 msgid "Play Video CD"
-msgstr ""
+msgstr "ניגון תקליטור וידאו"
 
 #: mainwindow.cpp:233 mainwindow.cpp:484
 #, kde-format
 msgid "Play DVD"
-msgstr ""
+msgstr "ניגון DVD"
 
 #: mainwindow.cpp:237
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Play DVD Folder"
-msgstr ""
+msgstr "ניגון תיקיית DVD"
 
 #: mainwindow.cpp:247
 #, kde-format
 msgid "&Playback"
-msgstr ""
+msgstr "&נגינה"
 
 #: mainwindow.cpp:250
 #, kde-format
 msgctxt "menu bar"
 msgid "Play&list"
-msgstr ""
+msgstr "&רשימת נגינה"
 
 #: mainwindow.cpp:254
 #, kde-format
 msgid "&Television"
-msgstr ""
+msgstr "&טלוויזיה"
 
 #: mainwindow.cpp:258
 #, kde-format
 msgid "&Settings"
-msgstr ""
+msgstr "ה&גדרות"
 
 #: mainwindow.cpp:279
 #, kde-format
 msgid "Start"
-msgstr ""
+msgstr "התחלה"
 
 #: mainwindow.cpp:280
 #, kde-format
 msgid "Playback"
-msgstr ""
+msgstr "נגינה"
 
 #: mainwindow.cpp:281
 #, kde-format
 msgid "Playlist"
-msgstr ""
+msgstr "רשימת נגינה"
 
 #: mainwindow.cpp:283
 #, kde-format
 msgid "Television"
-msgstr ""
+msgstr "טלוויזיה"
 
 #: mainwindow.cpp:347
 #, kde-format
 msgid "Play &File"
-msgstr ""
+msgstr "נגינת &קובץ"
 
 #: mainwindow.cpp:351
 #, kde-format
@@ -2060,133 +2059,133 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Open files"
-msgstr ""
+msgstr "פתיחת קבצים"
 
 #: mainwindow.cpp:728
 #, kde-format
 msgctxt "@title:window"
 msgid "Open URL"
-msgstr ""
+msgstr "פתיחת כתובת"
 
 #: mainwindow.cpp:728
 #, kde-format
 msgid "Enter a URL:"
-msgstr ""
+msgstr "מילוי כתובת:"
 
 #: mediawidget.cpp:91
 #, kde-format
 msgid "Previous"
-msgstr ""
+msgstr "הקודם"
 
 #: mediawidget.cpp:99
 #, kde-format
 msgid "Play"
-msgstr ""
+msgstr "נגינה"
 
 #: mediawidget.cpp:100
 #, kde-format
 msgid "Pause"
-msgstr ""
+msgstr "השהיה"
 
 #: mediawidget.cpp:109
 #, kde-format
 msgid "Stop"
-msgstr ""
+msgstr "עצירה"
 
 #: mediawidget.cpp:117
 #, kde-format
 msgid "Next"
-msgstr ""
+msgstr "הבא"
 
 #: mediawidget.cpp:126 mediawidget.cpp:670
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Full Screen Mode"
-msgstr ""
+msgstr "מצב מסך מלא"
 
 #: mediawidget.cpp:133 mediawidget.cpp:685
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
-msgstr ""
+msgstr "מצב מוקטן"
 
 #: mediawidget.cpp:146
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr ""
+msgstr "כתוביות"
 
 #: mediawidget.cpp:150
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
-msgstr ""
+msgstr "כבויות"
 
 #: mediawidget.cpp:158
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr ""
+msgstr "הוספת קובץ כתוביות"
 
 #: mediawidget.cpp:165
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio"
-msgstr ""
+msgstr "שמע"
 
 #: mediawidget.cpp:168
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
-msgstr ""
+msgstr "התקן שמע"
 
 #: mediawidget.cpp:170
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
-msgstr ""
+msgstr "התקן שמע"
 
 #: mediawidget.cpp:177
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
-msgstr ""
+msgstr "הגברת עוצמת שמע"
 
 #: mediawidget.cpp:184
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
-msgstr ""
+msgstr "הנמכת עוצמת שמע"
 
 #: mediawidget.cpp:190
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
-msgstr ""
+msgstr "השתקת שמע"
 
 #: mediawidget.cpp:200
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Video"
-msgstr ""
+msgstr "וידאו"
 
 #: mediawidget.cpp:204
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
-msgstr ""
+msgstr "ביטול שזירה"
 
 #: mediawidget.cpp:212
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
-msgstr ""
+msgstr "מושבת"
 
 #: mediawidget.cpp:219
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
-msgstr ""
+msgstr "התעלמות"
 
 #: mediawidget.cpp:225
 #, kde-format
@@ -2305,121 +2304,121 @@ msgstr ""
 #: mediawidget.cpp:354
 #, kde-format
 msgid "Video size"
-msgstr ""
+msgstr "גודל וידאו"
 
 #: mediawidget.cpp:362
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
-msgstr ""
+msgstr "אוטומטי"
 
 #: mediawidget.cpp:368
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: mediawidget.cpp:374
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr ""
+msgstr "50%"
 
 #: mediawidget.cpp:381
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
-msgstr ""
+msgstr "75%"
 
 #: mediawidget.cpp:387
 #, kde-format
 msgctxt "Video size"
 msgid "Original Size"
-msgstr ""
+msgstr "גודל מקורי"
 
 #: mediawidget.cpp:393
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
-msgstr ""
+msgstr "150%"
 
 #: mediawidget.cpp:399
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
-msgstr ""
+msgstr "200%"
 
 #: mediawidget.cpp:405
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
-msgstr ""
+msgstr "250%"
 
 #: mediawidget.cpp:411
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
-msgstr ""
+msgstr "300%"
 
 #: mediawidget.cpp:434
 #, kde-format
 msgid "Volume Slider"
-msgstr ""
+msgstr "מחוון עוצמת שמע"
 
 #: mediawidget.cpp:449
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
-msgstr ""
+msgstr "קפיצה לנקודה…"
 
 #: mediawidget.cpp:454
 #, kde-format
 msgctxt "playback menu"
 msgid "Skip"
-msgstr ""
+msgstr "דילוג"
 
 #: mediawidget.cpp:468 mediawidget.cpp:477 mediawidget.cpp:1227
 #: mediawidget.cpp:1237
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Backward"
-msgstr ""
+msgstr "דילוג %1 שנ׳ אחורה"
 
 #: mediawidget.cpp:486 mediawidget.cpp:495 mediawidget.cpp:1230
 #: mediawidget.cpp:1240
 #, no-c-format, kde-format
 msgctxt "submenu of 'Skip'"
 msgid "Skip %1s Forward"
-msgstr ""
+msgstr "דילוג %1 שנ׳ קדימה"
 
 #: mediawidget.cpp:501 mediawidget.cpp:504
 #, kde-format
 msgid "Seek Slider"
-msgstr ""
+msgstr "מחוון חתירה"
 
 #: mediawidget.cpp:515
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
-msgstr ""
+msgstr "תפריט DVD"
 
 #: mediawidget.cpp:519
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Title"
-msgstr ""
+msgstr "כותרת"
 
 #: mediawidget.cpp:525
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
-msgstr ""
+msgstr "פרק"
 
 #: mediawidget.cpp:531
 #, kde-format
 msgctxt "dvd navigation"
 msgid "Angle"
-msgstr ""
+msgstr "זווית"
 
 #: mediawidget.cpp:538
 #, kde-format
@@ -2458,7 +2457,7 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
-msgstr ""
+msgstr "פתיחת כתוביות"
 
 #: mediawidget.cpp:723
 #, kde-format
@@ -2471,7 +2470,7 @@ msgstr ""
 #, kde-format
 msgctxt "osd"
 msgid "Volume: %1%"
-msgstr ""
+msgstr "עוצמת שמע: %1%"
 
 #: mediawidget.cpp:894
 #, kde-format
@@ -2524,78 +2523,78 @@ msgstr ""
 #, kde-format
 msgctxt "playlist track"
 msgid "Title"
-msgstr ""
+msgstr "כותרת"
 
 #: playlist/playlistmodel.cpp:798
 #, kde-format
 msgctxt "playlist track"
 msgid "Artist"
-msgstr ""
+msgstr "אומן/נית"
 
 #: playlist/playlistmodel.cpp:800
 #, kde-format
 msgctxt "playlist track"
 msgid "Album"
-msgstr ""
+msgstr "אלבום"
 
 #: playlist/playlistmodel.cpp:802
 #, kde-format
 msgctxt "playlist track"
 msgid "Track Number"
-msgstr ""
+msgstr "מספר רצועה"
 
 #: playlist/playlistmodel.cpp:804
 #, kde-format
 msgctxt "playlist track"
 msgid "Length"
-msgstr ""
+msgstr "משך"
 
 #: playlist/playlisttab.cpp:372
 #, kde-format
 msgctxt "playlist browser"
 msgid "Temporary Playlist"
-msgstr ""
+msgstr "רשימת נגינה זמנית"
 
 #: playlist/playlisttab.cpp:396
 #, kde-format
 msgctxt "playlist menu"
 msgid "Repeat"
-msgstr ""
+msgstr "חזרה"
 
 #: playlist/playlisttab.cpp:401
 #, kde-format
 msgctxt "playlist menu"
 msgid "Random"
-msgstr ""
+msgstr "אקראי"
 
 #: playlist/playlisttab.cpp:406
 #, kde-format
 msgid "Add Subtitle"
-msgstr ""
+msgstr "הוספת כתוביות"
 
 #: playlist/playlisttab.cpp:420
 #, kde-format
 msgctxt "@action:inmenu playlist"
 msgid "New"
-msgstr ""
+msgstr "חדשה"
 
 #: playlist/playlisttab.cpp:425
 #, kde-format
 msgctxt "rename an entry in a list"
 msgid "Rename"
-msgstr ""
+msgstr "שינוי שם"
 
 #: playlist/playlisttab.cpp:634
 #, kde-format
 msgctxt "playlist browser"
 msgid "Unnamed Playlist"
-msgstr ""
+msgstr "רשימת נגינה ללא שם"
 
 #: playlist/playlisttab.cpp:848
 #, kde-format
 msgctxt "file filter"
 msgid "Subtitle Files"
-msgstr ""
+msgstr "קובץ כתוביות"
 
 #: playlist/playlisttab.cpp:865
 #, kde-format
