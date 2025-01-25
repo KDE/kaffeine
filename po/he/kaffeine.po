@@ -7,15 +7,14 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-22 14:46+0200\n"
+"PO-Revision-Date: 2025-01-23 09:36+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
-"n % 10 == 0) ? 2 : 3));\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Lokalize 24.12.0\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
@@ -372,22 +371,22 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
 msgid "Network ID:"
-msgstr ""
+msgstr "מזהה רשת:"
 
 #: dvb/dvbchanneldialog.cpp:920
 #, kde-format
 msgid "Transport stream ID:"
-msgstr ""
+msgstr "מזהה תזרים תעבורה:"
 
 #: dvb/dvbchanneldialog.cpp:927
 #, kde-format
 msgid "Service ID:"
-msgstr ""
+msgstr "מזהה שירות:"
 
 #: dvb/dvbchanneldialog.cpp:937
 #, kde-format
 msgid "Audio channel:"
-msgstr ""
+msgstr "ערוץ שמע:"
 
 #: dvb/dvbchanneldialog.cpp:974
 #, kde-format
@@ -418,32 +417,33 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Television"
-msgstr ""
+msgstr "הגדרת טלוויזיה"
 
 #: dvb/dvbconfigdialog.cpp:77
 #, kde-format
 msgid "Recording folder:"
-msgstr ""
+msgstr "תיקיית הקלטה:"
 
 #: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
 #, kde-format
 msgid "Select Folder"
-msgstr ""
+msgstr "בחירת תיקייה"
 
 #: dvb/dvbconfigdialog.cpp:89
 #, kde-format
 msgid "Time shift folder:"
-msgstr ""
+msgstr "תיקיית הזחת זמן:"
 
 #: dvb/dvbconfigdialog.cpp:101
 #, kde-format
 msgid "xmltv file name (optional):"
-msgstr ""
+msgstr "שם קובץ xmltv (רשות):"
 
 #: dvb/dvbconfigdialog.cpp:109
 #, kde-format
 msgid "Add optional file to allow reading EPG data from xmltv files"
 msgstr ""
+"הוספת קובץ רשות כדי לאפשר קריאת נתוני לוח שידורים אלקטרוני מקובצי xmltv"
 
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
@@ -480,17 +480,17 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
 msgid "Action after recording finishes:"
-msgstr ""
+msgstr "פעולה לאחר סיום ההקלטה:"
 
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
 msgid "Leave empty for no command."
-msgstr ""
+msgstr "להשאיר ריק כדי לא להריץ אף פקודה."
 
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
 msgid "Use ISO 8859-1 charset instead of ISO 6937:"
-msgstr ""
+msgstr "להשתמש בערכת התווים ISO 8859-1 במקום ב־ISO 6937:"
 
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
