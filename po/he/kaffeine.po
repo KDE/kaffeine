@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-25 14:10+0200\n"
+"PO-Revision-Date: 2025-01-27 08:54+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -221,7 +221,7 @@ msgstr "מקור:"
 #: dvb/dvbchanneldialog.cpp:835 dvb/dvbchanneldialog.cpp:894
 #, kde-format
 msgid "Frequency (MHz):"
-msgstr "תדירות (מה״ץ):"
+msgstr "תדירות (מה״צ):"
 
 #: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
 #, kde-format
@@ -392,27 +392,27 @@ msgstr "ערוץ שמע:"
 #: dvb/dvbchanneldialog.cpp:974
 #, kde-format
 msgid "Scrambled:"
-msgstr ""
+msgstr "מעורבל:"
 
 #: dvb/dvbchanneldialog.cpp:981
 #, kde-format
 msgid "PMT PID:"
-msgstr ""
+msgstr "מזהה מנות טבלת מיפוי תוכניות (PMT PID):"
 
 #: dvb/dvbchanneldialog.cpp:985
 #, kde-format
 msgid "Video PID:"
-msgstr ""
+msgstr "מזהה מנות (PID) וידאו:"
 
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
 msgid "Subtitle PID:"
-msgstr ""
+msgstr "מזהה מנות (PID) כתוביות:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
 msgid "Teletext PID:"
-msgstr ""
+msgstr "מזהה מנות (PID) טלטקסט:"
 
 #: dvb/dvbconfigdialog.cpp:59
 #, kde-format
@@ -459,17 +459,17 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
 msgid "Begin margin (minutes):"
-msgstr ""
+msgstr "שול התחלה (דקות):"
 
 #: dvb/dvbconfigdialog.cpp:130
 #, kde-format
 msgid "End margin (minutes):"
-msgstr ""
+msgstr "שול סוף (דקות):"
 
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr ""
+msgstr "תבנית מתן שם להקלטות:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
@@ -538,34 +538,34 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:543 dvb/dvbconfigdialog.cpp:567
 #, kde-format
 msgid "Device %1"
-msgstr ""
+msgstr "התקן %1"
 
 #: dvb/dvbconfigdialog.cpp:387
 #, kde-format
 msgctxt "@action"
 msgid "Add new Regex"
-msgstr ""
+msgstr "הוספת ביטוי רגולרי חדש"
 
 #: dvb/dvbconfigdialog.cpp:394
 #, kde-format
 msgid "Add another regular expression."
-msgstr ""
+msgstr "הוספת ביטוי רגולרי נוסף."
 
 #: dvb/dvbconfigdialog.cpp:398
 #, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr ""
+msgstr "הסרת ביטוי רגולרי"
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
 msgid "Remove checked regular expressions."
-msgstr ""
+msgstr "הסרת הביטויים הרגולריים המסומנים."
 
 #: dvb/dvbconfigdialog.cpp:618
 #, kde-format
 msgid "Update Scan Data"
-msgstr ""
+msgstr "עדכון נתוני הסריקה"
 
 #: dvb/dvbconfigdialog.cpp:637
 #, kde-format
@@ -578,6 +578,8 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"קובץ הסריקה גדול מ־%1 ק״ב.\n"
+"הפעולה מבוטלת, כנראה שמשהו אחר שגוי…\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -675,7 +677,7 @@ msgstr "סריקה אוטומטית"
 #: dvb/dvbconfigdialog.cpp:944
 #, kde-format
 msgid "Autoscan with 167 kHz Offsets"
-msgstr "סריקה אוטומטית עם מרווחים של 167 קה״ץ"
+msgstr "סריקה אוטומטית עם מרווחים של 167 קה״צ"
 
 #: dvb/dvbconfigdialog.cpp:945
 #, kde-format
@@ -797,42 +799,42 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
 msgid "Latitude:"
-msgstr ""
+msgstr "קו רוחב:"
 
 #: dvb/dvbconfigdialog.cpp:1251
 #, kde-format
 msgid "[S -90 ... 90 N]"
-msgstr ""
+msgstr "[דר׳ ‎-90 ‏… 90 צפ׳]"
 
 #: dvb/dvbconfigdialog.cpp:1269
 #, kde-format
 msgid "Longitude:"
-msgstr ""
+msgstr "קו אורך:"
 
 #: dvb/dvbconfigdialog.cpp:1274
 #, kde-format
 msgid "[W -180 ... 180 E]"
-msgstr ""
+msgstr "[מע׳ ‎-180 ‏… 180 מז׳]"
 
 #: dvb/dvbconfigdialog.cpp:1623
 #, kde-format
 msgid "Low frequency (KHz)"
-msgstr ""
+msgstr "תדירות נמוכה (קה״צ)"
 
 #: dvb/dvbconfigdialog.cpp:1631
 #, kde-format
 msgid "High frequency (MHz)"
-msgstr ""
+msgstr "תדירות גבוהה (מה״צ)"
 
 #: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
 msgid "Switch frequency (MHz)"
-msgstr ""
+msgstr "החלפת תדירות (מה״צ)"
 
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "טווח נמוך: %1 מה״צ עד %2 מה״צ"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
@@ -842,7 +844,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "טווח גבוה: %1 מה״צ עד %2 מה״צ"
 
 #: dvb/dvbepg.cpp:649
 msgid "Detective"
@@ -1430,41 +1432,41 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Recording Schedule"
-msgstr ""
+msgstr "תזמון הקלטה"
 
 #: dvb/dvbrecordingdialog.cpp:70
 #, kde-format
 msgctxt "@action"
 msgid "New"
-msgstr ""
+msgstr "חדש"
 
 #: dvb/dvbrecordingdialog.cpp:254
 #, kde-format
 msgctxt "@title:column recording"
 msgid "Name"
-msgstr ""
+msgstr "שם"
 
 #: dvb/dvbrecordingdialog.cpp:262
 #, kde-format
 msgctxt "@title:column tv show"
 msgid "Disabled"
-msgstr ""
+msgstr "מושבת"
 
 #: dvb/dvbrecordingdialog.cpp:307
 #, kde-format
 msgid "Disabled"
-msgstr ""
+msgstr "מושבת"
 
 #: dvb/dvbrecordingdialog.cpp:309
 #, kde-format
 msgid "Enabled"
-msgstr ""
+msgstr "פעיל"
 
 #: dvb/dvbrecordingdialog.cpp:384
 #, kde-format
 msgctxt "@title:window recording"
 msgid "Edit Schedule Entry"
-msgstr ""
+msgstr "עריכת רשומת תזמון"
 
 #: dvb/dvbrecordingdialog.cpp:394
 #, kde-format
@@ -1527,7 +1529,7 @@ msgstr "ספק"
 #: dvb/dvbscandialog.cpp:239
 #, kde-format
 msgid "SNR"
-msgstr ""
+msgstr "SNR (יחס אות לרעש)"
 
 #: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
 #, kde-format
@@ -1548,7 +1550,7 @@ msgstr "סריקת ערוצים"
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
 msgid "Search transponders for other Networks"
-msgstr ""
+msgstr "חיפוש טרנספונדרים לרשתות אחרות"
 
 #: dvb/dvbscandialog.cpp:307
 #, kde-format
@@ -1573,7 +1575,7 @@ msgstr "אות:"
 #: dvb/dvbscandialog.cpp:327
 #, kde-format
 msgid "SNR:"
-msgstr ""
+msgstr "SNR (יחס אות לרעש):"
 
 #: dvb/dvbscandialog.cpp:332
 #, kde-format
@@ -1675,6 +1677,8 @@ msgid ""
 "Kaffeine is currently recording programs.\n"
 "Do you really want to close the application?"
 msgstr ""
+"Kaffeine מקליטה כעת תוכניות.\n"
+"לסגור את היישום?"
 
 #: dvb/dvbtab.cpp:414
 #, kde-format
@@ -1683,6 +1687,8 @@ msgid ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 msgstr ""
+"ל־Kaffeine יש הקלטות מתוזמנות.\n"
+"לסגור את היישום?"
 
 #: dvb/dvbtab.cpp:487
 #, kde-format
@@ -1816,7 +1822,7 @@ msgstr "קפאין"
 #: main.cpp:141
 #, kde-format
 msgid "A media player by KDE with digital TV support."
-msgstr ""
+msgstr "נגון מדיה מבית KDE עם תמיכה בטלוויזיה דיגיטלית."
 
 #: main.cpp:145
 #, kde-format
@@ -1848,29 +1854,29 @@ msgstr "kde-l10n-he@kde.org"
 #: mainwindow.cpp:113
 #, kde-format
 msgid "&1 Play File"
-msgstr ""
+msgstr "&1 ניגון קובץ"
 
 #: mainwindow.cpp:115
 #, kde-format
 msgid "Open dialog to play a file"
-msgstr ""
+msgstr "פתיחת חלונית לניגון קובץ"
 
 #: mainwindow.cpp:119
 #, kde-format
 msgid "&2 Play Audio CD"
-msgstr ""
+msgstr "&2 השמעת תקליטור"
 
 #: mainwindow.cpp:121
 #, kde-format
 msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
-msgstr ""
+msgstr "התחלת ניגון תקליטור שמע. ההנחה היא שהתקליטור כבר נמצא בכונן התקליטורים"
 
 #: mainwindow.cpp:125
 #, kde-format
 msgid "&3 Play Video CD"
-msgstr ""
+msgstr "&3 ניגון תקליטור וידאו"
 
 #: mainwindow.cpp:127
 #, kde-format
@@ -1878,23 +1884,25 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"התחלת ניגון תקליטור וידאו (VCD). ההנחה היא שהתקליטור כבר נמצא בכונן "
+"התקליטורים"
 
 #: mainwindow.cpp:131
 #, kde-format
 msgid "&4 Play DVD"
-msgstr ""
+msgstr "&4 ניגון DVD"
 
 #: mainwindow.cpp:133
 #, kde-format
 msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
-msgstr ""
+msgstr "התחלת ניגון DVD ההנחה היא שה־DVD כבר נמצא בכונן ה־DVD"
 
 #: mainwindow.cpp:138
 #, kde-format
 msgid "&5 Digital TV"
-msgstr ""
+msgstr "&5 טלוויזיה דיגיטלית"
 
 #: mainwindow.cpp:207
 #, kde-format
@@ -1992,7 +2000,7 @@ msgstr "&ניגון DVD"
 #: mainwindow.cpp:364
 #, kde-format
 msgid "&Watch Digital TV"
-msgstr ""
+msgstr "&צפייה בטלוויזיה דיגיטלית"
 
 #: mainwindow.cpp:368
 #, kde-format
@@ -2011,28 +2019,28 @@ msgstr ""
 #: mainwindow.cpp:478
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
-msgstr ""
+msgstr "הקבצים/כתובות שייפתחו על ידי התוכנית יימחקו לאחר השימוש"
 
 #: mainwindow.cpp:479
 #, kde-format
 msgid "Start in full screen mode"
-msgstr ""
+msgstr "התחלה במצב מסך מלא"
 
 #: mainwindow.cpp:480
 #, kde-format
 msgid "Start in minimal mode"
-msgstr ""
+msgstr "התחלה במצב מוקטן"
 
 #: mainwindow.cpp:481
 #, kde-format
 msgid "Start with always on top"
-msgstr ""
+msgstr "התחלה תמיד עליון"
 
 #: mainwindow.cpp:488
 #, kde-format
 msgctxt "command line option"
 msgid "Dump dvb data (debug option)"
-msgstr ""
+msgstr "היטל נתוני dvb (אפשרות ניפוי שגיאות)"
 
 #: mainwindow.cpp:489
 #, kde-format
@@ -2480,48 +2488,48 @@ msgstr "עוצמת שמע: %1%"
 #, kde-format
 msgctxt "osd"
 msgid "Stopped"
-msgstr ""
+msgstr "נעצר"
 
 #: mediawidget.cpp:954
 #, kde-format
 msgctxt "osd"
 msgid "Mute On"
-msgstr ""
+msgstr "הפעלת השתקה"
 
 #: mediawidget.cpp:957
 #, kde-format
 msgctxt "osd"
 msgid "Mute Off"
-msgstr ""
+msgstr "כיבוי השתקה"
 
 #: mediawidget.cpp:1053
 #, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr ""
+msgstr "ביטול שזירה %1"
 
 #: mediawidget.cpp:1468
 #, kde-format
 msgctxt "osd"
 msgid "Playing"
-msgstr ""
+msgstr "מתנגן"
 
 #: mediawidget.cpp:1473
 #, kde-format
 msgctxt "osd"
 msgid "Paused"
-msgstr ""
+msgstr "מושהה"
 
 #: mediawidget.cpp:1651
 #, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
-msgstr ""
+msgstr "קפיצה לנקודה"
 
 #: mediawidget.cpp:1656
 #, kde-format
 msgid "Enter a position:"
-msgstr ""
+msgstr "נא למלא נקודה:"
 
 #: playlist/playlistmodel.cpp:796
 #, kde-format
@@ -2608,15 +2616,18 @@ msgid ""
 "*.m3u|M3U Playlist\n"
 "*.pls|PLS Playlist"
 msgstr ""
+"*.xspf|רשימת נגינה מסוג XSPF\n"
+"*.m3u|רשימת נגינה מסוג M3U\n"
+"*.pls|רשימת נגינה מסוג PLS"
 
 #: sqlhelper.cpp:48
 #, kde-format
 msgctxt "message box"
 msgid "Please install the Qt SQLite plugin."
-msgstr ""
+msgstr "נא להתקין את תוסף ה־SQLite ל־Qt."
 
 #: sqlhelper.cpp:63
 #, kde-format
 msgctxt "message box"
 msgid "Cannot open the SQLite database."
-msgstr ""
+msgstr "לא ניתן לפתוח את מסד הנתונים מסוג SQLite."
