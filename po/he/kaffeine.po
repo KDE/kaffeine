@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-27 08:54+0200\n"
+"PO-Revision-Date: 2025-01-29 08:30+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -496,22 +496,23 @@ msgstr "להשתמש בערכת התווים ISO 8859-1 במקום ב־ISO 6937:
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
 msgid "Create info files to accompany EPG recordings:"
-msgstr ""
+msgstr "יצירת קובצי מידע כדי ללוות את ההקלטות מלוח השידורים האלקטרוני:"
 
 #: dvb/dvbconfigdialog.cpp:179
 #, kde-format
 msgid "Scan channels when idle to fetch fresh EPG data:"
 msgstr ""
+"לסרוק את הערוצים בזמן המתנה כדי למשוך נתוני לוח שידורים אלקטרוני חדשים:"
 
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
 #, kde-format
 msgid "Scan data last updated on %1"
-msgstr ""
+msgstr "נתוני הסריקה עודכנו לאחרונה ב־%1"
 
 #: dvb/dvbconfigdialog.cpp:193
 #, kde-format
 msgid "Update Scan Data over Internet"
-msgstr ""
+msgstr "לעדכן את נתוני הסריקה דרך האינטרנט"
 
 #: dvb/dvbconfigdialog.cpp:197
 #, kde-format
@@ -521,7 +522,7 @@ msgstr "עריכת קובץ סריקה"
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
 msgid "You can add channels manually to this file before scanning for them."
-msgstr ""
+msgstr "אפשר להוסיף ערוצים ידנית לקובץ הזה בטרם סריקתם."
 
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
@@ -531,7 +532,7 @@ msgstr "אפשרויות כלליות"
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
 #, kde-format
 msgid "Automatic Recording"
-msgstr ""
+msgstr "הקלטה אוטומטית"
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -588,11 +589,13 @@ msgid ""
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
+"נתוני הסריקה עודכנו בהצלחה. %1 ק״ב התקבלו.\n"
+"השינויים יחולו לאחר סגירת חלונית ההגדרות."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
 msgid "Scan data update failed."
-msgstr ""
+msgstr "עדכון נתוני הסריקה נכשל."
 
 #: dvb/dvbconfigdialog.cpp:715
 #, kde-format
@@ -722,7 +725,7 @@ msgstr "שם:"
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
-msgstr ""
+msgstr "להשתמש במתח LNBf גבוה יותר:"
 
 #: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
@@ -739,37 +742,37 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
 msgid "Configuration:"
-msgstr ""
+msgstr "הגדרות:"
 
 #: dvb/dvbconfigdialog.cpp:1120
 #, kde-format
 msgid "DiSEqC Switch"
-msgstr ""
+msgstr "מתג DiSEqC"
 
 #: dvb/dvbconfigdialog.cpp:1121
 #, kde-format
 msgid "USALS Rotor"
-msgstr ""
+msgstr "מנוע USALS"
 
 #: dvb/dvbconfigdialog.cpp:1122
 #, kde-format
 msgid "Positions Rotor"
-msgstr ""
+msgstr "מנוע מקומות"
 
 #: dvb/dvbconfigdialog.cpp:1123
 #, kde-format
 msgid "Disable DiSEqC"
-msgstr ""
+msgstr "כיבוי DiSEqC"
 
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
 msgid "LNB %1 Settings"
-msgstr ""
+msgstr "הגדרות LNB %1"
 
 #: dvb/dvbconfigdialog.cpp:1170 dvb/dvbconfigdialog.cpp:1578
 #, kde-format
 msgid "LNB Settings"
-msgstr ""
+msgstr "הגדרות LNB"
 
 #: dvb/dvbconfigdialog.cpp:1188 dvb/dvbconfigdialog.cpp:1202
 #, kde-format
@@ -794,7 +797,7 @@ msgstr "הסרת לוויין"
 #: dvb/dvbconfigdialog.cpp:1241
 #, kde-format
 msgid "Your position:"
-msgstr ""
+msgstr "המקום שלך:"
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -839,7 +842,7 @@ msgstr "טווח נמוך: %1 מה״צ עד %2 מה״צ"
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
-msgstr ""
+msgstr "רב־ערוצי (Bacndstacked)"
 
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
@@ -848,7 +851,7 @@ msgstr "טווח גבוה: %1 מה״צ עד %2 מה״צ"
 
 #: dvb/dvbepg.cpp:649
 msgid "Detective"
-msgstr ""
+msgstr "בילוש"
 
 #: dvb/dvbepg.cpp:650
 msgid "Adventure"
@@ -888,7 +891,7 @@ msgstr "מזג אוויר"
 
 #: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
 msgid "Magazine"
-msgstr ""
+msgstr "מגזין"
 
 #: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
 msgid "Documentary"
@@ -938,7 +941,7 @@ msgstr "אתלטיקה קלה"
 
 #: dvb/dvbepg.cpp:685
 msgid "Motor"
-msgstr ""
+msgstr "ממונע"
 
 #: dvb/dvbepg.cpp:686
 msgid "Water"
@@ -950,15 +953,15 @@ msgstr "חורף"
 
 #: dvb/dvbepg.cpp:688
 msgid "Equestrian"
-msgstr ""
+msgstr "מרוץ סוסים"
 
 #: dvb/dvbepg.cpp:689
 msgid "Martial"
-msgstr ""
+msgstr "אומנויות לחימה"
 
 #: dvb/dvbepg.cpp:695
 msgid "Preschool"
-msgstr ""
+msgstr "קטנטנים"
 
 #: dvb/dvbepg.cpp:696
 msgid "06 to 14"
@@ -1022,15 +1025,15 @@ msgstr "קולנוע"
 
 #: dvb/dvbepg.cpp:722
 msgid "Experimental"
-msgstr ""
+msgstr "ניסיוני"
 
 #: dvb/dvbepg.cpp:723
 msgid "Press"
-msgstr ""
+msgstr "עתונאות"
 
 #: dvb/dvbepg.cpp:724
 msgid "New Media"
-msgstr ""
+msgstr "ניו מדיה"
 
 #: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
@@ -1038,7 +1041,7 @@ msgstr "אופנה"
 
 #: dvb/dvbepg.cpp:733
 msgid "Advisory"
-msgstr ""
+msgstr "ייעוץ"
 
 #: dvb/dvbepg.cpp:734
 msgid "People"
@@ -1066,7 +1069,7 @@ msgstr "חברתי"
 
 #: dvb/dvbepg.cpp:745
 msgid "Further"
-msgstr ""
+msgstr "העשרה"
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
@@ -1074,15 +1077,15 @@ msgstr "שפה"
 
 #: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
 msgid "Travel"
-msgstr ""
+msgstr "טיולים"
 
 #: dvb/dvbepg.cpp:753
 msgid "Handicraft"
-msgstr ""
+msgstr "מלאכת יד"
 
 #: dvb/dvbepg.cpp:754
 msgid "Motoring"
-msgstr ""
+msgstr "ממונעים"
 
 #: dvb/dvbepg.cpp:755
 msgid "Fitness"
@@ -1111,7 +1114,7 @@ msgstr "שחור ולבן "
 
 #: dvb/dvbepg.cpp:765
 msgid "Unpublished"
-msgstr ""
+msgstr "לא מפורסם"
 
 #: dvb/dvbepg.cpp:766
 msgid "Live"
@@ -1119,27 +1122,27 @@ msgstr "שידור חי"
 
 #: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
-msgstr ""
+msgstr "תלת־ממד בשתי עיניים"
 
 #: dvb/dvbepg.cpp:769
 msgid "User Defined 1"
-msgstr ""
+msgstr "בהגדרת המשתמש 1"
 
 #: dvb/dvbepg.cpp:770
 msgid "User Defined 2"
-msgstr ""
+msgstr "בהגדרת המשתמש 2"
 
 #: dvb/dvbepg.cpp:771
 msgid "User Defined 3"
-msgstr ""
+msgstr "בהגדרת המשתמש 3"
 
 #: dvb/dvbepg.cpp:772
 msgid "User Defined 4"
-msgstr ""
+msgstr "בהגדרת המשתמש 4"
 
 #: dvb/dvbepg.cpp:777
 msgid "Undefined"
-msgstr ""
+msgstr "לא מוגדר"
 
 #: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:808
 msgid "Movie"
@@ -1235,7 +1238,7 @@ msgstr "ביוגרפיה"
 
 #: dvb/dvbepg.cpp:829
 msgid "Educative"
-msgstr ""
+msgstr "חינוכי"
 
 #: dvb/dvbepg.cpp:835
 msgid "Auditorium"
@@ -1267,7 +1270,7 @@ msgstr "בריאות"
 
 #: dvb/dvbepg.cpp:855
 msgid "Raffle"
-msgstr ""
+msgstr "הגרלות"
 
 #: dvb/dvbepg.cpp:856
 msgid "Television sales"
@@ -1349,12 +1352,12 @@ msgstr "סמים / "
 #: dvb/dvbepg.cpp:959
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
-msgstr ""
+msgstr "מדינה %1: דירוג: %2%3\n"
 
 #: dvb/dvbepg.cpp:962
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
-msgstr ""
+msgstr "מדינה %1: דירוג: %2 שנים.\n"
 
 #: dvb/dvbepgdialog.cpp:46
 #, kde-format
@@ -2213,13 +2216,13 @@ msgstr ""
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
-msgstr ""
+msgstr "yadif"
 
 #: mediawidget.cpp:244
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
-msgstr ""
+msgstr "yadif2x"
 
 #: mediawidget.cpp:250
 #, kde-format
@@ -2433,7 +2436,7 @@ msgstr "זווית"
 #: mediawidget.cpp:538
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
-msgstr ""
+msgstr "החלפה בין הצגת הזמן שחלף לזמן שנותר"
 
 #: mediawidget.cpp:567
 #, kde-format
