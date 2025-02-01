@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-29 08:30+0200\n"
+"PO-Revision-Date: 2025-01-31 13:16+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -260,7 +260,7 @@ msgstr "רוחב פס:"
 #: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
 #, kde-format
 msgid "FEC rate LP:"
-msgstr ""
+msgstr "קצב FEC בעדיפות נמוכה (LP):"
 
 #: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
 #: dvb/dvbchanneldialog.cpp:840
@@ -282,7 +282,7 @@ msgstr "היררכיה:"
 #: dvb/dvbchanneldialog.cpp:827
 #, kde-format
 msgid "PLP (stream ID):"
-msgstr ""
+msgstr "PLP (מזהה תזרים):"
 
 #: dvb/dvbchanneldialog.cpp:845
 #, kde-format
@@ -297,77 +297,77 @@ msgstr "שידור שמע:"
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr ""
+msgstr "מזהה ערוץ SB (שידור שמע):"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr ""
+msgstr "מפתח SB:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr ""
+msgstr "כמות SB:"
 
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
 msgid "Layer A Modulation:"
-msgstr ""
+msgstr "אפנון שכבה A:"
 
 #: dvb/dvbchanneldialog.cpp:862
 #, kde-format
 msgid "Layer A FEC rate:"
-msgstr ""
+msgstr "קצב תיקון שגיאות קדימה (FEC) לשכבה A:"
 
 #: dvb/dvbchanneldialog.cpp:864
 #, kde-format
 msgid "Layer A segments:"
-msgstr ""
+msgstr "מקטעי שכבה A:"
 
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
 msgid "Layer A interleaving:"
-msgstr ""
+msgstr "שזירה בשכבה A:"
 
 #: dvb/dvbchanneldialog.cpp:870
 #, kde-format
 msgid "Layer B Modulation:"
-msgstr ""
+msgstr "אפנון שכבה B:"
 
 #: dvb/dvbchanneldialog.cpp:872
 #, kde-format
 msgid "Layer B FEC rate:"
-msgstr ""
+msgstr "קצב תיקון שגיאות קדימה (FEC) לשכבה B:"
 
 #: dvb/dvbchanneldialog.cpp:874
 #, kde-format
 msgid "Layer B segments:"
-msgstr ""
+msgstr "מקטעי שכבה B:"
 
 #: dvb/dvbchanneldialog.cpp:876
 #, kde-format
 msgid "Layer B interleaving:"
-msgstr ""
+msgstr "שזירה בשכבה B:"
 
 #: dvb/dvbchanneldialog.cpp:880
 #, kde-format
 msgid "Layer C Modulation:"
-msgstr ""
+msgstr "אפנון שכבה C:"
 
 #: dvb/dvbchanneldialog.cpp:882
 #, kde-format
 msgid "Layer C FEC rate:"
-msgstr ""
+msgstr "קצב תיקון שגיאות קדימה (FEC) לשכבה C:"
 
 #: dvb/dvbchanneldialog.cpp:884
 #, kde-format
 msgid "Layer C segments:"
-msgstr ""
+msgstr "מקטעי שכבה C:"
 
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
 msgid "Layer C interleaving:"
-msgstr ""
+msgstr "שזירה בשכבה C:"
 
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
@@ -449,12 +449,14 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
 msgid "Disable parsing EPG data from MPEG-TS tables:"
-msgstr ""
+msgstr "השבתת פענוח נתוני לוח שידורים אלקטרוני מטבלאות MPEG-TS:"
 
 #: dvb/dvbconfigdialog.cpp:115
 #, kde-format
 msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
 msgstr ""
+"כדאי להשתמש בזה אם ספק הטלוויזיה שלך לא משדר נתוני לוח שידורים אלקטרוני "
+"אמינים"
 
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
@@ -477,6 +479,8 @@ msgid ""
 "The following substitutions work: \"%year\" for year (YYYY) and the "
 "following: %month, %day, %hour, %min, %sec, %channel and %title"
 msgstr ""
+"אלו ההחלפות שעובדות: „‎%year” לשנה (YYYY) וגם הבאות: ‎%month,‏ ‎%day,‏ ‎%hour,‏"
+" ‎%min,‏ ‎%sec,‏ ‎%channel ו־‎%title"
 
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
@@ -705,7 +709,7 @@ msgstr "Atsc"
 #: dvb/dvbconfigdialog.cpp:966 dvb/dvbconfigdialog.cpp:1095
 #, kde-format
 msgid "Tuner timeout (ms):"
-msgstr ""
+msgstr "זמן המתנה לטיונר/כוונן (מ״ש):"
 
 #: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
 #, kde-format
@@ -738,6 +742,13 @@ msgid ""
 "- higher voltage mode (checked);\n"
 "- tristate (don't send the control)."
 msgstr ""
+"בחלק מהתקני ה־DVB, יש פקד נוסף שמאפשר להגדיל את \n"
+"המתח שנשלח ל־LNBf, כדי לפצות על ההנחתה בכבל. ברירת המחדל של הכפתור התלת־"
+"מצבי\n"
+"היא לא להשתמש בו. אפשר להגדיר אותו לאחד מהמצבים:\n"
+"- מצב רגיל (ללא סימון);\n"
+"- מצב מתח גבוה (מסומן);\n"
+"- תלת־מצבי (לא לשלוח את הפקד)."
 
 #: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
@@ -1218,7 +1229,7 @@ msgstr "ארוטי"
 
 #: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
-msgstr ""
+msgstr "הגרלה, מכירות בטלוויזיה, פרסים"
 
 #: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
@@ -1368,7 +1379,7 @@ msgstr "מדריך תוכניות"
 #: dvb/dvbepgdialog.cpp:73
 #, kde-format
 msgid "EPG language:"
-msgstr ""
+msgstr "שפת לוח השידורים האלקטרוני:"
 
 #: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
 #, kde-format
@@ -1378,7 +1389,7 @@ msgstr "כל שפה שהיא"
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
 msgid "Show channels with empty EPG data"
-msgstr ""
+msgstr "להציג ערוצים עם נתונים לוח שידורים אלקטרוני ריקים"
 
 #: dvb/dvbepgdialog.cpp:119
 #, kde-format
@@ -1424,12 +1435,15 @@ msgid ""
 "\n"
 "Please check the Configure Television window."
 msgstr ""
+"לא נמצא התקן עם הגדרות תקפות או שהרשאות הגישה שגויות.\n"
+"\n"
+"נא לעיין בחלון הגדרת הטלוויזיה."
 
 #: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
 #, kde-format
 msgctxt "message box"
 msgid "No available device found."
-msgstr ""
+msgstr "לא נמצא התקן זמין."
 
 #: dvb/dvbrecordingdialog.cpp:45
 #, kde-format
@@ -1564,6 +1578,10 @@ msgid ""
 "those other NIT data into account. Please notice that the scan will be a lot "
 "more slow if enabled."
 msgstr ""
+"ברשתות מסוימות, יכול להיות שחלק מההטרנספונדרים מקודדים בטבלאות מידע רשת "
+"נפרדות (NITים אחרים). נפוץ יותר במערכות DVB-C. לחיצה על הסמל הזה את אלגוריתם "
+"הסריקה כדי שייקח את נתוני ה־NIT האלה בחשבון. נא לשים לב שהסריקה תהיה איטית "
+"בהרבה אם האפשרות פעילה."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
@@ -1583,7 +1601,7 @@ msgstr "SNR (יחס אות לרעש):"
 #: dvb/dvbscandialog.cpp:332
 #, kde-format
 msgid "Tuned:"
-msgstr ""
+msgstr "מכוונן:"
 
 #: dvb/dvbscandialog.cpp:345
 #, kde-format
@@ -1593,7 +1611,7 @@ msgstr "סינון"
 #: dvb/dvbscandialog.cpp:348
 #, kde-format
 msgid "Free to air"
-msgstr ""
+msgstr "ערוץ לקליטה חופשית"
 
 #: dvb/dvbscandialog.cpp:351
 #, kde-format
@@ -1628,7 +1646,7 @@ msgstr "תוצאות חיפוש"
 #: dvb/dvbscandialog.cpp:391
 #, kde-format
 msgid "Current Transponder"
-msgstr ""
+msgstr "טרנספונדר נוכחי"
 
 #: dvb/dvbscandialog.cpp:473
 #, kde-format
@@ -2018,6 +2036,10 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
+"הפעלת כל הודעות ניפוי השגיאות. נא לשים לב שב־Kaffeince ניתן להפעיל הודעות "
+"ניפוי שגיאות לפי קטגוריות, על ידי שימוש במשתנה הסביבתי:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"כאשר ‚category’ יכול להיות:\n"
 
 #: mainwindow.cpp:478
 #, kde-format
@@ -2204,13 +2226,13 @@ msgstr "התעלמות"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
-msgstr ""
+msgstr "בוב"
 
 #: mediawidget.cpp:231
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
-msgstr ""
+msgstr "קווי"
 
 #: mediawidget.cpp:237
 #, kde-format
@@ -2228,31 +2250,31 @@ msgstr "yadif2x"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
-msgstr ""
+msgstr "אשלגן"
 
 #: mediawidget.cpp:256
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: mediawidget.cpp:262
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
-msgstr ""
+msgstr "ממוצע"
 
 #: mediawidget.cpp:268
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
-msgstr ""
+msgstr "מיזוג"
 
 #: mediawidget.cpp:274
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
-msgstr ""
+msgstr "טלסינה הפוכה"
 
 #: mediawidget.cpp:294
 #, kde-format
@@ -2453,6 +2475,17 @@ msgid ""
 "webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
 "Files (*)"
 msgstr ""
+"קובצי מדיה נתמכים (‎*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *.anim1 *."
+"anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *.animj *.asf "
+"*.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *.f4a *.f4b *."
+"f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u *.m3u8 *."
+"m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *.mp2 *.mp3 "
+"*.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *.mts *.nsv *."
+"oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra *.ram *.rax "
+"*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
+"*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
+"webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;כל "
+"הקבצים (*)"
 
 #: mediawidget.cpp:676
 #, kde-format
