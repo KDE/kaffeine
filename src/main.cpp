@@ -211,6 +211,10 @@ int main(int argc, char *argv[])
 {
 	qInstallMessageHandler(verboseMessageHandler);
 
+#if LIBVLC_VERSION_MAJOR <= 3
+	qputenv("QT_QPA_PLATFORM", "xcb");
+#endif
+
 	KLocalizedString::setApplicationDomain("kaffeine");
 
 	KaffeineApplication app(argc, argv);
