@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-09 16:17+0300\n"
+"PO-Revision-Date: 2025-03-07 23:29+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -1859,12 +1859,12 @@ msgstr "© 2007–2019 Kafein Yazarları."
 #: main.cpp:163
 #, kde-format
 msgid "Maintainer"
-msgstr "Projeyi Yürüten"
+msgstr "Bakımcı"
 
 #: main.cpp:168
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr "Önceki proje geliştiricileri (1.x sürümleri için)"
+msgstr "Önceki bakımcı (1.x sürümleri için)"
 
 #: main.cpp:172
 #, kde-format
