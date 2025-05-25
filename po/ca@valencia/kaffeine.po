@@ -1586,9 +1586,9 @@ msgid ""
 msgstr ""
 "A determinades xarxes, és possible que alguns transponedors estiguen "
 "codificats en Taules d'Informació de Xarxes separades (altres NIT). Açò és "
-"més habitual en sistemes DVB-C. Clicant en esta icona es canviarà "
-"l'algorisme d'exploració per a tindre en compte altres dades NIT. Cal tindre "
-"present que l'exploració serà força més lenta si està activada."
+"més habitual en sistemes DVB-C. Quan es clique damunt d'esta icona es "
+"canviarà l'algorisme d'exploració per a tindre en compte altres dades NIT. "
+"Cal tindre present que l'exploració serà força més lenta si està activada."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
