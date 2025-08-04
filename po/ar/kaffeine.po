@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-01-12 14:47+0400\n"
+"PO-Revision-Date: 2025-08-03 12:35+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -488,7 +488,7 @@ msgstr "الإجراء بعد انتهاء التسجيل:"
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
 msgid "Leave empty for no command."
-msgstr "اتركه فارغًا بدون أمر."
+msgstr "اتركه فارغًا بلا أمر."
 
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
@@ -504,7 +504,7 @@ msgstr "أنشئ ملفات معلومات لمرافقة تسجيلات EPG:"
 #, kde-format
 msgid "Scan channels when idle to fetch fresh EPG data:"
 msgstr ""
-"امسح القنوات عندما تكون في وضع الخمول لجلب بيانات دليل البرامج الإلكتروني "
+"امحُ القنوات عندما تكون في وضع الخمول لجلب بيانات دليل البرامج الإلكتروني "
 "الجديدة:"
 
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
