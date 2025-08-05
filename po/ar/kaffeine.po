@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-08-03 12:35+0400\n"
+"PO-Revision-Date: 2025-08-04 18:34+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -535,7 +535,7 @@ msgstr "خيارات عامة"
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
 #, kde-format
 msgid "Automatic Recording"
-msgstr "التسجيل التلقائي"
+msgstr "التسجيل الآليّ"
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -614,7 +614,7 @@ msgstr "حرك لليسار"
 #: dvb/dvbconfigdialog.cpp:723
 #, kde-format
 msgid "Reset"
-msgstr "إعادة تعيين"
+msgstr "صفّر"
 
 #: dvb/dvbconfigdialog.cpp:733
 #, kde-format
@@ -679,27 +679,27 @@ msgstr "أرضي"
 #: dvb/dvbconfigdialog.cpp:943 dvb/dvbconfigdialog.cpp:957
 #, kde-format
 msgid "Autoscan"
-msgstr "المسح آلي"
+msgstr "المسح آليّ"
 
 #: dvb/dvbconfigdialog.cpp:944
 #, kde-format
 msgid "Autoscan with 167 kHz Offsets"
-msgstr "المسح آلي بإزاحة قدرها 167 كيلو هرتز"
+msgstr "المسح آليّ بإزاحة قدرها 167 كيلو هرتز"
 
 #: dvb/dvbconfigdialog.cpp:945
 #, kde-format
 msgid "Autoscan Australia"
-msgstr "المسح آلي استراليا"
+msgstr "المسح آليّ استراليا"
 
 #: dvb/dvbconfigdialog.cpp:946
 #, kde-format
 msgid "Autoscan Italy"
-msgstr "المسح آلي إيطاليا"
+msgstr "المسح آليّ إيطاليا"
 
 #: dvb/dvbconfigdialog.cpp:947
 #, kde-format
 msgid "Autoscan Taiwan"
-msgstr "المسح آلي تايوان"
+msgstr "المسح آليّ تايوان"
 
 #: dvb/dvbconfigdialog.cpp:950
 #, kde-format
@@ -743,7 +743,7 @@ msgid ""
 "- tristate (don't send the control)."
 msgstr ""
 "في بعض أجهزة DVB، يوجد عنصر تحكم إضافي يسمح بزيادة الجهد المرسل إلى LNBf، "
-"وذلك للتعويض عن فقدان الكابلات. هذا الزر ثلاثي الحالة لا يستخدمه افتراضيًا. "
+"وذلك للتعويض عن فقدان الكابلات. هذا الزر ثلاثي الحالة لا يستخدمه مبدئيًا. "
 "يمكن ضبطه على:\n"
 "- الوضع العادي (غير محدد)؛\n"
 "- وضع الجهد الأعلى (محدد)؛\n"
@@ -1852,12 +1852,12 @@ msgstr "(C) 2007-2019 مؤلفو كافيين"
 #: main.cpp:163
 #, kde-format
 msgid "Maintainer"
-msgstr "المصين"
+msgstr "الصائن"
 
 #: main.cpp:168
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr "المصين السّابق (لإصدارات 1.س)"
+msgstr "الصائن السّابق (لإصدارات 1.س)"
 
 #: main.cpp:172
 #, kde-format
@@ -2287,7 +2287,7 @@ msgstr "النسبة الباعيّة"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "Automatic"
-msgstr "آلي"
+msgstr "آليّ"
 
 #: mediawidget.cpp:307
 #, kde-format
@@ -2346,7 +2346,7 @@ msgstr "حجم الفيديو"
 #, kde-format
 msgctxt "Video size"
 msgid "Automatic"
-msgstr "آلي"
+msgstr "آليّ"
 
 #: mediawidget.cpp:368
 #, kde-format
