@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-08-04 18:34+0400\n"
+"PO-Revision-Date: 2025-08-06 13:45+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -220,7 +220,7 @@ msgstr "المصدر:"
 #: dvb/dvbchanneldialog.cpp:835 dvb/dvbchanneldialog.cpp:894
 #, kde-format
 msgid "Frequency (MHz):"
-msgstr "تردد (ميجاهرتز):"
+msgstr "تردد (ميغاهرتز):"
 
 #: dvb/dvbchanneldialog.cpp:752 dvb/dvbchanneldialog.cpp:773
 #, kde-format
@@ -401,7 +401,7 @@ msgstr "رقم تعريف العملية الخاص بـ PMT:"
 #: dvb/dvbchanneldialog.cpp:985
 #, kde-format
 msgid "Video PID:"
-msgstr "رقم تعريف العملية الخاص بالفديو:"
+msgstr "رقم تعريف العملية الخاص بالفيديو:"
 
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
@@ -510,7 +510,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
 #, kde-format
 msgid "Scan data last updated on %1"
-msgstr "آخر تحديث لبيانات المسح تم في %1 "
+msgstr "آخر تحديث لبيانات المسح في %1 "
 
 #: dvb/dvbconfigdialog.cpp:193
 #, kde-format
@@ -574,7 +574,7 @@ msgstr "حدّث بيانات المسح"
 #: dvb/dvbconfigdialog.cpp:637
 #, kde-format
 msgid "Downloading scan data"
-msgstr "يتم تنزيل بيانات المسح"
+msgstr "ينزّل بيانات المسح"
 
 #: dvb/dvbconfigdialog.cpp:678
 #, kde-format
@@ -592,7 +592,7 @@ msgid ""
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
-" حُدثت بيانات المسح بنجاح. تم استلام %1 كيلوبايت.\n"
+" حُدثت بيانات المسح بنجاح. المستلم %1 كيلوبايت.\n"
 "تدخل التغييرات حيز التنفيذ بعد إغلاق\n"
 "مربع حوار الضبط."
 
@@ -837,17 +837,17 @@ msgstr "التردد المنخفض (كيلو هرتز)"
 #: dvb/dvbconfigdialog.cpp:1631
 #, kde-format
 msgid "High frequency (MHz)"
-msgstr "التردد العالي (ميجاهرتز)"
+msgstr "التردد العالي (ميغاهرتز)"
 
 #: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
 msgid "Switch frequency (MHz)"
-msgstr "تغيير التردد (ميجا هرتز)"
+msgstr "تغيير التردد (ميغا هرتز)"
 
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr "النطاق المنخفض: %1 ميجا هرتز إلى %2 ميجا هرتز"
+msgstr "النطاق المنخفض: %1 ميغا هرتز إلى %2 ميغا هرتز"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
@@ -857,7 +857,7 @@ msgstr "مكدسة"
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr "النطاق العالي: %1 ميجا هرتز إلى %2 ميجا هرتز"
+msgstr "النطاق العالي: %1 ميغا هرتز إلى %2 ميغا هرتز"
 
 #: dvb/dvbepg.cpp:649
 msgid "Detective"
