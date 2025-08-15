@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-08-06 13:45+0400\n"
+"PO-Revision-Date: 2025-08-14 13:17+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -1697,7 +1697,7 @@ msgid ""
 "Kaffeine is currently recording programs.\n"
 "Do you really want to close the application?"
 msgstr ""
-"يقوم كافيين حاليًا بتسجيل البرامج.\n"
+"يسجل كافيين حاليًا البرامج.\n"
 "هل تريد حقًا إغلاق التطبيق؟"
 
 #: dvb/dvbtab.cpp:414
@@ -1707,7 +1707,7 @@ msgid ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 msgstr ""
-"قام كافين بجدولة التسجيلات.\n"
+"جدول كافين التسجيلات.\n"
 "هل تريد حقًا إغلاق التطبيق؟"
 
 #: dvb/dvbtab.cpp:487
@@ -1892,8 +1892,8 @@ msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
-"ابدأ تشغيل قرص مضغوط صوتي. يفترض أن القرص المضغوط موجود بالفعل في محرك "
-"الأقراص المضغوطة"
+"ابدأ تشغيل قرص مضغوط صوتي. يفترض أن القرص المضغوط موجود فعلًا في محرك الأقراص "
+"المضغوطة"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -1906,7 +1906,7 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
-"ابدأ تشغيل قرص فيديو مضغوط. يفترض أن القرص المضغوط موجود بالفعل في محرك "
+"ابدأ تشغيل قرص فيديو مضغوط. يفترض أن القرص المضغوط موجود فعلًا في محرك "
 "الأقراص المضغوطة"
 
 #: mainwindow.cpp:131
@@ -1919,7 +1919,7 @@ msgstr "&4 شغّل فيديو ديفيدي"
 msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
-msgstr "ابدأ تشغيل قرص DVD. يفترض أن قرص DVD موجود بالفعل في محرك أقراص DVD"
+msgstr "ابدأ تشغيل قرص DVD. يفترض أن قرص DVD موجود فعلًا في محرك أقراص DVD"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2661,7 +2661,7 @@ msgstr ""
 #, kde-format
 msgctxt "message box"
 msgid "Please install the Qt SQLite plugin."
-msgstr "من فضلك قم بتنصيب إضافة Qt SQLite."
+msgstr "من فضلك ثبت ملحقة Qt SQLite."
 
 #: sqlhelper.cpp:63
 #, kde-format
