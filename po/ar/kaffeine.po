@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2024-11-05 01:49+0000\n"
-"PO-Revision-Date: 2025-08-14 13:17+0400\n"
+"PO-Revision-Date: 2025-08-20 21:33+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -391,7 +391,7 @@ msgstr "صوت القناة:"
 #: dvb/dvbchanneldialog.cpp:974
 #, kde-format
 msgid "Scrambled:"
-msgstr "التشفير:"
+msgstr "التعمية:"
 
 #: dvb/dvbchanneldialog.cpp:981
 #, kde-format
