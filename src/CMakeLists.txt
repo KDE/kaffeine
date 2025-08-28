@@ -45,6 +45,10 @@ if(HAVE_DVB)
       dvb/xmltv.cpp)
 endif(HAVE_DVB)
 
+if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    target_link_libraries(kaffeine inotify)
+endif()
+
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
 add_executable(kaffeine ${kaffeinedvb_SRCS} ${kaffeine_SRCS})

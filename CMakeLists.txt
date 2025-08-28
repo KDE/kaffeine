@@ -54,6 +54,10 @@ find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
 	DBusAddons
 )
 find_package(KF6DocTools ${KF6_MIN_VERSION} QUIET)
+if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    find_package(Inotify)
+    link_directories(/usr/local/lib)
+endif()
 
 find_package(VLC 1.2 REQUIRED)
 
