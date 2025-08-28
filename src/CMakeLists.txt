@@ -45,9 +45,6 @@ if(HAVE_DVB)
       dvb/xmltv.cpp)
 endif(HAVE_DVB)
 
-if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
-    target_link_libraries(kaffeine inotify)
-endif()
 
 configure_file(config-kaffeine.h.cmake ${CMAKE_BINARY_DIR}/config-kaffeine.h)
 
@@ -59,6 +56,10 @@ target_link_libraries(kaffeine Qt6::Sql KF6::XmlGui KF6::I18n KF6::Solid
 if(HAVE_DVB)
     target_link_libraries(kaffeine ${Libdvbv5_LIBRARIES})
 endif(HAVE_DVB)
+
+if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+    target_link_libraries(kaffeine inotify)
+endif()
 
 install(TARGETS kaffeine ${KDE_INSTALL_TARGETS_DEFAULT_ARGS})
 install(FILES scanfile.dvb DESTINATION ${KDE_INSTALL_DATADIR}/kaffeine)
