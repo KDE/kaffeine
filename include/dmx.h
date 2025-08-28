@@ -23,6 +23,7 @@
 
 #ifndef _DVBDMX_H_
 #define _DVBDMX_H_
+#define _UAPI_DVBDMX_H_
 
 #include "linuxtypes.h"
 #include <time.h>
