@@ -434,7 +434,7 @@ msgstr "Carpeta de gravació:"
 #: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
 #, kde-format
 msgid "Select Folder"
-msgstr "Selecciona una carpeta"
+msgstr "Tria una carpeta"
 
 #: dvb/dvbconfigdialog.cpp:89
 #, kde-format
