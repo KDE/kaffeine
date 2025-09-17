@@ -93,7 +93,7 @@ ecm_install_icons(ICONS
 
 EOF
 
-# Remve duplicated files
+# Remove duplicated files
 FILES=$(echo "$FILES" | tr ' ' '\n' | sort -u | tr '\n' ' ')
 
 for i in $FILES; do

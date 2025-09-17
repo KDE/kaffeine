@@ -52,7 +52,7 @@
 #include "mediawidget_p.h"
 #include "osdwidget.h"
 
-// Needs to be included before X11 headers, which deine some things like "Bool"
+// Needs to be included before X11 headers, which define some things like "Bool"
 #include "moc_mediawidget.cpp"
 
 #include <X11/extensions/scrnsaver.h>
