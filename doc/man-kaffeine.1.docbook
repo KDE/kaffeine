@@ -242,7 +242,7 @@ file will be available to be updated from the Internet in the Kaffeine applicati
 <title>See Also</title>
 <simplelist>
 <member>More detailed user documentation is available from <ulink
-url="help:/kaffeine ">help:/kaffeine</ulink>
+url="help:/kaffeine">help:/kaffeine</ulink>
 (either enter this &URL; into &konqueror;, or run
 <userinput><command>khelpcenter</command>
 <parameter>help:/kaffeine</parameter></userinput>).</member>
