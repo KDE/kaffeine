@@ -1,3 +1,4 @@
+# Ignore the following files
 *.gmo
 *.shell
 *CTestTestfile.cmake
@@ -10,6 +11,7 @@ CMakeCache.txt
 CMakeFiles/
 CMakeTmp/
 Makefile
+/compile_commands.json
 config-kaffeine.h
 doc/*.html
 doc/kaffeine.1
