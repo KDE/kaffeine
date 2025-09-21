@@ -426,7 +426,7 @@ For more details, please read Kaffeine's manual.
 Homepage
 ========
 
-<https://www.kde.org/applications/multimedia/kaffeine/>
+<https://apps.kde.org/kaffeine>
 
 Authors
 =======
