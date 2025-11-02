@@ -311,37 +311,40 @@ QString DvbSiText::convertText(const char *data, int size)
 		size--;
 	}
 
-	QStringDecoder::Encoding enc;
+    QByteArray enc;
 	switch (encoding) {
-	case Iso6937: enc = QStringDecoder::Latin1; break;
-	case Iso8859_1: enc = QStringDecoder::Latin1; break;
-	case Iso8859_2: enc = QStringDecoder::Latin1; break;
-	case Iso8859_3: enc = QStringDecoder::Latin1; break;
-	case Iso8859_4: enc = QStringDecoder::Latin1; break;
-	case Iso8859_5: enc = QStringDecoder::Latin1; break;
-	case Iso8859_6: enc = QStringDecoder::Latin1; break;
-	case Iso8859_7: enc = QStringDecoder::Latin1; break;
-	case Iso8859_8: enc = QStringDecoder::Latin1; break;
-	case Iso8859_9: enc = QStringDecoder::Latin1; break;
-	case Iso8859_10: enc = QStringDecoder::Latin1; break;
-	case Iso8859_11: enc = QStringDecoder::Latin1; break;
-	case Iso8859_13: enc = QStringDecoder::Latin1; break;
-	case Iso8859_14: enc = QStringDecoder::Latin1; break;
-	case Iso8859_15: enc = QStringDecoder::Latin1; break;
-	case Iso10646_ucs2: enc = QStringDecoder::Utf16; break;
-	case Iso2022_kr: enc = QStringDecoder::Latin1; break;
-	case Gb2312: enc = QStringDecoder::Latin1; break;
-	case Utf_16be: enc = QStringDecoder::Utf16BE; break;
-	case Utf_8: enc = QStringDecoder::Utf8; break;
+    case Iso6937: enc.append("ISO-8859-1"); break;
+    case Iso8859_1: enc.append("ISO-8859-1"); break;
+    case Iso8859_2: enc.append("ISO-8859-2"); break;
+    case Iso8859_3: enc.append("ISO-8859-3"); break;
+    case Iso8859_4: enc.append("ISO-8859-4"); break;
+    case Iso8859_5: enc.append("ISO-8859-5"); break;
+    case Iso8859_6: enc.append("ISO-8859-6"); break;
+    case Iso8859_7: enc.append("ISO-8859-7"); break;
+    case Iso8859_8: enc.append("ISO-8859-8"); break;
+    case Iso8859_9: enc.append("ISO-8859-9"); break;
+    case Iso8859_10: enc.append("ISO-8859-10"); break;
+    case Iso8859_11: enc.append("ISO-8859-11"); break;
+    case Iso8859_13: enc.append("ISO-8859-13"); break;
+    case Iso8859_14: enc.append("ISO-8859-14"); break;
+    case Iso8859_15: enc.append("ISO-8859-15"); break;
+    case Iso10646_ucs2: enc.append("UTF-8"); break;
+    case Iso2022_kr: enc.append("ISO-8859-1"); break;
+    case Gb2312: enc.append("ISO-8859-1"); break;
+    case Utf_16be: enc = enc.append("UTF-8BE"); break;
+    case Utf_8: enc.append("UTF-8"); break;
 	}
-
 	QStringDecoder convert(enc);
+    QStringDecoder convertFallback("ISO-8859-1");
+    QStringDecoder *convertUsed;
+    if(convert.isValid()) {
+        convertUsed = &convert;
+    } else {
+        convertUsed = &convertFallback;
+    }
 	QByteArray tmp;
 	if (encoding <= Iso8859_15) {
 		// only strip control codes for one-byte character tables
-
-		char *dest = new char[size];
-
 		for (const char *it = data; it != (data + size); ++it) {
 			unsigned char value = *it;
 
@@ -349,15 +352,10 @@ QString DvbSiText::convertText(const char *data, int size)
 				tmp += value;
 			}
 		}
-
-		QString result = convert(tmp);
-		delete[] dest;
-
-		return result;
+        return((*convertUsed)(tmp));
 	}
-
 	tmp = QByteArray(data, size);
-	return convert(tmp);
+    return((*convertUsed)(tmp));
 }
 
 void DvbSiText::setOverride6937(bool override)
