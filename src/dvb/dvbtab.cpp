@@ -443,15 +443,14 @@ void DvbTab::showRecordingDialog()
 
 void DvbTab::toggleEpgDialog()
 {
-	if (epgDialog.isNull()) {
+    if (epgDialog.isNull()) {
 		epgDialog = new DvbEpgDialog(manager, this);
 		epgDialog->setAttribute(Qt::WA_DeleteOnClose, true);
 		epgDialog->setCurrentChannel(manager->getLiveView()->getChannel());
 		epgDialog->setModal(false);
 		epgDialog->show();
 	} else {
-		epgDialog->deleteLater();
-		epgDialog = NULL;
+        epgDialog.clear();
 	}
 }
 
@@ -612,7 +611,7 @@ void DvbTab::playChannel(const DvbSharedChannel &channel, const QModelIndex &ind
 	currentChannel = channel->name;
 	manager->getLiveView()->playChannel(channel);
 
-	if (!epgDialog.isNull()) {
+    if (!epgDialog.isNull()) {
 		epgDialog->setCurrentChannel(manager->getLiveView()->getChannel());
 	}
 }
