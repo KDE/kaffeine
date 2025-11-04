@@ -18,11 +18,8 @@ set(QT_MIN_VERSION "6.6.0")
 set(KF6_MIN_VERSION "6.0.0")
 
 find_package(Qt6Core)
-find_package(ECM 1.0.0 REQUIRED NO_MODULE)
-set(CMAKE_MODULE_PATH
-	${ECM_MODULE_PATH}
-	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules"
-)
+find_package(ECM 1.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -35,31 +32,44 @@ include(CheckIncludeFiles)
 set(CMAKE_AUTOMOC ON)
 
 # Find Qt modules
-find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS
-	Core    # QCommandLineParser, QStringLiteral
-	Widgets # QApplication
-	Network
-	Sql
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG COMPONENTS
+     Core
+     Widgets
+     Network
+     Sql
+)
+set_package_properties(Qt6 PROPERTIES
+    TYPE REQUIRED
+    PURPOSE "Required application components"
 )
 
 # Find KDE modules
-find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
-	CoreAddons      # KAboutData
-	I18n            # KLocalizedString
-	WidgetsAddons   # KMessageBox
-	WindowSystem	# KStartupInfo
-	XmlGui		# KActonCollection
-	KIO		# KFileWidget
-	Solid
-	DBusAddons
+find_package(KF6 ${KF6_MIN_VERSION} COMPONENTS
+    CoreAddons
+    I18n
+    WidgetsAddons
+    WindowSystem
+    XmlGui
+    KIO
+    Solid
+    DBusAddons
 )
+set_package_properties(KF6 PROPERTIES
+    TYPE REQUIRED
+    PURPOSE "Required application components"
+)
+
 find_package(KF6DocTools ${KF6_MIN_VERSION} QUIET)
 if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     find_package(Inotify)
     link_directories(/usr/local/lib)
 endif()
 
-find_package(VLC 1.2 REQUIRED)
+find_package(VLC 1.2)
+set_package_properties(VLC PROPERTIES
+    TYPE REQUIRED
+    PURPOSE "Required application components for video playback"
+)
 
 feature_summary(WHAT ALL INCLUDE_QUIET_PACKAGES FATAL_ON_MISSING_REQUIRED_PACKAGES)
 
@@ -109,10 +119,10 @@ add_subdirectory(src)
 
 ki18n_install(po)
 
-if(KF6DocTools_VERSION)
+if(TARGET KF6::DocTools)
   add_subdirectory(doc)
   kdoctools_install(po)
-endif(KF6DocTools_VERSION)
+endif()
 
 if(BUILD_TOOLS)
   add_subdirectory(tools)
