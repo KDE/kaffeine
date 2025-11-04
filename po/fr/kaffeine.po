@@ -613,7 +613,7 @@ msgstr ""
 "Les données de numérisation ont été mises à jour avec succès. %1 Ko ont été "
 "reçus.\n"
 "Les modifications prendront effet lorsque vous aurez fermé\n"
-" la boîte de dialogue de configuration."
+" la boite de dialogue de configuration."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -1592,7 +1592,7 @@ msgstr "Effacer"
 #: dvb/dvbscandialog.cpp:298
 #, kde-format
 msgid "Channel Scan"
-msgstr "Balayage des chaînes"
+msgstr "Balayage des chaines"
 
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
@@ -1918,7 +1918,7 @@ msgstr "&1 Lire un fichier"
 #: mainwindow.cpp:115
 #, kde-format
 msgid "Open dialog to play a file"
-msgstr "Ouvrir une boîte de dialogue pour lire un fichier"
+msgstr "Ouvrir une boite de dialogue pour lire un fichier"
 
 #: mainwindow.cpp:119
 #, kde-format
