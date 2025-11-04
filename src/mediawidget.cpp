@@ -55,8 +55,6 @@
 // Needs to be included before X11 headers, which define some things like "Bool"
 #include "moc_mediawidget.cpp"
 
-#include <X11/extensions/scrnsaver.h>
-
 MediaWidget::MediaWidget(QMenu *menu_, QToolBar *toolBar, KActionCollection *collection,
 	QWidget *parent) : QWidget(parent), menu(menu_), displayMode(NormalMode),
 	autoResizeFactor(0), blockBackendUpdates(false), muted(false),
