@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(kaffeine)
 
-set(KAFFEINE_MAJOR_VERSION 3)
-set(KAFFEINE_MINOR_VERSION 0)
+set(KAFFEINE_MAJOR_VERSION 2)
+set(KAFFEINE_MINOR_VERSION 1)
 set(KAFFEINE_PATCH_VERSION 0)
 
 # comment/uuncomment below if either the version is a production or a development one
