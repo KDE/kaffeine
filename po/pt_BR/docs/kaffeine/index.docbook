@@ -1181,7 +1181,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imagedata fileref="view-restore.png" format="PNG"/></imageobject
 ></inlinemediaobject
 >. <action
->Altera para modo de tela inteira</action
+>Altera para modo de tela cheia</action
 >. </para
 ></listitem>
 </varlistentry>
