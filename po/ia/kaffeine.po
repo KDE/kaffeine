@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# giovanni <g.sora@tiscali.it>, 2017, 2020, 2021, 2022, 2023.
+# SPDX-FileCopyrightText: 2017, 2020, 2021, 2022, 2023, 2026 giovanni <g.sora@tiscali.it>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:51+0000\n"
-"PO-Revision-Date: 2023-05-19 22:25+0200\n"
+"PO-Revision-Date: 2026-01-14 12:03+0100\n"
 "Last-Translator: giovanni <g.sora@tiscali.it>\n"
 "Language-Team: Interlingua <kde-i18n-doc@kde.org>\n"
 "Language: ia\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 23.04.1\n"
+"X-Generator: Lokalize 23.08.5\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -236,12 +236,12 @@ msgstr "Modulation:"
 #: dvb/dvbchanneldialog.cpp:796 dvb/dvbchanneldialog.cpp:817
 #, kde-format
 msgid "FEC rate:"
-msgstr ""
+msgstr "Frequentia de FEC:"
 
 #: dvb/dvbchanneldialog.cpp:769
 #, kde-format
 msgid "Polarization:"
-msgstr ""
+msgstr "Polarization:"
 
 #: dvb/dvbchanneldialog.cpp:781
 #, kde-format
@@ -257,24 +257,24 @@ msgstr "Largessa de banda:"
 #: dvb/dvbchanneldialog.cpp:798 dvb/dvbchanneldialog.cpp:819
 #, kde-format
 msgid "FEC rate LP:"
-msgstr ""
+msgstr "Frequentia de FEC LP:"
 
 #: dvb/dvbchanneldialog.cpp:800 dvb/dvbchanneldialog.cpp:821
 #: dvb/dvbchanneldialog.cpp:840
 #, kde-format
 msgid "Transmission mode:"
-msgstr ""
+msgstr "Modo de Transmission:"
 
 #: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
 #: dvb/dvbchanneldialog.cpp:842
 #, kde-format
 msgid "Guard interval:"
-msgstr ""
+msgstr "Intervallo de Guarda:"
 
 #: dvb/dvbchanneldialog.cpp:804 dvb/dvbchanneldialog.cpp:825
 #, kde-format
 msgid "Hierarchy:"
-msgstr ""
+msgstr "Hierarchia:"
 
 #: dvb/dvbchanneldialog.cpp:827
 #, kde-format
@@ -294,17 +294,17 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr ""
+msgstr "ID de canal SB:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr ""
+msgstr "Indice SB:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr ""
+msgstr "Computo de SB:"
 
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
@@ -394,17 +394,17 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:981
 #, kde-format
 msgid "PMT PID:"
-msgstr ""
+msgstr "PMT PID:"
 
 #: dvb/dvbchanneldialog.cpp:985
 #, kde-format
 msgid "Video PID:"
-msgstr ""
+msgstr "Video PID:"
 
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
 msgid "Subtitle PID:"
-msgstr ""
+msgstr "Subtitulo PID:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
@@ -415,12 +415,12 @@ msgstr ""
 #, kde-format
 msgctxt "@title:window"
 msgid "Configure Television"
-msgstr ""
+msgstr "Configura Television"
 
 #: dvb/dvbconfigdialog.cpp:77
 #, kde-format
 msgid "Recording folder:"
-msgstr ""
+msgstr "Dossier de registrar:"
 
 #: dvb/dvbconfigdialog.cpp:85 dvb/dvbconfigdialog.cpp:97
 #, kde-format
@@ -651,17 +651,17 @@ msgstr "ISDB-T"
 #: dvb/dvbconfigdialog.cpp:917
 #, kde-format
 msgid "Cable"
-msgstr ""
+msgstr "Cablo"
 
 #: dvb/dvbconfigdialog.cpp:926
 #, kde-format
 msgid "Terrestrial (T2)"
-msgstr ""
+msgstr "Terrestrial (T2)"
 
 #: dvb/dvbconfigdialog.cpp:934
 #, kde-format
 msgid "Terrestrial"
-msgstr ""
+msgstr "Terrestrial"
 
 #: dvb/dvbconfigdialog.cpp:943 dvb/dvbconfigdialog.cpp:957
 #, kde-format
@@ -858,7 +858,7 @@ msgstr "Comedia"
 
 #: dvb/dvbepg.cpp:653
 msgid "Soap"
-msgstr ""
+msgstr "Sapon (Soap)"
 
 #: dvb/dvbepg.cpp:654
 msgid "Romance"
@@ -870,7 +870,7 @@ msgstr "Classic"
 
 #: dvb/dvbepg.cpp:656
 msgid "Adult"
-msgstr ""
+msgstr "Adulto"
 
 #: dvb/dvbepg.cpp:657 dvb/dvbepg.cpp:792
 msgid "User defined"
@@ -886,11 +886,11 @@ msgstr "Magazine"
 
 #: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
 msgid "Documentary"
-msgstr ""
+msgstr "Documentario"
 
 #: dvb/dvbepg.cpp:665 dvb/dvbepg.cpp:860
 msgid "Discussion"
-msgstr ""
+msgstr "Discussion"
 
 #: dvb/dvbepg.cpp:666 dvb/dvbepg.cpp:674 dvb/dvbepg.cpp:690 dvb/dvbepg.cpp:700
 #: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
@@ -900,11 +900,11 @@ msgstr "Definite per usator"
 
 #: dvb/dvbepg.cpp:671
 msgid "Quiz"
-msgstr ""
+msgstr "Quiz"
 
 #: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
 msgid "Variety"
-msgstr ""
+msgstr "Varietate (Variety)"
 
 #: dvb/dvbepg.cpp:673
 msgid "Talk"
@@ -916,11 +916,11 @@ msgstr "Eventos"
 
 #: dvb/dvbepg.cpp:681
 msgid "Football"
-msgstr ""
+msgstr "Football"
 
 #: dvb/dvbepg.cpp:682
 msgid "Tennis"
-msgstr ""
+msgstr "Tennis"
 
 #: dvb/dvbepg.cpp:683
 msgid "Team"
@@ -928,15 +928,15 @@ msgstr "Equipa"
 
 #: dvb/dvbepg.cpp:684
 msgid "Athletics"
-msgstr ""
+msgstr "Athletica"
 
 #: dvb/dvbepg.cpp:685
 msgid "Motor"
-msgstr ""
+msgstr "Motor"
 
 #: dvb/dvbepg.cpp:686
 msgid "Water"
-msgstr ""
+msgstr "Aqua"
 
 #: dvb/dvbepg.cpp:687
 msgid "Winter"
@@ -944,15 +944,15 @@ msgstr "Inverno"
 
 #: dvb/dvbepg.cpp:688
 msgid "Equestrian"
-msgstr ""
+msgstr "Equestre"
 
 #: dvb/dvbepg.cpp:689
 msgid "Martial"
-msgstr ""
+msgstr "Martial"
 
 #: dvb/dvbepg.cpp:695
 msgid "Preschool"
-msgstr ""
+msgstr "Prescholar"
 
 #: dvb/dvbepg.cpp:696
 msgid "06 to 14"
@@ -964,15 +964,15 @@ msgstr "10 a 16"
 
 #: dvb/dvbepg.cpp:698
 msgid "Educational"
-msgstr ""
+msgstr "Educational"
 
 #: dvb/dvbepg.cpp:699
 msgid "Cartoons"
-msgstr ""
+msgstr "Cartoons (designos animate)"
 
 #: dvb/dvbepg.cpp:705
 msgid "Poprock"
-msgstr ""
+msgstr "Poprock"
 
 #: dvb/dvbepg.cpp:707
 msgid "Folk"
@@ -988,7 +988,7 @@ msgstr "Opera"
 
 #: dvb/dvbepg.cpp:710
 msgid "Ballet"
-msgstr ""
+msgstr "Ballet"
 
 #: dvb/dvbepg.cpp:716
 msgid "Performance"
@@ -996,7 +996,7 @@ msgstr "Prestation"
 
 #: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
-msgstr ""
+msgstr "Belle Artes"
 
 #: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
 msgid "Religion"
@@ -1004,15 +1004,15 @@ msgstr "Religion"
 
 #: dvb/dvbepg.cpp:719
 msgid "Traditional"
-msgstr ""
+msgstr "Traditional"
 
 #: dvb/dvbepg.cpp:720
 msgid "Literature"
-msgstr ""
+msgstr "Litteratura"
 
 #: dvb/dvbepg.cpp:721
 msgid "Cinema"
-msgstr ""
+msgstr "Cinema"
 
 #: dvb/dvbepg.cpp:722
 msgid "Experimental"
@@ -1024,15 +1024,15 @@ msgstr "Pressa "
 
 #: dvb/dvbepg.cpp:724
 msgid "New Media"
-msgstr ""
+msgstr "Nove medios"
 
 #: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
-msgstr ""
+msgstr "Moda"
 
 #: dvb/dvbepg.cpp:733
 msgid "Advisory"
-msgstr ""
+msgstr "Aviso  (Advisory)"
 
 #: dvb/dvbepg.cpp:734
 msgid "People"
@@ -1048,7 +1048,7 @@ msgstr "Technologia"
 
 #: dvb/dvbepg.cpp:742
 msgid "Medicine"
-msgstr ""
+msgstr "Medicina"
 
 #: dvb/dvbepg.cpp:743
 msgid "Foreign"
@@ -1056,11 +1056,11 @@ msgstr "Estranie"
 
 #: dvb/dvbepg.cpp:744 dvb/dvbepg.cpp:785
 msgid "Social"
-msgstr ""
+msgstr "Social"
 
 #: dvb/dvbepg.cpp:745
 msgid "Further"
-msgstr ""
+msgstr "Ulterior"
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
@@ -1072,11 +1072,11 @@ msgstr "Viage"
 
 #: dvb/dvbepg.cpp:753
 msgid "Handicraft"
-msgstr ""
+msgstr "Artisanato"
 
 #: dvb/dvbepg.cpp:754
 msgid "Motoring"
-msgstr ""
+msgstr "Automobilismo"
 
 #: dvb/dvbepg.cpp:755
 msgid "Fitness"
@@ -1092,7 +1092,7 @@ msgstr "Facer compras"
 
 #: dvb/dvbepg.cpp:758
 msgid "Gardening"
-msgstr ""
+msgstr "Jardinage"
 
 #: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
 #, kde-format
@@ -1101,7 +1101,7 @@ msgstr "Linguage original"
 
 #: dvb/dvbepg.cpp:764
 msgid "Black and White "
-msgstr ""
+msgstr "Nigre e Blanc"
 
 #: dvb/dvbepg.cpp:765
 msgid "Unpublished"
@@ -1109,7 +1109,7 @@ msgstr "Non publicate"
 
 #: dvb/dvbepg.cpp:766
 msgid "Live"
-msgstr ""
+msgstr "Stato de Vita (Live)"
 
 #: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
@@ -1153,7 +1153,7 @@ msgstr "Sports"
 
 #: dvb/dvbepg.cpp:782 dvb/dvbepg.cpp:806
 msgid "Children"
-msgstr ""
+msgstr "Filios"
 
 #: dvb/dvbepg.cpp:783
 msgid "Music"
@@ -1169,7 +1169,7 @@ msgstr "Instruction"
 
 #: dvb/dvbepg.cpp:787
 msgid "Leisure"
-msgstr ""
+msgstr "Otio"
 
 #: dvb/dvbepg.cpp:788
 msgid "Special"
@@ -1177,15 +1177,15 @@ msgstr "Special"
 
 #: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
 msgid "Reserved"
-msgstr ""
+msgstr "Reservate"
 
 #: dvb/dvbepg.cpp:799
 msgid "Soap opera"
-msgstr ""
+msgstr "Soap opera"
 
 #: dvb/dvbepg.cpp:800
 msgid "Mini-series"
-msgstr ""
+msgstr "Mini-series"
 
 #: dvb/dvbepg.cpp:801
 msgid "Series"
@@ -1193,7 +1193,7 @@ msgstr "Series"
 
 #: dvb/dvbepg.cpp:803
 msgid "Reality show"
-msgstr ""
+msgstr "Monstra de Realitate (Reality Show)"
 
 #: dvb/dvbepg.cpp:804
 msgid "Information"
@@ -1201,19 +1201,19 @@ msgstr "Information"
 
 #: dvb/dvbepg.cpp:805
 msgid "Comical"
-msgstr ""
+msgstr "Comic"
 
 #: dvb/dvbepg.cpp:807
 msgid "Erotic"
-msgstr ""
+msgstr "Erotic"
 
 #: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
-msgstr ""
+msgstr "Lotteria, vendita per television, valorisar"
 
 #: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
-msgstr ""
+msgstr "Debatto/interview"
 
 #: dvb/dvbepg.cpp:811
 msgid "Other"
@@ -1229,11 +1229,11 @@ msgstr "Biographia"
 
 #: dvb/dvbepg.cpp:829
 msgid "Educative"
-msgstr ""
+msgstr "Educative (instruction)"
 
 #: dvb/dvbepg.cpp:835
 msgid "Auditorium"
-msgstr ""
+msgstr "Auditorium"
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
@@ -1261,23 +1261,23 @@ msgstr "Sanitate"
 
 #: dvb/dvbepg.cpp:855
 msgid "Raffle"
-msgstr ""
+msgstr "Lotteria"
 
 #: dvb/dvbepg.cpp:856
 msgid "Television sales"
-msgstr ""
+msgstr "Vendita per television"
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
-msgstr ""
+msgstr "Valorisation"
 
 #: dvb/dvbepg.cpp:861
 msgid "Interview"
-msgstr ""
+msgstr "Interview"
 
 #: dvb/dvbepg.cpp:864
 msgid "Adult cartoon"
-msgstr ""
+msgstr "Dessignos animate per adultos"
 
 #: dvb/dvbepg.cpp:865
 msgid "Interactive"
@@ -1294,7 +1294,7 @@ msgstr "Genere: %1"
 
 #: dvb/dvbepg.cpp:906
 msgid "reserved"
-msgstr ""
+msgstr "reservate"
 
 #: dvb/dvbepg.cpp:907
 msgid "all audiences"
@@ -1328,7 +1328,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "violence / "
-msgstr ""
+msgstr "violentia / "
 
 #: dvb/dvbepg.cpp:949
 #, kde-format
@@ -1584,7 +1584,7 @@ msgstr "Filtro"
 #: dvb/dvbscandialog.cpp:348
 #, kde-format
 msgid "Free to air"
-msgstr ""
+msgstr "Free to air"
 
 #: dvb/dvbscandialog.cpp:351
 #, kde-format
@@ -1604,7 +1604,7 @@ msgstr "Fornitor (Provider):"
 #: dvb/dvbscandialog.cpp:365
 #, kde-format
 msgid "Add Filtered"
-msgstr ""
+msgstr "Adde Filtrate"
 
 #: dvb/dvbscandialog.cpp:369
 #, kde-format
@@ -1817,7 +1817,7 @@ msgstr ""
 #: main.cpp:145
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr ""
+msgstr "(C) 2007-2019 LeAutores de Kaffeine."
 
 #: main.cpp:163
 #, kde-format
@@ -1854,7 +1854,7 @@ msgstr ""
 #: mainwindow.cpp:119
 #, kde-format
 msgid "&2 Play Audio CD"
-msgstr ""
+msgstr "&2 Reproduce CD Audio"
 
 #: mainwindow.cpp:121
 #, kde-format
@@ -1866,7 +1866,7 @@ msgstr ""
 #: mainwindow.cpp:125
 #, kde-format
 msgid "&3 Play Video CD"
-msgstr ""
+msgstr "&3 Reproduce CD Video"
 
 #: mainwindow.cpp:127
 #, kde-format
@@ -1878,7 +1878,7 @@ msgstr ""
 #: mainwindow.cpp:131
 #, kde-format
 msgid "&4 Play DVD"
-msgstr ""
+msgstr "&4 Reproduce DVD"
 
 #: mainwindow.cpp:133
 #, kde-format
@@ -1890,7 +1890,7 @@ msgstr ""
 #: mainwindow.cpp:138
 #, kde-format
 msgid "&5 Digital TV"
-msgstr ""
+msgstr "&5 Digital TV"
 
 #: mainwindow.cpp:207
 #, kde-format
@@ -2190,7 +2190,7 @@ msgstr "abandona"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
-msgstr ""
+msgstr "bob"
 
 #: mediawidget.cpp:229
 #, kde-format
@@ -2393,7 +2393,7 @@ msgstr "Salta %1s Avante"
 #: mediawidget.cpp:499 mediawidget.cpp:502
 #, kde-format
 msgid "Seek Slider"
-msgstr ""
+msgstr "Glissator de cerca"
 
 #: mediawidget.cpp:513
 #, kde-format
@@ -2603,6 +2603,9 @@ msgid ""
 "*.m3u|M3U Playlist\n"
 "*.pls|PLS Playlist"
 msgstr ""
+"*.xspf|XSPF Playlist\n"
+"*.m3u|M3U Playlist\n"
+"*.pls|PLS Playlist"
 
 #: sqlhelper.cpp:48
 #, kde-format
