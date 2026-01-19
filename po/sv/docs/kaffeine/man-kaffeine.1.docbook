@@ -468,9 +468,9 @@
 >Se också</title>
 <simplelist>
 <member
->Mer detaljerad användardokumentation är tillgänglig med <ulink url="help:/kaffeine"
+>More detailed user documentation is available from <ulink url="help:/kaffeine "
 >help:/kaffeine</ulink
-> (skriv antingen in webbadressen i &konqueror;, eller kör <userinput
+> (either enter this &URL; into &konqueror;, or run <userinput
 ><command
 >khelpcenter</command
 > <parameter
@@ -486,8 +486,8 @@
 <member
 >w-scan(1)</member>
 <member
->Det finns också ytterligare information tillgänglig på <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
->Kaffeine-sidan</ulink
+>There is also further information available at the <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Kaffeine Page</ulink
 ></member>
 </simplelist>
 </refsect1>
