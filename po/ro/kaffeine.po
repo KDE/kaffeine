@@ -1,14 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
-# This file is distributed under the same license as the PACKAGE package.
-# Sergiu Bivol <sergiu@cip.md>, 2008, 2009.
-# Sergiu Bivol <sergiu@cip.md>, 2010, 2012.
+# This file is distributed under the same license as the kaffeine package.
+# SPDX-FileCopyrightText: 2008, 2010, 2012, 2009, 2026 Sergiu Bivol <sergiu@cip.md>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:51+0000\n"
-"PO-Revision-Date: 2012-12-22 11:56+0200\n"
+"PO-Revision-Date: 2026-01-29 14:19+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -17,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
+"X-Generator: Lokalize 25.08.1\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -666,10 +666,9 @@ msgid "DVB-S"
 msgstr "DVB-S"
 
 #: dvb/dvbconfigdialog.cpp:803
-#, fuzzy, kde-format
-#| msgid "DVB-T"
+#, kde-format
 msgid "DVB-T2"
-msgstr "DVB-T"
+msgstr "DVB-T2"
 
 #: dvb/dvbconfigdialog.cpp:805
 #, kde-format
@@ -684,7 +683,7 @@ msgstr "ATSC"
 #: dvb/dvbconfigdialog.cpp:832 dvb/dvbconfigdialog.cpp:955
 #, kde-format
 msgid "ISDB-T"
-msgstr ""
+msgstr "ISDB-T"
 
 #: dvb/dvbconfigdialog.cpp:917
 #, kde-format
@@ -893,15 +892,15 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:651
 msgid "Science Fiction"
-msgstr ""
+msgstr "Științifico-fantastic"
 
 #: dvb/dvbepg.cpp:652
 msgid "Comedy"
-msgstr ""
+msgstr "Comedie"
 
 #: dvb/dvbepg.cpp:653
 msgid "Soap"
-msgstr ""
+msgstr "Telenovelă"
 
 #: dvb/dvbepg.cpp:654
 msgid "Romance"
@@ -909,37 +908,37 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:706
 msgid "Classical"
-msgstr ""
+msgstr "Clasic"
 
 #: dvb/dvbepg.cpp:656
 msgid "Adult"
-msgstr ""
+msgstr "Pentru adulți"
 
 #: dvb/dvbepg.cpp:657 dvb/dvbepg.cpp:792
 msgid "User defined"
-msgstr ""
+msgstr "Definit de utilizator"
 
 #: dvb/dvbepg.cpp:662
 msgid "Weather"
-msgstr ""
+msgstr "Vremea"
 
 #: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
 msgid "Magazine"
-msgstr ""
+msgstr "Revistă"
 
 #: dvb/dvbepg.cpp:664 dvb/dvbepg.cpp:824
 msgid "Documentary"
-msgstr ""
+msgstr "Documentar"
 
 #: dvb/dvbepg.cpp:665 dvb/dvbepg.cpp:860
 msgid "Discussion"
-msgstr ""
+msgstr "Discuție"
 
 #: dvb/dvbepg.cpp:666 dvb/dvbepg.cpp:674 dvb/dvbepg.cpp:690 dvb/dvbepg.cpp:700
 #: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
 #: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:768
 msgid "User Defined"
-msgstr ""
+msgstr "Definit de utilizator"
 
 #: dvb/dvbepg.cpp:671
 msgid "Quiz"
@@ -947,7 +946,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
 msgid "Variety"
-msgstr ""
+msgstr "De estradă"
 
 #: dvb/dvbepg.cpp:673
 msgid "Talk"
@@ -955,65 +954,63 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:679
 msgid "Events"
-msgstr ""
+msgstr "Evenimente"
 
 #: dvb/dvbepg.cpp:681
 msgid "Football"
-msgstr ""
+msgstr "Fotbal"
 
 #: dvb/dvbepg.cpp:682
 msgid "Tennis"
-msgstr ""
+msgstr "Tenis"
 
 #: dvb/dvbepg.cpp:683
 msgid "Team"
-msgstr ""
+msgstr "Echipă"
 
 #: dvb/dvbepg.cpp:684
 msgid "Athletics"
-msgstr ""
+msgstr "Atletică"
 
 #: dvb/dvbepg.cpp:685
 msgid "Motor"
-msgstr ""
+msgstr "Motoare"
 
 #: dvb/dvbepg.cpp:686
 msgid "Water"
-msgstr ""
+msgstr "Apă"
 
 #: dvb/dvbepg.cpp:687
 msgid "Winter"
-msgstr ""
+msgstr "Iarnă"
 
 #: dvb/dvbepg.cpp:688
 msgid "Equestrian"
-msgstr ""
+msgstr "Ecvestru"
 
 #: dvb/dvbepg.cpp:689
 msgid "Martial"
-msgstr ""
+msgstr "Marțial"
 
 #: dvb/dvbepg.cpp:695
 msgid "Preschool"
-msgstr ""
+msgstr "Preșcolar"
 
 #: dvb/dvbepg.cpp:696
 msgid "06 to 14"
-msgstr ""
+msgstr "de la 06 la 14"
 
 #: dvb/dvbepg.cpp:697
 msgid "10 to 16"
-msgstr ""
+msgstr "de la 10 la 16"
 
 #: dvb/dvbepg.cpp:698
-#, fuzzy
-#| msgid "Modulation:"
 msgid "Educational"
-msgstr "Modulare:"
+msgstr "Educativ"
 
 #: dvb/dvbepg.cpp:699
 msgid "Cartoons"
-msgstr ""
+msgstr "Desene animate"
 
 #: dvb/dvbepg.cpp:705
 msgid "Poprock"
@@ -1021,23 +1018,23 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:707
 msgid "Folk"
-msgstr ""
+msgstr "Folk"
 
 #: dvb/dvbepg.cpp:708
 msgid "Jazz"
-msgstr ""
+msgstr "Jazz"
 
 #: dvb/dvbepg.cpp:709
 msgid "Opera"
-msgstr ""
+msgstr "Operă"
 
 #: dvb/dvbepg.cpp:710
 msgid "Ballet"
-msgstr ""
+msgstr "Balet"
 
 #: dvb/dvbepg.cpp:716
 msgid "Performance"
-msgstr ""
+msgstr "Interpretare"
 
 #: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
@@ -1045,29 +1042,27 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
 msgid "Religion"
-msgstr ""
+msgstr "Religie"
 
 #: dvb/dvbepg.cpp:719
-#, fuzzy
-#| msgid "Duration"
 msgid "Traditional"
-msgstr "Durată"
+msgstr "Tradițional"
 
 #: dvb/dvbepg.cpp:720
 msgid "Literature"
-msgstr ""
+msgstr "Literatură"
 
 #: dvb/dvbepg.cpp:721
 msgid "Cinema"
-msgstr ""
+msgstr "Cinema"
 
 #: dvb/dvbepg.cpp:722
 msgid "Experimental"
-msgstr ""
+msgstr "Experimental"
 
 #: dvb/dvbepg.cpp:723
 msgid "Press"
-msgstr ""
+msgstr "Presă"
 
 #: dvb/dvbepg.cpp:724
 msgid "New Media"
@@ -1075,7 +1070,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
-msgstr ""
+msgstr "Modă"
 
 #: dvb/dvbepg.cpp:733
 msgid "Advisory"
@@ -1083,27 +1078,27 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:734
 msgid "People"
-msgstr ""
+msgstr "Oameni"
 
 #: dvb/dvbepg.cpp:740
 msgid "Nature"
-msgstr ""
+msgstr "Natură"
 
 #: dvb/dvbepg.cpp:741
 msgid "Technology"
-msgstr ""
+msgstr "Tehnologie"
 
 #: dvb/dvbepg.cpp:742
 msgid "Medicine"
-msgstr ""
+msgstr "Medicină"
 
 #: dvb/dvbepg.cpp:743
 msgid "Foreign"
-msgstr ""
+msgstr "Străin"
 
 #: dvb/dvbepg.cpp:744 dvb/dvbepg.cpp:785
 msgid "Social"
-msgstr ""
+msgstr "Social"
 
 #: dvb/dvbepg.cpp:745
 msgid "Further"
@@ -1111,15 +1106,15 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
-msgstr ""
+msgstr "Limbă"
 
 #: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
 msgid "Travel"
-msgstr ""
+msgstr "Călătorie"
 
 #: dvb/dvbepg.cpp:753
 msgid "Handicraft"
-msgstr ""
+msgstr "Meșteșugărit"
 
 #: dvb/dvbepg.cpp:754
 msgid "Motoring"
@@ -1127,96 +1122,92 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:755
 msgid "Fitness"
-msgstr ""
+msgstr "Fitness"
 
 #: dvb/dvbepg.cpp:756 dvb/dvbepg.cpp:844
 msgid "Cooking"
-msgstr ""
+msgstr "Gătit"
 
 #: dvb/dvbepg.cpp:757
 msgid "Shopping"
-msgstr ""
+msgstr "Cumpărături"
 
 #: dvb/dvbepg.cpp:758
 msgid "Gardening"
-msgstr ""
+msgstr "Grădinărit"
 
 #: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Original Language"
-msgstr "Dimensiune originală"
+msgstr "Limba originală"
 
 #: dvb/dvbepg.cpp:764
 msgid "Black and White "
-msgstr ""
+msgstr "Alb-negru "
 
 #: dvb/dvbepg.cpp:765
 msgid "Unpublished"
-msgstr ""
+msgstr "Nepublicat"
 
 #: dvb/dvbepg.cpp:766
 msgid "Live"
-msgstr ""
+msgstr "Pe viu"
 
 #: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
-msgstr ""
+msgstr "Planostereoscopic"
 
 #: dvb/dvbepg.cpp:769
 msgid "User Defined 1"
-msgstr ""
+msgstr "Definit de utilizator 1"
 
 #: dvb/dvbepg.cpp:770
 msgid "User Defined 2"
-msgstr ""
+msgstr "Definit de utilizator 2"
 
 #: dvb/dvbepg.cpp:771
 msgid "User Defined 3"
-msgstr ""
+msgstr "Definit de utilizator 3"
 
 #: dvb/dvbepg.cpp:772
 msgid "User Defined 4"
-msgstr ""
+msgstr "Definit de utilizator 4"
 
 #: dvb/dvbepg.cpp:777
 msgid "Undefined"
-msgstr ""
+msgstr "Nedefinit"
 
 #: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:808
 msgid "Movie"
-msgstr ""
+msgstr "Film"
 
 #: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:796 dvb/dvbepg.cpp:822
 msgid "News"
-msgstr ""
+msgstr "Știri"
 
 #: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:836
 msgid "Show"
-msgstr ""
+msgstr "Spectacol"
 
 #: dvb/dvbepg.cpp:781 dvb/dvbepg.cpp:797
 msgid "Sports"
-msgstr ""
+msgstr "Sport"
 
 #: dvb/dvbepg.cpp:782 dvb/dvbepg.cpp:806
 msgid "Children"
-msgstr ""
+msgstr "Copii"
 
 #: dvb/dvbepg.cpp:783
 msgid "Music"
-msgstr ""
+msgstr "Muzică"
 
 #: dvb/dvbepg.cpp:784
 msgid "Culture"
-msgstr ""
+msgstr "Cultură"
 
 #: dvb/dvbepg.cpp:786 dvb/dvbepg.cpp:798
-#, fuzzy
-#| msgid "Duration"
 msgid "Education"
-msgstr "Durată"
+msgstr "Educație"
 
 #: dvb/dvbepg.cpp:787
 msgid "Leisure"
@@ -1224,17 +1215,15 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:788
 msgid "Special"
-msgstr ""
+msgstr "Special"
 
 #: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
-#, fuzzy
-#| msgid "Reset"
 msgid "Reserved"
-msgstr "Reinițializează"
+msgstr "Rezervat"
 
 #: dvb/dvbepg.cpp:799
 msgid "Soap opera"
-msgstr ""
+msgstr "Telenovelă"
 
 #: dvb/dvbepg.cpp:800
 msgid "Mini-series"
@@ -1242,25 +1231,23 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:801
 msgid "Series"
-msgstr ""
+msgstr "Serial"
 
 #: dvb/dvbepg.cpp:803
 msgid "Reality show"
 msgstr ""
 
 #: dvb/dvbepg.cpp:804
-#, fuzzy
-#| msgid "Configuration:"
 msgid "Information"
-msgstr "Configurare:"
+msgstr "Informații"
 
 #: dvb/dvbepg.cpp:805
 msgid "Comical"
-msgstr ""
+msgstr "Umoristic"
 
 #: dvb/dvbepg.cpp:807
 msgid "Erotic"
-msgstr ""
+msgstr "Erotic"
 
 #: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
@@ -1268,31 +1255,27 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
-msgstr ""
+msgstr "Dezbateri/interviu"
 
 #: dvb/dvbepg.cpp:811
 msgid "Other"
-msgstr ""
+msgstr "Altele"
 
 #: dvb/dvbepg.cpp:823
 msgid "Report"
-msgstr ""
+msgstr "Raport"
 
 #: dvb/dvbepg.cpp:825
 msgid "Biography"
-msgstr ""
+msgstr "Biografie"
 
 #: dvb/dvbepg.cpp:829
-#, fuzzy
-#| msgid "Duration"
 msgid "Educative"
-msgstr "Durată"
+msgstr "Educativ"
 
 #: dvb/dvbepg.cpp:835
-#, fuzzy
-#| msgid "Audio"
 msgid "Auditorium"
-msgstr "Audio"
+msgstr "Auditoriu"
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
@@ -1304,7 +1287,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:839
 msgid "Feminine"
-msgstr ""
+msgstr "Feminin"
 
 #: dvb/dvbepg.cpp:840
 msgid "Game show"
@@ -1312,24 +1295,19 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:846
 msgid "Country"
-msgstr ""
+msgstr "Țară"
 
 #: dvb/dvbepg.cpp:847
 msgid "Health"
-msgstr ""
+msgstr "Sănătate"
 
 #: dvb/dvbepg.cpp:855
-#, fuzzy
-#| msgctxt "playlist menu"
-#| msgid "Shuffle"
 msgid "Raffle"
-msgstr "Amestecat"
+msgstr "Tombolă"
 
 #: dvb/dvbepg.cpp:856
-#, fuzzy
-#| msgid "Television"
 msgid "Television sales"
-msgstr "Televiziune"
+msgstr "Vânzări televizate"
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
@@ -1337,86 +1315,85 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:861
 msgid "Interview"
-msgstr ""
+msgstr "Interviu"
 
 #: dvb/dvbepg.cpp:864
 msgid "Adult cartoon"
-msgstr ""
+msgstr "Animație pentru adulți"
 
 #: dvb/dvbepg.cpp:865
 msgid "Interactive"
-msgstr ""
+msgstr "Interactiv"
 
 #: dvb/dvbepg.cpp:866
 msgid "Policy"
-msgstr ""
+msgstr "Politică"
 
 #: dvb/dvbepg.cpp:899
 #, no-c-format, kde-format
 msgid "Genre: %1"
-msgstr ""
+msgstr "Gen: %1"
 
 #: dvb/dvbepg.cpp:906
 msgid "reserved"
-msgstr ""
+msgstr "rezervat"
 
 #: dvb/dvbepg.cpp:907
 msgid "all audiences"
-msgstr ""
+msgstr "toate audiențele"
 
 #: dvb/dvbepg.cpp:908
 msgid "10 years"
-msgstr ""
+msgstr "10 ani"
 
 #: dvb/dvbepg.cpp:909
 msgid "12 years"
-msgstr ""
+msgstr "12 ani"
 
 #: dvb/dvbepg.cpp:910
 msgid "14 years"
-msgstr ""
+msgstr "14 ani"
 
 #: dvb/dvbepg.cpp:911
 msgid "16 years"
-msgstr ""
+msgstr "16 ani"
 
 #: dvb/dvbepg.cpp:912
 msgid "18 years"
-msgstr ""
+msgstr "18 ani"
 
 #: dvb/dvbepg.cpp:935
 #, no-c-format, kde-format
 msgid "Country %1: not rated\n"
-msgstr ""
+msgstr "Țara %1: fără evaluare\n"
 
 #: dvb/dvbepg.cpp:947
 #, kde-format
 msgid "violence / "
-msgstr ""
+msgstr "violență / "
 
 #: dvb/dvbepg.cpp:949
 #, kde-format
 msgid "sex / "
-msgstr ""
+msgstr "sex / "
 
 #: dvb/dvbepg.cpp:951
 #, kde-format
 msgid "drugs / "
-msgstr ""
+msgstr "droguri / "
 
 #: dvb/dvbepg.cpp:959
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
-msgstr ""
+msgstr "Țara %1: evaluare: %2%3\n"
 
 #: dvb/dvbepg.cpp:962
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
-msgstr ""
+msgstr "Țara %1: evaluare: %2 ani.\n"
 
 #: dvb/dvbepgdialog.cpp:46
-#, fuzzy, kde-format
-#| msgid "Program Guide"
+#, kde-format
 msgctxt "@title:window"
 msgid "Program Guide"
 msgstr "Ghid de programe"
@@ -1424,14 +1401,12 @@ msgstr "Ghid de programe"
 #: dvb/dvbepgdialog.cpp:73
 #, kde-format
 msgid "EPG language:"
-msgstr ""
+msgstr "Limba ghidului:"
 
 #: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Any language"
-msgstr "Dimensiune originală"
+msgstr "Orice limbă"
 
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
@@ -1439,37 +1414,31 @@ msgid "Show channels with empty EPG data"
 msgstr ""
 
 #: dvb/dvbepgdialog.cpp:119
-#, fuzzy, kde-format
-#| msgctxt "dialog"
-#| msgid "Recording Schedule"
+#, kde-format
 msgctxt "@action:inmenu tv show"
 msgid "Record Show"
-msgstr "Program de înregistrare"
+msgstr "Înregistrează emisiunea"
 
 #: dvb/dvbepgdialog.cpp:127
-#, fuzzy, kde-format
-#| msgid "Search:"
+#, kde-format
 msgctxt "@label:textbox"
 msgid "Search:"
 msgstr "Caută:"
 
 #: dvb/dvbepgdialog.cpp:477 dvb/dvbrecordingdialog.cpp:258
-#, fuzzy, kde-format
-#| msgid "Start"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Start"
-msgstr "Start"
+msgstr "Început"
 
 #: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
-#, fuzzy, kde-format
-#| msgid "Duration"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Duration"
 msgstr "Durată"
 
 #: dvb/dvbepgdialog.cpp:481
-#, fuzzy, kde-format
-#| msgid "Title"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Title"
 msgstr "Titlu"
@@ -1478,7 +1447,7 @@ msgstr "Titlu"
 #, kde-format
 msgctxt "@info"
 msgid "All devices are used for recordings."
-msgstr ""
+msgstr "Toate dispozitivele sunt folosite pentru înregistrări."
 
 #: dvb/dvbliveview.cpp:201
 #, kde-format
@@ -1493,121 +1462,100 @@ msgstr ""
 #, kde-format
 msgctxt "message box"
 msgid "No available device found."
-msgstr "Nici un dispozitiv disponibil găsit."
+msgstr "Nu a fost găsit niciun dispozitiv disponibil."
 
 #: dvb/dvbrecordingdialog.cpp:45
-#, fuzzy, kde-format
-#| msgctxt "dialog"
-#| msgid "Recording Schedule"
+#, kde-format
 msgctxt "@title:window"
 msgid "Recording Schedule"
 msgstr "Program de înregistrare"
 
 #: dvb/dvbrecordingdialog.cpp:70
-#, fuzzy, kde-format
-#| msgctxt "add a new item to a list"
-#| msgid "New"
+#, kde-format
 msgctxt "@action"
 msgid "New"
 msgstr "Nou"
 
 #: dvb/dvbrecordingdialog.cpp:254
-#, fuzzy, kde-format
-#| msgid "Name"
+#, kde-format
 msgctxt "@title:column recording"
 msgid "Name"
 msgstr "Denumire"
 
 #: dvb/dvbrecordingdialog.cpp:262
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Disabled"
-msgstr "Cablu"
+msgstr "Dezactivat"
 
 #: dvb/dvbrecordingdialog.cpp:307
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Disabled"
-msgstr "Cablu"
+msgstr "Dezactivat"
 
 #: dvb/dvbrecordingdialog.cpp:309
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Enabled"
-msgstr "Cablu"
+msgstr "Activat"
 
 #: dvb/dvbrecordingdialog.cpp:384
-#, fuzzy, kde-format
-#| msgctxt "subdialog of 'Recording Schedule'"
-#| msgid "Edit Schedule Entry"
+#, kde-format
 msgctxt "@title:window recording"
 msgid "Edit Schedule Entry"
-msgstr "Redactează înregistrarea planificată"
+msgstr "Modifică înregistrarea planificată"
 
 #: dvb/dvbrecordingdialog.cpp:394
-#, fuzzy, kde-format
-#| msgid "Name:"
+#, kde-format
 msgctxt "@label recording"
 msgid "Name:"
-msgstr "Nume:"
+msgstr "Denumire:"
 
 #: dvb/dvbrecordingdialog.cpp:408
-#, fuzzy, kde-format
-#| msgid "Channel:"
+#, kde-format
 msgctxt "@label tv show"
 msgid "Channel:"
 msgstr "Canal:"
 
 #: dvb/dvbrecordingdialog.cpp:420
-#, fuzzy, kde-format
-#| msgid "Start"
+#, kde-format
 msgctxt "@label tv show"
 msgid "Start:"
-msgstr "Start"
+msgstr "Început:"
 
 #: dvb/dvbrecordingdialog.cpp:430
-#, fuzzy, kde-format
-#| msgid "Duration:"
+#, kde-format
 msgctxt "@label tv show"
 msgid "Duration:"
 msgstr "Durată:"
 
 #: dvb/dvbrecordingdialog.cpp:441
-#, fuzzy, kde-format
-#| msgid "End:"
+#, kde-format
 msgctxt "@label tv show"
 msgid "End:"
-msgstr "Sfîrșit:"
+msgstr "Sfârșit:"
 
 #: dvb/dvbrecordingdialog.cpp:446
-#, fuzzy, kde-format
-#| msgid "Repeat:"
+#, kde-format
 msgctxt "@label recording"
 msgid "Repeat:"
 msgstr "Repetare:"
 
 #: dvb/dvbrecordingdialog.cpp:450
-#, fuzzy, kde-format
-#| msgctxt "button next to the 'Repeat:' label"
-#| msgid "Never"
+#, kde-format
 msgctxt "@action next to 'Repeat:'"
 msgid "Never"
 msgstr "Niciodată"
 
 #: dvb/dvbrecordingdialog.cpp:454
-#, fuzzy, kde-format
-#| msgctxt "button next to the 'Repeat:' label"
-#| msgid "Daily"
+#, kde-format
 msgctxt "@action next to 'Repeat:'"
 msgid "Daily"
 msgstr "Zilnic"
 
 #: dvb/dvbscandialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgid "%1"
-msgstr "%1%"
+msgstr "%1"
 
 #: dvb/dvbscandialog.cpp:237
 #, kde-format
@@ -1742,11 +1690,10 @@ msgid "Instant Record"
 msgstr "Înregistrare instantanee"
 
 #: dvb/dvbtab.cpp:123
-#, fuzzy, kde-format
-#| msgid "Configure Television"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
-msgstr "Configurează televiziunea"
+msgstr "Configurează televiziunea…"
 
 #: dvb/dvbtab.cpp:143
 #, kde-format
@@ -1791,22 +1738,22 @@ msgstr "Înregistrare instantanee oprită"
 #, kde-format
 msgctxt "%1 is a person; %2 is their character"
 msgid "%1 as %2"
-msgstr ""
+msgstr "%1 în rolul %2"
 
 #: dvb/xmltv.cpp:222
 #, kde-format
 msgid "Director(s)"
-msgstr ""
+msgstr "Regizori"
 
 #: dvb/xmltv.cpp:224
 #, kde-format
 msgid "Actor(s)"
-msgstr ""
+msgstr "Actori"
 
 #: dvb/xmltv.cpp:226
 #, kde-format
 msgid "Writer(s)"
-msgstr ""
+msgstr "Scriitori"
 
 #: dvb/xmltv.cpp:228
 #, kde-format
@@ -1816,12 +1763,12 @@ msgstr ""
 #: dvb/xmltv.cpp:230
 #, kde-format
 msgid "Producer(s)"
-msgstr ""
+msgstr "Producători"
 
 #: dvb/xmltv.cpp:232
 #, kde-format
 msgid "Composer(s)"
-msgstr ""
+msgstr "Compozitori"
 
 #: dvb/xmltv.cpp:234
 #, fuzzy, kde-format
@@ -1832,81 +1779,73 @@ msgstr "Editează"
 #: dvb/xmltv.cpp:236
 #, kde-format
 msgid "Presenter(s)"
-msgstr ""
+msgstr "Prezentatori"
 
 #: dvb/xmltv.cpp:238
 #, kde-format
 msgid "Commentator(s)"
-msgstr ""
+msgstr "Comentatori"
 
 #: dvb/xmltv.cpp:240
 #, kde-format
 msgid "Guest(s)"
-msgstr ""
+msgstr "Invitați"
 
 #: dvb/xmltv.cpp:244
 #, kde-format
 msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
 msgid "%1: %2\n"
-msgstr ""
+msgstr "%1: %2\n"
 
 #: dvb/xmltv.cpp:377
-#, fuzzy, kde-format
-#| msgid "Duration:"
+#, kde-format
 msgid "rating: %1"
-msgstr "Durată:"
+msgstr "evaluare: %1"
 
 #: dvb/xmltv.cpp:451
 #, kde-format
 msgid "Season %1"
-msgstr ""
+msgstr "Sezonul %1"
 
 #: dvb/xmltv.cpp:454
 #, kde-format
 msgid " Episode %1"
-msgstr ""
+msgstr " Episodul %1"
 
 #: dvb/xmltv.cpp:485
-#, fuzzy, kde-format
-#| msgid "Start"
+#, kde-format
 msgid "Star rating: %1"
-msgstr "Start"
+msgstr "Evaluare: %1"
 
 #: dvb/xmltv.cpp:491
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Date: %1"
-msgstr "Nume: %1"
+msgstr "Dată: %1"
 
 #: dvb/xmltv.cpp:495
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Category: %1"
-msgstr "Nume: %1"
+msgstr "Categorie: %1"
 
 #: dvb/xmltv.cpp:509
 #, kde-format
 msgid "Keyword: %1"
-msgstr ""
+msgstr "Cuvânt-cheie: %1"
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "language: %1"
-msgstr "Dimensiune originală"
+msgstr "limbă: %1"
 
 #: dvb/xmltv.cpp:538
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Original language: %1"
-msgstr "Dimensiune originală"
+msgstr "Limbă originală: %1"
 
 #: dvb/xmltv.cpp:544
 #, kde-format
 msgid "Country: %1"
-msgstr ""
+msgstr "Țară: %1"
 
 #: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
@@ -1914,28 +1853,25 @@ msgid "Kaffeine"
 msgstr "Kaffeine"
 
 #: main.cpp:141
-#, fuzzy, kde-format
-#| msgid "A media player for KDE with digital TV support."
+#, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr ""
 "Program KDE pentru redare multimedia cu suport pentru televiziune digitală."
 
 #: main.cpp:145
-#, fuzzy, kde-format
-#| msgid "(C) 2007-2009 The Kaffeine Authors"
+#, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr "(C) 2007-2009 Autorii Kaffeine"
+msgstr "(C) 2007-2019 Autorii Kaffeine"
 
 #: main.cpp:163
-#, fuzzy, kde-format
-#| msgid "Maintainer"
+#, kde-format
 msgid "Maintainer"
 msgstr "Responsabil"
 
 #: main.cpp:168
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
-msgstr ""
+msgstr "Fostul responsabil (pentru versiuni 1.x)"
 
 #: main.cpp:172
 #, kde-format
@@ -1952,17 +1888,17 @@ msgstr "silvatica2975@gmail.com,sergiu@cip.md"
 #: mainwindow.cpp:113
 #, kde-format
 msgid "&1 Play File"
-msgstr "&1 Redare fișier"
+msgstr "&1 Redă fișier"
 
 #: mainwindow.cpp:115
 #, kde-format
 msgid "Open dialog to play a file"
-msgstr ""
+msgstr "Deschide dialogul pentru redarea unui fișier"
 
 #: mainwindow.cpp:119
 #, kde-format
 msgid "&2 Play Audio CD"
-msgstr "&2 Redare CD audio"
+msgstr "&2 Redă Audio CD"
 
 #: mainwindow.cpp:121
 #, kde-format
@@ -1970,11 +1906,13 @@ msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"Începe redarea unui Audio CD. Aceasta presupune că discul e deja în unitatea "
+"optică"
 
 #: mainwindow.cpp:125
 #, kde-format
 msgid "&3 Play Video CD"
-msgstr "&3 Redare CD Video"
+msgstr "&3 Redă Video CD"
 
 #: mainwindow.cpp:127
 #, kde-format
@@ -1982,11 +1920,13 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"Începe redarea unui Video CD. Aceasta presupune că discul e deja în unitatea "
+"optică"
 
 #: mainwindow.cpp:131
 #, kde-format
 msgid "&4 Play DVD"
-msgstr "&4 Redare DVD"
+msgstr "&4 Redă DVD"
 
 #: mainwindow.cpp:133
 #, kde-format
@@ -1994,11 +1934,13 @@ msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
 msgstr ""
+"Începe redarea unui DVD. Aceasta presupune că DVD-ul e deja în unitatea "
+"optică"
 
 #: mainwindow.cpp:138
 #, kde-format
 msgid "&5 Digital TV"
-msgstr "&5 TV Digital"
+msgstr "&5 Televiziune digitală"
 
 #: mainwindow.cpp:207
 #, kde-format
@@ -2006,11 +1948,10 @@ msgid "&File"
 msgstr "&Fișier"
 
 #: mainwindow.cpp:214
-#, fuzzy, kde-format
-#| msgid "Open URL"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Open URL..."
-msgstr "Deschide URL"
+msgstr "Deschide URL…"
 
 #: mainwindow.cpp:225 mainwindow.cpp:482
 #, kde-format
@@ -2028,11 +1969,10 @@ msgid "Play DVD"
 msgstr "Redare DVD"
 
 #: mainwindow.cpp:237
-#, fuzzy, kde-format
-#| msgid "Play DVD"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Play DVD Folder"
-msgstr "Redare DVD"
+msgstr "Redă un dosar cu DVD"
 
 #: mainwindow.cpp:247
 #, kde-format
@@ -2076,39 +2016,34 @@ msgid "Television"
 msgstr "Televiziune"
 
 #: mainwindow.cpp:347
-#, fuzzy, kde-format
-#| msgid "&1 Play File"
+#, kde-format
 msgid "Play &File"
-msgstr "&1 Redare fișier"
+msgstr "Redă &fișier"
 
 #: mainwindow.cpp:351
-#, fuzzy, kde-format
-#| msgid "Play Audio CD"
+#, kde-format
 msgid "Play &Audio CD"
-msgstr "Redare  Audio CD"
+msgstr "Redă &Audio CD"
 
 #: mainwindow.cpp:355
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Play &Video CD"
-msgstr "Redare Video CD"
+msgstr "Redă &Video CD"
 
 #: mainwindow.cpp:359
-#, fuzzy, kde-format
-#| msgid "Play DVD"
+#, kde-format
 msgid "Play &DVD"
-msgstr "Redare DVD"
+msgstr "Redă &DVD"
 
 #: mainwindow.cpp:364
-#, fuzzy, kde-format
-#| msgid "&5 Digital TV"
+#, kde-format
 msgid "&Watch Digital TV"
-msgstr "&5 TV Digital"
+msgstr "Urmărește tele&viziune digitală"
 
 #: mainwindow.cpp:368
 #, kde-format
 msgid "&Quit"
-msgstr ""
+msgstr "&Termină"
 
 #: mainwindow.cpp:477
 #, kde-format
@@ -2122,7 +2057,7 @@ msgstr ""
 #: mainwindow.cpp:478
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
-msgstr ""
+msgstr "Fișierele/URL-urile deschise de aplicație vor fi șterse după utilizare"
 
 #: mainwindow.cpp:479
 #, kde-format
@@ -2130,21 +2065,20 @@ msgid "Start in full screen mode"
 msgstr "Pornește în regimul de ecran complet"
 
 #: mainwindow.cpp:480
-#, fuzzy, kde-format
-#| msgid "Start in full screen mode"
+#, kde-format
 msgid "Start in minimal mode"
-msgstr "Pornește în regimul de ecran complet"
+msgstr "Pornește în regimul minim"
 
 #: mainwindow.cpp:481
 #, kde-format
 msgid "Start with always on top"
-msgstr ""
+msgstr "Pornește mereu deasupra"
 
 #: mainwindow.cpp:488
 #, kde-format
 msgctxt "command line option"
 msgid "Dump dvb data (debug option)"
-msgstr ""
+msgstr "Scoate datele DVB (opțiune de depanare)"
 
 #: mainwindow.cpp:489
 #, kde-format
@@ -2170,15 +2104,13 @@ msgid "Files or URLs to play"
 msgstr "Fișiere sau URL-uri de redat"
 
 #: mainwindow.cpp:715
-#, fuzzy, kde-format
-#| msgid "Open file"
+#, kde-format
 msgctxt "@title:window"
 msgid "Open files"
-msgstr "Deschide fișier"
+msgstr "Deschide fișiere"
 
 #: mainwindow.cpp:728
-#, fuzzy, kde-format
-#| msgid "Open URL"
+#, kde-format
 msgctxt "@title:window"
 msgid "Open URL"
 msgstr "Deschide URL"
@@ -2214,153 +2146,142 @@ msgid "Next"
 msgstr "Următor"
 
 #: mediawidget.cpp:124 mediawidget.cpp:668
-#, fuzzy, kde-format
-#| msgid "Full Screen Mode"
+#, kde-format
 msgctxt "'Playback' menu"
 msgid "Full Screen Mode"
-msgstr "Mod pe tot ecranul"
+msgstr "Regim de ecran complet"
 
 #: mediawidget.cpp:131 mediawidget.cpp:683
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Minimal Mode"
-msgstr ""
+msgstr "Regim minim"
 
 #: mediawidget.cpp:144
-#, fuzzy, kde-format
-#| msgid "Add Satellite"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "Adaugă satelit"
+msgstr "Subtitre"
 
 #: mediawidget.cpp:148
 #, kde-format
 msgctxt "subtitle selection entry"
 msgid "off"
-msgstr "dezactivat"
+msgstr "dezactivate"
 
 #: mediawidget.cpp:156
-#, fuzzy, kde-format
-#| msgid "Add Satellite"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr "Adaugă satelit"
+msgstr "Adaugă fișier cu subtitre"
 
 #: mediawidget.cpp:163
-#, fuzzy, kde-format
-#| msgid "Audio"
+#, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio"
-msgstr "Audio"
+msgstr "Sunet"
 
 #: mediawidget.cpp:166
-#, fuzzy, kde-format
-#| msgid "Audio channel:"
+#, kde-format
 msgctxt "'Audio' menu"
 msgid "Audio Device"
-msgstr "Canal audio:"
+msgstr "Dispozitiv audio"
 
 #: mediawidget.cpp:168
-#, fuzzy, kde-format
-#| msgid "Audio channel:"
+#, kde-format
 msgctxt "'Playback' menu"
 msgid "Audio Device"
-msgstr "Canal audio:"
+msgstr "Dispozitiv audio"
 
 #: mediawidget.cpp:175
-#, fuzzy, kde-format
-#| msgid "Increase Volume"
+#, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
 msgstr "Mărește volumul"
 
 #: mediawidget.cpp:182
-#, fuzzy, kde-format
-#| msgid "Decrease Volume"
+#, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
 msgstr "Micșorează volumul"
 
 #: mediawidget.cpp:188
-#, fuzzy, kde-format
-#| msgid "Mute Volume"
+#, kde-format
 msgctxt "'Audio' menu"
 msgid "Mute Volume"
 msgstr "Muțește volumul"
 
 #: mediawidget.cpp:198
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgctxt "'Playback' menu"
 msgid "Video"
-msgstr "Redare Video CD"
+msgstr "Video"
 
 #: mediawidget.cpp:202
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Deinterlace"
-msgstr ""
+msgstr "Deîntrețesere"
 
 #: mediawidget.cpp:210
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
-msgstr "Cablu"
+msgstr "dezactivată"
 
 #: mediawidget.cpp:217
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "discard"
-msgstr ""
+msgstr "aruncă"
 
 #: mediawidget.cpp:223
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "bob"
-msgstr ""
+msgstr "bob"
 
 #: mediawidget.cpp:229
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "linear"
-msgstr ""
+msgstr "liniar"
 
 #: mediawidget.cpp:235
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
-msgstr ""
+msgstr "yadif"
 
 #: mediawidget.cpp:242
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
-msgstr ""
+msgstr "yadif2x"
 
 #: mediawidget.cpp:248
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
-msgstr ""
+msgstr "fosfor"
 
 #: mediawidget.cpp:254
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: mediawidget.cpp:260
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
-msgstr ""
+msgstr "medie"
 
 #: mediawidget.cpp:266
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
-msgstr ""
+msgstr "îmbină"
 
 #: mediawidget.cpp:272
 #, kde-format
@@ -2369,16 +2290,13 @@ msgid "Inverse telecine"
 msgstr ""
 
 #: mediawidget.cpp:292
-#, fuzzy, kde-format
-#| msgid "Aspect Ratio"
+#, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
 msgstr "Raport de aspect"
 
 #: mediawidget.cpp:299
-#, fuzzy, kde-format
-#| msgctxt "aspect ratio"
-#| msgid "Automatic"
+#, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "Automatic"
 msgstr "Automat"
@@ -2387,12 +2305,10 @@ msgstr "Automat"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "1:1"
-msgstr ""
+msgstr "1:1"
 
 #: mediawidget.cpp:311
-#, fuzzy, kde-format
-#| msgctxt "aspect ratio"
-#| msgid "4:3"
+#, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "4:3"
 msgstr "4:3"
@@ -2401,12 +2317,10 @@ msgstr "4:3"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "5:4"
-msgstr ""
+msgstr "5:4"
 
 #: mediawidget.cpp:323
-#, fuzzy, kde-format
-#| msgctxt "aspect ratio"
-#| msgid "16:9"
+#, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:9"
 msgstr "16:9"
@@ -2415,63 +2329,57 @@ msgstr "16:9"
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:10"
-msgstr ""
+msgstr "16:10"
 
 #: mediawidget.cpp:335
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.21:1"
-msgstr ""
+msgstr "2.21:1"
 
 #: mediawidget.cpp:341
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.35:1"
-msgstr ""
+msgstr "2.35:1"
 
 #: mediawidget.cpp:347
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "2.39:1"
-msgstr ""
+msgstr "2.39:1"
 
 #: mediawidget.cpp:352
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Video size"
-msgstr "Redare Video CD"
+msgstr "Dimensiune video"
 
 #: mediawidget.cpp:360
-#, fuzzy, kde-format
-#| msgctxt "aspect ratio"
-#| msgid "Automatic"
+#, kde-format
 msgctxt "Video size"
 msgid "Automatic"
-msgstr "Automat"
+msgstr "Automată"
 
 #: mediawidget.cpp:366
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
-msgstr ""
+msgstr "25%"
 
 #: mediawidget.cpp:372
-#, fuzzy, kde-format
-#| msgid "0%"
+#, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr "0%"
+msgstr "50%"
 
 #: mediawidget.cpp:379
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
-msgstr ""
+msgstr "75%"
 
 #: mediawidget.cpp:385
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgctxt "Video size"
 msgid "Original Size"
 msgstr "Dimensiune originală"
@@ -2480,25 +2388,25 @@ msgstr "Dimensiune originală"
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
-msgstr ""
+msgstr "150%"
 
 #: mediawidget.cpp:397
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
-msgstr ""
+msgstr "200%"
 
 #: mediawidget.cpp:403
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
-msgstr ""
+msgstr "250%"
 
 #: mediawidget.cpp:409
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
-msgstr ""
+msgstr "300%"
 
 #: mediawidget.cpp:432
 #, kde-format
@@ -2506,11 +2414,10 @@ msgid "Volume Slider"
 msgstr "Glisorul volumului"
 
 #: mediawidget.cpp:447
-#, fuzzy, kde-format
-#| msgid "Jump to Position"
+#, kde-format
 msgctxt "@action:inmenu"
 msgid "Jump to Position..."
-msgstr "Salt la poziție"
+msgstr "Sari la poziția…"
 
 #: mediawidget.cpp:452
 #, kde-format
@@ -2533,34 +2440,30 @@ msgid "Skip %1s Forward"
 msgstr "Derulează %1s înainte"
 
 #: mediawidget.cpp:499 mediawidget.cpp:502
-#, fuzzy, kde-format
-#| msgid "Volume Slider"
+#, kde-format
 msgid "Seek Slider"
-msgstr "Glisorul volumului"
+msgstr "Glisorul de derulare"
 
 #: mediawidget.cpp:513
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
-msgstr ""
+msgstr "Meniul DVD"
 
 #: mediawidget.cpp:517
-#, fuzzy, kde-format
-#| msgid "Title"
+#, kde-format
 msgctxt "dvd navigation"
 msgid "Title"
 msgstr "Titlu"
 
 #: mediawidget.cpp:523
-#, fuzzy, kde-format
-#| msgid "Chapter"
+#, kde-format
 msgctxt "dvd navigation"
 msgid "Chapter"
 msgstr "Capitol"
 
 #: mediawidget.cpp:529
-#, fuzzy, kde-format
-#| msgid "Angle"
+#, kde-format
 msgctxt "dvd navigation"
 msgid "Angle"
 msgstr "Unghi"
@@ -2585,10 +2488,20 @@ msgid ""
 "webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;All "
 "Files (*)"
 msgstr ""
+"Fișiere multimedia susținute (*.3ga *.3gp *.3gpp *.669 *.ac3 *.aif *.aiff *."
+"anim1 *.anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *.anim9 *."
+"animj *.asf *.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx *.dv *."
+"f4a *.f4b *.f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *.m2ts *.m3u "
+"*.m3u8 *.m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *.mov *.mp+ *."
+"mp2 *.mp3 *.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *.mpp *.mtm *."
+"mts *.nsv *.oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl *.qtvr *.ra "
+"*.ram *.rax *.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn "
+"*.snd *.spl *.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav "
+"*.wax *.webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *."
+"iso);;Toate fișierele (*)"
 
 #: mediawidget.cpp:674
-#, fuzzy, kde-format
-#| msgid "Exit Full Screen Mode"
+#, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Full Screen Mode"
 msgstr "Ieși din regimul de ecran complet"
@@ -2597,14 +2510,13 @@ msgstr "Ieși din regimul de ecran complet"
 #, kde-format
 msgctxt "'Playback' menu"
 msgid "Exit Minimal Mode"
-msgstr ""
+msgstr "Ieși din regimul minim"
 
 #: mediawidget.cpp:720
-#, fuzzy, kde-format
-#| msgid "Open file"
+#, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
-msgstr "Deschide fișier"
+msgstr "Deschide subtitre"
 
 #: mediawidget.cpp:721
 #, kde-format
@@ -2612,6 +2524,8 @@ msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
+"Subtitre (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
+"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp)"
 
 #: mediawidget.cpp:861 mediawidget.cpp:962
 #, kde-format
@@ -2638,11 +2552,10 @@ msgid "Mute Off"
 msgstr "Muțire dezactivată"
 
 #: mediawidget.cpp:1051
-#, fuzzy, kde-format
-#| msgid "Device %1"
+#, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr "Dispozitiv %1"
+msgstr "Deîntrețese %1"
 
 #: mediawidget.cpp:1466
 #, kde-format
@@ -2657,11 +2570,10 @@ msgid "Paused"
 msgstr "Întrerupt"
 
 #: mediawidget.cpp:1649
-#, fuzzy, kde-format
-#| msgid "Jump to Position"
+#, kde-format
 msgctxt "@title:window"
 msgid "Jump to Position"
-msgstr "Salt la poziție"
+msgstr "Sari la poziția"
 
 #: mediawidget.cpp:1654
 #, kde-format
@@ -2717,15 +2629,12 @@ msgid "Random"
 msgstr "Aleator"
 
 #: playlist/playlisttab.cpp:406
-#, fuzzy, kde-format
-#| msgid "Add Satellite"
+#, kde-format
 msgid "Add Subtitle"
-msgstr "Adaugă satelit"
+msgstr "Adaugă subtitre"
 
 #: playlist/playlisttab.cpp:420
-#, fuzzy, kde-format
-#| msgctxt "add a new item to a list"
-#| msgid "New"
+#, kde-format
 msgctxt "@action:inmenu playlist"
 msgid "New"
 msgstr "Nou"
@@ -2743,11 +2652,10 @@ msgid "Unnamed Playlist"
 msgstr "Listă de redare nedenumită"
 
 #: playlist/playlisttab.cpp:848
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgctxt "file filter"
 msgid "Subtitle Files"
-msgstr "Redare Video CD"
+msgstr "Fișiere cu subtitre"
 
 #: playlist/playlisttab.cpp:865
 #, kde-format
@@ -2757,15 +2665,15 @@ msgid ""
 "*.m3u|M3U Playlist\n"
 "*.pls|PLS Playlist"
 msgstr ""
-"*.xspf|Listă XSPF\n"
-"*.m3u|Listă M3U\n"
-"*.pls|Listă PLS"
+"*.xspf|Listă de redare XSPF\n"
+"*.m3u|Listă de redare M3U\n"
+"*.pls|Listă de redare PLS"
 
 #: sqlhelper.cpp:48
 #, kde-format
 msgctxt "message box"
 msgid "Please install the Qt SQLite plugin."
-msgstr "Instalați modulul Qt SQLite."
+msgstr "Instalați extensia Qt SQLite."
 
 #: sqlhelper.cpp:63
 #, kde-format
