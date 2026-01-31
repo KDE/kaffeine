@@ -35,6 +35,7 @@
   <name xml:lang="pl">Kaffeine</name>
   <name xml:lang="pt">Kaffeine</name>
   <name xml:lang="pt-BR">Kaffeine</name>
+  <name xml:lang="ro">Kaffeine</name>
   <name xml:lang="ru">Kaffeine</name>
   <name xml:lang="sa">कैफीन</name>
   <name xml:lang="sk">Kaffeine</name>
@@ -76,6 +77,7 @@
   <summary xml:lang="pl">Odtwarzacz multimedialny</summary>
   <summary xml:lang="pt">Leitor Multimédia</summary>
   <summary xml:lang="pt-BR">Reprodutor Multimídia</summary>
+  <summary xml:lang="ro">Lector multimedia</summary>
   <summary xml:lang="ru">Мультимедийный проигрыватель</summary>
   <summary xml:lang="sa">बहुमाध्यम प्लेयर</summary>
   <summary xml:lang="sk">Multimediálny prehrávač</summary>
@@ -120,6 +122,7 @@
     <p xml:lang="pl">Kaffeine jest odtwarzaczem multimedialny. Od reszty odróżnia go doskonała obsługa telewizji cyfrowej (DVB). Kaffeine posiada interfejs przyjazny użytkownikowi, tak że nawet początkujący użytkownicy mogą od razu zacząć odtwarzać swoje film: z DVD (uwzględniając w tym DVD z menu, tytułami, rozdziałami, itp.), VCD lub pliku.</p>
     <p xml:lang="pt">O Kaffeine é um leitor de conteúdos multimédia. O que o torna diferente dos outros é o seu suporte excelente para TV digital (DVB). O Kaffeine tem uma interface de utilizador amigável, para que mesmos os utilizadores iniciais comecem logo a ver os seus filmes: desde os DVD's (incluindo os menus, títulos, capítulos, etc.) aos VCD's e ficheiros individuais.</p>
     <p xml:lang="pt-BR">Kaffeine é um reprodutor de mídias. O que o torna diferente dos outros é o seu excelente suporte para TV digital (DVB). O Kaffeine tem uma interface amigável, para que até mesmo os usuários iniciantes possam rapidamente assistir a seus filmes, em DVDs (incluindo os menus, títulos, capítulos, etc.) VCDs e arquivos individuais.</p>
+    <p xml:lang="ro">Kaffeine e un lector multimedia. Ce îl scoate în evidență e suportul excelent pentru televiziunea digitală (DVB). Kaffeine are o interfață prietenoasă, astfel încât utilizatorii noi să-l poată folosi imediat pentru a-și reda filmele de pe DVD (inclusiv meniuri, titluri, capitole, etc.), VCD, sau fișiere.</p>
     <p xml:lang="ru">Kaffeine — проигрыватель мультимедиа. Его отличие от других проигрывателей — поддержка цифрового телевидения (DVB). У программы понятный интерфейс, поэтому новым пользователям несложно сразу начать смотреть фильмы с DVD, VCD или из файлов. При запуске видео с DVD доступно меню DVD, субтитры, а также разбиение на главы и разделы.</p>
     <p xml:lang="sa">कफीनः एकः मीडिया-क्रीडकः अस्ति । अन्येभ्यः भिन्नं यत् अस्ति तत् डिजिटलटीवी (DVB) इत्यस्य उत्तमं समर्थनम् अस्ति । कफीनस्य उपयोक्तृ-अनुकूलं अन्तरफलकं भवति, येन प्रथमवारं उपयोक्तारः अपि तत्क्षणमेव स्वचलच्चित्रं वादयितुं आरभुं शक्नुवन्ति: DVD (DVD मेनू, शीर्षकं, अध्यायाः इत्यादयः समाविष्टाः), VCD, अथवा सञ्चिकातः।</p>
     <p xml:lang="sk">Kaffeine prehrávač médií. Čo ho odlišuje od iných prehrávačov médií, je výborná podpora digitálnej TV (DVB). Kaffeine má priateľské rozhranie, takže aj úplne noví používatelia môžu hneď začať prehrávať svoje filmy: z DVD (vrátane DVD ponuky, titulov, kapitol atď.), VCD alebo súbor.</p>
@@ -165,6 +168,7 @@
       <caption xml:lang="pl">Główne okno Kaffeine</caption>
       <caption xml:lang="pt">Janela principal do Kaffeine</caption>
       <caption xml:lang="pt-BR">Janela principal do Kaffeine</caption>
+      <caption xml:lang="ro">Fereastra principală Kaffeine</caption>
       <caption xml:lang="ru">Главное окно Kaffeine</caption>
       <caption xml:lang="sa">कैफीन मुख्य खिडकी</caption>
       <caption xml:lang="sk">Hlavné okno Kaffeine</caption>
