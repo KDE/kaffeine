@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2025-11-17 11:51+0000\n"
-"PO-Revision-Date: 2026-01-29 14:19+0000\n"
+"PO-Revision-Date: 2026-02-09 15:58+0000\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -24,10 +24,9 @@ msgid "Cannot start mplayer process."
 msgstr ""
 
 #: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Subtitle %1"
-msgstr "Redare Video CD"
+msgstr "Subtitlu %1"
 
 #: backend-vlc/vlcmediawidget.cpp:917
 #, kde-format
@@ -431,15 +430,14 @@ msgid "Video PID:"
 msgstr "Redare Video CD"
 
 #: dvb/dvbchanneldialog.cpp:990
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Subtitle PID:"
-msgstr "Redare Video CD"
+msgstr "PID subtitlu:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
 msgid "Teletext PID:"
-msgstr ""
+msgstr "PID teletext:"
 
 #: dvb/dvbconfigdialog.cpp:59
 #, fuzzy, kde-format
@@ -2161,7 +2159,7 @@ msgstr "Regim minim"
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "Subtitre"
+msgstr "Subtitlu"
 
 #: mediawidget.cpp:148
 #, kde-format
@@ -2173,7 +2171,7 @@ msgstr "dezactivate"
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr "Adaugă fișier cu subtitre"
+msgstr "Adaugă fișier cu subtitluri"
 
 #: mediawidget.cpp:163
 #, kde-format
@@ -2516,7 +2514,7 @@ msgstr "Ieși din regimul minim"
 #, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
-msgstr "Deschide subtitre"
+msgstr "Deschide subtitlu"
 
 #: mediawidget.cpp:721
 #, kde-format
@@ -2524,8 +2522,8 @@ msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
-"Subtitre (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt *."
-"smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp)"
+"Subtitluri (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
+"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp)"
 
 #: mediawidget.cpp:861 mediawidget.cpp:962
 #, kde-format
@@ -2631,7 +2629,7 @@ msgstr "Aleator"
 #: playlist/playlisttab.cpp:406
 #, kde-format
 msgid "Add Subtitle"
-msgstr "Adaugă subtitre"
+msgstr "Adaugă subtitlu"
 
 #: playlist/playlisttab.cpp:420
 #, kde-format
@@ -2655,7 +2653,7 @@ msgstr "Listă de redare nedenumită"
 #, kde-format
 msgctxt "file filter"
 msgid "Subtitle Files"
-msgstr "Fișiere cu subtitre"
+msgstr "Fișiere cu subtitluri"
 
 #: playlist/playlisttab.cpp:865
 #, kde-format
