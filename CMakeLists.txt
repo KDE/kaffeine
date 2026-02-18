@@ -17,9 +17,10 @@ option(BUILD_TOOLS "Build the helper tools" OFF)
 set(QT_MIN_VERSION "6.6.0")
 set(KF6_MIN_VERSION "6.0.0")
 
-find_package(Qt6Core)
-find_package(ECM 1.0 REQUIRED NO_MODULE)
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${ECM_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+
+set(KDE_COMPILERSETTINGS_LEVEL 5.84.0)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
