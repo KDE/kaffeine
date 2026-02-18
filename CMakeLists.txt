@@ -66,7 +66,7 @@ if (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
     link_directories(/usr/local/lib)
 endif()
 
-find_package(VLC 1.2)
+find_package(VLC 3.0)
 set_package_properties(VLC PROPERTIES
     TYPE REQUIRED
     PURPOSE "Required application components for video playback"

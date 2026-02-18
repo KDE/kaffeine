@@ -135,7 +135,6 @@ const char *vlcEventName(int event)
 		return "VlmMediaInstanceStatusEnd";
 	case libvlc_VlmMediaInstanceStatusError:
 		return "VlmMediaInstanceStatusError";
-#if LIBVLC_VERSION_MAJOR > 2
 	case libvlc_RendererDiscovererItemAdded:
 		return "RendererDiscovererItemAdded";
 	case libvlc_RendererDiscovererItemDeleted:
@@ -158,7 +157,6 @@ const char *vlcEventName(int event)
 		return "MediaPlayerCorked";
 	case libvlc_MediaPlayerUnmuted:
 		return "MediaPlayerUnmuted";
-#endif
 
 	default:
 		return "Unknown";
@@ -177,11 +175,9 @@ VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
 		libvlc_MediaPlayerSeekableChanged,
 		libvlc_MediaPlayerStopped,
 		libvlc_MediaPlayerTimeChanged,
-#if LIBVLC_VERSION_MAJOR > 2
 		libvlc_MediaMetaChanged,
 		libvlc_MediaPlayerESAdded,
 		libvlc_MediaPlayerESDeleted,
-#endif
 #if 0 // all other possible events
 		libvlc_MediaSubItemAdded,
 		libvlc_MediaDurationChanged,
@@ -227,7 +223,6 @@ VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
 		libvlc_VlmMediaInstanceStatusPause,
 		libvlc_VlmMediaInstanceStatusEnd,
 		libvlc_VlmMediaInstanceStatusError,
-#if LIBVLC_VERSION_MAJOR > 2
 		libvlc_MediaListEndReached,
 		libvlc_MediaPlayerAudioDevice,
 		libvlc_MediaPlayerAudioVolume,
@@ -237,7 +232,6 @@ VlcMediaWidget::VlcMediaWidget(QWidget *parent) : AbstractMediaWidget(parent),
 		libvlc_MediaPlayerUnmuted,
 		libvlc_RendererDiscovererItemAdded,
 		libvlc_RendererDiscovererItemDeleted,
-#endif /*LIBVLC_VERSION_MAJOR */
 #endif
 	};
 
@@ -562,13 +556,6 @@ void VlcMediaWidget::unregisterEvents()
 	for (int i = 0; i < eventType.size(); ++i)
 		libvlc_event_detach(eventManager, eventType.at(i),
 				    vlcEventHandler, this);
-#if LIBVLC_VERSION_MAJOR <= 2
-	if (!vlcMedia)
-		return;
-	libvlc_event_manager_t *mediaEvent = libvlc_media_event_manager(vlcMedia);
-	libvlc_event_detach(mediaEvent, libvlc_MediaMetaChanged,
-			    vlcEventHandler, this);
-#endif
 }
 
 bool VlcMediaWidget::registerEvents()
@@ -588,25 +575,6 @@ int VlcMediaWidget::makePlay()
 		libvlc_media_player_stop(vlcMediaPlayer);
 		return -1;
 	}
-
-#if LIBVLC_VERSION_MAJOR <= 2
-	/*
-	 * There is a difference between libVlc 2.x and 3.x:
-	 * With version 2.x, the event needs to be registered at the
-	 * vlcMedia object, just before calling libvlc_media_player_set_media()
-	 *
-	 * On version 3.x, while this still works, you can simply register the
-	 * event directly at vlcMediaPlayer, together with all other events,
-	 * with simplifies the code.
-	 */
-	libvlc_event_manager_t *mediaEvent = libvlc_media_event_manager(vlcMedia);
-
-	if (libvlc_event_attach(mediaEvent, libvlc_MediaMetaChanged,
-				vlcEventHandler, this) != 0) {
-		qCWarning(logMediaWidget, "Cannot attach event handler %d",
-			  libvlc_MediaMetaChanged);
-	}
-#endif
 
 	libvlc_media_player_set_media(vlcMediaPlayer, vlcMedia);
 
@@ -745,17 +713,11 @@ void VlcMediaWidget::setExternalSubtitle(const QUrl &url)
 {
 	QString fname = url.toLocalFile();
 
-#if LIBVLC_VERSION_MAJOR > 2
 	if (libvlc_media_player_add_slave(vlcMediaPlayer,
 					  libvlc_media_slave_type_subtitle,
 					  url.toEncoded().constData(),
 					  true) == 0)
 		qCWarning(logMediaWidget, "Cannot set subtitle file %s", qPrintable(fname));
-#else
-	if (libvlc_video_set_subtitle_file(vlcMediaPlayer,
-					   fname.toLocal8Bit().constData()) == 0)
-		qCWarning(logMediaWidget, "Cannot set subtitle file %s", qPrintable(fname));
-#endif
 }
 
 void VlcMediaWidget::setCurrentTitle(int currentTitle)
@@ -1080,10 +1042,8 @@ void VlcMediaWidget::vlcEvent(const libvlc_event_t *event)
 	PendingUpdates pendingUpdatesToBeAdded = Nothing;
 
 	switch (event->type) {
-#if LIBVLC_VERSION_MAJOR > 2
 	case libvlc_MediaPlayerESAdded:
 	case libvlc_MediaPlayerESDeleted:
-#endif
 	case libvlc_MediaMetaChanged:
 		pendingUpdatesToBeAdded = Metadata | Subtitles | AudioStreams;
 		break;
