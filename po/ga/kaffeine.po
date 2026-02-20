@@ -292,11 +292,9 @@ msgid "Sound broadcasting:"
 msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:851
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Channel:"
+#, kde-format
 msgid "SB channel ID:"
-msgstr "Cainéal:"
+msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
@@ -512,11 +510,9 @@ msgid "Update Scan Data over Internet"
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:197
-#, fuzzy, kde-format
-#| msgctxt "@title:window"
-#| msgid "Edit Channel"
+#, kde-format
 msgid "Edit Scanfile"
-msgstr "Cuir an Cainéal in Eagar"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
@@ -529,10 +525,9 @@ msgid "General Options"
 msgstr "Roghanna Ginearálta"
 
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
-#, fuzzy, kde-format
-#| msgid "Edit Recording"
+#, kde-format
 msgid "Automatic Recording"
-msgstr "Cuir Taifead in Eagar"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -553,12 +548,10 @@ msgid "Add another regular expression."
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:398
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "Remove"
+#, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr "Bain"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
@@ -636,10 +629,9 @@ msgid "DVB-S"
 msgstr "DVB-S"
 
 #: dvb/dvbconfigdialog.cpp:803
-#, fuzzy, kde-format
-#| msgid "DVB-T"
+#, kde-format
 msgid "DVB-T2"
-msgstr "DVB-T"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:805
 #, kde-format
@@ -759,10 +751,9 @@ msgid "Positions Rotor"
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1123
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Disable DiSEqC"
-msgstr "Cábla"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
@@ -795,10 +786,9 @@ msgid "Remove Satellite"
 msgstr "Bain Satailít"
 
 #: dvb/dvbconfigdialog.cpp:1241
-#, fuzzy, kde-format
-#| msgid "Position"
+#, kde-format
 msgid "Your position:"
-msgstr "Ionad"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -973,10 +963,8 @@ msgid "10 to 16"
 msgstr ""
 
 #: dvb/dvbepg.cpp:698
-#, fuzzy
-#| msgid "Duration"
 msgid "Educational"
-msgstr "Aga"
+msgstr ""
 
 #: dvb/dvbepg.cpp:699
 msgid "Cartoons"
@@ -1015,10 +1003,8 @@ msgid "Religion"
 msgstr ""
 
 #: dvb/dvbepg.cpp:719
-#, fuzzy
-#| msgid "Duration"
 msgid "Traditional"
-msgstr "Aga"
+msgstr ""
 
 #: dvb/dvbepg.cpp:720
 msgid "Literature"
@@ -1178,10 +1164,8 @@ msgid "Culture"
 msgstr ""
 
 #: dvb/dvbepg.cpp:786 dvb/dvbepg.cpp:798
-#, fuzzy
-#| msgid "Duration"
 msgid "Education"
-msgstr "Aga"
+msgstr ""
 
 #: dvb/dvbepg.cpp:787
 msgid "Leisure"
@@ -1192,10 +1176,8 @@ msgid "Special"
 msgstr ""
 
 #: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
-#, fuzzy
-#| msgid "Reset"
 msgid "Reserved"
-msgstr "Athshocraigh"
+msgstr ""
 
 #: dvb/dvbepg.cpp:799
 msgid "Soap opera"
@@ -1214,10 +1196,8 @@ msgid "Reality show"
 msgstr ""
 
 #: dvb/dvbepg.cpp:804
-#, fuzzy
-#| msgid "Configuration:"
 msgid "Information"
-msgstr "Cumraíocht:"
+msgstr ""
 
 #: dvb/dvbepg.cpp:805
 msgid "Comical"
@@ -1248,17 +1228,12 @@ msgid "Biography"
 msgstr ""
 
 #: dvb/dvbepg.cpp:829
-#, fuzzy
-#| msgid "Duration"
 msgid "Educative"
-msgstr "Aga"
+msgstr ""
 
 #: dvb/dvbepg.cpp:835
-#, fuzzy
-#| msgctxt "'Playback' menu"
-#| msgid "Audio"
 msgid "Auditorium"
-msgstr "Fuaim"
+msgstr ""
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
@@ -1289,10 +1264,8 @@ msgid "Raffle"
 msgstr ""
 
 #: dvb/dvbepg.cpp:856
-#, fuzzy
-#| msgid "Television"
 msgid "Television sales"
-msgstr "Teilifís"
+msgstr ""
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
@@ -1468,23 +1441,20 @@ msgid "Name"
 msgstr "Ainm"
 
 #: dvb/dvbrecordingdialog.cpp:262
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Disabled"
-msgstr "Cábla"
+msgstr ""
 
 #: dvb/dvbrecordingdialog.cpp:307
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Disabled"
-msgstr "Cábla"
+msgstr ""
 
 #: dvb/dvbrecordingdialog.cpp:309
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgid "Enabled"
-msgstr "Cábla"
+msgstr ""
 
 #: dvb/dvbrecordingdialog.cpp:384
 #, kde-format
@@ -1541,10 +1511,9 @@ msgid "Daily"
 msgstr ""
 
 #: dvb/dvbscandialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgid "%1"
-msgstr "%1%"
+msgstr ""
 
 #: dvb/dvbscandialog.cpp:237
 #, kde-format
@@ -1760,10 +1729,9 @@ msgid "Composer(s)"
 msgstr ""
 
 #: dvb/xmltv.cpp:234
-#, fuzzy, kde-format
-#| msgid "Edit"
+#, kde-format
 msgid "Editor(s)"
-msgstr "Eagar"
+msgstr ""
 
 #: dvb/xmltv.cpp:236
 #, kde-format
@@ -1787,11 +1755,9 @@ msgid "%1: %2\n"
 msgstr ""
 
 #: dvb/xmltv.cpp:377
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Duration:"
+#, kde-format
 msgid "rating: %1"
-msgstr "Aga:"
+msgstr ""
 
 #: dvb/xmltv.cpp:451
 #, kde-format
@@ -1804,23 +1770,19 @@ msgid " Episode %1"
 msgstr ""
 
 #: dvb/xmltv.cpp:485
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Start:"
+#, kde-format
 msgid "Star rating: %1"
-msgstr "Tosaigh:"
+msgstr ""
 
 #: dvb/xmltv.cpp:491
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Date: %1"
-msgstr "Ainm: %1"
+msgstr ""
 
 #: dvb/xmltv.cpp:495
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Category: %1"
-msgstr "Ainm: %1"
+msgstr ""
 
 #: dvb/xmltv.cpp:509
 #, kde-format
@@ -1828,10 +1790,9 @@ msgid "Keyword: %1"
 msgstr ""
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "language: %1"
-msgstr "Ainm: %1"
+msgstr ""
 
 #: dvb/xmltv.cpp:538
 #, kde-format
@@ -1849,22 +1810,19 @@ msgid "Kaffeine"
 msgstr "Kaffeine"
 
 #: main.cpp:141
-#, fuzzy, kde-format
-#| msgid "A media player for KDE with digital TV support."
+#, kde-format
 msgid "A media player by KDE with digital TV support."
-msgstr "Seinnteoir meán KDE a thacaíonn le teilifís dhigiteach."
+msgstr ""
 
 #: main.cpp:145
-#, fuzzy, kde-format
-#| msgid "(C) 2007-2011 The Kaffeine Authors"
+#, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
-msgstr "© 2007-2011 Údair Kaffeine"
+msgstr ""
 
 #: main.cpp:163
-#, fuzzy, kde-format
-#| msgid "Maintainer"
+#, kde-format
 msgid "Maintainer"
-msgstr "Cothaitheoir"
+msgstr ""
 
 #: main.cpp:168
 #, kde-format
@@ -2008,34 +1966,29 @@ msgid "Television"
 msgstr "Teilifís"
 
 #: mainwindow.cpp:347
-#, fuzzy, kde-format
-#| msgid "&1 Play File"
+#, kde-format
 msgid "Play &File"
-msgstr "&1 Seinn Comhad"
+msgstr ""
 
 #: mainwindow.cpp:351
-#, fuzzy, kde-format
-#| msgid "Play Audio CD"
+#, kde-format
 msgid "Play &Audio CD"
-msgstr "Seinn Dlúthdhiosca Fuaime"
+msgstr ""
 
 #: mainwindow.cpp:355
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Play &Video CD"
-msgstr "Seinn Dlúthdhiosca Físe"
+msgstr ""
 
 #: mainwindow.cpp:359
-#, fuzzy, kde-format
-#| msgid "Play DVD"
+#, kde-format
 msgid "Play &DVD"
-msgstr "Seinn DVD"
+msgstr ""
 
 #: mainwindow.cpp:364
-#, fuzzy, kde-format
-#| msgid "&5 Digital TV"
+#, kde-format
 msgid "&Watch Digital TV"
-msgstr "&5 Teilifís Dhigiteach"
+msgstr ""
 
 #: mainwindow.cpp:368
 #, kde-format
@@ -2062,10 +2015,9 @@ msgid "Start in full screen mode"
 msgstr "Tosaigh sa mhód lánscáileáin"
 
 #: mainwindow.cpp:480
-#, fuzzy, kde-format
-#| msgid "Start in full screen mode"
+#, kde-format
 msgid "Start in minimal mode"
-msgstr "Tosaigh sa mhód lánscáileáin"
+msgstr ""
 
 #: mainwindow.cpp:481
 #, kde-format
@@ -2102,11 +2054,10 @@ msgid "Files or URLs to play"
 msgstr "Comhaid nó URLanna le seinm"
 
 #: mainwindow.cpp:715
-#, fuzzy, kde-format
-#| msgid "Open file"
+#, kde-format
 msgctxt "@title:window"
 msgid "Open files"
-msgstr "Oscail comhad"
+msgstr ""
 
 #: mainwindow.cpp:728
 #, kde-format
@@ -2157,12 +2108,10 @@ msgid "Minimal Mode"
 msgstr ""
 
 #: mediawidget.cpp:144
-#, fuzzy, kde-format
-#| msgctxt "@title:column tv show"
-#| msgid "Title"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "Teideal"
+msgstr ""
 
 #: mediawidget.cpp:148
 #, kde-format
@@ -2225,11 +2174,10 @@ msgid "Deinterlace"
 msgstr ""
 
 #: mediawidget.cpp:210
-#, fuzzy, kde-format
-#| msgid "Cable"
+#, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
-msgstr "Cábla"
+msgstr ""
 
 #: mediawidget.cpp:217
 #, kde-format
@@ -2352,19 +2300,15 @@ msgid "2.39:1"
 msgstr ""
 
 #: mediawidget.cpp:352
-#, fuzzy, kde-format
-#| msgctxt "'Playback' menu"
-#| msgid "Video"
+#, kde-format
 msgid "Video size"
-msgstr "Fís"
+msgstr ""
 
 #: mediawidget.cpp:360
-#, fuzzy, kde-format
-#| msgctxt "'Aspect Ratio' menu"
-#| msgid "Automatic"
+#, kde-format
 msgctxt "Video size"
 msgid "Automatic"
-msgstr "Uathoibríoch"
+msgstr ""
 
 #: mediawidget.cpp:366
 #, kde-format
@@ -2373,11 +2317,10 @@ msgid "25%"
 msgstr ""
 
 #: mediawidget.cpp:372
-#, fuzzy, kde-format
-#| msgid "0%"
+#, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr "0%"
+msgstr ""
 
 #: mediawidget.cpp:379
 #, kde-format
@@ -2509,11 +2452,10 @@ msgid "Exit Minimal Mode"
 msgstr ""
 
 #: mediawidget.cpp:720
-#, fuzzy, kde-format
-#| msgid "Open file"
+#, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
-msgstr "Oscail comhad"
+msgstr ""
 
 #: mediawidget.cpp:721
 #, kde-format
@@ -2547,11 +2489,10 @@ msgid "Mute Off"
 msgstr ""
 
 #: mediawidget.cpp:1051
-#, fuzzy, kde-format
-#| msgid "Device %1"
+#, kde-format
 msgctxt "osd message"
 msgid "Deinterlace %1"
-msgstr "Gléas %1"
+msgstr ""
 
 #: mediawidget.cpp:1466
 #, kde-format
@@ -2630,12 +2571,10 @@ msgid "Add Subtitle"
 msgstr ""
 
 #: playlist/playlisttab.cpp:420
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "New"
+#, kde-format
 msgctxt "@action:inmenu playlist"
 msgid "New"
-msgstr "Nua"
+msgstr ""
 
 #: playlist/playlisttab.cpp:425
 #, kde-format
@@ -2675,124 +2614,3 @@ msgstr ""
 msgctxt "message box"
 msgid "Cannot open the SQLite database."
 msgstr ""
-
-#, fuzzy
-#~| msgid "Horizontal"
-#~ msgid "Gorontalo"
-#~ msgstr "Cothrománach"
-
-#, fuzzy
-#~| msgctxt "@title:column tv show"
-#~| msgid "Duration"
-#~ msgid "Gujarati"
-#~ msgstr "Aga"
-
-#~ msgctxt "@info tv show title"
-#~ msgid "<font color=#008000 size=\"+1\">%1</font><br>"
-#~ msgstr "<font color=#008000 size=\"+1\">%1</font><br>"
-
-#~ msgctxt "@info tv show subheading"
-#~ msgid "<font color=#808000>%1</font><br>"
-#~ msgstr "<font color=#808000>%1</font><br>"
-
-#~ msgctxt "@info tv show start, end"
-#~ msgid "<font color=#800000>%1 - %2</font><br><br>"
-#~ msgstr "<font color=#800000>%1 - %2</font><br><br>"
-
-#, fuzzy
-#~| msgid "Open file"
-#~ msgid "open failed"
-#~ msgstr "Oscail comhad"
-
-#, fuzzy
-#~| msgid "Edit Recording"
-#~ msgid "invalid recording"
-#~ msgstr "Cuir Taifead in Eagar"
-
-#, fuzzy
-#~| msgid "Cable"
-#~ msgid "disabled %1"
-#~ msgstr "Cábla"
-
-#, fuzzy
-#~| msgid "Open file"
-#~ msgid "special subtitle found"
-#~ msgstr "Oscail comhad"
-
-#~ msgid "Christoph Pfister"
-#~ msgstr "Christoph Pfister"
-
-#~ msgctxt "file filter"
-#~ msgid "All Files"
-#~ msgstr "Gach Comhad"
-
-#, fuzzy
-#~| msgid "Remove Satellite"
-#~ msgid "Remove Regexes"
-#~ msgstr "Bain Satailít"
-
-#~ msgid "Name"
-#~ msgstr "Ainm"
-
-#~ msgid "Channel"
-#~ msgstr "Cainéal"
-
-#~| msgid "Remove"
-#~ msgid "Remove All"
-#~ msgstr "Bain"
-
-#~ msgid ""
-#~ "<center><font size=\"+4\"><b>[Kaffeine Player]</b><br>caffeine for your "
-#~ "desktop!</font></center>"
-#~ msgstr ""
-#~ "<center><font size=\"+4\"><b>[Seinnteoir Kaffeine]</b><br>caiféin ar do "
-#~ "dheasc!</font></center>"
-
-#~ msgid "Recordings"
-#~ msgstr "Taifid"
-
-#~ msgid "Start scan"
-#~ msgstr "Tosaigh an scanadh"
-
-#~ msgid "&View"
-#~ msgstr "&Amharc"
-
-#~ msgid "&Player"
-#~ msgstr "&Seinnteoir"
-
-#~ msgid "&DVB"
-#~ msgstr "&DVB"
-
-#~ msgid "Tune to the selected channel"
-#~ msgstr "Comhthiúin leis an gcainéal roghnaithe"
-
-#~ msgid "Use right click to edit/delete"
-#~ msgstr "Deaschliceáil chun é a chur in eagar/scriosadh"
-
-#~ msgid "Channel search"
-#~ msgstr "Cuardaigh cainéal"
-
-#~ msgid "Change icon"
-#~ msgstr "Athraigh an deilbhín"
-
-#~ msgid "DVB Settings"
-#~ msgstr "Socruithe DVB"
-
-#~ msgid "Configure DVB"
-#~ msgstr "Cumraigh DVB"
-
-#~ msgid "Player"
-#~ msgstr "Seinnteoir"
-
-#~ msgctxt "View|Full Screen Mode"
-#~ msgid "F"
-#~ msgstr "L"
-
-#~ msgid "Main Controls"
-#~ msgstr "Príomhrialtáin"
-
-#~ msgid "Position Slider"
-#~ msgstr "Barra Sleamhnáin"
-
-#~ msgid "Tab Manager"
-#~ msgstr "Bainisteoir na gCluaisíní"
