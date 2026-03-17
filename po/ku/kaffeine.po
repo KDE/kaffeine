@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2026-03-17 00:42+0000\n"
 "PO-Revision-Date: 2008-12-20 16:02+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@kde.org>\n"
@@ -24,13 +24,13 @@ msgstr ""
 msgid "Cannot start mplayer process."
 msgstr ""
 
-#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
+#: backend-vlc/vlcmediawidget.cpp:701 backend-vlc/vlcmediawidget.cpp:943
 #, fuzzy, kde-format
 #| msgid "Play Video CD"
 msgid "Subtitle %1"
 msgstr "CD ya Vîdeoyê Lê Bide"
 
-#: backend-vlc/vlcmediawidget.cpp:917
+#: backend-vlc/vlcmediawidget.cpp:879
 #, kde-format
 msgid "CD track %1"
 msgstr ""

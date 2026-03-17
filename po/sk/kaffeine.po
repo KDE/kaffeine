@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2026-03-17 00:42+0000\n"
 "PO-Revision-Date: 2023-12-06 19:05+0100\n"
 "Last-Translator: Roman Paholik <wizzardsk@gmail.com>\n"
 "Language-Team: Slovak <kde-sk@linux.sk>\n"
@@ -23,12 +23,12 @@ msgstr ""
 msgid "Cannot start mplayer process."
 msgstr "Nepodarilo sa spustiť proces mplayer."
 
-#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
+#: backend-vlc/vlcmediawidget.cpp:701 backend-vlc/vlcmediawidget.cpp:943
 #, kde-format
 msgid "Subtitle %1"
 msgstr "Titulky %1"
 
-#: backend-vlc/vlcmediawidget.cpp:917
+#: backend-vlc/vlcmediawidget.cpp:879
 #, kde-format
 msgid "CD track %1"
 msgstr "Stopa č. %1 disku CD"

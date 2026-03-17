@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: KDE 4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2025-11-17 11:51+0000\n"
+"POT-Creation-Date: 2026-03-17 00:42+0000\n"
 "PO-Revision-Date: 2011-06-02 09:32+0200\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <l10n-no@lister.huftis.org>\n"
@@ -25,12 +25,12 @@ msgstr ""
 msgid "Cannot start mplayer process."
 msgstr "Kan ikke starte mplayer-prosessen."
 
-#: backend-vlc/vlcmediawidget.cpp:733 backend-vlc/vlcmediawidget.cpp:981
+#: backend-vlc/vlcmediawidget.cpp:701 backend-vlc/vlcmediawidget.cpp:943
 #, kde-format
 msgid "Subtitle %1"
 msgstr ""
 
-#: backend-vlc/vlcmediawidget.cpp:917
+#: backend-vlc/vlcmediawidget.cpp:879
 #, kde-format
 msgid "CD track %1"
 msgstr ""
