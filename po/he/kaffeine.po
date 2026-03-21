@@ -1,13 +1,13 @@
 # Copyright (C) 2025 This file is copyright:
 # This file is distributed under the same license as the kaffeine package.
 #
-# SPDX-FileCopyrightText: 2024 Yaron Shahrabani <sh.yaron@gmail.com>
+# SPDX-FileCopyrightText: 2024, 2026 Yaron Shahrabani <sh.yaron@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2025-01-31 13:16+0200\n"
+"PO-Revision-Date: 2026-03-20 08:13+0200\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>\n"
 "Language-Team: צוות התרגום של KDE ישראל\n"
 "Language: he\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1) ? 0 : ((n == 2) ? 1 : ((n > 10 && "
 "n % 10 == 0) ? 2 : 3));\n"
-"X-Generator: Lokalize 24.12.0\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -449,7 +449,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
 msgid "Disable parsing EPG data from MPEG-TS tables:"
-msgstr "השבתת פענוח נתוני לוח שידורים אלקטרוני מטבלאות MPEG-TS:"
+msgstr "השבתת פיענוח נתוני לוח שידורים אלקטרוני מטבלאות MPEG-TS:"
 
 #: dvb/dvbconfigdialog.cpp:115
 #, kde-format
