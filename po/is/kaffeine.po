@@ -7,14 +7,14 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2026-03-22 17:05+0000\n"
+"PO-Revision-Date: 2026-03-23 09:06+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Plural-Forms: Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 23.08.5\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
@@ -289,7 +289,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:847
 #, kde-format
 msgid "Sound broadcasting:"
-msgstr ""
+msgstr "Útvörpun hljóðs:"
 
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
@@ -696,7 +696,7 @@ msgstr "ATSC"
 #: dvb/dvbconfigdialog.cpp:966 dvb/dvbconfigdialog.cpp:1095
 #, kde-format
 msgid "Tuner timeout (ms):"
-msgstr ""
+msgstr "Tímamörk móttakara (ms):"
 
 #: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
 #, kde-format
@@ -823,22 +823,22 @@ msgstr "Hátíðni (MHz)"
 #: dvb/dvbconfigdialog.cpp:1639
 #, kde-format
 msgid "Switch frequency (MHz)"
-msgstr ""
+msgstr "Skipt um tíðni (MHz)"
 
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "Lágt tíðnisvið: %1 MHz til %2 MHz"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
-msgstr ""
+msgstr "Stöfluð tíðnisvið"
 
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "Hátt tíðnisvið: %1 MHz til %2 MHz"
 
 #: dvb/dvbepg.cpp:649
 msgid "Detective"
@@ -1020,15 +1020,15 @@ msgstr "Á tilraunastigi"
 
 #: dvb/dvbepg.cpp:723
 msgid "Press"
-msgstr ""
+msgstr "Pressan"
 
 #: dvb/dvbepg.cpp:724
 msgid "New Media"
-msgstr ""
+msgstr "Nýmiðlun"
 
 #: dvb/dvbepg.cpp:726 dvb/dvbepg.cpp:845
 msgid "Fashion"
-msgstr ""
+msgstr "Tíska"
 
 #: dvb/dvbepg.cpp:733
 msgid "Advisory"
@@ -1217,7 +1217,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:811
 msgid "Other"
-msgstr ""
+msgstr "Annað"
 
 #: dvb/dvbepg.cpp:823
 msgid "Report"
@@ -1229,7 +1229,7 @@ msgstr "Æviágrip"
 
 #: dvb/dvbepg.cpp:829
 msgid "Educative"
-msgstr ""
+msgstr "Uppfræðandi"
 
 #: dvb/dvbepg.cpp:835
 msgid "Auditorium"
@@ -1241,11 +1241,11 @@ msgstr "Söngleikir"
 
 #: dvb/dvbepg.cpp:838
 msgid "Making of"
-msgstr ""
+msgstr "Um gerð"
 
 #: dvb/dvbepg.cpp:839
 msgid "Feminine"
-msgstr ""
+msgstr "Kvenlegt"
 
 #: dvb/dvbepg.cpp:840
 msgid "Game show"
@@ -1369,7 +1369,7 @@ msgstr "Hvaða tungumál sem er"
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
 msgid "Show channels with empty EPG data"
-msgstr ""
+msgstr "Sýna rásir með auðum EPG-gögnum"
 
 #: dvb/dvbepgdialog.cpp:119
 #, kde-format
