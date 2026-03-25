@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2026-03-23 09:06+0000\n"
+"PO-Revision-Date: 2026-03-24 10:24+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -1076,7 +1076,7 @@ msgstr "Handverk"
 
 #: dvb/dvbepg.cpp:754
 msgid "Motoring"
-msgstr ""
+msgstr "Vöktun"
 
 #: dvb/dvbepg.cpp:755
 msgid "Fitness"
@@ -1701,52 +1701,52 @@ msgstr "%1 sem %2"
 #: dvb/xmltv.cpp:222
 #, kde-format
 msgid "Director(s)"
-msgstr ""
+msgstr "Leikstjórn"
 
 #: dvb/xmltv.cpp:224
 #, kde-format
 msgid "Actor(s)"
-msgstr ""
+msgstr "Leikarar"
 
 #: dvb/xmltv.cpp:226
 #, kde-format
 msgid "Writer(s)"
-msgstr ""
+msgstr "Handrit"
 
 #: dvb/xmltv.cpp:228
 #, kde-format
 msgid "Adapter(s)"
-msgstr ""
+msgstr "Aðlögun"
 
 #: dvb/xmltv.cpp:230
 #, kde-format
 msgid "Producer(s)"
-msgstr ""
+msgstr "Framleiðsla"
 
 #: dvb/xmltv.cpp:232
 #, kde-format
 msgid "Composer(s)"
-msgstr ""
+msgstr "Gerð tónlistar"
 
 #: dvb/xmltv.cpp:234
 #, kde-format
 msgid "Editor(s)"
-msgstr ""
+msgstr "Klipping"
 
 #: dvb/xmltv.cpp:236
 #, kde-format
 msgid "Presenter(s)"
-msgstr ""
+msgstr "Kynning"
 
 #: dvb/xmltv.cpp:238
 #, kde-format
 msgid "Commentator(s)"
-msgstr ""
+msgstr "Þulur"
 
 #: dvb/xmltv.cpp:240
 #, kde-format
 msgid "Guest(s)"
-msgstr ""
+msgstr "Gestir"
 
 #: dvb/xmltv.cpp:244
 #, kde-format
@@ -2028,7 +2028,7 @@ msgstr "Byrja alltaf efst"
 #, kde-format
 msgctxt "command line option"
 msgid "Dump dvb data (debug option)"
-msgstr ""
+msgstr "Demba dvb-gögnum (valkostur fyrir villukembingu)"
 
 #: mainwindow.cpp:489
 #, kde-format
@@ -2046,12 +2046,12 @@ msgstr "(úreltur valkostur)"
 #, kde-format
 msgctxt "command line option"
 msgid "Play last tuned TV channel"
-msgstr ""
+msgstr "Spila síðast stilltu sjónvarpsrás"
 
 #: mainwindow.cpp:493
 #, kde-format
 msgid "Files or URLs to play"
-msgstr ""
+msgstr "Skrár eða slóðir til að spila"
 
 #: mainwindow.cpp:715
 #, kde-format
@@ -2421,7 +2421,7 @@ msgstr "Horn"
 #: mediawidget.cpp:536
 #, kde-format
 msgid "Switch between elapsed and remaining time display"
-msgstr ""
+msgstr "Skipta á milli þess að birta liðinn tíma og þann sem eftir er"
 
 #: mediawidget.cpp:565
 #, kde-format
