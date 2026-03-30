@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2026-03-24 10:24+0000\n"
+"PO-Revision-Date: 2026-03-29 20:26+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -66,19 +66,19 @@ msgstr "Muna síðustu stillingar"
 #, kde-format
 msgctxt "@label:listbox"
 msgid "Startup display mode:"
-msgstr ""
+msgstr "Birtingarhamur við ræsingu:"
 
 #: configurationdialog.cpp:68
 #, kde-format
 msgctxt "@label:spinbox"
 msgid "Short skip duration:"
-msgstr ""
+msgstr "Tímalengd stutts hopps:"
 
 #: configurationdialog.cpp:77
 #, kde-format
 msgctxt "@label:spinbox"
 msgid "Long skip duration:"
-msgstr ""
+msgstr "Tímalengd langs hopps:"
 
 #: configurationdialog.cpp:82
 #, kde-format
@@ -114,7 +114,7 @@ msgstr "LibVLC-viðföng:"
 #, kde-format
 msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
-msgstr ""
+msgstr "ATHUGAÐU: Endurræsa þarf Kaffeine svo nýju breyturnar taki gildi"
 
 #: configurationdialog.cpp:126
 #, kde-format
@@ -163,6 +163,8 @@ msgid ""
 "The channels will be sorted by number to allow drag and drop.\n"
 "Do you want to continue?"
 msgstr ""
+"Rásunum verður raðað eftir númerum sem gerir kleift að draga og sleppa.\n"
+"Viltu halda áfram?"
 
 #: dvb/dvbchanneldialog.cpp:415
 #, kde-format
@@ -279,12 +281,12 @@ msgstr "Stigskipan:"
 #: dvb/dvbchanneldialog.cpp:827
 #, kde-format
 msgid "PLP (stream ID):"
-msgstr ""
+msgstr "PLP (auðkenni streymis):"
 
 #: dvb/dvbchanneldialog.cpp:845
 #, kde-format
 msgid "Partial reception:"
-msgstr ""
+msgstr "Móttaka að hluta:"
 
 #: dvb/dvbchanneldialog.cpp:847
 #, kde-format
@@ -294,92 +296,92 @@ msgstr "Útvörpun hljóðs:"
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr ""
+msgstr "Auðkenni SB-rásar:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr ""
+msgstr "SB-lykilnúmer:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr ""
+msgstr "SB-fjöldi:"
 
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
 msgid "Layer A Modulation:"
-msgstr ""
+msgstr "Layer A mótun:"
 
 #: dvb/dvbchanneldialog.cpp:862
 #, kde-format
 msgid "Layer A FEC rate:"
-msgstr ""
+msgstr "Layer A FEC-hraði:"
 
 #: dvb/dvbchanneldialog.cpp:864
 #, kde-format
 msgid "Layer A segments:"
-msgstr ""
+msgstr "Layer A bútar:"
 
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
 msgid "Layer A interleaving:"
-msgstr ""
+msgstr "Layer A tímafléttun"
 
 #: dvb/dvbchanneldialog.cpp:870
 #, kde-format
 msgid "Layer B Modulation:"
-msgstr ""
+msgstr "Layer B mótun:"
 
 #: dvb/dvbchanneldialog.cpp:872
 #, kde-format
 msgid "Layer B FEC rate:"
-msgstr ""
+msgstr "Layer B FEC-hraði:"
 
 #: dvb/dvbchanneldialog.cpp:874
 #, kde-format
 msgid "Layer B segments:"
-msgstr ""
+msgstr "Layer B bútar:"
 
 #: dvb/dvbchanneldialog.cpp:876
 #, kde-format
 msgid "Layer B interleaving:"
-msgstr ""
+msgstr "Layer B tímafléttun"
 
 #: dvb/dvbchanneldialog.cpp:880
 #, kde-format
 msgid "Layer C Modulation:"
-msgstr ""
+msgstr "Layer B mótun:"
 
 #: dvb/dvbchanneldialog.cpp:882
 #, kde-format
 msgid "Layer C FEC rate:"
-msgstr ""
+msgstr "Layer C FEC-hraði:"
 
 #: dvb/dvbchanneldialog.cpp:884
 #, kde-format
 msgid "Layer C segments:"
-msgstr ""
+msgstr "Layer C bútar:"
 
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
 msgid "Layer C interleaving:"
-msgstr ""
+msgstr "Layer C tímafléttun"
 
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
 msgid "Network ID:"
-msgstr ""
+msgstr "Auðkenni netkerfis:"
 
 #: dvb/dvbchanneldialog.cpp:920
 #, kde-format
 msgid "Transport stream ID:"
-msgstr ""
+msgstr "Auðkenni flutningsstreymis:"
 
 #: dvb/dvbchanneldialog.cpp:927
 #, kde-format
 msgid "Service ID:"
-msgstr ""
+msgstr "Þjónustuauðkenni:"
 
 #: dvb/dvbchanneldialog.cpp:937
 #, kde-format
@@ -394,22 +396,22 @@ msgstr "Ruglað:"
 #: dvb/dvbchanneldialog.cpp:981
 #, kde-format
 msgid "PMT PID:"
-msgstr ""
+msgstr "PMT PID:"
 
 #: dvb/dvbchanneldialog.cpp:985
 #, kde-format
 msgid "Video PID:"
-msgstr ""
+msgstr "PID myndmerkis:"
 
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
 msgid "Subtitle PID:"
-msgstr ""
+msgstr "PID skjátexta:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
 msgid "Teletext PID:"
-msgstr ""
+msgstr "PID textavarps:"
 
 #: dvb/dvbconfigdialog.cpp:59
 #, kde-format
@@ -435,7 +437,7 @@ msgstr "Tímahliðrunarmappa:"
 #: dvb/dvbconfigdialog.cpp:101
 #, kde-format
 msgid "xmltv file name (optional):"
-msgstr ""
+msgstr "Heiti xmltv-skrár (valkvætt):"
 
 #: dvb/dvbconfigdialog.cpp:109
 #, kde-format
@@ -512,7 +514,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:197
 #, kde-format
 msgid "Edit Scanfile"
-msgstr ""
+msgstr "Breyta skönnunarskrá"
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
@@ -701,12 +703,12 @@ msgstr "Tímamörk móttakara (ms):"
 #: dvb/dvbconfigdialog.cpp:975 dvb/dvbscandialog.cpp:301
 #, kde-format
 msgid "Source:"
-msgstr "Uppruni:"
+msgstr "Upptök:"
 
 #: dvb/dvbconfigdialog.cpp:978 dvb/dvbconfigdialog.cpp:1152
 #, kde-format
 msgid "No Source"
-msgstr ""
+msgstr "Engin upptök"
 
 #: dvb/dvbconfigdialog.cpp:984
 #, kde-format
@@ -716,7 +718,7 @@ msgstr "Nafn:"
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
-msgstr ""
+msgstr "Nota hærri LNBf-spennu:"
 
 #: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
@@ -738,7 +740,7 @@ msgstr "Grunnstillingar:"
 #: dvb/dvbconfigdialog.cpp:1120
 #, kde-format
 msgid "DiSEqC Switch"
-msgstr ""
+msgstr "DiSEqC-rofi"
 
 #: dvb/dvbconfigdialog.cpp:1121
 #, kde-format
@@ -753,7 +755,7 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:1123
 #, kde-format
 msgid "Disable DiSEqC"
-msgstr ""
+msgstr "Gera DiSEqC óvirkt"
 
 #: dvb/dvbconfigdialog.cpp:1141
 #, kde-format
@@ -1032,7 +1034,7 @@ msgstr "Tíska"
 
 #: dvb/dvbepg.cpp:733
 msgid "Advisory"
-msgstr ""
+msgstr "Flokkun efnis"
 
 #: dvb/dvbepg.cpp:734
 msgid "People"
@@ -1060,7 +1062,7 @@ msgstr "Félagslegt"
 
 #: dvb/dvbepg.cpp:745
 msgid "Further"
-msgstr ""
+msgstr "Frekari"
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
@@ -1113,7 +1115,7 @@ msgstr "Í beinni"
 
 #: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
-msgstr ""
+msgstr "Flöt-rúmvörpun"
 
 #: dvb/dvbepg.cpp:769
 msgid "User Defined 1"
@@ -1145,7 +1147,7 @@ msgstr "Fréttir"
 
 #: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:836
 msgid "Show"
-msgstr ""
+msgstr "Þáttur"
 
 #: dvb/dvbepg.cpp:781 dvb/dvbepg.cpp:797
 msgid "Sports"
@@ -1209,11 +1211,11 @@ msgstr "Erótískt"
 
 #: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
-msgstr ""
+msgstr "Sjónvarpsmarkaður, verðsamanburður, sölukynning"
 
 #: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
-msgstr ""
+msgstr "Umræður / Viðtöl / Kappræður"
 
 #: dvb/dvbepg.cpp:811
 msgid "Other"
@@ -1221,7 +1223,7 @@ msgstr "Annað"
 
 #: dvb/dvbepg.cpp:823
 msgid "Report"
-msgstr ""
+msgstr "Rannsóknarblaðamennska"
 
 #: dvb/dvbepg.cpp:825
 msgid "Biography"
@@ -1233,7 +1235,7 @@ msgstr "Uppfræðandi"
 
 #: dvb/dvbepg.cpp:835
 msgid "Auditorium"
-msgstr ""
+msgstr "Fyrirlestrar"
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
@@ -1261,7 +1263,7 @@ msgstr "Heilsa"
 
 #: dvb/dvbepg.cpp:855
 msgid "Raffle"
-msgstr ""
+msgstr "Hlutavelta"
 
 #: dvb/dvbepg.cpp:856
 msgid "Television sales"
@@ -1269,7 +1271,7 @@ msgstr "Sjónvarpsmarkaður"
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
-msgstr ""
+msgstr "Sölukynning"
 
 #: dvb/dvbepg.cpp:861
 msgid "Interview"
@@ -1405,7 +1407,7 @@ msgstr "Titill"
 #, kde-format
 msgctxt "@info"
 msgid "All devices are used for recordings."
-msgstr ""
+msgstr "Öll tæki eru notuð fyrir upptökur."
 
 #: dvb/dvbliveview.cpp:201
 #, kde-format
@@ -1420,7 +1422,7 @@ msgstr ""
 #, kde-format
 msgctxt "message box"
 msgid "No available device found."
-msgstr ""
+msgstr "Ekkert tiltækt tæki fannst."
 
 #: dvb/dvbrecordingdialog.cpp:45
 #, kde-format
@@ -1629,7 +1631,7 @@ msgstr "Stöðva skönnun"
 #: dvb/dvbtab.cpp:97
 #, kde-format
 msgid "Program Guide"
-msgstr ""
+msgstr "Dagskrárleiðarvísir"
 
 #: dvb/dvbtab.cpp:102
 #, kde-format
@@ -1640,12 +1642,12 @@ msgstr "Stjórntextar"
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
-msgstr ""
+msgstr "Upptökuröðun"
 
 #: dvb/dvbtab.cpp:115
 #, kde-format
 msgid "Instant Record"
-msgstr ""
+msgstr "Samstundis-upptaka"
 
 #: dvb/dvbtab.cpp:123
 #, kde-format
@@ -1684,13 +1686,13 @@ msgstr ""
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
-msgstr ""
+msgstr "Samstundis-upptaka hafin"
 
 #: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
-msgstr ""
+msgstr "Samstundis-upptaka stöðvuð"
 
 #: dvb/xmltv.cpp:212
 #, kde-format
@@ -1813,6 +1815,7 @@ msgstr "Kaffeine"
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr ""
+"Margmiðlunarspilari frá KDE með stuðningi við stafrænar sjónvarpsútsendingar"
 
 #: main.cpp:145
 #, kde-format
@@ -1849,7 +1852,7 @@ msgstr "&1 Spila skrá"
 #: mainwindow.cpp:115
 #, kde-format
 msgid "Open dialog to play a file"
-msgstr ""
+msgstr "Opna glugga til að spila skrá"
 
 #: mainwindow.cpp:119
 #, kde-format
