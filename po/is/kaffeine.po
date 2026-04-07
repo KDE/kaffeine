@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2026-03-29 20:26+0000\n"
+"PO-Revision-Date: 2026-04-06 16:57+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -265,7 +265,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:840
 #, kde-format
 msgid "Transmission mode:"
-msgstr ""
+msgstr "Sendihamur:"
 
 #: dvb/dvbchanneldialog.cpp:802 dvb/dvbchanneldialog.cpp:823
 #: dvb/dvbchanneldialog.cpp:842
@@ -457,17 +457,17 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
 msgid "Begin margin (minutes):"
-msgstr ""
+msgstr "Bilsvæði á undan (mínútur):"
 
 #: dvb/dvbconfigdialog.cpp:130
 #, kde-format
 msgid "End margin (minutes):"
-msgstr ""
+msgstr "Bilsvæði á eftir (mínútur):"
 
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr ""
+msgstr "Nafnastíll fyrir upptökur:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
@@ -475,11 +475,13 @@ msgid ""
 "The following substitutions work: \"%year\" for year (YYYY) and the "
 "following: %month, %day, %hour, %min, %sec, %channel and %title"
 msgstr ""
+"Eftirfarandi útskipingar virka: \"%year\" fyrir ártal (YYYY) og einnig "
+"eftirfarandi: %month, %day, %hour, %min, %sec, %channel og %title"
 
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
 msgid "Action after recording finishes:"
-msgstr ""
+msgstr "Aðgerð eftir að upptöku lýkur:"
 
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
@@ -494,22 +496,22 @@ msgstr "Nota ISO 8859-1 stafatöflu í stað ISO 6937:"
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
 msgid "Create info files to accompany EPG recordings:"
-msgstr ""
+msgstr "Búa til info-skrár sem fylgja með EPG-upptökum:"
 
 #: dvb/dvbconfigdialog.cpp:179
 #, kde-format
 msgid "Scan channels when idle to fetch fresh EPG data:"
-msgstr ""
+msgstr "Skanna rásir á meðan iðjuleysi standur til að uppfæra EPG-gögn:"
 
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
 #, kde-format
 msgid "Scan data last updated on %1"
-msgstr ""
+msgstr "Skönnunargögn síðast uppfærð %1"
 
 #: dvb/dvbconfigdialog.cpp:193
 #, kde-format
 msgid "Update Scan Data over Internet"
-msgstr ""
+msgstr "Uppfæra skönnunargögn um internetið"
 
 #: dvb/dvbconfigdialog.cpp:197
 #, kde-format
@@ -576,6 +578,8 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"Skönnunarskrá er að verða stærri en %1 KB.\n"
+"Hætti, því eitthvað fór úrskeiðis...\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -584,6 +588,9 @@ msgid ""
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
+"Tókst að uppfæra skönnunargögn. Tók við %1 KB.\n"
+"Breytingar taka gildi eftir að þú hefur lokað\n"
+"stillingaglugganum."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -1546,7 +1553,7 @@ msgstr "Rásaskönnun"
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
 msgid "Search transponders for other Networks"
-msgstr ""
+msgstr "Leita að endurvarpa fyrir önnur netkerfi"
 
 #: dvb/dvbscandialog.cpp:307
 #, kde-format
@@ -1576,7 +1583,7 @@ msgstr "Merki/suð hlutfall (SNR):"
 #: dvb/dvbscandialog.cpp:332
 #, kde-format
 msgid "Tuned:"
-msgstr ""
+msgstr "Stillt:"
 
 #: dvb/dvbscandialog.cpp:345
 #, kde-format
@@ -1621,7 +1628,7 @@ msgstr "Niðurstöður skönnunar"
 #: dvb/dvbscandialog.cpp:391
 #, kde-format
 msgid "Current Transponder"
-msgstr ""
+msgstr "Núverandi endurvarpi"
 
 #: dvb/dvbscandialog.cpp:473
 #, kde-format
@@ -1673,6 +1680,8 @@ msgid ""
 "Kaffeine is currently recording programs.\n"
 "Do you really want to close the application?"
 msgstr ""
+"Kaffeine er að taka upp dagskrárliði.\n"
+"Viltu í alvörunni loka forritinu?"
 
 #: dvb/dvbtab.cpp:414
 #, kde-format
@@ -1681,6 +1690,8 @@ msgid ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 msgstr ""
+"Kaffeine er með upptökur á áætlun.\n"
+"Viltu í alvörunni loka forritinu?"
 
 #: dvb/dvbtab.cpp:487
 #, kde-format
@@ -1865,6 +1876,8 @@ msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"Hefja spilun af CD-hljómdiski. Gengið er út frá því að CD-diskurinn sé þegar "
+"í CD-drifinu"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -1877,6 +1890,8 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"Hefja spilun af CD-mynddiski. Gengið er út frá því að CD-diskurinn sé þegar "
+"í CD-drifinu"
 
 #: mainwindow.cpp:131
 #, kde-format
@@ -1889,6 +1904,8 @@ msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
 msgstr ""
+"Hefja spilun af DVD-mynddiski Gengið er út frá því að DVD-diskurinn sé þegar "
+"í DVD-drifinu"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2011,6 +2028,7 @@ msgstr ""
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
 msgstr ""
+"Skránum/slóðunum sem eru opnaðar með forritinu verður eytt eftir notkun"
 
 #: mainwindow.cpp:479
 #, kde-format
