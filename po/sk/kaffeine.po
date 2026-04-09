@@ -15,8 +15,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 23.08.3\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 23.08.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -586,17 +586,12 @@ msgid ""
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:701
-#, fuzzy, kde-format
-#| msgid ""
-#| "Scan data successfully updated. Changes take\n"
-#| "effect after you have closed the configuration dialog."
+#, kde-format
 msgid ""
 "Scan data successfully updated. %1 KB received.\n"
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
-"Scanované údaje úspešne aktualizované. Zmeny sa\n"
-"prejavia po zatvorení konfiguračného dialógu."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -2242,19 +2237,19 @@ msgstr "lineárny"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif"
-msgstr ""
+msgstr "yadif"
 
 #: mediawidget.cpp:242
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "yadif2x"
-msgstr ""
+msgstr "yadif2x"
 
 #: mediawidget.cpp:248
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "phosphor"
-msgstr ""
+msgstr "phosphor"
 
 #: mediawidget.cpp:254
 #, kde-format
@@ -2688,389 +2683,310 @@ msgstr "Nemôžem otvoriť SQLite databázu."
 #~ msgstr "Rušenie prekladania Vypnuté"
 
 #, fuzzy
-#~| msgid "Country %1: not rated\n"
 #~ msgid "not rated\n"
 #~ msgstr "Krajina %1: nehodnotené\n"
 
 #, fuzzy
-#~| msgid "Country %1: rating: %2 years.\n"
 #~ msgid "Parental rate: %1%2\n"
 #~ msgstr "Krajina %1: hodnotenie: %2 rokov.\n"
 
 #, fuzzy
-#~| msgid "Country %1: rating: %2 years.\n"
 #~ msgid "Parental rate: %1 years.\n"
 #~ msgstr "Krajina %1: hodnotenie: %2 rokov.\n"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Algonquian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Apache languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Original Language"
 #~ msgid "Artificial languages"
 #~ msgstr "Pôvodný jazyk"
 
 #, fuzzy
-#~| msgid "Equestrian"
 #~ msgid "Asturian"
 #~ msgstr "Jazdectvo"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Athapascan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Australian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Banda languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Bamileke languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Baltic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Berber languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Bihari languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Batak languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Caucasian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Celtic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Chamic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Cushitic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Land Dayak languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Original Language"
 #~ msgid "Dravidian languages"
 #~ msgstr "Pôvodný jazyk"
 
 #, fuzzy
-#~| msgid "Tennis"
 #~ msgid "Finnish"
 #~ msgstr "Tenis"
 
 #, fuzzy
-#~| msgid "Original Language"
 #~ msgid "Finno-Ugrian languages"
 #~ msgstr "Pôvodný jazyk"
 
 #, fuzzy
-#~| msgid "Fashion"
 #~ msgid "Fon"
 #~ msgstr "Móda"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Germanic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Horizontal"
 #~ msgid "Gorontalo"
 #~ msgstr "Horizotnálne"
 
 #, fuzzy
-#~| msgctxt "@title:column tv show"
-#~| msgid "Duration"
 #~ msgid "Gujarati"
 #~ msgstr "Trvanie"
 
 #, fuzzy
-#~| msgid "Original Language"
 #~ msgid "Himachali languages"
 #~ msgstr "Pôvodný jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Ijo languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Interview"
 #~ msgid "Interlingue"
 #~ msgstr "Interview"
 
 #, fuzzy
-#~| msgid "Interview"
 #~ msgid "Interlingua"
 #~ msgstr "Interview"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Indic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Iranian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Iroquoian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Karen languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Khoisan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Kru languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Magazine"
 #~ msgid "Magahi"
 #~ msgstr "Časopis"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Austronesian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Uncoded languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Mon-Khmer languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Manobo languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Multiple languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Munda languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Mayan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Nahuatl languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Nubian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Classical"
 #~ msgid "Classical Newari"
 #~ msgstr "Klasika"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Otomian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Papuan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Philippine languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Policy"
 #~ msgid "Polish"
 #~ msgstr "Politika"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Prakrit languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Romance languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Romance"
 #~ msgid "Romansh"
 #~ msgstr "Romantický"
 
 #, fuzzy
-#~| msgid "Romance"
 #~ msgid "Romany"
 #~ msgstr "Romantický"
 
 #, fuzzy
-#~| msgid "Romance"
 #~ msgid "Romanian"
 #~ msgstr "Romantický"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Salishan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Semitic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Original Language"
 #~ msgid "Sign Languages"
 #~ msgstr "Pôvodný jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Siouan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Slavic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Sami languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Songhai languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Equestrian"
 #~ msgid "Sumerian"
 #~ msgstr "Jazdectvo"
 
 #, fuzzy
-#~| msgid "Classical"
 #~ msgid "Classical Syriac"
 #~ msgstr "Klasika"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Tai languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Tupi languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Altaic languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Undefined"
 #~ msgid "Undetermined"
 #~ msgstr "Nedefinované"
 
 #, fuzzy
-#~| msgid "Variety"
 #~ msgid "Vai"
 #~ msgstr "Rôzne"
 
 #, fuzzy
-#~| msgctxt "rename an entry in a list"
-#~| msgid "Rename"
 #~ msgid "Vietnamese"
 #~ msgstr "Premenovať"
 
 #, fuzzy
-#~| msgid "Erotic"
 #~ msgid "Votic"
 #~ msgstr "Erotické"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Wakashan languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Sorbian languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Yupik languages"
 #~ msgstr "Jazyk"
 
 #, fuzzy
-#~| msgid "Language"
 #~ msgid "Zande languages"
 #~ msgstr "Jazyk"
 
@@ -3108,18 +3024,14 @@ msgstr "Nemôžem otvoriť SQLite databázu."
 #~ msgstr "Vaša pozícia (potrebné iba pre USALS)"
 
 #, fuzzy
-#~| msgid "Add Subtitle"
 #~ msgid "cannot set subtitle file %1"
 #~ msgstr "Pridať titulky"
 
 #, fuzzy
-#~| msgctxt "@label:listbox"
-#~| msgid "Startup display mode:"
 #~ msgid "unknown startup display mode %1"
 #~ msgstr "Režim zobrazovania pri štarte:"
 
 #, fuzzy
-#~| msgid "Audio channel:"
 #~ msgid "invalid channel"
 #~ msgstr "Audio kanál:"
 
@@ -3151,30 +3063,22 @@ msgstr "Nemôžem otvoriť SQLite databázu."
 #~ msgstr "LOF (MHz)"
 
 #, fuzzy
-#~| msgid "Transmission mode:"
 #~ msgid "unknown transmission type"
 #~ msgstr "Vysielací mód:"
 
 #, fuzzy
-#~| msgctxt "@title:window"
-#~| msgid "Open files"
 #~ msgid "open failed"
 #~ msgstr "Otvoriť súbory"
 
 #, fuzzy
-#~| msgid "Automatic Recording"
 #~ msgid "invalid recording"
 #~ msgstr "Automatické nahrávanie"
 
 #, fuzzy
-#~| msgctxt "@title:column tv show"
-#~| msgid "Disabled"
 #~ msgid "disabled %1"
 #~ msgstr "Zakázané"
 
 #, fuzzy
-#~| msgctxt "@title:window"
-#~| msgid "Open files"
 #~ msgid "special subtitle found"
 #~ msgstr "Otvoriť súbory"
 
@@ -3190,6 +3094,5 @@ msgstr "Nemôžem otvoriť SQLite databázu."
 #~ msgstr "Všetky súbory"
 
 #, fuzzy
-#~| msgid "Remove Satellite"
 #~ msgid "Remove Regexes"
 #~ msgstr "Odstrániť satelit"
