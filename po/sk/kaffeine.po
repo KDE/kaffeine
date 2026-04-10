@@ -584,6 +584,8 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"Scan file is becoming bigger than %1 KB.\n"
+"Aborting, as something might be wrong...\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -592,6 +594,9 @@ msgid ""
 "Changes take effect after you have closed\n"
 "the configuration dialog."
 msgstr ""
+"Scan data successfully updated. %1 KB received.\n"
+"Changes take effect after you have closed\n"
+"the configuration dialog."
 
 #: dvb/dvbconfigdialog.cpp:706
 #, kde-format
@@ -1741,7 +1746,7 @@ msgstr "Herec/herci"
 #: dvb/xmltv.cpp:226
 #, kde-format
 msgid "Writer(s)"
-msgstr ""
+msgstr "Autor(i)"
 
 #: dvb/xmltv.cpp:228
 #, kde-format
@@ -1756,7 +1761,7 @@ msgstr "Producent(i)"
 #: dvb/xmltv.cpp:232
 #, kde-format
 msgid "Composer(s)"
-msgstr ""
+msgstr "Skladateľ(ia)"
 
 #: dvb/xmltv.cpp:234
 #, kde-format
@@ -1766,7 +1771,7 @@ msgstr "Editor(i)"
 #: dvb/xmltv.cpp:236
 #, kde-format
 msgid "Presenter(s)"
-msgstr ""
+msgstr "Moderátor(i)"
 
 #: dvb/xmltv.cpp:238
 #, kde-format
@@ -2273,7 +2278,7 @@ msgstr "premiešavanie"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
-msgstr ""
+msgstr "Inverzný telecine"
 
 #: mediawidget.cpp:292
 #, kde-format
