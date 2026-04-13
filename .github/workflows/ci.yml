@@ -30,4 +30,4 @@ jobs:
         run: |
           cmake .
           make
-          sudo make install
+          make install
