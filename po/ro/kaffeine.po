@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2026-02-09 15:58+0000\n"
+"PO-Revision-Date: 2026-04-13 13:45+0100\n"
 "Last-Translator: Sergiu Bivol <sergiu@cip.md>\n"
 "Language-Team: Romanian <kde-i18n-ro@kde.org>\n"
 "Language: ro\n"
@@ -16,12 +16,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
 "20)) ? 1 : 2;\n"
-"X-Generator: Lokalize 25.08.1\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
 msgid "Cannot start mplayer process."
-msgstr ""
+msgstr "Procesul mplayer nu poate fi pornit."
 
 #: backend-vlc/vlcmediawidget.cpp:701 backend-vlc/vlcmediawidget.cpp:943
 #, kde-format
@@ -31,12 +31,10 @@ msgstr "Subtitlu %1"
 #: backend-vlc/vlcmediawidget.cpp:879
 #, kde-format
 msgid "CD track %1"
-msgstr ""
+msgstr "Pista CD %1"
 
 #: configurationdialog.cpp:42
-#, fuzzy, kde-format
-#| msgctxt "dialog"
-#| msgid "Configure Kaffeine"
+#, kde-format
 msgctxt "@title:window"
 msgid "Configure Kaffeine"
 msgstr "Configurează Kaffeine"
@@ -45,126 +43,118 @@ msgstr "Configurează Kaffeine"
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Normal Mode"
-msgstr ""
+msgstr "Regim normal"
 
 #: configurationdialog.cpp:51
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Minimal Mode"
-msgstr ""
+msgstr "Regim minim"
 
 #: configurationdialog.cpp:53
-#, fuzzy, kde-format
-#| msgid "Full Screen Mode"
+#, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Full Screen Mode"
-msgstr "Mod pe tot ecranul"
+msgstr "Pe tot ecranul"
 
 #: configurationdialog.cpp:55
 #, kde-format
 msgctxt "@item:inlistbox 'Startup display mode:'"
 msgid "Remember Last Setting"
-msgstr ""
+msgstr "Reține ultima configurare"
 
 #: configurationdialog.cpp:59
 #, kde-format
 msgctxt "@label:listbox"
 msgid "Startup display mode:"
-msgstr ""
+msgstr "Regim de afișare la pornire:"
 
 #: configurationdialog.cpp:68
-#, fuzzy, kde-format
-#| msgctxt "'Configure Kaffeine' dialog"
-#| msgid "Short skip duration:"
+#, kde-format
 msgctxt "@label:spinbox"
 msgid "Short skip duration:"
-msgstr "Durată pășire scurtă:"
+msgstr "Durată de pășire scurtă:"
 
 #: configurationdialog.cpp:77
-#, fuzzy, kde-format
-#| msgctxt "'Configure Kaffeine' dialog"
-#| msgid "Long skip duration:"
+#, kde-format
 msgctxt "@label:spinbox"
 msgid "Long skip duration:"
-msgstr "Durată pășire lungă:"
+msgstr "Durată de pășire lungă:"
 
 #: configurationdialog.cpp:82
-#, fuzzy, kde-format
-#| msgid "General Options"
+#, kde-format
 msgctxt "@title:group"
 msgid "General"
-msgstr "Opțiuni generale"
+msgstr "Generale"
 
 #: configurationdialog.cpp:89
 #, kde-format
 msgctxt "@label:textbox"
 msgid "Log messages:"
-msgstr ""
+msgstr "Mesaje de jurnal:"
 
 #: configurationdialog.cpp:92
 #, kde-format
 msgctxt "@action:button"
 msgid "Show dmesg"
-msgstr ""
+msgstr "Arată dmesg"
 
 #: configurationdialog.cpp:106
 #, kde-format
 msgctxt "@title:group"
 msgid "Diagnostics"
-msgstr ""
+msgstr "Diagnosticare"
 
 #: configurationdialog.cpp:114
 #, kde-format
 msgctxt "@label:textbox"
 msgid "LibVLC arguments:"
-msgstr ""
+msgstr "Argumente LibVLC:"
 
 #: configurationdialog.cpp:121
 #, kde-format
 msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
 msgstr ""
+"NOTĂ: Kaffeine trebuie repornită pentru ca noile argumente să intre în "
+"vigoare"
 
 #: configurationdialog.cpp:126
 #, kde-format
 msgctxt "@title:group"
 msgid "libVLC"
-msgstr ""
+msgstr "libVLC"
 
 #: configurationdialog.cpp:163
 #, kde-format
 msgctxt "@title:window"
 msgid "dmesg"
-msgstr ""
+msgstr "dmesg"
 
 #: dvb/dvbchanneldialog.cpp:108 dvb/dvbepgdialog.cpp:369
 #: dvb/dvbepgdialog.cpp:483 dvb/dvbrecordingdialog.cpp:256
 #: dvb/dvbscandialog.cpp:235
-#, fuzzy, kde-format
-#| msgid "Channel"
+#, kde-format
 msgctxt "@title:column tv show"
 msgid "Channel"
 msgstr "Canal"
 
 #: dvb/dvbchanneldialog.cpp:110
-#, fuzzy, kde-format
-#| msgid "Number"
+#, kde-format
 msgctxt "@title:column tv channel"
 msgid "Number"
 msgstr "Număr"
 
 #: dvb/dvbchanneldialog.cpp:292 dvb/dvbrecordingdialog.cpp:77
-#, fuzzy, kde-format
-#| msgid "Edit"
+#, kde-format
 msgctxt "@action"
 msgid "Edit"
-msgstr "Editează"
+msgstr "Modifică"
 
 #: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:728
 #: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:410
 #: playlist/playlisttab.cpp:430
-#, fuzzy, kde-format
-#| msgid "Remove"
+#, kde-format
 msgctxt "@action"
 msgid "Remove"
 msgstr "Elimină"
@@ -176,6 +166,8 @@ msgid ""
 "The channels will be sorted by number to allow drag and drop.\n"
 "Do you want to continue?"
 msgstr ""
+"Canalele vor fi sortate după număr pentru a permite tragerea și lăsarea.\n"
+"Doriți să continuați?"
 
 #: dvb/dvbchanneldialog.cpp:415
 #, kde-format
@@ -198,36 +190,30 @@ msgid "Circular right"
 msgstr "Circular dreapta"
 
 #: dvb/dvbchanneldialog.cpp:419
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Off"
+#, kde-format
 msgid "Off"
 msgstr "Dezactivat"
 
 #: dvb/dvbchanneldialog.cpp:709
-#, fuzzy, kde-format
-#| msgid "Edit channel"
+#, kde-format
 msgctxt "@title:window"
 msgid "Edit Channel"
-msgstr "Editare canale"
+msgstr "Modifică canalul"
 
 #: dvb/dvbchanneldialog.cpp:721
-#, fuzzy, kde-format
-#| msgid "Name:"
+#, kde-format
 msgctxt "@label tv channel"
 msgid "Name:"
-msgstr "Nume:"
+msgstr "Denumire:"
 
 #: dvb/dvbchanneldialog.cpp:730
-#, fuzzy, kde-format
-#| msgid "Number:"
+#, kde-format
 msgctxt "@label tv channel"
 msgid "Number:"
 msgstr "Număr:"
 
 #: dvb/dvbchanneldialog.cpp:739
-#, fuzzy, kde-format
-#| msgid "Source:"
+#, kde-format
 msgctxt "@label tv channel"
 msgid "Source:"
 msgstr "Sursă:"
@@ -301,10 +287,9 @@ msgid "PLP (stream ID):"
 msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:845
-#, fuzzy, kde-format
-#| msgid "Polarization:"
+#, kde-format
 msgid "Partial reception:"
-msgstr "Polarizare:"
+msgstr "Recepție parțială:"
 
 #: dvb/dvbchanneldialog.cpp:847
 #, kde-format
