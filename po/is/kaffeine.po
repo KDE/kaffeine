@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2026-04-06 16:57+0000\n"
+"PO-Revision-Date: 2026-04-29 17:40+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic\n"
 "Language: is\n"
@@ -443,16 +443,17 @@ msgstr "Heiti xmltv-skrár (valkvætt):"
 #, kde-format
 msgid "Add optional file to allow reading EPG data from xmltv files"
 msgstr ""
+"Bættu við valkvæðri skrá sem gerir kleift að lesa EPG-gögn úr xmltv-skrám"
 
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
 msgid "Disable parsing EPG data from MPEG-TS tables:"
-msgstr ""
+msgstr "Gera óvirkt að túlka EPG-gögn úr MPEG-TS töflum:"
 
 #: dvb/dvbconfigdialog.cpp:115
 #, kde-format
 msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
-msgstr ""
+msgstr "Notaðu þetta ef sjónvarpsþjónustan sendir ekki út áreiðanleg EPG-gögn"
 
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
@@ -522,6 +523,8 @@ msgstr "Breyta skönnunarskrá"
 #, kde-format
 msgid "You can add channels manually to this file before scanning for them."
 msgstr ""
+"Þú bætt handvirkt við sjónvarpsrásum í þessa skrá áður en þú reynir að "
+"skanna eftir þeim."
 
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
