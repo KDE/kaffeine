@@ -8,14 +8,15 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-03-17 00:42+0000\n"
-"PO-Revision-Date: 2013-09-08 07:04+0900\n"
-"Last-Translator: Gheyret Kenji <gheyret@gmail.com>\n"
+"PO-Revision-Date: 2026-05-30 16:42-0400\n"
+"Last-Translator: Abduqadir Abliz <sahranbay@gmail.com>\n"
 "Language-Team: Uyghur Computer Science Association <UKIJ@yahoogroups.com>\n"
 "Language: ug\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.9\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -102,7 +103,7 @@ msgstr ""
 #, kde-format
 msgctxt "@title:group"
 msgid "Diagnostics"
-msgstr "دىئاگنوزچى"
+msgstr "ئېنىقلاش"
 
 #: configurationdialog.cpp:114
 #, kde-format
@@ -146,7 +147,7 @@ msgstr "نومۇرى"
 #, kde-format
 msgctxt "@action"
 msgid "Edit"
-msgstr "تەھرىرلەش"
+msgstr "تەھرىر"
 
 #: dvb/dvbchanneldialog.cpp:300 dvb/dvbconfigdialog.cpp:728
 #: dvb/dvbrecordingdialog.cpp:84 playlist/playlisttab.cpp:410
@@ -167,12 +168,12 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:415
 #, kde-format
 msgid "Horizontal"
-msgstr "توغرا"
+msgstr "توغرىسىغا"
 
 #: dvb/dvbchanneldialog.cpp:416
 #, kde-format
 msgid "Vertical"
-msgstr "تىك"
+msgstr "بويىغا"
 
 #: dvb/dvbchanneldialog.cpp:417
 #, kde-format
@@ -185,11 +186,9 @@ msgid "Circular right"
 msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:419
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Off"
+#, kde-format
 msgid "Off"
-msgstr "تاقا"
+msgstr "تاقاق"
 
 #: dvb/dvbchanneldialog.cpp:709
 #, kde-format
@@ -207,7 +206,7 @@ msgstr "ئاتى:"
 #, kde-format
 msgctxt "@label tv channel"
 msgid "Number:"
-msgstr "رەقەم:"
+msgstr "نومۇر:"
 
 #: dvb/dvbchanneldialog.cpp:739
 #, kde-format
@@ -294,11 +293,9 @@ msgid "Sound broadcasting:"
 msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:851
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Channel:"
+#, kde-format
 msgid "SB channel ID:"
-msgstr "قانال:"
+msgstr ""
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
@@ -373,7 +370,7 @@ msgstr ""
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
 msgid "Network ID:"
-msgstr ""
+msgstr "تور كىملىك:"
 
 #: dvb/dvbchanneldialog.cpp:920
 #, kde-format
@@ -526,14 +523,12 @@ msgstr ""
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
 msgid "General Options"
-msgstr "ئادەتتىكى تاللانمىلار"
+msgstr "ئادەتتىكى تاللانما"
 
 #: dvb/dvbconfigdialog.cpp:251 dvb/dvbconfigdialog.cpp:456
-#, fuzzy, kde-format
-#| msgctxt "'Aspect Ratio' menu"
-#| msgid "Automatic"
+#, kde-format
 msgid "Automatic Recording"
-msgstr "ئاپتوماتىك"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:264 dvb/dvbconfigdialog.cpp:511
 #: dvb/dvbconfigdialog.cpp:512 dvb/dvbconfigdialog.cpp:542
@@ -554,12 +549,10 @@ msgid "Add another regular expression."
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:398
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "Remove"
+#, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr "چىقىرىۋەت"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
@@ -609,7 +602,7 @@ msgstr "سولغا يۆتكە"
 #: dvb/dvbconfigdialog.cpp:723
 #, kde-format
 msgid "Reset"
-msgstr "ئەسلىگە قايتۇرۇش"
+msgstr "ئەسلىگە قايتۇر"
 
 #: dvb/dvbconfigdialog.cpp:733
 #, kde-format
@@ -794,10 +787,9 @@ msgid "Remove Satellite"
 msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1241
-#, fuzzy, kde-format
-#| msgid "Position"
+#, kde-format
 msgid "Your position:"
-msgstr "ئورنى"
+msgstr ""
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -863,7 +855,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:652
 msgid "Comedy"
-msgstr ""
+msgstr "كومېدىيە"
 
 #: dvb/dvbepg.cpp:653
 msgid "Soap"
@@ -875,7 +867,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:655 dvb/dvbepg.cpp:706
 msgid "Classical"
-msgstr ""
+msgstr "كىلاسسىك"
 
 #: dvb/dvbepg.cpp:656
 msgid "Adult"
@@ -887,7 +879,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:662
 msgid "Weather"
-msgstr ""
+msgstr "ھاۋا رايى"
 
 #: dvb/dvbepg.cpp:663 dvb/dvbepg.cpp:680 dvb/dvbepg.cpp:725 dvb/dvbepg.cpp:732
 msgid "Magazine"
@@ -905,7 +897,7 @@ msgstr ""
 #: dvb/dvbepg.cpp:711 dvb/dvbepg.cpp:727 dvb/dvbepg.cpp:735 dvb/dvbepg.cpp:747
 #: dvb/dvbepg.cpp:759 dvb/dvbepg.cpp:768
 msgid "User Defined"
-msgstr ""
+msgstr "ئىشلەتكۈچى بەلگىلىگەن"
 
 #: dvb/dvbepg.cpp:671
 msgid "Quiz"
@@ -921,11 +913,11 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:679
 msgid "Events"
-msgstr ""
+msgstr "ھادىسە"
 
 #: dvb/dvbepg.cpp:681
 msgid "Football"
-msgstr ""
+msgstr "پۇتبول"
 
 #: dvb/dvbepg.cpp:682
 msgid "Tennis"
@@ -933,7 +925,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:683
 msgid "Team"
-msgstr ""
+msgstr "قوشۇن"
 
 #: dvb/dvbepg.cpp:684
 msgid "Athletics"
@@ -945,7 +937,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:686
 msgid "Water"
-msgstr ""
+msgstr "سۇ"
 
 #: dvb/dvbepg.cpp:687
 msgid "Winter"
@@ -972,11 +964,8 @@ msgid "10 to 16"
 msgstr ""
 
 #: dvb/dvbepg.cpp:698
-#, fuzzy
-#| msgctxt "@title:column tv show"
-#| msgid "Duration"
 msgid "Educational"
-msgstr "ۋاقتى"
+msgstr ""
 
 #: dvb/dvbepg.cpp:699
 msgid "Cartoons"
@@ -988,11 +977,11 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:707
 msgid "Folk"
-msgstr ""
+msgstr "خەلق كۈيلىرى"
 
 #: dvb/dvbepg.cpp:708
 msgid "Jazz"
-msgstr ""
+msgstr "جاز"
 
 #: dvb/dvbepg.cpp:709
 msgid "Opera"
@@ -1004,7 +993,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:716
 msgid "Performance"
-msgstr ""
+msgstr "ئۈنۈم"
 
 #: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
@@ -1015,11 +1004,8 @@ msgid "Religion"
 msgstr ""
 
 #: dvb/dvbepg.cpp:719
-#, fuzzy
-#| msgctxt "@title:column tv show"
-#| msgid "Duration"
 msgid "Traditional"
-msgstr "ۋاقتى"
+msgstr "مۇرەككەپ خەنزۇچە"
 
 #: dvb/dvbepg.cpp:720
 msgid "Literature"
@@ -1031,7 +1017,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:722
 msgid "Experimental"
-msgstr ""
+msgstr "سىناق"
 
 #: dvb/dvbepg.cpp:723
 msgid "Press"
@@ -1051,7 +1037,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:734
 msgid "People"
-msgstr ""
+msgstr "كىشى"
 
 #: dvb/dvbepg.cpp:740
 msgid "Nature"
@@ -1059,7 +1045,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:741
 msgid "Technology"
-msgstr ""
+msgstr "تېخنىكا"
 
 #: dvb/dvbepg.cpp:742
 msgid "Medicine"
@@ -1079,7 +1065,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
-msgstr ""
+msgstr "تىل"
 
 #: dvb/dvbepg.cpp:752 dvb/dvbepg.cpp:848
 msgid "Travel"
@@ -1110,11 +1096,9 @@ msgid "Gardening"
 msgstr ""
 
 #: dvb/dvbepg.cpp:763 iso-codes.cpp:125 iso-codes.cpp:155
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Original Language"
-msgstr "ئەسلى چوڭلۇقى"
+msgstr ""
 
 #: dvb/dvbepg.cpp:764
 msgid "Black and White "
@@ -1126,7 +1110,7 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:766
 msgid "Live"
-msgstr ""
+msgstr "نەق مەيدان"
 
 #: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
@@ -1150,42 +1134,39 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:777
 msgid "Undefined"
-msgstr ""
+msgstr "ئېنىقلانمىغان"
 
 #: dvb/dvbepg.cpp:778 dvb/dvbepg.cpp:808
 msgid "Movie"
-msgstr ""
+msgstr "كىنو"
 
 #: dvb/dvbepg.cpp:779 dvb/dvbepg.cpp:796 dvb/dvbepg.cpp:822
 msgid "News"
-msgstr ""
+msgstr "خەۋەر"
 
 #: dvb/dvbepg.cpp:780 dvb/dvbepg.cpp:836
 msgid "Show"
-msgstr ""
+msgstr "كۆرسەت"
 
 #: dvb/dvbepg.cpp:781 dvb/dvbepg.cpp:797
 msgid "Sports"
-msgstr ""
+msgstr "تەنتەربىيە"
 
 #: dvb/dvbepg.cpp:782 dvb/dvbepg.cpp:806
 msgid "Children"
-msgstr ""
+msgstr "بالا"
 
 #: dvb/dvbepg.cpp:783
 msgid "Music"
-msgstr ""
+msgstr "نەغمە"
 
 #: dvb/dvbepg.cpp:784
 msgid "Culture"
 msgstr ""
 
 #: dvb/dvbepg.cpp:786 dvb/dvbepg.cpp:798
-#, fuzzy
-#| msgctxt "@title:column tv show"
-#| msgid "Duration"
 msgid "Education"
-msgstr "ۋاقتى"
+msgstr "مائارىپ"
 
 #: dvb/dvbepg.cpp:787
 msgid "Leisure"
@@ -1193,13 +1174,11 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:788
 msgid "Special"
-msgstr ""
+msgstr "ئالاھىدە"
 
 #: dvb/dvbepg.cpp:789 dvb/dvbepg.cpp:790 dvb/dvbepg.cpp:791
-#, fuzzy
-#| msgid "Reset"
 msgid "Reserved"
-msgstr "ئەسلىگە قايتۇرۇش"
+msgstr ""
 
 #: dvb/dvbepg.cpp:799
 msgid "Soap opera"
@@ -1211,17 +1190,15 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:801
 msgid "Series"
-msgstr ""
+msgstr "يۈرۈشلۈك"
 
 #: dvb/dvbepg.cpp:803
 msgid "Reality show"
 msgstr ""
 
 #: dvb/dvbepg.cpp:804
-#, fuzzy
-#| msgid "Configuration:"
 msgid "Information"
-msgstr "سەپلىمە:"
+msgstr "ئۇچۇر"
 
 #: dvb/dvbepg.cpp:805
 msgid "Comical"
@@ -1241,33 +1218,27 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:811
 msgid "Other"
-msgstr ""
+msgstr "باشقا"
 
 #: dvb/dvbepg.cpp:823
 msgid "Report"
-msgstr ""
+msgstr "دوكلات"
 
 #: dvb/dvbepg.cpp:825
 msgid "Biography"
 msgstr ""
 
 #: dvb/dvbepg.cpp:829
-#, fuzzy
-#| msgctxt "@title:column tv show"
-#| msgid "Duration"
 msgid "Educative"
-msgstr "ۋاقتى"
+msgstr ""
 
 #: dvb/dvbepg.cpp:835
-#, fuzzy
-#| msgctxt "'Playback' menu"
-#| msgid "Audio"
 msgid "Auditorium"
-msgstr "ئۈن"
+msgstr ""
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
-msgstr ""
+msgstr "مۇزىكىلىق"
 
 #: dvb/dvbepg.cpp:838
 msgid "Making of"
@@ -1283,21 +1254,19 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:846
 msgid "Country"
-msgstr ""
+msgstr "دۆلەت"
 
 #: dvb/dvbepg.cpp:847
 msgid "Health"
-msgstr ""
+msgstr "ساغلاملىق"
 
 #: dvb/dvbepg.cpp:855
 msgid "Raffle"
 msgstr ""
 
 #: dvb/dvbepg.cpp:856
-#, fuzzy
-#| msgid "Television"
 msgid "Television sales"
-msgstr "تېلېۋىزور"
+msgstr ""
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
@@ -1313,11 +1282,11 @@ msgstr ""
 
 #: dvb/dvbepg.cpp:865
 msgid "Interactive"
-msgstr ""
+msgstr "دىئالوگلۇق"
 
 #: dvb/dvbepg.cpp:866
 msgid "Policy"
-msgstr ""
+msgstr "تۈزۈم"
 
 #: dvb/dvbepg.cpp:899
 #, no-c-format, kde-format
@@ -1394,11 +1363,9 @@ msgid "EPG language:"
 msgstr ""
 
 #: dvb/dvbepgdialog.cpp:105 dvb/dvbepgdialog.cpp:200
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Any language"
-msgstr "ئەسلى چوڭلۇقى"
+msgstr ""
 
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
@@ -1421,7 +1388,7 @@ msgstr "ئىزدە:"
 #, kde-format
 msgctxt "@title:column tv show"
 msgid "Start"
-msgstr "باشلاش"
+msgstr "باشلا"
 
 #: dvb/dvbepgdialog.cpp:479 dvb/dvbrecordingdialog.cpp:260
 #, kde-format
@@ -1478,17 +1445,17 @@ msgstr "ئاتى"
 #, kde-format
 msgctxt "@title:column tv show"
 msgid "Disabled"
-msgstr ""
+msgstr "چەكلەنگەن"
 
 #: dvb/dvbrecordingdialog.cpp:307
 #, kde-format
 msgid "Disabled"
-msgstr ""
+msgstr "چەكلەنگەن"
 
 #: dvb/dvbrecordingdialog.cpp:309
 #, kde-format
 msgid "Enabled"
-msgstr ""
+msgstr "قوزغىتىلغان"
 
 #: dvb/dvbrecordingdialog.cpp:384
 #, kde-format
@@ -1518,7 +1485,7 @@ msgstr "باشلاش:"
 #, kde-format
 msgctxt "@label tv show"
 msgid "Duration:"
-msgstr "ۋاقتى:"
+msgstr "داۋاملىشىش ۋاقتى:"
 
 #: dvb/dvbrecordingdialog.cpp:441
 #, kde-format
@@ -1545,10 +1512,9 @@ msgid "Daily"
 msgstr "كۈندە"
 
 #: dvb/dvbscandialog.cpp:87
-#, fuzzy, kde-format
-#| msgid "%1%"
+#, kde-format
 msgid "%1"
-msgstr "%1%"
+msgstr "%1"
 
 #: dvb/dvbscandialog.cpp:237
 #, kde-format
@@ -1624,12 +1590,12 @@ msgstr ""
 #: dvb/dvbscandialog.cpp:351
 #, kde-format
 msgid "Radio"
-msgstr "رادىئو"
+msgstr "رادىيو"
 
 #: dvb/dvbscandialog.cpp:354
 #, kde-format
 msgid "TV"
-msgstr "تېلېۋىزور"
+msgstr "TV"
 
 #: dvb/dvbscandialog.cpp:357
 #, kde-format
@@ -1764,11 +1730,9 @@ msgid "Composer(s)"
 msgstr ""
 
 #: dvb/xmltv.cpp:234
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "Edit"
+#, kde-format
 msgid "Editor(s)"
-msgstr "تەھرىرلەش"
+msgstr ""
 
 #: dvb/xmltv.cpp:236
 #, kde-format
@@ -1789,14 +1753,12 @@ msgstr ""
 #, kde-format
 msgctxt "%1 is a role (actor, director, etc); %2 is one or more people"
 msgid "%1: %2\n"
-msgstr ""
+msgstr "%1: %2\n"
 
 #: dvb/xmltv.cpp:377
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Duration:"
+#, kde-format
 msgid "rating: %1"
-msgstr "ۋاقتى:"
+msgstr ""
 
 #: dvb/xmltv.cpp:451
 #, kde-format
@@ -1809,23 +1771,19 @@ msgid " Episode %1"
 msgstr ""
 
 #: dvb/xmltv.cpp:485
-#, fuzzy, kde-format
-#| msgctxt "@label tv show"
-#| msgid "Start:"
+#, kde-format
 msgid "Star rating: %1"
-msgstr "باشلاش:"
+msgstr ""
 
 #: dvb/xmltv.cpp:491
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Date: %1"
-msgstr "ئاتى: %1"
+msgstr "چېسلا: %1"
 
 #: dvb/xmltv.cpp:495
-#, fuzzy, kde-format
-#| msgid "Name: %1"
+#, kde-format
 msgid "Category: %1"
-msgstr "ئاتى: %1"
+msgstr ""
 
 #: dvb/xmltv.cpp:509
 #, kde-format
@@ -1833,18 +1791,14 @@ msgid "Keyword: %1"
 msgstr ""
 
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "language: %1"
-msgstr "ئەسلى چوڭلۇقى"
+msgstr ""
 
 #: dvb/xmltv.cpp:538
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgid "Original language: %1"
-msgstr "ئەسلى چوڭلۇقى"
+msgstr ""
 
 #: dvb/xmltv.cpp:544
 #, kde-format
@@ -1867,10 +1821,9 @@ msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr ""
 
 #: main.cpp:163
-#, fuzzy, kde-format
-#| msgid "Maintainer"
+#, kde-format
 msgid "Maintainer"
-msgstr "مەسئۇل كىشى"
+msgstr "ئاسرىغۇچى"
 
 #: main.cpp:168
 #, kde-format
@@ -1881,13 +1834,13 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "ئابدۇقادىر ئابلىز, غەيرەت كەنجى"
+msgstr "ئابدۇقادىر ئابلىز، غەيرەت كەنجى"
 
 #: main.cpp:173
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "sahran.ug@gmail.com,  gheyret@gmail.com"
+msgstr "sahranbay@gmail.com, gheyret@gmail.com"
 
 #: mainwindow.cpp:113
 #, kde-format
@@ -1996,12 +1949,12 @@ msgstr "تەڭشەك(&S)"
 #: mainwindow.cpp:279
 #, kde-format
 msgid "Start"
-msgstr "باشلاش"
+msgstr "باشلا"
 
 #: mainwindow.cpp:280
 #, kde-format
 msgid "Playback"
-msgstr "قويۇش"
+msgstr "ياڭرات"
 
 #: mainwindow.cpp:281
 #, kde-format
@@ -2014,28 +1967,24 @@ msgid "Television"
 msgstr "تېلېۋىزور"
 
 #: mainwindow.cpp:347
-#, fuzzy, kde-format
-#| msgid "&File"
+#, kde-format
 msgid "Play &File"
-msgstr "ھۆججەت(&F)"
+msgstr ""
 
 #: mainwindow.cpp:351
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Play &Audio CD"
-msgstr "VCD قويۇش"
+msgstr ""
 
 #: mainwindow.cpp:355
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Play &Video CD"
-msgstr "VCD قويۇش"
+msgstr ""
 
 #: mainwindow.cpp:359
-#, fuzzy, kde-format
-#| msgid "Play Video CD"
+#, kde-format
 msgid "Play &DVD"
-msgstr "VCD قويۇش"
+msgstr ""
 
 #: mainwindow.cpp:364
 #, kde-format
@@ -2045,7 +1994,7 @@ msgstr ""
 #: mainwindow.cpp:368
 #, kde-format
 msgid "&Quit"
-msgstr ""
+msgstr "چېكىن(&Q)"
 
 #: mainwindow.cpp:477
 #, kde-format
@@ -2060,6 +2009,7 @@ msgstr ""
 #, kde-format
 msgid "The files/URLs opened by the application will be deleted after use"
 msgstr ""
+"پىروگرامما ئاچقان ھۆججەت/تور ئادرېسى ئىشلىتىلىپ بولغاندىن كېيىن ئۆچۈرۈلىدۇ"
 
 #: mainwindow.cpp:479
 #, kde-format
@@ -2130,7 +2080,7 @@ msgstr "ئالدىنقى"
 #: mediawidget.cpp:97
 #, kde-format
 msgid "Play"
-msgstr "قوي"
+msgstr "ياڭرات"
 
 #: mediawidget.cpp:98
 #, kde-format
@@ -2160,12 +2110,10 @@ msgid "Minimal Mode"
 msgstr ""
 
 #: mediawidget.cpp:144
-#, fuzzy, kde-format
-#| msgctxt "@title:column tv show"
-#| msgid "Title"
+#, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "ماۋزۇ"
+msgstr "قوشۇمچە ماۋزۇ"
 
 #: mediawidget.cpp:148
 #, kde-format
@@ -2201,13 +2149,13 @@ msgstr ""
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Increase Volume"
-msgstr "ئاۋازنى چوڭايتىش"
+msgstr "ئاۋازنى يۇقىرىلات"
 
 #: mediawidget.cpp:182
 #, kde-format
 msgctxt "'Audio' menu"
 msgid "Decrease Volume"
-msgstr "ئاۋازنى كىچىكلىتىش"
+msgstr "ئاۋازنى تۆۋەنلەت"
 
 #: mediawidget.cpp:188
 #, kde-format
@@ -2231,7 +2179,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "disabled"
-msgstr ""
+msgstr "چەكلەنگەن"
 
 #: mediawidget.cpp:217
 #, kde-format
@@ -2273,13 +2221,13 @@ msgstr ""
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "x"
-msgstr ""
+msgstr "x"
 
 #: mediawidget.cpp:260
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
-msgstr ""
+msgstr "ئوتتۇرىچە"
 
 #: mediawidget.cpp:266
 #, kde-format
@@ -2297,7 +2245,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Video' menu"
 msgid "Aspect Ratio"
-msgstr ""
+msgstr "تەرەپ نىسبىتى"
 
 #: mediawidget.cpp:299
 #, kde-format
@@ -2315,7 +2263,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "4:3"
-msgstr "4:3"
+msgstr ""
 
 #: mediawidget.cpp:317
 #, kde-format
@@ -2327,7 +2275,7 @@ msgstr ""
 #, kde-format
 msgctxt "'Aspect Ratio' menu"
 msgid "16:9"
-msgstr "16:9"
+msgstr ""
 
 #: mediawidget.cpp:329
 #, kde-format
@@ -2354,16 +2302,12 @@ msgid "2.39:1"
 msgstr ""
 
 #: mediawidget.cpp:352
-#, fuzzy, kde-format
-#| msgctxt "'Playback' menu"
-#| msgid "Video"
+#, kde-format
 msgid "Video size"
-msgstr "سىن"
+msgstr ""
 
 #: mediawidget.cpp:360
-#, fuzzy, kde-format
-#| msgctxt "'Aspect Ratio' menu"
-#| msgid "Automatic"
+#, kde-format
 msgctxt "Video size"
 msgid "Automatic"
 msgstr "ئاپتوماتىك"
@@ -2375,11 +2319,10 @@ msgid "25%"
 msgstr ""
 
 #: mediawidget.cpp:372
-#, fuzzy, kde-format
-#| msgid "0%"
+#, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr "0%"
+msgstr ""
 
 #: mediawidget.cpp:379
 #, kde-format
@@ -2388,9 +2331,7 @@ msgid "75%"
 msgstr ""
 
 #: mediawidget.cpp:385
-#, fuzzy, kde-format
-#| msgctxt "automatic resize"
-#| msgid "Original Size"
+#, kde-format
 msgctxt "Video size"
 msgid "Original Size"
 msgstr "ئەسلى چوڭلۇقى"
@@ -2434,7 +2375,7 @@ msgstr ""
 #, kde-format
 msgctxt "playback menu"
 msgid "Skip"
-msgstr "ئۆتكۈزۈۋەت"
+msgstr "ئاتلا"
 
 #: mediawidget.cpp:466 mediawidget.cpp:475 mediawidget.cpp:1225
 #: mediawidget.cpp:1235
@@ -2459,7 +2400,7 @@ msgstr ""
 #, kde-format
 msgctxt "dvd navigation"
 msgid "DVD Menu"
-msgstr "DVD Menu"
+msgstr ""
 
 #: mediawidget.cpp:517
 #, kde-format
@@ -2632,9 +2573,7 @@ msgid "Add Subtitle"
 msgstr ""
 
 #: playlist/playlisttab.cpp:420
-#, fuzzy, kde-format
-#| msgctxt "@action"
-#| msgid "New"
+#, kde-format
 msgctxt "@action:inmenu playlist"
 msgid "New"
 msgstr "يېڭى"
@@ -2682,348 +2621,290 @@ msgstr ""
 #~ msgid "No device found."
 #~ msgstr "ئۈسكۈنە تېپىلمىدى."
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Algonquian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Apache languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Artificial languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Athapascan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Australian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Banda languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Bamileke languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Baltic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Berber languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Bihari languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Batak languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Caucasian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Celtic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Chamic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Cushitic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Land Dayak languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Dravidian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Finno-Ugrian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Germanic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgid "Horizontal"
 #~ msgid "Gorontalo"
 #~ msgstr "توغرا"
 
-#, fuzzy
 #~| msgctxt "@title:column tv show"
 #~| msgid "Duration"
 #~ msgid "Gujarati"
 #~ msgstr "ۋاقتى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Himachali languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Ijo languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Indic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Iranian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Iroquoian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Karen languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Khoisan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Kru languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Austronesian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Uncoded languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Mon-Khmer languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Manobo languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Multiple languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Munda languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Mayan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Nahuatl languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Nubian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Otomian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Papuan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Philippine languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Prakrit languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Romance languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Salishan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Semitic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Sign Languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Siouan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Slavic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Sami languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Songhai languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Tai languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Tupi languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Altaic languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "rename an entry in a list"
 #~| msgid "Rename"
 #~ msgid "Vietnamese"
 #~ msgstr "ئات ئۆزگەرت"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Wakashan languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Sorbian languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Yupik languages"
 #~ msgstr "ئەسلى چوڭلۇقى"
 
-#, fuzzy
 #~| msgctxt "automatic resize"
 #~| msgid "Original Size"
 #~ msgid "Zande languages"
@@ -3033,7 +2914,6 @@ msgstr ""
 #~ msgid "Off"
 #~ msgstr "تاقا"
 
-#, fuzzy
 #~| msgctxt "'Aspect Ratio' menu"
 #~| msgid "Automatic"
 #~ msgid "invalid recording"
