@@ -47,6 +47,7 @@
   <name xml:lang="sr-ijekavianlatin">Kaffeine</name>
   <name xml:lang="sv">Kaffeine</name>
   <name xml:lang="tr">Kafein</name>
+  <name xml:lang="ug">Kaffeine</name>
   <name xml:lang="uk">Kaffeine</name>
   <name xml:lang="zh-CN">Kaffeine</name>
   <name xml:lang="zh-TW">Kaffeine</name>
@@ -90,6 +91,7 @@
   <summary xml:lang="sr-ijekavianlatin">Multimedijski plejer</summary>
   <summary xml:lang="sv">Multimediaspelare</summary>
   <summary xml:lang="tr">Çoklu Ortam Oynatıcısı</summary>
+  <summary xml:lang="ug">كۆپ ۋاسىتە ياڭراتقۇچ</summary>
   <summary xml:lang="uk">Програвач мультимедійних файлів</summary>
   <summary xml:lang="zh-CN">多媒体播放器</summary>
   <summary xml:lang="zh-TW">多媒體播放器</summary>
@@ -179,6 +181,7 @@
       <caption xml:lang="sl">Glavno okno Kaffeine</caption>
       <caption xml:lang="sv">Huvudfönstret i Kaffeine</caption>
       <caption xml:lang="tr">Kafein ana penceresi</caption>
+      <caption xml:lang="ug">Kaffeine ئاساسى كۆزنىكى</caption>
       <caption xml:lang="uk">Головне вікно Kaffeine</caption>
       <caption xml:lang="zh-CN">Kaffeine 主窗口</caption>
       <caption xml:lang="zh-TW">Kaffeine 主視窗</caption>
