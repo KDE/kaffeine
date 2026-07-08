@@ -33,8 +33,6 @@
 #include <QString>
 #include <QRegularExpression>
 
-#include <kwindowsystem_version.h>
-
 #include <iostream>
 
 #include <config-kaffeine.h>
@@ -182,17 +180,8 @@ void KaffeineApplication::activateRequested(const QStringList &arguments,
 {
 	parser.parse(arguments);
 
-#if KWINDOWSYSTEM_VERSION > QT_VERSION_CHECK(5, 91, 0)
 	KWindowSystem::updateStartupId(mainWindow->windowHandle());
 	KWindowSystem::activateWindow(mainWindow->windowHandle());
-#else
-#if KWINDOWSYSTEM_VERSION  >= QT_VERSION_CHECK(5, 62, 0)
-	KStartupInfo::setNewStartupId(mainWindow->window()->windowHandle(), KStartupInfo::startupId());
-#else
-	KStartupInfo::setNewStartupId(mainWindow, KStartupInfo::startupId());
-#endif
-	KWindowSystem::forceActiveWindow(mainWindow->winId());
-#endif
 	mainWindow->parseArgs(workingDirectory);
 }
 
