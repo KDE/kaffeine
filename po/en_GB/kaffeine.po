@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-03-17 00:42+0000\n"
+"POT-Creation-Date: 2026-07-09 00:42+0000\n"
 "PO-Revision-Date: 2021-06-12 14:25+0100\n"
 "Last-Translator: Steve Allewell <steve.allewell@gmail.com>\n"
 "Language-Team: British English <kde-l10n-en_gb@kde.org>\n"
@@ -1546,7 +1546,7 @@ msgstr "Provider"
 msgid "SNR"
 msgstr "SNR"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
 #, kde-format
 msgid "Channels"
 msgstr "Channels"
@@ -1652,45 +1652,45 @@ msgstr "Current Transponder"
 msgid "Stop Scan"
 msgstr "Stop Scan"
 
-#: dvb/dvbtab.cpp:97
+#: dvb/dvbtab.cpp:96
 #, kde-format
 msgid "Program Guide"
 msgstr "Programme Guide"
 
-#: dvb/dvbtab.cpp:102
+#: dvb/dvbtab.cpp:101
 #, kde-format
 msgid "OSD"
 msgstr "OSD"
 
-#: dvb/dvbtab.cpp:108
+#: dvb/dvbtab.cpp:107
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr "Recording Schedule"
 
-#: dvb/dvbtab.cpp:115
+#: dvb/dvbtab.cpp:114
 #, kde-format
 msgid "Instant Record"
 msgstr "Instant Record"
 
-#: dvb/dvbtab.cpp:123
+#: dvb/dvbtab.cpp:122
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "Configure Television..."
 
-#: dvb/dvbtab.cpp:143
+#: dvb/dvbtab.cpp:142
 #, kde-format
 msgid "Search:"
 msgstr "Search:"
 
-#: dvb/dvbtab.cpp:374
+#: dvb/dvbtab.cpp:373
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "Channel: %1_"
 
-#: dvb/dvbtab.cpp:391
+#: dvb/dvbtab.cpp:386
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1700,7 +1700,7 @@ msgstr ""
 "Kaffeine is currently recording programmes.\n"
 "Do you really want to close the application?"
 
-#: dvb/dvbtab.cpp:414
+#: dvb/dvbtab.cpp:401
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1710,13 +1710,13 @@ msgstr ""
 "Kaffeine has scheduled recordings.\n"
 "Do you really want to close the application?"
 
-#: dvb/dvbtab.cpp:487
+#: dvb/dvbtab.cpp:470
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr "Instant Record Started"
 
-#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#: dvb/dvbtab.cpp:476 dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -1834,38 +1834,38 @@ msgstr "Original language: %1"
 msgid "Country: %1"
 msgstr "Country: %1"
 
-#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr "Kaffeine"
 
-#: main.cpp:141
+#: main.cpp:139
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr "A media player by KDE with digital TV support."
 
-#: main.cpp:145
+#: main.cpp:143
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "(C) 2007-2019 The Kaffeine Authors."
 
-#: main.cpp:163
+#: main.cpp:161
 #, kde-format
 msgid "Maintainer"
 msgstr "Maintainer"
 
-#: main.cpp:168
+#: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr "Previous maintainer (for versions 1.x)"
 
-#: main.cpp:172
+#: main.cpp:170
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Andrew Coles, Steve Allewell"
 
-#: main.cpp:173
+#: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-03-17 00:42+0000\n"
+"POT-Creation-Date: 2026-07-09 00:42+0000\n"
 "PO-Revision-Date: 2023-07-23 23:20+0200\n"
 "Last-Translator: Shinjo Park <kde@peremen.name>\n"
 "Language-Team: Korean <kde-kr@kde.org>\n"
@@ -1556,7 +1556,7 @@ msgstr "공급자"
 msgid "SNR"
 msgstr "신호대 잡음비"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
 #, kde-format
 msgid "Channels"
 msgstr "채널"
@@ -1661,45 +1661,45 @@ msgstr "현재 트랜스폰더"
 msgid "Stop Scan"
 msgstr "검색 중지"
 
-#: dvb/dvbtab.cpp:97
+#: dvb/dvbtab.cpp:96
 #, kde-format
 msgid "Program Guide"
 msgstr "프로그램 가이드"
 
-#: dvb/dvbtab.cpp:102
+#: dvb/dvbtab.cpp:101
 #, kde-format
 msgid "OSD"
 msgstr "OSD"
 
-#: dvb/dvbtab.cpp:108
+#: dvb/dvbtab.cpp:107
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr "예약 녹화"
 
-#: dvb/dvbtab.cpp:115
+#: dvb/dvbtab.cpp:114
 #, kde-format
 msgid "Instant Record"
 msgstr "즉석 녹화"
 
-#: dvb/dvbtab.cpp:123
+#: dvb/dvbtab.cpp:122
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "텔레비전 설정..."
 
-#: dvb/dvbtab.cpp:143
+#: dvb/dvbtab.cpp:142
 #, kde-format
 msgid "Search:"
 msgstr "찾기:"
 
-#: dvb/dvbtab.cpp:374
+#: dvb/dvbtab.cpp:373
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "채널: %1_"
 
-#: dvb/dvbtab.cpp:391
+#: dvb/dvbtab.cpp:386
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1709,7 +1709,7 @@ msgstr ""
 "Kaffeine에서 프로그램을 녹화하고 있습니다.\n"
 "그래도 끝내시겠습니까?"
 
-#: dvb/dvbtab.cpp:414
+#: dvb/dvbtab.cpp:401
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1719,13 +1719,13 @@ msgstr ""
 "Kaffeine에 예약 녹화가 있습니다.\n"
 "그래도 끝내시겠습니까?"
 
-#: dvb/dvbtab.cpp:487
+#: dvb/dvbtab.cpp:470
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr "즉석 녹화 시작됨"
 
-#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#: dvb/dvbtab.cpp:476 dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -1843,38 +1843,38 @@ msgstr "원본 언어: %1"
 msgid "Country: %1"
 msgstr "국가: %1"
 
-#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr "Kaffeine"
 
-#: main.cpp:141
+#: main.cpp:139
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr "디지털 TV를 지원하는 KDE 미디어 재생기입니다."
 
-#: main.cpp:145
+#: main.cpp:143
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "(C) 2007-2019 The Kaffeine Authors."
 
-#: main.cpp:163
+#: main.cpp:161
 #, kde-format
 msgid "Maintainer"
 msgstr "관리자"
 
-#: main.cpp:168
+#: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr "이전 관리자(버전 1.x)"
 
-#: main.cpp:172
+#: main.cpp:170
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "박신조"
 
-#: main.cpp:173
+#: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-03-17 00:42+0000\n"
+"POT-Creation-Date: 2026-07-09 00:42+0000\n"
 "PO-Revision-Date: 2017-12-15 12:37+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -1687,7 +1687,7 @@ msgstr "провајдер"
 msgid "SNR"
 msgstr "СНР"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
 #, kde-format
 msgid "Channels"
 msgstr "Канали"
@@ -1794,45 +1794,45 @@ msgstr "Тренутни транспондер"
 msgid "Stop Scan"
 msgstr "Заустави скенирање"
 
-#: dvb/dvbtab.cpp:97
+#: dvb/dvbtab.cpp:96
 #, kde-format
 msgid "Program Guide"
 msgstr "Програмски водич"
 
-#: dvb/dvbtab.cpp:102
+#: dvb/dvbtab.cpp:101
 #, kde-format
 msgid "OSD"
 msgstr "ОСД"
 
-#: dvb/dvbtab.cpp:108
+#: dvb/dvbtab.cpp:107
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr "Распоред снимања"
 
-#: dvb/dvbtab.cpp:115
+#: dvb/dvbtab.cpp:114
 #, kde-format
 msgid "Instant Record"
 msgstr "Тренутно снимање"
 
-#: dvb/dvbtab.cpp:123
+#: dvb/dvbtab.cpp:122
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "Подеси телевизију..."
 
-#: dvb/dvbtab.cpp:143
+#: dvb/dvbtab.cpp:142
 #, kde-format
 msgid "Search:"
 msgstr "Тражи:"
 
-#: dvb/dvbtab.cpp:374
+#: dvb/dvbtab.cpp:373
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "Канал: %1_"
 
-#: dvb/dvbtab.cpp:391
+#: dvb/dvbtab.cpp:386
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1842,7 +1842,7 @@ msgstr ""
 "Кафеин тренутно снима емисије.\n"
 "Желите ли заиста да га затворите?"
 
-#: dvb/dvbtab.cpp:414
+#: dvb/dvbtab.cpp:401
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1852,13 +1852,13 @@ msgstr ""
 "Кафеин има заказана снимања.\n"
 "Желите ли заиста да га затворите?"
 
-#: dvb/dvbtab.cpp:487
+#: dvb/dvbtab.cpp:470
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr "Тренутно снимање је покренуто"
 
-#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#: dvb/dvbtab.cpp:476 dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -1990,40 +1990,40 @@ msgstr "изворни језик"
 msgid "Country: %1"
 msgstr "природа"
 
-#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr "Кафеин"
 
-#: main.cpp:141
+#: main.cpp:139
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr "КДЕ‑ов медија плејер са подршком за дигиталну телевизију."
 
-#: main.cpp:145
+#: main.cpp:143
 #, fuzzy, kde-format
 #| msgid "(C) 2007-2017 The Kaffeine Authors"
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "© 2007–2017, аутори Кафеина"
 
-#: main.cpp:163
+#: main.cpp:161
 #, fuzzy, kde-format
 #| msgid "Maintainer (for KDE4)"
 msgid "Maintainer"
 msgstr "Одржавалац (за КДЕ‑4)"
 
-#: main.cpp:168
+#: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr ""
 
-#: main.cpp:172
+#: main.cpp:170
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Слободан Симић"
 
-#: main.cpp:173
+#: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"

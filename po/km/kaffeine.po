@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-03-17 00:42+0000\n"
+"POT-Creation-Date: 2026-07-09 00:42+0000\n"
 "PO-Revision-Date: 2012-06-11 10:20+0700\n"
 "Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
 "Language-Team: Khmer\n"
@@ -1589,7 +1589,7 @@ msgstr "ក្រុម​ហ៊ុន​ផ្ដល់"
 msgid "SNR"
 msgstr "SNR"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
 #, kde-format
 msgid "Channels"
 msgstr "ប៉ុស្តិ៍"
@@ -1690,45 +1690,45 @@ msgstr "ឧបករណ៍​ទទួល​សញ្ញា​​បច្ចុ
 msgid "Stop Scan"
 msgstr "បញ្ឈប់​ការ​វិភាគ​រក"
 
-#: dvb/dvbtab.cpp:97
+#: dvb/dvbtab.cpp:96
 #, kde-format
 msgid "Program Guide"
 msgstr "មគ្គុទ្ទេសក៍​កម្មវិធី"
 
-#: dvb/dvbtab.cpp:102
+#: dvb/dvbtab.cpp:101
 #, kde-format
 msgid "OSD"
 msgstr "OSD"
 
-#: dvb/dvbtab.cpp:108
+#: dvb/dvbtab.cpp:107
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr "កាលវិភាគ​ថត"
 
-#: dvb/dvbtab.cpp:115
+#: dvb/dvbtab.cpp:114
 #, kde-format
 msgid "Instant Record"
 msgstr "កំណត់​ត្រា​បន្ទាន់"
 
-#: dvb/dvbtab.cpp:123
+#: dvb/dvbtab.cpp:122
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "កំណត់​រចនាសម្ព័ន្ធ​ទូរទស្សន៍"
 
-#: dvb/dvbtab.cpp:143
+#: dvb/dvbtab.cpp:142
 #, kde-format
 msgid "Search:"
 msgstr "ស្វែងរក ៖"
 
-#: dvb/dvbtab.cpp:374
+#: dvb/dvbtab.cpp:373
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "ប៉ុស្តិ៍ ៖ %1_"
 
-#: dvb/dvbtab.cpp:391
+#: dvb/dvbtab.cpp:386
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1738,7 +1738,7 @@ msgstr ""
 "ឥឡូវ​នេះ Kaffeine កំពុង​តែ​ថត​ចម្លង​កម្មវិធី ។\n"
 "​តើ​អ្នក​ពិត​ជា​ចង់​បិទ​កម្មវិធី​នេះ​ឬ ?"
 
-#: dvb/dvbtab.cpp:414
+#: dvb/dvbtab.cpp:401
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1748,13 +1748,13 @@ msgstr ""
 "Kaffeine បាន​កំណត់​ពេល​ការ​ថត​ចម្លង​ ។\n"
 "​តើ​អ្នក​ពិត​ជា​ចង់​បិទ​កម្មវិធី​នេះ​ឬ ?"
 
-#: dvb/dvbtab.cpp:487
+#: dvb/dvbtab.cpp:470
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr "បាន​ចាប់​ផ្ដើម​កំណត់​ត្រា​បន្ទាន់"
 
-#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#: dvb/dvbtab.cpp:476 dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -1884,41 +1884,41 @@ msgstr "ទំហំ​ដើម"
 msgid "Country: %1"
 msgstr ""
 
-#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr "Kaffeine"
 
-#: main.cpp:141
+#: main.cpp:139
 #, fuzzy, kde-format
 #| msgid "A media player for KDE with digital TV support."
 msgid "A media player by KDE with digital TV support."
 msgstr "កម្មវិធី​ចាក់​មេឌៀ​សម្រាប់ KDE ដែល​មានការ​គាំទ្រ​ទូរទស្សន៍​ឌីជីថល ។"
 
-#: main.cpp:145
+#: main.cpp:143
 #, fuzzy, kde-format
 #| msgid "(C) 2007-2011 The Kaffeine Authors"
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "រក្សាសិទ្ធិ​ឆ្នាំ ២០០៧-២០១១ ដោយ​អ្នកនិពន្ធ Kaffeine"
 
-#: main.cpp:163
+#: main.cpp:161
 #, fuzzy, kde-format
 #| msgid "Maintainer"
 msgid "Maintainer"
 msgstr "អ្នក​ថែទាំ"
 
-#: main.cpp:168
+#: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr ""
 
-#: main.cpp:172
+#: main.cpp:170
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "ខឹម សុខែម, សេង​ សុត្ថា, ម៉ន ម៉េត"
 
-#: main.cpp:173
+#: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"

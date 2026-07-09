@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-03-17 00:42+0000\n"
+"POT-Creation-Date: 2026-07-09 00:42+0000\n"
 "PO-Revision-Date: 2026-05-02 19:42+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
@@ -1553,7 +1553,7 @@ msgstr "Sağlayıcı"
 msgid "SNR"
 msgstr "SNR"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
 #, kde-format
 msgid "Channels"
 msgstr "Kanallar"
@@ -1659,45 +1659,45 @@ msgstr "Geçerli Transponder"
 msgid "Stop Scan"
 msgstr "Taramayı Durdur"
 
-#: dvb/dvbtab.cpp:97
+#: dvb/dvbtab.cpp:96
 #, kde-format
 msgid "Program Guide"
 msgstr "Program Rehberi"
 
-#: dvb/dvbtab.cpp:102
+#: dvb/dvbtab.cpp:101
 #, kde-format
 msgid "OSD"
 msgstr "Ekran Üzeri Görüntü"
 
-#: dvb/dvbtab.cpp:108
+#: dvb/dvbtab.cpp:107
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr "Kayıt Zamanlaması"
 
-#: dvb/dvbtab.cpp:115
+#: dvb/dvbtab.cpp:114
 #, kde-format
 msgid "Instant Record"
 msgstr "Anında Kayıt"
 
-#: dvb/dvbtab.cpp:123
+#: dvb/dvbtab.cpp:122
 #, kde-format
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "Televizyonu Yapılandır…"
 
-#: dvb/dvbtab.cpp:143
+#: dvb/dvbtab.cpp:142
 #, kde-format
 msgid "Search:"
 msgstr "Ara:"
 
-#: dvb/dvbtab.cpp:374
+#: dvb/dvbtab.cpp:373
 #, kde-format
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "Kanal: %1_"
 
-#: dvb/dvbtab.cpp:391
+#: dvb/dvbtab.cpp:386
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1707,7 +1707,7 @@ msgstr ""
 "Kaffenine şu anda program kaydediyor.\n"
 "Gerçekten uygulamayı kapatmak istiyor musunuz?"
 
-#: dvb/dvbtab.cpp:414
+#: dvb/dvbtab.cpp:401
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1717,13 +1717,13 @@ msgstr ""
 "Kaffeine için zamanlanmış kayıtlar var.\n"
 "Gerçekten uygulamayı kapatmak istiyor musunuz?"
 
-#: dvb/dvbtab.cpp:487
+#: dvb/dvbtab.cpp:470
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr "Anında Kayıt Başlatıldı"
 
-#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#: dvb/dvbtab.cpp:476 dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -1841,38 +1841,38 @@ msgstr "Özgün dil: %1"
 msgid "Country: %1"
 msgstr "Ülke: %1"
 
-#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, kde-format
 msgid "Kaffeine"
 msgstr "Kafein"
 
-#: main.cpp:141
+#: main.cpp:139
 #, kde-format
 msgid "A media player by KDE with digital TV support."
 msgstr "Sayısal TV destekli, KDE tarafından yapılmış bir ortam oynatıcısı"
 
-#: main.cpp:145
+#: main.cpp:143
 #, kde-format
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "© 2007–2019 Kafein Yazarları."
 
-#: main.cpp:163
+#: main.cpp:161
 #, kde-format
 msgid "Maintainer"
 msgstr "Bakımcı"
 
-#: main.cpp:168
+#: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr "Önceki bakımcı (1.x sürümleri için)"
 
-#: main.cpp:172
+#: main.cpp:170
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Serdar SOYTETİR, Emir SARI"
 
-#: main.cpp:173
+#: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"

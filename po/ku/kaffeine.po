@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2026-03-17 00:42+0000\n"
+"POT-Creation-Date: 2026-07-09 00:42+0000\n"
 "PO-Revision-Date: 2008-12-20 16:02+0200\n"
 "Last-Translator: Omer Ensari <oensari@gmail.com>\n"
 "Language-Team: Kurdish <kde-i18n-doc@kde.org>\n"
@@ -1606,7 +1606,7 @@ msgstr "Peydaker"
 msgid "SNR"
 msgstr "SNR"
 
-#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:92
+#: dvb/dvbscandialog.cpp:248 dvb/dvbscandialog.cpp:257 dvb/dvbtab.cpp:91
 #, kde-format
 msgid "Channels"
 msgstr "Kanal"
@@ -1715,47 +1715,47 @@ msgstr "Bersîvdar(sînyalên radyo re) ê heyî"
 msgid "Stop Scan"
 msgstr "Lê nihêrîn ê rawestîne "
 
-#: dvb/dvbtab.cpp:97
+#: dvb/dvbtab.cpp:96
 #, kde-format
 msgid "Program Guide"
 msgstr ""
 
-#: dvb/dvbtab.cpp:102
+#: dvb/dvbtab.cpp:101
 #, kde-format
 msgid "OSD"
 msgstr ""
 
-#: dvb/dvbtab.cpp:108
+#: dvb/dvbtab.cpp:107
 #, kde-format
 msgctxt "dialog"
 msgid "Recording Schedule"
 msgstr ""
 
-#: dvb/dvbtab.cpp:115
+#: dvb/dvbtab.cpp:114
 #, kde-format
 msgid "Instant Record"
 msgstr ""
 
-#: dvb/dvbtab.cpp:123
+#: dvb/dvbtab.cpp:122
 #, fuzzy, kde-format
 #| msgid "Configure Channels"
 msgctxt "@action:inmenu"
 msgid "Configure Television..."
 msgstr "Kanal Mîhang Bike"
 
-#: dvb/dvbtab.cpp:143
+#: dvb/dvbtab.cpp:142
 #, kde-format
 msgid "Search:"
 msgstr "Lêgere:"
 
-#: dvb/dvbtab.cpp:374
+#: dvb/dvbtab.cpp:373
 #, fuzzy, kde-format
 #| msgid "Channels"
 msgctxt "osd"
 msgid "Channel: %1_"
 msgstr "Kanal"
 
-#: dvb/dvbtab.cpp:391
+#: dvb/dvbtab.cpp:386
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1763,7 +1763,7 @@ msgid ""
 "Do you really want to close the application?"
 msgstr ""
 
-#: dvb/dvbtab.cpp:414
+#: dvb/dvbtab.cpp:401
 #, kde-format
 msgctxt "message box"
 msgid ""
@@ -1771,13 +1771,13 @@ msgid ""
 "Do you really want to close the application?"
 msgstr ""
 
-#: dvb/dvbtab.cpp:487
+#: dvb/dvbtab.cpp:470
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Started"
 msgstr ""
 
-#: dvb/dvbtab.cpp:493 dvb/dvbtab.cpp:504
+#: dvb/dvbtab.cpp:476 dvb/dvbtab.cpp:487
 #, kde-format
 msgctxt "osd"
 msgid "Instant Record Stopped"
@@ -1900,41 +1900,41 @@ msgstr ""
 msgid "Country: %1"
 msgstr ""
 
-#: main.cpp:137 mainwindow.cpp:345 mainwindow.cpp:377
+#: main.cpp:135 mainwindow.cpp:345 mainwindow.cpp:377
 #, fuzzy, kde-format
 #| msgid "Kaffeine Player"
 msgid "Kaffeine"
 msgstr "Lêdar Kaffeine "
 
-#: main.cpp:141
+#: main.cpp:139
 #, fuzzy, kde-format
 #| msgid "A media player for KDE with digital tv support"
 msgid "A media player by KDE with digital TV support."
 msgstr "Medya lêdarek ji bo KDE bi piştgirî ya dîjîtal tv re"
 
-#: main.cpp:145
+#: main.cpp:143
 #, fuzzy, kde-format
 #| msgid "(C) 2007 The Kaffeine Authors"
 msgid "(C) 2007-2019 The Kaffeine Authors."
 msgstr "(C) 2007 The Kaffeine Authors"
 
-#: main.cpp:163
+#: main.cpp:161
 #, kde-format
 msgid "Maintainer"
 msgstr ""
 
-#: main.cpp:168
+#: main.cpp:166
 #, kde-format
 msgid "Previous maintainer (for versions 1.x)"
 msgstr ""
 
-#: main.cpp:172
+#: main.cpp:170
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Omer Ensari"
 
-#: main.cpp:173
+#: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
