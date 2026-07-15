@@ -5,21 +5,22 @@
 # Lukáš Tinkl <ltinkl@redhat.com>, 2011.
 # Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012, 2013.
 # Vit Pelcak <vit@pelcak.org>, 2021, 2023.
+# SPDX-FileCopyrightText: 2026 Libor Filípek <libor.filipek@gmail.com>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-09 00:42+0000\n"
-"PO-Revision-Date: 2023-06-23 10:34+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"PO-Revision-Date: 2026-07-14 23:18+0200\n"
+"Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Lokalize 23.04.2\n"
+"X-Generator: Poedit 3.9\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -291,87 +292,87 @@ msgstr "PLP (ID proudu):"
 #: dvb/dvbchanneldialog.cpp:845
 #, kde-format
 msgid "Partial reception:"
-msgstr "Částečný příjem"
+msgstr "Částečný příjem:"
 
 #: dvb/dvbchanneldialog.cpp:847
 #, kde-format
 msgid "Sound broadcasting:"
-msgstr "Vysílání zvuku"
+msgstr "Vysílání zvuku:"
 
 #: dvb/dvbchanneldialog.cpp:851
 #, kde-format
 msgid "SB channel ID:"
-msgstr ""
+msgstr "ID kanálu SB:"
 
 #: dvb/dvbchanneldialog.cpp:853
 #, kde-format
 msgid "SB index:"
-msgstr ""
+msgstr "SB index:"
 
 #: dvb/dvbchanneldialog.cpp:855
 #, kde-format
 msgid "SB count:"
-msgstr ""
+msgstr "Počet SB:"
 
 #: dvb/dvbchanneldialog.cpp:860
 #, kde-format
 msgid "Layer A Modulation:"
-msgstr "Vrstva A Modulace:"
+msgstr "Modulace vrstvy A:"
 
 #: dvb/dvbchanneldialog.cpp:862
 #, kde-format
 msgid "Layer A FEC rate:"
-msgstr "Vrstva A rychlost FEC:"
+msgstr "Rychlost FEC vrstvy A:"
 
 #: dvb/dvbchanneldialog.cpp:864
 #, kde-format
 msgid "Layer A segments:"
-msgstr ""
+msgstr "Segmenty vrstvy A:"
 
 #: dvb/dvbchanneldialog.cpp:866
 #, kde-format
 msgid "Layer A interleaving:"
-msgstr ""
+msgstr "Prokládání vrstvy A:"
 
 #: dvb/dvbchanneldialog.cpp:870
 #, kde-format
 msgid "Layer B Modulation:"
-msgstr ""
+msgstr "Modulace vrstvy B:"
 
 #: dvb/dvbchanneldialog.cpp:872
 #, kde-format
 msgid "Layer B FEC rate:"
-msgstr ""
+msgstr "Rychlost FEC vrstvy B:"
 
 #: dvb/dvbchanneldialog.cpp:874
 #, kde-format
 msgid "Layer B segments:"
-msgstr ""
+msgstr "Segmenty vrstvy B:"
 
 #: dvb/dvbchanneldialog.cpp:876
 #, kde-format
 msgid "Layer B interleaving:"
-msgstr ""
+msgstr "Prokládání vrstvy B:"
 
 #: dvb/dvbchanneldialog.cpp:880
 #, kde-format
 msgid "Layer C Modulation:"
-msgstr ""
+msgstr "Modulace vrstvy C:"
 
 #: dvb/dvbchanneldialog.cpp:882
 #, kde-format
 msgid "Layer C FEC rate:"
-msgstr ""
+msgstr "Rychlost FEC vrstvy C:"
 
 #: dvb/dvbchanneldialog.cpp:884
 #, kde-format
 msgid "Layer C segments:"
-msgstr ""
+msgstr "Segmenty vrstvy C:"
 
 #: dvb/dvbchanneldialog.cpp:886
 #, kde-format
 msgid "Layer C interleaving:"
-msgstr ""
+msgstr "Prokládání vrstvy C:"
 
 #: dvb/dvbchanneldialog.cpp:911
 #, kde-format
@@ -448,16 +449,19 @@ msgstr "název souboru xmltv (volitelné):"
 #, kde-format
 msgid "Add optional file to allow reading EPG data from xmltv files"
 msgstr ""
+"Přidejte volitelný soubor, který umožní načítání dat EPG ze souborů xmltv"
 
 #: dvb/dvbconfigdialog.cpp:113
 #, kde-format
 msgid "Disable parsing EPG data from MPEG-TS tables:"
-msgstr ""
+msgstr "Zakázat analýzu dat EPG z tabulek MPEG-TS:"
 
 #: dvb/dvbconfigdialog.cpp:115
 #, kde-format
 msgid "Use this if your TV provider doesn't broadcast reliable EPG data"
 msgstr ""
+"Tuto možnost použijte, pokud váš poskytovatel televizních služeb nevysílá "
+"spolehlivá data EPG"
 
 #: dvb/dvbconfigdialog.cpp:123
 #, kde-format
@@ -472,7 +476,7 @@ msgstr "Koncový okraj (minuty):"
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr ""
+msgstr "Způsob pojmenování nahrávek:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
@@ -480,6 +484,8 @@ msgid ""
 "The following substitutions work: \"%year\" for year (YYYY) and the "
 "following: %month, %day, %hour, %min, %sec, %channel and %title"
 msgstr ""
+"Fungují následující zástupné symboly: \"%year\" pro rok (YYYY) a dále: "
+"%month, %day, %hour, %min, %sec, %channel a %title"
 
 #: dvb/dvbconfigdialog.cpp:153
 #, kde-format
@@ -489,7 +495,7 @@ msgstr "Činnost po dokončení nahrávání:"
 #: dvb/dvbconfigdialog.cpp:157
 #, kde-format
 msgid "Leave empty for no command."
-msgstr ""
+msgstr "Nechte prázdné, pokud nechcete zadat žádný příkaz."
 
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
@@ -499,12 +505,14 @@ msgstr "Použít kódování ISO 8859-1 namísto ISO 6937:"
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
 msgid "Create info files to accompany EPG recordings:"
-msgstr ""
+msgstr "Vytvořte informační soubory k nahrávkám z EPG:"
 
 #: dvb/dvbconfigdialog.cpp:179
 #, kde-format
 msgid "Scan channels when idle to fetch fresh EPG data:"
 msgstr ""
+"V době nečinnosti provádět skenování kanálů za účelem načtení aktuálních "
+"údajů z elektronického programového průvodce (EPG):"
 
 #: dvb/dvbconfigdialog.cpp:190 dvb/dvbscandialog.cpp:315
 #, kde-format
@@ -514,12 +522,12 @@ msgstr "Data z prohledávání byla naposledy obnovena %1"
 #: dvb/dvbconfigdialog.cpp:193
 #, kde-format
 msgid "Update Scan Data over Internet"
-msgstr ""
+msgstr "Aktualizace dat ze skenování přes internet"
 
 #: dvb/dvbconfigdialog.cpp:197
 #, kde-format
 msgid "Edit Scanfile"
-msgstr ""
+msgstr "Upravit soubor pro skenování"
 
 #: dvb/dvbconfigdialog.cpp:200
 #, kde-format
@@ -867,7 +875,7 @@ msgstr "Komedie"
 
 #: dvb/dvbepg.cpp:653
 msgid "Soap"
-msgstr ""
+msgstr "Mýdlo"
 
 #: dvb/dvbepg.cpp:654
 msgid "Romance"
@@ -913,11 +921,11 @@ msgstr "Kvíz"
 
 #: dvb/dvbepg.cpp:672 dvb/dvbepg.cpp:802
 msgid "Variety"
-msgstr ""
+msgstr "Variace"
 
 #: dvb/dvbepg.cpp:673
 msgid "Talk"
-msgstr "Talk"
+msgstr "Řeč"
 
 #: dvb/dvbepg.cpp:679
 msgid "Events"
@@ -1005,7 +1013,7 @@ msgstr "Výkon"
 
 #: dvb/dvbepg.cpp:717
 msgid "Fine Arts"
-msgstr ""
+msgstr "Výtvarné umění"
 
 #: dvb/dvbepg.cpp:718 dvb/dvbepg.cpp:867
 msgid "Religion"
@@ -1307,7 +1315,7 @@ msgstr "rezervované"
 
 #: dvb/dvbepg.cpp:907
 msgid "all audiences"
-msgstr ""
+msgstr "pro všechny"
 
 #: dvb/dvbepg.cpp:908
 msgid "10 years"
@@ -1805,7 +1813,7 @@ msgstr "Klíčové slovo: %1"
 #: dvb/xmltv.cpp:526 dvb/xmltv.cpp:532
 #, kde-format
 msgid "language: %1"
-msgstr "Jazyk: %1"
+msgstr "jazyk: %1"
 
 #: dvb/xmltv.cpp:538
 #, kde-format
@@ -1846,15 +1854,15 @@ msgstr "Předchozí správce (pro verze 1.x)"
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Vít Pelčák, David Kolibáč, Pavel Fric, Hynek Janoušek"
+msgstr "Vít Pelčák,David Kolibáč,Pavel Fric,Hynek Janoušek,Libor Filípek"
 
 #: main.cpp:171
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr ""
-"vit@pelcak.org, david@kolibac.cz, pavelfric@seznam.cz, hynek.janousek@seznam."
-"cz"
+"vit@pelcak.org,david@kolibac.cz,pavelfric@seznam.cz,hynek.janousek@seznam.cz,"
+"libor.filipek@gmail.com"
 
 #: mainwindow.cpp:113
 #, kde-format
@@ -2240,13 +2248,13 @@ msgstr "x"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "mean"
-msgstr ""
+msgstr "střední hodnota"
 
 #: mediawidget.cpp:266
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "blend"
-msgstr ""
+msgstr "mísení"
 
 #: mediawidget.cpp:272
 #, kde-format
