@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-09 00:42+0000\n"
-"PO-Revision-Date: 2026-07-14 23:18+0200\n"
+"PO-Revision-Date: 2026-07-15 11:34+0200\n"
 "Last-Translator: Libor Filípek <libor.filipek@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
@@ -533,6 +533,8 @@ msgstr "Upravit soubor pro skenování"
 #, kde-format
 msgid "You can add channels manually to this file before scanning for them."
 msgstr ""
+"Do tohoto souboru můžete kanály přidat ručně ještě předtím, než je začnete "
+"vyhledávat."
 
 #: dvb/dvbconfigdialog.cpp:217
 #, kde-format
@@ -555,23 +557,23 @@ msgstr "Zařízení %1"
 #, kde-format
 msgctxt "@action"
 msgid "Add new Regex"
-msgstr ""
+msgstr "Přidat nový regulární výraz"
 
 #: dvb/dvbconfigdialog.cpp:394
 #, kde-format
 msgid "Add another regular expression."
-msgstr ""
+msgstr "Přidat další regulární výraz."
 
 #: dvb/dvbconfigdialog.cpp:398
 #, kde-format
 msgctxt "@action"
 msgid "Remove Regex"
-msgstr ""
+msgstr "Odstranit regulární výraz"
 
 #: dvb/dvbconfigdialog.cpp:404
 #, kde-format
 msgid "Remove checked regular expressions."
-msgstr ""
+msgstr "Odstranit zvolené regulární výrazy."
 
 #: dvb/dvbconfigdialog.cpp:618
 #, kde-format
@@ -589,6 +591,8 @@ msgid ""
 "Scan file is becoming bigger than %1 KB.\n"
 "Aborting, as something might be wrong...\n"
 msgstr ""
+"Velikost skenovaného souboru přesahuje %1 KB.\n"
+"Proces se přerušuje, protože se pravděpodobně vyskytla chyba...\n"
 
 #: dvb/dvbconfigdialog.cpp:701
 #, kde-format
@@ -673,7 +677,7 @@ msgstr "Kabel"
 #: dvb/dvbconfigdialog.cpp:926
 #, kde-format
 msgid "Terrestrial (T2)"
-msgstr ""
+msgstr "Pozemní (T2)"
 
 #: dvb/dvbconfigdialog.cpp:934
 #, kde-format
@@ -733,7 +737,7 @@ msgstr "Název:"
 #: dvb/dvbconfigdialog.cpp:1103
 #, kde-format
 msgid "Use Higher LNBf voltage:"
-msgstr ""
+msgstr "Použijte vyšší napětí LNBf:"
 
 #: dvb/dvbconfigdialog.cpp:1109
 #, kde-format
@@ -746,6 +750,14 @@ msgid ""
 "- higher voltage mode (checked);\n"
 "- tristate (don't send the control)."
 msgstr ""
+"U některých zařízení DVB je k dispozici další ovládací prvek, který umožňuje "
+"zvýšit \n"
+"napětí vysílané do LNBf za účelem kompenzace ztrát v kabeláži. Toto tlačítko "
+"s třemi stavy\n"
+"je ve výchozím nastavení vypnuto. Lze jej nastavit na:\n"
+"- normální režim (nezvoleno);\n"
+"- režim s vyšším napětím (zvoleno);\n"
+"- třetí stav (neodesílat řídicí signál)."
 
 #: dvb/dvbconfigdialog.cpp:1117
 #, kde-format
@@ -805,7 +817,7 @@ msgstr "Odstranit satelit"
 #: dvb/dvbconfigdialog.cpp:1241
 #, kde-format
 msgid "Your position:"
-msgstr ""
+msgstr "Vaše poloha:"
 
 #: dvb/dvbconfigdialog.cpp:1246
 #, kde-format
@@ -845,17 +857,17 @@ msgstr "Přepnout frekvenci (MHz)"
 #: dvb/dvbconfigdialog.cpp:1647 dvb/dvbconfigdialog.cpp:1694
 #, kde-format
 msgid "Low range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "Dolní rozsah: %1 MHz až %2 MHz"
 
 #: dvb/dvbconfigdialog.cpp:1700
 #, kde-format
 msgid "Bandstacked"
-msgstr ""
+msgstr "Bandstacked"
 
 #: dvb/dvbconfigdialog.cpp:1704
 #, kde-format
 msgid "High range: %1 MHz to %2 MHz"
-msgstr ""
+msgstr "Horní rozsah: %1 MHz až %2 MHz"
 
 #: dvb/dvbepg.cpp:649
 msgid "Detective"
@@ -961,11 +973,11 @@ msgstr "Zima"
 
 #: dvb/dvbepg.cpp:688
 msgid "Equestrian"
-msgstr ""
+msgstr "Jezdectví"
 
 #: dvb/dvbepg.cpp:689
 msgid "Martial"
-msgstr ""
+msgstr "Bojové umění"
 
 #: dvb/dvbepg.cpp:695
 msgid "Preschool"
@@ -985,11 +997,11 @@ msgstr "Výukový"
 
 #: dvb/dvbepg.cpp:699
 msgid "Cartoons"
-msgstr ""
+msgstr "Kreslené filmy"
 
 #: dvb/dvbepg.cpp:705
 msgid "Poprock"
-msgstr ""
+msgstr "Poprock"
 
 #: dvb/dvbepg.cpp:707
 msgid "Folk"
@@ -1077,7 +1089,7 @@ msgstr "Sociální sítě"
 
 #: dvb/dvbepg.cpp:745
 msgid "Further"
-msgstr ""
+msgstr "Dále"
 
 #: dvb/dvbepg.cpp:746
 msgid "Language"
@@ -1089,11 +1101,11 @@ msgstr "Cestování"
 
 #: dvb/dvbepg.cpp:753
 msgid "Handicraft"
-msgstr ""
+msgstr "Ruční práce"
 
 #: dvb/dvbepg.cpp:754
 msgid "Motoring"
-msgstr ""
+msgstr "Automobilismus"
 
 #: dvb/dvbepg.cpp:755
 msgid "Fitness"
@@ -1130,7 +1142,7 @@ msgstr "Live"
 
 #: dvb/dvbepg.cpp:767
 msgid "Planostereoscopic"
-msgstr ""
+msgstr "Planostereoskopický"
 
 #: dvb/dvbepg.cpp:769
 msgid "User Defined 1"
@@ -1186,7 +1198,7 @@ msgstr "Vzdělání"
 
 #: dvb/dvbepg.cpp:787
 msgid "Leisure"
-msgstr ""
+msgstr "Volný čas"
 
 #: dvb/dvbepg.cpp:788
 msgid "Special"
@@ -1198,7 +1210,7 @@ msgstr "Rezervované"
 
 #: dvb/dvbepg.cpp:799
 msgid "Soap opera"
-msgstr ""
+msgstr "Mýdlová opera"
 
 #: dvb/dvbepg.cpp:800
 msgid "Mini-series"
@@ -1218,7 +1230,7 @@ msgstr "Informace"
 
 #: dvb/dvbepg.cpp:805
 msgid "Comical"
-msgstr ""
+msgstr "Komické"
 
 #: dvb/dvbepg.cpp:807
 msgid "Erotic"
@@ -1226,7 +1238,7 @@ msgstr "Erotika"
 
 #: dvb/dvbepg.cpp:809
 msgid "Raffle, television sales, prizing"
-msgstr ""
+msgstr "Tombola, prodej přes televizi, rozdávání cen"
 
 #: dvb/dvbepg.cpp:810
 msgid "Debate/interview"
@@ -1246,11 +1258,11 @@ msgstr "Životopis"
 
 #: dvb/dvbepg.cpp:829
 msgid "Educative"
-msgstr ""
+msgstr "Vzdělávací"
 
 #: dvb/dvbepg.cpp:835
 msgid "Auditorium"
-msgstr ""
+msgstr "Hlediště"
 
 #: dvb/dvbepg.cpp:837
 msgid "Musical"
@@ -1258,7 +1270,7 @@ msgstr "Muzikál"
 
 #: dvb/dvbepg.cpp:838
 msgid "Making of"
-msgstr ""
+msgstr "Jak to vznikalo"
 
 #: dvb/dvbepg.cpp:839
 msgid "Feminine"
@@ -1266,7 +1278,7 @@ msgstr "Ženský"
 
 #: dvb/dvbepg.cpp:840
 msgid "Game show"
-msgstr ""
+msgstr "Televizní soutěž"
 
 #: dvb/dvbepg.cpp:846
 msgid "Country"
@@ -1278,15 +1290,15 @@ msgstr "Zdraví"
 
 #: dvb/dvbepg.cpp:855
 msgid "Raffle"
-msgstr ""
+msgstr "Tombola"
 
 #: dvb/dvbepg.cpp:856
 msgid "Television sales"
-msgstr ""
+msgstr "Televizní prodej"
 
 #: dvb/dvbepg.cpp:857
 msgid "Prizing"
-msgstr ""
+msgstr "Ceny"
 
 #: dvb/dvbepg.cpp:861
 msgid "Interview"
@@ -1340,7 +1352,7 @@ msgstr "18 let"
 #: dvb/dvbepg.cpp:935
 #, no-c-format, kde-format
 msgid "Country %1: not rated\n"
-msgstr ""
+msgstr "Země %1: bez hodnocení\n"
 
 #: dvb/dvbepg.cpp:947
 #, kde-format
@@ -1360,12 +1372,12 @@ msgstr "drogy / "
 #: dvb/dvbepg.cpp:959
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2%3\n"
-msgstr ""
+msgstr "Země %1: hodnocení: %2%3\n"
 
 #: dvb/dvbepg.cpp:962
 #, no-c-format, kde-format
 msgid "Country %1: rating: %2 years.\n"
-msgstr ""
+msgstr "Země %1: hodnocení: %2 let.\n"
 
 #: dvb/dvbepgdialog.cpp:46
 #, kde-format
@@ -1386,7 +1398,7 @@ msgstr "Jakýkoliv jazyk"
 #: dvb/dvbepgdialog.cpp:112
 #, kde-format
 msgid "Show channels with empty EPG data"
-msgstr ""
+msgstr "Zobrazit kanály s prázdnými údaji EPG"
 
 #: dvb/dvbepgdialog.cpp:119
 #, kde-format
@@ -1432,6 +1444,10 @@ msgid ""
 "\n"
 "Please check the Configure Television window."
 msgstr ""
+"Nebylo nalezeno zařízení s platnými nastaveními nebo jsou nesprávná "
+"přístupová oprávnění.\n"
+"\n"
+"Zkontrolujte prosím okno Nastavit televizi."
 
 #: dvb/dvbliveview.cpp:378 dvb/dvbscandialog.cpp:468
 #, kde-format
@@ -1561,7 +1577,7 @@ msgstr "Prohledávání kanálů"
 #: dvb/dvbscandialog.cpp:306
 #, kde-format
 msgid "Search transponders for other Networks"
-msgstr ""
+msgstr "Vyhledat transpondéry jiných sítí"
 
 #: dvb/dvbscandialog.cpp:307
 #, kde-format
@@ -1572,6 +1588,11 @@ msgid ""
 "those other NIT data into account. Please notice that the scan will be a lot "
 "more slow if enabled."
 msgstr ""
+"V některých sítích se může stát, že jsou některé transpondéry zakódovány v "
+"samostatných tabulkách síťových informací (jiných NIT). K tomu dochází "
+"častěji v systémech DVB-C. Kliknutím na tuto ikonu změníte algoritmus "
+"vyhledávání tak, aby zohledňoval i data z těchto dalších NIT. Upozorňujeme, "
+"že při zapnutí této funkce bude vyhledávání výrazně pomalejší."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
 #, kde-format
@@ -1722,12 +1743,12 @@ msgstr "%1 jako %2"
 #: dvb/xmltv.cpp:222
 #, kde-format
 msgid "Director(s)"
-msgstr ""
+msgstr "Režisér(i)"
 
 #: dvb/xmltv.cpp:224
 #, kde-format
 msgid "Actor(s)"
-msgstr ""
+msgstr "Herci"
 
 #: dvb/xmltv.cpp:226
 #, kde-format
@@ -1737,7 +1758,7 @@ msgstr "Spisovatel(é)"
 #: dvb/xmltv.cpp:228
 #, kde-format
 msgid "Adapter(s)"
-msgstr ""
+msgstr "Adaptér(y)"
 
 #: dvb/xmltv.cpp:230
 #, kde-format
@@ -1752,12 +1773,12 @@ msgstr "Skladatel(é)"
 #: dvb/xmltv.cpp:234
 #, kde-format
 msgid "Editor(s)"
-msgstr ""
+msgstr "Editor(ři)"
 
 #: dvb/xmltv.cpp:236
 #, kde-format
 msgid "Presenter(s)"
-msgstr ""
+msgstr "Moderátor(ři)"
 
 #: dvb/xmltv.cpp:238
 #, kde-format
@@ -1872,7 +1893,7 @@ msgstr "&1 Přehrát soubor"
 #: mainwindow.cpp:115
 #, kde-format
 msgid "Open dialog to play a file"
-msgstr ""
+msgstr "Otevřít dialogové okno pro přehrání souboru"
 
 #: mainwindow.cpp:119
 #, kde-format
@@ -1885,6 +1906,8 @@ msgid ""
 "Start playing an audio CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"Spustit přehrávání zvukového CD. Předpokládá se, že CD je již vloženo v "
+"mechanice CD"
 
 #: mainwindow.cpp:125
 #, kde-format
@@ -1897,6 +1920,8 @@ msgid ""
 "Start playing a Video CD. It assumes that the CD is already there at the CD "
 "drive"
 msgstr ""
+"Spustit přehrávání Video CD. Předpokládá se, že CD je již vloženo v "
+"mechanice CD"
 
 #: mainwindow.cpp:131
 #, kde-format
@@ -1909,6 +1934,7 @@ msgid ""
 "Start playing a DVD. It assumes that the DVD is already there at the DVD "
 "drive"
 msgstr ""
+"Spustit přehrávání DVD. Předpokládá se, že DVD je již vloženo v DVD mechanice"
 
 #: mainwindow.cpp:138
 #, kde-format
@@ -2026,6 +2052,11 @@ msgid ""
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
 "where 'category' can be:\n"
 msgstr ""
+"Zapnout všechny ladicí zprávy. Upozorňujeme, že Kaffeine také umožňuje "
+"zapnout ladicí zprávy podle jednotlivých kategorií pomocí proměnné "
+"prostředí:\n"
+"QT_LOGGING_RULES=kaffeine.category.debug=true\n"
+"kde 'category' může být:\n"
 
 #: mainwindow.cpp:478
 #, kde-format
@@ -2260,7 +2291,7 @@ msgstr "mísení"
 #, kde-format
 msgctxt "'Deinterlace' menu"
 msgid "Inverse telecine"
-msgstr ""
+msgstr "Inverzní telekino"
 
 #: mediawidget.cpp:292
 #, kde-format
