@@ -2064,7 +2064,7 @@ msgstr ""
 "Meldungen pro Kategorie verwenden kann. Dies wird folgender "
 "Umgebungsvariable aktiviert:\n"
 "QT_LOGGING_RULES=kaffeine.category.debug=true\n"
-"Als „category“ können folgende Werte benutzt werden:\n"
+"Als „category“ können folgende Werte verwendet werden:\n"
 
 #: mainwindow.cpp:478
 #, kde-format
