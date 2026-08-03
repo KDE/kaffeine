@@ -19,7 +19,7 @@
 ></author>
 
 <date
->2018-05-01</date>
+>2018–05–01</date>
 <releaseinfo
 >Kaffeine 2.0.15</releaseinfo>
 
@@ -172,7 +172,7 @@
 <para
 >Dabei kann folgendes als <emphasis
 >category</emphasis
-> benutzt werden:</para>
+> verwendet werden:</para>
 
 <variablelist>
 <varlistentry>
@@ -300,7 +300,7 @@
 ></term>
 <listitem
 ><para
->Start im Vollbildmodus. Im Vollbildmodus sind alle Menüs standardmäßig ausgeblendet. Um die Menüs wieder einzublenden, bewegen Sie die Maus an die Menüpositionen, z. B. an die obere/untere oder linke Position des Bildschirms.</para>
+>Start im Vollbildmodus. Im Vollbildmodus sind alle Menüs standardmäßig ausgeblendet. Um die Menüs wieder einzublenden, bewegen Sie die Maus an die Menüpositionen, z. B. an die obere/untere oder linke Position des Bildschirms.</para>
 </listitem>
 </varlistentry>
 
@@ -313,7 +313,7 @@
 ></term>
 <listitem
 ><para
->Start im Minimalmodus. Im Minimalmodus wird die Fensterdekoration mit der Titelleiste angezeigt. Alle anderen Menüs sind standardmäßig ausgeblendet. Um die Menüs wieder einzublenden, bewegen Sie die Maus an die Menüpositionen, z. B. an die obere/untere oder linke Position des &kaffeine;-Fensters.</para>
+>Start im Minimalmodus. Im Minimalmodus wird die Fensterdekoration mit der Titelleiste angezeigt. Alle anderen Menüs sind standardmäßig ausgeblendet. Um die Menüs wieder einzublenden, bewegen Sie die Maus an die Menüpositionen, z. B. an die obere/untere oder linke Position des &kaffeine;-Fensters.</para>
 <para
 >Start im Minimalmodus</para>
 </listitem>
@@ -486,7 +486,7 @@
 <member
 >w-scan(1)</member>
 <member
->Weitere Informationen finden Sie außerdem auf der <ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>Weitere Informationen finden Sie außerdem auf der <ulink url="https://apps.kde.org/kaffeine"
 >Kaffeine-Seite</ulink
 ></member>
 </simplelist>
