@@ -1,12 +1,12 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# SPDX-FileCopyrightText: 2010, 2022, 2025 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
+# SPDX-FileCopyrightText: 2010, 2022, 2025, 2026 Zayed Al-Saidi <zayed.alsaidi@gmail.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-09 00:42+0000\n"
-"PO-Revision-Date: 2025-08-20 21:33+0400\n"
+"PO-Revision-Date: 2026-08-10 18:32+0400\n"
 "Last-Translator: Zayed Al-Saidi <zayed.alsaidi@gmail.com>\n"
 "Language-Team: ar\n"
 "Language: ar\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.12.3\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -1434,7 +1434,7 @@ msgid ""
 "\n"
 "Please check the Configure Television window."
 msgstr ""
-"لم يعثر على جهاز بإعدادات صالحة أو أن أذونات الوصول خاطئة.\n"
+"لم يعثر على جهاز بإعدادات صالحة أو أن أذون الوصول خاطئة.\n"
 "\n"
 "الرجاء التحقق من نافذة ضبط التلفاز."
 
