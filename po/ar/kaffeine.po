@@ -493,7 +493,7 @@ msgstr "اتركه فارغًا بلا أمر."
 #: dvb/dvbconfigdialog.cpp:163
 #, kde-format
 msgid "Use ISO 8859-1 charset instead of ISO 6937:"
-msgstr "استخدم الترميز  ISO 8859-1 عوضاً عن الترميز ISO 6937 :"
+msgstr "استخدم الترميز  ISO 8859-1 عوضًا عن الترميز ISO 6937 :"
 
 #: dvb/dvbconfigdialog.cpp:170
 #, kde-format
@@ -2101,12 +2101,12 @@ msgstr "افتح ملفّات"
 #, kde-format
 msgctxt "@title:window"
 msgid "Open URL"
-msgstr "افتح عنوناً"
+msgstr "افتح عنونًا"
 
 #: mainwindow.cpp:728
 #, kde-format
 msgid "Enter a URL:"
-msgstr "أدخل عنواناً:"
+msgstr "أدخل عنوانًا:"
 
 #: mediawidget.cpp:89
 #, kde-format
@@ -2121,7 +2121,7 @@ msgstr "شغّل"
 #: mediawidget.cpp:98
 #, kde-format
 msgid "Pause"
-msgstr "قف مؤقتاً"
+msgstr "قف مؤقتًا"
 
 #: mediawidget.cpp:107
 #, kde-format
