@@ -933,7 +933,7 @@ msgstr "Varietat"
 
 #: dvb/dvbepg.cpp:673
 msgid "Talk"
-msgstr "Xerrades"
+msgstr "Xarrades"
 
 #: dvb/dvbepg.cpp:679
 msgid "Events"
