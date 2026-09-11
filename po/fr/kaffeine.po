@@ -1644,7 +1644,7 @@ msgstr "Filtre"
 #: dvb/dvbscandialog.cpp:348
 #, kde-format
 msgid "Free to air"
-msgstr "Chaîne en clair"
+msgstr "Chaine en clair"
 
 #: dvb/dvbscandialog.cpp:351
 #, kde-format
