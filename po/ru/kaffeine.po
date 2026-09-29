@@ -483,7 +483,7 @@ msgstr "Запас после окончания (в минутах):"
 #: dvb/dvbconfigdialog.cpp:137
 #, kde-format
 msgid "Naming style for recordings:"
-msgstr "Формат названий записей."
+msgstr "Формат названий записей:"
 
 #: dvb/dvbconfigdialog.cpp:141
 #, kde-format
