@@ -6,13 +6,13 @@
 # Ozan Çağlayan <ozan@pardus.org.tr>, 2010.
 # obsoleteman <tulliana@gmail.com>, 2008-2009,2011-2012.
 # Volkan Gezer <volkangezer@gmail.com>, 2014.
-# SPDX-FileCopyrightText: 2022, 2023, 2024, 2025, 2026 Emir SARI <emir_sari@icloud.com>
+# SPDX-FileCopyrightText: 2022-2026 Emir SARI <emir_sari@icloud.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia-kde4\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-07-09 00:42+0000\n"
-"PO-Revision-Date: 2026-05-02 19:42+0300\n"
+"PO-Revision-Date: 2026-10-24 21:54+0300\n"
 "Last-Translator: Emir SARI <emir_sari@icloud.com>\n"
 "Language-Team: Turkish <kde-l10n-tr@kde.org>\n"
 "Language: tr\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 25.12.3\n"
+"X-Generator: Lokalize 26.08.0\n"
 
 #: backend-mplayer/mplayermediawidget.cpp:260
 #, kde-format
@@ -30,7 +30,7 @@ msgstr "Mplayer süreci başlatılamadı."
 #: backend-vlc/vlcmediawidget.cpp:701 backend-vlc/vlcmediawidget.cpp:943
 #, kde-format
 msgid "Subtitle %1"
-msgstr "Altyazı %1"
+msgstr "Alt yazı %1"
 
 #: backend-vlc/vlcmediawidget.cpp:879
 #, kde-format
@@ -413,7 +413,7 @@ msgstr "Video süreç kimliği:"
 #: dvb/dvbchanneldialog.cpp:990
 #, kde-format
 msgid "Subtitle PID:"
-msgstr "Altyazı süreç kimliği:"
+msgstr "Alt yazı süreç kimliği:"
 
 #: dvb/dvbchanneldialog.cpp:1006
 #, kde-format
@@ -2155,7 +2155,7 @@ msgstr "Yalın Kip"
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Subtitle"
-msgstr "Altyazı"
+msgstr "Alt Yazı"
 
 #: mediawidget.cpp:148
 #, kde-format
@@ -2167,7 +2167,7 @@ msgstr "kapalı"
 #, kde-format
 msgctxt "'Subtitle' menu"
 msgid "Add subtitle file"
-msgstr "Altyazı Dosyası Ekle"
+msgstr "Alt Yazı Dosyası Ekle"
 
 #: mediawidget.cpp:163
 #, kde-format
@@ -2510,7 +2510,7 @@ msgstr "Yalın Kipten Çık"
 #, kde-format
 msgctxt "@title:window"
 msgid "Open subtitle"
-msgstr "Altyazı aç"
+msgstr "Alt Yazı Aç"
 
 #: mediawidget.cpp:721
 #, kde-format
@@ -2518,8 +2518,9 @@ msgid ""
 "Subtitles (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
 "*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
 msgstr ""
-"Altyazılar (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *.rt "
-"*.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *.dfxp"
+"Alt yazılar (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *."
+"rt *.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *."
+"dfxp"
 
 #: mediawidget.cpp:861 mediawidget.cpp:962
 #, kde-format
@@ -2625,7 +2626,7 @@ msgstr "Rastgele"
 #: playlist/playlisttab.cpp:406
 #, kde-format
 msgid "Add Subtitle"
-msgstr "Altyazı Ekle"
+msgstr "Alt Yazı Ekle"
 
 #: playlist/playlisttab.cpp:420
 #, kde-format
@@ -2649,7 +2650,7 @@ msgstr "Adsız Oynatma Listesi"
 #, kde-format
 msgctxt "file filter"
 msgid "Subtitle Files"
-msgstr "Altyazı Dosyaları"
+msgstr "Alt Yazı Dosyaları"
 
 #: playlist/playlisttab.cpp:865
 #, kde-format
