@@ -120,8 +120,7 @@ msgctxt "@label:textbox"
 msgid "NOTE: Kaffeine should be restarted for the new arguments to take effect"
 msgstr ""
 "HUOMAA: Kaffeine on käynnistettävä uudelleen, jotta kaikki muutokset tulevat "
-"voimaanHUOMAA: Kaffeine on käynnistettävä uudelleen, jotta kaikki muutokset "
-"tulevat voimaan"
+"voimaan"
 
 #: configurationdialog.cpp:126
 #, kde-format
@@ -1594,10 +1593,6 @@ msgstr ""
 "verkkotietotaulukoihin (NIT). Tämä on yleistä DVB-C-järjestelmissä. "
 "Napsauttamalla tätä kuvaketta tutkimismenetelmän voi vaihtaa ottamaan muu "
 "NIT-tieto huomioon. Huomaa, että tällä asetuksella tutkiminen hidastuu "
-"merkittävästi.Joissakin verkoissa transponderi voi olla koodattu eri "
-"verkkotietotaulukoihin (NIT). Tämä on yleistä DVB-C-järjestelmissä. "
-"Napsauttamalla tätä kuvaketta tutkimismenetelmän voi vaihtaa ottamaan muu "
-"NIT-tieto huomioon. Huomaa, että tällä asetuksella tutkiminen hidastuu "
 "merkittävästi."
 
 #: dvb/dvbscandialog.cpp:310 dvb/dvbscandialog.cpp:427
@@ -2504,17 +2499,7 @@ msgstr ""
 "*.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx *.s3m *.shn *.snd *.spl "
 "*.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob *.voc *.wav *.wax *."
 "webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *.kaffeine *.iso);;"
-"Kaikki tiedostot (*)Tuetut mediatiedostot (*.3ga *.3gp *.3gpp *.669 *.ac3 *."
-"aif *.aiff *.anim1 *.anim2 *.anim3 *.anim4 *.anim5 *.anim6 *.anim7 *.anim8 *."
-"anim9 *.animj *.asf *.asx *.au *.avf *.avi *.bdm *.bdmv *.clpi *.cpi *.divx "
-"*.dv *.f4a *.f4b *.f4v *.flac *.flc *.fli *.flv *.it *.lrv *.m15 *.m2t *."
-"m2ts *.m3u *.m3u8 *.m4a *.m4b *.m4v *.med *.mka *.mkv *.mng *.mod *.moov *."
-"mov *.mp+ *.mp2 *.mp3 *.mp4 *.mpc *.mpe *.mpeg *.mpg *.mpga *.mpl *.mpls *."
-"mpp *.mtm *.mts *.nsv *.oga *.ogg *.ogm *.ogv *.ogx *.opus *.pls *.qt *.qtl "
-"*.qtvr *.ra *.ram *.rax *.rm *.rmj *.rmm *.rms *.rmvb *.rmx *.rp *.rv *.rvx "
-"*.s3m *.shn *.snd *.spl *.stm *.swf *.ts *.tta *.ult *.uni *.vdr *.vlc *.vob "
-"*.voc *.wav *.wax *.webm *.wma *.wmv *.wmx *.wv *.wvp *.wvx *.xm *.xspf *."
-"kaffeine *.iso);;Kaikki tiedostot (*)"
+"Kaikki tiedostot (*)"
 
 #: mediawidget.cpp:674
 #, kde-format
@@ -2542,9 +2527,7 @@ msgid ""
 msgstr ""
 "Tekstitykset (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *.psb *."
 "rt *.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *.ttml *."
-"dfxpTekstitykset (*.cdg *.idx *.srt *.sub *.utf *.ass *.ssa *.aqt *.jss *."
-"psb *.rt *.smi *.txt *.smil *.stl *.usf *.dks *.pjs *.mpl2 *.mks *.vtt *."
-"ttml *.dfxp"
+"dfxp"
 
 #: mediawidget.cpp:861 mediawidget.cpp:962
 #, kde-format
