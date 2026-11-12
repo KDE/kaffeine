@@ -743,7 +743,7 @@ msgstr "Oppsett:"
 #: dvb/dvbconfigdialog.cpp:1120
 #, kde-format
 msgid "DiSEqC Switch"
-msgstr "DiSEqC av/på"
+msgstr "DiSEqC på/av"
 
 #: dvb/dvbconfigdialog.cpp:1121
 #, kde-format

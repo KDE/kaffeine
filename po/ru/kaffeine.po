@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: kaffeine\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
 "POT-Creation-Date: 2026-11-08 02:56+0000\n"
-"PO-Revision-Date: 2026-02-05 19:12+0300\n"
+"PO-Revision-Date: 2026-11-11 22:59+0200\n"
 "Last-Translator: Alexander Yavorsky <kekcuha@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "Language: ru\n"
@@ -2377,19 +2377,19 @@ msgstr "Автоматический"
 #, kde-format
 msgctxt "Video size"
 msgid "25%"
-msgstr "25%"
+msgstr "25 %"
 
 #: mediawidget.cpp:372
 #, kde-format
 msgctxt "Video size"
 msgid "50%"
-msgstr "50%"
+msgstr "50 %"
 
 #: mediawidget.cpp:379
 #, kde-format
 msgctxt "Video size"
 msgid "75%"
-msgstr "75%"
+msgstr "75 %"
 
 #: mediawidget.cpp:385
 #, kde-format
@@ -2401,25 +2401,25 @@ msgstr "исходный размер"
 #, kde-format
 msgctxt "Video size"
 msgid "150%"
-msgstr "150%"
+msgstr "150 %"
 
 #: mediawidget.cpp:397
 #, kde-format
 msgctxt "Video size"
 msgid "200%"
-msgstr "200%"
+msgstr "200 %"
 
 #: mediawidget.cpp:403
 #, kde-format
 msgctxt "Video size"
 msgid "250%"
-msgstr "250%"
+msgstr "250 %"
 
 #: mediawidget.cpp:409
 #, kde-format
 msgctxt "Video size"
 msgid "300%"
-msgstr "300%"
+msgstr "300 %"
 
 #: mediawidget.cpp:432
 #, kde-format
@@ -2544,7 +2544,7 @@ msgstr ""
 #, kde-format
 msgctxt "osd"
 msgid "Volume: %1%"
-msgstr "Громкость: %1%"
+msgstr "Громкость: %1 %"
 
 #: mediawidget.cpp:892
 #, kde-format
