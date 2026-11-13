@@ -1,0 +1,508 @@
+<?xml version="1.0" ?>
+<!DOCTYPE refentry PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY % Arabic "INCLUDE">
+]>
+
+<refentry lang="&language;">
+<refentryinfo>
+<title
+>دليل مستخدم كافيين</title>
+<author
+><personname
+> <firstname
+>Burkhard</firstname
+> <surname
+>Lück</surname
+> </personname
+> <email
+>lueck@hube-lueck.de</email
+></author>
+
+<date
+>2018-05-01</date>
+<releaseinfo
+>كافيين 2.0.15</releaseinfo>
+
+</refentryinfo>
+
+<refmeta>
+<refentrytitle
+><command
+>Kaffeine</command
+></refentrytitle>
+<manvolnum
+>1</manvolnum>
+</refmeta>
+
+<refnamediv>
+<refname
+><command
+>kaffeine</command
+></refname>
+<refpurpose
+>مشغل وسائط لكِيدِي مع دعم التلفاز الرقمي</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv>
+<cmdsynopsis
+><command
+>kaffeine</command
+> <arg choice="opt"
+><option
+>-d, --debug</option
+></arg
+> <arg choice="opt"
+><option
+>--tempfile</option
+></arg
+> <arg choice="opt"
+><option
+>-f, --fullscreen</option
+></arg
+> <arg choice="opt"
+><option
+>-m, --minimal</option
+></arg
+> <arg choice="opt"
+><option
+>-t, --alwaysontop</option
+></arg
+> <arg choice="opt"
+><option
+>--audiocd</option
+></arg
+> <arg choice="opt"
+><option
+>--videocd</option
+></arg
+> <arg choice="opt"
+><option
+>--aspectratio <replaceable
+>نسبة_الأبعاد</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--dvd</option
+></arg
+> <arg choice="opt"
+><option
+>--dumpdvb</option
+></arg
+> <arg choice="opt"
+><option
+>--channel <replaceable
+>اسم</replaceable
+> / <replaceable
+>رقم</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--tv <replaceable
+>قناة</replaceable
+></option
+></arg
+> <arg choice="opt"
+><option
+>--lastchannel</option
+></arg
+> <arg choice="opt"
+><option
+><replaceable
+>ملفات</replaceable
+></option
+></arg
+> </cmdsynopsis>
+
+<para
+>يُرجى ملاحظة أن <option
+>--channel</option
+> و<option
+>--tv</option
+> و<option
+>--lastchannel</option
+> و<option
+>--audiocd</option
+> و<option
+>--videocd</option
+> و<option
+>--dvd</option
+> و<option
+><replaceable
+>ملفات</replaceable
+></option
+> متنافية.</para>
+</refsynopsisdiv>
+
+
+<refsect1>
+<title
+>الوصف</title>
+<para
+>كافيين مشغل وسائط. ما يجعله مختلفًا عن الآخرين هو دعمه الممتاز للتلفزيون الرقمي (DVB). يحتوي كافيين على واجهة سهلة الاستخدام، بحيث يمكن للمستخدمين من أول مرة تشغيل أفلامهم على الفور: من DVD (بما في ذلك قوائم DVD، والعناوين، والفصول، وما إلى ذلك)، أو VCD، أو ملف.</para>
+
+<para
+>يستخدم كافيين libVLC كخلفية تشغيل الفيديو/الصوت.</para>
+
+</refsect1>
+
+<refsect1>
+<title
+>خيارات</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><option
+>-d</option
+> <option
+>--debug</option
+></term>
+<listitem
+><para
+>فعّل جميع رسائل التنقيح. يُرجى ملاحظة أن كافيين يسمح أيضًا بضبط رسائل التنقيح بدقة، بتمكين الرسائل حسب الفئة، باستخدام متغير البيئة:</para>
+<para
+><emphasis role="bold"
+>QT_LOGGING_RULES=kaffeine.<emphasis
+>فئة</emphasis
+>.debug=true </emphasis
+></para>
+<para
+>حيث يمكن أن تكون <emphasis
+>فئة</emphasis
+>:</para>
+
+<variablelist>
+<varlistentry>
+<term
+><option
+>cam</option
+></term>
+<listitem
+><para
+>لسجلات dvb CAM</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dev</option
+></term>
+<listitem
+><para
+>لسجلات جهاز dvb وlibdvbv5</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvbsi</option
+></term>
+<listitem
+><para
+>لسجلات تحليل dvb MPEG-TS SI</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>epg</option
+></term>
+<listitem
+><para
+>لسجلات dvb EPG</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>dvb</option
+></term>
+<listitem
+><para
+>لسجلات dvb الأخرى</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>config</option
+></term>
+<listitem
+><para
+>لسجلات الضبط</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>mediawidget</option
+></term>
+<listitem
+><para
+>لسجلات أداة الوسائط</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>playlist</option
+></term>
+<listitem
+><para
+>لسجلات قائمة التشغيل</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>sql</option
+></term>
+<listitem
+><para
+>لسجلات SQL lite</para
+></listitem>
+</varlistentry>
+<varlistentry>
+<term
+><option
+>vlc</option
+></term>
+<listitem
+><para
+>لسجلات libVlc</para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tempfile</option
+></term>
+<listitem
+><para
+>المستندات والعناوين التي يفتحها التّطبيق ستُحذف بعد استخدامها</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-f</option
+> <option
+>--fullscreen</option
+></term>
+<listitem
+><para
+>ابدأ في وضع ملء الشاشة. في وضع ملء الشاشة، تُخفى جميع القوائم مبدئيًا. لإظهار القوائم، حرّك الفأرة إلى مواقع القوائم، مثل أعلى/أسفل أو يسار الشاشة.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-m</option
+> <option
+>--minimal</option
+></term>
+<listitem
+><para
+>ابدأ في وضع الحد الأدنى. في وضع الحد الأدنى، تُعرض زخرفة النافذة مع شريط العنوان. تُخفى جميع القوائم الأخرى مبدئيًا. لإظهار القوائم، حرّك الفأرة إلى مواقع القوائم، مثل أعلى/أسفل أو يسار نافذة كافيين.</para>
+<para
+>يبدأ في وضع الحد الأدنى</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>-t</option
+> <option
+>--alwaysontop</option
+></term>
+<listitem
+><para
+>يُخبر مدير النوافذ ببدء النافذة الرئيسية لـ كافيين دائمًا فوق النوافذ الأخرى. يمكن تعطيل هذا الخيار لاحقًا عبر مدير النوافذ، عادةً بالنقر بزر الفأرة الأيمن على شريط العنوان وإلغاء تحديد مربع الخيار الدائم في الأعلى.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--aspectratio</option
+> <replaceable
+>aspect_ratio</replaceable
+></term>
+<listitem
+><para
+>يُجبر كافيين على البدء بنسبة أبعاد محددة، معطلًا الوضع الآلي. قد يكون هذا مفيدًا على الشاشات العريضة وفائقة العريضة، حيث يريد المستخدم دائمًا رؤية الفيديو في وضع ملء الشاشة باستخدام أقصى دقة ممكنة. القيم الصالحة هي: 1:1, 4:3, 5:4, 16:9, 16:10, 2.21:1, 2.35:1 و2.39:1. إذا مُررت قيمة غير صالحة، أو لم يُستخدم هذا الخيار، فسيُعتمد الوضع الآلي مبدئيًا.</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--audiocd</option
+></term>
+<listitem
+><para
+>شغّل قرص صوتي</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--videocd</option
+></term>
+<listitem
+><para
+>شغّل فيديو سي دي</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dvd</option
+></term>
+<listitem
+><para
+>شغّل ديفيدي</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--dumpdvb</option
+></term>
+<listitem
+><para
+>أفرغ بيانات دي في دي (خيار التنقيح)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--channel</option
+> <replaceable
+>اسم</replaceable
+> / <replaceable
+>رقم</replaceable
+></term>
+<listitem
+><para
+>شغّل قناة تلفاز</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--tv</option
+> <replaceable
+>قناة</replaceable
+></term>
+<listitem
+><para
+>(خيار مهمل)</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+>--lastchannel</option
+> </term>
+<listitem
+><para
+>شغّل آخر قناة تلفاز مضبوطة</para>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><option
+><replaceable
+>ملفات</replaceable
+></option
+></term>
+<listitem
+><para
+>تشغيل ملفات أو عناوين</para>
+</listitem>
+</varlistentry>
+
+</variablelist>
+</refsect1>
+
+<refsect1>
+<title
+>الملفات</title>
+<para
+>يستخدم كافيين الملف <filename
+>scanfile.dvb</filename
+> بقائمة قنوات معروفة حسب الموقع والقمر الصناعي (لـ DVB-S).</para>
+<para
+>عند إضافة قنوات جديدة في مدينة ما، أو عند إضافة حزم أقمار صناعية جديدة غير متوفرة في كافيين، استخدم إما dvbv5-scan أو w_scan لإنشاء ملف جديد (في الحالة الأخيرة، حوّله إلى الصيغة المناسبة باستخدام dvb-format-convert)، وأرسله إلى <email
+>linux-media@vger.kernel.org</email
+>، مع الموضوع <quote
+>[PATCH] dtv-scan-tables: <replaceable
+>وصف ما</replaceable
+></quote
+>. ستُضاف الرقعة الجديدة إلى <filename
+>scanfile.dvb</filename
+> وسيكون الملف المحدّث متاحًا للتحديث من الإنترنت في تطبيق كافيين. </para>
+</refsect1>
+
+<refsect1>
+<title
+>انظر أيضًا</title>
+<simplelist>
+<member
+>وثائق المستخدم الأكثر تفصيلًا متوفرة من <ulink url="help:/kaffeine"
+>help:/kaffeine</ulink
+> (إما أدخل هذا &URL; في &konqueror;، أو شغّل <userinput
+><command
+>khelpcenter</command
+> <parameter
+>help:/kaffeine</parameter
+></userinput
+>).</member>
+<member
+>kf5options(7)</member>
+<member
+>qt5options(7)</member>
+<member
+>dvbv5-scan(1)</member>
+<member
+>w-scan(1)</member>
+<member
+>توجد أيضًا معلومات إضافية متوفرة في <ulink url="https://apps.kde.org/kaffeine"
+>صفحة كافيين</ulink
+></member>
+</simplelist>
+</refsect1>
+
+<refsect1>
+<title
+>المؤلفون</title>
+<para
+>لسرد مؤلفي كافيين استخدم <userinput
+><command
+>kaffeine</command
+> <option
+>--author</option
+></userinput
+> في الطرفية.</para>
+</refsect1>
+
+</refentry>

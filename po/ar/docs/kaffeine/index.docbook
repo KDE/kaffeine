@@ -1,0 +1,2158 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.5-Based Variant V1.1//EN" "dtd/kdedbx45.dtd" [
+<!ENTITY kaffeine "<application
+>Kaffeine</application
+>"
+><!--FIXME add entry to kdoctools-->
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Arabic "INCLUDE">
+]>
+
+<book id="kaffeine" lang="&language;">
+
+<bookinfo>
+<title
+>دليل كافيين</title>
+
+<authorgroup>
+<author
+><firstname
+>Jürgen</firstname
+> <othername
+></othername
+> <surname
+>Kofler</surname
+> <affiliation
+> <address
+><email
+>kaffeine@gmx.net</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Christophe</firstname
+> <othername
+></othername
+> <surname
+>Thommeret</surname
+> <affiliation
+> <address
+><email
+>hftom@free.fr</email
+></address>
+</affiliation>
+</author>
+<author
+><firstname
+>Mauro</firstname
+> <othername
+>Carvalho</othername
+> <surname
+>Chehab</surname
+> <affiliation
+> <address
+><email
+>mchehab+kde@kernel.org</email
+></address>
+</affiliation>
+</author>
+</authorgroup>
+
+<othercredit role="translator"
+><firstname
+>زايد</firstname
+><surname
+>السعيدي</surname
+><affiliation
+><address
+><email
+>zayed.alsaidi@gmail.com</email
+></address
+></affiliation
+><contrib
+>التّرجمة العربيّة</contrib
+></othercredit
+> 
+
+<copyright>
+<year
+>2004</year>
+<year
+>2016-2019</year>
+<holder
+>مؤلفو كافيين.</holder>
+</copyright>
+<legalnotice
+>&FDLNotice;</legalnotice>
+
+<date
+>2019-05-01</date>
+<releaseinfo
+>كافيين 2.0.17</releaseinfo>
+
+<!-- Abstract about this handbook -->
+
+<abstract>
+<para
+><ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
+>كفين</ulink
+> هو مشغل وسائط من &kde;. </para>
+</abstract>
+
+<keywordset>
+<keyword
+>كافيين</keyword>
+<keyword
+>vlc</keyword>
+<keyword
+>فيديو</keyword>
+<keyword
+>صوت</keyword>
+<keyword
+>mp3</keyword>
+<keyword
+>dvd</keyword>
+<keyword
+>atsc</keyword>
+<keyword
+>dvb-t</keyword>
+<keyword
+>dvb-c</keyword>
+<keyword
+>dvb-s</keyword>
+<keyword
+>dvb-t2</keyword>
+<keyword
+>dvb-s2</keyword>
+<keyword
+>isdb-t</keyword>
+<keyword
+>tv</keyword>
+</keywordset>
+
+</bookinfo>
+
+<chapter id="kaffeine-player">
+<title
+>مشغل كافيين</title>
+
+<sect1 id="startwindow">
+<title
+>نافذة البداية</title>
+
+<para
+>مثل العديد من مشغلات الوسائط الأخرى، يدعم كافيين مجموعة واسعة من صيغ الفيديو والصوت، بالإضافة إلى تشغيل الصوت والفيديو من أقراص DVD و &CD;. كما يدعم تشغيل التلفاز الرقمي المباشر إذا كان حاسوبك مزودًا بجهاز بث فيديو رقمي (DVB). </para>
+<para
+>عند بدء كافيين، يعرض شاشة تحتوي على الوظائف الرئيسية في المنتصف، ويمكن التبديل إلى وظائف أخرى عبر شريط القوائم أو الشريط الجانبي الأيسر: </para>
+
+<screenshot>
+<screeninfo
+>نافذة البداية</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_initial.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>نافذة البداية</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playfile">
+<title
+>تشغيل ملف</title>
+<para
+>تشغيل ملف فيديو أو صوت بسيط مثل النقر على الزر <guibutton
+>تشغيل ملف</guibutton
+>. سيطلب منك تحديد الملف المراد تشغيله، وسيبدأ تشغيله. نظرًا لأن كافيين يستخدم LibVLC كخلفية، فإنه يدعم جميع <ulink url="https://www.videolan.org/vlc/features.html"
+>صيغ الملفات</ulink
+> نفسها التي يدعمها VLC. كما يدعم فتح قائمة من الملفات لإنشاء وإدارة <ulink url="https://wiki.videolan.org/Playlist/"
+>قوائم التشغيل</ulink
+>. </para>
+
+<screenshot>
+<screeninfo
+>تشغيل ملف</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_play_file.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>تشغيل ملف</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect1>
+
+<sect1 id="playlistwindow">
+<title
+>نافذة قائمة التشغيل</title>
+<para
+>يدعم كافيين قوائم تشغيل متعددة. اختر القائمة النشطة باستخدام محدد <guilabel
+>قائمة التشغيل</guilabel
+> في الشريط الجانبي الأيسر. يمكنك بسهولة سحب بعض الملفات أو المجلدات من متصفح الملفات وإفلاتها على قائمة التشغيل لإضافتها إلى القائمة، أو إفلاتها على نافذة المشغل لإنشاء قائمة تشغيل جديدة. لتغيير اسم قائمة التشغيل، حرره وأكد باستخدام <keycap
+>رجوع</keycap
+>. </para>
+<screenshot>
+<screeninfo
+>نافذة قائمة التشغيل</screeninfo>
+ <mediaobject>
+   <imageobject>
+     <imagedata fileref="playlistwindow.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+     <phrase
+>نافذة قائمة التشغيل</phrase>
+   </textobject>
+  </mediaobject>
+</screenshot>
+
+<para
+>يمكنك العثور على جميع الوظائف المتعلقة بقائمة التشغيل في عنصر <guimenu
+>قائمة التشغيل</guimenu
+> من شريط القوائم وقائمة السياق (النقر بزر الفأرة الأيمن على قائمة التشغيل). </para>
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-digital-tv">
+<title
+>مشغل التلفاز الرقمي</title>
+<!-- https://blogs.s-osg.org/watching-digital-tv-via-kaffeine/-->
+
+<sect1 id="digital-tv">
+<title
+>إعدادات التلفاز الرقمي</title>
+
+<para
+>بينما تكون الوظيفة الأساسية مفيدة بما يكفي لمن يريد مشغل وسائط بسيطًا لكنه قوي، فإن أفضل ميزة في كافيين هي استخدامه كواجهة رسومية أمامية لمشاهدة وتسجيل التلفاز الرقمي. </para>
+
+<para
+>منذ إصدار كافيين 2.0، يستخدم دعم التلفاز الرقمي libdvbv5 وتم توسيعه لدعم معايير جديدة مثل DVB-T2 و ISDB-T. أصبح توسيع دعمه لمعايير التلفاز الرقمي الأحدث أكثر بساطة الآن. أيضًا، نظرًا لأنه يستخدم واجهة برمجة تطبيقات Linux DVB الإصدار 5، فإنه يدعم الواجهات الأمامية القادرة على تنفيذ معايير تلفاز رقمية متعددة. </para>
+
+<para
+>إعداد إعدادات التلفاز على كافيين بسيط مثل فتح عنصر <guimenu
+>تلفاز</guimenu
+> من شريط القوائم واختيار الخيار <guimenuitem
+>إعداد التلفاز...</guimenuitem
+>. ستفتح نافذة منبثقة، تسمح بتعيين المعلمات المراد استخدامها: </para>
+
+<screenshot>
+<screeninfo
+>إعدادات التلفاز - خيارات عامة</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_general_opts.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>إعدادات التلفاز - خيارات عامة</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<sect2 id="dtv-general-opts">
+<title
+>إعدادات التلفاز الرقمي العامة</title>
+
+<para
+>تسمح قائمة <guimenu
+>الخيارات العامة</guimenu
+> بتعيين الإعدادات المستقلة عن الجهاز. </para>
+
+<para
+>يحدد <guilabel
+>مجلد التسجيل</guilabel
+> الموقع الذي ستُخزن فيه جميع تسجيلات برامج التلفاز. </para>
+
+<para
+>يحدد <guilabel
+>اسم ملف xmltv (اختياري)</guilabel
+> اسم ملف يحتوي على بيانات دليل البرامج الإلكتروني (EPG) التي تم استردادها عبر أداة جلب خارجية. عند استخدام هذا الخيار، من المحتمل أن تضبط <guilabel
+>تعطيل تحليل بيانات دليل البرامج الإلكتروني (EPG) من جداول MPEG-TS</guilabel
+> </para>
+
+<para
+>يعطل <guilabel
+>تعطيل تحليل بيانات EPG من جداول MPEG-TS</guilabel
+> استرداد بيانات دليل البرامج الإلكتروني (EPG) من الإشارة المُبثّة. استخدمه لتوفير بعض وقت المعالج، إذا كان جهاز البث لا يرسل بيانات EPG موثوقة. </para>
+
+<para
+>يُستخدم <guilabel
+>مجلد إزاحة الوقت</guilabel
+> بالتزامن مع زر الإيقاف المؤقت (<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+>) في شاشة مشغل الوسائط. عند الضغط على الزر، يُخزَّن ملف إزاحة الوقت في الموقع المشار إليه بخيار القائمة هذا. </para>
+
+<para
+>يُستخدم خيارا <guilabel
+>الهامش البادئ</guilabel
+> و<guilabel
+>الهامش الختامي</guilabel
+> لإعداد نوع من <quote
+>هامش الأمان</quote
+> لتجنب فقدان بداية البرنامج ونهايته، إذ قد لا تكون الطوابع الزمنية في دليل البرامج دقيقة. لذا، يبدأ التسجيل فعليًا قبل بضع دقائق من وقت <guilabel
+>البدء</guilabel
+> المُعرَّف في <guimenu
+>دليل البرامج</guimenu
+>. يُحدَّد المقدار الدقيق للوقت السابق عبر <guilabel
+>الهامش البادئ</guilabel
+>. يمدّ كافيين التسجيل بمقدار الوقت المُعرَّف بواسطة <guilabel
+>الهامش الختامي</guilabel
+> بعد نهاية البرنامج. </para>
+
+<para
+>يُستخدم خيار <guilabel
+>نمط تسمية التسجيلات</guilabel
+> لإعداد كيفية تسمية كافيين للبرنامج. يمكن استخدام عدة وحدات ماكرو لتغيير اسم التسجيل ديناميكيًا: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>%title</parameter
+> - عنوان البرنامج، كما يظهر في قائمتي <guimenu
+>دليل البرامج</guimenu
+> و<guimenu
+>جدول التسجيلات</guimenu
+>؛ </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%day, %month, %year, %hour, %min, %sec</parameter
+> - حقول من الطابع الزمني الذي يمثل الوقت الذي يبدأ فيه كافيين تسجيل برنامج؛ </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>%channel</parameter
+> - اسم القناة التي بثّت البرنامج. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>يُستخدم خيار <guilabel
+>الإجراء بعد انتهاء التسجيل</guilabel
+> لإعداد أمر اختياري يُنفَّذ عندما يوقف كافيين تسجيل برنامج. </para>
+
+<para
+>يؤدي النقر على خيار <guilabel
+>تحديث بيانات المسح عبر الإنترنت</guilabel
+> إلى جعل كافيين يتحقق مما إذا كان ملف تعريف مسح قنوات جديد موجودًا في <ulink url="https://autoconfig.kde.org/kaffeine/"
+>موقع كيدي</ulink
+>. </para>
+<para
+>يستخدم كافيين ملفًا يُسمى scanfile.dvb لتخزين قائمة بالقنوات التلفزيونية الرقمية المعروفة حسب البلد والمدينة. يُحفَظ هذا الملف متزامنًا مع محتويات <ulink url="https://git.linuxtv.org/dtv-scan-tables.git"
+>شجرة dtv-scan-tables</ulink
+>، التي تُصان بواسطة مجتمع <ulink url="https://linuxtv.org"
+>LinuxTV</ulink
+>. لمزيد من التفاصيل، يُرجى الاطلاع على <ulink url="https://linuxtv.org/wiki/index.php/Dtv-scan-tables"
+>صفحة ويكي dtv-scan-tables</ulink
+>. </para>
+<para
+>عند النقر على الزر، يُنزِّل كافيين أحدث إصدار من تعريفات القنوات ويُخزِّنه في ملف بيانات محلي خاص بالمستخدم، متجاوزًا أي محتويات لملف سابق. </para>
+<para
+>يُرجى ملاحظة أنه لاستخدام أحدث التعريفات، يلزم إغلاق مربع حوار تهيئة التلفاز وإعادة فتحه.</para>
+
+<para
+>يتيح خيار <guilabel
+>تحرير ملف المسح</guilabel
+> تحرير الملف، وهو ما قد يكون مفيدًا لإضافة مجموعة جديدة من القنوات، بينما لم يُحدَّث الملف المنبع. إذا احتجت إلى استخدامه، فيُرجى التفكير في إرسال تحديث إلى <ulink url="https://git.linuxtv.org/dtv-scan-tables.git/"
+>dtv-scan-tables</ulink
+> ليستفيد الآخرون أيضًا من تعريفات القنوات الجديدة. </para>
+
+<para
+>يتيح خيار <guilabel
+>استخدام مجموعة أحرف ISO 8859-1 بدلًا من ISO 6937</guilabel
+> اختيار المبدئي لاستخدامه في رسائل MPEG-TS التي لا تحدد مجموعة أحرف صراحة. إذا لم يُضبط، فالمبدئي هو استخدام ترميز ISO-6937. إذا ضُبط، يتغير المبدئي إلى ISO 8859-1. </para>
+
+<para
+>يُمكّن خيار <guilabel
+>إنشاء ملفات معلومات لمرافقة تسجيلات EPG</guilabel
+> إنشاء ملفات مساعدة للتسجيلات المجدولة بمحتويات دليل البرامج للتسجيلات التي تُجرى عبر <guimenu
+>دليل البرامج</guimenu
+>. </para>
+
+<sect3 id="EPG-data">
+<title
+>استرداد بيانات دليل البرامج الإلكتروني (EPG)</title>
+
+<para
+>ترسل معظم هيئات البث التلفزيوني الرقمي معلومات البرامج عبر معلومات البث، مُرمَّزة في تيار MPEG-TS. ومع ذلك، يستخدم بعضها ترميزات غير قياسية لتلك البيانات. على سبيل المثال، في المملكة المتحدة، تُخزَّن بيانات EPG لبرامج عالية الدقة عادةً باستخدام تنسيق مملوك. مقدمو خدمات آخرون لا يملؤون بيانات EPG ببساطة، أو المعلومات هناك غير موثوقة. </para>
+
+<para
+>منذ كافيين 2.0.17، أصبح من الممكن تعطيل تحليل بيانات EPG من القنوات المُبثَّة، باستخدام برنامج خارجي لاستردادها. لتعطيل ذلك، ما عليك سوى ضبط مربع <guilabel
+>تعطيل تحليل بيانات دليل البرامج الإلكتروني (EPG) من جداول MPEG-TS</guilabel
+>. يمكنك الآن ضبط محلل خارجي لإنتاج ملف ببيانات EPG، واستخدام <guilabel
+>اسم ملف xmltv (اختياري)</guilabel
+> لتحديد اسم الملف المُنتَج. يجب أن يستخدم الملف المُنتَج تنسيق XMLTV، كما هو موصوف في DTD الخاص به. انظر <ulink url="http://wiki.xmltv.org/index.php/XMLTVFormat"
+>تنسيق ملف XMLTV</ulink
+> لمزيد من المعلومات. </para>
+
+<para
+>عند ضبط كافيين لاستخدام ملف XMLTV، سيكتشف تلقائيًا أي تغييرات في الملف. عند حدوث تغيير، سيفتح الملف ويحلل محتوياته، محدِّثًا بيانات EPG وفقًا لذلك. </para>
+
+<para
+>يجب ملاحظة أن ملف XMLTV يحتوي على جدول يربط تمثيله الداخلي للقنوات باسم القناة المتوقع في بيانات البث التلفزيوني الرقمي. لن يسترد كافيين بيانات EPG إلا إذا تطابقت القنوات هناك مع تلك الموجودة في قائمة قنوات كافيين. لذا، عليك التأكد من أن القنوات هناك تطابق ما يتوقعه كافيين. إذا لم تتطابق، يمكنك استخدام برنامج تحرير &XML; لسطر الأوامر لإضافة معلومات القناة المفقودة. </para>
+
+<para
+>على سبيل المثال، إذا كان لديك برنامج جالب xmltv يسترد الملف المُسمى <emphasis
+>original_xmltv_file.xmltv</emphasis
+>، يمكنك استخدام برنامج <emphasis
+>xmlstarlet</emphasis
+> لإضافة الارتباطات المفقودة. لذا، إذا أردت ربط قناة XMLTV المُسماة <emphasis
+>channel.foo.uk</emphasis
+> بقناة اسمها في كافيين هو <emphasis
+>FOO</emphasis
+>، يمكنك تشغيل هذا النص البرمجي الصغير: </para>
+<para
+><programlisting
+>channel="xmltv.channel.pt"\nname="DVB_CHANNEL"\nxmlstarlet ed \\\n        -s "tv/channel[@id='$channel']" -t elem -n display-name \\\n        -v "$name" original_xmltv_file.xmltv &gt; new_xmltv_file.xmltv\nmv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
+</programlisting>
+</para>
+<para
+>ثم، اضبط كافيين لاستخدام الملف الجديد <emphasis
+>/tmp/new_xmltv_file.xmltv</emphasis
+>. </para>
+
+</sect3>
+</sect2>
+<sect2 id="dtv-source-settings">
+<title
+>تهيئة مصادر التلفاز الرقمي</title>
+
+<screenshot>
+<screeninfo
+>تهيئة جهاز التلفاز</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_isdb_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>تهيئة التلفاز</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>تحتوي ألسنة <guimenu
+>الجهاز</guimenu
+> على الإعدادات الخاصة بكل جهاز. عادةً ما يكون اختيار البلد والمدينة في مربع التحرير والسرد <guilabel
+>المصدر</guilabel
+> (أو استخدام أحد مصادر المسح التلقائي) كافيًا للتهيئات غير الفضائية. يحدث الشيء نفسه للأجهزة التي تدعم معايير تلفاز متعددة. على تلك الأجهزة، تحتاج إلى ضبط <guilabel
+>المصدر</guilabel
+> لكل معيار تلفاز: </para>
+
+<screenshot>
+<screeninfo
+>تهيئة القنوات</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbc_dvbt2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>تهيئة القنوات</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>يحدد <guilabel
+>مهلة الموالف</guilabel
+> مقدار الوقت الذي سينتظره مسح القنوات للحصول على قفل إشارة. عادةً ما يكون المبدئي كافيًا لمعظم الأجهزة، ولكن إذا كان الجهاز بطيئًا جدًا في القفل، يمكن زيادة هذه القيمة. </para>
+
+<para
+>يحدد <guilabel
+>الاسم</guilabel
+> الاسم المرتبط بالمصدر الذي سيظهر عند اختيار عنصر <guimenu
+>التلفاز</guimenu
+> من شريط القوائم وخيار <guimenuitem
+>القنوات</guimenuitem
+> في لوحة الإعدادات. </para>
+
+<sect3 id="dtv-source-settings-satellite">
+<title
+>أجهزة الأقمار الاصطناعية</title>
+
+<para
+>تكوين أجهزة الأقمار الاصطناعية (DVB-S، DVB-S2) أكثر تعقيدًا، نظرًا لوجود ترتيبات مختلفة لأنظمة الأقمار الاصطناعية ممكنة. أيضًا، في أنظمة الأقمار الاصطناعية، تقع عادةً على عاتق الجهاز مسؤولية تشغيل مضخم يقع في الطبق - يُدعى LNBf - عبر جهد كهربائي مستمر. </para>
+<para
+>أيضًا، نظرًا لأن أنظمة الأقمار الاصطناعية تستخدم عرض حزمة عريض وتقبل إشارات باستقطابات مختلفة، فمن الشائع استخدام بروتوكول - يُدعى DiSEqC - لاختيار نطاق من القنوات المراد استقبالها. </para>
+<para
+>الخطوة الأولى هي تعليم كافيين حول تكوين القمر الاصطناعي عبر مربع التحرير والسرد <guimenu
+>الضبط</guimenu
+>: </para>
+
+<screenshot>
+<screeninfo
+>تعريفات أجهزة الأقمار الاصطناعية</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_dvbs2_device.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>تعريفات أجهزة الأقمار الاصطناعية</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>القيم التالية ممكنة: </para>
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>مبدل DiSEqC</parameter
+> - كابل الهوائي موصول بمبدل DiSEqC أو أن LNBf يتطلب أوامر DiSEqC لاختيار نطاق من القنوات. هذا هو الإعداد الأكثر شيوعًا. يسمح بوجود حتى 4 أقمار اصطناعية موصولة في نفس الوقت، كل منها بطبقها الخاص. لكل قمر اصطناعي، تحتاج إلى ضبط تكوين LNBf في الطبق الموجه إليه. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>دوار USALS</parameter
+> - كابل الهوائي موصول بطبق واحد مزود بدوار USALS، يُتحكم به عبر DiSEqC. يمكن تكوين أقمار اصطناعية متعددة، حيث سيغير الدوار موضع الطبق عند اختيار قمر اصطناعي مختلف. تحتاج إلى تحديد موضع الطبق (خط العرض، خط الطول). </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>دوار المواضع</parameter
+> - كابل الهوائي موصول بطبق واحد مزود بدوار بمجموعة من المواضع الثابتة، يُتحكم به عبر DiSEqC. يمكن تكوين أقمار اصطناعية متعددة، حيث سيغير الدوار موضع الطبق عند اختيار قمر اصطناعي مختلف. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>تعطيل DiSEqC</parameter
+> - كابل الهوائي موصول بطبق دون أي عناصر تدعم DiSEqC. يُستخدم هذا الإعداد عادةً مع LNBf متعدد النقاط مرصوص الحزم، حيث تكون جميع القنوات موجودة في نفس الوقت في كابلات الهوائي. </para>
+</listitem>
+</itemizedlist>
+
+<para
+>في نظام قمر اصطناعي نموذجي، يستخدم LNBf جهد التشغيل للاختيار بين جهد منخفض (13V) للاستقطاب العمودي أو الدائري الأيمن وجهد أعلى (18V) للاستقطاب الأفقي أو الدائري الأيسر. ومع ذلك، بسبب فقدان الكابلات، أحيانًا لا يفهم LNBf الجهد العالي ولن تُضبط عدة قنوات أو ستُضبط بشكل خاطئ. لذا، تقدم بعض الأجهزة خيارًا لزيادة الجهد إلى إعداد أعلى (14V أو 19V). يُفعّل هذا عبر الخيار ثلاثي الحالات <guilabel
+>استخدام جهد LNBf أعلى</guilabel
+>. ثلاث قيم ممكنة: </para>
+
+<itemizedlist mark='opencircle'>
+<listitem>
+<para
+><parameter
+>ثلاثي الحالات</parameter
+> - لا ترسل أمرًا إلى الجهاز لضبط مستوى الجهد. هذا هو المبدئي. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>غير محدد</parameter
+> - استخدم القيم العادية (13V/18V) للجهد المستمر. اختره فقط إذا كان الجهاز يدعم ضبط المستوى. </para>
+</listitem>
+<listitem>
+<para
+><parameter
+>محدد</parameter
+> - استخدم القيم الأعلى (14V/19V) للجهد المستمر. اختره فقط إذا كان الجهاز يدعم ضبط المستوى. </para>
+</listitem>
+</itemizedlist>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-non-rotor">
+<title
+>التكوينات بدون دوار</title>
+
+<para
+>عند استخدام خياري <parameter
+>مبدل DiSEqC</parameter
+> أو <parameter
+>تعطيل DiSEqC</parameter
+>، الخطوة الأولى هي ضبط القمر الاصطناعي الذي سيُستخدم كمصدر إشارة، عبر مربع تحرير وسرد على اليمين. مع مبدل DiSEqC، يمكن اختيار حتى 4 مصادر. كل منها مع LNBf الخاص به. بعد ضبط المصدر(المصادر)، لكل مصدر، انقر على الزر <guilabel
+>إعدادات LNBf</guilabel
+> المقابل لفتح نافذة منبثقة لاختيار نوع LNBf داخل الطبق الذي يتوافق مع المصدر: </para>
+
+<screenshot>
+<screeninfo
+>تعريفات LNBf</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_configure_tv_lnbf.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>تعريفات LNBf</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+</sect3>
+
+<sect3 id="dtv-source-settings-rotor">
+<title
+>تكوينات الدوار</title>
+
+<para
+>عند استخدام دوار، يوجد LNBf واحد فقط يُشارك مع أقمار اصطناعية متعددة. لذا، الخطوة التالية هي اختيار نوع LNBf عبر حوار <guilabel
+>إعدادات LNB</guilabel
+>. </para>
+<para
+>لدوار USALS، يتم التموضع عبر موضع القمر الاصطناعي (خط العرض، خط الطول). لذا، فقط اختر الأقمار الاصطناعية التي ستُستخدم عبر مربع تحرير وسرد وانقر على الزر <guilabel
+>إضافة قمر اصطناعي</guilabel
+>. </para>
+<para
+>لدوار المواضع، يتم التموضع عبر رقم موضع مكوّن مسبقًا. لذا، فقط اختر موضع القمر الاصطناعي في حوار الرقم على اليسار والقمر الاصطناعي عبر مربع تحرير وسرد على اليمين وانقر على الزر <guilabel
+>إضافة قمر اصطناعي</guilabel
+>. </para>
+<para
+>إذا أُضيف قمر اصطناعي عن طريق الخطأ، يمكنك اختيار القمر الاصطناعي والنقر على الزر <guilabel
+>إزالة قمر اصطناعي</guilabel
+> لإزالته. </para>
+
+</sect3>
+
+</sect2>
+<sect2 id="dtv-channel-setup">
+<title
+>إعداد قنوات التلفزة الرقمية</title>
+
+<para
+>بعد النقر على الزر <guibutton
+>موافق</guibutton
+>، الخطوة التالية هي مسح القنوات الرقمية، باستخدام عنصر <guimenu
+>تلفاز</guimenu
+> من شريط القوائم واختيار خيار <guimenuitem
+>قنوات</guimenuitem
+>، للوحة الإعدادات: </para>
+
+
+<screenshot>
+<screeninfo
+>مسح القنوات</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_finished_channels_added.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>مسح القنوات</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>إذا دُعم أكثر من معيار واحد، سيسمح لك مربع التحرير والسرد <guilabel
+>المصدر</guilabel
+> باختيار المعيار الذي سيُستخدم للمسح. لا تنسَ توصيل كابل هوائي الجهاز ليتوافق مع المعيار الذي سيُستخدم. </para>
+
+<para
+>عندما يحدد كافيين قناة، يقرأ جدول <acronym
+>MPEG-TS</acronym
+> يُدعى جدول معلومات الشبكة (<acronym
+>NIT</acronym
+>)، والذي يحتوي على معلومات حول القنوات التي تستخدم معلمات ضبط مختلفة يُرسلها نفس البثّ. في شبكات معينة، من الممكن أن تُخزّن بعض معلمات الضبط في عدة جداول <acronym
+>NIT</acronym
+> (تُدعى <quote
+>NITs أخرى</quote
+>). هذا أكثر شيوعًا في بعض أنظمة الكابل والأقمار الاصطناعية. باختيار <guilabel
+>البحث عن أجهزة إرسال لشبكات أخرى</guilabel
+>، يُوجّه كافيين لانتظار وتحليل جميع <acronym
+>NITs</acronym
+> الأخرى، مما قد يجعله يجد المزيد من القنوات، على حساب استغراق وقت أطول بكثير لإكمال عملية مسح القنوات. </para>
+
+<para
+>تبدأ عملية مسح القنوات بالنقر على <guibutton
+>بدء المسح</guibutton
+>. عند الانتهاء، ستظهر القنوات المكتشفة على اليمين. يمكن نسخ هذه القنوات إلى الجانب الأيسر بالنقر على <guibutton
+>إضافة المُصفّى</guibutton
+>. يمكن التحقق من معايير الضبط للقناة في الجانب الأيسر بالنقر على زر <guibutton
+>تحرير</guibutton
+>. بعض المعايير قابلة للتعديل في النافذة المنبثقة. </para>
+
+<screenshot>
+<screeninfo
+>حرّر إعدادات القناة</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_scan_channel_edit.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>حرّر إعدادات القناة</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>بمجرد حفظ القنوات، تصبح مشاهدة التلفاز بسيطة مثل النقر على زر <guibutton
+>التلفاز الرقمي</guibutton
+> في النافذة الرئيسة: </para>
+
+</sect2>
+</sect1>
+<sect1 id="dtv-watching">
+<title
+>مشاهدة التلفاز</title>
+
+<screenshot>
+<screeninfo
+>مشاهدة التلفاز</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_live_tv.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>مشاهدة التلفاز</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+<para
+>يتيح لك كافيين أيضًا النقر على زر <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> لإيقافه مؤقتًا. بهذا الإجراء، سيسجل كافيين البرنامج، وعند الضغط على زر <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start-circular.png" format="PNG"/></imageobject
+></inlinemediaobject
+> سيبدأ تشغيل البرنامج من النقطة التي أُوقف عندها، وهذا يُعرف باسم الإزاحة الزمنية. يوجد أيضًا زر <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> يتيح لك التسجيل السريع وحفظ البرنامج على القرص. </para>
+
+</sect1>
+<sect1 id="program-guide">
+<title
+>مرشد البرنامج</title>
+
+<para
+>تبث قنوات التلفاز الرقمي عادةً قائمة بالعروض الحالية والمستقبلية. يُسمى هذا دليل البرامج الإلكتروني - <acronym
+>EPG</acronym
+>. تُلتقط بيانات EPG عند تشغيل محتوى قناة. لعرض <acronym
+>EPG</acronym
+>، افتح عنصر <guimenu
+>تلفاز</guimenu
+> من شريط القوائم واختر خيار <guimenuitem
+>دليل البرامج</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>مرشد البرنامج</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_program_guide.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>مرشد البرنامج</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>في بعض البلدان، قد يكون EPG متاحًا بعدة لغات. افتراضيًا، يعرض كافيين أي لغات في EPG. إذا توفرت لغات متعددة لإدخال EPG معين، ولم يُحدد محتوى لغة صريح، فسيسبق بيانات العنوان والعنوان الفرعي والوصف برمز لغة مكون من 3 أحرف، كما هو محدد بمواصفة ISO 639-2. </para>
+
+<para
+>يتيح خيار <guilabel
+>لغة EPG</guilabel
+> تصفية لغة واحدة فقط. إذا فُعّل، فسيُطبق المرشح أيضًا على العرض على الشاشة - <acronym
+>OSD</acronym
+> وعلى أي تسجيلات مجدولة جديدة. لن يؤثر على التسجيلات المجدولة مسبقًا. </para>
+
+<para
+>بالإضافة إلى النقر على زر التسجيل <inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> عند فتح العرض المباشر، يتيح كافيين أيضًا تسجيل برنامج عبر دليل البرامج، بالنقر على <inlinemediaobject
+><imageobject
+><imagedata fileref="media-record.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <guibutton
+>تسجيل العرض</guibutton
+> في نافذة <guimenuitem
+>دليل البرامج</guimenuitem
+>. </para>
+
+</sect1>
+<sect1 id="recording-schedule">
+<title
+>جدولة التسجيل</title>
+
+<para
+>لعرض البرامج المجدولة للتسجيل، افتح عنصر <guimenu
+>تلفاز</guimenu
+> من شريط القوائم واختر خيار <guimenuitem
+>جدول التسجيل</guimenuitem
+>: </para>
+
+<screenshot>
+<screeninfo
+>جدولة التسجيل</screeninfo>
+<mediaobject>
+<imageobject>
+<imagedata fileref="kaffeine_recording_schedule_enabled.png" format="PNG"/>
+</imageobject>
+<textobject>
+<phrase
+>جدولة التسجيل</phrase>
+</textobject>
+</mediaobject>
+</screenshot>
+
+<para
+>بالنقر على زر <guibutton
+>جديد</guibutton
+>، يمكن تحديد وقت ومدة لبرنامج ليُسجل مباشرة. في هذه الحالة، لن يستخدم تعريفات EPG. </para>
+<para
+>باختيار برنامج موجود والنقر على زر <guibutton
+>تحرير</guibutton
+>، يمكن تغيير وقت البدء ومدة التسجيل. يمكن أيضًا برمجته ليُسجل أسبوعيًا أو يوميًا. </para>
+<para
+>باختيار برنامج موجود والنقر على زر <guibutton
+>إزالة</guibutton
+>، سيُزال البرنامج من جدول التسجيل. </para>
+
+</sect1>
+</chapter>
+
+<chapter id="kaffeine-menubar">
+<title
+>شريط قوائم كافيين</title>
+
+<sect1 id="file-menu">
+<title
+>قائمة ملف</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>ملف</guimenu
+> <guimenuitem
+>افتح...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-folder.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يفتح حوار الملف</action
+> ويتيح لك تحديد ملف محلي لتشغيله. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>U</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>ملف</guimenu
+> <guimenuitem
+>فتح URL...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="text-html.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يفتح حوارًا لإدخال نص</action
+>، لتتمكن من إدخال &URL; لتيار وسائط خارجي مدعوم. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>ملف</guimenu
+> <guimenuitem
+>افتح الأخير</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-open-recent.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يقدم قائمة منسدلة لفتح مورد حديث محلي</action
+>. يتضمن خيار <guimenuitem
+>مسح القائمة</guimenuitem
+> لمسح تلك القائمة. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>ملف</guimenu
+> <guimenuitem
+>تشغيل &CD; صوتي</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-audio.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يختار تشغيل &CD; صوتي</action
+> يجب أن يكون موجودًا بالفعل في محرك القراءة. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>ملف</guimenu
+> <guimenuitem
+>تشغيل &CD; فيديو</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يختار تشغيل &CD; فيديو</action
+> يجب أن يكون موجودًا بالفعل في محرك القراءة. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>ملف</guimenu
+> <guimenuitem
+>تشغيل &DVD;</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يختار تشغيل &DVD;</action
+> يجب أن يكون موجودًا بالفعل في محرك القراءة. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>ملف</guimenu
+> <guimenuitem
+>تشغيل مجلد &DVD;</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يفتح حوار الملف</action
+> ويتيح لك تحديد مجلد &DVD; لتشغيله. يحتوي هذا المجلد على البيانات الخام الموجودة على &DVD;. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>ملف</guimenu
+> <guimenuitem
+>أنهِ</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="gtk-quit.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يُنهي</action
+> كافيين. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playback-menu">
+<title
+>قائمة التشغيل</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgUp;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>السابق</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> إذا شغّلت دفقين أو أكثر في جلسة واحدة، <action
+>سيختار السابق</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Space;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>تشغيل/إيقاف مؤقت</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-start.png" format="PNG"/></imageobject
+></inlinemediaobject
+> وأيقونتي <inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-pause.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>بخانة اختيار لتشغيل دفق أو إيقافه مؤقتًا</action
+> لما تشاهده. على دفق تلفزيوني سيُتابع تسجيله، يُعرف هذا بـ <ulink url="https://en.wikipedia.org/wiki/Time_shifting"
+>الإزاحة الزمنية</ulink
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Backspace;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>إيقاف</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playback-stop.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>أوقف دفقًا</action
+> لما تشاهده. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&PgDn;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>التالي</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> إذا شغّلت دفقين أو أكثر في جلسة واحدة وتشاهد السابق، <action
+>سيختار التالي</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>F</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>وضع ملء الشاشة/الخروج من وضع ملء الشاشة</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+> وأيقونتي <inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>بدّل وضع ملء الشاشة</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>.</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>وضع الحد الأدنى/الخروج من وضع الحد الأدنى</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-restore.png" format="PNG"/></imageobject
+></inlinemediaobject
+> وأيقونتي <inlinemediaobject
+><imageobject
+><imagedata fileref="view-fullscreen.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. <action
+>بدّل وضع الحد الأدنى</action
+>. وضع واجهة مستخدم رسومية في نافذة، حيث لدينا فقط قائمة سياقية واختصارات لوحة المفاتيح. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>ترجمة</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>يقدم قائمة منسدلة بخيارات <action
+>متعلقة بدفق (دفقات) الترجمة</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>ترجمة</guisubmenu
+> <guimenuitem
+>إيقاف/<replaceable
+>اسم-الترجمة</replaceable
+></guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>اختر الترجمة المتاحة</action
+> من هذه القائمة المنسدلة. ستختلف قنوات الترجمة هذه حسب محتوى الدفق المصدر. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>ترجمة</guisubmenu
+> <guimenuitem
+>أضف ملف ترجمة</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="application-x-subrip.png" format="PNG"/></imageobject
+></inlinemediaobject
+> هذا الخيار هو لـ <action
+>إضافة ملف ترجمة محلي</action
+> عبر حوار ملف. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>صوت</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>يقدم قائمة منسدلة بخيارات <action
+>متعلقة بدفق (دفقات) الصوت</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>صوت</guisubmenu
+> <guimenuitem
+>جهاز الصوت</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+>يقدم قائمة منسدلة تظهر <action
+>أجهزة الصوت المتاحة</action
+>. متاح فقط إذا اكتُشف أكثر من جهاز صوت عند بدء كافيين. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>صوت</guisubmenu
+> <guimenuitem
+>ارفع مستوى الصوت</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-high.png" format="PNG"/></imageobject
+></inlinemediaobject
+> ارفع مستوى الصوت. يمكن أيضًا رفع مستوى الصوت بوضع المؤشر فوق منطقة مشغل الوسائط وتحريك عجلة الفأرة لأعلى. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>صوت</guisubmenu
+> <guimenuitem
+>اخفض مستوى الصوت</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-low.png" format="PNG"/></imageobject
+></inlinemediaobject
+> اخفض مستوى الصوت. يمكن أيضًا خفض مستوى الصوت بوضع المؤشر فوق منطقة مشغل الوسائط وتحريك عجلة الفأرة لأسفل. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>صوت</guisubmenu
+> <guimenuitem
+>اكتم الصوت</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-medium.png" format="PNG"/></imageobject
+></inlinemediaobject
+> وأيقونتي <inlinemediaobject
+><imageobject
+><imagedata fileref="audio-volume-muted.png" format="PNG"/></imageobject
+></inlinemediaobject
+>. أسكت مستوى الصوت وأعده. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>فيديو</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+>يقدم قائمة منسدلة بخيارات <action
+>متعلقة بدفق (دفقات) الفيديو</action
+>. </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>فيديو</guisubmenu
+> <guimenuitem
+>إزالة التداخل</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="format-justify-center.png" format="PNG"/></imageobject
+></inlinemediaobject
+> يقدم قائمة منسدلة بخوارزميات إزالة التداخل المتاحة. <action
+>هي عملية تحويل الفيديو المتداخل</action
+>، مثل إشارات التلفاز التناظرية الشائعة وغيرها. انظر مقال <ulink url="https://en.wikipedia.org/wiki/Deinterlacing"
+>ويكيبيديا</ulink
+> لمزيد من التفاصيل. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>فيديو</guisubmenu
+> <guimenuitem
+>نسبة العرض إلى الارتفاع</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>يقدم قائمة منسدلة بنسب العرض إلى الارتفاع المتاحة</action
+>، بالإضافة إلى خيار <guimenuitem
+>آلي</guimenuitem
+>. <ulink url="https://en.wikipedia.org/wiki/Aspect_ratio_(image)"
+>نسبة العرض إلى الارتفاع للصورة</ulink
+> تصف العلاقة التناسبية بين عرضها وارتفاعها. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>فيديو</guisubmenu
+> <guimenuitem
+>حجم الفيديو</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para
+><action
+>يقدم قائمة منسدلة بأحجام الفيديو المتاحة</action
+>. غيّر حجم الصورة بنسبة مئوية، بالإضافة إلى خياري <guimenuitem
+>آلي</guimenuitem
+> و<guimenuitem
+>الحجم الأصلي</guimenuitem
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>J</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>اقفز إلى موضع</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="go-jump.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يقدم صندوق تدوير لضبط النقطة الزمنية المطلوبة التي تريد الانتقال إليها</action
+>؛ بالساعات والدقائق والثواني. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>تخطي</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>يقدم قائمة منسدلة بأربعة أوقات قفز محددة مسبقًا</action
+>. مع الخيارات التالية: </para>
+
+  <variablelist>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;&Left;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>تخطي</guisubmenu
+> <guimenuitem
+>تخطي 60 ثانية للخلف</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يتحرك 60 ثانية للخلف</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Left;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>تخطي</guisubmenu
+> <guimenuitem
+>تخطي 15 ثانية للخلف</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-backward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يتحرك 15 ثانية للخلف</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Right;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>تخطي</guisubmenu
+> <guimenuitem
+>تخطي 15 ثانية للأمام</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يتحرك 15 ثانية للأمام</action
+>. </para
+></listitem>
+  </varlistentry>
+
+  <varlistentry>
+  <term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Shift;&Right;</keycombo
+> </shortcut
+> <guimenu
+>تشغيل</guimenu
+> <guisubmenu
+>تخطي</guisubmenu
+> <guimenuitem
+>تخطي 60 ثانية للأمام</guimenuitem
+> </menuchoice
+></term>
+  <listitem
+><para>
+  <inlinemediaobject
+><imageobject
+><imagedata fileref="media-skip-forward.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>يتحرك 60 ثانية للأمام</action
+>. </para
+></listitem>
+  </varlistentry>
+
+</variablelist>
+</listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>قائمة &DVD;</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-optical-video.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>ابدأ بقائمة &DVD; الرسومية الأصلية</action
+>. يُستكشف ذلك باستخدام مفاتيح المؤشر والفأرة. انظر مقال <ulink url="https://en.wikipedia.org/wiki/DVD-Video"
+>ويكيبيديا</ulink
+> لمزيد من التفاصيل. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>عنوان</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>محتوى &DVD; مقسم إلى عناوين لتسهيل التنقل</action
+>. من هنا يمكنك الذهاب مباشرة. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>فصل</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>محتوى &DVD; مقسم إلى فصول لتسهيل التنقل</action
+>. من هنا يمكنك الذهاب مباشرة. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تشغيل</guimenu
+> <guimenuitem
+>زاوية</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action
+>تنويع للفصول: من الممكن أن تتضمن عدة نسخ</action
+> (تسمى <quote
+>زوايا</quote
+>) لمشاهد معينة. من هنا يمكنك الذهاب مباشرة. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="playlist-menu">
+<title
+>قائمة التشغيل</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>قائمة تشغيل</guimenu
+> <guimenuitem
+>تكرار</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-repeat.png" format="PNG"/></imageobject
+></inlinemediaobject
+> خانة اختيار <action
+>لإعادة تشغيل الملف(ات) في حلقة</action
+> الموجودة في قائمة التشغيل. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>قائمة تشغيل</guimenu
+> <guimenuitem
+>عشوائي</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="media-playlist-shuffle.png" format="PNG"/></imageobject
+></inlinemediaobject
+> خانة اختيار <action
+>لإعادة تشغيل الملفات عشوائيًا</action
+> الموجودة في قائمة التشغيل حتى يتم تشغيلها جميعًا. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>قائمة التشغيل</guimenu
+> <guimenuitem
+>امسح</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-clear-list.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>امسح كل المدخلات في قائمة التشغيل</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>قائمة التشغيل</guimenu
+> <guimenuitem
+>جديد</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="list-add.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>إنشاء قائمة تشغيل جديدة</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>قائمة التشغيل</guimenu
+> <guimenuitem
+>أعد التسمية</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-rename.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>أعد تسمية قائمة التشغيل الحالية</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>قائمة التشغيل</guimenu
+> <guimenuitem
+>احذف</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="edit-delete.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>احذف قائمة التشغيل الحالية</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>قائمة التشغيل</guimenu
+> <guimenuitem
+>احفظ</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>احفظ قائمة التشغيل الحالية</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+>&Ctrl;&Shift;<keycap
+>S</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>قائمة التشغيل</guimenu
+> <guimenuitem
+>احفظ باسم...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save-as.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>احفظ قائمة التشغيل الحالية باسم جديد</action
+>. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="television-menu">
+<title
+>قائمة التلفاز</title>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>C</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تلفاز</guimenu
+> <guimenuitem
+>قنوات</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para
+><action>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="video-television.png" format="PNG"/></imageobject
+></inlinemediaobject
+> ستظهر لوحة إعدادات لـ<action
+>ضبط القنوات</action
+> المطابقة لمنطقتك. انظر قسم <link linkend="dtv-channel-setup"
+>إعداد قنوات التلفاز الرقمي</link
+> لمزيد من التفاصيل. </action
+></para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>G</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تلفاز</guimenu
+> <guimenuitem
+>دليل البرامج</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-list-details.png" format="PNG"/></imageobject
+></inlinemediaobject
+> ستظهر نافذة لـ<action
+>إدارة دليل البرامج</action
+>. انظر قسم <link linkend="program-guide"
+>دليل البرامج</link
+> لمزيد من التفاصيل. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>O</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تلفاز</guimenu
+> <guimenuitem
+>شاشة العرض</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
+></inlinemediaobject
+> <action
+>أظهر مربع معلومات شاشة العرض على نافذة التشغيل لمدة ثلاث ثوانٍ</action
+> مع معلومات دليل البرامج عن البرنامج الحالي والتالي. انقر نقرًا مزدوجًا عليه لرؤية معلومات موسعة عن البرنامج الحالي، ثم انقر مجددًا لإزالة مربع المعلومات هذا. انظر مقالة <ulink url="https://en.wikipedia.org/wiki/On-screen_display"
+>ويكيبيديا</ulink
+> لمزيد من التفاصيل. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><shortcut
+> <keycombo action="simul"
+><keycap
+>R</keycap
+></keycombo
+> </shortcut
+> <guimenu
+>تلفاز</guimenu
+> <guimenuitem
+>جدول التسجيل</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="view-pim-calendar.png" format="PNG"/></imageobject
+></inlinemediaobject
+> ستظهر نافذة لـ<action
+>إدارة التسجيلات المجدولة</action
+>. انظر قسم <link linkend="recording-schedule"
+>جدول التسجيل</link
+> لمزيد من التفاصيل. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تلفاز</guimenu
+> <guimenuitem
+>سجل فوريًا</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="document-save.png" format="PNG"/></imageobject
+></inlinemediaobject
+> مع مربع اختيار للتحقق من اختيارك. <action
+>ابدأ تسجيل الدفق الذي يُشغل فوريًا</action
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>تلفاز</guimenu
+> <guimenuitem
+>اضبط التلفاز...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> ستظهر نافذة لـ<action
+>ضبط المعاملات التي تدير أجهزة DVB</action
+>. انظر قسم <link linkend="digital-tv"
+>إعداد التلفاز الرقمي</link
+> لمزيد من التفاصيل. </para
+></listitem>
+</varlistentry>
+
+</variablelist>
+</sect1>
+
+<sect1 id="settings-menu">
+<title
+>قائمة الإعدادات</title
+> 
+
+<para
+>لتبسيط استخدام كافيين، تحتوي هذه القائمة على عنصري قائمة فقط: </para>
+
+<variablelist>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>إعدادات</guimenu
+> <guimenuitem
+>اضبط الاختصارات...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure-shortcuts.png" format="PNG"/></imageobject
+></inlinemediaobject
+> يتيح لك تمكين اختصارات لوحة المفاتيح وتعطيلها وتعديلها. لمزيد من المعلومات، انظر القسم المسمى <quote
+>استخدام الاختصارات وتخصيصها</quote
+>. </para
+></listitem>
+</varlistentry>
+
+<varlistentry>
+<term
+><menuchoice
+><guimenu
+>إعدادات</guimenu
+> <guimenuitem
+>اضبط كافيين...</guimenuitem
+> </menuchoice
+></term>
+<listitem
+><para>
+<inlinemediaobject
+><imageobject
+><imagedata fileref="configure.png" format="PNG"/></imageobject
+></inlinemediaobject
+> يفتح لوحة الإعدادات. </para
+></listitem>
+</varlistentry>
+</variablelist>
+
+</sect1>
+
+<sect1 id="help-menu">
+<title
+>قائمة مساعدة</title
+> 
+<para
+>كافيين يحتوي على عناصر قائمة <guimenu
+>مساعدة</guimenu
+> الشائعة في &kde;، لمزيد من المعلومات اقرأ الأقسام حول <ulink url="help:/fundamentals/menus.html#menus-help"
+>قائمة المساعدة</ulink
+> من أساسيات &kde;. </para>
+</sect1>
+</chapter>
+
+<chapter id="credits">
+<title
+>حقوق النشر والترخيص</title>
+
+<para
+>حقوق نشر البرنامج 2007-2018، مؤلفو كافيين. </para>
+
+<para
+>حقوق نشر التوثيق 2003-2005، يورغن كوفلر <email
+>kaffeine@gmx.net</email
+>، كريستوف توميريه <email
+>hftom@free.fr</email
+>، ماورو كارفاليو شحاب <email
+>mchehab+kde@kernel.org</email
+> </para>
+<para
+>الترجمة: زايد السعيدي <email
+>zayed.alsaidi@gmail.com</email
+></para
+> &underFDL; &underGPL; </chapter>
+
+&documentation.index;
+</book>
+<!--
+Local Variables:
+mode: sgml
+sgml-minimize-attributes:nil
+sgml-general-insert-case:lower
+sgml-indent-step:0
+sgml-indent-data:nil
+End:
+-->
+
