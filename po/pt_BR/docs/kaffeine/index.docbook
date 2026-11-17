@@ -99,7 +99,7 @@
 <para
 ><ulink url="https://www.kde.org/applications/multimedia/kaffeine/"
 >Kaffeine</ulink
-> é um reprodutor multimídia pelo &kde;. </para>
+> é um reprodutor multimídia pela &kde;. </para>
 </abstract>
 
 <keywordset>
@@ -1991,7 +1991,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 > <guimenu
 >Televisão</guimenu
 > <guimenuitem
->Mensagem na tela</guimenuitem
+>Indicador na tela</guimenuitem
 > </menuchoice
 ></term>
 <listitem
@@ -2001,7 +2001,7 @@ mv new_xmltv_file.xmltv /tmp/new_xmltv_file.xmltv
 ><imagedata fileref="dialog-information.png" format="PNG"/></imageobject
 ></inlinemediaobject
 > <action
->Mostra na janela de reprodução algumas informações sobrepostas (OSD) durante três segundos</action
+>Mostra informações em um indicador na tela na janela de reprodução durante três segundos</action
 > contendo informações do guia de programação à respeito do programa atual e do próximo programa. Um click duplo irá mostrar mais informações sobre o programa atual. Um novo click irá fazer com que estas informações desapareçam. Veja o artigo <ulink url="https://pt.wikipedia.org/wiki/On-screen_display"
 >Wikipedia</ulink
 > para maiores detalhes. </para
